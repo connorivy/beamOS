@@ -1,0 +1,3 @@
+[submodule "objects"]
+  path = connorivy/speckle-objects
+  url = git@github.com:connorivy/speckle-objects.git
