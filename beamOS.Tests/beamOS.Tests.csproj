@@ -21,4 +21,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\beamOS.API\beamOS.API.csproj" />
+  </ItemGroup>
+
 </Project>

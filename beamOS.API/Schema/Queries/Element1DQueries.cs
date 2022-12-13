@@ -1,6 +1,10 @@
 ﻿namespace beamOS.API.Schema.Queries
 {
-  public class Element1DQueries
+  public static class Element1DQueries
   {
+    public static double GetBeamLength()
+    {
+      return 5;
+    }
   }
 }
