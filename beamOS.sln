@@ -5,9 +5,13 @@ VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "beamOS.API", "beamOS.API\beamOS.API.csproj", "{E1E9AB8E-ED2E-47BB-B410-64CC163FE563}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Objects", "objects\Objects.csproj", "{E4D9960B-4E49-43F1-9979-51A8C768E9AE}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "beamOS.Tests", "beamOS.Tests\beamOS.Tests.csproj", "{9CDAA175-862C-4105-8F3E-D8BEE1123843}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{60D951DA-E333-4007-A423-F2E6364A521B}"
+	ProjectSection(SolutionItems) = preProject
+		.gitmodules = .gitmodules
+		.github\workflows\integrate.yml = .github\workflows\integrate.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,10 +23,6 @@ Global
 		{E1E9AB8E-ED2E-47BB-B410-64CC163FE563}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E1E9AB8E-ED2E-47BB-B410-64CC163FE563}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E1E9AB8E-ED2E-47BB-B410-64CC163FE563}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E4D9960B-4E49-43F1-9979-51A8C768E9AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E4D9960B-4E49-43F1-9979-51A8C768E9AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E4D9960B-4E49-43F1-9979-51A8C768E9AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E4D9960B-4E49-43F1-9979-51A8C768E9AE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9CDAA175-862C-4105-8F3E-D8BEE1123843}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9CDAA175-862C-4105-8F3E-D8BEE1123843}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9CDAA175-862C-4105-8F3E-D8BEE1123843}.Release|Any CPU.ActiveCfg = Release|Any CPU
