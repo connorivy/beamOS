@@ -7,7 +7,7 @@ namespace beamOS.API.Schema.Objects
   {
     // Base Curve of element1D. Only lines implemented right now but extendable to curves
     public ICurve BaseCurve { get; set; }
-    // counter-clockwise rotation in radians
+    // counter-clockwise rotation in radians when looking in the negative (local) x direction
     public double ProfileRotation { get; set; }
     public SectionProfile SectionProfile { get; set; }
     public Material Material { get; set; }
@@ -33,12 +33,6 @@ namespace beamOS.API.Schema.Objects
       return null;
     }
 
-    // Transformation matrix will be a 12x12 matrix made up of four instances of a 3x3 matrix defined as:
-    // | r11 r12 r13 |   | cos(a)cos(B) cos(a)sin(B)sin(g)-sin(a)cos(g) cos(a)sin(B)cos(g)+sin(a)sin(g) |
-    // | r21 r22 r23 | = | sin(a)cos(B) sin(a)sin(B)sin(g)+cos(a)cos(g) sin(a)sin(B)cos(g)-cos(a)sin(g) |
-    // | r31 r32 r33 |   |    -sin(B)            cos(B)sin(g)                    cos(B)cos(g)           |
-    //
-    // where a,B,g are alpha beta and gamma from the Euler YZX convention
     public Matrix<double> GetTransformationMatrix(Line baseLine)
     {
       var L = baseLine.Length;
@@ -115,16 +109,31 @@ namespace beamOS.API.Schema.Objects
       var rxy = (baseLine.P1[1] - baseLine.P0[1]) / L;
       var rxz = (baseLine.P1[2] - baseLine.P0[2]) / L;
 
-      var sqrtRxx2Rxz2 = Math.Sqrt(rxx * rxx + rxz * rxz);
       var cosG = Math.Cos(ProfileRotation);
       var sinG = Math.Sin(ProfileRotation);
 
-      var r21 = (-rxx * rxy * cosG - rxz * sinG) / sqrtRxx2Rxz2;
-      var r22 = sqrtRxx2Rxz2 * cosG;
-      var r23 = (-rxx * rxz * cosG + rxx * sinG) / sqrtRxx2Rxz2;
-      var r31 = (rxx * rxy * sinG - rxz * cosG) / sqrtRxx2Rxz2;
-      var r32 = -sqrtRxx2Rxz2 * sinG;
-      var r33 = (rxy * rxz * sinG + rxx * cosG) / sqrtRxx2Rxz2;
+      var sqrtRxx2Rxz2 = Math.Sqrt(rxx * rxx + rxz * rxz);
+
+      double r21, r22, r23, r31, r32, r33;
+
+      if (sqrtRxx2Rxz2 < .0001)
+      {
+        r21 = -rxy * cosG;
+        r22 = 0;
+        r23 = sinG;
+        r31 = rxy * sinG;
+        r32 = 0;
+        r33 = cosG;
+      }
+      else
+      {
+        r21 = (-rxx * rxy * cosG - rxz * sinG) / sqrtRxx2Rxz2;
+        r22 = sqrtRxx2Rxz2 * cosG;
+        r23 = (-rxy * rxz * cosG + rxx * sinG) / sqrtRxx2Rxz2;
+        r31 = (rxx * rxy * sinG - rxz * cosG) / sqrtRxx2Rxz2;
+        r32 = -sqrtRxx2Rxz2 * sinG;
+        r33 = (rxy * rxz * sinG + rxx * cosG) / sqrtRxx2Rxz2;
+      }
 
       return DenseMatrix.OfArray(new[,] {
         { rxx, rxy, rxz },
