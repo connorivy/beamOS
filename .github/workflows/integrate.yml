@@ -23,9 +23,7 @@ jobs:
       run: dotnet build --no-restore /p:ContinuousIntegrationBuild=true
     - name: Test
       run: dotnet test --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
-    - name: Codecov
-      uses: codecov/codecov-action@v3
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
       with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        flags: unittests
-        verbose: true
+        github-token: ${{ secrets.GITHUB_TOKEN }}
