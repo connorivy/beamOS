@@ -254,10 +254,10 @@ namespace beamOS.Tests.Schema.Objects
     #region misaligned
     public static IEnumerable<object[]> TestGetRotationMatrixData_Misaligned()
     {
-      //var tests = new List<object[]>();
+      var tests = new List<object[]>();
 
       // simplest case
-      yield return new object[]
+      tests.Add(new object[]
       {
         new Line(new[] { 0.0, 0.0, 0.0 }, new[] { 1.0, 1, 1 }),
         0,
@@ -267,10 +267,10 @@ namespace beamOS.Tests.Schema.Objects
           { -0.408248,  0.816497,  -0.408248},
           { -0.70710678118, 0, 0.70710678118},
         }
-      };
+      });
 
       // From Matrix Analysis of Structures example 8.3
-      yield return new object[]
+      tests.Add(new object[]
       {
         new Line(new[] { 4.0, 7.0, 6.0 }, new[] { 20.0, 15, 17 }),
         0.857302717,
@@ -280,9 +280,9 @@ namespace beamOS.Tests.Schema.Objects
           { -0.6338, 0.60512, 0.48181},
           { -0.13343, -0.69909, 0.70249},
         }
-      };
+      });
 
-
+      return tests;
     }
     #endregion
 
