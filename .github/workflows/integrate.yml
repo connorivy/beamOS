@@ -27,4 +27,4 @@ jobs:
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        path-to-lcov: beamOS/beamOS.Tests/coverage.info
+        path-to-lcov: D:\a\beamOS\beamOS\beamOS.Tests\coverage.info
