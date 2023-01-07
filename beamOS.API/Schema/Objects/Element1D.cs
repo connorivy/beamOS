@@ -27,78 +27,27 @@ namespace beamOS.API.Schema.Objects
       // if baseCurve is a line, life is good
       if (BaseCurve is Line baseLine)
       {
-        GetTransformationMatrix(baseLine);
+        var rotationMatrix = GetRotationMatrix(baseLine);
+        var transformationMatrix = GetTransformationMatrix(rotationMatrix);
         GetLocalStiffnessMatrix(baseLine);
       }
       return null;
     }
 
-    public Matrix<double> GetTransformationMatrix(Line baseLine)
+    public Matrix<double> GetTransformationMatrix(Matrix<double> rotationMatrix)
     {
-      var L = baseLine.Length;
+      if (rotationMatrix.ColumnCount != 3)
+        throw new Exception($"The method \"GetTransformationMatrix\" must have 3 columns, not ${rotationMatrix.ColumnCount}");
+      if (rotationMatrix.RowCount != 3)
+        throw new Exception($"The method \"GetTransformationMatrix\" must have 3 columns, not ${rotationMatrix.RowCount}");
 
-      //var dX = baseLine.P0[0] - baseLine.P1[0];
-      //var dY = baseLine.P0[1] - baseLine.P1[1];
-      //var dZ = baseLine.P0[2] - baseLine.P1[2];
-      //var cosG = Math.Cos(ProfileRotation);
-      //var sinG = Math.Sin(ProfileRotation);
-      //var den = L * Math.Sqrt(dX * dX + dY * dY);
+      var transformationMatrix = Matrix<double>.Build.Dense(12, 12);
+      transformationMatrix.SetSubMatrix(0, 0, rotationMatrix);
+      transformationMatrix.SetSubMatrix(3, 3, rotationMatrix);
+      transformationMatrix.SetSubMatrix(6, 6, rotationMatrix);
+      transformationMatrix.SetSubMatrix(9, 9, rotationMatrix);
 
-      //var r11 = (dX * dZ * cosG - L * dY * sinG) / den;
-      //var r12 = (dY * dZ * cosG + L * dX * sinG) / den;
-      //var r13 = -den * cosG / (L * L);
-      //var r21 = -(dX * dZ * sinG + L * dY * cosG) / den;
-      //var r22 = -(dY * dZ * sinG - L * dX * cosG) / den;
-      //var r23 = den * sinG / (L * L);
-      //var r31 = dX / L;
-      //var r32 = dY / L;
-      //var r33 = dZ / L;
-
-      //return SparseMatrix.OfArray(new[,] {
-      //  { r11, r12, r13, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-      //  { r21, r22, r23, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-      //  { r31, r32, r33, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-      //  { 0, 0, 0, r11, r12, r13, 0, 0, 0, 0, 0, 0 },
-      //  { 0, 0, 0, r21, r22, r23, 0, 0, 0, 0, 0, 0 },
-      //  { 0, 0, 0, r31, r32, r33, 0, 0, 0, 0, 0, 0 },
-      //  { 0, 0, 0, 0, 0, 0, r11, r12, r13, 0, 0, 0 },
-      //  { 0, 0, 0, 0, 0, 0, r21, r22, r23, 0, 0, 0 },
-      //  { 0, 0, 0, 0, 0, 0, r31, r32, r33, 0, 0, 0 },
-      //  { 0, 0, 0, 0, 0, 0, 0, 0, 0, r11, r12, r13 },
-      //  { 0, 0, 0, 0, 0, 0, 0, 0, 0, r21, r22, r23 },
-      //  { 0, 0, 0, 0, 0, 0, 0, 0, 0, r31, r32, r33 },
-      //});
-
-
-      var rxx = baseLine.P1[0] - baseLine.P0[0] / L;
-      var rxy = baseLine.P1[1] - baseLine.P0[1] / L;
-      var rxz = baseLine.P1[2] - baseLine.P0[2] / L;
-
-      var sqrtRxx2Rxz2 = Math.Sqrt(rxx * rxx + rxz * rxz);
-      var cosG = Math.Cos(ProfileRotation);
-      var sinG = Math.Sin(ProfileRotation);
-
-      var r21 = (-rxx * rxy * cosG - rxz * sinG) / sqrtRxx2Rxz2;
-      var r22 = sqrtRxx2Rxz2 * cosG;
-      var r23 = (-rxx * rxz * cosG + rxx * sinG) / sqrtRxx2Rxz2;
-      var r31 = (rxx * rxy * sinG - rxz * cosG) / sqrtRxx2Rxz2;
-      var r32 = -sqrtRxx2Rxz2 * sinG;
-      var r33 = (rxy * rxz * sinG + rxx * cosG) / sqrtRxx2Rxz2;
-
-      return SparseMatrix.OfArray(new[,] {
-        { rxx, rxy, rxz, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        { r21, r22, r23, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        { r31, r32, r33, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        { 0, 0, 0, rxx, rxy, rxz, 0, 0, 0, 0, 0, 0 },
-        { 0, 0, 0, r21, r22, r23, 0, 0, 0, 0, 0, 0 },
-        { 0, 0, 0, r31, r32, r33, 0, 0, 0, 0, 0, 0 },
-        { 0, 0, 0, 0, 0, 0, rxx, rxy, rxz, 0, 0, 0 },
-        { 0, 0, 0, 0, 0, 0, r21, r22, r23, 0, 0, 0 },
-        { 0, 0, 0, 0, 0, 0, r31, r32, r33, 0, 0, 0 },
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0, rxx, rxy, rxz },
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0, r21, r22, r23 },
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0, r31, r32, r33 },
-      });
+      return transformationMatrix;
     }
 
     public Matrix<double> GetRotationMatrix(Line baseLine)
