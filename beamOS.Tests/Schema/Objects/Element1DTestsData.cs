@@ -29,9 +29,9 @@ namespace beamOS.Tests.Schema.Objects
       // return the following matrix (ref Advanced Structural Analysis with MATLAB eqn 4.17)
       var curve = new Line(new[] { 10.0, 10, 5 }, new[] { 20.0, 18, 5 });
       var L = curve.Length;
-      var cx = (curve.P1[0] - curve.P0[0]) / L;
-      var cy = (curve.P1[1] - curve.P0[1]) / L;
-      var cz = (curve.P1[2] - curve.P0[2]) / L;
+      var cx = (curve.EndNode1.Position[0] - curve.EndNode0.Position[0]) / L;
+      var cy = (curve.EndNode1.Position[1] - curve.EndNode0.Position[1]) / L;
+      var cz = (curve.EndNode1.Position[2] - curve.EndNode0.Position[2]) / L;
       var sqrtCx2Cz2 = Math.Sqrt(Math.Pow(cx, 2) + Math.Pow(cz, 2));
       tests.Add(new object[]
       {
@@ -47,9 +47,9 @@ namespace beamOS.Tests.Schema.Objects
 
       curve = new Line(new[] { -10.0, 10, 5 }, new[] { 20.0, 18, 5 });
       L = curve.Length;
-      cx = (curve.P1[0] - curve.P0[0]) / L;
-      cy = (curve.P1[1] - curve.P0[1]) / L;
-      cz = (curve.P1[2] - curve.P0[2]) / L;
+      cx = (curve.EndNode1.Position[0] - curve.EndNode0.Position[0]) / L;
+      cy = (curve.EndNode1.Position[1] - curve.EndNode0.Position[1]) / L;
+      cz = (curve.EndNode1.Position[2] - curve.EndNode0.Position[2]) / L;
       sqrtCx2Cz2 = Math.Sqrt(Math.Pow(cx, 2) + Math.Pow(cz, 2));
       tests.Add(new object[]
       {
@@ -67,9 +67,9 @@ namespace beamOS.Tests.Schema.Objects
       // return the following matrix (ref Advanced Structural Analysis with MATLAB eqn 4.16)
       curve = new Line(new[] { 10.0, 18, 15 }, new[] { 20.0, 18, 5 });
       L = curve.Length;
-      cx = (curve.P1[0] - curve.P0[0]) / L;
-      //cy = (curve.P1[1] - curve.P0[1]) / L;
-      cz = (curve.P1[2] - curve.P0[2]) / L;
+      cx = (curve.EndNode1.Position[0] - curve.EndNode0.Position[0]) / L;
+      //cy = (curve.EndNode1.Position[1] - curve.EndNode0.Position[1]) / L;
+      cz = (curve.EndNode1.Position[2] - curve.EndNode0.Position[2]) / L;
       sqrtCx2Cz2 = Math.Sqrt(Math.Pow(cx, 2) + Math.Pow(cz, 2));
       tests.Add(new object[]
       {
@@ -85,9 +85,9 @@ namespace beamOS.Tests.Schema.Objects
 
       curve = new Line(new[] { -10.0, 18, 15 }, new[] { 20.0, 18, 5 });
       L = curve.Length;
-      cx = (curve.P1[0] - curve.P0[0]) / L;
-      //cy = (curve.P1[1] - curve.P0[1]) / L;
-      cz = (curve.P1[2] - curve.P0[2]) / L;
+      cx = (curve.EndNode1.Position[0] - curve.EndNode0.Position[0]) / L;
+      //cy = (curve.EndNode1.Position[1] - curve.EndNode0.Position[1]) / L;
+      cz = (curve.EndNode1.Position[2] - curve.EndNode0.Position[2]) / L;
       sqrtCx2Cz2 = Math.Sqrt(Math.Pow(cx, 2) + Math.Pow(cz, 2));
       tests.Add(new object[]
       {

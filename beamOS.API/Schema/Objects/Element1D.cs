@@ -93,9 +93,9 @@ namespace beamOS.API.Schema.Objects
     {
       var L = baseLine.Length;
 
-      var rxx = (baseLine.P1[0] - baseLine.P0[0]) / L;
-      var rxy = (baseLine.P1[1] - baseLine.P0[1]) / L;
-      var rxz = (baseLine.P1[2] - baseLine.P0[2]) / L;
+      var rxx = (baseLine.EndNode1.Position[0] - baseLine.EndNode0.Position[0]) / L;
+      var rxy = (baseLine.EndNode1.Position[1] - baseLine.EndNode0.Position[1]) / L;
+      var rxz = (baseLine.EndNode1.Position[2] - baseLine.EndNode0.Position[2]) / L;
 
       var cosG = Math.Cos(ProfileRotation);
       var sinG = Math.Sin(ProfileRotation);
