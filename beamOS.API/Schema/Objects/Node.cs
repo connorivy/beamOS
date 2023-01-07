@@ -2,6 +2,7 @@
 {
   public class Node
   {
+    public int Id { get; set; }
     // [x, y, z]
     public double[] Position { get; set; } = new double[3];
     public double[] Stiffness { get; set; } = new double[6];

@@ -3,7 +3,9 @@
   public class Material
   {
     public string Name { get; set; }
-    // Young's Modulus of Elasticity
+    // modulus of elasticity
     public double E { get; set; }
+    // modulus of rigidity
+    public double G { get; set; }
   }
 }

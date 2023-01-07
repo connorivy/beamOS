@@ -268,7 +268,7 @@ namespace beamOS.Tests.Schema.Objects
 
     public static IEnumerable<object[]> TestGetTransformationMatrixData()
     {
-      //var tests = new List<object[]>();
+      var tests = new List<object[]>();
 
       tests.Add(new object[]
       {
