@@ -30,9 +30,15 @@ namespace beamOS.API.Schema.Objects
         if (_localStiffnessMatrix != null) 
           return _localStiffnessMatrix;
 
+        if (Material == null)
+          throw new NullReferenceException(nameof(Material));
+
+        if (SectionProfile == null)
+          throw new NullReferenceException(nameof(SectionProfile));
+
         // TODO: support units
         var E = Material.E;
-        var G = Material.E;
+        var G = Material.G;
         var A = SectionProfile.A;
         var L = BaseCurve.Length;
         var Iz = SectionProfile.Iz;
@@ -47,14 +53,14 @@ namespace beamOS.API.Schema.Objects
           {      0,  12*E*Iz/L3,           0,      0,          0,  6*E*Iz/L2,      0, -12*E*Iz/L3,           0,      0,          0,  6*E*Iz/L2 },
           {      0,           0,  12*E*Iy/L3,      0, -6*E*Iy/L2,          0,      0,           0, -12*E*Iy/L3,      0, -6*E*Iy/L2,          0 },
           {      0,           0,           0,  G*J/L,          0,          0,      0,           0,           0, -G*J/L,          0,          0 },
-          {      0,           0,  -6*E*Iy/L2,      0,   4*E*Iy/L,          0,      0,           0,    6*E*Iy/L,      0,   2*E*Iy/L,          0 },
-          {      0,  -6*E*Iz/L2,           0,      0,          0,   4*E*Iz/L,      0,  -6*E*Iz/L2,           0,      0,          0,   2*E*Iz/L },
+          {      0,           0,  -6*E*Iy/L2,      0,   4*E*Iy/L,          0,      0,           0,   6*E*Iy/L2,      0,   2*E*Iy/L,          0 },
+          {      0,   6*E*Iz/L2,           0,      0,          0,   4*E*Iz/L,      0,  -6*E*Iz/L2,           0,      0,          0,   2*E*Iz/L },
           { -E*A/L,           0,           0,      0,          0,          0,  E*A/L,           0,           0,      0,          0,          0 },
           {      0, -12*E*Iz/L3,           0,      0,          0, -6*E*Iz/L2,      0,  12*E*Iz/L3,           0,      0,          0, -6*E*Iz/L2 },
-          {      0,           0, -12*E*Iy/L3,      0,   6*E*Iy/L,          0,      0,           0,  12*E*Iy/L3,      0,  6*E*Iy/L2,          0 },
+          {      0,           0, -12*E*Iy/L3,      0,  6*E*Iy/L2,          0,      0,           0,  12*E*Iy/L3,      0,  6*E*Iy/L2,          0 },
           {      0,           0,           0, -G*J/L,          0,          0,      0,           0,           0,  G*J/L,          0,          0 },
-          {      0,           0,  -6*E*Iy/L2,      0,  -2*E*Iy/L,          0,      0,           0,   6*E*Iy/L2,      0,   4*E*Iy/L,          0 },
-          {      0,  -6*E*Iz/L2,           0,      0,          0,   2*E*Iz/L,      0,  -6*E*Iz/L2,           0,      0,          0,   4*E*Iz/L },
+          {      0,           0,  -6*E*Iy/L2,      0,   2*E*Iy/L,          0,      0,           0,   6*E*Iy/L2,      0,   4*E*Iy/L,          0 },
+          {      0,   6*E*Iz/L2,           0,      0,          0,   2*E*Iz/L,      0,  -6*E*Iz/L2,           0,      0,          0,   4*E*Iz/L },
         });
 
         return _localStiffnessMatrix;
