@@ -67,16 +67,23 @@ namespace beamOS.API.Schema.Objects
       }
     }
 
-    public Matrix<double> CreateStiffnessMatrix()
+    private Matrix<double>? _globalStiffnessMatrix = null;
+    public Matrix<double> GlobalStiffnessMatrix
     {
-      // if baseCurve is a line, life is good
-      if (BaseCurve is Line baseLine)
+      get
       {
+        if (_globalStiffnessMatrix != null)
+          return _globalStiffnessMatrix;
+
+        if (BaseCurve is not Line baseLine)
+          throw new NotSupportedException("Curved elements are not supported yet");
+
         var rotationMatrix = GetRotationMatrix(baseLine);
         var transformationMatrix = GetTransformationMatrix(rotationMatrix);
-        GetLocalStiffnessMatrix(baseLine);
+
+        _globalStiffnessMatrix = transformationMatrix.Transpose() * LocalStiffnessMatrix * transformationMatrix;
+        return _globalStiffnessMatrix;
       }
-      return null;
     }
 
     public Matrix<double> GetTransformationMatrix(Matrix<double> rotationMatrix)
@@ -134,11 +141,6 @@ namespace beamOS.API.Schema.Objects
         { r21, r22, r23 },
         { r31, r32, r33 },
       });
-    }
-
-    public Matrix<double> GetLocalStiffnessMatrix(Line baseLine)
-    {
-      return null;
     }
   }
 }

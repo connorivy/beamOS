@@ -119,5 +119,37 @@ namespace beamOS.Tests.Schema.Objects
 
       Assert.True(equal, "Stiffness matrix is not equal to expected matrix");
     }
+
+    [Theory]
+    [MemberData(nameof(Element1DTestsData.TestGetGlobalStiffnessMatrixData), MemberType = typeof(Element1DTestsData))]
+    public void TestGetGlobalStiffnessMatrix(double E, double G, double A, double Iz, double Iy, double J, double rotation, double[] P0, double[] P1, double[,] matrixArray, bool exceptionThrown = false)
+    {
+      var baseCurve = new Line(P0, P1);
+      var mat = new Material() { E = E, G = G };
+      var section = new SectionProfile() { A = A, Iz = Iz, Iy = Iy, J = J };
+
+      var element1D = new Element1D(baseCurve, section, mat);
+      element1D.ProfileRotation = rotation;
+
+      // this line isn't necessary but will help our codecov by initializing the local matrix
+      var localStiffnessMatrix = element1D.LocalStiffnessMatrix;
+      var globalStiffnessMatrix = element1D.GlobalStiffnessMatrix.PointwiseRound();
+
+      // element stiffness matrix should always be symmetric
+      Assert.True(globalStiffnessMatrix.IsSymmetric(), "Matrix is not symmetric");
+
+      var expectedMatrix = DenseMatrix.OfArray(matrixArray).PointwiseRound();
+      var equal = globalStiffnessMatrix.AlmostEqual(expectedMatrix, .001);
+
+      //if (!equal)
+      //{
+      //  var newMat = globalStiffnessMatrix - expectedMatrix;
+      //  System.Diagnostics.Debug.WriteLine(globalStiffnessMatrix.PointwiseRound());
+      //  System.Diagnostics.Debug.WriteLine(expectedMatrix.PointwiseRound());
+      //  System.Diagnostics.Debug.WriteLine(newMat.PointwiseRound());
+      //}
+
+      Assert.True(equal, "Stiffness matrix is not equal to expected matrix");
+    }
   }
 }
