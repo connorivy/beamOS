@@ -22,24 +22,76 @@ namespace beamOS.API.Schema.Objects
       ElementType = type;
     }
 
-    public Matrix<double> CreateStiffnessMatrix()
+    private Matrix<double>? _localStiffnessMatrix = null;
+    public Matrix<double> LocalStiffnessMatrix
     {
-      // if baseCurve is a line, life is good
-      if (BaseCurve is Line baseLine)
+      get
       {
+        if (_localStiffnessMatrix != null) 
+          return _localStiffnessMatrix;
+
+        if (Material == null)
+          throw new NullReferenceException(nameof(Material));
+
+        if (SectionProfile == null)
+          throw new NullReferenceException(nameof(SectionProfile));
+
+        // TODO: support units
+        var E = Material.E;
+        var G = Material.G;
+        var A = SectionProfile.A;
+        var L = BaseCurve.Length;
+        var Iz = SectionProfile.Iz;
+        var Iy = SectionProfile.Iy;
+        var J = SectionProfile.J;
+        var L2 = L * L;
+        var L3 = L2 * L;
+
+        _localStiffnessMatrix = DenseMatrix.OfArray(new[,]
+        {
+          {  E*A/L,           0,           0,      0,          0,          0, -E*A/L,           0,           0,      0,          0,          0 },
+          {      0,  12*E*Iz/L3,           0,      0,          0,  6*E*Iz/L2,      0, -12*E*Iz/L3,           0,      0,          0,  6*E*Iz/L2 },
+          {      0,           0,  12*E*Iy/L3,      0, -6*E*Iy/L2,          0,      0,           0, -12*E*Iy/L3,      0, -6*E*Iy/L2,          0 },
+          {      0,           0,           0,  G*J/L,          0,          0,      0,           0,           0, -G*J/L,          0,          0 },
+          {      0,           0,  -6*E*Iy/L2,      0,   4*E*Iy/L,          0,      0,           0,   6*E*Iy/L2,      0,   2*E*Iy/L,          0 },
+          {      0,   6*E*Iz/L2,           0,      0,          0,   4*E*Iz/L,      0,  -6*E*Iz/L2,           0,      0,          0,   2*E*Iz/L },
+          { -E*A/L,           0,           0,      0,          0,          0,  E*A/L,           0,           0,      0,          0,          0 },
+          {      0, -12*E*Iz/L3,           0,      0,          0, -6*E*Iz/L2,      0,  12*E*Iz/L3,           0,      0,          0, -6*E*Iz/L2 },
+          {      0,           0, -12*E*Iy/L3,      0,  6*E*Iy/L2,          0,      0,           0,  12*E*Iy/L3,      0,  6*E*Iy/L2,          0 },
+          {      0,           0,           0, -G*J/L,          0,          0,      0,           0,           0,  G*J/L,          0,          0 },
+          {      0,           0,  -6*E*Iy/L2,      0,   2*E*Iy/L,          0,      0,           0,   6*E*Iy/L2,      0,   4*E*Iy/L,          0 },
+          {      0,   6*E*Iz/L2,           0,      0,          0,   2*E*Iz/L,      0,  -6*E*Iz/L2,           0,      0,          0,   4*E*Iz/L },
+        });
+
+        return _localStiffnessMatrix;
+      }
+    }
+
+    private Matrix<double>? _globalStiffnessMatrix = null;
+    public Matrix<double> GlobalStiffnessMatrix
+    {
+      get
+      {
+        if (_globalStiffnessMatrix != null)
+          return _globalStiffnessMatrix;
+
+        if (BaseCurve is not Line baseLine)
+          throw new NotSupportedException("Curved elements are not supported yet");
+
         var rotationMatrix = GetRotationMatrix(baseLine);
         var transformationMatrix = GetTransformationMatrix(rotationMatrix);
-        GetLocalStiffnessMatrix(baseLine);
+
+        _globalStiffnessMatrix = transformationMatrix.Transpose() * LocalStiffnessMatrix * transformationMatrix;
+        return _globalStiffnessMatrix;
       }
-      return null;
     }
 
     public Matrix<double> GetTransformationMatrix(Matrix<double> rotationMatrix)
     {
       if (rotationMatrix.ColumnCount != 3)
-        throw new Exception($"The method \"GetTransformationMatrix\" must have 3 columns, not ${rotationMatrix.ColumnCount}");
+        throw new Exception($"The provided rotation matrix must have 3 columns, not ${rotationMatrix.ColumnCount}");
       if (rotationMatrix.RowCount != 3)
-        throw new Exception($"The method \"GetTransformationMatrix\" must have 3 columns, not ${rotationMatrix.RowCount}");
+        throw new Exception($"The provided rotation matrix must have 3 rows, not ${rotationMatrix.RowCount}");
 
       var transformationMatrix = Matrix<double>.Build.Dense(12, 12);
       transformationMatrix.SetSubMatrix(0, 0, rotationMatrix);
@@ -54,9 +106,9 @@ namespace beamOS.API.Schema.Objects
     {
       var L = baseLine.Length;
 
-      var rxx = (baseLine.P1[0] - baseLine.P0[0]) / L;
-      var rxy = (baseLine.P1[1] - baseLine.P0[1]) / L;
-      var rxz = (baseLine.P1[2] - baseLine.P0[2]) / L;
+      var rxx = (baseLine.EndNode1.Position[0] - baseLine.EndNode0.Position[0]) / L;
+      var rxy = (baseLine.EndNode1.Position[1] - baseLine.EndNode0.Position[1]) / L;
+      var rxz = (baseLine.EndNode1.Position[2] - baseLine.EndNode0.Position[2]) / L;
 
       var cosG = Math.Cos(ProfileRotation);
       var sinG = Math.Sin(ProfileRotation);
@@ -89,11 +141,6 @@ namespace beamOS.API.Schema.Objects
         { r21, r22, r23 },
         { r31, r32, r33 },
       });
-    }
-
-    public Matrix<double> GetLocalStiffnessMatrix(Line baseLine)
-    {
-      return null;
     }
   }
 }

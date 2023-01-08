@@ -6,8 +6,7 @@
     /// The length of the curve.
     /// </summary>
     double Length { get; }
-
-    double[] P0 { get; set; }
-    double[] P1 { get; set; }
+    Node EndNode0 { get; set; }
+    Node EndNode1 { get; set; }
   }
 }

@@ -11,7 +11,7 @@ namespace beamOS.Tests.Schema.Objects
     Element1D Element1D;
     public Element1DTests()
     {
-      var curve = new Line(new double[] {0, 0, 0}, new double[] {10, 0, 0});
+      var curve = new Line(new double[] { 0, 0, 0 }, new double[] { 10, 0, 0 });
       Element1D = new Element1D(curve, null, null, ElementType.Beam);
     }
 
@@ -81,6 +81,75 @@ namespace beamOS.Tests.Schema.Objects
       Assert.True(subMatrix.Equals(subMatrix2));
       subMatrix2 = tMatrix.SubMatrix(9, 3, 6, 3);
       Assert.True(subMatrix.Equals(subMatrix2));
+    }
+
+    [Theory]
+    [MemberData(nameof(Element1DTestsData.TestGetLocalStiffnessMatrixData), MemberType = typeof(Element1DTestsData))]
+    public void TestGetLocalStiffnessMatrix(double? E, double G, double? A, double Iz, double Iy, double J, double[] P0, double[] P1, double[,] matrixArray, bool exceptionThrown = false)
+    {
+      var baseCurve = new Line(P0, P1);
+      Material mat = null;
+      if (E is not null)
+        mat = new Material() { E = (double)E, G = G };
+
+      SectionProfile section = null;
+      if (A is not null)
+        section = new SectionProfile() { A = (double)A, Iz = Iz, Iy = Iy, J = J };
+
+      var element1D = new Element1D(baseCurve, section, mat);
+
+      if (exceptionThrown)
+      {
+        Assert.ThrowsAny<Exception>(() => element1D.LocalStiffnessMatrix);
+        return;
+      }
+      var localStiffnessMatrix = element1D.LocalStiffnessMatrix;
+
+      // element stiffness matrix should always be symmetric
+      Assert.True(localStiffnessMatrix.IsSymmetric(), "Matrix is not symmetric");
+      
+      var expectedMatrix = DenseMatrix.OfArray(matrixArray);
+      var equal = localStiffnessMatrix.AlmostEqual(expectedMatrix, .0001);
+
+      //if (!equal)
+      //{
+      //  System.Diagnostics.Debug.WriteLine(localStiffnessMatrix.ToString());
+      //  System.Diagnostics.Debug.WriteLine(expectedMatrix.ToString());
+      //}
+
+      Assert.True(equal, "Stiffness matrix is not equal to expected matrix");
+    }
+
+    [Theory]
+    [MemberData(nameof(Element1DTestsData.TestGetGlobalStiffnessMatrixData), MemberType = typeof(Element1DTestsData))]
+    public void TestGetGlobalStiffnessMatrix(double E, double G, double A, double Iz, double Iy, double J, double rotation, double[] P0, double[] P1, double[,] matrixArray, bool exceptionThrown = false)
+    {
+      var baseCurve = new Line(P0, P1);
+      var mat = new Material() { E = E, G = G };
+      var section = new SectionProfile() { A = A, Iz = Iz, Iy = Iy, J = J };
+
+      var element1D = new Element1D(baseCurve, section, mat);
+      element1D.ProfileRotation = rotation;
+
+      // this line isn't necessary but will help our codecov by initializing the local matrix
+      var localStiffnessMatrix = element1D.LocalStiffnessMatrix;
+      var globalStiffnessMatrix = element1D.GlobalStiffnessMatrix.PointwiseRound();
+
+      // element stiffness matrix should always be symmetric
+      Assert.True(globalStiffnessMatrix.IsSymmetric(), "Matrix is not symmetric");
+
+      var expectedMatrix = DenseMatrix.OfArray(matrixArray).PointwiseRound();
+      var equal = globalStiffnessMatrix.AlmostEqual(expectedMatrix, .001);
+
+      //if (!equal)
+      //{
+      //  var newMat = globalStiffnessMatrix - expectedMatrix;
+      //  System.Diagnostics.Debug.WriteLine(globalStiffnessMatrix.PointwiseRound());
+      //  System.Diagnostics.Debug.WriteLine(expectedMatrix.PointwiseRound());
+      //  System.Diagnostics.Debug.WriteLine(newMat.PointwiseRound());
+      //}
+
+      Assert.True(equal, "Stiffness matrix is not equal to expected matrix");
     }
   }
 }

@@ -2,15 +2,15 @@
 {
   public class Line : ICurve
   {
-    public double[] P0 { get; set; } = new double[3];
-    public double[] P1 { get; set; } = new double[3];
+    public Node EndNode0 { get; set; }
+    public Node EndNode1 { get; set; }
     public Line(double[] P0, double[] P1)
     {
-      this.P0 = P0;
-      this.P1 = P1;
+      EndNode0 = new Node(P0);
+      EndNode1 = new Node(P1);
     }
 
     // TODO: maybe implement a private set for length and store that value instead of computing it every time
-    public double Length => Math.Sqrt(Math.Pow(P1[0] - P0[0], 2) + Math.Pow(P1[1] - P0[1], 2) + Math.Pow(P1[2] - P0[2], 2));
+    public double Length => Math.Sqrt(Math.Pow(EndNode1.Position[0] - EndNode0.Position[0], 2) + Math.Pow(EndNode1.Position[1] - EndNode0.Position[1], 2) + Math.Pow(EndNode1.Position[2] - EndNode0.Position[2], 2));
   }
 }
