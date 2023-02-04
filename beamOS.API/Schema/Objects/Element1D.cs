@@ -22,7 +22,8 @@ namespace beamOS.API.Schema.Objects
       ElementType = type;
     }
 
-    private Matrix<double>? _localStiffnessMatrix = null;
+    [ClearOnModelUnlock]
+    public Matrix<double>? _localStiffnessMatrix = null;
     public Matrix<double> LocalStiffnessMatrix
     {
       get
@@ -67,6 +68,7 @@ namespace beamOS.API.Schema.Objects
       }
     }
 
+    [ClearOnModelUnlock]
     private Matrix<double>? _globalStiffnessMatrix = null;
     public Matrix<double> GlobalStiffnessMatrix
     {
