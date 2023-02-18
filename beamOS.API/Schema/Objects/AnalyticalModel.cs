@@ -8,21 +8,25 @@ namespace beamOS.API.Schema.Objects
 {
   public sealed class AnalyticalModel
   {
-    public List<Node> Nodes { get; set; } = new List<Node>();
-    public List<Element1D> Element1Ds { get; set; } = new List<Element1D>();
     public AnalyticalModel() { }
+
+    private readonly List<Node> _nodes = new();
+    public IReadOnlyList<Node> Nodes => _nodes.AsReadOnly();
+    private readonly List<Element1D> _elementIDs = new();
+    public IReadOnlyList<Element1D> Element1Ds => _elementIDs.AsReadOnly();
+
     public void AddNode(Node node)
     {
-      // TODO: make sure there aren't any existing nodes within a certain tolerance
-      node.Id = Nodes.Count;
-      Nodes.Add(node);
+      // TODO: make sure there aren't any existing _nodes within a certain tolerance
+      node.Id = _nodes.Count;
+      _nodes.Add(node);
     }
     public void AddElement1D(Element1D el)
     {
       // TODO: check if model already has object defined between these two points
       AddNode(el.BaseCurve.EndNode0);
       AddNode(el.BaseCurve.EndNode1);
-      Element1Ds.Add(el);
+      _elementIDs.Add(el);
     }
 
     public sealed record DofInfo(int NodeId, int DofIndex);
@@ -39,7 +43,7 @@ namespace beamOS.API.Schema.Objects
         _dofs = new List<DofInfo>();
         var knownDisplacements = new List<DofInfo>();
         var knowForces = new List<DofInfo>();
-        foreach (var node in Nodes)
+        foreach (var node in _nodes)
         {
           for (var i = 0; i < 6; i++)
           {
