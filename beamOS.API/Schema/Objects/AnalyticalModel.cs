@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace beamOS.API.Schema.Objects
 {
-  public class AnalyticalModel
+  public sealed class AnalyticalModel
   {
     public List<Node> Nodes { get; set; } = new List<Node>();
     public List<Element1D> Element1Ds { get; set; } = new List<Element1D>();
@@ -25,39 +25,28 @@ namespace beamOS.API.Schema.Objects
       Element1Ds.Add(el);
     }
 
-    public class dofInfo
-    {
-      public int NodeId { get; set; }
-      // dofIndex is the number corrosponding to the DOFs property of the node
-      // DOFS -> [Fx, Fy, Fz, Mx, My, Mz]
-      public int DofIndex { get; set; }
-      public dofInfo(int id, int index)
-      {
-        NodeId = id;
-        DofIndex = index;
-      }
-    }
+    public sealed record DofInfo(int NodeId, int DofIndex);
 
     [ClearOnModelUnlock]
-    public List<dofInfo>? _dofs;
-    public List<dofInfo> DOFs
+    public List<DofInfo>? _dofs;
+    public List<DofInfo> DOFs
     {
       get
       {
         if (_dofs != null)
           return _dofs;
 
-        _dofs = new List<dofInfo>();
-        var knownDisplacements = new List<dofInfo>();
-        var knowForces = new List<dofInfo>();
+        _dofs = new List<DofInfo>();
+        var knownDisplacements = new List<DofInfo>();
+        var knowForces = new List<DofInfo>();
         foreach (var node in Nodes)
         {
           for (var i = 0; i < 6; i++)
           {
             if (node.DOFs[i])
-              knowForces.Add(new dofInfo(node.Id, i));
+              knowForces.Add(new DofInfo(node.Id, i));
             else
-              knownDisplacements.Add(new dofInfo(node.Id, i));
+              knownDisplacements.Add(new DofInfo(node.Id, i));
           }
         }
         _dofs.AddRange(knownDisplacements);

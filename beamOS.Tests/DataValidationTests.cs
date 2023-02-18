@@ -3,13 +3,8 @@ using System;
 
 namespace beamOS.Tests
 {
-  public class DataValidationTests
+  public sealed class DataValidationTests
   {
-    DataValidation DataValidation;
-    public DataValidationTests()
-    {
-      DataValidation = new DataValidation();
-    }
     [Theory]
     #region inLineData
     [InlineData("1", "TestAssertNumber1", true)]
