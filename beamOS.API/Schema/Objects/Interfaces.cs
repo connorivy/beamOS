@@ -9,4 +9,9 @@
     Node EndNode0 { get; set; }
     Node EndNode1 { get; set; }
   }
+
+  public interface IModelBuilderRule
+  {
+
+  }
 }

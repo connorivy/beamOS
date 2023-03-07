@@ -1,4 +1,6 @@
-﻿namespace beamOS.API.Schema.Objects
+﻿using Objects.Geometry;
+
+namespace beamOS.API.Schema.Objects
 {
   public class Node
   {
@@ -27,5 +29,6 @@
 
       Position = position;
     }
+    public Point GetPoint() => new(Position[0], Position[1], Position[2]);
   }
 }

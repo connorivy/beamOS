@@ -5,6 +5,7 @@ namespace beamOS.API.Schema.Objects
 {
   public class Element1D
   {
+    public int Id { get; set; }
     // Base Curve of element1D. Only lines implemented right now but extendable to curves
     public ICurve BaseCurve { get; set; }
     // counter-clockwise rotation in radians when looking in the negative (local) x direction

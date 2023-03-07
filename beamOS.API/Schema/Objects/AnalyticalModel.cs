@@ -1,32 +1,59 @@
-﻿using MathNet.Numerics.LinearAlgebra;
+﻿using LanguageExt;
+using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
+using Objects.Geometry;
 using Objects.Structural.Results;
 using System.Collections;
 using System.Linq;
+using System.Numerics;
 
 namespace beamOS.API.Schema.Objects
 {
-  public sealed class AnalyticalModel
+  public sealed partial class AnalyticalModel
   {
     public AnalyticalModel() { }
 
-    private readonly List<Node> _nodes = new();
-    public IReadOnlyList<Node> Nodes => _nodes.AsReadOnly();
-    private readonly List<Element1D> _elementIDs = new();
-    public IReadOnlyList<Element1D> Element1Ds => _elementIDs.AsReadOnly();
+    private readonly Dictionary<int, Node> _nodes = new();
+    public IReadOnlyDictionary<int, Node> Nodes => _nodes;
+    private readonly Dictionary<int, Element1D> _element1Ds = new();
+    public IReadOnlyDictionary<int, Element1D> Element1Ds => _element1Ds;
+    public double TOLERENCE = 1;
+    public float MinTreeNodeSize { get; set; }
+    public int ElementsPerTreeNode { get; set; } = 10;
 
-    public void AddNode(Node node)
+    //public void AddOrGetNode(Node node)
+    public void AddNode(Node node, out Option<Node> existingNodeOption)
     {
-      // TODO: make sure there aren't any existing _nodes within a certain tolerance
-      node.Id = _nodes.Count;
-      _nodes.Add(node);
+      var smallestTreeNode = OctreeRoot.SmallestTreeNodeContainingPoint(node.GetPoint())
+        .IfNone(() => {
+          ExpandOctree(node.GetPoint());
+          return OctreeRoot;
+        });
+
+      existingNodeOption = smallestTreeNode.GetExistingNodeAtThisLevel(node.GetPoint());
+
+      // TODO
+      //existingNodeOption.IfSome(existingNodeOption => UpdateNode());
+
+      existingNodeOption.IfNone(() =>
+      {
+        node.Id = _nodes.Count;
+        _nodes.Add(_nodes.Count, node);
+        smallestTreeNode.AddNode(node);
+      });
     }
+
     public void AddElement1D(Element1D el)
     {
+      AddNode(el.BaseCurve.EndNode0, out var existingNodeOption);
+      existingNodeOption.IfSome(node => el.BaseCurve.EndNode0 = node);
+
+      AddNode(el.BaseCurve.EndNode1, out existingNodeOption);
+      existingNodeOption.IfSome(node => el.BaseCurve.EndNode1 = node);
+
       // TODO: check if model already has object defined between these two points
-      AddNode(el.BaseCurve.EndNode0);
-      AddNode(el.BaseCurve.EndNode1);
-      _elementIDs.Add(el);
+      el.Id = _element1Ds.Count;
+      _element1Ds.Add(el.Id, el);
     }
 
     public sealed record DofInfo(int NodeId, int DofIndex);
@@ -43,7 +70,7 @@ namespace beamOS.API.Schema.Objects
         _dofs = new List<DofInfo>();
         var knownDisplacements = new List<DofInfo>();
         var knowForces = new List<DofInfo>();
-        foreach (var node in _nodes)
+        foreach (var node in _nodes.Values)
         {
           for (var i = 0; i < 6; i++)
           {
