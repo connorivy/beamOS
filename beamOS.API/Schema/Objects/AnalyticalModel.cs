@@ -11,14 +11,22 @@ namespace beamOS.API.Schema.Objects
 {
   public sealed partial class AnalyticalModel
   {
-    public AnalyticalModel() { }
+    public AnalyticalModel(double[] initialPoint) 
+    { 
+      OctreeRoot = new ModelOctreeNode(
+        this, 
+        new Point(initialPoint[0], initialPoint[1], initialPoint[2]),
+        MinTreeNodeSize,
+        Option<ModelOctreeNode>.None
+      );  
+    }
 
     private readonly Dictionary<int, Node> _nodes = new();
     public IReadOnlyDictionary<int, Node> Nodes => _nodes;
     private readonly Dictionary<int, Element1D> _element1Ds = new();
     public IReadOnlyDictionary<int, Element1D> Element1Ds => _element1Ds;
     public double TOLERENCE = 1;
-    public float MinTreeNodeSize { get; set; }
+    public float MinTreeNodeSize { get; set; } = 5;
     public int ElementsPerTreeNode { get; set; } = 10;
 
     //public void AddOrGetNode(Node node)
@@ -107,6 +115,39 @@ namespace beamOS.API.Schema.Objects
 
         for (var i = 1; i < list.Count; i++)
           UnlockObject(list[i]);
+      }
+      else if (obj is IDictionary dict)
+      {
+        if (dict.Count == 0)
+          return false;
+
+        var valueEnumerator = dict.Values.GetEnumerator();
+        var keyEnumerator = dict.Keys.GetEnumerator();
+
+        // unlock the first item in a list first and check if it was actually unlocked or not
+        valueEnumerator.MoveNext();
+        var valueObjUnlocked = UnlockObject(valueEnumerator.Current);
+        keyEnumerator.MoveNext();
+        var keyObjUnlocked = UnlockObject(keyEnumerator.Current);
+
+        // if it was unlocked, assume that the rest of the list needs to be unlocked
+        if (valueObjUnlocked)
+        {
+          objUnlocked = true;
+          while (valueEnumerator.MoveNext())
+          {
+            UnlockObject(valueEnumerator.Current);
+          }
+        }
+
+        if (keyObjUnlocked)
+        {
+          objUnlocked = true;
+          while (keyEnumerator.MoveNext())
+          {
+            UnlockObject(keyEnumerator.Current);
+          }
+        }
       }
 
       if (type.IsPrimitive || type.IsEnum)

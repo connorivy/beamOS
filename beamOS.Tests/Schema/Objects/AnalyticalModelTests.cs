@@ -15,10 +15,10 @@ namespace beamOS.Tests.Schema.Objects
     [MemberData(nameof(AnalyticalModelTestsData.TestGetDOFsData), MemberType = typeof(AnalyticalModelTestsData))]
     public void TestGetDOFs(double[][] nodeLocations, bool[][] nodeFixities, int[][] expectedResults)
     {
-      var model = new AnalyticalModel();
+      var model = new AnalyticalModel(nodeLocations[0]);
 
       for (var i = 0; i < nodeLocations.Length; i++)
-        model.AddNode(new Node(nodeLocations[i], nodeFixities[i]));
+        model.AddNode(new Node(nodeLocations[i], nodeFixities[i]), out var _);
 
       //calculate DOFs
       var calculated = new int[model.DOFs.Count()][];
@@ -36,7 +36,7 @@ namespace beamOS.Tests.Schema.Objects
     {
       Assert.Equal(P0.Length, P1.Length);
 
-      var model = new AnalyticalModel();
+      var model = new AnalyticalModel(P0[0]);
       var material = new Material() { E = E, G = G };
       var section = new SectionProfile() { A = A, Iz = Iz, Iy = Iy, J = J };
 
@@ -54,7 +54,7 @@ namespace beamOS.Tests.Schema.Objects
       // clear analysis results aka "unlock" model
       model.UnlockObject(model);
       Assert.Null(model._dofs);
-      foreach (var el in model.Element1Ds)
+      foreach (var el in model.Element1Ds.Values)
       {
         Assert.Null(el._localStiffnessMatrix);
       }

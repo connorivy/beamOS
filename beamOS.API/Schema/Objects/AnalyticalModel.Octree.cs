@@ -1,6 +1,7 @@
 ﻿using LanguageExt;
 using LanguageExt.ClassInstances;
 using Objects.Geometry;
+using System.Diagnostics;
 
 namespace beamOS.API.Schema.Objects
 {
@@ -13,9 +14,9 @@ namespace beamOS.API.Schema.Objects
       {
         var offsetDirCenterToPoint = OctreeRoot.GetPointOffsetDirections(p);
         var newCenter = new Point(
-          OctreeRoot.Center.x + OctreeRoot.Size / 2 * offsetDirCenterToPoint.x == 0 ? 1 : offsetDirCenterToPoint.x,
-          OctreeRoot.Center.y + OctreeRoot.Size / 2 * offsetDirCenterToPoint.y == 0 ? 1 : offsetDirCenterToPoint.y,
-          OctreeRoot.Center.z + OctreeRoot.Size / 2 * offsetDirCenterToPoint.z == 0 ? 1 : offsetDirCenterToPoint.z
+          OctreeRoot.Center.x + OctreeRoot.Size / 2 * (offsetDirCenterToPoint.x == 0 ? 1 : offsetDirCenterToPoint.x),
+          OctreeRoot.Center.y + OctreeRoot.Size / 2 * (offsetDirCenterToPoint.y == 0 ? 1 : offsetDirCenterToPoint.y),
+          OctreeRoot.Center.z + OctreeRoot.Size / 2 * (offsetDirCenterToPoint.z == 0 ? 1 : offsetDirCenterToPoint.z)
         );
         var newRoot = new ModelOctreeNode(this, newCenter, OctreeRoot.Size * 2, OctreeRoot);
         OctreeRoot = newRoot;
@@ -61,8 +62,10 @@ namespace beamOS.API.Schema.Objects
       }
       private void SetChildTreeNode(ModelOctreeNode oldTreeRoot)
       {
+        Debug.WriteLine($"{oldTreeRoot.Center.x}, {oldTreeRoot.Center.y}, {oldTreeRoot.Center.z}, {Size / 3}");
         for (var i = 0; i < ChildTreeNodes.Length; i++)
         {
+          Debug.WriteLine($"{ChildTreeNodes[i].Center.x}, {ChildTreeNodes[i].Center.y}, {ChildTreeNodes[i].Center.z}, {oldTreeRoot.Center.DistanceTo(ChildTreeNodes[i].Center)}");
           if (oldTreeRoot.Center.DistanceTo(ChildTreeNodes[i].Center) > Size / 3)
             continue;
 
@@ -172,9 +175,9 @@ namespace beamOS.API.Schema.Objects
           var offsetDirectionY = Math.Floor(i / 2.0) % 2;
           var offsetDirectionX = Math.Floor(i / 4.0) % 2;
           var childCenter = new Point(
-            Center.x - Size / 2 * offsetDirectionX == 0 ? -1 : 1,
-            Center.y - Size / 2 * offsetDirectionY == 0 ? -1 : 1,
-            Center.z - Size / 2 * offsetDirectionZ == 0 ? -1 : 1
+            Center.x - Size / 4 * (offsetDirectionX == 0 ? -1 : 1),
+            Center.y - Size / 4 * (offsetDirectionY == 0 ? -1 : 1),
+            Center.z - Size / 4 * (offsetDirectionZ == 0 ? -1 : 1)
           );
 
           ChildTreeNodes[i] = new ModelOctreeNode(_model, childCenter, Size / 2, Option<ModelOctreeNode>.None);
@@ -186,7 +189,10 @@ namespace beamOS.API.Schema.Objects
         {
           var childTreeNodeOption = SmallestTreeNodeContainingPoint(node.GetPoint());
           childTreeNodeOption.Match(
-            Some: treeNode => treeNode.AddNode(node),
+            Some: treeNode => {
+              treeNode.AddNode(node);
+              _nodes.Remove(node.Id);
+            },
             None: () => throw new Exception($"Could not find child node that contains node {node}")
           );
         }
