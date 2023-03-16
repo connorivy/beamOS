@@ -21,6 +21,11 @@ namespace beamOS.API.Schema.Objects
       );  
     }
 
+    public AnalyticalModel(ModelOctreeNode root)
+    {
+      OctreeRoot = root;
+    }
+
     private readonly Dictionary<int, Node> _nodes = new();
     public IReadOnlyDictionary<int, Node> Nodes => _nodes;
     private readonly Dictionary<int, Element1D> _element1Ds = new();
@@ -94,7 +99,7 @@ namespace beamOS.API.Schema.Objects
       }
     }
 
-    public bool UnlockObject(object obj)
+    public bool UnlockObject(object? obj)
     {
       if (obj == null) return false;
       //if (!Unlockable(obj)) return;

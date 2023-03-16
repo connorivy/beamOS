@@ -1,4 +1,5 @@
-﻿using System;
+﻿using beamOS.API.Schema.Objects;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace beamOS.Tests.Schema.Objects
 {
   public partial class AnalyticalModelTestsData
   {
-    public static IEnumerable<object[]> TestGetDOFsData()
+    public static IEnumerable<object[]> TestExpandOctreeData()
     {
       var tests = new List<object[]>();
 
@@ -58,37 +59,5 @@ namespace beamOS.Tests.Schema.Objects
 
       return tests;
     }
-
-    public static IEnumerable<object[]> TestUnlockModelData()
-    {
-      var tests = new List<object[]>();
-
-      tests.Add(new object[]
-      {
-        //E, G, A, Iz, Iy, J, rotation,
-        1, 1, 1, 1, 1, 1, 0,
-        new double [1][]
-        {
-          new double []{ 1.0, 1, 1 }
-        },
-        new double [1][]
-        {
-          new double []{ 0.0, 1, 1 }
-        },
-      }); 
-      return tests;
-    }
-
-    //public static IEnumerable<object[]> TestGetGlobalStiffnessMatrixData()
-    //{
-    //  var tests = new List<object[]>();
-
-    //  tests.Add(new object[]
-    //  {
-
-    //  });
-
-    //  return tests;
-    //}
   }
 }

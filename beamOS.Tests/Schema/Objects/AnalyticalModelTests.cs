@@ -3,7 +3,7 @@ using static beamOS.API.Schema.Objects.AnalyticalModel;
 
 namespace beamOS.Tests.Schema.Objects
 {
-  public class AnalyticalModelTests
+  public partial class AnalyticalModelTests
   {
     //[Theory]
     //[MemberData(nameof(AnalyticalModelTestsData.TestGetGlobalStiffnessMatrixData), MemberType = typeof(AnalyticalModelTestsData))]
