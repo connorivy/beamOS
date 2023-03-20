@@ -29,10 +29,4 @@
     <ProjectReference Include="..\beamOS.API\beamOS.API.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="TestObjects\AnalyticalModels\" />
-    <Folder Include="TestObjects\Element1Ds\Matrix Analysis of Structures %282nd Ed.%29\Examples\8.4\" />
-    <Folder Include="TestObjects\Element1Ds\Matrix Analysis of Structures %282nd Ed.%29\Problems\" />
-  </ItemGroup>
-
 </Project>

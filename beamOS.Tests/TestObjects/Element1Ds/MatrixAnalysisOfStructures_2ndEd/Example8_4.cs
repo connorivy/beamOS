@@ -2,7 +2,7 @@
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 
-namespace beamOS.Tests.TestObjects.Element1Ds.Matrix_Analysis_of_Structures__2nd_Ed._
+namespace beamOS.Tests.TestObjects.Element1Ds.MatrixAnalysisOfStructures_2ndEd
 {
   internal class Example8_4
   {
@@ -115,9 +115,8 @@ namespace beamOS.Tests.TestObjects.Element1Ds.Matrix_Analysis_of_Structures__2nd
         });
         #endregion
 
-        return new Element1DFixture()
+        return new Element1DFixture(element)
         {
-          Element = element,
           ExpectedRotationMatrix = rotationMatrix,
           ExpectedTransformationMatrix = transformationMatrix,
           ExpectedLocalStiffnessMatrix = localStiffnessMatrix,
@@ -274,9 +273,8 @@ namespace beamOS.Tests.TestObjects.Element1Ds.Matrix_Analysis_of_Structures__2nd
         });
         #endregion
 
-        return new Element1DFixture()
+        return new Element1DFixture(element)
         {
-          Element = element,
           ExpectedRotationMatrix = rotationMatrix,
           ExpectedTransformationMatrix = transformationMatrix,
           //ExpectedLocalStiffnessMatrix = localStiffnessMatrix,
@@ -432,9 +430,8 @@ namespace beamOS.Tests.TestObjects.Element1Ds.Matrix_Analysis_of_Structures__2nd
         });
         #endregion
 
-        return new Element1DFixture()
+        return new Element1DFixture(element)
         {
-          Element = element,
           ExpectedRotationMatrix = rotationMatrix,
           ExpectedTransformationMatrix = transformationMatrix,
           //ExpectedLocalStiffnessMatrix = localStiffnessMatrix,
