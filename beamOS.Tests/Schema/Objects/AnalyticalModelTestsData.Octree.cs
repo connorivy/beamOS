@@ -21,13 +21,13 @@ namespace beamOS.Tests.Schema.Objects
           new double[] { 0, -20, 0 },
           new double[] { 0, 0, -20 }
         },
-        new bool[4][]
-        {
-          new bool[] {true, true, true, true, true, true},
-          new bool[] {false, false, false, false, false, false},
-          new bool[] {false, false, false, false, false, false},
-          new bool[] {false, false, false, false, false, false}
-        },
+        //new bool[4][]
+        //{
+        //  new bool[] {true, true, true, true, true, true},
+        //  new bool[] {false, false, false, false, false, false},
+        //  new bool[] {false, false, false, false, false, false},
+        //  new bool[] {false, false, false, false, false, false}
+        //},
         new int[24][]
         {
           new int[] {1, 0},

@@ -3,14 +3,17 @@ using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Objects.Geometry;
 using Objects.Structural.Results;
+using Speckle.Core.Kits;
 using System.Collections;
 using System.Linq;
 using System.Numerics;
+using System.Reflection;
 
 namespace beamOS.API.Schema.Objects
 {
-  public sealed partial class AnalyticalModel
+  public sealed partial class AnalyticalModel : Base<AnalyticalModel>
   {
+    public AnalyticalModel() { }
     public AnalyticalModel(double[] initialPoint) 
     { 
       OctreeRoot = new ModelOctreeNode(
@@ -170,7 +173,18 @@ namespace beamOS.API.Schema.Objects
           prop.SetValue(obj, null);
           objUnlocked = true;
         }
-        UnlockObject(prop.GetValue(obj));
+
+        object? newValueToCheck;
+        try
+        {
+          newValueToCheck = prop.GetValue(obj);
+        }
+        catch (TargetParameterCountException)
+        {
+          continue;
+        }
+        
+        UnlockObject(newValueToCheck);
       }
 
       var fields = type.GetFields();
@@ -189,7 +203,17 @@ namespace beamOS.API.Schema.Objects
           }
           objUnlocked = true;
         }
-        UnlockObject(field.GetValue(obj));
+
+        object? newValueToCheck;
+        try
+        {
+          newValueToCheck = field.GetValue(obj);
+        }
+        catch (TargetParameterCountException)
+        {
+          continue;
+        }
+        UnlockObject(newValueToCheck);
       }
 
       return objUnlocked;

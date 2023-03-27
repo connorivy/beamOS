@@ -2,7 +2,7 @@
 
 namespace beamOS.API.Schema.Objects
 {
-  public class SectionProfile : Base
+  public class SectionProfile : Base<SectionProfile>
   {
     public string Name { get; set; }
     // moment of inertia about the strong axis

@@ -2,8 +2,9 @@
 
 namespace beamOS.API.Schema.Objects
 {
-  public class Line : Base, ICurve
+  public class Line : Base<Line>, ICurve
   {
+    public Line() { }
     public Node EndNode0 { get; set; }
     public Node EndNode1 { get; set; }
     public Line(double[] P0, double[] P1)

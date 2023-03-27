@@ -4,7 +4,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyName>$(MSBuildProjectName).Converter.beamOS</AssemblyName>
+    <AssemblyName>$(MSBuildProjectName).beamOS</AssemblyName>
     <RootNamespace>beamOS.API.Schema.$(MSBuildProjectName)</RootNamespace>
   </PropertyGroup>
 

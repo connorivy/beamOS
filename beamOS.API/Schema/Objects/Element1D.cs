@@ -5,7 +5,7 @@ using Speckle.Newtonsoft.Json;
 
 namespace beamOS.API.Schema.Objects
 {
-  public class Element1D : Base
+  public class Element1D : Base<Element1D>
   {
     public Element1D() { }
     public int Id { get; set; }

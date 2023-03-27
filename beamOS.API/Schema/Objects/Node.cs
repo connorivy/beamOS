@@ -3,8 +3,9 @@ using Speckle.Core.Models;
 
 namespace beamOS.API.Schema.Objects
 {
-  public class Node : Base
+  public class Node : Base<Node>
   {
+    public Node() { }
     public int Id { get; set; }
     // [x, y, z]
     public double[] Position { get; set; } = new double[3];
