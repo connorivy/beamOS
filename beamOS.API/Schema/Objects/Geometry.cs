@@ -1,6 +1,8 @@
-﻿namespace beamOS.API.Schema.Objects
+﻿using Speckle.Core.Models;
+
+namespace beamOS.API.Schema.Objects
 {
-  public class Line : ICurve
+  public class Line : Base, ICurve
   {
     public Node EndNode0 { get; set; }
     public Node EndNode1 { get; set; }

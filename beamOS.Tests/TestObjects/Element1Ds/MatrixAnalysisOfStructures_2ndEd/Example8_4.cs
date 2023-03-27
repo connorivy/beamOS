@@ -151,6 +151,7 @@ namespace beamOS.Tests.TestObjects.Element1Ds.MatrixAnalysisOfStructures_2ndEd
         };
 
         var element = new Element1D(baseLine, section, material, ElementType.Beam);
+        element.ProfileRotation = Math.PI / 2;
         #endregion
 
         #region ResultsDefinition

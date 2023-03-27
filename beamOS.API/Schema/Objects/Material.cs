@@ -1,6 +1,8 @@
-﻿namespace beamOS.API.Schema.Objects
+﻿using Speckle.Core.Models;
+
+namespace beamOS.API.Schema.Objects
 {
-  public class Material
+  public class Material : Base
   {
     public string Name { get; set; }
     // modulus of elasticity

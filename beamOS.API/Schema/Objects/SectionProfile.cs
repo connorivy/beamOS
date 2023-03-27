@@ -1,6 +1,8 @@
-﻿namespace beamOS.API.Schema.Objects
+﻿using Speckle.Core.Models;
+
+namespace beamOS.API.Schema.Objects
 {
-  public class SectionProfile
+  public class SectionProfile : Base
   {
     public string Name { get; set; }
     // moment of inertia about the strong axis

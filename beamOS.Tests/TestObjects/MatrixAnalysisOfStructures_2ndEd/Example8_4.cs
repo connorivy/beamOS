@@ -10,6 +10,7 @@ namespace beamOS.Tests.TestObjects.MatrixAnalysisOfStructures_2ndEd
 {
   internal class Example8_4 : SolvedProblem
   {
+    public override AnalyticalModelFixture AnalyticalModelFixture { get; set; }
     public Example8_4()
     {
       Element1DFixtures.Add(Element1);
@@ -20,8 +21,8 @@ namespace beamOS.Tests.TestObjects.MatrixAnalysisOfStructures_2ndEd
     }
 
     #region AnalyticalModelFixtureDefinition
-    private Option<AnalyticalModelFixture> _analyticalModelFixture;
-    public AnalyticalModelFixture ModelFixture => _analyticalModelFixture
+    private static Option<AnalyticalModelFixture> _analyticalModelFixture;
+    public static AnalyticalModelFixture ModelFixture => _analyticalModelFixture
       .Match(
         m => m,
         () =>
@@ -231,6 +232,7 @@ namespace beamOS.Tests.TestObjects.MatrixAnalysisOfStructures_2ndEd
       };
 
       var element = new Element1D(baseLine, section, material, ElementType.Beam);
+      element.ProfileRotation = Math.PI / 2;
       #endregion
 
       #region ResultsDefinition
@@ -385,6 +387,7 @@ namespace beamOS.Tests.TestObjects.MatrixAnalysisOfStructures_2ndEd
         G = 11500
       };
       var element = new Element1D(baseLine, section, material, ElementType.Beam);
+      element.ProfileRotation = 30 * Math.PI / 180;
       #endregion
 
       #region ResultsDefinition

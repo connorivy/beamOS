@@ -1,9 +1,14 @@
 ﻿using beamOS.API.Schema.Objects;
+using System.Collections;
 
 namespace beamOS.Tests.Schema.Objects
 {
-    public class Element1DTestsData
+  public class Element1DTestsData
   {
+    //public static IEnumerable<object[]> TestGetRotationMatrixData2()
+    //{
+      
+    //}
     public static IEnumerable<object[]> TestGetRotationMatrixData()
     {
       var tests = new List<object[]>();
@@ -523,7 +528,7 @@ namespace beamOS.Tests.Schema.Objects
 
     public static IEnumerable<object[]> TestGetGlobalStiffnessMatrixData()
     {
-      foreach (var element1D in TestObjects.MatrixAnalysisOfStructures_2ndEd.Example8_4)
+      //foreach (var element1D in TestObjects.MatrixAnalysisOfStructures_2ndEd.Example8_4)
       var tests = new List<object[]>();
 
       tests.Add(new object[]

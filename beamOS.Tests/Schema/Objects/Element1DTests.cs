@@ -1,18 +1,81 @@
 ﻿using beamOS.API;
 using beamOS.API.Schema.Objects;
+using beamOS.Tests.TestObjects;
+using beamOS.Tests.TestObjects.Element1Ds;
+using beamOS.Tests.TestObjects.MatrixAnalysisOfStructures_2ndEd;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
+using Xunit.Abstractions;
 
 namespace beamOS.Tests.Schema.Objects
 {
+  //[Collection("Solved Problems")]
   public class Element1DTests
   {
-    Element1D Element1D;
+    //readonly AllSolvedProblems AllSolvedProblems;
+    //public Element1DTests(AllSolvedProblems allSolved)
+    //{
+    //  AllSolvedProblems = allSolved;
+    //}
     public Element1DTests()
     {
-      var curve = new Line(new double[] { 0, 0, 0 }, new double[] { 10, 0, 0 });
-      Element1D = new Element1D(curve, null, null, ElementType.Beam);
+    }
+
+    [Fact]
+    public void TestSerialize()
+    {
+      var solvedProblem = new Example8_4();
+      var info = new info();
+      var fixture = solvedProblem.Element1DFixtures.First();
+      fixture.Serialize(info);
+
+      var newFixture = new Element1DFixture();
+      newFixture.Deserialize(info);
+    }
+
+    public class info : IXunitSerializationInfo
+    {
+      Dictionary<string, object> _dictionary = new();
+      public void AddValue(string key, object value, Type type = null)
+      {
+        _dictionary[key] = value;
+      }
+
+      public object GetValue(string key, Type type)
+      {
+        _dictionary.TryGetValue(key, out var result);
+        return result;
+      }
+
+      public T GetValue<T>(string key)
+      {
+        if (_dictionary.TryGetValue(key, out var result))
+          return (T)result;
+        return default;
+      }
+    }
+
+    [Theory]
+    [ClassData(typeof(AllElement1DFixtures))]
+    public void TestGetRotationMatrix2(Element1DFixture fixture)
+    {
+      var rotationMatrix = fixture.Element.GetRotationMatrix();
+
+      fixture.ExpectedRotationMatrix.IfSome(m => AssertAlmostEqual(rotationMatrix, m));
+    }
+
+    private void AssertAlmostEqual(Matrix<double> calculatedMatrix, Matrix<double> expectedMatrix)
+    {
+      RoundMatrix(calculatedMatrix);
+      RoundMatrix(expectedMatrix);
+
+      Assert.Equal(calculatedMatrix, expectedMatrix);
+    }
+
+    private void RoundMatrix(Matrix<double> matrix, int numDigits = 4)
+    {
+      matrix.MapInplace(m => Math.Round(m, numDigits));
     }
 
     [Theory]
@@ -22,7 +85,7 @@ namespace beamOS.Tests.Schema.Objects
       var element1D = new Element1D(baseLine, null, null);
       element1D.ProfileRotation = rotation;
 
-      var rotationMatrix = element1D.GetRotationMatrix(baseLine);
+      var rotationMatrix = element1D.GetRotationMatrix();
       var testMatrix = DenseMatrix.OfArray(matrixArray);
 
       var equal = rotationMatrix.AlmostEqual(testMatrix, .0001);

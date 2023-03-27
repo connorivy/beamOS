@@ -1,8 +1,9 @@
 ﻿using Objects.Geometry;
+using Speckle.Core.Models;
 
 namespace beamOS.API.Schema.Objects
 {
-  public class Node
+  public class Node : Base
   {
     public int Id { get; set; }
     // [x, y, z]

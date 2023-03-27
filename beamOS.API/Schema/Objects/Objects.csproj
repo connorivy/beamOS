@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>$(MSBuildProjectName).Converter.beamOS</AssemblyName>
+    <RootNamespace>beamOS.API.Schema.$(MSBuildProjectName)</RootNamespace>
+  </PropertyGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy /Y /S &quot;$(TargetDir)$(AssemblyName).dll&quot; &quot;$(AppData)\Speckle\Kits\Objects\&quot;" />
+  </Target>
+
+  <ItemGroup>
+    <PackageReference Include="LanguageExt.Core" Version="4.4.2" />
+    <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
+    <PackageReference Include="Speckle.Core" Version="2.11.1" />
+    <PackageReference Include="Speckle.Objects" Version="2.11.1" />
+  </ItemGroup>
+
+</Project>

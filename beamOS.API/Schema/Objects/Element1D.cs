@@ -1,10 +1,13 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
+using Speckle.Core.Models;
+using Speckle.Newtonsoft.Json;
 
 namespace beamOS.API.Schema.Objects
 {
-  public class Element1D
+  public class Element1D : Base
   {
+    public Element1D() { }
     public int Id { get; set; }
     // Base Curve of element1D. Only lines implemented right now but extendable to curves
     public ICurve BaseCurve { get; set; }
@@ -23,8 +26,10 @@ namespace beamOS.API.Schema.Objects
       ElementType = type;
     }
 
+    [JsonIgnore]
     [ClearOnModelUnlock]
     public Matrix<double>? _localStiffnessMatrix = null;
+    [JsonIgnore]
     public Matrix<double> LocalStiffnessMatrix
     {
       get
@@ -69,8 +74,10 @@ namespace beamOS.API.Schema.Objects
       }
     }
 
+    [JsonIgnore]
     [ClearOnModelUnlock]
     private Matrix<double>? _globalStiffnessMatrix = null;
+    [JsonIgnore]
     public Matrix<double> GlobalStiffnessMatrix
     {
       get
@@ -78,10 +85,7 @@ namespace beamOS.API.Schema.Objects
         if (_globalStiffnessMatrix != null)
           return _globalStiffnessMatrix;
 
-        if (BaseCurve is not Line baseLine)
-          throw new NotSupportedException("Curved elements are not supported yet");
-
-        var rotationMatrix = GetRotationMatrix(baseLine);
+        var rotationMatrix = GetRotationMatrix();
         var transformationMatrix = GetTransformationMatrix(rotationMatrix);
 
         _globalStiffnessMatrix = transformationMatrix.Transpose() * LocalStiffnessMatrix * transformationMatrix;
@@ -105,8 +109,11 @@ namespace beamOS.API.Schema.Objects
       return transformationMatrix;
     }
 
-    public Matrix<double> GetRotationMatrix(Line baseLine)
+    public Matrix<double> GetRotationMatrix()
     {
+      if (BaseCurve is not Line baseLine)
+        throw new NotSupportedException("Curved elements are not supported yet");
+
       var L = baseLine.Length;
 
       var rxx = (baseLine.EndNode1.Position[0] - baseLine.EndNode0.Position[0]) / L;

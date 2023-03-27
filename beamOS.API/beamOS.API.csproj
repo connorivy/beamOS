@@ -1,18 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Schema\Objects\**" />
+    <Content Remove="Schema\Objects\**" />
+    <EmbeddedResource Remove="Schema\Objects\**" />
+    <None Remove="Schema\Objects\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="HotChocolate.AspNetCore" Version="12.15.2" />
     <PackageReference Include="LanguageExt.Core" Version="4.4.2" />
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
     <PackageReference Include="QuikGraph" Version="2.5.0" />
-    <PackageReference Include="Speckle.Core" Version="2.10.3" />
-    <PackageReference Include="Speckle.Objects" Version="2.10.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="Schema\Objects\Objects.csproj" />
   </ItemGroup>
 
 </Project>
