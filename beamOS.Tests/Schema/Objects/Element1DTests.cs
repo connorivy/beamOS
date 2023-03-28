@@ -10,32 +10,6 @@ namespace beamOS.Tests.Schema.Objects
 {
   public class Element1DTests
   {
-    public Element1DTests()
-    {
-    }
-
-    public class info : IXunitSerializationInfo
-    {
-      Dictionary<string, object> _dictionary = new();
-      public void AddValue(string key, object value, Type type = null)
-      {
-        _dictionary[key] = value;
-      }
-
-      public object GetValue(string key, Type type)
-      {
-        _dictionary.TryGetValue(key, out var result);
-        return result;
-      }
-
-      public T GetValue<T>(string key)
-      {
-        if (_dictionary.TryGetValue(key, out var result))
-          return (T)result;
-        return default;
-      }
-    }
-
     [Theory]
     [ClassData(typeof(AllElement1DFixtures))]
     public void TestGetRotationMatrix2(Element1DFixture fixture)

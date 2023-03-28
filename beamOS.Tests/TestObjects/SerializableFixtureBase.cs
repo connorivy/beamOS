@@ -12,7 +12,11 @@ namespace beamOS.Tests.TestObjects
   public class SerializableFixtureBase<T> : IXunitSerializable 
     where T : Base
   {
-    [DetachProperty]
+    public SerializableFixtureBase() { }
+    public SerializableFixtureBase(T element) 
+    {
+      Element = element;
+    }
     public T Element { get; set; }
     public void Deserialize(IXunitSerializationInfo info)
     {

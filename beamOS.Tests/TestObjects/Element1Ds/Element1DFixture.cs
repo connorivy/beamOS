@@ -35,10 +35,7 @@ namespace beamOS.Tests.TestObjects.Element1Ds
     public Element1DFixture()
     {
     }
-    public Element1DFixture(Element1D element)
-    {
-      Element = element;
-    }
+    public Element1DFixture(Element1D element) : base(element) { }
 
     public Option<Matrix<double>> ExpectedRotationMatrix { get; set; }
     public Option<Matrix<double>> ExpectedTransformationMatrix { get; set; }

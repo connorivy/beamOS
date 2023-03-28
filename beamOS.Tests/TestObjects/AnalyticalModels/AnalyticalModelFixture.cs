@@ -8,11 +8,9 @@ namespace beamOS.Tests.TestObjects.AnalyticalModels
   public class AnalyticalModelFixture : SerializableFixtureBase<AnalyticalModel>, IHasGlobalResults
   {
     public AnalyticalModelFixture() { }
-    public AnalyticalModelFixture(AnalyticalModel model)
+    public AnalyticalModelFixture(AnalyticalModel model) : base(model)
     {
-      AnalyticalModel = model;
     }
-    public AnalyticalModel AnalyticalModel { get; set; }
     public Option<Matrix<double>> ExpectedGlobalStiffnessMatrix { get; set; }
     public Option<Vector<double>> ExpectedGlobalFixedEndForces { get; set; }
     public Option<Vector<double>> ExpectedGlobalEndDisplacements { get; set; }
