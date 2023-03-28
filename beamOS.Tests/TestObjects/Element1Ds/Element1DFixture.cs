@@ -30,13 +30,16 @@ namespace beamOS.Tests.TestObjects.Element1Ds
     }
   }
 
-  public class Element1DFixture : SerializableFixtureBase<Element1D>, IHasLocalResults, IHasGlobalResults
+  public class Element1DFixture : SerializableFixtureBase, IHasLocalResults, IHasGlobalResults
   {
     public Element1DFixture()
     {
     }
-    public Element1DFixture(Element1D element) : base(element) { }
-
+    public Element1DFixture(Element1D element)
+    {
+      Element = element;
+    }
+    public Element1D Element { get; set; }
     public Option<Matrix<double>> ExpectedRotationMatrix { get; set; }
     public Option<Matrix<double>> ExpectedTransformationMatrix { get; set; }
     public Option<Matrix<double>> ExpectedLocalStiffnessMatrix { get; set; }

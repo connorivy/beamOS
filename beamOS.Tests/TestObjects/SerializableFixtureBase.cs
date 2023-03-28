@@ -9,15 +9,9 @@ using Xunit.Abstractions;
 
 namespace beamOS.Tests.TestObjects
 {
-  public class SerializableFixtureBase<T> : IXunitSerializable 
-    where T : Base
+  public class SerializableFixtureBase : IXunitSerializable 
   {
     public SerializableFixtureBase() { }
-    public SerializableFixtureBase(T element) 
-    {
-      Element = element;
-    }
-    public T Element { get; set; }
     public void Deserialize(IXunitSerializationInfo info)
     {
       foreach (PropertyInfo prop in GetType().GetProperties())
@@ -33,7 +27,7 @@ namespace beamOS.Tests.TestObjects
       var type = prop.PropertyType;
       if (type.IsSubclassOf(typeof(Base)))
       {
-        prop.SetValue(this, (T)deserializerV2.Deserialize(info.GetValue<string>(prop.Name)));
+        prop.SetValue(this, deserializerV2.Deserialize(info.GetValue<string>(prop.Name)));
       }
       else if (type == typeof(Option<Matrix<double>>))
       {
