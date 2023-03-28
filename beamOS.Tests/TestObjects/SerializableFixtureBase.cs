@@ -4,20 +4,11 @@ using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Speckle.Core.Models;
 using Speckle.Core.Serialisation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit.Abstractions;
 
 namespace beamOS.Tests.TestObjects
 {
-  //public class SerializableFixtureBase<T> : FixtureBase<T>, IXunitSerializable
-  //{
-
-  //}
   public class SerializableFixtureBase<T> : IXunitSerializable 
     where T : Base
   {

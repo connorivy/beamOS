@@ -1,6 +1,4 @@
-﻿using Speckle.Core.Models;
-
-namespace beamOS.API.Schema
+﻿namespace beamOS.API.Schema
 {
   public class Query
   {

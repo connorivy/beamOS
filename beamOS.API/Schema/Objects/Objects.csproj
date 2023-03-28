@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -23,12 +23,6 @@
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
     <PackageReference Include="Speckle.Core" Version="2.11.1" />
     <PackageReference Include="Speckle.Objects" Version="2.11.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="Base\Base.csproj">
-      <PrivateAssets>all</PrivateAssets>
-    </ProjectReference>
   </ItemGroup>
 
 </Project>

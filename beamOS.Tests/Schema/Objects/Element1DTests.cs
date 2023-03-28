@@ -1,8 +1,6 @@
-﻿using beamOS.API;
-using beamOS.API.Schema.Objects;
-using beamOS.Tests.TestObjects;
+﻿using beamOS.API.Schema.Objects;
 using beamOS.Tests.TestObjects.Element1Ds;
-using beamOS.Tests.TestObjects.MatrixAnalysisOfStructures_2ndEd;
+using beamOS.Tests.TestObjects.SolvedProblems.MatrixAnalysisOfStructures_2ndEd;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
@@ -10,28 +8,10 @@ using Xunit.Abstractions;
 
 namespace beamOS.Tests.Schema.Objects
 {
-  //[Collection("Solved Problems")]
   public class Element1DTests
   {
-    //readonly AllSolvedProblems AllSolvedProblems;
-    //public Element1DTests(AllSolvedProblems allSolved)
-    //{
-    //  AllSolvedProblems = allSolved;
-    //}
     public Element1DTests()
     {
-    }
-
-    [Fact]
-    public void TestSerialize()
-    {
-      var solvedProblem = new Example8_4();
-      var info = new info();
-      var fixture = solvedProblem.Element1DFixtures.First();
-      fixture.Serialize(info);
-
-      var newFixture = new Element1DFixture();
-      newFixture.Deserialize(info);
     }
 
     public class info : IXunitSerializationInfo

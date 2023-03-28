@@ -27,7 +27,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\beamOS.API\beamOS.API.csproj" />
-    <ProjectReference Include="..\beamOS.API\Schema\Objects\Base\Base.csproj" />
   </ItemGroup>
 
 </Project>

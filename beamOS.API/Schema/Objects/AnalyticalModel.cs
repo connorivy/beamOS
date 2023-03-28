@@ -1,13 +1,8 @@
 ﻿using LanguageExt;
-using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Double;
 using Objects.Geometry;
-using Objects.Structural.Results;
-using Speckle.Core.Kits;
 using System.Collections;
-using System.Linq;
-using System.Numerics;
 using System.Reflection;
+
 
 namespace beamOS.API.Schema.Objects
 {
