@@ -5,10 +5,6 @@ namespace beamOS.Tests.Schema.Objects
 {
   public class Element1DTestsData
   {
-    //public static IEnumerable<object[]> TestGetRotationMatrixData2()
-    //{
-      
-    //}
     public static IEnumerable<object[]> TestGetRotationMatrixData()
     {
       var tests = new List<object[]>();
@@ -519,36 +515,6 @@ namespace beamOS.Tests.Schema.Objects
           {  0,   0,   0, -1/L,  0,  0,  0,   0,   0,  1/L,  0,  0 },
           {  0,   0,  -6/L2,  0,  2/L,  0,  0,   0,   6/L2,  0,  4/L,  0 },
           {  0,   6/L2,   0,  0,  0,  2/L,  0,  -6/L2,   0,  0,  0,  4/L },
-        },
-        false
-      });
-
-      return tests;
-    }
-
-    public static IEnumerable<object[]> TestGetGlobalStiffnessMatrixData()
-    {
-      //foreach (var element1D in TestObjects.MatrixAnalysisOfStructures_2ndEd.Example8_4)
-      var tests = new List<object[]>();
-
-      tests.Add(new object[]
-      {
-        // this problem comes from Matrix Analysis of Structures 2nd ed example 8.4
-        // E, G, A, Iz, Iy, J, Rotation, P0, P1, matrixArray, execptionThrown
-        29000, 11500, 32.9, 716, 236, 15.1, 0.523599, new[] {0.0,0,-20*12}, new[] {0.0,0,0}, new double[12,12]
-        {
-          { 8.9618, -5.2322, 0, 627.87, 1075.4, 0, -8.9618, 5.2322, 0, 627.87, 1075.4, 0 },
-          { -5.2322, 15.003, 0, -1800.4, -627.87, 0, 5.2322, -15.003, 0, -1800.4, -627.87, 0 },
-          { 0, 0, 3975.40, 0, 0, 0, 0, 0, -3975.40, 0, 0, 0 },
-          { 627.87, -1800.4, 0, 288067, 100459, 0, -627.87, 1800.4, 0, 144033, 50229, 0 },
-          { 1075.4, -627.87, 0, 100459, 172067, 0, -1075.4, 627.87, 0, 50229, 86033, 0 },
-          { 0, 0, 0, 0, 0, 723.54, 0, 0, 0, 0, 0, -723.54 },
-          { -8.9618, 5.2322, 0, -627.87, -1075.40, 0, 8.9618, -5.2322, 0, -627.87, -1075.4, 0 },
-          { 5.2322, -15.003, 0, 1800.4, 627.87, 0, -5.2322, 15.003, 0, 1800.4, 627.87, 0 },
-          { 0, 0, -3975.40, 0, 0, 0, 0, 0, 3975.40, 0, 0, 0 },
-          { 627.87, -1800.4, 0, 144033, 50229, 0, -627.87, 1800.4, 0, 288067, 100459, 0 },
-          { 1075.4, -627.87, 0, 50229, 86033, 0, -1075.4, 627.87, 0, 100459, 172067, 0 },
-          { 0, 0, 0, 0, 0, -723.54, 0, 0, 0, 0, 0, 723.54 },
         },
         false
       });

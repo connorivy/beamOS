@@ -1,4 +1,5 @@
 ﻿using beamOS.API.Schema.Objects;
+using beamOS.Tests.TestObjects;
 using beamOS.Tests.TestObjects.Element1Ds;
 using beamOS.Tests.TestObjects.SolvedProblems.MatrixAnalysisOfStructures_2ndEd;
 using MathNet.Numerics;
@@ -11,28 +12,6 @@ namespace beamOS.Tests.Schema.Objects
   public class Element1DTests
   {
     [Theory]
-    [ClassData(typeof(AllElement1DFixtures))]
-    public void TestGetRotationMatrix2(Element1DFixture fixture)
-    {
-      var rotationMatrix = fixture.Element.GetRotationMatrix();
-
-      fixture.ExpectedRotationMatrix.IfSome(m => AssertAlmostEqual(rotationMatrix, m));
-    }
-
-    private void AssertAlmostEqual(Matrix<double> calculatedMatrix, Matrix<double> expectedMatrix)
-    {
-      RoundMatrix(calculatedMatrix);
-      RoundMatrix(expectedMatrix);
-
-      Assert.Equal(calculatedMatrix, expectedMatrix);
-    }
-
-    private void RoundMatrix(Matrix<double> matrix, int numDigits = 4)
-    {
-      matrix.MapInplace(m => Math.Round(m, numDigits));
-    }
-
-    [Theory]
     [MemberData(nameof(Element1DTestsData.TestGetRotationMatrixData), MemberType = typeof(Element1DTestsData))]
     public void TestGetRotationMatrix(Line baseLine, double rotation, double[,] matrixArray)
     {
@@ -43,13 +22,17 @@ namespace beamOS.Tests.Schema.Objects
       var testMatrix = DenseMatrix.OfArray(matrixArray);
 
       var equal = rotationMatrix.AlmostEqual(testMatrix, .0001);
-      //if (!equal)
-      //{
-      //  System.Diagnostics.Debug.WriteLine(rotationMatrix.ToString());
-      //  System.Diagnostics.Debug.WriteLine(testMatrix.ToString());
-      //}
 
       Assert.True(equal);
+    }
+
+    [Theory]
+    [ClassData(typeof(AllElement1DFixtures))]
+    public void TestGetRotationMatrix2(Element1DFixture fixture)
+    {
+      var rotationMatrix = fixture.Element.GetRotationMatrix();
+
+      fixture.ExpectedRotationMatrix.IfSome(m => rotationMatrix.AssertAlmostEqual(m));
     }
 
     [Theory]
@@ -101,6 +84,15 @@ namespace beamOS.Tests.Schema.Objects
     }
 
     [Theory]
+    [ClassData(typeof(AllElement1DFixtures))]
+    public void TestGetTransformationMatrix2(Element1DFixture fixture)
+    {
+      var transformationMatrix = fixture.Element.GetTransformationMatrix(fixture.Element.GetRotationMatrix());
+
+      fixture.ExpectedTransformationMatrix.IfSome(m => transformationMatrix.AssertAlmostEqual(m, 1));
+    }
+
+    [Theory]
     [MemberData(nameof(Element1DTestsData.TestGetLocalStiffnessMatrixData), MemberType = typeof(Element1DTestsData))]
     public void TestGetLocalStiffnessMatrix(double? E, double G, double? A, double Iz, double Iy, double J, double[] P0, double[] P1, double[,] matrixArray, bool exceptionThrown = false)
     {
@@ -128,45 +120,34 @@ namespace beamOS.Tests.Schema.Objects
       var expectedMatrix = DenseMatrix.OfArray(matrixArray);
       var equal = localStiffnessMatrix.AlmostEqual(expectedMatrix, .0001);
 
-      //if (!equal)
-      //{
-      //  System.Diagnostics.Debug.WriteLine(localStiffnessMatrix.ToString());
-      //  System.Diagnostics.Debug.WriteLine(expectedMatrix.ToString());
-      //}
-
       Assert.True(equal, "Stiffness matrix is not equal to expected matrix");
     }
 
     [Theory]
-    [MemberData(nameof(Element1DTestsData.TestGetGlobalStiffnessMatrixData), MemberType = typeof(Element1DTestsData))]
-    public void TestGetGlobalStiffnessMatrix(double E, double G, double A, double Iz, double Iy, double J, double rotation, double[] P0, double[] P1, double[,] matrixArray, bool exceptionThrown = false)
+    [ClassData(typeof(AllElement1DFixtures))]
+    public void TestGetLocalStiffnessMatrix2(Element1DFixture fixture)
     {
-      var baseCurve = new Line(P0, P1);
-      var mat = new Material() { E = E, G = G };
-      var section = new SectionProfile() { A = A, Iz = Iz, Iy = Iy, J = J };
+      var localStiffnessMatrix = fixture.Element.LocalStiffnessMatrix;
 
-      var element1D = new Element1D(baseCurve, section, mat);
-      element1D.ProfileRotation = rotation;
+      fixture.ExpectedLocalStiffnessMatrix.IfSome(m => localStiffnessMatrix.AssertAlmostEqual(m, 1));
+    }
+
+    [Theory]
+    [ClassData(typeof(AllElement1DFixtures))]
+    public void TestGetGlobalStiffnessMatrix(Element1DFixture fixture)
+    {
+      var element1D = fixture.Element;
 
       // this line isn't necessary but will help our codecov by initializing the local matrix
       var localStiffnessMatrix = element1D.LocalStiffnessMatrix;
-      var globalStiffnessMatrix = element1D.GlobalStiffnessMatrix.PointwiseRound();
+      var globalStiffnessMatrix = element1D.GlobalStiffnessMatrix;
 
       // element stiffness matrix should always be symmetric
-      Assert.True(globalStiffnessMatrix.IsSymmetric(), "Matrix is not symmetric");
+      globalStiffnessMatrix.AssertSymmetric();
 
-      var expectedMatrix = DenseMatrix.OfArray(matrixArray).PointwiseRound();
-      var equal = globalStiffnessMatrix.AlmostEqual(expectedMatrix, .001);
-
-      //if (!equal)
-      //{
-      //  var newMat = globalStiffnessMatrix - expectedMatrix;
-      //  System.Diagnostics.Debug.WriteLine(globalStiffnessMatrix.PointwiseRound());
-      //  System.Diagnostics.Debug.WriteLine(expectedMatrix.PointwiseRound());
-      //  System.Diagnostics.Debug.WriteLine(newMat.PointwiseRound());
-      //}
-
-      Assert.True(equal, "Stiffness matrix is not equal to expected matrix");
+      fixture.ExpectedGlobalStiffnessMatrix.IfSome(
+        m => globalStiffnessMatrix.AssertAlmostEqual(m, 1)
+      );
     }
   }
 }
