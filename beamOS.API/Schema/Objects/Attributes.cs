@@ -1,8 +1,7 @@
-﻿namespace beamOS.API.Schema.Objects
+namespace beamOS.API.Schema.Objects;
+
+[AttributeUsage(AttributeTargets.Field)]
+public class ClearOnModelUnlockAttribute : Attribute
 {
-  [AttributeUsage(AttributeTargets.Field)]
-  public class ClearOnModelUnlock : Attribute
-  {
-    public ClearOnModelUnlock() { }
-  }
+  public ClearOnModelUnlockAttribute() { }
 }

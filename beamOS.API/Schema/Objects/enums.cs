@@ -1,8 +1,7 @@
-﻿namespace beamOS.API.Schema.Objects
+namespace beamOS.API.Schema.Objects;
+
+public enum ElementType
 {
-  public enum ElementType
-  {
-    Truss,
-    Beam
-  }
+  Truss,
+  Beam
 }

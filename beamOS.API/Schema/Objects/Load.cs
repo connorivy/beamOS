@@ -1,6 +1,5 @@
-﻿namespace beamOS.API.Schema.Objects
+namespace beamOS.API.Schema.Objects;
+
+public class Load
 {
-  public class Load
-  {
-  }
 }

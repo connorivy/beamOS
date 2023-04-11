@@ -1,17 +1,16 @@
-﻿namespace beamOS.API.Schema.Objects
+namespace beamOS.API.Schema.Objects;
+
+public interface ICurve
 {
-  public interface ICurve
-  {
-    /// <summary>
-    /// The length of the curve.
-    /// </summary>
-    double Length { get; }
-    Node EndNode0 { get; set; }
-    Node EndNode1 { get; set; }
-  }
+  /// <summary>
+  /// The length of the curve.
+  /// </summary>
+  double Length { get; }
+  Node EndNode0 { get; set; }
+  Node EndNode1 { get; set; }
+}
 
-  public interface IModelBuilderRule
-  {
+public interface IModelBuilderRule
+{
 
-  }
 }
