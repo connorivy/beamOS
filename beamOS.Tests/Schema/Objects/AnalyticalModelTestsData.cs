@@ -1,18 +1,14 @@
-﻿using System;
+namespace beamOS.Tests.Schema.Objects;
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace beamOS.Tests.Schema.Objects
+public partial class AnalyticalModelTestsData
 {
-  public partial class AnalyticalModelTestsData
+  public static IEnumerable<object[]> TestGetDOFsData()
   {
-    public static IEnumerable<object[]> TestGetDOFsData()
+    var tests = new List<object[]>
     {
-      var tests = new List<object[]>();
-
-      tests.Add(new object[]
+      new object[]
       {
         new double[4][] {
           new double[] { 0.0, 0, 0 },
@@ -54,19 +50,20 @@ namespace beamOS.Tests.Schema.Objects
           new int[] {0, 4},
           new int[] {0, 5}
         }
-      });
+      }
+    };
 
-      return tests;
-    }
+    return tests;
+  }
 
-    public static IEnumerable<object[]> TestUnlockModelData()
+  public static IEnumerable<object[]> TestUnlockModelData()
+  {
+    var tests = new List<object[]>
     {
-      var tests = new List<object[]>();
-
-      tests.Add(new object[]
+      new object[]
       {
-        //E, G, A, Iz, Iy, J, rotation,
-        1, 1, 1, 1, 1, 1, 0,
+        //E, G, A, Iz, Iy, J,
+        1, 1, 1, 1, 1, 1,
         new double [1][]
         {
           new double []{ 1.0, 1, 1 }
@@ -75,20 +72,20 @@ namespace beamOS.Tests.Schema.Objects
         {
           new double []{ 0.0, 1, 1 }
         },
-      }); 
-      return tests;
-    }
-
-    //public static IEnumerable<object[]> TestGetGlobalStiffnessMatrixData()
-    //{
-    //  var tests = new List<object[]>();
-
-    //  tests.Add(new object[]
-    //  {
-
-    //  });
-
-    //  return tests;
-    //}
+      }
+    };
+    return tests;
   }
+
+  //public static IEnumerable<object[]> TestGetGlobalStiffnessMatrixData()
+  //{
+  //  var tests = new List<object[]>();
+
+  //  tests.Add(new object[]
+  //  {
+
+  //  });
+
+  //  return tests;
+  //}
 }

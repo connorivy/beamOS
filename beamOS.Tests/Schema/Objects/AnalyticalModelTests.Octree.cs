@@ -1,6 +1,5 @@
 namespace beamOS.Tests.Schema.Objects;
 
-using beamOS.API.Schema.Objects;
 using beamOS.Tests.TestObjects.AnalyticalModels;
 using beamOS.Tests.TestObjects.AnalyticalModels.OctreeTestObjects;
 

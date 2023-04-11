@@ -16,7 +16,9 @@ public partial class AnalyticalModelTests
     var model = new AnalyticalModel(nodeLocations[0]);
 
     for (var i = 0; i < nodeLocations.Length; i++)
+    {
       model.AddNode(new Node(nodeLocations[i], nodeFixities[i]), out var _);
+    }
 
     //calculate DOFs
     var calculated = new int[model.DOFs.Count][];
@@ -30,7 +32,7 @@ public partial class AnalyticalModelTests
 
   [Theory]
   [MemberData(nameof(AnalyticalModelTestsData.TestUnlockModelData), MemberType = typeof(AnalyticalModelTestsData))]
-  public void TestUnlockModel(double E, double G, double A, double Iz, double Iy, double J, double rotation, double[][] P0, double[][] P1)
+  public void TestUnlockModel(double E, double G, double A, double Iz, double Iy, double J, double[][] P0, double[][] P1)
   {
     Assert.Equal(P0.Length, P1.Length);
 
