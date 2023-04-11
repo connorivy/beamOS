@@ -15,7 +15,7 @@ namespace beamOS.Tests.TestObjects.Element1Ds
     public AllElement1DFixtures() 
     {
       var allSolvedProblems = new AllSolvedProblems();
-      foreach (var solvedProblem in allSolvedProblems.SolvedProblems)
+      foreach (var solvedProblem in allSolvedProblems.AllTestObjects)
       {
         foreach (var element1DFixture in solvedProblem.Element1DFixtures)
         {

@@ -1,4 +1,4 @@
-﻿using beamOS.API.Schema.Objects;
+using beamOS.API.Schema.Objects;
 using beamOS.Tests.TestObjects.Element1Ds;
 using LanguageExt;
 using MathNet.Numerics.LinearAlgebra;
@@ -17,5 +17,6 @@ namespace beamOS.Tests.TestObjects.AnalyticalModels
     public Option<Vector<double>> ExpectedGlobalFixedEndForces { get; set; }
     public Option<Vector<double>> ExpectedGlobalEndDisplacements { get; set; }
     public Option<Vector<double>> ExpectedGlobalEndForces { get; set; }
+    public Option<double[]> ExpectedOctreeCenter { get; set; }
   }
 }

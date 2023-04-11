@@ -1,10 +1,11 @@
-﻿using beamOS.API.Schema.Objects;
+using beamOS.API.Schema.Objects;
 using beamOS.Tests.TestObjects;
 using beamOS.Tests.TestObjects.Element1Ds;
 using beamOS.Tests.TestObjects.SolvedProblems.MatrixAnalysisOfStructures_2ndEd;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace beamOS.Tests.Schema.Objects
@@ -26,13 +27,16 @@ namespace beamOS.Tests.Schema.Objects
       Assert.True(equal);
     }
 
-    [Theory]
+    [SkippableTheory]
     [ClassData(typeof(AllElement1DFixtures))]
     public void TestGetRotationMatrix2(Element1DFixture fixture)
     {
       var rotationMatrix = fixture.Element.GetRotationMatrix();
 
-      fixture.ExpectedRotationMatrix.IfSome(m => rotationMatrix.AssertAlmostEqual(m));
+      fixture.ExpectedRotationMatrix.Match(
+        m => rotationMatrix.AssertAlmostEqual(m),
+        () => throw new SkipException()
+      );
     }
 
     [Theory]
@@ -99,11 +103,15 @@ namespace beamOS.Tests.Schema.Objects
       var baseCurve = new Line(P0, P1);
       Material mat = null;
       if (E is not null)
+      {
         mat = new Material() { E = (double)E, G = G };
+      }
 
       SectionProfile section = null;
       if (A is not null)
+      {
         section = new SectionProfile() { A = (double)A, Iz = Iz, Iy = Iy, J = J };
+      }
 
       var element1D = new Element1D(baseCurve, section, mat);
 
@@ -116,23 +124,26 @@ namespace beamOS.Tests.Schema.Objects
 
       // element stiffness matrix should always be symmetric
       Assert.True(localStiffnessMatrix.IsSymmetric(), "Matrix is not symmetric");
-      
+
       var expectedMatrix = DenseMatrix.OfArray(matrixArray);
       var equal = localStiffnessMatrix.AlmostEqual(expectedMatrix, .0001);
 
       Assert.True(equal, "Stiffness matrix is not equal to expected matrix");
     }
 
-    [Theory]
+    [SkippableTheory]
     [ClassData(typeof(AllElement1DFixtures))]
     public void TestGetLocalStiffnessMatrix2(Element1DFixture fixture)
     {
       var localStiffnessMatrix = fixture.Element.LocalStiffnessMatrix;
 
-      fixture.ExpectedLocalStiffnessMatrix.IfSome(m => localStiffnessMatrix.AssertAlmostEqual(m, 1));
+      _ = fixture.ExpectedLocalStiffnessMatrix.Match(
+        m => localStiffnessMatrix.AssertAlmostEqual(m, 1),
+        () => throw new SkipException()
+      );
     }
 
-    [Theory]
+    [SkippableTheory]
     [ClassData(typeof(AllElement1DFixtures))]
     public void TestGetGlobalStiffnessMatrix(Element1DFixture fixture)
     {
@@ -145,8 +156,9 @@ namespace beamOS.Tests.Schema.Objects
       // element stiffness matrix should always be symmetric
       globalStiffnessMatrix.AssertSymmetric();
 
-      fixture.ExpectedGlobalStiffnessMatrix.IfSome(
-        m => globalStiffnessMatrix.AssertAlmostEqual(m, 1)
+      _ = fixture.ExpectedGlobalStiffnessMatrix.Match(
+        m => globalStiffnessMatrix.AssertAlmostEqual(m, 1),
+        () => throw new SkipException()
       );
     }
   }

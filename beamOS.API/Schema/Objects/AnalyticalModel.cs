@@ -1,22 +1,30 @@
-﻿using LanguageExt;
+using LanguageExt;
 using Objects.Geometry;
 using System.Collections;
 using System.Reflection;
-
+using System.Text.Json.Serialization;
 
 namespace beamOS.API.Schema.Objects
 {
   public sealed partial class AnalyticalModel : Base<AnalyticalModel>
   {
     public AnalyticalModel() { }
-    public AnalyticalModel(double[] initialPoint) 
-    { 
-      OctreeRoot = new ModelOctreeNode(
-        this, 
+    public AnalyticalModel(params double[] initialPoint) => this.OctreeRoot = new ModelOctreeNode(
+        this,
         new Point(initialPoint[0], initialPoint[1], initialPoint[2]),
-        MinTreeNodeSize,
+        this.MinTreeNodeSize,
         Option<ModelOctreeNode>.None
-      );  
+      );
+
+    public AnalyticalModel(Option<float> minTreeNodeSize, params double[] initialPoint)
+    {
+      _ = minTreeNodeSize.IfSome(size => this.MinTreeNodeSize = size);
+      this.OctreeRoot = new ModelOctreeNode(
+        this,
+        new Point(initialPoint[0], initialPoint[1], initialPoint[2]),
+        this.MinTreeNodeSize,
+        Option<ModelOctreeNode>.None
+      );
     }
 
     public AnalyticalModel(ModelOctreeNode root)
@@ -71,6 +79,7 @@ namespace beamOS.API.Schema.Objects
 
     [ClearOnModelUnlock]
     public List<DofInfo>? _dofs;
+    [JsonIgnore]
     public List<DofInfo> DOFs
     {
       get
@@ -92,7 +101,7 @@ namespace beamOS.API.Schema.Objects
           }
         }
         _dofs.AddRange(knownDisplacements);
-        _dofs.AddRange(knowForces);    
+        _dofs.AddRange(knowForces);
         return _dofs;
       }
     }
@@ -178,7 +187,7 @@ namespace beamOS.API.Schema.Objects
         {
           continue;
         }
-        
+
         UnlockObject(newValueToCheck);
       }
 

@@ -1,4 +1,4 @@
-﻿using LanguageExt;
+using LanguageExt;
 using LanguageExt.ClassInstances;
 using Objects.Geometry;
 using System.Diagnostics;
@@ -7,7 +7,7 @@ namespace beamOS.API.Schema.Objects
 {
   public sealed partial class AnalyticalModel
   {
-    private ModelOctreeNode OctreeRoot { get; set; }
+    public ModelOctreeNode OctreeRoot { get; private set; }
     public void ExpandOctree(Point p)
     {
       do
@@ -23,8 +23,9 @@ namespace beamOS.API.Schema.Objects
       } while (!OctreeRoot.Contains(p));
     }
 
-    public sealed class ModelOctreeNode
+    public sealed class ModelOctreeNode : Base<ModelOctreeNode>
     {
+      public ModelOctreeNode() { }
       private readonly AnalyticalModel _model;
       public Point Center { get; private set; }
       public double Size { get; private set; }

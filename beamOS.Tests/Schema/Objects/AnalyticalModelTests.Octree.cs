@@ -1,26 +1,21 @@
-﻿using beamOS.API.Schema.Objects;
+namespace beamOS.Tests.Schema.Objects;
 
-namespace beamOS.Tests.Schema.Objects
+using beamOS.API.Schema.Objects;
+using beamOS.Tests.TestObjects.AnalyticalModels;
+using beamOS.Tests.TestObjects.AnalyticalModels.OctreeTestObjects;
+
+public partial class AnalyticalModelTests
 {
-  public partial class AnalyticalModelTests
+  [Theory]
+  [ClassData(typeof(OctreeTestObjects))]
+  public void TestExpandOctree(AnalyticalModelFixture fixture)
   {
-    //[Theory]
-    //[MemberData(nameof(AnalyticalModelTestsData.TestExpandOctreeData), MemberType = typeof(AnalyticalModelTestsData))]
-    //public void TestExpandOctree(double[][] nodeLocations, int[][] expectedResults)
-    //{
-    //  var model = new AnalyticalModel(nodeLocations[0]);
+    var root = fixture.AnalyticalModel.OctreeRoot;
+    var calculatedCenter = new double[]
+    {
+      root.Center.x, root.Center.y, root.Center.z
+    };
 
-    //  for (var i = 0; i < nodeLocations.Length; i++)
-    //    model.AddNode(new Node(nodeLocations[i]), out var _);
-
-    //  //calculate DOFs
-    //  var calculated = new int[model.DOFs.Count()][];
-    //  for (var i = 0; i < model.DOFs.Count(); i++)
-    //  {
-    //    calculated[i] = new int[] { model.DOFs.ElementAt(i).NodeId, model.DOFs.ElementAt(i).DofIndex };
-    //  }
-
-    //  Assert.Equal(calculated, expectedResults);
-    //}
+    _ = fixture.ExpectedOctreeCenter.IfSome(center => Assert.Equal(calculatedCenter, center));
   }
 }

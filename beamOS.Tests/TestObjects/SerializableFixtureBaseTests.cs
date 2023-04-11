@@ -1,4 +1,5 @@
-﻿using beamOS.Tests.TestObjects.Element1Ds;
+using beamOS.Tests.TestObjects.AnalyticalModels;
+using beamOS.Tests.TestObjects.Element1Ds;
 using beamOS.Tests.TestObjects.SolvedProblems.MatrixAnalysisOfStructures_2ndEd;
 using Xunit.Abstractions;
 
@@ -7,7 +8,7 @@ namespace beamOS.Tests.TestObjects
   public class SerializableFixtureBaseTests
   {
     [Fact]
-    public void TestSerialize()
+    public void TestSerializeElement1DFixture()
     {
       var solvedProblem = new Example8_4();
       var info = new info();
@@ -16,6 +17,24 @@ namespace beamOS.Tests.TestObjects
 
       var newFixture = new Element1DFixture();
       newFixture.Deserialize(info);
+    }
+
+    [Fact]
+    public void TestSerializeAnalyticalModelFixture()
+    {
+      var solvedProblem = new Example8_4();
+      var info = new info();
+      var fixture = solvedProblem.AnalyticalModelFixture;
+      var centerCoords = new double[] { 1, 1, 1 };
+      fixture.ExpectedOctreeCenter = centerCoords;
+      fixture.Serialize(info);
+
+      var newFixture = new AnalyticalModelFixture();
+      newFixture.Deserialize(info);
+      newFixture.ExpectedOctreeCenter.Match(
+        center => Assert.Equal(center, centerCoords),
+        () => throw new Exception("This value should be some")
+      );
     }
 
     public class info : IXunitSerializationInfo
