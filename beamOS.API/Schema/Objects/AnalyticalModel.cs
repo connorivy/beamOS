@@ -8,25 +8,25 @@ using System.Text.Json.Serialization;
 public sealed partial class AnalyticalModel : Base<AnalyticalModel>
 {
   public AnalyticalModel() { }
-  public AnalyticalModel(params double[] initialPoint) => this.OctreeRoot = new ModelOctreeNode(
+  public AnalyticalModel(params double[] initialPoint) => this.OctreeRoot = new OctreeNode(
       this,
       new Point(initialPoint[0], initialPoint[1], initialPoint[2]),
       this.MinTreeNodeSize,
-      Option<ModelOctreeNode>.None
+      Option<OctreeNode>.None
     );
 
   public AnalyticalModel(Option<float> minTreeNodeSize, params double[] initialPoint)
   {
     _ = minTreeNodeSize.IfSome(size => this.MinTreeNodeSize = size);
-    this.OctreeRoot = new ModelOctreeNode(
+    this.OctreeRoot = new OctreeNode(
       this,
       new Point(initialPoint[0], initialPoint[1], initialPoint[2]),
       this.MinTreeNodeSize,
-      Option<ModelOctreeNode>.None
+      Option<OctreeNode>.None
     );
   }
 
-  public AnalyticalModel(ModelOctreeNode root) => this.OctreeRoot = root;
+  public AnalyticalModel(OctreeNode root) => this.OctreeRoot = root;
 
   private readonly Dictionary<int, Node> nodes = new();
   public IReadOnlyDictionary<int, Node> Nodes => this.nodes;
