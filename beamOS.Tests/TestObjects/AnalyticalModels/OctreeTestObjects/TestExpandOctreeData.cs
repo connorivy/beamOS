@@ -3,7 +3,7 @@ namespace beamOS.Tests.TestObjects.AnalyticalModels.OctreeTestObjects;
 using System.Collections.Generic;
 using beamOS.API.Schema.Objects;
 
-internal class OctreeTestObjects : TheoryDataBase<AnalyticalModelFixture>
+internal class TestExpandOctreeData : TheoryDataBase<AnalyticalModelFixture>
 {
   public override List<AnalyticalModelFixture> AllTestObjects => new()
   {

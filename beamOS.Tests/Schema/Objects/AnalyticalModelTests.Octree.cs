@@ -6,7 +6,7 @@ using beamOS.Tests.TestObjects.AnalyticalModels.OctreeTestObjects;
 public partial class AnalyticalModelTests
 {
   [Theory]
-  [ClassData(typeof(OctreeTestObjects))]
+  [ClassData(typeof(TestExpandOctreeData))]
   public void TestExpandOctree(AnalyticalModelFixture fixture)
   {
     var root = fixture.AnalyticalModel.OctreeRoot;
