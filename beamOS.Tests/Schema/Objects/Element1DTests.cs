@@ -35,7 +35,7 @@ public class Element1DTests
 
     _ = fixture.ExpectedRotationMatrix.Match(
       m => rotationMatrix.AssertAlmostEqual(m),
-      () => throw new SkipException()
+      () => throw new SkipException("Insufficient expected data present on test fixture")
     );
   }
 
@@ -139,7 +139,7 @@ public class Element1DTests
 
     _ = fixture.ExpectedLocalStiffnessMatrix.Match(
       m => localStiffnessMatrix.AssertAlmostEqual(m, 1),
-      () => throw new SkipException()
+      () => throw new SkipException("Insufficient expected data present on test fixture")
     );
   }
 
@@ -158,7 +158,7 @@ public class Element1DTests
 
     _ = fixture.ExpectedGlobalStiffnessMatrix.Match(
       m => globalStiffnessMatrix.AssertAlmostEqual(m, 1),
-      () => throw new SkipException()
+      () => throw new SkipException("Insufficient expected data present on test fixture")
     );
   }
 }
