@@ -1,4 +1,4 @@
-﻿namespace beamOS.Tests.TestObjects;
+namespace beamOS.Tests.TestObjects;
 
 public abstract class TheoryDataBase<T> : TheoryData<T>
   where T : class

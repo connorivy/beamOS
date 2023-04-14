@@ -1,5 +1,4 @@
-﻿namespace beamOS.Tests.TestObjects.SolvedProblems;
-
+namespace beamOS.Tests.TestObjects.SolvedProblems;
 using beamOS.Tests.TestObjects.AnalyticalModels;
 using beamOS.Tests.TestObjects.Element1Ds;
 

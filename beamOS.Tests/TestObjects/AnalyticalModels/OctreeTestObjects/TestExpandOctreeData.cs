@@ -1,5 +1,4 @@
 namespace beamOS.Tests.TestObjects.AnalyticalModels.OctreeTestObjects;
-
 using System.Collections.Generic;
 using beamOS.API.Schema.Objects;
 

@@ -1,11 +1,11 @@
 namespace beamOS.Tests.TestObjects;
+using System.Reflection;
 using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Speckle.Core.Models;
 using Speckle.Core.Serialisation;
-using System.Reflection;
 using Xunit.Abstractions;
 
 public class SerializableFixtureBase : IXunitSerializable
@@ -95,12 +95,12 @@ public class SerializableFixtureBase : IXunitSerializable
           continue;
         case Option<Matrix<double>> matrix:
           var x = matrix.ValueUnsafe();
-          matrix.IfSome(
+          _ = matrix.IfSome(
             m => info.AddValue(prop.Name, m.AsArray() ?? m.ToArray())
           );
           continue;
         case Option<Vector<double>> vector:
-          vector.IfSome(
+          _ = vector.IfSome(
             v => info.AddValue(prop.Name, v.AsArray() ?? v.ToArray())
           );
           continue;
