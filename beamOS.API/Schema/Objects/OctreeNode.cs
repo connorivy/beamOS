@@ -42,6 +42,27 @@ public sealed class OctreeNode : Base<OctreeNode>
       this.SetChildTreeNode(oldTreeRoot);
     });
   }
+
+  public OctreeNode(double[] center, double size, Option<OctreeNode> oldTreeRootOption)
+  {
+    this.Center = new Point(center[0], center[1], center[2]);
+    this.Size = size;
+    this.Min = new Point(
+      this.Center.x - (this.Size / 2),
+      this.Center.y - (this.Size / 2),
+      this.Center.z - (this.Size / 2)
+    );
+    this.Max = new Point(
+      this.Center.x + (this.Size / 2),
+      this.Center.y + (this.Size / 2),
+      this.Center.z + (this.Size / 2)
+    );
+    _ = oldTreeRootOption.IfSome(oldTreeRoot =>
+    {
+      this.CreateChildTreeNodes();
+      this.SetChildTreeNode(oldTreeRoot);
+    });
+  }
   private void SetChildTreeNode(OctreeNode oldTreeRoot)
   {
     Debug.WriteLine($"{oldTreeRoot.Center.x}, {oldTreeRoot.Center.y}, {oldTreeRoot.Center.z}, {this.Size / 3}");
@@ -60,12 +81,12 @@ public sealed class OctreeNode : Base<OctreeNode>
     throw new Exception("Trying to set child tree node that is not within the parent");
   }
   [Pure]
-  public bool Contains(Point p) => p.x >= this.Center.x - (this.Size / 2) &&
-      p.x < this.Center.x + (this.Size / 2) &&
-      p.y >= this.Center.y - (this.Size / 2) &&
-      p.y < this.Center.y + (this.Size / 2) &&
-      p.z >= this.Center.z - (this.Size / 2) &&
-      p.z < this.Center.z + (this.Size / 2);
+  public bool Contains(Point p) => p.x > this.Center.x - (this.Size / 2) &&
+      p.x <= this.Center.x + (this.Size / 2) &&
+      p.y > this.Center.y - (this.Size / 2) &&
+      p.y <= this.Center.y + (this.Size / 2) &&
+      p.z > this.Center.z - (this.Size / 2) &&
+      p.z <= this.Center.z + (this.Size / 2);
   [Pure]
   public Option<OctreeNode> SmallestTreeNodeContainingPoint(Point p)
   {
