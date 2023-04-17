@@ -96,44 +96,45 @@ public class Element1DTests
     _ = fixture.ExpectedTransformationMatrix.IfSome(m => transformationMatrix.AssertAlmostEqual(m, 1));
   }
 
-  [Theory]
-  [MemberData(nameof(Element1DTestsData.TestGetLocalStiffnessMatrixData), MemberType = typeof(Element1DTestsData))]
-  public void TestGetLocalStiffnessMatrix(double? E, double G, double? A, double Iz, double Iy, double J, double[] P0, double[] P1, double[,] matrixArray, bool exceptionThrown = false)
-  {
-    var baseCurve = new Line(P0, P1);
-    Material? mat = null;
-    if (E is not null)
-    {
-      mat = new Material() { E = (double)E, G = G };
-    }
+  //[Theory]
+  //[MemberData(nameof(Element1DTestsData.TestGetLocalStiffnessMatrixData), MemberType = typeof(Element1DTestsData))]
+  //public void TestGetLocalStiffnessMatrix(double? E, double G, double? A, double Iz, double Iy, double J, double[] P0, double[] P1, double[,] matrixArray, bool exceptionThrown = false)
+  //{
+  //  var baseCurve = new Line(P0, P1);
+  //  Material? mat = null;
+  //  if (E is not null)
+  //  {
+  //    mat = new Material() { E = (double)E, G = G };
+  //  }
 
-    SectionProfile? section = null;
-    if (A is not null)
-    {
-      section = new SectionProfile() { A = (double)A, Iz = Iz, Iy = Iy, J = J };
-    }
+  //  SectionProfile? section = null;
+  //  if (A is not null)
+  //  {
+  //    section = new SectionProfile() { A = (double)A, Iz = Iz, Iy = Iy, J = J };
+  //  }
 
-    var element1D = new Element1D(baseCurve, section, mat);
+  //  var element1D = new Element1D(baseCurve, section, mat);
 
-    if (exceptionThrown)
-    {
-      _ = Assert.ThrowsAny<Exception>(() => element1D.LocalStiffnessMatrix);
-      return;
-    }
-    var localStiffnessMatrix = element1D.LocalStiffnessMatrix;
+  //  if (exceptionThrown)
+  //  {
+  //    _ = Assert.ThrowsAny<Exception>(() => element1D.LocalStiffnessMatrix);
+  //    return;
+  //  }
+  //  var localStiffnessMatrix = element1D.LocalStiffnessMatrix;
 
-    // element stiffness matrix should always be symmetric
-    Assert.True(localStiffnessMatrix.IsSymmetric(), "Matrix is not symmetric");
+  //  // element stiffness matrix should always be symmetric
+  //  Assert.True(localStiffnessMatrix.IsSymmetric(), "Matrix is not symmetric");
 
-    var expectedMatrix = DenseMatrix.OfArray(matrixArray);
-    var equal = localStiffnessMatrix.AlmostEqual(expectedMatrix, .0001);
+  //  var expectedMatrix = DenseMatrix.OfArray(matrixArray);
+  //  var equal = localStiffnessMatrix.AlmostEqual(expectedMatrix, .0001);
 
-    Assert.True(equal, "Stiffness matrix is not equal to expected matrix");
-  }
+  //  Assert.True(equal, "Stiffness matrix is not equal to expected matrix");
+  //}
 
   [SkippableTheory]
   [ClassData(typeof(AllElement1DFixtures))]
-  public void TestGetLocalStiffnessMatrix2(Element1DFixture fixture)
+  [ClassData(typeof(TestGetLocalStiffnessMatrixData))]
+  public void TestGetLocalStiffnessMatrix(Element1DFixture fixture)
   {
     var localStiffnessMatrix = fixture.Element.LocalStiffnessMatrix;
 

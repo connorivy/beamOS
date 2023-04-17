@@ -1,6 +1,15 @@
 namespace beamOS.API.Schema.Objects;
 public class SectionProfile : Base<SectionProfile>
 {
+  public SectionProfile() { }
+  public SectionProfile(string? name, double iz, double iy, double a, double j)
+  {
+    this.Name = name;
+    this.Iz = iz;
+    this.Iy = iy;
+    this.A = a;
+    this.J = j;
+  }
   public string? Name { get; set; }
   // moment of inertia about the strong axis
   public double Iz { get; set; }
