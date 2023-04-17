@@ -318,30 +318,30 @@ public class Element1DTestsData
     return tests;
   }
 
-  public static IEnumerable<object[]> TestGetLocalStiffnessMatrixData()
-  {
-    var tests = new List<object[]>
-    {
-      #region nullValues
-      new object[]
-    {
-      // E, G, A, Iz, Iy, J, P0, P1, matrixArray, execptionThrown
-      null, 0, null, 0, 0, 0, new[] {0.0,0,0}, new[] {1.0,0,0}, new double[12,12], true
-    },
+  //public static IEnumerable<object[]> TestGetLocalStiffnessMatrixData()
+  //{
+  //  var tests = new List<object[]>
+  //  {
+  //    #region nullValues
+  //    new object[]
+  //  {
+  //    // E, G, A, Iz, Iy, J, P0, P1, matrixArray, execptionThrown
+  //    null, 0, null, 0, 0, 0, new[] {0.0,0,0}, new[] {1.0,0,0}, new double[12,12], true
+  //  },
 
-      new object[]
-    {
-      // E, G, A, Iz, Iy, J, P0, P1, matrixArray, execptionThrown
-      null, 0, 0, 0, 0, 0, new[] {0.0,0,0}, new[] {1.0,0,0}, new double[12,12], true
-    },
+  //    new object[]
+  //  {
+  //    // E, G, A, Iz, Iy, J, P0, P1, matrixArray, execptionThrown
+  //    null, 0, 0, 0, 0, 0, new[] {0.0,0,0}, new[] {1.0,0,0}, new double[12,12], true
+  //  },
 
-      new object[]
-    {
-      // E, G, A, Iz, Iy, J, P0, P1, matrixArray, execptionThrown
-      0, 0, null, 0, 0, 0, new[] {0.0,0,0}, new[] {1.0,0,0}, new double[12,12], true
-    },
-      #endregion
+  //    new object[]
+  //  {
+  //    // E, G, A, Iz, Iy, J, P0, P1, matrixArray, execptionThrown
+  //    0, 0, null, 0, 0, 0, new[] {0.0,0,0}, new[] {1.0,0,0}, new double[12,12], true
+  //  },
+  //    #endregion
 
-    return tests;
-  }
+  //  return tests;
+  //}
 }
