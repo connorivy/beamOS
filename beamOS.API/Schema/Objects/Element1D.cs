@@ -80,6 +80,7 @@ public class Element1D : Base<Element1D>
     }
   }
 
+<<<<<<< HEAD
   [JsonIgnore]
   [ClearOnModelUnlock]
   private Matrix<double>? globalStiffnessMatrix = null;
@@ -98,6 +99,70 @@ public class Element1D : Base<Element1D>
 
       this.globalStiffnessMatrix = transformationMatrix.Transpose() * this.LocalStiffnessMatrix * transformationMatrix;
       return this.globalStiffnessMatrix;
+=======
+    private Matrix<double>? _localStiffnessMatrix = null;
+    public Matrix<double> LocalStiffnessMatrix
+    {
+      get
+      {
+        if (_localStiffnessMatrix != null) 
+          return _localStiffnessMatrix;
+
+        if (Material == null)
+          throw new NullReferenceException(nameof(Material));
+
+        if (SectionProfile == null)
+          throw new NullReferenceException(nameof(SectionProfile));
+
+        // TODO: support units
+        var E = Material.E;
+        var G = Material.G;
+        var A = SectionProfile.A;
+        var L = BaseCurve.Length;
+        var Iz = SectionProfile.Iz;
+        var Iy = SectionProfile.Iy;
+        var J = SectionProfile.J;
+        var L2 = L * L;
+        var L3 = L2 * L;
+
+        _localStiffnessMatrix = DenseMatrix.OfArray(new[,]
+        {
+          {  E*A/L,           0,           0,      0,          0,          0, -E*A/L,           0,           0,      0,          0,          0 },
+          {      0,  12*E*Iz/L3,           0,      0,          0,  6*E*Iz/L2,      0, -12*E*Iz/L3,           0,      0,          0,  6*E*Iz/L2 },
+          {      0,           0,  12*E*Iy/L3,      0, -6*E*Iy/L2,          0,      0,           0, -12*E*Iy/L3,      0, -6*E*Iy/L2,          0 },
+          {      0,           0,           0,  G*J/L,          0,          0,      0,           0,           0, -G*J/L,          0,          0 },
+          {      0,           0,  -6*E*Iy/L2,      0,   4*E*Iy/L,          0,      0,           0,   6*E*Iy/L2,      0,   2*E*Iy/L,          0 },
+          {      0,   6*E*Iz/L2,           0,      0,          0,   4*E*Iz/L,      0,  -6*E*Iz/L2,           0,      0,          0,   2*E*Iz/L },
+          { -E*A/L,           0,           0,      0,          0,          0,  E*A/L,           0,           0,      0,          0,          0 },
+          {      0, -12*E*Iz/L3,           0,      0,          0, -6*E*Iz/L2,      0,  12*E*Iz/L3,           0,      0,          0, -6*E*Iz/L2 },
+          {      0,           0, -12*E*Iy/L3,      0,  6*E*Iy/L2,          0,      0,           0,  12*E*Iy/L3,      0,  6*E*Iy/L2,          0 },
+          {      0,           0,           0, -G*J/L,          0,          0,      0,           0,           0,  G*J/L,          0,          0 },
+          {      0,           0,  -6*E*Iy/L2,      0,   2*E*Iy/L,          0,      0,           0,   6*E*Iy/L2,      0,   4*E*Iy/L,          0 },
+          {      0,   6*E*Iz/L2,           0,      0,          0,   2*E*Iz/L,      0,  -6*E*Iz/L2,           0,      0,          0,   4*E*Iz/L },
+        });
+
+        return _localStiffnessMatrix;
+      }
+    }
+
+    private Matrix<double>? _globalStiffnessMatrix = null;
+    public Matrix<double> GlobalStiffnessMatrix
+    {
+      get
+      {
+        if (_globalStiffnessMatrix != null)
+          return _globalStiffnessMatrix;
+
+        if (BaseCurve is not Line baseLine)
+          throw new NotSupportedException("Curved elements are not supported yet");
+
+        var rotationMatrix = GetRotationMatrix(baseLine);
+        var transformationMatrix = GetTransformationMatrix(rotationMatrix);
+
+        _globalStiffnessMatrix = transformationMatrix.Transpose() * LocalStiffnessMatrix * transformationMatrix;
+        return _globalStiffnessMatrix;
+      }
+>>>>>>> main
     }
   }
 
@@ -105,7 +170,22 @@ public class Element1D : Base<Element1D>
   {
     if (rotationMatrix.ColumnCount != 3)
     {
+<<<<<<< HEAD
       throw new Exception($"The provided rotation matrix must have 3 columns, not ${rotationMatrix.ColumnCount}");
+=======
+      if (rotationMatrix.ColumnCount != 3)
+        throw new Exception($"The provided rotation matrix must have 3 columns, not ${rotationMatrix.ColumnCount}");
+      if (rotationMatrix.RowCount != 3)
+        throw new Exception($"The provided rotation matrix must have 3 rows, not ${rotationMatrix.RowCount}");
+
+      var transformationMatrix = Matrix<double>.Build.Dense(12, 12);
+      transformationMatrix.SetSubMatrix(0, 0, rotationMatrix);
+      transformationMatrix.SetSubMatrix(3, 3, rotationMatrix);
+      transformationMatrix.SetSubMatrix(6, 6, rotationMatrix);
+      transformationMatrix.SetSubMatrix(9, 9, rotationMatrix);
+
+      return transformationMatrix;
+>>>>>>> main
     }
 
     if (rotationMatrix.RowCount != 3)
@@ -113,11 +193,17 @@ public class Element1D : Base<Element1D>
       throw new Exception($"The provided rotation matrix must have 3 rows, not ${rotationMatrix.RowCount}");
     }
 
+<<<<<<< HEAD
     var transformationMatrix = Matrix<double>.Build.Dense(12, 12);
     transformationMatrix.SetSubMatrix(0, 0, rotationMatrix);
     transformationMatrix.SetSubMatrix(3, 3, rotationMatrix);
     transformationMatrix.SetSubMatrix(6, 6, rotationMatrix);
     transformationMatrix.SetSubMatrix(9, 9, rotationMatrix);
+=======
+      var rxx = (baseLine.EndNode1.Position[0] - baseLine.EndNode0.Position[0]) / L;
+      var rxy = (baseLine.EndNode1.Position[1] - baseLine.EndNode0.Position[1]) / L;
+      var rxz = (baseLine.EndNode1.Position[2] - baseLine.EndNode0.Position[2]) / L;
+>>>>>>> main
 
     return transformationMatrix;
   }
@@ -135,6 +221,7 @@ public class Element1D : Base<Element1D>
     var rxy = (baseLine.EndNode1.Position[1] - baseLine.EndNode0.Position[1]) / L;
     var rxz = (baseLine.EndNode1.Position[2] - baseLine.EndNode0.Position[2]) / L;
 
+<<<<<<< HEAD
     var cosG = Math.Cos(this.ProfileRotation);
     var sinG = Math.Sin(this.ProfileRotation);
 
@@ -166,5 +253,13 @@ public class Element1D : Base<Element1D>
       { r21, r22, r23 },
       { r31, r32, r33 },
     });
+=======
+      return DenseMatrix.OfArray(new[,] {
+        { rxx, rxy, rxz },
+        { r21, r22, r23 },
+        { r31, r32, r33 },
+      });
+    }
+>>>>>>> main
   }
 }
