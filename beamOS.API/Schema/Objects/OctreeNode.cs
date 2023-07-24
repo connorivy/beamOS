@@ -221,7 +221,7 @@ public sealed class OctreeNode : Base<OctreeNode>
     {
       foreach (var treeNode in this.ChildTreeNodes)
       {
-        if (treeNode.LineIntersects(el.BaseCurve.EndNode0.GetPoint(), el.BaseCurve.EndNode1.GetPoint()))
+        if (treeNode.CurveIntersects(el.BaseCurve))
         {
           treeNode.AddElement1D(el);
         }
@@ -229,8 +229,15 @@ public sealed class OctreeNode : Base<OctreeNode>
     }
   }
 
-  public bool LineIntersects(Point p0, Point p1)
+  public bool CurveIntersects(ICurve curve)
   {
+    if (curve is not Line line)
+    {
+      throw new ArgumentException("Non-lines are not yet supported");
+    }
+
+    var p0 = line.EndNode0.GetPoint();
+    var p1 = line.EndNode1.GetPoint();
     var direction = p1 - p0;
     var tmin = (this.Min.x - p0.x) / direction.x;
     var tmax = (this.Max.x - p0.x) / direction.x;

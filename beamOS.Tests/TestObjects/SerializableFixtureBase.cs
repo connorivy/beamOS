@@ -1,5 +1,6 @@
 namespace beamOS.Tests.TestObjects;
 using System.Reflection;
+using beamOS.API.Schema.Objects;
 using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
 using MathNet.Numerics.LinearAlgebra;
@@ -25,6 +26,10 @@ public class SerializableFixtureBase : IXunitSerializable
 
     var type = prop.PropertyType;
     if (type.IsSubclassOf(typeof(Base)))
+    {
+      prop.SetValue(this, deserializerV2.Deserialize(info.GetValue<string>(prop.Name)));
+    }
+    else if (type.IsInterface)
     {
       prop.SetValue(this, deserializerV2.Deserialize(info.GetValue<string>(prop.Name)));
     }
@@ -61,6 +66,31 @@ public class SerializableFixtureBase : IXunitSerializable
       var optionInstance = Activator.CreateInstance(type, new[] { instance });
       prop.SetValue(this, optionInstance);
     }
+    else if (type == typeof(string))
+    {
+      var stringValue = info.GetValue<string>(prop.Name);
+      prop.SetValue(this, stringValue);
+    }
+    else if (type == typeof(int))
+    {
+      var stringValue = info.GetValue<int>(prop.Name);
+      prop.SetValue(this, stringValue);
+    }
+    else if (type == typeof(double))
+    {
+      var stringValue = info.GetValue<double>(prop.Name);
+      prop.SetValue(this, stringValue);
+    }
+    else if (type == typeof(float))
+    {
+      var stringValue = info.GetValue<float>(prop.Name);
+      prop.SetValue(this, stringValue);
+    }
+    else if (type == typeof(bool))
+    {
+      var stringValue = info.GetValue<bool>(prop.Name);
+      prop.SetValue(this, stringValue);
+    }
   }
 
   public void Serialize(IXunitSerializationInfo info)
@@ -73,23 +103,17 @@ public class SerializableFixtureBase : IXunitSerializable
 
     foreach (var prop in this.GetType().GetProperties())
     {
-      object? item;
-      try
-      {
-        item = prop.GetValue(this);
-      }
-      catch
-      {
-        continue;
-      }
-
-      if (item == null)
-      {
-        return;
-      }
+      var item = prop.GetValue(this);
 
       switch (item)
       {
+        case string:
+        case int:
+        case double:
+        case float:
+        case bool:
+          info.AddValue(prop.Name, item);
+          continue;
         case Base @base:
           info.AddValue(prop.Name, serializerV2.Serialize(@base));
           continue;

@@ -1,6 +1,9 @@
 namespace beamOS.Tests.TestObjects;
+
+using beamOS.API.Schema.Objects;
 using beamOS.Tests.TestObjects.AnalyticalModels;
 using beamOS.Tests.TestObjects.Element1Ds;
+using beamOS.Tests.TestObjects.OctreeNodes;
 using beamOS.Tests.TestObjects.SolvedProblems.MatrixAnalysisOfStructures_2ndEd;
 using Xunit.Abstractions;
 
@@ -34,6 +37,19 @@ public class SerializableFixtureBaseTests
       center => Assert.Equal(center, centerCoords),
       () => throw new Exception("This value should be some")
     );
+  }
+
+  [Fact]
+  public void TestSerializeTestCurveIntersectsFixture()
+  {
+    var info = new info();
+    var fixture = TestCurveIntersectsTheoryData.Intersects1();
+    fixture.Serialize(info);
+
+    var newFixture = Activator.CreateInstance<TestCurveIntersectsFixture>();
+    newFixture.Deserialize(info);
+
+    Assert.Equal(((Line)fixture.Curve).EndNode0.Position, ((Line)newFixture.Curve).EndNode0.Position);
   }
 
   public class info : IXunitSerializationInfo
