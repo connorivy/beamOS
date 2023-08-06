@@ -3,7 +3,6 @@ namespace beamOS.Tests.Schema.Objects;
 using beamOS.API.Schema.Objects;
 using beamOS.Tests.TestObjects.OctreeNodes;
 using global::Objects.Geometry;
-using LanguageExt;
 
 public class OctreeNodeTests
 {
@@ -18,7 +17,7 @@ public class OctreeNodeTests
   [InlineData(new double[3] { 0, 0, 0 }, 10, new double[3] { -5, -5, 5 }, false)]
   public void TestContains(double[] center, double size, double[] point, bool expectedValue)
   {
-    var octreeNode = new OctreeNode(center, size, Option<OctreeNode>.None);
+    var octreeNode = new OctreeNode(center, size, null);
 
     var contains = octreeNode.Contains(new Point(point[0], point[1], point[2]));
 
@@ -29,7 +28,7 @@ public class OctreeNodeTests
   [ClassData(typeof(TestCurveIntersectsTheoryData))]
   public void TestCurveIntersects(TestCurveIntersectsFixture fixture)
   {
-    var octreeNode = new OctreeNode(new AnalyticalModel(), fixture.Center, fixture.Size, Option<OctreeNode>.None);
+    var octreeNode = new OctreeNode(new AnalyticalModel(), fixture.Center, fixture.Size, null);
 
     var contains = octreeNode.CurveIntersects(fixture.Curve);
 

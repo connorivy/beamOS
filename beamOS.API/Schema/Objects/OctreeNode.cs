@@ -1,5 +1,4 @@
 namespace beamOS.API.Schema.Objects;
-using LanguageExt;
 using System.Diagnostics.Contracts;
 using System.Diagnostics;
 using global::Objects.Geometry;
@@ -20,7 +19,7 @@ public sealed class OctreeNode : Base<OctreeNode>
   public Point Min { get; private set; }
   public Point Max { get; private set; }
 
-  public OctreeNode(AnalyticalModel model, Point center, double size, Option<OctreeNode> oldTreeRootOption)
+  public OctreeNode(AnalyticalModel model, Point center, double size, OctreeNode? oldTreeRoot)
   {
     this.model = model;
     this.Center = center;
@@ -36,14 +35,14 @@ public sealed class OctreeNode : Base<OctreeNode>
       this.Center.z + (this.Size / 2)
     );
 
-    _ = oldTreeRootOption.IfSome(oldTreeRoot =>
+    if (oldTreeRoot != null)
     {
       this.CreateChildTreeNodes();
       this.SetChildTreeNode(oldTreeRoot);
-    });
+    }
   }
 
-  public OctreeNode(double[] center, double size, Option<OctreeNode> oldTreeRootOption)
+  public OctreeNode(double[] center, double size, OctreeNode? oldTreeRoot)
   {
     this.Center = new Point(center[0], center[1], center[2]);
     this.Size = size;
@@ -57,11 +56,11 @@ public sealed class OctreeNode : Base<OctreeNode>
       this.Center.y + (this.Size / 2),
       this.Center.z + (this.Size / 2)
     );
-    _ = oldTreeRootOption.IfSome(oldTreeRoot =>
+    if (oldTreeRoot != null)
     {
       this.CreateChildTreeNodes();
       this.SetChildTreeNode(oldTreeRoot);
-    });
+    }
   }
   private void SetChildTreeNode(OctreeNode oldTreeRoot)
   {
@@ -88,11 +87,11 @@ public sealed class OctreeNode : Base<OctreeNode>
       p.z > this.Center.z - (this.Size / 2) &&
       p.z <= this.Center.z + (this.Size / 2);
   [Pure]
-  public Option<OctreeNode> SmallestTreeNodeContainingPoint(Point p)
+  public OctreeNode? SmallestTreeNodeContainingPoint(Point p)
   {
     if (!this.Contains(p))
     {
-      return Option<OctreeNode>.None;
+      return null;
     }
 
     if (!this.Partitioned)
@@ -103,7 +102,7 @@ public sealed class OctreeNode : Base<OctreeNode>
     foreach (var child in this.ChildTreeNodes)
     {
       var modelNode = child.SmallestTreeNodeContainingPoint(p);
-      if (modelNode.IsSome)
+      if (modelNode != null)
       {
         return modelNode;
       }
@@ -125,7 +124,7 @@ public sealed class OctreeNode : Base<OctreeNode>
     _ => 0
   };
   [Pure]
-  public Option<Node> GetExistingNodeAtThisLevel(Point location)
+  public Node? GetExistingNodeAtThisLevel(Point location)
   {
     foreach (var node in this.Nodes.Values)
     {
@@ -136,13 +135,13 @@ public sealed class OctreeNode : Base<OctreeNode>
         return node;
       }
     }
-    return Option<Node>.None;
+    return null;
   }
   [Pure]
-  public Option<Node> GetExistingNodeAtAnyLevel(Point location)
+  public Node? GetExistingNodeAtAnyLevel(Point location)
   {
     var analyticalNode = this.GetExistingNodeAtThisLevel(location);
-    if (analyticalNode.IsSome)
+    if (analyticalNode != null)
     {
       return analyticalNode;
     }
@@ -150,13 +149,13 @@ public sealed class OctreeNode : Base<OctreeNode>
     foreach (var node in this.ChildTreeNodes)
     {
       analyticalNode = node.GetExistingNodeAtThisLevel(location);
-      if (analyticalNode.IsSome)
+      if (analyticalNode != null)
       {
         return analyticalNode;
       }
     }
 
-    return Option<Node>.None;
+    return null;
   }
 
   internal void AddNode(Node node)
@@ -199,7 +198,7 @@ public sealed class OctreeNode : Base<OctreeNode>
         this.Center.z - (this.Size / 4 * (offsetDirectionZ == 0 ? -1 : 1))
       );
 
-      this.ChildTreeNodes[i] = new OctreeNode(this.model, childCenter, this.Size / 2, Option<OctreeNode>.None);
+      this.ChildTreeNodes[i] = new OctreeNode(this.model, childCenter, this.Size / 2, null);
     }
   }
   internal void AssignElementsToChildTreeNodes()
@@ -207,14 +206,15 @@ public sealed class OctreeNode : Base<OctreeNode>
     foreach (var node in this.nodes.Values)
     {
       var childTreeNodeOption = this.SmallestTreeNodeContainingPoint(node.GetPoint());
-      _ = childTreeNodeOption.Match(
-        Some: treeNode =>
-        {
-          treeNode.AddNode(node);
-          _ = this.nodes.Remove(node.Id);
-        },
-        None: () => throw new Exception($"Could not find child node that contains node {node}")
-      );
+      if (childTreeNodeOption != null)
+      {
+        childTreeNodeOption.AddNode(node);
+        _ = this.nodes.Remove(node.Id);
+      }
+      else
+      {
+        throw new Exception($"Could not find child node that contains node {node}");
+      }
     }
 
     foreach (var el in this.element1Ds.Values)

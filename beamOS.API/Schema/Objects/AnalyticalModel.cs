@@ -1,5 +1,4 @@
 namespace beamOS.API.Schema.Objects;
-using LanguageExt;
 using global::Objects.Geometry;
 using System.Collections;
 using System.Reflection;
@@ -12,17 +11,20 @@ public sealed partial class AnalyticalModel : Base<AnalyticalModel>
       this,
       new Point(initialPoint[0], initialPoint[1], initialPoint[2]),
       this.MinTreeNodeSize,
-      Option<OctreeNode>.None
+      null
     );
 
-  public AnalyticalModel(Option<float> minTreeNodeSize, params double[] initialPoint)
+  public AnalyticalModel(float? minTreeNodeSize, params double[] initialPoint)
   {
-    _ = minTreeNodeSize.IfSome(size => this.MinTreeNodeSize = size);
+    if (minTreeNodeSize.HasValue)
+    {
+      this.MinTreeNodeSize = minTreeNodeSize.Value;
+    }
     this.OctreeRoot = new OctreeNode(
       this,
       new Point(initialPoint[0], initialPoint[1], initialPoint[2]),
       this.MinTreeNodeSize,
-      Option<OctreeNode>.None
+      null
     );
   }
 
@@ -37,35 +39,40 @@ public sealed partial class AnalyticalModel : Base<AnalyticalModel>
   public int ElementsPerTreeNode { get; set; } = 10;
 
   //public void AddOrGetNode(Node node)
-  public void AddNode(Node node, out Option<Node> existingNodeOption)
+  public void AddNode(Node node, out Node? existingNode)
   {
-    var smallestTreeNode = this.OctreeRoot.SmallestTreeNodeContainingPoint(node.GetPoint())
-      .IfNone(() =>
-      {
-        this.ExpandOctree(node.GetPoint());
-        return this.OctreeRoot;
-      });
+    var smallestTreeNode = this.OctreeRoot.SmallestTreeNodeContainingPoint(node.GetPoint());
+    if (smallestTreeNode == null)
+    {
+      this.ExpandOctree(node.GetPoint());
+      smallestTreeNode = this.OctreeRoot;
+    }
 
-    existingNodeOption = smallestTreeNode.GetExistingNodeAtThisLevel(node.GetPoint());
+    existingNode = smallestTreeNode.GetExistingNodeAtThisLevel(node.GetPoint());
 
     // TODO
-    //existingNodeOption.IfSome(existingNodeOption => UpdateNode());
-
-    _ = existingNodeOption.IfNone(() =>
+    //existingNode.IfSome(existingNode => UpdateNode());
+    if (existingNode == null)
     {
       node.Id = this.nodes.Count;
       this.nodes.Add(this.nodes.Count, node);
       smallestTreeNode.AddNode(node);
-    });
+    }
   }
 
   public void AddElement1D(Element1D el)
   {
-    this.AddNode(el.BaseCurve.EndNode0, out var existingNodeOption);
-    _ = existingNodeOption.IfSome(node => el.BaseCurve.EndNode0 = node);
+    this.AddNode(el.BaseCurve.EndNode0, out var existingNode);
+    if (existingNode != null)
+    {
+      el.BaseCurve.EndNode0 = existingNode;
+    }
 
-    this.AddNode(el.BaseCurve.EndNode1, out existingNodeOption);
-    _ = existingNodeOption.IfSome(node => el.BaseCurve.EndNode1 = node);
+    this.AddNode(el.BaseCurve.EndNode1, out existingNode);
+    if (existingNode != null)
+    {
+      el.BaseCurve.EndNode1 = existingNode;
+    }
 
     // TODO: check if model already has object defined between these two points
     el.Id = this.element1Ds.Count;
