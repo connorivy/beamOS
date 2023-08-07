@@ -1,6 +1,7 @@
 namespace beamOS.API.Schema.Objects;
 
 using global::Objects.Geometry;
+using Speckle.Core.Models;
 
 public class Node : Base<Node>
 {
@@ -11,9 +12,10 @@ public class Node : Base<Node>
   /// </summary>
   public double[] Position { get; set; } = new double[3];
   public double[] Stiffness { get; set; } = new double[6];
-  // DOFS Fx Fy Fz Mx My Mz
+
   // Default fixity is free because this is the most conservative assumption
-  public bool[] DOFs { get; set; } = new bool[6] { true, true, true, true, true, true };
+  [DetachProperty]
+  public DOFs DOFs { get; set; } = DOFs.Free();
   // DOFS Fx Fy Fz Mx My Mz
   public double[] Reactions { get; set; } = new double[6];
   public Node(double[] position, bool[]? dofs = null)
@@ -23,18 +25,9 @@ public class Node : Base<Node>
       throw new ArgumentException("Node position must be of the form [x,y,z]");
     }
 
-    if (dofs is bool[] dofsNotNull)
+    if (dofs != null)
     {
-      if (dofsNotNull.Length != 6)
-      {
-        throw new ArgumentException("Node DOFs must be an array of length 6");
-      }
-
-      this.DOFs = dofsNotNull;
-    }
-    else
-    {
-      this.DOFs = new bool[6] { true, true, true, true, true, true };
+      this.DOFs = new DOFs(dofs);
     }
 
     this.Position = position;

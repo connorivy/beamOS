@@ -100,7 +100,7 @@ public sealed partial class AnalyticalModel : Base<AnalyticalModel>
       {
         for (var i = 0; i < 6; i++)
         {
-          if (node.DOFs[i])
+          if (node.DOFs.GetOrderedDOF(i))
           {
             knowForces.Add(new DofInfo(node.Id, i));
           }
@@ -218,6 +218,11 @@ public sealed partial class AnalyticalModel : Base<AnalyticalModel>
     var fields = type.GetFields();
     foreach (var field in fields)
     {
+      if (field.IsInitOnly)
+      {
+        continue;
+      }
+
       var att = Attribute.GetCustomAttribute(field, typeof(ClearOnModelUnlockAttribute));
       if (att != null)
       {
