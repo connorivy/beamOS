@@ -6,7 +6,9 @@ public class Node : Base<Node>
 {
   public Node() { }
   public int Id { get; set; }
-  // [x, y, z]
+  /// <summary>
+  /// [x, y, z]
+  /// </summary>
   public double[] Position { get; set; } = new double[3];
   public double[] Stiffness { get; set; } = new double[6];
   // DOFS Fx Fy Fz Mx My Mz
