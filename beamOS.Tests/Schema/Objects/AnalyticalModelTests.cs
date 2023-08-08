@@ -52,7 +52,7 @@ public partial class AnalyticalModelTests
     Assert.NotNull(model.dofs);
 
     // clear analysis results aka "unlock" model
-    _ = model.UnlockObject(model);
+    model.Unlock();
     Assert.Null(model.dofs);
     foreach (var el in model.Element1Ds.Values)
     {

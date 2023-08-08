@@ -120,7 +120,8 @@ public sealed partial class AnalyticalModel : Base<AnalyticalModel>
     }
   }
 
-  public bool UnlockObject(object? obj)
+  public void Unlock() => _ = this.UnlockObject(this);
+  private bool UnlockObject(object? obj)
   {
     if (obj == null)
     {
