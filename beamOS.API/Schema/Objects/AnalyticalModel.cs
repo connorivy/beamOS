@@ -1,4 +1,6 @@
 namespace beamOS.API.Schema.Objects;
+
+using beamOS.API.Schema.Objects.Interfaces;
 using global::Objects.Geometry;
 using System.Collections;
 using System.Reflection;
@@ -8,7 +10,7 @@ public sealed partial class AnalyticalModel : Base<AnalyticalModel>
 {
   public AnalyticalModel() { }
   public AnalyticalModel(params double[] initialPoint) => this.OctreeRoot = new OctreeNode(
-      this,
+      this.modelSettings,
       new Point(initialPoint[0], initialPoint[1], initialPoint[2]),
       this.MinTreeNodeSize,
       null
@@ -21,7 +23,7 @@ public sealed partial class AnalyticalModel : Base<AnalyticalModel>
       this.MinTreeNodeSize = minTreeNodeSize.Value;
     }
     this.OctreeRoot = new OctreeNode(
-      this,
+      this.modelSettings,
       new Point(initialPoint[0], initialPoint[1], initialPoint[2]),
       this.MinTreeNodeSize,
       null
@@ -29,6 +31,8 @@ public sealed partial class AnalyticalModel : Base<AnalyticalModel>
   }
 
   public AnalyticalModel(OctreeNode root) => this.OctreeRoot = root;
+
+  private readonly IModelSettings modelSettings = new ModelSettings(1, 5, 10, ModelOrientation.YUp);
 
   private readonly Dictionary<int, Node> nodes = new();
   public IReadOnlyDictionary<int, Node> Nodes => this.nodes;
