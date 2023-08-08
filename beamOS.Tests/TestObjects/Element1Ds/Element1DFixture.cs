@@ -1,7 +1,6 @@
 namespace beamOS.Tests.TestObjects.Element1Ds;
 using beamOS.API.Schema.Objects;
 using beamOS.Tests.TestObjects.SolvedProblems;
-using LanguageExt;
 using MathNet.Numerics.LinearAlgebra;
 
 public class AllElement1DFixtures : TheoryData<Element1DFixture>
@@ -35,32 +34,32 @@ public class Element1DFixture : SerializableFixtureBase, IHasLocalResults, IHasG
   }
   public Element1DFixture(Element1D element) => this.Element = element;
   public Element1D Element { get; set; }
-  public Option<Matrix<double>> ExpectedRotationMatrix { get; set; }
-  public Option<Matrix<double>> ExpectedTransformationMatrix { get; set; }
-  public Option<Matrix<double>> ExpectedLocalStiffnessMatrix { get; set; }
-  public Option<Matrix<double>> ExpectedGlobalStiffnessMatrix { get; set; }
-  public Option<Vector<double>> ExpectedLocalFixedEndForces { get; set; }
-  public Option<Vector<double>> ExpectedGlobalFixedEndForces { get; set; }
-  public Option<Vector<double>> ExpectedLocalEndDisplacements { get; set; }
-  public Option<Vector<double>> ExpectedGlobalEndDisplacements { get; set; }
-  public Option<Vector<double>> ExpectedLocalEndForces { get; set; }
-  public Option<Vector<double>> ExpectedGlobalEndForces { get; set; }
+  public Matrix<double>? ExpectedRotationMatrix { get; set; }
+  public Matrix<double>? ExpectedTransformationMatrix { get; set; }
+  public Matrix<double>? ExpectedLocalStiffnessMatrix { get; set; }
+  public Matrix<double>? ExpectedGlobalStiffnessMatrix { get; set; }
+  public Vector<double>? ExpectedLocalFixedEndForces { get; set; }
+  public Vector<double>? ExpectedGlobalFixedEndForces { get; set; }
+  public Vector<double>? ExpectedLocalEndDisplacements { get; set; }
+  public Vector<double>? ExpectedGlobalEndDisplacements { get; set; }
+  public Vector<double>? ExpectedLocalEndForces { get; set; }
+  public Vector<double>? ExpectedGlobalEndForces { get; set; }
 }
 
 public interface IHasLocalResults
 {
-  public Option<Matrix<double>> ExpectedRotationMatrix { get; set; }
-  public Option<Matrix<double>> ExpectedTransformationMatrix { get; set; }
-  public Option<Matrix<double>> ExpectedLocalStiffnessMatrix { get; set; }
-  public Option<Vector<double>> ExpectedLocalFixedEndForces { get; set; }
-  public Option<Vector<double>> ExpectedLocalEndDisplacements { get; set; }
-  public Option<Vector<double>> ExpectedLocalEndForces { get; set; }
+  public Matrix<double>? ExpectedRotationMatrix { get; set; }
+  public Matrix<double>? ExpectedTransformationMatrix { get; set; }
+  public Matrix<double>? ExpectedLocalStiffnessMatrix { get; set; }
+  public Vector<double>? ExpectedLocalFixedEndForces { get; set; }
+  public Vector<double>? ExpectedLocalEndDisplacements { get; set; }
+  public Vector<double>? ExpectedLocalEndForces { get; set; }
 }
 
 public interface IHasGlobalResults
 {
-  public Option<Matrix<double>> ExpectedGlobalStiffnessMatrix { get; set; }
-  public Option<Vector<double>> ExpectedGlobalFixedEndForces { get; set; }
-  public Option<Vector<double>> ExpectedGlobalEndDisplacements { get; set; }
-  public Option<Vector<double>> ExpectedGlobalEndForces { get; set; }
+  public Matrix<double>? ExpectedGlobalStiffnessMatrix { get; set; }
+  public Vector<double>? ExpectedGlobalFixedEndForces { get; set; }
+  public Vector<double>? ExpectedGlobalEndDisplacements { get; set; }
+  public Vector<double>? ExpectedGlobalEndForces { get; set; }
 }

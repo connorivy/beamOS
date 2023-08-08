@@ -1,7 +1,6 @@
-﻿using beamOS.API.Schema.Objects;
+using beamOS.API.Schema.Objects;
 using beamOS.Tests.TestObjects.AnalyticalModels;
 using beamOS.Tests.TestObjects.Element1Ds;
-using LanguageExt;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 
@@ -20,17 +19,23 @@ namespace beamOS.Tests.TestObjects.SolvedProblems.MatrixAnalysisOfStructures_2nd
     }
 
     #region AnalyticalModelFixtureDefinition
-    private static Option<AnalyticalModelFixture> _analyticalModelFixture;
-    public static AnalyticalModelFixture ModelFixture => _analyticalModelFixture
-      .Match(
-        m => m,
-        () =>
+    private static AnalyticalModelFixture? _analyticalModelFixture;
+    public static AnalyticalModelFixture ModelFixture
+    {
+      get
+      {
+        if (_analyticalModelFixture != null)
+        {
+          return _analyticalModelFixture;
+        }
+        else
         {
           var m = GetAnalyticalModel();
           _analyticalModelFixture = m;
           return m;
         }
-      );
+      }
+    }
 
     public static AnalyticalModelFixture GetAnalyticalModel()
     {
@@ -57,39 +62,59 @@ namespace beamOS.Tests.TestObjects.SolvedProblems.MatrixAnalysisOfStructures_2nd
     #region Element1DFixtureDefinitions
     //private static Element1DFixture Element1Fixture => _element1Fixture.Value;
     //private static readonly Lazy<Element1DFixture> _element1Fixture = new(GetElement1Fixture);
-    private static Option<Element1DFixture> _element1;
-    public static Element1DFixture Element1 => _element1
-      .Match(
-        el => el,
-        () =>
+    private static Element1DFixture? _element1;
+    public static Element1DFixture Element1
+    {
+      get
+      {
+        if (_element1 != null)
+        {
+          return _element1;
+        }
+        else
         {
           var el = GetElement1Fixture();
           _element1 = el;
           return el;
         }
-      );
-    private static Option<Element1DFixture> _element2;
-    public static Element1DFixture Element2 => _element2
-      .Match(
-        el => el,
-        () =>
+      }
+    }
+
+    private static Element1DFixture? _element2;
+    public static Element1DFixture Element2
+    {
+      get
+      {
+        if ( _element2 != null)
+        {
+          return _element2;
+        }
+        else
         {
           var el = GetElement2Fixture();
           _element2 = el;
           return el;
         }
-      );
-    private static Option<Element1DFixture> _element3;
-    public static Element1DFixture Element3 => _element3
-      .Match(
-        el => el,
-        () =>
+      }
+    }
+
+    private static Element1DFixture? _element3;
+    public static Element1DFixture Element3
+    {
+      get
+      {
+        if (_element3 != null)
+        {
+          return _element3;
+        }
+        else
         {
           var el = GetElement3Fixture();
           _element3 = el;
           return el;
         }
-      );
+      }
+    }
 
     private static Element1DFixture GetElement1Fixture()
     {

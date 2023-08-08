@@ -33,10 +33,14 @@ public class SerializableFixtureBaseTests
 
     var newFixture = new AnalyticalModelFixture();
     newFixture.Deserialize(info);
-    _ = newFixture.ExpectedOctreeCenter.Match(
-      center => Assert.Equal(center, centerCoords),
-      () => throw new Exception("This value should be some")
-    );
+    if (newFixture.ExpectedOctreeCenter != null)
+    {
+      Assert.Equal(newFixture.ExpectedOctreeCenter, centerCoords);
+    }
+    else
+    {
+      throw new Exception("This value should be some");
+    }
   }
 
   [Fact]

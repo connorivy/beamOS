@@ -14,6 +14,9 @@ public partial class AnalyticalModelTests
       root.Center.x, root.Center.y, root.Center.z
     };
 
-    _ = fixture.ExpectedOctreeCenter.IfSome(center => Assert.Equal(calculatedCenter, center));
+    if (fixture.ExpectedOctreeCenter != null)
+    {
+      Assert.Equal(calculatedCenter, fixture.ExpectedOctreeCenter);
+    }
   }
 }

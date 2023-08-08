@@ -33,10 +33,14 @@ public class Element1DTests
   {
     var rotationMatrix = fixture.Element.GetRotationMatrix();
 
-    _ = fixture.ExpectedRotationMatrix.Match(
-      m => rotationMatrix.AssertAlmostEqual(m),
-      () => throw new SkipException("Insufficient expected data present on test fixture")
-    );
+    if (fixture.ExpectedRotationMatrix != null)
+    {
+      rotationMatrix.AssertAlmostEqual(fixture.ExpectedRotationMatrix);
+    }
+    else
+    {
+      throw new SkipException("Insufficient expected data present on test fixture");
+    }
   }
 
   [Theory]
@@ -93,7 +97,10 @@ public class Element1DTests
   {
     var transformationMatrix = fixture.Element.GetTransformationMatrix(fixture.Element.GetRotationMatrix());
 
-    _ = fixture.ExpectedTransformationMatrix.IfSome(m => transformationMatrix.AssertAlmostEqual(m, 1));
+    if (fixture.ExpectedTransformationMatrix != null)
+    {
+      transformationMatrix.AssertAlmostEqual(fixture.ExpectedTransformationMatrix, 1);
+    }
   }
 
   //[Theory]
@@ -138,10 +145,14 @@ public class Element1DTests
   {
     var localStiffnessMatrix = fixture.Element.LocalStiffnessMatrix;
 
-    _ = fixture.ExpectedLocalStiffnessMatrix.Match(
-      m => localStiffnessMatrix.AssertAlmostEqual(m, 1),
-      () => throw new SkipException("Insufficient expected data present on test fixture")
-    );
+    if (fixture.ExpectedLocalStiffnessMatrix != null)
+    {
+      localStiffnessMatrix.AssertAlmostEqual(fixture.ExpectedLocalStiffnessMatrix, 1);
+    }
+    else
+    {
+      throw new SkipException("Insufficient expected data present on test fixture");
+    }
   }
 
   [SkippableTheory]
@@ -157,9 +168,13 @@ public class Element1DTests
     // element stiffness matrix should always be symmetric
     globalStiffnessMatrix.AssertSymmetric();
 
-    _ = fixture.ExpectedGlobalStiffnessMatrix.Match(
-      m => globalStiffnessMatrix.AssertAlmostEqual(m, 1),
-      () => throw new SkipException("Insufficient expected data present on test fixture")
-    );
+    if (fixture.ExpectedGlobalStiffnessMatrix != null)
+    {
+      globalStiffnessMatrix.AssertAlmostEqual(fixture.ExpectedGlobalStiffnessMatrix, 1);
+    }
+    else
+    {
+      throw new SkipException("Insufficient expected data present on test fixture");
+    }
   }
 }
