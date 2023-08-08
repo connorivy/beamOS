@@ -2,11 +2,12 @@ namespace beamOS.API.Schema.Objects;
 using System.Diagnostics.Contracts;
 using System.Diagnostics;
 using global::Objects.Geometry;
+using beamOS.API.Schema.Objects.Interfaces;
 
 public sealed class OctreeNode : Base<OctreeNode>
 {
+  [Obsolete("Serialization only", true)]
   public OctreeNode() { }
-  private readonly AnalyticalModel model;
   public Point Center { get; private set; }
   public double Size { get; private set; }
   public OctreeNode[] ChildTreeNodes { get; private set; } = new OctreeNode[8];
@@ -19,9 +20,10 @@ public sealed class OctreeNode : Base<OctreeNode>
   public Point Min { get; private set; }
   public Point Max { get; private set; }
 
-  public OctreeNode(AnalyticalModel model, Point center, double size, OctreeNode? oldTreeRoot)
+  private readonly IModelSettings modelSettings;
+  public OctreeNode(IModelSettings modelSettings, Point center, double size, OctreeNode? oldTreeRoot)
   {
-    this.model = model;
+    this.modelSettings = modelSettings;
     this.Center = center;
     this.Size = size;
     this.Min = new Point(
@@ -42,8 +44,9 @@ public sealed class OctreeNode : Base<OctreeNode>
     }
   }
 
-  public OctreeNode(double[] center, double size, OctreeNode? oldTreeRoot)
+  public OctreeNode(IModelSettings modelSettings, double[] center, double size, OctreeNode? oldTreeRoot)
   {
+    this.modelSettings = modelSettings;
     this.Center = new Point(center[0], center[1], center[2]);
     this.Size = size;
     this.Min = new Point(
@@ -130,7 +133,7 @@ public sealed class OctreeNode : Base<OctreeNode>
     {
       var nodeVect = new Point(node.Position[0], node.Position[1], node.Position[2]);
       var dist = location.DistanceTo(nodeVect);
-      if (dist < this.model.TOLERENCE)
+      if (dist < this.modelSettings.Tolerance)
       {
         return node;
       }
@@ -161,7 +164,7 @@ public sealed class OctreeNode : Base<OctreeNode>
   internal void AddNode(Node node)
   {
     this.nodes.Add(node.Id, node);
-    if (this.Size / 2 >= this.model.MinTreeNodeSize && this.nodes.Count + this.element1Ds.Count > this.model.ElementsPerTreeNode)
+    if (this.Size / 2 >= this.modelSettings.MinTreeNodeSize && this.nodes.Count + this.element1Ds.Count > this.modelSettings.ElementsPerTreeNode)
     {
       this.Partition();
     }
@@ -169,7 +172,7 @@ public sealed class OctreeNode : Base<OctreeNode>
   internal void AddElement1D(Element1D el)
   {
     this.element1Ds.Add(el.Id, el);
-    if (this.Size / 2 >= this.model.MinTreeNodeSize && this.nodes.Count + this.element1Ds.Count > this.model.ElementsPerTreeNode)
+    if (this.Size / 2 >= this.modelSettings.MinTreeNodeSize && this.nodes.Count + this.element1Ds.Count > this.modelSettings.ElementsPerTreeNode)
     {
       this.Partition();
     }
@@ -198,7 +201,7 @@ public sealed class OctreeNode : Base<OctreeNode>
         this.Center.z - (this.Size / 4 * (offsetDirectionZ == 0 ? -1 : 1))
       );
 
-      this.ChildTreeNodes[i] = new OctreeNode(this.model, childCenter, this.Size / 2, null);
+      this.ChildTreeNodes[i] = new OctreeNode(this.modelSettings, childCenter, this.Size / 2, null);
     }
   }
   internal void AssignElementsToChildTreeNodes()

@@ -14,7 +14,7 @@ public sealed partial class AnalyticalModel
         this.OctreeRoot.Center.y + (this.OctreeRoot.Size / 2 * (offsetDirCenterToPoint.y == 0 ? 1 : offsetDirCenterToPoint.y)),
         this.OctreeRoot.Center.z + (this.OctreeRoot.Size / 2 * (offsetDirCenterToPoint.z == 0 ? 1 : offsetDirCenterToPoint.z))
       );
-      var newRoot = new OctreeNode(this, newCenter, this.OctreeRoot.Size * 2, this.OctreeRoot);
+      var newRoot = new OctreeNode(this.modelSettings, newCenter, this.OctreeRoot.Size * 2, this.OctreeRoot);
       this.OctreeRoot = newRoot;
     } while (!this.OctreeRoot.Contains(p));
   }
