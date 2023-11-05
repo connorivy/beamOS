@@ -1,18 +1,37 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.3.32929.385
+VisualStudioVersion = 17.8.34212.112
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "beamOS.API", "beamOS.API\beamOS.API.csproj", "{E1E9AB8E-ED2E-47BB-B410-64CC163FE563}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "beamOS.Tests", "beamOS.Tests\beamOS.Tests.csproj", "{9CDAA175-862C-4105-8F3E-D8BEE1123843}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{60D951DA-E333-4007-A423-F2E6364A521B}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{036A7B56-BAAC-41A9-A38D-9B96688E0B50}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		Directory.Build.props = Directory.Build.props
+		DirectStiffnessMethodCheatSheet.md = DirectStiffnessMethodCheatSheet.md
 		.github\workflows\integrate.yml = .github\workflows\integrate.yml
+		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Objects", "beamOS.API\Schema\Objects\Objects.csproj", "{E01D568A-BA79-4363-96B0-A541ED9FB355}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PhysicalModel", "PhysicalModel", "{C98CCB50-6C71-4241-993B-C6B86BB59C5C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DirectStiffnessMethod", "DirectStiffnessMethod", "{546F702C-44DE-4950-9EC0-7A2D045B6441}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.PhysicalModel.Domain", "BeamOS.PhysicalModel\BeamOS.PhysicalModel.Domain\BeamOS.PhysicalModel.Domain.csproj", "{CE049E70-6D5B-464C-86D2-185072275C52}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.DirectStiffnessMethod.Domain", "BeamOS.DirectStiffnessMethod\BeamOS.DirectStiffnessMethod.Domain\BeamOS.DirectStiffnessMethod.Domain.csproj", "{AC33B443-20EA-408E-9D2D-FC93FF3A37B7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{1FCCD156-2A73-4393-B516-8AD77FD49F5B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.Common.Domain", "BeamOS.Common\BeamOS.Common.ValueObjects\BeamOS.Common.Domain.csproj", "{6E62773C-48E2-4241-8738-BFD022400B1A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D0A8CFFA-5ECB-437A-9DAD-9BDBF0E8B63A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{33262038-A7CA-4051-B269-CC56FC668095}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DirectStiffnessMethod", "DirectStiffnessMethod", "{AC242513-7F6C-45D5-9B1A-BEB0834B36F5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.DirectStiffnessMethod.Domain.UnitTests", "Tests\UnitTests\DirectStiffnessMethod\BeamOS.DirectStiffnessMethod.UnitTests\BeamOS.DirectStiffnessMethod.Domain.UnitTests.csproj", "{64B6B20A-3EA7-4DAC-804B-19C0EB54C28C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,23 +39,35 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E1E9AB8E-ED2E-47BB-B410-64CC163FE563}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E1E9AB8E-ED2E-47BB-B410-64CC163FE563}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E1E9AB8E-ED2E-47BB-B410-64CC163FE563}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E1E9AB8E-ED2E-47BB-B410-64CC163FE563}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9CDAA175-862C-4105-8F3E-D8BEE1123843}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9CDAA175-862C-4105-8F3E-D8BEE1123843}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9CDAA175-862C-4105-8F3E-D8BEE1123843}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9CDAA175-862C-4105-8F3E-D8BEE1123843}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E01D568A-BA79-4363-96B0-A541ED9FB355}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E01D568A-BA79-4363-96B0-A541ED9FB355}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E01D568A-BA79-4363-96B0-A541ED9FB355}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E01D568A-BA79-4363-96B0-A541ED9FB355}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE049E70-6D5B-464C-86D2-185072275C52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE049E70-6D5B-464C-86D2-185072275C52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE049E70-6D5B-464C-86D2-185072275C52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE049E70-6D5B-464C-86D2-185072275C52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC33B443-20EA-408E-9D2D-FC93FF3A37B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC33B443-20EA-408E-9D2D-FC93FF3A37B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC33B443-20EA-408E-9D2D-FC93FF3A37B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC33B443-20EA-408E-9D2D-FC93FF3A37B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E62773C-48E2-4241-8738-BFD022400B1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E62773C-48E2-4241-8738-BFD022400B1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E62773C-48E2-4241-8738-BFD022400B1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E62773C-48E2-4241-8738-BFD022400B1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64B6B20A-3EA7-4DAC-804B-19C0EB54C28C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64B6B20A-3EA7-4DAC-804B-19C0EB54C28C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64B6B20A-3EA7-4DAC-804B-19C0EB54C28C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64B6B20A-3EA7-4DAC-804B-19C0EB54C28C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CE049E70-6D5B-464C-86D2-185072275C52} = {C98CCB50-6C71-4241-993B-C6B86BB59C5C}
+		{AC33B443-20EA-408E-9D2D-FC93FF3A37B7} = {546F702C-44DE-4950-9EC0-7A2D045B6441}
+		{6E62773C-48E2-4241-8738-BFD022400B1A} = {1FCCD156-2A73-4393-B516-8AD77FD49F5B}
+		{33262038-A7CA-4051-B269-CC56FC668095} = {D0A8CFFA-5ECB-437A-9DAD-9BDBF0E8B63A}
+		{AC242513-7F6C-45D5-9B1A-BEB0834B36F5} = {33262038-A7CA-4051-B269-CC56FC668095}
+		{64B6B20A-3EA7-4DAC-804B-19C0EB54C28C} = {AC242513-7F6C-45D5-9B1A-BEB0834B36F5}
+	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {5F96B64E-9DDF-4BA6-BABA-71A90D33C22E}
+		SolutionGuid = {DCC0AF93-F9F0-490C-9F01-0DDF9F09494F}
 	EndGlobalSection
 EndGlobal

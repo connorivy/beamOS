@@ -16,7 +16,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 8.0.x
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
@@ -27,4 +27,4 @@ jobs:
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        path-to-lcov: D:\a\beamOS\beamOS\beamOS.Tests\coverage.info
+        path-to-lcov: D:\a\beamOS\beamOS\Tests\UnitTests\DirectStiffnessMethod\BeamOS.DirectStiffnessMethod.UnitTests\coverage.info
