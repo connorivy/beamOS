@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\BeamOS.DirectStiffnessMethod\BeamOS.DirectStiffnessMethod.Api\BeamOS.DirectStiffnessMethod.Api.csproj" />
+    <ProjectReference Include="..\BeamOS.Client\BeamOS.Client.csproj" />
+    <PackageReference Include="FastEndpoints" Version="5.19.1" />
+    <PackageReference Include="FastEndpoints.Swagger" Version="5.19.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.0-rc.2.23480.2" />
+  </ItemGroup>
+
+</Project>
