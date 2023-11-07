@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\BeamOS.DirectStiffnessMethod\BeamOS.DirectStiffnessMethod.Api\BeamOS.DirectStiffnessMethod.Api.csproj" />
+    <ProjectReference Include="..\..\BeamOS.PhysicalModel\BeamOS.PhysicalModel.Api\BeamOS.PhysicalModel.Api.csproj" />
     <ProjectReference Include="..\BeamOS.Client\BeamOS.Client.csproj" />
     <PackageReference Include="FastEndpoints" Version="5.19.1" />
     <PackageReference Include="FastEndpoints.Swagger" Version="5.19.1" />
