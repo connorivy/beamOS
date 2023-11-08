@@ -1,8 +1,9 @@
 using System.Reflection;
 using BeamOS.Client.Pages;
 using BeamOS.Components;
-using BeamOS.DirectStiffnessMethod.Api;
+//using BeamOS.DirectStiffnessMethod.Api;
 using BeamOS.PhysicalModel.Api.Endpoints;
+using BeamOS.PhysicalModel.Application;
 using BeamOS.PhysicalModel.Application.Models.Commands;
 using FastEndpoints;
 using FastEndpoints.Swagger;
@@ -17,11 +18,13 @@ builder.Services.AddRazorComponents()
 builder.Services.AddFastEndpoints(o => o.Assemblies = new List<Assembly>
 {
     typeof(Program).Assembly,
-    typeof(MyEndpoint).Assembly,
+    //typeof(MyEndpoint).Assembly,
     typeof(CreateModelEndpoint).Assembly,
     typeof(CreateModelCommand).Assembly,
 });
 builder.Services.SwaggerDocument(o => o.ExcludeNonFastEndpoints = true);
+
+builder.Services.AddPhysicalModelApplication();
 
 var app = builder.Build();
 

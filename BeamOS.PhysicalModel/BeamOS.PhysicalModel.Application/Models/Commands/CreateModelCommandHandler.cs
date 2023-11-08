@@ -1,28 +1,25 @@
+using BeamOS.Common.Application.Interfaces;
 using BeamOS.PhysicalModel.Domain.AnalyticalModelAggregate;
-using BeamOS.PhysicalModel.Domain.AnalyticalModelAggregate.ValueObjects;
-using FastEndpoints;
+using Riok.Mapperly.Abstractions;
 
 namespace BeamOS.PhysicalModel.Application.Models.Commands;
+
 public class CreateModelCommandHandler : ICommandHandler<CreateModelCommand, AnalyticalModel>
 {
-    public async Task<AnalyticalModel> ExecuteAsync(CreateModelCommand command, CancellationToken ct)
+    public async Task<AnalyticalModel> ExecuteAsync(CreateModelCommand command, CancellationToken ct = default)
     {
         await Task.CompletedTask;
 
-        UnitSettings unitSettings = new(
-            command.Settings.UnitSettings.LengthUnit,
-            command.Settings.UnitSettings.AreaUnit,
-            command.Settings.UnitSettings.VolumeUnit,
-            command.Settings.UnitSettings.ForceUnit,
-            command.Settings.UnitSettings.ForcePerLengthUnit,
-            command.Settings.UnitSettings.TorqueUnit
-            );
-        AnalyticalModelSettings settings = new(unitSettings);
-
-        var model = AnalyticalModel.Create(command.Name, command.Description, settings);
+        AnalyticalModel model = command.ToDomainObject();
 
         // TODO : persist model
 
         return model;
     }
+}
+
+[Mapper]
+public static partial class CreateModelCommandMapper
+{
+    public static partial AnalyticalModel ToDomainObject(this CreateModelCommand command);
 }

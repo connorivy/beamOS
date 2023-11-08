@@ -11,11 +11,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\BeamOS.Common\BeamOS.Common.ValueObjects\BeamOS.Common.Domain.csproj" />
+    <Folder Include="Common\ValueObjects\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Common\ValueObjects\" />
+    <ProjectReference Include="..\..\BeamOS.Common\BeamOS.Common.Domain\BeamOS.Common.Domain.csproj" />
   </ItemGroup>
 
 </Project>

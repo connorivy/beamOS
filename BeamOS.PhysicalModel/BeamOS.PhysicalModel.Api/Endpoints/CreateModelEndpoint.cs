@@ -6,7 +6,7 @@ using FastEndpoints;
 
 namespace BeamOS.PhysicalModel.Api.Endpoints;
 
-public class CreateModelEndpoint : Endpoint<CreateModelRequest, ModelResponse>
+public class CreateModelEndpoint(CreateModelCommandHandler createModelCommandHandler) : Endpoint<CreateModelRequest, ModelResponse>
 {
     public override void Configure()
     {
@@ -18,8 +18,10 @@ public class CreateModelEndpoint : Endpoint<CreateModelRequest, ModelResponse>
     {
         CreateModelCommand command = req.ToCommand();
 
-        AnalyticalModel model = await command.ExecuteAsync(ct);
+        AnalyticalModel model = await createModelCommandHandler.ExecuteAsync(command, ct);
 
-        await this.SendAsync(model.ToResponse(), cancellation: ct);
+        ModelResponse response = model.ToResponse();
+
+        await this.SendAsync(response, cancellation: ct);
     }
 }

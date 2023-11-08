@@ -1,5 +1,3 @@
-using BeamOS.PhysicalModel.Domain.AnalyticalModelAggregate;
-using FastEndpoints;
 using UnitsNet.Units;
 
 namespace BeamOS.PhysicalModel.Application.Models.Commands;
@@ -7,7 +5,7 @@ namespace BeamOS.PhysicalModel.Application.Models.Commands;
 public record CreateModelCommand(
     string Name,
     string Description,
-    AnalyticalModelSettingsCommand Settings) : ICommand<AnalyticalModel>;
+    AnalyticalModelSettingsCommand Settings);
 
 public record AnalyticalModelSettingsCommand(
     UnitSettingsCommand UnitSettings);

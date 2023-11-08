@@ -1,6 +1,6 @@
 @host = https://localhost:7120
 
-POST {{host}}/api/model/create
+POST {{host}}/api/model/
 Content-Type: application/json
 
 {

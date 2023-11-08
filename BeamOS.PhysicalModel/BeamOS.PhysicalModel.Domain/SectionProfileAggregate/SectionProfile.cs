@@ -3,7 +3,7 @@ using BeamOS.PhysicalModel.Domain.SectionProfileAggregate.ValueObjects;
 using UnitsNet;
 
 namespace BeamOS.PhysicalModel.Domain.SectionProfileAggregate;
-internal class SectionProfile : AggregateRoot<SectionProfileId>
+public class SectionProfile : AggregateRoot<SectionProfileId>
 {
     public SectionProfile(
         SectionProfileId id,

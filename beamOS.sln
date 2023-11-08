@@ -23,8 +23,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.DirectStiffnessMetho
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{1FCCD156-2A73-4393-B516-8AD77FD49F5B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.Common.Domain", "BeamOS.Common\BeamOS.Common.ValueObjects\BeamOS.Common.Domain.csproj", "{6E62773C-48E2-4241-8738-BFD022400B1A}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D0A8CFFA-5ECB-437A-9DAD-9BDBF0E8B63A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{33262038-A7CA-4051-B269-CC56FC668095}"
@@ -33,21 +31,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DirectStiffnessMethod", "Di
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.DirectStiffnessMethod.Domain.UnitTests", "Tests\UnitTests\DirectStiffnessMethod\BeamOS.DirectStiffnessMethod.UnitTests\BeamOS.DirectStiffnessMethod.Domain.UnitTests.csproj", "{64B6B20A-3EA7-4DAC-804B-19C0EB54C28C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOS.DirectStiffnessMethod.Application", "BeamOS.DirectStiffnessMethod\BeamOS.DirectStiffnessMethod.Application\BeamOS.DirectStiffnessMethod.Application.csproj", "{21A8FF0B-9BCF-433E-8D54-270062C35CE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.DirectStiffnessMethod.Application", "BeamOS.DirectStiffnessMethod\BeamOS.DirectStiffnessMethod.Application\BeamOS.DirectStiffnessMethod.Application.csproj", "{21A8FF0B-9BCF-433E-8D54-270062C35CE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOS.DirectStiffnessMethod.Api", "BeamOS.DirectStiffnessMethod\BeamOS.DirectStiffnessMethod.Api\BeamOS.DirectStiffnessMethod.Api.csproj", "{5A97EC10-4912-4B80-ADBD-CE89D2AF5EC1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.DirectStiffnessMethod.Api", "BeamOS.DirectStiffnessMethod\BeamOS.DirectStiffnessMethod.Api\BeamOS.DirectStiffnessMethod.Api.csproj", "{5A97EC10-4912-4B80-ADBD-CE89D2AF5EC1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOS.DirectStiffnessMethod.Contracts", "BeamOS.DirectStiffnessMethod\BeamOS.DirectStiffnessMethod.Contracts\BeamOS.DirectStiffnessMethod.Contracts.csproj", "{88B7871D-2C51-4BE4-8D83-C04E3E2A6ADE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.DirectStiffnessMethod.Contracts", "BeamOS.DirectStiffnessMethod\BeamOS.DirectStiffnessMethod.Contracts\BeamOS.DirectStiffnessMethod.Contracts.csproj", "{88B7871D-2C51-4BE4-8D83-C04E3E2A6ADE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOS", "BeamOS\BeamOS\BeamOS.csproj", "{F1EC9ED2-0475-4C0E-825C-DB27EC57332D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS", "BeamOS\BeamOS\BeamOS.csproj", "{F1EC9ED2-0475-4C0E-825C-DB27EC57332D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOS.Client", "BeamOS\BeamOS.Client\BeamOS.Client.csproj", "{EA68715A-25D0-418D-823A-9838770E808A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.Client", "BeamOS\BeamOS.Client\BeamOS.Client.csproj", "{EA68715A-25D0-418D-823A-9838770E808A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOS.PhysicalModel.Application", "BeamOS.PhysicalModel\BeamOS.PhysicalModel.Application\BeamOS.PhysicalModel.Application.csproj", "{C0A7A71C-A6DB-4E41-8928-A161F5930A5F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.PhysicalModel.Application", "BeamOS.PhysicalModel\BeamOS.PhysicalModel.Application\BeamOS.PhysicalModel.Application.csproj", "{C0A7A71C-A6DB-4E41-8928-A161F5930A5F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOS.PhysicalModel.Contracts", "BeamOS.PhysicalModel\BeamOS.PhysicalModel.Contracts\BeamOS.PhysicalModel.Contracts.csproj", "{15CA1F87-41D6-40F1-8E10-19B50C96E7E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.PhysicalModel.Contracts", "BeamOS.PhysicalModel\BeamOS.PhysicalModel.Contracts\BeamOS.PhysicalModel.Contracts.csproj", "{15CA1F87-41D6-40F1-8E10-19B50C96E7E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOS.PhysicalModel.Api", "BeamOS.PhysicalModel\BeamOS.PhysicalModel.Api\BeamOS.PhysicalModel.Api.csproj", "{F48D5D05-5ED8-4DA0-B988-1C708D62CEC0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.PhysicalModel.Api", "BeamOS.PhysicalModel\BeamOS.PhysicalModel.Api\BeamOS.PhysicalModel.Api.csproj", "{F48D5D05-5ED8-4DA0-B988-1C708D62CEC0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.Common.Domain", "BeamOS.Common\BeamOS.Common.Domain\BeamOS.Common.Domain.csproj", "{44433842-20DE-4BEA-B8ED-66A49AD598D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOS.Common.Application", "BeamOS.Common\BeamOS.Common.Application\BeamOS.Common.Application.csproj", "{3C24C74F-069D-4405-9C84-6A507CE57C69}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,10 +65,6 @@ Global
 		{AC33B443-20EA-408E-9D2D-FC93FF3A37B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC33B443-20EA-408E-9D2D-FC93FF3A37B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC33B443-20EA-408E-9D2D-FC93FF3A37B7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6E62773C-48E2-4241-8738-BFD022400B1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6E62773C-48E2-4241-8738-BFD022400B1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6E62773C-48E2-4241-8738-BFD022400B1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6E62773C-48E2-4241-8738-BFD022400B1A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{64B6B20A-3EA7-4DAC-804B-19C0EB54C28C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{64B6B20A-3EA7-4DAC-804B-19C0EB54C28C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64B6B20A-3EA7-4DAC-804B-19C0EB54C28C}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -103,6 +101,14 @@ Global
 		{F48D5D05-5ED8-4DA0-B988-1C708D62CEC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F48D5D05-5ED8-4DA0-B988-1C708D62CEC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F48D5D05-5ED8-4DA0-B988-1C708D62CEC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44433842-20DE-4BEA-B8ED-66A49AD598D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44433842-20DE-4BEA-B8ED-66A49AD598D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44433842-20DE-4BEA-B8ED-66A49AD598D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44433842-20DE-4BEA-B8ED-66A49AD598D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C24C74F-069D-4405-9C84-6A507CE57C69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C24C74F-069D-4405-9C84-6A507CE57C69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C24C74F-069D-4405-9C84-6A507CE57C69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C24C74F-069D-4405-9C84-6A507CE57C69}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -110,7 +116,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{CE049E70-6D5B-464C-86D2-185072275C52} = {C98CCB50-6C71-4241-993B-C6B86BB59C5C}
 		{AC33B443-20EA-408E-9D2D-FC93FF3A37B7} = {546F702C-44DE-4950-9EC0-7A2D045B6441}
-		{6E62773C-48E2-4241-8738-BFD022400B1A} = {1FCCD156-2A73-4393-B516-8AD77FD49F5B}
 		{33262038-A7CA-4051-B269-CC56FC668095} = {D0A8CFFA-5ECB-437A-9DAD-9BDBF0E8B63A}
 		{AC242513-7F6C-45D5-9B1A-BEB0834B36F5} = {33262038-A7CA-4051-B269-CC56FC668095}
 		{64B6B20A-3EA7-4DAC-804B-19C0EB54C28C} = {AC242513-7F6C-45D5-9B1A-BEB0834B36F5}
@@ -120,6 +125,8 @@ Global
 		{C0A7A71C-A6DB-4E41-8928-A161F5930A5F} = {C98CCB50-6C71-4241-993B-C6B86BB59C5C}
 		{15CA1F87-41D6-40F1-8E10-19B50C96E7E0} = {C98CCB50-6C71-4241-993B-C6B86BB59C5C}
 		{F48D5D05-5ED8-4DA0-B988-1C708D62CEC0} = {C98CCB50-6C71-4241-993B-C6B86BB59C5C}
+		{44433842-20DE-4BEA-B8ED-66A49AD598D1} = {1FCCD156-2A73-4393-B516-8AD77FD49F5B}
+		{3C24C74F-069D-4405-9C84-6A507CE57C69} = {1FCCD156-2A73-4393-B516-8AD77FD49F5B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DCC0AF93-F9F0-490C-9F01-0DDF9F09494F}

@@ -1,19 +1,10 @@
-using BeamOS.Common.Domain.Models;
+using BeamOS.Common.Domain.ValueObjects;
 
 namespace BeamOS.PhysicalModel.Domain.AnalyticalModelAggregate.ValueObjects;
-public class AnalyticalModelId : BeamOSValueObject
+public class AnalyticalModelId(Guid? modelId = null) : GuidBasedId(modelId)
 {
-    public Guid Value { get; }
-    private AnalyticalModelId(Guid value)
-    {
-        this.Value = value;
-    }
     public static AnalyticalModelId CreateUnique()
     {
         return new(Guid.NewGuid());
-    }
-    protected override IEnumerable<object> GetEqualityComponents()
-    {
-        yield return this.Value;
     }
 }
