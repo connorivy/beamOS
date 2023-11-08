@@ -9,8 +9,6 @@ public class AnalyticalModel : BeamOSEntity<AnalyticalModelId>
     public AnalyticalModel(
         AnalyticalModelId id,
         UnitSettings unitSettings
-        //List<AnalyticalNodeId> nodeIds,
-        //List<Element1DId> element1DIds
     ) : base(id)
     {
         this.UnitSettings = unitSettings;
@@ -20,8 +18,6 @@ public class AnalyticalModel : BeamOSEntity<AnalyticalModelId>
 
     public static AnalyticalModel Create(
         UnitSettings unitSettings
-        //List<AnalyticalNodeId> nodeIds,
-        //List<Element1DId> element1DIds
     )
     {
         //return new(AnalyticalModelId.CreateUnique(), unitSettings, nodeIds, element1DIds);

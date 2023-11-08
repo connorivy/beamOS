@@ -29,6 +29,17 @@ public class Element1D : AggregateRoot<Element1DId>
         this.BaseLine = GetBaseLine(startNode.LocationPoint, endNode.LocationPoint);
     }
 
+    public static Element1D Create(
+        AnalyticalModelId analyticalModelId,
+        AnalyticalNode startNode,
+        AnalyticalNode endNode,
+        MaterialId material,
+        SectionProfileId sectionProfile
+        )
+    {
+        return new(Element1DId.CreateUnique(), analyticalModelId, startNode, endNode, material, sectionProfile);
+    }
+
     public AnalyticalModelId AnalyticalModelId { get; }
     public AnalyticalNodeId StartNodeId { get; }
     public AnalyticalNodeId EndNodeId { get; }

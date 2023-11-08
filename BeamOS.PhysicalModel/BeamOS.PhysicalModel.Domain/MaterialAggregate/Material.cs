@@ -3,7 +3,7 @@ using BeamOS.PhysicalModel.Domain.MaterialAggregate.ValueObjects;
 using UnitsNet;
 
 namespace BeamOS.PhysicalModel.Domain.MaterialAggregate;
-internal class Material : AggregateRoot<MaterialId>
+public class Material : AggregateRoot<MaterialId>
 {
     private Material(MaterialId id, Pressure modulusOfElasticity, Pressure modulusOfRigidity) : base(id)
     {

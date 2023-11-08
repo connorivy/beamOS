@@ -1,0 +1,21 @@
+@host = https://localhost:7120
+
+POST {{host}}/api/model/
+Content-Type: application/json
+
+{
+    "name": "building",
+    "description": "this is a building",
+    "settings":
+    {
+        "unitSettings":
+        {
+            "lengthUnit": "Inch",
+            "areaUnit": "SquareInch",
+            "volumeUnit": "CubicInch",
+            "forceUnit": "KilopoundForce",
+            "forcePerLengthUnit": "KilopoundForcePerInch",
+            "torqueUnit": "KilopoundForceInch"
+        }
+    }
+}
