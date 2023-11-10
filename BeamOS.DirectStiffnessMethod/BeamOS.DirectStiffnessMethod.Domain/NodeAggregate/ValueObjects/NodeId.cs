@@ -1,15 +1,15 @@
 using BeamOS.Common.Domain.Enums;
 using BeamOS.Common.Domain.Models;
 
-namespace BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate.ValueObjects;
-public class AnalyticalNodeId : BeamOSValueObject
+namespace BeamOS.DirectStiffnessMethod.Domain.NodeAggregate.ValueObjects;
+public class NodeId : BeamOSValueObject
 {
     public Guid Value { get; }
-    private AnalyticalNodeId(Guid value)
+    private NodeId(Guid value)
     {
         this.Value = value;
     }
-    public static AnalyticalNodeId CreateUnique()
+    public static NodeId CreateUnique()
     {
         return new(Guid.NewGuid());
     }

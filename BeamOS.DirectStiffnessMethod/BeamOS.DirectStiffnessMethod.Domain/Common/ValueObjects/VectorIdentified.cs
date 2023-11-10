@@ -1,4 +1,4 @@
-using BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate.ValueObjects;
+using BeamOS.DirectStiffnessMethod.Domain.NodeAggregate.ValueObjects;
 
 namespace BeamOS.DirectStiffnessMethod.Domain.Common.ValueObjects;
 public class VectorIdentified : VectorIdentifiedGeneric<UnsupportedStructureDisplacementId>

@@ -2,7 +2,7 @@ using BeamOS.Common.Domain.Enums;
 using BeamOS.Common.Domain.Models;
 using BeamOS.DirectStiffnessMethod.Domain.Element1DAggregate;
 
-namespace BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate.ValueObjects;
+namespace BeamOS.DirectStiffnessMethod.Domain.NodeAggregate.ValueObjects;
 //public class UnsupportedStructureDisplacementRepo : BeamOSValueObject
 //{
 //    private readonly Dictionary<UnsupportedStructureDisplacementId, UnsupportedStructureDisplacement> dofIdentifierMap = [];
@@ -141,14 +141,14 @@ public class UnsupportedStructureDisplacementRepo : BeamOSValueObject
 {
     public List<UnsupportedStructureDisplacementId> DegreeOfFreedomIds { get; } = [];
     public List<UnsupportedStructureDisplacementId> BoundaryConditionIds { get; } = [];
-    public UnsupportedStructureDisplacementRepo(IEnumerable<AnalyticalNode> nodes)
+    public UnsupportedStructureDisplacementRepo(IEnumerable<Node> nodes)
     {
         this.InitializeIdentifierMaps(nodes);
     }
 
-    private void InitializeIdentifierMaps(IEnumerable<AnalyticalNode> nodes)
+    private void InitializeIdentifierMaps(IEnumerable<Node> nodes)
     {
-        foreach (AnalyticalNode node in nodes)
+        foreach (var node in nodes)
         {
             foreach (CoordinateSystemDirection3D direction in Enum.GetValues(typeof(CoordinateSystemDirection3D)))
             {

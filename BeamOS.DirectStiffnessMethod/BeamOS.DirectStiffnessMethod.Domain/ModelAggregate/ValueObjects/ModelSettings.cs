@@ -1,10 +1,10 @@
 using BeamOS.Common.Domain.Models;
-using BeamOS.DirectStiffnessMethod.Domain.AnalyticalModelAggregate.Enums;
+using BeamOS.DirectStiffnessMethod.Domain.ModelAggregate.Enums;
 using UnitsNet;
 using UnitsNet.Units;
 
-namespace BeamOS.DirectStiffnessMethod.Domain.AnalyticalModelAggregate.ValueObjects;
-public class AnalyticalModelSettings : BeamOSValueObject
+namespace BeamOS.DirectStiffnessMethod.Domain.ModelAggregate.ValueObjects;
+public class ModelSettings : BeamOSValueObject
 {
     public UnitSettings UnitSettings { get; }
     public ModelOrientation ModelOrientation { get; }
@@ -12,7 +12,7 @@ public class AnalyticalModelSettings : BeamOSValueObject
     public Length Tolerance { get; }
     public Length MinTreeNodeLength { get; }
     public int ElementsPerTreeNode { get; }
-    public AnalyticalModelSettings(
+    public ModelSettings(
         UnitSettings unitSettings,
         ModelOrientation modelOrientation,
         Length? tolerance = null,

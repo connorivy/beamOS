@@ -1,14 +1,14 @@
 using BeamOS.Common.Domain.Models;
 
-namespace BeamOS.DirectStiffnessMethod.Domain.AnalyticalModelAggregate.ValueObjects;
-public class AnalyticalModelId : BeamOSValueObject
+namespace BeamOS.DirectStiffnessMethod.Domain.ModelAggregate.ValueObjects;
+public class ModelId : BeamOSValueObject
 {
     public Guid Value { get; }
-    private AnalyticalModelId(Guid value)
+    private ModelId(Guid value)
     {
         this.Value = value;
     }
-    public static AnalyticalModelId CreateUnique()
+    public static ModelId CreateUnique()
     {
         return new(Guid.NewGuid());
     }
