@@ -1,24 +1,16 @@
-using BeamOS.PhysicalModel.Domain.AnalyticalNodeAggregate;
-using FastEndpoints;
+using BeamOS.Common.Application.Commands;
 using UnitsNet.Units;
 
 namespace BeamOS.PhysicalModel.Application.Nodes.Commands;
 
 public record CreateNodeCommand(
-    GuidBasedIdDto ModelId,
+    GuidBasedIdCommand ModelId,
     double XCoordinate,
     double YCoordinate,
     double ZCoordinate,
     LengthUnit LengthUnit,
-    RestraintsCommand? Restraint = null) : ICommand<AnalyticalNode>;
+    RestraintsCommand? Restraint = null);
 
-public record GuidBasedIdDto(Guid ModelId)
-{
-    public GuidBasedIdDto(string modelId) : this(Guid.Parse(modelId))
-    {
-
-    }
-};
 public record RestraintsCommand(
     bool CanTranslateAlongX,
     bool CanTranslateAlongY,

@@ -2,7 +2,7 @@ using System.Reflection;
 using BeamOS.Client.Pages;
 using BeamOS.Components;
 //using BeamOS.DirectStiffnessMethod.Api;
-using BeamOS.PhysicalModel.Api.Endpoints;
+using BeamOS.PhysicalModel.Api.Models.Endpoints;
 using BeamOS.PhysicalModel.Application;
 using BeamOS.PhysicalModel.Application.Models.Commands;
 using FastEndpoints;

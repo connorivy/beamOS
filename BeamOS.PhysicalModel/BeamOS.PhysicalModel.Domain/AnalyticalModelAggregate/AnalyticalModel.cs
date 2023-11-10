@@ -18,7 +18,7 @@ public class AnalyticalModel : AggregateRoot<AnalyticalModelId>
         string name,
         string description,
         AnalyticalModelSettings settings,
-        AnalyticalModelId? id = null) : base(id ?? AnalyticalModelId.CreateUnique())
+        AnalyticalModelId? id = null) : base(id ?? new())
     {
         this.Name = name;
         this.Description = description;
@@ -62,13 +62,13 @@ public class AnalyticalModel : AggregateRoot<AnalyticalModelId>
     }
 
     public Element1D AddElement1D(
-        AnalyticalNode startNode,
-        AnalyticalNode endNode,
-        MaterialId material,
-        SectionProfileId sectionProfile
+        AnalyticalNodeId startNodeId,
+        AnalyticalNodeId endNodeId,
+        MaterialId materialId,
+        SectionProfileId sectionProfileId
         )
     {
-        var el = Element1D.Create(this.Id, startNode, endNode, material, sectionProfile);
+        Element1D el = new(this.Id, startNodeId, endNodeId, materialId, sectionProfileId);
         return this.AddElement1D(el);
     }
     public Element1D AddElement1D(Element1D element1D)

@@ -1,4 +1,4 @@
-namespace BeamOS.PhysicalModel.Contracts.Nodes;
+namespace BeamOS.PhysicalModel.Contracts.Node;
 
 public record CreateNodeRequest(
     string ModelId,

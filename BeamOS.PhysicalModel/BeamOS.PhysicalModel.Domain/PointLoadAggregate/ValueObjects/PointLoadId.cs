@@ -1,19 +1,6 @@
-using BeamOS.Common.Domain.Models;
+using BeamOS.Common.Domain.ValueObjects;
 
 namespace BeamOS.PhysicalModel.Domain.PointLoadAggregate.ValueObjects;
-public class PointLoadId : BeamOSValueObject
+public class PointLoadId(Guid? id = null) : GuidBasedId(id)
 {
-    public Guid Value { get; }
-    private PointLoadId(Guid value)
-    {
-        this.Value = value;
-    }
-    public static PointLoadId CreateUnique()
-    {
-        return new(Guid.NewGuid());
-    }
-    protected override IEnumerable<object> GetEqualityComponents()
-    {
-        yield return this.Value;
-    }
 }

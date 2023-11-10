@@ -1,10 +1,6 @@
 using BeamOS.Common.Domain.ValueObjects;
 
 namespace BeamOS.PhysicalModel.Domain.AnalyticalModelAggregate.ValueObjects;
-public class AnalyticalModelId(Guid? modelId = null) : GuidBasedId(modelId)
+public class AnalyticalModelId(Guid? id = null) : GuidBasedId(id)
 {
-    public static AnalyticalModelId CreateUnique()
-    {
-        return new(Guid.NewGuid());
-    }
 }

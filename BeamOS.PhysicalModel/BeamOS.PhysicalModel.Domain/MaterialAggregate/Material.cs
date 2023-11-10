@@ -12,7 +12,7 @@ public class Material : AggregateRoot<MaterialId>
     }
     public static Material Create(Pressure modulusOfElasticity, Pressure modulusOfRigidity)
     {
-        return new(MaterialId.CreateUnique(), modulusOfElasticity, modulusOfRigidity);
+        return new(new MaterialId(), modulusOfElasticity, modulusOfRigidity);
     }
     public Pressure ModulusOfElasticity { get; set; }
     public Pressure ModulusOfRigidity { get; set; }
