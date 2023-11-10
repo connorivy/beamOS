@@ -1,4 +1,4 @@
-using BeamOS.PhysicalModel.Contracts;
+using BeamOS.PhysicalModel.Contracts.Model;
 using BeamOS.PhysicalModel.Domain.AnalyticalModelAggregate;
 using Riok.Mapperly.Abstractions;
 

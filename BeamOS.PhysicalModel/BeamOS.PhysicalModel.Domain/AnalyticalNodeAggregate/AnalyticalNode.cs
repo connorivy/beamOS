@@ -18,7 +18,7 @@ public class AnalyticalNode : AggregateRoot<AnalyticalNodeId>
         double zCoordinate,
         LengthUnit lengthUnit,
         Restraints? restraint = null,
-        AnalyticalNodeId? id = null) : base(id ?? AnalyticalNodeId.CreateUnique())
+        AnalyticalNodeId? id = null) : base(id ?? new())
     {
         this.ModelId = modelId;
         this.LocationPoint = new(xCoordinate, yCoordinate, zCoordinate, lengthUnit);
@@ -31,7 +31,7 @@ public class AnalyticalNode : AggregateRoot<AnalyticalNodeId>
         Length yCoordinate,
         Length zCoordinate,
         Restraints? restraint = null,
-        AnalyticalNodeId? id = null) : base(id ?? AnalyticalNodeId.CreateUnique())
+        AnalyticalNodeId? id = null) : base(id ?? new())
     {
         this.ModelId = modelId;
         this.LocationPoint = new(xCoordinate, yCoordinate, zCoordinate);
