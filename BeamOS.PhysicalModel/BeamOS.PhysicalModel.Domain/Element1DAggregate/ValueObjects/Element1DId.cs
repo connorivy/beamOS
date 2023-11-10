@@ -1,10 +1,6 @@
 using BeamOS.Common.Domain.ValueObjects;
 
 namespace BeamOS.PhysicalModel.Domain.Element1DAggregate.ValueObjects;
-public class Element1DId(Guid? value = null) : GuidBasedId(value)
+public class Element1DId(Guid? id = null) : GuidBasedId(id)
 {
-    public static Element1DId CreateUnique()
-    {
-        return new(Guid.NewGuid());
-    }
 }

@@ -1,10 +1,10 @@
 using BeamOS.PhysicalModel.Api.Mappers;
 using BeamOS.PhysicalModel.Application.Models.Commands;
-using BeamOS.PhysicalModel.Contracts;
+using BeamOS.PhysicalModel.Contracts.Model;
 using BeamOS.PhysicalModel.Domain.AnalyticalModelAggregate;
 using FastEndpoints;
 
-namespace BeamOS.PhysicalModel.Api.Endpoints;
+namespace BeamOS.PhysicalModel.Api.Models.Endpoints;
 
 public class CreateModelEndpoint(CreateModelCommandHandler createModelCommandHandler) : Endpoint<CreateModelRequest, ModelResponse>
 {
@@ -16,11 +16,11 @@ public class CreateModelEndpoint(CreateModelCommandHandler createModelCommandHan
 
     public override async Task HandleAsync(CreateModelRequest req, CancellationToken ct)
     {
-        CreateModelCommand command = req.ToCommand();
+        var command = req.ToCommand();
 
-        AnalyticalModel model = await createModelCommandHandler.ExecuteAsync(command, ct);
+        var model = await createModelCommandHandler.ExecuteAsync(command, ct);
 
-        ModelResponse response = model.ToResponse();
+        var response = model.ToResponse();
 
         await this.SendAsync(response, cancellation: ct);
     }

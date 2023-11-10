@@ -1,4 +1,4 @@
-namespace BeamOS.PhysicalModel.Contracts;
+namespace BeamOS.PhysicalModel.Contracts.Model;
 
 public record CreateModelRequest(
     string Name,

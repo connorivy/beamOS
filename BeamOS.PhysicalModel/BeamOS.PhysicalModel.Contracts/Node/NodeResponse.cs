@@ -1,4 +1,6 @@
-namespace BeamOS.PhysicalModel.Contracts.Nodes;
+using BeamOS.PhysicalModel.Contracts.Common;
+
+namespace BeamOS.PhysicalModel.Contracts.Node;
 public record NodeResponse(
     string Id,
     string ModelId,
@@ -6,8 +8,10 @@ public record NodeResponse(
     List<string> PointLoadIds,
     RestraintsResponse Restraints);
 
-public record PointResponse(LengthResponse XCoordinate, LengthResponse YCoordinate, LengthResponse ZCoordinate);
-public record LengthResponse(double Value, string Unit);
+public record PointResponse(
+    UnitValueDTO XCoordinate,
+    UnitValueDTO YCoordinate,
+    UnitValueDTO ZCoordinate);
 public record RestraintsResponse(
     bool CanTranslateAlongX,
     bool CanTranslateAlongY,

@@ -1,19 +1,6 @@
-using BeamOS.Common.Domain.Models;
+using BeamOS.Common.Domain.ValueObjects;
 
 namespace BeamOS.PhysicalModel.Domain.MaterialAggregate.ValueObjects;
-public class MaterialId : BeamOSValueObject
+public class MaterialId(Guid? id = null) : GuidBasedId(id)
 {
-    public Guid Value { get; }
-    private MaterialId(Guid value)
-    {
-        this.Value = value;
-    }
-    public static MaterialId CreateUnique()
-    {
-        return new(Guid.NewGuid());
-    }
-    protected override IEnumerable<object> GetEqualityComponents()
-    {
-        yield return this.Value;
-    }
 }
