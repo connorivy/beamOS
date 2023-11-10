@@ -1,9 +1,9 @@
 using BeamOS.Common.Domain.ValueObjects;
-using BeamOS.DirectStiffnessMethod.Domain.AnalyticalModelAggregate.ValueObjects;
-using BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate;
-using BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate.ValueObjects;
 using BeamOS.DirectStiffnessMethod.Domain.Element1DAggregate;
 using BeamOS.DirectStiffnessMethod.Domain.Element1DAggregate.ValueObjects;
+using BeamOS.DirectStiffnessMethod.Domain.ModelAggregate.ValueObjects;
+using BeamOS.DirectStiffnessMethod.Domain.NodeAggregate;
+using BeamOS.DirectStiffnessMethod.Domain.NodeAggregate.ValueObjects;
 using BeamOS.DirectStiffnessMethod.Domain.Services;
 using MathNet.Numerics.LinearAlgebra.Double;
 using UnitsNet;
@@ -16,7 +16,7 @@ public class SolverServiceTests
     public void SolveGivenSimpleBeamAndLoadsShouldEqualExpectedValue()
     {
         Restraints free2D = new(true, true, false, false, false, true);
-        AnalyticalNode node0 = AnalyticalNode.Create(0, 16, 0, LengthUnit.Foot, free2D);
+        Node node0 = Node.Create(0, 16, 0, LengthUnit.Foot, free2D);
         node0.LinearLoads.Add(new(
             new Force(150, ForceUnit.KilopoundForce),
             DenseVector.OfArray([1, 0, 0])
@@ -26,9 +26,9 @@ public class SolverServiceTests
             DenseVector.OfArray([0, -1, 0])
             ));
         Restraints pinned2d = new(false, false, false, false, false, true);
-        AnalyticalNode node1 = AnalyticalNode.Create(-12, 0, 0, LengthUnit.Foot, pinned2d);
-        AnalyticalNode node2 = AnalyticalNode.Create(0, 0, 0, LengthUnit.Foot, pinned2d);
-        AnalyticalNode node3 = AnalyticalNode.Create(12, 0, 0, LengthUnit.Foot, pinned2d);
+        Node node1 = Node.Create(-12, 0, 0, LengthUnit.Foot, pinned2d);
+        Node node2 = Node.Create(0, 0, 0, LengthUnit.Foot, pinned2d);
+        Node node3 = Node.Create(12, 0, 0, LengthUnit.Foot, pinned2d);
 
         Material steel29000ksi = new(
             new Pressure(29000, PressureUnit.KilopoundForcePerSquareInch),
@@ -51,7 +51,7 @@ public class SolverServiceTests
         var element2 = Element1D.Create(Angle.Zero, UnitSettings.K_IN, node0, node3, steel29000ksi, area8in);
 
         List<Element1D> element1Ds = [element0, element1, element2];
-        Dictionary<AnalyticalNodeId, AnalyticalNode> nodes = new()
+        Dictionary<NodeId, Node> nodes = new()
         {
             { node0.Id, node0 },
             { node1.Id, node1 },

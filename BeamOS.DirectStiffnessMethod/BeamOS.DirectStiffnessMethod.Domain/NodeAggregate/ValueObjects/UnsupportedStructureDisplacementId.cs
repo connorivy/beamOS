@@ -2,7 +2,7 @@ using BeamOS.Common.Domain.Enums;
 using BeamOS.Common.Domain.Models;
 using BeamOS.Common.Domain.ValueObjects;
 
-namespace BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate.ValueObjects;
+namespace BeamOS.DirectStiffnessMethod.Domain.NodeAggregate.ValueObjects;
 //public class UnsupportedStructureDisplacementId : SingleValueWrapperValueObject<int>
 //{
 //    public UnsupportedStructureDisplacementId(int value) : base(value)
@@ -12,9 +12,9 @@ namespace BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate.ValueObjec
 
 public class UnsupportedStructureDisplacementId : BeamOSValueObject
 {
-    public AnalyticalNodeId NodeId { get; }
+    public NodeId NodeId { get; }
     public CoordinateSystemDirection3D Direction { get; }
-    public UnsupportedStructureDisplacementId(AnalyticalNodeId nodeId, CoordinateSystemDirection3D direction)
+    public UnsupportedStructureDisplacementId(NodeId nodeId, CoordinateSystemDirection3D direction)
     {
         this.NodeId = nodeId;
         this.Direction = direction;

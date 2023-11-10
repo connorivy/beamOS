@@ -1,7 +1,7 @@
 using BeamOS.Common.Domain.Models;
 using UnitsNet.Units;
 
-namespace BeamOS.DirectStiffnessMethod.Domain.AnalyticalModelAggregate.ValueObjects;
+namespace BeamOS.DirectStiffnessMethod.Domain.ModelAggregate.ValueObjects;
 public class UnitSettings : BeamOSValueObject
 {
     public UnitSettings(

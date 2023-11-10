@@ -1,8 +1,8 @@
-using BeamOS.DirectStiffnessMethod.Domain.AnalyticalModelAggregate.ValueObjects;
-using BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate;
-using BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate.ValueObjects;
 using BeamOS.DirectStiffnessMethod.Domain.Common.ValueObjects;
 using BeamOS.DirectStiffnessMethod.Domain.Element1DAggregate;
+using BeamOS.DirectStiffnessMethod.Domain.ModelAggregate.ValueObjects;
+using BeamOS.DirectStiffnessMethod.Domain.NodeAggregate;
+using BeamOS.DirectStiffnessMethod.Domain.NodeAggregate.ValueObjects;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace BeamOS.DirectStiffnessMethod.Domain.Services;
@@ -11,7 +11,7 @@ public class SolverService
     public static void Solve(
         UnitSettings unitSettings,
         List<Element1D> element1Ds,
-        Dictionary<AnalyticalNodeId, AnalyticalNode> nodes)
+        Dictionary<NodeId, Node> nodes)
     {
         UnsupportedStructureDisplacementRepo displacementOrDOFRepo = new(nodes.Values);
 
@@ -39,7 +39,7 @@ public class SolverService
     private static VectorIdentified GetJointDisplacementVector(
         UnitSettings unitSettings,
         List<Element1D> element1Ds,
-        Dictionary<AnalyticalNodeId, AnalyticalNode> nodes,
+        Dictionary<NodeId, Node> nodes,
         UnsupportedStructureDisplacementRepo displacementOrDOFRepo)
     {
         List<UnsupportedStructureDisplacementId> dofIds = displacementOrDOFRepo.DegreeOfFreedomIds;
@@ -56,11 +56,11 @@ public class SolverService
 
     private static VectorIdentified BuildLoadVector(
         UnitSettings unitSettings,
-        Dictionary<AnalyticalNodeId, AnalyticalNode> nodes,
+        Dictionary<NodeId, Node> nodes,
         List<UnsupportedStructureDisplacementId> dofIds)
     {
         VectorIdentified loadVector = new(dofIds);
-        foreach (AnalyticalNode node in nodes.Values)
+        foreach (Node node in nodes.Values)
         {
             VectorIdentified localLoadVector = node
                 .GetForceVectorIdentifiedInGlobalCoordinates(unitSettings.ForceUnit, unitSettings.TorqueUnit);

@@ -2,11 +2,11 @@ using BeamOS.Common.Domain.Enums;
 using BeamOS.Common.Domain.Extensions;
 using BeamOS.Common.Domain.Models;
 using BeamOS.Common.Domain.ValueObjects;
-using BeamOS.DirectStiffnessMethod.Domain.AnalyticalModelAggregate.ValueObjects;
-using BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate;
-using BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate.ValueObjects;
 using BeamOS.DirectStiffnessMethod.Domain.Common.ValueObjects;
 using BeamOS.DirectStiffnessMethod.Domain.Element1DAggregate.ValueObjects;
+using BeamOS.DirectStiffnessMethod.Domain.ModelAggregate.ValueObjects;
+using BeamOS.DirectStiffnessMethod.Domain.NodeAggregate;
+using BeamOS.DirectStiffnessMethod.Domain.NodeAggregate.ValueObjects;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using UnitsNet;
@@ -18,8 +18,8 @@ public class Element1D : AggregateRoot<Element1DId>
         Element1DId element1DId,
         Angle sectionProfileRotation,
         UnitSettings unitSettings,
-        AnalyticalNode startNode,
-        AnalyticalNode endNode,
+        Node startNode,
+        Node endNode,
         Material material,
         SectionProfile sectionProfile
     ) : base(element1DId)
@@ -44,8 +44,8 @@ public class Element1D : AggregateRoot<Element1DId>
     public static Element1D Create(
         Angle sectionProfileRotation,
         UnitSettings unitSettings,
-        AnalyticalNode startNode,
-        AnalyticalNode endNode,
+        Node startNode,
+        Node endNode,
         Material material,
         SectionProfile sectionProfile)
     {
@@ -67,8 +67,8 @@ public class Element1D : AggregateRoot<Element1DId>
     public Line BaseLine { get; }
     public Length Length => this.BaseLine.Length;
 
-    public AnalyticalNodeId StartNodeId { get; set; }
-    public AnalyticalNodeId EndNodeId { get; set; }
+    public NodeId StartNodeId { get; set; }
+    public NodeId EndNodeId { get; set; }
 
     public static Line GetBaseLine(Point startPoint, Point endPoint)
     {
@@ -79,7 +79,7 @@ public class Element1D : AggregateRoot<Element1DId>
     {
         for (int i = 0; i < 2; i++)
         {
-            AnalyticalNodeId nodeId = i == 0 ? this.StartNodeId : this.EndNodeId;
+            NodeId nodeId = i == 0 ? this.StartNodeId : this.EndNodeId;
             foreach (CoordinateSystemDirection3D direction in Enum.GetValues(typeof(CoordinateSystemDirection3D)))
             {
                 if (direction == CoordinateSystemDirection3D.Undefined)
