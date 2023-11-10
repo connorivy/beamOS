@@ -1,7 +1,7 @@
 using BeamOS.Common.Domain.Models;
 using BeamOS.Common.Domain.ValueObjects;
-using BeamOS.PhysicalModel.Domain.AnalyticalModelAggregate.ValueObjects;
-using BeamOS.PhysicalModel.Domain.AnalyticalNodeAggregate.ValueObjects;
+using BeamOS.PhysicalModel.Domain.ModelAggregate.ValueObjects;
+using BeamOS.PhysicalModel.Domain.NodeAggregate.ValueObjects;
 using BeamOS.PhysicalModel.Domain.Element1DAggregate.ValueObjects;
 using BeamOS.PhysicalModel.Domain.MaterialAggregate.ValueObjects;
 using BeamOS.PhysicalModel.Domain.PointLoadAggregate;
@@ -12,9 +12,9 @@ namespace BeamOS.PhysicalModel.Domain.Element1DAggregate;
 public class Element1D : AggregateRoot<Element1DId>
 {
     public Element1D(
-        AnalyticalModelId modelId,
-        AnalyticalNodeId startNodeId,
-        AnalyticalNodeId endNodeId,
+        ModelId modelId,
+        NodeId startNodeId,
+        NodeId endNodeId,
         MaterialId materialId,
         SectionProfileId sectionProfileId,
         Element1DId? id = null) : base(id ?? new Element1DId())
@@ -26,9 +26,9 @@ public class Element1D : AggregateRoot<Element1DId>
         this.SectionProfileId = sectionProfileId;
     }
 
-    public AnalyticalModelId ModelId { get; }
-    public AnalyticalNodeId StartNodeId { get; }
-    public AnalyticalNodeId EndNodeId { get; }
+    public ModelId ModelId { get; }
+    public NodeId StartNodeId { get; }
+    public NodeId EndNodeId { get; }
     public MaterialId MaterialId { get; }
     public SectionProfileId SectionProfileId { get; }
     /// <summary>

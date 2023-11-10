@@ -1,7 +1,7 @@
 using BeamOS.PhysicalModel.Api.Mappers;
 using BeamOS.PhysicalModel.Application.Models.Commands;
 using BeamOS.PhysicalModel.Contracts.Model;
-using BeamOS.PhysicalModel.Domain.AnalyticalModelAggregate;
+using BeamOS.PhysicalModel.Domain.ModelAggregate;
 using FastEndpoints;
 
 namespace BeamOS.PhysicalModel.Api.Models.Endpoints;

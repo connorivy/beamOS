@@ -1,15 +1,15 @@
 using BeamOS.Common.Application.Interfaces;
-using BeamOS.PhysicalModel.Domain.AnalyticalNodeAggregate;
+using BeamOS.PhysicalModel.Domain.NodeAggregate;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOS.PhysicalModel.Application.Nodes.Commands;
-public class CreateNodeCommandHandler : ICommandHandler<CreateNodeCommand, AnalyticalNode>
+public class CreateNodeCommandHandler : ICommandHandler<CreateNodeCommand, Node>
 {
-    public async Task<AnalyticalNode> ExecuteAsync(CreateNodeCommand command, CancellationToken ct)
+    public async Task<Node> ExecuteAsync(CreateNodeCommand command, CancellationToken ct)
     {
         await Task.CompletedTask;
 
-        AnalyticalNode node = command.ToDomainObject();
+        Node node = command.ToDomainObject();
 
         // TODO : persist node
 
@@ -20,5 +20,5 @@ public class CreateNodeCommandHandler : ICommandHandler<CreateNodeCommand, Analy
 [Mapper]
 public static partial class CreateNodeCommandMapper
 {
-    public static partial AnalyticalNode ToDomainObject(this CreateNodeCommand command);
+    public static partial Node ToDomainObject(this CreateNodeCommand command);
 }

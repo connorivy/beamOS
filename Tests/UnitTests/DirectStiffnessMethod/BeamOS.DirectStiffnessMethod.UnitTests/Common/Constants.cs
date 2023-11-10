@@ -1,19 +1,19 @@
-using BeamOS.DirectStiffnessMethod.Domain.Element1DAggregate.ValueObjects;
-using BeamOS.DirectStiffnessMethod.Domain.ModelAggregate.Enums;
-using BeamOS.DirectStiffnessMethod.Domain.ModelAggregate.ValueObjects;
+using BeamOS.DirectStiffnessMethod.Domain.AnalyticalElement1DAggregate.ValueObjects;
+using BeamOS.DirectStiffnessMethod.Domain.AnalyticalModelAggregate.Enums;
+using BeamOS.DirectStiffnessMethod.Domain.AnalyticalModelAggregate.ValueObjects;
 using UnitsNet;
 
 namespace BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common;
 public static partial class Constants
 {
-    public static ModelSettings DefaultSettingsK_IN { get; } = new(
+    public static AnalyticalModelSettings DefaultSettingsK_IN { get; } = new(
       UnitSettings.K_IN,
       ModelOrientation.ZUp,
       new Length(.005, UnitSystem.SI),
       new Length(5, UnitSystem.SI),
       10
       );
-    public static ModelSettings DefaultSettingsSI { get; } = new(
+    public static AnalyticalModelSettings DefaultSettingsSI { get; } = new(
       UnitSettings.SI,
       ModelOrientation.ZUp,
       new Length(.005, UnitSystem.SI),

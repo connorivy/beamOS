@@ -1,11 +1,11 @@
-using BeamOS.DirectStiffnessMethod.Domain.Element1DAggregate;
+using BeamOS.DirectStiffnessMethod.Domain.AnalyticalElement1DAggregate;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Fixtures.AnalyticalElement1Ds;
 public class AnalyticalElement1DFixture : IHasLocalResults, IHasGlobalResults
 {
-    public AnalyticalElement1DFixture(Element1D element) => this.Element = element;
-    public Element1D Element { get; set; }
+    public AnalyticalElement1DFixture(AnalyticalElement1D element) => this.Element = element;
+    public AnalyticalElement1D Element { get; set; }
     public Matrix<double>? ExpectedRotationMatrix { get; set; }
     public Matrix<double>? ExpectedTransformationMatrix { get; set; }
     public Matrix<double>? ExpectedLocalStiffnessMatrix { get; set; }

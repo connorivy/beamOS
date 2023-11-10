@@ -1,8 +1,8 @@
+using BeamOS.DirectStiffnessMethod.Domain.AnalyticalElement1DAggregate;
+using BeamOS.DirectStiffnessMethod.Domain.AnalyticalModelAggregate.ValueObjects;
+using BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate;
+using BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate.ValueObjects;
 using BeamOS.DirectStiffnessMethod.Domain.Common.ValueObjects;
-using BeamOS.DirectStiffnessMethod.Domain.Element1DAggregate;
-using BeamOS.DirectStiffnessMethod.Domain.ModelAggregate.ValueObjects;
-using BeamOS.DirectStiffnessMethod.Domain.NodeAggregate;
-using BeamOS.DirectStiffnessMethod.Domain.NodeAggregate.ValueObjects;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace BeamOS.DirectStiffnessMethod.Domain.Services;
@@ -10,8 +10,8 @@ public class SolverService
 {
     public static void Solve(
         UnitSettings unitSettings,
-        List<Element1D> element1Ds,
-        Dictionary<NodeId, Node> nodes)
+        List<AnalyticalElement1D> element1Ds,
+        Dictionary<AnalyticalNodeId, AnalyticalNode> nodes)
     {
         UnsupportedStructureDisplacementRepo displacementOrDOFRepo = new(nodes.Values);
 
@@ -21,13 +21,13 @@ public class SolverService
     }
 
     private static VectorIdentified GetReactionVector(
-        List<Element1D> element1Ds,
+        List<AnalyticalElement1D> element1Ds,
         UnsupportedStructureDisplacementRepo displacementOrDOFRepo,
         VectorIdentified jointDisplacementVector)
     {
         List<UnsupportedStructureDisplacementId> bcIds = displacementOrDOFRepo.BoundaryConditionIds;
         VectorIdentified reactions = new(bcIds);
-        foreach (Element1D element1D in element1Ds)
+        foreach (AnalyticalElement1D element1D in element1Ds)
         {
             VectorIdentified globalMemberEndForcesVector = element1D.GetGlobalMemberEndForcesVectorIdentified(jointDisplacementVector);
             reactions.AddEntriesWithMatchingIdentifiers(globalMemberEndForcesVector);
@@ -38,8 +38,8 @@ public class SolverService
 
     private static VectorIdentified GetJointDisplacementVector(
         UnitSettings unitSettings,
-        List<Element1D> element1Ds,
-        Dictionary<NodeId, Node> nodes,
+        List<AnalyticalElement1D> element1Ds,
+        Dictionary<AnalyticalNodeId, AnalyticalNode> nodes,
         UnsupportedStructureDisplacementRepo displacementOrDOFRepo)
     {
         List<UnsupportedStructureDisplacementId> dofIds = displacementOrDOFRepo.DegreeOfFreedomIds;
@@ -56,11 +56,11 @@ public class SolverService
 
     private static VectorIdentified BuildLoadVector(
         UnitSettings unitSettings,
-        Dictionary<NodeId, Node> nodes,
+        Dictionary<AnalyticalNodeId, AnalyticalNode> nodes,
         List<UnsupportedStructureDisplacementId> dofIds)
     {
         VectorIdentified loadVector = new(dofIds);
-        foreach (Node node in nodes.Values)
+        foreach (AnalyticalNode node in nodes.Values)
         {
             VectorIdentified localLoadVector = node
                 .GetForceVectorIdentifiedInGlobalCoordinates(unitSettings.ForceUnit, unitSettings.TorqueUnit);
@@ -71,11 +71,11 @@ public class SolverService
     }
 
     private static MatrixIdentified<UnsupportedStructureDisplacementId> BuildStructureStiffnessMatrix(
-        List<Element1D> element1Ds,
+        List<AnalyticalElement1D> element1Ds,
         List<UnsupportedStructureDisplacementId> dofIds)
     {
         MatrixIdentified<UnsupportedStructureDisplacementId> sMatrix = new(dofIds);
-        foreach (Element1D element1D in element1Ds)
+        foreach (AnalyticalElement1D element1D in element1Ds)
         {
             MatrixIdentified<UnsupportedStructureDisplacementId> globalMatrixWithIdentifiers = element1D
                 .GetGlobalStiffnessMatrixIdentified();
