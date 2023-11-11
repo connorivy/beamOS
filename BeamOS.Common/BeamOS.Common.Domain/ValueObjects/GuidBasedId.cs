@@ -1,7 +1,7 @@
 using BeamOS.Common.Domain.Models;
 
 namespace BeamOS.Common.Domain.ValueObjects;
-public abstract class GuidBasedId(Guid? value) : BeamOSValueObject
+public class GuidBasedId(Guid? value) : BeamOSValueObject
 {
     public Guid Value { get; } = value ?? Guid.NewGuid();
 

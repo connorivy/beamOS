@@ -1,18 +1,19 @@
 using BeamOS.Common.Application.Interfaces;
+using BeamOS.PhysicalModel.Application.Common.Interfaces;
 using BeamOS.PhysicalModel.Domain.PointLoadAggregate;
+using BeamOS.PhysicalModel.Domain.PointLoadAggregate.ValueObjects;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOS.PhysicalModel.Application.PointLoads.Commands;
 
-public class CreatePointLoadCommandHandler : ICommandHandler<CreatePointLoadCommand, PointLoad>
+public class CreatePointLoadCommandHandler(IRepository<PointLoadId, PointLoad> pointLoadRepository)
+    : ICommandHandler<CreatePointLoadCommand, PointLoad>
 {
     public async Task<PointLoad> ExecuteAsync(CreatePointLoadCommand command, CancellationToken ct)
     {
-        await Task.CompletedTask;
-
         PointLoad load = command.ToDomainObject();
 
-        // TODO : persist load
+        await pointLoadRepository.Add(load);
 
         return load;
     }

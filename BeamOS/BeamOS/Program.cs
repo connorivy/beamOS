@@ -1,10 +1,13 @@
 using System.Reflection;
 using BeamOS.Client.Pages;
 using BeamOS.Components;
+using BeamOS.PhysicalModel.Api;
+
 //using BeamOS.DirectStiffnessMethod.Api;
 using BeamOS.PhysicalModel.Api.Models.Endpoints;
 using BeamOS.PhysicalModel.Application;
 using BeamOS.PhysicalModel.Application.Models.Commands;
+using BeamOS.PhysicalModel.Infrastructure;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 
@@ -22,9 +25,21 @@ builder.Services.AddFastEndpoints(o => o.Assemblies = new List<Assembly>
     typeof(CreateModelEndpoint).Assembly,
     typeof(CreateModelCommand).Assembly,
 });
-builder.Services.SwaggerDocument(o => o.ExcludeNonFastEndpoints = true);
+builder.Services
+    .SwaggerDocument(o =>
+    {
+        o.DocumentSettings = s =>
+        {
+            s.DocumentName = "Alpha Release";
+            s.Title = "beamOS api";
+            s.Version = "v0";
+        };
+        o.ExcludeNonFastEndpoints = true;
+    });
 
+builder.Services.AddPhysicalModelApi();
 builder.Services.AddPhysicalModelApplication();
+builder.Services.AddPhysicalModelInfrastructure();
 
 var app = builder.Build();
 
@@ -45,7 +60,12 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-app.UseFastEndpoints(c => c.Endpoints.RoutePrefix = "api");
+app.UseFastEndpoints(c =>
+{
+    c.Endpoints.RoutePrefix = "api";
+    c.Versioning.Prefix = "v";
+});
+
 app.UseSwaggerGen();
 
 app.MapRazorComponents<App>()

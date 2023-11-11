@@ -4,7 +4,7 @@ using BeamOS.PhysicalModel.Application.Models.Commands;
 using BeamOS.PhysicalModel.Contracts.Element1D;
 using FastEndpoints;
 
-namespace BeamOS.PhysicalModel.Api.Element1Ds;
+namespace BeamOS.PhysicalModel.Api.Element1Ds.Endpoints;
 
 public class CreateElement1DEndpoint(CreateElement1DCommandHandler createNodeCommandHandler) : Endpoint<CreateElement1DRequest, Element1DResponse>
 {

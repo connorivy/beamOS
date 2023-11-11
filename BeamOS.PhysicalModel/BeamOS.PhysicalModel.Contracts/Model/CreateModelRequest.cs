@@ -3,9 +3,9 @@ namespace BeamOS.PhysicalModel.Contracts.Model;
 public record CreateModelRequest(
     string Name,
     string Description,
-    AnalyticalModelSettingsRequest Settings);
+    ModelSettingsRequest Settings);
 
-public record AnalyticalModelSettingsRequest(
+public record ModelSettingsRequest(
     UnitSettingsRequest UnitSettings);
 
 public record UnitSettingsRequest(

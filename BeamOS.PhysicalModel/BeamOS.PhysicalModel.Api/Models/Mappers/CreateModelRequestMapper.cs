@@ -1,10 +1,12 @@
+using BeamOS.PhysicalModel.Api.Common.Interfaces;
 using BeamOS.PhysicalModel.Contracts.Model;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOS.PhysicalModel.Application.Models.Commands;
 
 [Mapper]
-public static partial class CreateModelRequestMapper
+public partial class CreateModelRequestMapper : IMapper<CreateModelRequest, CreateModelCommand>
 {
-    public static partial CreateModelCommand ToCommand(this CreateModelRequest request);
+    public CreateModelCommand Map(CreateModelRequest from) => this.ToCommand(from);
+    public partial CreateModelCommand ToCommand(CreateModelRequest request);
 }

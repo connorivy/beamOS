@@ -50,7 +50,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.Common.Domain", "Bea
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.Common.Application", "BeamOS.Common\BeamOS.Common.Application\BeamOS.Common.Application.csproj", "{3C24C74F-069D-4405-9C84-6A507CE57C69}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOS.Common.Contracts", "BeamOS.Common\BeamOS.Common.Contracts\BeamOS.Common.Contracts.csproj", "{79CBA285-74AE-42AC-B62D-16CEC0C11B86}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.Common.Contracts", "BeamOS.Common\BeamOS.Common.Contracts\BeamOS.Common.Contracts.csproj", "{79CBA285-74AE-42AC-B62D-16CEC0C11B86}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOS.PhysicalModel.Infrastructure", "BeamOS.PhysicalModel\BeamOS.PhysicalModel.Infrastructure\BeamOS.PhysicalModel.Infrastructure.csproj", "{3F0AF0D1-2053-4081-B2AB-8173C6ED4638}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -114,6 +116,10 @@ Global
 		{79CBA285-74AE-42AC-B62D-16CEC0C11B86}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{79CBA285-74AE-42AC-B62D-16CEC0C11B86}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{79CBA285-74AE-42AC-B62D-16CEC0C11B86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F0AF0D1-2053-4081-B2AB-8173C6ED4638}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F0AF0D1-2053-4081-B2AB-8173C6ED4638}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F0AF0D1-2053-4081-B2AB-8173C6ED4638}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F0AF0D1-2053-4081-B2AB-8173C6ED4638}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -133,6 +139,7 @@ Global
 		{44433842-20DE-4BEA-B8ED-66A49AD598D1} = {1FCCD156-2A73-4393-B516-8AD77FD49F5B}
 		{3C24C74F-069D-4405-9C84-6A507CE57C69} = {1FCCD156-2A73-4393-B516-8AD77FD49F5B}
 		{79CBA285-74AE-42AC-B62D-16CEC0C11B86} = {1FCCD156-2A73-4393-B516-8AD77FD49F5B}
+		{3F0AF0D1-2053-4081-B2AB-8173C6ED4638} = {C98CCB50-6C71-4241-993B-C6B86BB59C5C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DCC0AF93-F9F0-490C-9F01-0DDF9F09494F}

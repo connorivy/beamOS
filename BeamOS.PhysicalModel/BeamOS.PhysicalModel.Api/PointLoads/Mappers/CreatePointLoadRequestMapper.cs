@@ -1,3 +1,4 @@
+using BeamOS.PhysicalModel.Api.Common.Interfaces;
 using BeamOS.PhysicalModel.Application.PointLoads.Commands;
 using BeamOS.PhysicalModel.Contracts.Common;
 using BeamOS.PhysicalModel.Contracts.PointLoad;
@@ -8,12 +9,14 @@ using UnitsNet;
 using UnitsNet.Units;
 
 namespace BeamOS.PhysicalModel.Api.PointLoads.Mappers;
+
 [Mapper]
 [UseStaticMapper(typeof(Vector3Mapper))]
 [UseStaticMapper(typeof(UnitValueDTOToForceMapper))]
-public static partial class CreatePointLoadRequestMapper
+public partial class CreatePointLoadRequestMapper : IMapper<CreatePointLoadRequest, CreatePointLoadCommand>
 {
-    public static partial CreatePointLoadCommand ToCommand(this CreatePointLoadRequest request);
+    public CreatePointLoadCommand Map(CreatePointLoadRequest from) => this.ToCommand(from);
+    public partial CreatePointLoadCommand ToCommand(CreatePointLoadRequest request);
 }
 
 public static class Vector3Mapper

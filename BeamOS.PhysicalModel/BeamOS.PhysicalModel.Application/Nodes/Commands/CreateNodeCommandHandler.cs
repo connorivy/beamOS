@@ -1,17 +1,18 @@
 using BeamOS.Common.Application.Interfaces;
+using BeamOS.PhysicalModel.Application.Common.Interfaces;
 using BeamOS.PhysicalModel.Domain.NodeAggregate;
+using BeamOS.PhysicalModel.Domain.NodeAggregate.ValueObjects;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOS.PhysicalModel.Application.Nodes.Commands;
-public class CreateNodeCommandHandler : ICommandHandler<CreateNodeCommand, Node>
+public class CreateNodeCommandHandler(IRepository<NodeId, Node> nodeRepository)
+    : ICommandHandler<CreateNodeCommand, Node>
 {
     public async Task<Node> ExecuteAsync(CreateNodeCommand command, CancellationToken ct)
     {
-        await Task.CompletedTask;
-
         Node node = command.ToDomainObject();
 
-        // TODO : persist node
+        await nodeRepository.Add(node);
 
         return node;
     }

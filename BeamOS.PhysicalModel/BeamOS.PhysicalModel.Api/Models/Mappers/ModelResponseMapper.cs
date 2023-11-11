@@ -1,10 +1,12 @@
+using BeamOS.PhysicalModel.Api.Common.Interfaces;
 using BeamOS.PhysicalModel.Contracts.Model;
 using BeamOS.PhysicalModel.Domain.ModelAggregate;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOS.PhysicalModel.Api.Mappers;
 [Mapper]
-public static partial class ModelResponseMapper
+public partial class ModelResponseMapper : IMapper<Model, ModelResponse>
 {
-    public static partial ModelResponse ToResponse(this Model model);
+    public ModelResponse Map(Model from) => this.ToResponse(from);
+    public partial ModelResponse ToResponse(Model model);
 }

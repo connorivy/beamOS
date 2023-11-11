@@ -1,4 +1,4 @@
-using BeamOS.PhysicalModel.Api.Mappers;
+using BeamOS.PhysicalModel.Api.Common.Interfaces;
 using BeamOS.PhysicalModel.Application.Models.Commands;
 using BeamOS.PhysicalModel.Contracts.Model;
 using BeamOS.PhysicalModel.Domain.ModelAggregate;
@@ -6,21 +6,38 @@ using FastEndpoints;
 
 namespace BeamOS.PhysicalModel.Api.Models.Endpoints;
 
-public class CreateModelEndpoint(CreateModelCommandHandler createModelCommandHandler) : Endpoint<CreateModelRequest, ModelResponse>
+public class CreateModelEndpoint(
+    IMapper<CreateModelRequest, CreateModelCommand> commandMapper,
+    CreateModelCommandHandler createModelCommandHandler,
+    IMapper<Model, ModelResponse> modelResponseMapper) : Endpoint<CreateModelRequest, ModelResponse>
 {
     public override void Configure()
     {
         this.Post("model");
         this.AllowAnonymous();
+        this.Summary(s => s.ExampleRequest = new CreateModelRequest(
+            "Big Ol' Building",
+            "Description",
+            new ModelSettingsRequest(
+                new UnitSettingsRequest(
+                    "Inch",
+                    "SquareInch",
+                    "CubicInch",
+                    "KilopoundForce",
+                    "KilopoundForcePerInch",
+                    "KilopoundForceInch")
+                )
+            )
+        );
     }
 
     public override async Task HandleAsync(CreateModelRequest req, CancellationToken ct)
     {
-        var command = req.ToCommand();
+        CreateModelCommand command = commandMapper.Map(req);
 
-        var model = await createModelCommandHandler.ExecuteAsync(command, ct);
+        Model model = await createModelCommandHandler.ExecuteAsync(command, ct);
 
-        var response = model.ToResponse();
+        ModelResponse response = modelResponseMapper.Map(model);
 
         await this.SendAsync(response, cancellation: ct);
     }
