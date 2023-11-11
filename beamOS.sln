@@ -54,6 +54,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.Common.Contracts", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOS.PhysicalModel.Infrastructure", "BeamOS.PhysicalModel\BeamOS.PhysicalModel.Infrastructure\BeamOS.PhysicalModel.Infrastructure.csproj", "{3F0AF0D1-2053-4081-B2AB-8173C6ED4638}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOS.Common.Api", "BeamOS.Common\BeamOS.Common.Api\BeamOS.Common.Api.csproj", "{201EA3A1-4F17-4818-879C-87CAAADA5252}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -120,6 +122,10 @@ Global
 		{3F0AF0D1-2053-4081-B2AB-8173C6ED4638}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3F0AF0D1-2053-4081-B2AB-8173C6ED4638}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3F0AF0D1-2053-4081-B2AB-8173C6ED4638}.Release|Any CPU.Build.0 = Release|Any CPU
+		{201EA3A1-4F17-4818-879C-87CAAADA5252}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{201EA3A1-4F17-4818-879C-87CAAADA5252}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{201EA3A1-4F17-4818-879C-87CAAADA5252}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{201EA3A1-4F17-4818-879C-87CAAADA5252}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -140,6 +146,7 @@ Global
 		{3C24C74F-069D-4405-9C84-6A507CE57C69} = {1FCCD156-2A73-4393-B516-8AD77FD49F5B}
 		{79CBA285-74AE-42AC-B62D-16CEC0C11B86} = {1FCCD156-2A73-4393-B516-8AD77FD49F5B}
 		{3F0AF0D1-2053-4081-B2AB-8173C6ED4638} = {C98CCB50-6C71-4241-993B-C6B86BB59C5C}
+		{201EA3A1-4F17-4818-879C-87CAAADA5252} = {1FCCD156-2A73-4393-B516-8AD77FD49F5B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DCC0AF93-F9F0-490C-9F01-0DDF9F09494F}

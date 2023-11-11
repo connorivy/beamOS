@@ -1,6 +1,6 @@
 using BeamOS.Common.Domain.Models;
 
-namespace BeamOS.PhysicalModel.Application.Common.Interfaces;
+namespace BeamOS.Common.Application.Interfaces;
 public interface IRepository<TId, T>
     where TId : notnull
     where T : AggregateRoot<TId>

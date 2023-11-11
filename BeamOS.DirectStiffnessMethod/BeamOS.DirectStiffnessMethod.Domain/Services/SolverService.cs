@@ -11,9 +11,9 @@ public class SolverService
     public static void Solve(
         UnitSettings unitSettings,
         List<AnalyticalElement1D> element1Ds,
-        Dictionary<AnalyticalNodeId, AnalyticalNode> nodes)
+        List<AnalyticalNode> nodes)
     {
-        UnsupportedStructureDisplacementRepo displacementOrDOFRepo = new(nodes.Values);
+        UnsupportedStructureDisplacementRepo displacementOrDOFRepo = new(nodes);
 
         var jointDisplacementVector = GetJointDisplacementVector(unitSettings, element1Ds, nodes, displacementOrDOFRepo);
 
@@ -39,7 +39,7 @@ public class SolverService
     private static VectorIdentified GetJointDisplacementVector(
         UnitSettings unitSettings,
         List<AnalyticalElement1D> element1Ds,
-        Dictionary<AnalyticalNodeId, AnalyticalNode> nodes,
+        IEnumerable<AnalyticalNode> nodes,
         UnsupportedStructureDisplacementRepo displacementOrDOFRepo)
     {
         List<UnsupportedStructureDisplacementId> dofIds = displacementOrDOFRepo.DegreeOfFreedomIds;
@@ -56,11 +56,11 @@ public class SolverService
 
     private static VectorIdentified BuildLoadVector(
         UnitSettings unitSettings,
-        Dictionary<AnalyticalNodeId, AnalyticalNode> nodes,
+        IEnumerable<AnalyticalNode> nodes,
         List<UnsupportedStructureDisplacementId> dofIds)
     {
         VectorIdentified loadVector = new(dofIds);
-        foreach (AnalyticalNode node in nodes.Values)
+        foreach (AnalyticalNode node in nodes)
         {
             VectorIdentified localLoadVector = node
                 .GetForceVectorIdentifiedInGlobalCoordinates(unitSettings.ForceUnit, unitSettings.TorqueUnit);

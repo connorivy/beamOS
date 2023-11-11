@@ -1,10 +1,10 @@
-namespace BeamOS.PhysicalModel.Contracts.Model;
+namespace BeamOS.DirectStiffnessMethod.Contracts.Model;
 public record ModelResponse(
     string Id,
     string Name,
     string Description,
     ModelSettingsResponse Settings,
-    List<string> NodeIds,
+    List<string> AnalyticalNodeIds,
     List<string> Element1DIds,
     List<string> MaterialIds,
     List<string> SectionProfileIds);

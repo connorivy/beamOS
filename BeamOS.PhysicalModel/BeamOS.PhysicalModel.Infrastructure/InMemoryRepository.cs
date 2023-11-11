@@ -1,5 +1,5 @@
+using BeamOS.Common.Application.Interfaces;
 using BeamOS.Common.Domain.Models;
-using BeamOS.PhysicalModel.Application.Common.Interfaces;
 
 namespace BeamOS.PhysicalModel.Infrastructure;
 

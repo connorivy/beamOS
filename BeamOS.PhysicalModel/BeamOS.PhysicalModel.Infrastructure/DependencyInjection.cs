@@ -1,4 +1,4 @@
-using BeamOS.PhysicalModel.Application.Common.Interfaces;
+using BeamOS.Common.Application.Interfaces;
 using BeamOS.PhysicalModel.Domain.Element1DAggregate;
 using BeamOS.PhysicalModel.Domain.Element1DAggregate.ValueObjects;
 using BeamOS.PhysicalModel.Domain.ModelAggregate;

@@ -29,8 +29,8 @@ public class Model : AggregateRoot<ModelId>
     public string Description { get; private set; }
     public ModelSettings Settings { get; private set; }
 
-    private readonly List<NodeId> analyticalNodeIds = [];
-    public IReadOnlyList<NodeId> AnalyticalNodeIds => this.analyticalNodeIds.AsReadOnly();
+    private readonly List<NodeId> nodeIds = [];
+    public IReadOnlyList<NodeId> NodeIds => this.nodeIds.AsReadOnly();
 
     private readonly List<Element1DId> element1DIds = [];
     public IReadOnlyList<Element1DId> Element1DIds => this.element1DIds.AsReadOnly();
@@ -56,7 +56,7 @@ public class Model : AggregateRoot<ModelId>
     }
     public Node AddNode(Node node)
     {
-        this.analyticalNodeIds.Add(node.Id);
+        this.nodeIds.Add(node.Id);
 
         return node;
     }
