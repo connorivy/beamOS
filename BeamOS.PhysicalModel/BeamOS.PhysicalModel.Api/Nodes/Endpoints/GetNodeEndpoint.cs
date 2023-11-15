@@ -12,7 +12,7 @@ public class GetNodeEndpoint(
 {
     public override void Configure()
     {
-        this.Get("node/{id}");
+        this.Get("nodes/{id}");
         this.AllowAnonymous();
     }
 }

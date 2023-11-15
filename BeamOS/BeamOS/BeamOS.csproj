@@ -7,12 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\BeamOS.Common\BeamOS.Common.Infrastructure\BeamOS.Common.Infrastructure.csproj" />
     <ProjectReference Include="..\..\BeamOS.DirectStiffnessMethod\BeamOS.DirectStiffnessMethod.Api\BeamOS.DirectStiffnessMethod.Api.csproj" />
     <ProjectReference Include="..\..\BeamOS.PhysicalModel\BeamOS.PhysicalModel.Api\BeamOS.PhysicalModel.Api.csproj" />
     <ProjectReference Include="..\..\BeamOS.PhysicalModel\BeamOS.PhysicalModel.Infrastructure\BeamOS.PhysicalModel.Infrastructure.csproj" />
     <ProjectReference Include="..\BeamOS.Client\BeamOS.Client.csproj" />
-    <PackageReference Include="FastEndpoints.Swagger" Version="5.19.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.0-rc.2.23480.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
 </Project>

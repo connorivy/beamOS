@@ -9,6 +9,7 @@ using UnitsNet.Units;
 namespace BeamOS.PhysicalModel.Domain.NodeAggregate;
 public class Node : AggregateRoot<NodeId>
 {
+    private Node(NodeId id) : base(id) { }
     public ModelId ModelId { get; }
     public Point LocationPoint { get; private set; }
     public Node(
@@ -38,7 +39,7 @@ public class Node : AggregateRoot<NodeId>
         this.Restraints = restraint ?? Restraints.Free;
     }
 
-    public List<PointLoadId> PointLoadIds { get; } = [];
+    //public List<PointLoadId> PointLoadIds { get; private set; } = [];
     //public List<MomentLoad> MomentLoads { get; } = [];
     public Restraints Restraints { get; set; }
 }

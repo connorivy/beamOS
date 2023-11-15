@@ -5,7 +5,7 @@ public record NodeResponse(
     string Id,
     string ModelId,
     PointResponse LocationPoint,
-    List<string> PointLoadIds,
+    //List<string> PointLoadIds,
     RestraintsResponse Restraints);
 
 public record PointResponse(

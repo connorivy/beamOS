@@ -1,10 +1,12 @@
+using BeamOS.PhysicalModel.Api.Common.Interfaces;
 using BeamOS.PhysicalModel.Contracts.Element1D;
 using BeamOS.PhysicalModel.Domain.Element1DAggregate;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOS.PhysicalModel.Api.Mappers;
 [Mapper]
-public static partial class Element1DResponseMapper
+public partial class Element1DResponseMapper : IMapper<Element1D, Element1DResponse>
 {
-    public static partial Element1DResponse ToResponse(this Element1D model);
+    public Element1DResponse Map(Element1D from) => this.ToResponse(from);
+    public partial Element1DResponse ToResponse(Element1D model);
 }

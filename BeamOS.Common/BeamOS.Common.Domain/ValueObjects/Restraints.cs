@@ -4,24 +4,20 @@ namespace BeamOS.Common.Domain.ValueObjects;
 /// Describes the degrees of freedom of an element or node. A true value denotes free movement
 /// while a false value denotes restraint
 /// </summary>
-public class Restraints : CoordinateDirectionBase<bool>
+public class Restraints(
+    bool canTranslateAlongX,
+    bool canTranslateAlongY,
+    bool canTranslateAlongZ,
+    bool canRotateAboutX,
+    bool canRotateAboutY,
+    bool canRotateAboutZ) : CoordinateDirectionBase<bool>(
+        canTranslateAlongX,
+        canTranslateAlongY,
+        canTranslateAlongZ,
+        canRotateAboutX,
+        canRotateAboutY,
+        canRotateAboutZ)
 {
-    public Restraints(
-        bool canTranslateAlongX,
-        bool canTranslateAlongY,
-        bool canTranslateAlongZ,
-        bool canRotateAboutX,
-        bool canRotateAboutY,
-        bool canRotateAboutZ) : base(
-            canTranslateAlongX,
-            canTranslateAlongY,
-            canTranslateAlongZ,
-            canRotateAboutX,
-            canRotateAboutY,
-            canRotateAboutZ)
-    {
-    }
-
     public bool CanTranslateAlongX => this.AlongX;
     public bool CanTranslateAlongY => this.AlongY;
     public bool CanTranslateAlongZ => this.AlongZ;

@@ -51,9 +51,9 @@ public class AnalyticalNode : AggregateRoot<AnalyticalNodeId>
     }
 
     public List<LinearLoad> LinearLoads { get; } = [];
-    public List<MomentLoad> MomentLoads { get; } = [];
+    //public List<MomentLoad> MomentLoads { get; } = [];
     public Restraints Restraints { get; set; }
-    public Forces? Forces { get; set; }
+    //public Forces? Forces { get; set; }
 
     public Forces GetForcesInGlobalCoordinates()
     {

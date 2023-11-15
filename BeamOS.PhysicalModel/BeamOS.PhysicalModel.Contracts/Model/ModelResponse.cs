@@ -3,11 +3,12 @@ public record ModelResponse(
     string Id,
     string Name,
     string Description,
-    ModelSettingsResponse Settings,
-    List<string> NodeIds,
-    List<string> Element1DIds,
-    List<string> MaterialIds,
-    List<string> SectionProfileIds);
+    ModelSettingsResponse Settings
+    //List<string> NodeIds,
+    //List<string> Element1DIds,
+    //List<string> MaterialIds,
+    //List<string> SectionProfileIds
+    );
 
 public record ModelSettingsResponse(
     UnitSettingsResponse UnitSettings);

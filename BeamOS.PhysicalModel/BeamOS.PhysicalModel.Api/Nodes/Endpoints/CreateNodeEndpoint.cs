@@ -13,7 +13,7 @@ public class CreateNodeEndpoint(
 {
     public override void Configure()
     {
-        this.Post("node");
+        this.Post("nodes");
         this.AllowAnonymous();
         this.Summary(s => s.ExampleRequest = new CreateNodeRequest(
             "00000000-0000-0000-0000-000000000000",

@@ -26,18 +26,18 @@ public class Element1D : AggregateRoot<Element1DId>
         this.SectionProfileId = sectionProfileId;
     }
 
-    public ModelId ModelId { get; }
-    public NodeId StartNodeId { get; }
-    public NodeId EndNodeId { get; }
-    public MaterialId MaterialId { get; }
-    public SectionProfileId SectionProfileId { get; }
+    public ModelId ModelId { get; private set; }
+    public NodeId StartNodeId { get; private set; }
+    public NodeId EndNodeId { get; private set; }
+    public MaterialId MaterialId { get; private set; }
+    public SectionProfileId SectionProfileId { get; private set; }
     /// <summary>
     /// counter-clockwise rotation in radians when looking in the negative (local) x direction
     /// </summary>
     public Angle SectionProfileRotation { get; set; }
 
-    private readonly SortedList<double, PointLoad> loads = new();
-    public IReadOnlyDictionary<double, PointLoad> Loads => this.loads.AsReadOnly();
+    //private readonly SortedList<double, PointLoad> loads = new();
+    //public IReadOnlyDictionary<double, PointLoad> Loads => this.loads.AsReadOnly();
 
     //public Line BaseLine { get; }
     //public Length Length => this.BaseLine.Length;
