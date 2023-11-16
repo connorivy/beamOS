@@ -18,12 +18,10 @@ public class Node : AggregateRoot<NodeId>
         double yCoordinate,
         double zCoordinate,
         LengthUnit lengthUnit,
-        Restraints? restraint = null,
         NodeId? id = null) : base(id ?? new())
     {
         this.ModelId = modelId;
         this.LocationPoint = new(xCoordinate, yCoordinate, zCoordinate, lengthUnit);
-        this.Restraints = restraint ?? Restraints.Free;
     }
 
     public Node(
@@ -31,15 +29,13 @@ public class Node : AggregateRoot<NodeId>
         Length xCoordinate,
         Length yCoordinate,
         Length zCoordinate,
-        Restraints? restraint = null,
         NodeId? id = null) : base(id ?? new())
     {
         this.ModelId = modelId;
         this.LocationPoint = new(xCoordinate, yCoordinate, zCoordinate);
-        this.Restraints = restraint ?? Restraints.Free;
     }
 
     //public List<PointLoadId> PointLoadIds { get; private set; } = [];
     //public List<MomentLoad> MomentLoads { get; } = [];
-    public Restraints Restraints { get; set; }
+    public Restraints Restraints { get; set; } = Restraints.Free;
 }

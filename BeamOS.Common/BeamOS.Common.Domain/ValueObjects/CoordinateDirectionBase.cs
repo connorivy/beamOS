@@ -82,27 +82,27 @@ public abstract class CoordinateDirectionBase<TLinear, TRotational> : BeamOSValu
     /// <summary>
     /// Value along the x axis
     /// </summary>
-    protected TLinear AlongX => this.linearValues[0];
+    protected TLinear AlongX { get => this.linearValues[0]; set => this.linearValues[0] = value; }
     /// <summary>
     /// Value along the y axis
     /// </summary>
-    protected TLinear AlongY => this.linearValues[1];
+    protected TLinear AlongY { get => this.linearValues[1]; set => this.linearValues[1] = value; }
     /// <summary>
     /// Value along the z axis
     /// </summary>
-    protected TLinear AlongZ => this.linearValues[2];
+    protected TLinear AlongZ { get => this.linearValues[2]; set => this.linearValues[2] = value; }
     /// <summary>
     /// Value about the x axis
     /// </summary>
-    protected TRotational AboutX => this.rotationalValues[0];
+    protected TRotational AboutX { get => this.rotationalValues[0]; set => this.rotationalValues[0] = value; }
     /// <summary>
     /// Value about the y axis
     /// </summary>
-    protected TRotational AboutY => this.rotationalValues[1];
+    protected TRotational AboutY { get => this.rotationalValues[1]; set => this.rotationalValues[1] = value; }
     /// <summary>
     /// Value about the z axis
     /// </summary>
-    protected TRotational AboutZ => this.rotationalValues[2];
+    protected TRotational AboutZ { get => this.rotationalValues[2]; set => this.rotationalValues[2] = value; }
 
     protected override IEnumerable<object> GetEqualityComponents()
     {

@@ -5,7 +5,8 @@ using Riok.Mapperly.Abstractions;
 
 namespace BeamOS.PhysicalModel.Application.Element1Ds;
 
-public class CreateElement1DCommandHandler(IRepository<Element1DId, Element1D> element1DRepository)
+public class CreateElement1DCommandHandler(
+    IRepository<Element1DId, Element1D> element1DRepository)
     : ICommandHandler<CreateElement1DCommand, Element1D>
 {
     public async Task<Element1D> ExecuteAsync(CreateElement1DCommand command, CancellationToken ct)

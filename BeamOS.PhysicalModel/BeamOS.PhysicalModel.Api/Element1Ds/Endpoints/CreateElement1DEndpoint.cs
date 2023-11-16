@@ -1,6 +1,7 @@
 using BeamOS.PhysicalModel.Api.Common.Interfaces;
+using BeamOS.PhysicalModel.Api.Data;
+using BeamOS.PhysicalModel.Api.Element1Ds.Mappers;
 using BeamOS.PhysicalModel.Application.Element1Ds;
-using BeamOS.PhysicalModel.Application.Models.Commands;
 using BeamOS.PhysicalModel.Contracts.Element1D;
 using BeamOS.PhysicalModel.Domain.Element1DAggregate;
 using FastEndpoints;
@@ -9,11 +10,12 @@ namespace BeamOS.PhysicalModel.Api.Element1Ds.Endpoints;
 
 public class CreateElement1DEndpoint(
     CreateElement1DCommandHandler createNodeCommandHandler,
-    IMapper<Element1D, Element1DResponse> responseMapper) : Endpoint<CreateElement1DRequest, Element1DResponse>
+    IMapper<Element1D, Element1DResponse> responseMapper,
+    PhysicalModelDbContext dbContext) : Endpoint<CreateElement1DRequest, Element1DResponse>
 {
     public override void Configure()
     {
-        this.Post("element1D");
+        this.Post("element1Ds");
         this.AllowAnonymous();
         this.Summary(s => s.ExampleRequest = new CreateElement1DRequest(
             "00000000-0000-0000-0000-000000000000",
@@ -29,6 +31,9 @@ public class CreateElement1DEndpoint(
         CreateElement1DCommand command = req.ToCommand();
 
         Element1D element1D = await createNodeCommandHandler.ExecuteAsync(command, ct);
+
+        await dbContext.Element1Ds.AddAsync(element1D, ct);
+        await dbContext.SaveChangesAsync(ct);
 
         Element1DResponse response = responseMapper.Map(element1D);
         await this.SendAsync(response, cancellation: ct);

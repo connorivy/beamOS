@@ -18,12 +18,12 @@ public class Restraints(
         canRotateAboutY,
         canRotateAboutZ)
 {
-    public bool CanTranslateAlongX => this.AlongX;
-    public bool CanTranslateAlongY => this.AlongY;
-    public bool CanTranslateAlongZ => this.AlongZ;
-    public bool CanRotateAboutX => this.AboutX;
-    public bool CanRotateAboutY => this.AboutY;
-    public bool CanRotateAboutZ => this.AboutZ;
+    public bool CanTranslateAlongX { get => this.AlongX; private set => this.AlongX = value; }
+    public bool CanTranslateAlongY { get => this.AlongY; private set => this.AlongY = value; }
+    public bool CanTranslateAlongZ { get => this.AlongZ; private set => this.AlongZ = value; }
+    public bool CanRotateAboutX { get => this.AboutX; private set => this.AboutX = value; }
+    public bool CanRotateAboutY { get => this.AboutY; private set => this.AboutY = value; }
+    public bool CanRotateAboutZ { get => this.AboutZ; private set => this.AboutZ = value; }
     public static Restraints Free { get; } = new(true, true, true, true, true, true);
     public static Restraints Fixed { get; } = new(false, false, false, false, false, false);
 }

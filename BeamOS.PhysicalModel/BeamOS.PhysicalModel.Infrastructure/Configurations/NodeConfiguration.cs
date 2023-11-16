@@ -13,6 +13,9 @@ public class NodeConfiguration : IEntityTypeConfiguration<Node>
             .WithOne()
             .HasForeignKey(pl => pl.NodeId)
             .IsRequired();
+
+        // needed for some reason?
+        builder.ComplexProperty(n => n.Restraints);
     }
 }
 

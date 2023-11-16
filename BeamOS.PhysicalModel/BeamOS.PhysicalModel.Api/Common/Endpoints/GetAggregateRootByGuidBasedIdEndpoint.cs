@@ -2,13 +2,16 @@ using BeamOS.Common.Application.Interfaces;
 using BeamOS.Common.Domain.Interfaces;
 using BeamOS.Common.Domain.Models;
 using BeamOS.PhysicalModel.Api.Common.Interfaces;
+using BeamOS.PhysicalModel.Api.Data;
 using BeamOS.PhysicalModel.Contracts.Common;
+using BeamOS.PhysicalModel.Domain.Element1DAggregate;
 
 namespace BeamOS.PhysicalModel.Api.Common.Endpoints;
 
 public abstract class GetAggregateRootByGuidBasedIdEndpoint<TId, TAggregate, TResponse>(
     IRepository<TId, TAggregate> repository,
-    IMapper<TAggregate, TResponse> responseMapper) : FastEndpoints.Endpoint<IdRequest, TResponse>
+    IMapper<TAggregate, TResponse> responseMapper,
+    PhysicalModelDbContext dbContext) : FastEndpoints.Endpoint<IdRequest, TResponse>
         where TId : notnull, IConstructable<TId, Guid>
         where TAggregate : AggregateRoot<TId>
 {

@@ -13,7 +13,7 @@ public class CreateModelEndpoint(
 {
     public override void Configure()
     {
-        this.Post("model");
+        this.Post("models");
         this.AllowAnonymous();
         this.Summary(s => s.ExampleRequest = new CreateModelRequest(
             "Big Ol' Building",

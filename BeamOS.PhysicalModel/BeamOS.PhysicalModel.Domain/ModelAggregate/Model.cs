@@ -50,7 +50,7 @@ public class Model : AggregateRoot<ModelId>
         )
     {
         LengthUnit lengthUnit = coordinateLengthUnit ?? this.Settings.UnitSettings.LengthUnit;
-        Node node = new(this.Id, xCoordinate, yCoordinate, zCoordinate, lengthUnit, restraint);
+        Node node = new(this.Id, xCoordinate, yCoordinate, zCoordinate, lengthUnit);
 
         return this.AddNode(node);
     }

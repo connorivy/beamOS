@@ -41,9 +41,9 @@ builder.Services.AddFastEndpoints(o => o.Assemblies = new List<Assembly>
 //        o.ExcludeNonFastEndpoints = true;
 //    });
 
-builder.Services.AddPhysicalModelApi();
-builder.Services.AddPhysicalModelApplication();
-builder.Services.AddPhysicalModelInfrastructure();
+//builder.Services.AddPhysicalModelApi();
+//builder.Services.AddPhysicalModelApplication();
+//builder.Services.AddPhysicalModelInfrastructure();
 
 builder.Services.AddDbContext<BeamOsDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

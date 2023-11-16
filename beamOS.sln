@@ -52,11 +52,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.Common.Application",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.Common.Contracts", "BeamOS.Common\BeamOS.Common.Contracts\BeamOS.Common.Contracts.csproj", "{79CBA285-74AE-42AC-B62D-16CEC0C11B86}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOS.PhysicalModel.Infrastructure", "BeamOS.PhysicalModel\BeamOS.PhysicalModel.Infrastructure\BeamOS.PhysicalModel.Infrastructure.csproj", "{3F0AF0D1-2053-4081-B2AB-8173C6ED4638}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.PhysicalModel.Infrastructure", "BeamOS.PhysicalModel\BeamOS.PhysicalModel.Infrastructure\BeamOS.PhysicalModel.Infrastructure.csproj", "{3F0AF0D1-2053-4081-B2AB-8173C6ED4638}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOS.Common.Api", "BeamOS.Common\BeamOS.Common.Api\BeamOS.Common.Api.csproj", "{201EA3A1-4F17-4818-879C-87CAAADA5252}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.Common.Api", "BeamOS.Common\BeamOS.Common.Api\BeamOS.Common.Api.csproj", "{201EA3A1-4F17-4818-879C-87CAAADA5252}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOS.Common.Infrastructure", "BeamOS.Common\BeamOS.Common.Infrastructure\BeamOS.Common.Infrastructure.csproj", "{DCE69D62-0334-464C-BFDD-6D014C5AA31E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.Common.Infrastructure", "BeamOS.Common\BeamOS.Common.Infrastructure\BeamOS.Common.Infrastructure.csproj", "{DCE69D62-0334-464C-BFDD-6D014C5AA31E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
