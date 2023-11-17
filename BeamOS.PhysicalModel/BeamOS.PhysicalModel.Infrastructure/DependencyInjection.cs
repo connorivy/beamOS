@@ -10,6 +10,8 @@ using BeamOS.PhysicalModel.Domain.PointLoadAggregate.ValueObjects;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using BeamOS.PhysicalModel.Infrastructure.Nodes;
+using BeamOS.PhysicalModel.Infrastructure.Element1Ds;
 
 namespace BeamOS.PhysicalModel.Infrastructure;
 public static class DependencyInjection
@@ -40,9 +42,10 @@ public static class DependencyInjection
     public static IServiceCollection AddPhysicalModelInfrastructure(this IServiceCollection services)
     {
         _ = services.AddSingleton<IRepository<ModelId, Model>, InMemoryRepository<ModelId, Model>>();
-        _ = services.AddSingleton<IRepository<NodeId, Node>, InMemoryRepository<NodeId, Node>>();
-        _ = services.AddSingleton<IRepository<Element1DId, Element1D>, InMemoryRepository<Element1DId, Element1D>>();
+        _ = services.AddScoped<IRepository<NodeId, Node>, NodeDbContextRepository>();
+        _ = services.AddScoped<IRepository<Element1DId, Element1D>, Element1dDbContextRepository>();
         _ = services.AddSingleton<IRepository<PointLoadId, PointLoad>, InMemoryRepository<PointLoadId, PointLoad>>();
+
         return services;
     }
 }

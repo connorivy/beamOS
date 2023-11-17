@@ -1,11 +1,10 @@
 using BeamOS.PhysicalModel.Domain.Element1DAggregate;
 using Microsoft.EntityFrameworkCore;
-using BeamOS.PhysicalModel.Infrastructure;
 using BeamOS.Common.Infrastructure;
 using BeamOS.PhysicalModel.Domain.NodeAggregate;
-using BeamOS.PhysicalModel.Infrastructure.Configurations;
+using BeamOS.PhysicalModel.Infrastructure.Common.Configurations;
 
-namespace BeamOS.PhysicalModel.Api.Data;
+namespace BeamOS.PhysicalModel.Infrastructure;
 
 public class PhysicalModelDbContext : DbContext
 {
@@ -23,5 +22,11 @@ public class PhysicalModelDbContext : DbContext
     {
         builder
             .ApplyConfigurationsFromAssembly(typeof(NodeConfiguration).Assembly);
+
+        builder.Model.GetEntityTypes()
+            .SelectMany(e => e.GetProperties())
+            .Where(p => p.IsPrimaryKey())
+            .ToList()
+            .ForEach(p => p.ValueGenerated = Microsoft.EntityFrameworkCore.Metadata.ValueGenerated.Never);
     }
 }

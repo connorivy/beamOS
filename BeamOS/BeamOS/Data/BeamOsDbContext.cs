@@ -1,16 +1,10 @@
 using BeamOS.Common.Infrastructure;
 using BeamOS.PhysicalModel.Domain.Element1DAggregate;
-using BeamOS.PhysicalModel.Domain.Element1DAggregate.ValueObjects;
 using BeamOS.PhysicalModel.Domain.MaterialAggregate;
-using BeamOS.PhysicalModel.Domain.MaterialAggregate.ValueObjects;
-using BeamOS.PhysicalModel.Domain.ModelAggregate.ValueObjects;
 using BeamOS.PhysicalModel.Domain.NodeAggregate;
-using BeamOS.PhysicalModel.Domain.NodeAggregate.ValueObjects;
 using BeamOS.PhysicalModel.Domain.SectionProfileAggregate;
-using BeamOS.PhysicalModel.Domain.SectionProfileAggregate.ValueObjects;
 using BeamOS.PhysicalModel.Infrastructure;
-using BeamOS.PhysicalModel.Infrastructure.Configurations;
-using BeamOS.PhysicalModel.Infrastructure.ValueConverters;
+using BeamOS.PhysicalModel.Infrastructure.Common.Configurations;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

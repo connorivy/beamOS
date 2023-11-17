@@ -4,7 +4,7 @@ using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace BeamOS.PhysicalModel.Infrastructure.ValueConverters;
+namespace BeamOS.PhysicalModel.Infrastructure.Common.ValueConverters;
 
 // TODO : this is very not efficient
 public class VectorDoubleConverter : ValueConverter<Vector<double>, string>

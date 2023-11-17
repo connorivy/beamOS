@@ -3,7 +3,7 @@ using BeamOS.Common.Domain.Models;
 namespace BeamOS.Common.Domain.ValueObjects;
 public class GuidBasedId(Guid? value) : BeamOSValueObject
 {
-    public Guid Value { get; } = value ?? Guid.NewGuid();
+    public Guid Value { get; protected set; } = value ?? Guid.NewGuid();
 
     protected override IEnumerable<object> GetEqualityComponents()
     {

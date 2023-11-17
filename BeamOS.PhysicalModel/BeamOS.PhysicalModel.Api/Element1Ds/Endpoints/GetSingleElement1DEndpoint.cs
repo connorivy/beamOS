@@ -1,9 +1,11 @@
 using BeamOS.PhysicalModel.Api.Common.Interfaces;
-using BeamOS.PhysicalModel.Api.Data;
 using BeamOS.PhysicalModel.Contracts.Common;
 using BeamOS.PhysicalModel.Contracts.Element1D;
 using BeamOS.PhysicalModel.Domain.Element1DAggregate;
+using BeamOS.PhysicalModel.Domain.Element1DAggregate.ValueObjects;
+using BeamOS.PhysicalModel.Infrastructure;
 using FastEndpoints;
+using Microsoft.EntityFrameworkCore;
 
 namespace BeamOS.PhysicalModel.Api.Element1Ds.Endpoints;
 public class GetSingleElement1DEndpoint(
@@ -16,19 +18,18 @@ public class GetSingleElement1DEndpoint(
         this.AllowAnonymous();
     }
 
-    public override Task<Element1DResponse?> ExecuteAsync(IdRequest req, CancellationToken ct)
+    public override async Task<Element1DResponse?> ExecuteAsync(IdRequest req, CancellationToken ct)
     {
-        Element1D? element = dbContext.Element1Ds
-            .Where(e => e.Id.Value == Guid.Parse(req.Id))
-            .FirstOrDefault();
+        Element1DId expectedId = new(Guid.Parse(req.Id));
+        Element1D? element = await dbContext.Element1Ds.FirstAsync(n => n.Id == expectedId, cancellationToken: ct);
 
         if (element is null)
         {
-            return Task.FromResult<Element1DResponse?>(null);
+            return null;
         }
 
         Element1DResponse? response = responseMapper.Map(element);
 
-        return Task.FromResult<Element1DResponse?>(response);
+        return response;
     }
 }

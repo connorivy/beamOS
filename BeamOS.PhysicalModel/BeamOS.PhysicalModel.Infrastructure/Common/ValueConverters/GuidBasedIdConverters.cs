@@ -6,7 +6,7 @@ using BeamOS.PhysicalModel.Domain.PointLoadAggregate.ValueObjects;
 using BeamOS.PhysicalModel.Domain.SectionProfileAggregate.ValueObjects;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace BeamOS.PhysicalModel.Infrastructure.ValueConverters;
+namespace BeamOS.PhysicalModel.Infrastructure.Common.ValueConverters;
 
 public class ModelIdConverter : ValueConverter<ModelId, Guid>
 {

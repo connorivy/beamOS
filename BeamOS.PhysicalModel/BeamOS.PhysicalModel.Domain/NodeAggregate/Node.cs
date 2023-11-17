@@ -2,15 +2,13 @@ using BeamOS.Common.Domain.Models;
 using BeamOS.Common.Domain.ValueObjects;
 using BeamOS.PhysicalModel.Domain.ModelAggregate.ValueObjects;
 using BeamOS.PhysicalModel.Domain.NodeAggregate.ValueObjects;
-using BeamOS.PhysicalModel.Domain.PointLoadAggregate.ValueObjects;
 using UnitsNet;
 using UnitsNet.Units;
 
 namespace BeamOS.PhysicalModel.Domain.NodeAggregate;
 public class Node : AggregateRoot<NodeId>
 {
-    private Node(NodeId id) : base(id) { }
-    public ModelId ModelId { get; }
+    public ModelId ModelId { get; private set; }
     public Point LocationPoint { get; private set; }
     public Node(
         ModelId modelId,
@@ -38,4 +36,8 @@ public class Node : AggregateRoot<NodeId>
     //public List<PointLoadId> PointLoadIds { get; private set; } = [];
     //public List<MomentLoad> MomentLoads { get; } = [];
     public Restraints Restraints { get; set; } = Restraints.Free;
+
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    private Node() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }

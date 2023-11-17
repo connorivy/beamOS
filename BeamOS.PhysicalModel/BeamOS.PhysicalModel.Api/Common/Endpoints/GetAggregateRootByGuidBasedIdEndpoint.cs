@@ -2,9 +2,9 @@ using BeamOS.Common.Application.Interfaces;
 using BeamOS.Common.Domain.Interfaces;
 using BeamOS.Common.Domain.Models;
 using BeamOS.PhysicalModel.Api.Common.Interfaces;
-using BeamOS.PhysicalModel.Api.Data;
 using BeamOS.PhysicalModel.Contracts.Common;
 using BeamOS.PhysicalModel.Domain.Element1DAggregate;
+using BeamOS.PhysicalModel.Infrastructure;
 
 namespace BeamOS.PhysicalModel.Api.Common.Endpoints;
 

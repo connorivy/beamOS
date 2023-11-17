@@ -2,7 +2,6 @@ using FastEndpoints;
 using BeamOS.PhysicalModel.Application;
 using BeamOS.PhysicalModel.Infrastructure;
 using BeamOS.PhysicalModel.Api;
-using BeamOS.PhysicalModel.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using FastEndpoints.Swagger;
 
@@ -29,18 +28,12 @@ builder.Services.AddMappers();
 builder.Services.AddPhysicalModelApplication();
 builder.Services.AddPhysicalModelInfrastructure();
 
-//builder.Services.AddDbContext<PhysicalModelDbContext>(options =>
-//    options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=BeamOS;Trusted_Connection=True;TrustServerCertificate=True"));
-builder.Services.AddDbContext<PhysicalModelDbContext>(options => options.UseInMemoryDatabase("PhysicalModelDb"));
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+builder.Services.AddDbContext<PhysicalModelDbContext>(options =>
+    options.UseSqlServer(connectionString, b => b.MigrationsAssembly("BeamOS.PhysicalModel.Api")));
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    //app.UseSwagger();
-    //app.UseSwaggerUI();
-}
 
 app.UseHttpsRedirection();
 

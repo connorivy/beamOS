@@ -1,8 +1,8 @@
 using BeamOS.PhysicalModel.Api.Common.Interfaces;
-using BeamOS.PhysicalModel.Api.Data;
 using BeamOS.PhysicalModel.Contracts.Element1D;
 using BeamOS.PhysicalModel.Contracts.Model;
 using BeamOS.PhysicalModel.Domain.Element1DAggregate;
+using BeamOS.PhysicalModel.Infrastructure;
 using FastEndpoints;
 
 namespace BeamOS.PhysicalModel.Api.Models.Endpoints;
