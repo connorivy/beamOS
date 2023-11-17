@@ -12,6 +12,25 @@ namespace BeamOS.PhysicalModel.Api.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Models",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Settings_UnitSettings_AreaUnit = table.Column<int>(type: "int", nullable: false),
+                    Settings_UnitSettings_ForcePerLengthUnit = table.Column<int>(type: "int", nullable: false),
+                    Settings_UnitSettings_ForceUnit = table.Column<int>(type: "int", nullable: false),
+                    Settings_UnitSettings_LengthUnit = table.Column<int>(type: "int", nullable: false),
+                    Settings_UnitSettings_TorqueUnit = table.Column<int>(type: "int", nullable: false),
+                    Settings_UnitSettings_VolumeUnit = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Models", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Element1Ds",
                 columns: table => new
                 {
@@ -26,6 +45,12 @@ namespace BeamOS.PhysicalModel.Api.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Element1Ds", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Element1Ds_Models_ModelId",
+                        column: x => x.ModelId,
+                        principalTable: "Models",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -33,6 +58,7 @@ namespace BeamOS.PhysicalModel.Api.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ModelId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     LocationPoint_XCoordinate = table.Column<double>(type: "float", nullable: false),
                     LocationPoint_YCoordinate = table.Column<double>(type: "float", nullable: false),
                     LocationPoint_ZCoordinate = table.Column<double>(type: "float", nullable: false),
@@ -46,6 +72,12 @@ namespace BeamOS.PhysicalModel.Api.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Nodes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Nodes_Models_ModelId",
+                        column: x => x.ModelId,
+                        principalTable: "Models",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -69,6 +101,16 @@ namespace BeamOS.PhysicalModel.Api.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Element1Ds_ModelId",
+                table: "Element1Ds",
+                column: "ModelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Nodes_ModelId",
+                table: "Nodes",
+                column: "ModelId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PointLoad_NodeId",
                 table: "PointLoad",
                 column: "NodeId");
@@ -85,6 +127,9 @@ namespace BeamOS.PhysicalModel.Api.Migrations
 
             migrationBuilder.DropTable(
                 name: "Nodes");
+
+            migrationBuilder.DropTable(
+                name: "Models");
         }
     }
 }

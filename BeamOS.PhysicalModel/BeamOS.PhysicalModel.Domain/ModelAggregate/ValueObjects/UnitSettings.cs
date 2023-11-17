@@ -21,12 +21,12 @@ public class UnitSettings : BeamOSValueObject
         this.TorqueUnit = torqueUnit;
     }
 
-    public LengthUnit LengthUnit { get; }
-    public AreaUnit AreaUnit { get; }
-    public VolumeUnit VolumeUnit { get; }
-    public ForceUnit ForceUnit { get; }
-    public ForcePerLengthUnit ForcePerLengthUnit { get; }
-    public TorqueUnit TorqueUnit { get; }
+    public LengthUnit LengthUnit { get; private set; }
+    public AreaUnit AreaUnit { get; private set; }
+    public VolumeUnit VolumeUnit { get; private set; }
+    public ForceUnit ForceUnit { get; private set; }
+    public ForcePerLengthUnit ForcePerLengthUnit { get; private set; }
+    public TorqueUnit TorqueUnit { get; private set; }
     protected override IEnumerable<object> GetEqualityComponents()
     {
         yield return this.LengthUnit;
@@ -36,4 +36,8 @@ public class UnitSettings : BeamOSValueObject
         yield return this.ForcePerLengthUnit;
         yield return this.TorqueUnit;
     }
+
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    private UnitSettings() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }

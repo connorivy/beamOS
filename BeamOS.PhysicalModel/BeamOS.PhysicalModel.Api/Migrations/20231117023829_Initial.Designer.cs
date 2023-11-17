@@ -13,8 +13,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeamOS.PhysicalModel.Api.Migrations
 {
     [DbContext(typeof(PhysicalModelDbContext))]
-    [Migration("20231117015145_Initial3")]
-    partial class Initial3
+    [Migration("20231117023829_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -51,12 +51,63 @@ namespace BeamOS.PhysicalModel.Api.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ModelId");
+
                     b.ToTable("Element1Ds");
+                });
+
+            modelBuilder.Entity("BeamOS.PhysicalModel.Domain.ModelAggregate.Model", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.ComplexProperty<Dictionary<string, object>>("Settings", "BeamOS.PhysicalModel.Domain.ModelAggregate.Model.Settings#ModelSettings", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.ComplexProperty<Dictionary<string, object>>("UnitSettings", "BeamOS.PhysicalModel.Domain.ModelAggregate.Model.Settings#ModelSettings.UnitSettings#UnitSettings", b2 =>
+                                {
+                                    b2.IsRequired();
+
+                                    b2.Property<int>("AreaUnit")
+                                        .HasColumnType("int");
+
+                                    b2.Property<int>("ForcePerLengthUnit")
+                                        .HasColumnType("int");
+
+                                    b2.Property<int>("ForceUnit")
+                                        .HasColumnType("int");
+
+                                    b2.Property<int>("LengthUnit")
+                                        .HasColumnType("int");
+
+                                    b2.Property<int>("TorqueUnit")
+                                        .HasColumnType("int");
+
+                                    b2.Property<int>("VolumeUnit")
+                                        .HasColumnType("int");
+                                });
+                        });
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Models");
                 });
 
             modelBuilder.Entity("BeamOS.PhysicalModel.Domain.NodeAggregate.Node", b =>
                 {
                     b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ModelId")
                         .HasColumnType("uniqueidentifier");
 
                     b.ComplexProperty<Dictionary<string, object>>("LocationPoint", "BeamOS.PhysicalModel.Domain.NodeAggregate.Node.LocationPoint#Point", b1 =>
@@ -98,6 +149,8 @@ namespace BeamOS.PhysicalModel.Api.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ModelId");
+
                     b.ToTable("Nodes");
                 });
 
@@ -121,6 +174,24 @@ namespace BeamOS.PhysicalModel.Api.Migrations
                     b.HasIndex("NodeId");
 
                     b.ToTable("PointLoad");
+                });
+
+            modelBuilder.Entity("BeamOS.PhysicalModel.Domain.Element1DAggregate.Element1D", b =>
+                {
+                    b.HasOne("BeamOS.PhysicalModel.Domain.ModelAggregate.Model", null)
+                        .WithMany()
+                        .HasForeignKey("ModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("BeamOS.PhysicalModel.Domain.NodeAggregate.Node", b =>
+                {
+                    b.HasOne("BeamOS.PhysicalModel.Domain.ModelAggregate.Model", null)
+                        .WithMany()
+                        .HasForeignKey("ModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("BeamOS.PhysicalModel.Domain.PointLoadAggregate.PointLoad", b =>

@@ -1,12 +1,11 @@
 using BeamOS.Common.Domain.Models;
 using BeamOS.Common.Domain.ValueObjects;
+using BeamOS.PhysicalModel.Domain.Element1DAggregate;
+using BeamOS.PhysicalModel.Domain.MaterialAggregate;
+using BeamOS.PhysicalModel.Domain.MaterialAggregate.ValueObjects;
 using BeamOS.PhysicalModel.Domain.ModelAggregate.ValueObjects;
 using BeamOS.PhysicalModel.Domain.NodeAggregate;
 using BeamOS.PhysicalModel.Domain.NodeAggregate.ValueObjects;
-using BeamOS.PhysicalModel.Domain.Element1DAggregate;
-using BeamOS.PhysicalModel.Domain.Element1DAggregate.ValueObjects;
-using BeamOS.PhysicalModel.Domain.MaterialAggregate;
-using BeamOS.PhysicalModel.Domain.MaterialAggregate.ValueObjects;
 using BeamOS.PhysicalModel.Domain.SectionProfileAggregate;
 using BeamOS.PhysicalModel.Domain.SectionProfileAggregate.ValueObjects;
 using UnitsNet.Units;
@@ -52,9 +51,9 @@ public class Model : AggregateRoot<ModelId>
         LengthUnit lengthUnit = coordinateLengthUnit ?? this.Settings.UnitSettings.LengthUnit;
         Node node = new(this.Id, xCoordinate, yCoordinate, zCoordinate, lengthUnit);
 
-        return this.AddNode(node);
+        return AddNode(node);
     }
-    public Node AddNode(Node node)
+    public static Node AddNode(Node node)
     {
         //this.nodeIds.Add(node.Id);
 
@@ -69,23 +68,23 @@ public class Model : AggregateRoot<ModelId>
         )
     {
         Element1D el = new(this.Id, startNodeId, endNodeId, materialId, sectionProfileId);
-        return this.AddElement1D(el);
+        return AddElement1D(el);
     }
-    public Element1D AddElement1D(Element1D element1D)
+    public static Element1D AddElement1D(Element1D element1D)
     {
         //this.element1DIds.Add(element1D.Id);
 
         return element1D;
     }
 
-    public Material AddMaterial(Material material)
+    public static Material AddMaterial(Material material)
     {
         //this.materialIds.Add(material.Id);
 
         return material;
     }
 
-    public SectionProfile AddSectionProfile(SectionProfile sectionProfile)
+    public static SectionProfile AddSectionProfile(SectionProfile sectionProfile)
     {
         //this.sectionProfileIds.Add(sectionProfile.Id);
 
