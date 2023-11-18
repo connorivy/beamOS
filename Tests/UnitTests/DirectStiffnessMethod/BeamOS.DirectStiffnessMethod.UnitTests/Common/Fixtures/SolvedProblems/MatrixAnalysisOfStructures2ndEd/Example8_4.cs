@@ -1,3 +1,4 @@
+using BeamOS.Common.Domain.ValueObjects;
 using BeamOS.DirectStiffnessMethod.Domain.AnalyticalElement1DAggregate;
 using BeamOS.DirectStiffnessMethod.Domain.AnalyticalElement1DAggregate.ValueObjects;
 using BeamOS.DirectStiffnessMethod.Domain.AnalyticalModelAggregate.ValueObjects;
@@ -63,8 +64,8 @@ internal class Example8_4 : SolvedProblem
     private static AnalyticalElement1DFixture GetElement1Fixture()
     {
         #region ElementDefinition
-        AnalyticalNode startNode = AnalyticalNode.Create(-20, 0, 0, LengthUnit.Foot);
-        AnalyticalNode endNode = AnalyticalNode.Create(0, 0, 0, LengthUnit.Foot);
+        AnalyticalNode startNode = new(-20, 0, 0, LengthUnit.Foot, Restraint.Free);
+        AnalyticalNode endNode = new(0, 0, 0, LengthUnit.Foot, Restraint.Free);
         var element = AnalyticalElement1D.Create(Angle.Zero, UnitSettings.K_IN, startNode, endNode, Steel29000ksi, Profile33in2);
         #endregion
 
@@ -174,8 +175,8 @@ internal class Example8_4 : SolvedProblem
     public static AnalyticalElement1DFixture GetElement2Fixture()
     {
         #region ElementDefinition
-        AnalyticalNode startNode = AnalyticalNode.Create(0, -20, 0, LengthUnit.Foot);
-        AnalyticalNode endNode = AnalyticalNode.Create(0, 0, 0, LengthUnit.Foot);
+        AnalyticalNode startNode = new(0, -20, 0, LengthUnit.Foot, Restraint.Free);
+        AnalyticalNode endNode = new(0, 0, 0, LengthUnit.Foot, Restraint.Free);
 
         AnalyticalElement1D element = AnalyticalElement1D.Create(
             new Angle(Math.PI / 2, AngleUnit.Radian),
@@ -325,8 +326,8 @@ internal class Example8_4 : SolvedProblem
     public static AnalyticalElement1DFixture GetElement3Fixture()
     {
         #region ElementDefinition
-        AnalyticalNode startNode = AnalyticalNode.Create(0, 0, -20, LengthUnit.Foot);
-        AnalyticalNode endNode = AnalyticalNode.Create(0, 0, 0, LengthUnit.Foot);
+        AnalyticalNode startNode = new(0, 0, -20, LengthUnit.Foot, Restraint.Free);
+        AnalyticalNode endNode = new(0, 0, 0, LengthUnit.Foot, Restraint.Free);
 
         AnalyticalElement1D element = AnalyticalElement1D.Create(
             new Angle(30, AngleUnit.Degree),

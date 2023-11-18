@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BeamOS.Common.Domain.ValueObjects;
 using BeamOS.DirectStiffnessMethod.Domain.AnalyticalElement1DAggregate;
 using BeamOS.DirectStiffnessMethod.Domain.AnalyticalElement1DAggregate.ValueObjects;
@@ -19,8 +14,8 @@ public class AnalyticalModelTests
     [Fact]
     public void RunAnalysis_ForSampleProblem_ShouldResultInExpectedValues()
     {
-        Restraints free2D = new(true, true, false, false, false, true);
-        AnalyticalNode node0 = AnalyticalNode.Create(0, 16, 0, LengthUnit.Foot, free2D);
+        Restraint free2D = new(true, true, false, false, false, true);
+        AnalyticalNode node0 = new(0, 16, 0, LengthUnit.Foot, free2D);
         node0.LinearLoads.Add(new(
             new Force(150, ForceUnit.KilopoundForce),
             DenseVector.OfArray([1, 0, 0])
@@ -29,10 +24,10 @@ public class AnalyticalModelTests
             new Force(300, ForceUnit.KilopoundForce),
             DenseVector.OfArray([0, -1, 0])
             ));
-        Restraints pinned2d = new(false, false, false, false, false, true);
-        AnalyticalNode node1 = AnalyticalNode.Create(-12, 0, 0, LengthUnit.Foot, pinned2d);
-        AnalyticalNode node2 = AnalyticalNode.Create(0, 0, 0, LengthUnit.Foot, pinned2d);
-        AnalyticalNode node3 = AnalyticalNode.Create(12, 0, 0, LengthUnit.Foot, pinned2d);
+        Restraint pinned2d = new(false, false, false, false, false, true);
+        AnalyticalNode node1 = new(-12, 0, 0, LengthUnit.Foot, pinned2d);
+        AnalyticalNode node2 = new(0, 0, 0, LengthUnit.Foot, pinned2d);
+        AnalyticalNode node3 = new(12, 0, 0, LengthUnit.Foot, pinned2d);
 
         Material steel29000ksi = new(
             new Pressure(29000, PressureUnit.KilopoundForcePerSquareInch),

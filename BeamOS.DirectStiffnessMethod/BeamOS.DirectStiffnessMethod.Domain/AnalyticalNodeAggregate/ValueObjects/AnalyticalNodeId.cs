@@ -1,22 +1,12 @@
 using BeamOS.Common.Domain.Enums;
-using BeamOS.Common.Domain.Models;
+using BeamOS.Common.Domain.Interfaces;
+using BeamOS.Common.Domain.ValueObjects;
 
 namespace BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate.ValueObjects;
-public class AnalyticalNodeId : BeamOSValueObject
+
+public class AnalyticalNodeId(Guid? id = null) : GuidBasedId(id), IConstructable<AnalyticalNodeId, Guid>
 {
-    public Guid Value { get; }
-    private AnalyticalNodeId(Guid value)
-    {
-        this.Value = value;
-    }
-    public static AnalyticalNodeId CreateUnique()
-    {
-        return new(Guid.NewGuid());
-    }
-    protected override IEnumerable<object> GetEqualityComponents()
-    {
-        yield return this.Value;
-    }
+    public static AnalyticalNodeId Construct(Guid t1) => new(t1);
 
     public IEnumerable<UnsupportedStructureDisplacementId> GetUnsupportedStructureDisplacementIds()
     {

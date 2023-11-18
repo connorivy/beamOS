@@ -9,50 +9,45 @@ namespace BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate;
 public class AnalyticalNode : AggregateRoot<AnalyticalNodeId>
 {
     public Point LocationPoint { get; private set; }
-    private AnalyticalNode(
-        AnalyticalNodeId id,
+    public AnalyticalNode(
+        Point locationPoint,
+        Restraint restraint,
+        AnalyticalNodeId? id = null) : base(id ?? new())
+    {
+        this.LocationPoint = locationPoint;
+        this.Restraint = restraint;
+    }
+
+    public AnalyticalNode(
+        Length xCoordinate,
+        Length yCoordinate,
+        Length zCoordinate,
+        Restraint restraint,
+        AnalyticalNodeId? id = null) : this(
+            new Point(xCoordinate, yCoordinate, zCoordinate),
+            restraint,
+            id)
+    {
+    }
+
+    public AnalyticalNode(
         double xCoordinate,
         double yCoordinate,
         double zCoordinate,
         LengthUnit lengthUnit,
-        Restraints? restraint = null) : base(id)
+        Restraint restraint,
+        AnalyticalNodeId? id = null) : this(
+            new Length(xCoordinate, lengthUnit),
+            new Length(yCoordinate, lengthUnit),
+            new Length(zCoordinate, lengthUnit),
+            restraint,
+            id)
     {
-        this.LocationPoint = new(xCoordinate, yCoordinate, zCoordinate, lengthUnit);
-        this.Restraints = restraint ?? Restraints.Free;
-    }
-    public static AnalyticalNode Create(
-        double xCoordinate,
-        double yCoordinate,
-        double zCoordinate,
-        LengthUnit lengthUnit,
-        Restraints? restraint = null
-    )
-    {
-        return new(AnalyticalNodeId.CreateUnique(), xCoordinate, yCoordinate, zCoordinate, lengthUnit, restraint);
-    }
-    private AnalyticalNode(
-        AnalyticalNodeId id,
-        Length xCoordinate,
-        Length yCoordinate,
-        Length zCoordinate,
-        Restraints? restraint = null) : base(id)
-    {
-        this.LocationPoint = new(xCoordinate, yCoordinate, zCoordinate);
-        this.Restraints = restraint ?? Restraints.Free;
-    }
-    public static AnalyticalNode Create(
-        Length xCoordinate,
-        Length yCoordinate,
-        Length zCoordinate,
-        Restraints? restraint = null
-    )
-    {
-        return new(AnalyticalNodeId.CreateUnique(), xCoordinate, yCoordinate, zCoordinate, restraint);
     }
 
     public List<LinearLoad> LinearLoads { get; } = [];
     //public List<MomentLoad> MomentLoads { get; } = [];
-    public Restraints Restraints { get; set; }
+    public Restraint Restraint { get; set; }
     //public Forces? Forces { get; set; }
 
     public Forces GetForcesInGlobalCoordinates()

@@ -1,6 +1,6 @@
+using BeamOS.Common.Domain.ValueObjects;
 using BeamOS.DirectStiffnessMethod.Domain.AnalyticalElement1DAggregate;
 using BeamOS.DirectStiffnessMethod.Domain.AnalyticalElement1DAggregate.ValueObjects;
-using BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate;
 using BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Extensions;
 using BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Factories;
 using BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Fixtures.AnalyticalElement1Ds;
@@ -210,9 +210,8 @@ public partial class Element1DTests
     public void GetStiffnessMatrix_WithIsolatedLVariable_ShouldEqualExpectedValue()
     {
         AnalyticalElement1D element = Element1DFactory.Create(
-          startNode: AnalyticalNode.Create(0, 0, 0, UnitsNet.Units.LengthUnit.Meter),
-          endNode: AnalyticalNode.Create(5, 0, 0, UnitsNet.Units.LengthUnit.Meter)
-          );
+          startNode: new(0, 0, 0, UnitsNet.Units.LengthUnit.Meter, Restraint.Free),
+          endNode: new(5, 0, 0, UnitsNet.Units.LengthUnit.Meter, Restraint.Free));
 
         Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix();
         Matrix<double> expectedLocalStiffnessMatrix = DenseMatrix.OfArray(new double[12, 12]

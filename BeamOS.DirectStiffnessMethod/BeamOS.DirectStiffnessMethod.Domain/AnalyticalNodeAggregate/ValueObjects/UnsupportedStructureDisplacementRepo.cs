@@ -157,7 +157,7 @@ public class UnsupportedStructureDisplacementRepo : BeamOSValueObject
                 }
 
                 // if UnsupportedStructureDisplacement is degree of freedom
-                if (node.Restraints.GetValueInDirection(direction) == true)
+                if (node.Restraint.GetValueInDirection(direction) == true)
                 {
                     this.DegreeOfFreedomIds.Add(new(node.Id, direction));
                 }

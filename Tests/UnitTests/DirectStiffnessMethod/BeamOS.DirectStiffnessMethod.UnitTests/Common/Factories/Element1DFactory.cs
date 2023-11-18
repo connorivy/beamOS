@@ -1,3 +1,4 @@
+using BeamOS.Common.Domain.ValueObjects;
 using BeamOS.DirectStiffnessMethod.Domain.AnalyticalElement1DAggregate;
 using BeamOS.DirectStiffnessMethod.Domain.AnalyticalElement1DAggregate.ValueObjects;
 using BeamOS.DirectStiffnessMethod.Domain.AnalyticalModelAggregate.ValueObjects;
@@ -20,8 +21,8 @@ internal static class Element1DFactory
         return AnalyticalElement1D.Create(
             rotation ?? Angle.Zero,
             settings,
-            startNode ?? AnalyticalNode.Create(0, 0, 0, settings.LengthUnit),
-            endNode ?? AnalyticalNode.Create(1, 0, 0, settings.LengthUnit),
+            startNode ?? new(0, 0, 0, settings.LengthUnit, Restraint.Free),
+            endNode ?? new(1, 0, 0, settings.LengthUnit, Restraint.Free),
             material ?? Constants.UnitMaterialSI,
             sectionProfile ?? Constants.UnitSectionProfileSI
         );

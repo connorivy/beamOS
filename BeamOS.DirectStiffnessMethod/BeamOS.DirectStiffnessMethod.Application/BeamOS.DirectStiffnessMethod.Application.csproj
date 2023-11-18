@@ -12,8 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\Common\" />
-    <Folder Include="Models\Queries\" />
+    <Folder Include="AnalyticalModels\Common\" />
+    <Folder Include="AnalyticalModels\Queries\" />
   </ItemGroup>
 
 </Project>

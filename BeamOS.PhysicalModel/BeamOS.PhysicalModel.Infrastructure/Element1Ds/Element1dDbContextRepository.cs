@@ -14,6 +14,6 @@ public class Element1dDbContextRepository(PhysicalModelDbContext dbContext) : IR
     public async Task<Element1D?> GetById(Element1DId id)
     {
         return await dbContext.Element1Ds
-            .FirstAsync(el => el.Id == id);
+            .FirstOrDefaultAsync(el => el.Id == id);
     }
 }

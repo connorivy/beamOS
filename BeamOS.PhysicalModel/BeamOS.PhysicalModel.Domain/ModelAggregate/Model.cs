@@ -45,7 +45,7 @@ public class Model : AggregateRoot<ModelId>
         double yCoordinate,
         double zCoordinate,
         LengthUnit? coordinateLengthUnit = null,
-        Restraints? restraint = null
+        Restraint? restraint = null
         )
     {
         LengthUnit lengthUnit = coordinateLengthUnit ?? this.Settings.UnitSettings.LengthUnit;
