@@ -1,10 +1,9 @@
 using BeamOS.Common.Domain.Models;
 using BeamOS.Common.Domain.ValueObjects;
-using BeamOS.PhysicalModel.Domain.ModelAggregate.ValueObjects;
-using BeamOS.PhysicalModel.Domain.NodeAggregate.ValueObjects;
 using BeamOS.PhysicalModel.Domain.Element1DAggregate.ValueObjects;
 using BeamOS.PhysicalModel.Domain.MaterialAggregate.ValueObjects;
-using BeamOS.PhysicalModel.Domain.PointLoadAggregate;
+using BeamOS.PhysicalModel.Domain.ModelAggregate.ValueObjects;
+using BeamOS.PhysicalModel.Domain.NodeAggregate.ValueObjects;
 using BeamOS.PhysicalModel.Domain.SectionProfileAggregate.ValueObjects;
 using UnitsNet;
 

@@ -1,17 +1,21 @@
 using BeamOS.Common.Api.Interfaces;
-using FastEndpoints;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 
 namespace BeamOS.Common.Api;
 
-public abstract class BaseEndpoint<TRequest, TResponse> : Endpoint<TRequest, TResponse>,
-    IEndpoint<TRequest, TResponse>
-    where TRequest : notnull
+public abstract class BaseEndpoint
 {
+    public abstract string Route { get; }
     public void Map(IEndpointRouteBuilder app)
     {
-        //app.MapGet("/items/{id:string}", GetItemById);
+        if (this is IGetEndpointBase getEndpoint)
+        {
+            _ = app.MapGet(this.Route, getEndpoint.GetAsyncDelegate);
+        }
+        if (this is IPostEndpointBase postEndpoint)
+        {
+            _ = app.MapPost(this.Route, postEndpoint.PostAsyncDelegate);
+        }
     }
-    public abstract override Task<TResponse> ExecuteAsync(TRequest req, CancellationToken ct);
 }
-

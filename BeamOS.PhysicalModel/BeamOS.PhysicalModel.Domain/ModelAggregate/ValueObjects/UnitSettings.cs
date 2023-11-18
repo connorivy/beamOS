@@ -36,6 +36,20 @@ public class UnitSettings : BeamOSValueObject
         yield return this.ForcePerLengthUnit;
         yield return this.TorqueUnit;
     }
+    public static UnitSettings SI { get; } = new(
+        LengthUnit.Meter,
+        AreaUnit.SquareMeter,
+        VolumeUnit.CubicMeter,
+        ForceUnit.Newton,
+        ForcePerLengthUnit.NewtonPerMeter,
+        TorqueUnit.NewtonMeter);
+    public static UnitSettings K_IN { get; } = new(
+        LengthUnit.Inch,
+        AreaUnit.SquareInch,
+        VolumeUnit.CubicInch,
+        ForceUnit.KilopoundForce,
+        ForcePerLengthUnit.KilopoundForcePerInch,
+        TorqueUnit.KilopoundForceInch);
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private UnitSettings() { }

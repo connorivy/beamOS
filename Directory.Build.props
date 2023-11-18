@@ -4,7 +4,8 @@
   <PropertyGroup Label="General Config">
 
     <NoWarn>
-      CA1707; <!-- Remove the underscores from method name --> 
+      CA1707; <!-- Remove the underscores from method name -->
+      CA1725; <!--Parameter names should match base declaration-->
       IDE0007; <!-- IDE0007: Use var instead of explicit type -->
 
       IDE0021;

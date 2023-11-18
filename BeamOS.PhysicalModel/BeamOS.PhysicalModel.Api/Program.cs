@@ -1,11 +1,14 @@
-using FastEndpoints;
+using BeamOS.Common.Api;
+using BeamOS.PhysicalModel.Api;
 using BeamOS.PhysicalModel.Application;
 using BeamOS.PhysicalModel.Infrastructure;
-using BeamOS.PhysicalModel.Api;
 using Microsoft.EntityFrameworkCore;
 using FastEndpoints.Swagger;
+using FastEndpoints;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.AddServiceDefaults();
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -21,10 +24,11 @@ builder.Services
             s.Title = "beamOS api";
             s.Version = "v0";
         };
-        o.ExcludeNonFastEndpoints = true;
+        //o.ExcludeNonFastEndpoints = true;
     });
 
 builder.Services.AddMappers();
+builder.Services.AddBeamOsEndpoints<Program>();
 builder.Services.AddPhysicalModelApplication();
 builder.Services.AddPhysicalModelInfrastructure();
 
@@ -35,7 +39,11 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 var app = builder.Build();
 
+app.MapDefaultEndpoints();
+
 app.UseHttpsRedirection();
+
+app.MapGroup("/api").AddBeamOsEndpoints<Program>();
 
 app.UseFastEndpoints(c =>
 {
@@ -43,5 +51,15 @@ app.UseFastEndpoints(c =>
     c.Versioning.Prefix = "v";
 })
 .UseSwaggerGen();
+
+//Configure the HTTP-request pipeline
+if (app.Environment.IsDevelopment())
+{
+    //custom extension method to seed the DB
+    await PhysicalModelDbContext.SeedSqlServer(app.Services);
+}
+
+//SwaggerBuilderExtensions.UseSwagger(app);
+//app.UseSwaggerUI();
 
 app.Run();
