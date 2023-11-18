@@ -3,15 +3,13 @@ using BeamOS.PhysicalModel.Api.Element1Ds.Mappers;
 using BeamOS.PhysicalModel.Application.Element1Ds;
 using BeamOS.PhysicalModel.Contracts.Element1D;
 using BeamOS.PhysicalModel.Domain.Element1DAggregate;
-using BeamOS.PhysicalModel.Infrastructure;
 using FastEndpoints;
 
 namespace BeamOS.PhysicalModel.Api.Element1Ds.Endpoints;
 
 public class CreateElement1DEndpoint(
     CreateElement1DCommandHandler createNodeCommandHandler,
-    IMapper<Element1D, Element1DResponse> responseMapper,
-    PhysicalModelDbContext dbContext) : Endpoint<CreateElement1DRequest, Element1DResponse>
+    IMapper<Element1D, Element1DResponse> responseMapper) : Endpoint<CreateElement1DRequest, Element1DResponse>
 {
     public override void Configure()
     {

@@ -12,6 +12,7 @@ namespace BeamOS.PhysicalModel.Infrastructure;
 public class PhysicalModelDbContext : DbContext
 {
     public PhysicalModelDbContext(DbContextOptions<PhysicalModelDbContext> options) : base(options) { }
+    protected PhysicalModelDbContext(DbContextOptions options) : base(options) { }
 
     public DbSet<Model> Models { get; set; }
     public DbSet<Element1D> Element1Ds { get; set; }
