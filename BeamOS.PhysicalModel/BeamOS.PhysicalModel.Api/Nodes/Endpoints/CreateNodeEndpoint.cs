@@ -1,4 +1,4 @@
-using BeamOS.PhysicalModel.Api.Common.Interfaces;
+using BeamOS.Common.Api.Interfaces;
 using BeamOS.PhysicalModel.Application.Nodes.Commands;
 using BeamOS.PhysicalModel.Contracts.Node;
 using BeamOS.PhysicalModel.Domain.NodeAggregate;

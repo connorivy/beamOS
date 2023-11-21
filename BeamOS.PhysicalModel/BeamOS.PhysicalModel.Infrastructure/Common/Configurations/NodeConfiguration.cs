@@ -15,7 +15,7 @@ public class NodeConfiguration : IEntityTypeConfiguration<Node>
             .IsRequired();
 
         // needed for some reason?
-        builder.ComplexProperty(n => n.Restraints);
+        builder.ComplexProperty(n => n.Restraint);
     }
 }
 

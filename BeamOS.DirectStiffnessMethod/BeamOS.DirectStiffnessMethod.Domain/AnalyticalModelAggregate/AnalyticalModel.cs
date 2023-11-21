@@ -42,8 +42,8 @@ public class AnalyticalModel : BeamOSEntity<AnalyticalModelId>
 
     public static AnalyticalModel RunAnalysis(
         UnitSettings unitSettings,
-        List<AnalyticalElement1D> element1Ds,
-        List<AnalyticalNode> nodes)
+        IEnumerable<AnalyticalElement1D> element1Ds,
+        IEnumerable<AnalyticalNode> nodes)
     {
         AnalyticalModel model = new()
         {
@@ -81,7 +81,7 @@ public class AnalyticalModel : BeamOSEntity<AnalyticalModelId>
     }
 
 
-    private VectorIdentified GetReactionVector(List<AnalyticalElement1D> element1Ds)
+    private VectorIdentified GetReactionVector(IEnumerable<AnalyticalElement1D> element1Ds)
     {
         VectorIdentified reactions = new(this.BoundaryConditionIds);
         foreach (AnalyticalElement1D element1D in element1Ds)
@@ -94,7 +94,7 @@ public class AnalyticalModel : BeamOSEntity<AnalyticalModelId>
     }
 
     private VectorIdentified GetJointDisplacementVector(
-        List<AnalyticalElement1D> element1Ds,
+        IEnumerable<AnalyticalElement1D> element1Ds,
         IEnumerable<AnalyticalNode> nodes)
     {
         MatrixIdentified<UnsupportedStructureDisplacementId> sMatrix = this
@@ -123,7 +123,7 @@ public class AnalyticalModel : BeamOSEntity<AnalyticalModelId>
     }
 
     private MatrixIdentified<UnsupportedStructureDisplacementId> BuildStructureStiffnessMatrix(
-        List<AnalyticalElement1D> element1Ds)
+        IEnumerable<AnalyticalElement1D> element1Ds)
     {
         MatrixIdentified<UnsupportedStructureDisplacementId> sMatrix = new(this.DegreeOfFreedomIds);
         foreach (AnalyticalElement1D element1D in element1Ds)

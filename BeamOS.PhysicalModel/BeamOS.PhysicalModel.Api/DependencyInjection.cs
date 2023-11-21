@@ -1,4 +1,4 @@
-using BeamOS.PhysicalModel.Api.Common.Interfaces;
+using BeamOS.Common.Api.Interfaces;
 using BeamOS.PhysicalModel.Api.Nodes.Endpoints;
 
 namespace BeamOS.PhysicalModel.Api;

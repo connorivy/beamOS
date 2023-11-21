@@ -1,5 +1,7 @@
 using BeamOS.PhysicalModel.Contracts.Element1D;
+using BeamOS.PhysicalModel.Contracts.Material;
 using BeamOS.PhysicalModel.Contracts.Node;
+using BeamOS.PhysicalModel.Contracts.SectionProfile;
 
 namespace BeamOS.PhysicalModel.Contracts.Model;
 public record ModelResponse(
@@ -12,9 +14,9 @@ public record ModelResponse(
     List<string>? MaterialIds = null,
     List<string>? SectionProfileIds = null,
     List<NodeResponse>? Nodes = null,
-    List<Element1DResponse>? Element1Ds = null
-    //List<MaterialResponse>? Materials,
-    //List<SectionProfileResponse>? SectionProfiles
+    List<Element1DResponse>? Element1Ds = null,
+    List<MaterialResponse>? Materials = null,
+    List<SectionProfileResponse>? SectionProfiles = null
     );
 
 public record ModelSettingsResponse(

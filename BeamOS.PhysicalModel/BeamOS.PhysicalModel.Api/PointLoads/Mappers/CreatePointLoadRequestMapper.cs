@@ -1,4 +1,5 @@
-using BeamOS.PhysicalModel.Api.Common.Interfaces;
+using BeamOS.Common.Api.Interfaces;
+using BeamOS.Common.Contracts;
 using BeamOS.PhysicalModel.Application.PointLoads.Commands;
 using BeamOS.PhysicalModel.Contracts.Common;
 using BeamOS.PhysicalModel.Contracts.PointLoad;

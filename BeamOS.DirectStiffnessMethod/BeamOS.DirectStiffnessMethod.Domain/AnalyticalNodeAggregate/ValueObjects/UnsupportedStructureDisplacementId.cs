@@ -1,14 +1,7 @@
 using BeamOS.Common.Domain.Enums;
 using BeamOS.Common.Domain.Models;
-using BeamOS.Common.Domain.ValueObjects;
 
 namespace BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate.ValueObjects;
-//public class UnsupportedStructureDisplacementId : SingleValueWrapperValueObject<int>
-//{
-//    public UnsupportedStructureDisplacementId(int value) : base(value)
-//    {
-//    }
-//}
 
 public class UnsupportedStructureDisplacementId : BeamOSValueObject
 {

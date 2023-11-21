@@ -1,19 +1,9 @@
-using BeamOS.Common.Domain.Models;
+using BeamOS.Common.Domain.Interfaces;
+using BeamOS.Common.Domain.ValueObjects;
 
 namespace BeamOS.DirectStiffnessMethod.Domain.AnalyticalElement1DAggregate.ValueObjects;
-public class AnalyticalElement1DId : BeamOSValueObject
+
+public class AnalyticalElement1DId(Guid? id = null) : GuidBasedId(id), IConstructable<AnalyticalElement1DId, Guid>
 {
-    public Guid Value { get; }
-    private AnalyticalElement1DId(Guid value)
-    {
-        this.Value = value;
-    }
-    public static AnalyticalElement1DId CreateUnique()
-    {
-        return new(Guid.NewGuid());
-    }
-    protected override IEnumerable<object> GetEqualityComponents()
-    {
-        yield return this.Value;
-    }
+    public static AnalyticalElement1DId Construct(Guid id) => new(id);
 }

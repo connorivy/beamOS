@@ -1,7 +1,7 @@
+using BeamOS.Common.Api.Interfaces;
 using BeamOS.Common.Application.Interfaces;
 using BeamOS.Common.Domain.Interfaces;
 using BeamOS.Common.Domain.Models;
-using BeamOS.PhysicalModel.Api.Common.Interfaces;
 using BeamOS.PhysicalModel.Contracts.Common;
 
 namespace BeamOS.PhysicalModel.Api.Common.Endpoints;

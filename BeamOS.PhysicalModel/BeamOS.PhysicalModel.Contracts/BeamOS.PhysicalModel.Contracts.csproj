@@ -10,4 +10,8 @@
     <PackageReference Include="UnitsNet" Version="5.35.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\BeamOS.Common\BeamOS.Common.Contracts\BeamOS.Common.Contracts.csproj" />
+  </ItemGroup>
+
 </Project>

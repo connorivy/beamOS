@@ -1,16 +1,3 @@
-using BeamOS.PhysicalModel.Api.Common.Interfaces;
-using BeamOS.PhysicalModel.Contracts.Common;
-using BeamOS.PhysicalModel.Contracts.Element1D;
-using BeamOS.PhysicalModel.Contracts.Model;
-using BeamOS.PhysicalModel.Contracts.Node;
-using BeamOS.PhysicalModel.Domain.Element1DAggregate;
-using BeamOS.PhysicalModel.Domain.ModelAggregate;
-using BeamOS.PhysicalModel.Domain.ModelAggregate.ValueObjects;
-using BeamOS.PhysicalModel.Domain.NodeAggregate;
-using BeamOS.PhysicalModel.Infrastructure;
-using FastEndpoints;
-using Microsoft.EntityFrameworkCore;
-
 namespace BeamOS.PhysicalModel.Api.Models.Endpoints;
 
 //public class GetModelWithEntitiesEndpoint(

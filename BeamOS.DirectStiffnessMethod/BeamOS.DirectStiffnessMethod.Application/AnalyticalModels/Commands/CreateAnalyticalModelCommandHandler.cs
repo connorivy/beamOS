@@ -1,24 +1,39 @@
 using BeamOS.Common.Application.Interfaces;
+using BeamOS.DirectStiffnessMethod.Application.AnalyticalElement1ds.Commands;
+using BeamOS.DirectStiffnessMethod.Application.AnalyticalModels.Commands;
+using BeamOS.DirectStiffnessMethod.Application.AnalyticalNodes.Commands;
+using BeamOS.DirectStiffnessMethod.Domain.AnalyticalElement1DAggregate;
 using BeamOS.DirectStiffnessMethod.Domain.AnalyticalModelAggregate;
-//using Riok.Mapperly.Abstractions;
+using BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate;
+using Riok.Mapperly.Abstractions;
 
-//namespace BeamOS.DirectStiffnessMethod.Application.Models.Commands;
+namespace BeamOS.DirectStiffnessMethod.Application.AnalyticalModels.Commands;
 
-//public class CreateAnalyticalModelCommandHandler(IRepository<ModelId, Model> modelRepository)
-//    : ICommandHandler<CreateAnalyticalModelCommand, Model>
-//{
-//    public async Task<AnalyticalModel> ExecuteAsync(CreateAnalyticalModelCommand command, CancellationToken ct = default)
-//    {
-//        var model = command.ToDomainObject();
+public class CreateAnalyticalModelCommandHandler(
+    ICommandHandler<CreateAnalyticalNodeCommand, AnalyticalNode> createNodeHandler,
+    ICommandHandler<CreateAnalyticalElement1dCommand, AnalyticalElement1D> createEl1dHandler)
+    : ICommandHandler<CreateAnalyticalModelCommand, AnalyticalModel>
+{
+    public async Task<AnalyticalModel> ExecuteAsync(CreateAnalyticalModelCommand command, CancellationToken ct = default)
+    {
+        HashSet<AnalyticalNode> nodes = [];
+        HashSet<AnalyticalElement1D> element1Ds = [];
+        foreach (CreateAnalyticalNodeCommand nodeCommand in command.Nodes)
+        {
+            _ = nodes.Add(await createNodeHandler.ExecuteAsync(nodeCommand, ct));
+        }
 
-//        await modelRepository.Add(model);
+        foreach (CreateAnalyticalElement1dCommand el1dCommand in command.Element1Ds)
+        {
+            _ = element1Ds.Add(await createEl1dHandler.ExecuteAsync(el1dCommand, ct));
+        }
 
-//        return model;
-//    }
-//}
+        var model = AnalyticalModel.RunAnalysis(null, element1Ds, nodes);
+        //var model = command.ToDomainObject();
 
-//[Mapper]
-//public static partial class CreateModelCommandMapper
-//{
-//    public static partial Model ToDomainObject(this CreateAnalyticalModelCommand command);
-//}
+        //await modelRepository.Add(model);
+
+        //return model;
+        return null;
+    }
+}

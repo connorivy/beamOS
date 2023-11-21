@@ -35,7 +35,7 @@ public class Node : AggregateRoot<NodeId>
 
     //public List<PointLoadId> PointLoadIds { get; private set; } = [];
     //public List<MomentLoad> MomentLoads { get; } = [];
-    public Restraint Restraints { get; set; } = Restraint.Free;
+    public Restraint Restraint { get; set; } = Restraint.Free;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private Node() { }

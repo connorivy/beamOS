@@ -1,4 +1,4 @@
-using BeamOS.PhysicalModel.Api.Common.Interfaces;
+using BeamOS.Common.Api.Interfaces;
 using BeamOS.PhysicalModel.Api.Element1Ds.Mappers;
 using BeamOS.PhysicalModel.Application.Element1Ds;
 using BeamOS.PhysicalModel.Contracts.Element1D;

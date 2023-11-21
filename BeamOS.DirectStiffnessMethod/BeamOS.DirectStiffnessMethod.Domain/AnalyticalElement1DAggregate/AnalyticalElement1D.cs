@@ -49,7 +49,32 @@ public class AnalyticalElement1D : AggregateRoot<AnalyticalElement1DId>
         Material material,
         SectionProfile sectionProfile)
     {
-        return new(AnalyticalElement1DId.CreateUnique(), sectionProfileRotation, unitSettings, startNode, endNode, material, sectionProfile);
+        return new(new(), sectionProfileRotation, unitSettings, startNode, endNode, material, sectionProfile);
+    }
+
+    public AnalyticalElement1D(
+        Angle sectionProfileRotation,
+        Pressure modulusOfElasticity,
+        Pressure modulusOfRigidity,
+        Area area,
+        AreaMomentOfInertia strongAxisMomentOfInertia,
+        AreaMomentOfInertia weakAxisMomentOfInertia,
+        AreaMomentOfInertia polarMomentOfInertia,
+        Line baseLine,
+        AnalyticalNodeId startNodeId,
+        AnalyticalNodeId endNodeId,
+        AnalyticalElement1DId? id = null) : base(id ?? new())
+    {
+        this.SectionProfileRotation = sectionProfileRotation;
+        this.ModulusOfElasticity = modulusOfElasticity;
+        this.ModulusOfRigidity = modulusOfRigidity;
+        this.Area = area;
+        this.StrongAxisMomentOfInertia = strongAxisMomentOfInertia;
+        this.WeakAxisMomentOfInertia = weakAxisMomentOfInertia;
+        this.PolarMomentOfInertia = polarMomentOfInertia;
+        this.BaseLine = baseLine;
+        this.StartNodeId = startNodeId;
+        this.EndNodeId = endNodeId;
     }
 
     public Angle SectionProfileRotation { get; set; }

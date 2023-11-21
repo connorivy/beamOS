@@ -1,4 +1,4 @@
-namespace BeamOS.PhysicalModel.Api.Common.Interfaces;
+namespace BeamOS.Common.Api.Interfaces;
 public interface IMapper<TFrom, TTo>
 {
     TTo Map(TFrom from);

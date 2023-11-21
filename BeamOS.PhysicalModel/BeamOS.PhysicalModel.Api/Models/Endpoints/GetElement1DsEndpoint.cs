@@ -1,6 +1,5 @@
 using BeamOS.Common.Api;
 using BeamOS.Common.Api.Interfaces;
-using BeamOS.PhysicalModel.Api.Common.Interfaces;
 using BeamOS.PhysicalModel.Contracts.Element1D;
 using BeamOS.PhysicalModel.Domain.Element1DAggregate;
 using BeamOS.PhysicalModel.Domain.Element1DAggregate.ValueObjects;
