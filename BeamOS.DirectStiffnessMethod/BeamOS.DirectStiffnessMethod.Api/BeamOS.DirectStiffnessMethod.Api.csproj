@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,6 +18,11 @@
     <ProjectReference Include="..\..\BeamOS.PhysicalModel\BeamOS.PhysicalModel.Contracts\BeamOS.PhysicalModel.Contracts.csproj" />
     <ProjectReference Include="..\BeamOS.DirectStiffnessMethod.Application\BeamOS.DirectStiffnessMethod.Application.csproj" />
     <ProjectReference Include="..\BeamOS.DirectStiffnessMethod.Contracts\BeamOS.DirectStiffnessMethod.Contracts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Materials\Mappers\" />
+    <Folder Include="SectionProfiles\" />
   </ItemGroup>
 
 </Project>

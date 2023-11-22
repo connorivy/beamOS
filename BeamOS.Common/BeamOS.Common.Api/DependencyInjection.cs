@@ -1,3 +1,4 @@
+using BeamOS.Common.Api.Interfaces;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -29,5 +30,17 @@ public static class DependencyInjection
             var endpoint = scope.ServiceProvider.GetService(type) as BaseEndpoint;
             endpoint?.Map(app);
         }
+    }
+
+    public static IServiceCollection AddMappers<T>(this IServiceCollection services)
+    {
+        _ = services.Scan(scan => scan
+            .FromAssemblyOf<T>()
+            .AddClasses(classes => classes.AssignableTo(typeof(IMapper<,>)))
+            .AsImplementedInterfaces()
+            .WithTransientLifetime()
+        );
+
+        return services;
     }
 }

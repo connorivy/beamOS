@@ -15,17 +15,14 @@ namespace BeamOS.DirectStiffnessMethod.Domain.AnalyticalElement1DAggregate;
 public class AnalyticalElement1D : AggregateRoot<AnalyticalElement1DId>
 {
     public AnalyticalElement1D(
-        AnalyticalElement1DId element1DId,
         Angle sectionProfileRotation,
-        UnitSettings unitSettings,
         AnalyticalNode startNode,
         AnalyticalNode endNode,
         Material material,
-        SectionProfile sectionProfile
-    ) : base(element1DId)
+        SectionProfile sectionProfile,
+        AnalyticalElement1DId? id = null) : base(id ?? new())
     {
         this.SectionProfileRotation = sectionProfileRotation;
-        this.UnitSettings = unitSettings;
 
         this.StartNodeId = startNode.Id;
         this.EndNodeId = endNode.Id;
@@ -49,7 +46,7 @@ public class AnalyticalElement1D : AggregateRoot<AnalyticalElement1DId>
         Material material,
         SectionProfile sectionProfile)
     {
-        return new(new(), sectionProfileRotation, unitSettings, startNode, endNode, material, sectionProfile);
+        return new(sectionProfileRotation, startNode, endNode, material, sectionProfile);
     }
 
     public AnalyticalElement1D(

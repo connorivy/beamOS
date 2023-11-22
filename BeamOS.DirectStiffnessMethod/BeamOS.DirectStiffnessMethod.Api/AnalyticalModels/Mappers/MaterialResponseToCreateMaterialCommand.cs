@@ -1,16 +1,16 @@
 using BeamOS.Common.Api.Interfaces;
 using BeamOS.Common.Contracts;
-using BeamOS.DirectStiffnessMethod.Application.Material;
+using BeamOS.DirectStiffnessMethod.Application.Materials;
 using BeamOS.PhysicalModel.Contracts.Material;
 using Riok.Mapperly.Abstractions;
-using UnitsNet.Units;
 using UnitsNet;
+using UnitsNet.Units;
 
 namespace BeamOS.DirectStiffnessMethod.Api.AnalyticalModels.Mappers;
 
 [Mapper]
 [UseStaticMapper(typeof(UnitValueDTOToPressureMapper))]
-public partial class PhysicalModelMaterialResponseToCreateMaterialCommand : IMapper<MaterialResponse, CreateMaterialCommand>
+public partial class MaterialResponseToCreateMaterialCommand : IMapper<MaterialResponse, CreateMaterialCommand>
 {
     public CreateMaterialCommand Map(MaterialResponse from) => this.ToCommand(from);
     public partial CreateMaterialCommand ToCommand(MaterialResponse from);

@@ -8,7 +8,7 @@ using FastEndpoints;
 namespace BeamOS.PhysicalModel.Api.Element1Ds.Endpoints;
 
 public class CreateElement1DEndpoint(
-    CreateElement1DCommandHandler createNodeCommandHandler,
+    BeamOS.Common.Application.Interfaces.ICommandHandler<CreateElement1DCommand, Element1D> createNodeCommandHandler,
     IMapper<Element1D, Element1DResponse> responseMapper) : Endpoint<CreateElement1DRequest, Element1DResponse>
 {
     public override void Configure()

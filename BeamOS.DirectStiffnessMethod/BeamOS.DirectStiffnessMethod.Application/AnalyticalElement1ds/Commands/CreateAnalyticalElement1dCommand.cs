@@ -6,6 +6,6 @@ public record CreateAnalyticalElement1dCommand(
     Angle SectionProfileRotation,
     GuidBasedIdCommand StartNodeId,
     GuidBasedIdCommand EndNodeId,
-    GuidBasedIdCommand MaterialId,
-    GuidBasedIdCommand SectionProfileId
+    string MaterialId,
+    string SectionProfileId
     );

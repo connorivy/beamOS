@@ -5,6 +5,7 @@ using BeamOS.PhysicalModel.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using FastEndpoints.Swagger;
 using FastEndpoints;
+using BeamOS.Common.Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,9 +26,9 @@ builder.Services
         //o.ExcludeNonFastEndpoints = true;
     });
 
-builder.Services.AddMappers();
-builder.Services.AddBeamOsEndpoints<Program>();
-builder.Services.AddPhysicalModelApplication();
+builder.Services.AddMappers<IAssemblyMarkerPhysicalModelApi>();
+builder.Services.AddBeamOsEndpoints<IAssemblyMarkerPhysicalModelApi>();
+builder.Services.AddCommandHandlers<IAssemblyMarkerPhysicalModelApplication>();
 builder.Services.AddPhysicalModelInfrastructure();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -41,7 +42,7 @@ app.MapDefaultEndpoints();
 
 app.UseHttpsRedirection();
 
-app.MapGroup("/api").AddBeamOsEndpoints<Program>();
+app.MapGroup("/api").AddBeamOsEndpoints<IAssemblyMarkerPhysicalModelApi>();
 
 app.UseFastEndpoints(c =>
 {

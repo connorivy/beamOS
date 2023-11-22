@@ -8,7 +8,7 @@ namespace BeamOS.PhysicalModel.Api.Models.Endpoints;
 
 public class CreateModelEndpoint(
     IMapper<CreateModelRequest, CreateModelCommand> commandMapper,
-    CreateModelCommandHandler createModelCommandHandler,
+    BeamOS.Common.Application.Interfaces.ICommandHandler<CreateModelCommand, Model> createModelCommandHandler,
     IMapper<Model, ModelResponse> modelResponseMapper) : Endpoint<CreateModelRequest, ModelResponse>
 {
     public override void Configure()

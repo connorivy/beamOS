@@ -9,7 +9,7 @@ using FastEndpoints;
 namespace BeamOS.PhysicalModel.Api.PointLoads.Endpoints;
 public class CreatePointLoadEndpoint(
     IMapper<CreatePointLoadRequest, CreatePointLoadCommand> requestMapper,
-    CreatePointLoadCommandHandler createPointLoadCommandHandler,
+    BeamOS.Common.Application.Interfaces.ICommandHandler<CreatePointLoadCommand, PointLoad> createPointLoadCommandHandler,
     IMapper<PointLoad, PointLoadResponse> responseMapper)
     : Endpoint<CreatePointLoadRequest, PointLoadResponse>
 {

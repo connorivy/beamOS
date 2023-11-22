@@ -1,7 +1,8 @@
 using UnitsNet;
 
-namespace BeamOS.DirectStiffnessMethod.Application.SectionProfile;
+namespace BeamOS.DirectStiffnessMethod.Application.SectionProfiles;
 public record CreateSectionProfileCommand(
+    string Id,
     Area Area,
     AreaMomentOfInertia StrongAxisMomentOfInertia,
     AreaMomentOfInertia WeakAxisMomentOfInertia,

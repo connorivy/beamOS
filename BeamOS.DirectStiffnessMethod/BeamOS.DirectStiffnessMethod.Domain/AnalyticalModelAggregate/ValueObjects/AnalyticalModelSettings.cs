@@ -6,7 +6,7 @@ using UnitsNet.Units;
 namespace BeamOS.DirectStiffnessMethod.Domain.AnalyticalModelAggregate.ValueObjects;
 public class AnalyticalModelSettings : BeamOSValueObject
 {
-    public UnitSettings UnitSettings { get; }
+    public UnitSettings UnitSettings { get; private set; }
     public ModelOrientation ModelOrientation { get; }
     public bool IsLocked { get; }
     public Length Tolerance { get; }
@@ -38,4 +38,7 @@ public class AnalyticalModelSettings : BeamOSValueObject
         yield return this.MinTreeNodeLength;
         yield return this.ElementsPerTreeNode;
     }
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    private AnalyticalModelSettings() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }

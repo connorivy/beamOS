@@ -8,7 +8,7 @@ namespace BeamOS.PhysicalModel.Api.Nodes.Endpoints;
 
 public class CreateNodeEndpoint(
     IMapper<CreateNodeRequest, CreateNodeCommand> requestMapper,
-    CreateNodeCommandHandler createNodeCommandHandler,
+    BeamOS.Common.Application.Interfaces.ICommandHandler<CreateNodeCommand, Node> createNodeCommandHandler,
     IMapper<Node, NodeResponse> responseMapper) : Endpoint<CreateNodeRequest, NodeResponse>
 {
     public override void Configure()

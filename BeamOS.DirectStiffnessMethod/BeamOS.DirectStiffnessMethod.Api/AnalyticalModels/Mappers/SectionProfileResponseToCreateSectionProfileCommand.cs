@@ -1,6 +1,6 @@
 using BeamOS.Common.Api.Interfaces;
 using BeamOS.Common.Contracts;
-using BeamOS.DirectStiffnessMethod.Application.SectionProfile;
+using BeamOS.DirectStiffnessMethod.Application.SectionProfiles;
 using BeamOS.PhysicalModel.Contracts.SectionProfile;
 using Riok.Mapperly.Abstractions;
 using UnitsNet;
