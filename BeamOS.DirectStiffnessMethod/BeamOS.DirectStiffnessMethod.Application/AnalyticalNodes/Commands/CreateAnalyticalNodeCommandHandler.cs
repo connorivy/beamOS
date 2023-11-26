@@ -5,14 +5,14 @@ using Riok.Mapperly.Abstractions;
 
 namespace BeamOS.DirectStiffnessMethod.Application.AnalyticalNodes.Commands;
 
-public class CreateAnalyticalNodeCommandHandler(IRepository<AnalyticalNodeId, AnalyticalNode> nodeRepository)
+public class CreateAnalyticalNodeCommandHandler()
     : ICommandHandler<CreateAnalyticalNodeCommand, AnalyticalNode>
 {
     public async Task<AnalyticalNode> ExecuteAsync(CreateAnalyticalNodeCommand command, CancellationToken ct)
     {
         AnalyticalNode node = command.ToDomainObject();
 
-        await nodeRepository.Add(node);
+        //await nodeRepository.Add(node);
 
         return node;
     }

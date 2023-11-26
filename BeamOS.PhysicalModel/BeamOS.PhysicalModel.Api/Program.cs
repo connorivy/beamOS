@@ -33,12 +33,10 @@ builder.Services.AddPhysicalModelInfrastructure();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<PhysicalModelDbContext>(options =>
-    options.UseSqlServer(connectionString, b => b.MigrationsAssembly("BeamOS.PhysicalModel.Api")));
+    options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 var app = builder.Build();
-
-app.MapDefaultEndpoints();
 
 app.UseHttpsRedirection();
 
@@ -54,8 +52,10 @@ app.UseFastEndpoints(c =>
 //Configure the HTTP-request pipeline
 if (app.Environment.IsDevelopment())
 {
-    //custom extension method to seed the DB
-    await PhysicalModelDbContext.SeedSqlServer(app.Services);
+    //seed the DB
+    using var scope = app.Services.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<PhysicalModelDbContext>();
+    await dbContext.SeedAsync();
 }
 
 //SwaggerBuilderExtensions.UseSwagger(app);

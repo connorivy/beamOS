@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace BeamOS.PhysicalModel.Api.Migrations
+namespace BeamOS.PhysicalModel.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration
@@ -11,6 +11,20 @@ namespace BeamOS.PhysicalModel.Api.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Materials",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ModelId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ModulusOfElasticity = table.Column<double>(type: "float", nullable: false),
+                    ModulusOfRigidity = table.Column<double>(type: "float", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Materials", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Models",
                 columns: table => new
@@ -28,6 +42,22 @@ namespace BeamOS.PhysicalModel.Api.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Models", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SectionProfiles",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ModelId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Area = table.Column<double>(type: "float", nullable: false),
+                    StrongAxisMomentOfInertia = table.Column<double>(type: "float", nullable: false),
+                    WeakAxisMomentOfInertia = table.Column<double>(type: "float", nullable: false),
+                    PolarMomentOfInertia = table.Column<double>(type: "float", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SectionProfiles", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -62,12 +92,12 @@ namespace BeamOS.PhysicalModel.Api.Migrations
                     LocationPoint_XCoordinate = table.Column<double>(type: "float", nullable: false),
                     LocationPoint_YCoordinate = table.Column<double>(type: "float", nullable: false),
                     LocationPoint_ZCoordinate = table.Column<double>(type: "float", nullable: false),
-                    Restraints_CanRotateAboutX = table.Column<bool>(type: "bit", nullable: false),
-                    Restraints_CanRotateAboutY = table.Column<bool>(type: "bit", nullable: false),
-                    Restraints_CanRotateAboutZ = table.Column<bool>(type: "bit", nullable: false),
-                    Restraints_CanTranslateAlongX = table.Column<bool>(type: "bit", nullable: false),
-                    Restraints_CanTranslateAlongY = table.Column<bool>(type: "bit", nullable: false),
-                    Restraints_CanTranslateAlongZ = table.Column<bool>(type: "bit", nullable: false)
+                    Restraint_CanRotateAboutX = table.Column<bool>(type: "bit", nullable: false),
+                    Restraint_CanRotateAboutY = table.Column<bool>(type: "bit", nullable: false),
+                    Restraint_CanRotateAboutZ = table.Column<bool>(type: "bit", nullable: false),
+                    Restraint_CanTranslateAlongX = table.Column<bool>(type: "bit", nullable: false),
+                    Restraint_CanTranslateAlongY = table.Column<bool>(type: "bit", nullable: false),
+                    Restraint_CanTranslateAlongZ = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -123,7 +153,13 @@ namespace BeamOS.PhysicalModel.Api.Migrations
                 name: "Element1Ds");
 
             migrationBuilder.DropTable(
+                name: "Materials");
+
+            migrationBuilder.DropTable(
                 name: "PointLoad");
+
+            migrationBuilder.DropTable(
+                name: "SectionProfiles");
 
             migrationBuilder.DropTable(
                 name: "Nodes");

@@ -12,9 +12,12 @@ namespace BeamOS.DirectStiffnessMethod.Api.AnalyticalModels.Mappers;
 [Mapper]
 [UseStaticMapper(typeof(UnitValueDTOToAngleMapper))]
 [UseStaticMapper(typeof(UnitValueDTOToLengthMapper))]
+[UseStaticMapper(typeof(UnitValueDTOToAreaMapper))]
+[UseStaticMapper(typeof(UnitValueDTOToAreaMomentOfInertiaMapper))]
+[UseStaticMapper(typeof(UnitValueDTOToPressureMapper))]
 public partial class ModelResponseToCreateAnalyticalModelCommand : IMapper<ModelResponse, CreateAnalyticalModelCommand>
 {
-    public CreateAnalyticalModelCommand Map(ModelResponse from) => throw new NotImplementedException();
+    public CreateAnalyticalModelCommand Map(ModelResponse from) => this.ToCommand(from);
     public partial CreateAnalyticalModelCommand ToCommand(ModelResponse from);
 }
 

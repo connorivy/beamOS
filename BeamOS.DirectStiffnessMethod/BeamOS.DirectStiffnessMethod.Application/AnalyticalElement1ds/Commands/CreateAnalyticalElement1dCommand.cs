@@ -3,6 +3,7 @@ using UnitsNet;
 
 namespace BeamOS.DirectStiffnessMethod.Application.AnalyticalElement1ds.Commands;
 public record CreateAnalyticalElement1dCommand(
+    string Id,
     Angle SectionProfileRotation,
     GuidBasedIdCommand StartNodeId,
     GuidBasedIdCommand EndNodeId,

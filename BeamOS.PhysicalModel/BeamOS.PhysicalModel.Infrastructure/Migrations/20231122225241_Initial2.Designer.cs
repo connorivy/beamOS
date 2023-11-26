@@ -10,11 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace BeamOS.PhysicalModel.Api.Migrations
+namespace BeamOS.PhysicalModel.Infrastructure.Migrations
 {
     [DbContext(typeof(PhysicalModelDbContext))]
-    [Migration("20231117023829_Initial")]
-    partial class Initial
+    [Migration("20231122225241_Initial2")]
+    partial class Initial2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,6 +54,25 @@ namespace BeamOS.PhysicalModel.Api.Migrations
                     b.HasIndex("ModelId");
 
                     b.ToTable("Element1Ds");
+                });
+
+            modelBuilder.Entity("BeamOS.PhysicalModel.Domain.MaterialAggregate.Material", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ModelId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("ModulusOfElasticity")
+                        .HasColumnType("float");
+
+                    b.Property<double>("ModulusOfRigidity")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Materials");
                 });
 
             modelBuilder.Entity("BeamOS.PhysicalModel.Domain.ModelAggregate.Model", b =>
@@ -124,7 +143,7 @@ namespace BeamOS.PhysicalModel.Api.Migrations
                                 .HasColumnType("float");
                         });
 
-                    b.ComplexProperty<Dictionary<string, object>>("Restraints", "BeamOS.PhysicalModel.Domain.NodeAggregate.Node.Restraints#Restraints", b1 =>
+                    b.ComplexProperty<Dictionary<string, object>>("Restraint", "BeamOS.PhysicalModel.Domain.NodeAggregate.Node.Restraint#Restraint", b1 =>
                         {
                             b1.IsRequired();
 
@@ -174,6 +193,31 @@ namespace BeamOS.PhysicalModel.Api.Migrations
                     b.HasIndex("NodeId");
 
                     b.ToTable("PointLoad");
+                });
+
+            modelBuilder.Entity("BeamOS.PhysicalModel.Domain.SectionProfileAggregate.SectionProfile", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("Area")
+                        .HasColumnType("float");
+
+                    b.Property<Guid>("ModelId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("PolarMomentOfInertia")
+                        .HasColumnType("float");
+
+                    b.Property<double>("StrongAxisMomentOfInertia")
+                        .HasColumnType("float");
+
+                    b.Property<double>("WeakAxisMomentOfInertia")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SectionProfiles");
                 });
 
             modelBuilder.Entity("BeamOS.PhysicalModel.Domain.Element1DAggregate.Element1D", b =>

@@ -157,7 +157,7 @@ internal class Example8_4 : SolvedProblem
         });
         #endregion
 
-        return new AnalyticalElement1DFixture(element)
+        return new AnalyticalElement1DFixture(element, UnitSettings.K_IN)
         {
             ExpectedRotationMatrix = rotationMatrix,
             ExpectedTransformationMatrix = transformationMatrix,
@@ -308,7 +308,7 @@ internal class Example8_4 : SolvedProblem
         });
         #endregion
 
-        return new AnalyticalElement1DFixture(element)
+        return new AnalyticalElement1DFixture(element, UnitSettings.K_IN)
         {
             ExpectedRotationMatrix = rotationMatrix,
             ExpectedTransformationMatrix = transformationMatrix,
@@ -458,7 +458,7 @@ internal class Example8_4 : SolvedProblem
         });
         #endregion
 
-        return new AnalyticalElement1DFixture(element)
+        return new AnalyticalElement1DFixture(element, UnitSettings.K_IN)
         {
             ExpectedRotationMatrix = rotationMatrix,
             ExpectedTransformationMatrix = transformationMatrix,

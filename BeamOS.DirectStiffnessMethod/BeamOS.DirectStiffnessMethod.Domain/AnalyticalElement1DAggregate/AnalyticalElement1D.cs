@@ -10,6 +10,7 @@ using BeamOS.DirectStiffnessMethod.Domain.Common.ValueObjects;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using UnitsNet;
+using UnitsNet.Units;
 
 namespace BeamOS.DirectStiffnessMethod.Domain.AnalyticalElement1DAggregate;
 public class AnalyticalElement1D : AggregateRoot<AnalyticalElement1DId>
@@ -163,7 +164,10 @@ public class AnalyticalElement1D : AggregateRoot<AnalyticalElement1DId>
         return transformationMatrix;
     }
 
-    public Matrix<double> GetLocalStiffnessMatrix()
+    public Matrix<double> GetLocalStiffnessMatrix(
+        ForceUnit forceUnit,
+        ForcePerLengthUnit forcePerLengthUnit,
+        TorqueUnit torqueUnit)
     {
 #pragma warning disable IDE1006 // Naming Styles
         var E = this.ModulusOfElasticity;
@@ -177,18 +181,18 @@ public class AnalyticalElement1D : AggregateRoot<AnalyticalElement1DId>
         var L3 = L2 * L;
 
         // ForcePerLength (N/m, k/in)
-        var ExA_L = (E * A / L).As(this.UnitSettings.ForcePerLengthUnit);
-        var ExIs_L3 = E.MultiplyBy(Is.DivideBy(L3)).As(this.UnitSettings.ForcePerLengthUnit);
-        var ExIw_L3 = E.MultiplyBy(Iw.DivideBy(L3)).As(this.UnitSettings.ForcePerLengthUnit);
+        var ExA_L = (E * A / L).As(forcePerLengthUnit);
+        var ExIs_L3 = E.MultiplyBy(Is.DivideBy(L3)).As(forcePerLengthUnit);
+        var ExIw_L3 = E.MultiplyBy(Iw.DivideBy(L3)).As(forcePerLengthUnit);
 
         // Force (N, k)
-        var ExIs_L2 = E.MultiplyBy(Is.DivideBy(L2)).As(this.UnitSettings.ForceUnit);
-        var ExIw_L2 = E.MultiplyBy(Iw.DivideBy(L2)).As(this.UnitSettings.ForceUnit);
+        var ExIs_L2 = E.MultiplyBy(Is.DivideBy(L2)).As(forceUnit);
+        var ExIw_L2 = E.MultiplyBy(Iw.DivideBy(L2)).As(forceUnit);
 
         // Torque (Nm, k-in)
-        var ExIs_L = E.MultiplyBy(Is / L).As(this.UnitSettings.TorqueUnit);
-        var ExIw_L = E.MultiplyBy(Iw / L).As(this.UnitSettings.TorqueUnit);
-        var GxJ_L = G.MultiplyBy(J / L).As(this.UnitSettings.TorqueUnit);
+        var ExIs_L = E.MultiplyBy(Is / L).As(torqueUnit);
+        var ExIw_L = E.MultiplyBy(Iw / L).As(torqueUnit);
+        var GxJ_L = G.MultiplyBy(J / L).As(torqueUnit);
 #pragma warning restore IDE1006 // Naming Styles
 
         return DenseMatrix.OfArray(new[,]
@@ -208,18 +212,24 @@ public class AnalyticalElement1D : AggregateRoot<AnalyticalElement1DId>
         });
     }
 
-    public Matrix<double> GetGlobalStiffnessMatrix()
+    public Matrix<double> GetGlobalStiffnessMatrix(
+        ForceUnit forceUnit,
+        ForcePerLengthUnit forcePerLengthUnit,
+        TorqueUnit torqueUnit)
     {
         var transformationMatrix = this.GetTransformationMatrix();
-        var localStiffnessMatrix = this.GetLocalStiffnessMatrix();
+        var localStiffnessMatrix = this.GetLocalStiffnessMatrix(forceUnit, forcePerLengthUnit, torqueUnit);
         return transformationMatrix.Transpose() * localStiffnessMatrix * transformationMatrix;
     }
 
-    public MatrixIdentified<UnsupportedStructureDisplacementId> GetGlobalStiffnessMatrixIdentified()
+    public MatrixIdentified<UnsupportedStructureDisplacementId> GetGlobalStiffnessMatrixIdentified(
+        ForceUnit forceUnit,
+        ForcePerLengthUnit forcePerLengthUnit,
+        TorqueUnit torqueUnit)
     {
         return new(
             this.GetUnsupportedStructureDisplacementIds().ToList(),
-            this.GetGlobalStiffnessMatrix().ToArray()
+            this.GetGlobalStiffnessMatrix(forceUnit, forcePerLengthUnit, torqueUnit).ToArray()
             );
     }
 
@@ -245,17 +255,36 @@ public class AnalyticalElement1D : AggregateRoot<AnalyticalElement1DId>
         return this.GetTransformationMatrix() * this.GetGlobalEndDisplacementVector(jointDisplacementVector);
     }
 
-    public Vector<double> GetLocalMemberEndForcesVector(VectorIdentified jointDisplacementVector)
+    public Vector<double> GetLocalMemberEndForcesVector(VectorIdentified jointDisplacementVector,
+        ForceUnit forceUnit,
+        ForcePerLengthUnit forcePerLengthUnit,
+        TorqueUnit torqueUnit)
     {
-        return this.GetLocalStiffnessMatrix() * this.GetLocalEndDisplacementVector(jointDisplacementVector);
+        return this.GetLocalStiffnessMatrix(forceUnit, forcePerLengthUnit, torqueUnit)
+            * this.GetLocalEndDisplacementVector(jointDisplacementVector);
     }
 
-    public Vector<double> GetGlobalMemberEndForcesVector(VectorIdentified jointDisplacementVector)
+    public Vector<double> GetGlobalMemberEndForcesVector(VectorIdentified jointDisplacementVector,
+        ForceUnit forceUnit,
+        ForcePerLengthUnit forcePerLengthUnit,
+        TorqueUnit torqueUnit)
     {
-        return this.GetTransformationMatrix().Transpose() * this.GetLocalMemberEndForcesVector(jointDisplacementVector);
+        return this.GetTransformationMatrix().Transpose()
+            * this.GetLocalMemberEndForcesVector(
+                jointDisplacementVector,
+                forceUnit,
+                forcePerLengthUnit,
+                torqueUnit);
     }
-    public VectorIdentified GetGlobalMemberEndForcesVectorIdentified(VectorIdentified jointDisplacementVector)
+    public VectorIdentified GetGlobalMemberEndForcesVectorIdentified(VectorIdentified jointDisplacementVector,
+        ForceUnit forceUnit,
+        ForcePerLengthUnit forcePerLengthUnit,
+        TorqueUnit torqueUnit)
     {
-        return this.ToVectorIdentified(this.GetGlobalMemberEndForcesVector(jointDisplacementVector));
+        return this.ToVectorIdentified(this.GetGlobalMemberEndForcesVector(
+                jointDisplacementVector,
+                forceUnit,
+                forcePerLengthUnit,
+                torqueUnit));
     }
 }

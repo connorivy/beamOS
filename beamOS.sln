@@ -58,6 +58,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.Common.Infrastructur
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.DirectStiffnessMethod.Api", "BeamOS.DirectStiffnessMethod\BeamOS.DirectStiffnessMethod.Api\BeamOS.DirectStiffnessMethod.Api.csproj", "{31D9EE30-C2EF-4922-837D-AA70C762A24D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOS.DirectStiffnessMethod.Infrastructure", "BeamOS.DirectStiffnessMethod\BeamOS.DirectStiffnessMethod.Infrastructure\BeamOS.DirectStiffnessMethod.Infrastructure.csproj", "{1EAEFF8D-491D-466D-94A6-F1ACCFC959A8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -132,6 +134,10 @@ Global
 		{31D9EE30-C2EF-4922-837D-AA70C762A24D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31D9EE30-C2EF-4922-837D-AA70C762A24D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31D9EE30-C2EF-4922-837D-AA70C762A24D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EAEFF8D-491D-466D-94A6-F1ACCFC959A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EAEFF8D-491D-466D-94A6-F1ACCFC959A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EAEFF8D-491D-466D-94A6-F1ACCFC959A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EAEFF8D-491D-466D-94A6-F1ACCFC959A8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -154,6 +160,7 @@ Global
 		{201EA3A1-4F17-4818-879C-87CAAADA5252} = {1FCCD156-2A73-4393-B516-8AD77FD49F5B}
 		{DCE69D62-0334-464C-BFDD-6D014C5AA31E} = {1FCCD156-2A73-4393-B516-8AD77FD49F5B}
 		{31D9EE30-C2EF-4922-837D-AA70C762A24D} = {546F702C-44DE-4950-9EC0-7A2D045B6441}
+		{1EAEFF8D-491D-466D-94A6-F1ACCFC959A8} = {546F702C-44DE-4950-9EC0-7A2D045B6441}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DCC0AF93-F9F0-490C-9F01-0DDF9F09494F}

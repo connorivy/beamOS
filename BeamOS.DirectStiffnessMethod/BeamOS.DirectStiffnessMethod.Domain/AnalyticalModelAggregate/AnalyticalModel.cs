@@ -86,7 +86,11 @@ public class AnalyticalModel : BeamOSEntity<AnalyticalModelId>
         VectorIdentified reactions = new(this.BoundaryConditionIds);
         foreach (AnalyticalElement1D element1D in element1Ds)
         {
-            VectorIdentified globalMemberEndForcesVector = element1D.GetGlobalMemberEndForcesVectorIdentified(this.JointDisplacementVector);
+            VectorIdentified globalMemberEndForcesVector = element1D.GetGlobalMemberEndForcesVectorIdentified(
+                this.JointDisplacementVector,
+                this.UnitSettings.ForceUnit,
+                this.UnitSettings.ForcePerLengthUnit,
+                this.UnitSettings.TorqueUnit);
             reactions.AddEntriesWithMatchingIdentifiers(globalMemberEndForcesVector);
         }
 
@@ -129,7 +133,10 @@ public class AnalyticalModel : BeamOSEntity<AnalyticalModelId>
         foreach (AnalyticalElement1D element1D in element1Ds)
         {
             MatrixIdentified<UnsupportedStructureDisplacementId> globalMatrixWithIdentifiers = element1D
-                .GetGlobalStiffnessMatrixIdentified();
+                .GetGlobalStiffnessMatrixIdentified(
+                    this.UnitSettings.ForceUnit,
+                    this.UnitSettings.ForcePerLengthUnit,
+                    this.UnitSettings.TorqueUnit);
             sMatrix.AddEntriesWithMatchingIdentifiers(globalMatrixWithIdentifiers);
         }
 

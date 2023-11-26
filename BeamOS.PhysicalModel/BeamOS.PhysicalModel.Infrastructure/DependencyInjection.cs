@@ -13,6 +13,12 @@ using Microsoft.Extensions.DependencyInjection;
 using BeamOS.PhysicalModel.Infrastructure.Nodes;
 using BeamOS.PhysicalModel.Infrastructure.Element1Ds;
 using BeamOS.PhysicalModel.Infrastructure.Models;
+using BeamOS.PhysicalModel.Domain.MaterialAggregate.ValueObjects;
+using BeamOS.PhysicalModel.Domain.MaterialAggregate;
+using BeamOS.PhysicalModel.Infrastructure.Materials;
+using BeamOS.PhysicalModel.Domain.SectionProfileAggregate.ValueObjects;
+using BeamOS.PhysicalModel.Domain.SectionProfileAggregate;
+using BeamOS.PhysicalModel.Infrastructure.SectionProfiles;
 
 namespace BeamOS.PhysicalModel.Infrastructure;
 public static class DependencyInjection
@@ -45,6 +51,8 @@ public static class DependencyInjection
         _ = services.AddScoped<IRepository<ModelId, Model>, ModelDbContextRepository>();
         _ = services.AddScoped<IRepository<NodeId, Node>, NodeDbContextRepository>();
         _ = services.AddScoped<IRepository<Element1DId, Element1D>, Element1dDbContextRepository>();
+        _ = services.AddScoped<IRepository<MaterialId, Material>, MaterialDbContextRepository>();
+        _ = services.AddScoped<IRepository<SectionProfileId, SectionProfile>, SectionProfileDbContextRepository>();
         _ = services.AddSingleton<IRepository<PointLoadId, PointLoad>, InMemoryRepository<PointLoadId, PointLoad>>();
 
         return services;

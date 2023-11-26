@@ -1,12 +1,16 @@
 using BeamOS.Common.Api;
 using BeamOS.Common.Api.Interfaces;
 using BeamOS.PhysicalModel.Contracts.Element1D;
+using BeamOS.PhysicalModel.Contracts.Material;
 using BeamOS.PhysicalModel.Contracts.Model;
 using BeamOS.PhysicalModel.Contracts.Node;
+using BeamOS.PhysicalModel.Contracts.SectionProfile;
 using BeamOS.PhysicalModel.Domain.Element1DAggregate;
+using BeamOS.PhysicalModel.Domain.MaterialAggregate;
 using BeamOS.PhysicalModel.Domain.ModelAggregate;
 using BeamOS.PhysicalModel.Domain.ModelAggregate.ValueObjects;
 using BeamOS.PhysicalModel.Domain.NodeAggregate;
+using BeamOS.PhysicalModel.Domain.SectionProfileAggregate;
 using BeamOS.PhysicalModel.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +21,8 @@ public class GetModelEndpoint(
     IMapper<Element1D, Element1DResponse> element1dResponseMapper,
     IMapper<Node, NodeResponse> nodeResponseMapper,
     IMapper<Model, ModelResponse> modelResponseMapper,
+    IMapper<Material, MaterialResponse> materialResponseMapper,
+    IMapper<SectionProfile, SectionProfileResponse> sectionProfileResponseMapper,
     IMapper<ModelSettings, ModelSettingsResponse> settingsResponseMapper)
         : BaseEndpoint, IGetEndpoint<string, ModelResponse, bool?>
 {
@@ -47,7 +53,7 @@ public class GetModelEndpoint(
         }
         ModelId typedId = new(Guid.Parse(id));
 
-        Model model = await dbContext.Models
+        Model model1 = await dbContext.Models
             .FirstAsync(m => m.Id == typedId, cancellationToken: ct);
         List<Element1DResponse> element1Ds = await dbContext.Element1Ds
             .Where(el => el.ModelId == typedId)
@@ -57,14 +63,28 @@ public class GetModelEndpoint(
             .Where(el => el.ModelId == typedId)
             .Select(el => nodeResponseMapper.Map(el))
             .ToListAsync(cancellationToken: ct);
+        List<MaterialResponse> materials = await dbContext.Materials
+            .Where(el => el.ModelId == typedId)
+            .Select(el => materialResponseMapper.Map(el))
+            .ToListAsync(cancellationToken: ct);
+        List<SectionProfileResponse> sectionProfiles = await dbContext.SectionProfiles
+            .Where(el => el.ModelId == typedId)
+            .Select(el => sectionProfileResponseMapper.Map(el))
+            .ToListAsync(cancellationToken: ct);
+        List<SectionProfileResponse> pointLoads = await dbContext.PointLoads
+            .Where(el => el.ModelId == typedId)
+            .Select(el => sectionProfileResponseMapper.Map(el))
+            .ToListAsync(cancellationToken: ct);
 
-        ModelSettingsResponse settingsResponse = settingsResponseMapper.Map(model.Settings);
+        ModelSettingsResponse settingsResponse = settingsResponseMapper.Map(model1.Settings);
         return new ModelResponse(
             id,
-            model.Name,
-            model.Description,
+            model1.Name,
+            model1.Description,
             settingsResponse,
             Nodes: nodes,
-            Element1Ds: element1Ds);
+            Element1Ds: element1Ds,
+            Materials: materials,
+            SectionProfiles: sectionProfiles);
     }
 }

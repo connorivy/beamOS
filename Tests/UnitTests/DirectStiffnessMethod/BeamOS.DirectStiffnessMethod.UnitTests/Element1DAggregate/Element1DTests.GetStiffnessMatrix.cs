@@ -1,6 +1,7 @@
 using BeamOS.Common.Domain.ValueObjects;
 using BeamOS.DirectStiffnessMethod.Domain.AnalyticalElement1DAggregate;
 using BeamOS.DirectStiffnessMethod.Domain.AnalyticalElement1DAggregate.ValueObjects;
+using BeamOS.DirectStiffnessMethod.Domain.AnalyticalModelAggregate.ValueObjects;
 using BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Extensions;
 using BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Factories;
 using BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Fixtures.AnalyticalElement1Ds;
@@ -20,7 +21,10 @@ public partial class Element1DTests
     {
         _ = fixture.ExpectedLocalStiffnessMatrix.ThrowIfNull(() => throw new SkipException());
 
-        Matrix<double> localStiffnessMatrix = fixture.Element.GetLocalStiffnessMatrix();
+        Matrix<double> localStiffnessMatrix = fixture.Element.GetLocalStiffnessMatrix(
+            fixture.UnitSettings.ForceUnit,
+            fixture.UnitSettings.ForcePerLengthUnit,
+            fixture.UnitSettings.TorqueUnit);
 
         localStiffnessMatrix.AssertAlmostEqual(fixture.ExpectedLocalStiffnessMatrix, 1);
     }
@@ -30,7 +34,10 @@ public partial class Element1DTests
     {
         AnalyticalElement1D element = Element1DFactory.Create();
 
-        Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix();
+        Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix(
+            UnitSettings.SI.ForceUnit,
+            UnitSettings.SI.ForcePerLengthUnit,
+            UnitSettings.SI.TorqueUnit);
         Matrix<double> expectedLocalStiffnessMatrix = DenseMatrix.OfArray(new double[12, 12]
         {
             {  1,   0,   0,  0,  0,  0, -1,   0,   0,  0,  0,  0 },
@@ -56,7 +63,10 @@ public partial class Element1DTests
         Material material = MaterialFactory.Create(modulusOfElasticity: new Pressure(5, UnitSystem.SI));
         AnalyticalElement1D element = Element1DFactory.Create(material: material);
 
-        Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix();
+        Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix(
+            UnitSettings.SI.ForceUnit,
+            UnitSettings.SI.ForcePerLengthUnit,
+            UnitSettings.SI.TorqueUnit);
         Matrix<double> expectedLocalStiffnessMatrix = DenseMatrix.OfArray(new double[12, 12]
         {
             {  5*1,   0,   0,  0,  0,  0, -5*1,   0,   0,  0,  0,  0 },
@@ -82,7 +92,10 @@ public partial class Element1DTests
         Material material = MaterialFactory.Create(modulusOfRigidity: new Pressure(5, UnitSystem.SI));
         AnalyticalElement1D element = Element1DFactory.Create(material: material);
 
-        Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix();
+        Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix(
+            UnitSettings.SI.ForceUnit,
+            UnitSettings.SI.ForcePerLengthUnit,
+            UnitSettings.SI.TorqueUnit);
         Matrix<double> expectedLocalStiffnessMatrix = DenseMatrix.OfArray(new double[12, 12]
         {
             {  1,   0,   0,  0,  0,  0, -1,   0,   0,  0,  0,  0 },
@@ -108,7 +121,10 @@ public partial class Element1DTests
         SectionProfile section = SectionProfileFactory.CreateSI(area: new Area(5, UnitSystem.SI));
         AnalyticalElement1D element = Element1DFactory.Create(sectionProfile: section);
 
-        Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix();
+        Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix(
+            UnitSettings.SI.ForceUnit,
+            UnitSettings.SI.ForcePerLengthUnit,
+            UnitSettings.SI.TorqueUnit);
         Matrix<double> expectedLocalStiffnessMatrix = DenseMatrix.OfArray(new double[12, 12]
         {
             {  5*1,   0,   0,  0,  0,  0, -5*1,   0,   0,  0,  0,  0 },
@@ -134,7 +150,10 @@ public partial class Element1DTests
         SectionProfile section = SectionProfileFactory.CreateSI(strongAxisMomentOfInertia: new AreaMomentOfInertia(5, UnitSystem.SI));
         AnalyticalElement1D element = Element1DFactory.Create(sectionProfile: section);
 
-        Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix();
+        Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix(
+            UnitSettings.SI.ForceUnit,
+            UnitSettings.SI.ForcePerLengthUnit,
+            UnitSettings.SI.TorqueUnit);
         Matrix<double> expectedLocalStiffnessMatrix = DenseMatrix.OfArray(new double[12, 12]
         {
             {  1,   0,   0,  0,  0,  0, -1,   0,   0,  0,  0,  0 },
@@ -160,7 +179,10 @@ public partial class Element1DTests
         SectionProfile section = SectionProfileFactory.CreateSI(weakAxisMomentOfInertia: new AreaMomentOfInertia(5, UnitSystem.SI));
         AnalyticalElement1D element = Element1DFactory.Create(sectionProfile: section);
 
-        Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix();
+        Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix(
+            UnitSettings.SI.ForceUnit,
+            UnitSettings.SI.ForcePerLengthUnit,
+            UnitSettings.SI.TorqueUnit);
         Matrix<double> expectedLocalStiffnessMatrix = DenseMatrix.OfArray(new double[12, 12]
         {
             {  1,   0,   0,  0,  0,  0, -1,   0,   0,  0,  0,  0 },
@@ -186,7 +208,10 @@ public partial class Element1DTests
         SectionProfile section = SectionProfileFactory.CreateSI(polarMomentOfInertia: new AreaMomentOfInertia(5, UnitSystem.SI));
         AnalyticalElement1D element = Element1DFactory.Create(sectionProfile: section);
 
-        Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix();
+        Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix(
+            UnitSettings.SI.ForceUnit,
+            UnitSettings.SI.ForcePerLengthUnit,
+            UnitSettings.SI.TorqueUnit);
         Matrix<double> expectedLocalStiffnessMatrix = DenseMatrix.OfArray(new double[12, 12]
         {
             {  1,   0,   0,  0,  0,  0, -1,   0,   0,  0,  0,  0 },
@@ -213,7 +238,10 @@ public partial class Element1DTests
           startNode: new(0, 0, 0, UnitsNet.Units.LengthUnit.Meter, Restraint.Free),
           endNode: new(5, 0, 0, UnitsNet.Units.LengthUnit.Meter, Restraint.Free));
 
-        Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix();
+        Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix(
+            UnitSettings.SI.ForceUnit,
+            UnitSettings.SI.ForcePerLengthUnit,
+            UnitSettings.SI.TorqueUnit);
         Matrix<double> expectedLocalStiffnessMatrix = DenseMatrix.OfArray(new double[12, 12]
         {
             {  1/5.0,   0,   0,  0,  0,  0, -1/5.0,   0,   0,  0,  0,  0 },

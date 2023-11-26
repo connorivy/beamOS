@@ -1,14 +1,23 @@
-using BeamOS.PhysicalModel.Domain.Element1DAggregate;
-using Microsoft.EntityFrameworkCore;
 using BeamOS.Common.Infrastructure;
-using BeamOS.PhysicalModel.Domain.NodeAggregate;
-using BeamOS.PhysicalModel.Infrastructure.Common.Configurations;
+using BeamOS.PhysicalModel.Domain.Element1DAggregate;
+using BeamOS.PhysicalModel.Domain.MaterialAggregate;
 using BeamOS.PhysicalModel.Domain.ModelAggregate;
-using Microsoft.Extensions.DependencyInjection;
 using BeamOS.PhysicalModel.Domain.ModelAggregate.ValueObjects;
+using BeamOS.PhysicalModel.Domain.NodeAggregate;
+using BeamOS.PhysicalModel.Domain.PointLoadAggregate;
+using BeamOS.PhysicalModel.Domain.SectionProfileAggregate;
+using BeamOS.PhysicalModel.Infrastructure.Common.Configurations;
+using Microsoft.EntityFrameworkCore;
+using UnitsNet.Units;
 
 namespace BeamOS.PhysicalModel.Infrastructure;
 
+/// <summary>
+/// Build migrations from folder location
+/// \beamOS\BeamOS.PhysicalModel\BeamOS.PhysicalModel.Api\
+/// with the command
+/// dotnet ef migrations add Initial --project ..\BeamOS.PhysicalModel.Infrastructure\
+/// </summary>
 public class PhysicalModelDbContext : DbContext
 {
     public PhysicalModelDbContext(DbContextOptions<PhysicalModelDbContext> options) : base(options) { }
@@ -17,6 +26,9 @@ public class PhysicalModelDbContext : DbContext
     public DbSet<Model> Models { get; set; }
     public DbSet<Element1D> Element1Ds { get; set; }
     public DbSet<Node> Nodes { get; set; }
+    public DbSet<Material> Materials { get; set; }
+    public DbSet<SectionProfile> SectionProfiles { get; set; }
+    public DbSet<PointLoad> PointLoads { get; set; }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
@@ -36,29 +48,23 @@ public class PhysicalModelDbContext : DbContext
             .ForEach(p => p.ValueGenerated = Microsoft.EntityFrameworkCore.Metadata.ValueGenerated.Never);
     }
 
-    public static async Task SeedSqlServer(IServiceProvider applicationServices)
+    public async Task SeedAsync()
     {
-        using var scope = applicationServices.CreateScope();
-        var services = scope.ServiceProvider;
-
-        var dbContext = services.GetRequiredService<PhysicalModelDbContext>();
-        dbContext.Database.EnsureCreated();
-
         ModelId zeroId = new(Guid.Parse("00000000-0000-0000-0000-000000000000"));
-        if (await dbContext.Models
+        if (await this.Models
             .AnyAsync(m => m.Id == zeroId))
         {
             return;
         }
 
-        dbContext.Models.Add(new(
+        this.Models.Add(new(
             "Big Ol' Building",
             "Building on the corner of 6th and Main",
             new(UnitSettings.K_IN),
             new(Guid.Parse("00000000-0000-0000-0000-000000000000"))
         ));
 
-        dbContext.Nodes.Add(new(
+        this.Nodes.Add(new(
             new(Guid.Parse("00000000-0000-0000-0000-000000000000")),
             0,
             0,
@@ -67,7 +73,7 @@ public class PhysicalModelDbContext : DbContext
             new(Guid.Parse("00000000-0000-0000-0000-000000000000"))
         ));
 
-        dbContext.Nodes.Add(new(
+        this.Nodes.Add(new(
             new(Guid.Parse("00000000-0000-0000-0000-000000000000")),
             0,
             0,
@@ -76,7 +82,7 @@ public class PhysicalModelDbContext : DbContext
             new(Guid.Parse("00000000-0000-0000-0000-000000000001"))
         ));
 
-        dbContext.Nodes.Add(new(
+        this.Nodes.Add(new(
             new(Guid.Parse("00000000-0000-0000-0000-000000000000")),
             0,
             0,
@@ -85,7 +91,7 @@ public class PhysicalModelDbContext : DbContext
             new(Guid.Parse("00000000-0000-0000-0000-000000000002"))
         ));
 
-        dbContext.Element1Ds.Add(new(
+        this.Element1Ds.Add(new(
             new(Guid.Parse("00000000-0000-0000-0000-000000000000")),
             new(Guid.Parse("00000000-0000-0000-0000-000000000000")),
             new(Guid.Parse("00000000-0000-0000-0000-000000000001")),
@@ -93,7 +99,7 @@ public class PhysicalModelDbContext : DbContext
             new(Guid.Parse("00000000-0000-0000-0000-000000000000"))
         ));
 
-        dbContext.Element1Ds.Add(new(
+        this.Element1Ds.Add(new(
             new(Guid.Parse("00000000-0000-0000-0000-000000000000")),
             new(Guid.Parse("00000000-0000-0000-0000-000000000001")),
             new(Guid.Parse("00000000-0000-0000-0000-000000000002")),
@@ -101,6 +107,24 @@ public class PhysicalModelDbContext : DbContext
             new(Guid.Parse("00000000-0000-0000-0000-000000000000"))
         ));
 
-        await dbContext.SaveChangesAsync();
+
+        this.Materials.Add(new Material(
+            new(Guid.Parse("00000000-0000-0000-0000-000000000000")),
+            new(29000, PressureUnit.KilopoundForcePerSquareInch),
+            new(11460, PressureUnit.KilopoundForcePerSquareInch),
+            new(Guid.Parse("00000000-0000-0000-0000-000000000000"))
+        ));
+
+        //W12x19
+        this.SectionProfiles.Add(new(
+            new(Guid.Parse("00000000-0000-0000-0000-000000000000")),
+            new(5.57, AreaUnit.SquareInch),
+            new(130, AreaMomentOfInertiaUnit.InchToTheFourth),
+            new(3.76, AreaMomentOfInertiaUnit.InchToTheFourth),
+            new(.18, AreaMomentOfInertiaUnit.InchToTheFourth),
+            new(Guid.Parse("00000000-0000-0000-0000-000000000000"))
+        ));
+
+        await this.SaveChangesAsync();
     }
 }

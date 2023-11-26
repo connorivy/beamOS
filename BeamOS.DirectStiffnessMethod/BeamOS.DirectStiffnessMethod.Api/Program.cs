@@ -17,9 +17,6 @@ builder.Services.AddHttpClient<PhysicalModelApiClient>(client => client.BaseAddr
 
 var app = builder.Build();
 
-app.MapDefaultEndpoints();
-
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

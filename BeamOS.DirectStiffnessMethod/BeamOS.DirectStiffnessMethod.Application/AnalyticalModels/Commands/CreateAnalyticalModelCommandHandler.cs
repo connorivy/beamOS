@@ -23,15 +23,15 @@ public class CreateAnalyticalModelCommandHandler(
     {
         AnalyticalModelSettings settings = await settingsCommandHandler.ExecuteAsync(command.Settings, ct);
 
-        Dictionary<Guid, AnalyticalNode> nodes = [];
+        Dictionary<string, AnalyticalNode> nodes = [];
         Dictionary<string, Material> materials = [];
         Dictionary<string, SectionProfile> sectionProfiles = [];
-        Dictionary<Guid, AnalyticalElement1D> element1ds = [];
+        Dictionary<string, AnalyticalElement1D> element1ds = [];
 
         foreach (CreateAnalyticalNodeCommand nodeCommand in command.Nodes)
         {
             AnalyticalNode node = await createNodeHandler.ExecuteAsync(nodeCommand, ct);
-            nodes.Add(node.Id.Value, node);
+            nodes.Add(nodeCommand.Id, node);
         }
 
         foreach (CreateMaterialCommand materialCommand in command.Materials)
@@ -58,12 +58,12 @@ public class CreateAnalyticalModelCommandHandler(
         {
             CreateAnalyticalElement1dGivenEntitiesCommand commandWithEntities = new(
                 el1dCommand.SectionProfileRotation,
-                nodes[el1dCommand.StartNodeId.Id],
-                nodes[el1dCommand.EndNodeId.Id],
+                nodes[el1dCommand.StartNodeId.Id.ToString()],
+                nodes[el1dCommand.EndNodeId.Id.ToString()],
                 materials[el1dCommand.MaterialId],
                 sectionProfiles[el1dCommand.SectionProfileId]);
             AnalyticalElement1D element1d = await createEl1dHandler.ExecuteAsync(commandWithEntities, ct);
-            element1ds.Add(element1d.Id.Value, element1d);
+            element1ds.Add(element1d.Id.Value.ToString(), element1d);
         }
 
         var model = AnalyticalModel.RunAnalysis(settings.UnitSettings, element1ds.Values, nodes.Values);
