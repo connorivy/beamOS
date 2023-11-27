@@ -1,5 +1,6 @@
 using BeamOS.Common.Api.Interfaces;
 using BeamOS.PhysicalModel.Api.Element1Ds.Mappers;
+using BeamOS.PhysicalModel.Api.Mappers;
 using BeamOS.PhysicalModel.Application.Element1Ds;
 using BeamOS.PhysicalModel.Contracts.Element1D;
 using BeamOS.PhysicalModel.Domain.Element1DAggregate;
@@ -8,8 +9,8 @@ using FastEndpoints;
 namespace BeamOS.PhysicalModel.Api.Element1Ds.Endpoints;
 
 public class CreateElement1DEndpoint(
-    BeamOS.Common.Application.Interfaces.ICommandHandler<CreateElement1DCommand, Element1D> createNodeCommandHandler,
-    IMapper<Element1D, Element1DResponse> responseMapper) : Endpoint<CreateElement1DRequest, Element1DResponse>
+    CreateElement1DCommandHandler createElement1dCommandHandler,
+    Element1DResponseMapper responseMapper) : Endpoint<CreateElement1DRequest, Element1DResponse>
 {
     public override void Configure()
     {
@@ -28,7 +29,7 @@ public class CreateElement1DEndpoint(
     {
         CreateElement1DCommand command = req.ToCommand();
 
-        Element1D element1D = await createNodeCommandHandler.ExecuteAsync(command, ct);
+        Element1D element1D = await createElement1dCommandHandler.ExecuteAsync(command, ct);
 
         Element1DResponse response = responseMapper.Map(element1D);
         await this.SendAsync(response, cancellation: ct);

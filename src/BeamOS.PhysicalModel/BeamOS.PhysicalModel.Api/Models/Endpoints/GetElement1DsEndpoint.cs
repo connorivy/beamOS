@@ -1,5 +1,6 @@
 using BeamOS.Common.Api;
 using BeamOS.Common.Api.Interfaces;
+using BeamOS.PhysicalModel.Api.Mappers;
 using BeamOS.PhysicalModel.Contracts.Element1D;
 using BeamOS.PhysicalModel.Domain.Element1DAggregate;
 using BeamOS.PhysicalModel.Domain.Element1DAggregate.ValueObjects;
@@ -11,7 +12,7 @@ namespace BeamOS.PhysicalModel.Api.Models.Endpoints;
 
 public class GetElement1DsEndpoint(
     PhysicalModelDbContext dbContext,
-    IMapper<Element1D, Element1DResponse> responseMapper)
+    Element1DResponseMapper responseMapper)
         : BaseEndpoint, IGetEndpoint<string, List<Element1DResponse>, string[]?>
 {
     public override string Route => "models/{modelId}/element1Ds";

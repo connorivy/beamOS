@@ -1,4 +1,5 @@
-using BeamOS.Common.Api.Interfaces;
+using BeamOS.PhysicalModel.Api.Mappers;
+using BeamOS.PhysicalModel.Application.Models.Commands;
 using BeamOS.PhysicalModel.Application.Nodes.Commands;
 using BeamOS.PhysicalModel.Contracts.Node;
 using BeamOS.PhysicalModel.Domain.NodeAggregate;
@@ -7,9 +8,9 @@ using FastEndpoints;
 namespace BeamOS.PhysicalModel.Api.Nodes.Endpoints;
 
 public class CreateNodeEndpoint(
-    IMapper<CreateNodeRequest, CreateNodeCommand> requestMapper,
-    BeamOS.Common.Application.Interfaces.ICommandHandler<CreateNodeCommand, Node> createNodeCommandHandler,
-    IMapper<Node, NodeResponse> responseMapper) : Endpoint<CreateNodeRequest, NodeResponse>
+    CreateNodeRequestMapper requestMapper,
+    CreateNodeCommandHandler createNodeCommandHandler,
+    NodeResponseMapper responseMapper) : Endpoint<CreateNodeRequest, NodeResponse>
 {
     public override void Configure()
     {

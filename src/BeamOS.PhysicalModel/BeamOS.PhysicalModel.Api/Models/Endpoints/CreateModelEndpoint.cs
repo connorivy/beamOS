@@ -1,4 +1,5 @@
 using BeamOS.Common.Api.Interfaces;
+using BeamOS.PhysicalModel.Api.Mappers;
 using BeamOS.PhysicalModel.Application.Models.Commands;
 using BeamOS.PhysicalModel.Contracts.Model;
 using BeamOS.PhysicalModel.Domain.ModelAggregate;
@@ -7,9 +8,9 @@ using FastEndpoints;
 namespace BeamOS.PhysicalModel.Api.Models.Endpoints;
 
 public class CreateModelEndpoint(
-    IMapper<CreateModelRequest, CreateModelCommand> commandMapper,
-    BeamOS.Common.Application.Interfaces.ICommandHandler<CreateModelCommand, Model> createModelCommandHandler,
-    IMapper<Model, ModelResponse> modelResponseMapper) : Endpoint<CreateModelRequest, ModelResponse>
+    CreateModelRequestMapper commandMapper,
+    CreateModelCommandHandler createModelCommandHandler,
+    ModelResponseMapper modelResponseMapper) : Endpoint<CreateModelRequest, ModelResponse>
 {
     public override void Configure()
     {

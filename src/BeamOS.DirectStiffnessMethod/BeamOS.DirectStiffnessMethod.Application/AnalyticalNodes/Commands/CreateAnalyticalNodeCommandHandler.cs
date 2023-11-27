@@ -1,20 +1,18 @@
 using BeamOS.Common.Application.Interfaces;
 using BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate;
-using BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate.ValueObjects;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOS.DirectStiffnessMethod.Application.AnalyticalNodes.Commands;
 
-public class CreateAnalyticalNodeCommandHandler()
-    : ICommandHandler<CreateAnalyticalNodeCommand, AnalyticalNode>
+public class CreateAnalyticalNodeCommandHandler : ICommandHandler<CreateAnalyticalNodeCommand, AnalyticalNode>
 {
-    public async Task<AnalyticalNode> ExecuteAsync(CreateAnalyticalNodeCommand command, CancellationToken ct)
+    public Task<AnalyticalNode> ExecuteAsync(CreateAnalyticalNodeCommand command, CancellationToken ct)
     {
         AnalyticalNode node = command.ToDomainObject();
 
         //await nodeRepository.Add(node);
 
-        return node;
+        return Task.FromResult(node);
     }
 }
 

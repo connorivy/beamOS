@@ -4,8 +4,7 @@ using Riok.Mapperly.Abstractions;
 
 namespace BeamOS.DirectStiffnessMethod.Application.AnalyticalModels.Commands;
 
-public class CreateAnalyticalModelSettingsCommandHandler()
-    : ICommandHandler<ModelSettingsCommand, AnalyticalModelSettings>
+public class CreateAnalyticalModelSettingsCommandHandler : ICommandHandler<ModelSettingsCommand, AnalyticalModelSettings>
 {
     public Task<AnalyticalModelSettings> ExecuteAsync(ModelSettingsCommand command, CancellationToken ct)
     {

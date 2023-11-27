@@ -1,4 +1,4 @@
-using BeamOS.Common.Api.Interfaces;
+using BeamOS.PhysicalModel.Api.Mappers;
 using BeamOS.PhysicalModel.Contracts.Common;
 using BeamOS.PhysicalModel.Contracts.Node;
 using BeamOS.PhysicalModel.Domain.NodeAggregate;
@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BeamOS.PhysicalModel.Api.Nodes.Endpoints;
 public class GetSingleNodeEndpoint(
     PhysicalModelDbContext dbContext,
-    IMapper<Node, NodeResponse> responseMapper) : Endpoint<IdRequest, NodeResponse?>
+    NodeResponseMapper responseMapper) : Endpoint<IdRequest, NodeResponse?>
 {
     public override void Configure()
     {

@@ -37,7 +37,8 @@ public static class DependencyInjection
         _ = services.Scan(scan => scan
             .FromAssemblyOf<T>()
             .AddClasses(classes => classes.AssignableTo(typeof(IMapper<,>)))
-            .AsImplementedInterfaces()
+            .AsSelf()
+            //.AsImplementedInterfaces()
             .WithTransientLifetime()
         );
 

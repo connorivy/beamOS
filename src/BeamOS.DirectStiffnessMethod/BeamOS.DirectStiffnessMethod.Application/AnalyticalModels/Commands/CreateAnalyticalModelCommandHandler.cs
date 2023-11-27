@@ -12,12 +12,12 @@ using BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate;
 namespace BeamOS.DirectStiffnessMethod.Application.AnalyticalModels.Commands;
 
 public class CreateAnalyticalModelCommandHandler(
-    ICommandHandler<ModelSettingsCommand, AnalyticalModelSettings> settingsCommandHandler,
-    ICommandHandler<CreateAnalyticalNodeCommand, AnalyticalNode> createNodeHandler,
-    ICommandHandler<CreateMaterialCommand, Material> createMaterialHandler,
-    ICommandHandler<CreateSectionProfileCommand, SectionProfile> createSectionProfileHandler,
-    ICommandHandler<CreateAnalyticalElement1dGivenEntitiesCommand, AnalyticalElement1D> createEl1dHandler)
-    : ICommandHandler<CreateAnalyticalModelCommand, AnalyticalModel>
+    CreateAnalyticalModelSettingsCommandHandler settingsCommandHandler,
+    CreateAnalyticalNodeCommandHandler createNodeHandler,
+    CreateMaterialCommandHandler createMaterialHandler,
+    CreateSectionProfileCommandHandler createSectionProfileHandler,
+    CreateAnalyticalElement1dGivenEntitiesCommandHandler createEl1dHandler)
+    : ICommandHandler<CreateAnalyticalModelCommand, AnalyticalModel?>
 {
     public async Task<AnalyticalModel?> ExecuteAsync(CreateAnalyticalModelCommand command, CancellationToken ct = default)
     {

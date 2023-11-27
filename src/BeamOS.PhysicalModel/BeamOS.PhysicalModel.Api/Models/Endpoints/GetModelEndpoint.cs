@@ -1,5 +1,7 @@
 using BeamOS.Common.Api;
 using BeamOS.Common.Api.Interfaces;
+using BeamOS.PhysicalModel.Api.Mappers;
+using BeamOS.PhysicalModel.Api.Models.Mappers;
 using BeamOS.PhysicalModel.Contracts.Element1D;
 using BeamOS.PhysicalModel.Contracts.Material;
 using BeamOS.PhysicalModel.Contracts.Model;
@@ -18,12 +20,12 @@ namespace BeamOS.PhysicalModel.Api.Models.Endpoints;
 
 public class GetModelEndpoint(
     PhysicalModelDbContext dbContext,
-    IMapper<Element1D, Element1DResponse> element1dResponseMapper,
-    IMapper<Node, NodeResponse> nodeResponseMapper,
-    IMapper<Model, ModelResponse> modelResponseMapper,
-    IMapper<Material, MaterialResponse> materialResponseMapper,
-    IMapper<SectionProfile, SectionProfileResponse> sectionProfileResponseMapper,
-    IMapper<ModelSettings, ModelSettingsResponse> settingsResponseMapper)
+    Element1DResponseMapper element1dResponseMapper,
+    NodeResponseMapper nodeResponseMapper,
+    ModelResponseMapper modelResponseMapper,
+    MaterialResponseMapper materialResponseMapper,
+    SectionProfileResponseMapper sectionProfileResponseMapper,
+    ModelSettingsResponseMapper settingsResponseMapper)
         : BaseEndpoint, IGetEndpoint<string, ModelResponse, bool?>
 {
     public override string Route => "models/{id}";

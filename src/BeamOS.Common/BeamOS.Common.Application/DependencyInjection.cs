@@ -9,7 +9,8 @@ public static class DependencyInjection
         _ = services.Scan(scan => scan
            .FromAssemblyOf<T>()
            .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<,>)))
-           .AsImplementedInterfaces()
+           .AsSelf()
+           //.AsImplementedInterfaces()
            .WithTransientLifetime()
        );
 

@@ -3,8 +3,7 @@ using BeamOS.DirectStiffnessMethod.Domain.AnalyticalElement1DAggregate.ValueObje
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOS.DirectStiffnessMethod.Application.SectionProfiles;
-public class CreateSectionProfileCommandHandler()
-    : ICommandHandler<CreateSectionProfileCommand, SectionProfile>
+public class CreateSectionProfileCommandHandler : ICommandHandler<CreateSectionProfileCommand, SectionProfile>
 {
     public Task<SectionProfile> ExecuteAsync(CreateSectionProfileCommand command, CancellationToken ct)
     {

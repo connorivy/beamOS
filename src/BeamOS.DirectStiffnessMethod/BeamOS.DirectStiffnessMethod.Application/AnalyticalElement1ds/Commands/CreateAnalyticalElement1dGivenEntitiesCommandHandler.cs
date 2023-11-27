@@ -1,19 +1,18 @@
 using BeamOS.Common.Application.Interfaces;
 using BeamOS.DirectStiffnessMethod.Domain.AnalyticalElement1DAggregate;
-using BeamOS.DirectStiffnessMethod.Domain.AnalyticalElement1DAggregate.ValueObjects;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOS.DirectStiffnessMethod.Application.AnalyticalElement1ds.Commands;
-public class CreateAnalyticalElement1dGivenEntitiesCommandHandler()
+public class CreateAnalyticalElement1dGivenEntitiesCommandHandler
     : ICommandHandler<CreateAnalyticalElement1dGivenEntitiesCommand, AnalyticalElement1D>
 {
-    public async Task<AnalyticalElement1D> ExecuteAsync(CreateAnalyticalElement1dGivenEntitiesCommand command, CancellationToken ct)
+    public Task<AnalyticalElement1D> ExecuteAsync(CreateAnalyticalElement1dGivenEntitiesCommand command, CancellationToken ct)
     {
         AnalyticalElement1D element1D = command.ToDomainObject();
 
         //await element1DRepository.Add(element1D);
 
-        return element1D;
+        return Task.FromResult(element1D);
     }
 }
 
