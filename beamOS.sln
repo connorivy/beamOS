@@ -34,10 +34,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.DirectStiffnessMetho
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.DirectStiffnessMethod.Contracts", "BeamOS.DirectStiffnessMethod\BeamOS.DirectStiffnessMethod.Contracts\BeamOS.DirectStiffnessMethod.Contracts.csproj", "{88B7871D-2C51-4BE4-8D83-C04E3E2A6ADE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS", "BeamOS\BeamOS\BeamOS.csproj", "{F1EC9ED2-0475-4C0E-825C-DB27EC57332D}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.Client", "BeamOS\BeamOS.Client\BeamOS.Client.csproj", "{EA68715A-25D0-418D-823A-9838770E808A}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.PhysicalModel.Application", "BeamOS.PhysicalModel\BeamOS.PhysicalModel.Application\BeamOS.PhysicalModel.Application.csproj", "{C0A7A71C-A6DB-4E41-8928-A161F5930A5F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.PhysicalModel.Contracts", "BeamOS.PhysicalModel\BeamOS.PhysicalModel.Contracts\BeamOS.PhysicalModel.Contracts.csproj", "{15CA1F87-41D6-40F1-8E10-19B50C96E7E0}"
@@ -58,7 +54,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.Common.Infrastructur
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.DirectStiffnessMethod.Api", "BeamOS.DirectStiffnessMethod\BeamOS.DirectStiffnessMethod.Api\BeamOS.DirectStiffnessMethod.Api.csproj", "{31D9EE30-C2EF-4922-837D-AA70C762A24D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOS.DirectStiffnessMethod.Infrastructure", "BeamOS.DirectStiffnessMethod\BeamOS.DirectStiffnessMethod.Infrastructure\BeamOS.DirectStiffnessMethod.Infrastructure.csproj", "{1EAEFF8D-491D-466D-94A6-F1ACCFC959A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.DirectStiffnessMethod.Infrastructure", "BeamOS.DirectStiffnessMethod\BeamOS.DirectStiffnessMethod.Infrastructure\BeamOS.DirectStiffnessMethod.Infrastructure.csproj", "{1EAEFF8D-491D-466D-94A6-F1ACCFC959A8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -86,14 +82,6 @@ Global
 		{88B7871D-2C51-4BE4-8D83-C04E3E2A6ADE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{88B7871D-2C51-4BE4-8D83-C04E3E2A6ADE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{88B7871D-2C51-4BE4-8D83-C04E3E2A6ADE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F1EC9ED2-0475-4C0E-825C-DB27EC57332D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F1EC9ED2-0475-4C0E-825C-DB27EC57332D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F1EC9ED2-0475-4C0E-825C-DB27EC57332D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F1EC9ED2-0475-4C0E-825C-DB27EC57332D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EA68715A-25D0-418D-823A-9838770E808A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EA68715A-25D0-418D-823A-9838770E808A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EA68715A-25D0-418D-823A-9838770E808A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EA68715A-25D0-418D-823A-9838770E808A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C0A7A71C-A6DB-4E41-8928-A161F5930A5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C0A7A71C-A6DB-4E41-8928-A161F5930A5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0A7A71C-A6DB-4E41-8928-A161F5930A5F}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -71,10 +71,10 @@ public class GetModelEndpoint(
             .Where(el => el.ModelId == typedId)
             .Select(el => sectionProfileResponseMapper.Map(el))
             .ToListAsync(cancellationToken: ct);
-        List<SectionProfileResponse> pointLoads = await dbContext.PointLoads
-            .Where(el => el.ModelId == typedId)
-            .Select(el => sectionProfileResponseMapper.Map(el))
-            .ToListAsync(cancellationToken: ct);
+        //List<SectionProfileResponse> pointLoads = await dbContext.PointLoads
+        //    .Where(el => el.ModelId == typedId)
+        //    .Select(el => sectionProfileResponseMapper.Map(el))
+        //    .ToListAsync(cancellationToken: ct);
 
         ModelSettingsResponse settingsResponse = settingsResponseMapper.Map(model1.Settings);
         return new ModelResponse(
