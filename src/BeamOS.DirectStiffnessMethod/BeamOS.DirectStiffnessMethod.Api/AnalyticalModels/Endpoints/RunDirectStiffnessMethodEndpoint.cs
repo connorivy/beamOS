@@ -23,6 +23,6 @@ public class RunDirectStiffnessMethodEndpoint(
 
         AnalyticalModel model = await createAnalyticalModelCommandHandler.ExecuteAsync(command, ct);
 
-        return null;
+        return "success";
     }
 }
