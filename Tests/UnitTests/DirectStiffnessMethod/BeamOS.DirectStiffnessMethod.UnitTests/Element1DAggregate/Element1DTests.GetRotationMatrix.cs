@@ -1,5 +1,6 @@
-using BeamOS.DirectStiffnessMethod.Domain.Element1DAggregate;
-using BeamOS.DirectStiffnessMethod.Domain.NodeAggregate;
+using BeamOS.Common.Domain.ValueObjects;
+using BeamOS.DirectStiffnessMethod.Domain.AnalyticalElement1DAggregate;
+using BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate;
 using BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Extensions;
 using BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Factories;
 using BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Fixtures.AnalyticalElement1Ds;
@@ -30,9 +31,9 @@ public partial class Element1DTests
     {
         // if the beam is oriented in the same direction as the global coordinate system,
         // then the unit vectors of the global domain should be returned
-        var startNode = Node.Create(10, 7, -3, LengthUnit.Foot);
-        var endNode = Node.Create(20, 7, -3, LengthUnit.Foot);
-        Element1D element = Element1DFactory.Create(startNode: startNode, endNode: endNode);
+        AnalyticalNode startNode = new(10, 7, -3, LengthUnit.Foot, Restraint.Free);
+        AnalyticalNode endNode = new(20, 7, -3, LengthUnit.Foot, Restraint.Free);
+        AnalyticalElement1D element = Element1DFactory.Create(startNode: startNode, endNode: endNode);
 
         Matrix<double> expectedRotationMatrix = DenseMatrix.OfArray(new[,]
         {
@@ -57,9 +58,9 @@ public partial class Element1DTests
     {
         // if an elements local xy plane is equal to or parallel with the global xy plane,
         // return the following matrix (ref Advanced Structural Analysis with MATLAB eqn 4.17)
-        Node startNode = Node.Create(x0, y0, z0, LengthUnit.Foot);
-        Node endNode = Node.Create(x1, y1, z1, LengthUnit.Foot);
-        Element1D element = Element1DFactory.Create(startNode: startNode, endNode: endNode);
+        AnalyticalNode startNode = new(x0, y0, z0, LengthUnit.Foot, Restraint.Free);
+        AnalyticalNode endNode = new(x1, y1, z1, LengthUnit.Foot, Restraint.Free);
+        AnalyticalElement1D element = Element1DFactory.Create(startNode: startNode, endNode: endNode);
 
         var L = element.Length;
         var cx = (endNode.LocationPoint.XCoordinate - startNode.LocationPoint.XCoordinate) / L;
@@ -89,9 +90,9 @@ public partial class Element1DTests
     {
         // if an elements local xz is equal to or parallel with the global xz plane,
         // return the following matrix (ref Advanced Structural Analysis with MATLAB eqn 4.16)
-        Node startNode = Node.Create(x0, y0, z0, LengthUnit.Foot);
-        Node endNode = Node.Create(x1, y1, z1, LengthUnit.Foot);
-        Element1D element = Element1DFactory.Create(startNode: startNode, endNode: endNode);
+        AnalyticalNode startNode = new(x0, y0, z0, LengthUnit.Foot, Restraint.Free);
+        AnalyticalNode endNode = new(x1, y1, z1, LengthUnit.Foot, Restraint.Free);
+        AnalyticalElement1D element = Element1DFactory.Create(startNode: startNode, endNode: endNode);
 
         var L = element.Length;
         var cx = (endNode.LocationPoint.XCoordinate - startNode.LocationPoint.XCoordinate) / L;
@@ -122,9 +123,9 @@ public partial class Element1DTests
         // if an element is aligned with the global coord system, but has a non 0 rotation,
         // return the following matrix (ref Advanced Structural Analysis with MATLAB eqn 4.18)
         Angle rotation = new(rotationDegrees, AngleUnit.Degree);
-        Node startNode = Node.Create(x0, y0, z0, LengthUnit.Foot);
-        Node endNode = Node.Create(x1, y1, z1, LengthUnit.Foot);
-        Element1D element = Element1DFactory.Create(
+        AnalyticalNode startNode = new(x0, y0, z0, LengthUnit.Foot, Restraint.Free);
+        AnalyticalNode endNode = new(x1, y1, z1, LengthUnit.Foot, Restraint.Free);
+        AnalyticalElement1D element = Element1DFactory.Create(
           startNode: startNode,
           endNode: endNode,
           rotation: rotation
@@ -144,9 +145,9 @@ public partial class Element1DTests
     public void GetRotationMatrix_AlignedWithGlobalPlanesRotateMinus36Degree_ShouldEqualExpectedValue()
     {
         Angle rotation = new(-36, AngleUnit.Degree);
-        Node startNode = Node.Create(10, 18, -15, LengthUnit.Foot);
-        Node endNode = Node.Create(20, 18, -15, LengthUnit.Foot);
-        Element1D element = Element1DFactory.Create(
+        AnalyticalNode startNode = new(10, 18, -15, LengthUnit.Foot, Restraint.Free);
+        AnalyticalNode endNode = new(20, 18, -15, LengthUnit.Foot, Restraint.Free);
+        AnalyticalElement1D element = Element1DFactory.Create(
           startNode: startNode,
           endNode: endNode,
           rotation: rotation
@@ -167,9 +168,9 @@ public partial class Element1DTests
     {
         // by default (aka no profile rotation), a vertical member will end up with it's local
         // y axis aligned in the global -x direction
-        Node startNode = Node.Create(10, 10, 5, LengthUnit.Foot);
-        Node endNode = Node.Create(10, 18, 5, LengthUnit.Foot);
-        Element1D element = Element1DFactory.Create(startNode: startNode, endNode: endNode);
+        AnalyticalNode startNode = new(10, 10, 5, LengthUnit.Foot, Restraint.Free);
+        AnalyticalNode endNode = new(10, 18, 5, LengthUnit.Foot, Restraint.Free);
+        AnalyticalElement1D element = Element1DFactory.Create(startNode: startNode, endNode: endNode);
 
         Matrix<double> expectedRotationMatrix = DenseMatrix.OfArray(new[,]
         {
@@ -186,9 +187,9 @@ public partial class Element1DTests
     {
         // a positive (counter clockwise) 90 degree rotation will align the local y axis in the global +z direction
         Angle rotation = new(90, AngleUnit.Degree);
-        Node startNode = Node.Create(-9, -7, 5, LengthUnit.Foot);
-        Node endNode = Node.Create(-9, 0, 5, LengthUnit.Foot);
-        Element1D element = Element1DFactory.Create(
+        AnalyticalNode startNode = new(-9, -7, 5, LengthUnit.Foot, Restraint.Free);
+        AnalyticalNode endNode = new(-9, 0, 5, LengthUnit.Foot, Restraint.Free);
+        AnalyticalElement1D element = Element1DFactory.Create(
           startNode: startNode,
           endNode: endNode,
           rotation: rotation
@@ -211,9 +212,9 @@ public partial class Element1DTests
         // the local y axis will be -cos(-30d) in the global x direction and sin(-30d) in the global z dir
         // the local z axis will be sin(-30d) in the global x direction and cos(-30d) in the global z dir
         Angle rotation = new(-30, AngleUnit.Degree);
-        Node startNode = Node.Create(10, -7, -15, LengthUnit.Foot);
-        Node endNode = Node.Create(10, 18, -15, LengthUnit.Foot);
-        Element1D element = Element1DFactory.Create(
+        AnalyticalNode startNode = new(10, -7, -15, LengthUnit.Foot, Restraint.Free);
+        AnalyticalNode endNode = new(10, 18, -15, LengthUnit.Foot, Restraint.Free);
+        AnalyticalElement1D element = Element1DFactory.Create(
           startNode: startNode,
           endNode: endNode,
           rotation: rotation
@@ -236,9 +237,9 @@ public partial class Element1DTests
     {
         // a vertical member that has point 0 above point 1 will be aligned in the global -x dir
         // the local y axis will be in the global +x dir and the local z will be in the global +z
-        Node startNode = Node.Create(10, 10, 5, LengthUnit.Foot);
-        Node endNode = Node.Create(10, 18, 5, LengthUnit.Foot);
-        Element1D element = Element1DFactory.Create(startNode: startNode, endNode: endNode);
+        AnalyticalNode startNode = new(10, 10, 5, LengthUnit.Foot, Restraint.Free);
+        AnalyticalNode endNode = new(10, 18, 5, LengthUnit.Foot, Restraint.Free);
+        AnalyticalElement1D element = Element1DFactory.Create(startNode: startNode, endNode: endNode);
 
         Matrix<double> expectedRotationMatrix = DenseMatrix.OfArray(new[,]
         {
@@ -256,9 +257,9 @@ public partial class Element1DTests
         // for an element aligned with the global -y axis,
         // a positive (counter clockwise) 90 degree rotation will align the local y axis in the global +z direction
         Angle rotation = new(90, AngleUnit.Degree);
-        Node startNode = Node.Create(10, 36, -15, LengthUnit.Foot);
-        Node endNode = Node.Create(10, 18, -15, LengthUnit.Foot);
-        Element1D element = Element1DFactory.Create(
+        AnalyticalNode startNode = new(10, 36, -15, LengthUnit.Foot, Restraint.Free);
+        AnalyticalNode endNode = new(10, 18, -15, LengthUnit.Foot, Restraint.Free);
+        AnalyticalElement1D element = Element1DFactory.Create(
           startNode: startNode,
           endNode: endNode,
           rotation: rotation
@@ -278,9 +279,9 @@ public partial class Element1DTests
     public void GetRotationMatrix_MisalignedFromGlobal_ShouldEqualExpectedValue()
     {
         // simplest case
-        Node startNode = Node.Create(0, 0, 0, LengthUnit.Foot);
-        Node endNode = Node.Create(1, 1, 1, LengthUnit.Foot);
-        Element1D element = Element1DFactory.Create(startNode: startNode, endNode: endNode);
+        AnalyticalNode startNode = new(0, 0, 0, LengthUnit.Foot, Restraint.Free);
+        AnalyticalNode endNode = new(1, 1, 1, LengthUnit.Foot, Restraint.Free);
+        AnalyticalElement1D element = Element1DFactory.Create(startNode: startNode, endNode: endNode);
 
         Matrix<double> expectedRotationMatrix = DenseMatrix.OfArray(new[,]
         {
@@ -297,9 +298,9 @@ public partial class Element1DTests
     {
         // This answer is taken from Matrix Analysis of Structures example 8.3
         Angle rotation = new(0.857302717, AngleUnit.Radian);
-        Node startNode = Node.Create(4, 7, 6, LengthUnit.Foot);
-        Node endNode = Node.Create(20, 15, 17, LengthUnit.Foot);
-        Element1D element = Element1DFactory.Create(
+        AnalyticalNode startNode = new(4, 7, 6, LengthUnit.Foot, Restraint.Free);
+        AnalyticalNode endNode = new(20, 15, 17, LengthUnit.Foot, Restraint.Free);
+        AnalyticalElement1D element = Element1DFactory.Create(
           startNode: startNode,
           endNode: endNode,
           rotation: rotation

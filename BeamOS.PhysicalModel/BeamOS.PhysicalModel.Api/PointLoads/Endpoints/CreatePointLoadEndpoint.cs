@@ -1,11 +1,16 @@
-using BeamOS.PhysicalModel.Api.PointLoads.Mappers;
+using BeamOS.Common.Api.Interfaces;
+using BeamOS.Common.Contracts;
 using BeamOS.PhysicalModel.Application.PointLoads.Commands;
 using BeamOS.PhysicalModel.Contracts.Common;
 using BeamOS.PhysicalModel.Contracts.PointLoad;
+using BeamOS.PhysicalModel.Domain.PointLoadAggregate;
 using FastEndpoints;
 
 namespace BeamOS.PhysicalModel.Api.PointLoads.Endpoints;
-public class CreatePointLoadEndpoint(CreatePointLoadCommandHandler createPointLoadCommandHandler)
+public class CreatePointLoadEndpoint(
+    IMapper<CreatePointLoadRequest, CreatePointLoadCommand> requestMapper,
+    BeamOS.Common.Application.Interfaces.ICommandHandler<CreatePointLoadCommand, PointLoad> createPointLoadCommandHandler,
+    IMapper<PointLoad, PointLoadResponse> responseMapper)
     : Endpoint<CreatePointLoadRequest, PointLoadResponse>
 {
     public override void Configure()
@@ -22,11 +27,11 @@ public class CreatePointLoadEndpoint(CreatePointLoadCommandHandler createPointLo
 
     public override async Task HandleAsync(CreatePointLoadRequest req, CancellationToken ct)
     {
-        var command = req.ToCommand();
+        CreatePointLoadCommand command = requestMapper.Map(req);
 
-        var node = await createPointLoadCommandHandler.ExecuteAsync(command, ct);
+        PointLoad node = await createPointLoadCommandHandler.ExecuteAsync(command, ct);
 
-        var response = node.ToResponse();
+        PointLoadResponse response = responseMapper.Map(node);
         await this.SendAsync(response, cancellation: ct);
     }
 }

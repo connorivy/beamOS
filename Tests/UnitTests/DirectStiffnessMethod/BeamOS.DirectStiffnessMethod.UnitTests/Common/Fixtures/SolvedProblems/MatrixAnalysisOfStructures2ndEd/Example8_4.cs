@@ -1,7 +1,8 @@
-using BeamOS.DirectStiffnessMethod.Domain.Element1DAggregate;
-using BeamOS.DirectStiffnessMethod.Domain.Element1DAggregate.ValueObjects;
-using BeamOS.DirectStiffnessMethod.Domain.ModelAggregate.ValueObjects;
-using BeamOS.DirectStiffnessMethod.Domain.NodeAggregate;
+using BeamOS.Common.Domain.ValueObjects;
+using BeamOS.DirectStiffnessMethod.Domain.AnalyticalElement1DAggregate;
+using BeamOS.DirectStiffnessMethod.Domain.AnalyticalElement1DAggregate.ValueObjects;
+using BeamOS.DirectStiffnessMethod.Domain.AnalyticalModelAggregate.ValueObjects;
+using BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate;
 using BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Fixtures.AnalyticalElement1Ds;
 using BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Fixtures.AnalyticalModels;
 using MathNet.Numerics.LinearAlgebra;
@@ -63,9 +64,9 @@ internal class Example8_4 : SolvedProblem
     private static AnalyticalElement1DFixture GetElement1Fixture()
     {
         #region ElementDefinition
-        Node startNode = Node.Create(-20, 0, 0, LengthUnit.Foot);
-        Node endNode = Node.Create(0, 0, 0, LengthUnit.Foot);
-        var element = Element1D.Create(Angle.Zero, UnitSettings.K_IN, startNode, endNode, Steel29000ksi, Profile33in2);
+        AnalyticalNode startNode = new(-20, 0, 0, LengthUnit.Foot, Restraint.Free);
+        AnalyticalNode endNode = new(0, 0, 0, LengthUnit.Foot, Restraint.Free);
+        var element = AnalyticalElement1D.Create(Angle.Zero, UnitSettings.K_IN, startNode, endNode, Steel29000ksi, Profile33in2);
         #endregion
 
         #region ResultsDefinition
@@ -156,7 +157,7 @@ internal class Example8_4 : SolvedProblem
         });
         #endregion
 
-        return new AnalyticalElement1DFixture(element)
+        return new AnalyticalElement1DFixture(element, UnitSettings.K_IN)
         {
             ExpectedRotationMatrix = rotationMatrix,
             ExpectedTransformationMatrix = transformationMatrix,
@@ -174,10 +175,10 @@ internal class Example8_4 : SolvedProblem
     public static AnalyticalElement1DFixture GetElement2Fixture()
     {
         #region ElementDefinition
-        Node startNode = Node.Create(0, -20, 0, LengthUnit.Foot);
-        Node endNode = Node.Create(0, 0, 0, LengthUnit.Foot);
+        AnalyticalNode startNode = new(0, -20, 0, LengthUnit.Foot, Restraint.Free);
+        AnalyticalNode endNode = new(0, 0, 0, LengthUnit.Foot, Restraint.Free);
 
-        Element1D element = Element1D.Create(
+        AnalyticalElement1D element = AnalyticalElement1D.Create(
             new Angle(Math.PI / 2, AngleUnit.Radian),
             UnitSettings.K_IN,
             startNode,
@@ -307,7 +308,7 @@ internal class Example8_4 : SolvedProblem
         });
         #endregion
 
-        return new AnalyticalElement1DFixture(element)
+        return new AnalyticalElement1DFixture(element, UnitSettings.K_IN)
         {
             ExpectedRotationMatrix = rotationMatrix,
             ExpectedTransformationMatrix = transformationMatrix,
@@ -325,10 +326,10 @@ internal class Example8_4 : SolvedProblem
     public static AnalyticalElement1DFixture GetElement3Fixture()
     {
         #region ElementDefinition
-        Node startNode = Node.Create(0, 0, -20, LengthUnit.Foot);
-        Node endNode = Node.Create(0, 0, 0, LengthUnit.Foot);
+        AnalyticalNode startNode = new(0, 0, -20, LengthUnit.Foot, Restraint.Free);
+        AnalyticalNode endNode = new(0, 0, 0, LengthUnit.Foot, Restraint.Free);
 
-        Element1D element = Element1D.Create(
+        AnalyticalElement1D element = AnalyticalElement1D.Create(
             new Angle(30, AngleUnit.Degree),
             UnitSettings.K_IN,
             startNode,
@@ -457,7 +458,7 @@ internal class Example8_4 : SolvedProblem
         });
         #endregion
 
-        return new AnalyticalElement1DFixture(element)
+        return new AnalyticalElement1DFixture(element, UnitSettings.K_IN)
         {
             ExpectedRotationMatrix = rotationMatrix,
             ExpectedTransformationMatrix = transformationMatrix,

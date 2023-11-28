@@ -1,18 +1,18 @@
 using BeamOS.Common.Application.Interfaces;
-using BeamOS.PhysicalModel.Domain.AnalyticalModelAggregate;
+using BeamOS.PhysicalModel.Domain.ModelAggregate;
+using BeamOS.PhysicalModel.Domain.ModelAggregate.ValueObjects;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOS.PhysicalModel.Application.Models.Commands;
 
-public class CreateModelCommandHandler : ICommandHandler<CreateModelCommand, AnalyticalModel>
+public class CreateModelCommandHandler(IRepository<ModelId, Model> modelRepository)
+    : ICommandHandler<CreateModelCommand, Model>
 {
-    public async Task<AnalyticalModel> ExecuteAsync(CreateModelCommand command, CancellationToken ct = default)
+    public async Task<Model> ExecuteAsync(CreateModelCommand command, CancellationToken ct = default)
     {
-        await Task.CompletedTask;
+        Model model = command.ToDomainObject();
 
-        AnalyticalModel model = command.ToDomainObject();
-
-        // TODO : persist model
+        await modelRepository.Add(model);
 
         return model;
     }
@@ -21,5 +21,5 @@ public class CreateModelCommandHandler : ICommandHandler<CreateModelCommand, Ana
 [Mapper]
 public static partial class CreateModelCommandMapper
 {
-    public static partial AnalyticalModel ToDomainObject(this CreateModelCommand command);
+    public static partial Model ToDomainObject(this CreateModelCommand command);
 }

@@ -1,4 +1,4 @@
-using BeamOS.PhysicalModel.Contracts.Common;
+using BeamOS.Common.Contracts;
 
 namespace BeamOS.PhysicalModel.Contracts.Element1D;
 public record Element1DResponse(

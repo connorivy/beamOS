@@ -3,18 +3,14 @@ using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace BeamOS.DirectStiffnessMethod.Domain.Common.ValueObjects;
 public class VectorIdentifiedGeneric<TIdentifier>
+    where TIdentifier : notnull
 {
     private readonly List<TIdentifier> identifiers;
     private readonly double[] values;
-    public VectorIdentifiedGeneric(List<TIdentifier> identifiers)
+    public VectorIdentifiedGeneric(List<TIdentifier> identifiers, double[]? values)
     {
         this.identifiers = identifiers;
-        this.values = new double[identifiers.Count];
-    }
-    public VectorIdentifiedGeneric(List<TIdentifier> identifiers, double[] values)
-    {
-        this.identifiers = identifiers;
-        this.values = values;
+        this.values = values ?? new double[identifiers.Count];
     }
 
     public void AddEntriesWithMatchingIdentifiers(VectorIdentifiedGeneric<TIdentifier> vectorToBeAdded)

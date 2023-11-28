@@ -13,6 +13,9 @@ public static class DependencyInjection
         _ = services.AddTransient<CreateNodeCommandHandler>();
         _ = services.AddTransient<CreateElement1DCommandHandler>();
         _ = services.AddTransient<CreatePointLoadCommandHandler>();
+
+        _ = services.AddTransient<GetModelCommandHandler>();
+
         return services;
     }
 }

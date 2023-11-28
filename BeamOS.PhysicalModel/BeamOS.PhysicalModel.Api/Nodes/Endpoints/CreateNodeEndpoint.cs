@@ -1,16 +1,19 @@
-using BeamOS.PhysicalModel.Api.Mappers;
-using BeamOS.PhysicalModel.Application.Models.Commands;
+using BeamOS.Common.Api.Interfaces;
 using BeamOS.PhysicalModel.Application.Nodes.Commands;
 using BeamOS.PhysicalModel.Contracts.Node;
+using BeamOS.PhysicalModel.Domain.NodeAggregate;
 using FastEndpoints;
 
 namespace BeamOS.PhysicalModel.Api.Nodes.Endpoints;
 
-public class CreateNodeEndpoint(CreateNodeCommandHandler createNodeCommandHandler) : Endpoint<CreateNodeRequest, NodeResponse>
+public class CreateNodeEndpoint(
+    IMapper<CreateNodeRequest, CreateNodeCommand> requestMapper,
+    BeamOS.Common.Application.Interfaces.ICommandHandler<CreateNodeCommand, Node> createNodeCommandHandler,
+    IMapper<Node, NodeResponse> responseMapper) : Endpoint<CreateNodeRequest, NodeResponse>
 {
     public override void Configure()
     {
-        this.Post("node");
+        this.Post("nodes");
         this.AllowAnonymous();
         this.Summary(s => s.ExampleRequest = new CreateNodeRequest(
             "00000000-0000-0000-0000-000000000000",
@@ -31,11 +34,11 @@ public class CreateNodeEndpoint(CreateNodeCommandHandler createNodeCommandHandle
 
     public override async Task HandleAsync(CreateNodeRequest req, CancellationToken ct)
     {
-        var command = req.ToCommand();
+        CreateNodeCommand command = requestMapper.Map(req);
 
-        var node = await createNodeCommandHandler.ExecuteAsync(command, ct);
+        Node node = await createNodeCommandHandler.ExecuteAsync(command, ct);
 
-        var response = node.ToResponse();
+        NodeResponse response = responseMapper.Map(node);
         await this.SendAsync(response, cancellation: ct);
     }
 }

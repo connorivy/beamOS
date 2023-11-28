@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\BeamOS.Common\BeamOS.Common.Contracts\BeamOS.Common.Contracts.csproj" />
+  </ItemGroup>
+
 </Project>

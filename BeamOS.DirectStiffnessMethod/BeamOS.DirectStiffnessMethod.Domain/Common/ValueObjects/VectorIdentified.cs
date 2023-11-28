@@ -1,12 +1,7 @@
-using BeamOS.DirectStiffnessMethod.Domain.NodeAggregate.ValueObjects;
+using BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate.ValueObjects;
 
 namespace BeamOS.DirectStiffnessMethod.Domain.Common.ValueObjects;
-public class VectorIdentified : VectorIdentifiedGeneric<UnsupportedStructureDisplacementId>
+public class VectorIdentified(List<UnsupportedStructureDisplacementId> identifiers, double[]? values = null)
+    : VectorIdentifiedGeneric<UnsupportedStructureDisplacementId>(identifiers, values)
 {
-    public VectorIdentified(List<UnsupportedStructureDisplacementId> identifiers) : base(identifiers)
-    {
-    }
-
-    public VectorIdentified(List<UnsupportedStructureDisplacementId> identifiers, double[] values)
-        : base(identifiers, values) { }
 }

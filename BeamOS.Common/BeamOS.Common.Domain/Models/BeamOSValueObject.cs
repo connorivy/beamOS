@@ -1,5 +1,8 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace BeamOS.Common.Domain.Models;
 
+[ComplexType]
 public abstract class BeamOSValueObject : IEquatable<BeamOSValueObject>
 {
     protected static bool EqualOperator(BeamOSValueObject left, BeamOSValueObject right)

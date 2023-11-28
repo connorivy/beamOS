@@ -27,7 +27,10 @@ public partial class Element1DTests
     {
         _ = fixture.ExpectedGlobalStiffnessMatrix.ThrowIfNull(() => throw new SkipException());
 
-        Matrix<double> globalStiffnessMatrix = fixture.Element.GetGlobalStiffnessMatrix();
+        Matrix<double> globalStiffnessMatrix = fixture.Element.GetGlobalStiffnessMatrix(
+            fixture.UnitSettings.ForceUnit,
+            fixture.UnitSettings.ForcePerLengthUnit,
+            fixture.UnitSettings.TorqueUnit);
 
         globalStiffnessMatrix.AssertAlmostEqual(fixture.ExpectedGlobalStiffnessMatrix, 1);
     }
