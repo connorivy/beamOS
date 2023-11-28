@@ -189,7 +189,7 @@ namespace BeamOS.PhysicalModel.Infrastructure.Migrations
 
                     b.HasIndex("NodeId");
 
-                    b.ToTable("PointLoad");
+                    b.ToTable("PointLoads");
                 });
 
             modelBuilder.Entity("BeamOS.PhysicalModel.Domain.SectionProfileAggregate.SectionProfile", b =>

@@ -18,7 +18,7 @@ public record ModelResponse(
     List<Element1DResponse>? Element1Ds = null,
     List<MaterialResponse>? Materials = null,
     List<SectionProfileResponse>? SectionProfiles = null,
-    List<PointLoadResponse>? PointLoadResponses = null
+    List<PointLoadResponse>? PointLoads = null
     );
 
 public record ModelSettingsResponse(

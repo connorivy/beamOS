@@ -111,7 +111,7 @@ namespace BeamOS.PhysicalModel.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PointLoad",
+                name: "PointLoads",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -121,9 +121,9 @@ namespace BeamOS.PhysicalModel.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PointLoad", x => x.Id);
+                    table.PrimaryKey("PK_PointLoads", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PointLoad_Nodes_NodeId",
+                        name: "FK_PointLoads_Nodes_NodeId",
                         column: x => x.NodeId,
                         principalTable: "Nodes",
                         principalColumn: "Id",
@@ -141,8 +141,8 @@ namespace BeamOS.PhysicalModel.Infrastructure.Migrations
                 column: "ModelId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PointLoad_NodeId",
-                table: "PointLoad",
+                name: "IX_PointLoads_NodeId",
+                table: "PointLoads",
                 column: "NodeId");
         }
 
@@ -156,7 +156,7 @@ namespace BeamOS.PhysicalModel.Infrastructure.Migrations
                 name: "Materials");
 
             migrationBuilder.DropTable(
-                name: "PointLoad");
+                name: "PointLoads");
 
             migrationBuilder.DropTable(
                 name: "SectionProfiles");

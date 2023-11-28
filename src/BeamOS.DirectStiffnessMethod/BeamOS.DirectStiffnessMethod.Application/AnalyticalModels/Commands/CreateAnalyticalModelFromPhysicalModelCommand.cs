@@ -5,7 +5,7 @@ using BeamOS.DirectStiffnessMethod.Application.SectionProfiles;
 
 namespace BeamOS.DirectStiffnessMethod.Application.AnalyticalModels.Commands;
 
-public record CreateAnalyticalModelCommand(
+public record CreateAnalyticalModelFromPhysicalModelCommand(
     string Id,
     string Name,
     string Description,

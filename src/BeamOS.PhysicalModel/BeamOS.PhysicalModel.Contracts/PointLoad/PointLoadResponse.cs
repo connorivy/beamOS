@@ -1,5 +1,4 @@
 using BeamOS.Common.Contracts;
-using BeamOS.PhysicalModel.Contracts.Common;
 
 namespace BeamOS.PhysicalModel.Contracts.PointLoad;
 public record PointLoadResponse(

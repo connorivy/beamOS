@@ -1,6 +1,5 @@
 using BeamOS.Common.Api;
 using BeamOS.Common.Api.Interfaces;
-using BeamOS.Common.Application.Interfaces;
 using BeamOS.DirectStiffnessMethod.Api.AnalyticalModels.Mappers;
 using BeamOS.DirectStiffnessMethod.Application.AnalyticalModels.Commands;
 using BeamOS.DirectStiffnessMethod.Domain.AnalyticalModelAggregate;
@@ -20,7 +19,7 @@ public class RunDirectStiffnessMethodEndpoint(
     {
         ModelResponse? modelResponse = await physicalModelApi.GetModelResponse(id);
 
-        CreateAnalyticalModelCommand command = modelResponseMapper.Map(modelResponse);
+        CreateAnalyticalModelFromPhysicalModelCommand command = modelResponseMapper.Map(modelResponse);
 
         AnalyticalModel model = await createAnalyticalModelCommandHandler.ExecuteAsync(command, ct);
 

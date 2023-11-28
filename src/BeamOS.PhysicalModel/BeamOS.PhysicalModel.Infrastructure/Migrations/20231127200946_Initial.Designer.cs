@@ -13,8 +13,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeamOS.PhysicalModel.Infrastructure.Migrations
 {
     [DbContext(typeof(PhysicalModelDbContext))]
-    [Migration("20231122225241_Initial2")]
-    partial class Initial2
+    [Migration("20231127200946_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -192,7 +192,7 @@ namespace BeamOS.PhysicalModel.Infrastructure.Migrations
 
                     b.HasIndex("NodeId");
 
-                    b.ToTable("PointLoad");
+                    b.ToTable("PointLoads");
                 });
 
             modelBuilder.Entity("BeamOS.PhysicalModel.Domain.SectionProfileAggregate.SectionProfile", b =>

@@ -2,10 +2,12 @@ using BeamOS.Common.Api;
 using BeamOS.Common.Api.Interfaces;
 using BeamOS.PhysicalModel.Api.Mappers;
 using BeamOS.PhysicalModel.Api.Models.Mappers;
+using BeamOS.PhysicalModel.Api.PointLoads.Mappers;
 using BeamOS.PhysicalModel.Contracts.Element1D;
 using BeamOS.PhysicalModel.Contracts.Material;
 using BeamOS.PhysicalModel.Contracts.Model;
 using BeamOS.PhysicalModel.Contracts.Node;
+using BeamOS.PhysicalModel.Contracts.PointLoad;
 using BeamOS.PhysicalModel.Contracts.SectionProfile;
 using BeamOS.PhysicalModel.Domain.Element1DAggregate;
 using BeamOS.PhysicalModel.Domain.MaterialAggregate;
@@ -25,6 +27,7 @@ public class GetModelEndpoint(
     ModelResponseMapper modelResponseMapper,
     MaterialResponseMapper materialResponseMapper,
     SectionProfileResponseMapper sectionProfileResponseMapper,
+    PointLoadResponseMapper pointLoadResponseMapper,
     ModelSettingsResponseMapper settingsResponseMapper)
         : BaseEndpoint, IGetEndpoint<string, ModelResponse, bool?>
 {
@@ -73,10 +76,21 @@ public class GetModelEndpoint(
             .Where(el => el.ModelId == typedId)
             .Select(el => sectionProfileResponseMapper.Map(el))
             .ToListAsync(cancellationToken: ct);
-        //List<SectionProfileResponse> pointLoads = await dbContext.PointLoads
+        //List<PointLoadResponse> pointLoads = await dbContext.PointLoads
+        //    .Join(
+        //        dbContext.Nodes,
+        //        pl => pl.NodeId,
+        //        n => n.Id,
+        //        )
         //    .Where(el => el.ModelId == typedId)
         //    .Select(el => sectionProfileResponseMapper.Map(el))
         //    .ToListAsync(cancellationToken: ct);
+
+        List<PointLoadResponse> pointLoads = await (from pl in dbContext.PointLoads
+                                                    join n in dbContext.Nodes on pl.NodeId equals n.Id
+                                                    where n.ModelId == typedId
+                                                    select pointLoadResponseMapper.Map(pl))
+                                                    .ToListAsync(cancellationToken: ct);
 
         ModelSettingsResponse settingsResponse = settingsResponseMapper.Map(model1.Settings);
         return new ModelResponse(
@@ -87,6 +101,7 @@ public class GetModelEndpoint(
             Nodes: nodes,
             Element1Ds: element1Ds,
             Materials: materials,
-            SectionProfiles: sectionProfiles);
+            SectionProfiles: sectionProfiles,
+            PointLoads: pointLoads);
     }
 }

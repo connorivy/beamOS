@@ -7,6 +7,7 @@ using BeamOS.PhysicalModel.Domain.NodeAggregate;
 using BeamOS.PhysicalModel.Domain.PointLoadAggregate;
 using BeamOS.PhysicalModel.Domain.SectionProfileAggregate;
 using BeamOS.PhysicalModel.Infrastructure.Common.Configurations;
+using MathNet.Numerics.LinearAlgebra.Double;
 using Microsoft.EntityFrameworkCore;
 using UnitsNet.Units;
 
@@ -14,7 +15,7 @@ namespace BeamOS.PhysicalModel.Infrastructure;
 
 /// <summary>
 /// Build migrations from folder location
-/// \beamOS\BeamOS.PhysicalModel\BeamOS.PhysicalModel.Api\
+/// \beamOS\src\BeamOS.PhysicalModel\BeamOS.PhysicalModel.Api\
 /// with the command
 /// dotnet ef migrations add Initial --project ..\BeamOS.PhysicalModel.Infrastructure\
 /// </summary>
@@ -89,6 +90,13 @@ public class PhysicalModelDbContext : DbContext
             -10,
             UnitSettings.K_IN.LengthUnit,
             new(Guid.Parse("00000000-0000-0000-0000-000000000002"))
+        ));
+
+        this.PointLoads.Add(new(
+            new(Guid.Parse("00000000-0000-0000-0000-000000000000")),
+            new(5, ForceUnit.KilopoundForce),
+            DenseVector.OfArray([0.0, -1, 0]),
+            new(Guid.Parse("00000000-0000-0000-0000-000000000000"))
         ));
 
         this.Element1Ds.Add(new(

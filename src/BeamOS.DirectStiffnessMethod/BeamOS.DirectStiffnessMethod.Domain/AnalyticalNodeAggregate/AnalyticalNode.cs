@@ -9,13 +9,16 @@ namespace BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate;
 public class AnalyticalNode : AggregateRoot<AnalyticalNodeId>
 {
     public Point LocationPoint { get; private set; }
+
     public AnalyticalNode(
         Point locationPoint,
         Restraint restraint,
+        List<PointLoad>? pointLoads = null,
         AnalyticalNodeId? id = null) : base(id ?? new())
     {
         this.LocationPoint = locationPoint;
         this.Restraint = restraint;
+        this.PointLoads = pointLoads ?? [];
     }
 
     public AnalyticalNode(
@@ -23,9 +26,11 @@ public class AnalyticalNode : AggregateRoot<AnalyticalNodeId>
         Length yCoordinate,
         Length zCoordinate,
         Restraint restraint,
+        List<PointLoad>? pointLoads = null,
         AnalyticalNodeId? id = null) : this(
             new Point(xCoordinate, yCoordinate, zCoordinate),
             restraint,
+            pointLoads,
             id)
     {
     }
@@ -36,16 +41,18 @@ public class AnalyticalNode : AggregateRoot<AnalyticalNodeId>
         double zCoordinate,
         LengthUnit lengthUnit,
         Restraint restraint,
+        List<PointLoad>? pointLoads = null,
         AnalyticalNodeId? id = null) : this(
             new Length(xCoordinate, lengthUnit),
             new Length(yCoordinate, lengthUnit),
             new Length(zCoordinate, lengthUnit),
             restraint,
+            pointLoads,
             id)
     {
     }
 
-    public List<LinearLoad> LinearLoads { get; } = [];
+    public List<PointLoad> PointLoads { get; private set; } = [];
     //public List<MomentLoad> MomentLoads { get; } = [];
     public Restraint Restraint { get; set; }
     //public Forces? Forces { get; set; }
@@ -58,7 +65,7 @@ public class AnalyticalNode : AggregateRoot<AnalyticalNodeId>
         var momentAboutX = Torque.Zero;
         var momentAboutY = Torque.Zero;
         var momentAboutZ = Torque.Zero;
-        foreach (var linearLoad in this.LinearLoads)
+        foreach (var linearLoad in this.PointLoads)
         {
             forceAlongX += linearLoad.Magnitude * linearLoad.NormalizedDirection[0];
             forceAlongY += linearLoad.Magnitude * linearLoad.NormalizedDirection[1];

@@ -16,11 +16,11 @@ public class AnalyticalModelTests
     {
         Restraint free2D = new(true, true, false, false, false, true);
         AnalyticalNode node0 = new(0, 16, 0, LengthUnit.Foot, free2D);
-        node0.LinearLoads.Add(new(
+        node0.PointLoads.Add(new(
             new Force(150, ForceUnit.KilopoundForce),
             DenseVector.OfArray([1, 0, 0])
             ));
-        node0.LinearLoads.Add(new(
+        node0.PointLoads.Add(new(
             new Force(300, ForceUnit.KilopoundForce),
             DenseVector.OfArray([0, -1, 0])
             ));

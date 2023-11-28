@@ -17,16 +17,16 @@ public class CreateAnalyticalModelCommandHandler(
     CreateMaterialCommandHandler createMaterialHandler,
     CreateSectionProfileCommandHandler createSectionProfileHandler,
     CreateAnalyticalElement1dGivenEntitiesCommandHandler createEl1dHandler)
-    : ICommandHandler<CreateAnalyticalModelCommand, AnalyticalModel?>
+    : ICommandHandler<CreateAnalyticalModelFromPhysicalModelCommand, AnalyticalModel?>
 {
-    public async Task<AnalyticalModel?> ExecuteAsync(CreateAnalyticalModelCommand command, CancellationToken ct = default)
+    public async Task<AnalyticalModel?> ExecuteAsync(CreateAnalyticalModelFromPhysicalModelCommand command, CancellationToken ct = default)
     {
         AnalyticalModelSettings settings = await settingsCommandHandler.ExecuteAsync(command.Settings, ct);
 
         Dictionary<string, AnalyticalNode> nodes = [];
         Dictionary<string, Material> materials = [];
         Dictionary<string, SectionProfile> sectionProfiles = [];
-        Dictionary<string, AnalyticalElement1D> element1ds = [];
+        List<AnalyticalElement1D> element1ds = [];
 
         foreach (CreateAnalyticalNodeCommand nodeCommand in command.Nodes)
         {
@@ -63,10 +63,10 @@ public class CreateAnalyticalModelCommandHandler(
                 materials[el1dCommand.MaterialId],
                 sectionProfiles[el1dCommand.SectionProfileId]);
             AnalyticalElement1D element1d = await createEl1dHandler.ExecuteAsync(commandWithEntities, ct);
-            element1ds.Add(element1d.Id.Value.ToString(), element1d);
+            element1ds.Add(element1d);
         }
 
-        var model = AnalyticalModel.RunAnalysis(settings.UnitSettings, element1ds.Values, nodes.Values);
+        var model = AnalyticalModel.RunAnalysis(settings.UnitSettings, element1ds, nodes.Values);
 
         return model;
     }

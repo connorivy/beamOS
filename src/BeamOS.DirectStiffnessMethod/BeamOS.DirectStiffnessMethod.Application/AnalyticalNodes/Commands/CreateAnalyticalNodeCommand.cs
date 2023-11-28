@@ -1,3 +1,4 @@
+using BeamOS.DirectStiffnessMethod.Application.PointLoads;
 using UnitsNet;
 
 namespace BeamOS.DirectStiffnessMethod.Application.AnalyticalNodes.Commands;
@@ -6,7 +7,8 @@ public record CreateAnalyticalNodeCommand(
     string Id,
     string ModelId,
     PointCommand LocationPoint,
-    RestraintCommand Restraint);
+    RestraintCommand Restraint,
+    List<CreatePointLoadCommand> PointLoads);
 
 public record PointCommand(
     Length XCoordinate,

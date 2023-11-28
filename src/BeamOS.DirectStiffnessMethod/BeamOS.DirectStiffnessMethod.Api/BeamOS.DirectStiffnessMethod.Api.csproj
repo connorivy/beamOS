@@ -19,9 +19,4 @@
     <ProjectReference Include="..\BeamOS.DirectStiffnessMethod.Contracts\BeamOS.DirectStiffnessMethod.Contracts.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Materials\Mappers\" />
-    <Folder Include="SectionProfiles\" />
-  </ItemGroup>
-
 </Project>
