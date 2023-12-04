@@ -4,6 +4,7 @@ public class AllSolvedProblems : TheoryData<SolvedProblem>
 {
     public AllSolvedProblems()
     {
+        this.Add(new MatrixAnalysisOfStructures2ndEd.Example3_8());
         this.Add(new MatrixAnalysisOfStructures2ndEd.Example8_4());
     }
 

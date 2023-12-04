@@ -18,9 +18,8 @@ internal static class Element1DFactory
       )
     {
         UnitSettings settings = unitSettings ?? UnitSettings.SI;
-        return AnalyticalElement1D.Create(
+        return new(
             rotation ?? Angle.Zero,
-            settings,
             startNode ?? new(0, 0, 0, settings.LengthUnit, Restraint.Free),
             endNode ?? new(1, 0, 0, settings.LengthUnit, Restraint.Free),
             material ?? Constants.UnitMaterialSI,

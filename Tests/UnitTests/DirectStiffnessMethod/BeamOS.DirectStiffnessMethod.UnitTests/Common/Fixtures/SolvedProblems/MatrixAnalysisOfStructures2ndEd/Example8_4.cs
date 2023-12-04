@@ -1,8 +1,6 @@
-using BeamOS.Common.Domain.ValueObjects;
 using BeamOS.DirectStiffnessMethod.Domain.AnalyticalElement1DAggregate;
 using BeamOS.DirectStiffnessMethod.Domain.AnalyticalElement1DAggregate.ValueObjects;
 using BeamOS.DirectStiffnessMethod.Domain.AnalyticalModelAggregate.ValueObjects;
-using BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate;
 using BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Fixtures.AnalyticalElement1Ds;
 using BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Fixtures.AnalyticalModels;
 using MathNet.Numerics.LinearAlgebra;
@@ -12,9 +10,8 @@ using UnitsNet.Units;
 
 namespace BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Fixtures.SolvedProblems.MatrixAnalysisOfStructures2ndEd;
 
-internal class Example8_4 : SolvedProblem
+internal partial class Example8_4 : SolvedProblem
 {
-    public override AnalyticalModelFixture AnalyticalModelFixture { get; set; }
     public Example8_4()
     {
         this.Element1DFixtures.Add(Element1);
@@ -24,8 +21,22 @@ internal class Example8_4 : SolvedProblem
         this.AnalyticalModelFixture = ModelFixture;
     }
 
+    static Example8_4()
+    {
+        AnalyticalNode1 = GetAnalyticalNode1();
+        AnalyticalNode2 = GetAnalyticalNode2();
+        AnalyticalNode3 = GetAnalyticalNode3();
+        AnalyticalNode4 = GetAnalyticalNode4();
+
+        Element1 = GetElement1Fixture();
+        Element2 = GetElement2Fixture();
+        Element3 = GetElement3Fixture();
+
+        ModelFixture = GetAnalyticalModel();
+    }
+
     #region AnalyticalModelFixtureDefinition
-    public static AnalyticalModelFixture ModelFixture { get; } = GetAnalyticalModel();
+    public static AnalyticalModelFixture ModelFixture { get; }
 
     public static AnalyticalModelFixture GetAnalyticalModel()
     {
@@ -47,9 +58,9 @@ internal class Example8_4 : SolvedProblem
     #endregion
 
     #region Element1DFixtureDefinitions
-    public static AnalyticalElement1DFixture Element1 { get; } = GetElement1Fixture();
-    public static AnalyticalElement1DFixture Element2 { get; } = GetElement2Fixture();
-    public static AnalyticalElement1DFixture Element3 { get; } = GetElement3Fixture();
+    public static AnalyticalElement1DFixture Element1 { get; }
+    public static AnalyticalElement1DFixture Element2 { get; }
+    public static AnalyticalElement1DFixture Element3 { get; }
     public static SectionProfile Profile33in2 => new(
         new Area(32.9, AreaUnit.SquareInch),
         strongAxisMomentOfInertia: new AreaMomentOfInertia(716, AreaMomentOfInertiaUnit.InchToTheFourth),
@@ -63,11 +74,13 @@ internal class Example8_4 : SolvedProblem
 
     private static AnalyticalElement1DFixture GetElement1Fixture()
     {
-        #region ElementDefinition
-        AnalyticalNode startNode = new(-20, 0, 0, LengthUnit.Foot, Restraint.Free);
-        AnalyticalNode endNode = new(0, 0, 0, LengthUnit.Foot, Restraint.Free);
-        var element = AnalyticalElement1D.Create(Angle.Zero, UnitSettings.K_IN, startNode, endNode, Steel29000ksi, Profile33in2);
-        #endregion
+        AnalyticalElement1D element = new(
+            Angle.Zero,
+            AnalyticalNode2,
+            AnalyticalNode1,
+            Steel29000ksi,
+            Profile33in2,
+            new(Constants.Guid1));
 
         #region ResultsDefinition
         var rotationMatrix = DenseMatrix.OfArray(new double[,]
@@ -108,8 +121,8 @@ internal class Example8_4 : SolvedProblem
             { 0,       2162.9,   0,        0,       0,        173033.3, 0,        -2162.9,  0,        0,        0,        346066.7  }
         });
 
-        var localFixedEndForces = Vector<double>.Build.Dense(new double[]
-        {
+        var localFixedEndForces = Vector<double>.Build.Dense(
+        [
             0,
             30,
             0,
@@ -122,10 +135,10 @@ internal class Example8_4 : SolvedProblem
             0,
             0,
             -1200
-        });
+        ]);
 
-        var localEndDisplacements = Vector<double>.Build.Dense(new double[]
-        {
+        var localEndDisplacements = Vector<double>.Build.Dense(
+        [
             0,
             0,
             0,
@@ -138,10 +151,10 @@ internal class Example8_4 : SolvedProblem
             -3.0021,
             1.0569,
             6.4986
-        }) * Math.Pow(10, -3);
+        ]) * Math.Pow(10, -3);
 
-        var localEndForces = Vector<double>.Build.Dense(new double[]
-        {
+        var localEndForces = Vector<double>.Build.Dense(
+        [
             5.3757,
             44.106,
             -0.74272,
@@ -154,7 +167,7 @@ internal class Example8_4 : SolvedProblem
             -2.1722,
             119.27,
             1055
-        });
+        ]);
         #endregion
 
         return new AnalyticalElement1DFixture(element, UnitSettings.K_IN)
@@ -174,19 +187,13 @@ internal class Example8_4 : SolvedProblem
 
     public static AnalyticalElement1DFixture GetElement2Fixture()
     {
-        #region ElementDefinition
-        AnalyticalNode startNode = new(0, -20, 0, LengthUnit.Foot, Restraint.Free);
-        AnalyticalNode endNode = new(0, 0, 0, LengthUnit.Foot, Restraint.Free);
-
-        AnalyticalElement1D element = AnalyticalElement1D.Create(
+        AnalyticalElement1D element = new(
             new Angle(Math.PI / 2, AngleUnit.Radian),
-            UnitSettings.K_IN,
-            startNode,
-            endNode,
+            AnalyticalNode3,
+            AnalyticalNode1,
             Steel29000ksi,
-            Profile33in2);
-
-        #endregion
+            Profile33in2,
+            new(Constants.Guid2));
 
         #region ResultsDefinition
         var rotationMatrix = DenseMatrix.OfArray(new double[,]
@@ -325,18 +332,13 @@ internal class Example8_4 : SolvedProblem
 
     public static AnalyticalElement1DFixture GetElement3Fixture()
     {
-        #region ElementDefinition
-        AnalyticalNode startNode = new(0, 0, -20, LengthUnit.Foot, Restraint.Free);
-        AnalyticalNode endNode = new(0, 0, 0, LengthUnit.Foot, Restraint.Free);
-
-        AnalyticalElement1D element = AnalyticalElement1D.Create(
+        AnalyticalElement1D element = new(
             new Angle(30, AngleUnit.Degree),
-            UnitSettings.K_IN,
-            startNode,
-            endNode,
+            AnalyticalNode4,
+            AnalyticalNode1,
             Steel29000ksi,
-            Profile33in2);
-        #endregion
+            Profile33in2,
+            new(Constants.Guid3));
 
         #region ResultsDefinition
         var rotationMatrix = DenseMatrix.OfArray(new double[,]
