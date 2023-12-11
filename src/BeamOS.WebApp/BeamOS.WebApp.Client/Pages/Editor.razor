@@ -1,6 +1,25 @@
 @page "/editor"
+@using BeamOS.PhysicalModel.Contracts.Node
 @rendermode InteractiveAuto
+@inject BeamOS.PhysicalModel.Client.Interfaces.IPhysicalModelAlphaClient physicalModelClient
 
 <PageTitle>Editor</PageTitle>
 
 <beamos-editor></beamos-editor>
+
+<button @onclick="AddNode">
+    Add Node
+</button>
+
+@code {
+    private async Task AddNode()
+    {
+        CreateNodeRequest y = new CreateNodeRequest(
+            "00000000-0000-0000-0000-000000000000",
+            0,
+            0,
+            0,
+            "Foot");
+        var x = await physicalModelClient.CreateNode(y);
+    }
+}

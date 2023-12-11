@@ -1,11 +1,11 @@
 using BeamOS.Common.Api;
+using BeamOS.Common.Application;
 using BeamOS.PhysicalModel.Api;
 using BeamOS.PhysicalModel.Application;
 using BeamOS.PhysicalModel.Infrastructure;
-using Microsoft.EntityFrameworkCore;
-using FastEndpoints.Swagger;
 using FastEndpoints;
-using BeamOS.Common.Application;
+using FastEndpoints.Swagger;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 //builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
-builder.Services
+builder
+    .Services
     .AddFastEndpoints()
     .SwaggerDocument(o =>
     {
@@ -26,14 +27,27 @@ builder.Services
         //o.ExcludeNonFastEndpoints = true;
     });
 
+builder
+    .Services
+    .AddCors(options =>
+    {
+        options.AddDefaultPolicy(policy =>
+        {
+            policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+        });
+    });
+
 builder.Services.AddMappers<IAssemblyMarkerPhysicalModelApi>();
 builder.Services.AddBeamOsEndpoints<IAssemblyMarkerPhysicalModelApi>();
 builder.Services.AddCommandHandlers<IAssemblyMarkerPhysicalModelApplication>();
 builder.Services.AddPhysicalModelInfrastructure();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<PhysicalModelDbContext>(options =>
-    options.UseSqlServer(connectionString));
+var connectionString =
+    builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+builder
+    .Services
+    .AddDbContext<PhysicalModelDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 var app = builder.Build();
@@ -43,11 +57,11 @@ app.UseHttpsRedirection();
 app.MapGroup("/api").AddBeamOsEndpoints<IAssemblyMarkerPhysicalModelApi>();
 
 app.UseFastEndpoints(c =>
-{
-    c.Endpoints.RoutePrefix = "api";
-    c.Versioning.Prefix = "v";
-})
-.UseSwaggerGen();
+    {
+        c.Endpoints.RoutePrefix = "api";
+        c.Versioning.Prefix = "v";
+    })
+    .UseSwaggerGen();
 
 //Configure the HTTP-request pipeline
 if (app.Environment.IsDevelopment())
@@ -57,6 +71,8 @@ if (app.Environment.IsDevelopment())
     var dbContext = scope.ServiceProvider.GetRequiredService<PhysicalModelDbContext>();
     await dbContext.SeedAsync();
 }
+
+app.UseCors();
 
 //SwaggerBuilderExtensions.UseSwagger(app);
 //app.UseSwaggerUI();
