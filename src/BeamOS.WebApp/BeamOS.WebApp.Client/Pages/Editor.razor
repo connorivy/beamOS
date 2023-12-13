@@ -1,4 +1,5 @@
 @page "/editor"
+@using BeamOS.PhysicalModel.Contracts.Model
 @using BeamOS.PhysicalModel.Contracts.Node
 @rendermode InteractiveAuto
 @inject BeamOS.PhysicalModel.Client.Interfaces.IPhysicalModelAlphaClient physicalModelClient
@@ -6,21 +7,19 @@
 
 <PageTitle>Editor</PageTitle>
 
-<div id="editor"></div>
+<canvas id="editor" style="height: 600px; width: 100%;"></canvas>
 
 <button @onclick="AddNode">
     Add Node
 </button>
 
-<button @onclick="LoadEditor">
-    Load Editor
+<button @onclick="LoadModel">
+    Load Model
 </button>
 
 <button @onclick="SayHello">
-    Load Editor
+    Say Hello
 </button>
-
-<div id="editor" style="height: 400px; width: 100%;"></div>
 
 @code {
     ElementReference editorReference;
@@ -43,7 +42,17 @@
             10,
             "Foot");
         NodeResponse? x = await physicalModelClient.CreateNode(y);
-        await js.InvokeVoidAsync("beamOsEditor.asdfasdf", x);
+        await js.InvokeVoidAsync("beamOsEditor.commands.addNodeCommand", x);
+    }
+
+    private async Task LoadModel()
+    {
+        ModelResponse response = await physicalModelClient.GetModel("00000000-0000-0000-0000-000000000000");
+        foreach (NodeResponse? nodeResponse in response.Nodes)
+        {
+            await js.InvokeVoidAsync("beamOsEditor.commands.addNodeCommand", nodeResponse);
+        }
+        ;
     }
 
     private async Task LoadEditor()
