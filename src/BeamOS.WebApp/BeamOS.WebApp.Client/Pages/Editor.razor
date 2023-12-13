@@ -2,24 +2,56 @@
 @using BeamOS.PhysicalModel.Contracts.Node
 @rendermode InteractiveAuto
 @inject BeamOS.PhysicalModel.Client.Interfaces.IPhysicalModelAlphaClient physicalModelClient
+@inject IJSRuntime js
 
 <PageTitle>Editor</PageTitle>
 
-<beamos-editor></beamos-editor>
+<div id="editor"></div>
 
 <button @onclick="AddNode">
     Add Node
 </button>
 
+<button @onclick="LoadEditor">
+    Load Editor
+</button>
+
+<button @onclick="SayHello">
+    Load Editor
+</button>
+
+<div id="editor" style="height: 400px; width: 100%;"></div>
+
 @code {
+    ElementReference editorReference;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await js.InvokeVoidAsync("createFromId", "editor");
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
     private async Task AddNode()
     {
         CreateNodeRequest y = new CreateNodeRequest(
             "00000000-0000-0000-0000-000000000000",
-            0,
-            0,
-            0,
+            10,
+            10,
+            10,
             "Foot");
-        var x = await physicalModelClient.CreateNode(y);
+        NodeResponse? x = await physicalModelClient.CreateNode(y);
+        await js.InvokeVoidAsync("beamOsEditor.asdfasdf", x);
+    }
+
+    private async Task LoadEditor()
+    {
+    }
+
+    private async Task SayHello()
+    {
+        await js.InvokeVoidAsync("beamOsEditor.sayHello");
     }
 }
