@@ -1,8 +1,7 @@
 @page "/editor"
-@using BeamOS.PhysicalModel.Contracts.Model
-@using BeamOS.PhysicalModel.Contracts.Node
+@using BeamOS.PhysicalModel.Clients.Cs.Models;
 @rendermode InteractiveAuto
-@inject BeamOS.PhysicalModel.Client.Interfaces.IPhysicalModelAlphaClient physicalModelClient
+@inject BeamOS.PhysicalModel.Clients.Cs.PhysicalModelAlphaClient physicalModelClient
 @inject IJSRuntime js
 
 <PageTitle>Editor</PageTitle>
@@ -35,7 +34,7 @@
 
     private async Task AddNode()
     {
-        CreateNodeRequest y = new CreateNodeRequest(
+        CreateNodeRequest y = new(
             "00000000-0000-0000-0000-000000000000",
             10,
             10,

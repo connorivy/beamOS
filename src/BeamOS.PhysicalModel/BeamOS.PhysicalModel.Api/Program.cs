@@ -4,8 +4,12 @@ using BeamOS.PhysicalModel.Api;
 using BeamOS.PhysicalModel.Application;
 using BeamOS.PhysicalModel.Infrastructure;
 using FastEndpoints;
+using FastEndpoints.ClientGen;
+using FastEndpoints.ClientGen.Kiota;
 using FastEndpoints.Swagger;
 using Microsoft.EntityFrameworkCore;
+using NSwag;
+using NSwag.CodeGeneration.OperationNameGenerators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +17,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 //builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
+
+const string alphaRelease = "Alpha Release";
 builder
     .Services
     .AddFastEndpoints()
@@ -20,10 +26,11 @@ builder
     {
         o.DocumentSettings = s =>
         {
-            s.DocumentName = "Alpha Release";
+            s.DocumentName = alphaRelease;
             s.Title = "beamOS api";
             s.Version = "v0";
         };
+        o.ShortSchemaNames = true;
         //o.ExcludeNonFastEndpoints = true;
     });
 
@@ -60,8 +67,48 @@ app.UseFastEndpoints(c =>
     {
         c.Endpoints.RoutePrefix = "api";
         c.Versioning.Prefix = "v";
+        c.Endpoints.ShortNames = true;
     })
     .UseSwaggerGen();
+
+// using NSwag to generate cs and ts api clients.
+// I tried with kiota, but kiota does not allow providing your own DTOs and the generated DTOs
+// had all values as nullable with no constructors 🤮
+
+await app.GenerateClientsAndExitAsync(
+    alphaRelease,
+    $"../BeamOS.PhysicalModel.Client/",
+    csSettings: c =>
+    {
+        c.ClassName = "PhysicalModelAlphaClient";
+        //c.GenerateResponseClasses = false;
+        c.GenerateDtoTypes = false;
+
+        const string beamOsNs = nameof(BeamOS);
+        const string physicalModelNs = nameof(BeamOS.PhysicalModel);
+        const string contractsNs = nameof(BeamOS.PhysicalModel.Contracts);
+        const string nodeNs = nameof(BeamOS.PhysicalModel.Contracts.Node);
+        const string element1dNs = nameof(BeamOS.PhysicalModel.Contracts.Element1D);
+        const string modelNs = nameof(BeamOS.PhysicalModel.Contracts.Model);
+        const string pointLoadNs = nameof(BeamOS.PhysicalModel.Contracts.PointLoad);
+
+        const string contractsBaseNs = $"{beamOsNs}.{physicalModelNs}.{contractsNs}";
+        c.AdditionalNamespaceUsages =
+        [
+            $"{contractsBaseNs}.{nodeNs}",
+            $"{contractsBaseNs}.{element1dNs}",
+            $"{contractsBaseNs}.{modelNs}",
+            $"{contractsBaseNs}.{pointLoadNs}",
+        ];
+        //c.GenerateResponseClasses = false;
+        c.GenerateClientInterfaces = true;
+    },
+    tsSettings: t =>
+    {
+        t.ClassName = "PhysicalModelAlphaClient";
+        t.GenerateClientInterfaces = true;
+    }
+);
 
 //Configure the HTTP-request pipeline
 if (app.Environment.IsDevelopment())
@@ -78,3 +125,5 @@ app.UseCors();
 //app.UseSwaggerUI();
 
 app.Run();
+
+namespace BeamOS.PhysicalModel.Clients.Cs { }

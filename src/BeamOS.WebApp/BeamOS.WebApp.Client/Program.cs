@@ -1,12 +1,19 @@
-using BeamOS.PhysicalModel.Client.Interfaces;
+using BeamOS.PhysicalModel.Clients.Cs;
+using BeamOS.PhysicalModel.Clients.Cs.Extensions;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Refit;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
 builder
     .Services
-    .AddRefitClient<IPhysicalModelAlphaClient>()
-    .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://localhost:7193/"));
+    .AddHttpClient<PhysicalModelAlphaClientFactory>(
+        client => client.BaseAddress = new("https://localhost:7193")
+    );
+
+builder
+    .Services
+    .AddScoped<PhysicalModelAlphaClient>(
+        x => x.GetRequiredService<PhysicalModelAlphaClientFactory>().Create()
+    );
 
 await builder.Build().RunAsync();

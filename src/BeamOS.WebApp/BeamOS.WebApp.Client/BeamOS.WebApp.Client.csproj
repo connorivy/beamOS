@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\BeamOS.PhysicalModel\BeamOS.PhysicalModel.Client\BeamOS.PhysicalModel.Client.csproj" />
+    <ProjectReference Include="..\..\BeamOS.PhysicalModel\BeamOS.PhysicalModel.Clients\BeamOS.PhysicalModel.Client.csproj" />
   </ItemGroup>
 
 </Project>

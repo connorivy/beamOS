@@ -1,7 +1,8 @@
-using BeamOS.PhysicalModel.Client.Interfaces;
+//using BeamOS.PhysicalModel.Client.Interfaces;
 using BeamOS.WebApp.Client.Pages;
 using BeamOS.WebApp.Components;
-using Refit;
+
+//using Refit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,10 +13,10 @@ builder
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
-builder
-    .Services
-    .AddRefitClient<IPhysicalModelAlphaClient>()
-    .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://localhost:7193/"));
+//builder
+//    .Services
+//    .AddRefitClient<IPhysicalModelAlphaClient>()
+//    .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://localhost:7193/"));
 
 builder
     .Services
