@@ -20,7 +20,7 @@ using BeamOS.PhysicalModel.Contracts.PointLoad;
 #pragma warning disable 8603 // Disable "CS8603 Possible null reference return"
 #pragma warning disable 8604 // Disable "CS8604 Possible null reference argument for parameter"
 
-namespace FastEndpoints
+namespace BeamOS.PhysicalModel.Client
 {
     using System = global::System;
 
@@ -43,57 +43,57 @@ namespace FastEndpoints
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<PointLoadResponse> CreatePointLoadEndpointAsync(CreatePointLoadRequest createPointLoadRequest);
+        System.Threading.Tasks.Task<PointLoadResponse> CreatePointLoadAsync(CreatePointLoadRequest createPointLoadRequest);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<PointLoadResponse> CreatePointLoadEndpointAsync(CreatePointLoadRequest createPointLoadRequest, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<PointLoadResponse> CreatePointLoadAsync(CreatePointLoadRequest createPointLoadRequest, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<NodeResponse> CreateNodeEndpointAsync(CreateNodeRequest createNodeRequest);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<NodeResponse> CreateNodeEndpointAsync(CreateNodeRequest createNodeRequest, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<NodeResponse> GetSingleNodeEndpointAsync(string id);
+        System.Threading.Tasks.Task<NodeResponse> CreateNodeAsync(CreateNodeRequest createNodeRequest);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<NodeResponse> GetSingleNodeEndpointAsync(string id, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<NodeResponse> CreateNodeAsync(CreateNodeRequest createNodeRequest, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ModelResponse> CreateModelEndpointAsync(CreateModelRequest createModelRequest);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ModelResponse> CreateModelEndpointAsync(CreateModelRequest createModelRequest, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Element1DResponse> CreateElement1DEndpointAsync(CreateElement1DRequest createElement1DRequest);
+        System.Threading.Tasks.Task<NodeResponse> GetSingleNodeAsync(string id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Element1DResponse> CreateElement1DEndpointAsync(CreateElement1DRequest createElement1DRequest, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<NodeResponse> GetSingleNodeAsync(string id, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Element1DResponse> GetSingleElement1DEndpointAsync(string id);
+        System.Threading.Tasks.Task<ModelResponse> CreateModelAsync(CreateModelRequest createModelRequest);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Element1DResponse> GetSingleElement1DEndpointAsync(string id, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<ModelResponse> CreateModelAsync(CreateModelRequest createModelRequest, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Element1DResponse> CreateElement1dAsync(CreateElement1DRequest createElement1DRequest);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Element1DResponse> CreateElement1dAsync(CreateElement1DRequest createElement1DRequest, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Element1DResponse> GetSingleElement1dAsync(string id);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Element1DResponse> GetSingleElement1dAsync(string id, System.Threading.CancellationToken cancellationToken);
 
     }
 
@@ -312,15 +312,15 @@ namespace FastEndpoints
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<PointLoadResponse> CreatePointLoadEndpointAsync(CreatePointLoadRequest createPointLoadRequest)
+        public virtual System.Threading.Tasks.Task<PointLoadResponse> CreatePointLoadAsync(CreatePointLoadRequest createPointLoadRequest)
         {
-            return CreatePointLoadEndpointAsync(createPointLoadRequest, System.Threading.CancellationToken.None);
+            return CreatePointLoadAsync(createPointLoadRequest, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<PointLoadResponse> CreatePointLoadEndpointAsync(CreatePointLoadRequest createPointLoadRequest, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<PointLoadResponse> CreatePointLoadAsync(CreatePointLoadRequest createPointLoadRequest, System.Threading.CancellationToken cancellationToken)
         {
             if (createPointLoadRequest == null)
                 throw new System.ArgumentNullException("createPointLoadRequest");
@@ -396,15 +396,15 @@ namespace FastEndpoints
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<NodeResponse> CreateNodeEndpointAsync(CreateNodeRequest createNodeRequest)
+        public virtual System.Threading.Tasks.Task<NodeResponse> CreateNodeAsync(CreateNodeRequest createNodeRequest)
         {
-            return CreateNodeEndpointAsync(createNodeRequest, System.Threading.CancellationToken.None);
+            return CreateNodeAsync(createNodeRequest, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<NodeResponse> CreateNodeEndpointAsync(CreateNodeRequest createNodeRequest, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<NodeResponse> CreateNodeAsync(CreateNodeRequest createNodeRequest, System.Threading.CancellationToken cancellationToken)
         {
             if (createNodeRequest == null)
                 throw new System.ArgumentNullException("createNodeRequest");
@@ -480,15 +480,15 @@ namespace FastEndpoints
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<NodeResponse> GetSingleNodeEndpointAsync(string id)
+        public virtual System.Threading.Tasks.Task<NodeResponse> GetSingleNodeAsync(string id)
         {
-            return GetSingleNodeEndpointAsync(id, System.Threading.CancellationToken.None);
+            return GetSingleNodeAsync(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<NodeResponse> GetSingleNodeEndpointAsync(string id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<NodeResponse> GetSingleNodeAsync(string id, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -559,15 +559,15 @@ namespace FastEndpoints
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ModelResponse> CreateModelEndpointAsync(CreateModelRequest createModelRequest)
+        public virtual System.Threading.Tasks.Task<ModelResponse> CreateModelAsync(CreateModelRequest createModelRequest)
         {
-            return CreateModelEndpointAsync(createModelRequest, System.Threading.CancellationToken.None);
+            return CreateModelAsync(createModelRequest, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ModelResponse> CreateModelEndpointAsync(CreateModelRequest createModelRequest, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ModelResponse> CreateModelAsync(CreateModelRequest createModelRequest, System.Threading.CancellationToken cancellationToken)
         {
             if (createModelRequest == null)
                 throw new System.ArgumentNullException("createModelRequest");
@@ -643,15 +643,15 @@ namespace FastEndpoints
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Element1DResponse> CreateElement1DEndpointAsync(CreateElement1DRequest createElement1DRequest)
+        public virtual System.Threading.Tasks.Task<Element1DResponse> CreateElement1dAsync(CreateElement1DRequest createElement1DRequest)
         {
-            return CreateElement1DEndpointAsync(createElement1DRequest, System.Threading.CancellationToken.None);
+            return CreateElement1dAsync(createElement1DRequest, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Element1DResponse> CreateElement1DEndpointAsync(CreateElement1DRequest createElement1DRequest, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Element1DResponse> CreateElement1dAsync(CreateElement1DRequest createElement1DRequest, System.Threading.CancellationToken cancellationToken)
         {
             if (createElement1DRequest == null)
                 throw new System.ArgumentNullException("createElement1DRequest");
@@ -727,15 +727,15 @@ namespace FastEndpoints
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Element1DResponse> GetSingleElement1DEndpointAsync(string id)
+        public virtual System.Threading.Tasks.Task<Element1DResponse> GetSingleElement1dAsync(string id)
         {
-            return GetSingleElement1DEndpointAsync(id, System.Threading.CancellationToken.None);
+            return GetSingleElement1dAsync(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Element1DResponse> GetSingleElement1DEndpointAsync(string id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Element1DResponse> GetSingleElement1dAsync(string id, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;

@@ -1,0 +1,20 @@
+using NJsonSchema;
+using NJsonSchema.Generation;
+
+namespace BeamOS.PhysicalModel.Api.Common;
+
+public class MarkAsRequiredIfNonNullableSchemaProcessor : ISchemaProcessor
+{
+    //https://github.com/RicoSuter/NSwag/issues/3110
+    // may need to change schema.Properties to schema.ActualProperties for issues with inheritance
+    public void Process(SchemaProcessorContext context)
+    {
+        foreach (var (propName, prop) in context.Schema.Properties)
+        {
+            if (!prop.IsNullable(SchemaType.OpenApi3))
+            {
+                prop.IsRequired = true;
+            }
+        }
+    }
+}

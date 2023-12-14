@@ -10,20 +10,21 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BeamOS.PhysicalModel.Api.Models.Endpoints;
 
-public class GetElement1DsEndpoint(
-    PhysicalModelDbContext dbContext,
-    Element1DResponseMapper responseMapper)
-        : BaseEndpoint, IGetEndpoint<string, List<Element1DResponse>, string[]?>
+public class GetElement1ds(PhysicalModelDbContext dbContext, Element1DResponseMapper responseMapper)
+    : BaseEndpoint,
+        IGetEndpoint<string, List<Element1DResponse>, string[]?>
 {
     public override string Route => "models/{modelId}/element1Ds";
 
     public Task<List<Element1DResponse>> GetAsync(
         string modelId,
         [FromQuery] string[]? element1dIds,
-        CancellationToken ct)
+        CancellationToken ct
+    )
     {
         ModelId targetModelId = new(Guid.Parse(modelId));
-        IQueryable<Element1D> element1Ds = element1Ds = dbContext.Element1Ds
+        IQueryable<Element1D> element1Ds = element1Ds = dbContext
+            .Element1Ds
             .Where(el => el.ModelId == targetModelId);
 
         if (element1dIds is not null && element1dIds.Length > 0)
@@ -31,8 +32,7 @@ public class GetElement1DsEndpoint(
             HashSet<Element1DId> element1DIdsHash = element1dIds
                 .Select(s => new Element1DId(Guid.Parse(s)))
                 .ToHashSet();
-            element1Ds = element1Ds
-                .Where(el => element1DIdsHash.Contains(el.Id));
+            element1Ds = element1Ds.Where(el => element1DIdsHash.Contains(el.Id));
         }
 
         return Task.FromResult(element1Ds.Select(responseMapper.Map).ToList());

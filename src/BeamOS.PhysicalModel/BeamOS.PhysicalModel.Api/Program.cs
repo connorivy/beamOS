@@ -1,6 +1,7 @@
 using BeamOS.Common.Api;
 using BeamOS.Common.Application;
 using BeamOS.PhysicalModel.Api;
+using BeamOS.PhysicalModel.Api.Common;
 using BeamOS.PhysicalModel.Application;
 using BeamOS.PhysicalModel.Infrastructure;
 using FastEndpoints;
@@ -29,6 +30,7 @@ builder
             s.DocumentName = alphaRelease;
             s.Title = "beamOS api";
             s.Version = "v0";
+            s.SchemaSettings.SchemaProcessors.Add(new MarkAsRequiredIfNonNullableSchemaProcessor());
         };
         o.ShortSchemaNames = true;
         //o.ExcludeNonFastEndpoints = true;
@@ -75,13 +77,13 @@ app.UseFastEndpoints(c =>
 // I tried with kiota, but kiota does not allow providing your own DTOs and the generated DTOs
 // had all values as nullable with no constructors 🤮
 
+const string clientNs = "BeamOS.PhysicalModel.Client";
 await app.GenerateClientsAndExitAsync(
     alphaRelease,
-    $"../BeamOS.PhysicalModel.Client/",
+    $"../{clientNs}/",
     csSettings: c =>
     {
         c.ClassName = "PhysicalModelAlphaClient";
-        //c.GenerateResponseClasses = false;
         c.GenerateDtoTypes = false;
 
         const string beamOsNs = nameof(BeamOS);
@@ -100,13 +102,14 @@ await app.GenerateClientsAndExitAsync(
             $"{contractsBaseNs}.{modelNs}",
             $"{contractsBaseNs}.{pointLoadNs}",
         ];
-        //c.GenerateResponseClasses = false;
         c.GenerateClientInterfaces = true;
+        c.CSharpGeneratorSettings.Namespace = clientNs;
     },
     tsSettings: t =>
     {
         t.ClassName = "PhysicalModelAlphaClient";
         t.GenerateClientInterfaces = true;
+        t.TypeScriptGeneratorSettings.Namespace = "";
     }
 );
 

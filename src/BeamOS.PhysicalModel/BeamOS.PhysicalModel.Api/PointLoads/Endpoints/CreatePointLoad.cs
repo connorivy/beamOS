@@ -6,21 +6,24 @@ using BeamOS.PhysicalModel.Domain.PointLoadAggregate;
 using FastEndpoints;
 
 namespace BeamOS.PhysicalModel.Api.PointLoads.Endpoints;
-public class CreatePointLoadEndpoint(
+
+public class CreatePointLoad(
     CreatePointLoadRequestMapper requestMapper,
     CreatePointLoadCommandHandler createPointLoadCommandHandler,
-    PointLoadResponseMapper responseMapper)
-    : Endpoint<CreatePointLoadRequest, PointLoadResponse>
+    PointLoadResponseMapper responseMapper
+) : Endpoint<CreatePointLoadRequest, PointLoadResponse>
 {
     public override void Configure()
     {
         this.Post("point-load");
         this.AllowAnonymous();
-        this.Summary(s => s.ExampleRequest = new CreatePointLoadRequest(
-            "00000000-0000-0000-0000-000000000000",
-            new UnitValueDTO(55.0, "KilopoundForce"),
-            new Vector3(10, 15, 20)
-            )
+        this.Summary(
+            s =>
+                s.ExampleRequest = new CreatePointLoadRequest(
+                    "00000000-0000-0000-0000-000000000000",
+                    new UnitValueDTO(55.0, "KilopoundForce"),
+                    new Vector3(10, 15, 20)
+                )
         );
     }
 

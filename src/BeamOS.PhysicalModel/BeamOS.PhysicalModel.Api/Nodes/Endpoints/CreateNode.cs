@@ -7,29 +7,26 @@ using FastEndpoints;
 
 namespace BeamOS.PhysicalModel.Api.Nodes.Endpoints;
 
-public class CreateNodeEndpoint(
+public class CreateNode(
     CreateNodeRequestMapper requestMapper,
     CreateNodeCommandHandler createNodeCommandHandler,
-    NodeResponseMapper responseMapper) : Endpoint<CreateNodeRequest, NodeResponse>
+    NodeResponseMapper responseMapper
+) : Endpoint<CreateNodeRequest, NodeResponse>
 {
     public override void Configure()
     {
         this.Post("nodes");
         this.AllowAnonymous();
-        this.Summary(s => s.ExampleRequest = new CreateNodeRequest(
-            "00000000-0000-0000-0000-000000000000",
-            0.0,
-            0.0,
-            10.0,
-            "Foot",
-            new RestraintsRequest(
-                false,
-                false,
-                false,
-                false,
-                false,
-                false)
-            )
+        this.Summary(
+            s =>
+                s.ExampleRequest = new CreateNodeRequest(
+                    "00000000-0000-0000-0000-000000000000",
+                    0.0,
+                    0.0,
+                    10.0,
+                    "Foot",
+                    new RestraintsRequest(false, false, false, false, false, false)
+                )
         );
     }
 
