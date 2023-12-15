@@ -100,13 +100,11 @@ namespace BeamOS.PhysicalModel.Client
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.0.0.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class PhysicalModelAlphaClient : IPhysicalModelAlphaClient
     {
-        private string _baseUrl;
         private System.Net.Http.HttpClient _httpClient;
         private static System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(CreateSerializerSettings, true);
 
-        public PhysicalModelAlphaClient(string baseUrl, System.Net.Http.HttpClient httpClient)
+        public PhysicalModelAlphaClient(System.Net.Http.HttpClient httpClient)
         {
-            BaseUrl = baseUrl;
             _httpClient = httpClient;
         }
 
@@ -115,17 +113,6 @@ namespace BeamOS.PhysicalModel.Client
             var settings = new Newtonsoft.Json.JsonSerializerSettings();
             UpdateJsonSerializerSettings(settings);
             return settings;
-        }
-
-        public string BaseUrl
-        {
-            get { return _baseUrl; }
-            set
-            {
-                _baseUrl = value;
-                if (!string.IsNullOrEmpty(_baseUrl) && !_baseUrl.EndsWith("/"))
-                    _baseUrl += '/';
-            }
         }
 
         protected Newtonsoft.Json.JsonSerializerSettings JsonSerializerSettings { get { return _settings.Value; } }
@@ -159,7 +146,7 @@ namespace BeamOS.PhysicalModel.Client
                     request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     var urlBuilder_ = new System.Text.StringBuilder();
-                    if (!string.IsNullOrEmpty(BaseUrl)) urlBuilder_.Append(BaseUrl);
+                
                     urlBuilder_.Append("api");
                     urlBuilder_.Append('/');
                     urlBuilder_.Append("models");
@@ -247,7 +234,7 @@ namespace BeamOS.PhysicalModel.Client
                     request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     var urlBuilder_ = new System.Text.StringBuilder();
-                    if (!string.IsNullOrEmpty(BaseUrl)) urlBuilder_.Append(BaseUrl);
+                
                     urlBuilder_.Append("api");
                     urlBuilder_.Append('/');
                     urlBuilder_.Append("models");
@@ -339,7 +326,7 @@ namespace BeamOS.PhysicalModel.Client
                     request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     var urlBuilder_ = new System.Text.StringBuilder();
-                    if (!string.IsNullOrEmpty(BaseUrl)) urlBuilder_.Append(BaseUrl);
+                
                     urlBuilder_.Append("api");
                     urlBuilder_.Append('/');
                     urlBuilder_.Append("point-load");
@@ -423,7 +410,7 @@ namespace BeamOS.PhysicalModel.Client
                     request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     var urlBuilder_ = new System.Text.StringBuilder();
-                    if (!string.IsNullOrEmpty(BaseUrl)) urlBuilder_.Append(BaseUrl);
+                
                     urlBuilder_.Append("api");
                     urlBuilder_.Append('/');
                     urlBuilder_.Append("nodes");
@@ -500,7 +487,7 @@ namespace BeamOS.PhysicalModel.Client
                     request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     var urlBuilder_ = new System.Text.StringBuilder();
-                    if (!string.IsNullOrEmpty(BaseUrl)) urlBuilder_.Append(BaseUrl);
+                
                     urlBuilder_.Append("api");
                     urlBuilder_.Append('/');
                     urlBuilder_.Append("nodes");
@@ -586,7 +573,7 @@ namespace BeamOS.PhysicalModel.Client
                     request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     var urlBuilder_ = new System.Text.StringBuilder();
-                    if (!string.IsNullOrEmpty(BaseUrl)) urlBuilder_.Append(BaseUrl);
+                
                     urlBuilder_.Append("api");
                     urlBuilder_.Append('/');
                     urlBuilder_.Append("models");
@@ -670,7 +657,7 @@ namespace BeamOS.PhysicalModel.Client
                     request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     var urlBuilder_ = new System.Text.StringBuilder();
-                    if (!string.IsNullOrEmpty(BaseUrl)) urlBuilder_.Append(BaseUrl);
+                
                     urlBuilder_.Append("api");
                     urlBuilder_.Append('/');
                     urlBuilder_.Append("element1Ds");
@@ -747,7 +734,7 @@ namespace BeamOS.PhysicalModel.Client
                     request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     var urlBuilder_ = new System.Text.StringBuilder();
-                    if (!string.IsNullOrEmpty(BaseUrl)) urlBuilder_.Append(BaseUrl);
+                
                     urlBuilder_.Append("api");
                     urlBuilder_.Append('/');
                     urlBuilder_.Append("element1Ds");

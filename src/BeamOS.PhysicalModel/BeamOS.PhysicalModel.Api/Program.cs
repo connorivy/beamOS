@@ -104,6 +104,7 @@ await app.GenerateClientsAndExitAsync(
         ];
         c.GenerateClientInterfaces = true;
         c.CSharpGeneratorSettings.Namespace = clientNs;
+        c.UseBaseUrl = false;
     },
     tsSettings: t =>
     {
