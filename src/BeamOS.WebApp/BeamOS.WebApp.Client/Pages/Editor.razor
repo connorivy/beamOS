@@ -1,7 +1,8 @@
 @page "/editor"
-@using BeamOS.PhysicalModel.Clients.Cs.Models;
+@using BeamOS.PhysicalModel.Contracts.Model
+@using BeamOS.PhysicalModel.Contracts.Node
 @rendermode InteractiveAuto
-@inject BeamOS.PhysicalModel.Clients.Cs.PhysicalModelAlphaClient physicalModelClient
+
 @inject IJSRuntime js
 
 <PageTitle>Editor</PageTitle>
@@ -40,17 +41,18 @@
             10,
             10,
             "Foot");
-        NodeResponse? x = await physicalModelClient.CreateNode(y);
-        await js.InvokeVoidAsync("beamOsEditor.commands.addNodeCommand", x);
+        // NodeResponse? x = await physicalModelClient.CreateNodeAsync(y);
+        
+        await js.InvokeVoidAsync("beamOsEditor.api.createNode", y);
     }
 
     private async Task LoadModel()
     {
-        ModelResponse response = await physicalModelClient.GetModel("00000000-0000-0000-0000-000000000000");
-        foreach (NodeResponse? nodeResponse in response.Nodes)
-        {
-            await js.InvokeVoidAsync("beamOsEditor.commands.addNodeCommand", nodeResponse);
-        }
+        // ModelResponse response = await physicalModelClient.GetApiModelsAsync("00000000-0000-0000-0000-000000000000", null);
+        // foreach (NodeResponse? nodeResponse in response.Nodes)
+        // {
+        //     await js.InvokeVoidAsync("beamOsEditor.commands.addNodeCommand", nodeResponse);
+        // }
         ;
     }
 
