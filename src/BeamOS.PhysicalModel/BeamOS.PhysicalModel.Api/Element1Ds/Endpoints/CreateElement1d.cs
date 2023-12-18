@@ -8,21 +8,25 @@ using FastEndpoints;
 
 namespace BeamOS.PhysicalModel.Api.Element1Ds.Endpoints;
 
-public class CreateElement1DEndpoint(
+public class CreateElement1d(
     CreateElement1DCommandHandler createElement1dCommandHandler,
-    Element1DResponseMapper responseMapper) : Endpoint<CreateElement1DRequest, Element1DResponse>
+    Element1DResponseMapper responseMapper
+) : Endpoint<CreateElement1DRequest, Element1DResponse>
 {
     public override void Configure()
     {
         this.Post("element1Ds");
         this.AllowAnonymous();
-        this.Summary(s => s.ExampleRequest = new CreateElement1DRequest(
-            "00000000-0000-0000-0000-000000000000",
-            "00000000-0000-0000-0000-000000000001",
-            "00000000-0000-0000-0000-000000000002",
-            "00000000-0000-0000-0000-000000000003",
-            "00000000-0000-0000-0000-000000000004")
-            );
+        this.Summary(
+            s =>
+                s.ExampleRequest = new CreateElement1DRequest(
+                    "00000000-0000-0000-0000-000000000000",
+                    "00000000-0000-0000-0000-000000000001",
+                    "00000000-0000-0000-0000-000000000002",
+                    "00000000-0000-0000-0000-000000000003",
+                    "00000000-0000-0000-0000-000000000004"
+                )
+        );
     }
 
     public override async Task HandleAsync(CreateElement1DRequest req, CancellationToken ct)

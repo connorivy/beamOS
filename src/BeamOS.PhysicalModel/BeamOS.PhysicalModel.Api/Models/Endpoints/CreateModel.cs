@@ -7,28 +7,32 @@ using FastEndpoints;
 
 namespace BeamOS.PhysicalModel.Api.Models.Endpoints;
 
-public class CreateModelEndpoint(
+public class CreateModel(
     CreateModelRequestMapper commandMapper,
     CreateModelCommandHandler createModelCommandHandler,
-    ModelResponseMapper modelResponseMapper) : Endpoint<CreateModelRequest, ModelResponse>
+    ModelResponseMapper modelResponseMapper
+) : Endpoint<CreateModelRequest, ModelResponse>
 {
     public override void Configure()
     {
         this.Post("models");
         this.AllowAnonymous();
-        this.Summary(s => s.ExampleRequest = new CreateModelRequest(
-            "Big Ol' Building",
-            "Description",
-            new ModelSettingsRequest(
-                new UnitSettingsRequest(
-                    "Inch",
-                    "SquareInch",
-                    "CubicInch",
-                    "KilopoundForce",
-                    "KilopoundForcePerInch",
-                    "KilopoundForceInch")
+        this.Summary(
+            s =>
+                s.ExampleRequest = new CreateModelRequest(
+                    "Big Ol' Building",
+                    "Description",
+                    new ModelSettingsRequest(
+                        new UnitSettingsRequest(
+                            "Inch",
+                            "SquareInch",
+                            "CubicInch",
+                            "KilopoundForce",
+                            "KilopoundForcePerInch",
+                            "KilopoundForceInch"
+                        )
+                    )
                 )
-            )
         );
     }
 

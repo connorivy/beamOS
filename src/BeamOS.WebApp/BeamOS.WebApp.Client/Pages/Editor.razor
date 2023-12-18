@@ -1,0 +1,76 @@
+@page "/editor"
+@using BeamOS.PhysicalModel.Client
+@using BeamOS.PhysicalModel.Contracts.Model
+@using BeamOS.PhysicalModel.Contracts.Node
+@rendermode InteractiveAuto
+
+@inject IJSRuntime js
+@inject IPhysicalModelAlphaClientWithEditor apiClient
+@inject IPhysicalModelAlphaClient pmClient
+
+<PageTitle>Editor</PageTitle>
+
+<canvas id="editor" style="height: 600px; width: 100%;"></canvas>
+
+<button @onclick="AddNode">
+    Add Node
+</button>
+
+<button @onclick="LoadModel">
+    Load Model
+</button>
+
+<button @onclick="SayHello">
+    Say Hello
+</button>
+
+@code {
+    ElementReference editorReference;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await js.InvokeVoidAsync("createFromId", "editor");
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    private async Task AddNode()
+    {
+        CreateNodeRequest request = new(
+            "00000000-0000-0000-0000-000000000000",
+            10,
+            5,
+            10,
+            "Foot");
+
+        // await apiClient.CreateNodeAsync(request);
+
+        // await apiClient.ExecuteMethod(async (client, request) => await client.CreateNodeAsync(request), request);
+        await apiClient.ExecuteApiMethod<CreateNodeRequest, NodeResponse>(
+            client => client.CreateNodeAsync,
+            request,
+            nameof(IPhysicalModelAlphaClient.CreateNodeAsync)
+        );
+    }
+
+    private async Task LoadModel()
+    {
+        // ModelResponse response = await physicalModelClient.GetApiModelsAsync("00000000-0000-0000-0000-000000000000", null);
+        // foreach (NodeResponse? nodeResponse in response.Nodes)
+        // {
+        //     await js.InvokeVoidAsync("beamOsEditor.commands.addNodeCommand", nodeResponse);
+        // }
+        ;
+    }
+
+    private async Task LoadEditor()
+    {
+    }
+
+    private async Task SayHello()
+    {
+        await js.InvokeVoidAsync("beamOsEditor.api.sayHello");
+    }
+}

@@ -8,9 +8,9 @@ using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeamOS.PhysicalModel.Api.Nodes.Endpoints;
-public class GetSingleNodeEndpoint(
-    PhysicalModelDbContext dbContext,
-    NodeResponseMapper responseMapper) : Endpoint<IdRequest, NodeResponse?>
+
+public class GetSingleNode(PhysicalModelDbContext dbContext, NodeResponseMapper responseMapper)
+    : Endpoint<IdRequest, NodeResponse?>
 {
     public override void Configure()
     {
@@ -21,7 +21,9 @@ public class GetSingleNodeEndpoint(
     public override async Task<NodeResponse?> ExecuteAsync(IdRequest req, CancellationToken ct)
     {
         NodeId expectedId = new(Guid.Parse(req.Id));
-        Node? element = await dbContext.Nodes.FirstAsync(n => n.Id == expectedId, cancellationToken: ct);
+        Node? element = await dbContext
+            .Nodes
+            .FirstAsync(n => n.Id == expectedId, cancellationToken: ct);
 
         if (element is null)
         {

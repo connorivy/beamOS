@@ -8,8 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FastEndpoints" Version="5.19.2" />
-    <PackageReference Include="FastEndpoints.Swagger" Version="5.19.2" />
+    <PackageReference Include="FastEndpoints" Version="5.20.1.5-beta" />
+    <PackageReference Include="FastEndpoints.ClientGen" Version="5.20.1.5-beta" />
+    <PackageReference Include="FastEndpoints.ClientGen.Kiota" Version="5.20.1.5-beta" />
+    <PackageReference Include="FastEndpoints.Swagger" Version="5.20.1.5-beta" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
@@ -22,6 +24,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0" />
+    <PackageReference Include="System.Text.Json" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,5 +33,9 @@
     <ProjectReference Include="..\BeamOS.PhysicalModel.Contracts\BeamOS.PhysicalModel.Contracts.csproj" />
     <ProjectReference Include="..\BeamOS.PhysicalModel.Infrastructure\BeamOS.PhysicalModel.Infrastructure.csproj" />
   </ItemGroup>
+
+  <Target Name="ClientGen" AfterTargets="Build" Condition="'$(Configuration)'=='Release' AND '$(IsDesktopBuild)' == true">
+    <Exec WorkingDirectory="$(RunWorkingDirectory)" Command="$(RunCommand) --generateclients true" />
+  </Target>
 
 </Project>
