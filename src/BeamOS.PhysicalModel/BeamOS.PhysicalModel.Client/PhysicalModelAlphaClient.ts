@@ -10,9 +10,9 @@
 
 export interface IPhysicalModelAlphaClient {
 
-    getApiModelsElement1Ds(modelId: string, element1dIds: string[] | null | undefined): Promise<Element1DResponse[]>;
+    getElement1ds(modelId: string, element1dIds: string[] | null | undefined): Promise<Element1DResponse[]>;
 
-    getApiModels(id: string, sendEntities: boolean | null | undefined): Promise<ModelResponse>;
+    getModel(id: string, sendEntities: boolean | null | undefined): Promise<ModelResponse>;
 
     /**
      * @return Success
@@ -55,7 +55,7 @@ export class PhysicalModelAlphaClient implements IPhysicalModelAlphaClient {
         this.baseUrl = baseUrl ?? "";
     }
 
-    getApiModelsElement1Ds(modelId: string, element1dIds: string[] | null | undefined): Promise<Element1DResponse[]> {
+    getElement1ds(modelId: string, element1dIds: string[] | null | undefined): Promise<Element1DResponse[]> {
         let url_ = this.baseUrl + "/api/models/{modelId}/element1Ds?";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -72,11 +72,11 @@ export class PhysicalModelAlphaClient implements IPhysicalModelAlphaClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetApiModelsElement1Ds(_response);
+            return this.processGetElement1ds(_response);
         });
     }
 
-    protected processGetApiModelsElement1Ds(response: Response): Promise<Element1DResponse[]> {
+    protected processGetElement1ds(response: Response): Promise<Element1DResponse[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -101,7 +101,7 @@ export class PhysicalModelAlphaClient implements IPhysicalModelAlphaClient {
         return Promise.resolve<Element1DResponse[]>(null as any);
     }
 
-    getApiModels(id: string, sendEntities: boolean | null | undefined): Promise<ModelResponse> {
+    getModel(id: string, sendEntities: boolean | null | undefined): Promise<ModelResponse> {
         let url_ = this.baseUrl + "/api/models/{id}?";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -118,11 +118,11 @@ export class PhysicalModelAlphaClient implements IPhysicalModelAlphaClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetApiModels(_response);
+            return this.processGetModel(_response);
         });
     }
 
-    protected processGetApiModels(response: Response): Promise<ModelResponse> {
+    protected processGetModel(response: Response): Promise<ModelResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {

@@ -6,11 +6,8 @@ using BeamOS.PhysicalModel.Application;
 using BeamOS.PhysicalModel.Infrastructure;
 using FastEndpoints;
 using FastEndpoints.ClientGen;
-using FastEndpoints.ClientGen.Kiota;
 using FastEndpoints.Swagger;
 using Microsoft.EntityFrameworkCore;
-using NSwag;
-using NSwag.CodeGeneration.OperationNameGenerators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -110,7 +107,7 @@ await app.GenerateClientsAndExitAsync(
     {
         t.ClassName = "PhysicalModelAlphaClient";
         t.GenerateClientInterfaces = true;
-        t.TypeScriptGeneratorSettings.Namespace = "";
+        t.TypeScriptGeneratorSettings.Namespace = ""; // needed to not generate a namespace
     }
 );
 

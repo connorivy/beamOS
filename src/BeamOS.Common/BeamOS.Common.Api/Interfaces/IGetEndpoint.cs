@@ -2,10 +2,12 @@ using System.Linq.Expressions;
 using System.Reflection;
 
 namespace BeamOS.Common.Api.Interfaces;
+
 public interface IGetEndpointBase
 {
     Delegate GetAsyncDelegate { get; }
 }
+
 public interface IGetEndpoint<TRequest, TResponse> : IGetEndpointBase
     where TRequest : notnull
 {
@@ -45,7 +47,12 @@ public interface IGetEndpoint<TRequest, TResponse, TParam1, TParam2> : IGetEndpo
             return DelegateHelpers.CreateDelegate(x, this);
         }
     }
-    public Task<TResponse> GetAsync(TRequest request, TParam1 param1, TParam2 param2, CancellationToken ct);
+    public Task<TResponse> GetAsync(
+        TRequest request,
+        TParam1 param1,
+        TParam2 param2,
+        CancellationToken ct
+    );
 }
 
 public static class DelegateHelpers
@@ -53,7 +60,7 @@ public static class DelegateHelpers
     public static Delegate CreateDelegate(this MethodInfo methodInfo, object target)
     {
         Func<Type[], Type> getType;
-        var isAction = methodInfo.ReturnType.Equals((typeof(void)));
+        var isAction = methodInfo.ReturnType.Equals(typeof(void));
         var types = methodInfo.GetParameters().Select(p => p.ParameterType);
 
         if (isAction)
