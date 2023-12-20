@@ -1,6 +1,5 @@
 using BeamOS.PhysicalModel.Client;
 using BeamOS.WebApp.Client;
-using BeamOS.WebApp.Client.Pages;
 using BeamOS.WebApp.Components;
 
 var builder = WebApplication.CreateBuilder(args);

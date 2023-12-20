@@ -10,9 +10,16 @@
 
 export interface IPhysicalModelAlphaClient {
 
-    getApiModelsElement1Ds(modelId: string, element1dIds: string[] | null | undefined): Promise<Element1DResponse[]>;
+    getApiModels(id: string): Promise<ModelResponse>;
 
-    getApiModels(id: string, sendEntities: boolean | null | undefined): Promise<ModelResponse>;
+    getApiModelsHydrated(id: string): Promise<ModelResponseHydrated>;
+
+    getApiElement1Ds(modelId: string, element1dIds: string[] | null | undefined): Promise<Element1DResponse[]>;
+
+    /**
+     * @return Success
+     */
+    createElement1d(createElement1DRequest: CreateElement1DRequest): Promise<Element1DResponse>;
 
     /**
      * @return Success
@@ -37,11 +44,6 @@ export interface IPhysicalModelAlphaClient {
     /**
      * @return Success
      */
-    createElement1d(createElement1DRequest: CreateElement1DRequest): Promise<Element1DResponse>;
-
-    /**
-     * @return Success
-     */
     getSingleElement1d(id: string | null): Promise<Element1DResponse>;
 }
 
@@ -55,59 +57,11 @@ export class PhysicalModelAlphaClient implements IPhysicalModelAlphaClient {
         this.baseUrl = baseUrl ?? "";
     }
 
-    getApiModelsElement1Ds(modelId: string, element1dIds: string[] | null | undefined): Promise<Element1DResponse[]> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/element1Ds?";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        if (element1dIds !== undefined && element1dIds !== null)
-            element1dIds && element1dIds.forEach(item => { url_ += "element1dIds=" + encodeURIComponent("" + item) + "&"; });
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetApiModelsElement1Ds(_response);
-        });
-    }
-
-    protected processGetApiModelsElement1Ds(response: Response): Promise<Element1DResponse[]> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(Element1DResponse.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Element1DResponse[]>(null as any);
-    }
-
-    getApiModels(id: string, sendEntities: boolean | null | undefined): Promise<ModelResponse> {
-        let url_ = this.baseUrl + "/api/models/{id}?";
+    getApiModels(id: string): Promise<ModelResponse> {
+        let url_ = this.baseUrl + "/api/models/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        if (sendEntities !== undefined && sendEntities !== null)
-            url_ += "sendEntities=" + encodeURIComponent("" + sendEntities) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -138,6 +92,131 @@ export class PhysicalModelAlphaClient implements IPhysicalModelAlphaClient {
             });
         }
         return Promise.resolve<ModelResponse>(null as any);
+    }
+
+    getApiModelsHydrated(id: string): Promise<ModelResponseHydrated> {
+        let url_ = this.baseUrl + "/api/models/{id}/hydrated";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetApiModelsHydrated(_response);
+        });
+    }
+
+    protected processGetApiModelsHydrated(response: Response): Promise<ModelResponseHydrated> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ModelResponseHydrated.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ModelResponseHydrated>(null as any);
+    }
+
+    getApiElement1Ds(modelId: string, element1dIds: string[] | null | undefined): Promise<Element1DResponse[]> {
+        let url_ = this.baseUrl + "/api/element1Ds?";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined and cannot be null.");
+        else
+            url_ += "modelId=" + encodeURIComponent("" + modelId) + "&";
+        if (element1dIds !== undefined && element1dIds !== null)
+            element1dIds && element1dIds.forEach(item => { url_ += "element1dIds=" + encodeURIComponent("" + item) + "&"; });
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetApiElement1Ds(_response);
+        });
+    }
+
+    protected processGetApiElement1Ds(response: Response): Promise<Element1DResponse[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(Element1DResponse.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Element1DResponse[]>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    createElement1d(createElement1DRequest: CreateElement1DRequest): Promise<Element1DResponse> {
+        let url_ = this.baseUrl + "/api/element1Ds";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(createElement1DRequest);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateElement1d(_response);
+        });
+    }
+
+    protected processCreateElement1d(response: Response): Promise<Element1DResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Element1DResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Element1DResponse>(null as any);
     }
 
     /**
@@ -306,47 +385,6 @@ export class PhysicalModelAlphaClient implements IPhysicalModelAlphaClient {
     /**
      * @return Success
      */
-    createElement1d(createElement1DRequest: CreateElement1DRequest): Promise<Element1DResponse> {
-        let url_ = this.baseUrl + "/api/element1Ds";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(createElement1DRequest);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateElement1d(_response);
-        });
-    }
-
-    protected processCreateElement1d(response: Response): Promise<Element1DResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Element1DResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Element1DResponse>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
     getSingleElement1d(id: string | null): Promise<Element1DResponse> {
         let url_ = this.baseUrl + "/api/element1Ds/{id}";
         if (id === undefined || id === null)
@@ -383,109 +421,6 @@ export class PhysicalModelAlphaClient implements IPhysicalModelAlphaClient {
         }
         return Promise.resolve<Element1DResponse>(null as any);
     }
-}
-
-export class Element1DResponse implements IElement1DResponse {
-    id!: string;
-    modelId!: string;
-    startNodeId!: string;
-    endNodeId!: string;
-    materialId!: string;
-    sectionProfileId!: string;
-    sectionProfileRotation!: UnitValueDTO;
-
-    constructor(data?: IElement1DResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.sectionProfileRotation = new UnitValueDTO();
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.modelId = _data["modelId"];
-            this.startNodeId = _data["startNodeId"];
-            this.endNodeId = _data["endNodeId"];
-            this.materialId = _data["materialId"];
-            this.sectionProfileId = _data["sectionProfileId"];
-            this.sectionProfileRotation = _data["sectionProfileRotation"] ? UnitValueDTO.fromJS(_data["sectionProfileRotation"]) : new UnitValueDTO();
-        }
-    }
-
-    static fromJS(data: any): Element1DResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new Element1DResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["modelId"] = this.modelId;
-        data["startNodeId"] = this.startNodeId;
-        data["endNodeId"] = this.endNodeId;
-        data["materialId"] = this.materialId;
-        data["sectionProfileId"] = this.sectionProfileId;
-        data["sectionProfileRotation"] = this.sectionProfileRotation ? this.sectionProfileRotation.toJSON() : <any>undefined;
-        return data;
-    }
-}
-
-export interface IElement1DResponse {
-    id: string;
-    modelId: string;
-    startNodeId: string;
-    endNodeId: string;
-    materialId: string;
-    sectionProfileId: string;
-    sectionProfileRotation: UnitValueDTO;
-}
-
-export class UnitValueDTO implements IUnitValueDTO {
-    value!: number;
-    unit!: string;
-
-    constructor(data?: IUnitValueDTO) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.value = _data["value"];
-            this.unit = _data["unit"];
-        }
-    }
-
-    static fromJS(data: any): UnitValueDTO {
-        data = typeof data === 'object' ? data : {};
-        let result = new UnitValueDTO();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["value"] = this.value;
-        data["unit"] = this.unit;
-        return data;
-    }
-}
-
-export interface IUnitValueDTO {
-    value: number;
-    unit: string;
 }
 
 export class ModelResponse implements IModelResponse {
@@ -843,6 +778,46 @@ export interface IPointResponse {
     zCoordinate: UnitValueDTO;
 }
 
+export class UnitValueDTO implements IUnitValueDTO {
+    value!: number;
+    unit!: string;
+
+    constructor(data?: IUnitValueDTO) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.value = _data["value"];
+            this.unit = _data["unit"];
+        }
+    }
+
+    static fromJS(data: any): UnitValueDTO {
+        data = typeof data === 'object' ? data : {};
+        let result = new UnitValueDTO();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["value"] = this.value;
+        data["unit"] = this.unit;
+        return data;
+    }
+}
+
+export interface IUnitValueDTO {
+    value: number;
+    unit: string;
+}
+
 export class RestraintResponse implements IRestraintResponse {
     canTranslateAlongX!: boolean;
     canTranslateAlongY!: boolean;
@@ -897,6 +872,69 @@ export interface IRestraintResponse {
     canRotateAboutX: boolean;
     canRotateAboutY: boolean;
     canRotateAboutZ: boolean;
+}
+
+export class Element1DResponse implements IElement1DResponse {
+    id!: string;
+    modelId!: string;
+    startNodeId!: string;
+    endNodeId!: string;
+    materialId!: string;
+    sectionProfileId!: string;
+    sectionProfileRotation!: UnitValueDTO;
+
+    constructor(data?: IElement1DResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.sectionProfileRotation = new UnitValueDTO();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.modelId = _data["modelId"];
+            this.startNodeId = _data["startNodeId"];
+            this.endNodeId = _data["endNodeId"];
+            this.materialId = _data["materialId"];
+            this.sectionProfileId = _data["sectionProfileId"];
+            this.sectionProfileRotation = _data["sectionProfileRotation"] ? UnitValueDTO.fromJS(_data["sectionProfileRotation"]) : new UnitValueDTO();
+        }
+    }
+
+    static fromJS(data: any): Element1DResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new Element1DResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["modelId"] = this.modelId;
+        data["startNodeId"] = this.startNodeId;
+        data["endNodeId"] = this.endNodeId;
+        data["materialId"] = this.materialId;
+        data["sectionProfileId"] = this.sectionProfileId;
+        data["sectionProfileRotation"] = this.sectionProfileRotation ? this.sectionProfileRotation.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IElement1DResponse {
+    id: string;
+    modelId: string;
+    startNodeId: string;
+    endNodeId: string;
+    materialId: string;
+    sectionProfileId: string;
+    sectionProfileRotation: UnitValueDTO;
 }
 
 export class MaterialResponse implements IMaterialResponse {
@@ -1099,6 +1137,122 @@ export interface IVector3 {
     x: number;
     y: number;
     z: number;
+}
+
+export class ModelResponseHydrated implements IModelResponseHydrated {
+    id!: string;
+    name!: string;
+    description!: string;
+    settings!: ModelSettingsResponse;
+    nodes!: NodeResponse[];
+    element1Ds!: Element1DResponse[];
+    materials!: MaterialResponse[];
+    sectionProfiles!: SectionProfileResponse[];
+    pointLoads!: PointLoadResponse[];
+
+    constructor(data?: IModelResponseHydrated) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.settings = new ModelSettingsResponse();
+            this.nodes = [];
+            this.element1Ds = [];
+            this.materials = [];
+            this.sectionProfiles = [];
+            this.pointLoads = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.description = _data["description"];
+            this.settings = _data["settings"] ? ModelSettingsResponse.fromJS(_data["settings"]) : new ModelSettingsResponse();
+            if (Array.isArray(_data["nodes"])) {
+                this.nodes = [] as any;
+                for (let item of _data["nodes"])
+                    this.nodes!.push(NodeResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["element1Ds"])) {
+                this.element1Ds = [] as any;
+                for (let item of _data["element1Ds"])
+                    this.element1Ds!.push(Element1DResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["materials"])) {
+                this.materials = [] as any;
+                for (let item of _data["materials"])
+                    this.materials!.push(MaterialResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["sectionProfiles"])) {
+                this.sectionProfiles = [] as any;
+                for (let item of _data["sectionProfiles"])
+                    this.sectionProfiles!.push(SectionProfileResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["pointLoads"])) {
+                this.pointLoads = [] as any;
+                for (let item of _data["pointLoads"])
+                    this.pointLoads!.push(PointLoadResponse.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ModelResponseHydrated {
+        data = typeof data === 'object' ? data : {};
+        let result = new ModelResponseHydrated();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["description"] = this.description;
+        data["settings"] = this.settings ? this.settings.toJSON() : <any>undefined;
+        if (Array.isArray(this.nodes)) {
+            data["nodes"] = [];
+            for (let item of this.nodes)
+                data["nodes"].push(item.toJSON());
+        }
+        if (Array.isArray(this.element1Ds)) {
+            data["element1Ds"] = [];
+            for (let item of this.element1Ds)
+                data["element1Ds"].push(item.toJSON());
+        }
+        if (Array.isArray(this.materials)) {
+            data["materials"] = [];
+            for (let item of this.materials)
+                data["materials"].push(item.toJSON());
+        }
+        if (Array.isArray(this.sectionProfiles)) {
+            data["sectionProfiles"] = [];
+            for (let item of this.sectionProfiles)
+                data["sectionProfiles"].push(item.toJSON());
+        }
+        if (Array.isArray(this.pointLoads)) {
+            data["pointLoads"] = [];
+            for (let item of this.pointLoads)
+                data["pointLoads"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IModelResponseHydrated {
+    id: string;
+    name: string;
+    description: string;
+    settings: ModelSettingsResponse;
+    nodes: NodeResponse[];
+    element1Ds: Element1DResponse[];
+    materials: MaterialResponse[];
+    sectionProfiles: SectionProfileResponse[];
+    pointLoads: PointLoadResponse[];
 }
 
 export class CreatePointLoadRequest implements ICreatePointLoadRequest {
