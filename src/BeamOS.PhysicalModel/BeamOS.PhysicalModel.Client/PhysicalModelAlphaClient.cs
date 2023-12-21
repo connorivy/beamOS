@@ -28,18 +28,18 @@ namespace BeamOS.PhysicalModel.Client
     public partial interface IPhysicalModelAlphaClient
     {
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ModelResponse> GetApiModelsAsync(string id);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Element1DResponse>> GetElement1dsAsync(string modelId, System.Collections.Generic.IEnumerable<string> element1dIds);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ModelResponse> GetApiModelsAsync(string id, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Element1DResponse>> GetElement1dsAsync(string modelId, System.Collections.Generic.IEnumerable<string> element1dIds, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ModelResponseHydrated> GetApiModelsHydratedAsync(string id);
+        System.Threading.Tasks.Task<ModelResponse> GetModelAsync(string id, bool? sendEntities);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ModelResponseHydrated> GetApiModelsHydratedAsync(string id, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<ModelResponse> GetModelAsync(string id, bool? sendEntities, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Element1DResponse>> GetApiElement1DsAsync(string modelId, System.Collections.Generic.IEnumerable<string> element1dIds);
@@ -131,14 +131,14 @@ namespace BeamOS.PhysicalModel.Client
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ModelResponse> GetApiModelsAsync(string id)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Element1DResponse>> GetElement1dsAsync(string modelId, System.Collections.Generic.IEnumerable<string> element1dIds)
         {
-            return GetApiModelsAsync(id, System.Threading.CancellationToken.None);
+            return GetElement1dsAsync(modelId, element1dIds, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ModelResponse> GetApiModelsAsync(string id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Element1DResponse>> GetElement1dsAsync(string modelId, System.Collections.Generic.IEnumerable<string> element1dIds, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -211,14 +211,14 @@ namespace BeamOS.PhysicalModel.Client
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ModelResponseHydrated> GetApiModelsHydratedAsync(string id)
+        public virtual System.Threading.Tasks.Task<ModelResponse> GetModelAsync(string id, bool? sendEntities)
         {
-            return GetApiModelsHydratedAsync(id, System.Threading.CancellationToken.None);
+            return GetModelAsync(id, sendEntities, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ModelResponseHydrated> GetApiModelsHydratedAsync(string id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ModelResponse> GetModelAsync(string id, bool? sendEntities, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
