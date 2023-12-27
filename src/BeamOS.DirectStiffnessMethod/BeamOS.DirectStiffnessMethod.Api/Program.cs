@@ -2,6 +2,7 @@ using BeamOS.Common.Api;
 using BeamOS.Common.Application;
 using BeamOS.DirectStiffnessMethod.Api;
 using BeamOS.DirectStiffnessMethod.Application;
+using BeamOS.PhysicalModel.Client;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +16,7 @@ builder.Services.AddBeamOsEndpoints<IAssemblyMarkerDirectStiffnessMethodApi>();
 builder.Services.AddCommandHandlers<IAssemblyMarkerDirectStiffnessMethodApplication>();
 builder
     .Services
-    .AddHttpClient<PhysicalModelApiClient>(
+    .AddHttpClient<IPhysicalModelAlphaClient, PhysicalModelAlphaClient>(
         client => client.BaseAddress = new("https://localhost:7193")
     );
 

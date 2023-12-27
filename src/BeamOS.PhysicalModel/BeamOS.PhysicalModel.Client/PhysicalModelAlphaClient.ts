@@ -10,11 +10,11 @@
 
 export interface IPhysicalModelAlphaClient {
 
+    getModel(id: string): Promise<ModelResponse>;
+
+    getModelHydrated(id: string): Promise<ModelResponseHydrated>;
+
     getElement1ds(modelId: string, element1dIds: string[] | null | undefined): Promise<Element1DResponse[]>;
-
-    getModel(id: string, sendEntities: boolean | null | undefined): Promise<ModelResponse>;
-
-    getApiElement1Ds(modelId: string, element1dIds: string[] | null | undefined): Promise<Element1DResponse[]>;
 
     /**
      * @return Success
@@ -57,8 +57,82 @@ export class PhysicalModelAlphaClient implements IPhysicalModelAlphaClient {
         this.baseUrl = baseUrl ?? "";
     }
 
+    getModel(id: string): Promise<ModelResponse> {
+        let url_ = this.baseUrl + "/api/models/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetModel(_response);
+        });
+    }
+
+    protected processGetModel(response: Response): Promise<ModelResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ModelResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ModelResponse>(null as any);
+    }
+
+    getModelHydrated(id: string): Promise<ModelResponseHydrated> {
+        let url_ = this.baseUrl + "/api/models/{id}/hydrated";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetModelHydrated(_response);
+        });
+    }
+
+    protected processGetModelHydrated(response: Response): Promise<ModelResponseHydrated> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ModelResponseHydrated.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ModelResponseHydrated>(null as any);
+    }
+
     getElement1ds(modelId: string, element1dIds: string[] | null | undefined): Promise<Element1DResponse[]> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/element1Ds?";
+        let url_ = this.baseUrl + "/api/element1Ds?";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined and cannot be null.");
         else
@@ -104,13 +178,11 @@ export class PhysicalModelAlphaClient implements IPhysicalModelAlphaClient {
         return Promise.resolve<Element1DResponse[]>(null as any);
     }
 
-    getModel(id: string, sendEntities: boolean | null | undefined): Promise<ModelResponse> {
-        let url_ = this.baseUrl + "/api/models/{id}?";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        if (sendEntities !== undefined && sendEntities !== null)
-            url_ += "sendEntities=" + encodeURIComponent("" + sendEntities) + "&";
+    /**
+     * @return Success
+     */
+    createElement1d(createElement1DRequest: CreateElement1DRequest): Promise<Element1DResponse> {
+        let url_ = this.baseUrl + "/api/element1Ds";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(createElement1DRequest);
@@ -125,11 +197,11 @@ export class PhysicalModelAlphaClient implements IPhysicalModelAlphaClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetModel(_response);
+            return this.processCreateElement1d(_response);
         });
     }
 
-    protected processGetModel(response: Response): Promise<ModelResponse> {
+    protected processCreateElement1d(response: Response): Promise<Element1DResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {

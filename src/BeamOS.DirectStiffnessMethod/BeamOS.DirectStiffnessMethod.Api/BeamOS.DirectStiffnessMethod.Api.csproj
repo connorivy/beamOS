@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\BeamOS.Common\BeamOS.Common.Api\BeamOS.Common.Api.csproj" />
+    <ProjectReference Include="..\..\BeamOS.PhysicalModel\BeamOS.PhysicalModel.Client\BeamOS.PhysicalModel.Client.csproj" />
     <ProjectReference Include="..\..\BeamOS.PhysicalModel\BeamOS.PhysicalModel.Contracts\BeamOS.PhysicalModel.Contracts.csproj" />
     <ProjectReference Include="..\BeamOS.DirectStiffnessMethod.Application\BeamOS.DirectStiffnessMethod.Application.csproj" />
     <ProjectReference Include="..\BeamOS.DirectStiffnessMethod.Contracts\BeamOS.DirectStiffnessMethod.Contracts.csproj" />
