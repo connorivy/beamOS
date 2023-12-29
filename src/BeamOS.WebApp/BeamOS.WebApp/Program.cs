@@ -1,7 +1,6 @@
 using BeamOS.PhysicalModel.Client;
 using BeamOS.WebApp.Client;
 using BeamOS.WebApp.Components;
-using BeamOS.WebApp.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,8 +26,7 @@ builder
         client => client.BaseAddress = new("https://localhost:7193")
     );
 
-builder.Services.AddScoped<IPhysicalModelAlphaClientWithEditor, PhysicalModelAlphaClientProxy>();
-builder.Services.AddScoped<IAppAssemblyNameProvider, AppAssemblyNameProvider>();
+builder.Services.RegisterSharedServices();
 
 builder
     .Services

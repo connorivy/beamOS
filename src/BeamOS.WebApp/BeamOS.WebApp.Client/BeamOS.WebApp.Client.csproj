@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\BeamOS.PhysicalModel\BeamOS.PhysicalModel.Client\BeamOS.PhysicalModel.Client.csproj" />
+    <ProjectReference Include="..\BeamOS.WebApp.EditorApi\BeamOS.WebApp.EditorApi.csproj" />
   </ItemGroup>
 
 </Project>

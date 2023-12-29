@@ -18,6 +18,6 @@ builder
         client => client.BaseAddress = new(uriString)
     );
 
-builder.Services.AddScoped<IPhysicalModelAlphaClientWithEditor, PhysicalModelAlphaClientProxy>();
+builder.Services.RegisterSharedServices();
 
 await builder.Build().RunAsync();

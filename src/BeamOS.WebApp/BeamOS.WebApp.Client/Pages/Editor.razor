@@ -1,11 +1,14 @@
 @page "/editor"
 @using BeamOS.PhysicalModel.Client
+@using BeamOS.PhysicalModel.Contracts.Element1D
 @using BeamOS.PhysicalModel.Contracts.Model
 @using BeamOS.PhysicalModel.Contracts.Node
+@using BeamOS.WebApp.EditorApi
 @rendermode InteractiveServer
 
 @inject IJSRuntime js
-@inject IPhysicalModelAlphaClientWithEditor apiClient
+@inject IPhysicalModelAlphaClient apiClient
+@inject IEditorApiAlpha editorApiAlpha
 
 <PageTitle>Editor</PageTitle>
 
@@ -13,6 +16,10 @@
 
 <button @onclick="AddNode">
     Add Node
+</button>
+
+<button @onclick="AddElement1d">
+    Add Element1d
 </button>
 
 <button @onclick="LoadModel">
@@ -25,6 +32,8 @@
 
 @code {
     ElementReference editorReference;
+    string? startNodeId;
+    string? endNodeId;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -45,11 +54,40 @@
             10,
             "Foot");
 
-        await apiClient.ExecuteApiMethod<CreateNodeRequest, NodeResponse>(
-            client => client.CreateNodeAsync,
-            request,
-            nameof(IPhysicalModelAlphaClient.CreateNodeAsync)
+        NodeResponse response = await apiClient.CreateNodeAsync(request);
+
+        if (startNodeId is null)
+        {
+            startNodeId = response.Id;
+        }
+        else
+        {
+            endNodeId = response.Id;
+        }
+        var x = await editorApiAlpha.CreateNodeAsync(response);
+    }
+
+    private async Task AddElement1d()
+    {
+        CreateElement1DRequest createElement1DRequest = new(
+            "00000000-0000-0000-0000-000000000000",
+            startNodeId,
+            endNodeId,
+            "00000000-0000-0000-0000-000000000000",
+            "00000000-0000-0000-0000-000000000000"
         );
+
+        Element1DResponse response = await apiClient.CreateElement1dAsync(createElement1DRequest);
+        var newResponse = new Element1DResponse(
+            response.Id,
+            response.ModelId,
+            response.StartNodeId,
+            "error",
+            response.MaterialId,
+            response.SectionProfileId,
+            response.SectionProfileRotation
+        );
+        var x = await editorApiAlpha.CreateElement1dAsync(newResponse);
     }
 
     private async Task LoadModel()
