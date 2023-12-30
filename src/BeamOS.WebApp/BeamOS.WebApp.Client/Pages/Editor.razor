@@ -18,29 +18,18 @@
     Add Node
 </button>
 
-<button @onclick="AddElement1d">
-    Add Element1d
-</button>
-
-<button @onclick="LoadModel">
-    Load Model
-</button>
-
-<button @onclick="SayHello">
-    Say Hello
+<button @onclick="Solve">
+    Solve
 </button>
 
 @code {
-    ElementReference editorReference;
-    string? startNodeId;
-    string? endNodeId;
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             await js.InvokeVoidAsync("createFromId", "editor");
         }
+        await LoadModel();
         await base.OnAfterRenderAsync(firstRender);
     }
 
@@ -55,58 +44,18 @@
             "Foot");
 
         NodeResponse response = await apiClient.CreateNodeAsync(request);
-
-        if (startNodeId is null)
-        {
-            startNodeId = response.Id;
-        }
-        else
-        {
-            endNodeId = response.Id;
-        }
         var x = await editorApiAlpha.CreateNodeAsync(response);
-    }
-
-    private async Task AddElement1d()
-    {
-        CreateElement1DRequest createElement1DRequest = new(
-            "00000000-0000-0000-0000-000000000000",
-            startNodeId,
-            endNodeId,
-            "00000000-0000-0000-0000-000000000000",
-            "00000000-0000-0000-0000-000000000000"
-        );
-
-        Element1DResponse response = await apiClient.CreateElement1dAsync(createElement1DRequest);
-        var newResponse = new Element1DResponse(
-            response.Id,
-            response.ModelId,
-            response.StartNodeId,
-            "error",
-            response.MaterialId,
-            response.SectionProfileId,
-            response.SectionProfileRotation
-        );
-        var x = await editorApiAlpha.CreateElement1dAsync(newResponse);
     }
 
     private async Task LoadModel()
     {
-        // ModelResponse response = await physicalModelClient.GetApiModelsAsync("00000000-0000-0000-0000-000000000000", null);
-        // foreach (NodeResponse? nodeResponse in response.Nodes)
-        // {
-        //     await js.InvokeVoidAsync("beamOsEditor.commands.addNodeCommand", nodeResponse);
-        // }
-        ;
+        ModelResponseHydrated response = await apiClient.GetModelHydratedAsync("00000000-0000-0000-0000-000000000000");
+        var x = await editorApiAlpha.CreateModelHydratedAsync(response);
     }
 
-    private async Task LoadEditor()
+    private async Task Solve()
     {
-    }
-
-    private async Task SayHello()
-    {
-        await js.InvokeVoidAsync("beamOsEditor.api.sayHello");
+        
     }
 }
 

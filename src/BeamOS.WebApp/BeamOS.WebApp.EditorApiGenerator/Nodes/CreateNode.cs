@@ -3,7 +3,7 @@ using FastEndpoints;
 
 namespace BeamOS.WebApp.EditorApi.Nodes;
 
-public class CreateNode() : Endpoint<NodeResponse, string>
+public class CreateNode : Endpoint<NodeResponse, string>
 {
     public override void Configure()
     {

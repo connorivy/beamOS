@@ -20,10 +20,6 @@
     <ProjectReference Include="..\..\BeamOS.PhysicalModel\BeamOS.PhysicalModel.Contracts\BeamOS.PhysicalModel.Contracts.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
-
   <Target Name="ClientGen" AfterTargets="Build" Condition="'$(Configuration)'=='Release' AND '$(IsDesktopBuild)' == true">
     <Exec WorkingDirectory="$(RunWorkingDirectory)" Command="$(RunCommand) --generateclients true" />
   </Target>
