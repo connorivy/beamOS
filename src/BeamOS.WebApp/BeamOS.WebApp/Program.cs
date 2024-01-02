@@ -1,9 +1,17 @@
 using BeamOS.PhysicalModel.Client;
 using BeamOS.WebApp.Client;
-using BeamOS.WebApp.Client.Pages;
 using BeamOS.WebApp.Components;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder
+    .Configuration
+    .AddInMemoryCollection(
+        new Dictionary<string, string?>
+        {
+            [Constants.ASSEMBLY_NAME] = typeof(Program).Assembly.GetName().Name
+        }
+    );
 
 // Add services to the container.
 builder
@@ -18,7 +26,7 @@ builder
         client => client.BaseAddress = new("https://localhost:7193")
     );
 
-builder.Services.AddScoped<IPhysicalModelAlphaClientWithEditor, PhysicalModelAlphaClientProxy>();
+builder.Services.RegisterSharedServices();
 
 builder
     .Services
@@ -31,6 +39,18 @@ builder
     });
 
 var app = builder.Build();
+
+app.MapGet(
+    "/app-settings",
+    () =>
+        Results.Ok(
+            new Dictionary<string, string>
+            {
+                [Constants.ASSEMBLY_NAME] = typeof(Program).Assembly.GetName().Name,
+                [Constants.PHYSICAL_MODEL_API_BASE_URI] = "https://localhost:7193"
+            }
+        )
+);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -52,7 +72,7 @@ app.UseAntiforgery();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(typeof(Editor).Assembly);
+    .AddAdditionalAssemblies(typeof(BeamOS.WebApp.Client.Pages.Editor).Assembly);
 
 app.UseCors();
 

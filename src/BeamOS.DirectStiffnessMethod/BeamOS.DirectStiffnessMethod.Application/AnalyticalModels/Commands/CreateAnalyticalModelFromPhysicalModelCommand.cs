@@ -10,13 +10,13 @@ public record CreateAnalyticalModelFromPhysicalModelCommand(
     string Name,
     string Description,
     ModelSettingsCommand Settings,
-    List<CreateAnalyticalNodeCommand>? Nodes = null,
-    List<CreateAnalyticalElement1dCommand>? Element1Ds = null,
-    List<CreateMaterialCommand>? Materials = null,
-    List<CreateSectionProfileCommand>? SectionProfiles = null);
+    List<CreateAnalyticalNodeCommand> Nodes,
+    List<CreateAnalyticalElement1dCommand> Element1Ds,
+    List<CreateMaterialCommand> Materials,
+    List<CreateSectionProfileCommand> SectionProfiles
+);
 
-public record ModelSettingsCommand(
-    UnitSettingsCommand UnitSettings);
+public record ModelSettingsCommand(UnitSettingsCommand UnitSettings);
 
 public record UnitSettingsCommand(
     string LengthUnit,
@@ -24,4 +24,5 @@ public record UnitSettingsCommand(
     string VolumeUnit,
     string ForceUnit,
     string ForcePerLengthUnit,
-    string TorqueUnit);
+    string TorqueUnit
+);

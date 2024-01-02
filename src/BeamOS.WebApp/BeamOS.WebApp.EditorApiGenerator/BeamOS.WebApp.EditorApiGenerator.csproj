@@ -8,16 +8,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FastEndpoints" Version="5.20.1.8-beta" />
+    <PackageReference Include="FastEndpoints.ClientGen" Version="5.20.1.8-beta" />
+    <PackageReference Include="FastEndpoints.Swagger" Version="5.20.1.8-beta" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\BeamOS.Common\BeamOS.Common.Api\BeamOS.Common.Api.csproj" />
-    <ProjectReference Include="..\..\BeamOS.PhysicalModel\BeamOS.PhysicalModel.Client\BeamOS.PhysicalModel.Client.csproj" />
+    <ProjectReference Include="..\..\BeamOS.PhysicalModel\BeamOS.PhysicalModel.Api\BeamOS.PhysicalModel.Api.csproj" />
     <ProjectReference Include="..\..\BeamOS.PhysicalModel\BeamOS.PhysicalModel.Contracts\BeamOS.PhysicalModel.Contracts.csproj" />
-    <ProjectReference Include="..\BeamOS.DirectStiffnessMethod.Application\BeamOS.DirectStiffnessMethod.Application.csproj" />
-    <ProjectReference Include="..\BeamOS.DirectStiffnessMethod.Contracts\BeamOS.DirectStiffnessMethod.Contracts.csproj" />
   </ItemGroup>
+
+  <Target Name="ClientGen" AfterTargets="Build" Condition="'$(Configuration)'=='Release' AND '$(IsDesktopBuild)' == true">
+    <Exec WorkingDirectory="$(RunWorkingDirectory)" Command="$(RunCommand) --generateclients true" />
+  </Target>
 
 </Project>

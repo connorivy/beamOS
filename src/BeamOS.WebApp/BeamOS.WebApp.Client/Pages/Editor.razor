@@ -1,12 +1,14 @@
 @page "/editor"
 @using BeamOS.PhysicalModel.Client
+@using BeamOS.PhysicalModel.Contracts.Element1D
 @using BeamOS.PhysicalModel.Contracts.Model
 @using BeamOS.PhysicalModel.Contracts.Node
-@rendermode InteractiveAuto
+@using BeamOS.WebApp.EditorApi
+@rendermode InteractiveServer
 
 @inject IJSRuntime js
-@inject IPhysicalModelAlphaClientWithEditor apiClient
-@inject IPhysicalModelAlphaClient pmClient
+@inject IPhysicalModelAlphaClient apiClient
+@inject IEditorApiAlpha editorApiAlpha
 
 <PageTitle>Editor</PageTitle>
 
@@ -16,28 +18,24 @@
     Add Node
 </button>
 
-<button @onclick="LoadModel">
-    Load Model
-</button>
-
-<button @onclick="SayHello">
-    Say Hello
+<button @onclick="Solve">
+    Solve
 </button>
 
 @code {
-    ElementReference editorReference;
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             await js.InvokeVoidAsync("createFromId", "editor");
         }
+        await LoadModel();
         await base.OnAfterRenderAsync(firstRender);
     }
 
     private async Task AddNode()
     {
+        // Trace.WriteLine("AddNode");
         CreateNodeRequest request = new(
             "00000000-0000-0000-0000-000000000000",
             10,
@@ -45,32 +43,19 @@
             10,
             "Foot");
 
-        // await apiClient.CreateNodeAsync(request);
-
-        // await apiClient.ExecuteMethod(async (client, request) => await client.CreateNodeAsync(request), request);
-        await apiClient.ExecuteApiMethod<CreateNodeRequest, NodeResponse>(
-            client => client.CreateNodeAsync,
-            request,
-            nameof(IPhysicalModelAlphaClient.CreateNodeAsync)
-        );
+        NodeResponse response = await apiClient.CreateNodeAsync(request);
+        var x = await editorApiAlpha.CreateNodeAsync(response);
     }
 
     private async Task LoadModel()
     {
-        // ModelResponse response = await physicalModelClient.GetApiModelsAsync("00000000-0000-0000-0000-000000000000", null);
-        // foreach (NodeResponse? nodeResponse in response.Nodes)
-        // {
-        //     await js.InvokeVoidAsync("beamOsEditor.commands.addNodeCommand", nodeResponse);
-        // }
-        ;
+        ModelResponseHydrated response = await apiClient.GetModelHydratedAsync("00000000-0000-0000-0000-000000000000");
+        var x = await editorApiAlpha.CreateModelHydratedAsync(response);
     }
 
-    private async Task LoadEditor()
+    private async Task Solve()
     {
-    }
-
-    private async Task SayHello()
-    {
-        await js.InvokeVoidAsync("beamOsEditor.api.sayHello");
+        
     }
 }
+

@@ -5,6 +5,7 @@ using BeamOS.PhysicalModel.Contracts.PointLoad;
 using BeamOS.PhysicalModel.Contracts.SectionProfile;
 
 namespace BeamOS.PhysicalModel.Contracts.Model;
+
 public record ModelResponse(
     string Id,
     string Name,
@@ -19,10 +20,9 @@ public record ModelResponse(
     List<MaterialResponse>? Materials = null,
     List<SectionProfileResponse>? SectionProfiles = null,
     List<PointLoadResponse>? PointLoads = null
-    );
+);
 
-public record ModelSettingsResponse(
-    UnitSettingsResponse UnitSettings);
+public record ModelSettingsResponse(UnitSettingsResponse UnitSettings);
 
 public record UnitSettingsResponse(
     string LengthUnit,
@@ -30,4 +30,5 @@ public record UnitSettingsResponse(
     string VolumeUnit,
     string ForceUnit,
     string ForcePerLengthUnit,
-    string TorqueUnit);
+    string TorqueUnit
+);
