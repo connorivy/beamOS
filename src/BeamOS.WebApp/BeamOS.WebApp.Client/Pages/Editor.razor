@@ -1,4 +1,6 @@
 @page "/editor"
+@using BeamOS.DirectStiffnessMethod.Client
+@using BeamOS.DirectStiffnessMethod.Contracts.Model
 @using BeamOS.PhysicalModel.Client
 @using BeamOS.PhysicalModel.Contracts.Element1D
 @using BeamOS.PhysicalModel.Contracts.Model
@@ -8,28 +10,144 @@
 
 @inject IJSRuntime js
 @inject IPhysicalModelAlphaClient apiClient
+@inject IDirectStiffnessMethodAlphaClient dsmClient
 @inject IEditorApiAlpha editorApiAlpha
 
 <PageTitle>Editor</PageTitle>
 
 <canvas id="editor" style="height: 600px; width: 100%;"></canvas>
 
-<button @onclick="AddNode">
-    Add Node
-</button>
+<div style="width:100%; padding-bottom: 10px;">
+    <button @onclick="Solve">
+        Solve
+    </button>
+</div>
 
-<button @onclick="Solve">
-    Solve
-</button>
+<style>
+    table,
+    th,
+    td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+</style>
+
+<table style="width:50%; float:left; border-width: 1px; margin-bottom: 20px;">
+    <thead>
+        <tr>
+            <th>Calculated Reactions</th>
+            <th>Expected Reactions</th>
+            <th>Difference</th>
+        </tr>
+    </thead>
+    @for (int i = 0; i < @ExpectedReactions.Count; i++)
+    {
+        <tr>
+        @if (CalculatedReactions?.ElementAt(i) is double reaction)
+        {
+            <td>@reaction</td>
+        }
+        else
+        {
+            <td></td>;
+        }
+        <td>@ExpectedReactions[i]</td>
+        @if (@GetDifferenceOrNull(@ExpectedReactions[i], @CalculatedReactions?.ElementAt(i)) is double diff)
+        {
+            <td>@diff</td>
+        }
+        else
+        {
+            <td>N/A</td>
+        }
+        </tr>
+    }
+</table>
+<table style="width:50%; float:left;">
+    <thead>
+        <tr>
+            <th>Calculated Displacements</th>
+            <th>Expected Displacements</th>
+            <th>Difference</th>
+        </tr>
+    </thead>
+    @for (int i = 0; i < @ExpectedDisplacements.Count; i++)
+    {
+        <tr>
+            @if (CalculatedDisplacements?.ElementAt(i) is double reaction)
+            {
+                <td>@reaction</td>
+            }
+            else
+            {
+                <td></td>
+                ;
+            }
+            <td>@ExpectedDisplacements[i]</td>
+            @if (@GetDifferenceOrNull(@ExpectedDisplacements[i], @CalculatedDisplacements?.ElementAt(i)) is double diff)
+            {
+                <td>@diff</td>
+            }
+            else
+            {
+                <td>N/A</td>
+            }
+        </tr>
+    }
+</table>
 
 @code {
+    const string physicalModelId = "00000000-0000-0000-0000-000000000000";
+
+    public List<double>? CalculatedReactions { get; set; }
+    public List<double>? CalculatedDisplacements { get; set; }
+
+    public List<double> ExpectedReactions { get; } = [
+        0,
+        0,
+        0,
+        -10.064,
+        -13.419,
+        0,
+        0,
+        0,
+        0,
+        126.83,
+        0,
+        0,
+        0,
+        -139.94,
+        186.58,
+        0,
+        0,
+        0,
+    ];
+
+    public List<double> ExpectedDisplacements { get; } = [
+        .21552,
+        -.13995,
+        0,
+        0,
+        0,
+        0
+    ];
+
+    private double? GetDifferenceOrNull(double expected, double? calculated)
+    {
+        if (calculated is null)
+        {
+            return null;
+        }
+        return expected - calculated;
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             await js.InvokeVoidAsync("createFromId", "editor");
+            await LoadModel();
         }
-        await LoadModel();
         await base.OnAfterRenderAsync(firstRender);
     }
 
@@ -37,7 +155,7 @@
     {
         // Trace.WriteLine("AddNode");
         CreateNodeRequest request = new(
-            "00000000-0000-0000-0000-000000000000",
+            physicalModelId,
             10,
             5,
             10,
@@ -49,13 +167,15 @@
 
     private async Task LoadModel()
     {
-        ModelResponseHydrated response = await apiClient.GetModelHydratedAsync("00000000-0000-0000-0000-000000000000");
+        ModelResponseHydrated response = await apiClient.GetModelHydratedAsync(physicalModelId);
         var x = await editorApiAlpha.CreateModelHydratedAsync(response);
     }
 
     private async Task Solve()
     {
-        
+        AnalyticalModelResponse response = await dsmClient.RunDirectStiffnessMethodAsync(physicalModelId);
+        CalculatedReactions = response.AnalyticalNodeReactions;
+        CalculatedDisplacements = response.AnalyticalNodeDisplacements;
     }
 }
 

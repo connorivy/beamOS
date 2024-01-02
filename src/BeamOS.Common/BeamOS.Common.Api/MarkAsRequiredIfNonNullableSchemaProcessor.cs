@@ -1,7 +1,7 @@
 using NJsonSchema;
 using NJsonSchema.Generation;
 
-namespace BeamOS.PhysicalModel.Api.Common;
+namespace BeamOS.Common.Api;
 
 public class MarkAsRequiredIfNonNullableSchemaProcessor : ISchemaProcessor
 {

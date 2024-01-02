@@ -7,12 +7,13 @@ using BeamOS.PhysicalModel.Contracts.Node;
 
 namespace BeamOS.DirectStiffnessMethod.Api.AnalyticalNodes.Mappers;
 
-public class ModelResponseToCreateAnalyticalNodeCommands(
+public class ModelResponseHydratedToCreateAnalyticalNodeCommands(
     PointResponseMapper pointResponseMapper,
     RestraintResponseMapper restraintResponseMapper,
-    PointLoadResponseMapper pointLoadResponseMapper) : IMapper<ModelResponse, List<CreateAnalyticalNodeCommand>>
+    PointLoadResponseMapper pointLoadResponseMapper
+) : IMapper<ModelResponseHydrated, List<CreateAnalyticalNodeCommand>>
 {
-    public List<CreateAnalyticalNodeCommand> Map(ModelResponse from)
+    public List<CreateAnalyticalNodeCommand> Map(ModelResponseHydrated from)
     {
         List<CreateAnalyticalNodeCommand> commands = [];
         foreach (NodeResponse nodeResponse in from.Nodes)
@@ -23,12 +24,15 @@ public class ModelResponseToCreateAnalyticalNodeCommands(
                 .Select(pointLoadResponseMapper.Map)
                 .ToList();
 
-            commands.Add(new CreateAnalyticalNodeCommand(
-                nodeResponse.Id,
-                nodeResponse.ModelId,
-                pointResponseMapper.Map(nodeResponse.LocationPoint),
-                restraintResponseMapper.Map(nodeResponse.Restraint),
-                pointLoadCommands));
+            commands.Add(
+                new CreateAnalyticalNodeCommand(
+                    nodeResponse.Id,
+                    nodeResponse.ModelId,
+                    pointResponseMapper.Map(nodeResponse.LocationPoint),
+                    restraintResponseMapper.Map(nodeResponse.Restraint),
+                    pointLoadCommands
+                )
+            );
         }
         return commands;
     }
