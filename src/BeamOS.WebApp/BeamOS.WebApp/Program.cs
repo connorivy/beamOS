@@ -1,3 +1,4 @@
+using BeamOS.DirectStiffnessMethod.Client;
 using BeamOS.PhysicalModel.Client;
 using BeamOS.WebApp.Client;
 using BeamOS.WebApp.Components;
@@ -26,6 +27,12 @@ builder
         client => client.BaseAddress = new("https://localhost:7193")
     );
 
+builder
+    .Services
+    .AddHttpClient<IDirectStiffnessMethodAlphaClient, DirectStiffnessMethodAlphaClient>(
+        client => client.BaseAddress = new("https://localhost:7110")
+    );
+
 builder.Services.RegisterSharedServices();
 
 builder
@@ -47,7 +54,8 @@ app.MapGet(
             new Dictionary<string, string>
             {
                 [Constants.ASSEMBLY_NAME] = typeof(Program).Assembly.GetName().Name,
-                [Constants.PHYSICAL_MODEL_API_BASE_URI] = "https://localhost:7193"
+                [Constants.PHYSICAL_MODEL_API_BASE_URI] = "https://localhost:7193",
+                [Constants.DSM_API_BASE_URI] = "https://localhost:7110"
             }
         )
 );

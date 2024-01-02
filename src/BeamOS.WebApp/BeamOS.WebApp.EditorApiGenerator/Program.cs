@@ -1,4 +1,4 @@
-using BeamOS.PhysicalModel.Api.Common;
+using BeamOS.Common.Api;
 using FastEndpoints;
 using FastEndpoints.ClientGen;
 using FastEndpoints.Swagger;

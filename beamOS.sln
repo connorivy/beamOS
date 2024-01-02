@@ -68,7 +68,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.PhysicalModel.Client
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.WebApp.EditorApiGenerator", "src\BeamOS.WebApp\BeamOS.WebApp.EditorApiGenerator\BeamOS.WebApp.EditorApiGenerator.csproj", "{BEBCD601-B0EB-4C9C-B392-BF13634FFFD0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOS.WebApp.EditorApi", "src\BeamOS.WebApp\BeamOS.WebApp.EditorApi\BeamOS.WebApp.EditorApi.csproj", "{A91B5080-3A4B-45D7-83DF-D8C52C9E2B02}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.WebApp.EditorApi", "src\BeamOS.WebApp\BeamOS.WebApp.EditorApi\BeamOS.WebApp.EditorApi.csproj", "{A91B5080-3A4B-45D7-83DF-D8C52C9E2B02}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOS.DirectStiffnessMethod.Client", "src\BeamOS.DirectStiffnessMethod\BeamOS.DirectStiffnessMethod.Client\BeamOS.DirectStiffnessMethod.Client.csproj", "{1D713CAC-E2AD-4C38-B190-1D9C19AD3784}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -160,6 +162,10 @@ Global
 		{A91B5080-3A4B-45D7-83DF-D8C52C9E2B02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A91B5080-3A4B-45D7-83DF-D8C52C9E2B02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A91B5080-3A4B-45D7-83DF-D8C52C9E2B02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D713CAC-E2AD-4C38-B190-1D9C19AD3784}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D713CAC-E2AD-4C38-B190-1D9C19AD3784}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D713CAC-E2AD-4C38-B190-1D9C19AD3784}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D713CAC-E2AD-4C38-B190-1D9C19AD3784}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -192,6 +198,7 @@ Global
 		{7D641719-8ED1-48BE-A5A0-B42473C6C5F4} = {C98CCB50-6C71-4241-993B-C6B86BB59C5C}
 		{BEBCD601-B0EB-4C9C-B392-BF13634FFFD0} = {E2151A0E-7E33-4D74-86D9-F1A6F8A6A85C}
 		{A91B5080-3A4B-45D7-83DF-D8C52C9E2B02} = {E2151A0E-7E33-4D74-86D9-F1A6F8A6A85C}
+		{1D713CAC-E2AD-4C38-B190-1D9C19AD3784} = {546F702C-44DE-4950-9EC0-7A2D045B6441}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DCC0AF93-F9F0-490C-9F01-0DDF9F09494F}

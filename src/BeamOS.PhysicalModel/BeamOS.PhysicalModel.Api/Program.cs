@@ -75,40 +75,20 @@ app.UseFastEndpoints(c =>
 // had all values as nullable with no constructors 🤮
 
 const string clientNs = "BeamOS.PhysicalModel.Client";
-await app.GenerateClientsAndExitAsync(
+const string clientName = "PhysicalModelAlphaClient";
+const string contractsBaseNs =
+    $"{ApiClientGenerator.BeamOsNs}.{ApiClientGenerator.PhysicalModelNs}.{ApiClientGenerator.ContractsNs}";
+await app.GenerateClient(
     alphaRelease,
-    $"../{clientNs}/",
-    csSettings: c =>
-    {
-        c.ClassName = "PhysicalModelAlphaClient";
-        c.GenerateDtoTypes = false;
+    clientNs,
+    clientName,
 
-        const string beamOsNs = nameof(BeamOS);
-        const string physicalModelNs = nameof(BeamOS.PhysicalModel);
-        const string contractsNs = nameof(BeamOS.PhysicalModel.Contracts);
-        const string nodeNs = nameof(BeamOS.PhysicalModel.Contracts.Node);
-        const string element1dNs = nameof(BeamOS.PhysicalModel.Contracts.Element1D);
-        const string modelNs = nameof(BeamOS.PhysicalModel.Contracts.Model);
-        const string pointLoadNs = nameof(BeamOS.PhysicalModel.Contracts.PointLoad);
-
-        const string contractsBaseNs = $"{beamOsNs}.{physicalModelNs}.{contractsNs}";
-        c.AdditionalNamespaceUsages =
-        [
-            $"{contractsBaseNs}.{nodeNs}",
-            $"{contractsBaseNs}.{element1dNs}",
-            $"{contractsBaseNs}.{modelNs}",
-            $"{contractsBaseNs}.{pointLoadNs}",
-        ];
-        c.GenerateClientInterfaces = true;
-        c.CSharpGeneratorSettings.Namespace = clientNs;
-        c.UseBaseUrl = false;
-    },
-    tsSettings: t =>
-    {
-        t.ClassName = "PhysicalModelAlphaClient";
-        t.GenerateClientInterfaces = true;
-        t.TypeScriptGeneratorSettings.Namespace = ""; // needed to not generate a namespace
-    }
+    [
+        $"{contractsBaseNs}.{ApiClientGenerator.NodeNs}",
+        $"{contractsBaseNs}.{ApiClientGenerator.Element1dNs}",
+        $"{contractsBaseNs}.{ApiClientGenerator.ModelNs}",
+        $"{contractsBaseNs}.{ApiClientGenerator.PointLoadNs}",
+    ]
 );
 
 //Configure the HTTP-request pipeline

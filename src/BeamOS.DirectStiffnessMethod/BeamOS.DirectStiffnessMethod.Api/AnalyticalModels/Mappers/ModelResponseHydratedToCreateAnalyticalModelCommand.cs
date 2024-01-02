@@ -8,16 +8,15 @@ using BeamOS.PhysicalModel.Contracts.Model;
 
 namespace BeamOS.DirectStiffnessMethod.Api.AnalyticalModels.Mappers;
 
-public class ModelResponseToCreateAnalyticalModelCommand(
+public class ModelResponseHydratedToCreateAnalyticalModelCommand(
     ModelSettingsResponseMapper modelSettingsResponseMapper,
-    ModelResponseToCreateAnalyticalNodeCommands modelResponseToCreateAnalyticalNodeCommandsMapper,
+    ModelResponseHydratedToCreateAnalyticalNodeCommands modelResponseToCreateAnalyticalNodeCommandsMapper,
     Element1dResponseToCreateAnalyticalElement1dCommandMapper element1dResponseToCreateAnalyticalElement1dCommandMapper,
     MaterialResponseToCreateMaterialCommand materialResponseToCreateMaterialCommand,
     SectionProfileResponseToCreateSectionProfileCommand sectionProfileResponseToCreateSectionProfileCommand
-    )
-    : IMapper<ModelResponse, CreateAnalyticalModelFromPhysicalModelCommand>
+) : IMapper<ModelResponseHydrated, CreateAnalyticalModelFromPhysicalModelCommand>
 {
-    public CreateAnalyticalModelFromPhysicalModelCommand Map(ModelResponse source)
+    public CreateAnalyticalModelFromPhysicalModelCommand Map(ModelResponseHydrated source)
     {
         return new CreateAnalyticalModelFromPhysicalModelCommand(
             source.Id,
@@ -25,9 +24,11 @@ public class ModelResponseToCreateAnalyticalModelCommand(
             source.Description,
             modelSettingsResponseMapper.Map(source.Settings),
             modelResponseToCreateAnalyticalNodeCommandsMapper.Map(source),
-            element1dResponseToCreateAnalyticalElement1dCommandMapper.Map(source.Element1Ds).ToList(),
+            element1dResponseToCreateAnalyticalElement1dCommandMapper
+                .Map(source.Element1Ds)
+                .ToList(),
             materialResponseToCreateMaterialCommand.Map(source.Materials).ToList(),
             sectionProfileResponseToCreateSectionProfileCommand.Map(source.SectionProfiles).ToList()
-            );
+        );
     }
 }
