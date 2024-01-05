@@ -1,21 +1,23 @@
-using BeamOS.Common.Domain.Enums;
 using BeamOS.Common.Domain.Models;
+using MathNet.Numerics.LinearAlgebra;
 using UnitsNet;
 
 namespace BeamOS.DirectStiffnessMethod.Domain.Common.ValueObjects;
+
 public class MomentLoad : BeamOSValueObject
 {
-    public MomentLoad(CoordinateSystemDirection3D direction, Torque magnitude)
+    public MomentLoad(Torque magnitude, Vector<double> axisDirection)
     {
-        this.Direction = direction;
         this.Magnitude = magnitude;
+        this.NormalizedAxisDirection = axisDirection.Normalize(2);
     }
 
-    public CoordinateSystemDirection3D Direction { get; set; }
     public Torque Magnitude { get; set; }
+    public Vector<double> NormalizedAxisDirection { get; }
+
     protected override IEnumerable<object> GetEqualityComponents()
     {
-        yield return this.Direction;
         yield return this.Magnitude;
+        yield return this.NormalizedAxisDirection;
     }
 }
