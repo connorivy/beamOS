@@ -2,23 +2,20 @@ using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace BeamOS.DirectStiffnessMethod.Domain.Common.ValueObjects;
-public class MatrixIdentified<TIdentifier>
+
+public class MatrixIdentifiedGeneric<TIdentifier>
 {
     private readonly List<TIdentifier> rowIdentifiers;
     private readonly List<TIdentifier> columnIdentifiers;
     private readonly double[,] values;
-    public MatrixIdentified(List<TIdentifier> identifiers)
+
+    public MatrixIdentifiedGeneric(List<TIdentifier> identifiers, double[,]? values = null)
     {
         this.rowIdentifiers = identifiers;
         this.columnIdentifiers = this.rowIdentifiers;
-        this.values = new double[identifiers.Count, identifiers.Count];
+        this.values = values ?? new double[identifiers.Count, identifiers.Count];
     }
-    public MatrixIdentified(List<TIdentifier> identifiers, double[,] values)
-    {
-        this.rowIdentifiers = identifiers;
-        this.columnIdentifiers = this.rowIdentifiers;
-        this.values = values;
-    }
+
     public double? GetValue(TIdentifier rowIdentifier, TIdentifier columnIdentifier)
     {
         int rowIndex = this.rowIdentifiers.FindIndex(i => i.Equals(rowIdentifier));
@@ -31,6 +28,7 @@ public class MatrixIdentified<TIdentifier>
 
         return this.values[rowIndex, columnIndex];
     }
+
     public void SetValue(TIdentifier rowIdentifier, TIdentifier columnIdentifier, double value)
     {
         int rowIndex = this.rowIdentifiers.FindIndex(i => i.Equals(rowIdentifier));
@@ -40,9 +38,15 @@ public class MatrixIdentified<TIdentifier>
     }
 
     // TODO : could optimize for symmetric matrices
-    public void AddEntriesWithMatchingIdentifiers(MatrixIdentified<TIdentifier> matrixToBeAdded)
+    public void AddEntriesWithMatchingIdentifiers(
+        MatrixIdentifiedGeneric<TIdentifier> matrixToBeAdded
+    )
     {
-        for (int incomingRowIndex = 0; incomingRowIndex < matrixToBeAdded.values.GetLength(0); incomingRowIndex++)
+        for (
+            int incomingRowIndex = 0;
+            incomingRowIndex < matrixToBeAdded.values.GetLength(0);
+            incomingRowIndex++
+        )
         {
             TIdentifier incomingRowIdentifier = matrixToBeAdded.rowIdentifiers[incomingRowIndex];
 
@@ -52,17 +56,28 @@ public class MatrixIdentified<TIdentifier>
                 continue;
             }
 
-            for (int incomingColumnIndex = 0; incomingColumnIndex < matrixToBeAdded.values.GetLength(1); incomingColumnIndex++)
+            for (
+                int incomingColumnIndex = 0;
+                incomingColumnIndex < matrixToBeAdded.values.GetLength(1);
+                incomingColumnIndex++
+            )
             {
-                TIdentifier incomingColumnIdentifier = matrixToBeAdded.rowIdentifiers[incomingColumnIndex];
+                TIdentifier incomingColumnIdentifier = matrixToBeAdded.rowIdentifiers[
+                    incomingColumnIndex
+                ];
 
-                int thisColumnIndex = this.rowIdentifiers.FindIndex(i => i.Equals(incomingColumnIdentifier));
+                int thisColumnIndex = this.rowIdentifiers.FindIndex(
+                    i => i.Equals(incomingColumnIdentifier)
+                );
                 if (thisColumnIndex == -1)
                 {
                     continue;
                 }
 
-                this.values[thisRowIndex, thisColumnIndex] += matrixToBeAdded.values[incomingRowIndex, incomingColumnIndex];
+                this.values[thisRowIndex, thisColumnIndex] += matrixToBeAdded.values[
+                    incomingRowIndex,
+                    incomingColumnIndex
+                ];
             }
         }
     }

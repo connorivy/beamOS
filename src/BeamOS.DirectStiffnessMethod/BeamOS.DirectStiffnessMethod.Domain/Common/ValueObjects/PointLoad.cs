@@ -3,6 +3,7 @@ using MathNet.Numerics.LinearAlgebra;
 using UnitsNet;
 
 namespace BeamOS.DirectStiffnessMethod.Domain.Common.ValueObjects;
+
 public class PointLoad : BeamOSValueObject
 {
     public PointLoad(Force force, Vector<double> direction)
@@ -13,6 +14,7 @@ public class PointLoad : BeamOSValueObject
 
     public Force Magnitude { get; set; }
     public Vector<double> NormalizedDirection { get; }
+
     protected override IEnumerable<object> GetEqualityComponents()
     {
         yield return this.Magnitude;

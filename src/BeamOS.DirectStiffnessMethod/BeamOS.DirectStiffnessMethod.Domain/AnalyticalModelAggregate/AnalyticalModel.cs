@@ -8,10 +8,14 @@ using BeamOS.DirectStiffnessMethod.Domain.Common.ValueObjects;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace BeamOS.DirectStiffnessMethod.Domain.AnalyticalModelAggregate;
+
 public class AnalyticalModel : BeamOSEntity<AnalyticalModelId>
 {
-    private AnalyticalModel() : base(new()) { }
+    private AnalyticalModel()
+        : base(new()) { }
+
     public UnitSettings UnitSettings { get; private set; }
+
     //public List<AnalyticalNodeId> NodeIds { get; set; }
     //public List<Element1DId> Element1DIds { get; set; }
     //private readonly AnalyticalModelSettings settings;
@@ -20,6 +24,7 @@ public class AnalyticalModel : BeamOSEntity<AnalyticalModelId>
     //private readonly List<AnalyticalElement1DId> element1DIds = [];
     //public IReadOnlyList<AnalyticalElement1DId> Element1DIds => this.element1DIds.AsReadOnly();
 
+    public MatrixIdentified StructureStiffnessMatrix { get; private set; }
     public VectorIdentified JointDisplacementVector { get; private set; }
     public VectorIdentified ReactionVector { get; private set; }
     public List<UnsupportedStructureDisplacementId> DegreeOfFreedomIds { get; } = [];
@@ -43,14 +48,13 @@ public class AnalyticalModel : BeamOSEntity<AnalyticalModelId>
     public static AnalyticalModel RunAnalysis(
         UnitSettings unitSettings,
         IEnumerable<AnalyticalElement1D> element1Ds,
-        IEnumerable<AnalyticalNode> nodes)
+        IEnumerable<AnalyticalNode> nodes
+    )
     {
-        AnalyticalModel model = new()
-        {
-            UnitSettings = unitSettings
-        };
+        AnalyticalModel model = new() { UnitSettings = unitSettings };
         model.InitializeIdentifierMaps(nodes);
-        model.JointDisplacementVector = model.GetJointDisplacementVector(element1Ds, nodes);
+        model.StructureStiffnessMatrix = model.BuildStructureStiffnessMatrix(element1Ds);
+        model.JointDisplacementVector = model.GetJointDisplacementVector(nodes);
         model.ReactionVector = model.GetReactionVector(element1Ds);
 
         return model;
@@ -60,7 +64,11 @@ public class AnalyticalModel : BeamOSEntity<AnalyticalModelId>
     {
         foreach (var node in nodes)
         {
-            foreach (CoordinateSystemDirection3D direction in Enum.GetValues(typeof(CoordinateSystemDirection3D)))
+            foreach (
+                CoordinateSystemDirection3D direction in Enum.GetValues(
+                    typeof(CoordinateSystemDirection3D)
+                )
+            )
             {
                 if (direction == CoordinateSystemDirection3D.Undefined)
                 {
@@ -80,35 +88,32 @@ public class AnalyticalModel : BeamOSEntity<AnalyticalModelId>
         }
     }
 
-
     private VectorIdentified GetReactionVector(IEnumerable<AnalyticalElement1D> element1Ds)
     {
         VectorIdentified reactions = new(this.BoundaryConditionIds);
         foreach (AnalyticalElement1D element1D in element1Ds)
         {
-            VectorIdentified globalMemberEndForcesVector = element1D.GetGlobalMemberEndForcesVectorIdentified(
-                this.JointDisplacementVector,
-                this.UnitSettings.ForceUnit,
-                this.UnitSettings.ForcePerLengthUnit,
-                this.UnitSettings.TorqueUnit);
+            VectorIdentified globalMemberEndForcesVector =
+                element1D.GetGlobalMemberEndForcesVectorIdentified(
+                    this.JointDisplacementVector,
+                    this.UnitSettings.ForceUnit,
+                    this.UnitSettings.ForcePerLengthUnit,
+                    this.UnitSettings.TorqueUnit
+                );
             reactions.AddEntriesWithMatchingIdentifiers(globalMemberEndForcesVector);
         }
 
         return reactions;
     }
 
-    private VectorIdentified GetJointDisplacementVector(
-        IEnumerable<AnalyticalElement1D> element1Ds,
-        IEnumerable<AnalyticalNode> nodes)
+    private VectorIdentified GetJointDisplacementVector(IEnumerable<AnalyticalNode> nodes)
     {
-        MatrixIdentified<UnsupportedStructureDisplacementId> sMatrix = this
-            .BuildStructureStiffnessMatrix(element1Ds);
         VectorIdentified loadVector = this.BuildLoadVector(nodes);
 
-        Vector<double> dofDisplacementMathnetVector = sMatrix.Build().Inverse() * loadVector.Build();
-        VectorIdentified dofDisplacementVector = new(
-            this.DegreeOfFreedomIds,
-            dofDisplacementMathnetVector.ToArray());
+        Vector<double> dofDisplacementMathnetVector =
+            this.StructureStiffnessMatrix.Build().Inverse() * loadVector.Build();
+        VectorIdentified dofDisplacementVector =
+            new(this.DegreeOfFreedomIds, dofDisplacementMathnetVector.ToArray());
 
         return dofDisplacementVector;
     }
@@ -118,25 +123,29 @@ public class AnalyticalModel : BeamOSEntity<AnalyticalModelId>
         VectorIdentified loadVector = new(this.DegreeOfFreedomIds);
         foreach (AnalyticalNode node in nodes)
         {
-            VectorIdentified localLoadVector = node
-                .GetForceVectorIdentifiedInGlobalCoordinates(this.UnitSettings.ForceUnit, this.UnitSettings.TorqueUnit);
+            VectorIdentified localLoadVector = node.GetForceVectorIdentifiedInGlobalCoordinates(
+                this.UnitSettings.ForceUnit,
+                this.UnitSettings.TorqueUnit
+            );
             loadVector.AddEntriesWithMatchingIdentifiers(localLoadVector);
         }
 
         return loadVector;
     }
 
-    private MatrixIdentified<UnsupportedStructureDisplacementId> BuildStructureStiffnessMatrix(
-        IEnumerable<AnalyticalElement1D> element1Ds)
+    private MatrixIdentified BuildStructureStiffnessMatrix(
+        IEnumerable<AnalyticalElement1D> element1Ds
+    )
     {
-        MatrixIdentified<UnsupportedStructureDisplacementId> sMatrix = new(this.DegreeOfFreedomIds);
+        MatrixIdentified sMatrix = new(this.DegreeOfFreedomIds);
         foreach (AnalyticalElement1D element1D in element1Ds)
         {
-            MatrixIdentified<UnsupportedStructureDisplacementId> globalMatrixWithIdentifiers = element1D
-                .GetGlobalStiffnessMatrixIdentified(
+            MatrixIdentified globalMatrixWithIdentifiers =
+                element1D.GetGlobalStiffnessMatrixIdentified(
                     this.UnitSettings.ForceUnit,
                     this.UnitSettings.ForcePerLengthUnit,
-                    this.UnitSettings.TorqueUnit);
+                    this.UnitSettings.TorqueUnit
+                );
             sMatrix.AddEntriesWithMatchingIdentifiers(globalMatrixWithIdentifiers);
         }
 

@@ -13,6 +13,7 @@ using UnitsNet;
 using UnitsNet.Units;
 
 namespace BeamOS.DirectStiffnessMethod.Domain.AnalyticalElement1DAggregate;
+
 public class AnalyticalElement1D : AggregateRoot<AnalyticalElement1DId>
 {
     public AnalyticalElement1D(
@@ -26,7 +27,9 @@ public class AnalyticalElement1D : AggregateRoot<AnalyticalElement1DId>
         Line baseLine,
         AnalyticalNodeId startNodeId,
         AnalyticalNodeId endNodeId,
-        AnalyticalElement1DId? id = null) : base(id ?? new())
+        AnalyticalElement1DId? id = null
+    )
+        : base(id ?? new())
     {
         this.SectionProfileRotation = sectionProfileRotation;
         this.ModulusOfElasticity = modulusOfElasticity;
@@ -46,7 +49,9 @@ public class AnalyticalElement1D : AggregateRoot<AnalyticalElement1DId>
         AnalyticalNode endNode,
         Material material,
         SectionProfile sectionProfile,
-        AnalyticalElement1DId? id = null) : this(
+        AnalyticalElement1DId? id = null
+    )
+        : this(
             sectionProfileRotation,
             material.ModulusOfElasticity,
             material.ModulusOfRigidity,
@@ -57,10 +62,11 @@ public class AnalyticalElement1D : AggregateRoot<AnalyticalElement1DId>
             new Line(startNode.LocationPoint, endNode.LocationPoint),
             startNode.Id,
             endNode.Id,
-            id)
-    { }
+            id
+        ) { }
 
     public Angle SectionProfileRotation { get; set; }
+
     //public List<Load> Load { get; private set; }
 
     public Pressure ModulusOfElasticity { get; set; }
@@ -82,7 +88,11 @@ public class AnalyticalElement1D : AggregateRoot<AnalyticalElement1DId>
         for (var i = 0; i < 2; i++)
         {
             var nodeId = i == 0 ? this.StartNodeId : this.EndNodeId;
-            foreach (CoordinateSystemDirection3D direction in Enum.GetValues(typeof(CoordinateSystemDirection3D)))
+            foreach (
+                CoordinateSystemDirection3D direction in Enum.GetValues(
+                    typeof(CoordinateSystemDirection3D)
+                )
+            )
             {
                 if (direction == CoordinateSystemDirection3D.Undefined)
                 {
@@ -95,16 +105,27 @@ public class AnalyticalElement1D : AggregateRoot<AnalyticalElement1DId>
 
     public Matrix<double> GetRotationMatrix()
     {
-        var rxx = (this.BaseLine.EndPoint.XCoordinate - this.BaseLine.StartPoint.XCoordinate) / this.Length;
-        var rxy = (this.BaseLine.EndPoint.YCoordinate - this.BaseLine.StartPoint.YCoordinate) / this.Length;
-        var rxz = (this.BaseLine.EndPoint.ZCoordinate - this.BaseLine.StartPoint.ZCoordinate) / this.Length;
+        var rxx =
+            (this.BaseLine.EndPoint.XCoordinate - this.BaseLine.StartPoint.XCoordinate)
+            / this.Length;
+        var rxy =
+            (this.BaseLine.EndPoint.YCoordinate - this.BaseLine.StartPoint.YCoordinate)
+            / this.Length;
+        var rxz =
+            (this.BaseLine.EndPoint.ZCoordinate - this.BaseLine.StartPoint.ZCoordinate)
+            / this.Length;
 
         var cosG = Math.Cos(this.SectionProfileRotation.Radians);
         var sinG = Math.Sin(this.SectionProfileRotation.Radians);
 
         var sqrtRxx2Rxz2 = Math.Sqrt(rxx * rxx + rxz * rxz);
 
-        double r21, r22, r23, r31, r32, r33;
+        double r21,
+            r22,
+            r23,
+            r31,
+            r32,
+            r33;
 
         if (sqrtRxx2Rxz2 < .0001)
         {
@@ -125,11 +146,14 @@ public class AnalyticalElement1D : AggregateRoot<AnalyticalElement1DId>
             r33 = (rxy * rxz * sinG + rxx * cosG) / sqrtRxx2Rxz2;
         }
 
-        return DenseMatrix.OfArray(new[,] {
-            { rxx, rxy, rxz },
-            { r21, r22, r23 },
-            { r31, r32, r33 },
-        });
+        return DenseMatrix.OfArray(
+            new[,]
+            {
+                { rxx, rxy, rxz },
+                { r21, r22, r23 },
+                { r31, r32, r33 },
+            }
+        );
     }
 
     public Matrix<double> GetTransformationMatrix()
@@ -146,7 +170,8 @@ public class AnalyticalElement1D : AggregateRoot<AnalyticalElement1DId>
     public Matrix<double> GetLocalStiffnessMatrix(
         ForceUnit forceUnit,
         ForcePerLengthUnit forcePerLengthUnit,
-        TorqueUnit torqueUnit)
+        TorqueUnit torqueUnit
+    )
     {
 #pragma warning disable IDE1006 // Naming Styles
         var E = this.ModulusOfElasticity;
@@ -174,96 +199,112 @@ public class AnalyticalElement1D : AggregateRoot<AnalyticalElement1DId>
         var GxJ_L = G.MultiplyBy(J / L).As(torqueUnit);
 #pragma warning restore IDE1006 // Naming Styles
 
-        return DenseMatrix.OfArray(new[,]
-        {
-              {  ExA_L,           0,           0,      0,          0,          0, -ExA_L,           0,           0,      0,          0,          0 },
-              {      0,  12*ExIs_L3,           0,      0,          0,  6*ExIs_L2,      0, -12*ExIs_L3,           0,      0,          0,  6*ExIs_L2 },
-              {      0,           0,  12*ExIw_L3,      0, -6*ExIw_L2,          0,      0,           0, -12*ExIw_L3,      0, -6*ExIw_L2,          0 },
-              {      0,           0,           0,  GxJ_L,          0,          0,      0,           0,           0, -GxJ_L,          0,          0 },
-              {      0,           0,  -6*ExIw_L2,      0,   4*ExIw_L,          0,      0,           0,   6*ExIw_L2,      0,   2*ExIw_L,          0 },
-              {      0,   6*ExIs_L2,           0,      0,          0,   4*ExIs_L,      0,  -6*ExIs_L2,           0,      0,          0,   2*ExIs_L },
-              { -ExA_L,           0,           0,      0,          0,          0,  ExA_L,           0,           0,      0,          0,          0 },
-              {      0, -12*ExIs_L3,           0,      0,          0, -6*ExIs_L2,      0,  12*ExIs_L3,           0,      0,          0, -6*ExIs_L2 },
-              {      0,           0, -12*ExIw_L3,      0,  6*ExIw_L2,          0,      0,           0,  12*ExIw_L3,      0,  6*ExIw_L2,          0 },
-              {      0,           0,           0, -GxJ_L,          0,          0,      0,           0,           0,  GxJ_L,          0,          0 },
-              {      0,           0,  -6*ExIw_L2,      0,   2*ExIw_L,          0,      0,           0,   6*ExIw_L2,      0,   4*ExIw_L,          0 },
-              {      0,   6*ExIs_L2,           0,      0,          0,   2*ExIs_L,      0,  -6*ExIs_L2,           0,      0,          0,   4*ExIs_L },
-        });
+        return DenseMatrix.OfArray(
+            new[,]
+            {
+                { ExA_L, 0, 0, 0, 0, 0, -ExA_L, 0, 0, 0, 0, 0 },
+                { 0, 12 * ExIs_L3, 0, 0, 0, 6 * ExIs_L2, 0, -12 * ExIs_L3, 0, 0, 0, 6 * ExIs_L2 },
+                { 0, 0, 12 * ExIw_L3, 0, -6 * ExIw_L2, 0, 0, 0, -12 * ExIw_L3, 0, -6 * ExIw_L2, 0 },
+                { 0, 0, 0, GxJ_L, 0, 0, 0, 0, 0, -GxJ_L, 0, 0 },
+                { 0, 0, -6 * ExIw_L2, 0, 4 * ExIw_L, 0, 0, 0, 6 * ExIw_L2, 0, 2 * ExIw_L, 0 },
+                { 0, 6 * ExIs_L2, 0, 0, 0, 4 * ExIs_L, 0, -6 * ExIs_L2, 0, 0, 0, 2 * ExIs_L },
+                { -ExA_L, 0, 0, 0, 0, 0, ExA_L, 0, 0, 0, 0, 0 },
+                { 0, -12 * ExIs_L3, 0, 0, 0, -6 * ExIs_L2, 0, 12 * ExIs_L3, 0, 0, 0, -6 * ExIs_L2 },
+                { 0, 0, -12 * ExIw_L3, 0, 6 * ExIw_L2, 0, 0, 0, 12 * ExIw_L3, 0, 6 * ExIw_L2, 0 },
+                { 0, 0, 0, -GxJ_L, 0, 0, 0, 0, 0, GxJ_L, 0, 0 },
+                { 0, 0, -6 * ExIw_L2, 0, 2 * ExIw_L, 0, 0, 0, 6 * ExIw_L2, 0, 4 * ExIw_L, 0 },
+                { 0, 6 * ExIs_L2, 0, 0, 0, 2 * ExIs_L, 0, -6 * ExIs_L2, 0, 0, 0, 4 * ExIs_L },
+            }
+        );
     }
 
     public Matrix<double> GetGlobalStiffnessMatrix(
         ForceUnit forceUnit,
         ForcePerLengthUnit forcePerLengthUnit,
-        TorqueUnit torqueUnit)
+        TorqueUnit torqueUnit
+    )
     {
         var transformationMatrix = this.GetTransformationMatrix();
-        var localStiffnessMatrix = this.GetLocalStiffnessMatrix(forceUnit, forcePerLengthUnit, torqueUnit);
+        var localStiffnessMatrix = this.GetLocalStiffnessMatrix(
+            forceUnit,
+            forcePerLengthUnit,
+            torqueUnit
+        );
         return transformationMatrix.Transpose() * localStiffnessMatrix * transformationMatrix;
     }
 
-    public MatrixIdentified<UnsupportedStructureDisplacementId> GetGlobalStiffnessMatrixIdentified(
+    public MatrixIdentified GetGlobalStiffnessMatrixIdentified(
         ForceUnit forceUnit,
         ForcePerLengthUnit forcePerLengthUnit,
-        TorqueUnit torqueUnit)
+        TorqueUnit torqueUnit
+    )
     {
         return new(
             this.GetUnsupportedStructureDisplacementIds().ToList(),
             this.GetGlobalStiffnessMatrix(forceUnit, forcePerLengthUnit, torqueUnit).ToArray()
-            );
+        );
     }
 
     private VectorIdentified ToVectorIdentified(Vector<double> vector)
     {
-        return new(
-            this.GetUnsupportedStructureDisplacementIds().ToList(),
-            vector.ToArray()
-            );
+        return new(this.GetUnsupportedStructureDisplacementIds().ToList(), vector.ToArray());
     }
 
     public Vector<double> GetGlobalEndDisplacementVector(VectorIdentified jointDisplacementVector)
     {
-        VectorIdentified globalEndDisplacementVector = new(
-            this.GetUnsupportedStructureDisplacementIds().ToList()
-        );
+        VectorIdentified globalEndDisplacementVector =
+            new(this.GetUnsupportedStructureDisplacementIds().ToList());
         globalEndDisplacementVector.AddEntriesWithMatchingIdentifiers(jointDisplacementVector);
         return globalEndDisplacementVector.Build();
     }
 
     public Vector<double> GetLocalEndDisplacementVector(VectorIdentified jointDisplacementVector)
     {
-        return this.GetTransformationMatrix() * this.GetGlobalEndDisplacementVector(jointDisplacementVector);
+        return this.GetTransformationMatrix()
+            * this.GetGlobalEndDisplacementVector(jointDisplacementVector);
     }
 
-    public Vector<double> GetLocalMemberEndForcesVector(VectorIdentified jointDisplacementVector,
+    public Vector<double> GetLocalMemberEndForcesVector(
+        VectorIdentified jointDisplacementVector,
         ForceUnit forceUnit,
         ForcePerLengthUnit forcePerLengthUnit,
-        TorqueUnit torqueUnit)
+        TorqueUnit torqueUnit
+    )
     {
         return this.GetLocalStiffnessMatrix(forceUnit, forcePerLengthUnit, torqueUnit)
             * this.GetLocalEndDisplacementVector(jointDisplacementVector);
     }
 
-    public Vector<double> GetGlobalMemberEndForcesVector(VectorIdentified jointDisplacementVector,
+    public Vector<double> GetGlobalMemberEndForcesVector(
+        VectorIdentified jointDisplacementVector,
         ForceUnit forceUnit,
         ForcePerLengthUnit forcePerLengthUnit,
-        TorqueUnit torqueUnit)
+        TorqueUnit torqueUnit
+    )
     {
         return this.GetTransformationMatrix().Transpose()
             * this.GetLocalMemberEndForcesVector(
                 jointDisplacementVector,
                 forceUnit,
                 forcePerLengthUnit,
-                torqueUnit);
+                torqueUnit
+            );
     }
-    public VectorIdentified GetGlobalMemberEndForcesVectorIdentified(VectorIdentified jointDisplacementVector,
+
+    public VectorIdentified GetGlobalMemberEndForcesVectorIdentified(
+        VectorIdentified jointDisplacementVector,
         ForceUnit forceUnit,
         ForcePerLengthUnit forcePerLengthUnit,
-        TorqueUnit torqueUnit)
+        TorqueUnit torqueUnit
+    )
     {
-        return this.ToVectorIdentified(this.GetGlobalMemberEndForcesVector(
+        return this.ToVectorIdentified(
+            this.GetGlobalMemberEndForcesVector(
                 jointDisplacementVector,
                 forceUnit,
                 forcePerLengthUnit,
-                torqueUnit));
+                torqueUnit
+            )
+        );
     }
 }

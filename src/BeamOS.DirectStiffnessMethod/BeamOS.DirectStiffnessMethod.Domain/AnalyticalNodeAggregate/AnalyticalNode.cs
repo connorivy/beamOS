@@ -6,6 +6,7 @@ using UnitsNet;
 using UnitsNet.Units;
 
 namespace BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate;
+
 public class AnalyticalNode : AggregateRoot<AnalyticalNodeId>
 {
     public Point LocationPoint { get; private set; }
@@ -14,11 +15,15 @@ public class AnalyticalNode : AggregateRoot<AnalyticalNodeId>
         Point locationPoint,
         Restraint restraint,
         List<PointLoad>? pointLoads = null,
-        AnalyticalNodeId? id = null) : base(id ?? new())
+        List<MomentLoad>? momentLoads = null,
+        AnalyticalNodeId? id = null
+    )
+        : base(id ?? new())
     {
         this.LocationPoint = locationPoint;
         this.Restraint = restraint;
         this.PointLoads = pointLoads ?? [];
+        this.MomentLoads = momentLoads ?? [];
     }
 
     public AnalyticalNode(
@@ -27,13 +32,16 @@ public class AnalyticalNode : AggregateRoot<AnalyticalNodeId>
         Length zCoordinate,
         Restraint restraint,
         List<PointLoad>? pointLoads = null,
-        AnalyticalNodeId? id = null) : this(
+        List<MomentLoad>? momentLoads = null,
+        AnalyticalNodeId? id = null
+    )
+        : this(
             new Point(xCoordinate, yCoordinate, zCoordinate),
             restraint,
             pointLoads,
-            id)
-    {
-    }
+            momentLoads,
+            id
+        ) { }
 
     public AnalyticalNode(
         double xCoordinate,
@@ -42,19 +50,23 @@ public class AnalyticalNode : AggregateRoot<AnalyticalNodeId>
         LengthUnit lengthUnit,
         Restraint restraint,
         List<PointLoad>? pointLoads = null,
-        AnalyticalNodeId? id = null) : this(
+        List<MomentLoad>? momentLoads = null,
+        AnalyticalNodeId? id = null
+    )
+        : this(
             new Length(xCoordinate, lengthUnit),
             new Length(yCoordinate, lengthUnit),
             new Length(zCoordinate, lengthUnit),
             restraint,
             pointLoads,
-            id)
-    {
-    }
+            momentLoads,
+            id
+        ) { }
 
     public List<PointLoad> PointLoads { get; private set; } = [];
-    //public List<MomentLoad> MomentLoads { get; } = [];
+    public List<MomentLoad> MomentLoads { get; } = [];
     public Restraint Restraint { get; set; }
+
     //public Forces? Forces { get; set; }
 
     public Forces GetForcesInGlobalCoordinates()
@@ -65,25 +77,30 @@ public class AnalyticalNode : AggregateRoot<AnalyticalNodeId>
         var momentAboutX = Torque.Zero;
         var momentAboutY = Torque.Zero;
         var momentAboutZ = Torque.Zero;
+
         foreach (var linearLoad in this.PointLoads)
         {
             forceAlongX += linearLoad.Magnitude * linearLoad.NormalizedDirection[0];
             forceAlongY += linearLoad.Magnitude * linearLoad.NormalizedDirection[1];
             forceAlongZ += linearLoad.Magnitude * linearLoad.NormalizedDirection[2];
         }
-        //foreach (MomentLoad momentLoad in MomentLoads)
-        //{
-        //    momentAboutX += momentLoad.Magnitude * momentLoad.
-        //}
+        foreach (var momentLoad in this.MomentLoads)
+        {
+            momentAboutX += momentLoad.Magnitude * momentLoad.NormalizedAxisDirection[0];
+            momentAboutY += momentLoad.Magnitude * momentLoad.NormalizedAxisDirection[1];
+            momentAboutZ += momentLoad.Magnitude * momentLoad.NormalizedAxisDirection[2];
+        }
         return new(forceAlongX, forceAlongY, forceAlongZ, momentAboutX, momentAboutY, momentAboutZ);
     }
 
     public VectorIdentified GetForceVectorIdentifiedInGlobalCoordinates(
         ForceUnit forceUnit,
-        TorqueUnit torqueUnit)
+        TorqueUnit torqueUnit
+    )
     {
         return new(
             this.Id.GetUnsupportedStructureDisplacementIds().ToList(),
-            this.GetForcesInGlobalCoordinates().ToArray(forceUnit, torqueUnit));
+            this.GetForcesInGlobalCoordinates().ToArray(forceUnit, torqueUnit)
+        );
     }
 }

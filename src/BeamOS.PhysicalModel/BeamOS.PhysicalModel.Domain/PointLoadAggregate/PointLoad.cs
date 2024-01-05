@@ -5,13 +5,11 @@ using MathNet.Numerics.LinearAlgebra;
 using UnitsNet;
 
 namespace BeamOS.PhysicalModel.Domain.PointLoadAggregate;
+
 public class PointLoad : AggregateRoot<PointLoadId>
 {
-    public PointLoad(
-        NodeId nodeId,
-        Force force,
-        Vector<double> direction,
-        PointLoadId? id = null) : base(id ?? new())
+    public PointLoad(NodeId nodeId, Force force, Vector<double> direction, PointLoadId? id = null)
+        : base(id ?? new())
     {
         this.NodeId = nodeId;
         this.Force = force;
