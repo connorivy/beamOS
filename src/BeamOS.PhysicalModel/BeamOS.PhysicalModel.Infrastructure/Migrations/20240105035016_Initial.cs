@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -42,6 +42,20 @@ namespace BeamOS.PhysicalModel.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Models", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MomentLoads",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    NodeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Torque = table.Column<double>(type: "float", nullable: false),
+                    NormalizedAxisDirection = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MomentLoads", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -154,6 +168,9 @@ namespace BeamOS.PhysicalModel.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Materials");
+
+            migrationBuilder.DropTable(
+                name: "MomentLoads");
 
             migrationBuilder.DropTable(
                 name: "PointLoads");

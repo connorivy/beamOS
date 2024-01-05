@@ -10,6 +10,8 @@
 
 export interface IPhysicalModelAlphaClient {
 
+    createMomentLoad(request: CreateMomentLoadRequest): Promise<MomentLoadResponse>;
+
     getModel(id: string): Promise<ModelResponse>;
 
     getModelHydrated(id: string): Promise<ModelResponseHydrated>;
@@ -55,6 +57,44 @@ export class PhysicalModelAlphaClient implements IPhysicalModelAlphaClient {
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         this.http = http ? http : window as any;
         this.baseUrl = baseUrl ?? "";
+    }
+
+    createMomentLoad(request: CreateMomentLoadRequest): Promise<MomentLoadResponse> {
+        let url_ = this.baseUrl + "/api/moment-loads";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(request);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateMomentLoad(_response);
+        });
+    }
+
+    protected processCreateMomentLoad(response: Response): Promise<MomentLoadResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MomentLoadResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<MomentLoadResponse>(null as any);
     }
 
     getModel(id: string): Promise<ModelResponse> {
@@ -423,6 +463,190 @@ export class PhysicalModelAlphaClient implements IPhysicalModelAlphaClient {
     }
 }
 
+export class MomentLoadResponse implements IMomentLoadResponse {
+    id!: string;
+    nodeId!: string;
+    torque!: UnitValueDTO;
+    normalizedAxisDirection!: Vector3;
+
+    constructor(data?: IMomentLoadResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.torque = new UnitValueDTO();
+            this.normalizedAxisDirection = new Vector3();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.nodeId = _data["nodeId"];
+            this.torque = _data["torque"] ? UnitValueDTO.fromJS(_data["torque"]) : new UnitValueDTO();
+            this.normalizedAxisDirection = _data["normalizedAxisDirection"] ? Vector3.fromJS(_data["normalizedAxisDirection"]) : new Vector3();
+        }
+    }
+
+    static fromJS(data: any): MomentLoadResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new MomentLoadResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["nodeId"] = this.nodeId;
+        data["torque"] = this.torque ? this.torque.toJSON() : <any>undefined;
+        data["normalizedAxisDirection"] = this.normalizedAxisDirection ? this.normalizedAxisDirection.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IMomentLoadResponse {
+    id: string;
+    nodeId: string;
+    torque: UnitValueDTO;
+    normalizedAxisDirection: Vector3;
+}
+
+export class UnitValueDTO implements IUnitValueDTO {
+    value!: number;
+    unit!: string;
+
+    constructor(data?: IUnitValueDTO) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.value = _data["value"];
+            this.unit = _data["unit"];
+        }
+    }
+
+    static fromJS(data: any): UnitValueDTO {
+        data = typeof data === 'object' ? data : {};
+        let result = new UnitValueDTO();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["value"] = this.value;
+        data["unit"] = this.unit;
+        return data;
+    }
+}
+
+export interface IUnitValueDTO {
+    value: number;
+    unit: string;
+}
+
+export class Vector3 implements IVector3 {
+    x!: number;
+    y!: number;
+    z!: number;
+
+    constructor(data?: IVector3) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.x = _data["x"];
+            this.y = _data["y"];
+            this.z = _data["z"];
+        }
+    }
+
+    static fromJS(data: any): Vector3 {
+        data = typeof data === 'object' ? data : {};
+        let result = new Vector3();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["x"] = this.x;
+        data["y"] = this.y;
+        data["z"] = this.z;
+        return data;
+    }
+}
+
+export interface IVector3 {
+    x: number;
+    y: number;
+    z: number;
+}
+
+export class CreateMomentLoadRequest implements ICreateMomentLoadRequest {
+    nodeId!: string;
+    torque!: UnitValueDTO;
+    axisDirection!: Vector3;
+
+    constructor(data?: ICreateMomentLoadRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.torque = new UnitValueDTO();
+            this.axisDirection = new Vector3();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.nodeId = _data["nodeId"];
+            this.torque = _data["torque"] ? UnitValueDTO.fromJS(_data["torque"]) : new UnitValueDTO();
+            this.axisDirection = _data["axisDirection"] ? Vector3.fromJS(_data["axisDirection"]) : new Vector3();
+        }
+    }
+
+    static fromJS(data: any): CreateMomentLoadRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateMomentLoadRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["nodeId"] = this.nodeId;
+        data["torque"] = this.torque ? this.torque.toJSON() : <any>undefined;
+        data["axisDirection"] = this.axisDirection ? this.axisDirection.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ICreateMomentLoadRequest {
+    nodeId: string;
+    torque: UnitValueDTO;
+    axisDirection: Vector3;
+}
+
 export class ModelResponse implements IModelResponse {
     id!: string;
     name!: string;
@@ -778,46 +1002,6 @@ export interface IPointResponse {
     zCoordinate: UnitValueDTO;
 }
 
-export class UnitValueDTO implements IUnitValueDTO {
-    value!: number;
-    unit!: string;
-
-    constructor(data?: IUnitValueDTO) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.value = _data["value"];
-            this.unit = _data["unit"];
-        }
-    }
-
-    static fromJS(data: any): UnitValueDTO {
-        data = typeof data === 'object' ? data : {};
-        let result = new UnitValueDTO();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["value"] = this.value;
-        data["unit"] = this.unit;
-        return data;
-    }
-}
-
-export interface IUnitValueDTO {
-    value: number;
-    unit: string;
-}
-
 export class RestraintResponse implements IRestraintResponse {
     canTranslateAlongX!: boolean;
     canTranslateAlongY!: boolean;
@@ -1093,50 +1277,6 @@ export interface IPointLoadResponse {
     nodeId: string;
     force: UnitValueDTO;
     normalizedDirection: Vector3;
-}
-
-export class Vector3 implements IVector3 {
-    x!: number;
-    y!: number;
-    z!: number;
-
-    constructor(data?: IVector3) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.x = _data["x"];
-            this.y = _data["y"];
-            this.z = _data["z"];
-        }
-    }
-
-    static fromJS(data: any): Vector3 {
-        data = typeof data === 'object' ? data : {};
-        let result = new Vector3();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["x"] = this.x;
-        data["y"] = this.y;
-        data["z"] = this.z;
-        return data;
-    }
-}
-
-export interface IVector3 {
-    x: number;
-    y: number;
-    z: number;
 }
 
 export class ModelResponseHydrated implements IModelResponseHydrated {

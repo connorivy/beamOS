@@ -88,6 +88,7 @@ await app.GenerateClient(
         $"{contractsBaseNs}.{ApiClientGenerator.Element1dNs}",
         $"{contractsBaseNs}.{ApiClientGenerator.ModelNs}",
         $"{contractsBaseNs}.{ApiClientGenerator.PointLoadNs}",
+        $"{contractsBaseNs}.{ApiClientGenerator.MomentLoadNs}",
     ]
 );
 

@@ -118,6 +118,26 @@ namespace BeamOS.PhysicalModel.Infrastructure.Migrations
                     b.ToTable("Models");
                 });
 
+            modelBuilder.Entity("BeamOS.PhysicalModel.Domain.MomentLoadAggregate.MomentLoad", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("NodeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("NormalizedAxisDirection")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Torque")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MomentLoads");
+                });
+
             modelBuilder.Entity("BeamOS.PhysicalModel.Domain.NodeAggregate.Node", b =>
                 {
                     b.Property<Guid>("Id")
