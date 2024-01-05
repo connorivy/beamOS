@@ -27,11 +27,13 @@ public class GetModelHydrated(
     PointLoadResponseMapper pointLoadResponseMapper,
     MomentLoadResponseMapper momentLoadResponseMapper,
     ModelSettingsResponseMapper settingsResponseMapper
-) : BaseEndpoint, IGetEndpoint<string, ModelResponseHydrated>
+) : BeamOsEndpoint<string, ModelResponseHydrated>
 {
     public override string Route => "models/{id}/" + CommonApiConstants.HYDRATED_ROUTE;
 
-    public async Task<ModelResponseHydrated> GetAsync(string id, CancellationToken ct)
+    public override EndpointType EndpointType => EndpointType.Get;
+
+    public override async Task<ModelResponseHydrated> ExecuteAsync(string id, CancellationToken ct)
     {
         ModelId typedId = new(Guid.Parse(id));
 

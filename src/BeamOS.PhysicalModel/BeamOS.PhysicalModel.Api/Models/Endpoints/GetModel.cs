@@ -1,5 +1,4 @@
 using BeamOS.Common.Api;
-using BeamOS.Common.Api.Interfaces;
 using BeamOS.PhysicalModel.Api.Mappers;
 using BeamOS.PhysicalModel.Contracts.Model;
 using BeamOS.PhysicalModel.Domain.ModelAggregate;
@@ -10,12 +9,13 @@ using Microsoft.EntityFrameworkCore;
 namespace BeamOS.PhysicalModel.Api.Models.Endpoints;
 
 public class GetModel(PhysicalModelDbContext dbContext, ModelResponseMapper modelResponseMapper)
-    : BaseEndpoint,
-        IGetEndpoint<string, ModelResponse>
+    : BeamOsEndpoint<string, ModelResponse>
 {
     public override string Route => "models/{id}";
 
-    public async Task<ModelResponse> GetAsync(string id, CancellationToken ct)
+    public override EndpointType EndpointType => EndpointType.Get;
+
+    public override async Task<ModelResponse> ExecuteAsync(string id, CancellationToken ct)
     {
         ModelId expectedId = new(Guid.Parse(id));
         Model? element = await dbContext

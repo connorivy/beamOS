@@ -1,5 +1,4 @@
 using BeamOS.Common.Api;
-using BeamOS.Common.Api.Interfaces;
 using BeamOS.DirectStiffnessMethod.Api.AnalyticalModels.Mappers;
 using BeamOS.DirectStiffnessMethod.Application.AnalyticalModels.Commands;
 using BeamOS.DirectStiffnessMethod.Contracts.Model;
@@ -13,11 +12,13 @@ public class RunDirectStiffnessMethod(
     IPhysicalModelAlphaClient physicalModelApi,
     ModelResponseHydratedToCreateAnalyticalModelCommand modelResponseMapper,
     CreateAnalyticalModelCommandHandler createAnalyticalModelCommandHandler
-) : BaseEndpoint, IPostEndpoint<string, AnalyticalModelResponse>
+) : BeamOsEndpoint<string, AnalyticalModelResponse>
 {
     public override string Route => "/analytical-models/{physicalModelId}";
 
-    public async Task<AnalyticalModelResponse> PostAsync(
+    public override EndpointType EndpointType => EndpointType.Post;
+
+    public override async Task<AnalyticalModelResponse> ExecuteAsync(
         string physicalModelId,
         CancellationToken ct
     )
