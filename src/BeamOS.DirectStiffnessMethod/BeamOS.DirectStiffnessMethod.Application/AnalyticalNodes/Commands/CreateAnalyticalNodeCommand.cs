@@ -1,3 +1,4 @@
+using BeamOS.DirectStiffnessMethod.Application.MomentLoads;
 using BeamOS.DirectStiffnessMethod.Application.PointLoads;
 using UnitsNet;
 
@@ -8,12 +9,11 @@ public record CreateAnalyticalNodeCommand(
     string ModelId,
     PointCommand LocationPoint,
     RestraintCommand Restraint,
-    List<CreatePointLoadCommand> PointLoads);
+    List<CreatePointLoadCommand> PointLoads,
+    List<CreateMomentLoadCommand> MomentLoads
+);
 
-public record PointCommand(
-    Length XCoordinate,
-    Length YCoordinate,
-    Length ZCoordinate);
+public record PointCommand(Length XCoordinate, Length YCoordinate, Length ZCoordinate);
 
 public record RestraintCommand(
     bool CanTranslateAlongX,
@@ -21,4 +21,5 @@ public record RestraintCommand(
     bool CanTranslateAlongZ,
     bool CanRotateAboutX,
     bool CanRotateAboutY,
-    bool CanRotateAboutZ);
+    bool CanRotateAboutZ
+);

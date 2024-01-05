@@ -2,10 +2,12 @@ using BeamOS.Common.Api;
 using BeamOS.Common.Api.Interfaces;
 using BeamOS.PhysicalModel.Api.Mappers;
 using BeamOS.PhysicalModel.Api.Models.Mappers;
+using BeamOS.PhysicalModel.Api.MomentLoads.Mappers;
 using BeamOS.PhysicalModel.Api.PointLoads.Mappers;
 using BeamOS.PhysicalModel.Contracts.Element1D;
 using BeamOS.PhysicalModel.Contracts.Material;
 using BeamOS.PhysicalModel.Contracts.Model;
+using BeamOS.PhysicalModel.Contracts.MomentLoad;
 using BeamOS.PhysicalModel.Contracts.Node;
 using BeamOS.PhysicalModel.Contracts.PointLoad;
 using BeamOS.PhysicalModel.Contracts.SectionProfile;
@@ -23,6 +25,7 @@ public class GetModelHydrated(
     MaterialResponseMapper materialResponseMapper,
     SectionProfileResponseMapper sectionProfileResponseMapper,
     PointLoadResponseMapper pointLoadResponseMapper,
+    MomentLoadResponseMapper momentLoadResponseMapper,
     ModelSettingsResponseMapper settingsResponseMapper
 ) : BaseEndpoint, IGetEndpoint<string, ModelResponseHydrated>
 {
@@ -61,6 +64,12 @@ public class GetModelHydrated(
             where n.ModelId == typedId
             select pointLoadResponseMapper.Map(pl)
         ).ToListAsync(cancellationToken: ct);
+        List<MomentLoadResponse> momentLoads = await (
+            from ml in dbContext.MomentLoads
+            join n in dbContext.Nodes on ml.NodeId equals n.Id
+            where n.ModelId == typedId
+            select momentLoadResponseMapper.Map(ml)
+        ).ToListAsync(cancellationToken: ct);
 
         ModelSettingsResponse settingsResponse = settingsResponseMapper.Map(model1.Settings);
         return new ModelResponseHydrated(
@@ -72,7 +81,8 @@ public class GetModelHydrated(
             element1Ds,
             materials,
             sectionProfiles,
-            pointLoads
+            pointLoads,
+            momentLoads
         );
     }
 }
