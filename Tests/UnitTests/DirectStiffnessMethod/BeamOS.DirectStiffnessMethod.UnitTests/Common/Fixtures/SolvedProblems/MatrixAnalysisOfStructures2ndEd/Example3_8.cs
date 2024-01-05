@@ -93,8 +93,8 @@ internal class Example3_8 : SolvedProblem
 
         return new AnalyticalModelFixture(model)
         {
-            ExpectedSupportDisplacementVector = supportDisplacementVector,
-            ExpectedSupportReactionVector = supportReactionVector,
+            ExpectedDisplacementVector = supportDisplacementVector,
+            ExpectedReactionVector = supportReactionVector,
         };
     }
 

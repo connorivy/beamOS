@@ -32,7 +32,7 @@ public class AnalyticalModelTests
         AnalyticalModelFixture fixture
     )
     {
-        _ = fixture.ExpectedSupportDisplacementVector.ThrowIfNull(() => throw new SkipException());
+        _ = fixture.ExpectedDisplacementVector.ThrowIfNull(() => throw new SkipException());
 
         Vector<double> jointDisplacementVector = fixture
             .AnalyticalModel
@@ -40,7 +40,7 @@ public class AnalyticalModelTests
             .Build();
 
         jointDisplacementVector.AssertAlmostEqual(
-            fixture.ExpectedSupportDisplacementVector,
+            fixture.ExpectedDisplacementVector,
             fixture.NumberOfDecimalsToCompareDisplacementVector
         );
     }
@@ -51,10 +51,13 @@ public class AnalyticalModelTests
         AnalyticalModelFixture fixture
     )
     {
-        _ = fixture.ExpectedSupportReactionVector.ThrowIfNull(() => throw new SkipException());
+        _ = fixture.ExpectedReactionVector.ThrowIfNull(() => throw new SkipException());
 
         Vector<double> jointDisplacementVector = fixture.AnalyticalModel.ReactionVector.Build();
 
-        jointDisplacementVector.AssertAlmostEqual(fixture.ExpectedSupportReactionVector, 2);
+        jointDisplacementVector.AssertAlmostEqual(
+            fixture.ExpectedReactionVector,
+            fixture.NumberOfDecimalsToCompareReactionVector
+        );
     }
 }

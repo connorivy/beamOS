@@ -69,7 +69,7 @@ internal partial class Example8_4
             // this load should be removed when there is support for fixed-end moments.
             new MomentLoad(
                 new Torque(3 * 20 * 20 / 12, TorqueUnit.KilopoundForceFoot),
-                DenseVector.OfArray([0, 0, 1])
+                DenseVector.OfArray([0, 0, -1])
             ),
         ];
 

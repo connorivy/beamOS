@@ -65,11 +65,11 @@ internal partial class Example8_4 : SolvedProblem
 
             [
                 5.3757,
-                44.106,
+                44.106 - 30, // subtracting Qf because we're not using fixed end forces. This will change.
                 -0.74272,
                 2.1722,
                 58.987,
-                2330.5,
+                2330.52 - 1200, // subtracting 1200 for same reason as above ^
                 -4.6249,
                 11.117,
                 -6.4607,
@@ -93,8 +93,9 @@ internal partial class Example8_4 : SolvedProblem
         {
             ExpectedStructureStiffnessMatrix = expectedStructureStiffnessMatrix,
             NumberOfDecimalsToCompareSMatrix = 0,
-            //ExpectedSupportReactionVector = expectedReactionVector,
-            ExpectedSupportDisplacementVector = expectedDisplacementVector,
+            ExpectedReactionVector = expectedReactionVector,
+            NumberOfDecimalsToCompareReactionVector = 2,
+            ExpectedDisplacementVector = expectedDisplacementVector,
             NumberOfDecimalsToCompareDisplacementVector = 5
         };
     }
