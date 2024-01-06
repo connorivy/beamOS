@@ -86,9 +86,9 @@ public class AnalyticalNode : AggregateRoot<AnalyticalNodeId>
         }
         foreach (var momentLoad in this.MomentLoads)
         {
-            momentAboutX += momentLoad.Magnitude * momentLoad.NormalizedAxisDirection[0];
-            momentAboutY += momentLoad.Magnitude * momentLoad.NormalizedAxisDirection[1];
-            momentAboutZ += momentLoad.Magnitude * momentLoad.NormalizedAxisDirection[2];
+            momentAboutX += momentLoad.Torque * momentLoad.NormalizedAxisDirection[0];
+            momentAboutY += momentLoad.Torque * momentLoad.NormalizedAxisDirection[1];
+            momentAboutZ += momentLoad.Torque * momentLoad.NormalizedAxisDirection[2];
         }
         return new(forceAlongX, forceAlongY, forceAlongZ, momentAboutX, momentAboutY, momentAboutZ);
     }

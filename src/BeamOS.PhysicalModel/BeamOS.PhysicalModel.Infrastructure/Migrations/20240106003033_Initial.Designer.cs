@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeamOS.PhysicalModel.Infrastructure.Migrations
 {
     [DbContext(typeof(PhysicalModelDbContext))]
-    [Migration("20240105035016_Initial")]
+    [Migration("20240106003033_Initial")]
     partial class Initial
     {
         /// <inheritdoc />

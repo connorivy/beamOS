@@ -6,18 +6,18 @@ namespace BeamOS.DirectStiffnessMethod.Domain.Common.ValueObjects;
 
 public class MomentLoad : BeamOSValueObject
 {
-    public MomentLoad(Torque magnitude, Vector<double> axisDirection)
+    public MomentLoad(Torque torque, Vector<double> axisDirection)
     {
-        this.Magnitude = magnitude;
+        this.Torque = torque;
         this.NormalizedAxisDirection = axisDirection.Normalize(2);
     }
 
-    public Torque Magnitude { get; set; }
+    public Torque Torque { get; set; }
     public Vector<double> NormalizedAxisDirection { get; }
 
     protected override IEnumerable<object> GetEqualityComponents()
     {
-        yield return this.Magnitude;
+        yield return this.Torque;
         yield return this.NormalizedAxisDirection;
     }
 }
