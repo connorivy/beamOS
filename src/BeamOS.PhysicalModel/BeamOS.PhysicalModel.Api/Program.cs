@@ -89,6 +89,8 @@ await app.GenerateClient(
         $"{contractsBaseNs}.{ApiClientGenerator.ModelNs}",
         $"{contractsBaseNs}.{ApiClientGenerator.PointLoadNs}",
         $"{contractsBaseNs}.{ApiClientGenerator.MomentLoadNs}",
+        $"{contractsBaseNs}.{ApiClientGenerator.MaterialNs}",
+        $"{contractsBaseNs}.{ApiClientGenerator.SectionProfileNs}",
     ]
 );
 
@@ -107,5 +109,3 @@ app.UseCors();
 //app.UseSwaggerUI();
 
 app.Run();
-
-namespace BeamOS.PhysicalModel.Clients.Cs { }

@@ -15,8 +15,8 @@ public static class DependencyInjection
                     //.AddClasses(classes => classes.AssignableTo(typeof(BeamOsEndpoint<,,>)))
                     //.AddClasses(classes => classes.AssignableTo(typeof(BeamOsEndpoint<,,,>)))
                     //.AddClasses(classes => classes.AssignableTo(typeof(BeamOsEndpoint<,,,>)))
-                    .AddClasses(classes => classes.AssignableTo(typeof(BeamOsEndpointBase)))
-                    .AsSelf()
+                    .AddClasses(classes => classes.AssignableTo(typeof(IBeamOsEndpointBase)))
+                    .AsSelfWithInterfaces()
                     //.AsImplementedInterfaces()
                     .WithScopedLifetime()
         );

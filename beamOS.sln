@@ -70,7 +70,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.WebApp.EditorApiGene
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.WebApp.EditorApi", "src\BeamOS.WebApp\BeamOS.WebApp.EditorApi\BeamOS.WebApp.EditorApi.csproj", "{A91B5080-3A4B-45D7-83DF-D8C52C9E2B02}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOS.DirectStiffnessMethod.Client", "src\BeamOS.DirectStiffnessMethod\BeamOS.DirectStiffnessMethod.Client\BeamOS.DirectStiffnessMethod.Client.csproj", "{1D713CAC-E2AD-4C38-B190-1D9C19AD3784}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.DirectStiffnessMethod.Client", "src\BeamOS.DirectStiffnessMethod\BeamOS.DirectStiffnessMethod.Client\BeamOS.DirectStiffnessMethod.Client.csproj", "{1D713CAC-E2AD-4C38-B190-1D9C19AD3784}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PhysicalModel", "PhysicalModel", "{D4C5AC8A-4865-49C1-B804-9F96EE02F5C0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IntegrationTests", "IntegrationTests", "{D5303E3A-BC9C-46CC-8DFB-D529F4C38E22}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PhysicalModel", "PhysicalModel", "{26FF7C86-CFC4-431F-B4FF-6E4A0FDBEDF3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DirectStiffnessMethod", "DirectStiffnessMethod", "{60D3AD2D-0E65-46BE-853D-C434B5258AA9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOS.IntegrationTests.DirectStiffnessMethod", "tests\IntegrationTests\BeamOS.IntegrationTests.DirectStiffnessMethod\BeamOS.IntegrationTests.DirectStiffnessMethod.csproj", "{6B14DEC8-A012-4936-A3BC-65C859C80C12}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOS.Tests.Common", "tests\BeamOS.Tests.Common\BeamOS.Tests.Common.csproj", "{7159B3F9-8A68-4A95-9392-A6A6C4A090F5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -166,6 +178,14 @@ Global
 		{1D713CAC-E2AD-4C38-B190-1D9C19AD3784}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1D713CAC-E2AD-4C38-B190-1D9C19AD3784}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1D713CAC-E2AD-4C38-B190-1D9C19AD3784}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B14DEC8-A012-4936-A3BC-65C859C80C12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B14DEC8-A012-4936-A3BC-65C859C80C12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B14DEC8-A012-4936-A3BC-65C859C80C12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B14DEC8-A012-4936-A3BC-65C859C80C12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7159B3F9-8A68-4A95-9392-A6A6C4A090F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7159B3F9-8A68-4A95-9392-A6A6C4A090F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7159B3F9-8A68-4A95-9392-A6A6C4A090F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7159B3F9-8A68-4A95-9392-A6A6C4A090F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -199,6 +219,12 @@ Global
 		{BEBCD601-B0EB-4C9C-B392-BF13634FFFD0} = {E2151A0E-7E33-4D74-86D9-F1A6F8A6A85C}
 		{A91B5080-3A4B-45D7-83DF-D8C52C9E2B02} = {E2151A0E-7E33-4D74-86D9-F1A6F8A6A85C}
 		{1D713CAC-E2AD-4C38-B190-1D9C19AD3784} = {546F702C-44DE-4950-9EC0-7A2D045B6441}
+		{D4C5AC8A-4865-49C1-B804-9F96EE02F5C0} = {33262038-A7CA-4051-B269-CC56FC668095}
+		{D5303E3A-BC9C-46CC-8DFB-D529F4C38E22} = {13EB1A87-EDE0-405D-9DAE-2D70307CDADD}
+		{26FF7C86-CFC4-431F-B4FF-6E4A0FDBEDF3} = {D5303E3A-BC9C-46CC-8DFB-D529F4C38E22}
+		{60D3AD2D-0E65-46BE-853D-C434B5258AA9} = {D5303E3A-BC9C-46CC-8DFB-D529F4C38E22}
+		{6B14DEC8-A012-4936-A3BC-65C859C80C12} = {60D3AD2D-0E65-46BE-853D-C434B5258AA9}
+		{7159B3F9-8A68-4A95-9392-A6A6C4A090F5} = {13EB1A87-EDE0-405D-9DAE-2D70307CDADD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DCC0AF93-F9F0-490C-9F01-0DDF9F09494F}

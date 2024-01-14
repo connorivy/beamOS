@@ -1,11 +1,12 @@
 using System.Linq.Expressions;
 using System.Reflection;
+using BeamOS.Common.Api.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 
 namespace BeamOS.Common.Api;
 
-public abstract class BeamOsEndpointBase
+public abstract class BeamOsEndpointBase : IBeamOsEndpointBase
 {
     public abstract string Route { get; }
 
@@ -66,12 +67,16 @@ public abstract class BeamOsEndpointBase
     private string GetName() => this.GetType().Name;
 }
 
-public abstract class BeamOsEndpoint<TRequest, TResponse> : BeamOsEndpointBase
+public abstract class BeamOsEndpoint<TRequest, TResponse>
+    : BeamOsEndpointBase,
+        IBeamOsEndpoint<TRequest, TResponse>
 {
     public abstract Task<TResponse> ExecuteAsync(TRequest request, CancellationToken ct);
 }
 
-public abstract class BeamOsEndpoint<TRequest, TParam1, TResponse> : BeamOsEndpointBase
+public abstract class BeamOsEndpoint<TRequest, TParam1, TResponse>
+    : BeamOsEndpointBase,
+        IBeamOsEndpoint<TRequest, TParam1, TResponse>
 {
     public abstract Task<TResponse> ExecuteAsync(
         TRequest request,
@@ -80,7 +85,9 @@ public abstract class BeamOsEndpoint<TRequest, TParam1, TResponse> : BeamOsEndpo
     );
 }
 
-public abstract class BeamOsEndpoint<TRequest, TParam1, TParam2, TResponse> : BeamOsEndpointBase
+public abstract class BeamOsEndpoint<TRequest, TParam1, TParam2, TResponse>
+    : BeamOsEndpointBase,
+        IBeamOsEndpoint<TRequest, TParam1, TParam2, TResponse>
 {
     public abstract Task<TResponse> ExecuteAsync(
         TRequest request,
@@ -91,7 +98,8 @@ public abstract class BeamOsEndpoint<TRequest, TParam1, TParam2, TResponse> : Be
 }
 
 public abstract class BeamOsEndpoint<TRequest, TParam1, TParam2, TParam3, TResponse>
-    : BeamOsEndpointBase
+    : BeamOsEndpointBase,
+        IBeamOsEndpoint<TRequest, TParam1, TParam2, TParam3, TResponse>
 {
     public abstract Task<TResponse> ExecuteAsync(
         TRequest request,

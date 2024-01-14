@@ -16,6 +16,8 @@ export interface IPhysicalModelAlphaClient {
 
     getModelHydrated(id: string): Promise<ModelResponseHydrated>;
 
+    createMaterial(request: CreateMaterialRequest): Promise<MaterialResponse>;
+
     getElement1ds(modelId: string, element1dIds: string[] | null | undefined): Promise<Element1DResponse[]>;
 
     /**
@@ -169,6 +171,44 @@ export class PhysicalModelAlphaClient implements IPhysicalModelAlphaClient {
             });
         }
         return Promise.resolve<ModelResponseHydrated>(null as any);
+    }
+
+    createMaterial(request: CreateMaterialRequest): Promise<MaterialResponse> {
+        let url_ = this.baseUrl + "/api/materials";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(request);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateMaterial(_response);
+        });
+    }
+
+    protected processCreateMaterial(response: Response): Promise<MaterialResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MaterialResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<MaterialResponse>(null as any);
     }
 
     getElement1ds(modelId: string, element1dIds: string[] | null | undefined): Promise<Element1DResponse[]> {
@@ -1289,6 +1329,7 @@ export class ModelResponseHydrated implements IModelResponseHydrated {
     materials!: MaterialResponse[];
     sectionProfiles!: SectionProfileResponse[];
     pointLoads!: PointLoadResponse[];
+    momentLoads!: MomentLoadResponse[];
 
     constructor(data?: IModelResponseHydrated) {
         if (data) {
@@ -1304,6 +1345,7 @@ export class ModelResponseHydrated implements IModelResponseHydrated {
             this.materials = [];
             this.sectionProfiles = [];
             this.pointLoads = [];
+            this.momentLoads = [];
         }
     }
 
@@ -1337,6 +1379,11 @@ export class ModelResponseHydrated implements IModelResponseHydrated {
                 this.pointLoads = [] as any;
                 for (let item of _data["pointLoads"])
                     this.pointLoads!.push(PointLoadResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["momentLoads"])) {
+                this.momentLoads = [] as any;
+                for (let item of _data["momentLoads"])
+                    this.momentLoads!.push(MomentLoadResponse.fromJS(item));
             }
         }
     }
@@ -1379,6 +1426,11 @@ export class ModelResponseHydrated implements IModelResponseHydrated {
             for (let item of this.pointLoads)
                 data["pointLoads"].push(item.toJSON());
         }
+        if (Array.isArray(this.momentLoads)) {
+            data["momentLoads"] = [];
+            for (let item of this.momentLoads)
+                data["momentLoads"].push(item.toJSON());
+        }
         return data;
     }
 }
@@ -1393,6 +1445,55 @@ export interface IModelResponseHydrated {
     materials: MaterialResponse[];
     sectionProfiles: SectionProfileResponse[];
     pointLoads: PointLoadResponse[];
+    momentLoads: MomentLoadResponse[];
+}
+
+export class CreateMaterialRequest implements ICreateMaterialRequest {
+    modelId!: string;
+    modulusOfElasticity!: UnitValueDTO;
+    modulusOfRigidity!: UnitValueDTO;
+
+    constructor(data?: ICreateMaterialRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.modulusOfElasticity = new UnitValueDTO();
+            this.modulusOfRigidity = new UnitValueDTO();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.modelId = _data["modelId"];
+            this.modulusOfElasticity = _data["modulusOfElasticity"] ? UnitValueDTO.fromJS(_data["modulusOfElasticity"]) : new UnitValueDTO();
+            this.modulusOfRigidity = _data["modulusOfRigidity"] ? UnitValueDTO.fromJS(_data["modulusOfRigidity"]) : new UnitValueDTO();
+        }
+    }
+
+    static fromJS(data: any): CreateMaterialRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateMaterialRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["modelId"] = this.modelId;
+        data["modulusOfElasticity"] = this.modulusOfElasticity ? this.modulusOfElasticity.toJSON() : <any>undefined;
+        data["modulusOfRigidity"] = this.modulusOfRigidity ? this.modulusOfRigidity.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ICreateMaterialRequest {
+    modelId: string;
+    modulusOfElasticity: UnitValueDTO;
+    modulusOfRigidity: UnitValueDTO;
 }
 
 export class CreatePointLoadRequest implements ICreatePointLoadRequest {
@@ -1733,6 +1834,7 @@ export class CreateElement1DRequest implements ICreateElement1DRequest {
     endNodeId!: string;
     materialId!: string;
     sectionProfileId!: string;
+    sectionProfileRotation?: UnitValueDTO | undefined;
 
     constructor(data?: ICreateElement1DRequest) {
         if (data) {
@@ -1750,6 +1852,7 @@ export class CreateElement1DRequest implements ICreateElement1DRequest {
             this.endNodeId = _data["endNodeId"];
             this.materialId = _data["materialId"];
             this.sectionProfileId = _data["sectionProfileId"];
+            this.sectionProfileRotation = _data["sectionProfileRotation"] ? UnitValueDTO.fromJS(_data["sectionProfileRotation"]) : <any>undefined;
         }
     }
 
@@ -1767,6 +1870,7 @@ export class CreateElement1DRequest implements ICreateElement1DRequest {
         data["endNodeId"] = this.endNodeId;
         data["materialId"] = this.materialId;
         data["sectionProfileId"] = this.sectionProfileId;
+        data["sectionProfileRotation"] = this.sectionProfileRotation ? this.sectionProfileRotation.toJSON() : <any>undefined;
         return data;
     }
 }
@@ -1777,6 +1881,7 @@ export interface ICreateElement1DRequest {
     endNodeId: string;
     materialId: string;
     sectionProfileId: string;
+    sectionProfileRotation?: UnitValueDTO | undefined;
 }
 
 export class ApiException extends Error {
