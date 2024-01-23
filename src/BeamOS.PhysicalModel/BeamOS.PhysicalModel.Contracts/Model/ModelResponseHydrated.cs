@@ -1,3 +1,4 @@
+using BeamOS.PhysicalModel.Contracts.Common;
 using BeamOS.PhysicalModel.Contracts.Common.Interfaces;
 using BeamOS.PhysicalModel.Contracts.Element1D;
 using BeamOS.PhysicalModel.Contracts.Material;
@@ -19,4 +20,4 @@ public record ModelResponseHydrated(
     List<SectionProfileResponse> SectionProfiles,
     List<PointLoadResponse> PointLoads,
     List<MomentLoadResponse> MomentLoads
-) : IHasId;
+) : BeamOsContractBase, IHasId;

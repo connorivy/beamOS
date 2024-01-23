@@ -10,6 +10,8 @@
 
 export interface IPhysicalModelAlphaClient {
 
+    createSectionProfile(request: CreateSectionProfileRequest): Promise<SectionProfileResponse>;
+
     createMomentLoad(request: CreateMomentLoadRequest): Promise<MomentLoadResponse>;
 
     getModel(id: string): Promise<ModelResponse>;
@@ -59,6 +61,44 @@ export class PhysicalModelAlphaClient implements IPhysicalModelAlphaClient {
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         this.http = http ? http : window as any;
         this.baseUrl = baseUrl ?? "";
+    }
+
+    createSectionProfile(request: CreateSectionProfileRequest): Promise<SectionProfileResponse> {
+        let url_ = this.baseUrl + "/api/SectionProfiles";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(request);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateSectionProfile(_response);
+        });
+    }
+
+    protected processCreateSectionProfile(response: Response): Promise<SectionProfileResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SectionProfileResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SectionProfileResponse>(null as any);
     }
 
     createMomentLoad(request: CreateMomentLoadRequest): Promise<MomentLoadResponse> {
@@ -503,6 +543,162 @@ export class PhysicalModelAlphaClient implements IPhysicalModelAlphaClient {
     }
 }
 
+export class SectionProfileResponse implements ISectionProfileResponse {
+    id!: string;
+    area!: UnitValueDTO;
+    strongAxisMomentOfInertia!: UnitValueDTO;
+    weakAxisMomentOfInertia!: UnitValueDTO;
+    polarMomentOfInertia!: UnitValueDTO;
+
+    constructor(data?: ISectionProfileResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.area = new UnitValueDTO();
+            this.strongAxisMomentOfInertia = new UnitValueDTO();
+            this.weakAxisMomentOfInertia = new UnitValueDTO();
+            this.polarMomentOfInertia = new UnitValueDTO();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.area = _data["area"] ? UnitValueDTO.fromJS(_data["area"]) : new UnitValueDTO();
+            this.strongAxisMomentOfInertia = _data["strongAxisMomentOfInertia"] ? UnitValueDTO.fromJS(_data["strongAxisMomentOfInertia"]) : new UnitValueDTO();
+            this.weakAxisMomentOfInertia = _data["weakAxisMomentOfInertia"] ? UnitValueDTO.fromJS(_data["weakAxisMomentOfInertia"]) : new UnitValueDTO();
+            this.polarMomentOfInertia = _data["polarMomentOfInertia"] ? UnitValueDTO.fromJS(_data["polarMomentOfInertia"]) : new UnitValueDTO();
+        }
+    }
+
+    static fromJS(data: any): SectionProfileResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new SectionProfileResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["area"] = this.area ? this.area.toJSON() : <any>undefined;
+        data["strongAxisMomentOfInertia"] = this.strongAxisMomentOfInertia ? this.strongAxisMomentOfInertia.toJSON() : <any>undefined;
+        data["weakAxisMomentOfInertia"] = this.weakAxisMomentOfInertia ? this.weakAxisMomentOfInertia.toJSON() : <any>undefined;
+        data["polarMomentOfInertia"] = this.polarMomentOfInertia ? this.polarMomentOfInertia.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ISectionProfileResponse {
+    id: string;
+    area: UnitValueDTO;
+    strongAxisMomentOfInertia: UnitValueDTO;
+    weakAxisMomentOfInertia: UnitValueDTO;
+    polarMomentOfInertia: UnitValueDTO;
+}
+
+export class UnitValueDTO implements IUnitValueDTO {
+    value!: number;
+    unit!: string;
+
+    constructor(data?: IUnitValueDTO) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.value = _data["value"];
+            this.unit = _data["unit"];
+        }
+    }
+
+    static fromJS(data: any): UnitValueDTO {
+        data = typeof data === 'object' ? data : {};
+        let result = new UnitValueDTO();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["value"] = this.value;
+        data["unit"] = this.unit;
+        return data;
+    }
+}
+
+export interface IUnitValueDTO {
+    value: number;
+    unit: string;
+}
+
+export class CreateSectionProfileRequest implements ICreateSectionProfileRequest {
+    modelId!: string;
+    area!: UnitValueDTO;
+    strongAxisMomentOfInertia!: UnitValueDTO;
+    weakAxisMomentOfInertia!: UnitValueDTO;
+    polarMomentOfInertia!: UnitValueDTO;
+
+    constructor(data?: ICreateSectionProfileRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.area = new UnitValueDTO();
+            this.strongAxisMomentOfInertia = new UnitValueDTO();
+            this.weakAxisMomentOfInertia = new UnitValueDTO();
+            this.polarMomentOfInertia = new UnitValueDTO();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.modelId = _data["modelId"];
+            this.area = _data["area"] ? UnitValueDTO.fromJS(_data["area"]) : new UnitValueDTO();
+            this.strongAxisMomentOfInertia = _data["strongAxisMomentOfInertia"] ? UnitValueDTO.fromJS(_data["strongAxisMomentOfInertia"]) : new UnitValueDTO();
+            this.weakAxisMomentOfInertia = _data["weakAxisMomentOfInertia"] ? UnitValueDTO.fromJS(_data["weakAxisMomentOfInertia"]) : new UnitValueDTO();
+            this.polarMomentOfInertia = _data["polarMomentOfInertia"] ? UnitValueDTO.fromJS(_data["polarMomentOfInertia"]) : new UnitValueDTO();
+        }
+    }
+
+    static fromJS(data: any): CreateSectionProfileRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateSectionProfileRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["modelId"] = this.modelId;
+        data["area"] = this.area ? this.area.toJSON() : <any>undefined;
+        data["strongAxisMomentOfInertia"] = this.strongAxisMomentOfInertia ? this.strongAxisMomentOfInertia.toJSON() : <any>undefined;
+        data["weakAxisMomentOfInertia"] = this.weakAxisMomentOfInertia ? this.weakAxisMomentOfInertia.toJSON() : <any>undefined;
+        data["polarMomentOfInertia"] = this.polarMomentOfInertia ? this.polarMomentOfInertia.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ICreateSectionProfileRequest {
+    modelId: string;
+    area: UnitValueDTO;
+    strongAxisMomentOfInertia: UnitValueDTO;
+    weakAxisMomentOfInertia: UnitValueDTO;
+    polarMomentOfInertia: UnitValueDTO;
+}
+
 export class MomentLoadResponse implements IMomentLoadResponse {
     id!: string;
     nodeId!: string;
@@ -553,46 +749,6 @@ export interface IMomentLoadResponse {
     nodeId: string;
     torque: UnitValueDTO;
     normalizedAxisDirection: Vector3;
-}
-
-export class UnitValueDTO implements IUnitValueDTO {
-    value!: number;
-    unit!: string;
-
-    constructor(data?: IUnitValueDTO) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.value = _data["value"];
-            this.unit = _data["unit"];
-        }
-    }
-
-    static fromJS(data: any): UnitValueDTO {
-        data = typeof data === 'object' ? data : {};
-        let result = new UnitValueDTO();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["value"] = this.value;
-        data["unit"] = this.unit;
-        return data;
-    }
-}
-
-export interface IUnitValueDTO {
-    value: number;
-    unit: string;
 }
 
 export class Vector3 implements IVector3 {
@@ -1207,64 +1363,6 @@ export interface IMaterialResponse {
     id: string;
     modulusOfElasticity: UnitValueDTO;
     modulusOfRigidity: UnitValueDTO;
-}
-
-export class SectionProfileResponse implements ISectionProfileResponse {
-    id!: string;
-    area!: UnitValueDTO;
-    strongAxisMomentOfInertia!: UnitValueDTO;
-    weakAxisMomentOfInertia!: UnitValueDTO;
-    polarMomentOfInertia!: UnitValueDTO;
-
-    constructor(data?: ISectionProfileResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.area = new UnitValueDTO();
-            this.strongAxisMomentOfInertia = new UnitValueDTO();
-            this.weakAxisMomentOfInertia = new UnitValueDTO();
-            this.polarMomentOfInertia = new UnitValueDTO();
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.area = _data["area"] ? UnitValueDTO.fromJS(_data["area"]) : new UnitValueDTO();
-            this.strongAxisMomentOfInertia = _data["strongAxisMomentOfInertia"] ? UnitValueDTO.fromJS(_data["strongAxisMomentOfInertia"]) : new UnitValueDTO();
-            this.weakAxisMomentOfInertia = _data["weakAxisMomentOfInertia"] ? UnitValueDTO.fromJS(_data["weakAxisMomentOfInertia"]) : new UnitValueDTO();
-            this.polarMomentOfInertia = _data["polarMomentOfInertia"] ? UnitValueDTO.fromJS(_data["polarMomentOfInertia"]) : new UnitValueDTO();
-        }
-    }
-
-    static fromJS(data: any): SectionProfileResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new SectionProfileResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["area"] = this.area ? this.area.toJSON() : <any>undefined;
-        data["strongAxisMomentOfInertia"] = this.strongAxisMomentOfInertia ? this.strongAxisMomentOfInertia.toJSON() : <any>undefined;
-        data["weakAxisMomentOfInertia"] = this.weakAxisMomentOfInertia ? this.weakAxisMomentOfInertia.toJSON() : <any>undefined;
-        data["polarMomentOfInertia"] = this.polarMomentOfInertia ? this.polarMomentOfInertia.toJSON() : <any>undefined;
-        return data;
-    }
-}
-
-export interface ISectionProfileResponse {
-    id: string;
-    area: UnitValueDTO;
-    strongAxisMomentOfInertia: UnitValueDTO;
-    weakAxisMomentOfInertia: UnitValueDTO;
-    polarMomentOfInertia: UnitValueDTO;
 }
 
 export class PointLoadResponse implements IPointLoadResponse {

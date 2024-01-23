@@ -16,7 +16,9 @@ using BeamOS.PhysicalModel.Domain.SectionProfileAggregate.ValueObjects;
 using BeamOS.PhysicalModel.Infrastructure.Element1Ds;
 using BeamOS.PhysicalModel.Infrastructure.Materials;
 using BeamOS.PhysicalModel.Infrastructure.Models;
+using BeamOS.PhysicalModel.Infrastructure.MomentLoads;
 using BeamOS.PhysicalModel.Infrastructure.Nodes;
+using BeamOS.PhysicalModel.Infrastructure.PointLoads;
 using BeamOS.PhysicalModel.Infrastructure.SectionProfiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
@@ -65,13 +67,10 @@ public static class DependencyInjection
             IRepository<SectionProfileId, SectionProfile>,
             SectionProfileDbContextRepository
         >();
-        _ = services.AddSingleton<
-            IRepository<PointLoadId, PointLoad>,
-            InMemoryRepository<PointLoadId, PointLoad>
-        >();
-        _ = services.AddSingleton<
+        _ = services.AddScoped<IRepository<PointLoadId, PointLoad>, PointLoadDbContextRepository>();
+        _ = services.AddScoped<
             IRepository<MomentLoadId, MomentLoad>,
-            InMemoryRepository<MomentLoadId, MomentLoad>
+            MomentLoadDbContextRepository
         >();
 
         return services;

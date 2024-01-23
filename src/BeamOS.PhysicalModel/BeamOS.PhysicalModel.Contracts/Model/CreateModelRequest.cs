@@ -16,10 +16,10 @@ public record UnitSettingsRequest(
     public static UnitSettingsRequest K_IN { get; } =
         new(
             "Inch",
-            "InchesSquared",
-            "InchesCubed",
-            "Kilopounds",
-            "KilopoundsPerInch",
-            "KilopoundInch"
+            "SquareInch",
+            "CubicInch",
+            "KilopoundForce",
+            "KilopoundForcePerInch",
+            "KilopoundForceInch"
         );
 }

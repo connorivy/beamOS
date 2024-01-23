@@ -1,49 +1,121 @@
 using BeamOS.Common.Contracts;
-using BeamOS.Common.Domain.ValueObjects;
-using BeamOS.IntegrationTests.DirectStiffnessMethod.Common.Fixtures.Element1ds;
-using BeamOS.IntegrationTests.DirectStiffnessMethod.Common.Fixtures.Models;
 using BeamOS.PhysicalModel.Client;
-using BeamOS.PhysicalModel.Contracts.Common.Interfaces;
 using BeamOS.PhysicalModel.Contracts.Element1D;
 using BeamOS.PhysicalModel.Contracts.Material;
 using BeamOS.PhysicalModel.Contracts.Model;
+using BeamOS.PhysicalModel.Contracts.MomentLoad;
 using BeamOS.PhysicalModel.Contracts.Node;
+using BeamOS.PhysicalModel.Contracts.PointLoad;
 using BeamOS.PhysicalModel.Contracts.SectionProfile;
-using BeamOS.PhysicalModel.Domain.Element1DAggregate;
-using BeamOS.PhysicalModel.Domain.MaterialAggregate;
-using BeamOS.PhysicalModel.Domain.ModelAggregate;
-using BeamOS.PhysicalModel.Domain.ModelAggregate.ValueObjects;
-using BeamOS.PhysicalModel.Domain.MomentLoadAggregate;
-using BeamOS.PhysicalModel.Domain.NodeAggregate;
-using BeamOS.PhysicalModel.Domain.PointLoadAggregate;
-using BeamOS.PhysicalModel.Domain.SectionProfileAggregate;
-using BeamOS.Tests.Common;
-using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Double;
-using UnitsNet;
-using UnitsNet.Units;
 
 namespace BeamOS.IntegrationTests.DirectStiffnessMethod.Common.Fixtures.SolvedProblems.MatrixAnalysisOfStructures2ndEd;
 
 internal partial class Example8_4 : SolvedProblem
 {
-    private static readonly ModelId ModelId;
+    public static string ModelId;
+
+    public static ModelResponseHydrated GetExpectedResponse()
+    {
+        return new(
+            ModelId,
+            "building name",
+            "building description",
+            new(UnitSettingsResponse.K_IN),
+
+            [
+                new NodeResponse(
+                    node1.Id,
+                    ModelId,
+                    new PointResponse(
+                        new UnitValueDTO(0, "Meter"),
+                        new UnitValueDTO(0, "Meter"),
+                        new UnitValueDTO(0, "Meter")),
+                    RestraintResponse.Free
+                ),
+                new NodeResponse(
+                    node2.Id,
+                    ModelId,
+                    new PointResponse(
+                        new UnitValueDTO(-6.096, "Meter"),
+                        new UnitValueDTO(0, "Meter"),
+                        new UnitValueDTO(0, "Meter")),
+                    RestraintResponse.Fixed
+                ),
+                new NodeResponse(
+                    node3.Id,
+                    ModelId,
+                    new PointResponse(
+                        new UnitValueDTO(0, "Meter"),
+                        new UnitValueDTO(-6.096, "Meter"),
+                        new UnitValueDTO(0, "Meter")),
+                    RestraintResponse.Fixed
+                ),
+                new NodeResponse(
+                    node4.Id,
+                    ModelId,
+                    new PointResponse(
+                        new UnitValueDTO(0, "Meter"),
+                        new UnitValueDTO(0, "Meter"),
+                        new UnitValueDTO(-6.096, "Meter")),
+                    RestraintResponse.Fixed
+                ),
+            ],
+
+            [
+                new Element1DResponse(
+                    element1.Id,
+                    ModelId,
+                    node2.Id,
+                    node1.Id,
+                    steel29000.Id,
+                    profile33in2.Id,
+                    new UnitValueDTO(0, "Radian")
+                ),
+                new Element1DResponse(
+                    element2.Id,
+                    ModelId,
+                    node3.Id,
+                    node1.Id,
+                    steel29000.Id,
+                    profile33in2.Id,
+                    new UnitValueDTO(1.5707963267948966, "Radian")
+                ),
+                new Element1DResponse(
+                    element3.Id,
+                    ModelId,
+                    node4.Id,
+                    node1.Id,
+                    steel29000.Id,
+                    profile33in2.Id,
+                    new UnitValueDTO(0.5235987755982988, "Radian")
+                ),
+            ],
+
+            [
+                new MaterialResponse(
+                    steel29000.Id,
+                    new UnitValueDTO(29000, "KilopoundForcePerSquareInch"),
+                    new UnitValueDTO(11500, "KilopoundForcePerSquareInch")
+                )
+            ],
+
+            [
+                new SectionProfileResponse(
+                    profile33in2.Id,
+                    new UnitValueDTO(32.9, "SquareInch"),
+                    new UnitValueDTO(716, "InchToTheFourth"),
+                    new UnitValueDTO(236, "InchToTheFourth"),
+                    new UnitValueDTO(15.1, "InchToTheFourth")
+                )
+            ],
+            [],
+            []
+        );
+    }
 
     public Example8_4()
     {
         //this.Nodes.Add(Node1);
-        this.Nodes.Add(node2);
-        this.Nodes.Add(node3);
-        this.Nodes.Add(node4);
-
-        this.PointLoads.AddRange(GetPointLoads());
-        this.MomentLoads.AddRange(GetMomentLoads());
-
-        this.Element1dFixtures.Add(Element1);
-        this.Element1dFixtures.Add(Element2);
-        this.Element1dFixtures.Add(Element3);
-
-        this.ModelFixture = StaticModelFixture;
     }
 
     //public Example8_4()
@@ -51,78 +123,24 @@ internal partial class Example8_4 : SolvedProblem
     //    var modelResponse = await client.CreateModelAsync(new("building name", "building description", new ModelSettingsRequest(UnitSettings.K_IN)))
     //}
 
-    public async Task<Example8_4> Create(PhysicalModelAlphaClient client)
+    public static async Task CreatePhysicalModel(PhysicalModelAlphaClient client)
     {
-        var modelResponse = await client.CreateModelAsync(
+        model ??= await client.CreateModelAsync(
             new(
                 "building name",
                 "building description",
                 new ModelSettingsRequest(UnitSettingsRequest.K_IN)
             )
         );
+        ModelId = model.Id;
         await CreateNodes(client.CreateNodeAsync);
         await CreateMaterials(client.CreateMaterialAsync);
-
-
-        var node1 = await client.CreateNodeAsync(
-            new(modelResponse.Id, 0, 0, 0, Restraint: RestraintsRequest.Free)
-        );
-
-        var node2 = await client.CreateNodeAsync(
-            new(modelResponse.Id, -20, 0, 0, "Foot", Restraint: RestraintsRequest.Fixed)
-        );
-
-        var node3 = await client.CreateNodeAsync(
-            new(modelResponse.Id, 0, -20, 0, "Foot", RestraintsRequest.Fixed)
-        );
-
-        var node4 = await client.CreateNodeAsync(
-            new(modelResponse.Id, 0, 0, -20, "Foot", RestraintsRequest.Fixed)
-        );
-
-        var pl1 = await client.CreatePointLoadAsync(
-            new(node1.Id, new UnitValueDTO(-30, "Kilopound"), new Vector3(0, 1, 0))
-        );
-
-        var pl2 = await client.CreatePointLoadAsync(
-            new(node2.Id, new UnitValueDTO(-30, "Kilopound"), new Vector3(0, 1, 0))
-        );
-
-        // TODO : moment loads
-
-        // TODO : material
-        //var steel29000ksi = await client.create
-
-        // TODO : section profile Ids
-
-        var element1 = await client.CreateElement1dAsync(new(modelResponse.Id, node2.Id, node1.Id,))
-
-        Element1D element =
-            new(
-                ModelId,
-                Example8_4.node2.Id,
-                Example8_4.node1.Id,
-                Steel29000ksi.Id,
-                Profile33in2.Id,
-                new(Constants.Guid1)
-            );
+        await CreateSectionProfiles(client.CreateSectionProfileAsync);
+        await CreateElement1ds(client.CreateElement1dAsync);
+        await CreatePointLoads(client.CreatePointLoadAsync);
+        await CreateMomentLoads(client.CreateMomentLoadAsync);
     }
 
-    static Example8_4()
-    {
-        ModelId ??= new(Guid.NewGuid());
-
-        node1 ??= GetNode1();
-        node2 ??= GetNode2();
-        node3 ??= GetNode3();
-        node4 ??= GetNode4();
-
-        Element1 ??= GetElement1Fixture();
-        Element2 ??= GetElement2Fixture();
-        Element3 ??= GetElement3Fixture();
-
-        StaticModelFixture ??= GetAnalyticalModel();
-    }
     private static ModelResponse model;
 
     #region NodeDefinitions
@@ -133,7 +151,8 @@ internal partial class Example8_4 : SolvedProblem
 
     public static async Task CreateNodes(Func<CreateNodeRequest, Task<NodeResponse>> clientMethod)
     {
-        CreateNodeRequest node1req = new(model.Id, 0, 0, 0, Restraint: RestraintsRequest.Free);
+        CreateNodeRequest node1req =
+            new(model.Id, 0, 0, 0, "Foot", Restraint: RestraintsRequest.Free);
         node1 ??= await clientMethod(node1req);
         //yield return node1req;
 
@@ -151,179 +170,193 @@ internal partial class Example8_4 : SolvedProblem
     }
 
     private static MaterialResponse steel29000;
-    public static async Task CreateMaterials(Func<CreateMaterialRequest, Task<MaterialResponse>> clientMethod)
+
+    public static async Task CreateMaterials(
+        Func<CreateMaterialRequest, Task<MaterialResponse>> clientMethod
+    )
     {
-        CreateMaterialRequest steel29000req = new(
-            model.Id,
-            new UnitValueDTO(29000, "KilopoundForcePerSquareInch"),
-            new(11500, "KilopoundForcePerSquareInch")
-        );
+        CreateMaterialRequest steel29000req =
+            new(
+                model.Id,
+                new UnitValueDTO(29000, "KilopoundForcePerSquareInch"),
+                new(11500, "KilopoundForcePerSquareInch")
+            );
         steel29000 ??= await clientMethod(steel29000req);
         //yield return steel29000req;
     }
 
     private static SectionProfileResponse profile33in2;
-    public static async Task CreateSectionProfiles(Func<CreateSectionProfileRequest, Task<SectionProfileResponse>> clientMethod)
+
+    public static async Task CreateSectionProfiles(
+        Func<CreateSectionProfileRequest, Task<SectionProfileResponse>> clientMethod
+    )
     {
-        CreateSectionProfileRequest req = new(
-            model.Id,
-            Area: new(32.9, "SquareInch"),
-            StrongAxisMomentOfInertia: new(716, "InchToTheFourth"),
-            WeakAxisMomentOfInertia: new(236, "InchToTheFourth"),
-            PolarMomentOfInertia: new(15.1, "InchToTheFourth")
-        );
+        CreateSectionProfileRequest req =
+            new(
+                model.Id,
+                Area: new(32.9, "SquareInch"),
+                StrongAxisMomentOfInertia: new(716, "InchToTheFourth"),
+                WeakAxisMomentOfInertia: new(236, "InchToTheFourth"),
+                PolarMomentOfInertia: new(15.1, "InchToTheFourth")
+            );
         profile33in2 ??= await clientMethod(req);
         //yield return req;
     }
 
-    //private async Task<TRequest> AssignResponseAndReturnRequest<TRequest, TResponse>(TRequest req, Func<TRequest, Task<TResponse>> clientMethod, Action<TResponse> responseAssignment)
-    //{
-    //    if ()
-    //    TResponse response = await clientMethod(req);
-    //    node1 ??= await clientMethod(node1req);
-    //    yield return node1req;
-    //}
-
-
-    private static Node GetNode1()
-    {
-        return new(ModelId, 0, 0, 0, LengthUnit.Foot, Restraint.Free, id: new(Constants.Guid1));
-    }
-
-    private static Node GetNode2()
-    {
-        return new(ModelId, -20, 0, 0, LengthUnit.Foot, Restraint.Fixed, id: new(Constants.Guid2));
-    }
-
-    private static Node GetNode3()
-    {
-        return new(ModelId, 0, -20, 0, LengthUnit.Foot, Restraint.Fixed, id: new(Constants.Guid3));
-    }
-
-    private static Node GetNode4()
-    {
-        return new(ModelId, 0, 0, -20, LengthUnit.Foot, Restraint.Fixed, id: new(Constants.Guid4));
-    }
     #endregion
 
     #region LoadDefinitions
-    private static IEnumerable<PointLoad> GetPointLoads()
-    {
-        yield return new(
-            node1.Id,
-            new Force(-30, ForceUnit.KilopoundForce),
-            DenseVector.OfArray([0, 1, 0])
-        );
+    //private static IEnumerable<PointLoad> GetPointLoads()
+    //{
+    //    yield return new(
+    //        node1.Id,
+    //        new Force(-30, ForceUnit.KilopoundForce),
+    //        DenseVector.OfArray([0, 1, 0])
+    //    );
 
-        yield return new(
-            node2.Id,
-            new Force(-30, ForceUnit.KilopoundForce),
-            DenseVector.OfArray([0, 1, 0])
-        );
+    //    yield return new(
+    //        node2.Id,
+    //        new Force(-30, ForceUnit.KilopoundForce),
+    //        DenseVector.OfArray([0, 1, 0])
+    //    );
+    //}
+
+    public static async Task CreatePointLoads(
+        Func<CreatePointLoadRequest, Task<PointLoadResponse>> clientMethod
+    )
+    {
+        CreatePointLoadRequest req1 =
+            new(node1.Id, new(-30, "KilopoundForce"), new Vector3(0, 1, 0));
+        _ = await clientMethod(req1);
+
+        CreatePointLoadRequest req2 =
+            new(node2.Id, new(-30, "KilopoundForce"), new Vector3(0, 1, 0));
+        _ = await clientMethod(req2);
     }
 
-    private static IEnumerable<MomentLoad> GetMomentLoads()
+    public static async Task CreateMomentLoads(
+        Func<CreateMomentLoadRequest, Task<MomentLoadResponse>> clientMethod
+    )
     {
-        yield return new MomentLoad(
-            node1.Id,
-            new Torque(-1800, TorqueUnit.KilopoundForceInch),
-            DenseVector.OfArray([1, 0, 0])
-        );
-        yield return new MomentLoad(
-            node1.Id,
-            new Torque(1800, TorqueUnit.KilopoundForceInch),
-            DenseVector.OfArray([0, 0, 1])
-        );
+        CreateMomentLoadRequest req1 =
+            new(node1.Id, new(-1800, "KilopoundForceInch"), new Vector3(1, 0, 0));
+        _ = await clientMethod(req1);
 
-        // this moment load represents the fixed end moment of the distributed load.
-        // this load should be removed when there is support for fixed-end moments.
-        yield return new MomentLoad(
-            node1.Id,
-            new Torque(3 * 20 * 20 / 12, TorqueUnit.KilopoundForceFoot),
-            DenseVector.OfArray([0, 0, 1])
-        );
+        CreateMomentLoadRequest req2 =
+            new(node1.Id, new(1800, "KilopoundForceInch"), new Vector3(0, 0, 1));
+        _ = await clientMethod(req2);
 
-        // this moment load represents the fixed end moment of the distributed load.
-        // this load should be removed when there is support for fixed-end moments.
-        yield return new MomentLoad(
-            node2.Id,
-            new Torque(3 * 20 * 20 / 12, TorqueUnit.KilopoundForceFoot),
-            DenseVector.OfArray([0, 0, -1])
-        );
+        CreateMomentLoadRequest req3 =
+            new(node1.Id, new(3 * 20 * 20 / 12, "KilopoundForceFoot"), new Vector3(0, 0, 1));
+        _ = await clientMethod(req3);
+
+        CreateMomentLoadRequest req4 =
+            new(node2.Id, new(3 * 20 * 20 / 12, "KilopoundForceFoot"), new Vector3(0, 0, -1));
+        _ = await clientMethod(req4);
     }
+
+    //private static IEnumerable<MomentLoad> GetMomentLoads()
+    //{
+    //    yield return new MomentLoad(
+    //        node1.Id,
+    //        new Torque(-1800, TorqueUnit.KilopoundForceInch),
+    //        DenseVector.OfArray([1, 0, 0])
+    //    );
+    //    yield return new MomentLoad(
+    //        node1.Id,
+    //        new Torque(1800, TorqueUnit.KilopoundForceInch),
+    //        DenseVector.OfArray([0, 0, 1])
+    //    );
+
+    //    // this moment load represents the fixed end moment of the distributed load.
+    //    // this load should be removed when there is support for fixed-end moments.
+    //    yield return new MomentLoad(
+    //        node1.Id,
+    //        new Torque(3 * 20 * 20 / 12, TorqueUnit.KilopoundForceFoot),
+    //        DenseVector.OfArray([0, 0, 1])
+    //    );
+
+    //    // this moment load represents the fixed end moment of the distributed load.
+    //    // this load should be removed when there is support for fixed-end moments.
+    //    yield return new MomentLoad(
+    //        node2.Id,
+    //        new Torque(3 * 20 * 20 / 12, TorqueUnit.KilopoundForceFoot),
+    //        DenseVector.OfArray([0, 0, -1])
+    //    );
+    //}
     #endregion
 
     #region AnalyticalModelFixtureDefinition
 
-    public static ModelFixture StaticModelFixture { get; private set; }
+    //public static ModelFixture StaticModelFixture { get; private set; }
 
-    public static ModelFixture GetAnalyticalModel()
-    {
-        //var analyticalModel = AnalyticalModel.RunAnalysis(
-        //    UnitSettings.K_IN,
-        //    this.Element1dFixtures.Select(f => f.Element),
-        //    this.Nodes
-        //);
+    //public static ModelFixture GetAnalyticalModel()
+    //{
+    //    //var analyticalModel = AnalyticalModel.RunAnalysis(
+    //    //    UnitSettings.K_IN,
+    //    //    this.Element1dFixtures.Select(f => f.Element),
+    //    //    this.Nodes
+    //    //);
 
-        //var expectedStructureStiffnessMatrix = DenseMatrix.OfArray(
-        //    new double[,]
-        //    {
-        //        { 3990.3, -5.2322, 0, -627.87, -1075.4, 712.92 },
-        //        { -5.2322, 4008.4, 0, 1800.4, 627.87, -2162.9 },
-        //        { 0, 0, 3999.4, -2162.9, 712.92, 0 },
-        //        { -627.87, 1800.4, -2162.9, 634857, 100459, 0 },
-        //        { -1075.4, 627.87, 712.92, 100459, 286857, 0 },
-        //        { 712.92, -2162.9, 0, 0, 0, 460857 }
-        //    }
-        //);
+    //    //var expectedStructureStiffnessMatrix = DenseMatrix.OfArray(
+    //    //    new double[,]
+    //    //    {
+    //    //        { 3990.3, -5.2322, 0, -627.87, -1075.4, 712.92 },
+    //    //        { -5.2322, 4008.4, 0, 1800.4, 627.87, -2162.9 },
+    //    //        { 0, 0, 3999.4, -2162.9, 712.92, 0 },
+    //    //        { -627.87, 1800.4, -2162.9, 634857, 100459, 0 },
+    //    //        { -1075.4, 627.87, 712.92, 100459, 286857, 0 },
+    //    //        { 712.92, -2162.9, 0, 0, 0, 460857 }
+    //    //    }
+    //    //);
 
-        //var expectedReactionVector = DenseVector.OfArray(
+    //    //var expectedReactionVector = DenseVector.OfArray(
 
-        //    [
-        //        5.3757,
-        //        44.106 - 30, // subtracting Qf because we're not using fixed end forces. This will change.
-        //        -0.74272,
-        //        2.1722,
-        //        58.987,
-        //        2330.52 - 1200, // subtracting 1200 for same reason as above ^
-        //        -4.6249,
-        //        11.117,
-        //        -6.4607,
-        //        -515.55,
-        //        -0.76472,
-        //        369.67,
-        //        -0.75082,
-        //        4.7763,
-        //        7.2034,
-        //        -383.5,
-        //        -60.166,
-        //        -4.702
-        //    ]
-        //);
+    //    //    [
+    //    //        5.3757,
+    //    //        44.106 - 30, // subtracting Qf because we're not using fixed end forces. This will change.
+    //    //        -0.74272,
+    //    //        2.1722,
+    //    //        58.987,
+    //    //        2330.52 - 1200, // subtracting 1200 for same reason as above ^
+    //    //        -4.6249,
+    //    //        11.117,
+    //    //        -6.4607,
+    //    //        -515.55,
+    //    //        -0.76472,
+    //    //        369.67,
+    //    //        -0.75082,
+    //    //        4.7763,
+    //    //        7.2034,
+    //    //        -383.5,
+    //    //        -60.166,
+    //    //        -4.702
+    //    //    ]
+    //    //);
 
-        //var expectedDisplacementVector =
-        //    DenseVector.OfArray([-1.3522, -2.7965, -1.812, -3.0021, 1.0569, 6.4986])
-        //    * Math.Pow(10, -3);
+    //    //var expectedDisplacementVector =
+    //    //    DenseVector.OfArray([-1.3522, -2.7965, -1.812, -3.0021, 1.0569, 6.4986])
+    //    //    * Math.Pow(10, -3);
 
-        //return new AnalyticalModelFixture(analyticalModel)
-        //{
-        //    ExpectedStructureStiffnessMatrix = expectedStructureStiffnessMatrix,
-        //    NumberOfDecimalsToCompareSMatrix = 0,
-        //    ExpectedReactionVector = expectedReactionVector,
-        //    NumberOfDecimalsToCompareReactionVector = 2,
-        //    ExpectedDisplacementVector = expectedDisplacementVector,
-        //    NumberOfDecimalsToCompareDisplacementVector = 5
-        //};
+    //    //return new AnalyticalModelFixture(analyticalModel)
+    //    //{
+    //    //    ExpectedStructureStiffnessMatrix = expectedStructureStiffnessMatrix,
+    //    //    NumberOfDecimalsToCompareSMatrix = 0,
+    //    //    ExpectedReactionVector = expectedReactionVector,
+    //    //    NumberOfDecimalsToCompareReactionVector = 2,
+    //    //    ExpectedDisplacementVector = expectedDisplacementVector,
+    //    //    NumberOfDecimalsToCompareDisplacementVector = 5
+    //    //};
 
-        return new ModelFixture(
-            new Model(
-                "ModelName",
-                "ModelDescription",
-                new ModelSettings(UnitSettings.K_IN),
-                ModelId
-            )
-        );
-    }
+    //    return new ModelFixture(
+    //        new Model(
+    //            "ModelName",
+    //            "ModelDescription",
+    //            new ModelSettings(UnitSettings.K_IN),
+    //            ModelId
+    //        )
+    //    );
+    //}
     #endregion
 
     #region Element1dFixtureDefinitions
@@ -332,524 +365,537 @@ internal partial class Example8_4 : SolvedProblem
     private static Element1DResponse element2;
     private static Element1DResponse element3;
 
-    public static async Task GetElement1dRequests(Func<CreateElement1DRequest, Task<Element1DResponse>> clientMethod)
+    public static async Task CreateElement1ds(
+        Func<CreateElement1DRequest, Task<Element1DResponse>> clientMethod
+    )
     {
-        CreateElement1DRequest el1Req = new(model.Id, node2.Id, node1.Id, steel29000.Id, profile33in2.Id);
+        CreateElement1DRequest el1Req =
+            new(model.Id, node2.Id, node1.Id, steel29000.Id, profile33in2.Id);
         element1 ??= await clientMethod(el1Req);
         //yield return el1Req;
 
-        CreateElement1DRequest el2Req = new(model.Id, node3.Id, node1.Id, steel29000.Id, profile33in2.Id, new(Math.PI / 2, "Radian"));
+        CreateElement1DRequest el2Req =
+            new(
+                model.Id,
+                node3.Id,
+                node1.Id,
+                steel29000.Id,
+                profile33in2.Id,
+                new(Math.PI / 2, "Radian")
+            );
 
         element2 ??= await clientMethod(el2Req);
         //yield return el2Req;
 
-        CreateElement1DRequest el3Req = new(model.Id, node4.Id, node1.Id, steel29000.Id, profile33in2.Id, new(30, "Degree"));
+        CreateElement1DRequest el3Req =
+            new(model.Id, node4.Id, node1.Id, steel29000.Id, profile33in2.Id, new(30, "Degree"));
         element3 ??= await clientMethod(el3Req);
         //yield return el3Req;
     }
 
-    public static Element1dFixture Element1 { get; }
-    public static Element1dFixture Element2 { get; }
-    public static Element1dFixture Element3 { get; }
-    public static SectionProfile Profile33in2 =>
-        new(
-            ModelId,
-            new Area(32.9, AreaUnit.SquareInch),
-            strongAxisMomentOfInertia: new AreaMomentOfInertia(
-                716,
-                AreaMomentOfInertiaUnit.InchToTheFourth
-            ),
-            weakAxisMomentOfInertia: new AreaMomentOfInertia(
-                236,
-                AreaMomentOfInertiaUnit.InchToTheFourth
-            ),
-            polarMomentOfInertia: new AreaMomentOfInertia(
-                15.1,
-                AreaMomentOfInertiaUnit.InchToTheFourth
-            )
-        );
-    public static Material Steel29000ksi =>
-        new(
-            ModelId,
-            modulusOfElasticity: new Pressure(29000, PressureUnit.KilopoundForcePerSquareInch),
-            modulusOfRigidity: new Pressure(11500, PressureUnit.KilopoundForcePerSquareInch)
-        );
+    //public static Element1dFixture Element1 { get; }
+    //public static Element1dFixture Element2 { get; }
+    //public static Element1dFixture Element3 { get; }
+    //public static SectionProfile Profile33in2 =>
+    //    new(
+    //        model.Id,
+    //        new Area(32.9, AreaUnit.SquareInch),
+    //        strongAxisMomentOfInertia: new AreaMomentOfInertia(
+    //            716,
+    //            AreaMomentOfInertiaUnit.InchToTheFourth
+    //        ),
+    //        weakAxisMomentOfInertia: new AreaMomentOfInertia(
+    //            236,
+    //            AreaMomentOfInertiaUnit.InchToTheFourth
+    //        ),
+    //        polarMomentOfInertia: new AreaMomentOfInertia(
+    //            15.1,
+    //            AreaMomentOfInertiaUnit.InchToTheFourth
+    //        )
+    //    );
+    //public static Material Steel29000ksi =>
+    //    new(
+    //        ModelId,
+    //        modulusOfElasticity: new Pressure(29000, PressureUnit.KilopoundForcePerSquareInch),
+    //        modulusOfRigidity: new Pressure(11500, PressureUnit.KilopoundForcePerSquareInch)
+    //    );
 
-    private static Element1dFixture GetElement1Fixture()
-    {
-        Element1D element =
-            new(
-                ModelId,
-                node2.Id,
-                node1.Id,
-                Steel29000ksi.Id,
-                Profile33in2.Id,
-                new(Constants.Guid1)
-            );
+    //private static Element1dFixture GetElement1Fixture()
+    //{
+    //    Element1D element =
+    //        new(
+    //            ModelId,
+    //            node2.Id,
+    //            node1.Id,
+    //            Steel29000ksi.Id,
+    //            Profile33in2.Id,
+    //            new(Constants.Guid1)
+    //        );
 
-        #region ResultsDefinition
-        var rotationMatrix = DenseMatrix.OfArray(
-            new double[,]
-            {
-                { 1, 0, 0 },
-                { 0, 1, 0 },
-                { 0, 0, 1 }
-            }
-        );
+    //    #region ResultsDefinition
+    //    var rotationMatrix = DenseMatrix.OfArray(
+    //        new double[,]
+    //        {
+    //            { 1, 0, 0 },
+    //            { 0, 1, 0 },
+    //            { 0, 0, 1 }
+    //        }
+    //    );
 
-        var transformationMatrix = DenseMatrix.OfArray(
-            new double[,]
-            {
-                { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }
-            }
-        );
+    //    var transformationMatrix = DenseMatrix.OfArray(
+    //        new double[,]
+    //        {
+    //            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+    //            { 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+    //            { 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+    //            { 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 },
+    //            { 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 },
+    //            { 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
+    //            { 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0 },
+    //            { 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0 },
+    //            { 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0 },
+    //            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0 },
+    //            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 },
+    //            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }
+    //        }
+    //    );
 
-        var localStiffnessMatrix = DenseMatrix.OfArray(
-            new double[,]
-            {
-                { 3975.4, 0, 0, 0, 0, 0, -3975.4, 0, 0, 0, 0, 0 },
-                { 0, 18.024, 0, 0, 0, 2162.9, 0, -18.024, 0, 0, 0, 2162.9 },
-                { 0, 0, 5.941, 0, -712.92, 0, 0, 0, -5.941, 0, -712.92, 0, },
-                { 0, 0, 0, 723.54, 0, 0, 0, 0, 0, -723.54, 0, 0 },
-                { 0, 0, -712.92, 0, 114066.7, 0, 0, 0, 712.92, 0, 57033.3, 0 },
-                { 0, 2162.9, 0, 0, 0, 346066.7, 0, -2162.9, 0, 0, 0, 173033.3 },
-                { -3975.4, 0, 0, 0, 0, 0, 3975.4, 0, 0, 0, 0, 0 },
-                { 0, -18.024, 0, 0, 0, -2162.9, 0, 18.024, 0, 0, 0, -2162.9 },
-                { 0, 0, -5.941, 0, 712.92, 0, 0, 0, 5.941, 0, 712.92, 0 },
-                { 0, 0, 0, -723.54, 0, 0, 0, 0, 0, 723.54, 0, 0 },
-                { 0, 0, -712.92, 0, 57033.3, 0, 0, 0, 712.92, 0, 114066.7, 0 },
-                { 0, 2162.9, 0, 0, 0, 173033.3, 0, -2162.9, 0, 0, 0, 346066.7 }
-            }
-        );
+    //    var localStiffnessMatrix = DenseMatrix.OfArray(
+    //        new double[,]
+    //        {
+    //            { 3975.4, 0, 0, 0, 0, 0, -3975.4, 0, 0, 0, 0, 0 },
+    //            { 0, 18.024, 0, 0, 0, 2162.9, 0, -18.024, 0, 0, 0, 2162.9 },
+    //            { 0, 0, 5.941, 0, -712.92, 0, 0, 0, -5.941, 0, -712.92, 0, },
+    //            { 0, 0, 0, 723.54, 0, 0, 0, 0, 0, -723.54, 0, 0 },
+    //            { 0, 0, -712.92, 0, 114066.7, 0, 0, 0, 712.92, 0, 57033.3, 0 },
+    //            { 0, 2162.9, 0, 0, 0, 346066.7, 0, -2162.9, 0, 0, 0, 173033.3 },
+    //            { -3975.4, 0, 0, 0, 0, 0, 3975.4, 0, 0, 0, 0, 0 },
+    //            { 0, -18.024, 0, 0, 0, -2162.9, 0, 18.024, 0, 0, 0, -2162.9 },
+    //            { 0, 0, -5.941, 0, 712.92, 0, 0, 0, 5.941, 0, 712.92, 0 },
+    //            { 0, 0, 0, -723.54, 0, 0, 0, 0, 0, 723.54, 0, 0 },
+    //            { 0, 0, -712.92, 0, 57033.3, 0, 0, 0, 712.92, 0, 114066.7, 0 },
+    //            { 0, 2162.9, 0, 0, 0, 173033.3, 0, -2162.9, 0, 0, 0, 346066.7 }
+    //        }
+    //    );
 
-        var localFixedEndForces = Vector<double>
-            .Build
-            .Dense([0, 30, 0, 0, 0, 12000, 0, 30, 0, 0, 0, -1200]);
+    //    var localFixedEndForces = Vector<double>
+    //        .Build
+    //        .Dense([0, 30, 0, 0, 0, 12000, 0, 30, 0, 0, 0, -1200]);
 
-        var localEndDisplacements =
-            Vector<double>
-                .Build
-                .Dense([0, 0, 0, 0, 0, 0, -1.3522, -2.7965, -1.812, -3.0021, 1.0569, 6.4986])
-            * Math.Pow(10, -3);
+    //    var localEndDisplacements =
+    //        Vector<double>
+    //            .Build
+    //            .Dense([0, 0, 0, 0, 0, 0, -1.3522, -2.7965, -1.812, -3.0021, 1.0569, 6.4986])
+    //        * Math.Pow(10, -3);
 
-        var localEndForces = Vector<double>
-            .Build
-            .Dense(
+    //    var localEndForces = Vector<double>
+    //        .Build
+    //        .Dense(
 
-                [
-                    5.3757,
-                    44.106,
-                    -0.74272,
-                    2.1722,
-                    58.987,
-                    2330.5,
-                    -5.3757,
-                    15.894,
-                    0.74272,
-                    -2.1722,
-                    119.27,
-                    1055
-                ]
-            );
-        #endregion
+    //            [
+    //                5.3757,
+    //                44.106,
+    //                -0.74272,
+    //                2.1722,
+    //                58.987,
+    //                2330.5,
+    //                -5.3757,
+    //                15.894,
+    //                0.74272,
+    //                -2.1722,
+    //                119.27,
+    //                1055
+    //            ]
+    //        );
+    //    #endregion
 
-        return new Element1dFixture(element, UnitSettings.K_IN)
-        {
-            ExpectedRotationMatrix = rotationMatrix,
-            ExpectedTransformationMatrix = transformationMatrix,
-            ExpectedLocalStiffnessMatrix = localStiffnessMatrix,
-            ExpectedGlobalStiffnessMatrix = localStiffnessMatrix,
-            ExpectedLocalFixedEndForces = localFixedEndForces,
-            ExpectedGlobalFixedEndForces = localFixedEndForces,
-            ExpectedLocalEndDisplacements = localEndDisplacements,
-            ExpectedGlobalEndDisplacements = localEndDisplacements,
-            ExpectedLocalEndForces = localEndForces,
-            ExpectedGlobalEndForces = localEndForces,
-        };
-    }
+    //    return new Element1dFixture(element, UnitSettings.K_IN)
+    //    {
+    //        ExpectedRotationMatrix = rotationMatrix,
+    //        ExpectedTransformationMatrix = transformationMatrix,
+    //        ExpectedLocalStiffnessMatrix = localStiffnessMatrix,
+    //        ExpectedGlobalStiffnessMatrix = localStiffnessMatrix,
+    //        ExpectedLocalFixedEndForces = localFixedEndForces,
+    //        ExpectedGlobalFixedEndForces = localFixedEndForces,
+    //        ExpectedLocalEndDisplacements = localEndDisplacements,
+    //        ExpectedGlobalEndDisplacements = localEndDisplacements,
+    //        ExpectedLocalEndForces = localEndForces,
+    //        ExpectedGlobalEndForces = localEndForces,
+    //    };
+    //}
 
-    public static Element1dFixture GetElement2Fixture()
-    {
-        Element1D element =
-            new(
-                ModelId,
-                node3.Id,
-                node1.Id,
-                Steel29000ksi.Id,
-                Profile33in2.Id,
-                new(Constants.Guid2)
-            )
-            {
-                SectionProfileRotation = new Angle(Math.PI / 2, AngleUnit.Radian),
-            };
+    //public static Element1dFixture GetElement2Fixture()
+    //{
+    //    Element1D element =
+    //        new(
+    //            ModelId,
+    //            node3.Id,
+    //            node1.Id,
+    //            Steel29000ksi.Id,
+    //            Profile33in2.Id,
+    //            new(Constants.Guid2)
+    //        )
+    //        {
+    //            SectionProfileRotation = new Angle(Math.PI / 2, AngleUnit.Radian),
+    //        };
 
-        #region ResultsDefinition
-        var rotationMatrix = DenseMatrix.OfArray(
-            new double[,]
-            {
-                { 0, 1, 0 },
-                { 0, 0, 1 },
-                { 1, 0, 0 }
-            }
-        );
+    //    #region ResultsDefinition
+    //    var rotationMatrix = DenseMatrix.OfArray(
+    //        new double[,]
+    //        {
+    //            { 0, 1, 0 },
+    //            { 0, 0, 1 },
+    //            { 1, 0, 0 }
+    //        }
+    //    );
 
-        var transformationMatrix = DenseMatrix.OfArray(
-            new double[,]
-            {
-                { 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0 }
-            }
-        );
+    //    var transformationMatrix = DenseMatrix.OfArray(
+    //        new double[,]
+    //        {
+    //            { 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+    //            { 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+    //            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+    //            { 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 },
+    //            { 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
+    //            { 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 },
+    //            { 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0 },
+    //            { 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0 },
+    //            { 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0 },
+    //            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 },
+    //            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+    //            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0 }
+    //        }
+    //    );
 
-        var globalStiffnessMatrix = DenseMatrix.OfArray(
-            new double[,]
-            {
-                { 5.941, 0, 0, 0, 0, -712.92, -5.941, 0, 0, 0, 0, -712.92 },
-                { 0, 3975.4, 0, 0, 0, 0, 0, -3975.4, 0, 0, 0, 0 },
-                { 0, 0, 18.024, 2162.9, 0, 0, 0, 0, -18.024, 2162.9, 0, 0 },
-                { 0, 0, 2162.9, 346066.7, 0, 0, 0, 0, -2162.9, 173033.3, 0, 0 },
-                { 0, 0, 0, 0, 723.54, 0, 0, 0, 0, 0, -723.54, 0 },
-                { -712.92, 0, 0, 0, 0, 114066.7, 712.92, 0, 0, 0, 0, 57033.3 },
-                { -5.941, 0, 0, 0, 0, 712.92, 5.941, 0, 0, 0, 0, 712.92 },
-                { 0, -3975.4, 0, 0, 0, 0, 0, 3975.4, 0, 0, 0, 0 },
-                { 0, 0, -18.024, -2162.9, 0, 0, 0, 0, 18.024, -2162.9, 0, 0 },
-                { 0, 0, 2162.9, 173033.3, 0, 0, 0, 0, -2162.9, 346066.7, 0, 0 },
-                { 0, 0, 0, 0, -723.54, 0, 0, 0, 0, 0, 723.54, 0 },
-                { -712.92, 0, 0, 0, 0, 57033.3, 712.92, 0, 0, 0, 0, 114066.7 },
-            }
-        );
+    //    var globalStiffnessMatrix = DenseMatrix.OfArray(
+    //        new double[,]
+    //        {
+    //            { 5.941, 0, 0, 0, 0, -712.92, -5.941, 0, 0, 0, 0, -712.92 },
+    //            { 0, 3975.4, 0, 0, 0, 0, 0, -3975.4, 0, 0, 0, 0 },
+    //            { 0, 0, 18.024, 2162.9, 0, 0, 0, 0, -18.024, 2162.9, 0, 0 },
+    //            { 0, 0, 2162.9, 346066.7, 0, 0, 0, 0, -2162.9, 173033.3, 0, 0 },
+    //            { 0, 0, 0, 0, 723.54, 0, 0, 0, 0, 0, -723.54, 0 },
+    //            { -712.92, 0, 0, 0, 0, 114066.7, 712.92, 0, 0, 0, 0, 57033.3 },
+    //            { -5.941, 0, 0, 0, 0, 712.92, 5.941, 0, 0, 0, 0, 712.92 },
+    //            { 0, -3975.4, 0, 0, 0, 0, 0, 3975.4, 0, 0, 0, 0 },
+    //            { 0, 0, -18.024, -2162.9, 0, 0, 0, 0, 18.024, -2162.9, 0, 0 },
+    //            { 0, 0, 2162.9, 173033.3, 0, 0, 0, 0, -2162.9, 346066.7, 0, 0 },
+    //            { 0, 0, 0, 0, -723.54, 0, 0, 0, 0, 0, 723.54, 0 },
+    //            { -712.92, 0, 0, 0, 0, 57033.3, 712.92, 0, 0, 0, 0, 114066.7 },
+    //        }
+    //    );
 
-        var localfixedEndForces = Vector<double>
-            .Build
-            .Dense(new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+    //    var localfixedEndForces = Vector<double>
+    //        .Build
+    //        .Dense(new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
 
-        var localEndDisplacements =
-            Vector<double>
-                .Build
-                .Dense(
-                    new double[]
-                    {
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        -2.7965,
-                        -1.812,
-                        -1.3522,
-                        1.0569,
-                        6.4986,
-                        -3.0021
-                    }
-                ) * Math.Pow(10, -3);
+    //    var localEndDisplacements =
+    //        Vector<double>
+    //            .Build
+    //            .Dense(
+    //                new double[]
+    //                {
+    //                    0,
+    //                    0,
+    //                    0,
+    //                    0,
+    //                    0,
+    //                    0,
+    //                    -2.7965,
+    //                    -1.812,
+    //                    -1.3522,
+    //                    1.0569,
+    //                    6.4986,
+    //                    -3.0021
+    //                }
+    //            ) * Math.Pow(10, -3);
 
-        var globalEndDisplacements =
-            Vector<double>
-                .Build
-                .Dense(
-                    new double[]
-                    {
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        -1.3522,
-                        -2.7965,
-                        -1.812,
-                        -3.0021,
-                        1.0569,
-                        6.4986
-                    }
-                ) * Math.Pow(10, -3);
+    //    var globalEndDisplacements =
+    //        Vector<double>
+    //            .Build
+    //            .Dense(
+    //                new double[]
+    //                {
+    //                    0,
+    //                    0,
+    //                    0,
+    //                    0,
+    //                    0,
+    //                    0,
+    //                    -1.3522,
+    //                    -2.7965,
+    //                    -1.812,
+    //                    -3.0021,
+    //                    1.0569,
+    //                    6.4986
+    //                }
+    //            ) * Math.Pow(10, -3);
 
-        var localEndForces = Vector<double>
-            .Build
-            .Dense(
-                new double[]
-                {
-                    11.117,
-                    -6.4607,
-                    -4.6249,
-                    -0.76472,
-                    369.67,
-                    -515.55,
-                    -11.117,
-                    6.4607,
-                    4.6249,
-                    0.76472,
-                    740.31,
-                    -1035,
-                }
-            );
+    //    var localEndForces = Vector<double>
+    //        .Build
+    //        .Dense(
+    //            new double[]
+    //            {
+    //                11.117,
+    //                -6.4607,
+    //                -4.6249,
+    //                -0.76472,
+    //                369.67,
+    //                -515.55,
+    //                -11.117,
+    //                6.4607,
+    //                4.6249,
+    //                0.76472,
+    //                740.31,
+    //                -1035,
+    //            }
+    //        );
 
-        var globalEndForces = Vector<double>
-            .Build
-            .Dense(
-                new double[]
-                {
-                    -4.6249,
-                    11.117,
-                    -6.4607,
-                    -515.55,
-                    -0.76472,
-                    369.67,
-                    4.6249,
-                    -11.117,
-                    6.4607,
-                    -1,
-                    035,
-                    0.76472,
-                    740.31,
-                }
-            );
-        #endregion
+    //    var globalEndForces = Vector<double>
+    //        .Build
+    //        .Dense(
+    //            new double[]
+    //            {
+    //                -4.6249,
+    //                11.117,
+    //                -6.4607,
+    //                -515.55,
+    //                -0.76472,
+    //                369.67,
+    //                4.6249,
+    //                -11.117,
+    //                6.4607,
+    //                -1,
+    //                035,
+    //                0.76472,
+    //                740.31,
+    //            }
+    //        );
+    //    #endregion
 
-        return new Element1dFixture(element, UnitSettings.K_IN)
-        {
-            ExpectedRotationMatrix = rotationMatrix,
-            ExpectedTransformationMatrix = transformationMatrix,
-            //ExpectedLocalStiffnessMatrix = localStiffnessMatrix,
-            ExpectedGlobalStiffnessMatrix = globalStiffnessMatrix,
-            ExpectedLocalFixedEndForces = localfixedEndForces,
-            ExpectedGlobalFixedEndForces = localfixedEndForces,
-            ExpectedLocalEndDisplacements = localEndDisplacements,
-            ExpectedGlobalEndDisplacements = localEndDisplacements,
-            ExpectedLocalEndForces = localEndForces,
-            ExpectedGlobalEndForces = localEndForces,
-        };
-    }
+    //    return new Element1dFixture(element, UnitSettings.K_IN)
+    //    {
+    //        ExpectedRotationMatrix = rotationMatrix,
+    //        ExpectedTransformationMatrix = transformationMatrix,
+    //        //ExpectedLocalStiffnessMatrix = localStiffnessMatrix,
+    //        ExpectedGlobalStiffnessMatrix = globalStiffnessMatrix,
+    //        ExpectedLocalFixedEndForces = localfixedEndForces,
+    //        ExpectedGlobalFixedEndForces = localfixedEndForces,
+    //        ExpectedLocalEndDisplacements = localEndDisplacements,
+    //        ExpectedGlobalEndDisplacements = localEndDisplacements,
+    //        ExpectedLocalEndForces = localEndForces,
+    //        ExpectedGlobalEndForces = localEndForces,
+    //    };
+    //}
 
-    public static Element1dFixture GetElement3Fixture()
-    {
-        Element1D element =
-            new(
-                ModelId,
-                node4.Id,
-                node1.Id,
-                Steel29000ksi.Id,
-                Profile33in2.Id,
-                new(Constants.Guid3)
-            )
-            {
-                SectionProfileRotation = new Angle(30, AngleUnit.Degree),
-            };
+    //public static Element1dFixture GetElement3Fixture()
+    //{
+    //    Element1D element =
+    //        new(
+    //            ModelId,
+    //            node4.Id,
+    //            node1.Id,
+    //            Steel29000ksi.Id,
+    //            Profile33in2.Id,
+    //            new(Constants.Guid3)
+    //        )
+    //        {
+    //            SectionProfileRotation = new Angle(30, AngleUnit.Degree),
+    //        };
 
-        #region ResultsDefinition
-        var rotationMatrix = DenseMatrix.OfArray(
-            new double[,]
-            {
-                { 0, 0, 1 },
-                { -.5, .86603, 0 },
-                { -.86603, -.5, 0 }
-            }
-        );
+    //    #region ResultsDefinition
+    //    var rotationMatrix = DenseMatrix.OfArray(
+    //        new double[,]
+    //        {
+    //            { 0, 0, 1 },
+    //            { -.5, .86603, 0 },
+    //            { -.86603, -.5, 0 }
+    //        }
+    //    );
 
-        var transformationMatrix = DenseMatrix.OfArray(
-            new double[,]
-            {
-                { 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                { -0.5, 0.86603, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                { -0.86603, -0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, -0.5, 0.86603, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, -0.86603, -0.5, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, -0.5, 0.86603, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, -0.86603, -0.5, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-                { 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.5, 0.86603, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.86603, -0.5, 0 }
-            }
-        );
+    //    var transformationMatrix = DenseMatrix.OfArray(
+    //        new double[,]
+    //        {
+    //            { 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+    //            { -0.5, 0.86603, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+    //            { -0.86603, -0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+    //            { 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
+    //            { 0, 0, 0, -0.5, 0.86603, 0, 0, 0, 0, 0, 0, 0 },
+    //            { 0, 0, 0, -0.86603, -0.5, 0, 0, 0, 0, 0, 0, 0 },
+    //            { 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0 },
+    //            { 0, 0, 0, 0, 0, 0, -0.5, 0.86603, 0, 0, 0, 0 },
+    //            { 0, 0, 0, 0, 0, 0, -0.86603, -0.5, 0, 0, 0, 0 },
+    //            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+    //            { 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.5, 0.86603, 0 },
+    //            { 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.86603, -0.5, 0 }
+    //        }
+    //    );
 
-        var globalStiffnessMatrix = DenseMatrix.OfArray(
-            new double[,]
-            {
-                { 8.9618, -5.2322, 0, 627.87, 1075.4, 0, -8.9618, 5.2322, 0, 627.87, 1075.4, 0 },
-                {
-                    -5.2322,
-                    15.003,
-                    0,
-                    -1800.4,
-                    -627.87,
-                    0,
-                    5.2322,
-                    -15.003,
-                    0,
-                    -1800.4,
-                    -627.87,
-                    0
-                },
-                { 0, 0, 3975.4, 0, 0, 0, 0, 0, -3975.4, 0, 0, 0 },
-                {
-                    627.87,
-                    -1800.4,
-                    0,
-                    288066.7,
-                    100458.9,
-                    0,
-                    -627.87,
-                    1800.4,
-                    0,
-                    144033.3,
-                    50229.5,
-                    0
-                },
-                {
-                    1075.4,
-                    -627.87,
-                    0,
-                    100458.9,
-                    172066.7,
-                    0,
-                    -1075.4,
-                    627.87,
-                    0,
-                    50229.5,
-                    86033.3,
-                    0
-                },
-                { 0, 0, 0, 0, 0, 723.54, 0, 0, 0, 0, 0, -723.54 },
-                {
-                    -8.9618,
-                    5.2322,
-                    0,
-                    -627.87,
-                    -1075.4,
-                    0,
-                    8.9618,
-                    -5.2322,
-                    0,
-                    -627.87,
-                    -1075.4,
-                    0
-                },
-                { 5.2322, -15.003, 0, 1800.4, 627.87, 0, -5.2322, 15.003, 0, 1800.4, 627.87, 0 },
-                { 0, 0, -3975.4, 0, 0, 0, 0, 0, 3975.4, 0, 0, 0 },
-                {
-                    627.87,
-                    -1800.4,
-                    0,
-                    144033.3,
-                    50229.5,
-                    0,
-                    -627.87,
-                    1800.4,
-                    0,
-                    288066.7,
-                    100458.9,
-                    0
-                },
-                {
-                    1075.4,
-                    -627.87,
-                    0,
-                    50229.5,
-                    86033.3,
-                    0,
-                    -1075.4,
-                    627.87,
-                    0,
-                    100458.9,
-                    172066.7,
-                    0
-                },
-                { 0, 0, 0, 0, 0, -723.54, 0, 0, 0, 0, 0, 723.54 }
-            }
-        );
+    //    var globalStiffnessMatrix = DenseMatrix.OfArray(
+    //        new double[,]
+    //        {
+    //            { 8.9618, -5.2322, 0, 627.87, 1075.4, 0, -8.9618, 5.2322, 0, 627.87, 1075.4, 0 },
+    //            {
+    //                -5.2322,
+    //                15.003,
+    //                0,
+    //                -1800.4,
+    //                -627.87,
+    //                0,
+    //                5.2322,
+    //                -15.003,
+    //                0,
+    //                -1800.4,
+    //                -627.87,
+    //                0
+    //            },
+    //            { 0, 0, 3975.4, 0, 0, 0, 0, 0, -3975.4, 0, 0, 0 },
+    //            {
+    //                627.87,
+    //                -1800.4,
+    //                0,
+    //                288066.7,
+    //                100458.9,
+    //                0,
+    //                -627.87,
+    //                1800.4,
+    //                0,
+    //                144033.3,
+    //                50229.5,
+    //                0
+    //            },
+    //            {
+    //                1075.4,
+    //                -627.87,
+    //                0,
+    //                100458.9,
+    //                172066.7,
+    //                0,
+    //                -1075.4,
+    //                627.87,
+    //                0,
+    //                50229.5,
+    //                86033.3,
+    //                0
+    //            },
+    //            { 0, 0, 0, 0, 0, 723.54, 0, 0, 0, 0, 0, -723.54 },
+    //            {
+    //                -8.9618,
+    //                5.2322,
+    //                0,
+    //                -627.87,
+    //                -1075.4,
+    //                0,
+    //                8.9618,
+    //                -5.2322,
+    //                0,
+    //                -627.87,
+    //                -1075.4,
+    //                0
+    //            },
+    //            { 5.2322, -15.003, 0, 1800.4, 627.87, 0, -5.2322, 15.003, 0, 1800.4, 627.87, 0 },
+    //            { 0, 0, -3975.4, 0, 0, 0, 0, 0, 3975.4, 0, 0, 0 },
+    //            {
+    //                627.87,
+    //                -1800.4,
+    //                0,
+    //                144033.3,
+    //                50229.5,
+    //                0,
+    //                -627.87,
+    //                1800.4,
+    //                0,
+    //                288066.7,
+    //                100458.9,
+    //                0
+    //            },
+    //            {
+    //                1075.4,
+    //                -627.87,
+    //                0,
+    //                50229.5,
+    //                86033.3,
+    //                0,
+    //                -1075.4,
+    //                627.87,
+    //                0,
+    //                100458.9,
+    //                172066.7,
+    //                0
+    //            },
+    //            { 0, 0, 0, 0, 0, -723.54, 0, 0, 0, 0, 0, 723.54 }
+    //        }
+    //    );
 
-        var localFixedEndForces = Vector<double>.Build.Dense([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    //    var localFixedEndForces = Vector<double>.Build.Dense([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
 
-        var localEndDisplacements =
-            Vector<double>
-                .Build
-                .Dense([0, 0, 0, 0, 0, 0, -1.812, -1.7457, 2.5693, 6.4986, 2.4164, 2.0714])
-            * Math.Pow(10, -3);
+    //    var localEndDisplacements =
+    //        Vector<double>
+    //            .Build
+    //            .Dense([0, 0, 0, 0, 0, 0, -1.812, -1.7457, 2.5693, 6.4986, 2.4164, 2.0714])
+    //        * Math.Pow(10, -3);
 
-        var globalEndDisplacements =
-            Vector<double>
-                .Build
-                .Dense([0, 0, 0, 0, 0, 0, -1.3522, -2.7965, -1.812, -3.0021, 1.0569, 6.4986])
-            * Math.Pow(10, -3);
+    //    var globalEndDisplacements =
+    //        Vector<double>
+    //            .Build
+    //            .Dense([0, 0, 0, 0, 0, 0, -1.3522, -2.7965, -1.812, -3.0021, 1.0569, 6.4986])
+    //        * Math.Pow(10, -3);
 
-        var localEndForces = Vector<double>
-            .Build
-            .Dense(
+    //    var localEndForces = Vector<double>
+    //        .Build
+    //        .Dense(
 
-                [
-                    7.2034,
-                    4.5118,
-                    -1.7379,
-                    -4.702,
-                    139.65,
-                    362.21,
-                    -7.2034,
-                    -4.5118,
-                    1.7379,
-                    4.702,
-                    277.46,
-                    720.63,
-                ]
-            );
+    //            [
+    //                7.2034,
+    //                4.5118,
+    //                -1.7379,
+    //                -4.702,
+    //                139.65,
+    //                362.21,
+    //                -7.2034,
+    //                -4.5118,
+    //                1.7379,
+    //                4.702,
+    //                277.46,
+    //                720.63,
+    //            ]
+    //        );
 
-        var globalEndForces = Vector<double>
-            .Build
-            .Dense(
+    //    var globalEndForces = Vector<double>
+    //        .Build
+    //        .Dense(
 
-                [
-                    -0.75082,
-                    4.7763,
-                    7.2034,
-                    -383.5,
-                    -60.166,
-                    -4.702,
-                    0.75082,
-                    -4.7763,
-                    -7.2034,
-                    -762.82,
-                    -120.03,
-                    4.702,
-                ]
-            );
-        #endregion
+    //            [
+    //                -0.75082,
+    //                4.7763,
+    //                7.2034,
+    //                -383.5,
+    //                -60.166,
+    //                -4.702,
+    //                0.75082,
+    //                -4.7763,
+    //                -7.2034,
+    //                -762.82,
+    //                -120.03,
+    //                4.702,
+    //            ]
+    //        );
+    //    #endregion
 
-        return new Element1dFixture(element, UnitSettings.K_IN)
-        {
-            ExpectedRotationMatrix = rotationMatrix,
-            ExpectedTransformationMatrix = transformationMatrix,
-            //ExpectedLocalStiffnessMatrix = localStiffnessMatrix,
-            ExpectedGlobalStiffnessMatrix = globalStiffnessMatrix,
-            ExpectedLocalFixedEndForces = localFixedEndForces,
-            ExpectedGlobalFixedEndForces = localFixedEndForces,
-            ExpectedLocalEndDisplacements = localEndDisplacements,
-            ExpectedGlobalEndDisplacements = localEndDisplacements,
-            ExpectedLocalEndForces = localEndForces,
-            ExpectedGlobalEndForces = localEndForces,
-        };
-    }
+    //    return new Element1dFixture(element, UnitSettings.K_IN)
+    //    {
+    //        ExpectedRotationMatrix = rotationMatrix,
+    //        ExpectedTransformationMatrix = transformationMatrix,
+    //        //ExpectedLocalStiffnessMatrix = localStiffnessMatrix,
+    //        ExpectedGlobalStiffnessMatrix = globalStiffnessMatrix,
+    //        ExpectedLocalFixedEndForces = localFixedEndForces,
+    //        ExpectedGlobalFixedEndForces = localFixedEndForces,
+    //        ExpectedLocalEndDisplacements = localEndDisplacements,
+    //        ExpectedGlobalEndDisplacements = localEndDisplacements,
+    //        ExpectedLocalEndForces = localEndForces,
+    //        ExpectedGlobalEndForces = localEndForces,
+    //    };
+    //}
+
     #endregion
 }
