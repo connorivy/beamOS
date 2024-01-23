@@ -2,7 +2,7 @@
 <Project>
 
   <PropertyGroup Label="General Config">
-    <IsDesktopBuild Condition="'$(IsDesktopBuild)' == ''">true</IsDesktopBuild>
+    <ContinuousIntegrationBuild Condition="'$(ContinuousIntegrationBuild)' == ''">false</ContinuousIntegrationBuild>
     <NoWarn>
       CA1707; <!-- Remove the underscores from method name -->
       CA1725; <!--Parameter names should match base declaration-->

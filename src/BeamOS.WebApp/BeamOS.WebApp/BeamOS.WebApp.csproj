@@ -16,7 +16,7 @@
 
   <Target
     Name="NpmInstall"
-    Condition="'$(Configuration)' == 'Release' AND '$(IsDesktopBuild)' == true"
+    Condition="'$(Configuration)' == 'Release' AND '$(ContinuousIntegrationBuild)' == false"
     Inputs="$(NpmFolder)/package.json"
     Outputs="$(NpmFolder)/node_modules/.install-stamp">
     <!--
@@ -42,7 +42,7 @@
     Name="NpmRunBuild"
     DependsOnTargets="NpmInstall"
     BeforeTargets="BeforeBuild"
-    Condition="'$(Configuration)' == 'Release' AND '$(IsDesktopBuild)' == true">
+    Condition="'$(Configuration)' == 'Release' AND '$(ContinuousIntegrationBuild)' == false">
     <Exec WorkingDirectory="$(NpmFolder)" Command="npm run build" />
   </Target>
 

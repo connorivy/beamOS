@@ -1097,31 +1097,51 @@ export interface IUnitSettingsResponse {
     torqueUnit: string;
 }
 
-export class NodeResponse implements INodeResponse {
-    id!: string;
-    modelId!: string;
-    locationPoint!: PointResponse;
-    restraint!: RestraintResponse;
+export abstract class BeamOsContractBase implements IBeamOsContractBase {
 
-    constructor(data?: INodeResponse) {
+    constructor(data?: IBeamOsContractBase) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
                     (<any>this)[property] = (<any>data)[property];
             }
         }
-        if (!data) {
-            this.locationPoint = new PointResponse();
-            this.restraint = new RestraintResponse();
-        }
     }
 
     init(_data?: any) {
+    }
+
+    static fromJS(data: any): BeamOsContractBase {
+        data = typeof data === 'object' ? data : {};
+        throw new Error("The abstract class 'BeamOsContractBase' cannot be instantiated.");
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data;
+    }
+}
+
+export interface IBeamOsContractBase {
+}
+
+export class NodeResponse extends BeamOsContractBase implements INodeResponse {
+    id?: string;
+    modelId?: string;
+    locationPoint?: PointResponse;
+    restraint?: RestraintResponse;
+
+    constructor(data?: INodeResponse) {
+        super(data);
+    }
+
+    init(_data?: any) {
+        super.init(_data);
         if (_data) {
             this.id = _data["id"];
             this.modelId = _data["modelId"];
-            this.locationPoint = _data["locationPoint"] ? PointResponse.fromJS(_data["locationPoint"]) : new PointResponse();
-            this.restraint = _data["restraint"] ? RestraintResponse.fromJS(_data["restraint"]) : new RestraintResponse();
+            this.locationPoint = _data["locationPoint"] ? PointResponse.fromJS(_data["locationPoint"]) : <any>undefined;
+            this.restraint = _data["restraint"] ? RestraintResponse.fromJS(_data["restraint"]) : <any>undefined;
         }
     }
 
@@ -1138,41 +1158,33 @@ export class NodeResponse implements INodeResponse {
         data["modelId"] = this.modelId;
         data["locationPoint"] = this.locationPoint ? this.locationPoint.toJSON() : <any>undefined;
         data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
+        super.toJSON(data);
         return data;
     }
 }
 
-export interface INodeResponse {
-    id: string;
-    modelId: string;
-    locationPoint: PointResponse;
-    restraint: RestraintResponse;
+export interface INodeResponse extends IBeamOsContractBase {
+    id?: string;
+    modelId?: string;
+    locationPoint?: PointResponse;
+    restraint?: RestraintResponse;
 }
 
-export class PointResponse implements IPointResponse {
-    xCoordinate!: UnitValueDTO;
-    yCoordinate!: UnitValueDTO;
-    zCoordinate!: UnitValueDTO;
+export class PointResponse extends BeamOsContractBase implements IPointResponse {
+    xCoordinate?: UnitValueDTO;
+    yCoordinate?: UnitValueDTO;
+    zCoordinate?: UnitValueDTO;
 
     constructor(data?: IPointResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.xCoordinate = new UnitValueDTO();
-            this.yCoordinate = new UnitValueDTO();
-            this.zCoordinate = new UnitValueDTO();
-        }
+        super(data);
     }
 
     init(_data?: any) {
+        super.init(_data);
         if (_data) {
-            this.xCoordinate = _data["xCoordinate"] ? UnitValueDTO.fromJS(_data["xCoordinate"]) : new UnitValueDTO();
-            this.yCoordinate = _data["yCoordinate"] ? UnitValueDTO.fromJS(_data["yCoordinate"]) : new UnitValueDTO();
-            this.zCoordinate = _data["zCoordinate"] ? UnitValueDTO.fromJS(_data["zCoordinate"]) : new UnitValueDTO();
+            this.xCoordinate = _data["xCoordinate"] ? UnitValueDTO.fromJS(_data["xCoordinate"]) : <any>undefined;
+            this.yCoordinate = _data["yCoordinate"] ? UnitValueDTO.fromJS(_data["yCoordinate"]) : <any>undefined;
+            this.zCoordinate = _data["zCoordinate"] ? UnitValueDTO.fromJS(_data["zCoordinate"]) : <any>undefined;
         }
     }
 
@@ -1188,34 +1200,31 @@ export class PointResponse implements IPointResponse {
         data["xCoordinate"] = this.xCoordinate ? this.xCoordinate.toJSON() : <any>undefined;
         data["yCoordinate"] = this.yCoordinate ? this.yCoordinate.toJSON() : <any>undefined;
         data["zCoordinate"] = this.zCoordinate ? this.zCoordinate.toJSON() : <any>undefined;
+        super.toJSON(data);
         return data;
     }
 }
 
-export interface IPointResponse {
-    xCoordinate: UnitValueDTO;
-    yCoordinate: UnitValueDTO;
-    zCoordinate: UnitValueDTO;
+export interface IPointResponse extends IBeamOsContractBase {
+    xCoordinate?: UnitValueDTO;
+    yCoordinate?: UnitValueDTO;
+    zCoordinate?: UnitValueDTO;
 }
 
-export class RestraintResponse implements IRestraintResponse {
-    canTranslateAlongX!: boolean;
-    canTranslateAlongY!: boolean;
-    canTranslateAlongZ!: boolean;
-    canRotateAboutX!: boolean;
-    canRotateAboutY!: boolean;
-    canRotateAboutZ!: boolean;
+export class RestraintResponse extends BeamOsContractBase implements IRestraintResponse {
+    canTranslateAlongX?: boolean;
+    canTranslateAlongY?: boolean;
+    canTranslateAlongZ?: boolean;
+    canRotateAboutX?: boolean;
+    canRotateAboutY?: boolean;
+    canRotateAboutZ?: boolean;
 
     constructor(data?: IRestraintResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+        super(data);
     }
 
     init(_data?: any) {
+        super.init(_data);
         if (_data) {
             this.canTranslateAlongX = _data["canTranslateAlongX"];
             this.canTranslateAlongY = _data["canTranslateAlongY"];
@@ -1241,17 +1250,18 @@ export class RestraintResponse implements IRestraintResponse {
         data["canRotateAboutX"] = this.canRotateAboutX;
         data["canRotateAboutY"] = this.canRotateAboutY;
         data["canRotateAboutZ"] = this.canRotateAboutZ;
+        super.toJSON(data);
         return data;
     }
 }
 
-export interface IRestraintResponse {
-    canTranslateAlongX: boolean;
-    canTranslateAlongY: boolean;
-    canTranslateAlongZ: boolean;
-    canRotateAboutX: boolean;
-    canRotateAboutY: boolean;
-    canRotateAboutZ: boolean;
+export interface IRestraintResponse extends IBeamOsContractBase {
+    canTranslateAlongX?: boolean;
+    canTranslateAlongY?: boolean;
+    canTranslateAlongZ?: boolean;
+    canRotateAboutX?: boolean;
+    canRotateAboutY?: boolean;
+    canRotateAboutZ?: boolean;
 }
 
 export class Element1DResponse implements IElement1DResponse {
@@ -1417,42 +1427,29 @@ export interface IPointLoadResponse {
     normalizedDirection: Vector3;
 }
 
-export class ModelResponseHydrated implements IModelResponseHydrated {
-    id!: string;
-    name!: string;
-    description!: string;
-    settings!: ModelSettingsResponse;
-    nodes!: NodeResponse[];
-    element1Ds!: Element1DResponse[];
-    materials!: MaterialResponse[];
-    sectionProfiles!: SectionProfileResponse[];
-    pointLoads!: PointLoadResponse[];
-    momentLoads!: MomentLoadResponse[];
+export class ModelResponseHydrated extends BeamOsContractBase implements IModelResponseHydrated {
+    id?: string;
+    name?: string;
+    description?: string;
+    settings?: ModelSettingsResponse;
+    nodes?: NodeResponse[];
+    element1Ds?: Element1DResponse[];
+    materials?: MaterialResponse[];
+    sectionProfiles?: SectionProfileResponse[];
+    pointLoads?: PointLoadResponse[];
+    momentLoads?: MomentLoadResponse[];
 
     constructor(data?: IModelResponseHydrated) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.settings = new ModelSettingsResponse();
-            this.nodes = [];
-            this.element1Ds = [];
-            this.materials = [];
-            this.sectionProfiles = [];
-            this.pointLoads = [];
-            this.momentLoads = [];
-        }
+        super(data);
     }
 
     init(_data?: any) {
+        super.init(_data);
         if (_data) {
             this.id = _data["id"];
             this.name = _data["name"];
             this.description = _data["description"];
-            this.settings = _data["settings"] ? ModelSettingsResponse.fromJS(_data["settings"]) : new ModelSettingsResponse();
+            this.settings = _data["settings"] ? ModelSettingsResponse.fromJS(_data["settings"]) : <any>undefined;
             if (Array.isArray(_data["nodes"])) {
                 this.nodes = [] as any;
                 for (let item of _data["nodes"])
@@ -1529,21 +1526,22 @@ export class ModelResponseHydrated implements IModelResponseHydrated {
             for (let item of this.momentLoads)
                 data["momentLoads"].push(item.toJSON());
         }
+        super.toJSON(data);
         return data;
     }
 }
 
-export interface IModelResponseHydrated {
-    id: string;
-    name: string;
-    description: string;
-    settings: ModelSettingsResponse;
-    nodes: NodeResponse[];
-    element1Ds: Element1DResponse[];
-    materials: MaterialResponse[];
-    sectionProfiles: SectionProfileResponse[];
-    pointLoads: PointLoadResponse[];
-    momentLoads: MomentLoadResponse[];
+export interface IModelResponseHydrated extends IBeamOsContractBase {
+    id?: string;
+    name?: string;
+    description?: string;
+    settings?: ModelSettingsResponse;
+    nodes?: NodeResponse[];
+    element1Ds?: Element1DResponse[];
+    materials?: MaterialResponse[];
+    sectionProfiles?: SectionProfileResponse[];
+    pointLoads?: PointLoadResponse[];
+    momentLoads?: MomentLoadResponse[];
 }
 
 export class CreateMaterialRequest implements ICreateMaterialRequest {

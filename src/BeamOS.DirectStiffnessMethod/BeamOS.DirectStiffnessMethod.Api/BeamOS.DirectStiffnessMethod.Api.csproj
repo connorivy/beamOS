@@ -22,7 +22,7 @@
     <ProjectReference Include="..\BeamOS.DirectStiffnessMethod.Contracts\BeamOS.DirectStiffnessMethod.Contracts.csproj" />
   </ItemGroup>
 
-  <Target Name="ClientGen" AfterTargets="Build" Condition="'$(Configuration)'=='Release' AND '$(IsDesktopBuild)' == true">
+  <Target Name="ClientGen" AfterTargets="Build" Condition="'$(Configuration)'=='Release' AND '$(ContinuousIntegrationBuild)' == false">
     <Exec WorkingDirectory="$(RunWorkingDirectory)" Command="$(RunCommand) --generateclients true" />
   </Target>
 
