@@ -108,8 +108,42 @@ internal partial class Example8_4 : SolvedProblem
                     new UnitValueDTO(15.1, "InchToTheFourth")
                 )
             ],
-            [],
-            []
+
+            [
+                new PointLoadResponse(
+                    pointLoad1.Id,
+                    node1.Id,
+                    new UnitValueDTO(-133446.648457815, "Newton"),
+                    new Vector3(0, 1, 0)),
+                new PointLoadResponse(
+                    pointLoad2.Id,
+                    node2.Id,
+                    new UnitValueDTO(-133446.648457815, "Newton"),
+                    new Vector3(0, 1, 0)),
+            ],
+
+            [
+                new MomentLoadResponse(
+                    momentLoad1.Id,
+                    node1.Id,
+                    new UnitValueDTO(-1800, "KilopoundForceInch"),
+                    new Vector3(1, 0, 0)),
+                new MomentLoadResponse(
+                    momentLoad2.Id,
+                    node1.Id,
+                    new UnitValueDTO(1800, "KilopoundForceInch"),
+                    new Vector3(0, 0, 1)),
+                new MomentLoadResponse(
+                    momentLoad3.Id,
+                    node1.Id,
+                    new UnitValueDTO(100, "KilopoundForceFoot"),
+                    new Vector3(0, 0, 1)),
+                new MomentLoadResponse(
+                    momentLoad4.Id,
+                    node2.Id,
+                    new UnitValueDTO(100, "KilopoundForceFoot"),
+                    new Vector3(0, 0, -1)),
+            ]
         );
     }
 
@@ -221,18 +255,26 @@ internal partial class Example8_4 : SolvedProblem
     //    );
     //}
 
+    private static PointLoadResponse pointLoad1;
+    private static PointLoadResponse pointLoad2;
+
     public static async Task CreatePointLoads(
         Func<CreatePointLoadRequest, Task<PointLoadResponse>> clientMethod
     )
     {
         CreatePointLoadRequest req1 =
             new(node1.Id, new(-30, "KilopoundForce"), new Vector3(0, 1, 0));
-        _ = await clientMethod(req1);
+        pointLoad1 ??= await clientMethod(req1);
 
         CreatePointLoadRequest req2 =
             new(node2.Id, new(-30, "KilopoundForce"), new Vector3(0, 1, 0));
-        _ = await clientMethod(req2);
+        pointLoad2 ??= await clientMethod(req2);
     }
+
+    private static MomentLoadResponse momentLoad1;
+    private static MomentLoadResponse momentLoad2;
+    private static MomentLoadResponse momentLoad3;
+    private static MomentLoadResponse momentLoad4;
 
     public static async Task CreateMomentLoads(
         Func<CreateMomentLoadRequest, Task<MomentLoadResponse>> clientMethod
@@ -240,19 +282,19 @@ internal partial class Example8_4 : SolvedProblem
     {
         CreateMomentLoadRequest req1 =
             new(node1.Id, new(-1800, "KilopoundForceInch"), new Vector3(1, 0, 0));
-        _ = await clientMethod(req1);
+        momentLoad1 ??= await clientMethod(req1);
 
         CreateMomentLoadRequest req2 =
             new(node1.Id, new(1800, "KilopoundForceInch"), new Vector3(0, 0, 1));
-        _ = await clientMethod(req2);
+        momentLoad2 ??= await clientMethod(req2);
 
         CreateMomentLoadRequest req3 =
             new(node1.Id, new(3 * 20 * 20 / 12, "KilopoundForceFoot"), new Vector3(0, 0, 1));
-        _ = await clientMethod(req3);
+        momentLoad3 ??= await clientMethod(req3);
 
         CreateMomentLoadRequest req4 =
             new(node2.Id, new(3 * 20 * 20 / 12, "KilopoundForceFoot"), new Vector3(0, 0, -1));
-        _ = await clientMethod(req4);
+        momentLoad4 ??= await clientMethod(req4);
     }
 
     //private static IEnumerable<MomentLoad> GetMomentLoads()

@@ -9,8 +9,6 @@ using BeamOS.PhysicalModel.Client;
 using BeamOS.PhysicalModel.Contracts.Common;
 using BeamOS.PhysicalModel.Infrastructure;
 using FastEndpoints;
-using FastEndpoints.Swagger;
-using MathNet.Numerics;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +21,7 @@ public class UnitTest1
     [Fact]
     public async Task Test1()
     {
+        var keepAliveConnection = new SqliteConnection("DataSource=:memory:");
         WebApplication app = WebApplicationFactory.Create(
             [],
             builder =>
@@ -44,17 +43,8 @@ public class UnitTest1
                 builder.Services.AddCommandHandlers<IAssemblyMarkerPhysicalModelApplication>();
                 builder.Services.AddPhysicalModelInfrastructure();
 
-                var keepAliveConnection = new SqliteConnection("DataSource=:memory:");
                 keepAliveConnection.Open();
 
-                //builder
-                //    .Services
-                //    .AddDbContext<PhysicalModelDbContext>(options =>
-                //    {
-                //        options.UseSqlite(keepAliveConnection);
-                //        //using var ctx = new PhysicalModelDbContext(options.Options);
-                //        //_ = ctx.Database.EnsureCreated();
-                //    });
                 builder
                     .Services
                     .AddScoped<PhysicalModelDbContext>(
@@ -90,6 +80,7 @@ public class UnitTest1
         ContractComparer.AssertContractsEqual(modelResponse, Example8_4.GetExpectedResponse());
 
         await app.StopAsync();
+        keepAliveConnection.Close();
     }
 }
 
@@ -98,8 +89,6 @@ public class DbContextFactory
     public static PhysicalModelDbContext Create(SqliteConnection sqliteConnection)
     {
         var builder = new DbContextOptionsBuilder<PhysicalModelDbContext>();
-        //var connection = new SqliteConnection("DataSource=:memory:");
-        //connection.Open();
         _ = builder.UseSqlite(sqliteConnection);
 
         using (var ctx = new PhysicalModelDbContext(builder.Options))
@@ -108,28 +97,6 @@ public class DbContextFactory
         }
         return new(builder.Options);
     }
-}
-
-public class TestDataContextFactory
-{
-    public TestDataContextFactory()
-    {
-        var builder = new DbContextOptionsBuilder<PhysicalModelDbContext>();
-        var connection = new SqliteConnection("DataSource=:memory:");
-        connection.Open();
-        _ = builder.UseSqlite(connection);
-
-        using (var ctx = new PhysicalModelDbContext(builder.Options))
-        {
-            _ = ctx.Database.EnsureCreated();
-        }
-
-        this.options = builder.Options;
-    }
-
-    private readonly DbContextOptions<PhysicalModelDbContext> options;
-
-    public PhysicalModelDbContext Create() => new(this.options);
 }
 
 public static class ContractComparer
