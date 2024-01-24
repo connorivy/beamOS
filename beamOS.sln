@@ -8,7 +8,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		Directory.Build.props = Directory.Build.props
 		DirectStiffnessMethodCheatSheet.md = DirectStiffnessMethodCheatSheet.md
-		.github\workflows\integrate.yml = .github\workflows\integrate.yml
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -80,9 +79,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PhysicalModel", "PhysicalMo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DirectStiffnessMethod", "DirectStiffnessMethod", "{60D3AD2D-0E65-46BE-853D-C434B5258AA9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOS.IntegrationTests.DirectStiffnessMethod", "tests\IntegrationTests\BeamOS.IntegrationTests.DirectStiffnessMethod\BeamOS.IntegrationTests.DirectStiffnessMethod.csproj", "{6B14DEC8-A012-4936-A3BC-65C859C80C12}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.IntegrationTests.DirectStiffnessMethod", "tests\IntegrationTests\BeamOS.IntegrationTests.DirectStiffnessMethod\BeamOS.IntegrationTests.DirectStiffnessMethod.csproj", "{6B14DEC8-A012-4936-A3BC-65C859C80C12}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOS.Tests.Common", "tests\BeamOS.Tests.Common\BeamOS.Tests.Common.csproj", "{7159B3F9-8A68-4A95-9392-A6A6C4A090F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.Tests.Common", "tests\BeamOS.Tests.Common\BeamOS.Tests.Common.csproj", "{7159B3F9-8A68-4A95-9392-A6A6C4A090F5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
