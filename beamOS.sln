@@ -22,7 +22,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DirectStiffnessMethod", "DirectStiffnessMethod", "{AC242513-7F6C-45D5-9B1A-BEB0834B36F5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.DirectStiffnessMethod.Domain.UnitTests", "Tests\UnitTests\DirectStiffnessMethod\BeamOS.DirectStiffnessMethod.UnitTests\BeamOS.DirectStiffnessMethod.Domain.UnitTests.csproj", "{64B6B20A-3EA7-4DAC-804B-19C0EB54C28C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOS.DirectStiffnessMethod.Domain.UnitTests", "tests\UnitTests\DirectStiffnessMethod\BeamOS.DirectStiffnessMethod.UnitTests\BeamOS.DirectStiffnessMethod.Domain.UnitTests.csproj", "{64B6B20A-3EA7-4DAC-804B-19C0EB54C28C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1B95EC59-D4FE-4C61-AC5B-D44C3A7D62A3}"
 EndProject
