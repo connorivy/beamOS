@@ -24,3 +24,26 @@ jobs:
 
     - name: Build
       run: dotnet build --no-restore -c Release /p:ContinuousIntegrationBuild=true
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    
+    steps:
+
+    - name: Test
+      run: dotnet test --no-build -c Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
+
+    - name: ReportGenerator
+      uses: danielpalme/ReportGenerator-GitHub-Action@5.2.0
+      with:
+        reports: './tests/**/*.info'
+        targetdir: './tests/TestResults'
+        reporttypes: 'lcov'
+        filefilters: '-*\*.g.cs'
+
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: ./tests/TestResults/lcov.info
