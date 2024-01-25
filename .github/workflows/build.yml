@@ -25,12 +25,6 @@ jobs:
     - name: Build
       run: dotnet build --no-restore -c Release /p:ContinuousIntegrationBuild=true
 
-  test:
-    needs: build
-    runs-on: ubuntu-latest
-    
-    steps:
-
     - name: Test
       run: dotnet test --no-build -c Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
 
