@@ -109,3 +109,5 @@ app.UseCors();
 //app.UseSwaggerUI();
 
 app.Run();
+
+public partial class Program { }
