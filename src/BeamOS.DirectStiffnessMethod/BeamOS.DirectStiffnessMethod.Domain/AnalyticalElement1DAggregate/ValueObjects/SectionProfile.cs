@@ -2,6 +2,7 @@ using BeamOS.Common.Domain.Models;
 using UnitsNet;
 
 namespace BeamOS.DirectStiffnessMethod.Domain.AnalyticalElement1DAggregate.ValueObjects;
+
 public class SectionProfile : BeamOSValueObject
 {
     public SectionProfile(

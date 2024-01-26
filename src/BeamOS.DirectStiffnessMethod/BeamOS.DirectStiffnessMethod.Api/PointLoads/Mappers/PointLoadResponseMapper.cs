@@ -12,6 +12,10 @@ namespace BeamOS.DirectStiffnessMethod.Api.PointLoads.Mappers;
 public partial class PointLoadResponseMapper : IMapper<PointLoadResponse, CreatePointLoadCommand>
 {
     public CreatePointLoadCommand Map(PointLoadResponse source) => this.ToCommand(source);
-    [MapProperty(nameof(PointLoadResponse.NormalizedDirection), nameof(CreatePointLoadCommand.Direction))]
+
+    [MapProperty(
+        nameof(PointLoadResponse.NormalizedDirection),
+        nameof(CreatePointLoadCommand.Direction)
+    )]
     public partial CreatePointLoadCommand ToCommand(PointLoadResponse source);
 }

@@ -16,12 +16,18 @@ public class CreateAnalyticalModelCommandHandler(
     CreateAnalyticalNodeCommandHandler createNodeHandler,
     CreateMaterialCommandHandler createMaterialHandler,
     CreateSectionProfileCommandHandler createSectionProfileHandler,
-    CreateAnalyticalElement1dGivenEntitiesCommandHandler createEl1dHandler)
-    : ICommandHandler<CreateAnalyticalModelFromPhysicalModelCommand, AnalyticalModel?>
+    CreateAnalyticalElement1dGivenEntitiesCommandHandler createEl1dHandler
+) : ICommandHandler<CreateAnalyticalModelFromPhysicalModelCommand, AnalyticalModel?>
 {
-    public async Task<AnalyticalModel?> ExecuteAsync(CreateAnalyticalModelFromPhysicalModelCommand command, CancellationToken ct = default)
+    public async Task<AnalyticalModel?> ExecuteAsync(
+        CreateAnalyticalModelFromPhysicalModelCommand command,
+        CancellationToken ct = default
+    )
     {
-        AnalyticalModelSettings settings = await settingsCommandHandler.ExecuteAsync(command.Settings, ct);
+        AnalyticalModelSettings settings = await settingsCommandHandler.ExecuteAsync(
+            command.Settings,
+            ct
+        );
 
         Dictionary<string, AnalyticalNode> nodes = [];
         Dictionary<string, Material> materials = [];
@@ -50,19 +56,27 @@ public class CreateAnalyticalModelCommandHandler(
             {
                 continue;
             }
-            SectionProfile sectionProfile = await createSectionProfileHandler.ExecuteAsync(sectionProfileCommand, ct);
+            SectionProfile sectionProfile = await createSectionProfileHandler.ExecuteAsync(
+                sectionProfileCommand,
+                ct
+            );
             sectionProfiles.Add(sectionProfileCommand.Id, sectionProfile);
         }
 
         foreach (CreateAnalyticalElement1dCommand el1dCommand in command.Element1Ds)
         {
-            CreateAnalyticalElement1dGivenEntitiesCommand commandWithEntities = new(
-                el1dCommand.SectionProfileRotation,
-                nodes[el1dCommand.StartNodeId.Id.ToString()],
-                nodes[el1dCommand.EndNodeId.Id.ToString()],
-                materials[el1dCommand.MaterialId],
-                sectionProfiles[el1dCommand.SectionProfileId]);
-            AnalyticalElement1D element1d = await createEl1dHandler.ExecuteAsync(commandWithEntities, ct);
+            CreateAnalyticalElement1dGivenEntitiesCommand commandWithEntities =
+                new(
+                    el1dCommand.SectionProfileRotation,
+                    nodes[el1dCommand.StartNodeId.Id.ToString()],
+                    nodes[el1dCommand.EndNodeId.Id.ToString()],
+                    materials[el1dCommand.MaterialId],
+                    sectionProfiles[el1dCommand.SectionProfileId]
+                );
+            AnalyticalElement1D element1d = await createEl1dHandler.ExecuteAsync(
+                commandWithEntities,
+                ct
+            );
             element1ds.Add(element1d);
         }
 

@@ -1,5 +1,6 @@
 namespace BeamOS.PhysicalModel.Api.PointLoads.Endpoints;
 
+
 //public class GetPointLoadEndpoint(
 //    IRepository<PointLoadId, PointLoad> repository,
 //    IMapper<PointLoad, PointLoadResponse> responseMapper) : GetAggregateRootByGuidBasedIdEndpoint<PointLoadId, PointLoad, PointLoadResponse>(repository, responseMapper)

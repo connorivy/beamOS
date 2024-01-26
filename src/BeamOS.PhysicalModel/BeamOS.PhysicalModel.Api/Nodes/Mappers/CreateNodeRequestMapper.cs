@@ -9,5 +9,6 @@ namespace BeamOS.PhysicalModel.Application.Models.Commands;
 public partial class CreateNodeRequestMapper : IMapper<CreateNodeRequest, CreateNodeCommand>
 {
     public CreateNodeCommand Map(CreateNodeRequest from) => this.ToResponse(from);
+
     public partial CreateNodeCommand ToResponse(CreateNodeRequest model);
 }

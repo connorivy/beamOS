@@ -1,4 +1,5 @@
 namespace BeamOS.DirectStiffnessMethod.Domain.AnalyticalModelAggregate.Enums;
+
 public enum ModelOrientation
 {
     Undefined = 0,

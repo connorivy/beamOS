@@ -1,5 +1,3 @@
 namespace BeamOS.DirectStiffnessMethod.Application;
 
-public interface IAssemblyMarkerDirectStiffnessMethodApplication
-{
-}
+public interface IAssemblyMarkerDirectStiffnessMethodApplication { }

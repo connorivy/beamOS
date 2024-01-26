@@ -4,13 +4,19 @@ using BeamOS.Common.Domain.ValueObjects;
 
 namespace BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate.ValueObjects;
 
-public class AnalyticalNodeId(Guid? id = null) : GuidBasedId(id), IConstructable<AnalyticalNodeId, Guid>
+public class AnalyticalNodeId(Guid? id = null)
+    : GuidBasedId(id),
+        IConstructable<AnalyticalNodeId, Guid>
 {
     public static AnalyticalNodeId Construct(Guid t1) => new(t1);
 
     public IEnumerable<UnsupportedStructureDisplacementId> GetUnsupportedStructureDisplacementIds()
     {
-        foreach (CoordinateSystemDirection3D direction in Enum.GetValues(typeof(CoordinateSystemDirection3D)))
+        foreach (
+            CoordinateSystemDirection3D direction in Enum.GetValues(
+                typeof(CoordinateSystemDirection3D)
+            )
+        )
         {
             if (direction == CoordinateSystemDirection3D.Undefined)
             {

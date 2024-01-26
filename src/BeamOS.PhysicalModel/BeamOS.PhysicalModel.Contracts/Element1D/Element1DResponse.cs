@@ -1,6 +1,7 @@
 using BeamOS.Common.Contracts;
 
 namespace BeamOS.PhysicalModel.Contracts.Element1D;
+
 public record Element1DResponse(
     string Id,
     string ModelId,
@@ -8,4 +9,5 @@ public record Element1DResponse(
     string EndNodeId,
     string MaterialId,
     string SectionProfileId,
-    UnitValueDTO SectionProfileRotation);
+    UnitValueDTO SectionProfileRotation
+);

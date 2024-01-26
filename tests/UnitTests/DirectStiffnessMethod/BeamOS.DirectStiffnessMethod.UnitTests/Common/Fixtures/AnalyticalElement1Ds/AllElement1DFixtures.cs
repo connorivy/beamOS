@@ -1,12 +1,15 @@
 using BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Fixtures.SolvedProblems;
 
 namespace BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Fixtures.AnalyticalElement1Ds;
+
 public class AllElement1DFixtures : TheoryData<AnalyticalElement1DFixture>
 {
-    public List<AnalyticalElement1DFixture> Element1DFixtures { get; } = new()
-    {
-        // add standalone element 1D fixtures here
-    };
+    public List<AnalyticalElement1DFixture> Element1DFixtures { get; } =
+        new()
+        {
+            // add standalone element 1D fixtures here
+        };
+
     public AllElement1DFixtures()
     {
         var allSolvedProblems = new AllSolvedProblems();

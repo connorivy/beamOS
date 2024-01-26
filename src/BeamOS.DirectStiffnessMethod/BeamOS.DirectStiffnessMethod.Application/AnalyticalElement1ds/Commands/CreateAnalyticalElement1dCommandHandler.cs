@@ -8,6 +8,7 @@ using Riok.Mapperly.Abstractions;
 
 namespace BeamOS.DirectStiffnessMethod.Application.AnalyticalNodes.Commands;
 
+
 //public class CreateAnalyticalElement1dCommandHandler(IRepository<AnalyticalElement1DId, AnalyticalElement1D> Element1DRepository)
 //    : ICommandHandler<CreateAnalyticalElement1dCommand, AnalyticalElement1D>
 //{

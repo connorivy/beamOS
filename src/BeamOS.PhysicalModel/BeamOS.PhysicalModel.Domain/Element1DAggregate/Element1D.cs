@@ -8,6 +8,7 @@ using BeamOS.PhysicalModel.Domain.SectionProfileAggregate.ValueObjects;
 using UnitsNet;
 
 namespace BeamOS.PhysicalModel.Domain.Element1DAggregate;
+
 public class Element1D : AggregateRoot<Element1DId>
 {
     public Element1D(
@@ -16,7 +17,9 @@ public class Element1D : AggregateRoot<Element1DId>
         NodeId endNodeId,
         MaterialId materialId,
         SectionProfileId sectionProfileId,
-        Element1DId? id = null) : base(id ?? new Element1DId())
+        Element1DId? id = null
+    )
+        : base(id ?? new Element1DId())
     {
         this.ModelId = modelId;
         this.StartNodeId = startNodeId;
@@ -30,6 +33,7 @@ public class Element1D : AggregateRoot<Element1DId>
     public NodeId EndNodeId { get; private set; }
     public MaterialId MaterialId { get; private set; }
     public SectionProfileId SectionProfileId { get; private set; }
+
     /// <summary>
     /// counter-clockwise rotation in radians when looking in the negative (local) x direction
     /// </summary>

@@ -7,11 +7,16 @@ public class UnsupportedStructureDisplacementId : BeamOSValueObject
 {
     public AnalyticalNodeId NodeId { get; }
     public CoordinateSystemDirection3D Direction { get; }
-    public UnsupportedStructureDisplacementId(AnalyticalNodeId nodeId, CoordinateSystemDirection3D direction)
+
+    public UnsupportedStructureDisplacementId(
+        AnalyticalNodeId nodeId,
+        CoordinateSystemDirection3D direction
+    )
     {
         this.NodeId = nodeId;
         this.Direction = direction;
     }
+
     protected override IEnumerable<object> GetEqualityComponents()
     {
         yield return this.NodeId;

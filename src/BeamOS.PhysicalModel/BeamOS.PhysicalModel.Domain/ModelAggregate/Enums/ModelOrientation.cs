@@ -1,4 +1,5 @@
 namespace BeamOS.PhysicalModel.Domain.ModelAggregate.Enums;
+
 public enum ModelOrientation
 {
     Undefined = 0,

@@ -3,20 +3,20 @@ using BeamOS.DirectStiffnessMethod.Domain.AnalyticalModelAggregate.ValueObjects;
 using UnitsNet;
 
 namespace BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common;
+
 public static partial class Constants
 {
     public static AnalyticalModelSettings DefaultSettingsK_IN { get; } = new(UnitSettings.K_IN);
     public static AnalyticalModelSettings DefaultSettingsSI { get; } = new(UnitSettings.SI);
-    public static Material UnitMaterialSI { get; } = new(
-      modulusOfElasticity: new(1, UnitSystem.SI),
-      modulusOfRigidity: new(1, UnitSystem.SI)
-    );
-    public static SectionProfile UnitSectionProfileSI { get; } = new(
-      new Area(1, UnitSystem.SI),
-      new AreaMomentOfInertia(1, UnitSystem.SI),
-      new AreaMomentOfInertia(1, UnitSystem.SI),
-      new AreaMomentOfInertia(1, UnitSystem.SI)
-    );
+    public static Material UnitMaterialSI { get; } =
+        new(modulusOfElasticity: new(1, UnitSystem.SI), modulusOfRigidity: new(1, UnitSystem.SI));
+    public static SectionProfile UnitSectionProfileSI { get; } =
+        new(
+            new Area(1, UnitSystem.SI),
+            new AreaMomentOfInertia(1, UnitSystem.SI),
+            new AreaMomentOfInertia(1, UnitSystem.SI),
+            new AreaMomentOfInertia(1, UnitSystem.SI)
+        );
 
     public static Guid Guid0 { get; } = Guid.Parse("00000000-0000-0000-0000-000000000000");
     public static Guid Guid1 { get; } = Guid.Parse("00000000-0000-0000-0000-000000000001");

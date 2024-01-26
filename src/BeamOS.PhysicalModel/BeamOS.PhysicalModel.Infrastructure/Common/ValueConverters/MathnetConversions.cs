@@ -10,12 +10,17 @@ namespace BeamOS.PhysicalModel.Infrastructure.Common.ValueConverters;
 public class VectorDoubleConverter : ValueConverter<Vector<double>, string>
 {
     public VectorDoubleConverter()
-    : base(
+        : base(
             x => string.Join(';', x.ToArray()),
-            x => DenseVector.OfArray(Array.ConvertAll(x.Split(';', StringSplitOptions.RemoveEmptyEntries), double.Parse)),
-            null)
-    {
-    }
+            x =>
+                DenseVector.OfArray(
+                    Array.ConvertAll(
+                        x.Split(';', StringSplitOptions.RemoveEmptyEntries),
+                        double.Parse
+                    )
+                ),
+            null
+        ) { }
 }
 
 //public class Vector : BeamOSValueObject

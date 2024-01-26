@@ -9,5 +9,6 @@ namespace BeamOS.PhysicalModel.Api.Mappers;
 public partial class SectionProfileResponseMapper : IMapper<SectionProfile, SectionProfileResponse>
 {
     public SectionProfileResponse Map(SectionProfile from) => this.ToResponse(from);
+
     public partial SectionProfileResponse ToResponse(SectionProfile model);
 }

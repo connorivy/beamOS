@@ -8,7 +8,10 @@ namespace BeamOS.PhysicalModel.Application.Models.Commands;
 public class CreateModelCommandHandler(IRepository<ModelId, Model> modelRepository)
     : ICommandHandler<CreateModelCommand, Model>
 {
-    public async Task<Model> ExecuteAsync(CreateModelCommand command, CancellationToken ct = default)
+    public async Task<Model> ExecuteAsync(
+        CreateModelCommand command,
+        CancellationToken ct = default
+    )
     {
         Model model = command.ToDomainObject();
 

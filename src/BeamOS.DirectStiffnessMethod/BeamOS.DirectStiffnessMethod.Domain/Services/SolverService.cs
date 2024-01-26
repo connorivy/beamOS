@@ -6,6 +6,7 @@ using BeamOS.DirectStiffnessMethod.Domain.Common.ValueObjects;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace BeamOS.DirectStiffnessMethod.Domain.Services;
+
 public class SolverService
 {
     //public static void Solve(

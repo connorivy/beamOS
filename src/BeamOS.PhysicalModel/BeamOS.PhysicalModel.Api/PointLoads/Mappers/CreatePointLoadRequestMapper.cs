@@ -9,8 +9,10 @@ namespace BeamOS.PhysicalModel.Api.PointLoads.Mappers;
 [Mapper]
 [UseStaticMapper(typeof(Vector3ToFromMathnetVector))]
 [UseStaticMapper(typeof(UnitValueDtoToForceMapper))]
-public partial class CreatePointLoadRequestMapper : IMapper<CreatePointLoadRequest, CreatePointLoadCommand>
+public partial class CreatePointLoadRequestMapper
+    : IMapper<CreatePointLoadRequest, CreatePointLoadCommand>
 {
     public CreatePointLoadCommand Map(CreatePointLoadRequest from) => this.ToCommand(from);
+
     public partial CreatePointLoadCommand ToCommand(CreatePointLoadRequest request);
 }

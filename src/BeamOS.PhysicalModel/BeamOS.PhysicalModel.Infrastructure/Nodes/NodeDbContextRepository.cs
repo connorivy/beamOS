@@ -4,6 +4,7 @@ using BeamOS.PhysicalModel.Domain.NodeAggregate.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeamOS.PhysicalModel.Infrastructure.Nodes;
+
 public class NodeDbContextRepository(PhysicalModelDbContext dbContext) : IRepository<NodeId, Node>
 {
     public async Task Add(Node aggregate)
@@ -11,9 +12,9 @@ public class NodeDbContextRepository(PhysicalModelDbContext dbContext) : IReposi
         _ = await dbContext.Nodes.AddAsync(aggregate);
         _ = await dbContext.SaveChangesAsync();
     }
+
     public async Task<Node?> GetById(NodeId id)
     {
-        return await dbContext.Nodes
-            .FirstAsync(el => el.Id == id);
+        return await dbContext.Nodes.FirstAsync(el => el.Id == id);
     }
 }

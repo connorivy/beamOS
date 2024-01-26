@@ -2,6 +2,7 @@ using BeamOS.Common.Domain.Models;
 using UnitsNet.Units;
 
 namespace BeamOS.DirectStiffnessMethod.Domain.AnalyticalModelAggregate.ValueObjects;
+
 public class UnitSettings : BeamOSValueObject
 {
     public UnitSettings(
@@ -27,20 +28,25 @@ public class UnitSettings : BeamOSValueObject
     public ForceUnit ForceUnit { get; }
     public ForcePerLengthUnit ForcePerLengthUnit { get; }
     public TorqueUnit TorqueUnit { get; }
-    public static UnitSettings SI { get; } = new(
-        LengthUnit.Meter,
-        AreaUnit.SquareMeter,
-        VolumeUnit.CubicMeter,
-        ForceUnit.Newton,
-        ForcePerLengthUnit.NewtonPerMeter,
-        TorqueUnit.NewtonMeter);
-    public static UnitSettings K_IN { get; } = new(
-        LengthUnit.Inch,
-        AreaUnit.SquareInch,
-        VolumeUnit.CubicInch,
-        ForceUnit.KilopoundForce,
-        ForcePerLengthUnit.KilopoundForcePerInch,
-        TorqueUnit.KilopoundForceInch);
+    public static UnitSettings SI { get; } =
+        new(
+            LengthUnit.Meter,
+            AreaUnit.SquareMeter,
+            VolumeUnit.CubicMeter,
+            ForceUnit.Newton,
+            ForcePerLengthUnit.NewtonPerMeter,
+            TorqueUnit.NewtonMeter
+        );
+    public static UnitSettings K_IN { get; } =
+        new(
+            LengthUnit.Inch,
+            AreaUnit.SquareInch,
+            VolumeUnit.CubicInch,
+            ForceUnit.KilopoundForce,
+            ForcePerLengthUnit.KilopoundForcePerInch,
+            TorqueUnit.KilopoundForceInch
+        );
+
     protected override IEnumerable<object> GetEqualityComponents()
     {
         yield return this.LengthUnit;

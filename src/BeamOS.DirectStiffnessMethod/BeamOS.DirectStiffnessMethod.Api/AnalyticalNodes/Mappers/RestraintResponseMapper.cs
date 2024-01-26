@@ -9,5 +9,6 @@ namespace BeamOS.DirectStiffnessMethod.Api.AnalyticalNodes.Mappers;
 public partial class RestraintResponseMapper : IMapper<RestraintResponse, RestraintCommand>
 {
     public RestraintCommand Map(RestraintResponse from) => this.ToCommand(from);
+
     public partial RestraintCommand ToCommand(RestraintResponse response);
 }
