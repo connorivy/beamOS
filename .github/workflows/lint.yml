@@ -10,7 +10,14 @@ jobs:
     runs-on: ubuntu-latest
     name: Check Formatting
     steps:
-      - uses: actions/checkout@v3
-      - run: |
-          dotnet tool restore
-          dotnet csharpier --check .
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Restore csharpier tool
+      run: dotnet tool restore
+
+    - name: Check formatting
+      run: dotnet csharpier --check .
