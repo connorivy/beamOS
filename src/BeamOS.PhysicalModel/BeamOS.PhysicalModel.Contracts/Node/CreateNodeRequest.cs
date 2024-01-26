@@ -18,4 +18,8 @@ public record RestraintsRequest(
     bool CanRotateAboutX,
     bool CanRotateAboutY,
     bool CanRotateAboutZ
-);
+)
+{
+    public static RestraintsRequest Free { get; } = new(true, true, true, true, true, true);
+    public static RestraintsRequest Fixed { get; } = new(false, false, false, false, false, false);
+}

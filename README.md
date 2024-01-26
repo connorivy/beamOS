@@ -10,7 +10,8 @@ DISCLAIMER #2 : Up to this point, most of the effort has been put toward the str
 To run this project, simply:
 1. clone or fork the repo
 1. install and use npm version >= 20
-1. open the .sln in your IDE of choice and build the project
+1. build the project IN RELEASE MODE
+    - building the project in release mode will trigger an npm install and populate a 'js' folder under the wwwroot of the WebApp project
 1. set BeamOS.WebApp, BeamOS.PhysicalModel.Api, and BeamOS.DirectStiffnessMethod.Api as startup projects
 1. run the project
 

@@ -11,12 +11,13 @@ using Microsoft.EntityFrameworkCore;
 namespace BeamOS.PhysicalModel.Api.Element1Ds.Endpoints;
 
 public class GetElement1ds(PhysicalModelDbContext dbContext, Element1DResponseMapper responseMapper)
-    : BaseEndpoint,
-        IGetEndpoint<string, List<Element1DResponse>, string[]?>
+    : BeamOsEndpoint<string, string[]?, List<Element1DResponse>>
 {
     public override string Route => "element1Ds";
 
-    public async Task<List<Element1DResponse>> GetAsync(
+    public override EndpointType EndpointType => EndpointType.Get;
+
+    public override async Task<List<Element1DResponse>> ExecuteAsync(
         [FromQuery] string modelId,
         [FromQuery] string[]? element1dIds = null,
         CancellationToken ct = default

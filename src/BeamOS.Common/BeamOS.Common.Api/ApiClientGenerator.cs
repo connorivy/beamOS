@@ -14,6 +14,9 @@ public static class ApiClientGenerator
     public const string Element1dNs = nameof(BeamOS.PhysicalModel.Contracts.Element1D);
     public const string ModelNs = nameof(BeamOS.PhysicalModel.Contracts.Model);
     public const string PointLoadNs = nameof(BeamOS.PhysicalModel.Contracts.PointLoad);
+    public const string MomentLoadNs = nameof(BeamOS.PhysicalModel.Contracts.MomentLoad);
+    public const string MaterialNs = nameof(BeamOS.PhysicalModel.Contracts.Material);
+    public const string SectionProfileNs = nameof(BeamOS.PhysicalModel.Contracts.SectionProfile);
 
     public static async Task GenerateClient(
         this WebApplication app,

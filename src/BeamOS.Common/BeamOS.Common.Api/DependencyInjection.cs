@@ -3,16 +3,22 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BeamOS.Common.Api;
+
 public static class DependencyInjection
 {
     public static IServiceCollection AddBeamOsEndpoints<T>(this IServiceCollection services)
     {
-        _ = services.Scan(scan => scan
-            .FromAssemblyOf<T>()
-            .AddClasses(classes => classes.AssignableTo(typeof(BaseEndpoint)))
-            .AsSelf()
-            //.AsImplementedInterfaces()
-            .WithScopedLifetime()
+        _ = services.Scan(
+            scan =>
+                scan.FromAssemblyOf<T>()
+                    //.AddClasses(classes => classes.AssignableTo(typeof(BeamOsEndpoint<,>)))
+                    //.AddClasses(classes => classes.AssignableTo(typeof(BeamOsEndpoint<,,>)))
+                    //.AddClasses(classes => classes.AssignableTo(typeof(BeamOsEndpoint<,,,>)))
+                    //.AddClasses(classes => classes.AssignableTo(typeof(BeamOsEndpoint<,,,>)))
+                    .AddClasses(classes => classes.AssignableTo(typeof(IBeamOsEndpointBase)))
+                    .AsSelfWithInterfaces()
+                    //.AsImplementedInterfaces()
+                    .WithScopedLifetime()
         );
 
         return services;
@@ -20,26 +26,30 @@ public static class DependencyInjection
 
     public static void AddBeamOsEndpoints<T>(this IEndpointRouteBuilder app)
     {
-        IEnumerable<Type> endpointTypes = typeof(T).Assembly
+        IEnumerable<Type> endpointTypes = typeof(T)
+            .Assembly
             .GetTypes()
-            .Where(t => !t.IsAbstract && !t.IsInterface && t.IsAssignableTo(typeof(BaseEndpoint)));
+            .Where(
+                t => !t.IsAbstract && !t.IsInterface && t.IsAssignableTo(typeof(BeamOsEndpointBase))
+            );
 
         var scope = app.ServiceProvider.CreateScope();
         foreach (Type type in endpointTypes)
         {
-            var endpoint = scope.ServiceProvider.GetService(type) as BaseEndpoint;
+            var endpoint = scope.ServiceProvider.GetService(type) as BeamOsEndpointBase;
             endpoint?.Map(app);
         }
     }
 
     public static IServiceCollection AddMappers<T>(this IServiceCollection services)
     {
-        _ = services.Scan(scan => scan
-            .FromAssemblyOf<T>()
-            .AddClasses(classes => classes.AssignableTo(typeof(IMapper<,>)))
-            .AsSelf()
-            //.AsImplementedInterfaces()
-            .WithTransientLifetime()
+        _ = services.Scan(
+            scan =>
+                scan.FromAssemblyOf<T>()
+                    .AddClasses(classes => classes.AssignableTo(typeof(IMapper<,>)))
+                    .AsSelf()
+                    //.AsImplementedInterfaces()
+                    .WithTransientLifetime()
         );
 
         return services;

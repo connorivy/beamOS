@@ -9,7 +9,7 @@ public class MarkAsRequiredIfNonNullableSchemaProcessor : ISchemaProcessor
     // may need to change schema.Properties to schema.ActualProperties for issues with inheritance
     public void Process(SchemaProcessorContext context)
     {
-        foreach (var (propName, prop) in context.Schema.Properties)
+        foreach (var (propName, prop) in context.Schema.ActualProperties)
         {
             if (!prop.IsNullable(SchemaType.OpenApi3))
             {

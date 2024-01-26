@@ -1,4 +1,5 @@
 using BeamOS.Common.Application.Commands;
+using UnitsNet;
 
 namespace BeamOS.PhysicalModel.Application.Element1Ds;
 
@@ -7,4 +8,6 @@ public record CreateElement1DCommand(
     GuidBasedIdCommand StartNodeId,
     GuidBasedIdCommand EndNodeId,
     GuidBasedIdCommand MaterialId,
-    GuidBasedIdCommand SectionProfileId);
+    GuidBasedIdCommand SectionProfileId,
+    Angle? SectionProfileRotation = null
+);

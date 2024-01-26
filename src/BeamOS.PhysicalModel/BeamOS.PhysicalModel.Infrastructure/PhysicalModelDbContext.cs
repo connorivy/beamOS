@@ -2,13 +2,11 @@ using BeamOS.Common.Domain.Utils;
 using BeamOS.Common.Domain.ValueObjects;
 using BeamOS.Common.Infrastructure;
 using BeamOS.PhysicalModel.Domain.Element1DAggregate;
-using BeamOS.PhysicalModel.Domain.Element1DAggregate.ValueObjects;
 using BeamOS.PhysicalModel.Domain.MaterialAggregate;
-using BeamOS.PhysicalModel.Domain.MaterialAggregate.ValueObjects;
 using BeamOS.PhysicalModel.Domain.ModelAggregate;
 using BeamOS.PhysicalModel.Domain.ModelAggregate.ValueObjects;
+using BeamOS.PhysicalModel.Domain.MomentLoadAggregate;
 using BeamOS.PhysicalModel.Domain.NodeAggregate;
-using BeamOS.PhysicalModel.Domain.NodeAggregate.ValueObjects;
 using BeamOS.PhysicalModel.Domain.PointLoadAggregate;
 using BeamOS.PhysicalModel.Domain.SectionProfileAggregate;
 using BeamOS.PhysicalModel.Infrastructure.Common.Configurations;
@@ -39,6 +37,7 @@ public class PhysicalModelDbContext : DbContext
     public DbSet<Material> Materials { get; set; }
     public DbSet<SectionProfile> SectionProfiles { get; set; }
     public DbSet<PointLoad> PointLoads { get; set; }
+    public DbSet<MomentLoad> MomentLoads { get; set; }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {

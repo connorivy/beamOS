@@ -31,4 +31,15 @@ public record UnitSettingsResponse(
     string ForceUnit,
     string ForcePerLengthUnit,
     string TorqueUnit
-);
+)
+{
+    public static UnitSettingsResponse K_IN { get; } =
+        new(
+            "Inch",
+            "SquareInch",
+            "CubicInch",
+            "KilopoundForce",
+            "KilopoundForcePerInch",
+            "KilopoundForceInch"
+        );
+}
