@@ -9,5 +9,6 @@ namespace BeamOS.PhysicalModel.Api.Mappers;
 public partial class NodeResponseMapper : IMapper<Node, NodeResponse>
 {
     public NodeResponse Map(Node from) => this.ToResponse(from);
+
     public partial NodeResponse ToResponse(Node model);
 }

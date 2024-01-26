@@ -6,6 +6,8 @@ public class PhysicalModelApiClient(HttpClient httpClient)
 {
     public async Task<ModelResponse?> GetModelResponse(string id)
     {
-        return await httpClient.GetFromJsonAsync<ModelResponse>($"/api/models/{id}?sendEntities=true");
+        return await httpClient.GetFromJsonAsync<ModelResponse>(
+            $"/api/models/{id}?sendEntities=true"
+        );
     }
 }

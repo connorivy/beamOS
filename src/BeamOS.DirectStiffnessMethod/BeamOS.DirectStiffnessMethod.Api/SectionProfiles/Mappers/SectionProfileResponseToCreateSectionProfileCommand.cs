@@ -9,8 +9,11 @@ namespace BeamOS.DirectStiffnessMethod.Api.SectionProfiles.Mappers;
 [Mapper]
 [UseStaticMapper(typeof(UnitValueDtoToAreaMapper))]
 [UseStaticMapper(typeof(UnitValueDtoToAreaMomentOfInertiaMapper))]
-public partial class SectionProfileResponseToCreateSectionProfileCommand : AbstractMapper<SectionProfileResponse, CreateSectionProfileCommand>
+public partial class SectionProfileResponseToCreateSectionProfileCommand
+    : AbstractMapper<SectionProfileResponse, CreateSectionProfileCommand>
 {
-    public override CreateSectionProfileCommand Map(SectionProfileResponse from) => this.ToCommand(from);
+    public override CreateSectionProfileCommand Map(SectionProfileResponse from) =>
+        this.ToCommand(from);
+
     public partial CreateSectionProfileCommand ToCommand(SectionProfileResponse from);
 }

@@ -1,6 +1,7 @@
 using BeamOS.Common.Domain.Models;
 
 namespace BeamOS.Common.Domain.ValueObjects;
+
 public class SingleValueWrapperValueObject<T> : BeamOSValueObject
 {
     public T Value { get; }
@@ -13,5 +14,6 @@ public class SingleValueWrapperValueObject<T> : BeamOSValueObject
     }
 
     public static implicit operator SingleValueWrapperValueObject<T>(T value) => new(value);
+
     public static implicit operator T(SingleValueWrapperValueObject<T> wrapper) => wrapper.Value;
 }

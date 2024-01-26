@@ -11,13 +11,11 @@ using BeamOS.PhysicalModel.Domain.SectionProfileAggregate.ValueObjects;
 using UnitsNet.Units;
 
 namespace BeamOS.PhysicalModel.Domain.ModelAggregate;
+
 public class Model : AggregateRoot<ModelId>
 {
-    public Model(
-        string name,
-        string description,
-        ModelSettings settings,
-        ModelId? id = null) : base(id ?? new())
+    public Model(string name, string description, ModelSettings settings, ModelId? id = null)
+        : base(id ?? new())
     {
         this.Name = name;
         this.Description = description;
@@ -46,13 +44,14 @@ public class Model : AggregateRoot<ModelId>
         double zCoordinate,
         LengthUnit? coordinateLengthUnit = null,
         Restraint? restraint = null
-        )
+    )
     {
         LengthUnit lengthUnit = coordinateLengthUnit ?? this.Settings.UnitSettings.LengthUnit;
         Node node = new(this.Id, xCoordinate, yCoordinate, zCoordinate, lengthUnit);
 
         return AddNode(node);
     }
+
     public static Node AddNode(Node node)
     {
         //this.nodeIds.Add(node.Id);
@@ -65,11 +64,12 @@ public class Model : AggregateRoot<ModelId>
         NodeId endNodeId,
         MaterialId materialId,
         SectionProfileId sectionProfileId
-        )
+    )
     {
         Element1D el = new(this.Id, startNodeId, endNodeId, materialId, sectionProfileId);
         return AddElement1D(el);
     }
+
     public static Element1D AddElement1D(Element1D element1D)
     {
         //this.element1DIds.Add(element1D.Id);

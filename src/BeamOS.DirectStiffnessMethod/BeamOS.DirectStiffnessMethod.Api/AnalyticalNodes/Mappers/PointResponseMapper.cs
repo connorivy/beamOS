@@ -11,5 +11,6 @@ namespace BeamOS.DirectStiffnessMethod.Api.AnalyticalNodes.Mappers;
 public partial class PointResponseMapper : IMapper<PointResponse, PointCommand>
 {
     public PointCommand Map(PointResponse from) => this.ToCommand(from);
+
     public partial PointCommand ToCommand(PointResponse response);
 }

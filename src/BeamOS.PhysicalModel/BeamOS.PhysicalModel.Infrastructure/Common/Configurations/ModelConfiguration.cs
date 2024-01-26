@@ -5,20 +5,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BeamOS.PhysicalModel.Infrastructure.Common.Configurations;
+
 internal class ModelConfiguration : IEntityTypeConfiguration<Model>
 {
     public void Configure(EntityTypeBuilder<Model> builder)
     {
-        builder
-            .HasMany<Node>()
-            .WithOne()
-            .HasForeignKey(node => node.ModelId)
-            .IsRequired();
+        builder.HasMany<Node>().WithOne().HasForeignKey(node => node.ModelId).IsRequired();
 
-        builder
-            .HasMany<Element1D>()
-            .WithOne()
-            .HasForeignKey(el => el.ModelId)
-            .IsRequired();
+        builder.HasMany<Element1D>().WithOne().HasForeignKey(el => el.ModelId).IsRequired();
     }
 }

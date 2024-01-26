@@ -7,11 +7,13 @@ namespace BeamOS.PhysicalModel.Infrastructure;
 public class InMemoryModelRepository : IRepository<ModelId, Model>
 {
     private readonly Dictionary<ModelId, Model> models = [];
+
     public Task Add(Model model)
     {
         _ = this.models.TryAdd(model.Id, model);
         return Task.CompletedTask;
     }
+
     public async Task<Model?> GetById(ModelId modelId)
     {
         await Task.CompletedTask;

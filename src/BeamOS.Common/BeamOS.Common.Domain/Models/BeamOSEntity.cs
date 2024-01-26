@@ -1,4 +1,5 @@
 namespace BeamOS.Common.Domain.Models;
+
 public abstract class BeamOSEntity<TId> : IEquatable<BeamOSEntity<TId>>
     where TId : notnull
 {
@@ -18,6 +19,7 @@ public abstract class BeamOSEntity<TId> : IEquatable<BeamOSEntity<TId>>
     {
         return Equals(left, right);
     }
+
     public static bool operator !=(BeamOSEntity<TId> left, BeamOSEntity<TId> right)
     {
         return !Equals(left, right);

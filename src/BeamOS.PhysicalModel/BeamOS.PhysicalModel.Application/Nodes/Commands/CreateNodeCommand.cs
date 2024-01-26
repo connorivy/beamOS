@@ -9,7 +9,8 @@ public record CreateNodeCommand(
     double YCoordinate,
     double ZCoordinate,
     LengthUnit LengthUnit,
-    RestraintsCommand? Restraint = null);
+    RestraintsCommand? Restraint = null
+);
 
 public record RestraintsCommand(
     bool CanTranslateAlongX,
@@ -17,4 +18,5 @@ public record RestraintsCommand(
     bool CanTranslateAlongZ,
     bool CanRotateAboutX,
     bool CanRotateAboutY,
-    bool CanRotateAboutZ);
+    bool CanRotateAboutZ
+);

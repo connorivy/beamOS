@@ -8,11 +8,13 @@ namespace BeamOS.PhysicalModel.Api.Common.Endpoints;
 
 public abstract class GetAggregateRootByGuidBasedIdEndpoint<TId, TAggregate, TResponse>(
     IRepository<TId, TAggregate> repository,
-    IMapper<TAggregate, TResponse> responseMapper) : FastEndpoints.Endpoint<IdRequest, TResponse>
-        where TId : notnull, IConstructable<TId, Guid>
-        where TAggregate : AggregateRoot<TId>
+    IMapper<TAggregate, TResponse> responseMapper
+) : FastEndpoints.Endpoint<IdRequest, TResponse>
+    where TId : notnull, IConstructable<TId, Guid>
+    where TAggregate : AggregateRoot<TId>
 {
     public abstract override void Configure();
+
     //{
     //    this.Get("model/{id}");
     //    this.AllowAnonymous();

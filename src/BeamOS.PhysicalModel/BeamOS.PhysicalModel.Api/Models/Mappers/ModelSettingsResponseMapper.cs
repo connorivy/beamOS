@@ -9,5 +9,6 @@ namespace BeamOS.PhysicalModel.Api.Models.Mappers;
 public partial class ModelSettingsResponseMapper : IMapper<ModelSettings, ModelSettingsResponse>
 {
     public ModelSettingsResponse Map(ModelSettings from) => this.ToResponse(from);
+
     public partial ModelSettingsResponse ToResponse(ModelSettings model);
 }

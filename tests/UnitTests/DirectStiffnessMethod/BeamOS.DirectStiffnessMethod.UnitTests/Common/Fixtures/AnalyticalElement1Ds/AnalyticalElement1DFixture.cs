@@ -3,6 +3,7 @@ using BeamOS.DirectStiffnessMethod.Domain.AnalyticalModelAggregate.ValueObjects;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Fixtures.AnalyticalElement1Ds;
+
 public class AnalyticalElement1DFixture : IHasLocalResults, IHasGlobalResults
 {
     public AnalyticalElement1DFixture(AnalyticalElement1D element, UnitSettings unitSettings)

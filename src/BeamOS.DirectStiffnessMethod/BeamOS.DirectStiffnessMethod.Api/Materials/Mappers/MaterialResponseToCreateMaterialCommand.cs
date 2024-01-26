@@ -8,9 +8,10 @@ namespace BeamOS.DirectStiffnessMethod.Api.Materials.Mappers;
 
 [Mapper]
 [UseStaticMapper(typeof(UnitValueDtoToPressureMapper))]
-public partial class MaterialResponseToCreateMaterialCommand : AbstractMapper<MaterialResponse, CreateMaterialCommand>
+public partial class MaterialResponseToCreateMaterialCommand
+    : AbstractMapper<MaterialResponse, CreateMaterialCommand>
 {
     public override CreateMaterialCommand Map(MaterialResponse source) => this.ToCommand(source);
-    public partial CreateMaterialCommand ToCommand(MaterialResponse source);
 
+    public partial CreateMaterialCommand ToCommand(MaterialResponse source);
 }

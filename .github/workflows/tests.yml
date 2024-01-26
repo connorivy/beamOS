@@ -2,9 +2,8 @@ name: Tests
 
 on:
   workflow_run:
-    workflows: [ "Build" ]
-    types:
-      - completed
+    workflows: ["Build"]
+    types: [requested]
 
 jobs:
   test:

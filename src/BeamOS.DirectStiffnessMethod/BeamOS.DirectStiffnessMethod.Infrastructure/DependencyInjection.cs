@@ -5,7 +5,9 @@ namespace BeamOS.DirectStiffnessMethod.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddDirectStiffnessMethodInfrastructure(this IServiceCollection services)
+    public static IServiceCollection AddDirectStiffnessMethodInfrastructure(
+        this IServiceCollection services
+    )
     {
         //_ = services.AddScoped<IRepository<Ana, Model>, ModelDbContextRepository>();
         //_ = services.AddScoped<IRepository<NodeId, Node>, NodeDbContextRepository>();

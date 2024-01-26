@@ -1,6 +1,7 @@
 using BeamOS.Common.Domain.Models;
 
 namespace BeamOS.Common.Domain.ValueObjects;
+
 public class GuidBasedId(Guid? value) : BeamOSValueObject
 {
     public Guid Value { get; protected set; } = value ?? Guid.NewGuid();
@@ -9,6 +10,7 @@ public class GuidBasedId(Guid? value) : BeamOSValueObject
     {
         yield return this.Value;
     }
+
     public override string ToString()
     {
         return this.Value.ToString();

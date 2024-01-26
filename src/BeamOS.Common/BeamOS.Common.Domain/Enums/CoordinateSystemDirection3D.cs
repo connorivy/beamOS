@@ -1,4 +1,5 @@
 namespace BeamOS.Common.Domain.Enums;
+
 public enum CoordinateSystemDirection3D
 {
     Undefined = 0,

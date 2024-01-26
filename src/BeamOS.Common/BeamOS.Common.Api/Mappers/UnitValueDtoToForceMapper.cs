@@ -10,6 +10,7 @@ public static partial class StringToForceUnitMapper
 {
     public static partial ForceUnit MapToForceUnit(this string unit);
 }
+
 public static class UnitValueDtoToForceMapper
 {
     public static Force MapToForce(this UnitValueDTO dto)

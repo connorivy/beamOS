@@ -1,13 +1,16 @@
 using BeamOS.Common.Domain.Models;
 
 namespace BeamOS.DirectStiffnessMethod.Domain.AnalyticalModelAggregate.ValueObjects;
+
 public class AnalyticalModelSettings : BeamOSValueObject
 {
     public UnitSettings UnitSettings { get; private set; }
+
     public AnalyticalModelSettings(UnitSettings unitSettings)
     {
         this.UnitSettings = unitSettings;
     }
+
     //public ModelOrientation ModelOrientation { get; private set; }
     //public bool IsLocked { get; private set; }
     //public Length Tolerance { get; private set; }

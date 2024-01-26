@@ -9,4 +9,4 @@ public record CreateAnalyticalElement1dCommand(
     GuidBasedIdCommand EndNodeId,
     string MaterialId,
     string SectionProfileId
-    );
+);

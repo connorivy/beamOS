@@ -10,6 +10,7 @@ public static partial class StringToAreaMomentOfInertiaUnitMapper
 {
     public static partial AreaMomentOfInertiaUnit MapToAreaMomentOfInertiaUnit(this string unit);
 }
+
 public static class UnitValueDtoToAreaMomentOfInertiaMapper
 {
     public static AreaMomentOfInertia MapToAreaMomentOfInertia(this UnitValueDTO dto)

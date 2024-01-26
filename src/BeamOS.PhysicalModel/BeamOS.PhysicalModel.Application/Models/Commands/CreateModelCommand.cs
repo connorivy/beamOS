@@ -5,10 +5,10 @@ namespace BeamOS.PhysicalModel.Application.Models.Commands;
 public record CreateModelCommand(
     string Name,
     string Description,
-    AnalyticalModelSettingsCommand Settings);
+    AnalyticalModelSettingsCommand Settings
+);
 
-public record AnalyticalModelSettingsCommand(
-    UnitSettingsCommand UnitSettings);
+public record AnalyticalModelSettingsCommand(UnitSettingsCommand UnitSettings);
 
 public record UnitSettingsCommand(
     LengthUnit LengthUnit,
@@ -16,4 +16,5 @@ public record UnitSettingsCommand(
     VolumeUnit VolumeUnit,
     ForceUnit ForceUnit,
     ForcePerLengthUnit ForcePerLengthUnit,
-    TorqueUnit TorqueUnit);
+    TorqueUnit TorqueUnit
+);

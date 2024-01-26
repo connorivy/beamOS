@@ -6,16 +6,17 @@ using BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate;
 using UnitsNet;
 
 namespace BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Factories;
+
 internal static class Element1DFactory
 {
     public static AnalyticalElement1D Create(
-      UnitSettings? unitSettings = null,
-      AnalyticalNode? startNode = null,
-      AnalyticalNode? endNode = null,
-      Material? material = null,
-      SectionProfile? sectionProfile = null,
-      Angle? rotation = default
-      )
+        UnitSettings? unitSettings = null,
+        AnalyticalNode? startNode = null,
+        AnalyticalNode? endNode = null,
+        Material? material = null,
+        SectionProfile? sectionProfile = null,
+        Angle? rotation = default
+    )
     {
         UnitSettings settings = unitSettings ?? UnitSettings.SI;
         return new(
@@ -27,4 +28,3 @@ internal static class Element1DFactory
         );
     }
 }
-

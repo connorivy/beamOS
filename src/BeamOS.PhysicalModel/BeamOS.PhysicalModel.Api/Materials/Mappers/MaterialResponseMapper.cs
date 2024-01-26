@@ -9,5 +9,6 @@ namespace BeamOS.PhysicalModel.Api.Mappers;
 public partial class MaterialResponseMapper : IMapper<Material, MaterialResponse>
 {
     public MaterialResponse Map(Material from) => this.ToResponse(from);
+
     public partial MaterialResponse ToResponse(Material model);
 }

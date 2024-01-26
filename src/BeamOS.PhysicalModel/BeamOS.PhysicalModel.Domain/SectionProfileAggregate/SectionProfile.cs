@@ -4,6 +4,7 @@ using BeamOS.PhysicalModel.Domain.SectionProfileAggregate.ValueObjects;
 using UnitsNet;
 
 namespace BeamOS.PhysicalModel.Domain.SectionProfileAggregate;
+
 public class SectionProfile : AggregateRoot<SectionProfileId>
 {
     public SectionProfile(
@@ -12,7 +13,9 @@ public class SectionProfile : AggregateRoot<SectionProfileId>
         AreaMomentOfInertia strongAxisMomentOfInertia,
         AreaMomentOfInertia weakAxisMomentOfInertia,
         AreaMomentOfInertia polarMomentOfInertia,
-        SectionProfileId? id = null) : base(id ?? new())
+        SectionProfileId? id = null
+    )
+        : base(id ?? new())
     {
         this.ModelId = modelId;
         this.Area = area;

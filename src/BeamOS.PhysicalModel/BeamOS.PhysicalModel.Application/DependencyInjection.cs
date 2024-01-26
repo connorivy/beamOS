@@ -5,6 +5,7 @@ using BeamOS.PhysicalModel.Application.PointLoads.Commands;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BeamOS.PhysicalModel.Application;
+
 public static class DependencyInjection
 {
     public static IServiceCollection AddPhysicalModelApplication(this IServiceCollection services)

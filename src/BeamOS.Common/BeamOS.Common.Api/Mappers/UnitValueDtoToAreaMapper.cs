@@ -10,6 +10,7 @@ public static partial class StringToAreaUnitMapper
 {
     public static partial AreaUnit MapToAreaUnit(this string unit);
 }
+
 public static class UnitValueDtoToAreaMapper
 {
     public static Area MapToArea(this UnitValueDTO dto)

@@ -1,5 +1,3 @@
 ﻿namespace BeamOS.PhysicalModel.Api;
 
-public interface IAssemblyMarkerPhysicalModelApi
-{
-}
+public interface IAssemblyMarkerPhysicalModelApi { }

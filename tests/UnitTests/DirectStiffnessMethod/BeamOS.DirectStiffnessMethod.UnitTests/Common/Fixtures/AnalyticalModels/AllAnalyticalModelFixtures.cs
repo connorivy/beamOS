@@ -5,9 +5,11 @@ namespace BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Fixtures.Analytic
 public class AllAnalyticalModelFixtures : TheoryData<AnalyticalModelFixture>
 {
     public List<AnalyticalModelFixture> AnalyticalModelFixtures { get; } =
-    [
+
+        [
         // add standalone fixtures here
-    ];
+        ];
+
     public AllAnalyticalModelFixtures()
     {
         var allSolvedProblems = new AllSolvedProblems();

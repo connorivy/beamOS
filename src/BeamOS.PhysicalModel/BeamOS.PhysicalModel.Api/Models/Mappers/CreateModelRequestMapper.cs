@@ -8,5 +8,6 @@ namespace BeamOS.PhysicalModel.Application.Models.Commands;
 public partial class CreateModelRequestMapper : IMapper<CreateModelRequest, CreateModelCommand>
 {
     public CreateModelCommand Map(CreateModelRequest from) => this.ToCommand(from);
+
     public partial CreateModelCommand ToCommand(CreateModelRequest request);
 }

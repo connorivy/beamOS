@@ -5,6 +5,5 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace BeamOS.Common.Api;
-internal class EndpointOperationProcessor
-{
-}
+
+internal class EndpointOperationProcessor { }
