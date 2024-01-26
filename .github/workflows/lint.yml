@@ -2,9 +2,8 @@ name: Lint
 
 on:
   workflow_run:
-    workflows: [ "Build" ]
-    types:
-      - requested
+    workflows: ["Build"]
+    types: [requested]
 
 jobs:
   check_formatting:
