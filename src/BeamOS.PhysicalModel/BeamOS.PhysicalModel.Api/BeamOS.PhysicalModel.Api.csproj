@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\BeamOS.Common\BeamOS.Common.Api\BeamOS.Common.Api.csproj" />
+    <ProjectReference Include="..\..\BeamOs.Identity\BeamOs.Identity.Infrastructure\BeamOs.Identity.Infrastructure.csproj" />
     <ProjectReference Include="..\BeamOS.PhysicalModel.Application\BeamOS.PhysicalModel.Application.csproj" />
     <ProjectReference Include="..\BeamOS.PhysicalModel.Contracts\BeamOS.PhysicalModel.Contracts.csproj" />
     <ProjectReference Include="..\BeamOS.PhysicalModel.Infrastructure\BeamOS.PhysicalModel.Infrastructure.csproj" />
