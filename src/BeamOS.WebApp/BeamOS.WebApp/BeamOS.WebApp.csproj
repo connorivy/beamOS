@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -8,17 +8,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BeamOS.WebApp.Client\BeamOS.WebApp.Client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.0" />
     <PackageReference Include="Refit" Version="7.0.0" />
     <PackageReference Include="Refit.HttpClientFactory" Version="7.0.0" />
   </ItemGroup>
 
-  <Target
-    Name="NpmInstall"
-    Condition="'$(Configuration)' == 'Release' AND '$(ContinuousIntegrationBuild)' == false"
-    Inputs="$(NpmFolder)/package.json"
-    Outputs="$(NpmFolder)/node_modules/.install-stamp">
+  <ItemGroup>
+    <ProjectReference Include="..\..\BeamOS.DirectStiffnessMethod\BeamOS.DirectStiffnessMethod.Client\BeamOS.DirectStiffnessMethod.Client.csproj" />
+    <ProjectReference Include="..\..\BeamOS.PhysicalModel\BeamOS.PhysicalModel.Client\BeamOS.PhysicalModel.Client.csproj" />
+    <ProjectReference Include="..\BeamOS.WebApp.EditorApi\BeamOS.WebApp.EditorApi.csproj" />
+  </ItemGroup>
+
+  <Target Name="NpmInstall" Condition="'$(Configuration)' == 'Release' AND '$(ContinuousIntegrationBuild)' == false" Inputs="$(NpmFolder)/package.json" Outputs="$(NpmFolder)/node_modules/.install-stamp">
     <!--
         Use npm install or npm ci depending on RestorePackagesWithLockFile value.
         Uncomment the following lines if you want to use this feature:
@@ -27,7 +28,7 @@
           <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         </PropertyGroup>
      -->
-    <Exec WorkingDirectory="$(NpmFolder)" Command="npm ci"      Condition="'$(RestorePackagesWithLockFile)' == 'true'" />
+    <Exec WorkingDirectory="$(NpmFolder)" Command="npm ci" Condition="'$(RestorePackagesWithLockFile)' == 'true'" />
     <Exec WorkingDirectory="$(NpmFolder)" Command="npm install" Condition="'$(RestorePackagesWithLockFile)' != 'true'" />
 
     <!-- Write the stamp file, so incremental builds work -->
@@ -38,11 +39,7 @@
       2. Run npm run build before building the .NET project.
       MSBuild runs NpmInstall before this task because of the DependsOnTargets attribute.
    -->
-  <Target
-    Name="NpmRunBuild"
-    DependsOnTargets="NpmInstall"
-    BeforeTargets="BeforeBuild"
-    Condition="'$(Configuration)' == 'Release' AND '$(ContinuousIntegrationBuild)' == false">
+  <Target Name="NpmRunBuild" DependsOnTargets="NpmInstall" BeforeTargets="BeforeBuild" Condition="'$(Configuration)' == 'Release' AND '$(ContinuousIntegrationBuild)' == false">
     <Exec WorkingDirectory="$(NpmFolder)" Command="npm run build" />
   </Target>
 
