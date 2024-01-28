@@ -1,7 +1,10 @@
 using System.Security.Claims;
+using System.Text;
 using BeamOs.Identity.Infrastructure;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -28,9 +31,24 @@ builder
 
 builder
     .Services
-    .AddAuthentication()
-    .AddBearerToken(IdentityConstants.BearerScheme)
-    .AddIdentityCookies();
+    .AddAuthentication(x =>
+    {
+        x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(x =>
+    {
+#pragma warning disable CA5404 // Do not disable token validation checks
+        x.TokenValidationParameters = new()
+        {
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey")),
+            ValidateIssuerSigningKey = true,
+            ValidateAudience = false,
+            ValidateIssuer = false,
+        };
+#pragma warning restore CA5404 // Do not disable token validation checks
+    });
 
 builder
     .Services
@@ -49,13 +67,6 @@ var connectionString =
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.AddDbContext<BeamOsIdentityDbContext>(x => x.UseSqlServer(connectionString));
-
-builder
-    .Services
-    .AddIdentityCore<BeamOsUser>()
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<BeamOsIdentityDbContext>()
-    .AddApiEndpoints();
 
 builder.Services.AddScoped<IdentityDbSeeder>();
 
