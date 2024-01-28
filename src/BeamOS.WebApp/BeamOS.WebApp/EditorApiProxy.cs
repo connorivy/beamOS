@@ -4,7 +4,7 @@ using BeamOS.PhysicalModel.Contracts.Node;
 using BeamOS.WebApp.EditorApi;
 using Microsoft.JSInterop;
 
-namespace BeamOS.WebApp.Client;
+namespace BeamOS.WebApp;
 
 public class EditorApiProxy : DispatchProxy
 {
@@ -40,7 +40,7 @@ public class EditorApiProxy : DispatchProxy
 
     private static string GetTsMethodName(string csMethodName)
     {
-        string tsMethodName = csMethodName;
+        var tsMethodName = csMethodName;
         const string asyncSuffix = "Async";
         if (tsMethodName.EndsWith(asyncSuffix))
         {
