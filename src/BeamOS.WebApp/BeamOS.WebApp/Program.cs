@@ -1,6 +1,6 @@
 using BeamOS.DirectStiffnessMethod.Client;
 using BeamOS.PhysicalModel.Client;
-using BeamOS.WebApp.Client;
+using BeamOS.WebApp;
 using BeamOS.WebApp.Components;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -79,8 +79,9 @@ app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
-    .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(typeof(BeamOS.WebApp.Client.Pages.Editor).Assembly);
+    .AddInteractiveWebAssemblyRenderMode();
+
+//.AddAdditionalAssemblies(typeof(BeamOS.WebApp.Client.Pages.Editor).Assembly);
 
 app.UseCors();
 
