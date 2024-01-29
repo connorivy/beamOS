@@ -1,7 +1,10 @@
 import { BeamOsEditor } from 'beamos-editor';
 
 window.createFromId = (editorId) => {
-  window.beamOsEditor = BeamOsEditor.createFromId(editorId)
+  if (window.beamOsEditor === undefined) {
+    window.beamOsEditor = {}
+  }
+  window.beamOsEditor[editorId] = BeamOsEditor.createFromId(editorId)
   //window.editor.animate()
 }
 

@@ -9,12 +9,14 @@ namespace BeamOS.WebApp;
 public class EditorApiProxy : DispatchProxy
 {
     private IJSRuntime? js;
+    private string? beamOsApiOnWindow;
 
-    public static IEditorApiAlpha Create(IJSRuntime js)
+    public static IEditorApiAlpha Create(IJSRuntime js, string beamOsApiOnWindow)
     {
         var proxyInterface = Create<IEditorApiAlpha, EditorApiProxy>();
         var proxy = proxyInterface as EditorApiProxy ?? throw new Exception();
         proxy.js = js;
+        proxy.beamOsApiOnWindow = beamOsApiOnWindow;
         return proxyInterface;
     }
 
@@ -25,14 +27,14 @@ public class EditorApiProxy : DispatchProxy
             args = args[..^1];
         }
 
-        if (this.js is null)
+        if (this.js is null || this.beamOsApiOnWindow is null)
         {
             throw new Exception("Must use factory method to Create EditorApiProxy");
         }
 
         return this.js
             .InvokeAsync<string>(
-                $"beamOsEditor.api.{GetTsMethodName(targetMethod?.Name ?? throw new ArgumentNullException())}",
+                $"{this.beamOsApiOnWindow}.{GetTsMethodName(targetMethod?.Name ?? throw new ArgumentNullException())}",
                 args
             )
             .AsTask();
@@ -53,5 +55,13 @@ public class EditorApiProxy : DispatchProxy
         }
 
         return tsMethodName;
+    }
+}
+
+public class EditorApiProxyFactory(IJSRuntime js)
+{
+    public IEditorApiAlpha Create(string beamOsApiOnWindow)
+    {
+        return EditorApiProxy.Create(js, beamOsApiOnWindow);
     }
 }
