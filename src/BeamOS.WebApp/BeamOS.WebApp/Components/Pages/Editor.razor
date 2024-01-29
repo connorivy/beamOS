@@ -151,7 +151,7 @@
         editorApiAlpha ??= editorApiAlphaFactory.Create($"beamOsEditor.{elementId}.api");
         if (firstRender)
         {
-            await js.InvokeVoidAsync("createFromId", @elementId);
+            await js.InvokeVoidAsync("createFromId", elementId);
             await LoadModel();
         }
         await base.OnAfterRenderAsync(firstRender);
