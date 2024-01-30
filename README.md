@@ -4,8 +4,8 @@ An open source, test-first structural analysis program
 [![Coverage Status](https://coveralls.io/repos/github/connorivy/beamOS/badge.svg?branch=main)](https://coveralls.io/github/connorivy/beamOS?branch=main)
 
 ### See it in action
-WebApp : https://admin-webapp.gentlemoss-7abe23c3.southcentralus.azurecontainerapps.io/
-Physical Model Api : https://admin-physical-model.gentlemoss-7abe23c3.southcentralus.azurecontainerapps.io/swagger/index.html
+WebApp : https://admin-webapp.gentlemoss-7abe23c3.southcentralus.azurecontainerapps.io/ 
+Physical Model Api : https://admin-physical-model.gentlemoss-7abe23c3.southcentralus.azurecontainerapps.io/swagger/index.html 
 Direct Stiffness Method Api : https://admin-direct-stiffness-method.gentlemoss-7abe23c3.southcentralus.azurecontainerapps.io/swagger/index.html
 
 ### DISCLAIMER : THIS PROJECT IS A WORK-IN-PROGRESS AND SHOULD NOT BE USED FOR DESIGNING ANY REAL-WORLD STRUCTURES
