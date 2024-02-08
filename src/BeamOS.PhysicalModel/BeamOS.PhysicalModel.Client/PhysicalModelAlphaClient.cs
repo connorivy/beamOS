@@ -182,9 +182,8 @@ namespace BeamOS.PhysicalModel.Client
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    urlBuilder_.Append("api");
-                    urlBuilder_.Append('/');
-                    urlBuilder_.Append("SectionProfiles");
+                    // Operation Path: "api/SectionProfiles"
+                    urlBuilder_.Append("api/SectionProfiles");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -197,7 +196,9 @@ namespace BeamOS.PhysicalModel.Client
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
                         {
                             foreach (var item_ in response_.Content.Headers)
@@ -264,9 +265,8 @@ namespace BeamOS.PhysicalModel.Client
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    urlBuilder_.Append("api");
-                    urlBuilder_.Append('/');
-                    urlBuilder_.Append("moment-loads");
+                    // Operation Path: "api/moment-loads"
+                    urlBuilder_.Append("api/moment-loads");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -279,7 +279,9 @@ namespace BeamOS.PhysicalModel.Client
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
                         {
                             foreach (var item_ in response_.Content.Headers)
@@ -342,10 +344,8 @@ namespace BeamOS.PhysicalModel.Client
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    urlBuilder_.Append("api");
-                    urlBuilder_.Append('/');
-                    urlBuilder_.Append("models");
-                    urlBuilder_.Append('/');
+                    // Operation Path: "api/models/{id}"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
@@ -359,7 +359,9 @@ namespace BeamOS.PhysicalModel.Client
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
                         {
                             foreach (var item_ in response_.Content.Headers)
@@ -422,13 +424,10 @@ namespace BeamOS.PhysicalModel.Client
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    urlBuilder_.Append("api");
-                    urlBuilder_.Append('/');
-                    urlBuilder_.Append("models");
-                    urlBuilder_.Append('/');
+                    // Operation Path: "api/models/{id}/hydrated"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
-                    urlBuilder_.Append('/');
-                    urlBuilder_.Append("hydrated");
+                    urlBuilder_.Append("/hydrated");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -441,7 +440,9 @@ namespace BeamOS.PhysicalModel.Client
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
                         {
                             foreach (var item_ in response_.Content.Headers)
@@ -508,9 +509,8 @@ namespace BeamOS.PhysicalModel.Client
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    urlBuilder_.Append("api");
-                    urlBuilder_.Append('/');
-                    urlBuilder_.Append("materials");
+                    // Operation Path: "api/materials"
+                    urlBuilder_.Append("api/materials");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -523,7 +523,9 @@ namespace BeamOS.PhysicalModel.Client
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
                         {
                             foreach (var item_ in response_.Content.Headers)
@@ -586,14 +588,13 @@ namespace BeamOS.PhysicalModel.Client
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    urlBuilder_.Append("api");
-                    urlBuilder_.Append('/');
-                    urlBuilder_.Append("element1Ds");
+                    // Operation Path: "api/element1Ds"
+                    urlBuilder_.Append("api/element1Ds");
             urlBuilder_.Append('?');
-            urlBuilder_.Append(System.Uri.EscapeDataString("modelId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            urlBuilder_.Append(System.Uri.EscapeDataString("modelId")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
             if (element1dIds != null)
             {
-                foreach (var item_ in element1dIds) { urlBuilder_.Append(System.Uri.EscapeDataString("element1dIds") + "=").Append(System.Uri.EscapeDataString(ConvertToString(item_, System.Globalization.CultureInfo.InvariantCulture))).Append("&"); }
+                foreach (var item_ in element1dIds) { urlBuilder_.Append(System.Uri.EscapeDataString("element1dIds")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(item_, System.Globalization.CultureInfo.InvariantCulture))).Append('&'); }
             }
             urlBuilder_.Length--;
 
@@ -608,7 +609,9 @@ namespace BeamOS.PhysicalModel.Client
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
                         {
                             foreach (var item_ in response_.Content.Headers)
@@ -677,9 +680,8 @@ namespace BeamOS.PhysicalModel.Client
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    urlBuilder_.Append("api");
-                    urlBuilder_.Append('/');
-                    urlBuilder_.Append("element1Ds");
+                    // Operation Path: "api/element1Ds"
+                    urlBuilder_.Append("api/element1Ds");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -692,7 +694,9 @@ namespace BeamOS.PhysicalModel.Client
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
                         {
                             foreach (var item_ in response_.Content.Headers)
@@ -761,9 +765,8 @@ namespace BeamOS.PhysicalModel.Client
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    urlBuilder_.Append("api");
-                    urlBuilder_.Append('/');
-                    urlBuilder_.Append("point-load");
+                    // Operation Path: "api/point-load"
+                    urlBuilder_.Append("api/point-load");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -776,7 +779,9 @@ namespace BeamOS.PhysicalModel.Client
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
                         {
                             foreach (var item_ in response_.Content.Headers)
@@ -845,9 +850,8 @@ namespace BeamOS.PhysicalModel.Client
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    urlBuilder_.Append("api");
-                    urlBuilder_.Append('/');
-                    urlBuilder_.Append("nodes");
+                    // Operation Path: "api/nodes"
+                    urlBuilder_.Append("api/nodes");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -860,7 +864,9 @@ namespace BeamOS.PhysicalModel.Client
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
                         {
                             foreach (var item_ in response_.Content.Headers)
@@ -922,10 +928,8 @@ namespace BeamOS.PhysicalModel.Client
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    urlBuilder_.Append("api");
-                    urlBuilder_.Append('/');
-                    urlBuilder_.Append("nodes");
-                    urlBuilder_.Append('/');
+                    // Operation Path: "api/nodes/{id}"
+                    urlBuilder_.Append("api/nodes/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
@@ -939,7 +943,9 @@ namespace BeamOS.PhysicalModel.Client
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
                         {
                             foreach (var item_ in response_.Content.Headers)
@@ -1008,9 +1014,8 @@ namespace BeamOS.PhysicalModel.Client
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    urlBuilder_.Append("api");
-                    urlBuilder_.Append('/');
-                    urlBuilder_.Append("models");
+                    // Operation Path: "api/models"
+                    urlBuilder_.Append("api/models");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -1023,7 +1028,9 @@ namespace BeamOS.PhysicalModel.Client
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
                         {
                             foreach (var item_ in response_.Content.Headers)
@@ -1085,10 +1092,8 @@ namespace BeamOS.PhysicalModel.Client
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    urlBuilder_.Append("api");
-                    urlBuilder_.Append('/');
-                    urlBuilder_.Append("element1Ds");
-                    urlBuilder_.Append('/');
+                    // Operation Path: "api/element1Ds/{id}"
+                    urlBuilder_.Append("api/element1Ds/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
@@ -1102,7 +1107,9 @@ namespace BeamOS.PhysicalModel.Client
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
                         {
                             foreach (var item_ in response_.Content.Headers)
@@ -1233,10 +1240,19 @@ namespace BeamOS.PhysicalModel.Client
             {
                 return System.Convert.ToBase64String((byte[]) value);
             }
+            else if (value is string[])
+            {
+                return string.Join(",", (string[])value);
+            }
             else if (value.GetType().IsArray)
             {
-                var array = System.Linq.Enumerable.OfType<object>((System.Array) value);
-                return string.Join(",", System.Linq.Enumerable.Select(array, o => ConvertToString(o, cultureInfo)));
+                var valueArray = (System.Array)value;
+                var valueTextArray = new string[valueArray.Length];
+                for (var i = 0; i < valueArray.Length; i++)
+                {
+                    valueTextArray[i] = ConvertToString(valueArray.GetValue(i), cultureInfo);
+                }
+                return string.Join(",", valueTextArray);
             }
 
             var result = System.Convert.ToString(value, cultureInfo);

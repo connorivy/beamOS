@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
-
+  <PropertyGroup Label="Packaging">
+    <Version>0.0.4</Version>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
   <PropertyGroup Label="General Config">
     <ContinuousIntegrationBuild Condition="'$(ContinuousIntegrationBuild)' == ''">false</ContinuousIntegrationBuild>
     <NoWarn>
