@@ -1,5 +1,7 @@
 using System.Security.Claims;
 using System.Text;
+using BeamOS.Common.Api;
+using BeamOs.Identity.Api;
 using BeamOs.Identity.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -29,6 +31,8 @@ builder
         options.OperationFilter<SecurityRequirementsOperationFilter>();
     });
 
+builder.Services.AddBeamOsEndpoints<IAssemblyMarkerIdentityApi>();
+
 builder
     .Services
     .AddAuthentication(x =>
@@ -39,15 +43,18 @@ builder
     })
     .AddJwtBearer(x =>
     {
-#pragma warning disable CA5404 // Do not disable token validation checks
         x.TokenValidationParameters = new()
         {
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey")),
+            ValidateIssuer = true,
+            ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
             ValidateIssuerSigningKey = true,
-            ValidateAudience = false,
-            ValidateIssuer = false,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"])
+            ),
+            ValidateAudience = true,
+            ValidAudiences = builder.Configuration["JwtSettings:Audiences"].Split(','),
+            ValidateLifetime = true,
         };
-#pragma warning restore CA5404 // Do not disable token validation checks
     });
 
 builder
@@ -68,11 +75,16 @@ var connectionString =
 
 builder.Services.AddDbContext<BeamOsIdentityDbContext>(x => x.UseSqlServer(connectionString));
 
-builder.Services.AddScoped<IdentityDbSeeder>();
+//builder.Services.AddScoped<IdentityDbSeeder>();
 
 var app = builder.Build();
 
-app.MapIdentityApi<BeamOsUser>();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.AddBeamOsEndpoints<IAssemblyMarkerIdentityApi>();
+
+//app.MapIdentityApi<BeamOsUser>();
 
 app.MapGet("/user", (ClaimsPrincipal user) => $"Hello user {user.Identity.Name}")
     .RequireAuthorization();
@@ -89,9 +101,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 
-    using var scope = app.Services.CreateScope();
-    var seeder = scope.ServiceProvider.GetRequiredService<IdentityDbSeeder>();
-    await seeder.SeedAsync();
+    //using var scope = app.Services.CreateScope();
+    //var seeder = scope.ServiceProvider.GetRequiredService<IdentityDbSeeder>();
+    //await seeder.SeedAsync();
 }
 
 app.UseHttpsRedirection();
