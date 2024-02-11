@@ -25,4 +25,8 @@
     <ProjectReference Include="..\BeamOs.Identity.Infrastructure\BeamOs.Identity.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Users\Endpoints\" />
+  </ItemGroup>
+
 </Project>

@@ -2,6 +2,8 @@ using System.Security.Claims;
 using System.Text;
 using BeamOS.Common.Api;
 using BeamOs.Identity.Api;
+using BeamOs.Identity.Api.Infrastructure;
+using BeamOs.Identity.Domain.UserAggregate;
 using BeamOs.Identity.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -31,15 +33,16 @@ builder
         options.OperationFilter<SecurityRequirementsOperationFilter>();
     });
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddBeamOsEndpoints<IAssemblyMarkerIdentityApi>();
 
 builder
     .Services
     .AddAuthentication(x =>
     {
-        x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        //x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        //x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        //x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
     })
     .AddJwtBearer(x =>
     {

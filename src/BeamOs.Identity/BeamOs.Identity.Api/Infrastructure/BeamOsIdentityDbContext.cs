@@ -1,8 +1,9 @@
+using BeamOs.Identity.Api.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace BeamOs.Identity.Infrastructure;
+namespace BeamOs.Identity.Api.Infrastructure;
 
 /// <summary>
 /// Build migrations from folder location
@@ -38,7 +39,7 @@ public class IdentityDbSeeder(
                 continue;
             }
 
-            IdentityRole roleRole = new IdentityRole(role);
+            var roleRole = new IdentityRole(role);
             await roleManager.CreateAsync(roleRole);
         }
     }
