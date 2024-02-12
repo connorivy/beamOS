@@ -28,7 +28,7 @@ public class RefreshEndpoint(
             ?? throw new Exception();
 
         if (
-            user.RefreshToken == null
+            user.RefreshToken == RefreshToken.Default
             || !user.RefreshToken.PasswordMatches(token)
             || !user.RefreshToken.IsNotExpired(DateTime.UtcNow)
         )
@@ -37,7 +37,7 @@ public class RefreshEndpoint(
         }
 
         string newTokenString = RefreshToken.GenerateUnhashedToken();
-        RefreshToken
+        //RefreshToken
 
         return null;
     }
