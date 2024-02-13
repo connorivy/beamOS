@@ -153,7 +153,7 @@ accountGroup.MapPost(
 
 app.MapGet(
     "/signin-google",
-    (string state, string code, string scope, string authuser, string prompt) =>
+    (string? state, string? code, string? scope, string? authuser, string? prompt) =>
     {
         ;
     }

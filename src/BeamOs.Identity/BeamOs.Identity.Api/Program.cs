@@ -2,10 +2,14 @@ using System.Security.Claims;
 using System.Text;
 using BeamOS.Common.Api;
 using BeamOs.Identity.Api;
+using BeamOs.Identity.Api.Entities;
 using BeamOs.Identity.Api.Infrastructure;
 using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -65,14 +69,16 @@ builder
     .AddGoogle(options =>
     {
         options.SignInScheme = IdentityConstants.ExternalScheme;
+        //options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
         IConfigurationSection googleAuthNSection = builder
             .Configuration
             .GetSection("Authentication:Google");
         options.ClientId = googleAuthNSection["ClientId"];
         options.ClientSecret = googleAuthNSection["ClientSecret"];
-        //options.SaveTokens = true;
-    })
-    .AddIdentityCookies();
+        options.SaveTokens = true;
+    });
+
+//.AddIdentityCookies();
 
 builder
     .Services
@@ -91,6 +97,13 @@ var connectionString =
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.AddDbContext<BeamOsIdentityDbContext>(x => x.UseSqlServer(connectionString));
+
+builder
+    .Services
+    .AddIdentity<BeamOsUser, IdentityRole>()
+    .AddEntityFrameworkStores<BeamOsIdentityDbContext>();
+
+//.AddDefaultTokenProviders();
 
 //builder.Services.AddScoped<IdentityDbSeeder>();
 
@@ -135,36 +148,66 @@ if (app.Environment.IsDevelopment())
 
 app.MapPost(
     "/PerformExternalLogin",
-    async (HttpContext context) =>
+    (HttpContext context, [FromServices] SignInManager<BeamOsUser> signInManager) =>
     {
         //if (!await antiforgery.IsRequestValidAsync(context))
         //{
         //    return Results.Redirect("/");
         //}
 
-        //IEnumerable<KeyValuePair<string, StringValues>> query = [
-        //    new("ReturnUrl", returnUrl),
-        //                new("Action", ExternalLogin.LoginCallbackAction)];
+        IEnumerable<KeyValuePair<string, StringValues>> query = [new("ReturnUrl", "/hello")];
 
-        //var redirectUrl = UriHelper.BuildRelative(
-        //    context.Request.PathBase,
-        //    "/Account/ExternalLogin",
-        //    QueryString.Create(query));
-
-        //var properties = signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
-        //return TypedResults.Challenge(properties, [provider]);
-        return Results.Challenge(
-            new() { RedirectUri = "/PerformExternalLogin2" },
-            [GoogleDefaults.AuthenticationScheme]
+        var provider = "Google";
+        var redirectUrl = UriHelper.BuildRelative(
+            context.Request.PathBase,
+            "/PerformExternalLogin2",
+            QueryString.Create(query)
         );
+
+        var properties = signInManager.ConfigureExternalAuthenticationProperties(
+            provider,
+            redirectUrl
+        );
+        return TypedResults.Challenge(properties, [provider]);
+
+        //return Results.Challenge(
+        //    new() { RedirectUri = "/PerformExternalLogin2" },
+        //    [GoogleDefaults.AuthenticationScheme]
+        //);
     }
 );
 
 app.MapGet(
     "/PerformExternalLogin2",
+    async (
+        HttpContext context,
+        [FromServices] SignInManager<BeamOsUser> signInManager,
+        [FromServices] UserManager<BeamOsUser> userManager
+    ) =>
+    {
+        ExternalLoginInfo info = await signInManager.GetExternalLoginInfoAsync();
+
+        var user = await userManager.GetUserAsync(info.Principal);
+        var user2 = await userManager.GetUserAsync(context.User);
+        foreach (Claim c in context.User.Claims)
+        {
+            ;
+        }
+
+        var accessToken = await context.GetTokenAsync(
+            GoogleDefaults.AuthenticationScheme,
+            "access_token"
+        );
+        var idToken = await context.GetTokenAsync(GoogleDefaults.AuthenticationScheme, "id_token");
+        return "hello api";
+    }
+);
+
+app.MapGet(
+    "/hello",
     () =>
     {
-        return "hello api";
+        return "hello";
     }
 );
 
