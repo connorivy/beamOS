@@ -1,15 +1,14 @@
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Identity
 
-@inject IHttpClientFactory clientFactory
+@inject NavigationManager Navigator
 
-<button @onclick="LoginIdentity">loginIdentity</button>
-<form class="form-horizontal" action="https://localhost:7194/PerformExternalLogin" method="post">
+<form class="form-horizontal" action="https://localhost:7194/login-with-google" method="post">
     <div>
         <AntiforgeryToken />
         <input type="hidden" name="ReturnUrl" value="@ReturnUrl" />
         <p>
-            <button type="submit" class="btn btn-primary" name="provider" value="Google" title="Log in using your Google account">Google</button>
+            <button type="submit" class="btn btn-primary" name="Provider" value="Google" title="Log in using your Google account">Google</button>
         </p>
     </div>
 </form>
@@ -18,17 +17,8 @@
     [SupplyParameterFromQuery]
     private string? ReturnUrl { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        // var authenticationSchemes = await schemes.GetAllSchemesAsync();
-        // externalLogins = authenticationSchemes.Where(s => !string.IsNullOrEmpty(s.DisplayName)).ToArray();
-    }
-
-    private async Task LoginIdentity()
-    {
-        var client = clientFactory.CreateClient();
-        client.BaseAddress = new("https://localhost:7194");
-
-        var x = await client.PostAsync("/PerformExternalLogin", new StringContent(""));
+        ReturnUrl ??= Navigator.BaseUri;
     }
 }

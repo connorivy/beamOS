@@ -4,6 +4,7 @@ using BeamOS.Common.Api;
 using BeamOs.Identity.Api;
 using BeamOs.Identity.Api.Entities;
 using BeamOs.Identity.Api.Infrastructure;
+using FastEndpoints;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -41,6 +42,7 @@ builder
     });
 
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddFastEndpoints();
 builder.Services.AddBeamOsEndpoints<IAssemblyMarkerIdentityApi>();
 
 builder
@@ -77,8 +79,6 @@ builder
         options.ClientSecret = googleAuthNSection["ClientSecret"];
         options.SaveTokens = true;
     });
-
-//.AddIdentityCookies();
 
 builder
     .Services
@@ -122,6 +122,7 @@ var app = builder.Build();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseFastEndpoints();
 app.AddBeamOsEndpoints<IAssemblyMarkerIdentityApi>();
 
 //app.MapIdentityApi<BeamOsUser>();
@@ -145,37 +146,6 @@ if (app.Environment.IsDevelopment())
     //var seeder = scope.ServiceProvider.GetRequiredService<IdentityDbSeeder>();
     //await seeder.SeedAsync();
 }
-
-app.MapPost(
-    "/PerformExternalLogin",
-    (HttpContext context, [FromServices] SignInManager<BeamOsUser> signInManager) =>
-    {
-        //if (!await antiforgery.IsRequestValidAsync(context))
-        //{
-        //    return Results.Redirect("/");
-        //}
-
-        IEnumerable<KeyValuePair<string, StringValues>> query = [new("ReturnUrl", "/hello")];
-
-        var provider = "Google";
-        var redirectUrl = UriHelper.BuildRelative(
-            context.Request.PathBase,
-            "/PerformExternalLogin2",
-            QueryString.Create(query)
-        );
-
-        var properties = signInManager.ConfigureExternalAuthenticationProperties(
-            provider,
-            redirectUrl
-        );
-        return TypedResults.Challenge(properties, [provider]);
-
-        //return Results.Challenge(
-        //    new() { RedirectUri = "/PerformExternalLogin2" },
-        //    [GoogleDefaults.AuthenticationScheme]
-        //);
-    }
-);
 
 app.MapGet(
     "/PerformExternalLogin2",
