@@ -1,10 +1,13 @@
+using System;
 using System.Security.Claims;
 using BeamOS.Common.Api;
 using BeamOs.Identity.Api.Entities;
 using BeamOs.Identity.Api.Infrastructure;
 using FastEndpoints;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.Identity.Api.Features.LoginWithGoogle;
 
@@ -12,7 +15,8 @@ public class LoginWithGoogleEndpointRedirect(
     SignInManager<BeamOsUser> signInManager,
     UserManager<BeamOsUser> userManager,
     BeamOsIdentityDbContext dbContext,
-    IHttpContextAccessor httpContextAccessor
+    IHttpContextAccessor httpContextAccessor,
+    AuthenticationResponseFactory authenticationResponseFactory
 ) : BeamOsEndpoint<string, EmptyResponse>
 {
     public const string RedirectUrlQueryParam = "RedirectUrl";
@@ -27,14 +31,32 @@ public class LoginWithGoogleEndpointRedirect(
     {
         ExternalLoginInfo info = await signInManager.GetExternalLoginInfoAsync();
 
-        var user = await userManager.GetUserAsync(info.Principal);
         string email = info.Principal.FindFirstValue(ClaimTypes.Email) ?? throw new Exception();
+        var user = await userManager.Users.FirstOrDefaultAsync(u => u.Email == email);
         if (user == null)
         {
             user = new BeamOsUser() { Email = email, EmailConfirmed = true };
-            await userManager.CreateAsync(user);
+            _ = await userManager.CreateAsync(user);
             _ = await dbContext.SaveChangesAsync(ct);
         }
+
+        var cookie = httpContextAccessor.HttpContext.Request.Cookies[
+            IdentityConstants.ExternalScheme
+        ];
+
+        var authResponse = await authenticationResponseFactory.Create(user);
+
+        CookieOptions authOptions = new() { HttpOnly = true, };
+        httpContextAccessor
+            .HttpContext
+            .Response
+            .Cookies
+            .Append("Authorization", authResponse.AccessToken, authOptions);
+        httpContextAccessor
+            .HttpContext
+            .Response
+            .Cookies
+            .Append("Refresh", authResponse.RefreshToken, authOptions);
 
         httpContextAccessor.HttpContext.Response.Redirect(redirectUrl);
 

@@ -44,6 +44,7 @@ builder
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddFastEndpoints();
 builder.Services.AddBeamOsEndpoints<IAssemblyMarkerIdentityApi>();
+builder.Services.AddIdentityApi();
 
 builder
     .Services

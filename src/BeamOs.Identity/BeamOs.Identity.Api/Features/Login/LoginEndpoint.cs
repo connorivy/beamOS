@@ -6,8 +6,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.Identity.Api.Features.Login;
 
-public class LoginEndpoint(IConfiguration configuration, BeamOsIdentityDbContext dbContext)
-    : BeamOsEndpoint<LoginRequest, AuthenticationResponse>
+public class LoginEndpoint(
+    AuthenticationResponseFactory authenticationResponseFactory,
+    BeamOsIdentityDbContext dbContext
+) : BeamOsEndpoint<LoginRequest, AuthenticationResponse>
 {
     public override string Route => "/login";
 
@@ -33,17 +35,6 @@ public class LoginEndpoint(IConfiguration configuration, BeamOsIdentityDbContext
             return null;
         }
 
-        string token = AccessToken.Create(
-            request.Email,
-            configuration["JwtSettings:Audiences"].Split(','),
-            configuration["JwtSettings:Key"],
-            configuration["JwtSettings:Issuer"]
-        );
-
-        string refreshToken = RefreshToken.GenerateUnhashedToken();
-        existingUser.RefreshToken = new(refreshToken, DateTime.UtcNow, DateTime.UtcNow.AddDays(1));
-        _ = await dbContext.SaveChangesAsync(ct);
-
-        return new AuthenticationResponse(token, refreshToken);
+        return await authenticationResponseFactory.Create(existingUser, ct);
     }
 }

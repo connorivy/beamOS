@@ -1,13 +1,16 @@
+using System.Text;
 using BeamOS.DirectStiffnessMethod.Client;
 using BeamOS.PhysicalModel.Client;
 using BeamOS.WebApp;
 using BeamOS.WebApp.Components;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,23 +42,30 @@ builder
         client => client.BaseAddress = new("https://localhost:7110")
     );
 
+builder.Services.AddCascadingAuthenticationState();
 builder
     .Services
-    .AddAuthentication(options =>
+    .AddAuthentication(x =>
     {
-        options.DefaultScheme = IdentityConstants.ApplicationScheme;
-        options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+        x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
     })
-    .AddGoogle(options =>
+    .AddJwtBearer(x =>
     {
-        IConfigurationSection googleAuthNSection = builder
-            .Configuration
-            .GetSection("Authentication:Google");
-        options.ClientId = googleAuthNSection["ClientId"];
-        options.ClientSecret = googleAuthNSection["ClientSecret"];
-        options.SaveTokens = true;
-    })
-    .AddIdentityCookies();
+        x.TokenValidationParameters = new()
+        {
+            ValidateIssuer = true,
+            ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"])
+            ),
+            ValidateAudience = true,
+            ValidAudiences = builder.Configuration["JwtSettings:Audiences"].Split(','),
+            ValidateLifetime = true,
+        };
+    });
 
 builder.Services.RegisterSharedServices();
 
@@ -82,6 +92,18 @@ app.MapGet(
                 [Constants.DSM_API_BASE_URI] = "https://localhost:7110"
             }
         )
+);
+
+app.Use(
+    async (context, next) =>
+    {
+        var token = context.Request.Cookies["Authorization"];
+        if (!string.IsNullOrEmpty(token))
+        {
+            context.Request.Headers.Add("Authorization", "Bearer " + token);
+        }
+        await next();
+    }
 );
 
 //var accountGroup = app.MapGroup("/Account");
@@ -118,6 +140,9 @@ else
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
