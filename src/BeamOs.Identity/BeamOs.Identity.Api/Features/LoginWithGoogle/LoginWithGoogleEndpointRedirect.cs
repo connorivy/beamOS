@@ -1,10 +1,8 @@
-using System;
 using System.Security.Claims;
 using BeamOS.Common.Api;
 using BeamOs.Identity.Api.Entities;
 using BeamOs.Identity.Api.Infrastructure;
 using FastEndpoints;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\BeamOS.DirectStiffnessMethod\BeamOS.DirectStiffnessMethod.Client\BeamOS.DirectStiffnessMethod.Client.csproj" />
     <ProjectReference Include="..\..\BeamOS.PhysicalModel\BeamOS.PhysicalModel.Client\BeamOS.PhysicalModel.Client.csproj" />
+    <ProjectReference Include="..\BeamOS.WebApp.Client\BeamOS.WebApp.Client.csproj" />
     <ProjectReference Include="..\BeamOS.WebApp.EditorApi\BeamOS.WebApp.EditorApi.csproj" />
   </ItemGroup>
 

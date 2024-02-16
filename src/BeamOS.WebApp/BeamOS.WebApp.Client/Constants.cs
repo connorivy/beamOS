@@ -1,4 +1,4 @@
-namespace BeamOS.WebApp;
+namespace BeamOS.WebApp.Client;
 
 public static class Constants
 {
