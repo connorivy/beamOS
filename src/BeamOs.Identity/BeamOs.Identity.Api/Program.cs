@@ -129,8 +129,24 @@ var app = builder.Build();
 app.UseAuthentication();
 app.UseAuthorization();
 
+//app.MapIdentityApi<BeamOsUser>();
+
+//app.MapGet("/user", (ClaimsPrincipal user) => $"Hello user {user.Identity.Name}")
+//    .RequireAuthorization();
+
+//app.MapGet("/admin", (ClaimsPrincipal user) => $"Hello admin {user.Identity.Name}")
+//    .RequireAuthorization("AdminAccess");
+
+//app.MapGet("/manager", (ClaimsPrincipal user) => $"Hello manager {user.Identity.Name}")
+//    .RequireAuthorization("ManagerAccess");
+
 app.AddBeamOsEndpoints<IAssemblyMarkerIdentityApi>();
-app.UseFastEndpoints().UseSwaggerGen();
+app.UseFastEndpoints(c =>
+    {
+        c.Versioning.Prefix = "v";
+        c.Endpoints.ShortNames = true;
+    })
+    .UseSwaggerGen();
 
 const string clientNs = "BeamOs.Identity.Client";
 const string clientName = "IdentityAlphaClient";
@@ -142,22 +158,11 @@ await app.GenerateClient(
     [$"{contractsBaseNs}.Common", $"{contractsBaseNs}.Login", $"{contractsBaseNs}.LoginWithGoogle"]
 );
 
-//app.MapIdentityApi<BeamOsUser>();
-
-app.MapGet("/user", (ClaimsPrincipal user) => $"Hello user {user.Identity.Name}")
-    .RequireAuthorization();
-
-app.MapGet("/admin", (ClaimsPrincipal user) => $"Hello admin {user.Identity.Name}")
-    .RequireAuthorization("AdminAccess");
-
-app.MapGet("/manager", (ClaimsPrincipal user) => $"Hello manager {user.Identity.Name}")
-    .RequireAuthorization("ManagerAccess");
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    //app.UseSwagger();
+    //app.UseSwaggerUI();
 
     //using var scope = app.Services.CreateScope();
     //var seeder = scope.ServiceProvider.GetRequiredService<IdentityDbSeeder>();
