@@ -30,19 +30,30 @@ public class LoginWithGoogleEndpointRedirect(
         ExternalLoginInfo info = await signInManager.GetExternalLoginInfoAsync();
 
         string email = info.Principal.FindFirstValue(ClaimTypes.Email) ?? throw new Exception();
-        var user = await userManager.Users.FirstOrDefaultAsync(u => u.Email == email);
-        if (user == null)
+        string? givenName = info.Principal.FindFirstValue(ClaimTypes.GivenName);
+        string? surname = info.Principal.FindFirstValue(ClaimTypes.Surname);
+
+        foreach (var u in userManager.Users)
         {
-            user = new BeamOsUser() { Email = email, EmailConfirmed = true };
-            _ = await userManager.CreateAsync(user);
-            _ = await dbContext.SaveChangesAsync(ct);
+            ;
         }
 
-        var cookie = httpContextAccessor.HttpContext.Request.Cookies[
-            IdentityConstants.ExternalScheme
-        ];
+        BeamOsUser? user = await userManager.FindByEmailAsync(email);
+        if (user == null)
+        {
+            user = new BeamOsUser()
+            {
+                UserName = email,
+                Email = email,
+                EmailConfirmed = true,
+                GivenName = givenName,
+                Surname = surname
+            };
+            var x = await userManager.CreateAsync(user);
+            var y = await dbContext.SaveChangesAsync(ct);
+        }
 
-        var authResponse = await authenticationResponseFactory.Create(user);
+        var authResponse = await authenticationResponseFactory.Create(user, ct);
 
         CookieOptions authOptions = new() { HttpOnly = true, };
         httpContextAccessor

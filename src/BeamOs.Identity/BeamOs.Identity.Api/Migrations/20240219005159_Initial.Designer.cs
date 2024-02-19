@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeamOs.Identity.Api.Migrations
 {
     [DbContext(typeof(BeamOsIdentityDbContext))]
-    [Migration("20240213183320_Initial")]
+    [Migration("20240219005159_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -45,6 +45,9 @@ namespace BeamOs.Identity.Api.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("GivenName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -71,6 +74,9 @@ namespace BeamOs.Identity.Api.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Surname")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
@@ -82,14 +88,13 @@ namespace BeamOs.Identity.Api.Migrations
                         {
                             b1.IsRequired();
 
-                            b1.Property<DateTime>("CreationDate")
+                            b1.Property<DateTime?>("CreationDate")
                                 .HasColumnType("datetime2");
 
-                            b1.Property<DateTime>("ExpiryDate")
+                            b1.Property<DateTime?>("ExpiryDate")
                                 .HasColumnType("datetime2");
 
                             b1.Property<string>("TokenHash")
-                                .IsRequired()
                                 .HasColumnType("nvarchar(max)");
                         });
 

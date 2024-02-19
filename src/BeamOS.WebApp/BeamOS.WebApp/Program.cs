@@ -4,6 +4,8 @@ using BeamOS.PhysicalModel.Client;
 using BeamOS.WebApp.Client;
 using BeamOS.WebApp.Components;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,6 +38,7 @@ builder
         client => client.BaseAddress = new("https://localhost:7110")
     );
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddCascadingAuthenticationState();
 builder
     .Services
@@ -86,6 +89,24 @@ app.MapGet(
                 [Constants.DSM_API_BASE_URI] = "https://localhost:7110"
             }
         )
+);
+
+app.MapPost(
+    "/logout",
+    async ([FromForm] string returnUrl, [FromServices] IHttpContextAccessor httpContextAccessor) =>
+    {
+        if (httpContextAccessor.HttpContext?.Request.Cookies["Authorization"] is not null)
+        {
+            CookieOptions expiredCookieOptions =
+                new() { HttpOnly = true, Expires = DateTime.UtcNow.AddDays(-1) };
+            httpContextAccessor
+                .HttpContext
+                .Response
+                .Cookies
+                .Append("Authorization", "", expiredCookieOptions);
+        }
+        return TypedResults.LocalRedirect($"~/{returnUrl}");
+    }
 );
 
 app.Use(

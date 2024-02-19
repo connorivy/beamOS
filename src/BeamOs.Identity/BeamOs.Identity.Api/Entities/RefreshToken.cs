@@ -12,9 +12,9 @@ public class RefreshToken : BeamOSValueObject
         this.ExpiryDate = expiryDate;
     }
 
-    public string TokenHash { get; private set; }
-    public DateTime CreationDate { get; private set; }
-    public DateTime ExpiryDate { get; private set; }
+    public string? TokenHash { get; private set; }
+    public DateTime? CreationDate { get; private set; }
+    public DateTime? ExpiryDate { get; private set; }
 
     protected override IEnumerable<object> GetEqualityComponents()
     {

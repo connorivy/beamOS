@@ -1,7 +1,7 @@
 using BeamOS.Common.Api;
 using BeamOs.Identity.Api.Entities;
+using BeamOs.Identity.Api.Features.Common;
 using BeamOs.Identity.Api.Infrastructure;
-using BeamOs.Identity.Contracts.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.Identity.Api.Features.Login;

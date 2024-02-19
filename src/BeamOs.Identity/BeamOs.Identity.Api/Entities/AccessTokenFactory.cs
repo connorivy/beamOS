@@ -13,10 +13,8 @@ public class AccessTokenFactory(IConfiguration configuration)
     private readonly string keyString = configuration["JwtSettings:Key"];
     private readonly string issuer = configuration["JwtSettings:Issuer"];
 
-    public string Create(string email)
+    public string Create(List<Claim> claims)
     {
-        List<Claim> claims = [new Claim(ClaimTypes.Email, email)];
-
         foreach (var audience in this.audiences)
         {
             claims.Add(new Claim(JwtRegisteredClaimNames.Aud, audience));
@@ -39,6 +37,11 @@ public class AccessTokenFactory(IConfiguration configuration)
 
     public string Create(BeamOsUser user)
     {
-        return Create(user.Email);
+        List<Claim> claims =
+        [
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.Name, user.GivenName)
+        ];
+        return this.Create(claims);
     }
 }

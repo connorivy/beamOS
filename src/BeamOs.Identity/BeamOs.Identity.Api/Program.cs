@@ -104,7 +104,7 @@ builder
     .AddIdentity<BeamOsUser, IdentityRole>()
     .AddEntityFrameworkStores<BeamOsIdentityDbContext>();
 
-//.AddDefaultTokenProviders();
+builder.Services.Configure<IdentityOptions>(options => options.User.RequireUniqueEmail = true);
 
 //builder.Services.AddScoped<IdentityDbSeeder>();
 

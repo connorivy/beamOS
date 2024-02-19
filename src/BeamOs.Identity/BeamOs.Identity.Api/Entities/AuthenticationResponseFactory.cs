@@ -1,5 +1,5 @@
+using BeamOs.Identity.Api.Features.Common;
 using BeamOs.Identity.Api.Infrastructure;
-using BeamOs.Identity.Contracts.Users;
 
 namespace BeamOs.Identity.Api.Entities;
 

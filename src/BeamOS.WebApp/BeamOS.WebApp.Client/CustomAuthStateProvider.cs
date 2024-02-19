@@ -7,7 +7,7 @@ namespace BeamOS.WebApp.Client;
 
 public class CustomAuthStateProvider : AuthenticationStateProvider
 {
-    public override async Task<AuthenticationState> GetAuthenticationStateAsync()
+    public override Task<AuthenticationState> GetAuthenticationStateAsync()
     {
         var token = "fake";
 
@@ -26,9 +26,10 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
         var user = new ClaimsPrincipal(identity);
         var state = new AuthenticationState(user);
 
-        this.NotifyAuthenticationStateChanged(Task.FromResult(state));
+        var result = Task.FromResult(state);
+        this.NotifyAuthenticationStateChanged(result);
 
-        return state;
+        return result;
     }
 
     public static IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
