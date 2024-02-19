@@ -82,7 +82,6 @@
             else
             {
                 <td></td>
-                ;
             }
             <td>@ExpectedDisplacements[i]</td>
             @if (@GetDifferenceOrNull(@ExpectedDisplacements[i], @CalculatedDisplacements?.ElementAt(i)) is double diff)
@@ -98,16 +97,14 @@
 </table>
 
 @code {
-    private IEditorApiAlpha editorApiAlpha;
+    private IEditorApiAlpha? editorApiAlpha;
 
-    
     string elementId = "id" + Guid.NewGuid().ToString("N");
 
     const string physicalModelId = "00000000-0000-0000-0000-000000000000";
 
     public List<double>? CalculatedReactions { get; set; }
     public List<double>? CalculatedDisplacements { get; set; }
-
     public List<double> ExpectedReactions { get; } = [
         0,
         0,
@@ -149,10 +146,9 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        editorApiAlpha ??= editorApiAlphaFactory.Create($"beamOsEditor.{elementId}.api");
         if (firstRender)
         {
-            await js.InvokeVoidAsync("createFromId", elementId);
+            editorApiAlpha ??= await editorApiAlphaFactory.Create(elementId);
             await LoadModel();
         }
         await base.OnAfterRenderAsync(firstRender);
@@ -160,7 +156,6 @@
 
     private async Task AddNode()
     {
-        // Trace.WriteLine("AddNode");
         CreateNodeRequest request = new(
             physicalModelId,
             10,

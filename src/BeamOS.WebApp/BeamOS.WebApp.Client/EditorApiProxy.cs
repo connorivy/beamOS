@@ -6,15 +6,18 @@ namespace BeamOS.WebApp;
 
 public class EditorApiProxy : DispatchProxy
 {
-    private IJSRuntime? js;
-    private string? beamOsApiOnWindow;
+    private IJSObjectReference? editorReference;
 
-    public static IEditorApiAlpha Create(IJSRuntime js, string beamOsApiOnWindow)
+    public static async Task<IEditorApiAlpha> Create(IJSRuntime js, string canvasId)
     {
         var proxyInterface = Create<IEditorApiAlpha, EditorApiProxy>();
         var proxy = proxyInterface as EditorApiProxy ?? throw new Exception();
-        proxy.js = js;
-        proxy.beamOsApiOnWindow = beamOsApiOnWindow;
+
+        // WARNING : the string "createEditorFromId" must match the string in index.js
+        proxy.editorReference = await js.InvokeAsync<IJSObjectReference>(
+            "createEditorFromId",
+            canvasId
+        );
         return proxyInterface;
     }
 
@@ -25,14 +28,14 @@ public class EditorApiProxy : DispatchProxy
             args = args[..^1];
         }
 
-        if (this.js is null || this.beamOsApiOnWindow is null)
+        if (this.editorReference is null)
         {
             throw new Exception("Must use factory method to Create EditorApiProxy");
         }
 
-        return this.js
+        return this.editorReference
             .InvokeAsync<string>(
-                $"{this.beamOsApiOnWindow}.{GetTsMethodName(targetMethod?.Name ?? throw new ArgumentNullException())}",
+                $"api.{GetTsMethodName(targetMethod?.Name ?? throw new ArgumentNullException())}",
                 args
             )
             .AsTask();
@@ -58,8 +61,8 @@ public class EditorApiProxy : DispatchProxy
 
 public class EditorApiProxyFactory(IJSRuntime js)
 {
-    public IEditorApiAlpha Create(string beamOsApiOnWindow)
+    public async Task<IEditorApiAlpha> Create(string canvasId)
     {
-        return EditorApiProxy.Create(js, beamOsApiOnWindow);
+        return await EditorApiProxy.Create(js, canvasId);
     }
 }
