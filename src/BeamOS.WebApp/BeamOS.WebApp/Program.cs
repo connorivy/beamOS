@@ -1,10 +1,11 @@
 using System.Text;
 using BeamOS.DirectStiffnessMethod.Client;
 using BeamOS.PhysicalModel.Client;
+using BeamOS.WebApp;
 using BeamOS.WebApp.Client;
 using BeamOS.WebApp.Components;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
@@ -40,6 +41,7 @@ builder
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddCascadingAuthenticationState();
+
 builder
     .Services
     .AddAuthentication(x =>
@@ -63,6 +65,15 @@ builder
             ValidateLifetime = true,
         };
     });
+
+// workaround to make link redirection work in .net 8 with JWT auth
+// see this issue and comment https://github.com/dotnet/aspnetcore/issues/52063#issuecomment-1817420640
+builder
+    .Services
+    .AddSingleton<
+        IAuthorizationMiddlewareResultHandler,
+        BlazorAuthorizationMiddlewareResultHandler
+    >();
 
 builder.Services.RegisterSharedServices();
 

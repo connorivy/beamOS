@@ -5,44 +5,50 @@ using BeamOs.Identity.Api;
 using BeamOs.Identity.Api.Entities;
 using BeamOs.Identity.Api.Infrastructure;
 using FastEndpoints;
-using Microsoft.AspNetCore.Antiforgery;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Google;
+using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authentication.OAuth;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
+//builder.Services.AddEndpointsApiExplorer();
+//builder
+//    .Services
+//    .AddSwaggerGen(options =>
+//    {
+//        options.AddSecurityDefinition(
+//            "oauth2",
+//            new OpenApiSecurityScheme()
+//            {
+//                In = ParameterLocation.Header,
+//                Name = "Authorization",
+//                Type = SecuritySchemeType.ApiKey
+//            }
+//        );
+//        options.OperationFilter<SecurityRequirementsOperationFilter>();
+//    });
+
+const string alphaRelease = "Alpha Release";
+builder.Services.AddHttpContextAccessor();
 builder
     .Services
-    .AddSwaggerGen(options =>
+    .AddFastEndpoints()
+    .SwaggerDocument(o =>
     {
-        options.AddSecurityDefinition(
-            "oauth2",
-            new OpenApiSecurityScheme()
-            {
-                In = ParameterLocation.Header,
-                Name = "Authorization",
-                Type = SecuritySchemeType.ApiKey
-            }
-        );
-        options.OperationFilter<SecurityRequirementsOperationFilter>();
+        o.DocumentSettings = s =>
+        {
+            s.DocumentName = alphaRelease;
+            s.Title = "beamOS api";
+            s.Version = "v0";
+            s.SchemaSettings.SchemaProcessors.Add(new MarkAsRequiredIfNonNullableSchemaProcessor());
+        };
+        o.ShortSchemaNames = true;
+        //o.ExcludeNonFastEndpoints = true;
     });
-
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddFastEndpoints();
 builder.Services.AddBeamOsEndpoints<IAssemblyMarkerIdentityApi>();
 builder.Services.AddIdentityApi();
 
@@ -123,8 +129,18 @@ var app = builder.Build();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseFastEndpoints();
 app.AddBeamOsEndpoints<IAssemblyMarkerIdentityApi>();
+app.UseFastEndpoints().UseSwaggerGen();
+
+const string clientNs = "BeamOs.Identity.Client";
+const string clientName = "IdentityAlphaClient";
+const string contractsBaseNs = $"BeamOs.Identity.Api.Features";
+await app.GenerateClient(
+    alphaRelease,
+    clientNs,
+    clientName,
+    [$"{contractsBaseNs}.Common", $"{contractsBaseNs}.Login", $"{contractsBaseNs}.LoginWithGoogle"]
+);
 
 //app.MapIdentityApi<BeamOsUser>();
 
@@ -147,40 +163,6 @@ if (app.Environment.IsDevelopment())
     //var seeder = scope.ServiceProvider.GetRequiredService<IdentityDbSeeder>();
     //await seeder.SeedAsync();
 }
-
-app.MapGet(
-    "/PerformExternalLogin2",
-    async (
-        HttpContext context,
-        [FromServices] SignInManager<BeamOsUser> signInManager,
-        [FromServices] UserManager<BeamOsUser> userManager
-    ) =>
-    {
-        ExternalLoginInfo info = await signInManager.GetExternalLoginInfoAsync();
-
-        var user = await userManager.GetUserAsync(info.Principal);
-        var user2 = await userManager.GetUserAsync(context.User);
-        foreach (Claim c in context.User.Claims)
-        {
-            ;
-        }
-
-        var accessToken = await context.GetTokenAsync(
-            GoogleDefaults.AuthenticationScheme,
-            "access_token"
-        );
-        var idToken = await context.GetTokenAsync(GoogleDefaults.AuthenticationScheme, "id_token");
-        return "hello api";
-    }
-);
-
-app.MapGet(
-    "/hello",
-    () =>
-    {
-        return "hello";
-    }
-);
 
 app.UseHttpsRedirection();
 

@@ -8,7 +8,8 @@ namespace BeamOs.Identity.Api.Features.Login;
 
 public class LoginEndpoint(
     AuthenticationResponseFactory authenticationResponseFactory,
-    BeamOsIdentityDbContext dbContext
+    BeamOsIdentityDbContext dbContext,
+    LoginVerifiedUser loginVerifiedUser
 ) : BeamOsEndpoint<LoginRequest, AuthenticationResponse>
 {
     public override string Route => "/login";
@@ -34,6 +35,8 @@ public class LoginEndpoint(
             //return BadRequest("Username and password don't match");
             return null;
         }
+
+        _ = await loginVerifiedUser.Login(existingUser, "", ct);
 
         return await authenticationResponseFactory.Create(existingUser, ct);
     }

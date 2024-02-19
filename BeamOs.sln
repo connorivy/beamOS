@@ -83,6 +83,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Identity", "Identity", "{F7
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOs.Identity.Api", "src\BeamOs.Identity\BeamOs.Identity.Api\BeamOs.Identity.Api.csproj", "{0287A1E2-F41E-4051-B3D1-AAFF699A8853}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.Identity.Client", "src\BeamOs.Identity\BeamOs.Identity.Client\BeamOs.Identity.Client.csproj", "{73D159DE-53BF-48F4-8409-36F63587CED5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -189,6 +191,10 @@ Global
 		{0287A1E2-F41E-4051-B3D1-AAFF699A8853}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0287A1E2-F41E-4051-B3D1-AAFF699A8853}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0287A1E2-F41E-4051-B3D1-AAFF699A8853}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73D159DE-53BF-48F4-8409-36F63587CED5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73D159DE-53BF-48F4-8409-36F63587CED5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73D159DE-53BF-48F4-8409-36F63587CED5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73D159DE-53BF-48F4-8409-36F63587CED5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -227,6 +233,7 @@ Global
 		{852DA7A6-AFE8-4BD1-9A46-56A7C3244AC1} = {47A3A027-45D0-44EA-95F2-D775D0C97686}
 		{F750F89A-9FB2-497B-BE36-0C685076C2CF} = {2F3F3AAD-1659-49EF-942B-F0CF5B9E9F4B}
 		{0287A1E2-F41E-4051-B3D1-AAFF699A8853} = {F750F89A-9FB2-497B-BE36-0C685076C2CF}
+		{73D159DE-53BF-48F4-8409-36F63587CED5} = {F750F89A-9FB2-497B-BE36-0C685076C2CF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0E917AFB-AF19-41C1-9F0B-17BD02FD96BE}

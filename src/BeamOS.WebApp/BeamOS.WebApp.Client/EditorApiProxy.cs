@@ -1,6 +1,4 @@
 using System.Reflection;
-using BeamOS.PhysicalModel.Contracts.Common;
-using BeamOS.PhysicalModel.Contracts.Node;
 using BeamOS.WebApp.EditorApi;
 using Microsoft.JSInterop;
 

@@ -15,14 +15,14 @@ public class LoginWithGoogleEndpointRedirect(
     BeamOsIdentityDbContext dbContext,
     IHttpContextAccessor httpContextAccessor,
     AuthenticationResponseFactory authenticationResponseFactory
-) : BeamOsEndpoint<string, EmptyResponse>
+) : BeamOsEndpoint<string, string>
 {
     public const string RedirectUrlQueryParam = "RedirectUrl";
     public override string Route => "/login-with-google/authenticated";
 
     public override EndpointType EndpointType => EndpointType.Get;
 
-    public override async Task<EmptyResponse> ExecuteAsync(
+    public override async Task<string> ExecuteAsync(
         [FromQuery] string redirectUrl,
         CancellationToken ct
     )
@@ -32,11 +32,6 @@ public class LoginWithGoogleEndpointRedirect(
         string email = info.Principal.FindFirstValue(ClaimTypes.Email) ?? throw new Exception();
         string? givenName = info.Principal.FindFirstValue(ClaimTypes.GivenName);
         string? surname = info.Principal.FindFirstValue(ClaimTypes.Surname);
-
-        foreach (var u in userManager.Users)
-        {
-            ;
-        }
 
         BeamOsUser? user = await userManager.FindByEmailAsync(email);
         if (user == null)
@@ -49,8 +44,8 @@ public class LoginWithGoogleEndpointRedirect(
                 GivenName = givenName,
                 Surname = surname
             };
-            var x = await userManager.CreateAsync(user);
-            var y = await dbContext.SaveChangesAsync(ct);
+            _ = await userManager.CreateAsync(user);
+            _ = await dbContext.SaveChangesAsync(ct);
         }
 
         var authResponse = await authenticationResponseFactory.Create(user, ct);
@@ -69,6 +64,6 @@ public class LoginWithGoogleEndpointRedirect(
 
         httpContextAccessor.HttpContext.Response.Redirect(redirectUrl);
 
-        return new EmptyResponse();
+        return string.Empty;
     }
 }
