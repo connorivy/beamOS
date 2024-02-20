@@ -1128,8 +1128,8 @@ select {
   border-color: transparent;
 }
 
-.bg-\[\@primary\] {
-  background-color: @primary;
+.bg-\[--primary\] {
+  background-color: var(--primary);
 }
 
 .bg-gray-100 {
@@ -1145,6 +1145,14 @@ select {
 .bg-gray-50 {
   --tw-bg-opacity: 1;
   background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+}
+
+.bg-\[\@Primary\] {
+  background-color: @Primary;
+}
+
+.bg-\[\@primary\] {
+  background-color: @primary;
 }
 
 .p-2 {
@@ -1264,6 +1272,10 @@ select {
 
 .tracking-tight {
   letter-spacing: -0.025em;
+}
+
+.text-\[--primary\] {
+  color: var(--primary);
 }
 
 .text-black {
@@ -1486,6 +1498,10 @@ select {
   .dark\:border-gray-700 {
     --tw-border-opacity: 1;
     border-color: rgb(55 65 81 / var(--tw-border-opacity));
+  }
+
+  .dark\:bg-\[--primary\] {
+    background-color: var(--primary);
   }
 
   .dark\:bg-gray-700 {
