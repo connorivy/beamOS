@@ -1,0 +1,24 @@
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Identity
+
+@inject NavigationManager Navigator
+
+<form class="form-horizontal" action="https://localhost:7194/login-with-google" method="post">
+    <div>
+        <AntiforgeryToken />
+        <input type="hidden" name="ReturnUrl" value="@ReturnUrl" />
+        <p>
+            <button type="submit" class="btn btn-primary" name="Provider" value="Google" title="Log in using your Google account">Google</button>
+        </p>
+    </div>
+</form>
+
+@code {
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+
+    protected override void OnInitialized()
+    {
+        ReturnUrl ??= Navigator.BaseUri;
+    }
+}

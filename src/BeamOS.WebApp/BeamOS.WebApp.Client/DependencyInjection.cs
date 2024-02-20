@@ -1,7 +1,7 @@
 using BeamOS.WebApp.EditorApi;
 using Microsoft.JSInterop;
 
-namespace BeamOS.WebApp;
+namespace BeamOS.WebApp.Client;
 
 public static class DependencyInjection
 {

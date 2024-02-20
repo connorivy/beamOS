@@ -1,7 +1,13 @@
+using System.Text;
 using BeamOS.DirectStiffnessMethod.Client;
 using BeamOS.PhysicalModel.Client;
 using BeamOS.WebApp;
+using BeamOS.WebApp.Client;
 using BeamOS.WebApp.Components;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +39,42 @@ builder
         client => client.BaseAddress = new("https://localhost:7110")
     );
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddCascadingAuthenticationState();
+
+builder
+    .Services
+    .AddAuthentication(x =>
+    {
+        x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(x =>
+    {
+        x.TokenValidationParameters = new()
+        {
+            ValidateIssuer = true,
+            ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"])
+            ),
+            ValidateAudience = true,
+            ValidAudiences = builder.Configuration["JwtSettings:Audiences"].Split(','),
+            ValidateLifetime = true,
+        };
+    });
+
+// workaround to make link redirection work in .net 8 with JWT auth
+// see this issue and comment https://github.com/dotnet/aspnetcore/issues/52063#issuecomment-1817420640
+builder
+    .Services
+    .AddSingleton<
+        IAuthorizationMiddlewareResultHandler,
+        BlazorAuthorizationMiddlewareResultHandler
+    >();
+
 builder.Services.RegisterSharedServices();
 
 builder
@@ -60,6 +102,36 @@ app.MapGet(
         )
 );
 
+app.MapPost(
+    "/logout",
+    async ([FromForm] string returnUrl, [FromServices] IHttpContextAccessor httpContextAccessor) =>
+    {
+        if (httpContextAccessor.HttpContext?.Request.Cookies["Authorization"] is not null)
+        {
+            CookieOptions expiredCookieOptions =
+                new() { HttpOnly = true, Expires = DateTime.UtcNow.AddDays(-1) };
+            httpContextAccessor
+                .HttpContext
+                .Response
+                .Cookies
+                .Append("Authorization", "", expiredCookieOptions);
+        }
+        return TypedResults.LocalRedirect($"~/{returnUrl}");
+    }
+);
+
+app.Use(
+    async (context, next) =>
+    {
+        var token = context.Request.Cookies["Authorization"];
+        if (!string.IsNullOrEmpty(token))
+        {
+            context.Request.Headers.Add("Authorization", "Bearer " + token);
+        }
+        await next();
+    }
+);
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -72,16 +144,20 @@ else
     app.UseHsts();
 }
 
+app.UseStatusCodePagesWithRedirects("/404");
+
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
-    .AddInteractiveWebAssemblyRenderMode();
-
-//.AddAdditionalAssemblies(typeof(BeamOS.WebApp.Client.Pages.Editor).Assembly);
+    .AddInteractiveWebAssemblyRenderMode()
+    .AddAdditionalAssemblies(typeof(BeamOS.WebApp.Client._Imports).Assembly);
 
 app.UseCors();
 

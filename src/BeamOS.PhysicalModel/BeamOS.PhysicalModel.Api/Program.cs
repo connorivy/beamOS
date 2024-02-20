@@ -1,11 +1,9 @@
 using BeamOS.Common.Api;
 using BeamOS.Common.Application;
 using BeamOS.PhysicalModel.Api;
-using BeamOS.PhysicalModel.Api.Common;
 using BeamOS.PhysicalModel.Application;
 using BeamOS.PhysicalModel.Infrastructure;
 using FastEndpoints;
-using FastEndpoints.ClientGen;
 using FastEndpoints.Swagger;
 using Microsoft.EntityFrameworkCore;
 
@@ -93,6 +91,9 @@ await app.GenerateClient(
         $"{contractsBaseNs}.{ApiClientGenerator.SectionProfileNs}",
     ]
 );
+
+//app.MapGet("/user", (ClaimsPrincipal user) => $"Hello user {user.Identity.Name}")
+//.RequireAuthorization();
 
 //Configure the HTTP-request pipeline
 if (app.Environment.IsDevelopment())

@@ -1,0 +1,6 @@
+@BeamOs.Identity.Api_HostAddress = http://localhost:5188
+
+GET {{BeamOs.Identity.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

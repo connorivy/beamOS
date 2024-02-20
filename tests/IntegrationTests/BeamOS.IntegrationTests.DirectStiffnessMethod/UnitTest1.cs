@@ -17,8 +17,9 @@ public class UnitTest1(CustomWebApplicationFactory<Program> webApplicationFactor
         await Example8_4.CreatePhysicalModel(client);
 
         var modelResponse = await client.GetModelHydratedAsync(Example8_4.ModelId);
+        var expectedModelResponse = Example8_4.GetExpectedResponse();
 
-        ContractComparer.AssertContractsEqual(modelResponse, Example8_4.GetExpectedResponse());
+        ContractComparer.AssertContractsEqual(modelResponse, expectedModelResponse);
     }
 }
 
