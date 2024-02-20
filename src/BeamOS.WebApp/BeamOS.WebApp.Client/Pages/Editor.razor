@@ -16,7 +16,18 @@
 
 <PageTitle>Editor</PageTitle>
 
-<canvas id="@elementId" style="height: 600px; width: 100%;"></canvas>
+<div class="relative w-full h-3/4">
+    <canvas id="@elementId" class="w-full h-full absolute"></canvas>
+    @if (isLoading)
+    {   
+        <div class="bg-gray-800 w-full h-full absolute justify-center items-center opacity-80">
+            <div class="flex w-full h-full m-auto left-0 right-0 top-0 bottom-0 justify-center items-center">
+                <div class="rounded animate-spin ease duration-300 w-10 h-10 border-4 border-white"></div>
+                <h2 class="px-3 font-bold text-white"> @loadingText ...</h2>
+            </div>
+        </div>
+    }
+</div>
 
 <div style="width:100%; padding-bottom: 10px;">
     <button @onclick="Solve">
@@ -99,6 +110,9 @@
 @code {
     private IEditorApiAlpha? editorApiAlpha;
 
+    private string loadingText = "Loading beamOS Editor";
+    private bool isLoading = true;
+
     string elementId = "id" + Guid.NewGuid().ToString("N");
 
     const string physicalModelId = "00000000-0000-0000-0000-000000000000";
@@ -107,32 +121,32 @@
     public List<double>? CalculatedDisplacements { get; set; }
     public List<double> ExpectedReactions { get; } = [
         0,
-        0,
-        0,
-        -10.064,
-        -13.419,
-        0,
-        0,
-        0,
-        0,
-        126.83,
-        0,
-        0,
-        0,
-        -139.94,
-        186.58,
-        0,
-        0,
-        0,
+    0,
+    0,
+    -10.064,
+    -13.419,
+    0,
+    0,
+    0,
+    0,
+    126.83,
+    0,
+    0,
+    0,
+    -139.94,
+    186.58,
+    0,
+    0,
+    0,
     ];
 
     public List<double> ExpectedDisplacements { get; } = [
         .21552,
-        -.13995,
-        0,
-        0,
-        0,
-        0
+    -.13995,
+    0,
+    0,
+    0,
+    0
     ];
 
     private double? GetDifferenceOrNull(double expected, double? calculated)
@@ -148,8 +162,13 @@
     {
         if (firstRender)
         {
+            isLoading = true;
             editorApiAlpha ??= await editorApiAlphaFactory.Create(elementId);
+            loadingText = "Fetching Data";
+            StateHasChanged();
             await LoadModel();
+            isLoading = false;
+            StateHasChanged();
         }
         await base.OnAfterRenderAsync(firstRender);
     }
@@ -169,8 +188,15 @@
 
     private async Task LoadModel()
     {
-        ModelResponseHydrated response = await apiClient.GetModelHydratedAsync(physicalModelId);
-        var x = await editorApiAlpha.CreateModelHydratedAsync(response);
+        try
+        {
+            ModelResponseHydrated response = await apiClient.GetModelHydratedAsync(physicalModelId);
+            var x = await editorApiAlpha.CreateModelHydratedAsync(response);
+        }
+        catch
+        {
+            
+        }
     }
 
     private async Task Solve()
