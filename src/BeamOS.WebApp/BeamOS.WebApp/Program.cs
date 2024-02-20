@@ -144,6 +144,8 @@ else
     app.UseHsts();
 }
 
+app.UseStatusCodePagesWithRedirects("/404");
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
