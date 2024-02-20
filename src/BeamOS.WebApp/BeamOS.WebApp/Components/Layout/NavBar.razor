@@ -2,14 +2,12 @@
 
 @inject NavigationManager NavigationManager
 
-<nav class="bg-green-200 dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-gray-100">
+<header class="bg-green-200 dark:bg-gray-900 sticky w-full z-20 top-0 start-0 border-b border-gray-100">
     <div class="relative flex flex-wrap items-center justify-between w-full bg-gray-100 group p-7 shrink-0">
         <Logo />
         <div class="items-center justify-between hidden gap-12 text-black md:flex">
-            <a class="text-sm font-normal text-dark-grey-700 hover:text-dark-grey-900" href="javascript:void(0)">Product</a>
-            <a class="text-sm font-normal text-dark-grey-700 hover:text-dark-grey-900" href="javascript:void(0)">Features</a>
-            <a class="text-sm font-normal text-dark-grey-700 hover:text-dark-grey-900" href="javascript:void(0)">Pricing</a>
-            <a class="text-sm font-normal text-dark-grey-700 hover:text-dark-grey-900" href="javascript:void(0)">Company</a>
+            <a class="text-base font-bold text-dark-grey-700 hover:text-dark-grey-900" href="/">Home</a>
+            <a class="text-base font-bold text-dark-grey-700 hover:text-dark-grey-900" href="/editor">Editor</a>
         </div>
         <div class="items-center hidden gap-8 md:flex">
             <AuthorizeView>
@@ -18,7 +16,7 @@
                         <form action="logout" method="post">
                             <AntiforgeryToken />
                             <input type="hidden" name="ReturnUrl" value="@currentUrl" />
-                            <button type="submit" class="flex items-center text-sm font-normal text-black">Log Out</button>
+                            <button type="submit" class="flex items-center text-sm font-normal text-black">Log Out @context.User.Identity?.Name</button>
                         </form>
                     </div>
                 </Authorized>
@@ -61,7 +59,7 @@
             </AuthorizeView>
         </div>
     </div>
-</nav>
+</header>
 
 
 @code {

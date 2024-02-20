@@ -56,12 +56,12 @@ namespace BeamOs.Identity.Client
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task BeamOsIdentityApiFeaturesLoginWithGoogleLoginWithGoogleEndpointAsync(ExternalLoginRequest externalLoginRequest);
+        System.Threading.Tasks.Task LoginWithGoogleEndpointAsync(ExternalLoginRequest externalLoginRequest);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task BeamOsIdentityApiFeaturesLoginWithGoogleLoginWithGoogleEndpointAsync(ExternalLoginRequest externalLoginRequest, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task LoginWithGoogleEndpointAsync(ExternalLoginRequest externalLoginRequest, System.Threading.CancellationToken cancellationToken);
 
     }
 
@@ -424,15 +424,15 @@ namespace BeamOs.Identity.Client
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task BeamOsIdentityApiFeaturesLoginWithGoogleLoginWithGoogleEndpointAsync(ExternalLoginRequest externalLoginRequest)
+        public virtual System.Threading.Tasks.Task LoginWithGoogleEndpointAsync(ExternalLoginRequest externalLoginRequest)
         {
-            return BeamOsIdentityApiFeaturesLoginWithGoogleLoginWithGoogleEndpointAsync(externalLoginRequest, System.Threading.CancellationToken.None);
+            return LoginWithGoogleEndpointAsync(externalLoginRequest, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task BeamOsIdentityApiFeaturesLoginWithGoogleLoginWithGoogleEndpointAsync(ExternalLoginRequest externalLoginRequest, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task LoginWithGoogleEndpointAsync(ExternalLoginRequest externalLoginRequest, System.Threading.CancellationToken cancellationToken)
         {
             if (externalLoginRequest == null)
                 throw new System.ArgumentNullException("externalLoginRequest");

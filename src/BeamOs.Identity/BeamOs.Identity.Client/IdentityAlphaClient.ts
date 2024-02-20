@@ -21,7 +21,7 @@ export interface IIdentityAlphaClient {
     /**
      * @return Success
      */
-    beamOsIdentityApiFeaturesLoginWithGoogleLoginWithGoogleEndpoint(externalLoginRequest: ExternalLoginRequest): Promise<void>;
+    loginWithGoogleEndpoint(externalLoginRequest: ExternalLoginRequest): Promise<void>;
 }
 
 export class IdentityAlphaClient implements IIdentityAlphaClient {
@@ -192,7 +192,7 @@ export class IdentityAlphaClient implements IIdentityAlphaClient {
     /**
      * @return Success
      */
-    beamOsIdentityApiFeaturesLoginWithGoogleLoginWithGoogleEndpoint(externalLoginRequest: ExternalLoginRequest): Promise<void> {
+    loginWithGoogleEndpoint(externalLoginRequest: ExternalLoginRequest): Promise<void> {
         let url_ = this.baseUrl + "/login-with-google";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -209,11 +209,11 @@ export class IdentityAlphaClient implements IIdentityAlphaClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processBeamOsIdentityApiFeaturesLoginWithGoogleLoginWithGoogleEndpoint(_response);
+            return this.processLoginWithGoogleEndpoint(_response);
         });
     }
 
-    protected processBeamOsIdentityApiFeaturesLoginWithGoogleLoginWithGoogleEndpoint(response: Response): Promise<void> {
+    protected processLoginWithGoogleEndpoint(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
