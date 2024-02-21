@@ -9,7 +9,7 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
 {
     public override Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        var token = "fake";
+        string? token = null;
 
         var identity = new ClaimsIdentity();
         //http.DefaultRequestHeaders.Authorization = null;

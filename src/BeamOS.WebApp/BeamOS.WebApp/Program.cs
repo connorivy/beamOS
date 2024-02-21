@@ -126,9 +126,9 @@ app.Use(
         var token = context.Request.Cookies["Authorization"];
         if (!string.IsNullOrEmpty(token))
         {
-            context.Request.Headers.Add("Authorization", "Bearer " + token);
+            context.Request.Headers.Authorization = $"Bearer {token}";
         }
-        await next();
+        await next(context);
     }
 );
 

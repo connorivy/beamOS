@@ -17,10 +17,11 @@
 <PageTitle>Editor</PageTitle>
 
 <div class="relative w-full h-3/4">
+    <div class="bg-gray-900 w-full h-full absolute"></div>
     <canvas id="@elementId" class="w-full h-full absolute"></canvas>
     @if (isLoading)
     {   
-        <div class="bg-gray-800 w-full h-full absolute justify-center items-center opacity-80">
+        <div class="bg-gray-900 w-full h-full absolute justify-center items-center opacity-90">
             <div class="flex w-full h-full m-auto left-0 right-0 top-0 bottom-0 justify-center items-center">
                 <div class="rounded animate-spin ease duration-300 w-10 h-10 border-4 border-white"></div>
                 <h2 class="px-3 font-bold text-white"> @loadingText ...</h2>
@@ -29,73 +30,61 @@
     }
 </div>
 
-<div style="width:100%; padding-bottom: 10px;">
-    <button @onclick="Solve">
-        Solve
-    </button>
-</div>
+<div class="p-10 w-full">
+    <div class="flex justify-center items-center pb-2.5">
+        <AuthorizeView>
+            <Authorized>
+                <button @onclick="Solve" class="bg-indigo-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V13.5Zm0 2.25h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V18Zm2.498-6.75h.007v.008h-.007v-.008Zm0 2.25h.007v.008h-.007V13.5Zm0 2.25h.007v.008h-.007v-.008Zm0 2.25h.007v.008h-.007V18Zm2.504-6.75h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V13.5Zm0 2.25h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V18Zm2.498-6.75h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V13.5ZM8.25 6h7.5v2.25h-7.5V6ZM12 2.25c-1.892 0-3.758.11-5.593.322C5.307 2.7 4.5 3.65 4.5 4.757V19.5a2.25 2.25 0 0 0 2.25 2.25h10.5a2.25 2.25 0 0 0 2.25-2.25V4.757c0-1.108-.806-2.057-1.907-2.185A48.507 48.507 0 0 0 12 2.25Z" />
+                    </svg>
+                  <span>Solve</span>
+                </button>
+            </Authorized>
+            <NotAuthorized>
+                <button disabled class="bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V13.5Zm0 2.25h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V18Zm2.498-6.75h.007v.008h-.007v-.008Zm0 2.25h.007v.008h-.007V13.5Zm0 2.25h.007v.008h-.007v-.008Zm0 2.25h.007v.008h-.007V18Zm2.504-6.75h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V13.5Zm0 2.25h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V18Zm2.498-6.75h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V13.5ZM8.25 6h7.5v2.25h-7.5V6ZM12 2.25c-1.892 0-3.758.11-5.593.322C5.307 2.7 4.5 3.65 4.5 4.757V19.5a2.25 2.25 0 0 0 2.25 2.25h10.5a2.25 2.25 0 0 0 2.25-2.25V4.757c0-1.108-.806-2.057-1.907-2.185A48.507 48.507 0 0 0 12 2.25Z" />
+                    </svg>
+                  <span>Solve</span>
+                </button>
+                <div class="mx-2 bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-2" role="alert">
+                  <p>You need to login to enable analysis functionality.</p>
+                </div>
+            </NotAuthorized>
+        </AuthorizeView>
+    </div>
 
-<style>
-    table,
-    th,
-    td {
-        border: 1px solid black;
-        border-collapse: collapse;
-    }
-</style>
+    <style>
+        table,
+        th,
+        td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+    </style>
 
-<table style="width:50%; float:left; border-width: 1px; margin-bottom: 20px;">
-    <thead>
-        <tr>
-            <th>Calculated Reactions</th>
-            <th>Expected Reactions</th>
-            <th>Difference</th>
-        </tr>
-    </thead>
-    @for (int i = 0; i < @ExpectedReactions.Count; i++)
-    {
-        <tr>
-        @if (CalculatedReactions?.ElementAt(i) is double reaction)
+    <table style="width:47%; float:left; border-width: 1px; margin-bottom: 20px;">
+        <thead>
+            <tr>
+                <th>Calculated Reactions</th>
+                <th>Expected Reactions</th>
+                <th>Difference</th>
+            </tr>
+        </thead>
+        @for (int i = 0; i < @ExpectedReactions.Count; i++)
         {
-            <td>@reaction</td>
-        }
-        else
-        {
-            <td></td>;
-        }
-        <td>@ExpectedReactions[i]</td>
-        @if (@GetDifferenceOrNull(@ExpectedReactions[i], @CalculatedReactions?.ElementAt(i)) is double diff)
-        {
-            <td>@diff</td>
-        }
-        else
-        {
-            <td>N/A</td>
-        }
-        </tr>
-    }
-</table>
-<table style="width:50%; float:left;">
-    <thead>
-        <tr>
-            <th>Calculated Displacements</th>
-            <th>Expected Displacements</th>
-            <th>Difference</th>
-        </tr>
-    </thead>
-    @for (int i = 0; i < @ExpectedDisplacements.Count; i++)
-    {
-        <tr>
-            @if (CalculatedDisplacements?.ElementAt(i) is double reaction)
+            <tr>
+            @if (CalculatedReactions?.ElementAt(i) is double reaction)
             {
                 <td>@reaction</td>
             }
             else
             {
-                <td></td>
+                <td></td>;
             }
-            <td>@ExpectedDisplacements[i]</td>
-            @if (@GetDifferenceOrNull(@ExpectedDisplacements[i], @CalculatedDisplacements?.ElementAt(i)) is double diff)
+            <td>@ExpectedReactions[i]</td>
+            @if (@GetDifferenceOrNull(@ExpectedReactions[i], @CalculatedReactions?.ElementAt(i)) is double diff)
             {
                 <td>@diff</td>
             }
@@ -103,11 +92,44 @@
             {
                 <td>N/A</td>
             }
-        </tr>
-    }
-</table>
+            </tr>
+        }
+    </table>
+    <table style="width:47%; float:right;">
+        <thead>
+            <tr>
+                <th>Calculated Displacements</th>
+                <th>Expected Displacements</th>
+                <th>Difference</th>
+            </tr>
+        </thead>
+        @for (int i = 0; i < @ExpectedDisplacements.Count; i++)
+        {
+            <tr>
+                @if (CalculatedDisplacements?.ElementAt(i) is double reaction)
+                {
+                    <td>@reaction</td>
+                }
+                else
+                {
+                    <td></td>
+                }
+                <td>@ExpectedDisplacements[i]</td>
+                @if (@GetDifferenceOrNull(@ExpectedDisplacements[i], @CalculatedDisplacements?.ElementAt(i)) is double diff)
+                {
+                    <td>@diff</td>
+                }
+                else
+                {
+                    <td>N/A</td>
+                }
+            </tr>
+        }
+    </table>
+</div>
 
 @code {
+    private Popup popupRef;
     private IEditorApiAlpha? editorApiAlpha;
 
     private string loadingText = "Loading beamOS Editor";
@@ -195,7 +217,7 @@
         }
         catch
         {
-            
+
         }
     }
 
@@ -204,6 +226,11 @@
         AnalyticalModelResponse response = await dsmClient.RunDirectStiffnessMethodAsync(physicalModelId);
         CalculatedReactions = response.AnalyticalNodeReactions;
         CalculatedDisplacements = response.AnalyticalNodeDisplacements;
+    }
+
+    private void ShowPopup()
+    {
+        popupRef.Show("You must login in order to access this resource");
     }
 }
 
