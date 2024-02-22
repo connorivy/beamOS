@@ -6,7 +6,6 @@
 @inject IHttpContextAccessor httpContextAccessor
 @* @attribute [Authorize] *@
 
-@* @rendermode render mode must be static (default value) *@
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 <div class="p-4">
@@ -21,14 +20,14 @@
     {
         if (firstRender)
         {
-            if (httpContextAccessor.HttpContext?.Request.Cookies["Authorization"] is string accessToken)
+            if (httpContextAccessor.HttpContext?.Request.Cookies[CommonApiConstants.ACCESS_TOKEN_GUID] is string accessToken)
             {
-                await localStorageService.SetItemAsync("Authorization", accessToken);
+                await localStorageService.SetItemAsync(CommonApiConstants.ACCESS_TOKEN_GUID, accessToken);
             }
 
-            if (httpContextAccessor.HttpContext?.Request.Cookies["Refresh"] is string refreshToken)
+            if (httpContextAccessor.HttpContext?.Request.Cookies[CommonApiConstants.REFRESH_TOKEN_GUID] is string refreshToken)
             {
-                await localStorageService.SetItemAsync("Refresh", refreshToken);
+                await localStorageService.SetItemAsync(CommonApiConstants.REFRESH_TOKEN_GUID, refreshToken);
             }
 
             NavagationManager.NavigateTo(ReturnUrl ?? "/", true);

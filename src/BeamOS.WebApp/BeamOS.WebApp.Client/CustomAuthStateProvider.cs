@@ -16,10 +16,18 @@ public class CustomAuthStateProvider(Func<ILocalStorageService> localStorageServ
         return this.authenticatedState ?? await this.GetAuthStateFromLocalStorage();
     }
 
+    public void LogOut()
+    {
+        this.authenticatedState = null;
+        this.NotifyAuthenticationStateChanged(Task.FromResult(UnauthenticatedState));
+    }
+
     private async Task<AuthenticationState> GetAuthStateFromLocalStorage()
     {
         ILocalStorageService localStorageService = localStorageServiceFactory();
-        string? authToken = await localStorageService.GetItemAsStringAsync("Authorization");
+        string? authToken = await localStorageService.GetItemAsStringAsync(
+            Constants.ACCESS_TOKEN_GUID
+        );
 
         if (string.IsNullOrWhiteSpace(authToken))
         {

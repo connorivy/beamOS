@@ -1,4 +1,5 @@
 using System.Text;
+using BeamOS.Common.Api;
 using BeamOS.DirectStiffnessMethod.Client;
 using BeamOS.PhysicalModel.Client;
 using BeamOS.WebApp;
@@ -104,31 +105,10 @@ app.MapGet(
         )
 );
 
-//app.MapPost(
-//    "/clear-auth-cookies",
-//    async (
-//        [FromServices] IHttpContextAccessor httpContextAccessor,
-//        [FromServices] ILocalStorageService localStorageService
-//    ) =>
-//    {
-//        if (httpContextAccessor.HttpContext?.Request.Cookies["Authorization"] is not null)
-//        {
-//            CookieOptions expiredCookieOptions =
-//                new() { HttpOnly = true, Expires = DateTime.UtcNow.AddDays(-1) };
-//            httpContextAccessor
-//                .HttpContext
-//                .Response
-//                .Cookies
-//                .Append("Authorization", "", expiredCookieOptions);
-//        }
-//        await localStorageService.RemoveItemAsync("Authorization");
-//    }
-//);
-
 app.Use(
     async (context, next) =>
     {
-        var token = context.Request.Cookies["Authorization"];
+        var token = context.Request.Cookies[CommonApiConstants.ACCESS_TOKEN_GUID];
         if (!string.IsNullOrEmpty(token))
         {
             context.Request.Headers.Authorization = $"Bearer {token}";

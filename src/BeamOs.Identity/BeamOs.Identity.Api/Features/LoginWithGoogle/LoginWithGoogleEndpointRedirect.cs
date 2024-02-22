@@ -3,10 +3,8 @@ using BeamOS.Common.Api;
 using BeamOs.Identity.Api.Entities;
 using BeamOs.Identity.Api.Features.Common;
 using BeamOs.Identity.Api.Infrastructure;
-using FastEndpoints;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.Identity.Api.Features.LoginWithGoogle;
 
@@ -52,40 +50,32 @@ public class LoginWithGoogleEndpointRedirect(
 
         var authResponse = await authenticationResponseFactory.Create(user, ct);
 
-        //using HttpRequestMessage authResponseMessage = CreateAuthResponseMessage(
-        //    authResponse,
-        //    "https://localhost:7111/auth-state-changed"
-        //);
-        //authResponseMessage.Headers.Add("beamOS-access-token", authResponse.AccessToken);
-        //HttpClient client = new();
-        //var x = await client.SendAsync(authResponseMessage, ct);
-
         CookieOptions authOptions = new() { HttpOnly = true, };
         httpContextAccessor
             .HttpContext
             .Response
             .Cookies
-            .Append("Authorization", authResponse.AccessToken, authOptions);
+            .Append(CommonApiConstants.ACCESS_TOKEN_GUID, authResponse.AccessToken, authOptions);
         httpContextAccessor
             .HttpContext
             .Response
             .Cookies
-            .Append("Refresh", authResponse.RefreshToken, authOptions);
+            .Append(CommonApiConstants.REFRESH_TOKEN_GUID, authResponse.RefreshToken, authOptions);
 
         httpContextAccessor.HttpContext.Response.Redirect(redirectUrl);
 
         return string.Empty;
     }
 
-    private HttpRequestMessage CreateAuthResponseMessage(
+    private static HttpRequestMessage CreateAuthResponseMessage(
         AuthenticationResponse authenticationResponse,
         string url
     )
     {
-        var request_ = new System.Net.Http.HttpRequestMessage();
+        var request_ = new HttpRequestMessage();
 
         var json_ = System.Text.Json.JsonSerializer.Serialize(authenticationResponse);
-        var content_ = new System.Net.Http.StringContent(json_);
+        var content_ = new StringContent(json_);
         content_.Headers.ContentType = System
             .Net
             .Http
@@ -93,7 +83,7 @@ public class LoginWithGoogleEndpointRedirect(
             .MediaTypeHeaderValue
             .Parse("application/json");
         request_.Content = content_;
-        request_.Method = new System.Net.Http.HttpMethod("GET");
+        request_.Method = new HttpMethod("GET");
         request_
             .Headers
             .Accept

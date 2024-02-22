@@ -39,6 +39,16 @@ builder
         client => client.BaseAddress = new("https://localhost:7193")
     );
 
+builder
+    .Services
+    .AddCors(options =>
+    {
+        options.AddDefaultPolicy(policy =>
+        {
+            policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+        });
+    });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -70,5 +80,7 @@ await app.GenerateClient(
     clientName,
     [$"{contractsBaseNs}.{ApiClientGenerator.ModelNs}"]
 );
+
+app.UseCors();
 
 app.Run();

@@ -1,12 +1,8 @@
 using BeamOS.Common.Api;
 using BeamOs.Identity.Api.Entities;
-using FastEndpoints;
-using Microsoft.AspNetCore.Antiforgery;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 
 namespace BeamOs.Identity.Api.Features.LoginWithGoogle;
