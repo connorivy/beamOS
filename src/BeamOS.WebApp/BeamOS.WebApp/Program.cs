@@ -104,23 +104,26 @@ app.MapGet(
         )
 );
 
-app.MapPost(
-    "/logout",
-    async ([FromForm] string returnUrl, [FromServices] IHttpContextAccessor httpContextAccessor) =>
-    {
-        if (httpContextAccessor.HttpContext?.Request.Cookies["Authorization"] is not null)
-        {
-            CookieOptions expiredCookieOptions =
-                new() { HttpOnly = true, Expires = DateTime.UtcNow.AddDays(-1) };
-            httpContextAccessor
-                .HttpContext
-                .Response
-                .Cookies
-                .Append("Authorization", "", expiredCookieOptions);
-        }
-        return TypedResults.LocalRedirect($"~/{returnUrl}");
-    }
-);
+//app.MapPost(
+//    "/clear-auth-cookies",
+//    async (
+//        [FromServices] IHttpContextAccessor httpContextAccessor,
+//        [FromServices] ILocalStorageService localStorageService
+//    ) =>
+//    {
+//        if (httpContextAccessor.HttpContext?.Request.Cookies["Authorization"] is not null)
+//        {
+//            CookieOptions expiredCookieOptions =
+//                new() { HttpOnly = true, Expires = DateTime.UtcNow.AddDays(-1) };
+//            httpContextAccessor
+//                .HttpContext
+//                .Response
+//                .Cookies
+//                .Append("Authorization", "", expiredCookieOptions);
+//        }
+//        await localStorageService.RemoveItemAsync("Authorization");
+//    }
+//);
 
 app.Use(
     async (context, next) =>

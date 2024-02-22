@@ -1,4 +1,5 @@
 @page "/auth-state-changed"
+@layout FullScreenLayout
 
 @inject NavigationManager NavagationManager
 @inject ILocalStorageService localStorageService
@@ -8,7 +9,9 @@
 @* @rendermode render mode must be static (default value) *@
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 
-<h3>AuthStateChanged</h3>
+<div class="p-4">
+    <h3>Authenticating ...</h3>
+</div>
 
 @code {
     [SupplyParameterFromQuery]
