@@ -1,6 +1,7 @@
 using BeamOS.DirectStiffnessMethod.Client;
 using BeamOS.PhysicalModel.Client;
 using BeamOS.WebApp.Client;
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -34,5 +35,16 @@ builder.Services.RegisterSharedServices();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddSingleton<AuthenticationStateProvider, CustomAuthStateProvider>();
+builder.Services.AddBlazoredLocalStorage();
+builder
+    .Services
+    .AddSingleton<Func<ILocalStorageService>>(
+        sp =>
+            () =>
+            {
+                var scope = sp.CreateScope();
+                return scope.ServiceProvider.GetRequiredService<ILocalStorageService>();
+            }
+    );
 
 await builder.Build().RunAsync();

@@ -1,38 +1,39 @@
-using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text.Json;
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 
 namespace BeamOS.WebApp.Client;
 
-public class CustomAuthStateProvider : AuthenticationStateProvider
+public class CustomAuthStateProvider(Func<ILocalStorageService> localStorageServiceFactory)
+    : AuthenticationStateProvider
 {
-    public override Task<AuthenticationState> GetAuthenticationStateAsync()
+    private static readonly AuthenticationState UnauthenticatedState = new(new ClaimsPrincipal());
+    private AuthenticationState? authenticatedState;
+
+    public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        string? token = null;
-
-        var identity = new ClaimsIdentity();
-        //http.DefaultRequestHeaders.Authorization = null;
-
-        if (!string.IsNullOrEmpty(token))
-        {
-            identity = new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt");
-            //http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
-            //    "Bearer",
-            //    token.Replace("\"", "")
-            //);
-        }
-
-        var user = new ClaimsPrincipal(identity);
-        var state = new AuthenticationState(user);
-
-        var result = Task.FromResult(state);
-        this.NotifyAuthenticationStateChanged(result);
-
-        return result;
+        return this.authenticatedState ?? await this.GetAuthStateFromLocalStorage();
     }
 
-    public static IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
+    private async Task<AuthenticationState> GetAuthStateFromLocalStorage()
+    {
+        ILocalStorageService localStorageService = localStorageServiceFactory();
+        string? authToken = await localStorageService.GetItemAsStringAsync("Authorization");
+
+        if (string.IsNullOrWhiteSpace(authToken))
+        {
+            return UnauthenticatedState;
+        }
+
+        this.authenticatedState = new(
+            new ClaimsPrincipal(new ClaimsIdentity(ParseClaimsFromJwt(authToken), "jwt"))
+        );
+
+        return this.authenticatedState;
+    }
+
+    private static IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
     {
         var payload = jwt.Split('.')[1];
         var jsonBytes = ParseBase64WithoutPadding(payload);

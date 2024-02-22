@@ -19,6 +19,7 @@ public class LoginWithGoogleEndpointRedirect(
 ) : BeamOsEndpoint<string, string>
 {
     public const string RedirectUrlQueryParam = "RedirectUrl";
+    public const string LocalStorageUrlQueryParam = "LocalStorageUrl";
     public override string Route => "/login-with-google/authenticated";
 
     public override EndpointType EndpointType => EndpointType.Get;
@@ -71,10 +72,7 @@ public class LoginWithGoogleEndpointRedirect(
             .Cookies
             .Append("Refresh", authResponse.RefreshToken, authOptions);
 
-        httpContextAccessor
-            .HttpContext
-            .Response
-            .Redirect("https://localhost:7111/auth-state-changed");
+        httpContextAccessor.HttpContext.Response.Redirect(redirectUrl);
 
         return string.Empty;
     }

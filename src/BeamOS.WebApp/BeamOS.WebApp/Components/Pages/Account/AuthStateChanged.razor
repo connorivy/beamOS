@@ -16,20 +16,15 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var accessToken = httpContextAccessor.HttpContext.Request.Cookies["Authorization"];
+        if (httpContextAccessor.HttpContext?.Request.Cookies["Authorization"] is string accessToken)
+        {
+            await localStorageService.SetItemAsync("Authorization", accessToken);
+        }
 
-        // using var handler = new HttpClientHandler { UseCookies = false };
-        // HttpClient httpClient = new(handler) { BaseAddress = new("https:localhost:7194") };
-        // IdentityAlphaClient client = new(httpClient);
-
-        // var cookieContainer = new CookieContainer();
-
-        // ExternalLoginRequest externalLoginRequest = new(ReturnUrl ?? "https:localhost:7111/", "Google", "");
-
-        // var x = await client.LoginWithGoogleEndpointRedirectAsync(ReturnUrl ?? "https:localhost:7111/");
-
-        await localStorageService.SetItemAsync("Authorization", accessToken);
-        // await localStorageService.SetItemAsync(Constants.REFRESH_TOKEN_NAME, TokenProvider.RefreshToken);
+        if (httpContextAccessor.HttpContext?.Request.Cookies["Refresh"] is string refreshToken)
+        {
+            await localStorageService.SetItemAsync("Refresh", refreshToken);
+        }
 
         NavagationManager.NavigateTo(ReturnUrl ?? "/");
     }
