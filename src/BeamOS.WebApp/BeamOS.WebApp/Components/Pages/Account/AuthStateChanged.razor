@@ -1,0 +1,36 @@
+@page "/auth-state-changed"
+
+@inject NavigationManager NavagationManager
+@inject ILocalStorageService localStorageService
+@inject IHttpContextAccessor httpContextAccessor
+@* @attribute [Authorize] *@
+
+@* @rendermode render mode must be static (default value) *@
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+
+<h3>AuthStateChanged</h3>
+
+@code {
+    [SupplyParameterFromQuery]
+    public string? ReturnUrl { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var accessToken = httpContextAccessor.HttpContext.Request.Cookies["Authorization"];
+
+        // using var handler = new HttpClientHandler { UseCookies = false };
+        // HttpClient httpClient = new(handler) { BaseAddress = new("https:localhost:7194") };
+        // IdentityAlphaClient client = new(httpClient);
+
+        // var cookieContainer = new CookieContainer();
+
+        // ExternalLoginRequest externalLoginRequest = new(ReturnUrl ?? "https:localhost:7111/", "Google", "");
+
+        // var x = await client.LoginWithGoogleEndpointRedirectAsync(ReturnUrl ?? "https:localhost:7111/");
+
+        await localStorageService.SetItemAsync("Authorization", accessToken);
+        // await localStorageService.SetItemAsync(Constants.REFRESH_TOKEN_NAME, TokenProvider.RefreshToken);
+
+        NavagationManager.NavigateTo(ReturnUrl ?? "/");
+    }
+}

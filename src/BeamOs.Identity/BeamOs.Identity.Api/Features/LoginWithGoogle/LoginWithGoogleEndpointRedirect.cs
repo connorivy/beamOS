@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using BeamOS.Common.Api;
 using BeamOs.Identity.Api.Entities;
+using BeamOs.Identity.Api.Features.Common;
 using BeamOs.Identity.Api.Infrastructure;
 using FastEndpoints;
 using Microsoft.AspNetCore.Identity;
@@ -50,6 +51,14 @@ public class LoginWithGoogleEndpointRedirect(
 
         var authResponse = await authenticationResponseFactory.Create(user, ct);
 
+        //using HttpRequestMessage authResponseMessage = CreateAuthResponseMessage(
+        //    authResponse,
+        //    "https://localhost:7111/auth-state-changed"
+        //);
+        //authResponseMessage.Headers.Add("beamOS-access-token", authResponse.AccessToken);
+        //HttpClient client = new();
+        //var x = await client.SendAsync(authResponseMessage, ct);
+
         CookieOptions authOptions = new() { HttpOnly = true, };
         httpContextAccessor
             .HttpContext
@@ -62,8 +71,38 @@ public class LoginWithGoogleEndpointRedirect(
             .Cookies
             .Append("Refresh", authResponse.RefreshToken, authOptions);
 
-        httpContextAccessor.HttpContext.Response.Redirect(redirectUrl);
+        httpContextAccessor
+            .HttpContext
+            .Response
+            .Redirect("https://localhost:7111/auth-state-changed");
 
         return string.Empty;
+    }
+
+    private HttpRequestMessage CreateAuthResponseMessage(
+        AuthenticationResponse authenticationResponse,
+        string url
+    )
+    {
+        var request_ = new System.Net.Http.HttpRequestMessage();
+
+        var json_ = System.Text.Json.JsonSerializer.Serialize(authenticationResponse);
+        var content_ = new System.Net.Http.StringContent(json_);
+        content_.Headers.ContentType = System
+            .Net
+            .Http
+            .Headers
+            .MediaTypeHeaderValue
+            .Parse("application/json");
+        request_.Content = content_;
+        request_.Method = new System.Net.Http.HttpMethod("GET");
+        request_
+            .Headers
+            .Accept
+            .Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+        request_.RequestUri = new Uri(url, UriKind.Absolute);
+
+        return request_;
     }
 }
