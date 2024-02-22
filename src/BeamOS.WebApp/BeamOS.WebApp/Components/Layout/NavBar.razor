@@ -21,7 +21,7 @@
                 </Authorized>
                 <NotAuthorized>
                     <div class="flex items-center px-4 py-2 text-sm font-bold rounded-xl bg-indigo-100 text-indigo-600 hover:bg-indigo-600 hover:text-white transition duration-300">
-                        <NavLink class="nav-link" href="login">
+                        <NavLink class="nav-link" href="@loginRef">
                             <span class="bi bi-person-badge-nav-menu" aria-hidden="true"></span> Log In
                         </NavLink>
                     </div>
@@ -65,6 +65,7 @@
     private string? currentUrl;
 
     private string logoutRef => $"logout?ReturnUrl={currentUrl}";
+    private string loginRef => $"login?ReturnUrl={currentUrl}";
 
     protected override void OnInitialized()
     {

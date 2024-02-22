@@ -24,13 +24,11 @@
     {
         if (httpContextAccessor.HttpContext?.Request.Cookies["Authorization"] is not null)
         {
-            CookieOptions expiredCookieOptions =
-                new() { HttpOnly = true, Expires = DateTime.UtcNow.AddDays(-1) };
             httpContextAccessor
                 .HttpContext
                 .Response
                 .Cookies
-                .Append("Authorization", "", expiredCookieOptions);
+                .Delete("Authorization");
         }
     }
 }

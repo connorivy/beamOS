@@ -30,11 +30,11 @@
     }
 </div>
 
-<div class="p-10 w-full">
+<div class="flex flex-col p-6 w-full">
     <div class="flex justify-center items-center pb-2.5">
         <AuthorizeView>
             <Authorized>
-                <button @onclick="Solve" class="bg-indigo-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center">
+                <button @onclick="Solve" class="bg-indigo-300 hover:bg-indigo-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V13.5Zm0 2.25h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V18Zm2.498-6.75h.007v.008h-.007v-.008Zm0 2.25h.007v.008h-.007V13.5Zm0 2.25h.007v.008h-.007v-.008Zm0 2.25h.007v.008h-.007V18Zm2.504-6.75h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V13.5Zm0 2.25h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V18Zm2.498-6.75h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V13.5ZM8.25 6h7.5v2.25h-7.5V6ZM12 2.25c-1.892 0-3.758.11-5.593.322C5.307 2.7 4.5 3.65 4.5 4.757V19.5a2.25 2.25 0 0 0 2.25 2.25h10.5a2.25 2.25 0 0 0 2.25-2.25V4.757c0-1.108-.806-2.057-1.907-2.185A48.507 48.507 0 0 0 12 2.25Z" />
                     </svg>
@@ -48,88 +48,90 @@
                     </svg>
                   <span>Solve</span>
                 </button>
-                <div class="mx-2 bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-2" role="alert">
-                  <p>You need to login to enable analysis functionality.</p>
+                <div id="alert-border-4" class="flex justify-center items-center p-4 mx-2 text-yellow-800 border-t-4 border-yellow-300 bg-yellow-50 dark:text-yellow-300 dark:bg-gray-800 dark:border-yellow-800" role="alert">
+                    <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                    </svg>
+                    <div class="ms-3 text-sm font-medium">
+                      You need to login to enable analysis functionality.
+                    </div>
                 </div>
             </NotAuthorized>
         </AuthorizeView>
     </div>
 
-    <style>
-        table,
-        th,
-        td {
-            border: 1px solid black;
-            border-collapse: collapse;
-        }
-    </style>
+    <div class="flex flex-col md:flex-row mb-8">
+        <div class="w-full overflow-x-auto shadow-md sm:rounded-lg">
+            <table class="w-full text-sm text-left rtl:text-right text-gray-500">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">
+                            Calculated Reactions
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Expected Reactions
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Difference
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                @for (int i = 0; i < @ExpectedDisplacements.Count; i++)
+                {
+                    <tr class="odd:bg-white even:bg-gray-50 border-b">
+                        <td class="px-6 py-4">@CalculatedDisplacements?.ElementAt(i)</td>
+                        <td class="px-6 py-4">@ExpectedDisplacements[i]</td>
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                            @(@GetDifferenceOrNull(
+                                @ExpectedDisplacements[i],
+                                @CalculatedDisplacements?.ElementAt(i))?
+                            .ToString() ?? "N/A")
+                        </th>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
 
-    <table style="width:47%; float:left; border-width: 1px; margin-bottom: 20px;">
-        <thead>
-            <tr>
-                <th>Calculated Reactions</th>
-                <th>Expected Reactions</th>
-                <th>Difference</th>
-            </tr>
-        </thead>
-        @for (int i = 0; i < @ExpectedReactions.Count; i++)
-        {
-            <tr>
-            @if (CalculatedReactions?.ElementAt(i) is double reaction)
-            {
-                <td>@reaction</td>
-            }
-            else
-            {
-                <td></td>;
-            }
-            <td>@ExpectedReactions[i]</td>
-            @if (@GetDifferenceOrNull(@ExpectedReactions[i], @CalculatedReactions?.ElementAt(i)) is double diff)
-            {
-                <td>@diff</td>
-            }
-            else
-            {
-                <td>N/A</td>
-            }
-            </tr>
-        }
-    </table>
-    <table style="width:47%; float:right;">
-        <thead>
-            <tr>
-                <th>Calculated Displacements</th>
-                <th>Expected Displacements</th>
-                <th>Difference</th>
-            </tr>
-        </thead>
-        @for (int i = 0; i < @ExpectedDisplacements.Count; i++)
-        {
-            <tr>
-                @if (CalculatedDisplacements?.ElementAt(i) is double reaction)
+        <div class="p-4"></div>
+
+        <div class="w-full overflow-x-auto shadow-md sm:rounded-lg">
+            <table class="w-full text-sm text-left rtl:text-right text-gray-500">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">
+                            Calculated Reactions
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Expected Reactions
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Difference
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                @for (int i = 0; i < @ExpectedDisplacements.Count; i++)
                 {
-                    <td>@reaction</td>
+                    <tr class="odd:bg-white even:bg-gray-50 border-b">
+                        <td class="px-6 py-4">@CalculatedReactions?.ElementAt(i)</td>
+                        <td class="px-6 py-4">@ExpectedReactions[i]</td>
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                            @(@GetDifferenceOrNull(
+                                ExpectedReactions[i],
+                                CalculatedReactions?.ElementAt(i))?
+                            .ToString() ?? "N/A")
+                        </th>
+                    </tr>
                 }
-                else
-                {
-                    <td></td>
-                }
-                <td>@ExpectedDisplacements[i]</td>
-                @if (@GetDifferenceOrNull(@ExpectedDisplacements[i], @CalculatedDisplacements?.ElementAt(i)) is double diff)
-                {
-                    <td>@diff</td>
-                }
-                else
-                {
-                    <td>N/A</td>
-                }
-            </tr>
-        }
-    </table>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 @code {
-    private Popup popupRef;
     private IEditorApiAlpha? editorApiAlpha;
 
     private string loadingText = "Loading beamOS Editor";
@@ -143,41 +145,41 @@
     public List<double>? CalculatedDisplacements { get; set; }
     public List<double> ExpectedReactions { get; } = [
         0,
-    0,
-    0,
-    -10.064,
-    -13.419,
-    0,
-    0,
-    0,
-    0,
-    126.83,
-    0,
-    0,
-    0,
-    -139.94,
-    186.58,
-    0,
-    0,
-    0,
+        0,
+        0,
+        -10.064,
+        -13.419,
+        0,
+        0,
+        0,
+        0,
+        126.83,
+        0,
+        0,
+        0,
+        -139.94,
+        186.58,
+        0,
+        0,
+        0,
     ];
 
     public List<double> ExpectedDisplacements { get; } = [
         .21552,
-    -.13995,
-    0,
-    0,
-    0,
-    0
+        -.13995,
+        0,
+        0,
+        0,
+        0
     ];
 
     private double? GetDifferenceOrNull(double expected, double? calculated)
     {
-        if (calculated is null)
+        if (calculated is not double typedCalculated)
         {
             return null;
         }
-        return expected - calculated;
+        return Math.Round(expected - typedCalculated, 3);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -226,11 +228,6 @@
         AnalyticalModelResponse response = await dsmClient.RunDirectStiffnessMethodAsync(physicalModelId);
         CalculatedReactions = response.AnalyticalNodeReactions;
         CalculatedDisplacements = response.AnalyticalNodeDisplacements;
-    }
-
-    private void ShowPopup()
-    {
-        popupRef.Show("You must login in order to access this resource");
     }
 }
 

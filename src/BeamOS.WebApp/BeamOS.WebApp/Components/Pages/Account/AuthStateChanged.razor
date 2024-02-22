@@ -19,16 +19,21 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (httpContextAccessor.HttpContext?.Request.Cookies["Authorization"] is string accessToken)
+        if (firstRender)
         {
-            await localStorageService.SetItemAsync("Authorization", accessToken);
+            if (httpContextAccessor.HttpContext?.Request.Cookies["Authorization"] is string accessToken)
+            {
+                await localStorageService.SetItemAsync("Authorization", accessToken);
+            }
+
+            if (httpContextAccessor.HttpContext?.Request.Cookies["Refresh"] is string refreshToken)
+            {
+                await localStorageService.SetItemAsync("Refresh", refreshToken);
+            }
+
+            NavagationManager.NavigateTo(ReturnUrl ?? "/", true);
         }
 
-        if (httpContextAccessor.HttpContext?.Request.Cookies["Refresh"] is string refreshToken)
-        {
-            await localStorageService.SetItemAsync("Refresh", refreshToken);
-        }
-
-        NavagationManager.NavigateTo(ReturnUrl ?? "/");
+        await base.OnAfterRenderAsync(firstRender);
     }
 }
