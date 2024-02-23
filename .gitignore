@@ -353,3 +353,4 @@ MigrationBackup/
 
 # ignore generated js files from webpack output
 **/wwwroot/js/
+**/wwwroot/css/

@@ -1,9 +1,11 @@
 using System.Text;
+using BeamOS.Common.Api;
 using BeamOS.DirectStiffnessMethod.Client;
 using BeamOS.PhysicalModel.Client;
 using BeamOS.WebApp;
 using BeamOS.WebApp.Client;
 using BeamOS.WebApp.Components;
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -41,6 +43,7 @@ builder
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddCascadingAuthenticationState();
+builder.Services.AddBlazoredLocalStorage();
 
 builder
     .Services
@@ -102,33 +105,15 @@ app.MapGet(
         )
 );
 
-app.MapPost(
-    "/logout",
-    async ([FromForm] string returnUrl, [FromServices] IHttpContextAccessor httpContextAccessor) =>
-    {
-        if (httpContextAccessor.HttpContext?.Request.Cookies["Authorization"] is not null)
-        {
-            CookieOptions expiredCookieOptions =
-                new() { HttpOnly = true, Expires = DateTime.UtcNow.AddDays(-1) };
-            httpContextAccessor
-                .HttpContext
-                .Response
-                .Cookies
-                .Append("Authorization", "", expiredCookieOptions);
-        }
-        return TypedResults.LocalRedirect($"~/{returnUrl}");
-    }
-);
-
 app.Use(
     async (context, next) =>
     {
-        var token = context.Request.Cookies["Authorization"];
+        var token = context.Request.Cookies[CommonApiConstants.ACCESS_TOKEN_GUID];
         if (!string.IsNullOrEmpty(token))
         {
-            context.Request.Headers.Add("Authorization", "Bearer " + token);
+            context.Request.Headers.Authorization = $"Bearer {token}";
         }
-        await next();
+        await next(context);
     }
 );
 

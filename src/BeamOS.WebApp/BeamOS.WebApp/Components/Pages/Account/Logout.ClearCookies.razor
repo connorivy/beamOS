@@ -1,0 +1,43 @@
+@page "/logout-clear-cookies"
+@layout FullScreenLayout
+
+@inject NavigationManager NavigationManager
+@inject IHttpContextAccessor httpContextAccessor
+@* @attribute [Authorize] *@
+
+<div class="p-4">
+    <h3>Logging out ...</h3>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    public string? ReturnUrl { get; set; }
+
+    protected override void OnInitialized()
+    {
+        ClearCookies();
+
+        StateHasChanged();
+        NavigationManager.NavigateTo(ReturnUrl ?? "/", true);
+    }
+
+    private void ClearCookies()
+    {
+        if (httpContextAccessor.HttpContext?.Request.Cookies[CommonApiConstants.ACCESS_TOKEN_GUID] is not null)
+        {
+            httpContextAccessor
+                .HttpContext
+                .Response
+                .Cookies
+                .Delete(CommonApiConstants.ACCESS_TOKEN_GUID);
+        }
+        if (httpContextAccessor.HttpContext?.Request.Cookies[CommonApiConstants.REFRESH_TOKEN_GUID] is not null)
+        {
+            httpContextAccessor
+                .HttpContext
+                .Response
+                .Cookies
+                .Delete(CommonApiConstants.REFRESH_TOKEN_GUID);
+        }
+    }
+}

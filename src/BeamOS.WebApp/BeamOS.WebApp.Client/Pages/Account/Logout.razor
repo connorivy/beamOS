@@ -1,0 +1,42 @@
+@page "/logout"
+@layout FullScreenLayout
+
+@inject NavigationManager NavigationManager
+@inject ILocalStorageService localStorageService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@* @attribute [Authorize] *@
+
+@rendermode InteractiveWebAssembly
+
+<div class="p-4">
+    <h3>Logging out ...</h3>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    public string? ReturnUrl { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await ClearLocalStorage();
+
+            var queryParams = new Dictionary<string, string?>
+            {
+                ["ReturnUrl"] = ReturnUrl ?? "/",
+            };
+
+            (AuthenticationStateProvider as CustomAuthStateProvider)?.LogOut();
+            NavigationManager.NavigateTo(QueryHelpers.AddQueryString("logout-clear-cookies", queryParams));
+        }
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    private async Task ClearLocalStorage()
+    {
+        await localStorageService.RemoveItemAsync(Constants.ACCESS_TOKEN_GUID);
+        await localStorageService.RemoveItemAsync(Constants.REFRESH_TOKEN_GUID);
+    }
+}
