@@ -15,13 +15,19 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.0" />
     <PackageReference Include="Refit" Version="7.0.0" />
     <PackageReference Include="Refit.HttpClientFactory" Version="7.0.0" />
+    <PackageReference Include="Teronis.MSBuild.Packaging.ProjectBuildInPackage" Version="1.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\BeamOS.DirectStiffnessMethod\BeamOS.DirectStiffnessMethod.Client\BeamOS.DirectStiffnessMethod.Client.csproj" />
     <ProjectReference Include="..\..\BeamOs.Identity\BeamOs.Identity.Client\BeamOs.Identity.Client.csproj" />
     <ProjectReference Include="..\..\BeamOS.PhysicalModel\BeamOS.PhysicalModel.Client\BeamOS.PhysicalModel.Client.csproj" />
-    <ProjectReference Include="..\BeamOS.WebApp.Client\BeamOS.WebApp.Client.csproj" />
+    <ProjectReference Include="..\BeamOS.WebApp.Client\BeamOS.WebApp.Client.csproj">
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
     <ProjectReference Include="..\BeamOS.WebApp.EditorApi\BeamOS.WebApp.EditorApi.csproj" />
   </ItemGroup>
 

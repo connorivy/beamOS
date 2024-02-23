@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <InvariantGlobalization>false</InvariantGlobalization>
     <UserSecretsId>c6c2389a-5efe-4d57-8557-83c852fb76e6</UserSecretsId>
+    <Configurations>Debug;Release;GenerateClients</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
@@ -35,8 +36,8 @@
     <Folder Include="Users\Endpoints\" />
   </ItemGroup>
 
-  <Target Name="ClientGen" AfterTargets="Build" Condition="'$(Configuration)'=='Release' AND '$(ContinuousIntegrationBuild)' == false">
-    <Exec WorkingDirectory="$(RunWorkingDirectory)" Command="$(RunCommand) --generateclients true" />
+  <Target Name="ClientGen" AfterTargets="Build" Condition="'$(Configuration)'=='GenerateClients'">
+    <Exec WorkingDirectory="$(RunWorkingDirectory)" Command="$(RunCommand) --generateclients true --urls https://localhost:7194" />
   </Target>
 
 </Project>
