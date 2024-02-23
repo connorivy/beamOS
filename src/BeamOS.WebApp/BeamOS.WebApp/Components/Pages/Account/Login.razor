@@ -60,18 +60,14 @@
                     </div>
                 </div>
                 <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
-                <form class="form-horizontal" action="@LoginWithGoogleEndpoint" method="post">
-                    <div>
-                        <AntiforgeryToken />
-                        <input type="hidden" name="ReturnUrl" value="@FullExternalLoginReturnUrl" />
-                        <div class="flex items-center justify-center dark:bg-gray-800">
-                            <button type="submit" class="px-4 py-2 border flex gap-2 border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-500 hover:text-slate-900 dark:hover:text-slate-300 hover:shadow transition duration-150">
-                                <img class="w-6 h-6" src="https://www.svgrepo.com/show/475656/google-color.svg" loading="lazy" alt="google logo">
-                                <span>Login with Google</span>
-                            </button>
-                        </div>
-                    </div>
-                </form>
+
+                <div class="flex items-center justify-center dark:bg-gray-800">
+                    <button @onclick="LoginWithGoogle" class="px-4 py-2 border flex gap-2 border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-500 hover:text-slate-900 dark:hover:text-slate-300 hover:shadow transition duration-150">
+                        <img class="w-6 h-6" src="https://www.svgrepo.com/show/475656/google-color.svg" loading="lazy" alt="google logo">
+                        <span>Login with Google</span>
+                    </button>
+                </div>
+
                 <p class="text-sm font-light text-gray-500 dark:text-gray-400">
                     Don’t have an account yet? <a href="#" class="font-medium text-indigo-600 hover:underline dark:text-indigo-500">Sign up</a>
                 </p>
@@ -81,15 +77,10 @@
 </section>
 
 @code {
-    [SupplyParameterFromForm]
-    private InputModel Input { get; set; } = new();
-
     [SupplyParameterFromQuery]
     private string? ReturnUrl { get; set; }
 
     private string? FullExternalLoginReturnUrl { get; set; }
-
-    private string LoginWithGoogleEndpoint => $"{uriProvider.IdentityServerBaseUri}/login-with-google";
 
     protected override void OnParametersSet()
     {
@@ -105,17 +96,20 @@
             query: QueryString.Create(query));
     }
 
-    private sealed class InputModel
+    private void LoginWithGoogle()
     {
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; } = "";
+        UriHelper.FromAbsolute(uriProvider.IdentityServerBaseUri, out string scheme, out HostString host, out _, out _, out _);
+        IEnumerable<KeyValuePair<string, StringValues>> query =
+        [
+            new("ReturnUrl", FullExternalLoginReturnUrl)
+        ];
 
-        [Required]
-        [DataType(DataType.Password)]
-        public string Password { get; set; } = "";
+        var loginWithGoogleUri = UriHelper.BuildAbsolute(
+            scheme,
+            host,
+            path: new PathString("/login-with-google"),
+            query: QueryString.Create(query));
 
-        [Display(Name = "Remember me?")]
-        public bool RememberMe { get; set; }
+        NavigationManager.NavigateTo(loginWithGoogleUri);
     }
 }

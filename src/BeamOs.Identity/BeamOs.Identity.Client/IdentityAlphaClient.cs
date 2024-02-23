@@ -56,12 +56,12 @@ namespace BeamOs.Identity.Client
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task LoginWithGoogleEndpointAsync(ExternalLoginRequest externalLoginRequest);
+        System.Threading.Tasks.Task<string> LoginWithGoogleEndpointAsync(string returnUrl, string provider, string __RequestVerificationToken);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task LoginWithGoogleEndpointAsync(ExternalLoginRequest externalLoginRequest, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<string> LoginWithGoogleEndpointAsync(string returnUrl, string provider, string __RequestVerificationToken, System.Threading.CancellationToken cancellationToken);
 
     }
 
@@ -424,36 +424,34 @@ namespace BeamOs.Identity.Client
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task LoginWithGoogleEndpointAsync(ExternalLoginRequest externalLoginRequest)
+        public virtual System.Threading.Tasks.Task<string> LoginWithGoogleEndpointAsync(string returnUrl, string provider, string __RequestVerificationToken)
         {
-            return LoginWithGoogleEndpointAsync(externalLoginRequest, System.Threading.CancellationToken.None);
+            return LoginWithGoogleEndpointAsync(returnUrl, provider, __RequestVerificationToken, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task LoginWithGoogleEndpointAsync(ExternalLoginRequest externalLoginRequest, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<string> LoginWithGoogleEndpointAsync(string returnUrl, string provider, string __RequestVerificationToken, System.Threading.CancellationToken cancellationToken)
         {
-            if (externalLoginRequest == null)
-                throw new System.ArgumentNullException("externalLoginRequest");
-
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    var json_ = Newtonsoft.Json.JsonConvert.SerializeObject(externalLoginRequest, _settings.Value);
-                    var dictionary_ = Newtonsoft.Json.JsonConvert.DeserializeObject<System.Collections.Generic.Dictionary<string, string>>(json_, _settings.Value);
-                    var content_ = new System.Net.Http.FormUrlEncodedContent(dictionary_);
-                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/x-www-form-urlencoded");
-                    request_.Content = content_;
-                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "login-with-google"
                     urlBuilder_.Append("login-with-google");
+            urlBuilder_.Append('?');
+            urlBuilder_.Append(System.Uri.EscapeDataString("returnUrl")).Append('=').Append(System.Uri.EscapeDataString(returnUrl != null ? ConvertToString(returnUrl, System.Globalization.CultureInfo.InvariantCulture) : "")).Append('&');
+            urlBuilder_.Append(System.Uri.EscapeDataString("provider")).Append('=').Append(System.Uri.EscapeDataString(provider != null ? ConvertToString(provider, System.Globalization.CultureInfo.InvariantCulture) : "")).Append('&');
+            urlBuilder_.Append(System.Uri.EscapeDataString("__RequestVerificationToken")).Append('=').Append(System.Uri.EscapeDataString(__RequestVerificationToken != null ? ConvertToString(__RequestVerificationToken, System.Globalization.CultureInfo.InvariantCulture) : "")).Append('&');
+            urlBuilder_.Length--;
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -480,7 +478,12 @@ namespace BeamOs.Identity.Client
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            return;
+                            var objectResponse_ = await ReadObjectResponseAsync<string>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
                         }
                         else
                         {

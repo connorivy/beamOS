@@ -21,7 +21,7 @@ export interface IIdentityAlphaClient {
     /**
      * @return Success
      */
-    loginWithGoogleEndpoint(externalLoginRequest: ExternalLoginRequest): Promise<void>;
+    loginWithGoogleEndpoint(returnUrl: string | null, provider: string | null, __RequestVerificationToken: string | null): Promise<string>;
 }
 
 export class IdentityAlphaClient implements IIdentityAlphaClient {
@@ -192,19 +192,26 @@ export class IdentityAlphaClient implements IIdentityAlphaClient {
     /**
      * @return Success
      */
-    loginWithGoogleEndpoint(externalLoginRequest: ExternalLoginRequest): Promise<void> {
-        let url_ = this.baseUrl + "/login-with-google";
+    loginWithGoogleEndpoint(returnUrl: string | null, provider: string | null, __RequestVerificationToken: string | null): Promise<string> {
+        let url_ = this.baseUrl + "/login-with-google?";
+        if (returnUrl === undefined)
+            throw new Error("The parameter 'returnUrl' must be defined.");
+        else if(returnUrl !== null)
+            url_ += "returnUrl=" + encodeURIComponent("" + returnUrl) + "&";
+        if (provider === undefined)
+            throw new Error("The parameter 'provider' must be defined.");
+        else if(provider !== null)
+            url_ += "provider=" + encodeURIComponent("" + provider) + "&";
+        if (__RequestVerificationToken === undefined)
+            throw new Error("The parameter '__RequestVerificationToken' must be defined.");
+        else if(__RequestVerificationToken !== null)
+            url_ += "__RequestVerificationToken=" + encodeURIComponent("" + __RequestVerificationToken) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = Object.keys(externalLoginRequest as any).map((key) => {
-            return encodeURIComponent(key) + '=' + encodeURIComponent((externalLoginRequest as any)[key]);
-        }).join('&')
-
         let options_: RequestInit = {
-            body: content_,
-            method: "POST",
+            method: "GET",
             headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
+                "Accept": "application/json"
             }
         };
 
@@ -213,19 +220,23 @@ export class IdentityAlphaClient implements IIdentityAlphaClient {
         });
     }
 
-    protected processLoginWithGoogleEndpoint(response: Response): Promise<void> {
+    protected processLoginWithGoogleEndpoint(response: Response): Promise<string> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<string>(null as any);
     }
 }
 
@@ -310,9 +321,6 @@ export interface IAuthenticationResponse {
 }
 
 export class ExternalLoginRequest implements IExternalLoginRequest {
-    returnUrl!: string;
-    provider!: string;
-    __RequestVerificationToken!: string;
 
     constructor(data?: IExternalLoginRequest) {
         if (data) {
@@ -324,11 +332,6 @@ export class ExternalLoginRequest implements IExternalLoginRequest {
     }
 
     init(_data?: any) {
-        if (_data) {
-            this.returnUrl = _data["returnUrl"];
-            this.provider = _data["provider"];
-            this.__RequestVerificationToken = _data["__RequestVerificationToken"];
-        }
     }
 
     static fromJS(data: any): ExternalLoginRequest {
@@ -340,17 +343,11 @@ export class ExternalLoginRequest implements IExternalLoginRequest {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["returnUrl"] = this.returnUrl;
-        data["provider"] = this.provider;
-        data["__RequestVerificationToken"] = this.__RequestVerificationToken;
         return data;
     }
 }
 
 export interface IExternalLoginRequest {
-    returnUrl: string;
-    provider: string;
-    __RequestVerificationToken: string;
 }
 
 export class ApiException extends Error {
