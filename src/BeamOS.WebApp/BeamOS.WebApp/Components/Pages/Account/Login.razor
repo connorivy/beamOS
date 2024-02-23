@@ -15,6 +15,7 @@
 
 @inject NavigationManager NavigationManager
 @inject IHttpClientFactory clientFactory
+@inject IUriProvider uriProvider
 
 <PageTitle>Log in</PageTitle>
 
@@ -59,7 +60,7 @@
                     </div>
                 </div>
                 <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
-                <form class="form-horizontal" action="https://localhost:7194/login-with-google" method="post">
+                <form class="form-horizontal" action="@LoginWithGoogleEndpoint" method="post">
                     <div>
                         <AntiforgeryToken />
                         <input type="hidden" name="ReturnUrl" value="@FullExternalLoginReturnUrl" />
@@ -87,6 +88,8 @@
     private string? ReturnUrl { get; set; }
 
     private string? FullExternalLoginReturnUrl { get; set; }
+
+    private string LoginWithGoogleEndpoint => $"{uriProvider.IdentityServerBaseUri}/login-with-google";
 
     protected override void OnParametersSet()
     {

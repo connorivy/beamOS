@@ -8,7 +8,6 @@ using BeamOS.WebApp.Components;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,6 +40,7 @@ builder
         client => client.BaseAddress = new("https://localhost:7110")
     );
 
+builder.Services.AddSingleton<IUriProvider, UriProvider>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddBlazoredLocalStorage();
