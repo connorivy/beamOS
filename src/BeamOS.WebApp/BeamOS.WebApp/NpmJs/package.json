@@ -20,6 +20,6 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "beamos-editor": "^0.0.2"
+    "beamos-editor": "^0.0.3"
   }
 }
