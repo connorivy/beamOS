@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -51,6 +51,7 @@
    -->
   <Target Name="NpmRunBuild" DependsOnTargets="NpmInstall" BeforeTargets="BeforeBuild" Condition="'$(Configuration)' == 'Release' AND '$(ContinuousIntegrationBuild)' == false">
     <Exec WorkingDirectory="$(NpmFolder)" Command="npm run build" />
+    <Exec WorkingDirectory="$(NpmFolder)" Command="npx tailwindcss -i ./src/app.css -o ../wwwroot/css/app.css" />
   </Target>
 
 </Project>
