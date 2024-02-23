@@ -15,6 +15,9 @@ public class BeamOsIdentityDbContext : IdentityDbContext<BeamOsUser>
 {
     public BeamOsIdentityDbContext(DbContextOptions<BeamOsIdentityDbContext> options)
         : base(options) { }
+
+    protected BeamOsIdentityDbContext(DbContextOptions options)
+        : base(options) { }
 }
 
 public class IdentityDbSeeder(
