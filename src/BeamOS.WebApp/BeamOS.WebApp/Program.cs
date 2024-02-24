@@ -1,6 +1,7 @@
 using System.Text;
 using BeamOS.Common.Api;
 using BeamOS.DirectStiffnessMethod.Client;
+using BeamOs.Identity.Client;
 using BeamOS.PhysicalModel.Client;
 using BeamOS.WebApp;
 using BeamOS.WebApp.Client;
@@ -40,7 +41,12 @@ builder
         client => client.BaseAddress = new("https://localhost:7110")
     );
 
-builder.Services.AddSingleton<IUriProvider, UriProvider>();
+builder
+    .Services
+    .AddHttpClient<IIdentityAlphaClient, IdentityAlphaClient>(
+        client => client.BaseAddress = new("https://localhost:7194")
+    );
+
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddBlazoredLocalStorage();

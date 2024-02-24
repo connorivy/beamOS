@@ -10,12 +10,12 @@
 @using Microsoft.AspNetCore.Identity.Data
 @using System.Text
 @using System.Text.Json
+@using BeamOs.Identity.Client
 
 @rendermode InteractiveServer
 
 @inject NavigationManager NavigationManager
-@inject IHttpClientFactory clientFactory
-@inject IUriProvider uriProvider
+@inject IIdentityAlphaClient identityClient
 
 <PageTitle>Log in</PageTitle>
 
@@ -96,9 +96,13 @@
             query: QueryString.Create(query));
     }
 
-    private void LoginWithGoogle()
+    private async Task LoginWithGoogle()
     {
-        UriHelper.FromAbsolute(uriProvider.IdentityServerBaseUri, out string scheme, out HostString host, out _, out _, out _);
+        // hack until i can figure out something better
+        // ping the server to find out its uri
+        var url = await identityClient.PingAsync(string.Empty);
+
+        UriHelper.FromAbsolute(url, out string scheme, out HostString host, out _, out _, out _);
         IEnumerable<KeyValuePair<string, StringValues>> query =
         [
             new("ReturnUrl", FullExternalLoginReturnUrl)
@@ -109,6 +113,10 @@
             host,
             path: new PathString("/login-with-google"),
             query: QueryString.Create(query));
+
+        // var client = httpClientFactory.CreateClient("IdentityClient");
+        // var response = await client.GetAsync(loginWithGoogleUri);
+        // var contents = await response.Content.ReadAsStringAsync();
 
         NavigationManager.NavigateTo(loginWithGoogleUri);
     }
