@@ -13,7 +13,8 @@ public class LoginWithGoogleEndpointRedirect(
     UserManager<BeamOsUser> userManager,
     BeamOsIdentityDbContext dbContext,
     IHttpContextAccessor httpContextAccessor,
-    AuthenticationResponseFactory authenticationResponseFactory
+    AuthenticationResponseFactory authenticationResponseFactory,
+    IUriProvider uriProvider
 ) : BeamOsEndpoint<string, string>
 {
     public const string RedirectUrlQueryParam = "RedirectUrl";
@@ -50,7 +51,7 @@ public class LoginWithGoogleEndpointRedirect(
 
         var authResponse = await authenticationResponseFactory.Create(user, ct);
 
-        CookieOptions authOptions = new() { HttpOnly = true, };
+        CookieOptions authOptions = new() { HttpOnly = true, Domain = uriProvider.BasePath };
         httpContextAccessor
             .HttpContext
             .Response
