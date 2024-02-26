@@ -1,11 +1,37 @@
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.Extensions.Primitives;
+
 namespace BeamOS.WebApp;
 
-public class UriProvider : IUriProvider
+public class UriProvider(string scheme) : IUriProvider
 {
-    public string IdentityServerBaseUri { get; } = "https://localhost:7194";
+    public UriBuilder DirectStiffnessMethod { get; } = new(scheme, "localhost:7110");
+
+    public UriBuilder Identity { get; } = new(scheme, "localhost:7194");
+
+    public UriBuilder PhysicalModel { get; } = new(scheme, "localhost:7193");
+    public UriBuilder WebApp { get; } = new(scheme, "localhost:7111");
 }
 
 public interface IUriProvider
 {
-    string IdentityServerBaseUri { get; }
+    UriBuilder DirectStiffnessMethod { get; }
+    UriBuilder Identity { get; }
+    UriBuilder PhysicalModel { get; }
+    UriBuilder WebApp { get; }
+}
+
+public class UriBuilder(string scheme, string host)
+{
+    public string Build(string? path, IEnumerable<KeyValuePair<string, StringValues>>? queryParams)
+    {
+        return UriHelper.BuildAbsolute(
+            scheme,
+            new HostString(host),
+            path: path != null ? new PathString(path) : default,
+            query: queryParams != null ? QueryString.Create(queryParams) : default
+        );
+    }
+
+    public string BasePath => UriHelper.BuildAbsolute(scheme, new HostString(host));
 }

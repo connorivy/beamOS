@@ -47,6 +47,8 @@ builder
         client => client.BaseAddress = new("https://localhost:7194")
     );
 
+UriProvider uriProvider = new("https");
+builder.Services.AddSingleton<IUriProvider>(uriProvider);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddBlazoredLocalStorage();
