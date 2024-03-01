@@ -10,11 +10,13 @@
 @using Microsoft.AspNetCore.Identity.Data
 @using System.Text
 @using System.Text.Json
+@using BeamOs.Identity.Client
 
 @rendermode InteractiveServer
 
 @inject NavigationManager NavigationManager
-@inject IHttpClientFactory clientFactory
+@inject IIdentityAlphaClient identityClient
+@inject IUriProvider uriProvider
 
 <PageTitle>Log in</PageTitle>
 
@@ -59,18 +61,14 @@
                     </div>
                 </div>
                 <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
-                <form class="form-horizontal" action="https://localhost:7194/login-with-google" method="post">
-                    <div>
-                        <AntiforgeryToken />
-                        <input type="hidden" name="ReturnUrl" value="@FullExternalLoginReturnUrl" />
-                        <div class="flex items-center justify-center dark:bg-gray-800">
-                            <button type="submit" class="px-4 py-2 border flex gap-2 border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-500 hover:text-slate-900 dark:hover:text-slate-300 hover:shadow transition duration-150">
-                                <img class="w-6 h-6" src="https://www.svgrepo.com/show/475656/google-color.svg" loading="lazy" alt="google logo">
-                                <span>Login with Google</span>
-                            </button>
-                        </div>
-                    </div>
-                </form>
+
+                <div class="flex items-center justify-center dark:bg-gray-800">
+                    <button @onclick="LoginWithGoogle" class="px-4 py-2 border flex gap-2 border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-500 hover:text-slate-900 dark:hover:text-slate-300 hover:shadow transition duration-150">
+                        <img class="w-6 h-6" src="https://www.svgrepo.com/show/475656/google-color.svg" loading="lazy" alt="google logo">
+                        <span>Login with Google</span>
+                    </button>
+                </div>
+
                 <p class="text-sm font-light text-gray-500 dark:text-gray-400">
                     Don’t have an account yet? <a href="#" class="font-medium text-indigo-600 hover:underline dark:text-indigo-500">Sign up</a>
                 </p>
@@ -80,9 +78,6 @@
 </section>
 
 @code {
-    [SupplyParameterFromForm]
-    private InputModel Input { get; set; } = new();
-
     [SupplyParameterFromQuery]
     private string? ReturnUrl { get; set; }
 
@@ -90,29 +85,43 @@
 
     protected override void OnParametersSet()
     {
-        UriHelper.FromAbsolute(NavigationManager.BaseUri, out string scheme, out HostString host, out _, out _, out _);
+        // UriHelper.FromAbsolute(NavigationManager.BaseUri, out string scheme, out HostString host, out _, out _, out _);
         IEnumerable<KeyValuePair<string, StringValues>> query =
         [
             new("ReturnUrl", ReturnUrl ?? NavigationManager.BaseUri)
         ];
-        FullExternalLoginReturnUrl = UriHelper.BuildAbsolute(
-            scheme,
-            host,
-            path: new PathString("/auth-state-changed"),
-            query: QueryString.Create(query));
+        // FullExternalLoginReturnUrl = UriHelper.BuildAbsolute(
+        //     scheme,
+        //     host,
+        //     path: new PathString("/auth-state-changed"),
+        //     query: QueryString.Create(query));
+
+        FullExternalLoginReturnUrl = uriProvider.WebApp.Build("/auth-state-changed", query);
     }
 
-    private sealed class InputModel
+    private void LoginWithGoogle()
     {
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; } = "";
+        // hack until i can figure out something better
+        // ping the server to find out its uri
+        // var url = await identityClient.PingAsync(string.Empty);
 
-        [Required]
-        [DataType(DataType.Password)]
-        public string Password { get; set; } = "";
+        // UriHelper.FromAbsolute(url, out string scheme, out HostString host, out _, out _, out _);
+        IEnumerable<KeyValuePair<string, StringValues>> query =
+        [
+            new("ReturnUrl", FullExternalLoginReturnUrl)
+        ];
 
-        [Display(Name = "Remember me?")]
-        public bool RememberMe { get; set; }
+        // var loginWithGoogleUri = UriHelper.BuildAbsolute(
+        //     scheme,
+        //     host,
+        //     path: new PathString("/login-with-google"),
+        //     query: QueryString.Create(query));
+        var loginWithGoogleUri = uriProvider.Identity.Build("/login-with-google", query);
+
+        // var client = httpClientFactory.CreateClient("IdentityClient");
+        // var response = await client.GetAsync(loginWithGoogleUri);
+        // var contents = await response.Content.ReadAsStringAsync();
+
+        NavigationManager.NavigateTo(loginWithGoogleUri);
     }
 }

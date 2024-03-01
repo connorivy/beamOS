@@ -19,8 +19,7 @@ public class LoginWithGoogleEndpoint(
 
     public override void Configure()
     {
-        this.Post("/login-with-google");
-        this.AllowFormData(urlEncoded: true);
+        this.Get("/login-with-google");
         this.AllowAnonymous();
     }
 

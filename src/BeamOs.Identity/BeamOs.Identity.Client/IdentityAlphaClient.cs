@@ -56,12 +56,21 @@ namespace BeamOs.Identity.Client
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task LoginWithGoogleEndpointAsync(ExternalLoginRequest externalLoginRequest);
+        System.Threading.Tasks.Task<string> PingAsync(string @string);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task LoginWithGoogleEndpointAsync(ExternalLoginRequest externalLoginRequest, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<string> PingAsync(string @string, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task LoginWithGoogleEndpointAsync(string returnUrl, string provider, string __RequestVerificationToken);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task LoginWithGoogleEndpointAsync(string returnUrl, string provider, string __RequestVerificationToken, System.Threading.CancellationToken cancellationToken);
 
     }
 
@@ -424,18 +433,18 @@ namespace BeamOs.Identity.Client
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task LoginWithGoogleEndpointAsync(ExternalLoginRequest externalLoginRequest)
+        public virtual System.Threading.Tasks.Task<string> PingAsync(string @string)
         {
-            return LoginWithGoogleEndpointAsync(externalLoginRequest, System.Threading.CancellationToken.None);
+            return PingAsync(@string, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task LoginWithGoogleEndpointAsync(ExternalLoginRequest externalLoginRequest, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<string> PingAsync(string @string, System.Threading.CancellationToken cancellationToken)
         {
-            if (externalLoginRequest == null)
-                throw new System.ArgumentNullException("externalLoginRequest");
+            if (@string == null)
+                throw new System.ArgumentNullException("@string");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -443,17 +452,99 @@ namespace BeamOs.Identity.Client
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    var json_ = Newtonsoft.Json.JsonConvert.SerializeObject(externalLoginRequest, _settings.Value);
-                    var dictionary_ = Newtonsoft.Json.JsonConvert.DeserializeObject<System.Collections.Generic.Dictionary<string, string>>(json_, _settings.Value);
-                    var content_ = new System.Net.Http.FormUrlEncodedContent(dictionary_);
-                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/x-www-form-urlencoded");
+                    var json_ = Newtonsoft.Json.JsonConvert.SerializeObject(@string, _settings.Value);
+                    var content_ = new System.Net.Http.StringContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
-                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "ping"
+                    urlBuilder_.Append("ping");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<string>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task LoginWithGoogleEndpointAsync(string returnUrl, string provider, string __RequestVerificationToken)
+        {
+            return LoginWithGoogleEndpointAsync(returnUrl, provider, __RequestVerificationToken, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task LoginWithGoogleEndpointAsync(string returnUrl, string provider, string __RequestVerificationToken, System.Threading.CancellationToken cancellationToken)
+        {
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "login-with-google"
                     urlBuilder_.Append("login-with-google");
+            urlBuilder_.Append('?');
+            urlBuilder_.Append(System.Uri.EscapeDataString("returnUrl")).Append('=').Append(System.Uri.EscapeDataString(returnUrl != null ? ConvertToString(returnUrl, System.Globalization.CultureInfo.InvariantCulture) : "")).Append('&');
+            urlBuilder_.Append(System.Uri.EscapeDataString("provider")).Append('=').Append(System.Uri.EscapeDataString(provider != null ? ConvertToString(provider, System.Globalization.CultureInfo.InvariantCulture) : "")).Append('&');
+            urlBuilder_.Append(System.Uri.EscapeDataString("__RequestVerificationToken")).Append('=').Append(System.Uri.EscapeDataString(__RequestVerificationToken != null ? ConvertToString(__RequestVerificationToken, System.Globalization.CultureInfo.InvariantCulture) : "")).Append('&');
+            urlBuilder_.Length--;
 
                     PrepareRequest(client_, request_, urlBuilder_);
 

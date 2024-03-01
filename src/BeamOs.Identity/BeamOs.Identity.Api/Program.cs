@@ -49,6 +49,9 @@ builder
         o.ShortSchemaNames = true;
         //o.ExcludeNonFastEndpoints = true;
     });
+
+UriProvider uriProvider = new("https");
+builder.Services.AddSingleton<IUriProvider>(uriProvider);
 builder.Services.AddBeamOsEndpoints<IAssemblyMarkerIdentityApi>();
 builder.Services.AddIdentityApi();
 

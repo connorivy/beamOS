@@ -1,6 +1,7 @@
 using System.Text;
 using BeamOS.Common.Api;
 using BeamOS.DirectStiffnessMethod.Client;
+using BeamOs.Identity.Client;
 using BeamOS.PhysicalModel.Client;
 using BeamOS.WebApp;
 using BeamOS.WebApp.Client;
@@ -8,7 +9,6 @@ using BeamOS.WebApp.Components;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,6 +41,14 @@ builder
         client => client.BaseAddress = new("https://localhost:7110")
     );
 
+builder
+    .Services
+    .AddHttpClient<IIdentityAlphaClient, IdentityAlphaClient>(
+        client => client.BaseAddress = new("https://localhost:7194")
+    );
+
+UriProvider uriProvider = new("https");
+builder.Services.AddSingleton<IUriProvider>(uriProvider);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddBlazoredLocalStorage();
