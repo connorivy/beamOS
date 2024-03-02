@@ -1,3 +1,5 @@
+using System.Reflection;
+using System.Security.Cryptography;
 using BeamOS.Common.Domain.Models;
 using UnitsNet.Units;
 
@@ -28,6 +30,47 @@ public class UnitSettings : BeamOSValueObject
     public ForceUnit ForceUnit { get; private set; }
     public ForcePerLengthUnit ForcePerLengthUnit { get; private set; }
     public TorqueUnit TorqueUnit { get; private set; }
+
+    public TUnitType GetUnit<TUnitType>()
+        where TUnitType : Enum
+    {
+        foreach (PropertyInfo propInfo in typeof(UnitSettings).GetProperties())
+        {
+            var type = propInfo.PropertyType;
+            if (typeof(TUnitType) != type)
+            {
+                continue;
+            }
+
+            object? prop = propInfo.GetValue(this, null);
+            if (prop is not TUnitType unitType)
+            {
+                throw new Exception("This shouldn't happen");
+            }
+
+            return unitType;
+        }
+
+        throw new Exception(
+            $"Unit of type {typeof(TUnitType).FullName} is not defined by UnitSettings"
+        );
+    }
+
+    public Enum GetUnit(Type unitType)
+    {
+        foreach (PropertyInfo propInfo in typeof(UnitSettings).GetProperties())
+        {
+            var type = propInfo.PropertyType;
+            if (unitType != type)
+            {
+                continue;
+            }
+
+            return (Enum)propInfo.GetValue(this, null);
+        }
+
+        throw new Exception($"Unit of type {unitType.FullName} is not defined by UnitSettings");
+    }
 
     protected override IEnumerable<object> GetEqualityComponents()
     {

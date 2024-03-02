@@ -11,11 +11,17 @@ public class CreateSectionProfile(
     CreateSectionProfileRequestMapper commandMapper,
     CreateSectionProfileCommandHandler createSectionProfileCommandHandler,
     SectionProfileResponseMapper sectionProfileResponseMapper
-) : BeamOsEndpoint<CreateSectionProfileRequest, SectionProfileResponse>
+) : BeamOsFastEndpoint<CreateSectionProfileRequest, SectionProfileResponse>
 {
-    public override string Route => "SectionProfiles";
+    public override void Configure()
+    {
+        this.Post("SectionProfiles");
+        this.AllowAnonymous();
+    }
 
-    public override EndpointType EndpointType => EndpointType.Post;
+    //public override string Route => "SectionProfiles";
+
+    //public override EndpointType EndpointType => EndpointType.Post;
 
     public override async Task<SectionProfileResponse> ExecuteAsync(
         CreateSectionProfileRequest request,

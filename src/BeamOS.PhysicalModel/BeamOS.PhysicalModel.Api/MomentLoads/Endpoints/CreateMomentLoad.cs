@@ -10,11 +10,17 @@ public class CreateMomentLoad(
     CreateMomentLoadRequestMapper requestMapper,
     CreateMomentLoadCommandHandler createMomentLoadCommandHandler,
     MomentLoadResponseMapper responseMapper
-) : BeamOsEndpoint<CreateMomentLoadRequest, MomentLoadResponse>
+) : BeamOsFastEndpoint<CreateMomentLoadRequest, MomentLoadResponse>
 {
-    public override string Route => "moment-loads";
+    public override void Configure()
+    {
+        this.Post("moment-loads");
+        this.AllowAnonymous();
+    }
 
-    public override EndpointType EndpointType => EndpointType.Post;
+    //public override string Route => "moment-loads";
+
+    //public override EndpointType EndpointType => EndpointType.Post;
 
     public override async Task<MomentLoadResponse> ExecuteAsync(
         CreateMomentLoadRequest request,

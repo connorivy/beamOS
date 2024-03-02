@@ -11,11 +11,17 @@ public class CreateMaterial(
     CreateMaterialRequestMapper commandMapper,
     CreateMaterialCommandHandler createMaterialCommandHandler,
     MaterialResponseMapper materialResponseMapper
-) : BeamOsEndpoint<CreateMaterialRequest, MaterialResponse>
+) : BeamOsFastEndpoint<CreateMaterialRequest, MaterialResponse>
 {
-    public override string Route => "materials";
+    public override void Configure()
+    {
+        this.Post("/materials");
+        this.AllowAnonymous();
+    }
 
-    public override EndpointType EndpointType => EndpointType.Post;
+    //public override string Route => "materials";
+
+    //public override EndpointType EndpointType => EndpointType.Post;
 
     public override async Task<MaterialResponse> ExecuteAsync(
         CreateMaterialRequest request,

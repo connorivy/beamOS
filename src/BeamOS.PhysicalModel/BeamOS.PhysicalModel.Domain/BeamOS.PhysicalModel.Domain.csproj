@@ -14,4 +14,8 @@
     <ProjectReference Include="..\..\BeamOS.Common\BeamOS.Common.Domain\BeamOS.Common.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Common\Extensions\BeamOSEntityExtensions\" />
+  </ItemGroup>
+
 </Project>

@@ -1,5 +1,4 @@
 using BeamOS.Common.Api;
-using BeamOS.Common.Api.Interfaces;
 using BeamOS.PhysicalModel.Api.Mappers;
 using BeamOS.PhysicalModel.Api.Models.Mappers;
 using BeamOS.PhysicalModel.Api.MomentLoads.Mappers;
@@ -11,8 +10,10 @@ using BeamOS.PhysicalModel.Contracts.MomentLoad;
 using BeamOS.PhysicalModel.Contracts.Node;
 using BeamOS.PhysicalModel.Contracts.PointLoad;
 using BeamOS.PhysicalModel.Contracts.SectionProfile;
+using BeamOS.PhysicalModel.Domain.Common.Extensions;
 using BeamOS.PhysicalModel.Domain.ModelAggregate;
 using BeamOS.PhysicalModel.Domain.ModelAggregate.ValueObjects;
+using BeamOS.PhysicalModel.Domain.MomentLoadAggregate;
 using BeamOS.PhysicalModel.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
@@ -72,6 +73,16 @@ public class GetModelHydrated(
             where n.ModelId == typedId
             select momentLoadResponseMapper.Map(ml)
         ).ToListAsync(cancellationToken: ct);
+
+        List<MomentLoad> momentLoad = await (
+            from ml in dbContext.MomentLoads
+            join n in dbContext.Nodes on ml.NodeId equals n.Id
+            where n.ModelId == typedId
+            select ml
+        ).ToListAsync(cancellationToken: ct);
+
+        var ml1 = momentLoad.First();
+        ml1.UseUnitSettings(model1.Settings.UnitSettings);
 
         ModelSettingsResponse settingsResponse = settingsResponseMapper.Map(model1.Settings);
         return new ModelResponseHydrated(
