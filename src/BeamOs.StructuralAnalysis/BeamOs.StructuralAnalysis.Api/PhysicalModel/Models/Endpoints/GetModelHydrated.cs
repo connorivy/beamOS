@@ -1,8 +1,11 @@
-using BeamOS.Common.Api;
-using BeamOS.PhysicalModel.Api.Mappers;
-using BeamOS.PhysicalModel.Api.Models.Mappers;
-using BeamOS.PhysicalModel.Api.MomentLoads.Mappers;
-using BeamOS.PhysicalModel.Api.PointLoads.Mappers;
+using BeamOs.Api.Common;
+using BeamOs.Api.PhysicalModel.Element1ds.Mappers;
+using BeamOs.Api.PhysicalModel.Materials.Mappers;
+using BeamOs.Api.PhysicalModel.Models.Mappers;
+using BeamOs.Api.PhysicalModel.MomentLoads.Mappers;
+using BeamOs.Api.PhysicalModel.Nodes.Mappers;
+using BeamOs.Api.PhysicalModel.PointLoads.Mappers;
+using BeamOs.Api.PhysicalModel.SectionProfiles.Mappers;
 using BeamOS.PhysicalModel.Contracts.Element1D;
 using BeamOS.PhysicalModel.Contracts.Material;
 using BeamOS.PhysicalModel.Contracts.Model;
@@ -18,7 +21,7 @@ using BeamOS.PhysicalModel.Domain.NodeAggregate;
 using BeamOS.PhysicalModel.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
-namespace BeamOS.PhysicalModel.Api.Models.Endpoints;
+namespace BeamOs.Api.PhysicalModel.Models.Endpoints;
 
 public class GetModelHydrated(
     PhysicalModelDbContext dbContext,
@@ -91,7 +94,7 @@ public class GetModelHydrated(
         //    })
         //    .ToList();
 
-        ModelSettingsResponse settingsResponse = settingsResponseMapper.Map(model1.Settings);
+        var settingsResponse = settingsResponseMapper.Map(model1.Settings);
         return new ModelResponseHydrated(
             id,
             model1.Name,

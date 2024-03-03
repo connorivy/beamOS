@@ -10,4 +10,8 @@
     <ProjectReference Include="..\..\BeamOS.Common\BeamOS.Common.Contracts\BeamOS.Common.Contracts.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="AnalyticalNode\" />
+  </ItemGroup>
+
 </Project>
