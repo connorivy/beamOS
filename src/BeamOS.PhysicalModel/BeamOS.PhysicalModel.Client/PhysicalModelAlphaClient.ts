@@ -10,15 +10,16 @@
 
 export interface IPhysicalModelAlphaClient {
 
-    createSectionProfile(request: CreateSectionProfileRequest): Promise<SectionProfileResponse>;
+    getMomentLoads(modelId: string, momentLoadIds: string[] | null | undefined): Promise<MomentLoadResponse[]>;
 
-    createMomentLoad(request: CreateMomentLoadRequest): Promise<MomentLoadResponse>;
+    /**
+     * @return Success
+     */
+    createMomentLoad(createMomentLoadRequest: CreateMomentLoadRequest): Promise<MomentLoadResponse>;
 
     getModel(id: string): Promise<ModelResponse>;
 
     getModelHydrated(id: string): Promise<ModelResponseHydrated>;
-
-    createMaterial(request: CreateMaterialRequest): Promise<MaterialResponse>;
 
     getElement1ds(modelId: string, element1dIds: string[] | null | undefined): Promise<Element1DResponse[]>;
 
@@ -26,6 +27,11 @@ export interface IPhysicalModelAlphaClient {
      * @return Success
      */
     createElement1d(createElement1DRequest: CreateElement1DRequest): Promise<Element1DResponse>;
+
+    /**
+     * @return Success
+     */
+    createSectionProfile(createSectionProfileRequest: CreateSectionProfileRequest): Promise<SectionProfileResponse>;
 
     /**
      * @return Success
@@ -50,6 +56,11 @@ export interface IPhysicalModelAlphaClient {
     /**
      * @return Success
      */
+    createMaterial(createMaterialRequest: CreateMaterialRequest): Promise<MaterialResponse>;
+
+    /**
+     * @return Success
+     */
     getSingleElement1d(id: string | null): Promise<Element1DResponse>;
 }
 
@@ -63,34 +74,43 @@ export class PhysicalModelAlphaClient implements IPhysicalModelAlphaClient {
         this.baseUrl = baseUrl ?? "";
     }
 
-    createSectionProfile(request: CreateSectionProfileRequest): Promise<SectionProfileResponse> {
-        let url_ = this.baseUrl + "/api/SectionProfiles";
+    getMomentLoads(modelId: string, momentLoadIds: string[] | null | undefined): Promise<MomentLoadResponse[]> {
+        let url_ = this.baseUrl + "/api/moment-loads?";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined and cannot be null.");
+        else
+            url_ += "modelId=" + encodeURIComponent("" + modelId) + "&";
+        if (momentLoadIds !== undefined && momentLoadIds !== null)
+            momentLoadIds && momentLoadIds.forEach(item => { url_ += "momentLoadIds=" + encodeURIComponent("" + item) + "&"; });
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(request);
-
         let options_: RequestInit = {
-            body: content_,
-            method: "POST",
+            method: "GET",
             headers: {
-                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateSectionProfile(_response);
+            return this.processGetMomentLoads(_response);
         });
     }
 
-    protected processCreateSectionProfile(response: Response): Promise<SectionProfileResponse> {
+    protected processGetMomentLoads(response: Response): Promise<MomentLoadResponse[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = SectionProfileResponse.fromJS(resultData200);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(MomentLoadResponse.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -98,14 +118,17 @@ export class PhysicalModelAlphaClient implements IPhysicalModelAlphaClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<SectionProfileResponse>(null as any);
+        return Promise.resolve<MomentLoadResponse[]>(null as any);
     }
 
-    createMomentLoad(request: CreateMomentLoadRequest): Promise<MomentLoadResponse> {
+    /**
+     * @return Success
+     */
+    createMomentLoad(createMomentLoadRequest: CreateMomentLoadRequest): Promise<MomentLoadResponse> {
         let url_ = this.baseUrl + "/api/moment-loads";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(request);
+        const content_ = JSON.stringify(createMomentLoadRequest);
 
         let options_: RequestInit = {
             body: content_,
@@ -213,44 +236,6 @@ export class PhysicalModelAlphaClient implements IPhysicalModelAlphaClient {
         return Promise.resolve<ModelResponseHydrated>(null as any);
     }
 
-    createMaterial(request: CreateMaterialRequest): Promise<MaterialResponse> {
-        let url_ = this.baseUrl + "/api/materials";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(request);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateMaterial(_response);
-        });
-    }
-
-    protected processCreateMaterial(response: Response): Promise<MaterialResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = MaterialResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<MaterialResponse>(null as any);
-    }
-
     getElement1ds(modelId: string, element1dIds: string[] | null | undefined): Promise<Element1DResponse[]> {
         let url_ = this.baseUrl + "/api/element1Ds?";
         if (modelId === undefined || modelId === null)
@@ -337,6 +322,47 @@ export class PhysicalModelAlphaClient implements IPhysicalModelAlphaClient {
             });
         }
         return Promise.resolve<Element1DResponse>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    createSectionProfile(createSectionProfileRequest: CreateSectionProfileRequest): Promise<SectionProfileResponse> {
+        let url_ = this.baseUrl + "/api/SectionProfiles";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(createSectionProfileRequest);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateSectionProfile(_response);
+        });
+    }
+
+    protected processCreateSectionProfile(response: Response): Promise<SectionProfileResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SectionProfileResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SectionProfileResponse>(null as any);
     }
 
     /**
@@ -505,6 +531,47 @@ export class PhysicalModelAlphaClient implements IPhysicalModelAlphaClient {
     /**
      * @return Success
      */
+    createMaterial(createMaterialRequest: CreateMaterialRequest): Promise<MaterialResponse> {
+        let url_ = this.baseUrl + "/api/materials";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(createMaterialRequest);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateMaterial(_response);
+        });
+    }
+
+    protected processCreateMaterial(response: Response): Promise<MaterialResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MaterialResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<MaterialResponse>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
     getSingleElement1d(id: string | null): Promise<Element1DResponse> {
         let url_ = this.baseUrl + "/api/element1Ds/{id}";
         if (id === undefined || id === null)
@@ -541,162 +608,6 @@ export class PhysicalModelAlphaClient implements IPhysicalModelAlphaClient {
         }
         return Promise.resolve<Element1DResponse>(null as any);
     }
-}
-
-export class SectionProfileResponse implements ISectionProfileResponse {
-    id!: string;
-    area!: UnitValueDTO;
-    strongAxisMomentOfInertia!: UnitValueDTO;
-    weakAxisMomentOfInertia!: UnitValueDTO;
-    polarMomentOfInertia!: UnitValueDTO;
-
-    constructor(data?: ISectionProfileResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.area = new UnitValueDTO();
-            this.strongAxisMomentOfInertia = new UnitValueDTO();
-            this.weakAxisMomentOfInertia = new UnitValueDTO();
-            this.polarMomentOfInertia = new UnitValueDTO();
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.area = _data["area"] ? UnitValueDTO.fromJS(_data["area"]) : new UnitValueDTO();
-            this.strongAxisMomentOfInertia = _data["strongAxisMomentOfInertia"] ? UnitValueDTO.fromJS(_data["strongAxisMomentOfInertia"]) : new UnitValueDTO();
-            this.weakAxisMomentOfInertia = _data["weakAxisMomentOfInertia"] ? UnitValueDTO.fromJS(_data["weakAxisMomentOfInertia"]) : new UnitValueDTO();
-            this.polarMomentOfInertia = _data["polarMomentOfInertia"] ? UnitValueDTO.fromJS(_data["polarMomentOfInertia"]) : new UnitValueDTO();
-        }
-    }
-
-    static fromJS(data: any): SectionProfileResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new SectionProfileResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["area"] = this.area ? this.area.toJSON() : <any>undefined;
-        data["strongAxisMomentOfInertia"] = this.strongAxisMomentOfInertia ? this.strongAxisMomentOfInertia.toJSON() : <any>undefined;
-        data["weakAxisMomentOfInertia"] = this.weakAxisMomentOfInertia ? this.weakAxisMomentOfInertia.toJSON() : <any>undefined;
-        data["polarMomentOfInertia"] = this.polarMomentOfInertia ? this.polarMomentOfInertia.toJSON() : <any>undefined;
-        return data;
-    }
-}
-
-export interface ISectionProfileResponse {
-    id: string;
-    area: UnitValueDTO;
-    strongAxisMomentOfInertia: UnitValueDTO;
-    weakAxisMomentOfInertia: UnitValueDTO;
-    polarMomentOfInertia: UnitValueDTO;
-}
-
-export class UnitValueDTO implements IUnitValueDTO {
-    value!: number;
-    unit!: string;
-
-    constructor(data?: IUnitValueDTO) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.value = _data["value"];
-            this.unit = _data["unit"];
-        }
-    }
-
-    static fromJS(data: any): UnitValueDTO {
-        data = typeof data === 'object' ? data : {};
-        let result = new UnitValueDTO();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["value"] = this.value;
-        data["unit"] = this.unit;
-        return data;
-    }
-}
-
-export interface IUnitValueDTO {
-    value: number;
-    unit: string;
-}
-
-export class CreateSectionProfileRequest implements ICreateSectionProfileRequest {
-    modelId!: string;
-    area!: UnitValueDTO;
-    strongAxisMomentOfInertia!: UnitValueDTO;
-    weakAxisMomentOfInertia!: UnitValueDTO;
-    polarMomentOfInertia!: UnitValueDTO;
-
-    constructor(data?: ICreateSectionProfileRequest) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.area = new UnitValueDTO();
-            this.strongAxisMomentOfInertia = new UnitValueDTO();
-            this.weakAxisMomentOfInertia = new UnitValueDTO();
-            this.polarMomentOfInertia = new UnitValueDTO();
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.modelId = _data["modelId"];
-            this.area = _data["area"] ? UnitValueDTO.fromJS(_data["area"]) : new UnitValueDTO();
-            this.strongAxisMomentOfInertia = _data["strongAxisMomentOfInertia"] ? UnitValueDTO.fromJS(_data["strongAxisMomentOfInertia"]) : new UnitValueDTO();
-            this.weakAxisMomentOfInertia = _data["weakAxisMomentOfInertia"] ? UnitValueDTO.fromJS(_data["weakAxisMomentOfInertia"]) : new UnitValueDTO();
-            this.polarMomentOfInertia = _data["polarMomentOfInertia"] ? UnitValueDTO.fromJS(_data["polarMomentOfInertia"]) : new UnitValueDTO();
-        }
-    }
-
-    static fromJS(data: any): CreateSectionProfileRequest {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateSectionProfileRequest();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["modelId"] = this.modelId;
-        data["area"] = this.area ? this.area.toJSON() : <any>undefined;
-        data["strongAxisMomentOfInertia"] = this.strongAxisMomentOfInertia ? this.strongAxisMomentOfInertia.toJSON() : <any>undefined;
-        data["weakAxisMomentOfInertia"] = this.weakAxisMomentOfInertia ? this.weakAxisMomentOfInertia.toJSON() : <any>undefined;
-        data["polarMomentOfInertia"] = this.polarMomentOfInertia ? this.polarMomentOfInertia.toJSON() : <any>undefined;
-        return data;
-    }
-}
-
-export interface ICreateSectionProfileRequest {
-    modelId: string;
-    area: UnitValueDTO;
-    strongAxisMomentOfInertia: UnitValueDTO;
-    weakAxisMomentOfInertia: UnitValueDTO;
-    polarMomentOfInertia: UnitValueDTO;
 }
 
 export class MomentLoadResponse implements IMomentLoadResponse {
@@ -751,6 +662,46 @@ export interface IMomentLoadResponse {
     normalizedAxisDirection: Vector3;
 }
 
+export class UnitValueDTO implements IUnitValueDTO {
+    value!: number;
+    unit!: string;
+
+    constructor(data?: IUnitValueDTO) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.value = _data["value"];
+            this.unit = _data["unit"];
+        }
+    }
+
+    static fromJS(data: any): UnitValueDTO {
+        data = typeof data === 'object' ? data : {};
+        let result = new UnitValueDTO();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["value"] = this.value;
+        data["unit"] = this.unit;
+        return data;
+    }
+}
+
+export interface IUnitValueDTO {
+    value: number;
+    unit: string;
+}
+
 export class Vector3 implements IVector3 {
     x!: number;
     y!: number;
@@ -793,54 +744,6 @@ export interface IVector3 {
     x: number;
     y: number;
     z: number;
-}
-
-export class CreateMomentLoadRequest implements ICreateMomentLoadRequest {
-    nodeId!: string;
-    torque!: UnitValueDTO;
-    axisDirection!: Vector3;
-
-    constructor(data?: ICreateMomentLoadRequest) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.torque = new UnitValueDTO();
-            this.axisDirection = new Vector3();
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.nodeId = _data["nodeId"];
-            this.torque = _data["torque"] ? UnitValueDTO.fromJS(_data["torque"]) : new UnitValueDTO();
-            this.axisDirection = _data["axisDirection"] ? Vector3.fromJS(_data["axisDirection"]) : new Vector3();
-        }
-    }
-
-    static fromJS(data: any): CreateMomentLoadRequest {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateMomentLoadRequest();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["nodeId"] = this.nodeId;
-        data["torque"] = this.torque ? this.torque.toJSON() : <any>undefined;
-        data["axisDirection"] = this.axisDirection ? this.axisDirection.toJSON() : <any>undefined;
-        return data;
-    }
-}
-
-export interface ICreateMomentLoadRequest {
-    nodeId: string;
-    torque: UnitValueDTO;
-    axisDirection: Vector3;
 }
 
 export class ModelResponse implements IModelResponse {
@@ -1384,6 +1287,64 @@ export interface IMaterialResponse {
     modulusOfRigidity: UnitValueDTO;
 }
 
+export class SectionProfileResponse implements ISectionProfileResponse {
+    id!: string;
+    area!: UnitValueDTO;
+    strongAxisMomentOfInertia!: UnitValueDTO;
+    weakAxisMomentOfInertia!: UnitValueDTO;
+    polarMomentOfInertia!: UnitValueDTO;
+
+    constructor(data?: ISectionProfileResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.area = new UnitValueDTO();
+            this.strongAxisMomentOfInertia = new UnitValueDTO();
+            this.weakAxisMomentOfInertia = new UnitValueDTO();
+            this.polarMomentOfInertia = new UnitValueDTO();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.area = _data["area"] ? UnitValueDTO.fromJS(_data["area"]) : new UnitValueDTO();
+            this.strongAxisMomentOfInertia = _data["strongAxisMomentOfInertia"] ? UnitValueDTO.fromJS(_data["strongAxisMomentOfInertia"]) : new UnitValueDTO();
+            this.weakAxisMomentOfInertia = _data["weakAxisMomentOfInertia"] ? UnitValueDTO.fromJS(_data["weakAxisMomentOfInertia"]) : new UnitValueDTO();
+            this.polarMomentOfInertia = _data["polarMomentOfInertia"] ? UnitValueDTO.fromJS(_data["polarMomentOfInertia"]) : new UnitValueDTO();
+        }
+    }
+
+    static fromJS(data: any): SectionProfileResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new SectionProfileResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["area"] = this.area ? this.area.toJSON() : <any>undefined;
+        data["strongAxisMomentOfInertia"] = this.strongAxisMomentOfInertia ? this.strongAxisMomentOfInertia.toJSON() : <any>undefined;
+        data["weakAxisMomentOfInertia"] = this.weakAxisMomentOfInertia ? this.weakAxisMomentOfInertia.toJSON() : <any>undefined;
+        data["polarMomentOfInertia"] = this.polarMomentOfInertia ? this.polarMomentOfInertia.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ISectionProfileResponse {
+    id: string;
+    area: UnitValueDTO;
+    strongAxisMomentOfInertia: UnitValueDTO;
+    weakAxisMomentOfInertia: UnitValueDTO;
+    polarMomentOfInertia: UnitValueDTO;
+}
+
 export class PointLoadResponse implements IPointLoadResponse {
     id!: string;
     nodeId!: string;
@@ -1562,12 +1523,14 @@ export interface IModelResponseHydrated extends IBeamOsContractBase {
     momentLoads: MomentLoadResponse[];
 }
 
-export class CreateMaterialRequest implements ICreateMaterialRequest {
+export class CreateSectionProfileRequest implements ICreateSectionProfileRequest {
     modelId!: string;
-    modulusOfElasticity!: UnitValueDTO;
-    modulusOfRigidity!: UnitValueDTO;
+    area!: UnitValueDTO;
+    strongAxisMomentOfInertia!: UnitValueDTO;
+    weakAxisMomentOfInertia!: UnitValueDTO;
+    polarMomentOfInertia!: UnitValueDTO;
 
-    constructor(data?: ICreateMaterialRequest) {
+    constructor(data?: ICreateSectionProfileRequest) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1575,22 +1538,26 @@ export class CreateMaterialRequest implements ICreateMaterialRequest {
             }
         }
         if (!data) {
-            this.modulusOfElasticity = new UnitValueDTO();
-            this.modulusOfRigidity = new UnitValueDTO();
+            this.area = new UnitValueDTO();
+            this.strongAxisMomentOfInertia = new UnitValueDTO();
+            this.weakAxisMomentOfInertia = new UnitValueDTO();
+            this.polarMomentOfInertia = new UnitValueDTO();
         }
     }
 
     init(_data?: any) {
         if (_data) {
             this.modelId = _data["modelId"];
-            this.modulusOfElasticity = _data["modulusOfElasticity"] ? UnitValueDTO.fromJS(_data["modulusOfElasticity"]) : new UnitValueDTO();
-            this.modulusOfRigidity = _data["modulusOfRigidity"] ? UnitValueDTO.fromJS(_data["modulusOfRigidity"]) : new UnitValueDTO();
+            this.area = _data["area"] ? UnitValueDTO.fromJS(_data["area"]) : new UnitValueDTO();
+            this.strongAxisMomentOfInertia = _data["strongAxisMomentOfInertia"] ? UnitValueDTO.fromJS(_data["strongAxisMomentOfInertia"]) : new UnitValueDTO();
+            this.weakAxisMomentOfInertia = _data["weakAxisMomentOfInertia"] ? UnitValueDTO.fromJS(_data["weakAxisMomentOfInertia"]) : new UnitValueDTO();
+            this.polarMomentOfInertia = _data["polarMomentOfInertia"] ? UnitValueDTO.fromJS(_data["polarMomentOfInertia"]) : new UnitValueDTO();
         }
     }
 
-    static fromJS(data: any): CreateMaterialRequest {
+    static fromJS(data: any): CreateSectionProfileRequest {
         data = typeof data === 'object' ? data : {};
-        let result = new CreateMaterialRequest();
+        let result = new CreateSectionProfileRequest();
         result.init(data);
         return result;
     }
@@ -1598,16 +1565,20 @@ export class CreateMaterialRequest implements ICreateMaterialRequest {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["modelId"] = this.modelId;
-        data["modulusOfElasticity"] = this.modulusOfElasticity ? this.modulusOfElasticity.toJSON() : <any>undefined;
-        data["modulusOfRigidity"] = this.modulusOfRigidity ? this.modulusOfRigidity.toJSON() : <any>undefined;
+        data["area"] = this.area ? this.area.toJSON() : <any>undefined;
+        data["strongAxisMomentOfInertia"] = this.strongAxisMomentOfInertia ? this.strongAxisMomentOfInertia.toJSON() : <any>undefined;
+        data["weakAxisMomentOfInertia"] = this.weakAxisMomentOfInertia ? this.weakAxisMomentOfInertia.toJSON() : <any>undefined;
+        data["polarMomentOfInertia"] = this.polarMomentOfInertia ? this.polarMomentOfInertia.toJSON() : <any>undefined;
         return data;
     }
 }
 
-export interface ICreateMaterialRequest {
+export interface ICreateSectionProfileRequest {
     modelId: string;
-    modulusOfElasticity: UnitValueDTO;
-    modulusOfRigidity: UnitValueDTO;
+    area: UnitValueDTO;
+    strongAxisMomentOfInertia: UnitValueDTO;
+    weakAxisMomentOfInertia: UnitValueDTO;
+    polarMomentOfInertia: UnitValueDTO;
 }
 
 export class CreatePointLoadRequest implements ICreatePointLoadRequest {
@@ -1800,6 +1771,54 @@ export class IdRequest implements IIdRequest {
 export interface IIdRequest {
 }
 
+export class CreateMomentLoadRequest implements ICreateMomentLoadRequest {
+    nodeId!: string;
+    torque!: UnitValueDTO;
+    axisDirection!: Vector3;
+
+    constructor(data?: ICreateMomentLoadRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.torque = new UnitValueDTO();
+            this.axisDirection = new Vector3();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.nodeId = _data["nodeId"];
+            this.torque = _data["torque"] ? UnitValueDTO.fromJS(_data["torque"]) : new UnitValueDTO();
+            this.axisDirection = _data["axisDirection"] ? Vector3.fromJS(_data["axisDirection"]) : new Vector3();
+        }
+    }
+
+    static fromJS(data: any): CreateMomentLoadRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateMomentLoadRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["nodeId"] = this.nodeId;
+        data["torque"] = this.torque ? this.torque.toJSON() : <any>undefined;
+        data["axisDirection"] = this.axisDirection ? this.axisDirection.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ICreateMomentLoadRequest {
+    nodeId: string;
+    torque: UnitValueDTO;
+    axisDirection: Vector3;
+}
+
 export class CreateModelRequest implements ICreateModelRequest {
     name!: string;
     description!: string;
@@ -1940,6 +1959,54 @@ export interface IUnitSettingsRequest {
     forceUnit: string;
     forcePerLengthUnit: string;
     torqueUnit: string;
+}
+
+export class CreateMaterialRequest implements ICreateMaterialRequest {
+    modelId!: string;
+    modulusOfElasticity!: UnitValueDTO;
+    modulusOfRigidity!: UnitValueDTO;
+
+    constructor(data?: ICreateMaterialRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.modulusOfElasticity = new UnitValueDTO();
+            this.modulusOfRigidity = new UnitValueDTO();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.modelId = _data["modelId"];
+            this.modulusOfElasticity = _data["modulusOfElasticity"] ? UnitValueDTO.fromJS(_data["modulusOfElasticity"]) : new UnitValueDTO();
+            this.modulusOfRigidity = _data["modulusOfRigidity"] ? UnitValueDTO.fromJS(_data["modulusOfRigidity"]) : new UnitValueDTO();
+        }
+    }
+
+    static fromJS(data: any): CreateMaterialRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateMaterialRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["modelId"] = this.modelId;
+        data["modulusOfElasticity"] = this.modulusOfElasticity ? this.modulusOfElasticity.toJSON() : <any>undefined;
+        data["modulusOfRigidity"] = this.modulusOfRigidity ? this.modulusOfRigidity.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ICreateMaterialRequest {
+    modelId: string;
+    modulusOfElasticity: UnitValueDTO;
+    modulusOfRigidity: UnitValueDTO;
 }
 
 export class CreateElement1DRequest implements ICreateElement1DRequest {

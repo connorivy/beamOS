@@ -1,11 +1,11 @@
-using BeamOS.Common.Application.Interfaces;
-using BeamOS.PhysicalModel.Domain.ModelAggregate;
-using BeamOS.PhysicalModel.Domain.ModelAggregate.ValueObjects;
+using BeamOs.Application.Common.Interfaces;
+using BeamOs.Domain.PhysicalModel.ModelAggregate;
+using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.Infrastructure.PhysicalModel.Models;
 
-public class ModelDbContextRepository(PhysicalModelDbContext dbContext)
+public class ModelDbContextRepository(BeamOsStructuralDbContext dbContext)
     : IRepository<ModelId, Model>
 {
     public async Task Add(Model aggregate)

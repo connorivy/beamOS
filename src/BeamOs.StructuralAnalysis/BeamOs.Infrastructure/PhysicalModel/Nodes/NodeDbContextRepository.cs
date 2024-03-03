@@ -5,7 +5,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.Infrastructure.PhysicalModel.Nodes;
 
-public class NodeDbContextRepository(PhysicalModelDbContext dbContext) : IRepository<NodeId, Node>
+public class NodeDbContextRepository(BeamOsStructuralDbContext dbContext)
+    : IRepository<NodeId, Node>
 {
     public async Task Add(Node aggregate)
     {

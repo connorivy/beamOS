@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.Infrastructure.PhysicalModel.SectionProfiles;
 
-public class SectionProfileDbContextRepository(PhysicalModelDbContext dbContext)
+public class SectionProfileDbContextRepository(BeamOsStructuralDbContext dbContext)
     : IRepository<SectionProfileId, SectionProfile>
 {
     public async Task Add(SectionProfile aggregate)

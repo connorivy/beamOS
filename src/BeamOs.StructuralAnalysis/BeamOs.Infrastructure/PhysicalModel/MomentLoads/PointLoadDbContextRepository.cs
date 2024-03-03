@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.Infrastructure.PhysicalModel.MomentLoads;
 
-public class MomentLoadDbContextRepository(PhysicalModelDbContext dbContext)
+public class MomentLoadDbContextRepository(BeamOsStructuralDbContext dbContext)
     : IRepository<MomentLoadId, MomentLoad>
 {
     public async Task Add(MomentLoad aggregate)

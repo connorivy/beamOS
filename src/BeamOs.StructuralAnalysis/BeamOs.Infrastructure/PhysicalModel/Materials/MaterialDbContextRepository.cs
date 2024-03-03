@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.Infrastructure.PhysicalModel.Materials;
 
-public class MaterialDbContextRepository(PhysicalModelDbContext dbContext)
+public class MaterialDbContextRepository(BeamOsStructuralDbContext dbContext)
     : IRepository<MaterialId, Material>
 {
     public async Task Add(Material aggregate)

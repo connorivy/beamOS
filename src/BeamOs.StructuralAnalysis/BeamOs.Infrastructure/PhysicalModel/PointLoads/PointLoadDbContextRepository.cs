@@ -1,12 +1,11 @@
-using BeamOS.Common.Application.Interfaces;
-using BeamOs.Infrastructure.PhysicalModel;
-using BeamOS.PhysicalModel.Domain.PointLoadAggregate;
-using BeamOS.PhysicalModel.Domain.PointLoadAggregate.ValueObjects;
+using BeamOs.Application.Common.Interfaces;
+using BeamOs.Domain.PhysicalModel.PointLoadAggregate;
+using BeamOs.Domain.PhysicalModel.PointLoadAggregate.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.Infrastructure.PhysicalModel.PointLoads;
 
-public class PointLoadDbContextRepository(PhysicalModelDbContext dbContext)
+public class PointLoadDbContextRepository(BeamOsStructuralDbContext dbContext)
     : IRepository<PointLoadId, PointLoad>
 {
     public async Task Add(PointLoad aggregate)

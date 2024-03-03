@@ -31,18 +31,20 @@ namespace BeamOS.PhysicalModel.Client
     public partial interface IPhysicalModelAlphaClient
     {
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<SectionProfileResponse> CreateSectionProfileAsync(CreateSectionProfileRequest request);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<MomentLoadResponse>> GetMomentLoadsAsync(string modelId, System.Collections.Generic.IEnumerable<string> momentLoadIds);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<SectionProfileResponse> CreateSectionProfileAsync(CreateSectionProfileRequest request, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<MomentLoadResponse>> GetMomentLoadsAsync(string modelId, System.Collections.Generic.IEnumerable<string> momentLoadIds, System.Threading.CancellationToken cancellationToken);
 
+        /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<MomentLoadResponse> CreateMomentLoadAsync(CreateMomentLoadRequest request);
+        System.Threading.Tasks.Task<MomentLoadResponse> CreateMomentLoadAsync(CreateMomentLoadRequest createMomentLoadRequest);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<MomentLoadResponse> CreateMomentLoadAsync(CreateMomentLoadRequest request, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<MomentLoadResponse> CreateMomentLoadAsync(CreateMomentLoadRequest createMomentLoadRequest, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<ModelResponse> GetModelAsync(string id);
@@ -59,13 +61,6 @@ namespace BeamOS.PhysicalModel.Client
         System.Threading.Tasks.Task<ModelResponseHydrated> GetModelHydratedAsync(string id, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<MaterialResponse> CreateMaterialAsync(CreateMaterialRequest request);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<MaterialResponse> CreateMaterialAsync(CreateMaterialRequest request, System.Threading.CancellationToken cancellationToken);
-
-        /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Element1DResponse>> GetElement1dsAsync(string modelId, System.Collections.Generic.IEnumerable<string> element1dIds);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -80,6 +75,15 @@ namespace BeamOS.PhysicalModel.Client
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<Element1DResponse> CreateElement1dAsync(CreateElement1DRequest createElement1DRequest, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<SectionProfileResponse> CreateSectionProfileAsync(CreateSectionProfileRequest createSectionProfileRequest);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<SectionProfileResponse> CreateSectionProfileAsync(CreateSectionProfileRequest createSectionProfileRequest, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -119,6 +123,15 @@ namespace BeamOS.PhysicalModel.Client
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<MaterialResponse> CreateMaterialAsync(CreateMaterialRequest createMaterialRequest);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<MaterialResponse> CreateMaterialAsync(CreateMaterialRequest createMaterialRequest, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<Element1DResponse> GetSingleElement1dAsync(string id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -155,17 +168,17 @@ namespace BeamOS.PhysicalModel.Client
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<SectionProfileResponse> CreateSectionProfileAsync(CreateSectionProfileRequest request)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<MomentLoadResponse>> GetMomentLoadsAsync(string modelId, System.Collections.Generic.IEnumerable<string> momentLoadIds)
         {
-            return CreateSectionProfileAsync(request, System.Threading.CancellationToken.None);
+            return GetMomentLoadsAsync(modelId, momentLoadIds, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<SectionProfileResponse> CreateSectionProfileAsync(CreateSectionProfileRequest request, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<MomentLoadResponse>> GetMomentLoadsAsync(string modelId, System.Collections.Generic.IEnumerable<string> momentLoadIds, System.Threading.CancellationToken cancellationToken)
         {
-            if (request == null)
-                throw new System.ArgumentNullException("request");
+            if (modelId == null)
+                throw new System.ArgumentNullException("modelId");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -173,17 +186,20 @@ namespace BeamOS.PhysicalModel.Client
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    var json_ = Newtonsoft.Json.JsonConvert.SerializeObject(request, _settings.Value);
-                    var content_ = new System.Net.Http.StringContent(json_);
-                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
-                    request_.Content = content_;
-                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
                     request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/SectionProfiles"
-                    urlBuilder_.Append("api/SectionProfiles");
+                    // Operation Path: "api/moment-loads"
+                    urlBuilder_.Append("api/moment-loads");
+            urlBuilder_.Append('?');
+            urlBuilder_.Append(System.Uri.EscapeDataString("modelId")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+            if (momentLoadIds != null)
+            {
+                foreach (var item_ in momentLoadIds) { urlBuilder_.Append(System.Uri.EscapeDataString("momentLoadIds")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(item_, System.Globalization.CultureInfo.InvariantCulture))).Append('&'); }
+            }
+            urlBuilder_.Length--;
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -210,7 +226,7 @@ namespace BeamOS.PhysicalModel.Client
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<SectionProfileResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<MomentLoadResponse>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -237,18 +253,20 @@ namespace BeamOS.PhysicalModel.Client
             }
         }
 
+        /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<MomentLoadResponse> CreateMomentLoadAsync(CreateMomentLoadRequest request)
+        public virtual System.Threading.Tasks.Task<MomentLoadResponse> CreateMomentLoadAsync(CreateMomentLoadRequest createMomentLoadRequest)
         {
-            return CreateMomentLoadAsync(request, System.Threading.CancellationToken.None);
+            return CreateMomentLoadAsync(createMomentLoadRequest, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<MomentLoadResponse> CreateMomentLoadAsync(CreateMomentLoadRequest request, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<MomentLoadResponse> CreateMomentLoadAsync(CreateMomentLoadRequest createMomentLoadRequest, System.Threading.CancellationToken cancellationToken)
         {
-            if (request == null)
-                throw new System.ArgumentNullException("request");
+            if (createMomentLoadRequest == null)
+                throw new System.ArgumentNullException("createMomentLoadRequest");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -256,7 +274,7 @@ namespace BeamOS.PhysicalModel.Client
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    var json_ = Newtonsoft.Json.JsonConvert.SerializeObject(request, _settings.Value);
+                    var json_ = Newtonsoft.Json.JsonConvert.SerializeObject(createMomentLoadRequest, _settings.Value);
                     var content_ = new System.Net.Http.StringContent(json_);
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
@@ -482,89 +500,6 @@ namespace BeamOS.PhysicalModel.Client
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<MaterialResponse> CreateMaterialAsync(CreateMaterialRequest request)
-        {
-            return CreateMaterialAsync(request, System.Threading.CancellationToken.None);
-        }
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<MaterialResponse> CreateMaterialAsync(CreateMaterialRequest request, System.Threading.CancellationToken cancellationToken)
-        {
-            if (request == null)
-                throw new System.ArgumentNullException("request");
-
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    var json_ = Newtonsoft.Json.JsonConvert.SerializeObject(request, _settings.Value);
-                    var content_ = new System.Net.Http.StringContent(json_);
-                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
-                    request_.Content = content_;
-                    request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
-
-                    var urlBuilder_ = new System.Text.StringBuilder();
-                
-                    // Operation Path: "api/materials"
-                    urlBuilder_.Append("api/materials");
-
-                    PrepareRequest(client_, request_, urlBuilder_);
-
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-
-                    PrepareRequest(client_, request_, url_);
-
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
-                    {
-                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
-                        foreach (var item_ in response_.Headers)
-                            headers_[item_.Key] = item_.Value;
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-
-                        ProcessResponse(client_, response_);
-
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<MaterialResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
-                        }
-                        else
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (disposeClient_)
-                    client_.Dispose();
-            }
-        }
-
-        /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Element1DResponse>> GetElement1dsAsync(string modelId, System.Collections.Generic.IEnumerable<string> element1dIds)
         {
             return GetElement1dsAsync(modelId, element1dIds, System.Threading.CancellationToken.None);
@@ -709,6 +644,91 @@ namespace BeamOS.PhysicalModel.Client
                         if (status_ == 200)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<Element1DResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<SectionProfileResponse> CreateSectionProfileAsync(CreateSectionProfileRequest createSectionProfileRequest)
+        {
+            return CreateSectionProfileAsync(createSectionProfileRequest, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<SectionProfileResponse> CreateSectionProfileAsync(CreateSectionProfileRequest createSectionProfileRequest, System.Threading.CancellationToken cancellationToken)
+        {
+            if (createSectionProfileRequest == null)
+                throw new System.ArgumentNullException("createSectionProfileRequest");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    var json_ = Newtonsoft.Json.JsonConvert.SerializeObject(createSectionProfileRequest, _settings.Value);
+                    var content_ = new System.Net.Http.StringContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "api/SectionProfiles"
+                    urlBuilder_.Append("api/SectionProfiles");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<SectionProfileResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1043,6 +1063,91 @@ namespace BeamOS.PhysicalModel.Client
                         if (status_ == 200)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ModelResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<MaterialResponse> CreateMaterialAsync(CreateMaterialRequest createMaterialRequest)
+        {
+            return CreateMaterialAsync(createMaterialRequest, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<MaterialResponse> CreateMaterialAsync(CreateMaterialRequest createMaterialRequest, System.Threading.CancellationToken cancellationToken)
+        {
+            if (createMaterialRequest == null)
+                throw new System.ArgumentNullException("createMaterialRequest");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    var json_ = Newtonsoft.Json.JsonConvert.SerializeObject(createMaterialRequest, _settings.Value);
+                    var content_ = new System.Net.Http.StringContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "api/materials"
+                    urlBuilder_.Append("api/materials");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<MaterialResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
