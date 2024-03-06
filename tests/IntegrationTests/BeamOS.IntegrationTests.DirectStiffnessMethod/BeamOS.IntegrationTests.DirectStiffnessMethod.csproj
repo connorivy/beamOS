@@ -29,9 +29,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\BeamOS.DirectStiffnessMethod\BeamOS.DirectStiffnessMethod.Domain\BeamOS.DirectStiffnessMethod.Domain.csproj" />
-    <ProjectReference Include="..\..\..\src\BeamOS.PhysicalModel\BeamOS.PhysicalModel.Api\BeamOS.PhysicalModel.Api.csproj" />
-    <ProjectReference Include="..\..\..\src\BeamOS.PhysicalModel\BeamOS.PhysicalModel.Client\BeamOS.PhysicalModel.Client.csproj" />
+    <ProjectReference Include="..\..\..\src\BeamOs.StructuralAnalysis\BeamOs.ApiClient\BeamOs.ApiClient.csproj" />
+    <ProjectReference Include="..\..\..\src\BeamOs.StructuralAnalysis\BeamOs.Api\BeamOs.Api.csproj" />
     <ProjectReference Include="..\..\BeamOS.Tests.Common\BeamOS.Tests.Common.csproj" />
   </ItemGroup>
 

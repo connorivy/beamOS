@@ -53,7 +53,7 @@ export interface IApiAlphaClient {
     /**
      * @return Success
      */
-    getModelHydrated(string: string, id: string | null): Promise<ModelResponseHydrated>;
+    getModelHydrated(id: string | null): Promise<ModelResponseHydrated>;
 
     /**
      * @return Success
@@ -422,20 +422,16 @@ export class ApiAlphaClient implements IApiAlphaClient {
     /**
      * @return Success
      */
-    getModelHydrated(string: string, id: string | null): Promise<ModelResponseHydrated> {
+    getModelHydrated(id: string | null): Promise<ModelResponseHydrated> {
         let url_ = this.baseUrl + "/api/models/{id}/hydrated";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(string);
-
         let options_: RequestInit = {
-            body: content_,
             method: "GET",
             headers: {
-                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -2009,6 +2005,36 @@ export interface IModelResponseHydrated extends IBeamOsContractBase {
     sectionProfiles: SectionProfileResponse[];
     pointLoads: PointLoadResponse[];
     momentLoads: MomentLoadResponse[];
+}
+
+export class IdRequestFromPath implements IIdRequestFromPath {
+
+    constructor(data?: IIdRequestFromPath) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+    }
+
+    static fromJS(data: any): IdRequestFromPath {
+        data = typeof data === 'object' ? data : {};
+        let result = new IdRequestFromPath();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data;
+    }
+}
+
+export interface IIdRequestFromPath {
 }
 
 export class CreateMaterialRequest implements ICreateMaterialRequest {

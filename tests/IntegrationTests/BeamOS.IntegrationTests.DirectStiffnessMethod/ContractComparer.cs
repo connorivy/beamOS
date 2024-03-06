@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Reflection;
-using BeamOS.PhysicalModel.Contracts.Common;
+using BeamOs.Contracts.PhysicalModel.Common;
 
 namespace BeamOS.IntegrationTests.DirectStiffnessMethod;
 

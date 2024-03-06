@@ -1,10 +1,4 @@
-using System.Data.Common;
-using BeamOS.PhysicalModel.Infrastructure;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace BeamOS.IntegrationTests.DirectStiffnessMethod;
 

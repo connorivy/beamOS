@@ -25,7 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DirectStiffnessMethod\" />
     <Folder Include="AnalyticalResults\" />
   </ItemGroup>
 

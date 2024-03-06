@@ -16,8 +16,10 @@ using BeamOs.Contracts.PhysicalModel.MomentLoad;
 using BeamOs.Contracts.PhysicalModel.Node;
 using BeamOs.Contracts.PhysicalModel.PointLoad;
 using BeamOs.Contracts.PhysicalModel.SectionProfile;
+using BeamOs.Domain.PhysicalModel.Common.Extensions;
 using BeamOs.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
+using BeamOs.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.Infrastructure;
 using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
@@ -78,26 +80,26 @@ public class GetModelHydrated(
             where n.ModelId == typedId
             select pointLoadResponseMapper.Map(pl)
         ).ToListAsync(cancellationToken: ct);
-        List<MomentLoadResponse> momentLoadResponses = await (
-            from ml in dbContext.MomentLoads
-            join n in dbContext.Nodes on ml.NodeId equals n.Id
-            where n.ModelId == typedId
-            select momentLoadResponseMapper.Map(ml)
-        ).ToListAsync(cancellationToken: ct);
-
-        //List<MomentLoad> momentLoads = await (
+        //List<MomentLoadResponse> momentLoadResponses = await (
         //    from ml in dbContext.MomentLoads
         //    join n in dbContext.Nodes on ml.NodeId equals n.Id
         //    where n.ModelId == typedId
-        //    select ml
+        //    select momentLoadResponseMapper.Map(ml)
         //).ToListAsync(cancellationToken: ct);
-        //List<MomentLoadResponse> momentLoadResponses = momentLoads
-        //    .Select(ml =>
-        //    {
-        //        ml.UseUnitSettings(unitSettings);
-        //        return momentLoadResponseMapper.Map(ml);
-        //    })
-        //    .ToList();
+
+        List<MomentLoad> momentLoads = await (
+            from ml in dbContext.MomentLoads
+            join n in dbContext.Nodes on ml.NodeId equals n.Id
+            where n.ModelId == typedId
+            select ml
+        ).ToListAsync(cancellationToken: ct);
+        List<MomentLoadResponse> momentLoadResponses = momentLoads
+            .Select(ml =>
+            {
+                ml.UseUnitSettings(unitSettings);
+                return momentLoadResponseMapper.Map(ml);
+            })
+            .ToList();
 
         var settingsResponse = settingsResponseMapper.Map(model1.Settings);
         return new ModelResponseHydrated(

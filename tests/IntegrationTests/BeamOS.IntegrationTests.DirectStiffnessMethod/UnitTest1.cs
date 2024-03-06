@@ -1,5 +1,5 @@
+using BeamOs.ApiClient;
 using BeamOS.IntegrationTests.DirectStiffnessMethod.Common.Fixtures.SolvedProblems.MatrixAnalysisOfStructures2ndEd;
-using BeamOS.PhysicalModel.Client;
 
 namespace BeamOS.IntegrationTests.DirectStiffnessMethod;
 
@@ -10,7 +10,7 @@ public class UnitTest1(CustomWebApplicationFactory<Program> webApplicationFactor
     public async Task Test1()
     {
         var httpClient = webApplicationFactory.CreateClient();
-        var client = new PhysicalModelAlphaClient(httpClient);
+        var client = new ApiAlphaClient(httpClient);
         await Example8_4.CreatePhysicalModel(client);
 
         var modelResponse = await client.GetModelHydratedAsync(Example8_4.ModelId);
