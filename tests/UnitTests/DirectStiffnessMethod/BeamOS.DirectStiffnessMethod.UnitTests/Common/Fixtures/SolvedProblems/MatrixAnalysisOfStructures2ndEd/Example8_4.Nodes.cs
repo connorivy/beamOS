@@ -1,6 +1,6 @@
-using BeamOS.Common.Domain.ValueObjects;
-using BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate;
-using BeamOS.DirectStiffnessMethod.Domain.Common.ValueObjects;
+using BeamOs.Domain.Common.ValueObjects;
+using BeamOs.Domain.DirectStiffnessMethod.AnalyticalNodeAggregate;
+using BeamOs.Domain.DirectStiffnessMethod.Common.ValueObjects;
 using MathNet.Numerics.LinearAlgebra.Double;
 using UnitsNet;
 using UnitsNet.Units;

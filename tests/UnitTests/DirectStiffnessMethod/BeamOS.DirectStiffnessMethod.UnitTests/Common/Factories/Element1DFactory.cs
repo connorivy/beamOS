@@ -1,8 +1,8 @@
-using BeamOS.Common.Domain.ValueObjects;
-using BeamOS.DirectStiffnessMethod.Domain.AnalyticalElement1DAggregate;
-using BeamOS.DirectStiffnessMethod.Domain.AnalyticalElement1DAggregate.ValueObjects;
-using BeamOS.DirectStiffnessMethod.Domain.AnalyticalModelAggregate.ValueObjects;
-using BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate;
+using BeamOs.Domain.Common.ValueObjects;
+using BeamOs.Domain.DirectStiffnessMethod.AnalyticalElement1DAggregate;
+using BeamOs.Domain.DirectStiffnessMethod.AnalyticalElement1DAggregate.ValueObjects;
+using BeamOs.Domain.DirectStiffnessMethod.AnalyticalModelAggregate.ValueObjects;
+using BeamOs.Domain.DirectStiffnessMethod.AnalyticalNodeAggregate;
 using UnitsNet;
 
 namespace BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Factories;
