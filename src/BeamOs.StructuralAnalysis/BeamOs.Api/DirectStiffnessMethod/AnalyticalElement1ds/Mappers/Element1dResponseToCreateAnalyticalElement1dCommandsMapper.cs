@@ -1,10 +1,10 @@
-using BeamOS.Common.Api;
-using BeamOS.Common.Api.Mappers;
-using BeamOS.DirectStiffnessMethod.Application.AnalyticalElement1ds.Commands;
-using BeamOS.PhysicalModel.Contracts.Element1D;
+using BeamOs.Api.Common;
+using BeamOs.Api.Common.Mappers;
+using BeamOs.Application.DirectStiffnessMethod.AnalyticalElement1ds.Commands;
+using BeamOs.Contracts.PhysicalModel.Element1d;
 using Riok.Mapperly.Abstractions;
 
-namespace BeamOS.DirectStiffnessMethod.Api.AnalyticalElement1ds.Mappers;
+namespace BeamOs.Api.DirectStiffnessMethod.AnalyticalElement1ds.Mappers;
 
 [Mapper]
 [UseStaticMapper(typeof(UnitValueDtoToAngleMapper))]

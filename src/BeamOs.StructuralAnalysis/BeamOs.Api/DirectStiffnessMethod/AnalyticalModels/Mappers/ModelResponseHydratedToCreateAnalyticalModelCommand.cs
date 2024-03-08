@@ -1,12 +1,13 @@
-using BeamOS.Common.Api.Interfaces;
-using BeamOS.DirectStiffnessMethod.Api.AnalyticalElement1ds.Mappers;
-using BeamOS.DirectStiffnessMethod.Api.AnalyticalNodes.Mappers;
+using BeamOs.Api.Common.Interfaces;
+using BeamOs.Api.DirectStiffnessMethod.AnalyticalElement1ds.Mappers;
+using BeamOs.Api.DirectStiffnessMethod.AnalyticalNodes.Mappers;
+using BeamOs.Api.DirectStiffnessMethod.SectionProfiles.Mappers;
+using BeamOs.Application.DirectStiffnessMethod.AnalyticalModels.Commands;
+using BeamOs.Contracts.PhysicalModel.Model;
+using BeamOS.DirectStiffnessMethod.Api.AnalyticalModels.Mappers;
 using BeamOS.DirectStiffnessMethod.Api.Materials.Mappers;
-using BeamOS.DirectStiffnessMethod.Api.SectionProfiles.Mappers;
-using BeamOS.DirectStiffnessMethod.Application.AnalyticalModels.Commands;
-using BeamOS.PhysicalModel.Contracts.Model;
 
-namespace BeamOS.DirectStiffnessMethod.Api.AnalyticalModels.Mappers;
+namespace BeamOs.Api.DirectStiffnessMethod.AnalyticalModels.Mappers;
 
 public class ModelResponseHydratedToCreateAnalyticalModelCommand(
     ModelSettingsResponseMapper modelSettingsResponseMapper,

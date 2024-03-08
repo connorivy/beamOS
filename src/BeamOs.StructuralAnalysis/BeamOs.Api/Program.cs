@@ -1,5 +1,4 @@
 using BeamOs.Api;
-using BeamOS.Api;
 using BeamOs.Api.Common;
 using BeamOs.Application;
 using BeamOs.Application.Common;

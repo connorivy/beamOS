@@ -1,43 +1,35 @@
-using BeamOS.Common.Api;
+using BeamOs.Api.Common;
+using BeamOS.Api.Common;
+using BeamOs.Api.DirectStiffnessMethod.AnalyticalModels.Mappers;
+using BeamOs.Application.DirectStiffnessMethod.AnalyticalModels.Commands;
+using BeamOs.Contracts.AnalyticalResults.Model;
 using BeamOs.Contracts.PhysicalModel.Model;
-using BeamOS.DirectStiffnessMethod.Api.AnalyticalModels.Mappers;
-using BeamOS.DirectStiffnessMethod.Application.AnalyticalModels.Commands;
-using BeamOS.DirectStiffnessMethod.Contracts.Model;
-using BeamOS.DirectStiffnessMethod.Domain.AnalyticalModelAggregate;
-using BeamOS.PhysicalModel.Client;
-using BeamOS.PhysicalModel.Contracts.Model;
+using FastEndpoints;
 
-namespace BeamOS.DirectStiffnessMethod.Api.AnalyticalModels.Endpoints;
+namespace BeamOs.Api.DirectStiffnessMethod.AnalyticalModels.Endpoints;
 
 public class RunDirectStiffnessMethod(
-    IPhysicalModelAlphaClient physicalModelApi,
+    BeamOsFastEndpointOptions options,
     ModelResponseHydratedToCreateAnalyticalModelCommand modelResponseMapper,
     CreateAnalyticalModelCommandHandler createAnalyticalModelCommandHandler
-) : BeamOsEndpoint<string, AnalyticalModelResponse>
+) : BeamOsFastEndpoint<ModelResponseHydrated, AnalyticalModelResponse>(options)
 {
-    public override string Route => "/analytical-models/{physicalModelId}";
+    public override string Route => "/direct-stiffness-method/run";
 
-    public override EndpointType EndpointType => EndpointType.Post;
+    public override Http EndpointType => Http.POST;
 
     public override async Task<AnalyticalModelResponse> ExecuteAsync(
-        ModelResponseHydrated modelResponseHydrated,
+        ModelResponseHydrated modelResponse,
         CancellationToken ct
     )
     {
-        ModelResponseHydrated modelResponse = await physicalModelApi.GetModelHydratedAsync(
-            physicalModelId,
-            ct
-        );
+        var command = modelResponseMapper.Map(modelResponse);
 
-        CreateAnalyticalModelFromPhysicalModelCommand command = modelResponseMapper.Map(
-            modelResponse
-        );
-
-        AnalyticalModel model =
+        var model =
             await createAnalyticalModelCommandHandler.ExecuteAsync(command, ct)
             ?? throw new Exception("Analytical model returned null");
 
-        List<UnsupportedStructureDisplacementIdResponse> degreeOfFreedomIdResponses = model
+        var degreeOfFreedomIdResponses = model
             .DegreeOfFreedomIds
             .Select(
                 id =>
@@ -48,7 +40,7 @@ public class RunDirectStiffnessMethod(
             )
             .ToList();
 
-        List<UnsupportedStructureDisplacementIdResponse> boundaryConditionIdResponses = model
+        var boundaryConditionIdResponses = model
             .BoundaryConditionIds
             .Select(
                 id =>

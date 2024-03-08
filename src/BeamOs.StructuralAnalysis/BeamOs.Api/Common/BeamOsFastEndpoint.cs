@@ -1,3 +1,4 @@
+using BeamOs.Api.Common;
 using BeamOs.Api.Common.Interfaces;
 using FastEndpoints;
 

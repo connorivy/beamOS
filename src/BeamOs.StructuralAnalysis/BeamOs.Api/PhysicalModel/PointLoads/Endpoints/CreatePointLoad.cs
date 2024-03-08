@@ -1,4 +1,4 @@
-using BeamOS.Api;
+using BeamOs.Api.Common;
 using BeamOS.Api.Common;
 using BeamOs.Api.PhysicalModel.PointLoads.Mappers;
 using BeamOs.Application.PhysicalModel.PointLoads.Commands;

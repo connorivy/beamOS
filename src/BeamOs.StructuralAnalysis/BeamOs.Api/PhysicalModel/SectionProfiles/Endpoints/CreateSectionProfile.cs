@@ -1,4 +1,4 @@
-using BeamOS.Api;
+using BeamOs.Api.Common;
 using BeamOS.Api.Common;
 using BeamOs.Api.PhysicalModel.SectionProfiles.Mappers;
 using BeamOs.Application.PhysicalModel.SectionProfiles;

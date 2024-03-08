@@ -1,7 +1,7 @@
 using BeamOS.Common.Application.Interfaces;
 using BeamOS.Common.Domain.Models;
 
-namespace BeamOS.PhysicalModel.Infrastructure;
+namespace BeamOS.Common.Application;
 
 public class InMemoryRepository<TId, T> : IRepository<TId, T>
     where TId : notnull

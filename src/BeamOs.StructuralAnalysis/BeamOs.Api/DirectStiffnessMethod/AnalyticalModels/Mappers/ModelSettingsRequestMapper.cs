@@ -1,6 +1,6 @@
-using BeamOS.Common.Api.Interfaces;
-using BeamOS.DirectStiffnessMethod.Application.AnalyticalModels.Commands;
-using BeamOS.PhysicalModel.Contracts.Model;
+using BeamOs.Api.Common.Interfaces;
+using BeamOs.Application.DirectStiffnessMethod.AnalyticalModels.Commands;
+using BeamOs.Contracts.PhysicalModel.Model;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOS.DirectStiffnessMethod.Api.AnalyticalModels.Mappers;

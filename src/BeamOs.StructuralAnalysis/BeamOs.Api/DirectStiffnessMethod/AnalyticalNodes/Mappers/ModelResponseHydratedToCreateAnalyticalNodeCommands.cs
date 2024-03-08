@@ -1,13 +1,14 @@
-using BeamOS.Common.Api.Interfaces;
+using BeamOs.Api.Common.Interfaces;
+using BeamOs.Api.DirectStiffnessMethod.PointLoads.Mappers;
+using BeamOs.Application.DirectStiffnessMethod.AnalyticalNodes.Commands;
+using BeamOs.Application.DirectStiffnessMethod.MomentLoads;
+using BeamOs.Application.DirectStiffnessMethod.PointLoads;
+using BeamOs.Contracts.PhysicalModel.Model;
+using BeamOs.Contracts.PhysicalModel.Node;
+using BeamOS.DirectStiffnessMethod.Api.AnalyticalNodes.Mappers;
 using BeamOS.DirectStiffnessMethod.Api.MomentLoads.Mappers;
-using BeamOS.DirectStiffnessMethod.Api.PointLoads.Mappers;
-using BeamOS.DirectStiffnessMethod.Application.AnalyticalNodes.Commands;
-using BeamOS.DirectStiffnessMethod.Application.MomentLoads;
-using BeamOS.DirectStiffnessMethod.Application.PointLoads;
-using BeamOS.PhysicalModel.Contracts.Model;
-using BeamOS.PhysicalModel.Contracts.Node;
 
-namespace BeamOS.DirectStiffnessMethod.Api.AnalyticalNodes.Mappers;
+namespace BeamOs.Api.DirectStiffnessMethod.AnalyticalNodes.Mappers;
 
 public class ModelResponseHydratedToCreateAnalyticalNodeCommands(
     PointResponseMapper pointResponseMapper,

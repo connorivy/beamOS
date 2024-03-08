@@ -1,10 +1,10 @@
-using BeamOS.Common.Api.Interfaces;
-using BeamOS.Common.Api.Mappers;
-using BeamOS.DirectStiffnessMethod.Application.PointLoads;
-using BeamOS.PhysicalModel.Contracts.PointLoad;
+using BeamOs.Api.Common.Interfaces;
+using BeamOs.Api.Common.Mappers;
+using BeamOs.Application.DirectStiffnessMethod.PointLoads;
+using BeamOs.Contracts.PhysicalModel.PointLoad;
 using Riok.Mapperly.Abstractions;
 
-namespace BeamOS.DirectStiffnessMethod.Api.PointLoads.Mappers;
+namespace BeamOs.Api.DirectStiffnessMethod.PointLoads.Mappers;
 
 [Mapper]
 [UseStaticMapper(typeof(Vector3ToFromMathnetVector))]

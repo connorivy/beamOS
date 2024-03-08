@@ -1,3 +1,3 @@
-namespace BeamOS.DirectStiffnessMethod.Api;
+namespace BeamOs.Api.DirectStiffnessMethod;
 
 public interface IAssemblyMarkerDirectStiffnessMethodApi { }

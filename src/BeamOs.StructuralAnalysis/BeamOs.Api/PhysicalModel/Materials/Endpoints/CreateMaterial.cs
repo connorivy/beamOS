@@ -1,4 +1,4 @@
-using BeamOS.Api;
+using BeamOs.Api.Common;
 using BeamOS.Api.Common;
 using BeamOs.Api.PhysicalModel.Materials.Mappers;
 using BeamOs.Application.PhysicalModel.Materials;

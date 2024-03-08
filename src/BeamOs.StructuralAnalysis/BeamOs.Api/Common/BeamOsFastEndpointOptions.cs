@@ -1,6 +1,6 @@
 using FastEndpoints;
 
-namespace BeamOS.Api;
+namespace BeamOs.Api.Common;
 
 public class BeamOsFastEndpointOptions
 {

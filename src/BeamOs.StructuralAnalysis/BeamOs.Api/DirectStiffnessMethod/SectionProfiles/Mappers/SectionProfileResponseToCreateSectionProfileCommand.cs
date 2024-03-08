@@ -1,10 +1,10 @@
-using BeamOS.Common.Api;
-using BeamOS.Common.Api.Mappers;
-using BeamOS.DirectStiffnessMethod.Application.SectionProfiles;
-using BeamOS.PhysicalModel.Contracts.SectionProfile;
+using BeamOs.Api.Common;
+using BeamOs.Api.Common.Mappers;
+using BeamOs.Application.DirectStiffnessMethod.SectionProfiles;
+using BeamOs.Contracts.PhysicalModel.SectionProfile;
 using Riok.Mapperly.Abstractions;
 
-namespace BeamOS.DirectStiffnessMethod.Api.SectionProfiles.Mappers;
+namespace BeamOs.Api.DirectStiffnessMethod.SectionProfiles.Mappers;
 
 [Mapper]
 [UseStaticMapper(typeof(UnitValueDtoToAreaMapper))]

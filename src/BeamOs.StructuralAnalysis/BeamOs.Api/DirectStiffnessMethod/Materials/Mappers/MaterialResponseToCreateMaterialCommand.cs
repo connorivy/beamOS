@@ -1,7 +1,7 @@
-using BeamOS.Common.Api;
-using BeamOS.Common.Api.Mappers;
-using BeamOS.DirectStiffnessMethod.Application.Materials;
-using BeamOS.PhysicalModel.Contracts.Material;
+using BeamOs.Api.Common;
+using BeamOs.Api.Common.Mappers;
+using BeamOs.Application.DirectStiffnessMethod.Materials;
+using BeamOs.Contracts.PhysicalModel.Material;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOS.DirectStiffnessMethod.Api.Materials.Mappers;

@@ -1,4 +1,4 @@
-using BeamOS.Api;
+using BeamOs.Api.Common;
 using BeamOS.Api.Common;
 using BeamOs.Api.PhysicalModel.Element1ds.Mappers;
 using BeamOs.Application.PhysicalModel.Element1dAggregate;

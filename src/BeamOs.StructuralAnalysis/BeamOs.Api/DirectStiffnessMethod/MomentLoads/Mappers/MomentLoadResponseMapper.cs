@@ -1,7 +1,7 @@
-using BeamOS.Common.Api.Interfaces;
-using BeamOS.Common.Api.Mappers;
-using BeamOS.DirectStiffnessMethod.Application.MomentLoads;
-using BeamOS.PhysicalModel.Contracts.MomentLoad;
+using BeamOs.Api.Common.Interfaces;
+using BeamOs.Api.Common.Mappers;
+using BeamOs.Application.DirectStiffnessMethod.MomentLoads;
+using BeamOs.Contracts.PhysicalModel.MomentLoad;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOS.DirectStiffnessMethod.Api.MomentLoads.Mappers;
