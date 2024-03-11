@@ -24,8 +24,8 @@ public class AnalyticalElement1D : AggregateRoot<AnalyticalElement1DId>
         AreaMomentOfInertia weakAxisMomentOfInertia,
         AreaMomentOfInertia polarMomentOfInertia,
         Line baseLine,
-        AnalyticalNodeId startNodeId,
-        AnalyticalNodeId endNodeId,
+        DsmNodeId startNodeId,
+        DsmNodeId endNodeId,
         AnalyticalElement1DId? id = null
     )
         : base(id ?? new())
@@ -44,8 +44,8 @@ public class AnalyticalElement1D : AggregateRoot<AnalyticalElement1DId>
 
     public AnalyticalElement1D(
         Angle sectionProfileRotation,
-        AnalyticalNode startNode,
-        AnalyticalNode endNode,
+        DsmNode startNode,
+        DsmNode endNode,
         Material material,
         SectionProfile sectionProfile,
         AnalyticalElement1DId? id = null
@@ -79,8 +79,8 @@ public class AnalyticalElement1D : AggregateRoot<AnalyticalElement1DId>
     public Line BaseLine { get; }
     public Length Length => this.BaseLine.Length;
 
-    public AnalyticalNodeId StartNodeId { get; set; }
-    public AnalyticalNodeId EndNodeId { get; set; }
+    public DsmNodeId StartNodeId { get; set; }
+    public DsmNodeId EndNodeId { get; set; }
 
     public IEnumerable<UnsupportedStructureDisplacementId> GetUnsupportedStructureDisplacementIds()
     {

@@ -71,21 +71,25 @@ app.UseFastEndpoints(c =>
 
 const string clientNs = "BeamOs.ApiClient";
 const string clientName = "ApiAlphaClient";
-const string contractsBaseNs =
-    $"{ApiClientGenerator.BeamOsNs}.{ApiClientGenerator.ContractsNs}.{ApiClientGenerator.PhysicalModelNs}";
+const string contractsBaseNs = $"{ApiClientGenerator.BeamOsNs}.{ApiClientGenerator.ContractsNs}";
+const string physicalModelBaseNs = $"{contractsBaseNs}.{ApiClientGenerator.PhysicalModelNs}";
+const string analyticalResultsBaseNs =
+    $"{contractsBaseNs}.{ApiClientGenerator.AnalyticalResultsNs}";
+
 await app.GenerateClient(
     alphaRelease,
     clientNs,
     clientName,
 
     [
-        $"{contractsBaseNs}.{ApiClientGenerator.NodeNs}",
-        $"{contractsBaseNs}.{ApiClientGenerator.Element1dNs}",
-        $"{contractsBaseNs}.{ApiClientGenerator.ModelNs}",
-        $"{contractsBaseNs}.{ApiClientGenerator.PointLoadNs}",
-        $"{contractsBaseNs}.{ApiClientGenerator.MomentLoadNs}",
-        $"{contractsBaseNs}.{ApiClientGenerator.MaterialNs}",
-        $"{contractsBaseNs}.{ApiClientGenerator.SectionProfileNs}",
+        $"{physicalModelBaseNs}.{ApiClientGenerator.NodeNs}",
+        $"{physicalModelBaseNs}.{ApiClientGenerator.Element1dNs}",
+        $"{physicalModelBaseNs}.{ApiClientGenerator.ModelNs}",
+        $"{physicalModelBaseNs}.{ApiClientGenerator.PointLoadNs}",
+        $"{physicalModelBaseNs}.{ApiClientGenerator.MomentLoadNs}",
+        $"{physicalModelBaseNs}.{ApiClientGenerator.MaterialNs}",
+        $"{physicalModelBaseNs}.{ApiClientGenerator.SectionProfileNs}",
+        $"{analyticalResultsBaseNs}.{ApiClientGenerator.AnalyticalModelNs}",
     ]
 );
 

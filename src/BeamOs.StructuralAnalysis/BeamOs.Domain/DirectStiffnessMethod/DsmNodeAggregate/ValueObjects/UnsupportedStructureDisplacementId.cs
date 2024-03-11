@@ -5,11 +5,11 @@ namespace BeamOs.Domain.DirectStiffnessMethod.AnalyticalNodeAggregate.ValueObjec
 
 public class UnsupportedStructureDisplacementId : BeamOSValueObject
 {
-    public AnalyticalNodeId NodeId { get; }
+    public DsmNodeId NodeId { get; }
     public CoordinateSystemDirection3D Direction { get; }
 
     public UnsupportedStructureDisplacementId(
-        AnalyticalNodeId nodeId,
+        DsmNodeId nodeId,
         CoordinateSystemDirection3D direction
     )
     {

@@ -36,7 +36,7 @@ public class AnalyticalModelTests
 
         Vector<double> jointDisplacementVector = fixture
             .AnalyticalModel
-            .JointDisplacementVector
+            .UnknownJointDisplacementVector
             .Build();
 
         jointDisplacementVector.AssertAlmostEqual(
@@ -53,7 +53,10 @@ public class AnalyticalModelTests
     {
         _ = fixture.ExpectedReactionVector.ThrowIfNull(() => throw new SkipException());
 
-        Vector<double> jointDisplacementVector = fixture.AnalyticalModel.ReactionVector.Build();
+        Vector<double> jointDisplacementVector = fixture
+            .AnalyticalModel
+            .UnknownReactionVector
+            .Build();
 
         jointDisplacementVector.AssertAlmostEqual(
             fixture.ExpectedReactionVector,

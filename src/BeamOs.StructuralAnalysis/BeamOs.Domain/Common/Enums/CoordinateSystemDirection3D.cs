@@ -10,3 +10,20 @@ public enum CoordinateSystemDirection3D
     AboutY = 5,
     AboutZ = 6,
 }
+
+public static class CoordinateSystemDirection3dExtensions
+{
+    public static bool IsLinearDirection(this CoordinateSystemDirection3D coord)
+    {
+        if (
+            coord
+            is CoordinateSystemDirection3D.AlongX
+                or CoordinateSystemDirection3D.AlongY
+                or CoordinateSystemDirection3D.AlongZ
+        )
+        {
+            return true;
+        }
+        return false;
+    }
+}

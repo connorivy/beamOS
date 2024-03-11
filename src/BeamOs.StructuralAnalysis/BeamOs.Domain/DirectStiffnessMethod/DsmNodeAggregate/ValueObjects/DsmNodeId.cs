@@ -4,11 +4,9 @@ using BeamOs.Domain.Common.ValueObjects;
 
 namespace BeamOs.Domain.DirectStiffnessMethod.AnalyticalNodeAggregate.ValueObjects;
 
-public class AnalyticalNodeId(Guid? id = null)
-    : GuidBasedId(id),
-        IConstructable<AnalyticalNodeId, Guid>
+public class DsmNodeId(Guid? id = null) : GuidBasedId(id), IConstructable<DsmNodeId, Guid>
 {
-    public static AnalyticalNodeId Construct(Guid t1) => new(t1);
+    public static DsmNodeId Construct(Guid t1) => new(t1);
 
     public IEnumerable<UnsupportedStructureDisplacementId> GetUnsupportedStructureDisplacementIds()
     {

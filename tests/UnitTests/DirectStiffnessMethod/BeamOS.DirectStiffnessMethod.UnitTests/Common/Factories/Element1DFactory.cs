@@ -11,8 +11,8 @@ internal static class Element1DFactory
 {
     public static AnalyticalElement1D Create(
         UnitSettings? unitSettings = null,
-        AnalyticalNode? startNode = null,
-        AnalyticalNode? endNode = null,
+        DsmNode? startNode = null,
+        DsmNode? endNode = null,
         Material? material = null,
         SectionProfile? sectionProfile = null,
         Angle? rotation = default

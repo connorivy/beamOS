@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BeamOs.Contracts.AnalyticalResults.Forces;
+using BeamOs.Contracts.PhysicalModel.Common;
 
 namespace BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
 
-internal class AnalyticalNodeResponse { }
+public record AnalyticalNodeResponse(
+    string NodeId,
+    ForcesResponse Forces,
+    DisplacementsResponse Displacements
+) : BeamOsContractBase;

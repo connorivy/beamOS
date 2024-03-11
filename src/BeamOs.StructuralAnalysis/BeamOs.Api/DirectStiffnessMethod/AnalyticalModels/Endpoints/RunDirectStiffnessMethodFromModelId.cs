@@ -12,13 +12,13 @@ public class RunDirectStiffnessMethodFromModelId(
     BeamOsFastEndpointOptions options,
     GetModelHydrated getModelHydratedEndpoint,
     RunDirectStiffnessMethod runDirectStiffnessMethodEndpoint
-) : BeamOsFastEndpoint<IdRequestFromPath, AnalyticalModelResponse>(options)
+) : BeamOsFastEndpoint<IdRequestFromPath, AnalyticalModelResponse2>(options)
 {
     public override string Route => "/direct-stiffness-method/{id}";
 
     public override Http EndpointType => Http.GET;
 
-    public override async Task<AnalyticalModelResponse> ExecuteAsync(
+    public override async Task<AnalyticalModelResponse2> ExecuteAsync(
         IdRequestFromPath req,
         CancellationToken ct
     )

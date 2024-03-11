@@ -145,32 +145,32 @@
     public List<double>? CalculatedDisplacements { get; set; }
     public List<double> ExpectedReactions { get; } = [
         0,
-        0,
-        0,
-        -10.064,
-        -13.419,
-        0,
-        0,
-        0,
-        0,
-        126.83,
-        0,
-        0,
-        0,
-        -139.94,
-        186.58,
-        0,
-        0,
-        0,
+    0,
+    0,
+    -10.064,
+    -13.419,
+    0,
+    0,
+    0,
+    0,
+    126.83,
+    0,
+    0,
+    0,
+    -139.94,
+    186.58,
+    0,
+    0,
+    0,
     ];
 
     public List<double> ExpectedDisplacements { get; } = [
         .21552,
-        -.13995,
-        0,
-        0,
-        0,
-        0
+    -.13995,
+    0,
+    0,
+    0,
+    0
     ];
 
     private double? GetDifferenceOrNull(double expected, double? calculated)
@@ -225,6 +225,7 @@
 
     private async Task Solve()
     {
+        // AnalyticalModelResponse2 response = await analysisClient.RunDirectStiffnessMethodAsync()
         AnalyticalModelResponse response = await dsmClient.RunDirectStiffnessMethodAsync(physicalModelId);
         CalculatedReactions = response.AnalyticalNodeReactions;
         CalculatedDisplacements = response.AnalyticalNodeDisplacements;

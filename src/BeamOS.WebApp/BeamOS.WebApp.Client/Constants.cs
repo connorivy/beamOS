@@ -5,6 +5,7 @@ public static class Constants
     public const string ASSEMBLY_NAME = "AssemblyName";
     public const string PHYSICAL_MODEL_API_BASE_URI = "PhysicalModelApiBaseUriString";
     public const string DSM_API_BASE_URI = "DSMApiBaseUriString";
+    public const string ANALYSIS_API_BASE_URI = "AnalysisApiBaseUriString";
 
     // WARNING : strings must match CommonApiConstants. For some reason the client doesn't build
     // when referencing the BeamOs.Common.Api project

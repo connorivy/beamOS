@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="AnalyticalResults\" />
     <Folder Include="PhysicalModel\Common\Extensions\BeamOSEntityExtensions\" />
   </ItemGroup>
 

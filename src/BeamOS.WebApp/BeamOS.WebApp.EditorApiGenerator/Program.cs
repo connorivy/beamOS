@@ -39,12 +39,11 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseFastEndpoints(c =>
-    {
-        c.Endpoints.RoutePrefix = "api";
-        c.Versioning.Prefix = "v";
-        c.Endpoints.ShortNames = true;
-    })
-    .UseSwaggerGen();
+{
+    c.Endpoints.RoutePrefix = "api";
+    c.Versioning.Prefix = "v";
+    c.Endpoints.ShortNames = true;
+});
 
 const string clientNs = "BeamOS.WebApp.EditorApi";
 const string className = "EditorApiAlpha";

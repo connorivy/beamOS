@@ -7,16 +7,16 @@ using UnitsNet.Units;
 
 namespace BeamOs.Domain.DirectStiffnessMethod.AnalyticalNodeAggregate;
 
-public class AnalyticalNode : AggregateRoot<AnalyticalNodeId>
+public class DsmNode : AggregateRoot<DsmNodeId>
 {
     public Point LocationPoint { get; private set; }
 
-    public AnalyticalNode(
+    public DsmNode(
         Point locationPoint,
         Restraint restraint,
         List<PointLoad>? pointLoads = null,
         List<MomentLoad>? momentLoads = null,
-        AnalyticalNodeId? id = null
+        DsmNodeId? id = null
     )
         : base(id ?? new())
     {
@@ -26,14 +26,14 @@ public class AnalyticalNode : AggregateRoot<AnalyticalNodeId>
         this.MomentLoads = momentLoads ?? [];
     }
 
-    public AnalyticalNode(
+    public DsmNode(
         Length xCoordinate,
         Length yCoordinate,
         Length zCoordinate,
         Restraint restraint,
         List<PointLoad>? pointLoads = null,
         List<MomentLoad>? momentLoads = null,
-        AnalyticalNodeId? id = null
+        DsmNodeId? id = null
     )
         : this(
             new Point(xCoordinate, yCoordinate, zCoordinate),
@@ -43,7 +43,7 @@ public class AnalyticalNode : AggregateRoot<AnalyticalNodeId>
             id
         ) { }
 
-    public AnalyticalNode(
+    public DsmNode(
         double xCoordinate,
         double yCoordinate,
         double zCoordinate,
@@ -51,7 +51,7 @@ public class AnalyticalNode : AggregateRoot<AnalyticalNodeId>
         Restraint restraint,
         List<PointLoad>? pointLoads = null,
         List<MomentLoad>? momentLoads = null,
-        AnalyticalNodeId? id = null
+        DsmNodeId? id = null
     )
         : this(
             new Length(xCoordinate, lengthUnit),

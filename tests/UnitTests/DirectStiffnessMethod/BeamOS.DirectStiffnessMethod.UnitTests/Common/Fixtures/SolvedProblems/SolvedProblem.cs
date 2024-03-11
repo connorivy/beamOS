@@ -9,5 +9,5 @@ public abstract class SolvedProblem
 {
     public AnalyticalModelFixture AnalyticalModelFixture { get; set; }
     public List<AnalyticalElement1DFixture> Element1DFixtures { get; set; } = [];
-    public List<AnalyticalNode> AnalyticalNodes { get; set; } = [];
+    public List<DsmNode> AnalyticalNodes { get; set; } = [];
 }

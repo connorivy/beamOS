@@ -6,8 +6,8 @@ namespace BeamOs.Application.DirectStiffnessMethod.AnalyticalElement1ds.Commands
 
 public record CreateAnalyticalElement1dGivenEntitiesCommand(
     Angle SectionProfileRotation,
-    AnalyticalNode StartNode,
-    AnalyticalNode EndNode,
+    DsmNode StartNode,
+    DsmNode EndNode,
     Material Material,
     SectionProfile SectionProfile
 );

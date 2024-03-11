@@ -31,14 +31,14 @@ public class CreateAnalyticalModelCommandHandler(
             ct
         );
 
-        Dictionary<string, AnalyticalNode> nodes = [];
+        Dictionary<string, DsmNode> nodes = [];
         Dictionary<string, Material> materials = [];
         Dictionary<string, SectionProfile> sectionProfiles = [];
         List<AnalyticalElement1D> element1ds = [];
 
         foreach (var nodeCommand in command.Nodes)
         {
-            AnalyticalNode node = await createNodeHandler.ExecuteAsync(nodeCommand, ct);
+            DsmNode node = await createNodeHandler.ExecuteAsync(nodeCommand, ct);
             nodes.Add(nodeCommand.Id, node);
         }
 

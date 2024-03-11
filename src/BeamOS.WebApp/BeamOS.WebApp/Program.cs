@@ -47,6 +47,12 @@ builder
         client => client.BaseAddress = new("https://localhost:7194")
     );
 
+//builder
+//    .Services
+//    .AddHttpClient<IApiAlphaClient, ApiAlphaClient>(
+//        client => client.BaseAddress = new("https://localhost:7111")
+//    );
+
 UriProvider uriProvider = new("https");
 builder.Services.AddSingleton<IUriProvider>(uriProvider);
 builder.Services.AddHttpContextAccessor();
@@ -108,7 +114,8 @@ app.MapGet(
             {
                 [Constants.ASSEMBLY_NAME] = typeof(Program).Assembly.GetName().Name,
                 [Constants.PHYSICAL_MODEL_API_BASE_URI] = "https://localhost:7193",
-                [Constants.DSM_API_BASE_URI] = "https://localhost:7110"
+                [Constants.DSM_API_BASE_URI] = "https://localhost:7110",
+                [Constants.ANALYSIS_API_BASE_URI] = "https://localhost:7111"
             }
         )
 );

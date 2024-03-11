@@ -7,6 +7,7 @@ public static class ApiClientGenerator
 {
     public const string BeamOsNs = nameof(BeamOs);
     public const string PhysicalModelNs = nameof(BeamOs.Contracts.PhysicalModel);
+    public const string AnalyticalResultsNs = nameof(BeamOs.Contracts.AnalyticalResults);
 
     //public const string AnalyticalModelNs = nameof(BeamOs.A);
     public const string ContractsNs = nameof(BeamOs.Contracts);
@@ -17,6 +18,7 @@ public static class ApiClientGenerator
     public const string MomentLoadNs = nameof(BeamOs.Contracts.PhysicalModel.MomentLoad);
     public const string MaterialNs = nameof(BeamOs.Contracts.PhysicalModel.Material);
     public const string SectionProfileNs = nameof(BeamOs.Contracts.PhysicalModel.SectionProfile);
+    public const string AnalyticalModelNs = nameof(BeamOs.Contracts.AnalyticalResults.Model);
 
     public static async Task GenerateClient(
         this WebApplication app,

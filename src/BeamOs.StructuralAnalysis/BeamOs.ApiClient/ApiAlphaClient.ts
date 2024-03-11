@@ -74,6 +74,16 @@ export interface IApiAlphaClient {
      * @return Success
      */
     getSingleElement1d(id: string | null): Promise<Element1DResponse>;
+
+    /**
+     * @return Success
+     */
+    runDirectStiffnessMethod(modelResponseHydrated: ModelResponseHydrated): Promise<AnalyticalModelResponse2>;
+
+    /**
+     * @return Success
+     */
+    runDirectStiffnessMethodFromModelId(id: string | null): Promise<AnalyticalModelResponse2>;
 }
 
 export class ApiAlphaClient implements IApiAlphaClient {
@@ -623,6 +633,87 @@ export class ApiAlphaClient implements IApiAlphaClient {
             });
         }
         return Promise.resolve<Element1DResponse>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    runDirectStiffnessMethod(modelResponseHydrated: ModelResponseHydrated): Promise<AnalyticalModelResponse2> {
+        let url_ = this.baseUrl + "/api/direct-stiffness-method/run";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(modelResponseHydrated);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processRunDirectStiffnessMethod(_response);
+        });
+    }
+
+    protected processRunDirectStiffnessMethod(response: Response): Promise<AnalyticalModelResponse2> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AnalyticalModelResponse2.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<AnalyticalModelResponse2>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    runDirectStiffnessMethodFromModelId(id: string | null): Promise<AnalyticalModelResponse2> {
+        let url_ = this.baseUrl + "/api/direct-stiffness-method/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processRunDirectStiffnessMethodFromModelId(_response);
+        });
+    }
+
+    protected processRunDirectStiffnessMethodFromModelId(response: Response): Promise<AnalyticalModelResponse2> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AnalyticalModelResponse2.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<AnalyticalModelResponse2>(null as any);
     }
 }
 
@@ -2169,6 +2260,292 @@ export class GetElement1dsRequest implements IGetElement1dsRequest {
 }
 
 export interface IGetElement1dsRequest {
+}
+
+export class AnalyticalModelResponse2 implements IAnalyticalModelResponse2 {
+    degreeOfFreedomIds!: UnsupportedStructureDisplacementIdResponse[];
+    boundaryConditionIds!: UnsupportedStructureDisplacementIdResponse[];
+    nodeResponses!: AnalyticalNodeResponse[];
+
+    constructor(data?: IAnalyticalModelResponse2) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.degreeOfFreedomIds = [];
+            this.boundaryConditionIds = [];
+            this.nodeResponses = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["degreeOfFreedomIds"])) {
+                this.degreeOfFreedomIds = [] as any;
+                for (let item of _data["degreeOfFreedomIds"])
+                    this.degreeOfFreedomIds!.push(UnsupportedStructureDisplacementIdResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["boundaryConditionIds"])) {
+                this.boundaryConditionIds = [] as any;
+                for (let item of _data["boundaryConditionIds"])
+                    this.boundaryConditionIds!.push(UnsupportedStructureDisplacementIdResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["nodeResponses"])) {
+                this.nodeResponses = [] as any;
+                for (let item of _data["nodeResponses"])
+                    this.nodeResponses!.push(AnalyticalNodeResponse.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): AnalyticalModelResponse2 {
+        data = typeof data === 'object' ? data : {};
+        let result = new AnalyticalModelResponse2();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.degreeOfFreedomIds)) {
+            data["degreeOfFreedomIds"] = [];
+            for (let item of this.degreeOfFreedomIds)
+                data["degreeOfFreedomIds"].push(item.toJSON());
+        }
+        if (Array.isArray(this.boundaryConditionIds)) {
+            data["boundaryConditionIds"] = [];
+            for (let item of this.boundaryConditionIds)
+                data["boundaryConditionIds"].push(item.toJSON());
+        }
+        if (Array.isArray(this.nodeResponses)) {
+            data["nodeResponses"] = [];
+            for (let item of this.nodeResponses)
+                data["nodeResponses"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IAnalyticalModelResponse2 {
+    degreeOfFreedomIds: UnsupportedStructureDisplacementIdResponse[];
+    boundaryConditionIds: UnsupportedStructureDisplacementIdResponse[];
+    nodeResponses: AnalyticalNodeResponse[];
+}
+
+export class UnsupportedStructureDisplacementIdResponse implements IUnsupportedStructureDisplacementIdResponse {
+    analyticalNodeId!: string;
+    direction!: string;
+
+    constructor(data?: IUnsupportedStructureDisplacementIdResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.analyticalNodeId = _data["analyticalNodeId"];
+            this.direction = _data["direction"];
+        }
+    }
+
+    static fromJS(data: any): UnsupportedStructureDisplacementIdResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new UnsupportedStructureDisplacementIdResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["analyticalNodeId"] = this.analyticalNodeId;
+        data["direction"] = this.direction;
+        return data;
+    }
+}
+
+export interface IUnsupportedStructureDisplacementIdResponse {
+    analyticalNodeId: string;
+    direction: string;
+}
+
+export class AnalyticalNodeResponse extends BeamOsContractBase implements IAnalyticalNodeResponse {
+    nodeId!: string;
+    forces!: ForcesResponse;
+    displacements!: DisplacementsResponse;
+
+    constructor(data?: IAnalyticalNodeResponse) {
+        super(data);
+        if (!data) {
+            this.forces = new ForcesResponse();
+            this.displacements = new DisplacementsResponse();
+        }
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.nodeId = _data["nodeId"];
+            this.forces = _data["forces"] ? ForcesResponse.fromJS(_data["forces"]) : new ForcesResponse();
+            this.displacements = _data["displacements"] ? DisplacementsResponse.fromJS(_data["displacements"]) : new DisplacementsResponse();
+        }
+    }
+
+    static fromJS(data: any): AnalyticalNodeResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new AnalyticalNodeResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["nodeId"] = this.nodeId;
+        data["forces"] = this.forces ? this.forces.toJSON() : <any>undefined;
+        data["displacements"] = this.displacements ? this.displacements.toJSON() : <any>undefined;
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IAnalyticalNodeResponse extends IBeamOsContractBase {
+    nodeId: string;
+    forces: ForcesResponse;
+    displacements: DisplacementsResponse;
+}
+
+export class ForcesResponse implements IForcesResponse {
+    forceAlongX!: UnitValueDto;
+    forceAlongY!: UnitValueDto;
+    forceAlongZ!: UnitValueDto;
+    momentAboutX!: UnitValueDto;
+    momentAboutY!: UnitValueDto;
+    momentAboutZ!: UnitValueDto;
+
+    constructor(data?: IForcesResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.forceAlongX = new UnitValueDto();
+            this.forceAlongY = new UnitValueDto();
+            this.forceAlongZ = new UnitValueDto();
+            this.momentAboutX = new UnitValueDto();
+            this.momentAboutY = new UnitValueDto();
+            this.momentAboutZ = new UnitValueDto();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.forceAlongX = _data["forceAlongX"] ? UnitValueDto.fromJS(_data["forceAlongX"]) : new UnitValueDto();
+            this.forceAlongY = _data["forceAlongY"] ? UnitValueDto.fromJS(_data["forceAlongY"]) : new UnitValueDto();
+            this.forceAlongZ = _data["forceAlongZ"] ? UnitValueDto.fromJS(_data["forceAlongZ"]) : new UnitValueDto();
+            this.momentAboutX = _data["momentAboutX"] ? UnitValueDto.fromJS(_data["momentAboutX"]) : new UnitValueDto();
+            this.momentAboutY = _data["momentAboutY"] ? UnitValueDto.fromJS(_data["momentAboutY"]) : new UnitValueDto();
+            this.momentAboutZ = _data["momentAboutZ"] ? UnitValueDto.fromJS(_data["momentAboutZ"]) : new UnitValueDto();
+        }
+    }
+
+    static fromJS(data: any): ForcesResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ForcesResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["forceAlongX"] = this.forceAlongX ? this.forceAlongX.toJSON() : <any>undefined;
+        data["forceAlongY"] = this.forceAlongY ? this.forceAlongY.toJSON() : <any>undefined;
+        data["forceAlongZ"] = this.forceAlongZ ? this.forceAlongZ.toJSON() : <any>undefined;
+        data["momentAboutX"] = this.momentAboutX ? this.momentAboutX.toJSON() : <any>undefined;
+        data["momentAboutY"] = this.momentAboutY ? this.momentAboutY.toJSON() : <any>undefined;
+        data["momentAboutZ"] = this.momentAboutZ ? this.momentAboutZ.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IForcesResponse {
+    forceAlongX: UnitValueDto;
+    forceAlongY: UnitValueDto;
+    forceAlongZ: UnitValueDto;
+    momentAboutX: UnitValueDto;
+    momentAboutY: UnitValueDto;
+    momentAboutZ: UnitValueDto;
+}
+
+export class DisplacementsResponse implements IDisplacementsResponse {
+    displacementAlongX!: UnitValueDto;
+    displacementAlongY!: UnitValueDto;
+    displacementAlongZ!: UnitValueDto;
+    rotationAboutX!: UnitValueDto;
+    rotationAboutY!: UnitValueDto;
+    rotationAboutZ!: UnitValueDto;
+
+    constructor(data?: IDisplacementsResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.displacementAlongX = new UnitValueDto();
+            this.displacementAlongY = new UnitValueDto();
+            this.displacementAlongZ = new UnitValueDto();
+            this.rotationAboutX = new UnitValueDto();
+            this.rotationAboutY = new UnitValueDto();
+            this.rotationAboutZ = new UnitValueDto();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.displacementAlongX = _data["displacementAlongX"] ? UnitValueDto.fromJS(_data["displacementAlongX"]) : new UnitValueDto();
+            this.displacementAlongY = _data["displacementAlongY"] ? UnitValueDto.fromJS(_data["displacementAlongY"]) : new UnitValueDto();
+            this.displacementAlongZ = _data["displacementAlongZ"] ? UnitValueDto.fromJS(_data["displacementAlongZ"]) : new UnitValueDto();
+            this.rotationAboutX = _data["rotationAboutX"] ? UnitValueDto.fromJS(_data["rotationAboutX"]) : new UnitValueDto();
+            this.rotationAboutY = _data["rotationAboutY"] ? UnitValueDto.fromJS(_data["rotationAboutY"]) : new UnitValueDto();
+            this.rotationAboutZ = _data["rotationAboutZ"] ? UnitValueDto.fromJS(_data["rotationAboutZ"]) : new UnitValueDto();
+        }
+    }
+
+    static fromJS(data: any): DisplacementsResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new DisplacementsResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["displacementAlongX"] = this.displacementAlongX ? this.displacementAlongX.toJSON() : <any>undefined;
+        data["displacementAlongY"] = this.displacementAlongY ? this.displacementAlongY.toJSON() : <any>undefined;
+        data["displacementAlongZ"] = this.displacementAlongZ ? this.displacementAlongZ.toJSON() : <any>undefined;
+        data["rotationAboutX"] = this.rotationAboutX ? this.rotationAboutX.toJSON() : <any>undefined;
+        data["rotationAboutY"] = this.rotationAboutY ? this.rotationAboutY.toJSON() : <any>undefined;
+        data["rotationAboutZ"] = this.rotationAboutZ ? this.rotationAboutZ.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IDisplacementsResponse {
+    displacementAlongX: UnitValueDto;
+    displacementAlongY: UnitValueDto;
+    displacementAlongZ: UnitValueDto;
+    rotationAboutX: UnitValueDto;
+    rotationAboutY: UnitValueDto;
+    rotationAboutZ: UnitValueDto;
 }
 
 export class ApiException extends Error {
