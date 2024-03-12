@@ -1,5 +1,4 @@
 using FastEndpoints.ClientGen;
-using Microsoft.AspNetCore.Builder;
 
 namespace BeamOs.Api.Common;
 
@@ -9,7 +8,6 @@ public static class ApiClientGenerator
     public const string PhysicalModelNs = nameof(BeamOs.Contracts.PhysicalModel);
     public const string AnalyticalResultsNs = nameof(BeamOs.Contracts.AnalyticalResults);
 
-    //public const string AnalyticalModelNs = nameof(BeamOs.A);
     public const string ContractsNs = nameof(BeamOs.Contracts);
     public const string NodeNs = nameof(BeamOs.Contracts.PhysicalModel.Node);
     public const string Element1dNs = nameof(BeamOs.Contracts.PhysicalModel.Element1d);

@@ -8,7 +8,6 @@ public static class ApiClientGenerator
     public const string BeamOsNs = nameof(BeamOS);
     public const string PhysicalModelNs = nameof(BeamOS.PhysicalModel);
 
-    //public const string AnalyticalModelNs = nameof(BeamOS.A);
     public const string ContractsNs = nameof(BeamOS.PhysicalModel.Contracts);
     public const string NodeNs = nameof(BeamOS.PhysicalModel.Contracts.Node);
     public const string Element1dNs = nameof(BeamOS.PhysicalModel.Contracts.Element1D);

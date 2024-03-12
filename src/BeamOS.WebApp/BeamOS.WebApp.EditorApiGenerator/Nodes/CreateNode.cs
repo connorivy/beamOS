@@ -1,4 +1,4 @@
-using BeamOS.PhysicalModel.Contracts.Node;
+using BeamOs.Contracts.PhysicalModel.Node;
 using FastEndpoints;
 
 namespace BeamOS.WebApp.EditorApiGenerator.Nodes;
