@@ -20,20 +20,7 @@ public static class DependencyInjection
 
     public static void AddBeamOsEndpointsForAnalysis(this IApplicationBuilder app)
     {
-        //IEnumerable<Type> endpointTypes = typeof(T)
-        //    .Assembly
-        //    .GetTypes()
-        //    .Where(
-        //        t => !t.IsAbstract && !t.IsInterface && t.IsAssignableTo(typeof(BeamOsEndpointBase))
-        //    );
-
-        //var scope = app.ServiceProvider.CreateScope();
-        //foreach (Type type in endpointTypes)
-        //{
-        //    var endpoint = scope.ServiceProvider.GetService(type) as BeamOsEndpointBase;
-        //    endpoint?.Map(app);
-        //}
-
+        const string alphaRelease = "Alpha Release";
         _ = app.UseFastEndpoints(c =>
             {
                 c.Endpoints.RoutePrefix = "api";
@@ -42,6 +29,11 @@ public static class DependencyInjection
                 c.Endpoints.Filter = ed =>
                     ed.EndpointType.Assembly == typeof(IAssemblyMarkerApi).Assembly;
             })
-            .UseSwaggerGen();
+            .UseSwaggerGen(config =>
+            {
+                //config.DocumentName = alphaRelease;
+                //config.Path = "/api";
+                //config.
+            });
     }
 }

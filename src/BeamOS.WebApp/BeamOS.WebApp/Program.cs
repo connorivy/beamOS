@@ -48,6 +48,7 @@ builder
         };
         o.ShortSchemaNames = true;
         o.ExcludeNonFastEndpoints = true;
+        o.EndpointFilter = ed => ed.EndpointType.Assembly == typeof(IAssemblyMarkerApi).Assembly;
     });
 
 //builder
@@ -150,6 +151,11 @@ app.MapGet(
 );
 
 app.AddBeamOsEndpointsForAnalysis();
+
+//seed the DB
+using var scope = app.Services.CreateScope();
+var dbContext = scope.ServiceProvider.GetRequiredService<BeamOsStructuralDbContext>();
+await dbContext.SeedAsync();
 
 app.Use(
     async (context, next) =>

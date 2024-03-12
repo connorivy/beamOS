@@ -19,9 +19,9 @@ namespace BeamOs.Infrastructure;
 
 /// <summary>
 /// Build migrations from folder location
-/// \beamOS\src\BeamOS.PhysicalModel\BeamOS.PhysicalModel.Api\
+/// \beamOS\src\BeamOS.WebApp\BeamOS.WebApp\
 /// with the command
-/// dotnet ef migrations add Initial --project ..\BeamOS.PhysicalModel.Infrastructure\
+/// dotnet ef migrations add Initial --project ..\..\BeamOs.StructuralAnalysis\BeamOs.Infrastructure\
 /// </summary>
 public class BeamOsStructuralDbContext : DbContext
 {
