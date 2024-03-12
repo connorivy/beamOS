@@ -1,4 +1,3 @@
-//using BeamOS.DirectStiffnessMethod.Domain.AnalyticalModelAggregate;
 using BeamOs.Domain.DirectStiffnessMethod.AnalyticalModelAggregate;
 using MathNet.Numerics.LinearAlgebra;
 

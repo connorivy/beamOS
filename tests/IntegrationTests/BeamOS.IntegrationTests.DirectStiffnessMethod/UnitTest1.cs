@@ -3,8 +3,8 @@ using BeamOS.IntegrationTests.DirectStiffnessMethod.Common.Fixtures.SolvedProble
 
 namespace BeamOS.IntegrationTests.DirectStiffnessMethod;
 
-public class UnitTest1(CustomWebApplicationFactory<Program> webApplicationFactory)
-    : IClassFixture<CustomWebApplicationFactory<Program>>
+public class UnitTest1(CustomWebApplicationFactory<BeamOs.Api.Program> webApplicationFactory)
+    : IClassFixture<CustomWebApplicationFactory<BeamOs.Api.Program>>
 {
     [Fact]
     public async Task Test1()

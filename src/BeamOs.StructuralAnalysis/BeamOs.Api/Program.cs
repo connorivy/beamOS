@@ -1,9 +1,6 @@
 using BeamOs.Api;
 using BeamOs.Api.Common;
-using BeamOs.Application;
-using BeamOs.Application.Common;
 using BeamOs.Infrastructure;
-using BeamOs.Infrastructure.PhysicalModel;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +10,11 @@ var builder = WebApplication.CreateBuilder(args);
 const string alphaRelease = "Alpha Release";
 builder
     .Services
-    .AddFastEndpoints()
+    .AddFastEndpoints(options =>
+    {
+        options.DisableAutoDiscovery = true;
+        options.Assemblies =  [typeof(IAssemblyMarkerApi).Assembly];
+    })
     .SwaggerDocument(o =>
     {
         o.DocumentSettings = s =>
@@ -24,7 +25,7 @@ builder
             s.SchemaSettings.SchemaProcessors.Add(new MarkAsRequiredIfNonNullableSchemaProcessor());
         };
         o.ShortSchemaNames = true;
-        //o.ExcludeNonFastEndpoints = true;
+        o.ExcludeNonFastEndpoints = true;
     });
 
 builder
@@ -58,7 +59,6 @@ app.UseFastEndpoints(c =>
         c.Endpoints.RoutePrefix = "api";
         c.Versioning.Prefix = "v";
         c.Endpoints.ShortNames = true;
-        c.Endpoints.Filter = ed => ed.GetType().Assembly == typeof(IAssemblyMarkerApi).Assembly;
     })
     .UseSwaggerGen();
 
@@ -109,4 +109,7 @@ app.UseCors();
 
 app.Run();
 
-public partial class Program { }
+namespace BeamOs.Api
+{
+    public partial class Program { }
+}

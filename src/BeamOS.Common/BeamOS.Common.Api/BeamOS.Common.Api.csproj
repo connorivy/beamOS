@@ -15,7 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\BeamOS.PhysicalModel\BeamOS.PhysicalModel.Contracts\BeamOS.PhysicalModel.Contracts.csproj" />
+    <ProjectReference Include="..\BeamOS.Common.Contracts\BeamOS.Common.Contracts.csproj" />
+    <ProjectReference Include="..\BeamOS.Common.Domain\BeamOS.Common.Domain.csproj" />
   </ItemGroup>
 
 </Project>

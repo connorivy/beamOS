@@ -199,3 +199,8 @@ app.MapRazorComponents<App>()
 app.UseCors();
 
 app.Run();
+
+namespace BeamOS.WebApp
+{
+    public partial class Program { }
+}
