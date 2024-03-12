@@ -1,6 +1,7 @@
 //using BeamOs.ApiClient;
-using BeamOS.DirectStiffnessMethod.Client;
-using BeamOS.PhysicalModel.Client;
+//using BeamOS.DirectStiffnessMethod.Client;
+//using BeamOS.PhysicalModel.Client;
+using BeamOs.ApiClient;
 using BeamOS.WebApp.Client;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -22,23 +23,23 @@ var dsmUriString =
 var analysisUriString =
     builder.Configuration.GetValue<string>(Constants.DSM_API_BASE_URI) ?? "https://localhost:7111";
 
-builder
-    .Services
-    .AddHttpClient<IPhysicalModelAlphaClient, PhysicalModelAlphaClient>(
-        client => client.BaseAddress = new(physicalModelUriString)
-    );
-
-builder
-    .Services
-    .AddHttpClient<IDirectStiffnessMethodAlphaClient, DirectStiffnessMethodAlphaClient>(
-        client => client.BaseAddress = new(dsmUriString)
-    );
+//builder
+//    .Services
+//    .AddHttpClient<IPhysicalModelAlphaClient, PhysicalModelAlphaClient>(
+//        client => client.BaseAddress = new(physicalModelUriString)
+//    );
 
 //builder
 //    .Services
-//    .AddHttpClient<IApiAlphaClient, ApiAlphaClient>(
-//        client => client.BaseAddress = new(analysisUriString)
+//    .AddHttpClient<IDirectStiffnessMethodAlphaClient, DirectStiffnessMethodAlphaClient>(
+//        client => client.BaseAddress = new(dsmUriString)
 //    );
+
+builder
+    .Services
+    .AddHttpClient<IApiAlphaClient, ApiAlphaClient>(
+        client => client.BaseAddress = new(analysisUriString)
+    );
 
 builder.Services.RegisterSharedServices();
 

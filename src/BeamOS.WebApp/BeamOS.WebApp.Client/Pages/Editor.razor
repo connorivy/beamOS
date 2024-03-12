@@ -1,17 +1,14 @@
 @page "/editor"
-@using BeamOS.DirectStiffnessMethod.Client
-@using BeamOS.DirectStiffnessMethod.Contracts.Model
-@using BeamOS.PhysicalModel.Client
-@using BeamOS.PhysicalModel.Contracts.Element1D
-@using BeamOS.PhysicalModel.Contracts.Model
-@using BeamOS.PhysicalModel.Contracts.Node
 @using BeamOS.WebApp.EditorApi
+@using BeamOs.ApiClient
+@using BeamOs.Contracts.AnalyticalResults.Model
+@using BeamOs.Contracts.PhysicalModel.Model
+@using BeamOs.Contracts.PhysicalModel.Node
 
 @rendermode InteractiveServer
 
 @inject IJSRuntime js
-@inject IPhysicalModelAlphaClient apiClient
-@inject IDirectStiffnessMethodAlphaClient dsmClient
+@inject IApiAlphaClient analysisApiClient
 @inject EditorApiProxyFactory editorApiAlphaFactory
 
 <PageTitle>Editor</PageTitle>
@@ -145,32 +142,32 @@
     public List<double>? CalculatedDisplacements { get; set; }
     public List<double> ExpectedReactions { get; } = [
         0,
-    0,
-    0,
-    -10.064,
-    -13.419,
-    0,
-    0,
-    0,
-    0,
-    126.83,
-    0,
-    0,
-    0,
-    -139.94,
-    186.58,
-    0,
-    0,
-    0,
+        0,
+        0,
+        -10.064,
+        -13.419,
+        0,
+        0,
+        0,
+        0,
+        126.83,
+        0,
+        0,
+        0,
+        -139.94,
+        186.58,
+        0,
+        0,
+        0,
     ];
 
     public List<double> ExpectedDisplacements { get; } = [
         .21552,
-    -.13995,
-    0,
-    0,
-    0,
-    0
+        -.13995,
+        0,
+        0,
+        0,
+        0
     ];
 
     private double? GetDifferenceOrNull(double expected, double? calculated)
@@ -206,7 +203,7 @@
             10,
             "Foot");
 
-        NodeResponse response = await apiClient.CreateNodeAsync(request);
+        NodeResponse response = await analysisApiClient.CreateNodeAsync(request);
         var x = await editorApiAlpha.CreateNodeAsync(response);
     }
 
@@ -214,7 +211,7 @@
     {
         try
         {
-            ModelResponseHydrated response = await apiClient.GetModelHydratedAsync(physicalModelId);
+            ModelResponseHydrated response = await analysisApiClient.GetModelHydratedAsync(physicalModelId);
             var x = await editorApiAlpha.CreateModelHydratedAsync(response);
         }
         catch
@@ -226,9 +223,31 @@
     private async Task Solve()
     {
         // AnalyticalModelResponse2 response = await analysisClient.RunDirectStiffnessMethodAsync()
-        AnalyticalModelResponse response = await dsmClient.RunDirectStiffnessMethodAsync(physicalModelId);
-        CalculatedReactions = response.AnalyticalNodeReactions;
-        CalculatedDisplacements = response.AnalyticalNodeDisplacements;
+        AnalyticalModelResponse2 response = await analysisApiClient
+            .RunDirectStiffnessMethodFromModelIdAsync(physicalModelId);
+
+        CalculatedReactions = [];
+        CalculatedDisplacements = [];
+        foreach (var res in response.NodeResponses)
+        {
+            CalculatedReactions.AddRange([
+                res.Forces.ForceAlongX.Value,
+                res.Forces.ForceAlongY.Value,
+                res.Forces.ForceAlongZ.Value,
+                res.Forces.MomentAboutX.Value,
+                res.Forces.MomentAboutY.Value,
+                res.Forces.MomentAboutZ.Value,
+            ]);
+
+            CalculatedDisplacements.AddRange([
+                res.Displacements.DisplacementAlongX.Value,
+                res.Displacements.DisplacementAlongY.Value,
+                res.Displacements.DisplacementAlongZ.Value,
+                res.Displacements.RotationAboutX.Value,
+                res.Displacements.RotationAboutY.Value,
+                res.Displacements.RotationAboutZ.Value,
+            ]);
+        }
     }
 }
 

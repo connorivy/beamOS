@@ -1,8 +1,7 @@
 using System.Text;
+using BeamOs.ApiClient;
 using BeamOS.Common.Api;
-using BeamOS.DirectStiffnessMethod.Client;
 using BeamOs.Identity.Client;
-using BeamOS.PhysicalModel.Client;
 using BeamOS.WebApp;
 using BeamOS.WebApp.Client;
 using BeamOS.WebApp.Components;
@@ -29,17 +28,17 @@ builder
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
-builder
-    .Services
-    .AddHttpClient<IPhysicalModelAlphaClient, PhysicalModelAlphaClient>(
-        client => client.BaseAddress = new("https://localhost:7193")
-    );
+//builder
+//    .Services
+//    .AddHttpClient<IPhysicalModelAlphaClient, PhysicalModelAlphaClient>(
+//        client => client.BaseAddress = new("https://localhost:7193")
+//    );
 
-builder
-    .Services
-    .AddHttpClient<IDirectStiffnessMethodAlphaClient, DirectStiffnessMethodAlphaClient>(
-        client => client.BaseAddress = new("https://localhost:7110")
-    );
+//builder
+//    .Services
+//    .AddHttpClient<IDirectStiffnessMethodAlphaClient, DirectStiffnessMethodAlphaClient>(
+//        client => client.BaseAddress = new("https://localhost:7110")
+//    );
 
 builder
     .Services
@@ -47,11 +46,11 @@ builder
         client => client.BaseAddress = new("https://localhost:7194")
     );
 
-//builder
-//    .Services
-//    .AddHttpClient<IApiAlphaClient, ApiAlphaClient>(
-//        client => client.BaseAddress = new("https://localhost:7111")
-//    );
+builder
+    .Services
+    .AddHttpClient<IApiAlphaClient, ApiAlphaClient>(
+        client => client.BaseAddress = new("https://localhost:7111")
+    );
 
 UriProvider uriProvider = new("https");
 builder.Services.AddSingleton<IUriProvider>(uriProvider);
