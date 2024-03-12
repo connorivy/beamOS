@@ -78,12 +78,22 @@ export interface IApiAlphaClient {
     /**
      * @return Success
      */
-    runDirectStiffnessMethod(modelResponseHydrated: ModelResponseHydrated): Promise<AnalyticalModelResponse2>;
+    runDirectStiffnessMethod(modelResponseHydrated: ModelResponseHydrated): Promise<AnalyticalModelResponse>;
 
     /**
      * @return Success
      */
-    runDirectStiffnessMethodFromModelId(id: string | null): Promise<AnalyticalModelResponse2>;
+    runDirectStiffnessMethod2(modelResponseHydrated: ModelResponseHydrated): Promise<AnalyticalModelResponse2>;
+
+    /**
+     * @return Success
+     */
+    runDirectStiffnessMethodFromModelId(id: string | null): Promise<AnalyticalModelResponse>;
+
+    /**
+     * @return Success
+     */
+    runDirectStiffnessMethodFromModelId2(id: string | null): Promise<AnalyticalModelResponse>;
 }
 
 export class ApiAlphaClient implements IApiAlphaClient {
@@ -638,7 +648,7 @@ export class ApiAlphaClient implements IApiAlphaClient {
     /**
      * @return Success
      */
-    runDirectStiffnessMethod(modelResponseHydrated: ModelResponseHydrated): Promise<AnalyticalModelResponse2> {
+    runDirectStiffnessMethod(modelResponseHydrated: ModelResponseHydrated): Promise<AnalyticalModelResponse> {
         let url_ = this.baseUrl + "/api/direct-stiffness-method/run";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -658,7 +668,48 @@ export class ApiAlphaClient implements IApiAlphaClient {
         });
     }
 
-    protected processRunDirectStiffnessMethod(response: Response): Promise<AnalyticalModelResponse2> {
+    protected processRunDirectStiffnessMethod(response: Response): Promise<AnalyticalModelResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AnalyticalModelResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<AnalyticalModelResponse>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    runDirectStiffnessMethod2(modelResponseHydrated: ModelResponseHydrated): Promise<AnalyticalModelResponse2> {
+        let url_ = this.baseUrl + "/api/direct-stiffness-method/run2";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(modelResponseHydrated);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processRunDirectStiffnessMethod2(_response);
+        });
+    }
+
+    protected processRunDirectStiffnessMethod2(response: Response): Promise<AnalyticalModelResponse2> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -679,7 +730,7 @@ export class ApiAlphaClient implements IApiAlphaClient {
     /**
      * @return Success
      */
-    runDirectStiffnessMethodFromModelId(id: string | null): Promise<AnalyticalModelResponse2> {
+    runDirectStiffnessMethodFromModelId(id: string | null): Promise<AnalyticalModelResponse> {
         let url_ = this.baseUrl + "/api/direct-stiffness-method/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -698,14 +749,14 @@ export class ApiAlphaClient implements IApiAlphaClient {
         });
     }
 
-    protected processRunDirectStiffnessMethodFromModelId(response: Response): Promise<AnalyticalModelResponse2> {
+    protected processRunDirectStiffnessMethodFromModelId(response: Response): Promise<AnalyticalModelResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = AnalyticalModelResponse2.fromJS(resultData200);
+            result200 = AnalyticalModelResponse.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -713,7 +764,47 @@ export class ApiAlphaClient implements IApiAlphaClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<AnalyticalModelResponse2>(null as any);
+        return Promise.resolve<AnalyticalModelResponse>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    runDirectStiffnessMethodFromModelId2(id: string | null): Promise<AnalyticalModelResponse> {
+        let url_ = this.baseUrl + "/api/direct-stiffness-method/v2/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processRunDirectStiffnessMethodFromModelId2(_response);
+        });
+    }
+
+    protected processRunDirectStiffnessMethodFromModelId2(response: Response): Promise<AnalyticalModelResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AnalyticalModelResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<AnalyticalModelResponse>(null as any);
     }
 }
 
@@ -2262,6 +2353,132 @@ export class GetElement1dsRequest implements IGetElement1dsRequest {
 export interface IGetElement1dsRequest {
 }
 
+export class AnalyticalModelResponse implements IAnalyticalModelResponse {
+    degreeOfFreedomIds!: UnsupportedStructureDisplacementIdResponse[];
+    boundaryConditionIds!: UnsupportedStructureDisplacementIdResponse[];
+    analyticalNodeDisplacements!: number[];
+    analyticalNodeReactions!: number[];
+
+    constructor(data?: IAnalyticalModelResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.degreeOfFreedomIds = [];
+            this.boundaryConditionIds = [];
+            this.analyticalNodeDisplacements = [];
+            this.analyticalNodeReactions = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["degreeOfFreedomIds"])) {
+                this.degreeOfFreedomIds = [] as any;
+                for (let item of _data["degreeOfFreedomIds"])
+                    this.degreeOfFreedomIds!.push(UnsupportedStructureDisplacementIdResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["boundaryConditionIds"])) {
+                this.boundaryConditionIds = [] as any;
+                for (let item of _data["boundaryConditionIds"])
+                    this.boundaryConditionIds!.push(UnsupportedStructureDisplacementIdResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["analyticalNodeDisplacements"])) {
+                this.analyticalNodeDisplacements = [] as any;
+                for (let item of _data["analyticalNodeDisplacements"])
+                    this.analyticalNodeDisplacements!.push(item);
+            }
+            if (Array.isArray(_data["analyticalNodeReactions"])) {
+                this.analyticalNodeReactions = [] as any;
+                for (let item of _data["analyticalNodeReactions"])
+                    this.analyticalNodeReactions!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): AnalyticalModelResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new AnalyticalModelResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.degreeOfFreedomIds)) {
+            data["degreeOfFreedomIds"] = [];
+            for (let item of this.degreeOfFreedomIds)
+                data["degreeOfFreedomIds"].push(item.toJSON());
+        }
+        if (Array.isArray(this.boundaryConditionIds)) {
+            data["boundaryConditionIds"] = [];
+            for (let item of this.boundaryConditionIds)
+                data["boundaryConditionIds"].push(item.toJSON());
+        }
+        if (Array.isArray(this.analyticalNodeDisplacements)) {
+            data["analyticalNodeDisplacements"] = [];
+            for (let item of this.analyticalNodeDisplacements)
+                data["analyticalNodeDisplacements"].push(item);
+        }
+        if (Array.isArray(this.analyticalNodeReactions)) {
+            data["analyticalNodeReactions"] = [];
+            for (let item of this.analyticalNodeReactions)
+                data["analyticalNodeReactions"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IAnalyticalModelResponse {
+    degreeOfFreedomIds: UnsupportedStructureDisplacementIdResponse[];
+    boundaryConditionIds: UnsupportedStructureDisplacementIdResponse[];
+    analyticalNodeDisplacements: number[];
+    analyticalNodeReactions: number[];
+}
+
+export class UnsupportedStructureDisplacementIdResponse implements IUnsupportedStructureDisplacementIdResponse {
+    analyticalNodeId!: string;
+    direction!: string;
+
+    constructor(data?: IUnsupportedStructureDisplacementIdResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.analyticalNodeId = _data["analyticalNodeId"];
+            this.direction = _data["direction"];
+        }
+    }
+
+    static fromJS(data: any): UnsupportedStructureDisplacementIdResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new UnsupportedStructureDisplacementIdResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["analyticalNodeId"] = this.analyticalNodeId;
+        data["direction"] = this.direction;
+        return data;
+    }
+}
+
+export interface IUnsupportedStructureDisplacementIdResponse {
+    analyticalNodeId: string;
+    direction: string;
+}
+
 export class AnalyticalModelResponse2 implements IAnalyticalModelResponse2 {
     degreeOfFreedomIds!: UnsupportedStructureDisplacementIdResponse[];
     boundaryConditionIds!: UnsupportedStructureDisplacementIdResponse[];
@@ -2333,46 +2550,6 @@ export interface IAnalyticalModelResponse2 {
     degreeOfFreedomIds: UnsupportedStructureDisplacementIdResponse[];
     boundaryConditionIds: UnsupportedStructureDisplacementIdResponse[];
     nodeResponses: AnalyticalNodeResponse[];
-}
-
-export class UnsupportedStructureDisplacementIdResponse implements IUnsupportedStructureDisplacementIdResponse {
-    analyticalNodeId!: string;
-    direction!: string;
-
-    constructor(data?: IUnsupportedStructureDisplacementIdResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.analyticalNodeId = _data["analyticalNodeId"];
-            this.direction = _data["direction"];
-        }
-    }
-
-    static fromJS(data: any): UnsupportedStructureDisplacementIdResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new UnsupportedStructureDisplacementIdResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["analyticalNodeId"] = this.analyticalNodeId;
-        data["direction"] = this.direction;
-        return data;
-    }
-}
-
-export interface IUnsupportedStructureDisplacementIdResponse {
-    analyticalNodeId: string;
-    direction: string;
 }
 
 export class AnalyticalNodeResponse extends BeamOsContractBase implements IAnalyticalNodeResponse {

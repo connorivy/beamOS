@@ -62,7 +62,7 @@ public class BeamOsStructuralDbContext : DbContext
 
     public async Task SeedAsync()
     {
-        this.Database.EnsureCreated();
+        _ = this.Database.EnsureCreated();
         ModelId zeroId = new(TypedGuids.G0);
         if (await this.Models.AnyAsync(m => m.Id == zeroId))
         {

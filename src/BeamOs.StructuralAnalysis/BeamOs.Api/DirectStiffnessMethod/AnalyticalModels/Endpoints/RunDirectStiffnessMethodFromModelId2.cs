@@ -8,13 +8,13 @@ using FastEndpoints;
 
 namespace BeamOs.Api.DirectStiffnessMethod.AnalyticalModels.Endpoints;
 
-public class RunDirectStiffnessMethodFromModelId(
+public class RunDirectStiffnessMethodFromModelId2(
     BeamOsFastEndpointOptions options,
     GetModelHydrated getModelHydratedEndpoint,
     RunDirectStiffnessMethod runDirectStiffnessMethodEndpoint
 ) : BeamOsFastEndpoint<IdRequestFromPath, AnalyticalModelResponse>(options)
 {
-    public override string Route => "/direct-stiffness-method/{id}";
+    public override string Route => "/direct-stiffness-method/v2/{id}";
 
     public override Http EndpointType => Http.GET;
 

@@ -209,45 +209,16 @@
 
     private async Task LoadModel()
     {
-        try
-        {
-            ModelResponseHydrated response = await analysisApiClient.GetModelHydratedAsync(physicalModelId);
-            var x = await editorApiAlpha.CreateModelHydratedAsync(response);
-        }
-        catch
-        {
-
-        }
+        ModelResponseHydrated response = await analysisApiClient.GetModelHydratedAsync(physicalModelId);
+        var x = await editorApiAlpha.CreateModelHydratedAsync(response);
     }
 
     private async Task Solve()
     {
-        // AnalyticalModelResponse2 response = await analysisClient.RunDirectStiffnessMethodAsync()
-        AnalyticalModelResponse2 response = await analysisApiClient
+        AnalyticalModelResponse response = await analysisApiClient
             .RunDirectStiffnessMethodFromModelIdAsync(physicalModelId);
-
-        CalculatedReactions = [];
-        CalculatedDisplacements = [];
-        foreach (var res in response.NodeResponses)
-        {
-            CalculatedReactions.AddRange([
-                res.Forces.ForceAlongX.Value,
-                res.Forces.ForceAlongY.Value,
-                res.Forces.ForceAlongZ.Value,
-                res.Forces.MomentAboutX.Value,
-                res.Forces.MomentAboutY.Value,
-                res.Forces.MomentAboutZ.Value,
-            ]);
-
-            CalculatedDisplacements.AddRange([
-                res.Displacements.DisplacementAlongX.Value,
-                res.Displacements.DisplacementAlongY.Value,
-                res.Displacements.DisplacementAlongZ.Value,
-                res.Displacements.RotationAboutX.Value,
-                res.Displacements.RotationAboutY.Value,
-                res.Displacements.RotationAboutZ.Value,
-            ]);
-        }
+        CalculatedReactions = response.AnalyticalNodeReactions;
+        CalculatedDisplacements = response.AnalyticalNodeDisplacements;
     }
 }
 

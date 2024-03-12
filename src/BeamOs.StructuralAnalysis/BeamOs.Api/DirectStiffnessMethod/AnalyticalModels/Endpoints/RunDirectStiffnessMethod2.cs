@@ -3,24 +3,25 @@ using BeamOs.Api.Common;
 using BeamOS.Api.Common;
 using BeamOs.Api.DirectStiffnessMethod.AnalyticalModels.Mappers;
 using BeamOs.Application.DirectStiffnessMethod.AnalyticalModels.Commands;
+using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
 using BeamOs.Contracts.AnalyticalResults.Model;
 using BeamOs.Contracts.PhysicalModel.Model;
 using FastEndpoints;
 
 namespace BeamOs.Api.DirectStiffnessMethod.AnalyticalModels.Endpoints;
 
-public class RunDirectStiffnessMethod(
+public class RunDirectStiffnessMethod2(
     BeamOsFastEndpointOptions options,
     ModelResponseHydratedToCreateAnalyticalModelCommand modelResponseMapper,
     CreateAnalyticalModelCommandHandler createAnalyticalModelCommandHandler,
     AnalyticalNodeResponseMapper analyticalNodeResponseMapper
-) : BeamOsFastEndpoint<ModelResponseHydrated, AnalyticalModelResponse>(options)
+) : BeamOsFastEndpoint<ModelResponseHydrated, AnalyticalModelResponse2>(options)
 {
-    public override string Route => "/direct-stiffness-method/run";
+    public override string Route => "/direct-stiffness-method/run2";
 
     public override Http EndpointType => Http.POST;
 
-    public override async Task<AnalyticalModelResponse> ExecuteAsync(
+    public override async Task<AnalyticalModelResponse2> ExecuteAsync(
         ModelResponseHydrated modelResponse,
         CancellationToken ct
     )
@@ -53,11 +54,14 @@ public class RunDirectStiffnessMethod(
             )
             .ToList();
 
-        return new AnalyticalModelResponse(
+        List<AnalyticalNodeResponse> nodeResponses = analyticalNodeResponseMapper
+            .Map(model.AnalyticalNodes)
+            .ToList();
+
+        return new AnalyticalModelResponse2(
             degreeOfFreedomIdResponses,
             boundaryConditionIdResponses,
-            model.UnknownJointDisplacementVector.Select(kvp => kvp.Value).ToList(),
-            model.UnknownReactionVector.Select(kvp => kvp.Value).ToList()
+            nodeResponses
         );
     }
 }

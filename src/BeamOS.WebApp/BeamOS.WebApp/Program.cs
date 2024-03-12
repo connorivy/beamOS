@@ -1,13 +1,18 @@
 using System.Text;
+using BeamOs.Api;
 using BeamOs.ApiClient;
 using BeamOS.Common.Api;
 using BeamOs.Identity.Client;
+using BeamOs.Infrastructure;
 using BeamOS.WebApp;
 using BeamOS.WebApp.Client;
 using BeamOS.WebApp.Components;
 using Blazored.LocalStorage;
+using FastEndpoints;
+using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +32,23 @@ builder
     .AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
+
+const string alphaRelease = "Alpha Release";
+builder
+    .Services
+    .AddFastEndpoints()
+    .SwaggerDocument(o =>
+    {
+        o.DocumentSettings = s =>
+        {
+            s.DocumentName = alphaRelease;
+            s.Title = "beamOS api";
+            s.Version = "v0";
+            s.SchemaSettings.SchemaProcessors.Add(new MarkAsRequiredIfNonNullableSchemaProcessor());
+        };
+        o.ShortSchemaNames = true;
+        o.ExcludeNonFastEndpoints = true;
+    });
 
 //builder
 //    .Services
@@ -51,6 +73,14 @@ builder
     .AddHttpClient<IApiAlphaClient, ApiAlphaClient>(
         client => client.BaseAddress = new("https://localhost:7111")
     );
+
+builder.Services.AddAnalysisApiServices();
+var connectionString =
+    builder.Configuration.GetConnectionString("AnalysisDbConnection")
+    ?? throw new InvalidOperationException("Connection string 'AnalysisDbConnection' not found.");
+builder
+    .Services
+    .AddDbContext<BeamOsStructuralDbContext>(options => options.UseSqlServer(connectionString));
 
 UriProvider uriProvider = new("https");
 builder.Services.AddSingleton<IUriProvider>(uriProvider);
@@ -118,6 +148,8 @@ app.MapGet(
             }
         )
 );
+
+app.AddBeamOsEndpointsForAnalysis();
 
 app.Use(
     async (context, next) =>

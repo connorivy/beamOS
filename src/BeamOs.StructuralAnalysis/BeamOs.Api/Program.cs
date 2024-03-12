@@ -37,11 +37,7 @@ builder
         });
     });
 
-builder.Services.AddTransient<BeamOsFastEndpointOptions>();
-builder.Services.AddMappers<IAssemblyMarkerApi>();
-builder.Services.AddBeamOsEndpoints<IAssemblyMarkerApi>();
-builder.Services.AddCommandHandlers<IAssemblyMarkerApplication>();
-builder.Services.AddPhysicalModelInfrastructure();
+builder.Services.AddAnalysisApiServices();
 
 var connectionString =
     builder.Configuration.GetConnectionString("DefaultConnection")
@@ -62,6 +58,7 @@ app.UseFastEndpoints(c =>
         c.Endpoints.RoutePrefix = "api";
         c.Versioning.Prefix = "v";
         c.Endpoints.ShortNames = true;
+        c.Endpoints.Filter = ed => ed.GetType().Assembly == typeof(IAssemblyMarkerApi).Assembly;
     })
     .UseSwaggerGen();
 

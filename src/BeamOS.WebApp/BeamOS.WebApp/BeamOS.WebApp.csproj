@@ -24,6 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\BeamOs.Identity\BeamOs.Identity.Client\BeamOs.Identity.Client.csproj" />
     <ProjectReference Include="..\..\BeamOs.StructuralAnalysis\BeamOs.ApiClient\BeamOs.ApiClient.csproj" />
+    <ProjectReference Include="..\..\BeamOs.StructuralAnalysis\BeamOs.Api\BeamOs.Api.csproj" />
     <ProjectReference Include="..\BeamOS.WebApp.Client\BeamOS.WebApp.Client.csproj">
       <PrivateAssets>all</PrivateAssets>
     </ProjectReference>
