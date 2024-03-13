@@ -41,7 +41,7 @@ builder
 builder.Services.AddAnalysisApiServices();
 
 var connectionString =
-    builder.Configuration.GetConnectionString("DefaultConnection")
+    builder.Configuration.GetConnectionString("AnalysisDbConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder
     .Services

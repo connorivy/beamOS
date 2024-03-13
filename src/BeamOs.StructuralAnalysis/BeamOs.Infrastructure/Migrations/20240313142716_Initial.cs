@@ -32,10 +32,12 @@ namespace BeamOs.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Settings_UnitSettings_AngleUnit = table.Column<int>(type: "int", nullable: false),
                     Settings_UnitSettings_AreaUnit = table.Column<int>(type: "int", nullable: false),
                     Settings_UnitSettings_ForcePerLengthUnit = table.Column<int>(type: "int", nullable: false),
                     Settings_UnitSettings_ForceUnit = table.Column<int>(type: "int", nullable: false),
                     Settings_UnitSettings_LengthUnit = table.Column<int>(type: "int", nullable: false),
+                    Settings_UnitSettings_PressureUnit = table.Column<int>(type: "int", nullable: false),
                     Settings_UnitSettings_TorqueUnit = table.Column<int>(type: "int", nullable: false),
                     Settings_UnitSettings_VolumeUnit = table.Column<int>(type: "int", nullable: false)
                 },

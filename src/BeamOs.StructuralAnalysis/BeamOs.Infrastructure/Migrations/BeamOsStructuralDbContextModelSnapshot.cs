@@ -93,6 +93,9 @@ namespace BeamOs.Infrastructure.Migrations
                                 {
                                     b2.IsRequired();
 
+                                    b2.Property<int>("AngleUnit")
+                                        .HasColumnType("int");
+
                                     b2.Property<int>("AreaUnit")
                                         .HasColumnType("int");
 
@@ -103,6 +106,9 @@ namespace BeamOs.Infrastructure.Migrations
                                         .HasColumnType("int");
 
                                     b2.Property<int>("LengthUnit")
+                                        .HasColumnType("int");
+
+                                    b2.Property<int>("PressureUnit")
                                         .HasColumnType("int");
 
                                     b2.Property<int>("TorqueUnit")

@@ -1,3 +1,4 @@
+using System.Reflection;
 using BeamOs.Domain.Common.Interfaces;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using UnitsNet;
@@ -8,7 +9,11 @@ public static class BeamOSEntityExtensions
 {
     public static void UseUnitSettings(this IBeamOsDomainObject entity, UnitSettings unitSettings)
     {
-        foreach (var propInfo in entity.GetType().GetProperties())
+        foreach (
+            var propInfo in entity
+                .GetType()
+                .GetProperties(BindingFlags.Instance | BindingFlags.Public)
+        )
         {
             var type = Nullable.GetUnderlyingType(propInfo.PropertyType) ?? propInfo.PropertyType;
             var prop = propInfo.GetValue(entity, null);

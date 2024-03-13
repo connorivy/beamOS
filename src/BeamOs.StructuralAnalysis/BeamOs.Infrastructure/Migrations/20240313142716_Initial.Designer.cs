@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeamOs.Infrastructure.Migrations
 {
     [DbContext(typeof(BeamOsStructuralDbContext))]
-    [Migration("20240312130411_Initial")]
+    [Migration("20240313142716_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -96,6 +96,9 @@ namespace BeamOs.Infrastructure.Migrations
                                 {
                                     b2.IsRequired();
 
+                                    b2.Property<int>("AngleUnit")
+                                        .HasColumnType("int");
+
                                     b2.Property<int>("AreaUnit")
                                         .HasColumnType("int");
 
@@ -106,6 +109,9 @@ namespace BeamOs.Infrastructure.Migrations
                                         .HasColumnType("int");
 
                                     b2.Property<int>("LengthUnit")
+                                        .HasColumnType("int");
+
+                                    b2.Property<int>("PressureUnit")
                                         .HasColumnType("int");
 
                                     b2.Property<int>("TorqueUnit")

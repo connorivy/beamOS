@@ -30,7 +30,8 @@ public record UnitSettingsResponse(
     string VolumeUnit,
     string ForceUnit,
     string ForcePerLengthUnit,
-    string TorqueUnit
+    string TorqueUnit,
+    string PressureUnit
 )
 {
     public static UnitSettingsResponse K_IN { get; } =
@@ -40,6 +41,7 @@ public record UnitSettingsResponse(
             "CubicInch",
             "KilopoundForce",
             "KilopoundForcePerInch",
-            "KilopoundForceInch"
+            "KilopoundForceInch",
+            "KilopoundForcePerSquareInch"
         );
 }

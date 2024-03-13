@@ -10,7 +10,8 @@ public record UnitSettingsRequest(
     string VolumeUnit,
     string ForceUnit,
     string ForcePerLengthUnit,
-    string TorqueUnit
+    string TorqueUnit,
+    string PressureUnit
 )
 {
     public static UnitSettingsRequest K_IN { get; } =
@@ -20,6 +21,7 @@ public record UnitSettingsRequest(
             "CubicInch",
             "KilopoundForce",
             "KilopoundForcePerInch",
-            "KilopoundForceInch"
+            "KilopoundForceInch",
+            "KilopoundForcePerSquareInch"
         );
 }

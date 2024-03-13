@@ -16,5 +16,6 @@ public record UnitSettingsCommand(
     VolumeUnit VolumeUnit,
     ForceUnit ForceUnit,
     ForcePerLengthUnit ForcePerLengthUnit,
-    TorqueUnit TorqueUnit
+    TorqueUnit TorqueUnit,
+    PressureUnit PressureUnit
 );

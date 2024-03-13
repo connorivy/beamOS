@@ -1,5 +1,3 @@
-using System.Reflection;
-using System.Security.Cryptography;
 using BeamOs.Domain.Common.Models;
 using UnitsNet.Units;
 
@@ -13,7 +11,9 @@ public class UnitSettings : BeamOSValueObject
         VolumeUnit volumeUnit,
         ForceUnit forceUnit,
         ForcePerLengthUnit forcePerLengthUnit,
-        TorqueUnit torqueUnit
+        TorqueUnit torqueUnit,
+        PressureUnit pressureUnit,
+        AreaMomentOfInertiaUnit areaMomentOfInertiaUnit
     )
     {
         this.LengthUnit = lengthUnit;
@@ -22,6 +22,8 @@ public class UnitSettings : BeamOSValueObject
         this.ForceUnit = forceUnit;
         this.ForcePerLengthUnit = forcePerLengthUnit;
         this.TorqueUnit = torqueUnit;
+        this.PressureUnit = pressureUnit;
+        this.AreaMomentOfInertiaUnit = areaMomentOfInertiaUnit;
     }
 
     public LengthUnit LengthUnit { get; private set; }
@@ -30,6 +32,9 @@ public class UnitSettings : BeamOSValueObject
     public ForceUnit ForceUnit { get; private set; }
     public ForcePerLengthUnit ForcePerLengthUnit { get; private set; }
     public TorqueUnit TorqueUnit { get; private set; }
+    public AngleUnit AngleUnit { get; private set; } = AngleUnit.Radian; // TODO : support degrees
+    public PressureUnit PressureUnit { get; private set; }
+    public AreaMomentOfInertiaUnit AreaMomentOfInertiaUnit { get; private set; }
 
     public TUnitType GetUnit<TUnitType>()
         where TUnitType : Enum
@@ -89,7 +94,8 @@ public class UnitSettings : BeamOSValueObject
             VolumeUnit.CubicMeter,
             ForceUnit.Newton,
             ForcePerLengthUnit.NewtonPerMeter,
-            TorqueUnit.NewtonMeter
+            TorqueUnit.NewtonMeter,
+            PressureUnit.NewtonPerSquareMeter
         );
     public static UnitSettings K_IN { get; } =
         new(
@@ -98,7 +104,8 @@ public class UnitSettings : BeamOSValueObject
             VolumeUnit.CubicInch,
             ForceUnit.KilopoundForce,
             ForcePerLengthUnit.KilopoundForcePerInch,
-            TorqueUnit.KilopoundForceInch
+            TorqueUnit.KilopoundForceInch,
+            PressureUnit.KilopoundForcePerSquareInch
         );
     public static UnitSettings K_FT { get; } =
         new(
@@ -107,7 +114,8 @@ public class UnitSettings : BeamOSValueObject
             VolumeUnit.CubicFoot,
             ForceUnit.KilopoundForce,
             ForcePerLengthUnit.KilopoundForcePerFoot,
-            TorqueUnit.KilopoundForceFoot
+            TorqueUnit.KilopoundForceFoot,
+            PressureUnit.KilopoundForcePerSquareFoot
         );
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
