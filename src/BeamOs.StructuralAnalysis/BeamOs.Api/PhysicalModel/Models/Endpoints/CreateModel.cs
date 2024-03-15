@@ -29,7 +29,8 @@ public class CreateModel(
                     "KilopoundForce",
                     "KilopoundForcePerInch",
                     "KilopoundForceInch",
-                    "KilopoundForcePerSquareInch"
+                    "KilopoundForcePerSquareInch",
+                    "InchToTheForth"
                 )
             )
         );

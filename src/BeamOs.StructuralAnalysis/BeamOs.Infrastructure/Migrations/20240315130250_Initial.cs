@@ -33,6 +33,7 @@ namespace BeamOs.Infrastructure.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Settings_UnitSettings_AngleUnit = table.Column<int>(type: "int", nullable: false),
+                    Settings_UnitSettings_AreaMomentOfInertiaUnit = table.Column<int>(type: "int", nullable: false),
                     Settings_UnitSettings_AreaUnit = table.Column<int>(type: "int", nullable: false),
                     Settings_UnitSettings_ForcePerLengthUnit = table.Column<int>(type: "int", nullable: false),
                     Settings_UnitSettings_ForceUnit = table.Column<int>(type: "int", nullable: false),

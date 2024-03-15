@@ -96,6 +96,9 @@ namespace BeamOs.Infrastructure.Migrations
                                     b2.Property<int>("AngleUnit")
                                         .HasColumnType("int");
 
+                                    b2.Property<int>("AreaMomentOfInertiaUnit")
+                                        .HasColumnType("int");
+
                                     b2.Property<int>("AreaUnit")
                                         .HasColumnType("int");
 

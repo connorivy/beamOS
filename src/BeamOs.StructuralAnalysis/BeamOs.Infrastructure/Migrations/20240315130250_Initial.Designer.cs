@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeamOs.Infrastructure.Migrations
 {
     [DbContext(typeof(BeamOsStructuralDbContext))]
-    [Migration("20240313142716_Initial")]
+    [Migration("20240315130250_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -97,6 +97,9 @@ namespace BeamOs.Infrastructure.Migrations
                                     b2.IsRequired();
 
                                     b2.Property<int>("AngleUnit")
+                                        .HasColumnType("int");
+
+                                    b2.Property<int>("AreaMomentOfInertiaUnit")
                                         .HasColumnType("int");
 
                                     b2.Property<int>("AreaUnit")

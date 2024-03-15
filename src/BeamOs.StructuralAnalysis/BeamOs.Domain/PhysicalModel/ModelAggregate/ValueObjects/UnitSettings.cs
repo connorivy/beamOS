@@ -95,7 +95,8 @@ public class UnitSettings : BeamOSValueObject
             ForceUnit.Newton,
             ForcePerLengthUnit.NewtonPerMeter,
             TorqueUnit.NewtonMeter,
-            PressureUnit.NewtonPerSquareMeter
+            PressureUnit.NewtonPerSquareMeter,
+            AreaMomentOfInertiaUnit.MeterToTheFourth
         );
     public static UnitSettings K_IN { get; } =
         new(
@@ -105,7 +106,8 @@ public class UnitSettings : BeamOSValueObject
             ForceUnit.KilopoundForce,
             ForcePerLengthUnit.KilopoundForcePerInch,
             TorqueUnit.KilopoundForceInch,
-            PressureUnit.KilopoundForcePerSquareInch
+            PressureUnit.KilopoundForcePerSquareInch,
+            AreaMomentOfInertiaUnit.InchToTheFourth
         );
     public static UnitSettings K_FT { get; } =
         new(
@@ -115,7 +117,8 @@ public class UnitSettings : BeamOSValueObject
             ForceUnit.KilopoundForce,
             ForcePerLengthUnit.KilopoundForcePerFoot,
             TorqueUnit.KilopoundForceFoot,
-            PressureUnit.KilopoundForcePerSquareFoot
+            PressureUnit.KilopoundForcePerSquareFoot,
+            AreaMomentOfInertiaUnit.FootToTheFourth
         );
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
