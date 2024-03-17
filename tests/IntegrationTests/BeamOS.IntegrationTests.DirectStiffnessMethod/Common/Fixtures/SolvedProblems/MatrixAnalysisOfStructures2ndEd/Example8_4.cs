@@ -27,36 +27,36 @@ internal partial class Example8_4 : SolvedProblem
                     node1.Id,
                     ModelId,
                     new PointResponse(
-                        new UnitValueDto(0, "Meter"),
-                        new UnitValueDto(0, "Meter"),
-                        new UnitValueDto(0, "Meter")),
+                        new UnitValueDto(0, "Inch"),
+                        new UnitValueDto(0, "Inch"),
+                        new UnitValueDto(0, "Inch")),
                     RestraintResponse.Free
                 ),
                 new NodeResponse(
                     node2.Id,
                     ModelId,
                     new PointResponse(
-                        new UnitValueDto(-6.096, "Meter"),
-                        new UnitValueDto(0, "Meter"),
-                        new UnitValueDto(0, "Meter")),
+                        new UnitValueDto(-240, "Inch"),
+                        new UnitValueDto(0, "Inch"),
+                        new UnitValueDto(0, "Inch")),
                     RestraintResponse.Fixed
                 ),
                 new NodeResponse(
                     node3.Id,
                     ModelId,
                     new PointResponse(
-                        new UnitValueDto(0, "Meter"),
-                        new UnitValueDto(-6.096, "Meter"),
-                        new UnitValueDto(0, "Meter")),
+                        new UnitValueDto(0, "Inch"),
+                        new UnitValueDto(-240, "Inch"),
+                        new UnitValueDto(0, "Inch")),
                     RestraintResponse.Fixed
                 ),
                 new NodeResponse(
                     node4.Id,
                     ModelId,
                     new PointResponse(
-                        new UnitValueDto(0, "Meter"),
-                        new UnitValueDto(0, "Meter"),
-                        new UnitValueDto(-6.096, "Meter")),
+                        new UnitValueDto(0, "Inch"),
+                        new UnitValueDto(0, "Inch"),
+                        new UnitValueDto(-240, "Inch")),
                     RestraintResponse.Fixed
                 ),
             ],
@@ -113,12 +113,12 @@ internal partial class Example8_4 : SolvedProblem
                 new PointLoadResponse(
                     pointLoad1.Id,
                     node1.Id,
-                    new UnitValueDto(-133446.648457815, "Newton"),
+                    new UnitValueDto(-30, "KilopoundForce"),
                     new Vector3(0, 1, 0)),
                 new PointLoadResponse(
                     pointLoad2.Id,
                     node2.Id,
-                    new UnitValueDto(-133446.648457815, "Newton"),
+                    new UnitValueDto(-30, "KilopoundForce"),
                     new Vector3(0, 1, 0)),
             ],
 
@@ -136,12 +136,12 @@ internal partial class Example8_4 : SolvedProblem
                 new MomentLoadResponse(
                     momentLoad3.Id,
                     node1.Id,
-                    new UnitValueDto(100, "KilopoundForceFoot"),
+                    new UnitValueDto(1200, "KilopoundForceInch"),
                     new Vector3(0, 0, 1)),
                 new MomentLoadResponse(
                     momentLoad4.Id,
                     node2.Id,
-                    new UnitValueDto(100, "KilopoundForceFoot"),
+                    new UnitValueDto(1200, "KilopoundForceInch"),
                     new Vector3(0, 0, -1)),
             ]
         );

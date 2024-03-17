@@ -49,17 +49,3 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
     //    builder.UseEnvironment("Development");
     //}
 }
-
-public class CustomApp : AppFixture<BeamOS.WebApp.Program>
-{
-    //protected override void ConfigureApp(IWebHostBuilder a)
-    //{
-    //    //only needed when tests are not in a separate project
-    //    //a.UseContentRoot(Directory.GetCurrentDirectory());
-    //}
-
-    //protected override void ConfigureServices(IServiceCollection s)
-    //{
-    //    //s.AddSingleton<IAmazonSimpleEmailServiceV2, FakeSesClient>();
-    //}
-}

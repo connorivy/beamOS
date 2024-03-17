@@ -24,6 +24,6 @@ public record UnitSettingsRequest(
             "KilopoundForcePerInch",
             "KilopoundForceInch",
             "KilopoundForcePerSquareInch",
-            "InchToTheForth"
+            "InchToTheFourth"
         );
 }
