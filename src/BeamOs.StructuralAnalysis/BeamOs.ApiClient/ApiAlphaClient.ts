@@ -51,9 +51,10 @@ export interface IApiAlphaClient {
     getModel(string: string, id: string | null): Promise<ModelResponse>;
 
     /**
+     * @param units (optional) 
      * @return Success
      */
-    getModelHydrated(id: string | null): Promise<ModelResponseHydrated>;
+    getModelHydrated(modelId: string | null, units: PreconfiguredUnits | null | undefined): Promise<ModelResponseHydrated>;
 
     /**
      * @return Success
@@ -440,13 +441,16 @@ export class ApiAlphaClient implements IApiAlphaClient {
     }
 
     /**
+     * @param units (optional) 
      * @return Success
      */
-    getModelHydrated(id: string | null): Promise<ModelResponseHydrated> {
-        let url_ = this.baseUrl + "/api/models/{id}/hydrated";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+    getModelHydrated(modelId: string | null, units: PreconfiguredUnits | null | undefined): Promise<ModelResponseHydrated> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/hydrated?";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (units !== undefined && units !== null)
+            url_ += "units=" + encodeURIComponent("" + units) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -1761,6 +1765,8 @@ export class UnitSettingsResponse implements IUnitSettingsResponse {
     forceUnit!: string;
     forcePerLengthUnit!: string;
     torqueUnit!: string;
+    pressureUnit!: string;
+    areaMomentOfInertiaUnit!: string;
 
     constructor(data?: IUnitSettingsResponse) {
         if (data) {
@@ -1779,6 +1785,8 @@ export class UnitSettingsResponse implements IUnitSettingsResponse {
             this.forceUnit = _data["forceUnit"];
             this.forcePerLengthUnit = _data["forcePerLengthUnit"];
             this.torqueUnit = _data["torqueUnit"];
+            this.pressureUnit = _data["pressureUnit"];
+            this.areaMomentOfInertiaUnit = _data["areaMomentOfInertiaUnit"];
         }
     }
 
@@ -1797,6 +1805,8 @@ export class UnitSettingsResponse implements IUnitSettingsResponse {
         data["forceUnit"] = this.forceUnit;
         data["forcePerLengthUnit"] = this.forcePerLengthUnit;
         data["torqueUnit"] = this.torqueUnit;
+        data["pressureUnit"] = this.pressureUnit;
+        data["areaMomentOfInertiaUnit"] = this.areaMomentOfInertiaUnit;
         return data;
     }
 }
@@ -1808,6 +1818,8 @@ export interface IUnitSettingsResponse {
     forceUnit: string;
     forcePerLengthUnit: string;
     torqueUnit: string;
+    pressureUnit: string;
+    areaMomentOfInertiaUnit: string;
 }
 
 export class Element1DResponse implements IElement1DResponse {
@@ -1924,7 +1936,7 @@ export interface IMaterialResponse {
 export class CreateModelRequest implements ICreateModelRequest {
     name!: string;
     description!: string;
-    settings!: ModelSettingsRequest;
+    settings!: PhysicalModelSettingsDto;
 
     constructor(data?: ICreateModelRequest) {
         if (data) {
@@ -1934,7 +1946,7 @@ export class CreateModelRequest implements ICreateModelRequest {
             }
         }
         if (!data) {
-            this.settings = new ModelSettingsRequest();
+            this.settings = new PhysicalModelSettingsDto();
         }
     }
 
@@ -1942,7 +1954,7 @@ export class CreateModelRequest implements ICreateModelRequest {
         if (_data) {
             this.name = _data["name"];
             this.description = _data["description"];
-            this.settings = _data["settings"] ? ModelSettingsRequest.fromJS(_data["settings"]) : new ModelSettingsRequest();
+            this.settings = _data["settings"] ? PhysicalModelSettingsDto.fromJS(_data["settings"]) : new PhysicalModelSettingsDto();
         }
     }
 
@@ -1965,13 +1977,13 @@ export class CreateModelRequest implements ICreateModelRequest {
 export interface ICreateModelRequest {
     name: string;
     description: string;
-    settings: ModelSettingsRequest;
+    settings: PhysicalModelSettingsDto;
 }
 
-export class ModelSettingsRequest implements IModelSettingsRequest {
-    unitSettings!: UnitSettingsRequest;
+export class PhysicalModelSettingsDto implements IPhysicalModelSettingsDto {
+    unitSettings!: UnitSettingsDtoVerbose;
 
-    constructor(data?: IModelSettingsRequest) {
+    constructor(data?: IPhysicalModelSettingsDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1979,19 +1991,19 @@ export class ModelSettingsRequest implements IModelSettingsRequest {
             }
         }
         if (!data) {
-            this.unitSettings = new UnitSettingsRequest();
+            this.unitSettings = new UnitSettingsDtoVerbose();
         }
     }
 
     init(_data?: any) {
         if (_data) {
-            this.unitSettings = _data["unitSettings"] ? UnitSettingsRequest.fromJS(_data["unitSettings"]) : new UnitSettingsRequest();
+            this.unitSettings = _data["unitSettings"] ? UnitSettingsDtoVerbose.fromJS(_data["unitSettings"]) : new UnitSettingsDtoVerbose();
         }
     }
 
-    static fromJS(data: any): ModelSettingsRequest {
+    static fromJS(data: any): PhysicalModelSettingsDto {
         data = typeof data === 'object' ? data : {};
-        let result = new ModelSettingsRequest();
+        let result = new PhysicalModelSettingsDto();
         result.init(data);
         return result;
     }
@@ -2003,19 +2015,21 @@ export class ModelSettingsRequest implements IModelSettingsRequest {
     }
 }
 
-export interface IModelSettingsRequest {
-    unitSettings: UnitSettingsRequest;
+export interface IPhysicalModelSettingsDto {
+    unitSettings: UnitSettingsDtoVerbose;
 }
 
-export class UnitSettingsRequest implements IUnitSettingsRequest {
+export class UnitSettingsDtoVerbose implements IUnitSettingsDtoVerbose {
     lengthUnit!: string;
     areaUnit!: string;
     volumeUnit!: string;
+    areaMomentOfInertiaUnit!: string;
     forceUnit!: string;
-    forcePerLengthUnit!: string;
     torqueUnit!: string;
+    forcePerLengthUnit!: string;
+    pressureUnit!: string;
 
-    constructor(data?: IUnitSettingsRequest) {
+    constructor(data?: IUnitSettingsDtoVerbose) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -2029,15 +2043,17 @@ export class UnitSettingsRequest implements IUnitSettingsRequest {
             this.lengthUnit = _data["lengthUnit"];
             this.areaUnit = _data["areaUnit"];
             this.volumeUnit = _data["volumeUnit"];
+            this.areaMomentOfInertiaUnit = _data["areaMomentOfInertiaUnit"];
             this.forceUnit = _data["forceUnit"];
-            this.forcePerLengthUnit = _data["forcePerLengthUnit"];
             this.torqueUnit = _data["torqueUnit"];
+            this.forcePerLengthUnit = _data["forcePerLengthUnit"];
+            this.pressureUnit = _data["pressureUnit"];
         }
     }
 
-    static fromJS(data: any): UnitSettingsRequest {
+    static fromJS(data: any): UnitSettingsDtoVerbose {
         data = typeof data === 'object' ? data : {};
-        let result = new UnitSettingsRequest();
+        let result = new UnitSettingsDtoVerbose();
         result.init(data);
         return result;
     }
@@ -2047,20 +2063,24 @@ export class UnitSettingsRequest implements IUnitSettingsRequest {
         data["lengthUnit"] = this.lengthUnit;
         data["areaUnit"] = this.areaUnit;
         data["volumeUnit"] = this.volumeUnit;
+        data["areaMomentOfInertiaUnit"] = this.areaMomentOfInertiaUnit;
         data["forceUnit"] = this.forceUnit;
-        data["forcePerLengthUnit"] = this.forcePerLengthUnit;
         data["torqueUnit"] = this.torqueUnit;
+        data["forcePerLengthUnit"] = this.forcePerLengthUnit;
+        data["pressureUnit"] = this.pressureUnit;
         return data;
     }
 }
 
-export interface IUnitSettingsRequest {
+export interface IUnitSettingsDtoVerbose {
     lengthUnit: string;
     areaUnit: string;
     volumeUnit: string;
+    areaMomentOfInertiaUnit: string;
     forceUnit: string;
-    forcePerLengthUnit: string;
     torqueUnit: string;
+    forcePerLengthUnit: string;
+    pressureUnit: string;
 }
 
 export class ModelResponseHydrated extends BeamOsContractBase implements IModelResponseHydrated {
@@ -2189,9 +2209,9 @@ export interface IModelResponseHydrated extends IBeamOsContractBase {
     momentLoads: MomentLoadResponse[];
 }
 
-export class IdRequestFromPath implements IIdRequestFromPath {
+export class GetModelHydratedRequest implements IGetModelHydratedRequest {
 
-    constructor(data?: IIdRequestFromPath) {
+    constructor(data?: IGetModelHydratedRequest) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -2203,9 +2223,9 @@ export class IdRequestFromPath implements IIdRequestFromPath {
     init(_data?: any) {
     }
 
-    static fromJS(data: any): IdRequestFromPath {
+    static fromJS(data: any): GetModelHydratedRequest {
         data = typeof data === 'object' ? data : {};
-        let result = new IdRequestFromPath();
+        let result = new GetModelHydratedRequest();
         result.init(data);
         return result;
     }
@@ -2216,7 +2236,13 @@ export class IdRequestFromPath implements IIdRequestFromPath {
     }
 }
 
-export interface IIdRequestFromPath {
+export interface IGetModelHydratedRequest {
+}
+
+export enum PreconfiguredUnits {
+    N_M = 0,
+    K_IN = 1,
+    K_FT = 2,
 }
 
 export class CreateMaterialRequest implements ICreateMaterialRequest {
@@ -2723,6 +2749,36 @@ export interface IDisplacementsResponse {
     rotationAboutX: UnitValueDto;
     rotationAboutY: UnitValueDto;
     rotationAboutZ: UnitValueDto;
+}
+
+export class IdRequestFromPath implements IIdRequestFromPath {
+
+    constructor(data?: IIdRequestFromPath) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+    }
+
+    static fromJS(data: any): IdRequestFromPath {
+        data = typeof data === 'object' ? data : {};
+        let result = new IdRequestFromPath();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data;
+    }
+}
+
+export interface IIdRequestFromPath {
 }
 
 export class ApiException extends Error {

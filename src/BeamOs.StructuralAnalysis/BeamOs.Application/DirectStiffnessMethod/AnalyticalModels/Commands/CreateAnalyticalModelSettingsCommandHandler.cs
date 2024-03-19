@@ -6,10 +6,10 @@ using Riok.Mapperly.Abstractions;
 namespace BeamOS.DirectStiffnessMethod.Application.AnalyticalModels.Commands;
 
 public class CreateAnalyticalModelSettingsCommandHandler
-    : ICommandHandler<ModelSettingsCommand, AnalyticalModelSettings>
+    : ICommandHandler<AnalyticalModelSettingsCommand, AnalyticalModelSettings>
 {
     public Task<AnalyticalModelSettings> ExecuteAsync(
-        ModelSettingsCommand command,
+        AnalyticalModelSettingsCommand command,
         CancellationToken ct
     )
     {
@@ -22,5 +22,7 @@ public class CreateAnalyticalModelSettingsCommandHandler
 [Mapper]
 public static partial class CreateAnalyticalModelSettingsCommandMapper
 {
-    public static partial AnalyticalModelSettings ToDomainObject(this ModelSettingsCommand command);
+    public static partial AnalyticalModelSettings ToDomainObject(
+        this AnalyticalModelSettingsCommand command
+    );
 }

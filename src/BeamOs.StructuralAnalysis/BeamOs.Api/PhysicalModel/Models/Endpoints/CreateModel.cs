@@ -2,6 +2,7 @@ using BeamOs.Api.Common;
 using BeamOS.Api.Common;
 using BeamOs.Api.PhysicalModel.Models.Mappers;
 using BeamOs.Application.PhysicalModel.Models.Commands;
+using BeamOs.Contracts.Common;
 using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Domain.PhysicalModel.ModelAggregate;
 using FastEndpoints;
@@ -21,16 +22,16 @@ public class CreateModel(
         new(
             "Big Ol' Building",
             "Description",
-            new ModelSettingsRequest(
-                new UnitSettingsRequest(
+            new PhysicalModelSettingsDto(
+                new UnitSettingsDtoVerbose(
                     "Inch",
                     "SquareInch",
                     "CubicInch",
+                    "InchToTheFourth",
                     "KilopoundForce",
-                    "KilopoundForcePerInch",
                     "KilopoundForceInch",
-                    "KilopoundForcePerSquareInch",
-                    "InchToTheFourth"
+                    "KilopoundForcePerInch",
+                    "KilopoundForcePerSquareInch"
                 )
             )
         );

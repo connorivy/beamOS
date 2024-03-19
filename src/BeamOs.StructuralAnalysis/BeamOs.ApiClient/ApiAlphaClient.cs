@@ -4,6 +4,7 @@
 // </auto-generated>
 //----------------------
 
+using BeamOs.Contracts.Common;
 using BeamOs.Contracts.PhysicalModel.Node;
 using BeamOs.Contracts.PhysicalModel.Element1d;
 using BeamOs.Contracts.PhysicalModel.Model;
@@ -105,12 +106,12 @@ namespace BeamOs.ApiClient
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ModelResponseHydrated> GetModelHydratedAsync(string id);
+        System.Threading.Tasks.Task<ModelResponseHydrated> GetModelHydratedAsync(string modelId, PreconfiguredUnits? units);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ModelResponseHydrated> GetModelHydratedAsync(string id, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<ModelResponseHydrated> GetModelHydratedAsync(string modelId, PreconfiguredUnits? units, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -882,15 +883,15 @@ namespace BeamOs.ApiClient
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ModelResponseHydrated> GetModelHydratedAsync(string id)
+        public virtual System.Threading.Tasks.Task<ModelResponseHydrated> GetModelHydratedAsync(string modelId, PreconfiguredUnits? units)
         {
-            return GetModelHydratedAsync(id, System.Threading.CancellationToken.None);
+            return GetModelHydratedAsync(modelId, units, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ModelResponseHydrated> GetModelHydratedAsync(string id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ModelResponseHydrated> GetModelHydratedAsync(string modelId, PreconfiguredUnits? units, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -903,10 +904,16 @@ namespace BeamOs.ApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/models/{id}/hydrated"
+                    // Operation Path: "api/models/{modelId}/hydrated"
                     urlBuilder_.Append("api/models/");
-                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/hydrated");
+            urlBuilder_.Append('?');
+            if (units != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("units")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(units, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+            }
+            urlBuilder_.Length--;
 
                     PrepareRequest(client_, request_, urlBuilder_);
 

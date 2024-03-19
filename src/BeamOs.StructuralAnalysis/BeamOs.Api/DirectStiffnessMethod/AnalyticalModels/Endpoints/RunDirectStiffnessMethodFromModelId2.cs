@@ -23,8 +23,10 @@ public class RunDirectStiffnessMethodFromModelId2(
         CancellationToken ct
     )
     {
+        GetModelHydratedRequest modelHydratedRequest = new(req.Id, null);
+
         ModelResponseHydrated responseHydrated = await getModelHydratedEndpoint.ExecuteAsync(
-            req,
+            modelHydratedRequest,
             ct
         );
         return await runDirectStiffnessMethodEndpoint.ExecuteAsync(responseHydrated, ct);

@@ -1,7 +1,7 @@
 using BeamOs.Domain.Common.Models;
 using UnitsNet.Units;
 
-namespace BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
+namespace BeamOs.Domain.Common.ValueObjects;
 
 public class UnitSettings : BeamOSValueObject
 {
@@ -120,6 +120,35 @@ public class UnitSettings : BeamOSValueObject
             PressureUnit.KilopoundForcePerSquareFoot,
             AreaMomentOfInertiaUnit.FootToTheFourth
         );
+
+    public static UnitSettings Create(LengthUnit lengthUnit, ForceUnit forceUnit)
+    {
+        if (lengthUnit == LengthUnit.Meter)
+        {
+            if (forceUnit == ForceUnit.Newton)
+            {
+                return SI;
+            }
+        }
+        else if (lengthUnit == LengthUnit.Foot)
+        {
+            if (forceUnit == ForceUnit.KilopoundForce)
+            {
+                return K_FT;
+            }
+        }
+        else if (lengthUnit == LengthUnit.Inch)
+        {
+            if (forceUnit == ForceUnit.KilopoundForce)
+            {
+                return K_IN;
+            }
+        }
+
+        throw new NotSupportedException(
+            "Unable to map the provided units to a UnitSettings object"
+        );
+    }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private UnitSettings() { }

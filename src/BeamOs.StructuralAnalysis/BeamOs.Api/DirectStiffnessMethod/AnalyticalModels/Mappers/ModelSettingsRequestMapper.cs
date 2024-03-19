@@ -7,9 +7,10 @@ namespace BeamOS.DirectStiffnessMethod.Api.AnalyticalModels.Mappers;
 
 [Mapper]
 public partial class ModelSettingsResponseMapper
-    : IMapper<ModelSettingsResponse, ModelSettingsCommand>
+    : IMapper<ModelSettingsResponse, AnalyticalModelSettingsCommand>
 {
-    public ModelSettingsCommand Map(ModelSettingsResponse source) => this.ToCommand(source);
+    public AnalyticalModelSettingsCommand Map(ModelSettingsResponse source) =>
+        this.ToCommand(source);
 
-    public partial ModelSettingsCommand ToCommand(ModelSettingsResponse source);
+    public partial AnalyticalModelSettingsCommand ToCommand(ModelSettingsResponse source);
 }

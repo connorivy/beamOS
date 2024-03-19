@@ -79,6 +79,7 @@ await app.GenerateClient(
     clientName,
 
     [
+        $"{contractsBaseNs}.{ApiClientGenerator.CommonNs}",
         $"{physicalModelBaseNs}.{ApiClientGenerator.NodeNs}",
         $"{physicalModelBaseNs}.{ApiClientGenerator.Element1dNs}",
         $"{physicalModelBaseNs}.{ApiClientGenerator.ModelNs}",

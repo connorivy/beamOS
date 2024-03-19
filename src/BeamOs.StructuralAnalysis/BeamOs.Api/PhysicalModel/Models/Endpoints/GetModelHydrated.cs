@@ -2,12 +2,12 @@ using BeamOs.Api.Common;
 using BeamOS.Api.Common;
 using BeamOs.Api.PhysicalModel.Element1ds.Mappers;
 using BeamOs.Api.PhysicalModel.Materials.Mappers;
+using BeamOs.Api.PhysicalModel.Models.Extensions;
 using BeamOs.Api.PhysicalModel.Models.Mappers;
 using BeamOs.Api.PhysicalModel.MomentLoads.Mappers;
 using BeamOs.Api.PhysicalModel.Nodes.Mappers;
 using BeamOs.Api.PhysicalModel.PointLoads.Mappers;
 using BeamOs.Api.PhysicalModel.SectionProfiles.Mappers;
-using BeamOs.Contracts.Common;
 using BeamOs.Contracts.PhysicalModel.Element1d;
 using BeamOs.Contracts.PhysicalModel.Material;
 using BeamOs.Contracts.PhysicalModel.Model;
@@ -16,6 +16,7 @@ using BeamOs.Contracts.PhysicalModel.Node;
 using BeamOs.Contracts.PhysicalModel.PointLoad;
 using BeamOs.Contracts.PhysicalModel.SectionProfile;
 using BeamOs.Domain.Common.Interfaces;
+using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.PhysicalModel.Common.Extensions;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate;
 using BeamOs.Domain.PhysicalModel.ModelAggregate;
@@ -38,23 +39,24 @@ public class GetModelHydrated(
     PointLoadResponseMapper pointLoadResponseMapper,
     MomentLoadResponseMapper momentLoadResponseMapper,
     ModelSettingsResponseMapper settingsResponseMapper
-) : BeamOsFastEndpoint<IdRequestFromPath, ModelResponseHydrated>(options)
+) : BeamOsFastEndpoint<GetModelHydratedRequest, ModelResponseHydrated>(options)
 {
-    public override string Route => "models/{id}/" + CommonApiConstants.HYDRATED_ROUTE;
+    public override string Route => "models/{modelId}/" + CommonApiConstants.HYDRATED_ROUTE;
 
     public override Http EndpointType => Http.GET;
 
     public override async Task<ModelResponseHydrated> ExecuteAsync(
-        IdRequestFromPath req,
+        GetModelHydratedRequest req,
         CancellationToken ct
     )
     {
-        ModelId typedId = new(Guid.Parse(req.Id));
+        ModelId typedId = new(Guid.Parse(req.ModelId));
 
         Model model1 = await dbContext
             .Models
             .FirstAsync(m => m.Id == typedId, cancellationToken: ct);
-        UnitSettings unitSettings = model1.Settings.UnitSettings;
+
+        UnitSettings unitSettings = req.Units?.ToDomainObject() ?? model1.Settings.UnitSettings;
 
         List<Node> nodes = await (
             from n in dbContext.Nodes
@@ -130,7 +132,7 @@ public class GetModelHydrated(
 
         var settingsResponse = settingsResponseMapper.Map(model1.Settings);
         return new ModelResponseHydrated(
-            req.Id,
+            req.ModelId,
             model1.Name,
             model1.Description,
             settingsResponse,
@@ -150,6 +152,11 @@ public class GetModelHydrated(
     )
         where TEntity : IBeamOsDomainObject
     {
+        if (unitSettings == UnitSettings.SI)
+        {
+            return entities.Select(responseMapper.Map).ToList();
+        }
+
         return entities
             .Select(e =>
             {

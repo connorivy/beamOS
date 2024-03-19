@@ -1,6 +1,6 @@
 using System.Reflection;
 using BeamOs.Domain.Common.Interfaces;
-using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
+using BeamOs.Domain.Common.ValueObjects;
 using UnitsNet;
 
 namespace BeamOs.Domain.PhysicalModel.Common.Extensions;

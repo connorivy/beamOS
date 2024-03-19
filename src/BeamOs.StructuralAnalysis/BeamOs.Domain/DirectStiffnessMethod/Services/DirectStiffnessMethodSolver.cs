@@ -1,4 +1,5 @@
 using BeamOs.Domain.Common.Enums;
+using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.DirectStiffnessMethod.AnalyticalElement1DAggregate;
 using BeamOs.Domain.DirectStiffnessMethod.AnalyticalModelAggregate;
 using BeamOs.Domain.DirectStiffnessMethod.AnalyticalModelAggregate.ValueObjects;

@@ -163,7 +163,7 @@ internal partial class Example8_4 : SolvedProblem
             new(
                 "building name",
                 "building description",
-                new ModelSettingsRequest(UnitSettingsRequest.K_IN)
+                new PhysicalModelSettingsDto(UnitSettingsDtoVerbose.K_IN)
             )
         );
         ModelId = model.Id;

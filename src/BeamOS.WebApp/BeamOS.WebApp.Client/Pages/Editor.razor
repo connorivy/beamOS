@@ -2,6 +2,7 @@
 @using BeamOS.WebApp.EditorApi
 @using BeamOs.ApiClient
 @using BeamOs.Contracts.AnalyticalResults.Model
+@using BeamOs.Contracts.Common
 @using BeamOs.Contracts.PhysicalModel.Model
 @using BeamOs.Contracts.PhysicalModel.Node
 
@@ -209,7 +210,8 @@
 
     private async Task LoadModel()
     {
-        ModelResponseHydrated response = await analysisApiClient.GetModelHydratedAsync(physicalModelId);
+        ModelResponseHydrated response = await analysisApiClient
+            .GetModelHydratedAsync(physicalModelId, PreconfiguredUnits.N_M);
         var x = await editorApiAlpha.CreateModelHydratedAsync(response);
     }
 
