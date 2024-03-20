@@ -1,5 +1,5 @@
+using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.DirectStiffnessMethod.AnalyticalElement1DAggregate;
-using BeamOs.Domain.DirectStiffnessMethod.AnalyticalModelAggregate.ValueObjects;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Fixtures.AnalyticalElement1Ds;

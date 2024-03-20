@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
   <PropertyGroup Label="Packaging">
-    <Version>0.0.15</Version>
-    <IsPackable>true</IsPackable>
+    <Version>0.0.16</Version>
   </PropertyGroup>
   <PropertyGroup Label="General Config">
     <ContinuousIntegrationBuild Condition="'$(ContinuousIntegrationBuild)' == ''">false</ContinuousIntegrationBuild>

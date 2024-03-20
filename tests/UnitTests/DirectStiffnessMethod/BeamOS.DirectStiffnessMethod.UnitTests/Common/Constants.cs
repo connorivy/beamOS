@@ -1,3 +1,4 @@
+using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.DirectStiffnessMethod.AnalyticalElement1DAggregate.ValueObjects;
 using BeamOs.Domain.DirectStiffnessMethod.AnalyticalModelAggregate.ValueObjects;
 using UnitsNet;
