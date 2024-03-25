@@ -23,6 +23,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="Teronis.MSBuild.Packaging.ProjectBuildInPackage" Version="1.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
@@ -30,9 +34,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BeamOs.Application\BeamOs.Application.csproj" />
+    <ProjectReference Include="..\BeamOs.Application\BeamOs.Application.csproj">
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
     <ProjectReference Include="..\BeamOs.Contracts\BeamOs.Contracts.csproj" />
-    <ProjectReference Include="..\BeamOs.Domain\BeamOs.Domain.csproj" />
+    <ProjectReference Include="..\BeamOs.Domain\BeamOs.Domain.csproj">
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
     <ProjectReference Include="..\BeamOs.Infrastructure\BeamOs.Infrastructure.csproj" />
   </ItemGroup>
 

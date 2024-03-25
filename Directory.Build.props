@@ -2,6 +2,7 @@
 <Project>
   <PropertyGroup Label="Packaging">
     <Version>0.0.16</Version>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
   <PropertyGroup Label="General Config">
     <ContinuousIntegrationBuild Condition="'$(ContinuousIntegrationBuild)' == ''">false</ContinuousIntegrationBuild>

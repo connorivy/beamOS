@@ -7,6 +7,7 @@
     <InvariantGlobalization>false</InvariantGlobalization>
     <UserSecretsId>c6c2389a-5efe-4d57-8557-83c852fb76e6</UserSecretsId>
     <Configurations>Debug;Release;GenerateClients</Configurations>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
