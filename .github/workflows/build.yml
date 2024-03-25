@@ -8,6 +8,18 @@ jobs:
   build_and_test:
     name: Build and Test
     runs-on: ubuntu-latest
+    env:
+      ContinuousIntegrationBuild: true
+
+    services:
+      mssql:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          SA_PASSWORD: yourStrong(!)Password
+          ACCEPT_EULA: 'Y'
+        ports:
+          - 1433:1433
+
     steps:
     - uses: actions/checkout@v4
     - name: Setup .NET
