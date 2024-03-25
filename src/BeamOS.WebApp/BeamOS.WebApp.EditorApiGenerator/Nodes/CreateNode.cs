@@ -1,7 +1,7 @@
-using BeamOS.PhysicalModel.Contracts.Node;
+using BeamOs.Contracts.PhysicalModel.Node;
 using FastEndpoints;
 
-namespace BeamOS.WebApp.EditorApi.Nodes;
+namespace BeamOS.WebApp.EditorApiGenerator.Nodes;
 
 public class CreateNode : Endpoint<NodeResponse, string>
 {

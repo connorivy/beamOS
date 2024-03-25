@@ -1,4 +1,4 @@
-using BeamOS.PhysicalModel.Contracts.Element1D;
+using BeamOs.Contracts.PhysicalModel.Element1d;
 using FastEndpoints;
 
 namespace BeamOS.WebApp.EditorApiGenerator.Element1ds;

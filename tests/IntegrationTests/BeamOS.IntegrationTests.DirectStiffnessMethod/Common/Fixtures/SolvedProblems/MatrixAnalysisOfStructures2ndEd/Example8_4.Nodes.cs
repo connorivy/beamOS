@@ -1,12 +1,3 @@
-using BeamOS.Common.Domain.ValueObjects;
-using BeamOS.PhysicalModel.Domain.MomentLoadAggregate;
-using BeamOS.PhysicalModel.Domain.NodeAggregate;
-using BeamOS.PhysicalModel.Domain.PointLoadAggregate;
-using BeamOS.Tests.Common;
-using MathNet.Numerics.LinearAlgebra.Double;
-using UnitsNet;
-using UnitsNet.Units;
-
 namespace BeamOS.IntegrationTests.DirectStiffnessMethod.Common.Fixtures.SolvedProblems.MatrixAnalysisOfStructures2ndEd;
 
 internal partial class Example8_4

@@ -1,4 +1,4 @@
-using BeamOS.DirectStiffnessMethod.Domain.AnalyticalElement1DAggregate.ValueObjects;
+using BeamOs.Domain.DirectStiffnessMethod.AnalyticalElement1DAggregate.ValueObjects;
 using UnitsNet;
 
 namespace BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Factories;

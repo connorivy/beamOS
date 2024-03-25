@@ -1,14 +1,18 @@
 using System.Text;
+using BeamOs.Api;
+using BeamOs.ApiClient;
 using BeamOS.Common.Api;
-using BeamOS.DirectStiffnessMethod.Client;
 using BeamOs.Identity.Client;
-using BeamOS.PhysicalModel.Client;
+using BeamOs.Infrastructure;
 using BeamOS.WebApp;
 using BeamOS.WebApp.Client;
 using BeamOS.WebApp.Components;
 using Blazored.LocalStorage;
+using FastEndpoints;
+using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,23 +33,55 @@ builder
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
+const string alphaRelease = "Alpha Release";
 builder
     .Services
-    .AddHttpClient<IPhysicalModelAlphaClient, PhysicalModelAlphaClient>(
-        client => client.BaseAddress = new("https://localhost:7193")
-    );
+    .AddFastEndpoints()
+    .SwaggerDocument(o =>
+    {
+        o.DocumentSettings = s =>
+        {
+            s.DocumentName = alphaRelease;
+            s.Title = "beamOS api";
+            s.Version = "v0";
+            s.SchemaSettings.SchemaProcessors.Add(new MarkAsRequiredIfNonNullableSchemaProcessor());
+        };
+        o.ShortSchemaNames = true;
+        o.ExcludeNonFastEndpoints = true;
+        o.EndpointFilter = ed => ed.EndpointType.Assembly == typeof(IAssemblyMarkerApi).Assembly;
+    });
 
-builder
-    .Services
-    .AddHttpClient<IDirectStiffnessMethodAlphaClient, DirectStiffnessMethodAlphaClient>(
-        client => client.BaseAddress = new("https://localhost:7110")
-    );
+//builder
+//    .Services
+//    .AddHttpClient<IPhysicalModelAlphaClient, PhysicalModelAlphaClient>(
+//        client => client.BaseAddress = new("https://localhost:7193")
+//    );
+
+//builder
+//    .Services
+//    .AddHttpClient<IDirectStiffnessMethodAlphaClient, DirectStiffnessMethodAlphaClient>(
+//        client => client.BaseAddress = new("https://localhost:7110")
+//    );
 
 builder
     .Services
     .AddHttpClient<IIdentityAlphaClient, IdentityAlphaClient>(
         client => client.BaseAddress = new("https://localhost:7194")
     );
+
+builder
+    .Services
+    .AddHttpClient<IApiAlphaClient, ApiAlphaClient>(
+        client => client.BaseAddress = new("https://localhost:7111")
+    );
+
+builder.Services.AddAnalysisApiServices();
+var connectionString =
+    builder.Configuration.GetConnectionString("AnalysisDbConnection")
+    ?? throw new InvalidOperationException("Connection string 'AnalysisDbConnection' not found.");
+builder
+    .Services
+    .AddDbContext<BeamOsStructuralDbContext>(options => options.UseSqlServer(connectionString));
 
 UriProvider uriProvider = new("https");
 builder.Services.AddSingleton<IUriProvider>(uriProvider);
@@ -108,10 +144,18 @@ app.MapGet(
             {
                 [Constants.ASSEMBLY_NAME] = typeof(Program).Assembly.GetName().Name,
                 [Constants.PHYSICAL_MODEL_API_BASE_URI] = "https://localhost:7193",
-                [Constants.DSM_API_BASE_URI] = "https://localhost:7110"
+                [Constants.DSM_API_BASE_URI] = "https://localhost:7110",
+                [Constants.ANALYSIS_API_BASE_URI] = "https://localhost:7111"
             }
         )
 );
+
+app.AddBeamOsEndpointsForAnalysis();
+
+//seed the DB
+using var scope = app.Services.CreateScope();
+var dbContext = scope.ServiceProvider.GetRequiredService<BeamOsStructuralDbContext>();
+await dbContext.SeedAsync();
 
 app.Use(
     async (context, next) =>
@@ -155,3 +199,8 @@ app.MapRazorComponents<App>()
 app.UseCors();
 
 app.Run();
+
+namespace BeamOS.WebApp
+{
+    public partial class Program { }
+}

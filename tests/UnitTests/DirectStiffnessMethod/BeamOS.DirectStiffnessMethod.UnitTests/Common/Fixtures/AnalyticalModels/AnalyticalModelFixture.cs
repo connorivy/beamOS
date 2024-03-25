@@ -1,4 +1,4 @@
-using BeamOS.DirectStiffnessMethod.Domain.AnalyticalModelAggregate;
+using BeamOs.Domain.DirectStiffnessMethod.AnalyticalModelAggregate;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Fixtures.AnalyticalModels;

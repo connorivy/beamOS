@@ -253,25 +253,25 @@ export interface INodeResponse extends IBeamOsContractBase {
 }
 
 export class PointResponse extends BeamOsContractBase implements IPointResponse {
-    xCoordinate!: UnitValueDTO;
-    yCoordinate!: UnitValueDTO;
-    zCoordinate!: UnitValueDTO;
+    xCoordinate!: UnitValueDto;
+    yCoordinate!: UnitValueDto;
+    zCoordinate!: UnitValueDto;
 
     constructor(data?: IPointResponse) {
         super(data);
         if (!data) {
-            this.xCoordinate = new UnitValueDTO();
-            this.yCoordinate = new UnitValueDTO();
-            this.zCoordinate = new UnitValueDTO();
+            this.xCoordinate = new UnitValueDto();
+            this.yCoordinate = new UnitValueDto();
+            this.zCoordinate = new UnitValueDto();
         }
     }
 
     init(_data?: any) {
         super.init(_data);
         if (_data) {
-            this.xCoordinate = _data["xCoordinate"] ? UnitValueDTO.fromJS(_data["xCoordinate"]) : new UnitValueDTO();
-            this.yCoordinate = _data["yCoordinate"] ? UnitValueDTO.fromJS(_data["yCoordinate"]) : new UnitValueDTO();
-            this.zCoordinate = _data["zCoordinate"] ? UnitValueDTO.fromJS(_data["zCoordinate"]) : new UnitValueDTO();
+            this.xCoordinate = _data["xCoordinate"] ? UnitValueDto.fromJS(_data["xCoordinate"]) : new UnitValueDto();
+            this.yCoordinate = _data["yCoordinate"] ? UnitValueDto.fromJS(_data["yCoordinate"]) : new UnitValueDto();
+            this.zCoordinate = _data["zCoordinate"] ? UnitValueDto.fromJS(_data["zCoordinate"]) : new UnitValueDto();
         }
     }
 
@@ -293,16 +293,16 @@ export class PointResponse extends BeamOsContractBase implements IPointResponse 
 }
 
 export interface IPointResponse extends IBeamOsContractBase {
-    xCoordinate: UnitValueDTO;
-    yCoordinate: UnitValueDTO;
-    zCoordinate: UnitValueDTO;
+    xCoordinate: UnitValueDto;
+    yCoordinate: UnitValueDto;
+    zCoordinate: UnitValueDto;
 }
 
-export class UnitValueDTO implements IUnitValueDTO {
+export class UnitValueDto implements IUnitValueDto {
     value!: number;
     unit!: string;
 
-    constructor(data?: IUnitValueDTO) {
+    constructor(data?: IUnitValueDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -318,9 +318,9 @@ export class UnitValueDTO implements IUnitValueDTO {
         }
     }
 
-    static fromJS(data: any): UnitValueDTO {
+    static fromJS(data: any): UnitValueDto {
         data = typeof data === 'object' ? data : {};
-        let result = new UnitValueDTO();
+        let result = new UnitValueDto();
         result.init(data);
         return result;
     }
@@ -333,7 +333,7 @@ export class UnitValueDTO implements IUnitValueDTO {
     }
 }
 
-export interface IUnitValueDTO {
+export interface IUnitValueDto {
     value: number;
     unit: string;
 }
@@ -619,7 +619,7 @@ export class Element1DResponse implements IElement1DResponse {
     endNodeId!: string;
     materialId!: string;
     sectionProfileId!: string;
-    sectionProfileRotation!: UnitValueDTO;
+    sectionProfileRotation!: UnitValueDto;
 
     constructor(data?: IElement1DResponse) {
         if (data) {
@@ -629,7 +629,7 @@ export class Element1DResponse implements IElement1DResponse {
             }
         }
         if (!data) {
-            this.sectionProfileRotation = new UnitValueDTO();
+            this.sectionProfileRotation = new UnitValueDto();
         }
     }
 
@@ -641,7 +641,7 @@ export class Element1DResponse implements IElement1DResponse {
             this.endNodeId = _data["endNodeId"];
             this.materialId = _data["materialId"];
             this.sectionProfileId = _data["sectionProfileId"];
-            this.sectionProfileRotation = _data["sectionProfileRotation"] ? UnitValueDTO.fromJS(_data["sectionProfileRotation"]) : new UnitValueDTO();
+            this.sectionProfileRotation = _data["sectionProfileRotation"] ? UnitValueDto.fromJS(_data["sectionProfileRotation"]) : new UnitValueDto();
         }
     }
 
@@ -672,13 +672,13 @@ export interface IElement1DResponse {
     endNodeId: string;
     materialId: string;
     sectionProfileId: string;
-    sectionProfileRotation: UnitValueDTO;
+    sectionProfileRotation: UnitValueDto;
 }
 
 export class MaterialResponse implements IMaterialResponse {
     id!: string;
-    modulusOfElasticity!: UnitValueDTO;
-    modulusOfRigidity!: UnitValueDTO;
+    modulusOfElasticity!: UnitValueDto;
+    modulusOfRigidity!: UnitValueDto;
 
     constructor(data?: IMaterialResponse) {
         if (data) {
@@ -688,16 +688,16 @@ export class MaterialResponse implements IMaterialResponse {
             }
         }
         if (!data) {
-            this.modulusOfElasticity = new UnitValueDTO();
-            this.modulusOfRigidity = new UnitValueDTO();
+            this.modulusOfElasticity = new UnitValueDto();
+            this.modulusOfRigidity = new UnitValueDto();
         }
     }
 
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
-            this.modulusOfElasticity = _data["modulusOfElasticity"] ? UnitValueDTO.fromJS(_data["modulusOfElasticity"]) : new UnitValueDTO();
-            this.modulusOfRigidity = _data["modulusOfRigidity"] ? UnitValueDTO.fromJS(_data["modulusOfRigidity"]) : new UnitValueDTO();
+            this.modulusOfElasticity = _data["modulusOfElasticity"] ? UnitValueDto.fromJS(_data["modulusOfElasticity"]) : new UnitValueDto();
+            this.modulusOfRigidity = _data["modulusOfRigidity"] ? UnitValueDto.fromJS(_data["modulusOfRigidity"]) : new UnitValueDto();
         }
     }
 
@@ -719,16 +719,16 @@ export class MaterialResponse implements IMaterialResponse {
 
 export interface IMaterialResponse {
     id: string;
-    modulusOfElasticity: UnitValueDTO;
-    modulusOfRigidity: UnitValueDTO;
+    modulusOfElasticity: UnitValueDto;
+    modulusOfRigidity: UnitValueDto;
 }
 
 export class SectionProfileResponse implements ISectionProfileResponse {
     id!: string;
-    area!: UnitValueDTO;
-    strongAxisMomentOfInertia!: UnitValueDTO;
-    weakAxisMomentOfInertia!: UnitValueDTO;
-    polarMomentOfInertia!: UnitValueDTO;
+    area!: UnitValueDto;
+    strongAxisMomentOfInertia!: UnitValueDto;
+    weakAxisMomentOfInertia!: UnitValueDto;
+    polarMomentOfInertia!: UnitValueDto;
 
     constructor(data?: ISectionProfileResponse) {
         if (data) {
@@ -738,20 +738,20 @@ export class SectionProfileResponse implements ISectionProfileResponse {
             }
         }
         if (!data) {
-            this.area = new UnitValueDTO();
-            this.strongAxisMomentOfInertia = new UnitValueDTO();
-            this.weakAxisMomentOfInertia = new UnitValueDTO();
-            this.polarMomentOfInertia = new UnitValueDTO();
+            this.area = new UnitValueDto();
+            this.strongAxisMomentOfInertia = new UnitValueDto();
+            this.weakAxisMomentOfInertia = new UnitValueDto();
+            this.polarMomentOfInertia = new UnitValueDto();
         }
     }
 
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
-            this.area = _data["area"] ? UnitValueDTO.fromJS(_data["area"]) : new UnitValueDTO();
-            this.strongAxisMomentOfInertia = _data["strongAxisMomentOfInertia"] ? UnitValueDTO.fromJS(_data["strongAxisMomentOfInertia"]) : new UnitValueDTO();
-            this.weakAxisMomentOfInertia = _data["weakAxisMomentOfInertia"] ? UnitValueDTO.fromJS(_data["weakAxisMomentOfInertia"]) : new UnitValueDTO();
-            this.polarMomentOfInertia = _data["polarMomentOfInertia"] ? UnitValueDTO.fromJS(_data["polarMomentOfInertia"]) : new UnitValueDTO();
+            this.area = _data["area"] ? UnitValueDto.fromJS(_data["area"]) : new UnitValueDto();
+            this.strongAxisMomentOfInertia = _data["strongAxisMomentOfInertia"] ? UnitValueDto.fromJS(_data["strongAxisMomentOfInertia"]) : new UnitValueDto();
+            this.weakAxisMomentOfInertia = _data["weakAxisMomentOfInertia"] ? UnitValueDto.fromJS(_data["weakAxisMomentOfInertia"]) : new UnitValueDto();
+            this.polarMomentOfInertia = _data["polarMomentOfInertia"] ? UnitValueDto.fromJS(_data["polarMomentOfInertia"]) : new UnitValueDto();
         }
     }
 
@@ -775,16 +775,16 @@ export class SectionProfileResponse implements ISectionProfileResponse {
 
 export interface ISectionProfileResponse {
     id: string;
-    area: UnitValueDTO;
-    strongAxisMomentOfInertia: UnitValueDTO;
-    weakAxisMomentOfInertia: UnitValueDTO;
-    polarMomentOfInertia: UnitValueDTO;
+    area: UnitValueDto;
+    strongAxisMomentOfInertia: UnitValueDto;
+    weakAxisMomentOfInertia: UnitValueDto;
+    polarMomentOfInertia: UnitValueDto;
 }
 
 export class PointLoadResponse implements IPointLoadResponse {
     id!: string;
     nodeId!: string;
-    force!: UnitValueDTO;
+    force!: UnitValueDto;
     normalizedDirection!: Vector3;
 
     constructor(data?: IPointLoadResponse) {
@@ -795,7 +795,7 @@ export class PointLoadResponse implements IPointLoadResponse {
             }
         }
         if (!data) {
-            this.force = new UnitValueDTO();
+            this.force = new UnitValueDto();
             this.normalizedDirection = new Vector3();
         }
     }
@@ -804,7 +804,7 @@ export class PointLoadResponse implements IPointLoadResponse {
         if (_data) {
             this.id = _data["id"];
             this.nodeId = _data["nodeId"];
-            this.force = _data["force"] ? UnitValueDTO.fromJS(_data["force"]) : new UnitValueDTO();
+            this.force = _data["force"] ? UnitValueDto.fromJS(_data["force"]) : new UnitValueDto();
             this.normalizedDirection = _data["normalizedDirection"] ? Vector3.fromJS(_data["normalizedDirection"]) : new Vector3();
         }
     }
@@ -829,7 +829,7 @@ export class PointLoadResponse implements IPointLoadResponse {
 export interface IPointLoadResponse {
     id: string;
     nodeId: string;
-    force: UnitValueDTO;
+    force: UnitValueDto;
     normalizedDirection: Vector3;
 }
 
@@ -880,7 +880,7 @@ export interface IVector3 {
 export class MomentLoadResponse implements IMomentLoadResponse {
     id!: string;
     nodeId!: string;
-    torque!: UnitValueDTO;
+    torque!: UnitValueDto;
     normalizedAxisDirection!: Vector3;
 
     constructor(data?: IMomentLoadResponse) {
@@ -891,7 +891,7 @@ export class MomentLoadResponse implements IMomentLoadResponse {
             }
         }
         if (!data) {
-            this.torque = new UnitValueDTO();
+            this.torque = new UnitValueDto();
             this.normalizedAxisDirection = new Vector3();
         }
     }
@@ -900,7 +900,7 @@ export class MomentLoadResponse implements IMomentLoadResponse {
         if (_data) {
             this.id = _data["id"];
             this.nodeId = _data["nodeId"];
-            this.torque = _data["torque"] ? UnitValueDTO.fromJS(_data["torque"]) : new UnitValueDTO();
+            this.torque = _data["torque"] ? UnitValueDto.fromJS(_data["torque"]) : new UnitValueDto();
             this.normalizedAxisDirection = _data["normalizedAxisDirection"] ? Vector3.fromJS(_data["normalizedAxisDirection"]) : new Vector3();
         }
     }
@@ -925,7 +925,7 @@ export class MomentLoadResponse implements IMomentLoadResponse {
 export interface IMomentLoadResponse {
     id: string;
     nodeId: string;
-    torque: UnitValueDTO;
+    torque: UnitValueDto;
     normalizedAxisDirection: Vector3;
 }
 

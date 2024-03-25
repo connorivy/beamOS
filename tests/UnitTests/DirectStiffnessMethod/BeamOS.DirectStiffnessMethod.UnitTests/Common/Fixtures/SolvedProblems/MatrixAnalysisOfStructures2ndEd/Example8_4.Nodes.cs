@@ -1,6 +1,6 @@
-using BeamOS.Common.Domain.ValueObjects;
-using BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate;
-using BeamOS.DirectStiffnessMethod.Domain.Common.ValueObjects;
+using BeamOs.Domain.Common.ValueObjects;
+using BeamOs.Domain.DirectStiffnessMethod.AnalyticalNodeAggregate;
+using BeamOs.Domain.DirectStiffnessMethod.Common.ValueObjects;
 using MathNet.Numerics.LinearAlgebra.Double;
 using UnitsNet;
 using UnitsNet.Units;
@@ -9,12 +9,12 @@ namespace BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Fixtures.SolvedPr
 
 internal partial class Example8_4
 {
-    public static AnalyticalNode AnalyticalNode1 { get; }
-    public static AnalyticalNode AnalyticalNode2 { get; }
-    public static AnalyticalNode AnalyticalNode3 { get; }
-    public static AnalyticalNode AnalyticalNode4 { get; }
+    public static DsmNode AnalyticalNode1 { get; }
+    public static DsmNode AnalyticalNode2 { get; }
+    public static DsmNode AnalyticalNode3 { get; }
+    public static DsmNode AnalyticalNode4 { get; }
 
-    private static AnalyticalNode GetAnalyticalNode1()
+    private static DsmNode GetAnalyticalNode1()
     {
         List<PointLoad> pointLoads =
         [
@@ -53,7 +53,7 @@ internal partial class Example8_4
         );
     }
 
-    private static AnalyticalNode GetAnalyticalNode2()
+    private static DsmNode GetAnalyticalNode2()
     {
         List<PointLoad> pointLoads =
         [
@@ -76,12 +76,12 @@ internal partial class Example8_4
         return new(-20, 0, 0, LengthUnit.Foot, Restraint.Fixed, id: new(Constants.Guid2));
     }
 
-    private static AnalyticalNode GetAnalyticalNode3()
+    private static DsmNode GetAnalyticalNode3()
     {
         return new(0, -20, 0, LengthUnit.Foot, Restraint.Fixed, id: new(Constants.Guid3));
     }
 
-    private static AnalyticalNode GetAnalyticalNode4()
+    private static DsmNode GetAnalyticalNode4()
     {
         return new(0, 0, -20, LengthUnit.Foot, Restraint.Fixed, id: new(Constants.Guid4));
     }

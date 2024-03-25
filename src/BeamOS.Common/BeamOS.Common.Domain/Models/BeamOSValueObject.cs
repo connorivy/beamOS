@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using BeamOS.Common.Domain.Interfaces;
 
 namespace BeamOS.Common.Domain.Models;
 
 [ComplexType]
-public abstract class BeamOSValueObject : IEquatable<BeamOSValueObject>
+public abstract class BeamOSValueObject : IEquatable<BeamOSValueObject>, IBeamOsDomainObject
 {
     protected static bool EqualOperator(BeamOSValueObject left, BeamOSValueObject right)
     {

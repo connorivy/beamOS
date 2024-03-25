@@ -1,6 +1,0 @@
-@BeamOS.DirectStiffnessMethod.Api_HostAddress = http://localhost:5197
-
-GET {{BeamOS.DirectStiffnessMethod.Api_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

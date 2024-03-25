@@ -1,12 +1,12 @@
-using BeamOS.Common.Domain.ValueObjects;
-using BeamOS.DirectStiffnessMethod.Domain.AnalyticalElement1DAggregate;
-using BeamOS.DirectStiffnessMethod.Domain.AnalyticalElement1DAggregate.ValueObjects;
-using BeamOS.DirectStiffnessMethod.Domain.AnalyticalModelAggregate;
-using BeamOS.DirectStiffnessMethod.Domain.AnalyticalModelAggregate.ValueObjects;
-using BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate;
-using BeamOS.DirectStiffnessMethod.Domain.Common.ValueObjects;
 using BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Fixtures.AnalyticalElement1Ds;
 using BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Fixtures.AnalyticalModels;
+using BeamOs.Domain.Common.ValueObjects;
+using BeamOs.Domain.DirectStiffnessMethod.AnalyticalElement1DAggregate;
+using BeamOs.Domain.DirectStiffnessMethod.AnalyticalElement1DAggregate.ValueObjects;
+using BeamOs.Domain.DirectStiffnessMethod.AnalyticalModelAggregate;
+using BeamOs.Domain.DirectStiffnessMethod.AnalyticalModelAggregate.ValueObjects;
+using BeamOs.Domain.DirectStiffnessMethod.AnalyticalNodeAggregate;
+using BeamOs.Domain.DirectStiffnessMethod.Common.ValueObjects;
 using MathNet.Numerics.LinearAlgebra.Double;
 using UnitsNet;
 using UnitsNet.Units;
@@ -64,22 +64,22 @@ internal class Example3_8 : SolvedProblem
         );
     }
 
-    public static AnalyticalNode AnalyticalNode1 { get; }
-    public static AnalyticalNode AnalyticalNode2 { get; }
-    public static AnalyticalNode AnalyticalNode3 { get; }
-    public static AnalyticalNode AnalyticalNode4 { get; }
+    public static DsmNode AnalyticalNode1 { get; }
+    public static DsmNode AnalyticalNode2 { get; }
+    public static DsmNode AnalyticalNode3 { get; }
+    public static DsmNode AnalyticalNode4 { get; }
     public static AnalyticalElement1DFixture Element1 { get; }
     public static AnalyticalElement1DFixture Element2 { get; }
     public static AnalyticalElement1DFixture Element3 { get; }
     public static Material Steel29000 { get; }
     public static SectionProfile Area8In { get; }
     public static SectionProfile Area6In { get; }
-    public static List<AnalyticalNode> AnalyticalNodesStatic { get; set; }
+    public static List<DsmNode> AnalyticalNodesStatic { get; set; }
     public static List<AnalyticalElement1DFixture> AnalyticalElementsStatic { get; set; }
     public static AnalyticalModelFixture AnalyticalModelFixtureStatic { get; set; }
 
     public static AnalyticalModelFixture GetAnalyticalModelFixture(
-        IEnumerable<AnalyticalNode> nodes,
+        IEnumerable<DsmNode> nodes,
         IEnumerable<AnalyticalElement1D> els
     )
     {
@@ -98,7 +98,7 @@ internal class Example3_8 : SolvedProblem
         };
     }
 
-    private static AnalyticalNode GetAnalyticalNode1()
+    private static DsmNode GetAnalyticalNode1()
     {
         Restraint free2D = new(true, true, false, false, false, true);
         List<PointLoad> pointLoads =
@@ -115,19 +115,19 @@ internal class Example3_8 : SolvedProblem
         return new(12, 16, 0, LengthUnit.Foot, free2D, pointLoads, id: new(Constants.Guid1));
     }
 
-    private static AnalyticalNode GetAnalyticalNode2()
+    private static DsmNode GetAnalyticalNode2()
     {
         Restraint pinned2d = new(false, false, false, false, false, true);
         return new(0, 0, 0, LengthUnit.Foot, pinned2d, id: new(Constants.Guid2));
     }
 
-    private static AnalyticalNode GetAnalyticalNode3()
+    private static DsmNode GetAnalyticalNode3()
     {
         Restraint pinned2d = new(false, false, false, false, false, true);
         return new(12, 0, 0, LengthUnit.Foot, pinned2d, id: new(Constants.Guid3));
     }
 
-    private static AnalyticalNode GetAnalyticalNode4()
+    private static DsmNode GetAnalyticalNode4()
     {
         Restraint pinned2d = new(false, false, false, false, false, true);
         return new(24, 0, 0, LengthUnit.Foot, pinned2d, id: new(Constants.Guid4));

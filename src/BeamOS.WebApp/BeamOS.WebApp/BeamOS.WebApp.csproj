@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <NpmFolder>./NpmJs</NpmFolder>
     <UserSecretsId>1b8b30f7-695f-4024-ae1b-ee72f0a52305</UserSecretsId>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,6 +14,10 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Refit" Version="7.0.0" />
     <PackageReference Include="Refit.HttpClientFactory" Version="7.0.0" />
     <PackageReference Include="Teronis.MSBuild.Packaging.ProjectBuildInPackage" Version="1.0.0">
@@ -22,10 +27,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\BeamOS.Common\BeamOS.Common.Api\BeamOS.Common.Api.csproj" />
-    <ProjectReference Include="..\..\BeamOS.DirectStiffnessMethod\BeamOS.DirectStiffnessMethod.Client\BeamOS.DirectStiffnessMethod.Client.csproj" />
     <ProjectReference Include="..\..\BeamOs.Identity\BeamOs.Identity.Client\BeamOs.Identity.Client.csproj" />
-    <ProjectReference Include="..\..\BeamOS.PhysicalModel\BeamOS.PhysicalModel.Client\BeamOS.PhysicalModel.Client.csproj" />
+    <ProjectReference Include="..\..\BeamOs.StructuralAnalysis\BeamOs.ApiClient\BeamOs.ApiClient.csproj" />
+    <ProjectReference Include="..\..\BeamOs.StructuralAnalysis\BeamOs.Api\BeamOs.Api.csproj" />
     <ProjectReference Include="..\BeamOS.WebApp.Client\BeamOS.WebApp.Client.csproj">
       <PrivateAssets>all</PrivateAssets>
     </ProjectReference>

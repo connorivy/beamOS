@@ -1,17 +1,15 @@
 @page "/editor"
-@using BeamOS.DirectStiffnessMethod.Client
-@using BeamOS.DirectStiffnessMethod.Contracts.Model
-@using BeamOS.PhysicalModel.Client
-@using BeamOS.PhysicalModel.Contracts.Element1D
-@using BeamOS.PhysicalModel.Contracts.Model
-@using BeamOS.PhysicalModel.Contracts.Node
 @using BeamOS.WebApp.EditorApi
+@using BeamOs.ApiClient
+@using BeamOs.Contracts.AnalyticalResults.Model
+@using BeamOs.Contracts.Common
+@using BeamOs.Contracts.PhysicalModel.Model
+@using BeamOs.Contracts.PhysicalModel.Node
 
 @rendermode InteractiveServer
 
 @inject IJSRuntime js
-@inject IPhysicalModelAlphaClient apiClient
-@inject IDirectStiffnessMethodAlphaClient dsmClient
+@inject IApiAlphaClient analysisApiClient
 @inject EditorApiProxyFactory editorApiAlphaFactory
 
 <PageTitle>Editor</PageTitle>
@@ -66,10 +64,10 @@
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                     <tr>
                         <th scope="col" class="px-6 py-3">
-                            Calculated Reactions
+                            Calculated Displacement Vector
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Expected Reactions
+                            Expected Displacement Vector
                         </th>
                         <th scope="col" class="px-6 py-3">
                             Difference
@@ -101,10 +99,10 @@
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                     <tr>
                         <th scope="col" class="px-6 py-3">
-                            Calculated Reactions
+                            Calculated Reaction Vector
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Expected Reactions
+                            Expected Reaction Vector
                         </th>
                         <th scope="col" class="px-6 py-3">
                             Difference
@@ -206,26 +204,21 @@
             10,
             "Foot");
 
-        NodeResponse response = await apiClient.CreateNodeAsync(request);
+        NodeResponse response = await analysisApiClient.CreateNodeAsync(request);
         var x = await editorApiAlpha.CreateNodeAsync(response);
     }
 
     private async Task LoadModel()
     {
-        try
-        {
-            ModelResponseHydrated response = await apiClient.GetModelHydratedAsync(physicalModelId);
-            var x = await editorApiAlpha.CreateModelHydratedAsync(response);
-        }
-        catch
-        {
-
-        }
+        ModelResponseHydrated response = await analysisApiClient
+            .GetModelHydratedAsync(physicalModelId, PreconfiguredUnits.N_M);
+        var x = await editorApiAlpha.CreateModelHydratedAsync(response);
     }
 
     private async Task Solve()
     {
-        AnalyticalModelResponse response = await dsmClient.RunDirectStiffnessMethodAsync(physicalModelId);
+        AnalyticalModelResponse response = await analysisApiClient
+            .RunDirectStiffnessMethodFromModelIdAsync(physicalModelId);
         CalculatedReactions = response.AnalyticalNodeReactions;
         CalculatedDisplacements = response.AnalyticalNodeDisplacements;
     }

@@ -17,8 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\BeamOS.PhysicalModel\BeamOS.PhysicalModel.Api\BeamOS.PhysicalModel.Api.csproj" />
-    <ProjectReference Include="..\..\BeamOS.PhysicalModel\BeamOS.PhysicalModel.Contracts\BeamOS.PhysicalModel.Contracts.csproj" />
+    <ProjectReference Include="..\..\BeamOs.StructuralAnalysis\BeamOs.Api\BeamOs.Api.csproj" />
+    <ProjectReference Include="..\..\BeamOs.StructuralAnalysis\BeamOs.Contracts\BeamOs.Contracts.csproj" />
   </ItemGroup>
 
   <Target Name="ClientGen" AfterTargets="Build" Condition="'$(Configuration)'=='GenerateClients'">

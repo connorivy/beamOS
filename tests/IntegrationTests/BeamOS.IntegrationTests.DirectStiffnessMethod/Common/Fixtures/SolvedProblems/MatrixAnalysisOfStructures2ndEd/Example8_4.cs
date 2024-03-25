@@ -1,12 +1,12 @@
-using BeamOS.Common.Contracts;
-using BeamOS.PhysicalModel.Client;
-using BeamOS.PhysicalModel.Contracts.Element1D;
-using BeamOS.PhysicalModel.Contracts.Material;
-using BeamOS.PhysicalModel.Contracts.Model;
-using BeamOS.PhysicalModel.Contracts.MomentLoad;
-using BeamOS.PhysicalModel.Contracts.Node;
-using BeamOS.PhysicalModel.Contracts.PointLoad;
-using BeamOS.PhysicalModel.Contracts.SectionProfile;
+using BeamOs.ApiClient;
+using BeamOs.Contracts.Common;
+using BeamOs.Contracts.PhysicalModel.Element1d;
+using BeamOs.Contracts.PhysicalModel.Material;
+using BeamOs.Contracts.PhysicalModel.Model;
+using BeamOs.Contracts.PhysicalModel.MomentLoad;
+using BeamOs.Contracts.PhysicalModel.Node;
+using BeamOs.Contracts.PhysicalModel.PointLoad;
+using BeamOs.Contracts.PhysicalModel.SectionProfile;
 
 namespace BeamOS.IntegrationTests.DirectStiffnessMethod.Common.Fixtures.SolvedProblems.MatrixAnalysisOfStructures2ndEd;
 
@@ -27,36 +27,36 @@ internal partial class Example8_4 : SolvedProblem
                     node1.Id,
                     ModelId,
                     new PointResponse(
-                        new UnitValueDTO(0, "Meter"),
-                        new UnitValueDTO(0, "Meter"),
-                        new UnitValueDTO(0, "Meter")),
+                        new UnitValueDto(0, "Inch"),
+                        new UnitValueDto(0, "Inch"),
+                        new UnitValueDto(0, "Inch")),
                     RestraintResponse.Free
                 ),
                 new NodeResponse(
                     node2.Id,
                     ModelId,
                     new PointResponse(
-                        new UnitValueDTO(-6.096, "Meter"),
-                        new UnitValueDTO(0, "Meter"),
-                        new UnitValueDTO(0, "Meter")),
+                        new UnitValueDto(-240, "Inch"),
+                        new UnitValueDto(0, "Inch"),
+                        new UnitValueDto(0, "Inch")),
                     RestraintResponse.Fixed
                 ),
                 new NodeResponse(
                     node3.Id,
                     ModelId,
                     new PointResponse(
-                        new UnitValueDTO(0, "Meter"),
-                        new UnitValueDTO(-6.096, "Meter"),
-                        new UnitValueDTO(0, "Meter")),
+                        new UnitValueDto(0, "Inch"),
+                        new UnitValueDto(-240, "Inch"),
+                        new UnitValueDto(0, "Inch")),
                     RestraintResponse.Fixed
                 ),
                 new NodeResponse(
                     node4.Id,
                     ModelId,
                     new PointResponse(
-                        new UnitValueDTO(0, "Meter"),
-                        new UnitValueDTO(0, "Meter"),
-                        new UnitValueDTO(-6.096, "Meter")),
+                        new UnitValueDto(0, "Inch"),
+                        new UnitValueDto(0, "Inch"),
+                        new UnitValueDto(-240, "Inch")),
                     RestraintResponse.Fixed
                 ),
             ],
@@ -69,7 +69,7 @@ internal partial class Example8_4 : SolvedProblem
                     node1.Id,
                     steel29000.Id,
                     profile33in2.Id,
-                    new UnitValueDTO(0, "Radian")
+                    new UnitValueDto(0, "Radian")
                 ),
                 new Element1DResponse(
                     element2.Id,
@@ -78,7 +78,7 @@ internal partial class Example8_4 : SolvedProblem
                     node1.Id,
                     steel29000.Id,
                     profile33in2.Id,
-                    new UnitValueDTO(1.5707963267948966, "Radian")
+                    new UnitValueDto(1.5707963267948966, "Radian")
                 ),
                 new Element1DResponse(
                     element3.Id,
@@ -87,25 +87,25 @@ internal partial class Example8_4 : SolvedProblem
                     node1.Id,
                     steel29000.Id,
                     profile33in2.Id,
-                    new UnitValueDTO(0.5235987755982988, "Radian")
+                    new UnitValueDto(0.5235987755982988, "Radian")
                 ),
             ],
 
             [
                 new MaterialResponse(
                     steel29000.Id,
-                    new UnitValueDTO(29000, "KilopoundForcePerSquareInch"),
-                    new UnitValueDTO(11500, "KilopoundForcePerSquareInch")
+                    new UnitValueDto(29000, "KilopoundForcePerSquareInch"),
+                    new UnitValueDto(11500, "KilopoundForcePerSquareInch")
                 )
             ],
 
             [
                 new SectionProfileResponse(
                     profile33in2.Id,
-                    new UnitValueDTO(32.9, "SquareInch"),
-                    new UnitValueDTO(716, "InchToTheFourth"),
-                    new UnitValueDTO(236, "InchToTheFourth"),
-                    new UnitValueDTO(15.1, "InchToTheFourth")
+                    new UnitValueDto(32.9, "SquareInch"),
+                    new UnitValueDto(716, "InchToTheFourth"),
+                    new UnitValueDto(236, "InchToTheFourth"),
+                    new UnitValueDto(15.1, "InchToTheFourth")
                 )
             ],
 
@@ -113,12 +113,12 @@ internal partial class Example8_4 : SolvedProblem
                 new PointLoadResponse(
                     pointLoad1.Id,
                     node1.Id,
-                    new UnitValueDTO(-133446.648457815, "Newton"),
+                    new UnitValueDto(-30, "KilopoundForce"),
                     new Vector3(0, 1, 0)),
                 new PointLoadResponse(
                     pointLoad2.Id,
                     node2.Id,
-                    new UnitValueDTO(-133446.648457815, "Newton"),
+                    new UnitValueDto(-30, "KilopoundForce"),
                     new Vector3(0, 1, 0)),
             ],
 
@@ -126,22 +126,22 @@ internal partial class Example8_4 : SolvedProblem
                 new MomentLoadResponse(
                     momentLoad1.Id,
                     node1.Id,
-                    new UnitValueDTO(-1800, "KilopoundForceInch"),
+                    new UnitValueDto(-1800, "KilopoundForceInch"),
                     new Vector3(1, 0, 0)),
                 new MomentLoadResponse(
                     momentLoad2.Id,
                     node1.Id,
-                    new UnitValueDTO(1800, "KilopoundForceInch"),
+                    new UnitValueDto(1800, "KilopoundForceInch"),
                     new Vector3(0, 0, 1)),
                 new MomentLoadResponse(
                     momentLoad3.Id,
                     node1.Id,
-                    new UnitValueDTO(100, "KilopoundForceFoot"),
+                    new UnitValueDto(1200, "KilopoundForceInch"),
                     new Vector3(0, 0, 1)),
                 new MomentLoadResponse(
                     momentLoad4.Id,
                     node2.Id,
-                    new UnitValueDTO(100, "KilopoundForceFoot"),
+                    new UnitValueDto(1200, "KilopoundForceInch"),
                     new Vector3(0, 0, -1)),
             ]
         );
@@ -157,13 +157,13 @@ internal partial class Example8_4 : SolvedProblem
     //    var modelResponse = await client.CreateModelAsync(new("building name", "building description", new ModelSettingsRequest(UnitSettings.K_IN)))
     //}
 
-    public static async Task CreatePhysicalModel(PhysicalModelAlphaClient client)
+    public static async Task CreatePhysicalModel(ApiAlphaClient client)
     {
         model ??= await client.CreateModelAsync(
             new(
                 "building name",
                 "building description",
-                new ModelSettingsRequest(UnitSettingsRequest.K_IN)
+                new PhysicalModelSettingsDto(UnitSettingsDtoVerbose.K_IN)
             )
         );
         ModelId = model.Id;
@@ -212,7 +212,7 @@ internal partial class Example8_4 : SolvedProblem
         CreateMaterialRequest steel29000req =
             new(
                 model.Id,
-                new UnitValueDTO(29000, "KilopoundForcePerSquareInch"),
+                new UnitValueDto(29000, "KilopoundForcePerSquareInch"),
                 new(11500, "KilopoundForcePerSquareInch")
             );
         steel29000 ??= await clientMethod(steel29000req);
@@ -408,15 +408,15 @@ internal partial class Example8_4 : SolvedProblem
     private static Element1DResponse element3;
 
     public static async Task CreateElement1ds(
-        Func<CreateElement1DRequest, Task<Element1DResponse>> clientMethod
+        Func<CreateElement1dRequest, Task<Element1DResponse>> clientMethod
     )
     {
-        CreateElement1DRequest el1Req =
+        CreateElement1dRequest el1Req =
             new(model.Id, node2.Id, node1.Id, steel29000.Id, profile33in2.Id);
         element1 ??= await clientMethod(el1Req);
         //yield return el1Req;
 
-        CreateElement1DRequest el2Req =
+        CreateElement1dRequest el2Req =
             new(
                 model.Id,
                 node3.Id,
@@ -429,7 +429,7 @@ internal partial class Example8_4 : SolvedProblem
         element2 ??= await clientMethod(el2Req);
         //yield return el2Req;
 
-        CreateElement1DRequest el3Req =
+        CreateElement1dRequest el3Req =
             new(model.Id, node4.Id, node1.Id, steel29000.Id, profile33in2.Id, new(30, "Degree"));
         element3 ??= await clientMethod(el3Req);
         //yield return el3Req;

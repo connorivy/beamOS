@@ -4,10 +4,14 @@
 // </auto-generated>
 //----------------------
 
-using BeamOS.PhysicalModel.Contracts.Node;
-using BeamOS.PhysicalModel.Contracts.Element1D;
-using BeamOS.PhysicalModel.Contracts.Model;
-using BeamOS.PhysicalModel.Contracts.PointLoad;
+using BeamOs.Contracts.PhysicalModel.Node;
+using BeamOs.Contracts.PhysicalModel.Element1d;
+using BeamOs.Contracts.PhysicalModel.Model;
+using BeamOs.Contracts.PhysicalModel.PointLoad;
+using BeamOs.Contracts.PhysicalModel.MomentLoad;
+using BeamOs.Contracts.PhysicalModel.Material;
+using BeamOs.Contracts.PhysicalModel.SectionProfile;
+using BeamOs.Contracts.AnalyticalResults.Model;
 
 #pragma warning disable 108 // Disable "CS0108 '{derivedDto}.ToJson()' hides inherited member '{dtoBase}.ToJson()'. Use the new keyword if hiding was intended."
 #pragma warning disable 114 // Disable "CS0114 '{derivedDto}.RaisePropertyChanged(String)' hides inherited member 'dtoBase.RaisePropertyChanged(String)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword."

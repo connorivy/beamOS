@@ -1,6 +1,8 @@
+using BeamOS.Common.Domain.Interfaces;
+
 namespace BeamOS.Common.Domain.Models;
 
-public abstract class BeamOSEntity<TId> : IEquatable<BeamOSEntity<TId>>
+public abstract class BeamOSEntity<TId> : IEquatable<BeamOSEntity<TId>>, IBeamOsDomainObject
     where TId : notnull
 {
     public TId Id { get; protected set; }

@@ -29,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\src\BeamOS.DirectStiffnessMethod\BeamOS.DirectStiffnessMethod.Domain\BeamOS.DirectStiffnessMethod.Domain.csproj" />
+    <ProjectReference Include="..\..\..\..\src\BeamOs.StructuralAnalysis\BeamOs.Domain\BeamOs.Domain.csproj" />
   </ItemGroup>
 
 </Project>
