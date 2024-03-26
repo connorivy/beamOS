@@ -33,9 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\BeamOS.Common\BeamOS.Common.Api\BeamOS.Common.Api.csproj">
-      <PrivateAssets>all</PrivateAssets>
-    </ProjectReference>
+    <ProjectReference Include="..\..\BeamOS.Common\BeamOS.Common.Api\BeamOS.Common.Api.csproj" />
     <ProjectReference Include="..\..\BeamOS.Common\BeamOS.Common.Domain\BeamOS.Common.Domain.csproj">
       <PrivateAssets>all</PrivateAssets>
     </ProjectReference>
