@@ -26,17 +26,11 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="8.0.0" />
-    <PackageReference Include="Teronis.MSBuild.Packaging.ProjectBuildInPackage" Version="1.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\BeamOS.Common\BeamOS.Common.Api\BeamOS.Common.Api.csproj" />
-    <ProjectReference Include="..\..\BeamOS.Common\BeamOS.Common.Domain\BeamOS.Common.Domain.csproj">
-      <PrivateAssets>all</PrivateAssets>
-    </ProjectReference>
+    <ProjectReference Include="..\..\BeamOS.Common\BeamOS.Common.Domain\BeamOS.Common.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>

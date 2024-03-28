@@ -13,19 +13,11 @@
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
     <PackageReference Include="Riok.Mapperly" Version="3.2.0" />
     <PackageReference Include="Scrutor" Version="4.2.2" />
-    <PackageReference Include="Teronis.MSBuild.Packaging.ProjectBuildInPackage" Version="1.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BeamOS.Common.Contracts\BeamOS.Common.Contracts.csproj">
-      <PrivateAssets>all</PrivateAssets>
-    </ProjectReference>
-    <ProjectReference Include="..\BeamOS.Common.Domain\BeamOS.Common.Domain.csproj">
-      <PrivateAssets>all</PrivateAssets>
-    </ProjectReference>
+    <ProjectReference Include="..\BeamOS.Common.Contracts\BeamOS.Common.Contracts.csproj" />
+    <ProjectReference Include="..\BeamOS.Common.Domain\BeamOS.Common.Domain.csproj" />
   </ItemGroup>
 
 </Project>
