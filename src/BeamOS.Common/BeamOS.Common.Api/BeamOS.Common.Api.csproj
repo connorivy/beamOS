@@ -8,11 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FastEndpoints" Version="5.21.2" />
-    <PackageReference Include="FastEndpoints.ClientGen" Version="5.21.2" />
-    <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
-    <PackageReference Include="Riok.Mapperly" Version="3.2.0" />
-    <PackageReference Include="Scrutor" Version="4.2.2" />
+    <PackageReference Include="FastEndpoints" />
+    <PackageReference Include="FastEndpoints.ClientGen" />
+    <PackageReference Include="MathNet.Numerics" />
+    <PackageReference Include="Riok.Mapperly" />
+    <PackageReference Include="Scrutor" />
   </ItemGroup>
 
   <ItemGroup>

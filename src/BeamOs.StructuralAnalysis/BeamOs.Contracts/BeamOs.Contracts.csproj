@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FastEndpoints.Attributes" Version="5.21.2" />
+    <PackageReference Include="FastEndpoints.Attributes" />
   </ItemGroup>
 
 </Project>
