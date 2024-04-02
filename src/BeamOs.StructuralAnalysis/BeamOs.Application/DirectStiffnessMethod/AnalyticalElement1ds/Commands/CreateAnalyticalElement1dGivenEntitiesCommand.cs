@@ -1,5 +1,5 @@
 using BeamOs.Domain.DirectStiffnessMethod.AnalyticalElement1DAggregate.ValueObjects;
-using BeamOs.Domain.DirectStiffnessMethod.AnalyticalNodeAggregate;
+using BeamOs.Domain.DirectStiffnessMethod.DsmNodeAggregate;
 using UnitsNet;
 
 namespace BeamOs.Application.DirectStiffnessMethod.AnalyticalElement1ds.Commands;

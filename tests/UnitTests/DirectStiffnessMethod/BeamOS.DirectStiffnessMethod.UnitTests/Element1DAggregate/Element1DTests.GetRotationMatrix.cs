@@ -3,7 +3,7 @@ using BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Factories;
 using BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Fixtures.AnalyticalElement1Ds;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.DirectStiffnessMethod.AnalyticalElement1DAggregate;
-using BeamOs.Domain.DirectStiffnessMethod.AnalyticalNodeAggregate;
+using BeamOs.Domain.DirectStiffnessMethod.DsmNodeAggregate;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Throw;

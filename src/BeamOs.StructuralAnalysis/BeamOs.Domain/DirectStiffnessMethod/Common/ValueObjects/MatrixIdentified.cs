@@ -1,4 +1,4 @@
-using BeamOs.Domain.DirectStiffnessMethod.AnalyticalNodeAggregate.ValueObjects;
+using BeamOs.Domain.DirectStiffnessMethod.DsmNodeAggregate.ValueObjects;
 
 namespace BeamOs.Domain.DirectStiffnessMethod.Common.ValueObjects;
 

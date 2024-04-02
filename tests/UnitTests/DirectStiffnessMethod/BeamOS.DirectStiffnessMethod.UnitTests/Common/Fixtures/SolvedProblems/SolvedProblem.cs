@@ -1,7 +1,7 @@
 //using BeamOS.DirectStiffnessMethod.Domain.AnalyticalNodeAggregate;
 using BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Fixtures.AnalyticalElement1Ds;
 using BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Fixtures.AnalyticalModels;
-using BeamOs.Domain.DirectStiffnessMethod.AnalyticalNodeAggregate;
+using BeamOs.Domain.DirectStiffnessMethod.DsmNodeAggregate;
 
 namespace BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Fixtures.SolvedProblems;
 

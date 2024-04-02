@@ -1,7 +1,7 @@
 using BeamOs.Domain.AnalyticalResults.AnalyticalNodeAggregate.ValueObjects;
 using BeamOs.Domain.Common.Models;
 using BeamOs.Domain.Common.ValueObjects;
-using BeamOs.Domain.DirectStiffnessMethod.AnalyticalNodeAggregate.ValueObjects;
+using BeamOs.Domain.DirectStiffnessMethod.DsmNodeAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
 
 namespace BeamOs.Domain.AnalyticalResults.AnalyticalNodeAggregate;

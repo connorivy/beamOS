@@ -12,5 +12,10 @@ public partial class PointLoadResponseMapper : IMapper<PointLoad, PointLoadRespo
 {
     public PointLoadResponse Map(PointLoad from) => this.ToResponse(from);
 
+    [MapProperty(nameof(@PointLoad.Data.Force), nameof(PointLoadResponse.Force))]
+    [MapProperty(
+        nameof(@PointLoad.Data.NormalizedDirection),
+        nameof(PointLoadResponse.NormalizedDirection)
+    )]
     public partial PointLoadResponse ToResponse(PointLoad pointLoad);
 }

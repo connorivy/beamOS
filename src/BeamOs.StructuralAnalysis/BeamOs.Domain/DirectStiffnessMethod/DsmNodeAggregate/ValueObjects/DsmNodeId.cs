@@ -2,7 +2,7 @@ using BeamOs.Domain.Common.Enums;
 using BeamOs.Domain.Common.Interfaces;
 using BeamOs.Domain.Common.ValueObjects;
 
-namespace BeamOs.Domain.DirectStiffnessMethod.AnalyticalNodeAggregate.ValueObjects;
+namespace BeamOs.Domain.DirectStiffnessMethod.DsmNodeAggregate.ValueObjects;
 
 public class DsmNodeId(Guid? id = null) : GuidBasedId(id), IConstructable<DsmNodeId, Guid>
 {

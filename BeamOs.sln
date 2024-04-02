@@ -72,6 +72,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOs.Domain", "src\BeamOs
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOs.ApiClient", "src\BeamOs.StructuralAnalysis\BeamOs.ApiClient\BeamOs.ApiClient.csproj", "{F99C1F03-3C94-4B66-B2D5-A9E564BE31BC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Diagrams", "Diagrams", "{08F62D98-7CDB-4C8A-BF62-1B3C5282731C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StructuralAnalysis", "StructuralAnalysis", "{94A3A938-6829-426A-9E72-50162B0DB03A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.UnitTests.Domain", "tests\UnitTests\StructuralAnalysis\BeamOs.UnitTests.Domain\BeamOs.UnitTests.Domain.csproj", "{8753B7EA-2EF1-4F3E-85C3-07E63F33E6D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -199,6 +205,12 @@ Global
 		{F99C1F03-3C94-4B66-B2D5-A9E564BE31BC}.GenerateClients|Any CPU.Build.0 = Debug|Any CPU
 		{F99C1F03-3C94-4B66-B2D5-A9E564BE31BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F99C1F03-3C94-4B66-B2D5-A9E564BE31BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8753B7EA-2EF1-4F3E-85C3-07E63F33E6D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8753B7EA-2EF1-4F3E-85C3-07E63F33E6D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8753B7EA-2EF1-4F3E-85C3-07E63F33E6D3}.GenerateClients|Any CPU.ActiveCfg = Debug|Any CPU
+		{8753B7EA-2EF1-4F3E-85C3-07E63F33E6D3}.GenerateClients|Any CPU.Build.0 = Debug|Any CPU
+		{8753B7EA-2EF1-4F3E-85C3-07E63F33E6D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8753B7EA-2EF1-4F3E-85C3-07E63F33E6D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -231,6 +243,9 @@ Global
 		{7BC7D825-9C1A-495B-AE83-04D6823844C5} = {AAA311E5-CD84-4E27-8F40-F82AE599D3E0}
 		{2F728F70-0E8C-4333-8F1F-8A10F6EA3D9F} = {AAA311E5-CD84-4E27-8F40-F82AE599D3E0}
 		{F99C1F03-3C94-4B66-B2D5-A9E564BE31BC} = {AAA311E5-CD84-4E27-8F40-F82AE599D3E0}
+		{08F62D98-7CDB-4C8A-BF62-1B3C5282731C} = {2C1BA5D8-E1EA-4867-BABD-37E0349E9F7D}
+		{94A3A938-6829-426A-9E72-50162B0DB03A} = {2C1BA5D8-E1EA-4867-BABD-37E0349E9F7D}
+		{8753B7EA-2EF1-4F3E-85C3-07E63F33E6D3} = {94A3A938-6829-426A-9E72-50162B0DB03A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0E917AFB-AF19-41C1-9F0B-17BD02FD96BE}
