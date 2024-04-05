@@ -1,92 +1,112 @@
 using BeamOs.Domain.Diagrams.Common;
-using BeamOs.Domain.Diagrams.Common.Extensions;
-using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate.ValueObjects;
-using BeamOs.Domain.PhysicalModel.PointLoadAggregate.ValueObjects;
 using MathNet.Numerics;
-using MathNet.Numerics.Integration;
 using UnitsNet;
+using UnitsNet.Units;
 
 namespace BeamOs.Domain.Diagrams;
 
 public class Diagram
 {
-    private readonly Length elementLength;
+    private static readonly Length EqualityTolerance = new(1, LengthUnit.Inch);
+    public Length ElementLength { get; private set; }
+    public LengthUnit LengthUnit { get; private set; }
+    public Dictionary<Ratio, Length> RatioToLengthDict { get; private set; }
+    public List<DiagramConsistantInterval> Intervals { get; private set; }
 
-    //public Diagram(
-    //    Dictionary<double, ImmutablePointLoad> pointLoadsMap,
-    //    ShearForceDiagramId? id = null
-    //)
-    ////: base(id ?? new())
-    //{
-    //    this.PointLoadsMap = pointLoadsMap;
-    //}
-
-    public Dictionary<double, ImmutablePointLoad> PointLoadsMap { get; private set; }
-    public List<DiagramConsistantInterval> Intervals { get; private set; } = [new(0, 1, new())];
-
-    public void Build(
-        IEnumerable<DiagramPointValue> pointValues,
-        IEnumerable<DiagramDistributedValue> distributedValues,
-        Length elementLength
+    public Diagram(
+        Length elementLength,
+        Dictionary<Ratio, Length> ratioToLengthDict,
+        List<DiagramConsistantInterval> intervals,
+        LengthUnit lengthUnit
     )
     {
-        var x = pointValues
+        this.ElementLength = elementLength;
+        this.RatioToLengthDict = ratioToLengthDict;
+        this.Intervals = intervals;
+        this.LengthUnit = lengthUnit;
+    }
+
+    public static Diagram Build(
+        IEnumerable<DiagramPointValue> pointValues,
+        IEnumerable<DiagramDistributedValue> distributedValues,
+        Length elementLength,
+        LengthUnit lengthUnit
+    )
+    {
+        var ratioToLengthDict = pointValues
             .Select(pv => pv.Location)
             .Concat(distributedValues.Select(dv => dv.StartLocation))
             .Concat(distributedValues.Select(dv => dv.EndLocation))
-            .Select(d => Math.Round(elementLength.Value * d, 2))
             .Distinct()
-            .Order()
-            .ToList();
+            .ToDictionary(d => d, d => elementLength * d.As(RatioUnit.DecimalFraction));
 
-        List<DiagramConsistantInterval> intervals = [new(0, elementLength.Value, new())];
+        var intervals = BuildConsistantIntervals(
+            pointValues,
+            distributedValues,
+            elementLength,
+            lengthUnit,
+            ratioToLengthDict
+        );
 
-        foreach (double point in x)
+        return new Diagram(elementLength, ratioToLengthDict, intervals, lengthUnit);
+    }
+
+    private static List<DiagramConsistantInterval> BuildConsistantIntervals(
+        IEnumerable<DiagramPointValue> pointValues,
+        IEnumerable<DiagramDistributedValue> distributedValues,
+        Length elementLength,
+        LengthUnit lengthUnit,
+        Dictionary<Ratio, Length> ratioToLengthDict
+    )
+    {
+        List<DiagramConsistantInterval> intervals =
+        [
+            new(new Length(0, elementLength.Unit), elementLength, new())
+        ];
+
+        foreach (Length point in ratioToLengthDict.Values.OrderBy(l => l.As(lengthUnit)))
         {
             InsertPointInIntervals(intervals, point);
         }
 
         foreach (var pointValue in pointValues)
         {
-            AddPointValue(
-                intervals,
-                pointValue.Location * elementLength.Value,
-                pointValue.Polynomial
-            );
+            AddPointValue(intervals, ratioToLengthDict[pointValue.Location], pointValue.Polynomial);
         }
 
         foreach (var distributedValue in distributedValues)
         {
             AddDistributedValue(
                 intervals,
-                distributedValue.StartLocation * elementLength.Value,
-                distributedValue.EndLocation * elementLength.Value,
-                distributedValue.Polynomial
+                ratioToLengthDict[distributedValue.StartLocation],
+                ratioToLengthDict[distributedValue.EndLocation],
+                distributedValue.Polynomial,
+                lengthUnit
             );
         }
 
-        this.Intervals = intervals;
+        return intervals;
     }
 
     private static void InsertPointInIntervals(
         List<DiagramConsistantInterval> intervals,
-        double point
+        Length locationAlongBeam
     )
     {
         for (int i = 0; i < intervals.Count; i++)
         {
             var interval = intervals[i];
-            if (point > interval.EndLocation)
+            if (locationAlongBeam > interval.EndLocation)
             {
                 continue;
             }
-            else if (point > interval.StartLocation)
+            else if (locationAlongBeam > interval.StartLocation)
             {
                 intervals.Insert(
                     i + 1,
-                    new(point, interval.EndLocation, interval.PolynomialDescription)
+                    new(locationAlongBeam, interval.EndLocation, interval.PolynomialDescription)
                 );
-                interval.EndLocation = point;
+                interval.EndLocation = locationAlongBeam;
             }
             return;
         }
@@ -94,11 +114,13 @@ public class Diagram
 
     private static void AddPointValue(
         List<DiagramConsistantInterval> intervals,
-        double startLocation,
+        Length startLocation,
         Polynomial polynomialValue
     )
     {
-        int intervalIndex = intervals.FindIndex(i => i.StartLocation == startLocation);
+        int intervalIndex = intervals.FindIndex(
+            i => i.StartLocation.Equals(startLocation, EqualityTolerance)
+        );
 
         if (intervalIndex < 0)
         {
@@ -113,13 +135,18 @@ public class Diagram
 
     private static void AddDistributedValue(
         List<DiagramConsistantInterval> intervals,
-        double startLocation,
-        double endLocation,
-        Polynomial polynomialValue
+        Length startLocation,
+        Length endLocation,
+        Polynomial polynomialValue,
+        LengthUnit lengthUnit
     )
     {
-        int startIntervalIndex = intervals.FindIndex(i => i.StartLocation == startLocation);
-        int endIntervalIndex = intervals.FindIndex(i => i.StartLocation == endLocation);
+        int startIntervalIndex = intervals.FindIndex(
+            i => i.StartLocation.Equals(startLocation, EqualityTolerance)
+        );
+        int endIntervalIndex = intervals.FindIndex(
+            i => i.StartLocation.Equals(endLocation, EqualityTolerance)
+        );
 
         if (startIntervalIndex < 0 || endIntervalIndex < 0)
         {
@@ -129,13 +156,17 @@ public class Diagram
         }
 
         Polynomial integrated = polynomialValue.Integrate();
-        double boundedIntegral =
-            integrated.Evaluate(endLocation) - integrated.Evaluate(startLocation);
+        double boundedIntegral = 0;
 
         int indexDiff = endIntervalIndex - startIntervalIndex;
         foreach (var interval in intervals.Skip(startIntervalIndex).Take(indexDiff))
         {
-            interval.PolynomialDescription += integrated;
+            double integralAtStart = integrated.Evaluate(interval.StartLocation.As(lengthUnit));
+            double integralAtEnd = integrated.Evaluate(interval.EndLocation.As(lengthUnit));
+
+            interval.PolynomialDescription +=
+                integrated + new Polynomial(boundedIntegral - integralAtStart);
+            boundedIntegral += integralAtEnd - integralAtStart;
         }
 
         foreach (var interval in intervals.Skip(startIntervalIndex + indexDiff))
@@ -144,44 +175,65 @@ public class Diagram
         }
     }
 
-    public void Integrate(double valueAtZero)
+    public Diagram Integrate(
+        IEnumerable<DiagramPointValue> pointValues,
+        IEnumerable<DiagramDistributedValue> additionalDistributedValues
+    )
     {
-        double previousEndValue = valueAtZero;
+        var ratioToLengthDict = this.RatioToLengthDict
+            .Select(i => i.Key)
+            .Concat(pointValues.Select(pv => pv.Location))
+            .Concat(additionalDistributedValues.Select(dv => dv.StartLocation))
+            .Concat(additionalDistributedValues.Select(dv => dv.EndLocation))
+            .Distinct()
+            .ToDictionary(d => d, d => this.ElementLength * d.As(RatioUnit.DecimalFraction));
+
+        var intervals = BuildConsistantIntervals(
+            pointValues,
+            this.GetDistributedValuesFromDiagram().Concat(additionalDistributedValues),
+            ElementLength,
+            LengthUnit,
+            ratioToLengthDict
+        );
+
+        return new Diagram(ElementLength, ratioToLengthDict, intervals, LengthUnit);
+    }
+
+    private IEnumerable<DiagramDistributedValue> GetDistributedValuesFromDiagram()
+    {
         foreach (var interval in this.Intervals)
         {
-            Polynomial integrated = interval.PolynomialDescription.Integrate();
-            double yIntercept = (previousEndValue - integrated).Evaluate(interval.StartLocation);
-
-            double boundedIntegral =
-                integrated.Evaluate(interval.EndLocation)
-                - integrated.Evaluate(interval.StartLocation);
-            previousEndValue += boundedIntegral;
+            Ratio startRatio =
+                new(interval.StartLocation / this.ElementLength, RatioUnit.DecimalFraction);
+            Ratio endRatio =
+                new(interval.EndLocation / this.ElementLength, RatioUnit.DecimalFraction);
+            yield return new(startRatio, endRatio, interval.PolynomialDescription);
         }
     }
 }
 
 public class DiagramPointValue
 {
-    public DiagramPointValue(double location, Polynomial polynomial)
+    public DiagramPointValue(Ratio location, Polynomial polynomial)
     {
         this.Location = location;
         this.Polynomial = polynomial;
     }
 
-    public double Location { get; set; }
+    public Ratio Location { get; set; }
     public Polynomial Polynomial { get; set; }
 }
 
 public class DiagramDistributedValue
 {
-    public DiagramDistributedValue(double startLocation, double endLocation, Polynomial polynomial)
+    public DiagramDistributedValue(Ratio startLocation, Ratio endLocation, Polynomial polynomial)
     {
         this.StartLocation = startLocation;
         this.EndLocation = endLocation;
         this.Polynomial = polynomial;
     }
 
-    public double StartLocation { get; set; }
-    public double EndLocation { get; set; }
+    public Ratio StartLocation { get; set; }
+    public Ratio EndLocation { get; set; }
     public Polynomial Polynomial { get; set; }
 }

@@ -10,105 +10,106 @@ using UnitsNet;
 
 namespace BeamOs.Domain.Diagrams.ShearForceDiagramAggregate;
 
-public class ShearForceDiagramAggregate : AggregateRoot<ShearForceDiagramId>
-{
-    private readonly Length elementLength;
 
-    public ShearForceDiagramAggregate(
-        Dictionary<double, ImmutablePointLoad> pointLoadsMap,
-        ShearForceDiagramId? id = null
-    )
-        : base(id ?? new())
-    {
-        this.PointLoadsMap = pointLoadsMap;
-    }
+//public class ShearForceDiagramAggregate : AggregateRoot<ShearForceDiagramId>
+//{
+//    private readonly Length elementLength;
 
-    public Dictionary<double, ImmutablePointLoad> PointLoadsMap { get; private set; }
-    public List<DiagramConsistantInterval> Intervals { get; private set; } = [new(0, 1, new())];
+//    public ShearForceDiagramAggregate(
+//        Dictionary<double, ImmutablePointLoad> pointLoadsMap,
+//        ShearForceDiagramId? id = null
+//    )
+//        : base(id ?? new())
+//    {
+//        this.PointLoadsMap = pointLoadsMap;
+//    }
 
-    public void Build(CoordinateSystemDirection3D direction, UnitSettings unitSettings)
-    {
-        List<double> sortedLocationKeys = this.PointLoadsMap.Keys.OrderBy(x => x).ToList();
+//    public Dictionary<double, ImmutablePointLoad> PointLoadsMap { get; private set; }
+//    public List<DiagramConsistantInterval> Intervals { get; private set; } = [new(0, 1, new())];
 
-        foreach (var locationKey in this.PointLoadsMap.Keys.OrderBy(key => key))
-        {
-            var plAtZero = this.PointLoadsMap[locationKey];
-            Force forceDueToLoad = plAtZero.GetForceInDirection(direction);
-            Polynomial shearValue = new(forceDueToLoad.As(unitSettings.ForceUnit));
+//    public void Build(CoordinateSystemDirection3D direction, UnitSettings unitSettings)
+//    {
+//        List<double> sortedLocationKeys = this.PointLoadsMap.Keys.OrderBy(x => x).ToList();
 
-            this.AddPointLoad(locationKey, shearValue);
-        }
-    }
+//        foreach (var locationKey in this.PointLoadsMap.Keys.OrderBy(key => key))
+//        {
+//            var plAtZero = this.PointLoadsMap[locationKey];
+//            Force forceDueToLoad = plAtZero.GetForceInDirection(direction);
+//            Polynomial shearValue = new(forceDueToLoad.As(unitSettings.ForceUnit));
 
-    private void AddPointLoad(double startLocation, Polynomial polynomialValue)
-    {
-        int intervalIndex = this.GetIntervalIndexThatContainsLocation(startLocation);
-        var currentInterval = this.Intervals[intervalIndex];
+//            this.AddPointLoad(locationKey, shearValue);
+//        }
+//    }
 
-        if (currentInterval.StartLocation == startLocation)
-        {
-            // current interval is already split at the correct location, just add the equation
-            AddEquationToIntervals(polynomialValue, this.Intervals.Skip((intervalIndex + 1) - 1));
-        }
-        else
-        {
-            DiagramConsistantInterval newInterval =
-                new(
-                    startLocation,
-                    currentInterval.EndLocation,
-                    currentInterval.PolynomialDescription + polynomialValue
-                );
-            currentInterval.EndLocation = startLocation;
-            this.Intervals.Insert(intervalIndex + 1, newInterval);
-            AddEquationToIntervals(polynomialValue, this.Intervals.Skip((intervalIndex + 1) + 1));
-        }
-    }
+//    private void AddPointLoad(double startLocation, Polynomial polynomialValue)
+//    {
+//        int intervalIndex = this.GetIntervalIndexThatContainsLocation(startLocation);
+//        var currentInterval = this.Intervals[intervalIndex];
 
-    private int GetIntervalIndexThatContainsLocation(double location)
-    {
-        for (var i = 0; i < this.Intervals.Count; i++)
-        {
-            var currentInterval = this.Intervals[i];
+//        if (currentInterval.StartLocation == startLocation)
+//        {
+//            // current interval is already split at the correct location, just add the equation
+//            AddEquationToIntervals(polynomialValue, this.Intervals.Skip((intervalIndex + 1) - 1));
+//        }
+//        else
+//        {
+//            DiagramConsistantInterval newInterval =
+//                new(
+//                    startLocation,
+//                    currentInterval.EndLocation,
+//                    currentInterval.PolynomialDescription + polynomialValue
+//                );
+//            currentInterval.EndLocation = startLocation;
+//            this.Intervals.Insert(intervalIndex + 1, newInterval);
+//            AddEquationToIntervals(polynomialValue, this.Intervals.Skip((intervalIndex + 1) + 1));
+//        }
+//    }
 
-            if (currentInterval.StartLocation <= location && currentInterval.EndLocation > location)
-            {
-                return i;
-            }
-        }
+//    private int GetIntervalIndexThatContainsLocation(double location)
+//    {
+//        for (var i = 0; i < this.Intervals.Count; i++)
+//        {
+//            var currentInterval = this.Intervals[i];
 
-        if (location == 1.0)
-        {
-            var currentLastInterval = this.Intervals.Last();
-            this.Intervals.Add(new(1.0, 1.0, currentLastInterval.PolynomialDescription));
-            return this.Intervals.Count - 1;
-        }
+//            if (currentInterval.StartLocation <= location && currentInterval.EndLocation > location)
+//            {
+//                return i;
+//            }
+//        }
 
-        throw new Exception($"Could not find interval that contains location {location}");
-    }
+//        if (location == 1.0)
+//        {
+//            var currentLastInterval = this.Intervals.Last();
+//            this.Intervals.Add(new(1.0, 1.0, currentLastInterval.PolynomialDescription));
+//            return this.Intervals.Count - 1;
+//        }
 
-    private static void AddEquationToIntervals(
-        Polynomial polynomialValue,
-        IEnumerable<DiagramConsistantInterval> intervals
-    )
-    {
-        foreach (var interval in intervals)
-        {
-            interval.PolynomialDescription += polynomialValue;
-        }
-    }
+//        throw new Exception($"Could not find interval that contains location {location}");
+//    }
 
-    public void Integrate(double valueAtZero)
-    {
-        double previousEndValue = valueAtZero;
-        foreach (var interval in this.Intervals)
-        {
-            Polynomial integrated = interval.PolynomialDescription.Integrate();
-            double yIntercept = (previousEndValue - integrated).Evaluate(interval.StartLocation);
+//    private static void AddEquationToIntervals(
+//        Polynomial polynomialValue,
+//        IEnumerable<DiagramConsistantInterval> intervals
+//    )
+//    {
+//        foreach (var interval in intervals)
+//        {
+//            interval.PolynomialDescription += polynomialValue;
+//        }
+//    }
 
-            double boundedIntegral =
-                integrated.Evaluate(interval.EndLocation)
-                - integrated.Evaluate(interval.StartLocation);
-            previousEndValue += boundedIntegral;
-        }
-    }
-}
+//    public void Integrate(double valueAtZero)
+//    {
+//        double previousEndValue = valueAtZero;
+//        foreach (var interval in this.Intervals)
+//        {
+//            Polynomial integrated = interval.PolynomialDescription.Integrate();
+//            double yIntercept = (previousEndValue - integrated).Evaluate(interval.StartLocation);
+
+//            double boundedIntegral =
+//                integrated.Evaluate(interval.EndLocation)
+//                - integrated.Evaluate(interval.StartLocation);
+//            previousEndValue += boundedIntegral;
+//        }
+//    }
+//}
