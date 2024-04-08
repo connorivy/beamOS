@@ -1,5 +1,7 @@
 using BeamOs.Domain.Diagrams.Common;
+using BeamOs.Domain.Diagrams.Common.ValueObjects.DiagramBuilder;
 using MathNet.Numerics;
+using MathNet.Numerics.LinearAlgebra;
 using UnitsNet;
 using UnitsNet.Units;
 
@@ -22,6 +24,17 @@ public class Diagram
     {
         this.ElementLength = elementLength;
         this.RatioToLengthDict = ratioToLengthDict;
+        this.Intervals = intervals;
+        this.LengthUnit = lengthUnit;
+    }
+
+    public Diagram(
+        Length elementLength,
+        LengthUnit lengthUnit,
+        List<DiagramConsistantInterval> intervals
+    )
+    {
+        this.ElementLength = elementLength;
         this.Intervals = intervals;
         this.LengthUnit = lengthUnit;
     }
@@ -56,7 +69,8 @@ public class Diagram
         IEnumerable<DiagramDistributedValue> distributedValues,
         Length elementLength,
         LengthUnit lengthUnit,
-        Dictionary<Ratio, Length> ratioToLengthDict
+        Dictionary<Ratio, Length> ratioToLengthDict,
+        List<DiagramPointValueAsLength>? boundaryConditions = null
     )
     {
         List<DiagramConsistantInterval> intervals =
@@ -85,7 +99,132 @@ public class Diagram
             );
         }
 
+        if (boundaryConditions != null)
+        {
+            ApplyBoundaryConditions(
+                intervals,
+                boundaryConditions,
+                lengthUnit,
+                boundaryConditions.Count
+            );
+        }
+        //foreach (var boundaryCondition in boundaryConditions ?? [])
+        //{
+        //    ApplyBoundaryCondition(intervals, boundaryCondition, lengthUnit);
+        //}
+
         return intervals;
+    }
+
+    private static void ApplyBoundaryConditions(
+        List<DiagramConsistantInterval> intervals,
+        List<DiagramPointValueAsLength> boundaryConditions,
+        LengthUnit lengthUnit,
+        int numTimesIntegrated
+    )
+    {
+        // numTimesIntegrated = 1
+        // C = const
+        // | 1 | | C | = | const |
+
+        // numTimesIntegrated = 2
+        // C1x + C2 = const
+        // | x 1 | | C1 | = | f(x1) |
+        // | x 1 | | C2 |   | f(x2) |
+
+        // numTimesIntegrated = 3
+        // C1x2 + C2x + C3 = const
+        // | x2 x 1 | | C1 | = | f(x1) |
+        // | x2 x 1 | | C2 |   | f(x2) |
+        // | x2 x 1 | | C3 |   | f(x3) |
+
+        if (boundaryConditions.Count != numTimesIntegrated)
+        {
+            throw new Exception(
+                "Number of provided boundary conditions must match number of times being integrated"
+            );
+        }
+
+        double[,] matrixArray = new double[numTimesIntegrated, numTimesIntegrated];
+        double[] results = new double[numTimesIntegrated];
+        for (int bcIndex = 0; bcIndex < numTimesIntegrated; bcIndex++)
+        {
+            DiagramPointValueAsLength bc = boundaryConditions[bcIndex];
+            double currentVal = EvaluateIntervalsAtLocationAndThrowIfDifferent(
+                intervals,
+                lengthUnit,
+                bc.Location
+            );
+            for (int i = 0; i < numTimesIntegrated; i++)
+            {
+                matrixArray[bcIndex, numTimesIntegrated - (i + 1)] = Math.Pow(
+                    bc.Location.As(lengthUnit),
+                    i
+                );
+            }
+            results[bcIndex] = bc.Value - currentVal;
+        }
+
+        var a = Matrix<double>.Build.DenseOfArray(matrixArray);
+        var b = Vector<double>.Build.Dense(results);
+        var x = a.Solve(b).ToArray();
+    }
+
+    private static double EvaluateIntervalsAtLocationAndThrowIfDifferent(
+        List<DiagramConsistantInterval> intervals,
+        LengthUnit lengthUnit,
+        Length location
+    )
+    {
+        List<DiagramConsistantInterval> containingIntervals = GetContainingIntervals(
+                intervals,
+                location
+            )
+            .ToList();
+        double valInFirstInterval = containingIntervals[0]
+            .PolynomialDescription
+            .Evaluate(location.As(lengthUnit));
+        if (containingIntervals.Count > 1)
+        {
+            if (containingIntervals.Count > 2)
+            {
+                throw new Exception("How did this happen?");
+            }
+
+            double valInLastInterval = containingIntervals[1]
+                .PolynomialDescription
+                .Evaluate(location.As(lengthUnit));
+            if (Math.Abs(valInFirstInterval - valInLastInterval) > EqualityTolerance.As(lengthUnit))
+            {
+                throw new Exception(
+                    "Cannot apply boundary condition at point with two different values"
+                );
+            }
+        }
+
+        return valInFirstInterval;
+    }
+
+    private static IEnumerable<DiagramConsistantInterval> GetContainingIntervals(
+        List<DiagramConsistantInterval> intervals,
+        Length location
+    )
+    {
+        for (int i = 0; i < intervals.Count; i++)
+        {
+            var interval = intervals[i];
+            if (location < interval.StartLocation || location > interval.EndLocation)
+            {
+                continue;
+            }
+
+            yield return interval;
+            if (i < intervals.Count - 1 && location.Equals(interval.EndLocation, EqualityTolerance))
+            {
+                yield return intervals[i + 1];
+            }
+            yield break;
+        }
     }
 
     private static void InsertPointInIntervals(
@@ -176,10 +315,14 @@ public class Diagram
     }
 
     public Diagram Integrate(
-        IEnumerable<DiagramPointValue> pointValues,
-        IEnumerable<DiagramDistributedValue> additionalDistributedValues
+        IEnumerable<DiagramPointValue>? pointValues = null,
+        IEnumerable<DiagramDistributedValue>? additionalDistributedValues = null,
+        List<DiagramPointValueAsLength>? boundaryConditions = null
     )
     {
+        pointValues ??=  [];
+        additionalDistributedValues ??=  [];
+
         var ratioToLengthDict = this.RatioToLengthDict
             .Select(i => i.Key)
             .Concat(pointValues.Select(pv => pv.Location))
@@ -191,12 +334,23 @@ public class Diagram
         var intervals = BuildConsistantIntervals(
             pointValues,
             this.GetDistributedValuesFromDiagram().Concat(additionalDistributedValues),
-            ElementLength,
-            LengthUnit,
-            ratioToLengthDict
+            this.ElementLength,
+            this.LengthUnit,
+            ratioToLengthDict,
+            boundaryConditions
         );
 
-        return new Diagram(ElementLength, ratioToLengthDict, intervals, LengthUnit);
+        return new Diagram(this.ElementLength, ratioToLengthDict, intervals, this.LengthUnit);
+    }
+
+    public DiagramBuilder Integrate2()
+    {
+        return new DiagramBuilder(
+            this.ElementLength,
+            EqualityTolerance,
+            this.LengthUnit,
+            this.Intervals
+        );
     }
 
     private IEnumerable<DiagramDistributedValue> GetDistributedValuesFromDiagram()
