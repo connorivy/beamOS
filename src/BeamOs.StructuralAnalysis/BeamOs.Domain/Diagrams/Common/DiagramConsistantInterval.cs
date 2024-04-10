@@ -37,6 +37,8 @@ public sealed class DiagramConsistantInterval : BeamOSEntity<DiagramConsistantIn
         return this.PolynomialDescription.Evaluate(location.As(this.LengthUnit));
     }
 
+    public Length Length => this.EndLocation - this.StartLocation;
+
     //public bool EqualsIntervalAtLocation(DiagramConsistantInterval other, Length location, Length EqualityTolerance)
     //{
     //    return this.EvalutateAtLocation()

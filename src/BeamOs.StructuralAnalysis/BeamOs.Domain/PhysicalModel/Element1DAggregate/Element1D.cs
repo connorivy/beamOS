@@ -53,13 +53,13 @@ public class Element1D : AggregateRoot<Element1DId>
         return new(startPoint, endPoint);
     }
 
-    public void AddPointLoad(Ratio locationAlongBeam, ImmutablePointLoad pointLoad)
-    {
-        if (locationAlongBeam.As(UnitsNet.Units.RatioUnit.DecimalFraction) is < 0 or > 1)
-        {
-            throw new ArgumentException("Provided location along beam must be between 0 and 1");
-        }
+    //public void AddPointLoad(Ratio locationAlongBeam, ImmutablePointLoad pointLoad)
+    //{
+    //    if (locationAlongBeam.As(UnitsNet.Units.RatioUnit.DecimalFraction) is < 0 or > 1)
+    //    {
+    //        throw new ArgumentException("Provided location along beam must be between 0 and 1");
+    //    }
 
-        this.PointLoads.Add(locationAlongBeam, new(new(), pointLoad));
-    }
+    //    this.PointLoads.Add(locationAlongBeam, new(new(), pointLoad));
+    //}
 }

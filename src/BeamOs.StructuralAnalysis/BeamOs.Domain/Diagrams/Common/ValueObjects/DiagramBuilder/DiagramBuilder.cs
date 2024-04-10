@@ -10,11 +10,13 @@ public class DiagramBuilder
     private readonly Length elementLength;
     private readonly Length equalityTolerance;
     private readonly LengthUnit lengthUnit;
-    private readonly List<DiagramPointValueAsLength> pointValues = new();
-    private readonly List<DiagramDistributedValueAsLength> distributedValues = new();
-    private readonly List<DiagramPointValueAsLength> boundaryConditions = new();
+    private readonly List<DiagramPointValue> pointValues = [];
+    private readonly List<DiagramDistributedValue> distributedValues = [];
+    private readonly List<DiagramPointValue> boundaryConditions = [];
     private readonly List<DiagramConsistantInterval> previousDiagramIntervals = [];
     private int numTimesToIntegrate;
+
+    private readonly double equalityToleranceAsDouble;
 
     public DiagramBuilder(
         Length elementLength,
@@ -25,8 +27,30 @@ public class DiagramBuilder
     {
         this.elementLength = elementLength;
         this.equalityTolerance = equalityTolerance;
+        this.equalityToleranceAsDouble = equalityTolerance.As(lengthUnit);
         this.lengthUnit = lengthUnit;
         this.previousDiagramIntervals = previousDiagramIntervals ?? [];
+    }
+
+    public DiagramBuilder(
+        Length elementLength,
+        Length equalityTolerance,
+        LengthUnit lengthUnit,
+        List<DiagramPointValue> pointValues,
+        List<DiagramDistributedValue> distributedValues,
+        List<DiagramPointValue> boundaryConditions,
+        List<DiagramConsistantInterval> previousDiagramIntervals,
+        int numTimesToIntegrate
+    )
+    {
+        this.elementLength = elementLength;
+        this.equalityTolerance = equalityTolerance;
+        this.lengthUnit = lengthUnit;
+        this.pointValues = pointValues;
+        this.distributedValues = distributedValues;
+        this.boundaryConditions = boundaryConditions;
+        this.previousDiagramIntervals = previousDiagramIntervals;
+        this.numTimesToIntegrate = numTimesToIntegrate;
     }
 
     public Diagram Build()
@@ -197,6 +221,27 @@ public class DiagramBuilder
             );
         }
 
+        List<DiagramPointValue> bcsToSolveFor = this.boundaryConditions
+            .Take(this.numTimesToIntegrate)
+            .ToList();
+        double[] integrationConstants = this.SolveForIntegrationConstants(intervals, bcsToSolveFor);
+        Polynomial polynomialToAdd = new(integrationConstants.Reverse());
+
+        foreach (var interval in intervals)
+        {
+            interval.PolynomialDescription += polynomialToAdd;
+        }
+        this.CheckRedundantBoundaryConditions(
+            intervals,
+            this.boundaryConditions.Skip(this.numTimesToIntegrate)
+        );
+    }
+
+    private double[] SolveForIntegrationConstants(
+        List<DiagramConsistantInterval> intervals,
+        List<DiagramPointValue> boundaryConditions
+    )
+    {
         var matrixArray = new double[this.numTimesToIntegrate, this.numTimesToIntegrate];
         var results = new double[this.numTimesToIntegrate];
         for (var bcIndex = 0; bcIndex < this.numTimesToIntegrate; bcIndex++)
@@ -215,28 +260,29 @@ public class DiagramBuilder
             }
             results[bcIndex] = bc.Value - currentVal;
         }
-        //var matrixArray = new double[this.boundaryConditions.Count, this.boundaryConditions.Count];
-        //var results = new double[this.boundaryConditions.Count];
-        //for (var bcIndex = 0; bcIndex < this.boundaryConditions.Count; bcIndex++)
-        //{
-        //    var bc = this.boundaryConditions[bcIndex];
-        //    var currentVal = this.EvaluateIntervalsAtLocationAndThrowIfDifferent(
-        //        intervals,
-        //        bc.Location
-        //    );
-        //    for (var i = 0; i < this.boundaryConditions.Count; i++)
-        //    {
-        //        matrixArray[bcIndex, this.boundaryConditions.Count - (i + 1)] = Math.Pow(
-        //            bc.Location.As(this.lengthUnit),
-        //            i
-        //        );
-        //    }
-        //    results[bcIndex] = bc.Value - currentVal;
-        //}
 
         var a = Matrix<double>.Build.DenseOfArray(matrixArray);
         var b = Vector<double>.Build.Dense(results);
-        var x = a.Solve(b).ToArray();
+        return a.Solve(b).ToArray();
+    }
+
+    private void CheckRedundantBoundaryConditions(
+        List<DiagramConsistantInterval> intervals,
+        IEnumerable<DiagramPointValue> boundaryConditions
+    )
+    {
+        foreach (var bc in boundaryConditions)
+        {
+            var currentVal = this.EvaluateIntervalsAtLocationAndThrowIfDifferent(
+                intervals,
+                bc.Location
+            );
+
+            if (Math.Abs(bc.Value - currentVal) > this.equalityToleranceAsDouble)
+            {
+                throw new Exception("Unable to apply all boundary conditions");
+            }
+        }
     }
 
     private double EvaluateIntervalsAtLocationAndThrowIfDifferent(
@@ -298,14 +344,14 @@ public class DiagramBuilder
     }
 
     #region Builder Methods
-    public DiagramBuilder AddPointLoads(params DiagramPointValueAsLength[] diagramPointValues)
+    public DiagramBuilder AddPointLoads(params DiagramPointValue[] diagramPointValues)
     {
         this.pointValues.AddRange(diagramPointValues);
         return this;
     }
 
     public DiagramBuilder AddDistributedLoads(
-        params DiagramDistributedValueAsLength[] diagramDistributedValues
+        params DiagramDistributedValue[] diagramDistributedValues
     )
     {
         this.distributedValues.AddRange(diagramDistributedValues);
@@ -314,13 +360,13 @@ public class DiagramBuilder
 
     public DiagramBuilder ApplyIntegrationBoundaryConditions(
         int numTimesIntegrated,
-        params DiagramPointValueAsLength[] boundaryConditions
+        params DiagramPointValue[] boundaryConditions
     )
     {
         if (boundaryConditions.Length < numTimesIntegrated)
         {
             throw new Exception(
-                $"Number of provided boundary conditions, {boundaryConditions.Length}, does not match numTimesToIntegrate, {numTimesIntegrated}"
+                $"Number of provided boundary conditions, {boundaryConditions.Length}, is less than the numTimesToIntegrate, {numTimesIntegrated}"
             );
         }
 
@@ -332,9 +378,9 @@ public class DiagramBuilder
     #endregion
 }
 
-public class DiagramPointValueAsLength
+public class DiagramPointValue
 {
-    public DiagramPointValueAsLength(Length location, double value)
+    public DiagramPointValue(Length location, double value)
     {
         this.Location = location;
         this.Value = value;
@@ -344,18 +390,26 @@ public class DiagramPointValueAsLength
     public double Value { get; set; }
 }
 
-public class DiagramDistributedValueAsLength
+public class DiagramDistributedValue
 {
-    public DiagramDistributedValueAsLength(
-        Length startLocation,
-        Length endLocation,
-        Polynomial polynomial
-    )
+    public DiagramDistributedValue(Length startLocation, Length endLocation, Polynomial polynomial)
     {
         this.StartLocation = startLocation;
         this.EndLocation = endLocation;
         this.Polynomial = polynomial;
     }
+
+    public DiagramDistributedValue(
+        double startLocation,
+        double endLocation,
+        LengthUnit lengthUnit,
+        Polynomial polynomial
+    )
+        : this(
+            new Length(startLocation, lengthUnit),
+            new Length(endLocation, lengthUnit),
+            polynomial
+        ) { }
 
     public Length StartLocation { get; set; }
     public Length EndLocation { get; set; }

@@ -1,3 +1,4 @@
+using BeamOs.Domain.Common.Enums;
 using BeamOs.Domain.Common.Models;
 using BeamOs.Domain.PhysicalModel.MomentLoadAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
@@ -24,6 +25,23 @@ public class MomentLoad : AggregateRoot<MomentLoadId>
     public NodeId NodeId { get; private set; }
     public Torque Torque { get; private set; }
     public Vector<double> NormalizedAxisDirection { get; private set; }
+
+    public Torque GetTorqueInDirection(CoordinateSystemDirection3D direction)
+    {
+        return direction switch
+        {
+            CoordinateSystemDirection3D.AlongX
+            or CoordinateSystemDirection3D.AlongY
+            or CoordinateSystemDirection3D.AlongZ
+                => throw new ArgumentException("Moment load has no torque along an axis"),
+            CoordinateSystemDirection3D.AboutX => this.Torque * this.NormalizedAxisDirection[0],
+            CoordinateSystemDirection3D.AboutY => this.Torque * this.NormalizedAxisDirection[1],
+            CoordinateSystemDirection3D.AboutZ => this.Torque * this.NormalizedAxisDirection[2],
+            CoordinateSystemDirection3D.Undefined
+                => throw new ArgumentException("Unexpected value for direction, Undefined"),
+            _ => throw new NotImplementedException(),
+        };
+    }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private MomentLoad() { }
