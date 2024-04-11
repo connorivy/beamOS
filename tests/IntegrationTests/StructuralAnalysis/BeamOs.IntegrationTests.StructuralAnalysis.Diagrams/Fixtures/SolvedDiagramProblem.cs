@@ -4,33 +4,44 @@ using UnitsNet;
 
 namespace BeamOs.IntegrationTests.StructuralAnalysis.Diagrams.Fixtures;
 
-public abstract class SolvedDiagramProblem
+public interface ISolvedDiagramProblem { }
+
+public interface ISolvedShearDiagramProblem : ISolvedDiagramProblem
 {
-    public virtual Diagram? ShearDiagram { get; }
+    public Diagram GetShearDiagram();
 
-    public virtual (
+    public (
         Length length,
         DiagramValueAtLocation expectedValue
-    )[]? ExpectedShearDiagramValues { get; }
+    )[] ExpectedShearDiagramValues { get; }
+}
 
-    public virtual Diagram? MomentDiagram { get; }
+public interface ISolvedMomentDiagramProblem : ISolvedDiagramProblem
+{
+    public Diagram GetMomentDiagram();
 
-    public virtual (
+    public (
         Length length,
         DiagramValueAtLocation expectedValue
-    )[]? ExpectedMomentDiagramValues { get; }
+    )[] ExpectedMomentDiagramValues { get; }
+}
 
-    public virtual Diagram? RotationDiagram { get; }
+public interface ISolvedRotationDiagramProblem : ISolvedDiagramProblem
+{
+    public Diagram GetRotationDiagram();
 
-    public virtual (
+    public (
         Length length,
         DiagramValueAtLocation expectedValue
-    )[]? ExpectedRotationDiagramValues { get; }
+    )[] ExpectedRotationDiagramValues { get; }
+}
 
-    public virtual Diagram? DeflectionDiagram { get; }
+public interface ISolvedDeflectionDiagramProblem : ISolvedDiagramProblem
+{
+    public Diagram GetDeflectionDiagram();
 
-    public virtual (
+    public (
         Length length,
         DiagramValueAtLocation expectedValue
-    )[]? ExpectedDeflectionDiagramValues { get; }
+    )[] ExpectedDeflectionDiagramValues { get; }
 }

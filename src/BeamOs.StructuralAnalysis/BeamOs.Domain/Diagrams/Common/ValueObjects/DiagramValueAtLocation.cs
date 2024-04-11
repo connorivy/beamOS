@@ -39,4 +39,15 @@ public class DiagramValueAtLocation : BeamOSValueObject
     {
         return new(value.Item1, value.Item2);
     }
+
+    public static DiagramValueAtLocation operator -(
+        DiagramValueAtLocation value1,
+        DiagramValueAtLocation value2
+    )
+    {
+        return new DiagramValueAtLocation(
+            value1.ValueOnLeft - value2.ValueOnLeft,
+            value1.ValueOnRight - value2.ValueOnRight
+        );
+    }
 }

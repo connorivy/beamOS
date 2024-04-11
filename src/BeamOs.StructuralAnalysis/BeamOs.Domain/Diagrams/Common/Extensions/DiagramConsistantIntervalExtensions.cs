@@ -1,4 +1,3 @@
-using BeamOs.Domain.Diagrams.Common.ValueObjects;
 using UnitsNet;
 
 namespace BeamOs.Domain.Diagrams.Common.Extensions;

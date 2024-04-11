@@ -7,10 +7,13 @@ using UnitsNet.Units;
 
 namespace BeamOs.IntegrationTests.StructuralAnalysis.Diagrams.Fixtures.Hibbeler_StructuralAnalysis9thEd;
 
-public class Example4_11 : SolvedDiagramProblem
+public class Example4_11 : ISolvedShearDiagramProblem, ISolvedMomentDiagramProblem
 {
-    public override Diagram ShearDiagram =>
-        new DiagramBuilder(
+    private Diagram? shearDiagram;
+
+    public Diagram GetShearDiagram()
+    {
+        this.shearDiagram ??= new DiagramBuilder(
             new Length(32, LengthUnit.Foot),
             new Length(1, LengthUnit.Inch),
             LengthUnit.Foot
@@ -27,11 +30,13 @@ public class Example4_11 : SolvedDiagramProblem
                 new DiagramDistributedValue(26, 32, LengthUnit.Foot, new Polynomial(.5 * -32, .5))
             )
             .Build();
+        return this.shearDiagram;
+    }
 
-    public override (
+    public (
         Length length,
         DiagramValueAtLocation expectedValue
-    )[] ExpectedShearDiagramValues =>
+    )[] ExpectedShearDiagramValues { get; } =
 
         [
             (new Length(0, LengthUnit.Foot), 4),
@@ -42,8 +47,11 @@ public class Example4_11 : SolvedDiagramProblem
             (new Length(32, LengthUnit.Foot), 6),
         ];
 
-    public override Diagram? MomentDiagram =>
-        this.ShearDiagram
+    private Diagram? momentDiagram;
+
+    public Diagram GetMomentDiagram()
+    {
+        this.momentDiagram ??= this.GetShearDiagram()
             .Integrate()
             .ApplyIntegrationBoundaryConditions(
                 1,
@@ -52,11 +60,13 @@ public class Example4_11 : SolvedDiagramProblem
                 new DiagramPointValue(new Length(10, LengthUnit.Foot), 0)
             )
             .Build();
+        return this.momentDiagram;
+    }
 
-    public override (
+    public (
         Length length,
         DiagramValueAtLocation expectedValue
-    )[] ExpectedMomentDiagramValues =>
+    )[] ExpectedMomentDiagramValues { get; } =
 
         [
             (new Length(0, LengthUnit.Foot), 60),
