@@ -46,7 +46,7 @@ public class Element1D : AggregateRoot<Element1DId>
 
     //public Line BaseLine { get; }
     //public Length Length => this.BaseLine.Length;
-    public Dictionary<Ratio, PointLoad> PointLoads { get; private set; } = [];
+    //public Dictionary<Ratio, PointLoad> PointLoads { get; private set; } = [];
 
     public static Line GetBaseLine(Point startPoint, Point endPoint)
     {

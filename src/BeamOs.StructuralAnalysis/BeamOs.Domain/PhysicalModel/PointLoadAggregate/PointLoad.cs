@@ -37,7 +37,11 @@ public class PointLoad : AggregateRoot<PointLoadId>
             _ => throw new NotImplementedException(),
         };
     }
-    //public ImmutablePointLoad Data { get; private set; }
+
+    public PointLoadData GetData()
+    {
+        return new(this.Force, this.NormalizedDirection);
+    }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private PointLoad() { }

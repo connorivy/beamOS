@@ -1,4 +1,3 @@
-using BeamOs.Domain.Common.Enums;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.Diagrams.Common;
 using BeamOs.Domain.Diagrams.Common.ValueObjects.DiagramBuilder;
@@ -7,8 +6,7 @@ using BeamOs.Domain.Diagrams.MomentDiagramAggregate;
 using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.Domain.PhysicalModel.PointLoadAggregate.ValueObjects;
-using MathNet.Numerics;
-using MathNet.Numerics.RootFinding;
+using MathNet.Numerics.LinearAlgebra;
 using UnitsNet;
 using UnitsNet.Units;
 
@@ -26,9 +24,9 @@ public class ShearForceDiagram : DiagramBase<ShearForceDiagramId>
 
     public static ShearForceDiagram Create(
         Length elementLength,
-        CoordinateSystemDirection3D direction,
+        Vector<double> direction,
         UnitSettings unitSettings,
-        List<(Length length, ImmutablePointLoad pointLoad)> pointLoads
+        List<(Length length, PointLoadData pointLoad)> pointLoads
     )
     {
         List<DiagramPointValue> pointValues = [];
@@ -53,6 +51,36 @@ public class ShearForceDiagram : DiagramBase<ShearForceDiagramId>
 
         return new(elementLength, unitSettings.LengthUnit, db.Intervals);
     }
+
+    //public static ShearForceDiagram Create(
+    //    CoordinateSystemDirection3D direction,
+    //    UnitSettings unitSettings,
+    //    Element1dData element1dData,
+    //    List<(Length length, PointLoadData pointLoad)> pointLoads
+    //)
+    //{
+    //    List<DiagramPointValue> pointValues = [];
+    //    foreach (var (length, pointLoad) in pointLoads)
+    //    {
+    //        Force forceDueToLoad = pointLoad.GetForceInDirection(direction);
+    //        pointValues.Add(
+    //            new DiagramPointValue(length, forceDueToLoad.As(unitSettings.ForceUnit))
+    //        );
+    //    }
+
+    //    var db = new DiagramBuilder(
+    //        element,
+    //        new Length(1, LengthUnit.Inch),
+    //        unitSettings.LengthUnit,
+    //        pointValues,
+    //        [],
+    //        [],
+    //        [],
+    //        0
+    //    ).Build();
+
+    //    return new(elementLength, unitSettings.LengthUnit, db.Intervals);
+    //}
 
     public MomentDiagram CreateMomentDiagram(List<(Length length, MomentLoad load)> moments)
     {

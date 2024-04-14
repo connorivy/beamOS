@@ -5,9 +5,9 @@ using UnitsNet;
 
 namespace BeamOs.Domain.PhysicalModel.PointLoadAggregate.ValueObjects;
 
-public class ImmutablePointLoad : BeamOSValueObject
+public class PointLoadData : BeamOSValueObject
 {
-    public ImmutablePointLoad(Force force, Vector<double> normalizedDirection)
+    public PointLoadData(Force force, Vector<double> normalizedDirection)
     {
         this.Force = force;
         this.NormalizedDirection = normalizedDirection;
@@ -31,6 +31,13 @@ public class ImmutablePointLoad : BeamOSValueObject
                 => throw new ArgumentException("Unexpected value for direction, Undefined"),
             _ => throw new NotImplementedException(),
         };
+    }
+
+    public Force GetForceInDirection(Vector<double> direction)
+    {
+        // magnitude of projection of A onto B = (A . B) / | B |
+        double magnitude = this.NormalizedDirection.DotProduct(direction) / direction.L2Norm();
+        return this.Force * magnitude;
     }
 
     protected override IEnumerable<object> GetEqualityComponents()
