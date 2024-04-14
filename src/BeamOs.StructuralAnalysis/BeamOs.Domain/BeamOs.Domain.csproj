@@ -12,8 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AngouriMath" />
     <PackageReference Include="MathNet.Numerics" />
+    <PackageReference Include="MathNet.Spatial" />
     <PackageReference Include="UnitsNet" />
   </ItemGroup>
 

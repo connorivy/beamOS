@@ -19,4 +19,6 @@ public class MaterialData : BeamOSValueObject
         yield return this.ModulusOfElasticity;
         yield return this.ModulusOfRigidity;
     }
+
+    public static MaterialData Undefined { get; } = new(new(), new());
 }

@@ -1,28 +1,28 @@
 using BeamOs.Domain.Common.Enums;
 using BeamOs.Domain.Common.Models;
-using MathNet.Numerics.LinearAlgebra;
+using MathNet.Spatial.Euclidean;
 using UnitsNet;
 
 namespace BeamOs.Domain.PhysicalModel.PointLoadAggregate.ValueObjects;
 
 public class PointLoadData : BeamOSValueObject
 {
-    public PointLoadData(Force force, Vector<double> normalizedDirection)
+    public PointLoadData(Force force, Vector3D normalizedDirection)
     {
         this.Force = force;
         this.NormalizedDirection = normalizedDirection;
     }
 
     public Force Force { get; private set; }
-    public Vector<double> NormalizedDirection { get; private set; }
+    public Vector3D NormalizedDirection { get; private set; }
 
     public Force GetForceInDirection(CoordinateSystemDirection3D direction)
     {
         return direction switch
         {
-            CoordinateSystemDirection3D.AlongX => this.Force * this.NormalizedDirection[0],
-            CoordinateSystemDirection3D.AlongY => this.Force * this.NormalizedDirection[1],
-            CoordinateSystemDirection3D.AlongZ => this.Force * this.NormalizedDirection[2],
+            CoordinateSystemDirection3D.AlongX => this.Force * this.NormalizedDirection.X,
+            CoordinateSystemDirection3D.AlongY => this.Force * this.NormalizedDirection.Y,
+            CoordinateSystemDirection3D.AlongZ => this.Force * this.NormalizedDirection.Z,
             CoordinateSystemDirection3D.AboutX
             or CoordinateSystemDirection3D.AboutY
             or CoordinateSystemDirection3D.AboutZ
@@ -33,11 +33,12 @@ public class PointLoadData : BeamOSValueObject
         };
     }
 
-    public Force GetForceInDirection(Vector<double> direction)
+    public Force GetForceInDirection(Vector3D direction)
     {
         // magnitude of projection of A onto B = (A . B) / | B |
-        double magnitude = this.NormalizedDirection.DotProduct(direction) / direction.L2Norm();
-        return this.Force * magnitude;
+        double magnitudeOfProjection =
+            this.NormalizedDirection.DotProduct(direction) / direction.Length;
+        return this.Force * magnitudeOfProjection;
     }
 
     protected override IEnumerable<object> GetEqualityComponents()

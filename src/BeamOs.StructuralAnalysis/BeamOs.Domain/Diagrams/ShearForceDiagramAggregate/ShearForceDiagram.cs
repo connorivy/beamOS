@@ -4,9 +4,10 @@ using BeamOs.Domain.Diagrams.Common.ValueObjects.DiagramBuilder;
 using BeamOs.Domain.Diagrams.DiagramBaseAggregate;
 using BeamOs.Domain.Diagrams.MomentDiagramAggregate;
 using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate.ValueObjects;
-using BeamOs.Domain.PhysicalModel.MomentLoadAggregate;
+using BeamOs.Domain.PhysicalModel.Element1DAggregate.ValueObjects;
+using BeamOs.Domain.PhysicalModel.MomentLoadAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.PointLoadAggregate.ValueObjects;
-using MathNet.Numerics.LinearAlgebra;
+using MathNet.Spatial.Euclidean;
 using UnitsNet;
 using UnitsNet.Units;
 
@@ -14,32 +15,47 @@ namespace BeamOs.Domain.Diagrams.ShearForceDiagramAggregate;
 
 public class ShearForceDiagram : DiagramBase<ShearForceDiagramId>
 {
+    private readonly Vector3D elementDirection;
+    private readonly Vector3D shearDirection;
+    private readonly UnitSettings unitSettings;
+
     protected ShearForceDiagram(
+        UnitSettings unitSettings,
+        Vector3D elementDirection,
+        Vector3D shearDirection,
         Length elementLength,
-        LengthUnit lengthUnit,
         List<DiagramConsistantInterval> intervals,
         ShearForceDiagramId? id = null
     )
-        : base(elementLength, lengthUnit, intervals, id ?? new()) { }
+        : base(elementLength, unitSettings.LengthUnit, intervals, id ?? new())
+    {
+        this.elementDirection = elementDirection;
+        this.shearDirection = shearDirection;
+        this.unitSettings = unitSettings;
+    }
 
     public static ShearForceDiagram Create(
-        Length elementLength,
-        Vector<double> direction,
         UnitSettings unitSettings,
+        Vector3D shearDirection,
+        Element1dData element1DData,
         List<(Length length, PointLoadData pointLoad)> pointLoads
     )
     {
+        // shearDirection
+        // elementDirection
+        var elementDirection = element1DData.BaseLine.GetDirection(unitSettings.LengthUnit);
+
         List<DiagramPointValue> pointValues = [];
         foreach (var (length, pointLoad) in pointLoads)
         {
-            Force forceDueToLoad = pointLoad.GetForceInDirection(direction);
+            Force forceDueToLoad = pointLoad.GetForceInDirection(shearDirection);
             pointValues.Add(
                 new DiagramPointValue(length, forceDueToLoad.As(unitSettings.ForceUnit))
             );
         }
 
         var db = new DiagramBuilder(
-            elementLength,
+            element1DData.BaseLine.Length,
             new Length(1, LengthUnit.Inch),
             unitSettings.LengthUnit,
             pointValues,
@@ -49,52 +65,41 @@ public class ShearForceDiagram : DiagramBase<ShearForceDiagramId>
             0
         ).Build();
 
-        return new(elementLength, unitSettings.LengthUnit, db.Intervals);
+        return new(
+            unitSettings,
+            elementDirection,
+            shearDirection,
+            element1DData.BaseLine.Length,
+            db.Intervals
+        );
     }
 
-    //public static ShearForceDiagram Create(
-    //    CoordinateSystemDirection3D direction,
-    //    UnitSettings unitSettings,
-    //    Element1dData element1dData,
-    //    List<(Length length, PointLoadData pointLoad)> pointLoads
-    //)
-    //{
-    //    List<DiagramPointValue> pointValues = [];
-    //    foreach (var (length, pointLoad) in pointLoads)
-    //    {
-    //        Force forceDueToLoad = pointLoad.GetForceInDirection(direction);
-    //        pointValues.Add(
-    //            new DiagramPointValue(length, forceDueToLoad.As(unitSettings.ForceUnit))
-    //        );
-    //    }
-
-    //    var db = new DiagramBuilder(
-    //        element,
-    //        new Length(1, LengthUnit.Inch),
-    //        unitSettings.LengthUnit,
-    //        pointValues,
-    //        [],
-    //        [],
-    //        [],
-    //        0
-    //    ).Build();
-
-    //    return new(elementLength, unitSettings.LengthUnit, db.Intervals);
-    //}
-
-    public MomentDiagram CreateMomentDiagram(List<(Length length, MomentLoad load)> moments)
+    public MomentDiagram CreateMomentDiagram(
+        List<(Length length, MomentLoadData momentLoadData)> momentLoads
+    )
     {
+        var aboutAxis = this.elementDirection.CrossProduct(this.shearDirection);
         List<DiagramPointValue> pointValues = [];
-        foreach (var (length, load) in moments)
+        foreach (var (length, loadData) in momentLoads)
         {
-            //Torque torqueDueToLoad = load.GetTorqueInDirection(direction);
-            //pointValues.Add(
-            //    new DiagramPointValue(length, forceDueToLoad.As(unitSettings.ForceUnit))
-            //);
+            Torque torqueDueToLoad = loadData.GetTorqueAboutAxis(aboutAxis);
+            pointValues.Add(
+                new DiagramPointValue(length, torqueDueToLoad.As(this.unitSettings.TorqueUnit))
+            );
         }
 
-        var builder = this.Integrate().Build();
-        return new(this.ElementLength, this.LengthUnit, builder.Intervals);
+        var diagram = new DiagramBuilder(
+            this.ElementLength,
+            this.EqualityTolerance,
+            this.unitSettings.LengthUnit,
+            pointValues,
+            [],
+            [],
+            this.Intervals,
+            0
+        ).Build();
+
+        return new(this.ElementLength, this.LengthUnit, diagram.Intervals);
     }
 
     //    private readonly Length elementLength;

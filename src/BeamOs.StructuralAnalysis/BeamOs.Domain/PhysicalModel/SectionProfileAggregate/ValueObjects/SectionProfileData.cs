@@ -23,6 +23,8 @@ public class SectionProfileData : BeamOSValueObject
     public AreaMomentOfInertia WeakAxisMomentOfInertia { get; }
     public AreaMomentOfInertia PolarMomentOfInertia { get; }
 
+    public static SectionProfileData Undefined { get; } = new(new(), new(), new(), new());
+
     protected override IEnumerable<object> GetEqualityComponents()
     {
         yield return this.Area;
