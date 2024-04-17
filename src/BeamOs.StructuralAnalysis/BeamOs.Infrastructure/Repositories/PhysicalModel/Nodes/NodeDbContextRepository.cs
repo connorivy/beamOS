@@ -3,7 +3,7 @@ using BeamOs.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
-namespace BeamOs.Infrastructure.PhysicalModel.Nodes;
+namespace BeamOs.Infrastructure.Repositories.PhysicalModel.Nodes;
 
 public class NodeDbContextRepository(BeamOsStructuralDbContext dbContext)
     : IRepository<NodeId, Node>

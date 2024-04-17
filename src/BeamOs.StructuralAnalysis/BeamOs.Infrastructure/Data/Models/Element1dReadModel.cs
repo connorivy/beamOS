@@ -17,9 +17,4 @@ internal class Element1dReadModel
     /// counter-clockwise rotation in radians when looking in the negative (local) x direction
     /// </summary>
     public Angle SectionProfileRotation { get; set; }
-
-    //public static Line GetBaseLine(Point startPoint, Point endPoint)
-    //{
-    //    return new(startPoint, endPoint);
-    //}
 }

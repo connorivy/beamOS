@@ -5,7 +5,6 @@ using BeamOs.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate;
 using BeamOs.Infrastructure.Data.Configurations.Write;
 using BeamOs.Infrastructure.Data.Models;
-using BeamOs.Infrastructure.PhysicalModel;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.Infrastructure;

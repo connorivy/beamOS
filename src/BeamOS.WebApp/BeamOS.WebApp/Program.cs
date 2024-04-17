@@ -4,7 +4,6 @@ using BeamOs.ApiClient;
 using BeamOS.Common.Api;
 using BeamOs.Identity.Client;
 using BeamOs.Infrastructure;
-using BeamOs.Infrastructure.PhysicalModel;
 using BeamOS.WebApp;
 using BeamOS.WebApp.Client;
 using BeamOS.WebApp.Components;

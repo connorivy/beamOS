@@ -1,7 +1,6 @@
 using BeamOs.Api;
 using BeamOs.Api.Common;
 using BeamOs.Infrastructure;
-using BeamOs.Infrastructure.PhysicalModel;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Microsoft.EntityFrameworkCore;

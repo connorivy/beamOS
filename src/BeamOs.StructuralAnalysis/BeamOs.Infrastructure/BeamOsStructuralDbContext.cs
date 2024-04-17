@@ -9,7 +9,6 @@ using BeamOs.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate;
 using BeamOs.Infrastructure.Data.Configurations.Write;
-using BeamOs.Infrastructure.PhysicalModel;
 using MathNet.Spatial.Euclidean;
 using Microsoft.EntityFrameworkCore;
 using UnitsNet;

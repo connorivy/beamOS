@@ -3,7 +3,7 @@ using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Spatial.Euclidean;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace BeamOs.Infrastructure.PhysicalModel.Common.ValueConverters;
+namespace BeamOs.Infrastructure.Data.ValueConverters;
 
 // TODO : this is very not efficient
 public class VectorDoubleConverter : ValueConverter<Vector<double>, string>

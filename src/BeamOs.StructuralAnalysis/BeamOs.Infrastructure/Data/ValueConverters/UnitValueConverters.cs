@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UnitsNet;
 
-namespace BeamOs.Infrastructure.PhysicalModel.Common.ValueConverters;
+namespace BeamOs.Infrastructure.Data.ValueConverters;
 
 public class AngleValueConverter : ValueConverter<Angle, double>
 {

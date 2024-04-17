@@ -3,7 +3,7 @@ using BeamOs.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.Domain.PhysicalModel.MomentLoadAggregate.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
-namespace BeamOs.Infrastructure.PhysicalModel.MomentLoads;
+namespace BeamOs.Infrastructure.Repositories.PhysicalModel.MomentLoads;
 
 public class MomentLoadDbContextRepository(BeamOsStructuralDbContext dbContext)
     : IRepository<MomentLoadId, MomentLoad>

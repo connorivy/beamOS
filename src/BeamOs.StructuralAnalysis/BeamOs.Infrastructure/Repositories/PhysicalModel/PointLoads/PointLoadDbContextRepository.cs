@@ -3,7 +3,7 @@ using BeamOs.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.Domain.PhysicalModel.PointLoadAggregate.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
-namespace BeamOs.Infrastructure.PhysicalModel.PointLoads;
+namespace BeamOs.Infrastructure.Repositories.PhysicalModel.PointLoads;
 
 public class PointLoadDbContextRepository(BeamOsStructuralDbContext dbContext)
     : IRepository<PointLoadId, PointLoad>

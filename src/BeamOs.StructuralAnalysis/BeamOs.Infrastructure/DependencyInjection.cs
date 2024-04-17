@@ -13,18 +13,18 @@ using BeamOs.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.Domain.PhysicalModel.PointLoadAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate.ValueObjects;
-using BeamOs.Infrastructure.PhysicalModel.Element1Ds;
-using BeamOs.Infrastructure.PhysicalModel.Materials;
-using BeamOs.Infrastructure.PhysicalModel.Models;
-using BeamOs.Infrastructure.PhysicalModel.MomentLoads;
-using BeamOs.Infrastructure.PhysicalModel.Nodes;
-using BeamOs.Infrastructure.PhysicalModel.PointLoads;
-using BeamOs.Infrastructure.PhysicalModel.SectionProfiles;
+using BeamOs.Infrastructure.Repositories.PhysicalModel.Element1Ds;
+using BeamOs.Infrastructure.Repositories.PhysicalModel.Materials;
+using BeamOs.Infrastructure.Repositories.PhysicalModel.Models;
+using BeamOs.Infrastructure.Repositories.PhysicalModel.MomentLoads;
+using BeamOs.Infrastructure.Repositories.PhysicalModel.Nodes;
+using BeamOs.Infrastructure.Repositories.PhysicalModel.PointLoads;
+using BeamOs.Infrastructure.Repositories.PhysicalModel.SectionProfiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BeamOs.Infrastructure.PhysicalModel;
+namespace BeamOs.Infrastructure;
 
 public static class DependencyInjection
 {
@@ -32,7 +32,7 @@ public static class DependencyInjection
         this ModelConfigurationBuilder configurationBuilder
     )
     {
-        IEnumerable<Type> valueConverters = typeof(DependencyInjection)
+        var valueConverters = typeof(DependencyInjection)
             .Assembly
             .GetTypes()
             .Where(

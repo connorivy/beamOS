@@ -3,7 +3,7 @@ using BeamOs.Domain.PhysicalModel.SectionProfileAggregate;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
-namespace BeamOs.Infrastructure.PhysicalModel.SectionProfiles;
+namespace BeamOs.Infrastructure.Repositories.PhysicalModel.SectionProfiles;
 
 public class SectionProfileDbContextRepository(BeamOsStructuralDbContext dbContext)
     : IRepository<SectionProfileId, SectionProfile>

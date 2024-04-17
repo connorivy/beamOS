@@ -4,7 +4,7 @@ using BeamOs.Domain.PhysicalModel.Element1DAggregate.ValueObjects;
 using BeamOs.Infrastructure.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace BeamOs.Infrastructure.PhysicalModel.Element1Ds;
+namespace BeamOs.Infrastructure.Repositories.PhysicalModel.Element1Ds;
 
 internal class Element1dDbContextRepository(
     BeamOsStructuralDbContext dbContext,
