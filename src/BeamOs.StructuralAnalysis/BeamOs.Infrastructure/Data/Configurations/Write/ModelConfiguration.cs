@@ -4,7 +4,7 @@ using BeamOs.Domain.PhysicalModel.NodeAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace BeamOs.Infrastructure.PhysicalModel.Common.Configurations;
+namespace BeamOs.Infrastructure.Data.Configurations.Write;
 
 internal class ModelConfiguration : IEntityTypeConfiguration<Model>
 {

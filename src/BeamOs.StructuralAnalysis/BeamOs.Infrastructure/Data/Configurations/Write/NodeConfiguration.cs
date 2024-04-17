@@ -3,7 +3,7 @@ using BeamOs.Domain.PhysicalModel.PointLoadAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace BeamOs.Infrastructure.PhysicalModel.Common.Configurations;
+namespace BeamOs.Infrastructure.Data.Configurations.Write;
 
 public class NodeConfiguration : IEntityTypeConfiguration<Node>
 {

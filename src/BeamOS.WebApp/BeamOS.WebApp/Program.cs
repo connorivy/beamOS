@@ -4,6 +4,7 @@ using BeamOs.ApiClient;
 using BeamOS.Common.Api;
 using BeamOs.Identity.Client;
 using BeamOs.Infrastructure;
+using BeamOs.Infrastructure.PhysicalModel;
 using BeamOS.WebApp;
 using BeamOS.WebApp.Client;
 using BeamOS.WebApp.Components;
@@ -81,7 +82,8 @@ var connectionString =
     ?? throw new InvalidOperationException("Connection string 'AnalysisDbConnection' not found.");
 builder
     .Services
-    .AddDbContext<BeamOsStructuralDbContext>(options => options.UseSqlServer(connectionString));
+    .AddDbContext<BeamOsStructuralDbContext>(options => options.UseSqlServer(connectionString))
+    .AddPhysicalModelInfrastructureReadModel(connectionString);
 
 UriProvider uriProvider = new("https");
 builder.Services.AddSingleton<IUriProvider>(uriProvider);

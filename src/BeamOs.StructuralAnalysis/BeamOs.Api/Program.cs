@@ -1,6 +1,7 @@
 using BeamOs.Api;
 using BeamOs.Api.Common;
 using BeamOs.Infrastructure;
+using BeamOs.Infrastructure.PhysicalModel;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Microsoft.EntityFrameworkCore;
@@ -45,7 +46,9 @@ var connectionString =
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder
     .Services
-    .AddDbContext<BeamOsStructuralDbContext>(options => options.UseSqlServer(connectionString));
+    .AddDbContext<BeamOsStructuralDbContext>(options => options.UseSqlServer(connectionString))
+    .AddPhysicalModelInfrastructureReadModel(connectionString);
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 var app = builder.Build();
