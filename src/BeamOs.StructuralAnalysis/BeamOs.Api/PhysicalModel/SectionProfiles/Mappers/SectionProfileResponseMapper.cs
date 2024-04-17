@@ -1,4 +1,4 @@
-using BeamOs.Api.Common.Interfaces;
+using BeamOs.Application.Common.Interfaces;
 using BeamOs.Contracts.PhysicalModel.SectionProfile;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate;
 using Riok.Mapperly.Abstractions;

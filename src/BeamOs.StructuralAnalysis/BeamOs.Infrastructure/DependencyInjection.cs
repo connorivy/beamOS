@@ -59,21 +59,79 @@ public static class DependencyInjection
         this IServiceCollection services
     )
     {
-        _ = services.AddScoped<IRepository<ModelId, Model>, ModelDbContextRepository>();
-        _ = services.AddScoped<IRepository<NodeId, Node>, NodeDbContextRepository>();
-        _ = services.AddScoped<IRepository<Element1DId, Element1D>, Element1dDbContextRepository>();
-        _ = services.AddScoped<IRepository<MaterialId, Material>, MaterialDbContextRepository>();
-        _ = services.AddScoped<
-            IRepository<SectionProfileId, SectionProfile>,
-            SectionProfileDbContextRepository
-        >();
-        _ = services.AddScoped<IRepository<PointLoadId, PointLoad>, PointLoadDbContextRepository>();
-        _ = services.AddScoped<
-            IRepository<MomentLoadId, MomentLoad>,
-            MomentLoadDbContextRepository
-        >();
+        Type[] assemblyTypes = typeof(DependencyInjection)
+            .Assembly
+            .GetTypes()
+            .Where(t => t.IsClass && !t.IsAbstract)
+            .ToArray();
+
+        foreach (var assemblyType in assemblyTypes)
+        {
+            if (GetGenericInterfaceType(assemblyType, typeof(IMapper<,>)) is not null)
+            {
+                _ = services.AddSingleton(assemblyType);
+            }
+            else if (
+                GetGenericInterfaceType(assemblyType, typeof(IQueryHandler<,>))
+                is Type interfaceType
+            )
+            {
+                _ = services.AddScoped(interfaceType, assemblyType);
+            }
+            else if (
+                GetGenericInterfaceType(assemblyType, typeof(IRepository<,>))
+                is Type repoInterfaceType
+            )
+            {
+                _ = services.AddScoped(repoInterfaceType, assemblyType);
+            }
+        }
+
+        //_ = services.AddScoped<IRepository<ModelId, Model>, ModelDbContextRepository>();
+        //_ = services.AddScoped<IRepository<NodeId, Node>, NodeDbContextRepository>();
+        //_ = services.AddScoped<IRepository<Element1DId, Element1D>, Element1dDbContextRepository>();
+        //_ = services.AddScoped<IRepository<MaterialId, Material>, MaterialDbContextRepository>();
+        //_ = services.AddScoped<
+        //    IRepository<SectionProfileId, SectionProfile>,
+        //    SectionProfileDbContextRepository
+        //>();
+        //_ = services.AddScoped<IRepository<PointLoadId, PointLoad>, PointLoadDbContextRepository>();
+        //_ = services.AddScoped<
+        //    IRepository<MomentLoadId, MomentLoad>,
+        //    MomentLoadDbContextRepository
+        //>();
 
         return services;
+    }
+
+    private static bool TryGetGenericInterfaceType(
+        Type concreteType,
+        Type genericInterfaceType,
+        out Type interfaceType
+    )
+    {
+        foreach (var inter in concreteType.GetInterfaces())
+        {
+            if (inter.IsGenericType && inter.GetGenericTypeDefinition() == genericInterfaceType)
+            {
+                interfaceType = inter;
+                return true;
+            }
+        }
+        interfaceType = null;
+        return false;
+    }
+
+    private static Type? GetGenericInterfaceType(Type concreteType, Type genericInterfaceType)
+    {
+        foreach (var inter in concreteType.GetInterfaces())
+        {
+            if (inter.IsGenericType && inter.GetGenericTypeDefinition() == genericInterfaceType)
+            {
+                return inter;
+            }
+        }
+        return null;
     }
 
     public static IServiceCollection AddPhysicalModelInfrastructureReadModel(

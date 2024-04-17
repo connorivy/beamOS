@@ -1,10 +1,10 @@
+using BeamOs.Infrastructure.Data.Interfaces;
 using UnitsNet;
 
 namespace BeamOs.Infrastructure.Data.Models;
 
-internal sealed class NodeReadModel
+internal sealed class NodeReadModel : ReadModelBase, IFlattenedLocationPoint
 {
-    public Guid Id { get; private set; }
     public Guid ModelId { get; private set; }
 
     public Length LocationPoint_XCoordinate { get; private set; }

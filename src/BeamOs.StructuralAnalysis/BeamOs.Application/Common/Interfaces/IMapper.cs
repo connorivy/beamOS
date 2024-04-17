@@ -1,4 +1,4 @@
-namespace BeamOs.Api.Common.Interfaces;
+namespace BeamOs.Application.Common.Interfaces;
 
 public interface IMapper<TFrom, TTo>
 {

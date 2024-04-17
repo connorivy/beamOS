@@ -1,5 +1,5 @@
-using BeamOs.Api.Common.Interfaces;
 using BeamOs.Api.Common.Mappers;
+using BeamOs.Application.Common.Interfaces;
 using BeamOs.Application.DirectStiffnessMethod.PointLoads;
 using BeamOs.Contracts.PhysicalModel.PointLoad;
 using Riok.Mapperly.Abstractions;

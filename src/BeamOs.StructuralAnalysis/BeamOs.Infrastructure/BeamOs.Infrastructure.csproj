@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="QueryHandlers\PhysicalModel\Materials\Mappers\" />
     <Folder Include="Repositories\AnalyticalResults\" />
-    <Folder Include="Queries\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BeamOs.Application\BeamOs.Application.csproj" />
+    <ProjectReference Include="..\BeamOs.Contracts\BeamOs.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

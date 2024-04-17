@@ -8,6 +8,7 @@ using BeamOs.Api.PhysicalModel.MomentLoads.Mappers;
 using BeamOs.Api.PhysicalModel.Nodes.Mappers;
 using BeamOs.Api.PhysicalModel.PointLoads.Mappers;
 using BeamOs.Api.PhysicalModel.SectionProfiles.Mappers;
+using BeamOs.Application.Common.Interfaces;
 using BeamOs.Contracts.PhysicalModel.Element1d;
 using BeamOs.Contracts.PhysicalModel.Material;
 using BeamOs.Contracts.PhysicalModel.Model;
@@ -148,7 +149,7 @@ public class GetModelHydrated(
     private static List<TResponse> MapUnitsAndGetResponse<TEntity, TResponse>(
         IEnumerable<TEntity> entities,
         UnitSettings unitSettings,
-        Api.Common.Interfaces.IMapper<TEntity, TResponse> responseMapper
+        IMapper<TEntity, TResponse> responseMapper
     )
         where TEntity : IBeamOsDomainObject
     {

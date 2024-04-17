@@ -6,4 +6,4 @@ using System.Threading.Tasks;
 
 namespace BeamOs.Infrastructure.Data.Models;
 
-internal sealed class ModelReadModel { }
+internal sealed class ModelReadModel : ReadModelBase { }
