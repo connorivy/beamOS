@@ -1,5 +1,6 @@
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
+using MathNet.Spatial.Euclidean;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BeamOs.Infrastructure.PhysicalModel.Common.ValueConverters;
@@ -19,6 +20,12 @@ public class VectorDoubleConverter : ValueConverter<Vector<double>, string>
                 ),
             null
         ) { }
+}
+
+public class Vector3dConverter : ValueConverter<Vector3D, string>
+{
+    public Vector3dConverter()
+        : base(x => x.ToString(), x => Vector3D.Parse(x, null), null) { }
 }
 
 //public class Vector : BeamOSValueObject
