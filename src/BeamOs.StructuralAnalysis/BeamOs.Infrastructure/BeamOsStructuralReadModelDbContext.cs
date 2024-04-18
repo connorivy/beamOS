@@ -23,7 +23,7 @@ internal class BeamOsStructuralReadModelDbContext : DbContext
     protected BeamOsStructuralReadModelDbContext(DbContextOptions options)
         : base(options) { }
 
-    public DbSet<Model> Models { get; set; }
+    public DbSet<ModelReadModel> Models { get; set; }
     public DbSet<Element1dReadModel> Element1Ds { get; set; }
     public DbSet<NodeReadModel> Nodes { get; set; }
     public DbSet<MaterialReadModel> Materials { get; set; }

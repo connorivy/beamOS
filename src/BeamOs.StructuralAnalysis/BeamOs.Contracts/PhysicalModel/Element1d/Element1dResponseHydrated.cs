@@ -8,9 +8,13 @@ namespace BeamOs.Contracts.PhysicalModel.Element1d;
 public record Element1dResponseHydrated(
     string Id,
     string ModelId,
-    NodeResponse StartNode,
-    NodeResponse EndNode,
-    MaterialResponse Material,
-    SectionProfileResponse SectionProfile,
-    UnitValueDto SectionProfileRotation
+    string StartNodeId,
+    string EndNodeId,
+    string MaterialId,
+    string SectionProfileId,
+    UnitValueDto SectionProfileRotation,
+    NodeResponse? StartNode,
+    NodeResponse? EndNode,
+    MaterialResponse? Material,
+    SectionProfileResponse? SectionProfile
 );

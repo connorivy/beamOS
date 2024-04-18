@@ -2,7 +2,7 @@ using BeamOs.Api.Common;
 using BeamOS.Api.Common;
 using BeamOs.Application.Common.Interfaces;
 using BeamOs.Application.PhysicalModel.Element1dAggregate.Queries;
-using BeamOs.Contracts.PhysicalModel.Common;
+using BeamOs.Contracts.Common;
 using BeamOs.Contracts.PhysicalModel.Element1d;
 using FastEndpoints;
 

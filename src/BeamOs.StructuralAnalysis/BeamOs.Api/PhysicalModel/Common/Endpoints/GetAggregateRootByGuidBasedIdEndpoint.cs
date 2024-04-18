@@ -1,5 +1,5 @@
 using BeamOs.Application.Common.Interfaces;
-using BeamOs.Contracts.PhysicalModel.Common;
+using BeamOs.Contracts.Common;
 using BeamOs.Domain.Common.Interfaces;
 using BeamOs.Domain.Common.Models;
 

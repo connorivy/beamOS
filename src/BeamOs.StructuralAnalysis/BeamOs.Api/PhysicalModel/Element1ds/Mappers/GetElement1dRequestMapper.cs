@@ -1,5 +1,5 @@
 using BeamOs.Application.PhysicalModel.Element1dAggregate.Queries;
-using BeamOs.Contracts.PhysicalModel.Common;
+using BeamOs.Contracts.Common;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.Api.PhysicalModel.Element1ds.Mappers;

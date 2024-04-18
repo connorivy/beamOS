@@ -1,5 +1,5 @@
 using BeamOs.Api.PhysicalModel.Nodes.Mappers;
-using BeamOs.Contracts.PhysicalModel.Common;
+using BeamOs.Contracts.Common;
 using BeamOs.Contracts.PhysicalModel.Node;
 using BeamOs.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;

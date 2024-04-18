@@ -1,38 +1,33 @@
 using BeamOs.Api.Common;
 using BeamOS.Api.Common;
 using BeamOs.Api.PhysicalModel.Models.Mappers;
+using BeamOs.Application.Common.Interfaces;
+using BeamOs.Application.Common.Queries;
+using BeamOs.Contracts.Common;
 using BeamOs.Contracts.PhysicalModel.Model;
-using BeamOs.Domain.PhysicalModel.ModelAggregate;
-using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOs.Infrastructure;
 using FastEndpoints;
-using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.Api.PhysicalModel.Models.Endpoints;
 
 public class GetModel(
     BeamOsFastEndpointOptions options,
     BeamOsStructuralDbContext dbContext,
+    IQueryHandler<GetResourceByIdWithPropertiesQuery, ModelResponse> getResourceByIdQueryHandler,
     ModelResponseMapper modelResponseMapper
-) : BeamOsFastEndpoint<string, ModelResponse>(options)
+) : BeamOsFastEndpoint<IdRequestWithProperties, ModelResponse>(options)
 {
     public override string Route => "models/{id}";
 
     public override Http EndpointType => Http.GET;
 
-    public override async Task<ModelResponse?> ExecuteAsync(string id, CancellationToken ct)
+    public override async Task<ModelResponse?> ExecuteAsync(
+        IdRequestWithProperties req,
+        CancellationToken ct
+    )
     {
-        ModelId expectedId = new(Guid.Parse(id));
-        Model? element = await dbContext
-            .Models
-            .FirstAsync(m => m.Id == expectedId, cancellationToken: ct);
-
-        if (element is null)
-        {
-            return null;
-        }
-
-        var response = modelResponseMapper.Map(element);
-        return response;
+        GetResourceByIdWithPropertiesQuery query =
+            new(Guid.Parse(req.Id), req.Properties?.ToHashSet());
+        return await getResourceByIdQueryHandler.ExecuteAsync(query, ct);
     }
 }

@@ -12,11 +12,11 @@ public record ModelResponse(
     string Description,
     ModelSettingsResponse Settings,
     List<string>? NodeIds = null,
-    List<string>? Element1DIds = null,
+    List<string>? Element1dIds = null,
     List<string>? MaterialIds = null,
     List<string>? SectionProfileIds = null,
     List<NodeResponse>? Nodes = null,
-    List<Element1DResponse>? Element1Ds = null,
+    List<Element1DResponse>? Element1ds = null,
     List<MaterialResponse>? Materials = null,
     List<SectionProfileResponse>? SectionProfiles = null,
     List<PointLoadResponse>? PointLoads = null

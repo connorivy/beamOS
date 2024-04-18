@@ -1,6 +1,6 @@
 using BeamOs.Api.PhysicalModel.Element1ds.Mappers;
 using BeamOs.Application.Common.Interfaces;
-using BeamOs.Contracts.PhysicalModel.Common;
+using BeamOs.Contracts.Common;
 using BeamOs.Contracts.PhysicalModel.Element1d;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate.ValueObjects;

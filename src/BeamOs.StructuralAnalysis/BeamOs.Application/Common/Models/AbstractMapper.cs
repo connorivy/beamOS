@@ -1,6 +1,6 @@
 using BeamOs.Application.Common.Interfaces;
 
-namespace BeamOs.Api.Common;
+namespace BeamOs.Application.Common.Models;
 
 public abstract class AbstractMapper<TFrom, TTo> : IMapper<TFrom, TTo>
 {
