@@ -9,7 +9,7 @@ using BeamOs.Domain.DirectStiffnessMethod.AnalyticalElement1DAggregate;
 using BeamOs.Domain.DirectStiffnessMethod.AnalyticalElement1DAggregate.ValueObjects;
 using BeamOs.Domain.DirectStiffnessMethod.AnalyticalModelAggregate;
 using BeamOs.Domain.DirectStiffnessMethod.AnalyticalModelAggregate.ValueObjects;
-using BeamOs.Domain.DirectStiffnessMethod.AnalyticalNodeAggregate;
+using BeamOs.Domain.DirectStiffnessMethod.DsmNodeAggregate;
 
 namespace BeamOs.Application.DirectStiffnessMethod.AnalyticalModels.Commands;
 

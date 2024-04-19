@@ -23,4 +23,9 @@ public class Material : AggregateRoot<MaterialId>
     public ModelId ModelId { get; private set; }
     public Pressure ModulusOfElasticity { get; private set; }
     public Pressure ModulusOfRigidity { get; private set; }
+
+    public MaterialData GetData()
+    {
+        return new(this.ModulusOfElasticity, this.ModulusOfRigidity);
+    }
 }

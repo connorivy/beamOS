@@ -4,9 +4,9 @@ using BeamOs.Domain.Common.Models;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.DirectStiffnessMethod.AnalyticalElement1DAggregate;
 using BeamOs.Domain.DirectStiffnessMethod.AnalyticalModelAggregate.ValueObjects;
-using BeamOs.Domain.DirectStiffnessMethod.AnalyticalNodeAggregate;
-using BeamOs.Domain.DirectStiffnessMethod.AnalyticalNodeAggregate.ValueObjects;
 using BeamOs.Domain.DirectStiffnessMethod.Common.ValueObjects;
+using BeamOs.Domain.DirectStiffnessMethod.DsmNodeAggregate;
+using BeamOs.Domain.DirectStiffnessMethod.DsmNodeAggregate.ValueObjects;
 using UnitsNet;
 
 namespace BeamOs.Domain.DirectStiffnessMethod.AnalyticalModelAggregate;

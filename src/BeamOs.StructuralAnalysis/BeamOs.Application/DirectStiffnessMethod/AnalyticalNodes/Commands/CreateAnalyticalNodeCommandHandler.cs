@@ -1,6 +1,6 @@
 using BeamOs.Application.Common.Interfaces;
 using BeamOs.Application.DirectStiffnessMethod.AnalyticalNodes.Commands;
-using BeamOs.Domain.DirectStiffnessMethod.AnalyticalNodeAggregate;
+using BeamOs.Domain.DirectStiffnessMethod.DsmNodeAggregate;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOS.DirectStiffnessMethod.Application.AnalyticalNodes.Commands;

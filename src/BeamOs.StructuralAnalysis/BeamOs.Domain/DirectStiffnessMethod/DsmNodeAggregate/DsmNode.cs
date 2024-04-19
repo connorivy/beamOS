@@ -1,11 +1,11 @@
 using BeamOs.Domain.Common.Models;
 using BeamOs.Domain.Common.ValueObjects;
-using BeamOs.Domain.DirectStiffnessMethod.AnalyticalNodeAggregate.ValueObjects;
 using BeamOs.Domain.DirectStiffnessMethod.Common.ValueObjects;
+using BeamOs.Domain.DirectStiffnessMethod.DsmNodeAggregate.ValueObjects;
 using UnitsNet;
 using UnitsNet.Units;
 
-namespace BeamOs.Domain.DirectStiffnessMethod.AnalyticalNodeAggregate;
+namespace BeamOs.Domain.DirectStiffnessMethod.DsmNodeAggregate;
 
 public class DsmNode : AggregateRoot<DsmNodeId>
 {

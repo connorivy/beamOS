@@ -7,7 +7,7 @@ using Riok.Mapperly.Abstractions;
 namespace BeamOs.Api.PhysicalModel.PointLoads.Mappers;
 
 [Mapper]
-[UseStaticMapper(typeof(Vector3ToFromMathnetVector))]
+[UseStaticMapper(typeof(Vector3ToFromMathnetVector3d))]
 [UseStaticMapper(typeof(UnitValueDtoToForceMapper))]
 public partial class CreatePointLoadRequestMapper
     : IMapper<CreatePointLoadRequest, CreatePointLoadCommand>

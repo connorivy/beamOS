@@ -1,4 +1,7 @@
 using BeamOs.Domain.Common.Models;
+using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra.Double;
+using MathNet.Spatial.Euclidean;
 using UnitsNet;
 using UnitsNet.Units;
 
@@ -39,6 +42,15 @@ public class Line : BeamOSValueObject
         var deltaZ = endPoint.ZCoordinate - startPoint.ZCoordinate;
         var squared = deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ;
         return new Length(Math.Sqrt(squared.SquareMeters), LengthUnit.Meter);
+    }
+
+    public Vector3D GetDirection(LengthUnit lengthUnit)
+    {
+        return new(
+            (this.EndPoint.XCoordinate - this.StartPoint.XCoordinate).As(lengthUnit),
+            (this.EndPoint.YCoordinate - this.StartPoint.YCoordinate).As(lengthUnit),
+            (this.EndPoint.ZCoordinate - this.StartPoint.ZCoordinate).As(lengthUnit)
+        );
     }
 
     protected override IEnumerable<object> GetEqualityComponents()

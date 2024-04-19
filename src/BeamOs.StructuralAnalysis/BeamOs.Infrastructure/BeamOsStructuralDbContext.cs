@@ -11,6 +11,7 @@ using BeamOs.Domain.PhysicalModel.SectionProfileAggregate;
 using BeamOs.Infrastructure.PhysicalModel;
 using BeamOs.Infrastructure.PhysicalModel.Common.Configurations;
 using MathNet.Numerics.LinearAlgebra.Double;
+using MathNet.Spatial.Euclidean;
 using Microsoft.EntityFrameworkCore;
 using UnitsNet;
 using UnitsNet.Units;
@@ -273,13 +274,13 @@ public class BeamOsStructuralDbContext : DbContext
         var pl1 = new PointLoad(
             node1.Id,
             new Force(150, ForceUnit.KilopoundForce),
-            DenseVector.OfArray([1, 0, 0])
+            new Vector3D(1, 0, 0)
         );
 
         var pl2 = new PointLoad(
             node1.Id,
             new Force(300, ForceUnit.KilopoundForce),
-            DenseVector.OfArray([0, -1, 0])
+            new Vector3D(0, -1, 0)
         );
 
         _ = this.Nodes.Add(node1);
