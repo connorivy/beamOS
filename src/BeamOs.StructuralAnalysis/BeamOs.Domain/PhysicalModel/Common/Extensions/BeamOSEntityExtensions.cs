@@ -9,6 +9,22 @@ public static class BeamOSEntityExtensions
 {
     public static void UseUnitSettings(this IBeamOsDomainObject entity, UnitSettings unitSettings)
     {
+        UseUnitSettingsRecursive(entity, unitSettings, []);
+    }
+
+    private static void UseUnitSettingsRecursive(
+        this IBeamOsDomainObject entity,
+        UnitSettings unitSettings,
+        HashSet<int> visitedObjectHashCodes
+    )
+    {
+        int code = entity.GetHashCode();
+        if (visitedObjectHashCodes.Contains(code))
+        {
+            return;
+        }
+        visitedObjectHashCodes.Add(code);
+
         foreach (
             var propInfo in entity
                 .GetType()
@@ -32,9 +48,16 @@ public static class BeamOSEntityExtensions
                     }
                 }
             }
+            else if (prop is IEnumerable<IBeamOsDomainObject> domainObjects)
+            {
+                foreach (var domainObject in domainObjects)
+                {
+                    UseUnitSettingsRecursive(domainObject, unitSettings, visitedObjectHashCodes);
+                }
+            }
             else if (prop is IBeamOsDomainObject domainObject)
             {
-                domainObject.UseUnitSettings(unitSettings);
+                domainObject.UseUnitSettingsRecursive(unitSettings, visitedObjectHashCodes);
             }
         }
     }
