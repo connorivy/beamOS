@@ -1,6 +1,3 @@
-using BeamOs.Domain.PhysicalModel.ModelAggregate;
-using BeamOs.Domain.PhysicalModel.MomentLoadAggregate;
-using BeamOs.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.Infrastructure.Data.Configurations.Write;
 using BeamOs.Infrastructure.Data.Models;
 using Microsoft.EntityFrameworkCore;
@@ -28,8 +25,8 @@ internal class BeamOsStructuralReadModelDbContext : DbContext
     public DbSet<NodeReadModel> Nodes { get; set; }
     public DbSet<MaterialReadModel> Materials { get; set; }
     public DbSet<SectionProfileReadModel> SectionProfiles { get; set; }
-    public DbSet<PointLoad> PointLoads { get; set; }
-    public DbSet<MomentLoad> MomentLoads { get; set; }
+    public DbSet<PointLoadReadModel> PointLoads { get; set; }
+    public DbSet<MomentLoadReadModel> MomentLoads { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -48,16 +45,6 @@ internal class BeamOsStructuralReadModelDbContext : DbContext
             typeof(NodeConfiguration).Assembly,
             ReadConfigurationsFilter
         );
-
-        //builder
-        //    .Model
-        //    .GetEntityTypes()
-        //    .SelectMany(e => e.GetProperties())
-        //    .Where(p => p.IsPrimaryKey())
-        //    .ToList()
-        //    .ForEach(
-        //        p => p.ValueGenerated = Microsoft.EntityFrameworkCore.Metadata.ValueGenerated.Never
-        //    );
     }
 
     private static bool ReadConfigurationsFilter(Type type) =>

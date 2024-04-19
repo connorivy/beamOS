@@ -22,7 +22,15 @@ internal sealed class GetModelByIdWithPropertiesQueryHandler(
             .Where(m => m.Id == query.Id)
             .Take(1);
 
-        ModelReadModel? readModel = await queryable.Include(m => m.Nodes).FirstOrDefaultAsync(ct);
+        ModelReadModel? readModel = await queryable
+            .Include(m => m.Nodes)
+            .ThenInclude(n => n.PointLoads)
+            .Include(m => m.Nodes)
+            .ThenInclude(n => n.MomentLoads)
+            .Include(m => m.Element1ds)
+            .Include(m => m.Materials)
+            .Include(m => m.SectionProfiles)
+            .FirstOrDefaultAsync(ct);
 
         return modelReadModelMapper.Map(readModel);
     }

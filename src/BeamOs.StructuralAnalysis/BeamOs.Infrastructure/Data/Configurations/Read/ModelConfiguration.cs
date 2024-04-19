@@ -10,10 +10,30 @@ internal class ModelReadModelConfiguration : IEntityTypeConfiguration<ModelReadM
     {
         _ = builder.HasKey(x => x.Id);
 
+        _ = builder.HasMany(m => m.Nodes).WithOne().HasForeignKey(el => el.ModelId).IsRequired();
+
         _ = builder
-            .HasMany<NodeReadModel>(m => m.Nodes)
+            .HasMany(m => m.Element1ds)
             .WithOne()
-            .HasForeignKey(node => node.ModelId)
+            .HasForeignKey(el => el.ModelId)
             .IsRequired();
+
+        _ = builder
+            .HasMany(m => m.Materials)
+            .WithOne()
+            .HasForeignKey(el => el.ModelId)
+            .IsRequired();
+
+        _ = builder
+            .HasMany(m => m.SectionProfiles)
+            .WithOne()
+            .HasForeignKey(el => el.ModelId)
+            .IsRequired();
+
+        //_ = builder
+        //    .HasMany(m => m.PointLoads)
+        //    .WithOne()
+        //    .HasForeignKey(el => el.ModelId)
+        //    .IsRequired();
     }
 }

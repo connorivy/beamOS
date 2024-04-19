@@ -21,4 +21,9 @@ internal sealed class ModelReadModel : ReadModelBase, IFlattenedModelSettings
     public TorqueUnit Settings_UnitSettings_TorqueUnit { get; private set; }
     public VolumeUnit Settings_UnitSettings_VolumeUnit { get; private set; }
     public List<NodeReadModel>? Nodes { get; private set; }
+    public List<Element1dReadModel>? Element1ds { get; private set; }
+    public List<MaterialReadModel>? Materials { get; private set; }
+    public List<SectionProfileReadModel>? SectionProfiles { get; private set; }
+    //public List<PointLoadReadModel>? PointLoads { get; private set; }
+    //public List<MomentLoadReadModel>? MomentLoads { get; private set; }
 }

@@ -17,4 +17,6 @@ internal sealed class NodeReadModel : ReadModelBase, IFlattenedLocationPoint
     public bool Restraint_CanTranslateAlongX { get; private set; }
     public bool Restraint_CanTranslateAlongY { get; private set; }
     public bool Restraint_CanTranslateAlongZ { get; private set; }
+    public List<PointLoadReadModel>? PointLoads { get; private set; }
+    public List<MomentLoadReadModel>? MomentLoads { get; private set; }
 }

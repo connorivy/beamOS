@@ -1,7 +1,7 @@
 using BeamOs.Contracts.Common;
 using MathNet.Spatial.Euclidean;
 
-namespace BeamOs.Api.Common.Mappers;
+namespace BeamOs.Application.Common.Mappers;
 
 public static class Vector3ToFromMathnetVector3d
 {

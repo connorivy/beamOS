@@ -34,7 +34,11 @@ internal class GetSingleElement1d : IQueryHandler<GetElement1dByIdQuery, Element
                         new UnitValueDto(
                             el.SectionProfileRotation.Value,
                             el.SectionProfileRotation.Unit.ToString()
-                        )
+                        ),
+                        null,
+                        null,
+                        null,
+                        null
                     )
             )
             .FirstOrDefaultAsync(ct);

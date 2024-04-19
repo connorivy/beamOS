@@ -1,4 +1,3 @@
-using BeamOs.Api.Common.Interfaces;
 using BeamOs.Application.Common.Models;
 using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
 using BeamOs.Domain.AnalyticalResults.AnalyticalNodeAggregate;

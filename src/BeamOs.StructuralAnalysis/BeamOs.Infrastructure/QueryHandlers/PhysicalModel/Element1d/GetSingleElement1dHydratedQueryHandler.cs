@@ -8,7 +8,7 @@ namespace BeamOs.Infrastructure.QueryHandlers.PhysicalModel.Element1d;
 
 internal class GetSingleElement1dHydratedQueryHandler(
     BeamOsStructuralReadModelDbContext dbContext,
-    Element1dReadModelToHydratedResponse hydratedResponseMapper
+    Element1dReadModelToResponseMapper hydratedResponseMapper
 ) : IQueryHandler<GetElement1dHydratedByIdQuery, Element1dResponseHydrated>
 {
     public async Task<Element1dResponseHydrated?> ExecuteAsync(

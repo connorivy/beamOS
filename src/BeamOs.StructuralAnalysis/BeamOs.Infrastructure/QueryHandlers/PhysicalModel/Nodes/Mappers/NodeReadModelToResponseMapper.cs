@@ -5,7 +5,7 @@ using BeamOs.Infrastructure.QueryHandlers.PhysicalModel.Nodes.Mappers;
 
 namespace BeamOs.Infrastructure.QueryHandlers.PhysicalModel.Element1d.Mappers;
 
-internal partial class NodeReadModelToHydratedResponseMapper(
+internal partial class NodeReadModelToResponseMapper(
     IFlattenedLocationPointToLocationPointResponseMapper pointResponseMapper,
     NodeReadModelToRestraintMapper restraintResponseMapper
 ) : AbstractMapper<NodeReadModel, NodeResponse>

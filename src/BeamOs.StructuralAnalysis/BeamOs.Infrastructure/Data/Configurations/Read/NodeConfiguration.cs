@@ -9,5 +9,17 @@ internal class NodeReadModelConfiguration : IEntityTypeConfiguration<NodeReadMod
     public void Configure(EntityTypeBuilder<NodeReadModel> builder)
     {
         builder.HasKey(n => n.Id);
+
+        _ = builder
+            .HasMany(n => n.PointLoads)
+            .WithOne(m => m.Node)
+            .HasForeignKey(el => el.NodeId)
+            .IsRequired();
+
+        _ = builder
+            .HasMany(n => n.MomentLoads)
+            .WithOne(m => m.Node)
+            .HasForeignKey(el => el.NodeId)
+            .IsRequired();
     }
 }

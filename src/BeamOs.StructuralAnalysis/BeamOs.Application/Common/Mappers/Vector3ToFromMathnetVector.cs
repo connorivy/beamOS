@@ -2,7 +2,7 @@ using BeamOs.Contracts.Common;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 
-namespace BeamOs.Api.Common.Mappers;
+namespace BeamOs.Application.Common.Mappers;
 
 public static class Vector3ToFromMathnetVector
 {

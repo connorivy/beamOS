@@ -1,25 +1,4 @@
 using BeamOs.Application.Common.Interfaces;
-using BeamOs.Domain.PhysicalModel.Element1DAggregate;
-using BeamOs.Domain.PhysicalModel.Element1DAggregate.ValueObjects;
-using BeamOs.Domain.PhysicalModel.MaterialAggregate;
-using BeamOs.Domain.PhysicalModel.MaterialAggregate.ValueObjects;
-using BeamOs.Domain.PhysicalModel.ModelAggregate;
-using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
-using BeamOs.Domain.PhysicalModel.MomentLoadAggregate;
-using BeamOs.Domain.PhysicalModel.MomentLoadAggregate.ValueObjects;
-using BeamOs.Domain.PhysicalModel.NodeAggregate;
-using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
-using BeamOs.Domain.PhysicalModel.PointLoadAggregate;
-using BeamOs.Domain.PhysicalModel.PointLoadAggregate.ValueObjects;
-using BeamOs.Domain.PhysicalModel.SectionProfileAggregate;
-using BeamOs.Domain.PhysicalModel.SectionProfileAggregate.ValueObjects;
-using BeamOs.Infrastructure.Repositories.PhysicalModel.Element1Ds;
-using BeamOs.Infrastructure.Repositories.PhysicalModel.Materials;
-using BeamOs.Infrastructure.Repositories.PhysicalModel.Models;
-using BeamOs.Infrastructure.Repositories.PhysicalModel.MomentLoads;
-using BeamOs.Infrastructure.Repositories.PhysicalModel.Nodes;
-using BeamOs.Infrastructure.Repositories.PhysicalModel.PointLoads;
-using BeamOs.Infrastructure.Repositories.PhysicalModel.SectionProfiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.DependencyInjection;
@@ -87,39 +66,7 @@ public static class DependencyInjection
             }
         }
 
-        //_ = services.AddScoped<IRepository<ModelId, Model>, ModelDbContextRepository>();
-        //_ = services.AddScoped<IRepository<NodeId, Node>, NodeDbContextRepository>();
-        //_ = services.AddScoped<IRepository<Element1DId, Element1D>, Element1dDbContextRepository>();
-        //_ = services.AddScoped<IRepository<MaterialId, Material>, MaterialDbContextRepository>();
-        //_ = services.AddScoped<
-        //    IRepository<SectionProfileId, SectionProfile>,
-        //    SectionProfileDbContextRepository
-        //>();
-        //_ = services.AddScoped<IRepository<PointLoadId, PointLoad>, PointLoadDbContextRepository>();
-        //_ = services.AddScoped<
-        //    IRepository<MomentLoadId, MomentLoad>,
-        //    MomentLoadDbContextRepository
-        //>();
-
         return services;
-    }
-
-    private static bool TryGetGenericInterfaceType(
-        Type concreteType,
-        Type genericInterfaceType,
-        out Type interfaceType
-    )
-    {
-        foreach (var inter in concreteType.GetInterfaces())
-        {
-            if (inter.IsGenericType && inter.GetGenericTypeDefinition() == genericInterfaceType)
-            {
-                interfaceType = inter;
-                return true;
-            }
-        }
-        interfaceType = null;
-        return false;
     }
 
     private static Type? GetGenericInterfaceType(Type concreteType, Type genericInterfaceType)

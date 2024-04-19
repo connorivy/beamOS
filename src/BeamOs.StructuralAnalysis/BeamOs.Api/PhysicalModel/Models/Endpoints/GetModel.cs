@@ -1,20 +1,16 @@
 using BeamOs.Api.Common;
 using BeamOS.Api.Common;
-using BeamOs.Api.PhysicalModel.Models.Mappers;
 using BeamOs.Application.Common.Interfaces;
 using BeamOs.Application.Common.Queries;
 using BeamOs.Contracts.Common;
 using BeamOs.Contracts.PhysicalModel.Model;
-using BeamOs.Infrastructure;
 using FastEndpoints;
 
 namespace BeamOs.Api.PhysicalModel.Models.Endpoints;
 
 public class GetModel(
     BeamOsFastEndpointOptions options,
-    BeamOsStructuralDbContext dbContext,
-    IQueryHandler<GetResourceByIdWithPropertiesQuery, ModelResponse> getResourceByIdQueryHandler,
-    ModelResponseMapper modelResponseMapper
+    IQueryHandler<GetResourceByIdWithPropertiesQuery, ModelResponse> getResourceByIdQueryHandler
 ) : BeamOsFastEndpoint<IdRequestWithProperties, ModelResponse>(options)
 {
     public override string Route => "models/{id}";
