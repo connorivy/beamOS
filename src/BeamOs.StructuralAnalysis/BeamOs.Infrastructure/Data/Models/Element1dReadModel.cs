@@ -2,11 +2,12 @@ using BeamOs.Application.PhysicalModel.Element1dAggregate.Interfaces;
 using BeamOs.Application.PhysicalModel.Materials.Interfaces;
 using BeamOs.Application.PhysicalModel.Nodes.Interfaces;
 using BeamOs.Application.PhysicalModel.SectionProfiles.Interfaces;
+using BeamOs.Domain.Common.Models;
 using UnitsNet;
 
 namespace BeamOs.Infrastructure.Data.Models;
 
-internal class Element1dReadModel : ReadModelBase, IElement1dData
+internal class Element1dReadModel : BeamOSEntity<Guid>, IElement1dData
 {
     public Guid ModelId { get; private set; }
     public Guid StartNodeId { get; private set; }

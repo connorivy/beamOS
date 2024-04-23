@@ -3,11 +3,12 @@ using BeamOs.Application.PhysicalModel.Materials.Interfaces;
 using BeamOs.Application.PhysicalModel.Models.Interfaces;
 using BeamOs.Application.PhysicalModel.Nodes.Interfaces;
 using BeamOs.Application.PhysicalModel.SectionProfiles.Interfaces;
+using BeamOs.Domain.Common.Models;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 
 namespace BeamOs.Infrastructure.Data.Models;
 
-internal sealed class ModelReadModel : ReadModelBase, IModelData
+internal sealed class ModelReadModel : BeamOSEntity<Guid>, IModelData
 {
     public string? Name { get; private set; }
     public string? Description { get; private set; }

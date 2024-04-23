@@ -1,9 +1,10 @@
 using BeamOs.Application.PhysicalModel.Nodes.Interfaces;
+using BeamOs.Domain.Common.Models;
 using BeamOs.Domain.Common.ValueObjects;
 
 namespace BeamOs.Infrastructure.Data.Models;
 
-internal sealed class NodeReadModel : ReadModelBase, INodeData
+internal sealed class NodeReadModel : BeamOSEntity<Guid>, INodeData
 {
     public Guid ModelId { get; private set; }
     public Point LocationPoint { get; private set; }
