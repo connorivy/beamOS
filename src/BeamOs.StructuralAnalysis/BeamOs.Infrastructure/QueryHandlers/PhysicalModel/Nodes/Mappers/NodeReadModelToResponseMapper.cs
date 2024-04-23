@@ -2,21 +2,14 @@ using BeamOs.Application.Common.Models;
 using BeamOs.Contracts.PhysicalModel.Node;
 using BeamOs.Infrastructure.Data.Models;
 using BeamOs.Infrastructure.QueryHandlers.PhysicalModel.Nodes.Mappers;
+using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.Infrastructure.QueryHandlers.PhysicalModel.Element1d.Mappers;
 
-internal partial class NodeReadModelToResponseMapper(
-    IFlattenedLocationPointToLocationPointResponseMapper pointResponseMapper,
-    NodeReadModelToRestraintMapper restraintResponseMapper
-) : AbstractMapper<NodeReadModel, NodeResponse>
+[Mapper]
+internal partial class NodeReadModelToResponseMapper : AbstractMapper<NodeReadModel, NodeResponse>
 {
-    public override NodeResponse Map(NodeReadModel source)
-    {
-        return new(
-            source.Id.ToString(),
-            source.ModelId.ToString(),
-            pointResponseMapper.Map(source),
-            restraintResponseMapper.Map(source)
-        );
-    }
+    public override NodeResponse Map(NodeReadModel source) => this.ToResponse(source);
+
+    public partial NodeResponse ToResponse(NodeReadModel source);
 }

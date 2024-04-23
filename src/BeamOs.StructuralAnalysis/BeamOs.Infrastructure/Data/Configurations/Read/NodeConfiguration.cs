@@ -10,6 +10,8 @@ internal class NodeReadModelConfiguration : IEntityTypeConfiguration<NodeReadMod
     {
         builder.HasKey(n => n.Id);
 
+        builder.ComplexProperty(n => n.Restraint);
+
         _ = builder
             .HasMany(n => n.PointLoads)
             .WithOne(m => m.Node)

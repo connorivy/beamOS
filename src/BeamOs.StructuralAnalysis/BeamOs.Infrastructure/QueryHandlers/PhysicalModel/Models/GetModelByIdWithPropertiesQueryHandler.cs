@@ -1,21 +1,16 @@
 using BeamOs.Application.Common.Interfaces;
 using BeamOs.Application.Common.Queries;
-using BeamOs.Contracts.PhysicalModel.Model;
-using BeamOs.Domain.Common.ValueObjects;
-using BeamOs.Domain.PhysicalModel.Common.Extensions;
+using BeamOs.Application.PhysicalModel.Models.Interfaces;
 using BeamOs.Infrastructure.Data.Models;
-using BeamOs.Infrastructure.QueryHandlers.PhysicalModel.Models.Mappers;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.Infrastructure.QueryHandlers.PhysicalModel.Models;
 
 internal sealed class GetModelByIdWithPropertiesQueryHandler(
-    BeamOsStructuralReadModelDbContext dbContext,
-    ModelReadModelToModelResponseMapper modelReadModelMapper,
-    IFlattenedModelSettingsToUnitSettingsDomainObjectMapper flattenedModelSettingsToDomainObjectMapper
-) : IQueryHandler<GetResourceByIdWithPropertiesQuery, ModelResponse>
+    BeamOsStructuralReadModelDbContext dbContext
+) : IQueryHandler<GetResourceByIdWithPropertiesQuery, IModelData>
 {
-    public async Task<ModelResponse?> ExecuteAsync(
+    public async Task<IModelData?> ExecuteAsync(
         GetResourceByIdWithPropertiesQuery query,
         CancellationToken ct = default
     )
@@ -25,19 +20,26 @@ internal sealed class GetModelByIdWithPropertiesQueryHandler(
             .Where(m => m.Id == query.Id)
             .Take(1);
 
-        ModelReadModel? readModel = await queryable
-            .Include(m => m.Nodes)
-            .ThenInclude(n => n.PointLoads)
-            .Include(m => m.Nodes)
-            .ThenInclude(n => n.MomentLoads)
-            .Include(m => m.Element1ds)
-            .Include(m => m.Materials)
-            .Include(m => m.SectionProfiles)
-            .FirstOrDefaultAsync(ct);
+        if (query.Properties is not null)
+        {
+            foreach (string propertyName in query.Properties)
+            {
+                queryable = queryable.Include(propertyName);
+            }
+        }
+        else
+        {
+            // todo : more generic
+            queryable = queryable
+                .Include(m => m.Nodes)
+                .ThenInclude(n => n.PointLoads)
+                .Include(m => m.Nodes)
+                .ThenInclude(n => n.MomentLoads)
+                .Include(m => m.Element1ds)
+                .Include(m => m.Materials)
+                .Include(m => m.SectionProfiles);
+        }
 
-        UnitSettings unitSettings = flattenedModelSettingsToDomainObjectMapper.Map(readModel);
-        readModel.UseUnitSettings(unitSettings);
-
-        return modelReadModelMapper.Map(readModel);
+        return await queryable.FirstOrDefaultAsync(ct);
     }
 }

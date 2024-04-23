@@ -1,9 +1,9 @@
-using BeamOs.Application.PhysicalModel.SectionProfiles.Interfaces;
+using BeamOs.Application.Common.Interfaces;
 using UnitsNet;
 
-namespace BeamOs.Infrastructure.Data.Models;
+namespace BeamOs.Application.PhysicalModel.SectionProfiles.Interfaces;
 
-internal sealed class SectionProfileReadModel : ReadModelBase, ISectionProfileData
+public interface ISectionProfileData : IEntityData
 {
     public Guid ModelId { get; set; }
     public Area Area { get; set; }

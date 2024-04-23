@@ -21,7 +21,7 @@ internal class Element1dDbContextRepository(
     {
         var x = readModelDbContext.Element1Ds.Where(el => el.Id == id.Value).Take(1);
 
-        var y = await x.Select(el => el.StartNode).Concat(x.Select(el => el.EndNode)).ToListAsync();
+        //var y = await x.Select(el => el.StartNode).Concat(x.Select(el => el.EndNode)).ToListAsync();
 
         return await dbContext.Element1Ds.FirstOrDefaultAsync(el => el.Id == id);
     }

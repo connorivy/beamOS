@@ -1,8 +1,12 @@
+using BeamOs.Application.PhysicalModel.Element1dAggregate.Interfaces;
+using BeamOs.Application.PhysicalModel.Materials.Interfaces;
+using BeamOs.Application.PhysicalModel.Nodes.Interfaces;
+using BeamOs.Application.PhysicalModel.SectionProfiles.Interfaces;
 using UnitsNet;
 
 namespace BeamOs.Infrastructure.Data.Models;
 
-internal class Element1dReadModel : ReadModelBase
+internal class Element1dReadModel : ReadModelBase, IElement1dData
 {
     public Guid ModelId { get; private set; }
     public Guid StartNodeId { get; private set; }
@@ -18,4 +22,12 @@ internal class Element1dReadModel : ReadModelBase
     /// counter-clockwise rotation in radians when looking in the negative (local) x direction
     /// </summary>
     public Angle SectionProfileRotation { get; set; }
+
+    INodeData? IElement1dData.StartNode => this.StartNode;
+
+    INodeData? IElement1dData.EndNode => this.EndNode;
+
+    IMaterialData? IElement1dData.Material => this.Material;
+
+    ISectionProfileData? IElement1dData.SectionProfile => this.SectionProfile;
 }
