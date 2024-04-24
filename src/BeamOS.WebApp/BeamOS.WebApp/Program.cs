@@ -81,7 +81,8 @@ var connectionString =
     ?? throw new InvalidOperationException("Connection string 'AnalysisDbConnection' not found.");
 builder
     .Services
-    .AddDbContext<BeamOsStructuralDbContext>(options => options.UseSqlServer(connectionString));
+    .AddDbContext<BeamOsStructuralDbContext>(options => options.UseSqlServer(connectionString))
+    .AddPhysicalModelInfrastructureReadModel(connectionString);
 
 UriProvider uriProvider = new("https");
 builder.Services.AddSingleton<IUriProvider>(uriProvider);

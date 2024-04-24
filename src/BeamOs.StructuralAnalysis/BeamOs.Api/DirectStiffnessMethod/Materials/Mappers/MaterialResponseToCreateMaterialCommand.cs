@@ -1,5 +1,5 @@
-using BeamOs.Api.Common;
 using BeamOs.Api.Common.Mappers;
+using BeamOs.Application.Common.Models;
 using BeamOs.Application.DirectStiffnessMethod.Materials;
 using BeamOs.Contracts.PhysicalModel.Material;
 using Riok.Mapperly.Abstractions;

@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BeamOs.Contracts\BeamOs.Contracts.csproj" />
     <ProjectReference Include="..\BeamOs.Domain\BeamOs.Domain.csproj" />
   </ItemGroup>
 

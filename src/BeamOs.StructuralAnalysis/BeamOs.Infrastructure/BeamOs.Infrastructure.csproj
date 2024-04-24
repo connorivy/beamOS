@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="AnalyticalResults\" />
+    <Folder Include="Repositories\AnalyticalResults\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BeamOs.Application\BeamOs.Application.csproj" />
+    <ProjectReference Include="..\BeamOs.Contracts\BeamOs.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

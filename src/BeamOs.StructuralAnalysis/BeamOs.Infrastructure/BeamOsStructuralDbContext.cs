@@ -8,9 +8,7 @@ using BeamOs.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate;
-using BeamOs.Infrastructure.PhysicalModel;
-using BeamOs.Infrastructure.PhysicalModel.Common.Configurations;
-using MathNet.Numerics.LinearAlgebra.Double;
+using BeamOs.Infrastructure.Data.Configurations.Write;
 using MathNet.Spatial.Euclidean;
 using Microsoft.EntityFrameworkCore;
 using UnitsNet;
@@ -48,7 +46,10 @@ public class BeamOsStructuralDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        _ = builder.ApplyConfigurationsFromAssembly(typeof(NodeConfiguration).Assembly);
+        _ = builder.ApplyConfigurationsFromAssembly(
+            typeof(NodeConfiguration).Assembly,
+            WriteConfigurationsFilter
+        );
 
         builder
             .Model
@@ -60,6 +61,11 @@ public class BeamOsStructuralDbContext : DbContext
                 p => p.ValueGenerated = Microsoft.EntityFrameworkCore.Metadata.ValueGenerated.Never
             );
     }
+
+    private static bool WriteConfigurationsFilter(Type type) =>
+        type.FullName?.Contains(
+            $"{nameof(Data.Configurations)}.{nameof(Data.Configurations.Write)}"
+        ) ?? false;
 
     public async Task SeedAsync()
     {

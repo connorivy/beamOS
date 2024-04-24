@@ -1,5 +1,5 @@
-using BeamOs.Api.Common.Interfaces;
 using BeamOs.Api.DirectStiffnessMethod.PointLoads.Mappers;
+using BeamOs.Application.Common.Interfaces;
 using BeamOs.Application.DirectStiffnessMethod.AnalyticalNodes.Commands;
 using BeamOs.Application.DirectStiffnessMethod.MomentLoads;
 using BeamOs.Application.DirectStiffnessMethod.PointLoads;

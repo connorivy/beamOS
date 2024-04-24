@@ -1,6 +1,5 @@
 using BeamOs.Api.Common.Interfaces;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.DependencyInjection;
+using BeamOs.Application.Common.Interfaces;
 
 namespace BeamOs.Api.Common;
 

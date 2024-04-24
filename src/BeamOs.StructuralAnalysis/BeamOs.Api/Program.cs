@@ -45,7 +45,9 @@ var connectionString =
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder
     .Services
-    .AddDbContext<BeamOsStructuralDbContext>(options => options.UseSqlServer(connectionString));
+    .AddDbContext<BeamOsStructuralDbContext>(options => options.UseSqlServer(connectionString))
+    .AddPhysicalModelInfrastructureReadModel(connectionString);
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 var app = builder.Build();

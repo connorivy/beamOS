@@ -1,7 +1,7 @@
 using BeamOs.Api.Common;
 using BeamOs.Application;
 using BeamOs.Application.Common;
-using BeamOs.Infrastructure.PhysicalModel;
+using BeamOs.Infrastructure;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 

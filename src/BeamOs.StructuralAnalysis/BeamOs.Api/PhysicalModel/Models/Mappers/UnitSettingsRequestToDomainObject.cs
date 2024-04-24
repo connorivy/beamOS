@@ -1,4 +1,4 @@
-using BeamOs.Api.Common.Interfaces;
+using BeamOs.Application.Common.Interfaces;
 using BeamOs.Contracts.Common;
 using BeamOs.Domain.Common.ValueObjects;
 using Riok.Mapperly.Abstractions;

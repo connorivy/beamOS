@@ -1,5 +1,6 @@
 using BeamOs.Contracts.PhysicalModel.Element1d;
 using BeamOs.Contracts.PhysicalModel.Material;
+using BeamOs.Contracts.PhysicalModel.MomentLoad;
 using BeamOs.Contracts.PhysicalModel.Node;
 using BeamOs.Contracts.PhysicalModel.PointLoad;
 using BeamOs.Contracts.PhysicalModel.SectionProfile;
@@ -11,15 +12,12 @@ public record ModelResponse(
     string Name,
     string Description,
     ModelSettingsResponse Settings,
-    List<string>? NodeIds = null,
-    List<string>? Element1DIds = null,
-    List<string>? MaterialIds = null,
-    List<string>? SectionProfileIds = null,
     List<NodeResponse>? Nodes = null,
-    List<Element1DResponse>? Element1Ds = null,
+    List<Element1dResponseHydrated>? Element1ds = null,
     List<MaterialResponse>? Materials = null,
     List<SectionProfileResponse>? SectionProfiles = null,
-    List<PointLoadResponse>? PointLoads = null
+    List<PointLoadResponse>? PointLoads = null,
+    List<MomentLoadResponse>? MomentLoads = null
 );
 
 public record ModelSettingsResponse(UnitSettingsResponse UnitSettings);
