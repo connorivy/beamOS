@@ -1,5 +1,3 @@
-﻿namespace BeamOs.Application.PhysicalModel.Element1dAggregate.Queries;
+namespace BeamOs.Application.PhysicalModel.Element1dAggregate.Queries;
 
 public record GetElement1dHydratedByIdQuery(Guid Id);
-
-

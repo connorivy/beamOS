@@ -1,7 +1,6 @@
 using BeamOs.Application.Common.Models;
 using BeamOs.Contracts.PhysicalModel.Node;
 using BeamOs.Infrastructure.Data.Models;
-using BeamOs.Infrastructure.QueryHandlers.PhysicalModel.Nodes.Mappers;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.Infrastructure.QueryHandlers.PhysicalModel.Element1d.Mappers;
