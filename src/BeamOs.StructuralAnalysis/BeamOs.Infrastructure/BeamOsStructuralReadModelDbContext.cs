@@ -1,3 +1,4 @@
+using BeamOs.Domain.Diagrams.Common;
 using BeamOs.Infrastructure.Data.Configurations.Write;
 using BeamOs.Infrastructure.Data.Models;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +28,9 @@ internal class BeamOsStructuralReadModelDbContext : DbContext
     public DbSet<SectionProfileReadModel> SectionProfiles { get; set; }
     public DbSet<PointLoadReadModel> PointLoads { get; set; }
     public DbSet<MomentLoadReadModel> MomentLoads { get; set; }
+
+    //public DbSet<ShearForceDiagramReadModel> ShearForceDiagrams { get; set; }
+    //public DbSet<DiagramConsistantInterval> DiagramConsistantIntervals { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

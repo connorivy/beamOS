@@ -1,4 +1,5 @@
 using BeamOs.Application.Common.Interfaces;
+using BeamOs.Application.Common.Interfaces.Repositories;
 using BeamOs.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.Domain.PhysicalModel.MomentLoadAggregate.ValueObjects;
 using Riok.Mapperly.Abstractions;
@@ -16,7 +17,7 @@ public class CreateMomentLoadCommandHandler(
     {
         var load = command.ToDomainObject();
 
-        await momentLoadRepository.Add(load);
+        momentLoadRepository.Add(load);
 
         return load;
     }

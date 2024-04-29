@@ -115,7 +115,7 @@ builder
 
 builder.Services.Configure<IdentityOptions>(options => options.User.RequireUniqueEmail = true);
 
-//builder.Services.AddScoped<IdentityDbSeeder>();
+builder.Services.AddScoped<IdentityDbSeeder>();
 
 builder
     .Services
@@ -167,9 +167,9 @@ if (app.Environment.IsDevelopment())
     //app.UseSwagger();
     //app.UseSwaggerUI();
 
-    //using var scope = app.Services.CreateScope();
-    //var seeder = scope.ServiceProvider.GetRequiredService<IdentityDbSeeder>();
-    //await seeder.SeedAsync();
+    using var scope = app.Services.CreateScope();
+    var seeder = scope.ServiceProvider.GetRequiredService<IdentityDbSeeder>();
+    await seeder.SeedAsync();
 }
 
 app.UseHttpsRedirection();

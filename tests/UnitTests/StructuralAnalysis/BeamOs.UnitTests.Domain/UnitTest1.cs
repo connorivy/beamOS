@@ -72,19 +72,19 @@ public class UnitTest1
         //            { 0.5, pl1 },
         //        }
         //    );
-        var shearForceDiagram = ShearForceDiagram.Create(
-            UnitSettings.K_IN,
-            new Vector3D(0, 1.0, 0),
-            data,
+        //var shearForceDiagram = ShearForceDiagram.Create(
+        //    UnitSettings.K_IN,
+        //    new Vector3D(0, 1.0, 0),
+        //    data,
 
-            [
-                (new Length(), new PointLoadData(new Force(5, ForceUnit.KilopoundForce), new Vector3D(0, 1.0, 0))),
-                (new Length(120, LengthUnit.Inch), new PointLoadData(new Force(5, ForceUnit.KilopoundForce), new Vector3D(0, 1.0, 0))),
-                (new Length(60, LengthUnit.Inch), new PointLoadData(new Force(10, ForceUnit.KilopoundForce), new Vector3D(0, -1.0, 0))),
-            ]
-        );
+        //    [
+        //        (new Length(), new PointLoadData(new Force(5, ForceUnit.KilopoundForce), new Vector3D(0, 1.0, 0))),
+        //        (new Length(120, LengthUnit.Inch), new PointLoadData(new Force(5, ForceUnit.KilopoundForce), new Vector3D(0, 1.0, 0))),
+        //        (new Length(60, LengthUnit.Inch), new PointLoadData(new Force(10, ForceUnit.KilopoundForce), new Vector3D(0, -1.0, 0))),
+        //    ]
+        //);
 
-        var momentDiagram = shearForceDiagram.CreateMomentDiagram([]);
+        //var momentDiagram = shearForceDiagram.CreateMomentDiagram([]);
 
         //shearForceDiagram.Build(CoordinateSystemDirection3D.AlongY, UnitSettings.K_IN);
         //shearForceDiagram.Integrate(0);

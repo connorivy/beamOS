@@ -9,7 +9,8 @@ namespace BeamOs.Identity.Api.Features.Login;
 public class LoginEndpoint(
     AuthenticationResponseFactory authenticationResponseFactory,
     BeamOsIdentityDbContext dbContext,
-    LoginVerifiedUser loginVerifiedUser
+    LoginVerifiedUser loginVerifiedUser,
+    AccessTokenFactory accessTokenFactory
 ) : BeamOsEndpoint<LoginRequest, AuthenticationResponse>
 {
     public override string Route => "/login";
@@ -26,6 +27,8 @@ public class LoginEndpoint(
                 .Users
                 .FirstOrDefaultAsync(u => u.Email == request.Email, cancellationToken: ct)
             ?? throw new Exception();
+
+        var x = accessTokenFactory.Create(existingUser);
 
         if (
             existingUser is null

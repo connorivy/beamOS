@@ -1,17 +1,26 @@
+using BeamOs.Domain.AnalyticalResults.Common.ValueObjects;
 using BeamOs.Domain.Common.Models;
-using BeamOs.Domain.DirectStiffnessMethod.DsmNodeAggregate.ValueObjects;
 
 namespace BeamOs.Domain.DirectStiffnessMethod.Services.ValueObjects;
 
 public class SortedUnsupportedStructureIds(
-    List<UnsupportedStructureDisplacementId> degreeOfFreedomIds,
-    List<UnsupportedStructureDisplacementId> boundaryConditionIds
+    List<UnsupportedStructureDisplacementId2> degreeOfFreedomIds,
+    List<UnsupportedStructureDisplacementId2> boundaryConditionIds
 ) : BeamOSValueObject
 {
-    public List<UnsupportedStructureDisplacementId> DegreeOfFreedomIds { get; } =
+    public List<UnsupportedStructureDisplacementId2> DegreeOfFreedomIds { get; } =
         degreeOfFreedomIds;
-    public List<UnsupportedStructureDisplacementId> BoundaryConditionIds { get; } =
+    public List<UnsupportedStructureDisplacementId2> BoundaryConditionIds { get; } =
         boundaryConditionIds;
+
+    public void Deconstruct(
+        out List<UnsupportedStructureDisplacementId2> degreeOfFreedomIds,
+        out List<UnsupportedStructureDisplacementId2> boundaryConditionIds
+    )
+    {
+        degreeOfFreedomIds = this.DegreeOfFreedomIds;
+        boundaryConditionIds = this.BoundaryConditionIds;
+    }
 
     protected override IEnumerable<object> GetEqualityComponents()
     {

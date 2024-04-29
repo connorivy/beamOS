@@ -1,4 +1,5 @@
 using BeamOs.Application.Common.Interfaces;
+using BeamOs.Application.Common.Interfaces.Repositories;
 using BeamOs.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using Riok.Mapperly.Abstractions;
@@ -15,7 +16,7 @@ public class CreateModelCommandHandler(IRepository<ModelId, Model> modelReposito
     {
         var model = command.ToDomainObject();
 
-        await modelRepository.Add(model);
+        modelRepository.Add(model);
 
         return model;
     }

@@ -1,4 +1,5 @@
 using BeamOs.Application.Common.Interfaces;
+using BeamOs.Application.Common.Interfaces.Repositories;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate.ValueObjects;
 using Riok.Mapperly.Abstractions;
@@ -16,7 +17,7 @@ public class CreateSectionProfileCommandHandler(
     {
         var load = command.ToDomainObject();
 
-        await sectionProfileRepository.Add(load);
+        sectionProfileRepository.Add(load);
 
         return load;
     }

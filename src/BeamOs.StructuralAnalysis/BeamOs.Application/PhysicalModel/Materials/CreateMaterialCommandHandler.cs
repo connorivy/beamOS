@@ -1,4 +1,5 @@
 using BeamOs.Application.Common.Interfaces;
+using BeamOs.Application.Common.Interfaces.Repositories;
 using BeamOs.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.Domain.PhysicalModel.MaterialAggregate.ValueObjects;
 using Riok.Mapperly.Abstractions;
@@ -8,13 +9,13 @@ namespace BeamOs.Application.PhysicalModel.Materials;
 public class CreateMaterialCommandHandler(IRepository<MaterialId, Material> materialRepository)
     : ICommandHandler<CreateMaterialCommand, Material>
 {
-    public async Task<Material> ExecuteAsync(CreateMaterialCommand command, CancellationToken ct)
+    public Task<Material> ExecuteAsync(CreateMaterialCommand command, CancellationToken ct)
     {
         var load = command.ToDomainObject();
 
-        await materialRepository.Add(load);
+        materialRepository.Add(load);
 
-        return load;
+        return Task.FromResult(load);
     }
 }
 

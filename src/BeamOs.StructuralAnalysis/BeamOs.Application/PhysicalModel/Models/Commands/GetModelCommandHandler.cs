@@ -1,4 +1,5 @@
 using BeamOs.Application.Common.Interfaces;
+using BeamOs.Application.Common.Interfaces.Repositories;
 using BeamOs.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 

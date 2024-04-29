@@ -63,7 +63,14 @@ public class IdentityDbSeeder(
             return;
         }
 
-        user = new BeamOsUser() { EmailConfirmed = true };
+        user = new BeamOsUser()
+        {
+            UserName = email,
+            Email = email,
+            EmailConfirmed = true,
+            GivenName = roles.First(),
+        };
+
         await userStore.SetUserNameAsync(user, email, CancellationToken.None);
 
         var emailStore = (IUserEmailStore<BeamOsUser>)userStore;

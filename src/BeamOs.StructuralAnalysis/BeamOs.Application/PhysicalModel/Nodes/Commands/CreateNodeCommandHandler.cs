@@ -1,4 +1,5 @@
 using BeamOs.Application.Common.Interfaces;
+using BeamOs.Application.Common.Interfaces.Repositories;
 using BeamOs.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
 using Riok.Mapperly.Abstractions;
@@ -12,7 +13,7 @@ public class CreateNodeCommandHandler(IRepository<NodeId, Node> nodeRepository)
     {
         var node = command.ToDomainObject();
 
-        await nodeRepository.Add(node);
+        nodeRepository.Add(node);
 
         return node;
     }

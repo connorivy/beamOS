@@ -1,4 +1,5 @@
 using BeamOs.Application.Common.Interfaces;
+using BeamOs.Application.Common.Interfaces.Repositories;
 using BeamOs.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.Domain.PhysicalModel.PointLoadAggregate.ValueObjects;
 using Riok.Mapperly.Abstractions;
@@ -12,7 +13,7 @@ public class CreatePointLoadCommandHandler(IRepository<PointLoadId, PointLoad> p
     {
         var load = command.ToDomainObject();
 
-        await pointLoadRepository.Add(load);
+        pointLoadRepository.Add(load);
 
         return load;
     }
