@@ -1,8 +1,7 @@
 using System.Text;
 using BeamOs.Api;
+using BeamOs.Api.Common;
 using BeamOs.ApiClient;
-using BeamOS.Common.Api;
-using BeamOs.Identity.Client;
 using BeamOs.Infrastructure;
 using BeamOS.WebApp;
 using BeamOS.WebApp.Client;
@@ -50,12 +49,6 @@ builder
         o.ExcludeNonFastEndpoints = true;
         o.EndpointFilter = ed => ed.EndpointType.Assembly == typeof(IAssemblyMarkerApi).Assembly;
     });
-
-builder
-    .Services
-    .AddHttpClient<IIdentityAlphaClient, IdentityAlphaClient>(
-        client => client.BaseAddress = new("https://localhost:7194")
-    );
 
 builder
     .Services
