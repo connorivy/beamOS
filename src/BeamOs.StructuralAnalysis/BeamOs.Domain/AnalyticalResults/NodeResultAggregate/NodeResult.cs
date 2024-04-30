@@ -24,8 +24,8 @@ public class NodeResult : AggregateRoot<NodeResultId>
     public Forces Forces { get; private set; }
     public Displacements Displacements { get; private set; }
 
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     [Obsolete("EF Core Constructor", true)]
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private NodeResult() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }

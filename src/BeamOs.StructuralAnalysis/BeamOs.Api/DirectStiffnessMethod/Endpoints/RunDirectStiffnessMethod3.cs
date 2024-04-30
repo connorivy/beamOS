@@ -2,13 +2,12 @@ using BeamOs.Api.AnalyticalResults.NodeResults.Mappers;
 using BeamOs.Api.Common;
 using BeamOS.Api.Common;
 using BeamOs.Application.DirectStiffnessMethod.Commands;
-using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
 using BeamOs.Contracts.AnalyticalResults.Model;
 using BeamOs.Contracts.Common;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using FastEndpoints;
 
-namespace BeamOs.Api.DirectStiffnessMethod.AnalyticalModels.Endpoints;
+namespace BeamOs.Api.DirectStiffnessMethod.Endpoints;
 
 public class RunDirectStiffnessMethod3(
     BeamOsFastEndpointOptions options,
@@ -29,9 +28,7 @@ public class RunDirectStiffnessMethod3(
 
         var model = await runDsmCommandHandler.ExecuteAsync(command, ct);
 
-        List<AnalyticalNodeResponse> nodeResponses = nodeResultToResponseMapper
-            .Map(model.NodeResults)
-            .ToList();
+        var nodeResponses = nodeResultToResponseMapper.Map(model.NodeResults).ToList();
 
         return new AnalyticalModelResponse3(nodeResponses);
     }
