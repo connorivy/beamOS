@@ -217,10 +217,10 @@
 
     private async Task Solve()
     {
-        AnalyticalModelResponse response = await analysisApiClient
-            .RunDirectStiffnessMethodFromModelIdAsync(physicalModelId);
-        CalculatedReactions = response.AnalyticalNodeReactions;
-        CalculatedDisplacements = response.AnalyticalNodeDisplacements;
+        // AnalyticalModelResponse response = await analysisApiClient
+        //     .RunDirectStiffnessMethodFromModelIdAsync(physicalModelId);
+        // CalculatedReactions = response.AnalyticalNodeReactions;
+        // CalculatedDisplacements = response.AnalyticalNodeDisplacements;
     }
 }
 

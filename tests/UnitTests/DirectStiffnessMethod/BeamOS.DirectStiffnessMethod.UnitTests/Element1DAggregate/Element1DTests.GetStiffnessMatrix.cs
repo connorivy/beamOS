@@ -36,7 +36,7 @@ public partial class Element1DTests
     public void GetStiffnessMatrix_WithAllUnitValue_ShouldEqualCoefficients()
     {
         //AnalyticalElement1D element = Element1DFactory.Create();
-        DsmElement1dVo element = DsmElement1dFactory.CreateWithUnitSiValues();
+        DsmElement1d element = DsmElement1dFactory.CreateWithUnitSiValues();
 
         Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix(
             UnitSettings.SI.ForceUnit,
@@ -71,7 +71,7 @@ public partial class Element1DTests
         //    modulusOfElasticity: new Pressure(5, UnitSystem.SI)
         //);
         //AnalyticalElement1D element = Element1DFactory.Create(material: material);
-        DsmElement1dVo element = DsmElement1dFactory.CreateWithUnitSiValues(
+        DsmElement1d element = DsmElement1dFactory.CreateWithUnitSiValues(
             modulusOfElasticity: new(5, UnitSystem.SI)
         );
 
@@ -108,7 +108,7 @@ public partial class Element1DTests
         //    modulusOfRigidity: new Pressure(5, UnitSystem.SI)
         //);
         //AnalyticalElement1D element = Element1DFactory.Create(material: material);
-        DsmElement1dVo element = DsmElement1dFactory.CreateWithUnitSiValues(
+        DsmElement1d element = DsmElement1dFactory.CreateWithUnitSiValues(
             modulusOfRigidity: new(5, UnitSystem.SI)
         );
 
@@ -143,7 +143,7 @@ public partial class Element1DTests
     {
         //SectionProfile section = SectionProfileFactory.CreateSI(area: new Area(5, UnitSystem.SI));
         //AnalyticalElement1D element = Element1DFactory.Create(sectionProfile: section);
-        DsmElement1dVo element = DsmElement1dFactory.CreateWithUnitSiValues(
+        DsmElement1d element = DsmElement1dFactory.CreateWithUnitSiValues(
             area: new(5, UnitSystem.SI)
         );
 
@@ -180,7 +180,7 @@ public partial class Element1DTests
         //    strongAxisMomentOfInertia: new AreaMomentOfInertia(5, UnitSystem.SI)
         //);
         //AnalyticalElement1D element = Element1DFactory.Create(sectionProfile: section);
-        DsmElement1dVo element = DsmElement1dFactory.CreateWithUnitSiValues(
+        DsmElement1d element = DsmElement1dFactory.CreateWithUnitSiValues(
             strongAxisMomentOfInertia: new(5, UnitSystem.SI)
         );
 
@@ -217,7 +217,7 @@ public partial class Element1DTests
         //    weakAxisMomentOfInertia: new AreaMomentOfInertia(5, UnitSystem.SI)
         //);
         //AnalyticalElement1D element = Element1DFactory.Create(sectionProfile: section);
-        DsmElement1dVo element = DsmElement1dFactory.CreateWithUnitSiValues(
+        DsmElement1d element = DsmElement1dFactory.CreateWithUnitSiValues(
             weakAxisMomentOfInertia: new(5, UnitSystem.SI)
         );
 
@@ -254,7 +254,7 @@ public partial class Element1DTests
         //    polarMomentOfInertia: new AreaMomentOfInertia(5, UnitSystem.SI)
         //);
         //AnalyticalElement1D element = Element1DFactory.Create(sectionProfile: section);
-        DsmElement1dVo element = DsmElement1dFactory.CreateWithUnitSiValues(
+        DsmElement1d element = DsmElement1dFactory.CreateWithUnitSiValues(
             polarMomentOfInertia: new(5, UnitSystem.SI)
         );
 
@@ -291,7 +291,7 @@ public partial class Element1DTests
         //    startNode: new(0, 0, 0, UnitsNet.Units.LengthUnit.Meter, Restraint.Free),
         //    endNode: new(5, 0, 0, UnitsNet.Units.LengthUnit.Meter, Restraint.Free)
         //);
-        DsmElement1dVo element = DsmElement1dFactory.CreateWithUnitSiValues(
+        DsmElement1d element = DsmElement1dFactory.CreateWithUnitSiValues(
             baseLine: new(0, 0, 0, 5, 0, 0, LengthUnit.Meter)
         );
 

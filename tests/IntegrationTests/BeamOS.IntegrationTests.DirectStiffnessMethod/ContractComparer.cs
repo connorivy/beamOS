@@ -18,6 +18,13 @@ public static class ContractComparer
         BeamOsContractBase second
     )
     {
+        if (first.GetType() != second.GetType())
+        {
+            throw new ArgumentException(
+                $"Type of first contract, {first.GetType()}, does not match type of second contract, {second.GetType()}"
+            );
+        }
+
         foreach (
             PropertyInfo propertyInfo in first
                 .GetType()

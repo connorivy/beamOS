@@ -11,6 +11,12 @@ public static partial class StringToTorqueUnitMapper
     public static partial TorqueUnit MapToTorqueUnit(this string unit);
 }
 
+[Mapper]
+public static partial class TorqueUnitToStringMapper
+{
+    public static partial string MapToString(this TorqueUnit unit);
+}
+
 public static class UnitValueDtoToTorqueMapper
 {
     public static Torque MapToTorque(this UnitValueDto dto)

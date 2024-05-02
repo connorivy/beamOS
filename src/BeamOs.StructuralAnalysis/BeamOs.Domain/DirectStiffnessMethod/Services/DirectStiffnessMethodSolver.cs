@@ -14,13 +14,13 @@ public sealed class DirectStiffnessMethodSolver
 {
     public static ModelResults RunAnalysis(
         UnitSettings unitSettings,
-        IEnumerable<DsmElement1dVo> element1Ds,
+        IEnumerable<DsmElement1d> element1Ds,
         IEnumerable<DsmNodeVo> nodes
     )
     {
         var (degreeOfFreedomIds, boundaryConditionIds) = GetSortedUnsupportedStructureIds(nodes);
 
-        MatrixIdentified2 structureStiffnessMatrix = BuildStructureStiffnessMatrix(
+        MatrixIdentified structureStiffnessMatrix = BuildStructureStiffnessMatrix(
             degreeOfFreedomIds,
             element1Ds,
             unitSettings.ForceUnit,
@@ -28,23 +28,23 @@ public sealed class DirectStiffnessMethodSolver
             unitSettings.TorqueUnit
         );
 
-        VectorIdentified2 knownJointDisplacementVector = BuildKnownJointDisplacementVector(
+        VectorIdentified knownJointDisplacementVector = BuildKnownJointDisplacementVector(
             boundaryConditionIds
         );
 
-        VectorIdentified2 knownReactionVector = BuildKnownJointReactionVector(
+        VectorIdentified knownReactionVector = BuildKnownJointReactionVector(
             degreeOfFreedomIds,
             nodes,
             unitSettings.ForceUnit,
             unitSettings.TorqueUnit
         );
-        VectorIdentified2 unknownJointDisplacementVector = GetUnknownJointDisplacementVector(
+        VectorIdentified unknownJointDisplacementVector = GetUnknownJointDisplacementVector(
             structureStiffnessMatrix,
             knownReactionVector,
             degreeOfFreedomIds
         );
 
-        VectorIdentified2 unknownReactionVector = GetUnknownJointReactionVector(
+        VectorIdentified unknownReactionVector = GetUnknownJointReactionVector(
             boundaryConditionIds,
             unknownJointDisplacementVector,
             element1Ds,
@@ -100,15 +100,15 @@ public sealed class DirectStiffnessMethodSolver
         );
     }
 
-    private static MatrixIdentified2 BuildStructureStiffnessMatrix(
+    private static MatrixIdentified BuildStructureStiffnessMatrix(
         List<UnsupportedStructureDisplacementId2> degreeOfFreedomIds,
-        IEnumerable<DsmElement1dVo> element1ds,
+        IEnumerable<DsmElement1d> element1ds,
         ForceUnit forceUnit,
         ForcePerLengthUnit forcePerLengthUnit,
         TorqueUnit torqueUnit
     )
     {
-        MatrixIdentified2 sMatrix = new(degreeOfFreedomIds);
+        MatrixIdentified sMatrix = new(degreeOfFreedomIds);
         foreach (var element1D in element1ds)
         {
             var globalMatrixWithIdentifiers = element1D.GetGlobalStiffnessMatrixIdentified(
@@ -122,7 +122,7 @@ public sealed class DirectStiffnessMethodSolver
         return sMatrix;
     }
 
-    private static VectorIdentified2 BuildKnownJointDisplacementVector(
+    private static VectorIdentified BuildKnownJointDisplacementVector(
         List<UnsupportedStructureDisplacementId2> boundaryConditionIds
     )
     {
@@ -131,17 +131,17 @@ public sealed class DirectStiffnessMethodSolver
             .Repeat(0.0, boundaryConditionIds.Count)
             .ToArray();
 
-        return new VectorIdentified2(boundaryConditionIds, hardcodedNodeDisplacements);
+        return new VectorIdentified(boundaryConditionIds, hardcodedNodeDisplacements);
     }
 
-    private static VectorIdentified2 BuildKnownJointReactionVector(
+    private static VectorIdentified BuildKnownJointReactionVector(
         List<UnsupportedStructureDisplacementId2> degreeOfFreedomIds,
         IEnumerable<DsmNodeVo> nodes,
         ForceUnit forceUnit,
         TorqueUnit torqueUnit
     )
     {
-        VectorIdentified2 loadVector = new(degreeOfFreedomIds);
+        VectorIdentified loadVector = new(degreeOfFreedomIds);
         foreach (var node in nodes)
         {
             var localLoadVector = node.GetForceVectorIdentifiedInGlobalCoordinates(
@@ -154,30 +154,30 @@ public sealed class DirectStiffnessMethodSolver
         return loadVector;
     }
 
-    private static VectorIdentified2 GetUnknownJointDisplacementVector(
-        MatrixIdentified2 structureStiffnessMatrix,
-        VectorIdentified2 knownReactionVector,
+    private static VectorIdentified GetUnknownJointDisplacementVector(
+        MatrixIdentified structureStiffnessMatrix,
+        VectorIdentified knownReactionVector,
         List<UnsupportedStructureDisplacementId2> degreeOfFreedomIds
     )
     {
         var dofDisplacementMathnetVector =
             structureStiffnessMatrix.Build().Inverse() * knownReactionVector.Build();
-        VectorIdentified2 dofDisplacementVector =
+        VectorIdentified dofDisplacementVector =
             new(degreeOfFreedomIds, dofDisplacementMathnetVector.ToArray());
 
         return dofDisplacementVector;
     }
 
-    private static VectorIdentified2 GetUnknownJointReactionVector(
+    private static VectorIdentified GetUnknownJointReactionVector(
         List<UnsupportedStructureDisplacementId2> boundaryConditionIds,
-        VectorIdentified2 unknownJointDisplacementVector,
-        IEnumerable<DsmElement1dVo> element1Ds,
+        VectorIdentified unknownJointDisplacementVector,
+        IEnumerable<DsmElement1d> element1Ds,
         ForceUnit forceUnit,
         ForcePerLengthUnit forcePerLengthUnit,
         TorqueUnit torqueUnit
     )
     {
-        VectorIdentified2 reactions = new(boundaryConditionIds);
+        VectorIdentified reactions = new(boundaryConditionIds);
         foreach (var element1D in element1Ds)
         {
             var globalMemberEndForcesVector = element1D.GetGlobalMemberEndForcesVectorIdentified(
@@ -193,10 +193,10 @@ public sealed class DirectStiffnessMethodSolver
     }
 
     private static List<NodeResult> GetAnalyticalNodes(
-        VectorIdentified2 unknownJointDisplacementVector,
-        VectorIdentified2 knownJointDisplacementVector,
-        VectorIdentified2 unknownJointReactionVector,
-        VectorIdentified2 knownJointReactionVector,
+        VectorIdentified unknownJointDisplacementVector,
+        VectorIdentified knownJointDisplacementVector,
+        VectorIdentified unknownJointReactionVector,
+        VectorIdentified knownJointReactionVector,
         LengthUnit lengthUnit,
         ForceUnit forceUnit,
         TorqueUnit torqueUnit

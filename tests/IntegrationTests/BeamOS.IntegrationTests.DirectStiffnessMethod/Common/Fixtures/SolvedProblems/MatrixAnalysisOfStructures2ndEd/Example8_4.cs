@@ -14,7 +14,7 @@ internal partial class Example8_4 : SolvedProblem
 {
     public static string ModelId;
 
-    public static ModelResponseHydrated GetExpectedResponse()
+    public static ModelResponse GetExpectedResponse()
     {
         return new(
             ModelId,
@@ -186,19 +186,19 @@ internal partial class Example8_4 : SolvedProblem
     public static async Task CreateNodes(Func<CreateNodeRequest, Task<NodeResponse>> clientMethod)
     {
         CreateNodeRequest node1req =
-            new(model.Id, 0, 0, 0, "Foot", Restraint: RestraintsRequest.Free);
+            new(model.Id, 0, 0, 0, "Foot", Restraint: RestraintRequest.Free);
         node1 ??= await clientMethod(node1req);
         //yield return node1req;
 
-        CreateNodeRequest node2req = new(model.Id, -20, 0, 0, "Foot", RestraintsRequest.Fixed);
+        CreateNodeRequest node2req = new(model.Id, -20, 0, 0, "Foot", RestraintRequest.Fixed);
         node2 ??= await clientMethod(node2req);
         //yield return node2req;
 
-        CreateNodeRequest node3req = new(model.Id, 0, -20, 0, "Foot", RestraintsRequest.Fixed);
+        CreateNodeRequest node3req = new(model.Id, 0, -20, 0, "Foot", RestraintRequest.Fixed);
         node3 ??= await clientMethod(node3req);
         //yield return node3req;
 
-        CreateNodeRequest node4req = new(model.Id, 0, 0, -20, "Foot", RestraintsRequest.Fixed);
+        CreateNodeRequest node4req = new(model.Id, 0, 0, -20, "Foot", RestraintRequest.Fixed);
         node4 ??= await clientMethod(node4req);
         //yield return node4req;
     }

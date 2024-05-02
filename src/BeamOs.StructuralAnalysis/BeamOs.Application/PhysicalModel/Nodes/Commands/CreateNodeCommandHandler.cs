@@ -6,14 +6,18 @@ using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.Application.PhysicalModel.Nodes.Commands;
 
-public class CreateNodeCommandHandler(IRepository<NodeId, Node> nodeRepository)
-    : ICommandHandler<CreateNodeCommand, Node>
+public class CreateNodeCommandHandler(
+    IRepository<NodeId, Node> nodeRepository,
+    IUnitOfWork unitOfWork
+) : ICommandHandler<CreateNodeCommand, Node>
 {
     public async Task<Node> ExecuteAsync(CreateNodeCommand command, CancellationToken ct)
     {
         var node = command.ToDomainObject();
 
         nodeRepository.Add(node);
+
+        await unitOfWork.SaveChangesAsync(ct);
 
         return node;
     }

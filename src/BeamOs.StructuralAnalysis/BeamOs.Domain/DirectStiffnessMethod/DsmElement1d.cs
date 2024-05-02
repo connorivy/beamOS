@@ -15,7 +15,7 @@ using UnitsNet.Units;
 
 namespace BeamOs.Domain.DirectStiffnessMethod;
 
-public class DsmElement1dVo(
+public class DsmElement1d(
     Angle sectionProfileRotation,
     Pressure modulusOfElasticity,
     Pressure modulusOfRigidity,
@@ -28,7 +28,7 @@ public class DsmElement1dVo(
     NodeId endNodeId
 ) : BeamOSValueObject
 {
-    public DsmElement1dVo(
+    public DsmElement1d(
         Angle sectionProfileRotation,
         Node startNode,
         Node endNode,
@@ -208,7 +208,7 @@ public class DsmElement1dVo(
         return transformationMatrix.Transpose() * localStiffnessMatrix * transformationMatrix;
     }
 
-    public MatrixIdentified2 GetGlobalStiffnessMatrixIdentified(
+    public MatrixIdentified GetGlobalStiffnessMatrixIdentified(
         ForceUnit forceUnit,
         ForcePerLengthUnit forcePerLengthUnit,
         TorqueUnit torqueUnit
@@ -220,27 +220,27 @@ public class DsmElement1dVo(
         );
     }
 
-    private VectorIdentified2 ToVectorIdentified(Vector<double> vector)
+    private VectorIdentified ToVectorIdentified(Vector<double> vector)
     {
         return new(this.GetUnsupportedStructureDisplacementIds().ToList(), vector.ToArray());
     }
 
-    public Vector<double> GetGlobalEndDisplacementVector(VectorIdentified2 jointDisplacementVector)
+    public Vector<double> GetGlobalEndDisplacementVector(VectorIdentified jointDisplacementVector)
     {
-        VectorIdentified2 globalEndDisplacementVector =
+        VectorIdentified globalEndDisplacementVector =
             new(this.GetUnsupportedStructureDisplacementIds().ToList());
         globalEndDisplacementVector.AddEntriesWithMatchingIdentifiers(jointDisplacementVector);
         return globalEndDisplacementVector.Build();
     }
 
-    public Vector<double> GetLocalEndDisplacementVector(VectorIdentified2 jointDisplacementVector)
+    public Vector<double> GetLocalEndDisplacementVector(VectorIdentified jointDisplacementVector)
     {
         return this.GetTransformationMatrix()
             * this.GetGlobalEndDisplacementVector(jointDisplacementVector);
     }
 
     public Vector<double> GetLocalMemberEndForcesVector(
-        VectorIdentified2 jointDisplacementVector,
+        VectorIdentified jointDisplacementVector,
         ForceUnit forceUnit,
         ForcePerLengthUnit forcePerLengthUnit,
         TorqueUnit torqueUnit
@@ -251,7 +251,7 @@ public class DsmElement1dVo(
     }
 
     public Vector<double> GetGlobalMemberEndForcesVector(
-        VectorIdentified2 jointDisplacementVector,
+        VectorIdentified jointDisplacementVector,
         ForceUnit forceUnit,
         ForcePerLengthUnit forcePerLengthUnit,
         TorqueUnit torqueUnit
@@ -266,8 +266,8 @@ public class DsmElement1dVo(
             );
     }
 
-    public VectorIdentified2 GetGlobalMemberEndForcesVectorIdentified(
-        VectorIdentified2 jointDisplacementVector,
+    public VectorIdentified GetGlobalMemberEndForcesVectorIdentified(
+        VectorIdentified jointDisplacementVector,
         ForceUnit forceUnit,
         ForcePerLengthUnit forcePerLengthUnit,
         TorqueUnit torqueUnit

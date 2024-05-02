@@ -1,5 +1,4 @@
 using BeamOs.Application.Common.Mappers;
-using BeamOs.Application.Common.Models;
 using BeamOs.Contracts.PhysicalModel.MomentLoad;
 using BeamOs.Infrastructure.Data.Models;
 using Riok.Mapperly.Abstractions;

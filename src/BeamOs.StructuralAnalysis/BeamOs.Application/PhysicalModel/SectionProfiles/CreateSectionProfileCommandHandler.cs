@@ -7,17 +7,20 @@ using Riok.Mapperly.Abstractions;
 namespace BeamOs.Application.PhysicalModel.SectionProfiles;
 
 public class CreateSectionProfileCommandHandler(
-    IRepository<SectionProfileId, SectionProfile> sectionProfileRepository
+    IRepository<SectionProfileId, SectionProfile> sectionProfileRepository,
+    IUnitOfWork unitOfWork
 ) : ICommandHandler<CreateSectionProfileCommand, SectionProfile>
 {
     public async Task<SectionProfile> ExecuteAsync(
         CreateSectionProfileCommand command,
-        CancellationToken ct
+        CancellationToken ct = default
     )
     {
         var load = command.ToDomainObject();
 
         sectionProfileRepository.Add(load);
+
+        await unitOfWork.SaveChangesAsync(ct);
 
         return load;
     }

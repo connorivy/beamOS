@@ -6,14 +6,21 @@ using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.Application.PhysicalModel.PointLoads.Commands;
 
-public class CreatePointLoadCommandHandler(IRepository<PointLoadId, PointLoad> pointLoadRepository)
-    : ICommandHandler<CreatePointLoadCommand, PointLoad>
+public class CreatePointLoadCommandHandler(
+    IRepository<PointLoadId, PointLoad> pointLoadRepository,
+    IUnitOfWork unitOfWork
+) : ICommandHandler<CreatePointLoadCommand, PointLoad>
 {
-    public async Task<PointLoad> ExecuteAsync(CreatePointLoadCommand command, CancellationToken ct)
+    public async Task<PointLoad> ExecuteAsync(
+        CreatePointLoadCommand command,
+        CancellationToken ct = default
+    )
     {
         var load = command.ToDomainObject();
 
         pointLoadRepository.Add(load);
+
+        await unitOfWork.SaveChangesAsync(ct);
 
         return load;
     }

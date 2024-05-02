@@ -6,13 +6,13 @@ namespace BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Fixtures.Analytic
 
 public class AnalyticalElement1DFixture : IHasLocalResults, IHasGlobalResults
 {
-    public AnalyticalElement1DFixture(DsmElement1dVo element, UnitSettings unitSettings)
+    public AnalyticalElement1DFixture(DsmElement1d element, UnitSettings unitSettings)
     {
         this.Element = element;
         this.UnitSettings = unitSettings;
     }
 
-    public DsmElement1dVo Element { get; set; }
+    public DsmElement1d Element { get; set; }
     public UnitSettings UnitSettings { get; set; }
     public Matrix<double>? ExpectedRotationMatrix { get; set; }
     public Matrix<double>? ExpectedTransformationMatrix { get; set; }

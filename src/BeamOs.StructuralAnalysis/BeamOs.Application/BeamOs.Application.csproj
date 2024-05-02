@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Common\Models\" />
     <Folder Include="PhysicalModel\Nodes\Common\" />
     <Folder Include="PhysicalModel\Nodes\Queries\" />
   </ItemGroup>

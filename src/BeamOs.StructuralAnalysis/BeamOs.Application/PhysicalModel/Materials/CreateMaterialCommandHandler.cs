@@ -6,16 +6,20 @@ using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.Application.PhysicalModel.Materials;
 
-public class CreateMaterialCommandHandler(IRepository<MaterialId, Material> materialRepository)
-    : ICommandHandler<CreateMaterialCommand, Material>
+public class CreateMaterialCommandHandler(
+    IRepository<MaterialId, Material> materialRepository,
+    IUnitOfWork unitOfWork
+) : ICommandHandler<CreateMaterialCommand, Material>
 {
-    public Task<Material> ExecuteAsync(CreateMaterialCommand command, CancellationToken ct)
+    public async Task<Material> ExecuteAsync(CreateMaterialCommand command, CancellationToken ct)
     {
         var load = command.ToDomainObject();
 
         materialRepository.Add(load);
 
-        return Task.FromResult(load);
+        await unitOfWork.SaveChangesAsync(ct);
+
+        return load;
     }
 }
 

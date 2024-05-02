@@ -19,6 +19,7 @@
   <ItemGroup>
     <PackageReference Include="MathNet.Numerics" />
     <PackageReference Include="UnitsNet" />
+    <PackageReference Include="Xunit.SkippableFact" />
   </ItemGroup>
 
   <ItemGroup>

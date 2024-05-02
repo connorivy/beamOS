@@ -86,6 +86,8 @@ public static class DependencyInjection
             .AddScoped<IPointLoadRepository, PointLoadDbContextRepository>()
             .AddScoped<ISectionProfileRepository, SectionProfileDbContextRepository>();
 
+        _ = services.AddScoped<IUnitOfWork, UnitOfWork>();
+
         return services;
     }
 

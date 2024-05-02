@@ -78,7 +78,7 @@ public class RunDirectStiffnessMethodCommandHandler(
 
         var dsmElement1ds = element1ds.Select(
             el =>
-                new DsmElement1dVo(
+                new DsmElement1d(
                     el.SectionProfileRotation,
                     nodesMap[el.StartNodeId],
                     nodesMap[el.EndNodeId],

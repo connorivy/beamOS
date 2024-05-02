@@ -24,7 +24,7 @@ public static class ApiClientGenerator
         string releaseName,
         string clientNamespace,
         string clientName,
-        string[] additionalNamespaces,
+        string[]? additionalNamespaces = null,
         string? pathToClient = null
     )
     {
@@ -36,7 +36,7 @@ public static class ApiClientGenerator
             {
                 c.ClassName = clientName;
                 c.GenerateDtoTypes = false;
-                c.AdditionalNamespaceUsages = additionalNamespaces;
+                c.AdditionalNamespaceUsages = additionalNamespaces ?? [];
                 c.GenerateClientInterfaces = true;
                 c.CSharpGeneratorSettings.Namespace = clientNamespace;
                 c.UseBaseUrl = false;

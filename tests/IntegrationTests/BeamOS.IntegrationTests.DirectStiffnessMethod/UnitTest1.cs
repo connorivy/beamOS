@@ -13,7 +13,7 @@ public class UnitTest1(CustomWebApplicationFactory<BeamOs.Api.Program> webApplic
         var client = new ApiAlphaClient(httpClient);
         await Example8_4.CreatePhysicalModel(client);
 
-        var modelResponse = await client.GetModelHydratedAsync(Example8_4.ModelId, null);
+        var modelResponse = await client.GetModelAsync(Example8_4.ModelId, null);
         var expectedModelResponse = Example8_4.GetExpectedResponse();
 
         ContractComparer.AssertContractsEqual(modelResponse, expectedModelResponse);

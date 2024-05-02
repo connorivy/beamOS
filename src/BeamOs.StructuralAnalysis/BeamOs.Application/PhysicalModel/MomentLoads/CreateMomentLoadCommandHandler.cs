@@ -7,7 +7,8 @@ using Riok.Mapperly.Abstractions;
 namespace BeamOs.Application.PhysicalModel.MomentLoads;
 
 public class CreateMomentLoadCommandHandler(
-    IRepository<MomentLoadId, MomentLoad> momentLoadRepository
+    IRepository<MomentLoadId, MomentLoad> momentLoadRepository,
+    IUnitOfWork unitOfWork
 ) : ICommandHandler<CreateMomentLoadCommand, MomentLoad>
 {
     public async Task<MomentLoad> ExecuteAsync(
@@ -18,6 +19,8 @@ public class CreateMomentLoadCommandHandler(
         var load = command.ToDomainObject();
 
         momentLoadRepository.Add(load);
+
+        await unitOfWork.SaveChangesAsync(ct);
 
         return load;
     }

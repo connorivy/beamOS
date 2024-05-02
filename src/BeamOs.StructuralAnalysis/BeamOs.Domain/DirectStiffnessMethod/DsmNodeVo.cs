@@ -1,6 +1,7 @@
 using BeamOs.Domain.Common.Models;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.DirectStiffnessMethod.Common.Extensions;
+using BeamOs.Domain.DirectStiffnessMethod.Common.ValueObjects;
 using BeamOs.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.PointLoadAggregate;
@@ -47,7 +48,7 @@ public class DsmNodeVo(
         return new(forceAlongX, forceAlongY, forceAlongZ, momentAboutX, momentAboutY, momentAboutZ);
     }
 
-    public Common.ValueObjects.VectorIdentified2 GetForceVectorIdentifiedInGlobalCoordinates(
+    public VectorIdentified GetForceVectorIdentifiedInGlobalCoordinates(
         ForceUnit forceUnit,
         TorqueUnit torqueUnit
     )

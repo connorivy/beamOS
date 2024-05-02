@@ -1,6 +1,9 @@
+using BeamOs.Api.Common.Mappers;
 using BeamOs.Application.Common.Interfaces;
+using BeamOs.Contracts.Common;
+using Riok.Mapperly.Abstractions;
 
-namespace BeamOs.Application.Common.Models;
+namespace BeamOs.Application.Common.Mappers;
 
 public abstract class AbstractMapper<TFrom, TTo> : IMapper<TFrom, TTo>
 {

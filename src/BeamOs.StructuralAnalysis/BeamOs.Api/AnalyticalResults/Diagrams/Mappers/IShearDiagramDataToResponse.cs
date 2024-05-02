@@ -1,5 +1,5 @@
 using BeamOs.Application.AnalyticalResults.Diagrams.ShearDiagrams.Interfaces;
-using BeamOs.Application.Common.Models;
+using BeamOs.Application.Common.Mappers;
 using BeamOs.Contracts.AnalyticalResults.Diagrams;
 using Riok.Mapperly.Abstractions;
 

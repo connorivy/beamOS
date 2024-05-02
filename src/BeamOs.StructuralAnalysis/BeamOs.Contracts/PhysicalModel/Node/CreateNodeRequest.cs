@@ -8,10 +8,10 @@ public record CreateNodeRequest(
     double YCoordinate,
     double ZCoordinate,
     string? LengthUnit = null,
-    RestraintsRequest? Restraint = null
+    RestraintRequest? Restraint = null
 );
 
-public record RestraintsRequest(
+public record RestraintRequest(
     bool CanTranslateAlongX,
     bool CanTranslateAlongY,
     bool CanTranslateAlongZ,
@@ -20,6 +20,6 @@ public record RestraintsRequest(
     bool CanRotateAboutZ
 )
 {
-    public static RestraintsRequest Free { get; } = new(true, true, true, true, true, true);
-    public static RestraintsRequest Fixed { get; } = new(false, false, false, false, false, false);
+    public static RestraintRequest Free { get; } = new(true, true, true, true, true, true);
+    public static RestraintRequest Fixed { get; } = new(false, false, false, false, false, false);
 }

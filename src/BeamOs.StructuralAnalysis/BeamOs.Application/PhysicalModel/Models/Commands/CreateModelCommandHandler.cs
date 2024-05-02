@@ -6,8 +6,10 @@ using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.Application.PhysicalModel.Models.Commands;
 
-public class CreateModelCommandHandler(IRepository<ModelId, Model> modelRepository)
-    : ICommandHandler<CreateModelCommand, Model>
+public class CreateModelCommandHandler(
+    IRepository<ModelId, Model> modelRepository,
+    IUnitOfWork unitOfWork
+) : ICommandHandler<CreateModelCommand, Model>
 {
     public async Task<Model> ExecuteAsync(
         CreateModelCommand command,
@@ -17,6 +19,8 @@ public class CreateModelCommandHandler(IRepository<ModelId, Model> modelReposito
         var model = command.ToDomainObject();
 
         modelRepository.Add(model);
+
+        await unitOfWork.SaveChangesAsync(ct);
 
         return model;
     }
