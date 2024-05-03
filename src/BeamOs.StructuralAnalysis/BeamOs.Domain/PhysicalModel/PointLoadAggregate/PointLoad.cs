@@ -1,5 +1,6 @@
 using BeamOs.Domain.Common.Enums;
 using BeamOs.Domain.Common.Models;
+using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.PointLoadAggregate.ValueObjects;
 using MathNet.Spatial.Euclidean;
@@ -9,14 +10,22 @@ namespace BeamOs.Domain.PhysicalModel.PointLoadAggregate;
 
 public class PointLoad : AggregateRoot<PointLoadId>
 {
-    public PointLoad(NodeId nodeId, Force force, Vector3D direction, PointLoadId? id = null)
+    public PointLoad(
+        // ModelId modelId,
+        NodeId nodeId,
+        Force force,
+        Vector3D direction,
+        PointLoadId? id = null
+    )
         : base(id ?? new())
     {
         this.NodeId = nodeId;
         this.Force = force;
         this.NormalizedDirection = direction;
+        // this.ModelId = modelId;
     }
 
+    public ModelId ModelId { get; private set; }
     public NodeId NodeId { get; private set; }
     public Force Force { get; private set; }
     public Vector3D NormalizedDirection { get; private set; }

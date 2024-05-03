@@ -30,10 +30,10 @@ internal class ModelReadModelConfiguration : IEntityTypeConfiguration<ModelReadM
             .HasForeignKey(el => el.ModelId)
             .IsRequired();
 
-        //_ = builder
-        //    .HasMany(m => m.PointLoads)
-        //    .WithOne()
-        //    .HasForeignKey(el => el.ModelId)
-        //    .IsRequired();
+        _ = builder
+            .HasMany(m => m.PointLoads)
+            .WithOne()
+            .HasForeignKey(el => el.ModelId)
+            .IsRequired();
     }
 }

@@ -22,7 +22,7 @@ namespace BeamOs.Infrastructure;
 /// Build migrations from folder location
 /// \beamOS\src\BeamOS.WebApp\BeamOS.WebApp\
 /// with the command
-/// dotnet ef migrations add Initial --project ..\..\BeamOs.StructuralAnalysis\BeamOs.Infrastructure\
+/// dotnet ef migrations add Initial --project ..\..\BeamOs.StructuralAnalysis\BeamOs.Infrastructure\ --context BeamOsStructuralDbContext
 /// </summary>
 public class BeamOsStructuralDbContext : DbContext
 {
@@ -284,12 +284,14 @@ public class BeamOsStructuralDbContext : DbContext
         );
 
         var pl1 = new PointLoad(
+            new ModelId(TypedGuids.G0),
             node1.Id,
             new Force(150, ForceUnit.KilopoundForce),
             new Vector3D(1, 0, 0)
         );
 
         var pl2 = new PointLoad(
+            new ModelId(TypedGuids.G0),
             node1.Id,
             new Force(300, ForceUnit.KilopoundForce),
             new Vector3D(0, -1, 0)

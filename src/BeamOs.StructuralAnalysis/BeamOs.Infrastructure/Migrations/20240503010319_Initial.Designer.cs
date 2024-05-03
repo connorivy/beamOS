@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeamOs.Infrastructure.Migrations
 {
     [DbContext(typeof(BeamOsStructuralDbContext))]
-    [Migration("20240315130250_Initial")]
+    [Migration("20240503010319_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -209,6 +209,9 @@ namespace BeamOs.Infrastructure.Migrations
 
                     b.Property<double>("Force")
                         .HasColumnType("float");
+
+                    b.Property<Guid>("ModelId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("NodeId")
                         .HasColumnType("uniqueidentifier");
