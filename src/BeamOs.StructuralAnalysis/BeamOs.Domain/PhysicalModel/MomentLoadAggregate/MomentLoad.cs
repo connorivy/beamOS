@@ -1,5 +1,6 @@
 using BeamOs.Domain.Common.Enums;
 using BeamOs.Domain.Common.Models;
+using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.MomentLoadAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
 using MathNet.Numerics.LinearAlgebra;
@@ -17,6 +18,23 @@ public class MomentLoad : AggregateRoot<MomentLoadId>
     )
         : base(id ?? new())
     {
+        this.NodeId = nodeId;
+        this.Torque = torque;
+        this.NormalizedAxisDirection = axisDirection.Normalize(2);
+    }
+
+    public ModelId ModelId { get; private set; }
+
+    public MomentLoad(
+        ModelId modelId,
+        NodeId nodeId,
+        Torque torque,
+        Vector<double> axisDirection,
+        MomentLoadId? id = null
+    )
+        : base(id ?? new())
+    {
+        this.ModelId = modelId;
         this.NodeId = nodeId;
         this.Torque = torque;
         this.NormalizedAxisDirection = axisDirection.Normalize(2);

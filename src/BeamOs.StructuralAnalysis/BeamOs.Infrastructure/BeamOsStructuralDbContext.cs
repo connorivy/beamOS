@@ -20,7 +20,7 @@ namespace BeamOs.Infrastructure;
 
 /// <summary>
 /// Build migrations from folder location
-/// \beamOS\src\BeamOS.WebApp\BeamOS.WebApp\
+/// \beamOS\src\BeamOs.StructuralAnalysis\BeamOs.Api\
 /// with the command
 /// dotnet ef migrations add Initial --project ..\..\BeamOs.StructuralAnalysis\BeamOs.Infrastructure\ --context BeamOsStructuralDbContext
 /// </summary>

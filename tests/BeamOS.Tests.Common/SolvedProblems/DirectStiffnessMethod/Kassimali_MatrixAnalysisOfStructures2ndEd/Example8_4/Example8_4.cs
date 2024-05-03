@@ -112,11 +112,13 @@ internal partial class Example8_4
             [
                 new PointLoadResponse(
                     pointLoad1.Id,
+                    ModelId,
                     node1.Id,
                     new UnitValueDto(-30, "KilopoundForce"),
                     new Vector3(0, 1, 0)),
                 new PointLoadResponse(
                     pointLoad2.Id,
+                    ModelId,
                     node2.Id,
                     new UnitValueDto(-30, "KilopoundForce"),
                     new Vector3(0, 1, 0)),

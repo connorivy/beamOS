@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeamOs.Infrastructure.Migrations
 {
     [DbContext(typeof(BeamOsStructuralDbContext))]
-    [Migration("20240503010319_Initial")]
+    [Migration("20240503142701_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -133,6 +133,9 @@ namespace BeamOs.Infrastructure.Migrations
             modelBuilder.Entity("BeamOs.Domain.PhysicalModel.MomentLoadAggregate.MomentLoad", b =>
                 {
                     b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ModelId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("NodeId")

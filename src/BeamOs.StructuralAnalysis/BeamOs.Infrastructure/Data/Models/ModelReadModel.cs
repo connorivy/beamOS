@@ -18,8 +18,7 @@ internal sealed class ModelReadModel : BeamOSEntity<Guid>, IModelData
     public List<MaterialReadModel>? Materials { get; internal set; }
     public List<SectionProfileReadModel>? SectionProfiles { get; internal set; }
     public List<PointLoadReadModel>? PointLoads { get; internal set; }
-
-    //public List<MomentLoadReadModel>? MomentLoads { get; internal set; }
+    public List<MomentLoadReadModel>? MomentLoads { get; internal set; }
 
     List<INodeData>? IModelData.Nodes => this.Nodes?.ToList<INodeData>();
 

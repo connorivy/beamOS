@@ -10,6 +10,15 @@ internal class NodeDbContextRepository(BeamOsStructuralDbContext dbContext)
     : RepositoryBase<NodeId, Node>(dbContext),
         INodeRepository
 {
+    public async Task<ModelId> GetModelId(NodeId nodeId, CancellationToken ct = default)
+    {
+        return await this.DbContext
+            .Nodes
+            .Where(n => n.Id == nodeId)
+            .Select(n => n.ModelId)
+            .SingleAsync(cancellationToken: ct);
+    }
+
     public async Task<List<Node>> GetNodesInModel(ModelId modelId, CancellationToken ct = default)
     {
         return await this.DbContext.Nodes.Where(n => n.ModelId == modelId).ToListAsync(ct);

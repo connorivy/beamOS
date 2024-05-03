@@ -35,5 +35,11 @@ internal class ModelReadModelConfiguration : IEntityTypeConfiguration<ModelReadM
             .WithOne()
             .HasForeignKey(el => el.ModelId)
             .IsRequired();
+
+        _ = builder
+            .HasMany(m => m.MomentLoads)
+            .WithOne()
+            .HasForeignKey(el => el.ModelId)
+            .IsRequired();
     }
 }

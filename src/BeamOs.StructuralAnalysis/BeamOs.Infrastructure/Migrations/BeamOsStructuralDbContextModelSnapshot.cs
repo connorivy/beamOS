@@ -132,6 +132,9 @@ namespace BeamOs.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("ModelId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("NodeId")
                         .HasColumnType("uniqueidentifier");
 

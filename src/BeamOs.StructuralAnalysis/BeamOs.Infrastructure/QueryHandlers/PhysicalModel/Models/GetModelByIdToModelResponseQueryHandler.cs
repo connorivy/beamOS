@@ -35,12 +35,14 @@ internal sealed class GetModelByIdToModelResponseQueryHandler(
             // todo : more generic
             queryable = queryable
                 .Include(m => m.Nodes)
-                .ThenInclude(n => n.PointLoads)
-                .Include(m => m.Nodes)
-                .ThenInclude(n => n.MomentLoads)
+                //.ThenInclude(n => n.PointLoads)
+                //.Include(m => m.Nodes)
+                //.ThenInclude(n => n.MomentLoads)
                 .Include(m => m.Element1ds)
                 .Include(m => m.Materials)
-                .Include(m => m.SectionProfiles);
+                .Include(m => m.SectionProfiles)
+                .Include(m => m.PointLoads)
+                .Include(m => m.MomentLoads);
         }
 
         ModelReadModel? model = await queryable.FirstOrDefaultAsync(cancellationToken: ct);

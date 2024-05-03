@@ -19,6 +19,7 @@ internal partial class ModelReadModelToModelResponseMapper
 }
 
 [Mapper]
+[UseStaticMapper(typeof(Vector3ToFromMathnetVector))]
 internal partial class ModelReadModelToModelResponseMapper2
     : AbstractMapperProvidedUnits<ModelReadModel, ModelResponse>
 {

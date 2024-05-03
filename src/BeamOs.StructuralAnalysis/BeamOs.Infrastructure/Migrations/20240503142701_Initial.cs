@@ -52,6 +52,7 @@ namespace BeamOs.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ModelId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     NodeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Torque = table.Column<double>(type: "float", nullable: false),
                     NormalizedAxisDirection = table.Column<string>(type: "nvarchar(max)", nullable: false)

@@ -25,6 +25,21 @@ public class PointLoad : AggregateRoot<PointLoadId>
         // this.ModelId = modelId;
     }
 
+    public PointLoad(
+        ModelId modelId,
+        NodeId nodeId,
+        Force force,
+        Vector3D direction,
+        PointLoadId? id = null
+    )
+        : base(id ?? new())
+    {
+        this.ModelId = modelId;
+        this.NodeId = nodeId;
+        this.Force = force;
+        this.NormalizedDirection = direction;
+    }
+
     public ModelId ModelId { get; private set; }
     public NodeId NodeId { get; private set; }
     public Force Force { get; private set; }
