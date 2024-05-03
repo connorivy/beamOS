@@ -11,21 +11,6 @@ namespace BeamOs.Domain.PhysicalModel.PointLoadAggregate;
 public class PointLoad : AggregateRoot<PointLoadId>
 {
     public PointLoad(
-        // ModelId modelId,
-        NodeId nodeId,
-        Force force,
-        Vector3D direction,
-        PointLoadId? id = null
-    )
-        : base(id ?? new())
-    {
-        this.NodeId = nodeId;
-        this.Force = force;
-        this.NormalizedDirection = direction;
-        // this.ModelId = modelId;
-    }
-
-    public PointLoad(
         ModelId modelId,
         NodeId nodeId,
         Force force,

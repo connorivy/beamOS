@@ -11,21 +11,6 @@ namespace BeamOs.Domain.PhysicalModel.MomentLoadAggregate;
 public class MomentLoad : AggregateRoot<MomentLoadId>
 {
     public MomentLoad(
-        NodeId nodeId,
-        Torque torque,
-        Vector<double> axisDirection,
-        MomentLoadId? id = null
-    )
-        : base(id ?? new())
-    {
-        this.NodeId = nodeId;
-        this.Torque = torque;
-        this.NormalizedAxisDirection = axisDirection.Normalize(2);
-    }
-
-    public ModelId ModelId { get; private set; }
-
-    public MomentLoad(
         ModelId modelId,
         NodeId nodeId,
         Torque torque,
@@ -40,6 +25,7 @@ public class MomentLoad : AggregateRoot<MomentLoadId>
         this.NormalizedAxisDirection = axisDirection.Normalize(2);
     }
 
+    public ModelId ModelId { get; private set; }
     public NodeId NodeId { get; private set; }
     public Torque Torque { get; private set; }
     public Vector<double> NormalizedAxisDirection { get; private set; }
