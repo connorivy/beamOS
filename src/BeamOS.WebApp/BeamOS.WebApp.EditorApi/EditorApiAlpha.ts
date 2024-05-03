@@ -563,6 +563,8 @@ export class UnitSettingsResponse implements IUnitSettingsResponse {
     forceUnit!: string;
     forcePerLengthUnit!: string;
     torqueUnit!: string;
+    pressureUnit!: string;
+    areaMomentOfInertiaUnit!: string;
 
     constructor(data?: IUnitSettingsResponse) {
         if (data) {
@@ -581,6 +583,8 @@ export class UnitSettingsResponse implements IUnitSettingsResponse {
             this.forceUnit = _data["forceUnit"];
             this.forcePerLengthUnit = _data["forcePerLengthUnit"];
             this.torqueUnit = _data["torqueUnit"];
+            this.pressureUnit = _data["pressureUnit"];
+            this.areaMomentOfInertiaUnit = _data["areaMomentOfInertiaUnit"];
         }
     }
 
@@ -599,6 +603,8 @@ export class UnitSettingsResponse implements IUnitSettingsResponse {
         data["forceUnit"] = this.forceUnit;
         data["forcePerLengthUnit"] = this.forcePerLengthUnit;
         data["torqueUnit"] = this.torqueUnit;
+        data["pressureUnit"] = this.pressureUnit;
+        data["areaMomentOfInertiaUnit"] = this.areaMomentOfInertiaUnit;
         return data;
     }
 }
@@ -610,6 +616,8 @@ export interface IUnitSettingsResponse {
     forceUnit: string;
     forcePerLengthUnit: string;
     torqueUnit: string;
+    pressureUnit: string;
+    areaMomentOfInertiaUnit: string;
 }
 
 export class Element1DResponse implements IElement1DResponse {
@@ -783,6 +791,7 @@ export interface ISectionProfileResponse {
 
 export class PointLoadResponse implements IPointLoadResponse {
     id!: string;
+    modelId!: string;
     nodeId!: string;
     force!: UnitValueDto;
     normalizedDirection!: Vector3;
@@ -803,6 +812,7 @@ export class PointLoadResponse implements IPointLoadResponse {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
+            this.modelId = _data["modelId"];
             this.nodeId = _data["nodeId"];
             this.force = _data["force"] ? UnitValueDto.fromJS(_data["force"]) : new UnitValueDto();
             this.normalizedDirection = _data["normalizedDirection"] ? Vector3.fromJS(_data["normalizedDirection"]) : new Vector3();
@@ -819,6 +829,7 @@ export class PointLoadResponse implements IPointLoadResponse {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
+        data["modelId"] = this.modelId;
         data["nodeId"] = this.nodeId;
         data["force"] = this.force ? this.force.toJSON() : <any>undefined;
         data["normalizedDirection"] = this.normalizedDirection ? this.normalizedDirection.toJSON() : <any>undefined;
@@ -828,6 +839,7 @@ export class PointLoadResponse implements IPointLoadResponse {
 
 export interface IPointLoadResponse {
     id: string;
+    modelId: string;
     nodeId: string;
     force: UnitValueDto;
     normalizedDirection: Vector3;

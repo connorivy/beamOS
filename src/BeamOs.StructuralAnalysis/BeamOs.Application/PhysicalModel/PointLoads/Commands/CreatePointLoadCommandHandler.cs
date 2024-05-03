@@ -31,9 +31,3 @@ public class CreatePointLoadCommandHandler(
         return pointLoad;
     }
 }
-
-//[Mapper]
-//public static partial class CreatePointLoadCommandMapper
-//{
-//    public static partial PointLoad ToDomainObject(this CreatePointLoadCommand command);
-//}

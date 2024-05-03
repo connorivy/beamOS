@@ -85,12 +85,7 @@ export interface IApiAlphaClient {
     /**
      * @return Success
      */
-    getSingleElement1d(id: string | null): Promise<Element1dResponseHydrated>;
-
-    /**
-     * @return Success
-     */
-    getSingleElement1dHydrated(id: string | null): Promise<Element1dResponseHydrated>;
+    getSingleElement1d(id: string | null): Promise<Element1DResponse>;
 }
 
 export class ApiAlphaClient implements IApiAlphaClient {
@@ -687,7 +682,7 @@ export class ApiAlphaClient implements IApiAlphaClient {
     /**
      * @return Success
      */
-    getSingleElement1d(id: string | null): Promise<Element1dResponseHydrated> {
+    getSingleElement1d(id: string | null): Promise<Element1DResponse> {
         let url_ = this.baseUrl + "/api/element1Ds/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -706,14 +701,14 @@ export class ApiAlphaClient implements IApiAlphaClient {
         });
     }
 
-    protected processGetSingleElement1d(response: Response): Promise<Element1dResponseHydrated> {
+    protected processGetSingleElement1d(response: Response): Promise<Element1DResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Element1dResponseHydrated.fromJS(resultData200);
+            result200 = Element1DResponse.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -721,47 +716,7 @@ export class ApiAlphaClient implements IApiAlphaClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<Element1dResponseHydrated>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
-    getSingleElement1dHydrated(id: string | null): Promise<Element1dResponseHydrated> {
-        let url_ = this.baseUrl + "/api/element1ds/{id}/hydrated";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetSingleElement1dHydrated(_response);
-        });
-    }
-
-    protected processGetSingleElement1dHydrated(response: Response): Promise<Element1dResponseHydrated> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Element1dResponseHydrated.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Element1dResponseHydrated>(null as any);
+        return Promise.resolve<Element1DResponse>(null as any);
     }
 }
 
@@ -1201,6 +1156,7 @@ export interface ICreateSectionProfileRequest {
 
 export class PointLoadResponse implements IPointLoadResponse {
     id!: string;
+    modelId!: string;
     nodeId!: string;
     force!: UnitValueDto;
     normalizedDirection!: Vector3;
@@ -1221,6 +1177,7 @@ export class PointLoadResponse implements IPointLoadResponse {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
+            this.modelId = _data["modelId"];
             this.nodeId = _data["nodeId"];
             this.force = _data["force"] ? UnitValueDto.fromJS(_data["force"]) : new UnitValueDto();
             this.normalizedDirection = _data["normalizedDirection"] ? Vector3.fromJS(_data["normalizedDirection"]) : new Vector3();
@@ -1237,6 +1194,7 @@ export class PointLoadResponse implements IPointLoadResponse {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
+        data["modelId"] = this.modelId;
         data["nodeId"] = this.nodeId;
         data["force"] = this.force ? this.force.toJSON() : <any>undefined;
         data["normalizedDirection"] = this.normalizedDirection ? this.normalizedDirection.toJSON() : <any>undefined;
@@ -1246,6 +1204,7 @@ export class PointLoadResponse implements IPointLoadResponse {
 
 export interface IPointLoadResponse {
     id: string;
+    modelId: string;
     nodeId: string;
     force: UnitValueDto;
     normalizedDirection: Vector3;
@@ -1733,31 +1692,27 @@ export class GetMomentLoadRequest implements IGetMomentLoadRequest {
 export interface IGetMomentLoadRequest {
 }
 
-export class ModelResponse implements IModelResponse {
+export class ModelResponse extends BeamOsContractBase implements IModelResponse {
     id!: string;
     name!: string;
     description!: string;
     settings!: ModelSettingsResponse;
     nodes?: NodeResponse[] | undefined;
-    element1ds?: Element1dResponseHydrated[] | undefined;
+    element1ds?: Element1DResponse[] | undefined;
     materials?: MaterialResponse[] | undefined;
     sectionProfiles?: SectionProfileResponse[] | undefined;
     pointLoads?: PointLoadResponse[] | undefined;
     momentLoads?: MomentLoadResponse[] | undefined;
 
     constructor(data?: IModelResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+        super(data);
         if (!data) {
             this.settings = new ModelSettingsResponse();
         }
     }
 
     init(_data?: any) {
+        super.init(_data);
         if (_data) {
             this.id = _data["id"];
             this.name = _data["name"];
@@ -1771,7 +1726,7 @@ export class ModelResponse implements IModelResponse {
             if (Array.isArray(_data["element1ds"])) {
                 this.element1ds = [] as any;
                 for (let item of _data["element1ds"])
-                    this.element1ds!.push(Element1dResponseHydrated.fromJS(item));
+                    this.element1ds!.push(Element1DResponse.fromJS(item));
             }
             if (Array.isArray(_data["materials"])) {
                 this.materials = [] as any;
@@ -1839,17 +1794,18 @@ export class ModelResponse implements IModelResponse {
             for (let item of this.momentLoads)
                 data["momentLoads"].push(item.toJSON());
         }
+        super.toJSON(data);
         return data;
     }
 }
 
-export interface IModelResponse {
+export interface IModelResponse extends IBeamOsContractBase {
     id: string;
     name: string;
     description: string;
     settings: ModelSettingsResponse;
     nodes?: NodeResponse[] | undefined;
-    element1ds?: Element1dResponseHydrated[] | undefined;
+    element1ds?: Element1DResponse[] | undefined;
     materials?: MaterialResponse[] | undefined;
     sectionProfiles?: SectionProfileResponse[] | undefined;
     pointLoads?: PointLoadResponse[] | undefined;
@@ -1959,7 +1915,7 @@ export interface IUnitSettingsResponse {
     areaMomentOfInertiaUnit: string;
 }
 
-export class Element1dResponseHydrated implements IElement1dResponseHydrated {
+export class Element1DResponse implements IElement1DResponse {
     id!: string;
     modelId!: string;
     startNodeId!: string;
@@ -1967,12 +1923,8 @@ export class Element1dResponseHydrated implements IElement1dResponseHydrated {
     materialId!: string;
     sectionProfileId!: string;
     sectionProfileRotation!: UnitValueDto;
-    startNode?: NodeResponse | undefined;
-    endNode?: NodeResponse | undefined;
-    material?: MaterialResponse | undefined;
-    sectionProfile?: SectionProfileResponse | undefined;
 
-    constructor(data?: IElement1dResponseHydrated) {
+    constructor(data?: IElement1DResponse) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1993,16 +1945,12 @@ export class Element1dResponseHydrated implements IElement1dResponseHydrated {
             this.materialId = _data["materialId"];
             this.sectionProfileId = _data["sectionProfileId"];
             this.sectionProfileRotation = _data["sectionProfileRotation"] ? UnitValueDto.fromJS(_data["sectionProfileRotation"]) : new UnitValueDto();
-            this.startNode = _data["startNode"] ? NodeResponse.fromJS(_data["startNode"]) : <any>undefined;
-            this.endNode = _data["endNode"] ? NodeResponse.fromJS(_data["endNode"]) : <any>undefined;
-            this.material = _data["material"] ? MaterialResponse.fromJS(_data["material"]) : <any>undefined;
-            this.sectionProfile = _data["sectionProfile"] ? SectionProfileResponse.fromJS(_data["sectionProfile"]) : <any>undefined;
         }
     }
 
-    static fromJS(data: any): Element1dResponseHydrated {
+    static fromJS(data: any): Element1DResponse {
         data = typeof data === 'object' ? data : {};
-        let result = new Element1dResponseHydrated();
+        let result = new Element1DResponse();
         result.init(data);
         return result;
     }
@@ -2016,15 +1964,11 @@ export class Element1dResponseHydrated implements IElement1dResponseHydrated {
         data["materialId"] = this.materialId;
         data["sectionProfileId"] = this.sectionProfileId;
         data["sectionProfileRotation"] = this.sectionProfileRotation ? this.sectionProfileRotation.toJSON() : <any>undefined;
-        data["startNode"] = this.startNode ? this.startNode.toJSON() : <any>undefined;
-        data["endNode"] = this.endNode ? this.endNode.toJSON() : <any>undefined;
-        data["material"] = this.material ? this.material.toJSON() : <any>undefined;
-        data["sectionProfile"] = this.sectionProfile ? this.sectionProfile.toJSON() : <any>undefined;
         return data;
     }
 }
 
-export interface IElement1dResponseHydrated {
+export interface IElement1DResponse {
     id: string;
     modelId: string;
     startNodeId: string;
@@ -2032,10 +1976,6 @@ export interface IElement1dResponseHydrated {
     materialId: string;
     sectionProfileId: string;
     sectionProfileRotation: UnitValueDto;
-    startNode?: NodeResponse | undefined;
-    endNode?: NodeResponse | undefined;
-    material?: MaterialResponse | undefined;
-    sectionProfile?: SectionProfileResponse | undefined;
 }
 
 export class MaterialResponse implements IMaterialResponse {
@@ -2390,85 +2330,6 @@ export interface IModelResponseHydrated extends IBeamOsContractBase {
     sectionProfiles: SectionProfileResponse[];
     pointLoads: PointLoadResponse[];
     momentLoads: MomentLoadResponse[];
-}
-
-export class Element1DResponse implements IElement1DResponse {
-    id!: string;
-    modelId!: string;
-    startNodeId!: string;
-    endNodeId!: string;
-    materialId!: string;
-    sectionProfileId!: string;
-    sectionProfileRotation!: UnitValueDto;
-    startNode?: NodeResponse | undefined;
-    endNode?: NodeResponse | undefined;
-    material?: MaterialResponse | undefined;
-    sectionProfile?: SectionProfileResponse | undefined;
-
-    constructor(data?: IElement1DResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.sectionProfileRotation = new UnitValueDto();
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.modelId = _data["modelId"];
-            this.startNodeId = _data["startNodeId"];
-            this.endNodeId = _data["endNodeId"];
-            this.materialId = _data["materialId"];
-            this.sectionProfileId = _data["sectionProfileId"];
-            this.sectionProfileRotation = _data["sectionProfileRotation"] ? UnitValueDto.fromJS(_data["sectionProfileRotation"]) : new UnitValueDto();
-            this.startNode = _data["startNode"] ? NodeResponse.fromJS(_data["startNode"]) : <any>undefined;
-            this.endNode = _data["endNode"] ? NodeResponse.fromJS(_data["endNode"]) : <any>undefined;
-            this.material = _data["material"] ? MaterialResponse.fromJS(_data["material"]) : <any>undefined;
-            this.sectionProfile = _data["sectionProfile"] ? SectionProfileResponse.fromJS(_data["sectionProfile"]) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): Element1DResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new Element1DResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["modelId"] = this.modelId;
-        data["startNodeId"] = this.startNodeId;
-        data["endNodeId"] = this.endNodeId;
-        data["materialId"] = this.materialId;
-        data["sectionProfileId"] = this.sectionProfileId;
-        data["sectionProfileRotation"] = this.sectionProfileRotation ? this.sectionProfileRotation.toJSON() : <any>undefined;
-        data["startNode"] = this.startNode ? this.startNode.toJSON() : <any>undefined;
-        data["endNode"] = this.endNode ? this.endNode.toJSON() : <any>undefined;
-        data["material"] = this.material ? this.material.toJSON() : <any>undefined;
-        data["sectionProfile"] = this.sectionProfile ? this.sectionProfile.toJSON() : <any>undefined;
-        return data;
-    }
-}
-
-export interface IElement1DResponse {
-    id: string;
-    modelId: string;
-    startNodeId: string;
-    endNodeId: string;
-    materialId: string;
-    sectionProfileId: string;
-    sectionProfileRotation: UnitValueDto;
-    startNode?: NodeResponse | undefined;
-    endNode?: NodeResponse | undefined;
-    material?: MaterialResponse | undefined;
-    sectionProfile?: SectionProfileResponse | undefined;
 }
 
 export class GetModelHydratedRequest implements IGetModelHydratedRequest {

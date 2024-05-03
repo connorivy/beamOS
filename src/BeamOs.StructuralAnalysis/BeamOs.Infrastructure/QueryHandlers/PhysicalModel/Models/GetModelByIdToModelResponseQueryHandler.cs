@@ -2,7 +2,6 @@ using BeamOs.Api.PhysicalModel.Models.Mappers;
 using BeamOs.Application.Common.Interfaces;
 using BeamOs.Application.Common.Queries;
 using BeamOs.Contracts.PhysicalModel.Model;
-using BeamOs.Domain.PhysicalModel.Common.Extensions;
 using BeamOs.Infrastructure.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,9 +34,6 @@ internal sealed class GetModelByIdToModelResponseQueryHandler(
             // todo : more generic
             queryable = queryable
                 .Include(m => m.Nodes)
-                //.ThenInclude(n => n.PointLoads)
-                //.Include(m => m.Nodes)
-                //.ThenInclude(n => n.MomentLoads)
                 .Include(m => m.Element1ds)
                 .Include(m => m.Materials)
                 .Include(m => m.SectionProfiles)
@@ -46,7 +42,6 @@ internal sealed class GetModelByIdToModelResponseQueryHandler(
         }
 
         ModelReadModel? model = await queryable.FirstOrDefaultAsync(cancellationToken: ct);
-        //model?.UseUnitSettings(model.Settings.UnitSettings);
 
         return model is not null ? modelReadModelToModelResponseMapper.Map(model) : null;
     }

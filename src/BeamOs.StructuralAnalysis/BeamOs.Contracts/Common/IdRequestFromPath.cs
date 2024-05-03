@@ -1,3 +1,3 @@
 namespace BeamOs.Contracts.Common;
 
-public record IdRequestWithProperties(string Id, string[]? Properties);
+public record IdRequestWithProperties(string Id, string[]? Properties = null);

@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BeamOs.Application\BeamOs.Application.csproj" />
-    <ProjectReference Include="..\BeamOs.Contracts\BeamOs.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

@@ -13,8 +13,7 @@ namespace BeamOs.Api.PhysicalModel.Models.Endpoints;
 
 public class GetModel(
     BeamOsFastEndpointOptions options,
-    IQueryHandler<GetResourceByIdWithPropertiesQuery, ModelResponse> getResourceByIdQueryHandler,
-    IModelDataToResponseMapper modelDataToResponseMapper
+    IQueryHandler<GetResourceByIdWithPropertiesQuery, ModelResponse> getResourceByIdQueryHandler
 ) : BeamOsFastEndpoint<IdRequestWithProperties, ModelResponse?>(options)
 {
     public override string Route => "models/{id}";
@@ -27,7 +26,10 @@ public class GetModel(
     )
     {
         GetResourceByIdWithPropertiesQuery query =
-            new(Guid.Parse(req.Id), req.Properties?.ToHashSet());
+            new(
+                Guid.Parse(req.Id),
+                req.Properties?.Length > 0 ? req.Properties?.ToHashSet() : null
+            );
 
         return await getResourceByIdQueryHandler.ExecuteAsync(query, ct);
     }
