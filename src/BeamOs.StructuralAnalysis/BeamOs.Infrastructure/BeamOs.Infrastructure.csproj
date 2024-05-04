@@ -20,4 +20,10 @@
     <ProjectReference Include="..\BeamOs.Application\BeamOs.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>BeamOS.IntegrationTests.DirectStiffnessMethod</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
 </Project>
