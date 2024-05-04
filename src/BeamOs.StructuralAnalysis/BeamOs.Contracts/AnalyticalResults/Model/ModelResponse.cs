@@ -21,6 +21,13 @@ public record AnalyticalModelResponse2(
 //List<string> SectionProfileIds
 );
 
+public record AnalyticalModelResponse3(
+    List<AnalyticalNodeResponse> NodeResponses
+//List<string> Element1DIds,
+//List<string> MaterialIds,
+//List<string> SectionProfileIds
+);
+
 public record UnsupportedStructureDisplacementIdResponse(string AnalyticalNodeId, string Direction);
 
 public record ModelSettingsResponse(UnitSettingsResponse UnitSettings);

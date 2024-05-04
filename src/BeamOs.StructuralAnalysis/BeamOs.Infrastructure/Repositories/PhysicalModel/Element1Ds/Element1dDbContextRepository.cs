@@ -1,28 +1,23 @@
-using BeamOs.Application.Common.Interfaces;
+using BeamOs.Application.PhysicalModel.Element1dAggregate;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate.ValueObjects;
-using BeamOs.Infrastructure.Data.Models;
+using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.Infrastructure.Repositories.PhysicalModel.Element1Ds;
 
-internal class Element1dDbContextRepository(
-    BeamOsStructuralDbContext dbContext,
-    BeamOsStructuralReadModelDbContext readModelDbContext
-) : IRepository<Element1DId, Element1D>
+internal class Element1dDbContextRepository(BeamOsStructuralDbContext dbContext)
+    : RepositoryBase<Element1DId, Element1D>(dbContext),
+        IElement1dRepository
 {
-    public async Task Add(Element1D aggregate)
+    public async Task<List<Element1D>> GetElement1dsInModel(
+        ModelId modelId,
+        CancellationToken ct = default
+    )
     {
-        _ = await dbContext.Element1Ds.AddAsync(aggregate);
-        _ = await dbContext.SaveChangesAsync();
-    }
-
-    public async Task<Element1D?> GetById(Element1DId id)
-    {
-        var x = readModelDbContext.Element1Ds.Where(el => el.Id == id.Value).Take(1);
-
-        //var y = await x.Select(el => el.StartNode).Concat(x.Select(el => el.EndNode)).ToListAsync();
-
-        return await dbContext.Element1Ds.FirstOrDefaultAsync(el => el.Id == id);
+        return await this.DbContext
+            .Element1Ds
+            .Where(el => el.ModelId == modelId)
+            .ToListAsync(cancellationToken: ct);
     }
 }

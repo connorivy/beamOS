@@ -1,4 +1,4 @@
-using BeamOs.Application.Common.Models;
+using BeamOs.Application.Common.Mappers;
 using BeamOs.Application.PhysicalModel.Models.Interfaces;
 using BeamOs.Contracts.PhysicalModel.Model;
 using Riok.Mapperly.Abstractions;

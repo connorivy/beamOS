@@ -1,5 +1,6 @@
 using BeamOs.Domain.Common.Enums;
 using BeamOs.Domain.Common.Models;
+using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.PointLoadAggregate.ValueObjects;
 using MathNet.Spatial.Euclidean;
@@ -9,14 +10,22 @@ namespace BeamOs.Domain.PhysicalModel.PointLoadAggregate;
 
 public class PointLoad : AggregateRoot<PointLoadId>
 {
-    public PointLoad(NodeId nodeId, Force force, Vector3D direction, PointLoadId? id = null)
+    public PointLoad(
+        ModelId modelId,
+        NodeId nodeId,
+        Force force,
+        Vector3D direction,
+        PointLoadId? id = null
+    )
         : base(id ?? new())
     {
+        this.ModelId = modelId;
         this.NodeId = nodeId;
         this.Force = force;
         this.NormalizedDirection = direction;
     }
 
+    public ModelId ModelId { get; private set; }
     public NodeId NodeId { get; private set; }
     public Force Force { get; private set; }
     public Vector3D NormalizedDirection { get; private set; }
@@ -43,6 +52,7 @@ public class PointLoad : AggregateRoot<PointLoadId>
         return new(this.Force, this.NormalizedDirection);
     }
 
+    [Obsolete("EF Core Constructor", true)]
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private PointLoad() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

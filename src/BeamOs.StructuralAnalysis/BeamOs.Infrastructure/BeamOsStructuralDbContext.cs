@@ -1,5 +1,7 @@
 using BeamOs.Domain.Common.Utils;
 using BeamOs.Domain.Common.ValueObjects;
+using BeamOs.Domain.Diagrams.Common;
+using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate;
 using BeamOs.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.Domain.PhysicalModel.ModelAggregate;
@@ -18,9 +20,9 @@ namespace BeamOs.Infrastructure;
 
 /// <summary>
 /// Build migrations from folder location
-/// \beamOS\src\BeamOS.WebApp\BeamOS.WebApp\
+/// \beamOS\src\BeamOs.StructuralAnalysis\BeamOs.Api\
 /// with the command
-/// dotnet ef migrations add Initial --project ..\..\BeamOs.StructuralAnalysis\BeamOs.Infrastructure\
+/// dotnet ef migrations add Initial --project ..\..\BeamOs.StructuralAnalysis\BeamOs.Infrastructure\ --context BeamOsStructuralDbContext
 /// </summary>
 public class BeamOsStructuralDbContext : DbContext
 {
@@ -37,6 +39,10 @@ public class BeamOsStructuralDbContext : DbContext
     public DbSet<SectionProfile> SectionProfiles { get; set; }
     public DbSet<PointLoad> PointLoads { get; set; }
     public DbSet<MomentLoad> MomentLoads { get; set; }
+
+    //public DbSet<ShearForceDiagram> ShearForceDiagrams { get; set; }
+
+    //public DbSet<DiagramConsistantInterval> DiagramConsistantIntervals { get; set; }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
@@ -278,12 +284,14 @@ public class BeamOsStructuralDbContext : DbContext
         );
 
         var pl1 = new PointLoad(
+            new ModelId(TypedGuids.G0),
             node1.Id,
             new Force(150, ForceUnit.KilopoundForce),
             new Vector3D(1, 0, 0)
         );
 
         var pl2 = new PointLoad(
+            new ModelId(TypedGuids.G0),
             node1.Id,
             new Force(300, ForceUnit.KilopoundForce),
             new Vector3D(0, -1, 0)

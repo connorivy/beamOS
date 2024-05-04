@@ -33,6 +33,19 @@ public class PointLoadData : BeamOSValueObject
         };
     }
 
+    public Force GetForceInLocalAxisDirection(LinearCoordinateDirection3D direction)
+    {
+        return direction switch
+        {
+            LinearCoordinateDirection3D.AlongX => this.Force * this.NormalizedDirection.X,
+            LinearCoordinateDirection3D.AlongY => this.Force * this.NormalizedDirection.Y,
+            LinearCoordinateDirection3D.AlongZ => this.Force * this.NormalizedDirection.Z,
+            LinearCoordinateDirection3D.Undefined
+                => throw new ArgumentException("Unexpected value for direction, Undefined"),
+            _ => throw new NotImplementedException(),
+        };
+    }
+
     public Force GetForceInDirection(Vector3D direction)
     {
         // magnitude of projection of A onto B = (A . B) / | B |

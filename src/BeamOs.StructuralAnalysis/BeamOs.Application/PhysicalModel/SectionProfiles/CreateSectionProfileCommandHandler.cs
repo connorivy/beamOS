@@ -1,4 +1,5 @@
 using BeamOs.Application.Common.Interfaces;
+using BeamOs.Application.Common.Interfaces.Repositories;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate.ValueObjects;
 using Riok.Mapperly.Abstractions;
@@ -6,17 +7,20 @@ using Riok.Mapperly.Abstractions;
 namespace BeamOs.Application.PhysicalModel.SectionProfiles;
 
 public class CreateSectionProfileCommandHandler(
-    IRepository<SectionProfileId, SectionProfile> sectionProfileRepository
+    IRepository<SectionProfileId, SectionProfile> sectionProfileRepository,
+    IUnitOfWork unitOfWork
 ) : ICommandHandler<CreateSectionProfileCommand, SectionProfile>
 {
     public async Task<SectionProfile> ExecuteAsync(
         CreateSectionProfileCommand command,
-        CancellationToken ct
+        CancellationToken ct = default
     )
     {
         var load = command.ToDomainObject();
 
-        await sectionProfileRepository.Add(load);
+        sectionProfileRepository.Add(load);
+
+        await unitOfWork.SaveChangesAsync(ct);
 
         return load;
     }

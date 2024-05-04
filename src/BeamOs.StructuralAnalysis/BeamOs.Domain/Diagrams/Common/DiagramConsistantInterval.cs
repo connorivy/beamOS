@@ -11,20 +11,20 @@ public sealed class DiagramConsistantInterval : BeamOSEntity<DiagramConsistantIn
     public DiagramConsistantInterval(
         Length startLocation,
         Length endLocation,
-        Polynomial polynomialDescription,
+        Polynomial polynomial,
         DiagramConsistantIntervalId? id = null
     )
         : base(id ?? new())
     {
         this.StartLocation = startLocation;
         this.EndLocation = endLocation;
-        this.PolynomialDescription = polynomialDescription;
+        this.Polynomial = polynomial;
         this.LengthUnit = startLocation.Unit;
     }
 
     public Length StartLocation { get; set; }
     public Length EndLocation { get; set; }
-    public Polynomial PolynomialDescription { get; set; }
+    public Polynomial Polynomial { get; set; }
     public LengthUnit LengthUnit { get; set; }
 
     public double EvalutateAtLocation(Length location)
@@ -34,7 +34,7 @@ public sealed class DiagramConsistantInterval : BeamOSEntity<DiagramConsistantIn
             throw new Exception("Out of bounds my guy");
         }
 
-        return this.PolynomialDescription.Evaluate(location.As(this.LengthUnit));
+        return this.Polynomial.Evaluate(location.As(this.LengthUnit));
     }
 
     public Length Length => this.EndLocation - this.StartLocation;

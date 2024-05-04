@@ -10,13 +10,10 @@
 @using Microsoft.AspNetCore.Identity.Data
 @using System.Text
 @using System.Text.Json
-@using BeamOs.Identity.Client
 
 @rendermode InteractiveServer
 
 @inject NavigationManager NavigationManager
-@inject IIdentityAlphaClient identityClient
-@inject IUriProvider uriProvider
 
 <PageTitle>Log in</PageTitle>
 
@@ -85,43 +82,23 @@
 
     protected override void OnParametersSet()
     {
-        // UriHelper.FromAbsolute(NavigationManager.BaseUri, out string scheme, out HostString host, out _, out _, out _);
-        IEnumerable<KeyValuePair<string, StringValues>> query =
-        [
-            new("ReturnUrl", ReturnUrl ?? NavigationManager.BaseUri)
-        ];
-        // FullExternalLoginReturnUrl = UriHelper.BuildAbsolute(
-        //     scheme,
-        //     host,
-        //     path: new PathString("/auth-state-changed"),
-        //     query: QueryString.Create(query));
+        // IEnumerable<KeyValuePair<string, StringValues>> query =
+        // [
+        //     new("ReturnUrl", ReturnUrl ?? NavigationManager.BaseUri)
+        // ];
 
-        FullExternalLoginReturnUrl = uriProvider.WebApp.Build("/auth-state-changed", query);
+        // FullExternalLoginReturnUrl = uriProvider.WebApp.Build("/auth-state-changed", query);
     }
 
     private void LoginWithGoogle()
     {
-        // hack until i can figure out something better
-        // ping the server to find out its uri
-        // var url = await identityClient.PingAsync(string.Empty);
+        // IEnumerable<KeyValuePair<string, StringValues>> query =
+        // [
+        //     new("ReturnUrl", FullExternalLoginReturnUrl)
+        // ];
 
-        // UriHelper.FromAbsolute(url, out string scheme, out HostString host, out _, out _, out _);
-        IEnumerable<KeyValuePair<string, StringValues>> query =
-        [
-            new("ReturnUrl", FullExternalLoginReturnUrl)
-        ];
+        // var loginWithGoogleUri = uriProvider.Identity.Build("/login-with-google", query);
 
-        // var loginWithGoogleUri = UriHelper.BuildAbsolute(
-        //     scheme,
-        //     host,
-        //     path: new PathString("/login-with-google"),
-        //     query: QueryString.Create(query));
-        var loginWithGoogleUri = uriProvider.Identity.Build("/login-with-google", query);
-
-        // var client = httpClientFactory.CreateClient("IdentityClient");
-        // var response = await client.GetAsync(loginWithGoogleUri);
-        // var contents = await response.Content.ReadAsStringAsync();
-
-        NavigationManager.NavigateTo(loginWithGoogleUri);
+        // NavigationManager.NavigateTo(loginWithGoogleUri);
     }
 }

@@ -24,7 +24,7 @@ public class CreateNode(
                     0.0,
                     10.0,
                     "Foot",
-                    new RestraintsRequest(false, false, false, false, false, false)
+                    new RestraintRequest(false, false, false, false, false, false)
                 )
         );
     }

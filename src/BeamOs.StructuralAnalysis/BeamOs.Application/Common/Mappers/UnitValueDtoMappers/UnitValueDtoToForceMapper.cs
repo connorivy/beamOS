@@ -11,6 +11,12 @@ public static partial class StringToForceUnitMapper
     public static partial ForceUnit MapToForceUnit(this string unit);
 }
 
+[Mapper]
+public static partial class ForceUnitToStringMapper
+{
+    public static partial string MapToString(this ForceUnit unit);
+}
+
 public static class UnitValueDtoToForceMapper
 {
     public static Force MapToForce(this UnitValueDto dto)

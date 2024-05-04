@@ -2,13 +2,12 @@ using BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Extensions;
 using BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Factories;
 using BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Fixtures.AnalyticalElement1Ds;
 using BeamOs.Domain.Common.ValueObjects;
-using BeamOs.Domain.DirectStiffnessMethod.AnalyticalElement1DAggregate;
-using BeamOs.Domain.DirectStiffnessMethod.AnalyticalElement1DAggregate.ValueObjects;
-using BeamOs.Domain.DirectStiffnessMethod.AnalyticalModelAggregate.ValueObjects;
+using BeamOs.Domain.DirectStiffnessMethod;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Throw;
 using UnitsNet;
+using UnitsNet.Units;
 
 namespace BeamOS.DirectStiffnessMethod.Domain.UnitTests.Element1DAggregate;
 
@@ -36,7 +35,8 @@ public partial class Element1DTests
     [Fact]
     public void GetStiffnessMatrix_WithAllUnitValue_ShouldEqualCoefficients()
     {
-        AnalyticalElement1D element = Element1DFactory.Create();
+        //AnalyticalElement1D element = Element1DFactory.Create();
+        DsmElement1d element = DsmElement1dFactory.CreateWithUnitSiValues();
 
         Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix(
             UnitSettings.SI.ForceUnit,
@@ -67,10 +67,13 @@ public partial class Element1DTests
     [Fact]
     public void GetStiffnessMatrix_WithIsolatedEVariable_ShouldEqualExpectedValue()
     {
-        Material material = MaterialFactory.Create(
-            modulusOfElasticity: new Pressure(5, UnitSystem.SI)
+        //Material material = MaterialFactory.Create(
+        //    modulusOfElasticity: new Pressure(5, UnitSystem.SI)
+        //);
+        //AnalyticalElement1D element = Element1DFactory.Create(material: material);
+        DsmElement1d element = DsmElement1dFactory.CreateWithUnitSiValues(
+            modulusOfElasticity: new(5, UnitSystem.SI)
         );
-        AnalyticalElement1D element = Element1DFactory.Create(material: material);
 
         Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix(
             UnitSettings.SI.ForceUnit,
@@ -101,10 +104,13 @@ public partial class Element1DTests
     [Fact]
     public void GetStiffnessMatrix_WithIsolatedGVariable_ShouldEqualExpectedValue()
     {
-        Material material = MaterialFactory.Create(
-            modulusOfRigidity: new Pressure(5, UnitSystem.SI)
+        //Material material = MaterialFactory.Create(
+        //    modulusOfRigidity: new Pressure(5, UnitSystem.SI)
+        //);
+        //AnalyticalElement1D element = Element1DFactory.Create(material: material);
+        DsmElement1d element = DsmElement1dFactory.CreateWithUnitSiValues(
+            modulusOfRigidity: new(5, UnitSystem.SI)
         );
-        AnalyticalElement1D element = Element1DFactory.Create(material: material);
 
         Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix(
             UnitSettings.SI.ForceUnit,
@@ -135,8 +141,11 @@ public partial class Element1DTests
     [Fact]
     public void GetStiffnessMatrix_WithIsolatedAVariable_ShouldEqualExpectedValue()
     {
-        SectionProfile section = SectionProfileFactory.CreateSI(area: new Area(5, UnitSystem.SI));
-        AnalyticalElement1D element = Element1DFactory.Create(sectionProfile: section);
+        //SectionProfile section = SectionProfileFactory.CreateSI(area: new Area(5, UnitSystem.SI));
+        //AnalyticalElement1D element = Element1DFactory.Create(sectionProfile: section);
+        DsmElement1d element = DsmElement1dFactory.CreateWithUnitSiValues(
+            area: new(5, UnitSystem.SI)
+        );
 
         Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix(
             UnitSettings.SI.ForceUnit,
@@ -167,10 +176,13 @@ public partial class Element1DTests
     [Fact]
     public void GetStiffnessMatrix_WithIsolatedIStrongVariable_ShouldEqualExpectedValue()
     {
-        SectionProfile section = SectionProfileFactory.CreateSI(
-            strongAxisMomentOfInertia: new AreaMomentOfInertia(5, UnitSystem.SI)
+        //SectionProfile section = SectionProfileFactory.CreateSI(
+        //    strongAxisMomentOfInertia: new AreaMomentOfInertia(5, UnitSystem.SI)
+        //);
+        //AnalyticalElement1D element = Element1DFactory.Create(sectionProfile: section);
+        DsmElement1d element = DsmElement1dFactory.CreateWithUnitSiValues(
+            strongAxisMomentOfInertia: new(5, UnitSystem.SI)
         );
-        AnalyticalElement1D element = Element1DFactory.Create(sectionProfile: section);
 
         Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix(
             UnitSettings.SI.ForceUnit,
@@ -201,10 +213,13 @@ public partial class Element1DTests
     [Fact]
     public void GetStiffnessMatrix_WithIsolatedIWeakVariable_ShouldEqualExpectedValue()
     {
-        SectionProfile section = SectionProfileFactory.CreateSI(
-            weakAxisMomentOfInertia: new AreaMomentOfInertia(5, UnitSystem.SI)
+        //SectionProfile section = SectionProfileFactory.CreateSI(
+        //    weakAxisMomentOfInertia: new AreaMomentOfInertia(5, UnitSystem.SI)
+        //);
+        //AnalyticalElement1D element = Element1DFactory.Create(sectionProfile: section);
+        DsmElement1d element = DsmElement1dFactory.CreateWithUnitSiValues(
+            weakAxisMomentOfInertia: new(5, UnitSystem.SI)
         );
-        AnalyticalElement1D element = Element1DFactory.Create(sectionProfile: section);
 
         Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix(
             UnitSettings.SI.ForceUnit,
@@ -235,10 +250,13 @@ public partial class Element1DTests
     [Fact]
     public void GetStiffnessMatrix_WithIsolatedJVariable_ShouldEqualExpectedValue()
     {
-        SectionProfile section = SectionProfileFactory.CreateSI(
-            polarMomentOfInertia: new AreaMomentOfInertia(5, UnitSystem.SI)
+        //SectionProfile section = SectionProfileFactory.CreateSI(
+        //    polarMomentOfInertia: new AreaMomentOfInertia(5, UnitSystem.SI)
+        //);
+        //AnalyticalElement1D element = Element1DFactory.Create(sectionProfile: section);
+        DsmElement1d element = DsmElement1dFactory.CreateWithUnitSiValues(
+            polarMomentOfInertia: new(5, UnitSystem.SI)
         );
-        AnalyticalElement1D element = Element1DFactory.Create(sectionProfile: section);
 
         Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix(
             UnitSettings.SI.ForceUnit,
@@ -269,9 +287,12 @@ public partial class Element1DTests
     [Fact]
     public void GetStiffnessMatrix_WithIsolatedLVariable_ShouldEqualExpectedValue()
     {
-        AnalyticalElement1D element = Element1DFactory.Create(
-            startNode: new(0, 0, 0, UnitsNet.Units.LengthUnit.Meter, Restraint.Free),
-            endNode: new(5, 0, 0, UnitsNet.Units.LengthUnit.Meter, Restraint.Free)
+        //AnalyticalElement1D element = Element1DFactory.Create(
+        //    startNode: new(0, 0, 0, UnitsNet.Units.LengthUnit.Meter, Restraint.Free),
+        //    endNode: new(5, 0, 0, UnitsNet.Units.LengthUnit.Meter, Restraint.Free)
+        //);
+        DsmElement1d element = DsmElement1dFactory.CreateWithUnitSiValues(
+            baseLine: new(0, 0, 0, 5, 0, 0, LengthUnit.Meter)
         );
 
         Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix(

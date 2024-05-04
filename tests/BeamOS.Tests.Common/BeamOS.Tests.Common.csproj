@@ -14,4 +14,10 @@
     <PackageReference Include="xunit.runner.visualstudio" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\BeamOs.StructuralAnalysis\BeamOs.ApiClient\BeamOs.ApiClient.csproj" />
+    <ProjectReference Include="..\..\src\BeamOs.StructuralAnalysis\BeamOs.Contracts\BeamOs.Contracts.csproj" />
+    <ProjectReference Include="..\..\src\BeamOs.StructuralAnalysis\BeamOs.Domain\BeamOs.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

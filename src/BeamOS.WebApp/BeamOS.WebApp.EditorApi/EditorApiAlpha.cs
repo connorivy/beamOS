@@ -51,12 +51,12 @@ namespace BeamOS.WebApp.EditorApi
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<string> CreateElement1dAsync(Element1dResponseHydrated element1DResponse);
+        System.Threading.Tasks.Task<string> CreateElement1dAsync(Element1DResponse element1DResponse);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<string> CreateElement1dAsync(Element1dResponseHydrated element1DResponse, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<string> CreateElement1dAsync(Element1DResponse element1DResponse, System.Threading.CancellationToken cancellationToken);
 
     }
 
@@ -270,7 +270,7 @@ namespace BeamOS.WebApp.EditorApi
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<string> CreateElement1dAsync(Element1dResponseHydrated element1DResponse)
+        public virtual System.Threading.Tasks.Task<string> CreateElement1dAsync(Element1DResponse element1DResponse)
         {
             return CreateElement1dAsync(element1DResponse, System.Threading.CancellationToken.None);
         }
@@ -278,7 +278,7 @@ namespace BeamOS.WebApp.EditorApi
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<string> CreateElement1dAsync(Element1dResponseHydrated element1DResponse, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<string> CreateElement1dAsync(Element1DResponse element1DResponse, System.Threading.CancellationToken cancellationToken)
         {
             if (element1DResponse == null)
                 throw new System.ArgumentNullException("element1DResponse");

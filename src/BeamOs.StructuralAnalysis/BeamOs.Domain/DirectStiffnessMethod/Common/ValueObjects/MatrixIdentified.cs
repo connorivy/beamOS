@@ -1,8 +1,8 @@
-using BeamOs.Domain.DirectStiffnessMethod.DsmNodeAggregate.ValueObjects;
+using BeamOs.Domain.AnalyticalResults.Common.ValueObjects;
 
 namespace BeamOs.Domain.DirectStiffnessMethod.Common.ValueObjects;
 
 public class MatrixIdentified(
-    List<UnsupportedStructureDisplacementId> identifiers,
+    List<UnsupportedStructureDisplacementId2> identifiers,
     double[,]? values = null
-) : MatrixIdentifiedGeneric<UnsupportedStructureDisplacementId>(identifiers, values) { }
+) : MatrixIdentifiedGeneric<UnsupportedStructureDisplacementId2>(identifiers, values) { }

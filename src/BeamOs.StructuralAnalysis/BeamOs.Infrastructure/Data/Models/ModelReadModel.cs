@@ -10,13 +10,15 @@ namespace BeamOs.Infrastructure.Data.Models;
 
 internal sealed class ModelReadModel : BeamOSEntity<Guid>, IModelData
 {
-    public string? Name { get; private set; }
-    public string? Description { get; private set; }
-    public ModelSettings Settings { get; private set; }
-    public List<NodeReadModel>? Nodes { get; private set; }
-    public List<Element1dReadModel>? Element1ds { get; private set; }
-    public List<MaterialReadModel>? Materials { get; private set; }
-    public List<SectionProfileReadModel>? SectionProfiles { get; private set; }
+    public string? Name { get; internal set; }
+    public string? Description { get; internal set; }
+    public ModelSettings Settings { get; internal set; }
+    public List<NodeReadModel>? Nodes { get; internal set; }
+    public List<Element1dReadModel>? Element1ds { get; internal set; }
+    public List<MaterialReadModel>? Materials { get; internal set; }
+    public List<SectionProfileReadModel>? SectionProfiles { get; internal set; }
+    public List<PointLoadReadModel>? PointLoads { get; internal set; }
+    public List<MomentLoadReadModel>? MomentLoads { get; internal set; }
 
     List<INodeData>? IModelData.Nodes => this.Nodes?.ToList<INodeData>();
 
@@ -26,6 +28,4 @@ internal sealed class ModelReadModel : BeamOSEntity<Guid>, IModelData
 
     List<ISectionProfileData>? IModelData.SectionProfiles =>
         this.SectionProfiles?.ToList<ISectionProfileData>();
-    //public List<PointLoadReadModel>? PointLoads { get; private set; }
-    //public List<MomentLoadReadModel>? MomentLoads { get; private set; }
 }

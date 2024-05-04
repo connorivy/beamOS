@@ -19,6 +19,12 @@ public static class BeamOSEntityExtensions
     )
     {
         int code = entity.GetHashCode();
+
+        if (code == -1233034319)
+        {
+            ;
+        }
+
         if (visitedObjectHashCodes.Contains(code))
         {
             return;
