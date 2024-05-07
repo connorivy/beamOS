@@ -23,4 +23,13 @@ public static class UnitValueDtoToAngleMapper
     {
         return new(dto.Value, dto.Unit.MapToAngleUnit());
     }
+
+    public static UnitValueDto ToDto(this Angle value, AngleUnit? unitOverride = null)
+    {
+        if (unitOverride is not null)
+        {
+            return new(value.As(unitOverride.Value), unitOverride.Value.MapToString());
+        }
+        return new(value.Value, value.Unit.MapToString());
+    }
 }

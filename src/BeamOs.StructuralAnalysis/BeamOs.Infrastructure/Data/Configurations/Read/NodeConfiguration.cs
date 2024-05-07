@@ -23,6 +23,12 @@ internal class NodeReadModelConfiguration : IEntityTypeConfiguration<NodeReadMod
             .WithOne(m => m.Node)
             .HasForeignKey(el => el.NodeId)
             .IsRequired();
+
+        _ = builder
+            .HasOne(n => n.NodeResult)
+            .WithOne(m => m.Node)
+            .HasForeignKey<NodeResultReadModel>(el => el.NodeId)
+            .IsRequired();
     }
 }
 

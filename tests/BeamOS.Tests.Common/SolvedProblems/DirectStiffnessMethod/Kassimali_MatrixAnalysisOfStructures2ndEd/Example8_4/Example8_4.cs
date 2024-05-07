@@ -1,3 +1,4 @@
+using BeamOs.Api.Common.Mappers;
 using BeamOs.ApiClient;
 using BeamOs.Contracts.Common;
 using BeamOs.Contracts.PhysicalModel.Element1d;
@@ -7,6 +8,8 @@ using BeamOs.Contracts.PhysicalModel.MomentLoad;
 using BeamOs.Contracts.PhysicalModel.Node;
 using BeamOs.Contracts.PhysicalModel.PointLoad;
 using BeamOs.Contracts.PhysicalModel.SectionProfile;
+using BeamOs.Domain.DirectStiffnessMethod;
+using UnitsNet;
 
 namespace BeamOS.Tests.Common.SolvedProblems.DirectStiffnessMethod.Kassimali_MatrixAnalysisOfStructures2ndEd.Example8_4;
 

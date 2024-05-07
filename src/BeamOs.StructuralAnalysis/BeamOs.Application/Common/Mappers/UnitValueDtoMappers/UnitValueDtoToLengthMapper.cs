@@ -27,7 +27,7 @@ public static partial class LengthUnitToStringMapper
 
 public static class LengthToUnitValueDtoMapperMapper
 {
-    public static UnitValueDto MapToUnitValueDto(this Length value, LengthUnit unit)
+    public static UnitValueDto ToDto(this Length value, LengthUnit unit)
     {
         return new(value.As(unit), unit.MapToString());
     }

@@ -1,3 +1,5 @@
+using BeamOs.Domain.AnalyticalResults.NodeResultAggregate;
+using BeamOs.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.Domain.PhysicalModel.PointLoadAggregate;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +11,13 @@ public class NodeConfiguration : IEntityTypeConfiguration<Node>
 {
     public void Configure(EntityTypeBuilder<Node> builder)
     {
-        builder.HasMany<PointLoad>().WithOne().HasForeignKey(pl => pl.NodeId).IsRequired();
+        builder.HasMany<PointLoad>().WithOne().HasForeignKey(el => el.NodeId).IsRequired();
+        builder.HasMany<MomentLoad>().WithOne().HasForeignKey(el => el.NodeId).IsRequired();
+        builder
+            .HasOne<NodeResult>()
+            .WithOne()
+            .HasForeignKey<NodeResult>(el => el.NodeId)
+            .IsRequired();
 
         // needed for some reason?
         builder.ComplexProperty(n => n.Restraint);

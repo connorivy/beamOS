@@ -11,4 +11,5 @@ internal sealed class NodeReadModel : BeamOSEntity<Guid>, INodeData
     public Restraint Restraint { get; private set; }
     public List<PointLoadReadModel>? PointLoads { get; private set; }
     public List<MomentLoadReadModel>? MomentLoads { get; private set; }
+    public NodeResultReadModel? NodeResult { get; private set; }
 }

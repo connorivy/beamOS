@@ -22,6 +22,25 @@ public sealed class Displacements : CoordinateDirectionBase<Length, Angle>
             rotationAboutZ
         ) { }
 
+    public Displacements(
+        double displacementAlongX,
+        double displacementAlongY,
+        double displacementAlongZ,
+        double rotationAboutX,
+        double rotationAboutY,
+        double rotationAboutZ,
+        LengthUnit lengthUnit,
+        AngleUnit angleUnit
+    )
+        : this(
+            new(displacementAlongX, lengthUnit),
+            new(displacementAlongY, lengthUnit),
+            new(displacementAlongZ, lengthUnit),
+            new(rotationAboutX, angleUnit),
+            new(rotationAboutY, angleUnit),
+            new(rotationAboutZ, angleUnit)
+        ) { }
+
     public Length DisplacementAlongX => this.AlongX;
     public Length DisplacementAlongY => this.AlongY;
     public Length DisplacementAlongZ => this.AlongZ;

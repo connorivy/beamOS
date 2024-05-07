@@ -65,7 +65,7 @@ public class RunDirectStiffnessMethodCommandHandler(
             await materialRepository.GetMaterialsInModel(command.ModelId, ct)
         ).ToDictionary(m => m.Id, m => m);
 
-        var dsmNodes = nodes.Select(
+        IEnumerable<DsmNodeVo> dsmNodes = nodes.Select(
             n =>
                 new DsmNodeVo(
                     n.Id,
@@ -76,7 +76,7 @@ public class RunDirectStiffnessMethodCommandHandler(
                 )
         );
 
-        var dsmElement1ds = element1ds.Select(
+        IEnumerable<DsmElement1d> dsmElement1ds = element1ds.Select(
             el =>
                 new DsmElement1d(
                     el.SectionProfileRotation,
@@ -87,6 +87,11 @@ public class RunDirectStiffnessMethodCommandHandler(
                 )
         );
 
-        return DirectStiffnessMethodSolver.RunAnalysis(unitSettings, dsmElement1ds, dsmNodes);
+        return DirectStiffnessMethodSolver.RunAnalysis(
+            command.ModelId,
+            unitSettings,
+            dsmElement1ds,
+            dsmNodes
+        );
     }
 }

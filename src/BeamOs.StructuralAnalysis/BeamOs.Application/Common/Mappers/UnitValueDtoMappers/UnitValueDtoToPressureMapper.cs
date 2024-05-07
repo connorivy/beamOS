@@ -23,4 +23,13 @@ public static class UnitValueDtoToPressureMapper
     {
         return new(dto.Value, dto.Unit.MapToPressureUnit());
     }
+
+    public static UnitValueDto ToDto(this Pressure value, PressureUnit? unitOverride = null)
+    {
+        if (unitOverride is not null)
+        {
+            return new(value.As(unitOverride.Value), unitOverride.Value.MapToString());
+        }
+        return new(value.Value, value.Unit.MapToString());
+    }
 }

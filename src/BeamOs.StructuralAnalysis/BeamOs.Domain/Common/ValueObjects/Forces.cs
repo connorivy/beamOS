@@ -1,3 +1,4 @@
+using MathNet.Spatial.Units;
 using UnitsNet;
 using UnitsNet.Units;
 
@@ -14,6 +15,25 @@ public class Forces : CoordinateDirectionBase<Force, Torque>
         Torque momentAboutZ
     )
         : base(forceAlongX, forceAlongY, forceAlongZ, momentAboutX, momentAboutY, momentAboutZ) { }
+
+    public Forces(
+        double forceAlongX,
+        double forceAlongY,
+        double forceAlongZ,
+        double momentAboutX,
+        double momentAboutY,
+        double momentAboutZ,
+        ForceUnit forceUnit,
+        TorqueUnit torqueUnit
+    )
+        : this(
+            new(forceAlongX, forceUnit),
+            new(forceAlongY, forceUnit),
+            new(forceAlongZ, forceUnit),
+            new(momentAboutX, torqueUnit),
+            new(momentAboutY, torqueUnit),
+            new(momentAboutZ, torqueUnit)
+        ) { }
 
     public Force ForceAlongX => this.AlongX;
     public Force ForceAlongY => this.AlongY;

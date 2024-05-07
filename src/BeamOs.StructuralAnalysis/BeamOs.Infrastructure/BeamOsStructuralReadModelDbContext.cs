@@ -28,6 +28,7 @@ internal class BeamOsStructuralReadModelDbContext : DbContext
     public DbSet<SectionProfileReadModel> SectionProfiles { get; set; }
     public DbSet<PointLoadReadModel> PointLoads { get; set; }
     public DbSet<MomentLoadReadModel> MomentLoads { get; set; }
+    public DbSet<NodeResultReadModel> NodeResults { get; set; }
 
     //public DbSet<ShearForceDiagramReadModel> ShearForceDiagrams { get; set; }
     //public DbSet<DiagramConsistantInterval> DiagramConsistantIntervals { get; set; }

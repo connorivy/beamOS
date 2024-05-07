@@ -23,4 +23,9 @@ public static class UnitValueDtoToForcePerLengthMapper
     {
         return new(dto.Value, dto.Unit.MapToForcePerLengthUnit());
     }
+
+    public static UnitValueDto ToDto(this ForcePerLength value, ForcePerLengthUnit unit)
+    {
+        return new(value.As(unit), unit.MapToString());
+    }
 }

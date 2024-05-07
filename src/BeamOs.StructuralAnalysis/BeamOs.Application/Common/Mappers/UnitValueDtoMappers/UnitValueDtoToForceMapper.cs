@@ -23,4 +23,9 @@ public static class UnitValueDtoToForceMapper
     {
         return new(dto.Value, dto.Unit.MapToForceUnit());
     }
+
+    public static UnitValueDto ToDto(this Force value, ForceUnit unit)
+    {
+        return new(value.As(unit), unit.MapToString());
+    }
 }

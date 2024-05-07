@@ -23,4 +23,16 @@ public static class UnitValueDtoToAreaMomentOfInertiaMapper
     {
         return new(dto.Value, dto.Unit.MapToAreaMomentOfInertiaUnit());
     }
+
+    public static UnitValueDto ToDto(
+        this AreaMomentOfInertia value,
+        AreaMomentOfInertiaUnit? unitOverride = null
+    )
+    {
+        if (unitOverride is not null)
+        {
+            return new(value.As(unitOverride.Value), unitOverride.Value.MapToString());
+        }
+        return new(value.Value, value.Unit.MapToString());
+    }
 }

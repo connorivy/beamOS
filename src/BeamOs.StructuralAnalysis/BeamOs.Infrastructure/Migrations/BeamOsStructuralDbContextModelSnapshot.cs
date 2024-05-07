@@ -69,6 +69,8 @@ namespace BeamOs.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ModelId");
+
                     b.ToTable("Materials");
                 });
 
@@ -146,6 +148,8 @@ namespace BeamOs.Infrastructure.Migrations
                         .HasColumnType("float");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("NodeId");
 
                     b.ToTable("MomentLoads");
                 });
@@ -249,6 +253,8 @@ namespace BeamOs.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ModelId");
+
                     b.ToTable("SectionProfiles");
                 });
 
@@ -257,6 +263,24 @@ namespace BeamOs.Infrastructure.Migrations
                     b.HasOne("BeamOs.Domain.PhysicalModel.ModelAggregate.Model", null)
                         .WithMany()
                         .HasForeignKey("ModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("BeamOs.Domain.PhysicalModel.MaterialAggregate.Material", b =>
+                {
+                    b.HasOne("BeamOs.Domain.PhysicalModel.ModelAggregate.Model", null)
+                        .WithMany()
+                        .HasForeignKey("ModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("BeamOs.Domain.PhysicalModel.MomentLoadAggregate.MomentLoad", b =>
+                {
+                    b.HasOne("BeamOs.Domain.PhysicalModel.NodeAggregate.Node", null)
+                        .WithMany()
+                        .HasForeignKey("NodeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -275,6 +299,15 @@ namespace BeamOs.Infrastructure.Migrations
                     b.HasOne("BeamOs.Domain.PhysicalModel.NodeAggregate.Node", null)
                         .WithMany()
                         .HasForeignKey("NodeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("BeamOs.Domain.PhysicalModel.SectionProfileAggregate.SectionProfile", b =>
+                {
+                    b.HasOne("BeamOs.Domain.PhysicalModel.ModelAggregate.Model", null)
+                        .WithMany()
+                        .HasForeignKey("ModelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

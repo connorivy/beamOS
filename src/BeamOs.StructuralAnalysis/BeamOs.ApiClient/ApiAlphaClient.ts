@@ -51,6 +51,11 @@ export interface IApiAlphaClient {
     createModel(createModelRequest: CreateModelRequest): Promise<ModelResponse>;
 
     /**
+     * @return Success
+     */
+    deleteModel(id: string | null): Promise<boolean>;
+
+    /**
      * @param properties (optional) 
      * @return Success
      */
@@ -425,6 +430,47 @@ export class ApiAlphaClient implements IApiAlphaClient {
             });
         }
         return Promise.resolve<ModelResponse>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    deleteModel(id: string | null): Promise<boolean> {
+        let url_ = this.baseUrl + "/api/models/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeleteModel(_response);
+        });
+    }
+
+    protected processDeleteModel(response: Response): Promise<boolean> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<boolean>(null as any);
     }
 
     /**
@@ -2030,6 +2076,7 @@ export class CreateModelRequest implements ICreateModelRequest {
     name!: string;
     description!: string;
     settings!: PhysicalModelSettingsDto;
+    id?: string | undefined;
 
     constructor(data?: ICreateModelRequest) {
         if (data) {
@@ -2048,6 +2095,7 @@ export class CreateModelRequest implements ICreateModelRequest {
             this.name = _data["name"];
             this.description = _data["description"];
             this.settings = _data["settings"] ? PhysicalModelSettingsDto.fromJS(_data["settings"]) : new PhysicalModelSettingsDto();
+            this.id = _data["id"];
         }
     }
 
@@ -2063,6 +2111,7 @@ export class CreateModelRequest implements ICreateModelRequest {
         data["name"] = this.name;
         data["description"] = this.description;
         data["settings"] = this.settings ? this.settings.toJSON() : <any>undefined;
+        data["id"] = this.id;
         return data;
     }
 }
@@ -2071,6 +2120,7 @@ export interface ICreateModelRequest {
     name: string;
     description: string;
     settings: PhysicalModelSettingsDto;
+    id?: string | undefined;
 }
 
 export class PhysicalModelSettingsDto implements IPhysicalModelSettingsDto {
