@@ -4,7 +4,7 @@ using UnitsNet.Units;
 
 namespace BeamOS.Tests.Common.SolvedProblems.DirectStiffnessMethod.Kassimali_MatrixAnalysisOfStructures2ndEd.Example8_4;
 
-internal class Nodes
+public class Nodes
 {
     public static NodeFixture Node1 { get; } =
         new(new Point(0, 0, 0, LengthUnit.Foot), Restraint.Free);
@@ -63,7 +63,7 @@ internal class Nodes
 
     public static NodeResultFixture Node3ExpectedResult { get; } =
         new(
-            Node2,
+            Node3,
             new Forces(
                 -4.6249,
                 11.117,
@@ -79,7 +79,7 @@ internal class Nodes
 
     public static NodeResultFixture Node4ExpectedResult { get; } =
         new(
-            Node2,
+            Node4,
             new Forces(
                 -0.75082,
                 4.7763,
@@ -92,7 +92,4 @@ internal class Nodes
             ),
             new Displacements(0, 0, 0, 0, 0, 0, LengthUnit.Inch, AngleUnit.Radian)
         );
-
-    public static Dictionary<NodeFixture, NodeResultFixture> NodeToResultMap { get; } =
-        new() { { Node1, Node1ExpectedResult } };
 }

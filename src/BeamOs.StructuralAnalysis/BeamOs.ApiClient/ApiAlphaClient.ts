@@ -13,7 +13,7 @@ export interface IApiAlphaClient {
     /**
      * @return Success
      */
-    runDirectStiffnessMethod3(id: string | null): Promise<AnalyticalModelResponse3>;
+    runDirectStiffnessMethod(idRequest: IdRequest): Promise<AnalyticalModelResponse3>;
 
     /**
      * @return Success
@@ -24,16 +24,6 @@ export interface IApiAlphaClient {
      * @return Success
      */
     createPointLoad(createPointLoadRequest: CreatePointLoadRequest): Promise<PointLoadResponse>;
-
-    /**
-     * @return Success
-     */
-    createNode(createNodeRequest: CreateNodeRequest): Promise<NodeResponse>;
-
-    /**
-     * @return Success
-     */
-    getSingleNode(id: string | null): Promise<NodeResponse>;
 
     /**
      * @return Success
@@ -73,6 +63,22 @@ export interface IApiAlphaClient {
     createMaterial(createMaterialRequest: CreateMaterialRequest): Promise<MaterialResponse>;
 
     /**
+     * @param nodeIds (optional) 
+     * @return Success
+     */
+    getNodeResults(modelId: string | null, nodeIds: string[] | null | undefined): Promise<NodeResultResponse[]>;
+
+    /**
+     * @return Success
+     */
+    createNode(createNodeRequest: CreateNodeRequest): Promise<NodeResponse>;
+
+    /**
+     * @return Success
+     */
+    getSingleNode(id: string | null): Promise<NodeResponse>;
+
+    /**
      * @return Success
      */
     getShearDiagram(id: string | null): Promise<ShearDiagramResponse>;
@@ -106,26 +112,27 @@ export class ApiAlphaClient implements IApiAlphaClient {
     /**
      * @return Success
      */
-    runDirectStiffnessMethod3(id: string | null): Promise<AnalyticalModelResponse3> {
-        let url_ = this.baseUrl + "/api/direct-stiffness-method/run3/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+    runDirectStiffnessMethod(idRequest: IdRequest): Promise<AnalyticalModelResponse3> {
+        let url_ = this.baseUrl + "/api/direct-stiffness-method/run/";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(idRequest);
+
         let options_: RequestInit = {
-            method: "GET",
+            body: content_,
+            method: "POST",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processRunDirectStiffnessMethod3(_response);
+            return this.processRunDirectStiffnessMethod(_response);
         });
     }
 
-    protected processRunDirectStiffnessMethod3(response: Response): Promise<AnalyticalModelResponse3> {
+    protected processRunDirectStiffnessMethod(response: Response): Promise<AnalyticalModelResponse3> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -223,87 +230,6 @@ export class ApiAlphaClient implements IApiAlphaClient {
             });
         }
         return Promise.resolve<PointLoadResponse>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
-    createNode(createNodeRequest: CreateNodeRequest): Promise<NodeResponse> {
-        let url_ = this.baseUrl + "/api/nodes";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(createNodeRequest);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateNode(_response);
-        });
-    }
-
-    protected processCreateNode(response: Response): Promise<NodeResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = NodeResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<NodeResponse>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
-    getSingleNode(id: string | null): Promise<NodeResponse> {
-        let url_ = this.baseUrl + "/api/nodes/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetSingleNode(_response);
-        });
-    }
-
-    protected processGetSingleNode(response: Response): Promise<NodeResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = NodeResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<NodeResponse>(null as any);
     }
 
     /**
@@ -601,6 +527,137 @@ export class ApiAlphaClient implements IApiAlphaClient {
     }
 
     /**
+     * @param nodeIds (optional) 
+     * @return Success
+     */
+    getNodeResults(modelId: string | null, nodeIds: string[] | null | undefined): Promise<NodeResultResponse[]> {
+        let url_ = this.baseUrl + "/api/node-results/{modelId}?";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (nodeIds !== undefined && nodeIds !== null)
+            nodeIds && nodeIds.forEach(item => { url_ += "nodeIds=" + encodeURIComponent("" + item) + "&"; });
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetNodeResults(_response);
+        });
+    }
+
+    protected processGetNodeResults(response: Response): Promise<NodeResultResponse[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(NodeResultResponse.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<NodeResultResponse[]>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    createNode(createNodeRequest: CreateNodeRequest): Promise<NodeResponse> {
+        let url_ = this.baseUrl + "/api/nodes";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(createNodeRequest);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateNode(_response);
+        });
+    }
+
+    protected processCreateNode(response: Response): Promise<NodeResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = NodeResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<NodeResponse>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    getSingleNode(id: string | null): Promise<NodeResponse> {
+        let url_ = this.baseUrl + "/api/nodes/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetSingleNode(_response);
+        });
+    }
+
+    protected processGetSingleNode(response: Response): Promise<NodeResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = NodeResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<NodeResponse>(null as any);
+    }
+
+    /**
      * @return Success
      */
     getShearDiagram(id: string | null): Promise<ShearDiagramResponse> {
@@ -767,7 +824,7 @@ export class ApiAlphaClient implements IApiAlphaClient {
 }
 
 export class AnalyticalModelResponse3 implements IAnalyticalModelResponse3 {
-    nodeResponses!: AnalyticalNodeResponse[];
+    nodeResponses!: NodeResultResponse[];
 
     constructor(data?: IAnalyticalModelResponse3) {
         if (data) {
@@ -786,7 +843,7 @@ export class AnalyticalModelResponse3 implements IAnalyticalModelResponse3 {
             if (Array.isArray(_data["nodeResponses"])) {
                 this.nodeResponses = [] as any;
                 for (let item of _data["nodeResponses"])
-                    this.nodeResponses!.push(AnalyticalNodeResponse.fromJS(item));
+                    this.nodeResponses!.push(NodeResultResponse.fromJS(item));
             }
         }
     }
@@ -810,7 +867,7 @@ export class AnalyticalModelResponse3 implements IAnalyticalModelResponse3 {
 }
 
 export interface IAnalyticalModelResponse3 {
-    nodeResponses: AnalyticalNodeResponse[];
+    nodeResponses: NodeResultResponse[];
 }
 
 export abstract class BeamOsContractBase implements IBeamOsContractBase {
@@ -841,12 +898,12 @@ export abstract class BeamOsContractBase implements IBeamOsContractBase {
 export interface IBeamOsContractBase {
 }
 
-export class AnalyticalNodeResponse extends BeamOsContractBase implements IAnalyticalNodeResponse {
+export class NodeResultResponse extends BeamOsContractBase implements INodeResultResponse {
     nodeId!: string;
     forces!: ForcesResponse;
     displacements!: DisplacementsResponse;
 
-    constructor(data?: IAnalyticalNodeResponse) {
+    constructor(data?: INodeResultResponse) {
         super(data);
         if (!data) {
             this.forces = new ForcesResponse();
@@ -863,9 +920,9 @@ export class AnalyticalNodeResponse extends BeamOsContractBase implements IAnaly
         }
     }
 
-    static fromJS(data: any): AnalyticalNodeResponse {
+    static fromJS(data: any): NodeResultResponse {
         data = typeof data === 'object' ? data : {};
-        let result = new AnalyticalNodeResponse();
+        let result = new NodeResultResponse();
         result.init(data);
         return result;
     }
@@ -880,7 +937,7 @@ export class AnalyticalNodeResponse extends BeamOsContractBase implements IAnaly
     }
 }
 
-export interface IAnalyticalNodeResponse extends IBeamOsContractBase {
+export interface INodeResultResponse extends IBeamOsContractBase {
     nodeId: string;
     forces: ForcesResponse;
     displacements: DisplacementsResponse;
@@ -1348,266 +1405,6 @@ export interface ICreatePointLoadRequest {
     direction: Vector3;
 }
 
-export class NodeResponse extends BeamOsContractBase implements INodeResponse {
-    id!: string;
-    modelId!: string;
-    locationPoint!: PointResponse;
-    restraint!: RestraintResponse;
-
-    constructor(data?: INodeResponse) {
-        super(data);
-        if (!data) {
-            this.locationPoint = new PointResponse();
-            this.restraint = new RestraintResponse();
-        }
-    }
-
-    init(_data?: any) {
-        super.init(_data);
-        if (_data) {
-            this.id = _data["id"];
-            this.modelId = _data["modelId"];
-            this.locationPoint = _data["locationPoint"] ? PointResponse.fromJS(_data["locationPoint"]) : new PointResponse();
-            this.restraint = _data["restraint"] ? RestraintResponse.fromJS(_data["restraint"]) : new RestraintResponse();
-        }
-    }
-
-    static fromJS(data: any): NodeResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new NodeResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["modelId"] = this.modelId;
-        data["locationPoint"] = this.locationPoint ? this.locationPoint.toJSON() : <any>undefined;
-        data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
-        super.toJSON(data);
-        return data;
-    }
-}
-
-export interface INodeResponse extends IBeamOsContractBase {
-    id: string;
-    modelId: string;
-    locationPoint: PointResponse;
-    restraint: RestraintResponse;
-}
-
-export class PointResponse extends BeamOsContractBase implements IPointResponse {
-    xCoordinate!: UnitValueDto;
-    yCoordinate!: UnitValueDto;
-    zCoordinate!: UnitValueDto;
-
-    constructor(data?: IPointResponse) {
-        super(data);
-        if (!data) {
-            this.xCoordinate = new UnitValueDto();
-            this.yCoordinate = new UnitValueDto();
-            this.zCoordinate = new UnitValueDto();
-        }
-    }
-
-    init(_data?: any) {
-        super.init(_data);
-        if (_data) {
-            this.xCoordinate = _data["xCoordinate"] ? UnitValueDto.fromJS(_data["xCoordinate"]) : new UnitValueDto();
-            this.yCoordinate = _data["yCoordinate"] ? UnitValueDto.fromJS(_data["yCoordinate"]) : new UnitValueDto();
-            this.zCoordinate = _data["zCoordinate"] ? UnitValueDto.fromJS(_data["zCoordinate"]) : new UnitValueDto();
-        }
-    }
-
-    static fromJS(data: any): PointResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new PointResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["xCoordinate"] = this.xCoordinate ? this.xCoordinate.toJSON() : <any>undefined;
-        data["yCoordinate"] = this.yCoordinate ? this.yCoordinate.toJSON() : <any>undefined;
-        data["zCoordinate"] = this.zCoordinate ? this.zCoordinate.toJSON() : <any>undefined;
-        super.toJSON(data);
-        return data;
-    }
-}
-
-export interface IPointResponse extends IBeamOsContractBase {
-    xCoordinate: UnitValueDto;
-    yCoordinate: UnitValueDto;
-    zCoordinate: UnitValueDto;
-}
-
-export class RestraintResponse extends BeamOsContractBase implements IRestraintResponse {
-    canTranslateAlongX!: boolean;
-    canTranslateAlongY!: boolean;
-    canTranslateAlongZ!: boolean;
-    canRotateAboutX!: boolean;
-    canRotateAboutY!: boolean;
-    canRotateAboutZ!: boolean;
-
-    constructor(data?: IRestraintResponse) {
-        super(data);
-    }
-
-    init(_data?: any) {
-        super.init(_data);
-        if (_data) {
-            this.canTranslateAlongX = _data["canTranslateAlongX"];
-            this.canTranslateAlongY = _data["canTranslateAlongY"];
-            this.canTranslateAlongZ = _data["canTranslateAlongZ"];
-            this.canRotateAboutX = _data["canRotateAboutX"];
-            this.canRotateAboutY = _data["canRotateAboutY"];
-            this.canRotateAboutZ = _data["canRotateAboutZ"];
-        }
-    }
-
-    static fromJS(data: any): RestraintResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new RestraintResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["canTranslateAlongX"] = this.canTranslateAlongX;
-        data["canTranslateAlongY"] = this.canTranslateAlongY;
-        data["canTranslateAlongZ"] = this.canTranslateAlongZ;
-        data["canRotateAboutX"] = this.canRotateAboutX;
-        data["canRotateAboutY"] = this.canRotateAboutY;
-        data["canRotateAboutZ"] = this.canRotateAboutZ;
-        super.toJSON(data);
-        return data;
-    }
-}
-
-export interface IRestraintResponse extends IBeamOsContractBase {
-    canTranslateAlongX: boolean;
-    canTranslateAlongY: boolean;
-    canTranslateAlongZ: boolean;
-    canRotateAboutX: boolean;
-    canRotateAboutY: boolean;
-    canRotateAboutZ: boolean;
-}
-
-export class CreateNodeRequest implements ICreateNodeRequest {
-    modelId!: string;
-    xCoordinate!: number;
-    yCoordinate!: number;
-    zCoordinate!: number;
-    lengthUnit?: string | undefined;
-    restraint?: RestraintRequest | undefined;
-
-    constructor(data?: ICreateNodeRequest) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.modelId = _data["modelId"];
-            this.xCoordinate = _data["xCoordinate"];
-            this.yCoordinate = _data["yCoordinate"];
-            this.zCoordinate = _data["zCoordinate"];
-            this.lengthUnit = _data["lengthUnit"];
-            this.restraint = _data["restraint"] ? RestraintRequest.fromJS(_data["restraint"]) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): CreateNodeRequest {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateNodeRequest();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["modelId"] = this.modelId;
-        data["xCoordinate"] = this.xCoordinate;
-        data["yCoordinate"] = this.yCoordinate;
-        data["zCoordinate"] = this.zCoordinate;
-        data["lengthUnit"] = this.lengthUnit;
-        data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
-        return data;
-    }
-}
-
-export interface ICreateNodeRequest {
-    modelId: string;
-    xCoordinate: number;
-    yCoordinate: number;
-    zCoordinate: number;
-    lengthUnit?: string | undefined;
-    restraint?: RestraintRequest | undefined;
-}
-
-export class RestraintRequest implements IRestraintRequest {
-    canTranslateAlongX!: boolean;
-    canTranslateAlongY!: boolean;
-    canTranslateAlongZ!: boolean;
-    canRotateAboutX!: boolean;
-    canRotateAboutY!: boolean;
-    canRotateAboutZ!: boolean;
-
-    constructor(data?: IRestraintRequest) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.canTranslateAlongX = _data["canTranslateAlongX"];
-            this.canTranslateAlongY = _data["canTranslateAlongY"];
-            this.canTranslateAlongZ = _data["canTranslateAlongZ"];
-            this.canRotateAboutX = _data["canRotateAboutX"];
-            this.canRotateAboutY = _data["canRotateAboutY"];
-            this.canRotateAboutZ = _data["canRotateAboutZ"];
-        }
-    }
-
-    static fromJS(data: any): RestraintRequest {
-        data = typeof data === 'object' ? data : {};
-        let result = new RestraintRequest();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["canTranslateAlongX"] = this.canTranslateAlongX;
-        data["canTranslateAlongY"] = this.canTranslateAlongY;
-        data["canTranslateAlongZ"] = this.canTranslateAlongZ;
-        data["canRotateAboutX"] = this.canRotateAboutX;
-        data["canRotateAboutY"] = this.canRotateAboutY;
-        data["canRotateAboutZ"] = this.canRotateAboutZ;
-        return data;
-    }
-}
-
-export interface IRestraintRequest {
-    canTranslateAlongX: boolean;
-    canTranslateAlongY: boolean;
-    canTranslateAlongZ: boolean;
-    canRotateAboutX: boolean;
-    canRotateAboutY: boolean;
-    canRotateAboutZ: boolean;
-}
-
 export class MomentLoadResponse implements IMomentLoadResponse {
     id!: string;
     nodeId!: string;
@@ -1959,6 +1756,154 @@ export interface IUnitSettingsResponse {
     torqueUnit: string;
     pressureUnit: string;
     areaMomentOfInertiaUnit: string;
+}
+
+export class NodeResponse extends BeamOsContractBase implements INodeResponse {
+    id!: string;
+    modelId!: string;
+    locationPoint!: PointResponse;
+    restraint!: RestraintResponse;
+
+    constructor(data?: INodeResponse) {
+        super(data);
+        if (!data) {
+            this.locationPoint = new PointResponse();
+            this.restraint = new RestraintResponse();
+        }
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.id = _data["id"];
+            this.modelId = _data["modelId"];
+            this.locationPoint = _data["locationPoint"] ? PointResponse.fromJS(_data["locationPoint"]) : new PointResponse();
+            this.restraint = _data["restraint"] ? RestraintResponse.fromJS(_data["restraint"]) : new RestraintResponse();
+        }
+    }
+
+    static fromJS(data: any): NodeResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new NodeResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["modelId"] = this.modelId;
+        data["locationPoint"] = this.locationPoint ? this.locationPoint.toJSON() : <any>undefined;
+        data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface INodeResponse extends IBeamOsContractBase {
+    id: string;
+    modelId: string;
+    locationPoint: PointResponse;
+    restraint: RestraintResponse;
+}
+
+export class PointResponse extends BeamOsContractBase implements IPointResponse {
+    xCoordinate!: UnitValueDto;
+    yCoordinate!: UnitValueDto;
+    zCoordinate!: UnitValueDto;
+
+    constructor(data?: IPointResponse) {
+        super(data);
+        if (!data) {
+            this.xCoordinate = new UnitValueDto();
+            this.yCoordinate = new UnitValueDto();
+            this.zCoordinate = new UnitValueDto();
+        }
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.xCoordinate = _data["xCoordinate"] ? UnitValueDto.fromJS(_data["xCoordinate"]) : new UnitValueDto();
+            this.yCoordinate = _data["yCoordinate"] ? UnitValueDto.fromJS(_data["yCoordinate"]) : new UnitValueDto();
+            this.zCoordinate = _data["zCoordinate"] ? UnitValueDto.fromJS(_data["zCoordinate"]) : new UnitValueDto();
+        }
+    }
+
+    static fromJS(data: any): PointResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new PointResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["xCoordinate"] = this.xCoordinate ? this.xCoordinate.toJSON() : <any>undefined;
+        data["yCoordinate"] = this.yCoordinate ? this.yCoordinate.toJSON() : <any>undefined;
+        data["zCoordinate"] = this.zCoordinate ? this.zCoordinate.toJSON() : <any>undefined;
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IPointResponse extends IBeamOsContractBase {
+    xCoordinate: UnitValueDto;
+    yCoordinate: UnitValueDto;
+    zCoordinate: UnitValueDto;
+}
+
+export class RestraintResponse extends BeamOsContractBase implements IRestraintResponse {
+    canTranslateAlongX!: boolean;
+    canTranslateAlongY!: boolean;
+    canTranslateAlongZ!: boolean;
+    canRotateAboutX!: boolean;
+    canRotateAboutY!: boolean;
+    canRotateAboutZ!: boolean;
+
+    constructor(data?: IRestraintResponse) {
+        super(data);
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.canTranslateAlongX = _data["canTranslateAlongX"];
+            this.canTranslateAlongY = _data["canTranslateAlongY"];
+            this.canTranslateAlongZ = _data["canTranslateAlongZ"];
+            this.canRotateAboutX = _data["canRotateAboutX"];
+            this.canRotateAboutY = _data["canRotateAboutY"];
+            this.canRotateAboutZ = _data["canRotateAboutZ"];
+        }
+    }
+
+    static fromJS(data: any): RestraintResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new RestraintResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["canTranslateAlongX"] = this.canTranslateAlongX;
+        data["canTranslateAlongY"] = this.canTranslateAlongY;
+        data["canTranslateAlongZ"] = this.canTranslateAlongZ;
+        data["canRotateAboutX"] = this.canRotateAboutX;
+        data["canRotateAboutY"] = this.canRotateAboutY;
+        data["canRotateAboutZ"] = this.canRotateAboutZ;
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IRestraintResponse extends IBeamOsContractBase {
+    canTranslateAlongX: boolean;
+    canTranslateAlongY: boolean;
+    canTranslateAlongZ: boolean;
+    canRotateAboutX: boolean;
+    canRotateAboutY: boolean;
+    canRotateAboutZ: boolean;
 }
 
 export class Element1DResponse implements IElement1DResponse {
@@ -2464,6 +2409,148 @@ export interface ICreateMaterialRequest {
     modelId: string;
     modulusOfElasticity: UnitValueDto;
     modulusOfRigidity: UnitValueDto;
+}
+
+export class GetNodeResultsRequest implements IGetNodeResultsRequest {
+
+    constructor(data?: IGetNodeResultsRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+    }
+
+    static fromJS(data: any): GetNodeResultsRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetNodeResultsRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data;
+    }
+}
+
+export interface IGetNodeResultsRequest {
+}
+
+export class CreateNodeRequest implements ICreateNodeRequest {
+    modelId!: string;
+    xCoordinate!: number;
+    yCoordinate!: number;
+    zCoordinate!: number;
+    lengthUnit?: string | undefined;
+    restraint?: RestraintRequest | undefined;
+
+    constructor(data?: ICreateNodeRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.modelId = _data["modelId"];
+            this.xCoordinate = _data["xCoordinate"];
+            this.yCoordinate = _data["yCoordinate"];
+            this.zCoordinate = _data["zCoordinate"];
+            this.lengthUnit = _data["lengthUnit"];
+            this.restraint = _data["restraint"] ? RestraintRequest.fromJS(_data["restraint"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): CreateNodeRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateNodeRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["modelId"] = this.modelId;
+        data["xCoordinate"] = this.xCoordinate;
+        data["yCoordinate"] = this.yCoordinate;
+        data["zCoordinate"] = this.zCoordinate;
+        data["lengthUnit"] = this.lengthUnit;
+        data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ICreateNodeRequest {
+    modelId: string;
+    xCoordinate: number;
+    yCoordinate: number;
+    zCoordinate: number;
+    lengthUnit?: string | undefined;
+    restraint?: RestraintRequest | undefined;
+}
+
+export class RestraintRequest implements IRestraintRequest {
+    canTranslateAlongX!: boolean;
+    canTranslateAlongY!: boolean;
+    canTranslateAlongZ!: boolean;
+    canRotateAboutX!: boolean;
+    canRotateAboutY!: boolean;
+    canRotateAboutZ!: boolean;
+
+    constructor(data?: IRestraintRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.canTranslateAlongX = _data["canTranslateAlongX"];
+            this.canTranslateAlongY = _data["canTranslateAlongY"];
+            this.canTranslateAlongZ = _data["canTranslateAlongZ"];
+            this.canRotateAboutX = _data["canRotateAboutX"];
+            this.canRotateAboutY = _data["canRotateAboutY"];
+            this.canRotateAboutZ = _data["canRotateAboutZ"];
+        }
+    }
+
+    static fromJS(data: any): RestraintRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new RestraintRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["canTranslateAlongX"] = this.canTranslateAlongX;
+        data["canTranslateAlongY"] = this.canTranslateAlongY;
+        data["canTranslateAlongZ"] = this.canTranslateAlongZ;
+        data["canRotateAboutX"] = this.canRotateAboutX;
+        data["canRotateAboutY"] = this.canRotateAboutY;
+        data["canRotateAboutZ"] = this.canRotateAboutZ;
+        return data;
+    }
+}
+
+export interface IRestraintRequest {
+    canTranslateAlongX: boolean;
+    canTranslateAlongY: boolean;
+    canTranslateAlongZ: boolean;
+    canRotateAboutX: boolean;
+    canRotateAboutY: boolean;
+    canRotateAboutZ: boolean;
 }
 
 export class ShearDiagramResponse implements IShearDiagramResponse {

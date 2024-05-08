@@ -9,31 +9,32 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.Api.PhysicalModel.Nodes.Endpoints;
 
-public class GetSingleNodeResult(
-    BeamOsStructuralDbContext dbContext,
-    NodeResponseMapper responseMapper
-) : Endpoint<IdRequest, NodeResponse?>
-{
-    public override void Configure()
-    {
-        this.Get("nodes/{id}");
-        this.AllowAnonymous();
-    }
 
-    public override async Task<NodeResponse?> ExecuteAsync(IdRequest req, CancellationToken ct)
-    {
-        NodeId expectedId = new(Guid.Parse(req.Id));
-        Node? element = await dbContext
-            .Nodes
-            .FirstAsync(n => n.Id == expectedId, cancellationToken: ct);
+//public class GetSingleNodeResult(
+//    BeamOsStructuralDbContext dbContext,
+//    NodeResponseMapper responseMapper
+//) : Endpoint<IdRequest, NodeResponse?>
+//{
+//    public override void Configure()
+//    {
+//        this.Get("node-results/{id}");
+//        this.AllowAnonymous();
+//    }
 
-        if (element is null)
-        {
-            return null;
-        }
+//    public override async Task<NodeResponse?> ExecuteAsync(IdRequest req, CancellationToken ct)
+//    {
+//        NodeId expectedId = new(Guid.Parse(req.Id));
+//        Node? element = await dbContext
+//            .Nodes
+//            .FirstAsync(n => n.Id == expectedId, cancellationToken: ct);
 
-        NodeResponse? response = responseMapper.Map(element);
+//        if (element is null)
+//        {
+//            return null;
+//        }
 
-        return response;
-    }
-}
+//        NodeResponse? response = responseMapper.Map(element);
+
+//        return response;
+//    }
+//}

@@ -8,7 +8,7 @@ using UnitsNet;
 
 namespace BeamOs.Domain.PhysicalModel.PointLoadAggregate;
 
-public class PointLoad : AggregateRoot<PointLoadId>
+public class PointLoad
 {
     public PointLoad(
         ModelId modelId,
@@ -17,7 +17,6 @@ public class PointLoad : AggregateRoot<PointLoadId>
         Vector3D direction,
         PointLoadId? id = null
     )
-        : base(id ?? new())
     {
         this.ModelId = modelId;
         this.NodeId = nodeId;
@@ -25,10 +24,10 @@ public class PointLoad : AggregateRoot<PointLoadId>
         this.NormalizedDirection = direction;
     }
 
-    public ModelId ModelId { get; private set; }
-    public NodeId NodeId { get; private set; }
-    public Force Force { get; private set; }
-    public Vector3D NormalizedDirection { get; private set; }
+    public ModelId ModelId { get; set; }
+    public NodeId NodeId { get; set; }
+    public Force Force { get; set; }
+    public Vector3D NormalizedDirection { get; set; }
 
     public Force GetForceInDirection(CoordinateSystemDirection3D direction)
     {
@@ -52,8 +51,7 @@ public class PointLoad : AggregateRoot<PointLoadId>
         return new(this.Force, this.NormalizedDirection);
     }
 
-    [Obsolete("EF Core Constructor", true)]
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-    private PointLoad() { }
+    public PointLoad() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }

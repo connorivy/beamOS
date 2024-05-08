@@ -1,10 +1,9 @@
-using MathNet.Spatial.Units;
 using UnitsNet;
 using UnitsNet.Units;
 
 namespace BeamOs.Domain.Common.ValueObjects;
 
-public class Forces : CoordinateDirectionBase<Force, Torque>
+public sealed class Forces : CoordinateDirectionBase<Force, Torque>
 {
     public Forces(
         Force forceAlongX,
@@ -35,12 +34,36 @@ public class Forces : CoordinateDirectionBase<Force, Torque>
             new(momentAboutZ, torqueUnit)
         ) { }
 
-    public Force ForceAlongX => this.AlongX;
-    public Force ForceAlongY => this.AlongY;
-    public Force ForceAlongZ => this.AlongZ;
-    public Torque MomentAboutX => this.AboutX;
-    public Torque MomentAboutY => this.AboutY;
-    public Torque MomentAboutZ => this.AboutZ;
+    public Force ForceAlongX
+    {
+        get => this.AlongX;
+        private set => this.AlongX = value;
+    }
+    public Force ForceAlongY
+    {
+        get => this.AlongY;
+        private set => this.AlongY = value;
+    }
+    public Force ForceAlongZ
+    {
+        get => this.AlongZ;
+        private set => this.AlongZ = value;
+    }
+    public Torque MomentAboutX
+    {
+        get => this.AboutX;
+        private set => this.AboutX = value;
+    }
+    public Torque MomentAboutY
+    {
+        get => this.AboutY;
+        private set => this.AboutY = value;
+    }
+    public Torque MomentAboutZ
+    {
+        get => this.AboutZ;
+        private set => this.AboutZ = value;
+    }
 
     public double[] ToArray(ForceUnit forceUnit, TorqueUnit torqueUnit)
     {

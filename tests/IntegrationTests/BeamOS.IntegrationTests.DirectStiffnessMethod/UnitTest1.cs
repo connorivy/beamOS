@@ -1,5 +1,6 @@
 using BeamOs.ApiClient;
-using BeamOs.Contracts.PhysicalModel.Node;
+using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
+using BeamOs.Contracts.Common;
 using BeamOS.IntegrationTests.DirectStiffnessMethod.Common.Fixtures.SolvedProblems.MatrixAnalysisOfStructures2ndEd;
 using BeamOS.Tests.Common.SolvedProblems.DirectStiffnessMethod.Kassimali_MatrixAnalysisOfStructures2ndEd.Example8_4;
 using BeamOS.Tests.Common.SolvedProblems.Fixtures;
@@ -45,15 +46,24 @@ public class UnitTest1(CustomWebApplicationFactory<BeamOs.Api.Program> webApplic
         var modelFixture = new Example8_4f();
 
         await modelFixture.Create(client);
+        await client.RunDirectStiffnessMethodAsync(new IdRequest(modelFixture.ModelId));
 
-        var expectedModelResponse = modelFixture.GetExpectedResponse();
+        var expectedModelResponse = modelFixture.GetExpectedNodeResultFixtures();
         var modelResponse = await client.GetModelAsync(modelFixture.Id.ToString(), null);
 
-        foreach (var x in modelFixture.ExpectedNodeResults)
-        {
-            NodeResponse? calculatedResult = await client.GetSingleNodeAsync("");
-        }
+        ICollection<NodeResultResponse> calculatedNodeResponses = await client.GetNodeResultsAsync(
+            modelFixture.ModelId,
+            []
+        );
+        //foreach (var x in modelFixture.ExpectedNodeResults)
+        //{
+        //    NodeResponse? calculatedResult = await client.GetNodeResultsAsync(modelFixture.ModelId, );
 
-        ContractComparer.AssertContractsEqual(modelResponse, expectedModelResponse);
+        //}
+
+        ContractComparer.AssertContractsEqual(
+            expectedModelResponse,
+            calculatedNodeResponses.ToArray()
+        );
     }
 }

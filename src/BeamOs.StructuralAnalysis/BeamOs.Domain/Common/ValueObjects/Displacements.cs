@@ -41,12 +41,36 @@ public sealed class Displacements : CoordinateDirectionBase<Length, Angle>
             new(rotationAboutZ, angleUnit)
         ) { }
 
-    public Length DisplacementAlongX => this.AlongX;
-    public Length DisplacementAlongY => this.AlongY;
-    public Length DisplacementAlongZ => this.AlongZ;
-    public Angle RotationAboutX => this.AboutX;
-    public Angle RotationAboutY => this.AboutY;
-    public Angle RotationAboutZ => this.AboutZ;
+    public Length DisplacementAlongX
+    {
+        get => this.AlongX;
+        private set => this.AlongX = value;
+    }
+    public Length DisplacementAlongY
+    {
+        get => this.AlongY;
+        private set => this.AlongY = value;
+    }
+    public Length DisplacementAlongZ
+    {
+        get => this.AlongZ;
+        private set => this.AlongZ = value;
+    }
+    public Angle RotationAboutX
+    {
+        get => this.AboutX;
+        private set => this.AboutX = value;
+    }
+    public Angle RotationAboutY
+    {
+        get => this.AboutY;
+        private set => this.AboutY = value;
+    }
+    public Angle RotationAboutZ
+    {
+        get => this.AboutZ;
+        private set => this.AboutZ = value;
+    }
 
     public double[] ToArray(LengthUnit lengthUnit, AngleUnit angleUnit)
     {

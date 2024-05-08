@@ -10,6 +10,8 @@ using BeamOs.Contracts.PhysicalModel.Node;
 using BeamOs.Contracts.PhysicalModel.PointLoad;
 using BeamOs.Contracts.PhysicalModel.SectionProfile;
 using BeamOs.Domain.Common.ValueObjects;
+using BeamOs.Domain.PhysicalModel.PointLoadAggregate;
+using BeamOs.Domain.PhysicalModel.PointLoadAggregate.ValueObjects;
 using BeamOS.Tests.Common.SolvedProblems.Fixtures.Mappers;
 using Riok.Mapperly.Abstractions;
 
@@ -20,7 +22,7 @@ public abstract partial class ModelFixture
 {
     protected ModelFixture()
     {
-        this.unitMapperWithOptionalUnits = new(this.UnitSettings);
+        this.UnitMapperWithOptionalUnits = new(this.UnitSettings);
         this.ModelId = this.Id.ToString();
     }
 
@@ -102,16 +104,14 @@ public abstract partial class ModelFixture
 
     public Dictionary<Guid, string> FixtureGuidToIdDict { get; } = [];
 
-    public partial NodeResultResponse ToResponse(NodeResultFixture fixture);
-
     public partial NodeResponse ToResponse(NodeFixture fixture);
 
-    private string GetModelId(DummyModelId modelId)
+    protected string GetModelId(DummyModelId modelId)
     {
         return this.Id.ToString();
     }
 
-    private string GuidToString(Guid guid) => this.FixtureGuidToIdDict[guid];
+    protected string GuidToString(Guid id) => this.FixtureGuidToIdDict[id];
 
     public partial Element1DResponse ToResponse(Element1dFixture fixture);
 
@@ -141,8 +141,11 @@ public abstract partial class ModelFixture
     )]
     public partial CreateMomentLoadRequest ToRequest(MomentLoadFixture fixture);
 
+    // public partial PointLoad ToDomainObject2(PointLoadFixture fixture);
+    // public partial PointLoadFixture ToDomainObject2(PointLoad fixture);
+
     [UseMapper]
-    private readonly UnitMapperWithOptionalUnits unitMapperWithOptionalUnits;
+    protected UnitMapperWithOptionalUnits UnitMapperWithOptionalUnits { get; }
 }
 
 public interface IHasExpectedModelResponse { }
@@ -150,6 +153,7 @@ public interface IHasExpectedModelResponse { }
 public interface IHasExpectedNodeResults
 {
     public NodeResultFixture[] ExpectedNodeResults { get; }
+    public NodeResultResponse ToResponse(NodeResultFixture source);
 }
 
 public static class IHasExpectedModelResponseExtensions
@@ -195,3 +199,14 @@ public static class IHasExpectedModelResponseExtensions
 }
 
 public struct DummyModelId { }
+
+[Mapper]
+public static partial class IHasExpectedNodeResultsExtensions
+{
+    public static NodeResultResponse[] GetExpectedNodeResultFixtures(
+        this IHasExpectedNodeResults modelFixture
+    )
+    {
+        return modelFixture.ExpectedNodeResults.Select(modelFixture.ToResponse).ToArray();
+    }
+}

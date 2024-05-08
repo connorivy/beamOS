@@ -9,15 +9,15 @@ using FastEndpoints;
 
 namespace BeamOs.Api.DirectStiffnessMethod.Endpoints;
 
-public class RunDirectStiffnessMethod3(
+public class RunDirectStiffnessMethod(
     BeamOsFastEndpointOptions options,
     RunDirectStiffnessMethodCommandHandler runDsmCommandHandler,
     NodeResultToResponseMapper nodeResultToResponseMapper
 ) : BeamOsFastEndpoint<IdRequest, AnalyticalModelResponse3>(options)
 {
-    public override string Route => "/direct-stiffness-method/run3/{id}";
+    public override string Route => "/direct-stiffness-method/run/";
 
-    public override Http EndpointType => Http.GET;
+    public override Http EndpointType => Http.POST;
 
     public override async Task<AnalyticalModelResponse3> ExecuteAsync(
         IdRequest req,

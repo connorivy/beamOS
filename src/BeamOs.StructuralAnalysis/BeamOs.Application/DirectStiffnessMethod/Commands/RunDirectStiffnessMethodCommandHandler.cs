@@ -1,3 +1,4 @@
+using BeamOs.Application.AnalyticalResults.NodeResults;
 using BeamOs.Application.Common.Interfaces;
 using BeamOs.Application.PhysicalModel.Element1dAggregate;
 using BeamOs.Application.PhysicalModel.Materials;
@@ -29,7 +30,9 @@ public class RunDirectStiffnessMethodCommandHandler(
     IPointLoadRepository pointLoadRepository,
     IMomentLoadRepository momentLoadRepository,
     IMaterialRepository materialRepository,
-    ISectionProfileRepository sectionProfileRepository
+    ISectionProfileRepository sectionProfileRepository,
+    INodeResultRepository nodeResultRepository,
+    IUnitOfWork unitOfWork
 ) : ICommandHandler<RunDirectStiffnessMethodCommand, ModelResults>
 {
     public async Task<ModelResults> ExecuteAsync(
@@ -87,11 +90,20 @@ public class RunDirectStiffnessMethodCommandHandler(
                 )
         );
 
-        return DirectStiffnessMethodSolver.RunAnalysis(
+        ModelResults results = DirectStiffnessMethodSolver.RunAnalysis(
             command.ModelId,
             unitSettings,
             dsmElement1ds,
             dsmNodes
         );
+
+        foreach (var nodeResult in results.NodeResults)
+        {
+            nodeResultRepository.Add(nodeResult);
+        }
+
+        await unitOfWork.SaveChangesAsync(ct);
+
+        return results;
     }
 }

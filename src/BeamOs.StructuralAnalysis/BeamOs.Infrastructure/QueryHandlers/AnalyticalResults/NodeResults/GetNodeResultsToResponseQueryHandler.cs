@@ -1,33 +1,47 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BeamOs.Application.Common.Interfaces;
 using BeamOs.Application.Common.Queries;
-using BeamOs.Application.PhysicalModel.Element1dAggregate.Interfaces;
 using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
 using BeamOs.Domain.Common.ValueObjects;
+using BeamOs.Infrastructure.Data.Models;
+using BeamOs.Infrastructure.QueryHandlers.AnalyticalResults.NodeResults.Mappers;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.Infrastructure.QueryHandlers.AnalyticalResults.NodeResults;
 
-internal class GetNodeResultsToResponseQueryHandler
-    : IQueryHandler<GetResourcesByIdsQuery, NodeResultResponse?[]>
+internal class GetNodeResultsToResponseQueryHandler(BeamOsStructuralReadModelDbContext dbContext)
+    : IQueryHandler<GetModelResourcesByIdsQuery, NodeResultResponse?[]>
 {
-    private readonly BeamOsStructuralReadModelDbContext dbContext;
-
-    public GetNodeResultsToResponseQueryHandler(BeamOsStructuralReadModelDbContext dbContext) =>
-        this.dbContext = dbContext;
-
     public async Task<NodeResultResponse?[]?> ExecuteAsync(
-        GetResourcesByIdsQuery query,
+        GetModelResourcesByIdsQuery query,
         CancellationToken ct = default
     )
     {
-        UnitSettings unitSettings = this.dbContext.Models.Where(m => m.Id == query.Id)
-        var element1dQuery = this.dbContext.NodeResults.Where(el => query.Ids.Contains(el.NodeId));
+        IQueryable<NodeResultReadModel> queryable = dbContext
+            .NodeResults
+            .Where(el => el.ModelId == query.ModelId);
 
-        return await element1dQuery.FirstOrDefaultAsync(ct);
+        if (query.ResourceIds is not null)
+        {
+            queryable = queryable.Where(el => query.ResourceIds.Contains(el.Id));
+        }
+
+        NodeResultReadModel[] nodeResultReadModels = await queryable.ToArrayAsync(
+            cancellationToken: ct
+        );
+
+        if (nodeResultReadModels.Length == 0)
+        {
+            return [];
+        }
+
+        UnitSettings unitSettings = await dbContext
+            .Models
+            .Where(m => m.Id == query.ModelId)
+            .Select(m => m.Settings.UnitSettings)
+            .FirstAsync(cancellationToken: ct);
+
+        var responseMapper = NodeResultReadModelToResponse.Create(unitSettings);
+
+        return responseMapper.Map(nodeResultReadModels).ToArray();
     }
 }

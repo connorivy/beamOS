@@ -1,9 +1,12 @@
+using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOS.Tests.Common.SolvedProblems.Fixtures;
+using Riok.Mapperly.Abstractions;
 
 namespace BeamOS.Tests.Common.SolvedProblems.DirectStiffnessMethod.Kassimali_MatrixAnalysisOfStructures2ndEd.Example8_4;
 
-public class Example8_4f : ModelFixture, IHasExpectedNodeResults
+[Mapper]
+public partial class Example8_4f : ModelFixture, IHasExpectedNodeResults
 {
     public override Guid Id => new("ddb1e60a-df17-48b0-810a-60e425acf640");
     public override UnitSettings UnitSettings => UnitSettings.K_IN;
@@ -23,6 +26,11 @@ public class Example8_4f : ModelFixture, IHasExpectedNodeResults
             MomentLoads.MomentLoad3,
             MomentLoads.MomentLoad4
         ];
+
+    public NodeResultResponse ToResponse(NodeResultFixture fixture) =>
+        this.ToResponseSourceGenerated(fixture);
+
+    public partial NodeResultResponse ToResponseSourceGenerated(NodeResultFixture fixture);
 
     public NodeResultFixture[] ExpectedNodeResults { get; } =
 

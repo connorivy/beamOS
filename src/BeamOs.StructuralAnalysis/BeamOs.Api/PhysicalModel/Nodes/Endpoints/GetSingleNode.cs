@@ -9,10 +9,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.Api.PhysicalModel.Nodes.Endpoints;
 
-public class GetSingleNodeResult(
-    BeamOsStructuralDbContext dbContext,
-    NodeResponseMapper responseMapper
-) : Endpoint<IdRequest, NodeResponse?>
+public class GetSingleNode(BeamOsStructuralDbContext dbContext, NodeResponseMapper responseMapper)
+    : Endpoint<IdRequest, NodeResponse?>
 {
     public override void Configure()
     {

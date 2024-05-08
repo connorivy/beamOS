@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeamOs.Infrastructure.Migrations
 {
     [DbContext(typeof(BeamOsStructuralDbContext))]
-    [Migration("20240507201816_Initial")]
+    [Migration("20240508165059_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -25,6 +25,71 @@ namespace BeamOs.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("BeamOs.Domain.AnalyticalResults.NodeResultAggregate.NodeResult", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ModelId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("NodeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.ComplexProperty<Dictionary<string, object>>("Displacements", "BeamOs.Domain.AnalyticalResults.NodeResultAggregate.NodeResult.Displacements#Displacements", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<double>("DisplacementAlongX")
+                                .HasColumnType("float");
+
+                            b1.Property<double>("DisplacementAlongY")
+                                .HasColumnType("float");
+
+                            b1.Property<double>("DisplacementAlongZ")
+                                .HasColumnType("float");
+
+                            b1.Property<double>("RotationAboutX")
+                                .HasColumnType("float");
+
+                            b1.Property<double>("RotationAboutY")
+                                .HasColumnType("float");
+
+                            b1.Property<double>("RotationAboutZ")
+                                .HasColumnType("float");
+                        });
+
+                    b.ComplexProperty<Dictionary<string, object>>("Forces", "BeamOs.Domain.AnalyticalResults.NodeResultAggregate.NodeResult.Forces#Forces", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<double>("ForceAlongX")
+                                .HasColumnType("float");
+
+                            b1.Property<double>("ForceAlongY")
+                                .HasColumnType("float");
+
+                            b1.Property<double>("ForceAlongZ")
+                                .HasColumnType("float");
+
+                            b1.Property<double>("MomentAboutX")
+                                .HasColumnType("float");
+
+                            b1.Property<double>("MomentAboutY")
+                                .HasColumnType("float");
+
+                            b1.Property<double>("MomentAboutZ")
+                                .HasColumnType("float");
+                        });
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NodeId")
+                        .IsUnique();
+
+                    b.ToTable("NodeResults");
+                });
 
             modelBuilder.Entity("BeamOs.Domain.PhysicalModel.Element1DAggregate.Element1D", b =>
                 {
@@ -259,6 +324,15 @@ namespace BeamOs.Infrastructure.Migrations
                     b.HasIndex("ModelId");
 
                     b.ToTable("SectionProfiles");
+                });
+
+            modelBuilder.Entity("BeamOs.Domain.AnalyticalResults.NodeResultAggregate.NodeResult", b =>
+                {
+                    b.HasOne("BeamOs.Domain.PhysicalModel.NodeAggregate.Node", null)
+                        .WithOne()
+                        .HasForeignKey("BeamOs.Domain.AnalyticalResults.NodeResultAggregate.NodeResult", "NodeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("BeamOs.Domain.PhysicalModel.Element1DAggregate.Element1D", b =>

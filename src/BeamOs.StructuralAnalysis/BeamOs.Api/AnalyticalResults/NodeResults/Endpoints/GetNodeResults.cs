@@ -1,40 +1,29 @@
-using BeamOs.Api.PhysicalModel.Nodes.Mappers;
+using BeamOs.Api.Common;
+using BeamOS.Api.Common;
+using BeamOs.Application.Common.Interfaces;
+using BeamOs.Application.Common.Queries;
+using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
 using BeamOs.Contracts.Common;
-using BeamOs.Contracts.PhysicalModel.Node;
-using BeamOs.Domain.PhysicalModel.NodeAggregate;
-using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
-using BeamOs.Infrastructure;
 using FastEndpoints;
-using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.Api.PhysicalModel.Nodes.Endpoints;
 
-public class GetNodeResults(BeamOsStructuralDbContext dbContext, NodeResponseMapper responseMapper)
-    : Endpoint<GetNodeResultsRequest, NodeResponse?[]>
+public class GetNodeResults(
+    BeamOsFastEndpointOptions options,
+    IQueryHandler<GetModelResourcesByIdsQuery, NodeResultResponse?[]> getResourcesByIdsQueryHandler
+) : BeamOsFastEndpoint<GetNodeResultsRequest, NodeResultResponse?[]>(options)
 {
-    public override void Configure()
-    {
-        this.Get("node-results/{modelId}");
-        this.AllowAnonymous();
-    }
+    public override Http EndpointType => Http.GET;
+    public override string Route => "node-results/{modelId}";
 
-    public override async Task<NodeResponse?[]> ExecuteAsync(
+    public override async Task<NodeResultResponse?[]> ExecuteAsync(
         GetNodeResultsRequest req,
         CancellationToken ct
     )
     {
-        NodeId expectedId = new(Guid.Parse(req.Id));
-        Node? element = await dbContext
-            .Nodes
-            .FirstAsync(n => n.Id == expectedId, cancellationToken: ct);
+        GetModelResourcesByIdsQuery query =
+            new(Guid.Parse(req.ModelId), req.NodeIds?.Select(Guid.Parse).ToArray());
 
-        if (element is null)
-        {
-            return null;
-        }
-
-        NodeResponse? response = responseMapper.Map(element);
-
-        return response;
+        return await getResourcesByIdsQueryHandler.ExecuteAsync(query, ct);
     }
 }

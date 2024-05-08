@@ -6,35 +6,42 @@ namespace BeamOS.IntegrationTests.DirectStiffnessMethod;
 
 public static class ContractComparer
 {
-    public static void AssertContractsEqual(BeamOsContractBase first, BeamOsContractBase second)
+    public static void AssertContractsEqual(BeamOsContractBase expected, BeamOsContractBase actual)
     {
-        RoundAllDoubleValues(first, 2);
-        RoundAllDoubleValues(second, 2);
-        AssertContractsEqualRecursive(first, second);
+        RoundAllDoubleValues(expected, 2);
+        RoundAllDoubleValues(actual, 2);
+        AssertContractsEqualRecursive(expected, actual);
+    }
+
+    public static void AssertContractsEqual(IList expected, IList actual)
+    {
+        RoundAllDoubleValues(expected, 2);
+        RoundAllDoubleValues(actual, 2);
+        AssertContractValuesAreEqual(expected, actual, 2);
     }
 
     private static void AssertContractsEqualRecursive(
-        BeamOsContractBase first,
-        BeamOsContractBase second
+        BeamOsContractBase expected,
+        BeamOsContractBase actual
     )
     {
-        if (first.GetType() != second.GetType())
+        if (expected.GetType() != actual.GetType())
         {
             throw new ArgumentException(
-                $"Type of first contract, {first.GetType()}, does not match type of second contract, {second.GetType()}"
+                $"Type of expected contract, {expected.GetType()}, does not match type of actual contract, {actual.GetType()}"
             );
         }
 
         foreach (
-            PropertyInfo propertyInfo in first
+            PropertyInfo propertyInfo in expected
                 .GetType()
                 .GetProperties(BindingFlags.Public | BindingFlags.Instance)
         )
         {
-            object? firstValue = propertyInfo.GetValue(first, null);
-            object? secondValue = propertyInfo.GetValue(second, null);
+            object? expectedValue = propertyInfo.GetValue(expected, null);
+            object? actualValue = propertyInfo.GetValue(actual, null);
 
-            AssertContractValuesAreEqual(firstValue, secondValue);
+            AssertContractValuesAreEqual(expectedValue, actualValue);
         }
     }
 
@@ -86,70 +93,82 @@ public static class ContractComparer
         }
     }
 
-    private static void AssertContractValuesAreEqual(object? first, object? second)
+    private static void AssertContractValuesAreEqual(
+        object? expected,
+        object? actual,
+        int numDecimals = 2
+    )
     {
-        if (first == null && second == null)
+        if (expected == null && actual == null)
         {
             return;
         }
-        if (first == null || second == null)
+        if (expected == null || actual == null)
         {
-            throw new ArgumentNullException($"Value of first: {first}, \nValue of second {second}");
+            throw new ArgumentNullException(
+                $"Value of expected: {expected}, \nValue of actual {actual}"
+            );
         }
-        if (first.GetType() != second.GetType())
+        if (expected.GetType() != actual.GetType())
         {
             throw new ArgumentException(
-                $"Value and type of first: {first} {first.GetType()}, Value and type of second {second} {second.GetType()}"
+                $"Value and type of expected: {expected} {expected.GetType()}, Value and type of actual {actual} {actual.GetType()}"
             );
         }
 
         if (
-            first is BeamOsContractBase firstContract
-            && second is BeamOsContractBase secondContract
+            expected is BeamOsContractBase expectedContract
+            && actual is BeamOsContractBase actualContract
         )
         {
-            AssertContractsEqualRecursive(firstContract, secondContract);
+            AssertContractsEqualRecursive(expectedContract, actualContract);
             return;
         }
 
-        if (first is IList firstList && second is IList secondList)
+        if (expected is IList expectedList && actual is IList actualList)
         {
-            AssertListsEqual(firstList, secondList);
+            AssertListsEqual(expectedList, actualList);
             return;
         }
 
-        if (!Equals(first, second))
+        if (expected is double expectedDouble && actual is double actualDouble)
+        {
+            Assert.Equal(expectedDouble, actualDouble, numDecimals);
+            return;
+        }
+
+        if (!Equals(expected, actual))
         {
             throw new ArgumentException(
-                $"First info: \n{first.GetType()}\n{first}\n\nSecond Info: \n{second}"
+                $"expected info: \n{expected.GetType()}\n{expected}\n\nactual Info: \n{actual}"
             );
         }
     }
 
-    private static void AssertListsEqual(IList firstList, IList secondList)
+    private static void AssertListsEqual(IList expectedList, IList actualList)
     {
-        if (firstList.Count != secondList.Count)
+        if (expectedList.Count != actualList.Count)
         {
             throw new ArgumentException(
-                $"First is a list with count {firstList.Count} and second is a list with count {secondList.Count}"
+                $"expected is a list with count {expectedList.Count} and actual is a list with count {actualList.Count}"
             );
         }
-        HashSet<int> firstSet = [];
-        HashSet<int> secondSet = [];
-        foreach (var item in firstList)
+        HashSet<int> expectedSet = [];
+        HashSet<int> actualSet = [];
+        foreach (var item in expectedList)
         {
-            firstSet.Add(item.GetHashCode());
+            expectedSet.Add(item.GetHashCode());
         }
-        foreach (var item in secondList)
+        foreach (var item in actualList)
         {
-            secondSet.Add(item.GetHashCode());
+            actualSet.Add(item.GetHashCode());
         }
-        foreach (int key in firstSet)
+        foreach (int key in expectedSet)
         {
-            if (!secondSet.Contains(key))
+            if (!actualSet.Contains(key))
             {
                 throw new Exception(
-                    $"First list contains an item with a hashcode equal to {key}, but the second list does not."
+                    $"expected list contains an item with a hashcode equal to {key}, but the actual list does not."
                 );
             }
         }
