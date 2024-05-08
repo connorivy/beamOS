@@ -8,7 +8,7 @@ using UnitsNet;
 
 namespace BeamOs.Domain.PhysicalModel.PointLoadAggregate;
 
-public class PointLoad
+public class PointLoad : AggregateRoot<PointLoadId>
 {
     public PointLoad(
         ModelId modelId,
@@ -16,26 +16,26 @@ public class PointLoad
         Force force,
         Vector3D direction,
         PointLoadId? id = null
-    )
+    ) : base(id ?? new())
     {
         this.ModelId = modelId;
         this.NodeId = nodeId;
         this.Force = force;
-        this.NormalizedDirection = direction;
+        this.Direction = direction;
     }
 
-    public ModelId ModelId { get; set; }
-    public NodeId NodeId { get; set; }
-    public Force Force { get; set; }
-    public Vector3D NormalizedDirection { get; set; }
+    public ModelId ModelId { get; private set; }
+    public NodeId NodeId { get; private set; }
+    public Force Force { get; private set; }
+    public Vector3D Direction { get; private set; }
 
     public Force GetForceInDirection(CoordinateSystemDirection3D direction)
     {
         return direction switch
         {
-            CoordinateSystemDirection3D.AlongX => this.Force * this.NormalizedDirection.X,
-            CoordinateSystemDirection3D.AlongY => this.Force * this.NormalizedDirection.Y,
-            CoordinateSystemDirection3D.AlongZ => this.Force * this.NormalizedDirection.Z,
+            CoordinateSystemDirection3D.AlongX => this.Force * this.Direction.X,
+            CoordinateSystemDirection3D.AlongY => this.Force * this.Direction.Y,
+            CoordinateSystemDirection3D.AlongZ => this.Force * this.Direction.Z,
             CoordinateSystemDirection3D.AboutX
             or CoordinateSystemDirection3D.AboutY
             or CoordinateSystemDirection3D.AboutZ
@@ -48,9 +48,10 @@ public class PointLoad
 
     public PointLoadData GetData()
     {
-        return new(this.Force, this.NormalizedDirection);
+        return new(this.Force, this.Direction);
     }
 
+    [Obsolete("EF Core Constructor")]
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     public PointLoad() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

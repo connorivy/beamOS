@@ -46,40 +46,40 @@ public abstract class DsmModelFixture : ModelFixture
     }
     public PointLoad ToDomainObject(PointLoadFixture fixture)
     {
-        return new(this.StrongModelId, new(this.LocalGuidToServerGuid(fixture.Node.Id)), fixture.Force, fixture.NormalizedDirection);
+        return new(this.StrongModelId, new(this.LocalGuidToServerGuid(fixture.Node.Id)), fixture.Force, fixture.Direction);
     }
 
     public MomentLoad ToDomainObject(MomentLoadFixture fixture)
     {
-        return new(this.StrongModelId, new(this.LocalGuidToServerGuid(fixture.Node.Id)), fixture.Torque, fixture.NormalizedAxisDirection.ToVector());
+        return new(this.StrongModelId, new(this.LocalGuidToServerGuid(fixture.Node.Id)), fixture.Torque, fixture.AxisDirection.ToVector());
     }
 
-    public DsmElement1d ToDsm(Element1dFixture fixture)
-    {
-        return new DsmElement1d(
-            fixture.SectionProfileRotation,
-            ToDomainObject(fixture.StartNode),
-            ToDomainObject(fixture.EndNode),
-
-            new NodeId(Guid.Parse(this.Fixture.FixtureGuidToIdDict[fixture.Id])),
-            fixture.LocationPoint,
-            fixture.Restraint,
-            this.Fixture.PointLoadFixtures.Where(pl => pl.Node == fixture).Select(this.ToDomainObject).ToList(),
-            this.Fixture.MomentLoadFixtures.Where(pl => pl.Node == fixture).Select(this.ToDomainObject).ToList()
-        );
-    }
-
-    public Node ToDomainObject(NodeFixture fixture)
-    {
-        return new(this.StrongModelId, fixture.LocationPoint, fixture.Restraint,
-            new(this.LocalGuidToServerGuid(fixture.Id)));
-    }
+    // public DsmElement1d ToDsm(Element1dFixture fixture)
+    // {
+    //     return new DsmElement1d(
+    //         fixture.SectionProfileRotation,
+    //         ToDomainObject(fixture.StartNode),
+    //         ToDomainObject(fixture.EndNode),
+    //
+    //         new NodeId(Guid.Parse(this.Fixture.FixtureGuidToIdDict[fixture.Id])),
+    //         fixture.LocationPoint,
+    //         fixture.Restraint,
+    //         this.Fixture.PointLoadFixtures.Where(pl => pl.Node == fixture).Select(this.ToDomainObject).ToList(),
+    //         this.Fixture.MomentLoadFixtures.Where(pl => pl.Node == fixture).Select(this.ToDomainObject).ToList()
+    //     );
+    // }
 
     public Node ToDomainObject(NodeFixture fixture)
     {
         return new(this.StrongModelId, fixture.LocationPoint, fixture.Restraint,
             new(this.LocalGuidToServerGuid(fixture.Id)));
     }
+
+    //public Node ToDomainObject(NodeFixture fixture)
+    //{
+    //    return new(this.StrongModelId, fixture.LocationPoint, fixture.Restraint,
+    //        new(this.LocalGuidToServerGuid(fixture.Id)));
+    //}
 }
 
 public interface IDsmModelFixture

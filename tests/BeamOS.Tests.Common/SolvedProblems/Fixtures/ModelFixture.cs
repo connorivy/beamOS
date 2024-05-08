@@ -9,7 +9,10 @@ using BeamOs.Contracts.PhysicalModel.MomentLoad;
 using BeamOs.Contracts.PhysicalModel.Node;
 using BeamOs.Contracts.PhysicalModel.PointLoad;
 using BeamOs.Contracts.PhysicalModel.SectionProfile;
+using BeamOs.Domain.Common.Interfaces;
 using BeamOs.Domain.Common.ValueObjects;
+using BeamOs.Domain.PhysicalModel.Common.ValueObjects;
+using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.Domain.PhysicalModel.PointLoadAggregate.ValueObjects;
 using BeamOS.Tests.Common.SolvedProblems.Fixtures.Mappers;
@@ -17,7 +20,7 @@ using Riok.Mapperly.Abstractions;
 
 namespace BeamOS.Tests.Common.SolvedProblems.Fixtures;
 
-[Mapper]
+[Mapper(PreferParameterlessConstructors = false)]
 public abstract partial class ModelFixture
 {
     protected ModelFixture()
@@ -130,18 +133,42 @@ public abstract partial class ModelFixture
     public partial CreateElement1dRequest ToRequest(Element1dFixture fixture);
 
     [MapProperty(
-        nameof(PointLoadFixture.NormalizedDirection),
+        nameof(PointLoadFixture.Direction),
         nameof(CreatePointLoadRequest.Direction)
     )]
     public partial CreatePointLoadRequest ToRequest(PointLoadFixture fixture);
 
     [MapProperty(
-        nameof(MomentLoadFixture.NormalizedAxisDirection),
+        nameof(MomentLoadFixture.AxisDirection),
         nameof(CreateMomentLoadRequest.AxisDirection)
     )]
     public partial CreateMomentLoadRequest ToRequest(MomentLoadFixture fixture);
 
-    // public partial PointLoad ToDomainObject2(PointLoadFixture fixture);
+    //[MapDerivedType<Guid, PointLoadId>]
+    //[MapDerivedType<Guid, NodeId>]
+    //public partial GuidBasedId ToId(Guid id);
+
+    public TId ToId<TId>(Guid id)
+        where TId : IConstructable<TId, Guid>
+    {
+        return TId.Construct(Guid.Parse(this.FixtureGuidToIdDict[id]));
+    }
+
+    public NodeId ToNodeId(Guid id) => this.ToId<NodeId>(id);
+
+    public PointLoadId ToPointLoadId(Guid id) => this.ToId<PointLoadId>(id);
+
+    //[ObjectFactory]
+    //public TId ToId<TId>(Guid id)
+    //    where TId : NodeBaseId, IConstructable<TId, Guid>
+    //{
+    //    return TId.Construct(id);
+    //}
+
+    //public partial NodeId ToId(Guid id);
+
+    public partial PointLoad ToDomainObject2(PointLoadFixture fixture);
+
     // public partial PointLoadFixture ToDomainObject2(PointLoad fixture);
 
     [UseMapper]

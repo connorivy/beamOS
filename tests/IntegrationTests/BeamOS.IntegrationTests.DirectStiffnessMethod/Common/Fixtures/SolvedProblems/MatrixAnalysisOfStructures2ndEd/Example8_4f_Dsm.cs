@@ -52,6 +52,6 @@ internal class Example8_4f_Dsm : Example8_4f
 
     public static void he()
     {
-        DirectStiffnessMethodSolver.BuildStructureStiffnessMatrix
+        // DirectStiffnessMethodSolver.BuildStructureStiffnessMatrix
     }
 }
