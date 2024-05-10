@@ -1,4 +1,3 @@
-using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using UnitsNet;
 
 namespace BeamOS.Tests.Common.SolvedProblems.Fixtures;
@@ -18,7 +17,7 @@ public class Element1dFixture(
     /// <summary>
     /// counter-clockwise rotation in radians when looking in the negative (local) x direction
     /// </summary>
-    public Angle SectionProfileRotation { get; }
+    public Angle SectionProfileRotation { get; init; }
 }
 
 //public class Element1dFixture(

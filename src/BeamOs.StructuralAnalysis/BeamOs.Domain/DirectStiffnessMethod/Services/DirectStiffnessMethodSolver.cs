@@ -69,7 +69,7 @@ public sealed class DirectStiffnessMethodSolver
         return new(nodeResults, []);
     }
 
-    private static SortedUnsupportedStructureIds GetSortedUnsupportedStructureIds(
+    internal static SortedUnsupportedStructureIds GetSortedUnsupportedStructureIds(
         IEnumerable<DsmNodeVo> nodes
     )
     {

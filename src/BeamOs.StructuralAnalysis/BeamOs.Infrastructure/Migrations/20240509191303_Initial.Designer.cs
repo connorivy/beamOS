@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeamOs.Infrastructure.Migrations
 {
     [DbContext(typeof(BeamOsStructuralDbContext))]
-    [Migration("20240508165059_Initial")]
+    [Migration("20240509191303_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -202,15 +202,15 @@ namespace BeamOs.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("AxisDirection")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid>("ModelId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("NodeId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("NormalizedAxisDirection")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Torque")
                         .HasColumnType("float");
@@ -279,6 +279,10 @@ namespace BeamOs.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Direction")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<double>("Force")
                         .HasColumnType("float");
 
@@ -287,10 +291,6 @@ namespace BeamOs.Infrastructure.Migrations
 
                     b.Property<Guid>("NodeId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("NormalizedDirection")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

@@ -11,22 +11,33 @@ using BeamOs.Contracts.PhysicalModel.PointLoad;
 using BeamOs.Contracts.PhysicalModel.SectionProfile;
 using BeamOs.Domain.Common.Interfaces;
 using BeamOs.Domain.Common.ValueObjects;
-using BeamOs.Domain.PhysicalModel.Common.ValueObjects;
+using BeamOs.Domain.PhysicalModel.Element1DAggregate.ValueObjects;
+using BeamOs.Domain.PhysicalModel.MaterialAggregate;
+using BeamOs.Domain.PhysicalModel.MaterialAggregate.ValueObjects;
+using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
+using BeamOs.Domain.PhysicalModel.MomentLoadAggregate;
+using BeamOs.Domain.PhysicalModel.MomentLoadAggregate.ValueObjects;
+using BeamOs.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.Domain.PhysicalModel.PointLoadAggregate.ValueObjects;
+using BeamOs.Domain.PhysicalModel.SectionProfileAggregate;
+using BeamOs.Domain.PhysicalModel.SectionProfileAggregate.ValueObjects;
 using BeamOS.Tests.Common.SolvedProblems.Fixtures.Mappers;
+using MathNet.Numerics.LinearAlgebra;
+using MathNet.Spatial.Euclidean;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOS.Tests.Common.SolvedProblems.Fixtures;
 
-[Mapper(PreferParameterlessConstructors = false)]
+[Mapper]
 public abstract partial class ModelFixture
 {
     protected ModelFixture()
     {
         this.UnitMapperWithOptionalUnits = new(this.UnitSettings);
         this.ModelId = this.Id.ToString();
+        this.StrongModelId = new(Guid.Parse(this.ModelId));
     }
 
     public abstract Guid Id { get; }
@@ -104,6 +115,7 @@ public abstract partial class ModelFixture
     }
 
     public string ModelId { get; private set; }
+    public ModelId StrongModelId { get; }
 
     public Dictionary<Guid, string> FixtureGuidToIdDict { get; } = [];
 
@@ -132,16 +144,8 @@ public abstract partial class ModelFixture
 
     public partial CreateElement1dRequest ToRequest(Element1dFixture fixture);
 
-    [MapProperty(
-        nameof(PointLoadFixture.Direction),
-        nameof(CreatePointLoadRequest.Direction)
-    )]
     public partial CreatePointLoadRequest ToRequest(PointLoadFixture fixture);
 
-    [MapProperty(
-        nameof(MomentLoadFixture.AxisDirection),
-        nameof(CreateMomentLoadRequest.AxisDirection)
-    )]
     public partial CreateMomentLoadRequest ToRequest(MomentLoadFixture fixture);
 
     //[MapDerivedType<Guid, PointLoadId>]
@@ -154,22 +158,31 @@ public abstract partial class ModelFixture
         return TId.Construct(Guid.Parse(this.FixtureGuidToIdDict[id]));
     }
 
+    public ModelId ToModelId(DummyModelId id) => this.StrongModelId;
+
     public NodeId ToNodeId(Guid id) => this.ToId<NodeId>(id);
 
     public PointLoadId ToPointLoadId(Guid id) => this.ToId<PointLoadId>(id);
 
-    //[ObjectFactory]
-    //public TId ToId<TId>(Guid id)
-    //    where TId : NodeBaseId, IConstructable<TId, Guid>
-    //{
-    //    return TId.Construct(id);
-    //}
+    public MomentLoadId ToMomentLoadId(Guid id) => this.ToId<MomentLoadId>(id);
 
-    //public partial NodeId ToId(Guid id);
+    public MaterialId ToMaterialId(Guid id) => this.ToId<MaterialId>(id);
 
-    public partial PointLoad ToDomainObject2(PointLoadFixture fixture);
+    public SectionProfileId ToSectionProfileId(Guid id) => this.ToId<SectionProfileId>(id);
 
-    // public partial PointLoadFixture ToDomainObject2(PointLoad fixture);
+    public Element1DId ToElement1dId(Guid id) => this.ToId<Element1DId>(id);
+
+    public partial PointLoad ToDomainObject(PointLoadFixture fixture);
+
+    public partial MomentLoad ToDomainObject(MomentLoadFixture fixture);
+
+    public Vector<double> ToVector(Vector3D vector3D) => vector3D.ToVector();
+
+    public partial Node ToDomainObject(NodeFixture fixture);
+
+    public partial Material ToDomainObject(MaterialFixture fixture);
+
+    public partial SectionProfile ToDomainObject(SectionProfileFixture fixture);
 
     [UseMapper]
     protected UnitMapperWithOptionalUnits UnitMapperWithOptionalUnits { get; }

@@ -25,10 +25,10 @@ public class MomentLoad : AggregateRoot<MomentLoadId>
         this.AxisDirection = axisDirection.Normalize(2);
     }
 
-    public ModelId ModelId { get; private set; }
-    public NodeId NodeId { get; private set; }
-    public Torque Torque { get; private set; }
-    public Vector<double> AxisDirection { get; private set; }
+    public ModelId ModelId { get; set; }
+    public NodeId NodeId { get; set; }
+    public Torque Torque { get; set; }
+    public Vector<double> AxisDirection { get; set; }
 
     public Torque GetTorqueInDirection(CoordinateSystemDirection3D direction)
     {

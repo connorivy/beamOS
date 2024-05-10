@@ -133,7 +133,7 @@ namespace BeamOs.Infrastructure.Migrations
                     ModelId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     NodeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Torque = table.Column<double>(type: "float", nullable: false),
-                    NormalizedAxisDirection = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    AxisDirection = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -185,7 +185,7 @@ namespace BeamOs.Infrastructure.Migrations
                     ModelId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     NodeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Force = table.Column<double>(type: "float", nullable: false),
-                    NormalizedDirection = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Direction = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {

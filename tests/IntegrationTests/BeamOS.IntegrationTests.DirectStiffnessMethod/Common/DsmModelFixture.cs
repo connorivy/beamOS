@@ -1,91 +1,96 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BeamOs.Domain.AnalyticalResults.Common.ValueObjects;
 using BeamOs.Domain.Common.Enums;
 using BeamOs.Domain.DirectStiffnessMethod;
-using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
-using BeamOs.Domain.PhysicalModel.MomentLoadAggregate;
-using BeamOs.Domain.PhysicalModel.NodeAggregate;
+using BeamOs.Domain.DirectStiffnessMethod.Common.ValueObjects;
 using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
-using BeamOs.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOS.Tests.Common.SolvedProblems.Fixtures;
-using Riok.Mapperly.Abstractions;
+using MathNet.Numerics.LinearAlgebra;
 
 namespace BeamOS.IntegrationTests.DirectStiffnessMethod.Common;
 
-public abstract class DsmModelFixture : ModelFixture
+public abstract class DsmModelFixture
 {
     public DsmModelFixture(ModelFixture fixture)
     {
         this.Fixture = fixture;
-        this.StrongModelId = new(Guid.Parse(fixture.ModelId));
     }
 
-    [UseMapper]
     public ModelFixture Fixture { get; }
 
-    public DsmNodeVo ToDsmNodeVo(NodeFixture fixture)
+    public DsmNodeVo ToDsm(NodeFixture fixture)
     {
         return new DsmNodeVo(
-            new NodeId(Guid.Parse(this.Fixture.FixtureGuidToIdDict[fixture.Id])),
+            this.Fixture.ToNodeId(fixture.Id),
             fixture.LocationPoint,
             fixture.Restraint,
-            this.Fixture.PointLoadFixtures.Where(pl => pl.Node == fixture).Select(this.ToDomainObject).ToList(),
-            this.Fixture.MomentLoadFixtures.Where(pl => pl.Node == fixture).Select(this.ToDomainObject).ToList()
+            this.Fixture
+                .PointLoadFixtures
+                .Where(pl => pl.Node == fixture)
+                .Select(this.Fixture.ToDomainObject)
+                .ToList(),
+            this.Fixture
+                .MomentLoadFixtures
+                .Where(pl => pl.Node == fixture)
+                .Select(this.Fixture.ToDomainObject)
+                .ToList()
         );
     }
 
-    public ModelId StrongModelId { get; }
-
-    public Guid LocalGuidToServerGuid(Guid id)
+    public DsmElement1d ToDsm(Element1dFixture fixture)
     {
-        return Guid.Parse(this.FixtureGuidToIdDict[id]);
-    }
-    public PointLoad ToDomainObject(PointLoadFixture fixture)
-    {
-        return new(this.StrongModelId, new(this.LocalGuidToServerGuid(fixture.Node.Id)), fixture.Force, fixture.Direction);
-    }
-
-    public MomentLoad ToDomainObject(MomentLoadFixture fixture)
-    {
-        return new(this.StrongModelId, new(this.LocalGuidToServerGuid(fixture.Node.Id)), fixture.Torque, fixture.AxisDirection.ToVector());
+        return new(
+            fixture.SectionProfileRotation,
+            this.Fixture.ToDomainObject(fixture.StartNode),
+            this.Fixture.ToDomainObject(fixture.EndNode),
+            this.Fixture.ToDomainObject(fixture.Material),
+            this.Fixture.ToDomainObject(fixture.SectionProfile)
+        );
     }
 
-    // public DsmElement1d ToDsm(Element1dFixture fixture)
-    // {
-    //     return new DsmElement1d(
-    //         fixture.SectionProfileRotation,
-    //         ToDomainObject(fixture.StartNode),
-    //         ToDomainObject(fixture.EndNode),
-    //
-    //         new NodeId(Guid.Parse(this.Fixture.FixtureGuidToIdDict[fixture.Id])),
-    //         fixture.LocationPoint,
-    //         fixture.Restraint,
-    //         this.Fixture.PointLoadFixtures.Where(pl => pl.Node == fixture).Select(this.ToDomainObject).ToList(),
-    //         this.Fixture.MomentLoadFixtures.Where(pl => pl.Node == fixture).Select(this.ToDomainObject).ToList()
-    //     );
-    // }
-
-    public Node ToDomainObject(NodeFixture fixture)
+    public DsmElement1d ToDsm(DsmElement1dFixture fixture)
     {
-        return new(this.StrongModelId, fixture.LocationPoint, fixture.Restraint,
-            new(this.LocalGuidToServerGuid(fixture.Id)));
+        return this.ToDsm(fixture.Fixture);
     }
-
-    //public Node ToDomainObject(NodeFixture fixture)
-    //{
-    //    return new(this.StrongModelId, fixture.LocationPoint, fixture.Restraint,
-    //        new(this.LocalGuidToServerGuid(fixture.Id)));
-    //}
 }
 
 public interface IDsmModelFixture
 {
     public ModelFixture Fixture { get; }
+    public DsmElement1dFixture[] DsmElement1ds2 { get; }
+    public DsmNodeVo[] DsmNodes { get; }
+    public DsmElement1d[] DsmElement1ds { get; }
 }
+
+public class DsmNodeFixture
+{
+    public NodeFixture Fixture { get; }
+}
+
+public class DsmElement1dFixture(Element1dFixture fixture)
+{
+    public Element1dFixture Fixture { get; } = fixture;
+
+    public double[,]? ExpectedRotationMatrix { get; init; }
+    public double[,]? ExpectedTransformationMatrix { get; init; }
+    public double[,]? ExpectedLocalStiffnessMatrix { get; init; }
+    public double[,]? ExpectedGlobalStiffnessMatrix { get; init; }
+    public double[]? ExpectedLocalFixedEndForces { get; init; }
+    public double[]? ExpectedGlobalFixedEndForces { get; init; }
+    public double[]? ExpectedLocalEndDisplacements { get; init; }
+    public double[]? ExpectedGlobalEndDisplacements { get; init; }
+    public double[]? ExpectedLocalEndForces { get; init; }
+    public double[]? ExpectedGlobalEndForces { get; init; }
+}
+
+public interface IHasStructuralStiffnessMatrix : IDsmModelFixture
+{
+    public double[,] ExpectedStructuralStiffnessMatrix { get; }
+}
+
+//public static class IHasStructuralStiffnessMatrixExtensions
+//{
+//    public static
+//}
 
 public interface IHasUnsupportedStructureDisplacementIds : IDsmModelFixture
 {
