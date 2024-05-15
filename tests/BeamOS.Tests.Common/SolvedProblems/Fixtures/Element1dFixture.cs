@@ -19,36 +19,3 @@ public class Element1dFixture(
     /// </summary>
     public Angle SectionProfileRotation { get; init; }
 }
-
-//public class Element1dFixture(
-//    string startNodeId,
-//    string endNodeId,
-//    string materialId,
-//    string sectionProfileId,
-//    Angle sectionProfileRotation,
-//    Pressure modulusOfElasticity,
-//    Pressure modulusOfRigidity,
-//    Area area,
-//    AreaMomentOfInertia strongAxisMomentOfInertia,
-//    AreaMomentOfInertia weakAxisMomentOfInertia,
-//    AreaMomentOfInertia polarMomentOfInertia,
-//    Point startNodeLocation,
-//    Point endNodeLocation
-//)
-//{
-//    protected string StartNodeId { get; } = startNodeId;
-//    protected string EndNodeId { get; } = endNodeId;
-//    protected string MaterialId { get; } = materialId;
-//    protected string SectionProfileId { get; } = sectionProfileId;
-//    protected Angle SectionProfileRotation { get; } = sectionProfileRotation;
-//    protected Pressure ModulusOfElasticity { get; } = modulusOfElasticity;
-//    protected Pressure ModulusOfRigidity { get; } = modulusOfRigidity;
-//    protected Area Area { get; } = area;
-//    protected AreaMomentOfInertia StrongAxisMomentOfInertia { get; } = strongAxisMomentOfInertia;
-//    protected AreaMomentOfInertia WeakAxisMomentOfInertia { get; } = weakAxisMomentOfInertia;
-//    protected AreaMomentOfInertia PolarMomentOfInertia { get; } = polarMomentOfInertia;
-//    protected Point StartNodeLocation { get; } = startNodeLocation;
-//    protected Point EndNodeLocation { get; } = endNodeLocation;
-
-//    //public CreateElement1dRequest GetCreateElement1DRequest()
-//}

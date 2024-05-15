@@ -1,8 +1,8 @@
 using BeamOS.Tests.Common.SolvedProblems.Fixtures;
 
-namespace BeamOS.Tests.Common.SolvedProblems.DirectStiffnessMethod.Kassimali_MatrixAnalysisOfStructures2ndEd.Example8_4;
+namespace BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd.Example8_4;
 
-internal class Materials
+internal class Kassimali_Example8_4_Materials
 {
     public static MaterialFixture Steel29000Ksi { get; } =
         new MaterialFixture(

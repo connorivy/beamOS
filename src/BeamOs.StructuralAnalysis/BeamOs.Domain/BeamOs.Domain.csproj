@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="PhysicalModel\Common\Extensions\BeamOSEntityExtensions\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="MathNet.Numerics" />
     <PackageReference Include="MathNet.Spatial" />
     <PackageReference Include="UnitsNet" />

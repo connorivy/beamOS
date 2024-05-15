@@ -67,4 +67,7 @@ public class DsmNodeVo(
         yield return this.PointLoads;
         yield return this.MomentLoads;
     }
+
+    public DsmNodeVo()
+        : this(null, null, null) { }
 }

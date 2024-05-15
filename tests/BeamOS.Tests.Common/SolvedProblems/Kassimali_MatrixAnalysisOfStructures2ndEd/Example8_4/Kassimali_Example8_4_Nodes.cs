@@ -2,9 +2,9 @@ using BeamOs.Domain.Common.ValueObjects;
 using BeamOS.Tests.Common.SolvedProblems.Fixtures;
 using UnitsNet.Units;
 
-namespace BeamOS.Tests.Common.SolvedProblems.DirectStiffnessMethod.Kassimali_MatrixAnalysisOfStructures2ndEd.Example8_4;
+namespace BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd.Example8_4;
 
-public class Nodes
+public class Kassimali_Example8_4_Nodes
 {
     public static NodeFixture Node1 { get; } =
         new(new Point(0, 0, 0, LengthUnit.Foot), Restraint.Free);

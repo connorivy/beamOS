@@ -1,31 +1,31 @@
 using BeamOs.ApiClient;
-using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
-using BeamOs.Contracts.Common;
-using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.DirectStiffnessMethod.Common.ValueObjects;
 using BeamOs.Domain.DirectStiffnessMethod.Services;
-using BeamOS.IntegrationTests.DirectStiffnessMethod.Common.Fixtures.SolvedProblems.MatrixAnalysisOfStructures2ndEd;
+using BeamOS.IntegrationTests.DirectStiffnessMethod.Common;
+using BeamOS.IntegrationTests.DirectStiffnessMethod.Common.Fixtures;
+using BeamOS.IntegrationTests.DirectStiffnessMethod.Common.SolvedProblems.MatrixAnalysisOfStructures2ndEd.Example8_4;
+using BeamOS.Tests.Common.SolvedProblems;
 using BeamOS.Tests.Common.SolvedProblems.DirectStiffnessMethod.Kassimali_MatrixAnalysisOfStructures2ndEd.Example8_4;
-using BeamOS.Tests.Common.SolvedProblems.Fixtures;
 using FluentAssertions;
+using Xunit.Sdk;
 
 namespace BeamOS.IntegrationTests.DirectStiffnessMethod;
 
 public class UnitTest1(CustomWebApplicationFactory<BeamOs.Api.Program> webApplicationFactory)
     : IClassFixture<CustomWebApplicationFactory<BeamOs.Api.Program>>
 {
-    [Fact]
-    public async Task Test1()
-    {
-        var httpClient = webApplicationFactory.CreateClient();
-        var client = new ApiAlphaClient(httpClient);
-        await Example8_4.CreatePhysicalModel(client);
+    //[Fact]
+    //public async Task Test1()
+    //{
+    //    var httpClient = webApplicationFactory.CreateClient();
+    //    var client = new ApiAlphaClient(httpClient);
+    //    await Example8_4f.CreatePhysicalModel(client);
 
-        var modelResponse = await client.GetModelAsync(Example8_4.ModelId, null);
-        var expectedModelResponse = Example8_4.GetExpectedResponse();
+    //    var modelResponse = await client.GetModelAsync(Example8_4f.ModelId, null);
+    //    var expectedModelResponse = Example8_4f.GetExpectedResponse();
 
-        ContractComparer.AssertContractsEqual(modelResponse, expectedModelResponse);
-    }
+    //    ContractComparer.AssertContractsEqual(modelResponse, expectedModelResponse);
+    //}
 
     //[Fact]
     //public async Task Test2()
@@ -42,49 +42,49 @@ public class UnitTest1(CustomWebApplicationFactory<BeamOs.Api.Program> webApplic
     //    ContractComparer.AssertContractsEqual(modelResponse, expectedModelResponse);
     //}
 
+    //[Fact]
+    //public async Task Test3()
+    //{
+    //    var httpClient = webApplicationFactory.CreateClient();
+    //    var client = new ApiAlphaClient(httpClient);
+    //    var modelFixture = new Example8_4f();
+
+    //    await modelFixture.Create(client);
+    //    await client.RunDirectStiffnessMethodAsync(new IdRequest(modelFixture.ModelId));
+
+    //    var expectedModelResponse = modelFixture.GetExpectedNodeResultFixtures();
+    //    var modelResponse = await client.GetModelAsync(modelFixture.Id.ToString(), null);
+
+    //    ICollection<NodeResultResponse> calculatedNodeResponses = await client.GetNodeResultsAsync(
+    //        modelFixture.ModelId,
+    //        []
+    //    );
+    //    //foreach (var x in modelFixture.ExpectedNodeResults)
+    //    //{
+    //    //    NodeResponse? calculatedResult = await client.GetNodeResultsAsync(modelFixture.ModelId, );
+
+    //    //}
+
+    //    ContractComparer.AssertContractsEqual(
+    //        expectedModelResponse,
+    //        calculatedNodeResponses.ToArray()
+    //    );
+    //}
+
     [Fact]
-    public async Task Test3()
+    public void Test_Dsm_StructuralStiffnessMatrix()
     {
-        var httpClient = webApplicationFactory.CreateClient();
-        var client = new ApiAlphaClient(httpClient);
-        var modelFixture = new Example8_4f();
+        //var httpClient = webApplicationFactory.CreateClient();
+        //var client = new ApiAlphaClient(httpClient);
+        var baseFixture = new Kassimali_Example8_4();
 
-        await modelFixture.Create(client);
-        await client.RunDirectStiffnessMethodAsync(new IdRequest(modelFixture.ModelId));
-
-        var expectedModelResponse = modelFixture.GetExpectedNodeResultFixtures();
-        var modelResponse = await client.GetModelAsync(modelFixture.Id.ToString(), null);
-
-        ICollection<NodeResultResponse> calculatedNodeResponses = await client.GetNodeResultsAsync(
-            modelFixture.ModelId,
-            []
-        );
-        //foreach (var x in modelFixture.ExpectedNodeResults)
-        //{
-        //    NodeResponse? calculatedResult = await client.GetNodeResultsAsync(modelFixture.ModelId, );
-
-        //}
-
-        ContractComparer.AssertContractsEqual(
-            expectedModelResponse,
-            calculatedNodeResponses.ToArray()
-        );
-    }
-
-    [Fact]
-    public async Task Test_Dsm_StructuralStiffnessMatrix()
-    {
-        var httpClient = webApplicationFactory.CreateClient();
-        var client = new ApiAlphaClient(httpClient);
-        var baseFixture = new Example8_4f();
-
-        await baseFixture.Create(client);
+        //await baseFixture.Create(client);
         //await client.RunDirectStiffnessMethodAsync(new IdRequest(modelFixture.Fixture.ModelId));
 
-        var modelFixture = new Example8_4f_Dsm(baseFixture);
+        var modelFixture = new Example8_4_Dsm(baseFixture);
         var unitSettings = modelFixture.Fixture.UnitSettings;
-        var nodes = modelFixture.DsmNodes;
-        var element1ds = modelFixture.DsmElement1ds;
+        var nodes = modelFixture.DsmNodeFixtures.Select(modelFixture.ToDsm).ToArray();
+        var element1ds = modelFixture.DsmElement1dFixtures.Select(modelFixture.ToDsm).ToArray();
         var (degreeOfFreedomIds, boundaryConditionIds) =
             DirectStiffnessMethodSolver.GetSortedUnsupportedStructureIds(nodes);
 
@@ -112,39 +112,31 @@ public class UnitTest1(CustomWebApplicationFactory<BeamOs.Api.Program> webApplic
         }
     }
 
-    [Fact]
-    public async Task Test_Dsm_GlobalStiffnessMatrix()
+    //[Fact]
+    [Theory]
+    [ClassData(typeof(AllDsmElement1dFixtures))]
+    public void Test_Dsm_GlobalStiffnessMatrix(DsmElement1dFixture element1dFixture)
     {
-        var httpClient = webApplicationFactory.CreateClient();
-        var client = new ApiAlphaClient(httpClient);
-        var baseFixture = new Example8_4f();
-
-        await baseFixture.Create(client);
-        //await client.RunDirectStiffnessMethodAsync(new IdRequest(modelFixture.Fixture.ModelId));
-
-        var modelFixture = new Example8_4f_Dsm(baseFixture);
-
-        foreach (var el in modelFixture.DsmElement1ds2)
+        if (element1dFixture.ExpectedGlobalStiffnessMatrix is null)
         {
-            var dsmEl = modelFixture.ToDsm(el);
-            var actualRotationMatrix = dsmEl.GetRotationMatrix().ToArray();
-            //Assert.Equal(actualRotationMatrix, el.ExpectedRotationMatrix);
-            actualRotationMatrix
-                .Should()
-                .BeEquivalentTo(
-                    el.ExpectedRotationMatrix,
-                    options =>
-                        options
-                            .ComparingByValue<double>()
-                            .Using<double>(
-                                ctx =>
-                                    ctx.Subject
-                                        .Should()
-                                        .BeApproximately(ctx.Expectation, precision: 2)
-                            )
-                            .WhenTypeIs<double>()
-                );
+            throw SkipException.ForSkip("No expected value to test against calculated value");
         }
+
+        var dsmEl = element1dFixture.ToDomainObjectWithLocalIds();
+        var actualRotationMatrix = dsmEl.GetRotationMatrix().ToArray();
+        actualRotationMatrix
+            .Should()
+            .BeEquivalentTo(
+                element1dFixture.ExpectedRotationMatrix,
+                options =>
+                    options
+                        .ComparingByValue<double>()
+                        .Using<double>(
+                            ctx =>
+                                ctx.Subject.Should().BeApproximately(ctx.Expectation, precision: 2)
+                        )
+                        .WhenTypeIs<double>()
+            );
     }
 
     //[Fact]

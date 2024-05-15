@@ -4,7 +4,7 @@ using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Contracts.PhysicalModel.Node;
 using BeamOs.Domain.Common.ValueObjects;
 
-namespace BeamOS.Tests.Common.SolvedProblems.DirectStiffnessMethod.Kassimali_MatrixAnalysisOfStructures2ndEd.Example3_8;
+namespace BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd.Example3_8;
 
 internal class Example3_8
 {
@@ -22,7 +22,7 @@ internal class Example3_8
     private static RestraintRequest pinned2d = new(false, false, false, false, false, true);
 
     private static CreateNodeRequest Node1 { get; } =
-        new(modelId, 12 * 12, 16 * 12, 0, Restraint: free2D);
+        new(modelId, 12, 16, 0, "Foot", restraint: free2D);
 
     //private static CreateElement1dRequest Element1(string modelId)
     //{

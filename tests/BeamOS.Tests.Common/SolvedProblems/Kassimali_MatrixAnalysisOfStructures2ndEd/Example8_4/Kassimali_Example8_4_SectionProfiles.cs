@@ -1,8 +1,8 @@
 using BeamOS.Tests.Common.SolvedProblems.Fixtures;
 
-namespace BeamOS.Tests.Common.SolvedProblems.DirectStiffnessMethod.Kassimali_MatrixAnalysisOfStructures2ndEd.Example8_4;
+namespace BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd.Example8_4;
 
-internal class SectionProfiles
+internal class Kassimali_Example8_4_SectionProfiles
 {
     public static SectionProfileFixture Profile33in2 { get; } =
         new(

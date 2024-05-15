@@ -1,11 +1,12 @@
-using BeamOS.Tests.Common.SolvedProblems.DirectStiffnessMethod.Kassimali_MatrixAnalysisOfStructures2ndEd.Example8_4;
+using BeamOS.IntegrationTests.DirectStiffnessMethod.Common.Fixtures;
+using BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd.Example8_4;
 
-namespace BeamOS.IntegrationTests.DirectStiffnessMethod.Common.Fixtures.SolvedProblems.MatrixAnalysisOfStructures2ndEd;
+namespace BeamOS.IntegrationTests.DirectStiffnessMethod.Common.SolvedProblems.MatrixAnalysisOfStructures2ndEd.Example8_4;
 
 internal static class DsmElement1dFixtures
 {
     public static DsmElement1dFixture Element1 { get; } =
-        new(Element1ds.Element1)
+        new(Kassimali_Example8_4_Element1ds.Element1)
         {
             ExpectedRotationMatrix = new double[,]
             {
@@ -93,7 +94,7 @@ internal static class DsmElement1dFixtures
         };
 
     public static DsmElement1dFixture Element2 { get; } =
-        new(Element1ds.Element2)
+        new(Kassimali_Example8_4_Element1ds.Element2)
         {
             ExpectedRotationMatrix = new double[,]
             {
@@ -196,7 +197,7 @@ internal static class DsmElement1dFixtures
         };
 
     public static DsmElement1dFixture Element3 { get; } =
-        new(Element1ds.Element3)
+        new(Kassimali_Example8_4_Element1ds.Element3)
         {
             ExpectedRotationMatrix = new double[,]
             {
