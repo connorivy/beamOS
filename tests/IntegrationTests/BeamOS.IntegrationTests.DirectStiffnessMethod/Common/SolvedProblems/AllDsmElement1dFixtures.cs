@@ -3,7 +3,7 @@ using BeamOS.IntegrationTests.DirectStiffnessMethod.Common.SolvedProblems.Matrix
 
 namespace BeamOS.Tests.Common.SolvedProblems;
 
-internal class AllDsmElement1dFixtures : TheoryDataBase<DsmElement1dFixture>
+public class AllDsmElement1dFixtures : TheoryDataBase<DsmElement1dFixture>
 {
     public static Example8_4_Dsm Example8_4_Dsm { get; } =
         new(AllSolvedProblems.Kassimali_Examples8_4);

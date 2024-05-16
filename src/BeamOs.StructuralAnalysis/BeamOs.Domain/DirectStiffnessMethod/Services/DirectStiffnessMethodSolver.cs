@@ -137,7 +137,7 @@ public sealed class DirectStiffnessMethodSolver
         return new VectorIdentified(boundaryConditionIds, hardcodedNodeDisplacements);
     }
 
-    private static VectorIdentified BuildKnownJointReactionVector(
+    internal static VectorIdentified BuildKnownJointReactionVector(
         List<UnsupportedStructureDisplacementId2> degreeOfFreedomIds,
         IEnumerable<DsmNodeVo> nodes,
         ForceUnit forceUnit,
@@ -157,7 +157,7 @@ public sealed class DirectStiffnessMethodSolver
         return loadVector;
     }
 
-    private static VectorIdentified GetUnknownJointDisplacementVector(
+    internal static VectorIdentified GetUnknownJointDisplacementVector(
         MatrixIdentified structureStiffnessMatrix,
         VectorIdentified knownReactionVector,
         List<UnsupportedStructureDisplacementId2> degreeOfFreedomIds
@@ -171,7 +171,7 @@ public sealed class DirectStiffnessMethodSolver
         return dofDisplacementVector;
     }
 
-    private static VectorIdentified GetUnknownJointReactionVector(
+    internal static VectorIdentified GetUnknownJointReactionVector(
         List<UnsupportedStructureDisplacementId2> boundaryConditionIds,
         VectorIdentified unknownJointDisplacementVector,
         IEnumerable<DsmElement1d> element1Ds,

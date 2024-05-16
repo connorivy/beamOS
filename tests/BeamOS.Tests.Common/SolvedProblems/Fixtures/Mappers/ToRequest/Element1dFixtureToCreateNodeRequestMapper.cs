@@ -1,7 +1,7 @@
 ﻿using BeamOs.Api.Common.Mappers;
 using BeamOs.Contracts.PhysicalModel.Element1d;
 
-namespace BeamOS.Tests.Common.SolvedProblems.Fixtures.Mappers;
+namespace BeamOS.Tests.Common.SolvedProblems.Fixtures.Mappers.ToRequest;
 
 internal static partial class Element1dFixtureToCreateNodeRequestMapper
 {

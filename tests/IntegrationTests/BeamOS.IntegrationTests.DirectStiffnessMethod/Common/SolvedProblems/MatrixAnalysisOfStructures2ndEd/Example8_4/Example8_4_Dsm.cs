@@ -5,7 +5,7 @@ using BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2nd
 
 namespace BeamOS.IntegrationTests.DirectStiffnessMethod.Common.SolvedProblems.MatrixAnalysisOfStructures2ndEd.Example8_4;
 
-internal class Example8_4_Dsm
+public class Example8_4_Dsm
     : DsmModelFixture,
         IHasStructuralStiffnessMatrix,
         IHasExpectedReactionVector,

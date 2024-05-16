@@ -84,35 +84,44 @@ public interface IHasExpectedNodeResults
 public static class IHasExpectedModelResponseExtensions
 {
     public static ModelResponse GetExpectedResponse<T>(this T modelFixture)
-        where T : ModelFixture, IHasExpectedModelResponse
+        where T : ModelFixtureInDb
     {
-        var nodeResponses = modelFixture.NodeFixtures.Select(modelFixture.ToResponse).ToList();
+        var nodeResponses = modelFixture
+            .ModelFixture
+            .NodeFixtures
+            .Select(modelFixture.ToResponse)
+            .ToList();
         var element1dResponse = modelFixture
+            .ModelFixture
             .Element1dFixtures
             .Select(modelFixture.ToResponse)
             .ToList();
         var materialResponse = modelFixture
+            .ModelFixture
             .MaterialFixtures
             .Select(modelFixture.ToResponse)
             .ToList();
         var sectionProfileResponses = modelFixture
+            .ModelFixture
             .SectionProfileFixtures
             .Select(modelFixture.ToResponse)
             .ToList();
         var pointLoadResponses = modelFixture
+            .ModelFixture
             .PointLoadFixtures
             .Select(modelFixture.ToResponse)
             .ToList();
         var momentLoadResponses = modelFixture
+            .ModelFixture
             .MomentLoadFixtures
             .Select(modelFixture.ToResponse)
             .ToList();
 
         return new ModelResponse(
-            modelFixture.ModelId,
-            modelFixture.Name,
-            modelFixture.Description,
-            new ModelSettingsResponse(modelFixture.UnitSettings.ToResponse()),
+            modelFixture.ModelFixture.ModelId,
+            modelFixture.ModelFixture.Name,
+            modelFixture.ModelFixture.Description,
+            new ModelSettingsResponse(modelFixture.ModelFixture.UnitSettings.ToResponse()),
             nodeResponses,
             element1dResponse,
             materialResponse,

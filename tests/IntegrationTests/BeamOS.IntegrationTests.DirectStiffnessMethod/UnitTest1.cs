@@ -3,9 +3,11 @@ using BeamOs.Domain.DirectStiffnessMethod.Common.ValueObjects;
 using BeamOs.Domain.DirectStiffnessMethod.Services;
 using BeamOS.IntegrationTests.DirectStiffnessMethod.Common;
 using BeamOS.IntegrationTests.DirectStiffnessMethod.Common.Fixtures;
+using BeamOS.IntegrationTests.DirectStiffnessMethod.Common.Interfaces;
 using BeamOS.IntegrationTests.DirectStiffnessMethod.Common.SolvedProblems.MatrixAnalysisOfStructures2ndEd.Example8_4;
 using BeamOS.Tests.Common.SolvedProblems;
 using BeamOS.Tests.Common.SolvedProblems.DirectStiffnessMethod.Kassimali_MatrixAnalysisOfStructures2ndEd.Example8_4;
+using BeamOS.Tests.Common.SolvedProblems.Fixtures;
 using FluentAssertions;
 using Xunit.Sdk;
 
@@ -71,17 +73,22 @@ public class UnitTest1(CustomWebApplicationFactory<BeamOs.Api.Program> webApplic
     //    );
     //}
 
-    [Fact]
-    public void Test_Dsm_StructuralStiffnessMatrix()
+    [Theory]
+    [ClassData(typeof(AllSolvedDsmProblems))]
+    public void Test_Dsm_StructuralStiffnessMatrix(DsmModelFixture modelFixture)
     {
+        if (modelFixture is not IHasStructuralStiffnessMatrix modelFixtureWithSsm)
+        {
+            throw SkipException.ForSkip("No expected value to test against calculated value");
+        }
         //var httpClient = webApplicationFactory.CreateClient();
         //var client = new ApiAlphaClient(httpClient);
-        var baseFixture = new Kassimali_Example8_4();
+        //var baseFixture = new Kassimali_Example8_4();
 
-        //await baseFixture.Create(client);
-        //await client.RunDirectStiffnessMethodAsync(new IdRequest(modelFixture.Fixture.ModelId));
+        ////await baseFixture.Create(client);
+        ////await client.RunDirectStiffnessMethodAsync(new IdRequest(modelFixture.Fixture.ModelId));
 
-        var modelFixture = new Example8_4_Dsm(baseFixture);
+        //var modelFixture = new Example8_4_Dsm(baseFixture);
         var unitSettings = modelFixture.Fixture.UnitSettings;
         var nodes = modelFixture.DsmNodeFixtures.Select(modelFixture.ToDsm).ToArray();
         var element1ds = modelFixture.DsmElement1dFixtures.Select(modelFixture.ToDsm).ToArray();
@@ -97,14 +104,14 @@ public class UnitTest1(CustomWebApplicationFactory<BeamOs.Api.Program> webApplic
                 unitSettings.TorqueUnit
             );
 
-        int numRows = modelFixture.ExpectedStructuralStiffnessMatrix.GetLength(0);
-        int numColumns = modelFixture.ExpectedStructuralStiffnessMatrix.GetLength(1);
+        int numRows = modelFixtureWithSsm.ExpectedStructuralStiffnessMatrix.GetLength(0);
+        int numColumns = modelFixtureWithSsm.ExpectedStructuralStiffnessMatrix.GetLength(1);
         for (int row = 0; row < numRows; row++)
         {
             for (int col = 0; col < numColumns; col++)
             {
                 Assert.Equal(
-                    modelFixture.ExpectedStructuralStiffnessMatrix[row, col],
+                    modelFixtureWithSsm.ExpectedStructuralStiffnessMatrix[row, col],
                     structureStiffnessMatrix.Values[row, col],
                     0
                 );
@@ -112,7 +119,6 @@ public class UnitTest1(CustomWebApplicationFactory<BeamOs.Api.Program> webApplic
         }
     }
 
-    //[Fact]
     [Theory]
     [ClassData(typeof(AllDsmElement1dFixtures))]
     public void Test_Dsm_GlobalStiffnessMatrix(DsmElement1dFixture element1dFixture)

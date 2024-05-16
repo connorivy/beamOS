@@ -8,19 +8,19 @@ public class VectorIdentifiedGeneric<TIdentifier> : IEnumerable<KeyValuePair<TId
     where TIdentifier : notnull
 {
     private readonly List<TIdentifier> identifiers;
-    private readonly double[] values;
+    public double[] Values { get; }
 
     public VectorIdentifiedGeneric(List<TIdentifier> identifiers, double[]? values)
     {
         this.identifiers = identifiers;
-        this.values = values ?? new double[identifiers.Count];
+        this.Values = values ?? new double[identifiers.Count];
     }
 
     public void AddEntriesWithMatchingIdentifiers(
         VectorIdentifiedGeneric<TIdentifier> vectorToBeAdded
     )
     {
-        for (var incomingIndex = 0; incomingIndex < vectorToBeAdded.values.Length; incomingIndex++)
+        for (var incomingIndex = 0; incomingIndex < vectorToBeAdded.Values.Length; incomingIndex++)
         {
             var incomingIdentifier = vectorToBeAdded.identifiers[incomingIndex];
 
@@ -30,20 +30,20 @@ public class VectorIdentifiedGeneric<TIdentifier> : IEnumerable<KeyValuePair<TId
                 continue;
             }
 
-            this.values[thisIdentifierIndex] += vectorToBeAdded.values[incomingIndex];
+            this.Values[thisIdentifierIndex] += vectorToBeAdded.Values[incomingIndex];
         }
     }
 
     public Vector<double> Build()
     {
-        return DenseVector.OfArray(this.values);
+        return DenseVector.OfArray(this.Values);
     }
 
     public IEnumerator<KeyValuePair<TIdentifier, double>> GetEnumerator()
     {
         for (var i = 0; i < this.identifiers.Count; i++)
         {
-            yield return new KeyValuePair<TIdentifier, double>(this.identifiers[i], this.values[i]);
+            yield return new KeyValuePair<TIdentifier, double>(this.identifiers[i], this.Values[i]);
         }
     }
 

@@ -13,19 +13,15 @@ public partial class ModelFixtureInDb
 
     [UseMapper]
     public UnitMapperWithOptionalUnits UnitMapperWithOptionalUnits { get; }
-    public Dictionary<Guid, string> RuntimeIdToDbIdDict { get; }
+    public Dictionary<Guid, string> RuntimeIdToDbIdDict { get; } = [];
 
-    protected ModelFixtureInDb(
-        Dictionary<Guid, string> runtimeIdToDbIdDict,
-        ModelFixture modelFixture
-    )
+    public ModelFixtureInDb(ModelFixture modelFixture)
     {
-        this.RuntimeIdToDbIdDict = runtimeIdToDbIdDict;
         this.ModelFixture = modelFixture;
         this.UnitMapperWithOptionalUnits = modelFixture.UnitMapperWithOptionalUnits;
     }
 
-    public async Task<ModelFixtureInDb> Create(ApiAlphaClient client, ModelFixture modelFixture)
+    public async Task Create(ApiAlphaClient client)
     {
         // todo : update, don't just delete and re-create
         try
@@ -38,7 +34,6 @@ public partial class ModelFixtureInDb
             await client.CreateModelAsync(this.ToRequest(this));
         }
 
-        Dictionary<Guid, string> runtimeIdToDbIdDict = [];
         foreach (var nodeFixture in this.ModelFixture.NodeFixtures)
         {
             this.RuntimeIdToDbIdDict[nodeFixture.Id] = (
@@ -76,12 +71,10 @@ public partial class ModelFixtureInDb
 
         foreach (var momentLoadFixture in this.ModelFixture.MomentLoadFixtures)
         {
-            runtimeIdToDbIdDict[momentLoadFixture.Id] = (
+            this.RuntimeIdToDbIdDict[momentLoadFixture.Id] = (
                 await client.CreateMomentLoadAsync(this.ToRequest(momentLoadFixture))
             ).Id;
         }
-
-        return new ModelFixtureInDb(runtimeIdToDbIdDict, modelFixture);
     }
 
     protected string RuntimeIdToDbId(Guid id) => this.RuntimeIdToDbIdDict[id];

@@ -1262,7 +1262,7 @@ export class PointLoadResponse implements IPointLoadResponse {
     modelId!: string;
     nodeId!: string;
     force!: UnitValueDto;
-    normalizedDirection!: Vector3;
+    direction!: Vector3;
 
     constructor(data?: IPointLoadResponse) {
         if (data) {
@@ -1273,7 +1273,7 @@ export class PointLoadResponse implements IPointLoadResponse {
         }
         if (!data) {
             this.force = new UnitValueDto();
-            this.normalizedDirection = new Vector3();
+            this.direction = new Vector3();
         }
     }
 
@@ -1283,7 +1283,7 @@ export class PointLoadResponse implements IPointLoadResponse {
             this.modelId = _data["modelId"];
             this.nodeId = _data["nodeId"];
             this.force = _data["force"] ? UnitValueDto.fromJS(_data["force"]) : new UnitValueDto();
-            this.normalizedDirection = _data["normalizedDirection"] ? Vector3.fromJS(_data["normalizedDirection"]) : new Vector3();
+            this.direction = _data["direction"] ? Vector3.fromJS(_data["direction"]) : new Vector3();
         }
     }
 
@@ -1300,7 +1300,7 @@ export class PointLoadResponse implements IPointLoadResponse {
         data["modelId"] = this.modelId;
         data["nodeId"] = this.nodeId;
         data["force"] = this.force ? this.force.toJSON() : <any>undefined;
-        data["normalizedDirection"] = this.normalizedDirection ? this.normalizedDirection.toJSON() : <any>undefined;
+        data["direction"] = this.direction ? this.direction.toJSON() : <any>undefined;
         return data;
     }
 }
@@ -1310,7 +1310,7 @@ export interface IPointLoadResponse {
     modelId: string;
     nodeId: string;
     force: UnitValueDto;
-    normalizedDirection: Vector3;
+    direction: Vector3;
 }
 
 export class Vector3 implements IVector3 {
@@ -1409,7 +1409,7 @@ export class MomentLoadResponse implements IMomentLoadResponse {
     id!: string;
     nodeId!: string;
     torque!: UnitValueDto;
-    normalizedAxisDirection!: Vector3;
+    axisDirection!: Vector3;
 
     constructor(data?: IMomentLoadResponse) {
         if (data) {
@@ -1420,7 +1420,7 @@ export class MomentLoadResponse implements IMomentLoadResponse {
         }
         if (!data) {
             this.torque = new UnitValueDto();
-            this.normalizedAxisDirection = new Vector3();
+            this.axisDirection = new Vector3();
         }
     }
 
@@ -1429,7 +1429,7 @@ export class MomentLoadResponse implements IMomentLoadResponse {
             this.id = _data["id"];
             this.nodeId = _data["nodeId"];
             this.torque = _data["torque"] ? UnitValueDto.fromJS(_data["torque"]) : new UnitValueDto();
-            this.normalizedAxisDirection = _data["normalizedAxisDirection"] ? Vector3.fromJS(_data["normalizedAxisDirection"]) : new Vector3();
+            this.axisDirection = _data["axisDirection"] ? Vector3.fromJS(_data["axisDirection"]) : new Vector3();
         }
     }
 
@@ -1445,7 +1445,7 @@ export class MomentLoadResponse implements IMomentLoadResponse {
         data["id"] = this.id;
         data["nodeId"] = this.nodeId;
         data["torque"] = this.torque ? this.torque.toJSON() : <any>undefined;
-        data["normalizedAxisDirection"] = this.normalizedAxisDirection ? this.normalizedAxisDirection.toJSON() : <any>undefined;
+        data["axisDirection"] = this.axisDirection ? this.axisDirection.toJSON() : <any>undefined;
         return data;
     }
 }
@@ -1454,7 +1454,7 @@ export interface IMomentLoadResponse {
     id: string;
     nodeId: string;
     torque: UnitValueDto;
-    normalizedAxisDirection: Vector3;
+    axisDirection: Vector3;
 }
 
 export class CreateMomentLoadRequest implements ICreateMomentLoadRequest {
@@ -2443,10 +2443,7 @@ export interface IGetNodeResultsRequest {
 
 export class CreateNodeRequest implements ICreateNodeRequest {
     modelId!: string;
-    xCoordinate!: number;
-    yCoordinate!: number;
-    zCoordinate!: number;
-    lengthUnit?: string | undefined;
+    locationPoint!: PointRequest;
     restraint?: RestraintRequest | undefined;
 
     constructor(data?: ICreateNodeRequest) {
@@ -2456,15 +2453,15 @@ export class CreateNodeRequest implements ICreateNodeRequest {
                     (<any>this)[property] = (<any>data)[property];
             }
         }
+        if (!data) {
+            this.locationPoint = new PointRequest();
+        }
     }
 
     init(_data?: any) {
         if (_data) {
             this.modelId = _data["modelId"];
-            this.xCoordinate = _data["xCoordinate"];
-            this.yCoordinate = _data["yCoordinate"];
-            this.zCoordinate = _data["zCoordinate"];
-            this.lengthUnit = _data["lengthUnit"];
+            this.locationPoint = _data["locationPoint"] ? PointRequest.fromJS(_data["locationPoint"]) : new PointRequest();
             this.restraint = _data["restraint"] ? RestraintRequest.fromJS(_data["restraint"]) : <any>undefined;
         }
     }
@@ -2479,10 +2476,7 @@ export class CreateNodeRequest implements ICreateNodeRequest {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["modelId"] = this.modelId;
-        data["xCoordinate"] = this.xCoordinate;
-        data["yCoordinate"] = this.yCoordinate;
-        data["zCoordinate"] = this.zCoordinate;
-        data["lengthUnit"] = this.lengthUnit;
+        data["locationPoint"] = this.locationPoint ? this.locationPoint.toJSON() : <any>undefined;
         data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
         return data;
     }
@@ -2490,11 +2484,57 @@ export class CreateNodeRequest implements ICreateNodeRequest {
 
 export interface ICreateNodeRequest {
     modelId: string;
-    xCoordinate: number;
-    yCoordinate: number;
-    zCoordinate: number;
-    lengthUnit?: string | undefined;
+    locationPoint: PointRequest;
     restraint?: RestraintRequest | undefined;
+}
+
+export class PointRequest implements IPointRequest {
+    xCoordinate!: UnitValueDto;
+    yCoordinate!: UnitValueDto;
+    zCoordinate!: UnitValueDto;
+
+    constructor(data?: IPointRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.xCoordinate = new UnitValueDto();
+            this.yCoordinate = new UnitValueDto();
+            this.zCoordinate = new UnitValueDto();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.xCoordinate = _data["xCoordinate"] ? UnitValueDto.fromJS(_data["xCoordinate"]) : new UnitValueDto();
+            this.yCoordinate = _data["yCoordinate"] ? UnitValueDto.fromJS(_data["yCoordinate"]) : new UnitValueDto();
+            this.zCoordinate = _data["zCoordinate"] ? UnitValueDto.fromJS(_data["zCoordinate"]) : new UnitValueDto();
+        }
+    }
+
+    static fromJS(data: any): PointRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new PointRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["xCoordinate"] = this.xCoordinate ? this.xCoordinate.toJSON() : <any>undefined;
+        data["yCoordinate"] = this.yCoordinate ? this.yCoordinate.toJSON() : <any>undefined;
+        data["zCoordinate"] = this.zCoordinate ? this.zCoordinate.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IPointRequest {
+    xCoordinate: UnitValueDto;
+    yCoordinate: UnitValueDto;
+    zCoordinate: UnitValueDto;
 }
 
 export class RestraintRequest implements IRestraintRequest {

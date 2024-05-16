@@ -10,7 +10,8 @@ namespace BeamOS.Tests.Common.SolvedProblems.DirectStiffnessMethod.Kassimali_Mat
 public partial class Kassimali_Example8_4 : ModelFixture, IHasExpectedNodeResults
 {
     public override Guid Id => new("ddb1e60a-df17-48b0-810a-60e425acf640");
-    public override UnitSettings UnitSettings => UnitSettings.K_IN;
+    public static UnitSettings StaticUnitSettings { get; } = UnitSettings.K_IN;
+    public override UnitSettings UnitSettings => StaticUnitSettings;
     public override NodeFixture[] NodeFixtures => Kassimali_Example8_4_Nodes.All;
     public override MaterialFixture[] MaterialFixtures =>
         [Kassimali_Example8_4_Materials.Steel29000Ksi];

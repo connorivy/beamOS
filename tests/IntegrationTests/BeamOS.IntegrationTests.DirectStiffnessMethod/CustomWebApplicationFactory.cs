@@ -48,50 +48,50 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
     //    builder.UseEnvironment("Development");
     //}
 
-    protected override void ConfigureWebHost(IWebHostBuilder builder)
-    {
-        if (
-            !bool.TryParse(
-                Environment.GetEnvironmentVariable("ContinuousIntegrationBuild"),
-                out bool isCiBuild
-            ) || !isCiBuild
-        )
-        {
-            base.ConfigureWebHost(builder);
-            return;
-        }
+    //protected override void ConfigureWebHost(IWebHostBuilder builder)
+    //{
+    //    if (
+    //        !bool.TryParse(
+    //            Environment.GetEnvironmentVariable("ContinuousIntegrationBuild"),
+    //            out bool isCiBuild
+    //        ) || !isCiBuild
+    //    )
+    //    {
+    //        base.ConfigureWebHost(builder);
+    //        return;
+    //    }
 
-        // if this is a ci build, then replace the default connection string
-        builder.ConfigureServices(services =>
-        {
-            var dbContextDescriptor = services.SingleOrDefault(
-                d => d.ServiceType == typeof(DbContextOptions<BeamOsStructuralDbContext>)
-            );
+    //    // if this is a ci build, then replace the default connection string
+    //    builder.ConfigureServices(services =>
+    //    {
+    //        var dbContextDescriptor = services.SingleOrDefault(
+    //            d => d.ServiceType == typeof(DbContextOptions<BeamOsStructuralDbContext>)
+    //        );
 
-            var dbContextReadModelDescriptor = services.SingleOrDefault(
-                d => d.ServiceType == typeof(DbContextOptions<BeamOsStructuralReadModelDbContext>)
-            );
+    //        var dbContextReadModelDescriptor = services.SingleOrDefault(
+    //            d => d.ServiceType == typeof(DbContextOptions<BeamOsStructuralReadModelDbContext>)
+    //        );
 
-            services.Remove(dbContextDescriptor);
-            services.Remove(dbContextReadModelDescriptor);
+    //        services.Remove(dbContextDescriptor);
+    //        services.Remove(dbContextReadModelDescriptor);
 
-            var dbConnectionDescriptor = services.SingleOrDefault(
-                d => d.ServiceType == typeof(DbConnection)
-            );
+    //        var dbConnectionDescriptor = services.SingleOrDefault(
+    //            d => d.ServiceType == typeof(DbConnection)
+    //        );
 
-            services.Remove(dbConnectionDescriptor);
+    //        services.Remove(dbConnectionDescriptor);
 
-            const string connectionString =
-                "Server=localhost,1433;Database=yourDatabaseName;Integrated Security=False;Encrypt=False;TrustServerCertificate=true;MultipleActiveResultSets=true;User=SA;Password=yourStrong(!)Password;";
+    //        const string connectionString =
+    //            "Server=localhost,1433;Database=yourDatabaseName;Integrated Security=False;Encrypt=False;TrustServerCertificate=true;MultipleActiveResultSets=true;User=SA;Password=yourStrong(!)Password;";
 
-            services.AddDbContext<BeamOsStructuralDbContext>(
-                options => options.UseSqlServer(connectionString)
-            );
-            services.AddDbContext<BeamOsStructuralReadModelDbContext>(
-                options => options.UseSqlServer(connectionString)
-            );
-        });
+    //        services.AddDbContext<BeamOsStructuralDbContext>(
+    //            options => options.UseSqlServer(connectionString)
+    //        );
+    //        services.AddDbContext<BeamOsStructuralReadModelDbContext>(
+    //            options => options.UseSqlServer(connectionString)
+    //        );
+    //    });
 
-        builder.UseEnvironment("Development");
-    }
+    //    builder.UseEnvironment("Development");
+    //}
 }
