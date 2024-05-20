@@ -1,13 +1,15 @@
 @inherits LayoutComponentBase
 
-<MudThemeProvider />
+<MudThemeProvider @rendermode="InteractiveAuto"
+                  Theme="@_baseTheme"
+                  IsDarkMode="@IsDarkMode" />
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
 <MudLayout>
-    <NavBar />
-    <MudDrawer @bind-Open="@open" Elevation="1" ClipMode="DrawerClipMode.Always">
+    <NavBar @bind-IsDarkMode="@IsDarkMode" />
+    <MudDrawer @bind-Open="@Open" Elevation="1" ClipMode="DrawerClipMode.Always">
         <NavMenu />
     </MudDrawer>
     <MudMainContent Class="h-full">
@@ -24,5 +26,49 @@
 </div>
 
 @code {
+    private string inputValue = "initial";
     private bool open = true;
+    public bool Open
+    {
+        get => open;
+        set
+        {
+            Console.WriteLine($"isDarkMode layout value {value}");
+            open = value;
+            this.StateHasChanged();
+        }
+    }
+
+    private bool isDarkMode = true;
+    public bool IsDarkMode
+    {
+        get => isDarkMode;
+        set
+        {
+            Console.WriteLine($"isDarkMode layout value {value}");
+            isDarkMode = value;
+            this.StateHasChanged();
+        }
+    }
+
+    private bool isDarkMode2 = true;
+    public bool IsDarkMode2
+    {
+        get => isDarkMode2;
+        set
+        {
+            Console.WriteLine($"isDarkMode layout value {value}");
+            isDarkMode2 = value;
+            this.StateHasChanged();
+        }
+    }
+    //public bool IsDarkMode { get; set; }
+
+    private MudThemeProvider _mudThemeProvider;
+    private MudTheme _baseTheme = new();
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        return base.OnAfterRenderAsync(firstRender);
+    }
 }

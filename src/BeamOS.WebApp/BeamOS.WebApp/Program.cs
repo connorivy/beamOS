@@ -55,7 +55,7 @@ builder
 builder
     .Services
     .AddHttpClient<IApiAlphaClient, ApiAlphaClient>(
-        client => client.BaseAddress = new("https://localhost:7111")
+        client => client.BaseAddress = new("http://localhost:7111")
     );
 
 builder.Services.AddAnalysisApiServices();

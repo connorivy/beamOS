@@ -12,14 +12,18 @@
     <link rel="stylesheet" href="css/tailwind.css" />
     <link rel="stylesheet" href=@($"{Configuration[Constants.ASSEMBLY_NAME]}.styles.css") />
     <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
-    <HeadOutlet />
+    @* https://github.com/MudBlazor/MudBlazor/issues/7805 *@
+    <HeadOutlet @rendermode="InteractiveServer"/>
 </head>
 
 <body class="h-screen">
-    <Routes />
+    <Routes @rendermode="InteractiveServer"/>
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
     <script src="_framework/blazor.web.js"></script>
     <script src="js/index.bundle.js"></script>
+    <environment names="Development">
+        <script src="/_framework/aspnetcore-browser-refresh.js"></script>
+    </environment>
 </body>
 
 </html>
