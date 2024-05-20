@@ -2,7 +2,67 @@
 
 @inject NavigationManager NavigationManager
 
-<header class="bg-green-200 dark:bg-gray-900 sticky w-full z-20 top-0 start-0 border-b border-gray-100">
+@*
+<FluentHeader Class="siteheader">
+    <Logo />
+    <FluentSpacer />
+    <div class="links">
+        <FluentAnchor Appearance="Appearance.Lightweight"
+                        Href="http://github.com/microsoft/fluentui-blazor" Target="_blank" Rel="noreferrer noopener"
+                        title="FluentUI Blazor source on GitHub" aria-label="FluentUI Blazor Repo">
+        </FluentAnchor>
+        <AuthorizeView>
+            <Authorized>
+                <FluentAnchor Href="@logoutRef" Target="_blank" Appearance="Appearance.Lightweight">
+                    <span class="bi bi-person-badge-nav-menu" aria-hidden="true"></span> Log Out @context.User.Identity?.Name
+                </FluentAnchor>
+            </Authorized>
+            <NotAuthorized>
+                <FluentAnchor Href="@logoutRef" Target="_blank" Appearance="Appearance.Lightweight">
+                    <span class="bi bi-person-badge-nav-menu" aria-hidden="true"></span> Log In @context.User.Identity?.Name
+                </FluentAnchor>
+            </NotAuthorized>
+        </AuthorizeView>
+    </div>
+</FluentHeader>
+*@
+
+<MudAppBar>
+        <MudHidden Breakpoint="Breakpoint.SmAndDown">
+            <MudIcon Icon="@Icons.Custom.Brands.MudBlazor" Size="Size.Large" />
+        </MudHidden>
+        <MudHidden Breakpoint="Breakpoint.MdAndUp">
+            <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit" Edge="Edge.Start" />
+        </MudHidden>
+        <MudHidden Breakpoint="Breakpoint.Xs">
+            <MudText Typo="Typo.h6" Class="ml-4">Admin Dashboard</MudText>
+        </MudHidden>
+        <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
+            <MudText Typo="Typo.subtitle2">Admin Dashboard</MudText>
+        </MudHidden>
+        <MudSpacer />
+        <MudMenu Icon="@Icons.Material.Outlined.Translate" Color="Color.Inherit" Direction="Direction.Bottom" OffsetY="true" Dense="true">
+            <MudMenuItem>English</MudMenuItem>
+            <MudMenuItem>Swedish</MudMenuItem>
+            <MudMenuItem>Old Norse</MudMenuItem>
+        </MudMenu>
+        <MudMenu Icon="@Icons.Material.Outlined.Widgets" Color="Color.Inherit" Direction="Direction.Bottom" OffsetY="true" Dense="true">
+            <MudMenuItem Link="https://mudblazor.com/">MudBlazor</MudMenuItem>
+            <MudMenuItem Link="https://github.com/Garderoben/MudBlazor.Templates">Source Code</MudMenuItem>
+        </MudMenu>
+        <MudMenu Direction="Direction.Left" OffsetX="true" Dense="true" Class="mt-1 ml-4">
+            <ActivatorContent>
+                <MudAvatar />
+            </ActivatorContent>
+            <ChildContent>
+                <MudDivider Class="mb-2" />
+@*                 <MudListItem Text="Account" Icon="@Icons.Material.Outlined.Person" Href="/personal/account" />
+                <MudListItem Text="Logout" Icon="@Icons.Material.Outlined.Login" Href="/pages/authentication/login" /> *@
+            </ChildContent>
+        </MudMenu>
+    </MudAppBar>
+
+@* <header class="bg-green-200 dark:bg-gray-900 sticky w-full z-20 top-0 start-0 border-b border-gray-100">
     <div class="relative flex flex-wrap items-center justify-between w-full bg-gray-100 group p-7 shrink-0">
         <Logo />
         <div class="items-center justify-between hidden gap-12 text-black md:flex">
@@ -58,7 +118,7 @@
             </AuthorizeView>
         </div>
     </div>
-</header>
+</header> *@
 
 
 @code {

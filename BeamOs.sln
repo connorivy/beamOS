@@ -48,9 +48,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StructuralAnalysis", "Struc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOs.Domain.UnitTests", "tests\StructuralAnalysis\BeamOs.Domain.UnitTests\BeamOs.Domain.UnitTests.csproj", "{C003F689-77F4-4AA3-A487-AEE3F7FE6E6B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.Domain.IntegrationTests", "tests\StructuralAnalysis\BeamOs.Domain.IntegrationTests\BeamOs.Domain.IntegrationTests.csproj", "{A7E8BBC6-41A1-4321-B047-3A4B651557DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOs.Domain.IntegrationTests", "tests\StructuralAnalysis\BeamOs.Domain.IntegrationTests\BeamOs.Domain.IntegrationTests.csproj", "{A7E8BBC6-41A1-4321-B047-3A4B651557DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.Api.IntegrationTests", "tests\StructuralAnalysis\BeamOs.Api.IntegrationTests\BeamOs.Api.IntegrationTests.csproj", "{7F677B7F-7F65-40D0-8420-A446C225F832}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOs.Api.IntegrationTests", "tests\StructuralAnalysis\BeamOs.Api.IntegrationTests\BeamOs.Api.IntegrationTests.csproj", "{7F677B7F-7F65-40D0-8420-A446C225F832}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

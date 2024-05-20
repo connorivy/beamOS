@@ -21,7 +21,8 @@ var dsmUriString =
     builder.Configuration.GetValue<string>(Constants.DSM_API_BASE_URI) ?? "https://localhost:7110";
 
 var analysisUriString =
-    builder.Configuration.GetValue<string>(Constants.DSM_API_BASE_URI) ?? "https://localhost:7111";
+    builder.Configuration.GetValue<string>(Constants.ANALYSIS_API_BASE_URI)
+    ?? "https://localhost:7111";
 
 //builder
 //    .Services

@@ -21,6 +21,9 @@
     <PackageVersion Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="$(AspnetVersion)" />
+    <!-- Fluent UI -->
+    <PackageVersion Include="Microsoft.FluentUI.AspNetCore.Components" Version="4.7.2" />
+    <PackageVersion Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="4.7.2" />
     <!-- EF Core -->
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="$(EfVersion)" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="$(EfVersion)" />
@@ -35,6 +38,8 @@
     <PackageVersion Include="FastEndpoints.ClientGen" Version="$(FastEndpointVersion)" />
     <PackageVersion Include="FastEndpoints.Swagger" Version="$(FastEndpointVersion)" />
     <PackageVersion Include="FastEndpoints.Testing" Version="$(FastEndpointVersion)" />
+    <PackageVersion Include="MudBlazor" Version="7.0.0-preview.3" />
+    <PackageVersion Include="MudBlazor.ThemeManager" Version="1.0.9" />
     <!-- Testing -->
     <PackageVersion Include="xunit" Version="2.6.2" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.4" />

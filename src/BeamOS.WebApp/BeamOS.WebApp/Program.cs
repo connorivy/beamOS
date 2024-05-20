@@ -32,6 +32,8 @@ builder
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
+//builder.Services.AddFluentUIComponents();
+
 const string alphaRelease = "Alpha Release";
 builder
     .Services
@@ -65,7 +67,7 @@ builder
     .AddDbContext<BeamOsStructuralDbContext>(options => options.UseSqlServer(connectionString))
     .AddPhysicalModelInfrastructureReadModel(connectionString);
 
-UriProvider uriProvider = new("https");
+UriProvider uriProvider = new("http");
 builder.Services.AddSingleton<IUriProvider>(uriProvider);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddCascadingAuthenticationState();
@@ -127,7 +129,7 @@ app.MapGet(
                 [Constants.ASSEMBLY_NAME] = typeof(Program).Assembly.GetName().Name,
                 [Constants.PHYSICAL_MODEL_API_BASE_URI] = "https://localhost:7193",
                 [Constants.DSM_API_BASE_URI] = "https://localhost:7110",
-                [Constants.ANALYSIS_API_BASE_URI] = "https://localhost:7111"
+                [Constants.ANALYSIS_API_BASE_URI] = "http://localhost:7111"
             }
         )
 );
