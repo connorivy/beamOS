@@ -4,7 +4,7 @@ using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
 using UnitsNet;
 using UnitsNet.Units;
 
-namespace BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Factories;
+namespace BeamOs.Domain.UnitTests.DirectStiffnessMethod.Common.Factories;
 
 internal static class DsmElement1dFactory
 {

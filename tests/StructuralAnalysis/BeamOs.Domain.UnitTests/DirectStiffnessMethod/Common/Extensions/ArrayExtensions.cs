@@ -1,7 +1,7 @@
 using System.Globalization;
 using MathNet.Numerics.LinearAlgebra;
 
-namespace BeamOs.UnitTests.Domain.DirectStiffnessMethod.Common.Extensions;
+namespace BeamOs.Domain.UnitTests.DirectStiffnessMethod.Common.Extensions;
 
 internal static class ArrayExtensions
 {

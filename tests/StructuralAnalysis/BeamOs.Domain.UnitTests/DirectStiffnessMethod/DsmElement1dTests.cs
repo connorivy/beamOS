@@ -1,9 +1,9 @@
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Fixtures;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Mappers;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.SolvedProblems;
-using BeamOs.UnitTests.Domain.DirectStiffnessMethod.Common.Extensions;
+using BeamOs.Domain.UnitTests.DirectStiffnessMethod.Common.Extensions;
 
-namespace BeamOS.DirectStiffnessMethod.Domain.UnitTests.Element1DAggregate;
+namespace BeamOs.Domain.UnitTests.DirectStiffnessMethod;
 
 public partial class DsmElement1dTests
 {

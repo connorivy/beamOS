@@ -43,14 +43,14 @@
             <MudText Typo="Typo.subtitle2">Admin Dashboard</MudText>
         </MudHidden>
         <MudSpacer />
-    <MudToggleIconButton
-                        @bind-Toggled:get="IsDarkMode"
-                        @bind-Toggled:set="ToggleDarkMode"
-                         Size="Size.Medium"
-                         Color="Color.Default"
-                         Icon="@Icons.Material.Rounded.LightMode"
-                         ToggledIcon="@Icons.Material.Rounded.DarkMode"
-                         Class="p-2 my-auto" />
+        <MudToggleIconButton
+            @bind-Toggled:get="IsDarkMode"
+            @bind-Toggled:set="ToggleDarkMode"
+            Size="Size.Medium"
+            Color="Color.Default"
+            Icon="@Icons.Material.Rounded.LightMode"
+            ToggledIcon="@Icons.Material.Rounded.DarkMode"
+            Class="p-2 my-auto" />
         <MudMenu Icon="@Icons.Material.Outlined.Translate" Color="Color.Inherit" Direction="Direction.Bottom" OffsetY="true" Dense="true">
             <MudMenuItem>English</MudMenuItem>
             <MudMenuItem>Swedish</MudMenuItem>
@@ -132,8 +132,6 @@
 
 
 @code {
-    private bool isDarkMode = false;
-
     [Parameter]
     public bool IsDarkMode { get; set; }
     [Parameter]
@@ -142,10 +140,7 @@
     async Task ToggleDarkMode(bool value)
     {
         this.IsDarkMode = value;
-        Console.WriteLine($"toggle dark mode {value} {IsDarkMode}");
         await IsDarkModeChanged.InvokeAsync(value);
-        Console.WriteLine($"it worked");
-        this.StateHasChanged();
     }
 
     private string? currentUrl;

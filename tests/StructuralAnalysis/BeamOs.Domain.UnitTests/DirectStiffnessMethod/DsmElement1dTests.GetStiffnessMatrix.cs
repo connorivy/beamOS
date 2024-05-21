@@ -1,15 +1,15 @@
-using BeamOS.DirectStiffnessMethod.Domain.UnitTests.Common.Factories;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.DirectStiffnessMethod;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Fixtures;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Mappers;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.SolvedProblems;
-using BeamOs.UnitTests.Domain.DirectStiffnessMethod.Common.Extensions;
+using BeamOs.Domain.UnitTests.DirectStiffnessMethod.Common.Extensions;
+using BeamOs.Domain.UnitTests.DirectStiffnessMethod.Common.Factories;
 using MathNet.Numerics.LinearAlgebra;
 using UnitsNet;
 using UnitsNet.Units;
 
-namespace BeamOS.DirectStiffnessMethod.Domain.UnitTests.Element1DAggregate;
+namespace BeamOs.Domain.UnitTests.DirectStiffnessMethod;
 
 public partial class DsmElement1dTests
 {

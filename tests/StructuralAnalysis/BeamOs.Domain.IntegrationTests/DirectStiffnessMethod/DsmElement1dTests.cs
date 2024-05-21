@@ -5,7 +5,7 @@ using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Mappers;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.SolvedProblems;
 using BeamOS.Tests.Common.Extensions;
 
-namespace BeamOS.DirectStiffnessMethod.Domain.UnitTests.Element1DAggregate;
+namespace BeamOs.Domain.IntegrationTests.DirectStiffnessMethod;
 
 public partial class DsmElement1dTests
 {
