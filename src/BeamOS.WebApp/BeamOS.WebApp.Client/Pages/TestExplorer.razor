@@ -1,4 +1,5 @@
 @page "/test-explorer"
+@using BeamOS.WebApp.Client.Components
 @using BeamOS.WebApp.EditorApi
 @using BeamOs.ApiClient
 @using BeamOs.Contracts.AnalyticalResults.Model
@@ -14,8 +15,42 @@
 
 <PageTitle>Test Explorer</PageTitle>
 
-<MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="h-full">
-    <Editor />
+<MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="h-full relative">
+    <EditorComponent />
+    <MudContainer MaxWidth="MaxWidth.False" Class="absolute bottom-0 w-full">
+        <MudSpacer></MudSpacer>
+        <MudSimpleTable Striped="true" Dense="true" Class="my-4 mx-4">
+            <thead class="font-bold">
+                <tr>
+                    <th class="font-bold">
+                        Calculated Displacement Vector
+                    </th>
+                    <th>
+                        Expected Displacement Vector
+                    </th>
+                    <th class="font-bold">
+                        Difference
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < @ExpectedDisplacements.Count; i++)
+                {
+                    <tr>
+                        <td>@CalculatedDisplacements?.ElementAt(i)</td>
+                        <td>@ExpectedDisplacements[i]</td>
+                        <th>
+                            @(@GetDifferenceOrNull(
+                                @ExpectedDisplacements[i],
+                                @CalculatedDisplacements?.ElementAt(i))?
+                                .ToString() ?? "N/A")
+                        </th>
+                    </tr>
+                }
+            </tbody>
+        </MudSimpleTable>
+        <MudSpacer></MudSpacer>
+    </MudContainer>
 
     <div class="flex flex-col p-6">
         <div class="flex justify-center items-center pb-2.5">
@@ -130,6 +165,30 @@
 
     const string physicalModelId = "00000000-0000-0000-0000-000000000000";
 
+    public string[] GetHeaders(string nameOfTestResult)
+    {
+        return new string[3]
+        {
+            $"Expected {nameOfTestResult}",
+            $"Calculated {nameOfTestResult}",
+            "Difference",
+        };
+    }
+
+    public double[] ExpectedValues { get; set; }
+    public double[]? CalculatedValues { get; set; }
+    public double?[] Difference
+    {
+        get
+        {
+            double?[] vals = [ExpectedValues.Length];
+            for (int i = 0; i < ExpectedValues.Length; i++)
+            {
+                vals[i] = CalculatedValues != null ? ExpectedValues[i] - CalculatedValues[i] : null;
+            }
+            return vals;
+        }
+    }
     public List<double>? CalculatedReactions { get; set; }
     public List<double>? CalculatedDisplacements { get; set; }
     public List<double> ExpectedReactions { get; } = [
@@ -169,41 +228,6 @@
             return null;
         }
         return Math.Round(expected - typedCalculated, 5);
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            // isLoading = true;
-            // editorApiAlpha ??= await editorApiAlphaFactory.Create(elementId);
-            // loadingText = "Fetching Data";
-            // StateHasChanged();
-            // await LoadModel();
-            // isLoading = false;
-            // StateHasChanged();
-        }
-        await base.OnAfterRenderAsync(firstRender);
-    }
-
-    private async Task AddNode()
-    {
-        CreateNodeRequest request = new(
-            physicalModelId,
-            10,
-            5,
-            10,
-            "Foot");
-
-        NodeResponse response = await analysisApiClient.CreateNodeAsync(request);
-        var x = await editorApiAlpha.CreateNodeAsync(response);
-    }
-
-    private async Task LoadModel()
-    {
-        ModelResponseHydrated response = await analysisApiClient
-            .GetModelHydratedAsync(physicalModelId, PreconfiguredUnits.N_M);
-        var x = await editorApiAlpha.CreateModelHydratedAsync(response);
     }
 
     private async Task Solve()

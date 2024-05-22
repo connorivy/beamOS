@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="xunit.runner.utility" />
+    <PackageReference Include="xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BeamOS.Tests.Common\BeamOS.Tests.Common.csproj" />
+    <ProjectReference Include="..\StructuralAnalysis\BeamOs.Api.IntegrationTests\BeamOs.Api.IntegrationTests.csproj">
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\StructuralAnalysis\BeamOs.Domain.IntegrationTests\BeamOs.Domain.IntegrationTests.csproj">
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\StructuralAnalysis\BeamOs.Domain.UnitTests\BeamOs.Domain.UnitTests.csproj">
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
+  </ItemGroup>
+
+</Project>

@@ -2,11 +2,13 @@ using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOS.Tests.Common.SolvedProblems.Fixtures;
 using BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd.Example8_4;
+using BeamOS.Tests.Common.Traits;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOS.Tests.Common.SolvedProblems.DirectStiffnessMethod.Kassimali_MatrixAnalysisOfStructures2ndEd.Example8_4;
 
 [Mapper]
+[Kassimali_MatrixAnalysisOfStructures2ndEd]
 public partial class Kassimali_Example8_4 : ModelFixture, IHasExpectedNodeResults
 {
     public override Guid Id => new("ddb1e60a-df17-48b0-810a-60e425acf640");

@@ -5,6 +5,7 @@
 @using BeamOs.Contracts.Common
 @using BeamOs.Contracts.PhysicalModel.Model
 @using BeamOs.Contracts.PhysicalModel.Node
+@using BeamOS.Tests.Common.SolvedProblems
 
 @* @rendermode InteractiveWebAssembly *@
 
@@ -17,7 +18,7 @@
 <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="h-full">
     <Editor />
 
-    <div class="flex flex-col p-6">
+    @* <div class="flex flex-col p-6">
         <div class="flex justify-center items-center pb-2.5">
             <AuthorizeView>
                 <Authorized>
@@ -116,102 +117,10 @@
                 </table>
             </div>
         </div>
-    </div>
+    </div> *@
 </MudContainer>
 
 @code {
-    private bool open = true;
-    private IEditorApiAlpha? editorApiAlpha;
-
-    private string loadingText = "Loading beamOS Editor";
-    private bool isLoading = true;
-
-    string elementId = "id" + Guid.NewGuid().ToString("N");
-
-    const string physicalModelId = "00000000-0000-0000-0000-000000000000";
-
-    public List<double>? CalculatedReactions { get; set; }
-    public List<double>? CalculatedDisplacements { get; set; }
-    public List<double> ExpectedReactions { get; } = [
-        0,
-    0,
-    0,
-    -10.064,
-    -13.419,
-    0,
-    0,
-    0,
-    0,
-    126.83,
-    0,
-    0,
-    0,
-    -139.94,
-    186.58,
-    0,
-    0,
-    0,
-    ];
-
-    public List<double> ExpectedDisplacements { get; } = [
-        .21552,
-    -.13995,
-    0,
-    0,
-    0,
-    0
-    ];
-
-    private double? GetDifferenceOrNull(double expected, double? calculated)
-    {
-        if (calculated is not double typedCalculated)
-        {
-            return null;
-        }
-        return Math.Round(expected - typedCalculated, 5);
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            // isLoading = true;
-            // editorApiAlpha ??= await editorApiAlphaFactory.Create(elementId);
-            // loadingText = "Fetching Data";
-            // StateHasChanged();
-            // await LoadModel();
-            // isLoading = false;
-            // StateHasChanged();
-        }
-        await base.OnAfterRenderAsync(firstRender);
-    }
-
-    private async Task AddNode()
-    {
-        CreateNodeRequest request = new(
-            physicalModelId,
-            10,
-            5,
-            10,
-            "Foot");
-
-        NodeResponse response = await analysisApiClient.CreateNodeAsync(request);
-        var x = await editorApiAlpha.CreateNodeAsync(response);
-    }
-
-    private async Task LoadModel()
-    {
-        ModelResponseHydrated response = await analysisApiClient
-            .GetModelHydratedAsync(physicalModelId, PreconfiguredUnits.N_M);
-        var x = await editorApiAlpha.CreateModelHydratedAsync(response);
-    }
-
-    private async Task Solve()
-    {
-        // AnalyticalModelResponse response = await analysisApiClient
-        //     .RunDirectStiffnessMethodFromModelIdAsync(physicalModelId);
-        // CalculatedReactions = response.AnalyticalNodeReactions;
-        // CalculatedDisplacements = response.AnalyticalNodeDisplacements;
-    }
+    public BeamOS.Tests.Common.SolvedProblems.AllSolvedProblems AllSolvedDsmProblems { get; } = new();
 }
 

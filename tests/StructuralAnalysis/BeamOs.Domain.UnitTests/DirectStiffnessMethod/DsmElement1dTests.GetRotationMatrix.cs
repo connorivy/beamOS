@@ -4,11 +4,13 @@ using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Mappers;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.SolvedProblems;
 using BeamOs.Domain.UnitTests.DirectStiffnessMethod.Common.Extensions;
 using BeamOs.Domain.UnitTests.DirectStiffnessMethod.Common.Factories;
+using BeamOS.Tests.Common.Traits;
 using UnitsNet;
 using UnitsNet.Units;
 
 namespace BeamOs.Domain.UnitTests.DirectStiffnessMethod;
 
+[DirectStiffnessMethod]
 public partial class DsmElement1dTests
 {
     [Theory]

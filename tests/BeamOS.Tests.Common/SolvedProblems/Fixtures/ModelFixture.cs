@@ -17,7 +17,7 @@ using Riok.Mapperly.Abstractions;
 namespace BeamOS.Tests.Common.SolvedProblems.Fixtures;
 
 [Mapper]
-public abstract partial class ModelFixture
+public abstract partial class ModelFixture : FixtureBase
 {
     protected ModelFixture()
     {
@@ -27,7 +27,7 @@ public abstract partial class ModelFixture
     }
 
     public Dictionary<Guid, string> FixtureGuidToIdDict { get; } = [];
-    public abstract Guid Id { get; }
+    public abstract override Guid Id { get; }
     public abstract UnitSettings UnitSettings { get; }
     public virtual string Name { get; } = "Test Model";
     public virtual string Description { get; } = "Test Model Description";
@@ -71,6 +71,29 @@ public abstract partial class ModelFixture
 
     [UseMapper]
     public UnitMapperWithOptionalUnits UnitMapperWithOptionalUnits { get; }
+
+    public ModelResponse GetExpectedResponse()
+    {
+        var nodeResponses = this.NodeFixtures.Select(this.ToResponse).ToList();
+        var element1dResponse = this.Element1dFixtures.Select(this.ToResponse).ToList();
+        var materialResponse = this.MaterialFixtures.Select(this.ToResponse).ToList();
+        var sectionProfileResponses = this.SectionProfileFixtures.Select(this.ToResponse).ToList();
+        var pointLoadResponses = this.PointLoadFixtures.Select(this.ToResponse).ToList();
+        var momentLoadResponses = this.MomentLoadFixtures.Select(this.ToResponse).ToList();
+
+        return new ModelResponse(
+            this.ModelId,
+            this.Name,
+            this.Description,
+            new ModelSettingsResponse(this.UnitSettings.ToResponse()),
+            nodeResponses,
+            element1dResponse,
+            materialResponse,
+            sectionProfileResponses,
+            pointLoadResponses,
+            momentLoadResponses
+        );
+    }
 }
 
 public interface IHasExpectedModelResponse { }
@@ -132,7 +155,10 @@ public static class IHasExpectedModelResponseExtensions
     }
 }
 
-public struct DummyModelId { }
+public struct DummyModelId
+{
+    public Guid ToGuid() => Guid.NewGuid();
+}
 
 [Mapper]
 public static partial class IHasExpectedNodeResultsExtensions

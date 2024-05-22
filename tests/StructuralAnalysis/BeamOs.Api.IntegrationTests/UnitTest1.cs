@@ -1,5 +1,5 @@
 using BeamOs.ApiClient;
-using BeamOS.Tests.Common.SolvedProblems.DirectStiffnessMethod.Kassimali_MatrixAnalysisOfStructures2ndEd.Example8_4;
+using BeamOS.Tests.Common.SolvedProblems;
 using BeamOS.Tests.Common.SolvedProblems.Fixtures;
 
 namespace BeamOs.Api.IntegrationTests;
@@ -7,13 +7,13 @@ namespace BeamOs.Api.IntegrationTests;
 public class UnitTest1(CustomWebApplicationFactory<Program> webApplicationFactory)
     : IClassFixture<CustomWebApplicationFactory<Program>>
 {
-    [Fact]
-    public async Task Test1()
+    [SkippableTheory]
+    [ClassData(typeof(AllSolvedProblems))]
+    public async Task Test1(ModelFixture modelFixture)
     {
         var httpClient = webApplicationFactory.CreateClient();
         var client = new ApiAlphaClient(httpClient);
-        var problem = new Kassimali_Example8_4();
-        var dbModelFixture = new ModelFixtureInDb(problem);
+        var dbModelFixture = new ModelFixtureInDb(modelFixture);
 
         await dbModelFixture.Create(client);
 

@@ -3,9 +3,11 @@ using BeamOs.Domain.DirectStiffnessMethod.Services;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Fixtures;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Interfaces;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.SolvedProblems;
+using BeamOS.Tests.Common.Traits;
 
 namespace BeamOs.Domain.IntegrationTests.DirectStiffnessMethod;
 
+[DirectStiffnessMethod]
 public class DsmModelTests
 {
     [SkippableTheory]

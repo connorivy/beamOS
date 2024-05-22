@@ -42,6 +42,7 @@
     <PackageVersion Include="MudBlazor.ThemeManager" Version="1.0.9" />
     <!-- Testing -->
     <PackageVersion Include="xunit" Version="2.6.2" />
+    <PackageVersion Include="xunit.runner.utility" Version="2.8.0" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.4" />
     <PackageVersion Include="coverlet.collector" Version="6.0.0" />
     <PackageVersion Include="coverlet.msbuild" Version="6.0.0" />

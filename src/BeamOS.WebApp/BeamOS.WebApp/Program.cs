@@ -52,10 +52,14 @@ builder
         o.EndpointFilter = ed => ed.EndpointType.Assembly == typeof(IAssemblyMarkerApi).Assembly;
     });
 
+string protocol =
+    builder.Configuration["APPLICATION_URL_PROTOCOL"]
+    ?? throw new Exception("Unable to find protocol in application configuration");
+
 builder
     .Services
     .AddHttpClient<IApiAlphaClient, ApiAlphaClient>(
-        client => client.BaseAddress = new("http://localhost:7111")
+        client => client.BaseAddress = new($"{protocol}://localhost:7111")
     );
 
 builder.Services.AddAnalysisApiServices();
@@ -67,7 +71,7 @@ builder
     .AddDbContext<BeamOsStructuralDbContext>(options => options.UseSqlServer(connectionString))
     .AddPhysicalModelInfrastructureReadModel(connectionString);
 
-UriProvider uriProvider = new("http");
+UriProvider uriProvider = new(protocol);
 builder.Services.AddSingleton<IUriProvider>(uriProvider);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddCascadingAuthenticationState();
@@ -129,7 +133,7 @@ app.MapGet(
                 [Constants.ASSEMBLY_NAME] = typeof(Program).Assembly.GetName().Name,
                 [Constants.PHYSICAL_MODEL_API_BASE_URI] = "https://localhost:7193",
                 [Constants.DSM_API_BASE_URI] = "https://localhost:7110",
-                [Constants.ANALYSIS_API_BASE_URI] = "http://localhost:7111"
+                [Constants.ANALYSIS_API_BASE_URI] = $"{protocol}://localhost:7111"
             }
         )
 );

@@ -3,25 +3,28 @@
 @using BeamOs.Contracts.Common
 @using BeamOs.Contracts.PhysicalModel.Model
 
+@rendermode InteractiveAuto
+
 @inject IJSRuntime js
 @inject IApiAlphaClient analysisApiClient
 @inject EditorApiProxyFactory editorApiAlphaFactory
 
-<MudContainer>
-    <div class="bg-gray-900 absolute"></div>
-    <canvas id="@elementId" class="absolute"></canvas>
-    @if (isLoading)
-    {
-        <div class="bg-gray-900 w-full h-full absolute justify-center items-center opacity-90">
-            <div class="flex w-full h-full m-auto left-0 right-0 top-0 bottom-0 justify-center items-center">
-                <div class="rounded animate-spin ease duration-300 w-10 h-10 border-4 border-white"></div>
-                <h2 class="px-3 font-bold text-white"> @loadingText ...</h2>
-            </div>
-        </div>
-    }
+<MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class=@($"h-full w-full {@Class}")>
+    <MudPaper Class="h-full w-full absolute z-0"></MudPaper>
+    @* <div class="bg-gray-900 w-full h-full absolute"></div> *@
+    <canvas id="@elementId" class="h-full w-full absolute z-1"></canvas>
+    <MudOverlay Absolute="true" @bind-Visible="@isLoading">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.Center">
+            <div class="rounded animate-spin ease duration-300 w-10 h-10 border-4 border-white"></div>
+            <h2 class="px-3 font-bold text-white"> @loadingText ...</h2>
+        </MudStack>
+    </MudOverlay>
 </MudContainer>
 
 @code {
+    [Parameter]
+    public string? Class { get; set; }
+
     private bool isLoading = true;
     private string loadingText = "Loading beamOS editor...";
     public string elementId { get; } = "id" + Guid.NewGuid().ToString("N");
