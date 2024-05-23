@@ -12,12 +12,12 @@
                               Adornment="Adornment.End" Immediate="true" Variant="Variant.Outlined" />
             </MudListSubheader>
 
-            @foreach (var testInfo in testInfos.Where(i => i.MethodInfo.Name.Contains(searchTerm.Trim(), StringComparison.OrdinalIgnoreCase)))
+            @* @foreach (var testInfo in testInfos.Where(i => i.MethodInfo.Name.Contains(searchTerm.Trim(), StringComparison.OrdinalIgnoreCase)))
             {
                 <MudListItem Icon="@Icons.Material.Filled.Folder" Value="@testInfo" >
                     @testInfo.MethodInfo.Name
                 </MudListItem>
-            }
+            } *@
             <MudListItem Text="Name" />
         </MudList>
     </MudPaper>
@@ -29,9 +29,9 @@
     string searchTerm = "";
     TestInfo[] testInfos = [];
     TestInfo? selectedTestInfo;
-    protected override void OnInitialized()
-    {
-        testInfos = AssemblyScanning.GetAllTestInfo().ToArray();
-        base.OnInitialized();
-    }
+    // protected override void OnInitialized()
+    // {
+    //     testInfos = AssemblyScanning.GetAllTestInfo().ToArray();
+    //     base.OnInitialized();
+    // }
 }

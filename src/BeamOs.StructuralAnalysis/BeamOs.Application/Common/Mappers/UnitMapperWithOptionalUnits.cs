@@ -200,4 +200,7 @@ public class UnitMapperWithOptionalUnits()
     {
         return VolumeUnitToStringMapper.MapToString(unit);
     }
+
+    public UnitMapperWithOptionalUnits ShallowCopy() =>
+        (UnitMapperWithOptionalUnits)this.MemberwiseClone();
 }

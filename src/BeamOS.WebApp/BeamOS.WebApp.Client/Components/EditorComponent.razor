@@ -28,7 +28,7 @@
     private bool isLoading = true;
     private string loadingText = "Loading beamOS editor...";
     public string elementId { get; } = "id" + Guid.NewGuid().ToString("N");
-    private IEditorApiAlpha? editorApiAlpha;
+    public IEditorApiAlpha? EditorApiAlpha { get; private set; }
     const string physicalModelId = "00000000-0000-0000-0000-000000000000";
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -36,7 +36,7 @@
         if (firstRender)
         {
             isLoading = true;
-            editorApiAlpha ??= await editorApiAlphaFactory.Create(elementId);
+            EditorApiAlpha ??= await editorApiAlphaFactory.Create(elementId);
             loadingText = "Fetching Data";
             StateHasChanged();
             await LoadModel(physicalModelId);
@@ -50,7 +50,7 @@
     {
         ModelResponseHydrated response = await analysisApiClient
             .GetModelHydratedAsync(modelId, PreconfiguredUnits.N_M);
-        var x = await editorApiAlpha.CreateModelHydratedAsync(response);
+        var x = await EditorApiAlpha.CreateModelHydratedAsync(response);
     }
 
 }

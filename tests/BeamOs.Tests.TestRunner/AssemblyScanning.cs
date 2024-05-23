@@ -1,5 +1,6 @@
 using System.Reflection;
 using BeamOs.Api.IntegrationTests;
+using BeamOS.Tests.Common.Interfaces;
 using BeamOS.Tests.Common.SolvedProblems.Fixtures;
 using BeamOS.Tests.Common.Traits;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +15,7 @@ public static class AssemblyScanning
     public static IEnumerable<Assembly> TestAssemblies()
     {
         yield return typeof(IAssemblyMarkerApiIntegrationTests).Assembly;
+        yield return typeof(IAssemblyMarkerDomainIntegrationTests).Assembly;
     }
 
     public static IEnumerable<Assembly> GetTestingAssemblies()
@@ -82,27 +84,17 @@ public static class AssemblyScanning
                 continue;
             }
 
-            if (dataItem.Length > 1)
-            {
-                continue;
-            }
-
-            if (dataItem[0] is FixtureBase fixtureBase)
-            {
-                yield return new TestInfo(
-                    classType,
-                    dataItem,
-                    methodInfo,
-                    methodInfo
-                        .GetCustomAttributes<TestBaseAttribute>()
-                        .Concat(classType.GetCustomAttributes<TestBaseAttribute>())
-                        .Concat(fixtureBase.GetType().GetCustomAttributes<TestBaseAttribute>())
-                        .GroupBy(attr => attr.TraitName)
-                        .ToDictionary(g => g.Key, g => g.Select(attr => attr.TraitValue).ToArray()),
-                    fixtureBase.ModelId.ToGuid(),
-                    fixtureBase.Id
-                );
-            }
+            yield return new TestInfo(
+                classType,
+                dataItem,
+                methodInfo,
+                methodInfo
+                    .GetCustomAttributes<TestBaseAttribute>()
+                    .Concat(classType.GetCustomAttributes<TestBaseAttribute>())
+                    .Concat(dataItem[0].GetType().GetCustomAttributes<TestBaseAttribute>())
+                    .GroupBy(attr => attr.TraitName)
+                    .ToDictionary(g => g.Key, g => g.Select(attr => attr.TraitValue).ToArray())
+            );
         }
     }
 

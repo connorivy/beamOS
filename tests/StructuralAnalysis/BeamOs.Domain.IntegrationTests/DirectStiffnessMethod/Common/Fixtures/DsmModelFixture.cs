@@ -1,10 +1,12 @@
 using BeamOs.Domain.DirectStiffnessMethod;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Interfaces;
+using BeamOS.Tests.Common.Interfaces;
 using BeamOS.Tests.Common.SolvedProblems.Fixtures;
+using BeamOS.WebApp.EditorApi;
 
 namespace BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Fixtures;
 
-public abstract class DsmModelFixture : IDsmModelFixture
+public abstract class DsmModelFixture : IDsmModelFixture, ITestFixtureDisplayable
 {
     public DsmModelFixture(ModelFixture fixture)
     {
@@ -14,6 +16,8 @@ public abstract class DsmModelFixture : IDsmModelFixture
     public ModelFixture Fixture { get; }
     public abstract DsmElement1dFixture[] DsmElement1dFixtures { get; }
     public abstract DsmNodeFixture[] DsmNodeFixtures { get; }
+
+    public Task Display(IEditorApiAlpha editorApiAlpha) => this.Fixture.Display(editorApiAlpha);
 
     public DsmNodeVo ToDsm(NodeFixture fixture)
     {

@@ -1,4 +1,6 @@
 @page "/test-explorer"
+@using BeamOS.Tests.Common.Interfaces
+@using BeamOS.Tests.Common.SolvedProblems.Fixtures
 @using BeamOS.WebApp.Client.Components
 @using BeamOS.WebApp.EditorApi
 @using BeamOs.ApiClient
@@ -6,6 +8,7 @@
 @using BeamOs.Contracts.Common
 @using BeamOs.Contracts.PhysicalModel.Model
 @using BeamOs.Contracts.PhysicalModel.Node
+@using BeamOs.Domain.Common.ValueObjects
 @using BeamOs.Tests.TestRunner
 
 @* @rendermode InteractiveWebAssembly *@
@@ -35,7 +38,7 @@
         </MudPaper>
     </MudDrawer>
     <div class="flex h-full relative">
-        <EditorComponent Class="h-full"/>
+        <EditorComponent @ref="editorComponent" Class="h-full"/>
         <MudContainer MaxWidth="MaxWidth.False" Class="absolute bottom-0 w-full">
             <MudSpacer></MudSpacer>
             <MudSimpleTable Striped="true" Dense="true" Class="my-4 mx-4">
@@ -107,6 +110,7 @@
 @code {
     private bool open = true;
     private IEditorApiAlpha? editorApiAlpha;
+    private EditorComponent editorComponent;
 
     private string loadingText = "Loading beamOS Editor";
     private bool isLoading = true;
@@ -197,9 +201,18 @@
         base.OnInitialized();
     }
 
-    private void OnSelectedTestInfoChanged(TestInfo? testInfo)
+    private async Task OnSelectedTestInfoChanged(TestInfo? testInfo)
     {
-        selectedTestInfo = testInfo;
+        if (testInfo is null)
+        {
+            return;
+        }
+
+        if (testInfo.GetDisplayable() is ITestFixtureDisplayable displayable)
+        {
+            await editorComponent.EditorApiAlpha.ClearAsync();
+            await displayable.Display(editorComponent.EditorApiAlpha);
+        }
     }
 }
 

@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using BeamOs.Contracts.Common;
 
@@ -19,12 +18,12 @@ namespace BeamOs.Contracts.PhysicalModel.Node;
 //    //    RestraintRequest? Restraint = null) : this(ModelId, LocationPoint.)
 //}
 
-public class CreateNodeRequest
+public record CreateNodeRequest(
+    string ModelId,
+    PointRequest LocationPoint,
+    RestraintRequest? Restraint = null
+)
 {
-    public string ModelId { get; }
-    public PointRequest LocationPoint { get; }
-    public RestraintRequest? Restraint { get; }
-
     public CreateNodeRequest(
         string modelId,
         double xCoordinate,
@@ -42,19 +41,44 @@ public class CreateNodeRequest
             ),
             restraint
         ) { }
-
-    [JsonConstructor]
-    public CreateNodeRequest(
-        string modelId,
-        PointRequest locationPoint,
-        RestraintRequest? restraint
-    )
-    {
-        this.ModelId = modelId;
-        this.LocationPoint = locationPoint;
-        this.Restraint = restraint;
-    }
 }
+
+//public class CreateNodeRequest
+//{
+//    public string ModelId { get; }
+//    public PointRequest LocationPoint { get; }
+//    public RestraintRequest? Restraint { get; }
+
+//    public CreateNodeRequest(
+//        string modelId,
+//        double xCoordinate,
+//        double yCoordinate,
+//        double zCoordinate,
+//        string lengthUnit,
+//        RestraintRequest? restraint = null
+//    )
+//        : this(
+//            modelId,
+//            new(
+//                new(xCoordinate, lengthUnit),
+//                new(yCoordinate, lengthUnit),
+//                new(zCoordinate, lengthUnit)
+//            ),
+//            restraint
+//        ) { }
+
+//    [JsonConstructor]
+//    public CreateNodeRequest(
+//        string modelId,
+//        PointRequest locationPoint,
+//        RestraintRequest? restraint
+//    )
+//    {
+//        this.ModelId = modelId;
+//        this.LocationPoint = locationPoint;
+//        this.Restraint = restraint;
+//    }
+//}
 
 public record PointRequest(
     UnitValueDto XCoordinate,
