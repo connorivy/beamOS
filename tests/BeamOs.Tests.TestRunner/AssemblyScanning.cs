@@ -16,9 +16,9 @@ public static class AssemblyScanning
         yield return typeof(IAssemblyMarkerApiIntegrationTests).Assembly;
     }
 
-    public static Assembly[] GetTestingAssemblies()
+    public static IEnumerable<Assembly> GetTestingAssemblies()
     {
-        return TestAssemblies().Where(AssemblyContainsTests).ToArray();
+        return TestAssemblies().Where(AssemblyContainsTests);
     }
 
     public static bool AssemblyContainsTests(Assembly assembly)
@@ -31,13 +31,38 @@ public static class AssemblyScanning
         {
             foreach (var methodInfo in exportedType.GetMethods())
             {
-                if (methodInfo.GetCustomAttribute<FactAttribute>() is not null)
+                if (methodInfo.GetCustomAttribute<DataAttribute>() is not null)
                 {
                     return true;
                 }
             }
         }
         return false;
+    }
+
+    public static IEnumerable<TestInfo> GetAllTestInfo()
+    {
+        foreach (var testAssembly in TestAssemblies())
+        {
+            foreach (
+                var exportedType in testAssembly
+                    .GetExportedTypes()
+                    .Where(t => !t.IsInterface && !t.IsAbstract)
+            )
+            {
+                object? testClassInstance = null;
+                foreach (var methodInfo in exportedType.GetMethods())
+                {
+                    TestInfo[] testInfo = AssemblyScanning
+                        .GetTestInfoFromMethod(methodInfo, exportedType)
+                        .ToArray();
+                    foreach (var test in testInfo)
+                    {
+                        yield return test;
+                    }
+                }
+            }
+        }
     }
 
     public static IEnumerable<TestInfo> GetTestInfoFromMethod(MethodInfo methodInfo, Type classType)

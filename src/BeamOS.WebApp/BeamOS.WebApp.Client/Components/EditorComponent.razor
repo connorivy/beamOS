@@ -9,7 +9,7 @@
 @inject IApiAlphaClient analysisApiClient
 @inject EditorApiProxyFactory editorApiAlphaFactory
 
-<MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class=@($"h-full w-full {@Class}")>
+<MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class=@($"relative {@Class}")>
     <MudPaper Class="h-full w-full absolute z-0"></MudPaper>
     @* <div class="bg-gray-900 w-full h-full absolute"></div> *@
     <canvas id="@elementId" class="h-full w-full absolute z-1"></canvas>
@@ -39,17 +39,17 @@
             editorApiAlpha ??= await editorApiAlphaFactory.Create(elementId);
             loadingText = "Fetching Data";
             StateHasChanged();
-            await LoadModel();
+            await LoadModel(physicalModelId);
             isLoading = false;
             StateHasChanged();
         }
         await base.OnAfterRenderAsync(firstRender);
     }
 
-    private async Task LoadModel()
+    public async Task LoadModel(string modelId)
     {
         ModelResponseHydrated response = await analysisApiClient
-            .GetModelHydratedAsync(physicalModelId, PreconfiguredUnits.N_M);
+            .GetModelHydratedAsync(modelId, PreconfiguredUnits.N_M);
         var x = await editorApiAlpha.CreateModelHydratedAsync(response);
     }
 

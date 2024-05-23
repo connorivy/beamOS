@@ -6,6 +6,7 @@
 @using BeamOs.Contracts.Common
 @using BeamOs.Contracts.PhysicalModel.Model
 @using BeamOs.Contracts.PhysicalModel.Node
+@using BeamOs.Tests.TestRunner
 
 @* @rendermode InteractiveWebAssembly *@
 
@@ -16,43 +17,62 @@
 <PageTitle>Test Explorer</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="h-full relative">
-    <EditorComponent />
-    <MudContainer MaxWidth="MaxWidth.False" Class="absolute bottom-0 w-full">
-        <MudSpacer></MudSpacer>
-        <MudSimpleTable Striped="true" Dense="true" Class="my-4 mx-4">
-            <thead class="font-bold">
-                <tr>
-                    <th class="font-bold">
-                        Calculated Displacement Vector
-                    </th>
-                    <th>
-                        Expected Displacement Vector
-                    </th>
-                    <th class="font-bold">
-                        Difference
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                @for (int i = 0; i < @ExpectedDisplacements.Count; i++)
+    <MudDrawer @bind-Open="@open" Elevation="1" ClipMode="DrawerClipMode.Always">
+        <MudPaper Elevation="0">
+            <MudList T="TestInfo" SelectedValueChanged="OnSelectedTestInfoChanged">
+                <MudListSubheader>
+                    <MudTextField @bind-Value="@searchTerm" AdornmentIcon="@Icons.Material.Filled.Brush"
+                                  Adornment="Adornment.End" Immediate="true" Variant="Variant.Outlined" />
+                </MudListSubheader>
+
+                @foreach (var testInfo in testInfos.Where(i => i.MethodInfo.Name.Contains(searchTerm.Trim(), StringComparison.OrdinalIgnoreCase)))
                 {
+                    <MudListItem Icon="@Icons.Material.Filled.Folder" Value="@testInfo">
+                        @testInfo.MethodInfo.Name
+                    </MudListItem>
+                }
+            </MudList>
+        </MudPaper>
+    </MudDrawer>
+    <div class="flex h-full relative">
+        <EditorComponent Class="h-full"/>
+        <MudContainer MaxWidth="MaxWidth.False" Class="absolute bottom-0 w-full">
+            <MudSpacer></MudSpacer>
+            <MudSimpleTable Striped="true" Dense="true" Class="my-4 mx-4">
+                <thead class="font-bold">
                     <tr>
-                        <td>@CalculatedDisplacements?.ElementAt(i)</td>
-                        <td>@ExpectedDisplacements[i]</td>
+                        <th class="font-bold">
+                            Calculated Displacement Vector
+                        </th>
                         <th>
-                            @(@GetDifferenceOrNull(
-                                @ExpectedDisplacements[i],
-                                @CalculatedDisplacements?.ElementAt(i))?
-                                .ToString() ?? "N/A")
+                            Expected Displacement Vector
+                        </th>
+                        <th class="font-bold">
+                            Difference
                         </th>
                     </tr>
-                }
-            </tbody>
-        </MudSimpleTable>
-        <MudSpacer></MudSpacer>
-    </MudContainer>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < @ExpectedDisplacements.Count; i++)
+                    {
+                        <tr>
+                            <td>@CalculatedDisplacements?.ElementAt(i)</td>
+                            <td>@ExpectedDisplacements[i]</td>
+                            <th>
+                                @(@GetDifferenceOrNull(
+                                    @ExpectedDisplacements[i],
+                                    @CalculatedDisplacements?.ElementAt(i))?
+                                    .ToString() ?? "N/A")
+                            </th>
+                        </tr>
+                    }
+                </tbody>
+            </MudSimpleTable>
+            <MudSpacer></MudSpacer>
+        </MudContainer>
+    </div>
 
-    <div class="flex flex-col p-6">
+    @* <div class="flex flex-col p-6">
         <div class="flex justify-center items-center pb-2.5">
             <AuthorizeView>
                 <Authorized>
@@ -81,77 +101,7 @@
                 </NotAuthorized>
             </AuthorizeView>
         </div>
-
-        <div class="flex flex-col md:flex-row mb-8">
-            <div class="w-full overflow-x-auto shadow-md sm:rounded-lg">
-                <table class="w-full text-sm text-left rtl:text-right text-gray-500">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-                        <tr>
-                            <th scope="col" class="px-6 py-3">
-                                Calculated Displacement Vector
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Expected Displacement Vector
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Difference
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for (int i = 0; i < @ExpectedDisplacements.Count; i++)
-                        {
-                            <tr class="odd:bg-white even:bg-gray-50 border-b">
-                                <td class="px-6 py-4">@CalculatedDisplacements?.ElementAt(i)</td>
-                                <td class="px-6 py-4">@ExpectedDisplacements[i]</td>
-                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                                    @(@GetDifferenceOrNull(
-                                        @ExpectedDisplacements[i],
-                                        @CalculatedDisplacements?.ElementAt(i))?
-                                        .ToString() ?? "N/A")
-                                </th>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="p-4"></div>
-
-            <div class="w-full overflow-x-auto shadow-md sm:rounded-lg">
-                <table class="w-full text-sm text-left rtl:text-right text-gray-500">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-                        <tr>
-                            <th scope="col" class="px-6 py-3">
-                                Calculated Reaction Vector
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Expected Reaction Vector
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Difference
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for (int i = 0; i < @ExpectedDisplacements.Count; i++)
-                        {
-                            <tr class="odd:bg-white even:bg-gray-50 border-b">
-                                <td class="px-6 py-4">@CalculatedReactions?.ElementAt(i)</td>
-                                <td class="px-6 py-4">@ExpectedReactions[i]</td>
-                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                                    @(@GetDifferenceOrNull(
-                                        ExpectedReactions[i],
-                                        CalculatedReactions?.ElementAt(i))?
-                                        .ToString() ?? "N/A")
-                                </th>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+    </div> *@
 </MudContainer>
 
 @code {
@@ -236,6 +186,20 @@
         //     .RunDirectStiffnessMethodFromModelIdAsync(physicalModelId);
         // CalculatedReactions = response.AnalyticalNodeReactions;
         // CalculatedDisplacements = response.AnalyticalNodeDisplacements;
+    }
+
+    string searchTerm = "";
+    TestInfo[] testInfos = [];
+    TestInfo? selectedTestInfo;
+    protected override void OnInitialized()
+    {
+        testInfos = AssemblyScanning.GetAllTestInfo().ToArray();
+        base.OnInitialized();
+    }
+
+    private void OnSelectedTestInfoChanged(TestInfo? testInfo)
+    {
+        selectedTestInfo = testInfo;
     }
 }
 
