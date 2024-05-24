@@ -9,9 +9,9 @@
 
 <MudLayout>
     <NavBar @bind-IsDarkMode="@isDarkMode" />
-    <MudDrawer @bind-Open="@open" Elevation="1" ClipMode="DrawerClipMode.Always">
+    @* <MudDrawer @bind-Open="@open" Elevation="1" ClipMode="DrawerClipMode.Always">
         <NavMenu />
-    </MudDrawer>
+    </MudDrawer> *@
     <MudMainContent Class="h-full">
         <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="h-full">
             @Body

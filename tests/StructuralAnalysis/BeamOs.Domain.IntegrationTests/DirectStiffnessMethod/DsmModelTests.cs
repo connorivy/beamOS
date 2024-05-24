@@ -143,10 +143,11 @@ public class DsmModelTests
             )
             .Values;
 
-        int numColumns = modelFixtureWithJrv.ExpectedReactionVector.Length;
-        for (int i = 0; i < numColumns; i++)
-        {
-            Assert.Equal(modelFixtureWithJrv.ExpectedReactionVector[i], jointReactionVector[i], 2);
-        }
+        Asserter.AssertEqual(
+            "Joint Reaction Vector",
+            modelFixtureWithJrv.ExpectedReactionVector,
+            jointReactionVector,
+            2
+        );
     }
 }

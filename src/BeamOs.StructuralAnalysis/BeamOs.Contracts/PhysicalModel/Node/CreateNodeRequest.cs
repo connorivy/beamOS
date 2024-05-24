@@ -18,6 +18,8 @@ namespace BeamOs.Contracts.PhysicalModel.Node;
 //    //    RestraintRequest? Restraint = null) : this(ModelId, LocationPoint.)
 //}
 
+// todo : unit test fails when this is a record due to not have 'json deserializer' attr
+// but client generator fails to create this method when it's a class for some other reason
 public record CreateNodeRequest(
     string ModelId,
     PointRequest LocationPoint,

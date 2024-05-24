@@ -1,4 +1,5 @@
 using MudBlazor.Services;
+using MudExtensions.Services;
 
 namespace BeamOS.WebApp.Client;
 
@@ -8,6 +9,6 @@ public static class DependencyInjection
     {
         //_ = services.AddScoped(x => EditorApiProxy.Create(x.GetRequiredService<IJSRuntime>()));
         _ = services.AddTransient<EditorApiProxyFactory>();
-        _ = services.AddMudServices();
+        _ = services.AddMudServices().AddMudExtensions();
     }
 }
