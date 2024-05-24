@@ -2,9 +2,11 @@ using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Fixtures;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Interfaces;
 using BeamOS.Tests.Common.SolvedProblems.DirectStiffnessMethod.Kassimali_MatrixAnalysisOfStructures2ndEd.Example8_4;
 using BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd.Example8_4;
+using BeamOS.Tests.Common.Traits;
 
 namespace BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.SolvedProblems.MatrixAnalysisOfStructures2ndEd.Example8_4;
 
+[Kassimali_MatrixAnalysisOfStructures2ndEd]
 public class Example8_4_Dsm
     : DsmModelFixture,
         IHasStructuralStiffnessMatrix,

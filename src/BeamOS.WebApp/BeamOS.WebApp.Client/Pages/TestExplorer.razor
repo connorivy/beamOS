@@ -1,6 +1,8 @@
 @page "/test-explorer"
+@using BeamOS.Tests.Common
 @using BeamOS.Tests.Common.Interfaces
 @using BeamOS.Tests.Common.SolvedProblems.Fixtures
+@using BeamOS.Tests.Common.Traits
 @using BeamOS.WebApp.Client.Components
 @using BeamOS.WebApp.EditorApi
 @using BeamOs.ApiClient
@@ -26,12 +28,25 @@
                 <MudListSubheader>
                     <MudTextField @bind-Value="@searchTerm" AdornmentIcon="@Icons.Material.Filled.Brush"
                                   Adornment="Adornment.End" Immediate="true" Variant="Variant.Outlined" />
+                    <MudSelect T="string" @bind-Value=selectedTrait Label="Pizza" Variant="Variant.Filled" AnchorOrigin="Origin.BottomCenter">
+                        @foreach (var trait in allTraits.Keys)
+                        {
+                            <MudSelectItem Value=@trait />
+                        }
+                    </MudSelect>
                 </MudListSubheader>
 
-                @foreach (var testInfo in testInfos.Where(i => i.MethodInfo.Name.Contains(searchTerm.Trim(), StringComparison.OrdinalIgnoreCase)))
+                @foreach (var trait in allTraits.GetValueOrDefault(selectedTrait) ?? [])
                 {
-                    <MudListItem Icon="@Icons.Material.Filled.Folder" Value="@testInfo">
-                        @testInfo.MethodInfo.Name
+                    <MudListItem Icon="@Icons.Material.Filled.Inbox" Text="@trait" Expanded="true">
+                        <NestedList>
+                            @foreach (var testInfo in testInfos.Where(i => i.TraitNameToValueDict.GetValueOrDefault(selectedTrait)?.Contains(trait) ?? false).Where(i => i.MethodInfo.Name.Contains(searchTerm.Trim(), StringComparison.OrdinalIgnoreCase)))
+                            {
+                                <MudListItem T="TestInfo" Icon="@Icons.Material.Filled.StarRate" Value="@testInfo">
+                                    @testInfo.MethodInfo.Name
+                                </MudListItem>
+                            }
+                        </NestedList>
                     </MudListItem>
                 }
             </MudList>
@@ -45,10 +60,10 @@
                 <thead class="font-bold">
                     <tr>
                         <th class="font-bold">
-                            Calculated Displacement Vector
+                            Calculated @nameOfAssertionResult
                         </th>
                         <th>
-                            Expected Displacement Vector
+                            Expected @nameOfAssertionResult
                         </th>
                         <th class="font-bold">
                             Difference
@@ -56,15 +71,15 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for (int i = 0; i < @ExpectedDisplacements.Count; i++)
+                    @for (int i = 0; i < ExpectedValues.Length; i++)
                     {
                         <tr>
-                            <td>@CalculatedDisplacements?.ElementAt(i)</td>
-                            <td>@ExpectedDisplacements[i]</td>
+                            <td>@CalculatedValues?.ElementAt(i)</td>
+                            <td>@ExpectedValues[i]</td>
                             <th>
                                 @(@GetDifferenceOrNull(
-                                    @ExpectedDisplacements[i],
-                                    @CalculatedDisplacements?.ElementAt(i))?
+                                    @ExpectedValues[i],
+                                    @CalculatedValues?.ElementAt(i))?
                                     .ToString() ?? "N/A")
                             </th>
                         </tr>
@@ -119,6 +134,8 @@
 
     const string physicalModelId = "00000000-0000-0000-0000-000000000000";
 
+    string? nameOfAssertionResult { get; set; }
+
     public string[] GetHeaders(string nameOfTestResult)
     {
         return new string[3]
@@ -129,7 +146,7 @@
         };
     }
 
-    public double[] ExpectedValues { get; set; }
+    public double[] ExpectedValues { get; set; } = [];
     public double[]? CalculatedValues { get; set; }
     public double?[] Difference
     {
@@ -143,37 +160,7 @@
             return vals;
         }
     }
-    public List<double>? CalculatedReactions { get; set; }
-    public List<double>? CalculatedDisplacements { get; set; }
-    public List<double> ExpectedReactions { get; } = [
-        0,
-    0,
-    0,
-    -10.064,
-    -13.419,
-    0,
-    0,
-    0,
-    0,
-    126.83,
-    0,
-    0,
-    0,
-    -139.94,
-    186.58,
-    0,
-    0,
-    0,
-    ];
 
-    public List<double> ExpectedDisplacements { get; } = [
-        .21552,
-    -.13995,
-    0,
-    0,
-    0,
-    0
-    ];
 
     private double? GetDifferenceOrNull(double expected, double? calculated)
     {
@@ -195,9 +182,32 @@
     string searchTerm = "";
     TestInfo[] testInfos = [];
     TestInfo? selectedTestInfo;
+    Dictionary<string, string[]> allTraits = [];
+    const string defaultTrait = ProblemSourceAttribute.TRAIT_NAME;
+    string? selectedTrait;
+
     protected override void OnInitialized()
     {
         testInfos = AssemblyScanning.GetAllTestInfo().ToArray();
+
+        var traitKeys = testInfos
+            .SelectMany(i => i.TraitNameToValueDict.Keys)
+            .Distinct();
+
+        foreach (var key in traitKeys)
+        {
+            allTraits.Add(key, testInfos.SelectMany(i => i.TraitNameToValueDict.GetValueOrDefault(key) ?? []).Distinct().ToArray());
+        }
+
+        if (allTraits.ContainsKey(defaultTrait))
+        {
+            selectedTrait = defaultTrait;
+        }
+        else
+        {
+            selectedTrait = allTraits.Keys.FirstOrDefault();
+        }
+
         base.OnInitialized();
     }
 
@@ -210,9 +220,26 @@
 
         if (testInfo.GetDisplayable() is ITestFixtureDisplayable displayable)
         {
-            await editorComponent.EditorApiAlpha.ClearAsync();
-            await displayable.Display(editorComponent.EditorApiAlpha);
+            Asserter.DoubleArrayAssertedEqual += OnDoubleArrayAssertedEqual;
+            try
+            {
+                await editorComponent.EditorApiAlpha.ClearAsync();
+                await displayable.Display(editorComponent.EditorApiAlpha);
+                await testInfo.RunTest();
+            }
+            finally
+            {
+                Asserter.DoubleArrayAssertedEqual -= OnDoubleArrayAssertedEqual;
+            }
         }
+    }
+
+    private void OnDoubleArrayAssertedEqual(object? _, ComparedObjectEventArgs<double[]> comparedObjectEventArgs)
+    {
+        ExpectedValues = comparedObjectEventArgs.Expected;
+        CalculatedValues = comparedObjectEventArgs.Calculated;
+        nameOfAssertionResult = comparedObjectEventArgs.ComparedObjectName;
+        this.StateHasChanged();
     }
 }
 

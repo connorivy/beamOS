@@ -25,4 +25,17 @@ public class TestInfo
 
     public ITestFixtureDisplayable? GetDisplayable() =>
         this.TestData.FirstOrDefault() as ITestFixtureDisplayable;
+
+    public async Task RunTest()
+    {
+        // todo : will fail for tests with constructor
+        object? test = this.MethodInfo.Invoke(
+            Activator.CreateInstance(this.TestClassType),
+            this.TestData
+        );
+        if (test is Task t)
+        {
+            await t.ConfigureAwait(false);
+        }
+    }
 }

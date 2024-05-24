@@ -3,6 +3,7 @@ using BeamOs.Domain.DirectStiffnessMethod.Services;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Fixtures;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Interfaces;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.SolvedProblems;
+using BeamOS.Tests.Common;
 using BeamOS.Tests.Common.Traits;
 
 namespace BeamOs.Domain.IntegrationTests.DirectStiffnessMethod;
@@ -37,19 +38,12 @@ public class DsmModelTests
             )
             .Values;
 
-        int numRows = modelFixtureWithSsm.ExpectedStructuralStiffnessMatrix.GetLength(0);
-        int numColumns = modelFixtureWithSsm.ExpectedStructuralStiffnessMatrix.GetLength(1);
-        for (int row = 0; row < numRows; row++)
-        {
-            for (int col = 0; col < numColumns; col++)
-            {
-                Assert.Equal(
-                    modelFixtureWithSsm.ExpectedStructuralStiffnessMatrix[row, col],
-                    structureStiffnessMatrix[row, col],
-                    0
-                );
-            }
-        }
+        Asserter.AssertEqual(
+            "Structural Stiffness Matrix",
+            modelFixtureWithSsm.ExpectedStructuralStiffnessMatrix,
+            structureStiffnessMatrix,
+            0
+        );
     }
 
     [SkippableTheory]
@@ -92,15 +86,12 @@ public class DsmModelTests
             )
             .Values;
 
-        int numColumns = modelFixtureWithJdv.ExpectedDisplacementVector.Length;
-        for (int i = 0; i < numColumns; i++)
-        {
-            Assert.Equal(
-                modelFixtureWithJdv.ExpectedDisplacementVector[i],
-                jointDisplacementVector[i],
-                2
-            );
-        }
+        Asserter.AssertEqual(
+            "Joint Displacement Vector",
+            modelFixtureWithJdv.ExpectedDisplacementVector,
+            jointDisplacementVector,
+            2
+        );
     }
 
     [SkippableTheory]
