@@ -13,11 +13,11 @@
     <link rel="stylesheet" href=@($"{Configuration[Constants.ASSEMBLY_NAME]}.styles.css") />
     <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
     @* https://github.com/MudBlazor/MudBlazor/issues/7805 *@
-    <HeadOutlet @rendermode="InteractiveServer"/>
+    <HeadOutlet @rendermode="InteractiveAuto"/>
 </head>
 
 <body class="h-screen">
-    <Routes @rendermode="InteractiveServer"/>
+    <Routes @rendermode="InteractiveAuto" />
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
     <script src="_framework/blazor.web.js"></script>
     <script src="js/index.bundle.js"></script>

@@ -1,11 +1,8 @@
 using System.Reflection;
 using BeamOs.Api.IntegrationTests;
-using BeamOS.Tests.Common.Interfaces;
-using BeamOS.Tests.Common.SolvedProblems.Fixtures;
+using BeamOs.Api.UnitTests;
 using BeamOS.Tests.Common.Traits;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
-using Xunit.Abstractions;
 using Xunit.Sdk;
 
 namespace BeamOs.Tests.TestRunner;
@@ -14,8 +11,9 @@ public static class AssemblyScanning
 {
     public static IEnumerable<Assembly> TestAssemblies()
     {
-        yield return typeof(IAssemblyMarkerApiIntegrationTests).Assembly;
+        //yield return typeof(IAssemblyMarkerApiIntegrationTests).Assembly;
         yield return typeof(IAssemblyMarkerDomainIntegrationTests).Assembly;
+        yield return typeof(IAssemblyMarkerDomainUnitTests).Assembly;
     }
 
     public static IEnumerable<Assembly> GetTestingAssemblies()
@@ -52,12 +50,9 @@ public static class AssemblyScanning
                     .Where(t => !t.IsInterface && !t.IsAbstract)
             )
             {
-                object? testClassInstance = null;
                 foreach (var methodInfo in exportedType.GetMethods())
                 {
-                    TestInfo[] testInfo = AssemblyScanning
-                        .GetTestInfoFromMethod(methodInfo, exportedType)
-                        .ToArray();
+                    TestInfo[] testInfo = GetTestInfoFromMethod(methodInfo, exportedType).ToArray();
                     foreach (var test in testInfo)
                     {
                         yield return test;
@@ -69,32 +64,30 @@ public static class AssemblyScanning
 
     public static IEnumerable<TestInfo> GetTestInfoFromMethod(MethodInfo methodInfo, Type classType)
     {
-        DataAttribute? dataAttribute = methodInfo.GetCustomAttribute<DataAttribute>();
-        if (dataAttribute is null)
+        IEnumerable<DataAttribute> dataAttributes = methodInfo.GetCustomAttributes<DataAttribute>();
+        foreach (var dataAttribute in dataAttributes)
         {
-            yield break;
-        }
+            object[][] data = dataAttribute.GetData(methodInfo).ToArray();
 
-        object[][] data = dataAttribute.GetData(methodInfo).ToArray();
-
-        foreach (var dataItem in data)
-        {
-            if (dataItem.Length == 0)
+            foreach (var dataItem in data)
             {
-                continue;
-            }
+                if (dataItem.Length == 0)
+                {
+                    continue;
+                }
 
-            yield return new TestInfo(
-                classType,
-                dataItem,
-                methodInfo,
-                methodInfo
-                    .GetCustomAttributes<TestBaseAttribute>()
-                    .Concat(classType.GetCustomAttributes<TestBaseAttribute>())
-                    .Concat(dataItem[0].GetType().GetCustomAttributes<TestBaseAttribute>())
-                    .GroupBy(attr => attr.TraitName)
-                    .ToDictionary(g => g.Key, g => g.Select(attr => attr.TraitValue).ToArray())
-            );
+                yield return new TestInfo(
+                    classType,
+                    dataItem,
+                    methodInfo,
+                    methodInfo
+                        .GetCustomAttributes<TestBaseAttribute>()
+                        .Concat(classType.GetCustomAttributes<TestBaseAttribute>())
+                        .Concat(dataItem[0].GetType().GetCustomAttributes<TestBaseAttribute>())
+                        .GroupBy(attr => attr.TraitName)
+                        .ToDictionary(g => g.Key, g => g.Select(attr => attr.TraitValue).ToArray())
+                );
+            }
         }
     }
 

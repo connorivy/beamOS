@@ -20,7 +20,6 @@
     <ProjectReference Include="..\StructuralAnalysis\BeamOs.Domain.IntegrationTests\BeamOs.Domain.IntegrationTests.csproj">
     </ProjectReference>
     <ProjectReference Include="..\StructuralAnalysis\BeamOs.Domain.UnitTests\BeamOs.Domain.UnitTests.csproj">
-      <PrivateAssets>all</PrivateAssets>
     </ProjectReference>
   </ItemGroup>
 
