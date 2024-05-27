@@ -24,12 +24,12 @@ public abstract partial class ModelFixture : FixtureBase, ITestFixtureDisplayabl
     protected ModelFixture()
     {
         this.UnitMapperWithOptionalUnits = new(this.UnitSettings);
-        this.ModelId = this.Id.ToString();
-        this.StrongModelId = new(Guid.Parse(this.ModelId));
+        this.StrongModelId = new(this.Id);
     }
 
     public Dictionary<Guid, string> FixtureGuidToIdDict { get; } = [];
     public abstract override Guid Id { get; }
+    public override GuidWrapperForModelId ModelId => new(this.Id);
     public abstract UnitSettings UnitSettings { get; protected set; }
     public virtual string Name { get; } = "Test Model";
     public virtual string Description { get; } = "Test Model Description";
@@ -45,19 +45,7 @@ public abstract partial class ModelFixture : FixtureBase, ITestFixtureDisplayabl
         ModelResponse response = await client.GetModelAsync(this.Id.ToString(), null);
     }
 
-    public string ModelId { get; private set; }
     public ModelId StrongModelId { get; }
-
-    //public partial NodeResponse ToResponse(NodeFixture fixture);
-
-    protected string GetModelId(DummyModelId modelId)
-    {
-        return this.Id.ToString();
-    }
-
-    //protected string GuidToString(Guid id) => this.FixtureGuidToIdDict[id];
-
-    public ModelId ToModelId(DummyModelId id) => this.StrongModelId;
 
     public partial PointLoad ToDomainObjectWithLocalIds(PointLoadFixture fixture);
 
@@ -96,7 +84,7 @@ public abstract partial class ModelFixture : FixtureBase, ITestFixtureDisplayabl
             var momentLoadResponses = this.MomentLoadFixtures.Select(this.ToResponse).ToList();
 
             return new ModelResponse(
-                this.ModelId,
+                this.Id.ToString(),
                 this.Name,
                 this.Description,
                 new ModelSettingsResponse(this.UnitSettings.ToResponse()),
@@ -123,68 +111,10 @@ public abstract partial class ModelFixture : FixtureBase, ITestFixtureDisplayabl
     }
 }
 
-public interface IHasExpectedModelResponse { }
-
 public interface IHasExpectedNodeResults
 {
     public NodeResultFixture[] ExpectedNodeResults { get; }
     public NodeResultResponse ToResponse(NodeResultFixture source);
-}
-
-public static class IHasExpectedModelResponseExtensions
-{
-    public static ModelResponse GetExpectedResponse<T>(this T modelFixture)
-        where T : ModelFixtureInDb
-    {
-        var nodeResponses = modelFixture
-            .ModelFixture
-            .NodeFixtures
-            .Select(modelFixture.ToResponse)
-            .ToList();
-        var element1dResponse = modelFixture
-            .ModelFixture
-            .Element1dFixtures
-            .Select(modelFixture.ToResponse)
-            .ToList();
-        var materialResponse = modelFixture
-            .ModelFixture
-            .MaterialFixtures
-            .Select(modelFixture.ToResponse)
-            .ToList();
-        var sectionProfileResponses = modelFixture
-            .ModelFixture
-            .SectionProfileFixtures
-            .Select(modelFixture.ToResponse)
-            .ToList();
-        var pointLoadResponses = modelFixture
-            .ModelFixture
-            .PointLoadFixtures
-            .Select(modelFixture.ToResponse)
-            .ToList();
-        var momentLoadResponses = modelFixture
-            .ModelFixture
-            .MomentLoadFixtures
-            .Select(modelFixture.ToResponse)
-            .ToList();
-
-        return new ModelResponse(
-            modelFixture.ModelFixture.ModelId,
-            modelFixture.ModelFixture.Name,
-            modelFixture.ModelFixture.Description,
-            new ModelSettingsResponse(modelFixture.ModelFixture.UnitSettings.ToResponse()),
-            nodeResponses,
-            element1dResponse,
-            materialResponse,
-            sectionProfileResponses,
-            pointLoadResponses,
-            momentLoadResponses
-        );
-    }
-}
-
-public struct DummyModelId
-{
-    public Guid ToGuid() => Guid.NewGuid();
 }
 
 [Mapper]

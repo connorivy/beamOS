@@ -4,6 +4,7 @@ using UnitsNet;
 namespace BeamOS.Tests.Common.SolvedProblems.Fixtures;
 
 public class Element1dFixture(
+    Guid modelId,
     NodeFixture startNode,
     NodeFixture endNode,
     MaterialFixture material,
@@ -11,6 +12,7 @@ public class Element1dFixture(
     UnitSettings unitSettings
 ) : FixtureBase
 {
+    public override GuidWrapperForModelId ModelId { get; } = new(modelId);
     public NodeFixture StartNode { get; } = startNode;
     public NodeFixture EndNode { get; } = endNode;
     public MaterialFixture Material { get; } = material;

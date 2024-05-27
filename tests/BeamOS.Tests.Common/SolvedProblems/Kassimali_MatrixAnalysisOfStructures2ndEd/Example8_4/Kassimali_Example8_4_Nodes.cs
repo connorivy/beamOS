@@ -7,16 +7,16 @@ namespace BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructure
 public class Kassimali_Example8_4_Nodes
 {
     public static NodeFixture Node1 { get; } =
-        new(new Point(0, 0, 0, LengthUnit.Foot), Restraint.Free);
+        new(new Point(0, 0, 0, LengthUnit.Foot), Restraint.Free, Kassimali_Example8_4.IdStatic);
 
     public static NodeFixture Node2 { get; } =
-        new(new Point(-20, 0, 0, LengthUnit.Foot), Restraint.Fixed);
+        new(new Point(-20, 0, 0, LengthUnit.Foot), Restraint.Fixed, Kassimali_Example8_4.IdStatic);
 
     public static NodeFixture Node3 { get; } =
-        new(new Point(0, -20, 0, LengthUnit.Foot), Restraint.Fixed);
+        new(new Point(0, -20, 0, LengthUnit.Foot), Restraint.Fixed, Kassimali_Example8_4.IdStatic);
 
     public static NodeFixture Node4 { get; } =
-        new(new Point(0, 0, -20, LengthUnit.Foot), Restraint.Fixed);
+        new(new Point(0, 0, -20, LengthUnit.Foot), Restraint.Fixed, Kassimali_Example8_4.IdStatic);
 
     public static NodeFixture[] All => [Node1, Node2, Node3, Node4];
 

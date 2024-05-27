@@ -17,7 +17,10 @@ public class UnitTest1(CustomWebApplicationFactory<Program> webApplicationFactor
 
         await dbModelFixture.Create(client);
 
-        var modelResponse = await client.GetModelAsync(dbModelFixture.ModelFixture.ModelId, null);
+        var modelResponse = await client.GetModelAsync(
+            dbModelFixture.ModelFixture.Id.ToString(),
+            null
+        );
         var expectedModelResponse = dbModelFixture.GetExpectedResponse();
 
         ContractComparer.AssertContractsEqual(modelResponse, expectedModelResponse);

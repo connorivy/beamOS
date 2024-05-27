@@ -1,16 +1,7 @@
-using BeamOs.Api.Common.Mappers;
-using BeamOs.Contracts.PhysicalModel.Element1d;
-using BeamOs.Contracts.PhysicalModel.Material;
-using BeamOs.Contracts.PhysicalModel.Model;
-using BeamOs.Contracts.PhysicalModel.MomentLoad;
-using BeamOs.Contracts.PhysicalModel.Node;
-using BeamOs.Contracts.PhysicalModel.PointLoad;
-using BeamOs.Contracts.PhysicalModel.SectionProfile;
 using BeamOs.Domain.Common.Interfaces;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.Domain.PhysicalModel.MaterialAggregate.ValueObjects;
-using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.Domain.PhysicalModel.MomentLoadAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.NodeAggregate;
@@ -32,8 +23,6 @@ public partial class ModelFixtureInDb
         return TId.Construct(Guid.Parse(this.RuntimeIdToDbIdDict[id]));
     }
 
-    public ModelId ToModelId(DummyModelId id) => this.ModelFixture.StrongModelId;
-
     public NodeId ToNodeId(Guid id) => this.ToId<NodeId>(id);
 
     public PointLoadId ToPointLoadId(Guid id) => this.ToId<PointLoadId>(id);
@@ -50,7 +39,7 @@ public partial class ModelFixtureInDb
 
     public partial MomentLoad ToDomainObjectWithDbIds(MomentLoadFixture fixture);
 
-    public Vector<double> ToVector(Vector3D vector3D) => vector3D.ToVector();
+    public static Vector<double> ToVector(Vector3D vector3D) => vector3D.ToVector();
 
     public partial Node ToDomainObjectWithDbIds(NodeFixture fixture);
 

@@ -1,5 +1,5 @@
-using BeamOS.Tests.Common.SolvedProblems.DirectStiffnessMethod.Kassimali_MatrixAnalysisOfStructures2ndEd.Example8_4;
 using BeamOS.Tests.Common.SolvedProblems.Fixtures;
+using BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd.Example8_4;
 
 namespace BeamOS.Tests.Common.SolvedProblems;
 

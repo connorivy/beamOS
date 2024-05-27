@@ -150,8 +150,6 @@ public class UnitSettings : BeamOSValueObject
         );
     }
 
-    public UnitSettings ShallowCopy() => (UnitSettings)this.MemberwiseClone();
-
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private UnitSettings() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
