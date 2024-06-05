@@ -58,7 +58,7 @@ public partial class ModelFixtureInDb
             ).Id;
         }
 
-        foreach (var element1dFixture in this.ModelFixture.Element1dFixtures)
+        foreach (var element1dFixture in this.ModelFixture.Element1dFixtures.Value)
         {
             this.RuntimeIdToDbIdDict[element1dFixture.Id] = (
                 await client.CreateElement1dAsync(this.ToRequest(element1dFixture))
@@ -90,6 +90,7 @@ public partial class ModelFixtureInDb
         var nodeResponses = this.ModelFixture.NodeFixtures.Select(this.ToResponse).ToList();
         var element1dResponse = this.ModelFixture
             .Element1dFixtures
+            .Value
             .Select(this.ToResponse)
             .ToList();
         var materialResponse = this.ModelFixture.MaterialFixtures.Select(this.ToResponse).ToList();

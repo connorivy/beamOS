@@ -12,3 +12,8 @@ public class FixtureBase
 /// </summary>
 /// <param name="ModelId"></param>
 public record struct GuidWrapperForModelId(Guid? ModelId = null);
+
+public interface IModelMember
+{
+    public ModelFixture Model { get; }
+}

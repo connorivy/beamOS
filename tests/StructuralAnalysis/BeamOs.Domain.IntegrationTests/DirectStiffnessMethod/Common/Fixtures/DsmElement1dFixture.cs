@@ -1,8 +1,10 @@
+using BeamOS.Tests.Common.Interfaces;
 using BeamOS.Tests.Common.SolvedProblems.Fixtures;
+using BeamOS.WebApp.EditorApi;
 
 namespace BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Fixtures;
 
-public partial class DsmElement1dFixture(Element1dFixture fixture)
+public partial class DsmElement1dFixture(Element1dFixture fixture) : ITestFixtureDisplayable
 {
     public Element1dFixture Fixture { get; } = fixture;
 
@@ -16,4 +18,6 @@ public partial class DsmElement1dFixture(Element1dFixture fixture)
     public double[]? ExpectedGlobalEndDisplacements { get; init; }
     public double[]? ExpectedLocalEndForces { get; init; }
     public double[]? ExpectedGlobalEndForces { get; init; }
+
+    public Task Display(IEditorApiAlpha editorApiAlpha) => this.Fixture.Display(editorApiAlpha);
 }

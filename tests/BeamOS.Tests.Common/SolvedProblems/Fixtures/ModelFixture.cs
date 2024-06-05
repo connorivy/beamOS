@@ -36,7 +36,7 @@ public abstract partial class ModelFixture : FixtureBase, ITestFixtureDisplayabl
     public virtual NodeFixture[] NodeFixtures { get; } = [];
     public virtual MaterialFixture[] MaterialFixtures { get; } = [];
     public virtual SectionProfileFixture[] SectionProfileFixtures { get; } = [];
-    public virtual Element1dFixture[] Element1dFixtures { get; } = [];
+    public virtual Lazy<Element1dFixture[]> Element1dFixtures { get; } = new(() => []);
     public virtual PointLoadFixture[] PointLoadFixtures { get; } = [];
     public virtual MomentLoadFixture[] MomentLoadFixtures { get; } = [];
 
@@ -75,7 +75,7 @@ public abstract partial class ModelFixture : FixtureBase, ITestFixtureDisplayabl
         try
         {
             var nodeResponses = this.NodeFixtures.Select(this.ToResponse).ToList();
-            var element1dResponse = this.Element1dFixtures.Select(this.ToResponse).ToList();
+            var element1dResponse = this.Element1dFixtures.Value.Select(this.ToResponse).ToList();
             var materialResponse = this.MaterialFixtures.Select(this.ToResponse).ToList();
             var sectionProfileResponses = this.SectionProfileFixtures
                 .Select(this.ToResponse)
