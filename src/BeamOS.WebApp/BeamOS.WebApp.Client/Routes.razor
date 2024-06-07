@@ -1,5 +1,7 @@
 @using BeamOS.WebApp.Client.Pages.Account
 
+<Fluxor.Blazor.Web.StoreInitializer />
+
 <Router AppAssembly="@typeof(Program).Assembly">
     <Found Context="routeData">
         <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">

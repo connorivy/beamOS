@@ -1,0 +1,104 @@
+@page "/test-explorer"
+@inherits FluxorComponent
+
+@using BeamOS.Tests.Common
+@using BeamOS.Tests.Common.Interfaces
+@using BeamOS.Tests.Common.SolvedProblems.Fixtures
+@using BeamOS.Tests.Common.Traits
+@using BeamOS.WebApp.Client.Components
+@using BeamOS.WebApp.Client.Pages
+@using BeamOS.WebApp.EditorApi
+@using BeamOs.ApiClient
+@using BeamOs.Contracts.AnalyticalResults.Model
+@using BeamOs.Contracts.Common
+@using BeamOs.Contracts.PhysicalModel.Model
+@using BeamOs.Contracts.PhysicalModel.Node
+@using BeamOs.Domain.Common.ValueObjects
+@using BeamOs.Tests.TestRunner
+@using Fluxor
+@using Fluxor.Blazor.Web.Components
+@using MudExtensions
+
+@rendermode InteractiveWebAssembly
+
+<PageTitle>Test Explorer</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="h-full relative">
+    <MudSplitter EnableSlide="true" Class="h-full" Dimension="15" EnableMargin=false>
+        <StartContent>
+            @* <MudDrawer @bind-Open="@open" Elevation="1" ClipMode="DrawerClipMode.Always"> *@
+                <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="h-full">
+                    <MudList T="TestInfo" SelectedValueChanged="OnSelectedTestInfoChanged">
+                        <MudListSubheader>
+                            <MudTextField @bind-Value="@searchTerm" AdornmentIcon="@Icons.Material.Filled.Brush"
+                                          Adornment="Adornment.End" Immediate="true" Variant="Variant.Outlined" />
+                        <MudSelect T="string" Value="selectedTrait" SelectedValuesChanged="OnSelectedTraitChanged" Label="Pizza" Variant="Variant.Filled" AnchorOrigin="Origin.BottomCenter">
+                            @foreach (var trait in TestInfoProvider.AllTraits.Keys)
+                                {
+                                    <MudSelectItem Value=@trait />
+                                }
+                            </MudSelect>
+                        </MudListSubheader>
+
+                    @foreach (var trait in TestInfoProvider.AllTraits.GetValueOrDefault(selectedTrait) ?? [])
+                        {
+                            <MudListItem Icon="@Icons.Material.Filled.Inbox" Text="@trait" Expanded="true">
+                                <NestedList>
+                                @foreach (var testInfo in testInfos.Where(i => i.TraitNameToValueDict.GetValueOrDefault(selectedTrait)?.Contains(trait) ?? false).Where(i => i.MethodInfo.Name.Contains(searchTerm.Trim(), StringComparison.OrdinalIgnoreCase)))
+                                    {
+                                        <MudListItem T="TestInfo" Icon="@Icons.Material.Outlined.Check" Value="@testInfo">
+                                            @testInfo.MethodInfo.Name
+                                        </MudListItem>
+                                    }
+                                </NestedList>
+                            </MudListItem>
+                        }
+                    </MudList>
+                </MudContainer>
+            @* </MudDrawer> *@
+        </StartContent>
+        <EndContent>
+            <div class="w-full h-full relative">
+                <EditorComponent @ref="editorComponent" Class="h-full" />
+                <MudContainer MaxWidth="MaxWidth.False" Class="absolute bottom-0 w-full max-h-[50%]">
+                    <TestInfoCompactView TestInfo="@TestExplorerState.Value.SelectedTestInfo"/>
+                    <MudSpacer></MudSpacer>
+                    <MudContainer MaxWidth="MaxWidth.Medium" Class="h-full overflow-hide">
+                        <MudSimpleTable Striped="true" Dense="true" Class="my-4 mx-4 h-full overflow-scroll">
+                        <thead class="font-bold">
+                            <tr>
+                                <th class="font-bold">
+                                    Calculated @nameOfAssertionResult
+                                </th>
+                                <th>
+                                    Expected @nameOfAssertionResult
+                                </th>
+                                <th class="font-bold">
+                                    Difference
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < ExpectedValues.Length; i++)
+                            {
+                                <tr>
+                                    <td>@CalculatedValues?.ElementAt(i)</td>
+                                    <td>@ExpectedValues[i]</td>
+                                    <th>
+                                        @(@GetDifferenceOrNull(
+                                            @ExpectedValues[i],
+                                            @CalculatedValues?.ElementAt(i))?
+                                            .ToString() ?? "N/A")
+                                    </th>
+                                </tr>
+                            }
+                        </tbody>
+                    </MudSimpleTable>
+                    </MudContainer>
+                    <MudSpacer></MudSpacer>
+                </MudContainer>
+            </div>
+        </EndContent>
+    </MudSplitter>
+</MudContainer>
+

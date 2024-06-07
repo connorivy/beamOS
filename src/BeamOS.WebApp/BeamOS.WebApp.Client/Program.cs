@@ -42,7 +42,7 @@ builder
         client => client.BaseAddress = new(analysisUriString)
     );
 
-builder.Services.RegisterSharedServices();
+builder.Services.RegisterSharedServices<Program>();
 
 builder.Services.AddAuthorizationCore();
 builder.Services.AddCascadingAuthenticationState();

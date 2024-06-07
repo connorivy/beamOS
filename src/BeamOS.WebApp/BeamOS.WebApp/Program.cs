@@ -110,7 +110,7 @@ builder
         BlazorAuthorizationMiddlewareResultHandler
     >();
 
-builder.Services.RegisterSharedServices();
+builder.Services.RegisterSharedServices<Program>();
 
 builder
     .Services

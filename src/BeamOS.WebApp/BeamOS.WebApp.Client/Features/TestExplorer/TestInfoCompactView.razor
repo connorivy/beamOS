@@ -1,0 +1,43 @@
+@* <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="h-full relative"> *@
+<MudSimpleTable Dense="true" Class="w-max">
+        <thead>
+            <th colspan="2">
+                @TestInfo?.MethodInfo.Name
+            </th>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    Source Name:
+                </td>
+                <td>
+                    @Displayable?.SourceInfo.SourceName
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Source Type:
+                </td>
+                <td>
+                    @Displayable?.SourceInfo.SourceType
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Model Name:
+                </td>
+                <td>
+                    @Displayable?.SourceInfo.ModelName
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Element Name:
+                </td>
+                <td>
+                    @Displayable?.SourceInfo.ElementName
+                </td>
+            </tr>
+        </tbody>
+    </MudSimpleTable>
+@* </MudContainer> *@

@@ -17,6 +17,8 @@ public abstract class DsmModelFixture : IDsmModelFixture, ITestFixtureDisplayabl
     public abstract DsmElement1dFixture[] DsmElement1dFixtures { get; }
     public abstract DsmNodeFixture[] DsmNodeFixtures { get; }
 
+    public SourceInfo SourceInfo => this.Fixture.SourceInfo;
+
     public Task Display(IEditorApiAlpha editorApiAlpha) => this.Fixture.Display(editorApiAlpha);
 
     public DsmNodeVo ToDsm(NodeFixture fixture)

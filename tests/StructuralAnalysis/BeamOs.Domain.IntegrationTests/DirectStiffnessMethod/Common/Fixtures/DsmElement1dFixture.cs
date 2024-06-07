@@ -18,6 +18,7 @@ public partial class DsmElement1dFixture(Element1dFixture fixture) : ITestFixtur
     public double[]? ExpectedGlobalEndDisplacements { get; init; }
     public double[]? ExpectedLocalEndForces { get; init; }
     public double[]? ExpectedGlobalEndForces { get; init; }
+    public SourceInfo SourceInfo => this.Fixture.SourceInfo;
 
     public Task Display(IEditorApiAlpha editorApiAlpha) => this.Fixture.Display(editorApiAlpha);
 }

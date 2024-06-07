@@ -105,6 +105,8 @@ public abstract partial class ModelFixture : FixtureBase, ITestFixtureDisplayabl
         }
     }
 
+    public abstract SourceInfo SourceInfo { get; }
+
     public async Task Display(IEditorApiAlpha editorApiAlpha)
     {
         await editorApiAlpha.CreateModelAsync(this.GetExpectedResponse(UnitSettings.SI));

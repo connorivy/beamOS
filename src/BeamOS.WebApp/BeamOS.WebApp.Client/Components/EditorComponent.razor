@@ -5,7 +5,8 @@
 
 @rendermode InteractiveAuto
 
-@inject IJSRuntime js
+@implements IDisposable
+
 @inject IApiAlphaClient analysisApiClient
 @inject EditorApiProxyFactory editorApiAlphaFactory
 
@@ -26,7 +27,7 @@
     public string? Class { get; set; }
 
     private bool isLoading = true;
-    private string loadingText = "Loading beamOS editor...";
+    private string loadingText = "Loading beamOS editor";
     public string elementId { get; } = "id" + Guid.NewGuid().ToString("N");
     public IEditorApiAlpha? EditorApiAlpha { get; private set; }
     const string physicalModelId = "00000000-0000-0000-0000-000000000000";
@@ -53,4 +54,15 @@
         var x = await EditorApiAlpha.CreateModelHydratedAsync(response);
     }
 
+    public void Dispose()
+    {
+        // obj?.Dispose();
+    }
+
+    [FeatureState]
+    public record EditorComponentState(bool IsLoading, string LoadingText, ModelResponse? visibleModel)
+    {
+        private EditorComponentState()
+            : this(true, "Loading beamOS editor", null) { }
+    }
 }

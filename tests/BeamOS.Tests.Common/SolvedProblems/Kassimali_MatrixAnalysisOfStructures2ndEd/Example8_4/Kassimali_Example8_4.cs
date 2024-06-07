@@ -1,5 +1,6 @@
 using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
 using BeamOs.Domain.Common.ValueObjects;
+using BeamOS.Tests.Common.Interfaces;
 using BeamOS.Tests.Common.SolvedProblems.Fixtures;
 using BeamOS.Tests.Common.Traits;
 using Riok.Mapperly.Abstractions;
@@ -10,6 +11,12 @@ namespace BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructure
 [Kassimali_MatrixAnalysisOfStructures2ndEd]
 public partial class Kassimali_Example8_4 : ModelFixture, IHasExpectedNodeResults
 {
+    public override SourceInfo SourceInfo { get; } =
+        new(
+            "Matrix Analysis Of Structures 2nd Edition by Kassimali",
+            FixtureSourceType.Textbook,
+            "Example 8.4"
+        );
     public static Kassimali_Example8_4 Instance { get; } = new();
     public static Guid IdStatic { get; } = new("ddb1e60a-df17-48b0-810a-60e425acf640");
     public override Guid Id => IdStatic;

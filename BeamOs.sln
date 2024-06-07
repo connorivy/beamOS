@@ -52,7 +52,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOs.Domain.IntegrationTe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOs.Api.IntegrationTests", "tests\StructuralAnalysis\BeamOs.Api.IntegrationTests\BeamOs.Api.IntegrationTests.csproj", "{7F677B7F-7F65-40D0-8420-A446C225F832}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.Tests.TestRunner", "tests\BeamOs.Tests.TestRunner\BeamOs.Tests.TestRunner.csproj", "{A6627A57-F87E-4A33-8C8F-A919764D0B7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOs.Tests.TestRunner", "tests\BeamOs.Tests.TestRunner\BeamOs.Tests.TestRunner.csproj", "{A6627A57-F87E-4A33-8C8F-A919764D0B7B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

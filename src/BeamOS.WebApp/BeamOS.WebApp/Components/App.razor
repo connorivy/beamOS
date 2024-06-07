@@ -15,11 +15,11 @@
     <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
     <link href="_content/CodeBeam.MudBlazor.Extensions/MudExtensions.min.css" rel="stylesheet" />
     @* https://github.com/MudBlazor/MudBlazor/issues/7805 *@
-    <HeadOutlet @rendermode="InteractiveAuto"/>
+    <HeadOutlet @rendermode="InteractiveWebAssembly" />
 </head>
 
 <body class="h-screen">
-    <Routes @rendermode="InteractiveAuto" />
+    <Routes @rendermode="InteractiveWebAssembly" />
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
     <script src="_content/CodeBeam.MudBlazor.Extensions/MudExtensions.min.js"></script>
     <script src="_framework/blazor.web.js"></script>

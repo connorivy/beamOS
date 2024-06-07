@@ -11,7 +11,8 @@ public class Element1dFixture(
     NodeFixture endNode,
     MaterialFixture material,
     SectionProfileFixture sectionProfile,
-    UnitSettings unitSettings
+    UnitSettings unitSettings,
+    string? elementName = null
 ) : FixtureBase, IModelMember, ITestFixtureDisplayable
 {
     public ModelFixture Model { get; } = model;
@@ -27,6 +28,9 @@ public class Element1dFixture(
     /// counter-clockwise rotation in radians when looking in the negative (local) x direction
     /// </summary>
     public Angle SectionProfileRotation { get; init; }
+    public string? ElementName { get; } = elementName;
+
+    public SourceInfo SourceInfo => this.Model.SourceInfo with { ElementName = this.ElementName };
 
     public async Task Display(IEditorApiAlpha editorApiAlpha)
     {

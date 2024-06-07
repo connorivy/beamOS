@@ -7,6 +7,7 @@
     <MicrosoftExtensionsVersion>8.0.0</MicrosoftExtensionsVersion>
     <EfVersion>8.0.0</EfVersion>
     <FastEndpointVersion>5.25.0</FastEndpointVersion>
+    <FluxorVersion>6.0.0-Beta2</FluxorVersion>
   </PropertyGroup>
   <ItemGroup>
     <!-- ASP.NET -->
@@ -26,6 +27,10 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="$(EfVersion)" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(EfVersion)" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="$(EfVersion)" />
+    <!-- Fluxor -->
+    <PackageVersion Include="Fluxor" Version="$(FluxorVersion)" />
+    <PackageVersion Include="Fluxor.Blazor.Web" Version="$(FluxorVersion)" />
+    <PackageVersion Include="Fluxor.Blazor.Web.ReduxDevTools" Version="$(FluxorVersion)" />
     <!--Microsoft Extensions-->
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Http" Version="$(MicrosoftExtensionsVersion)" />
