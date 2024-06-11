@@ -2,7 +2,7 @@
 <MudSimpleTable Dense="true" Class="w-max">
         <thead>
             <th colspan="2">
-                @TestInfo?.MethodInfo.Name
+                Problem Source Information
             </th>
         </thead>
         <tbody>
@@ -11,7 +11,7 @@
                     Source Name:
                 </td>
                 <td>
-                    @Displayable?.SourceInfo.SourceName
+                    @SourceInfo.SourceName
                 </td>
             </tr>
             <tr>
@@ -19,7 +19,7 @@
                     Source Type:
                 </td>
                 <td>
-                    @Displayable?.SourceInfo.SourceType
+                    @SourceInfo.SourceType
                 </td>
             </tr>
             <tr>
@@ -27,7 +27,7 @@
                     Model Name:
                 </td>
                 <td>
-                    @Displayable?.SourceInfo.ModelName
+                    @SourceInfo.ModelName
                 </td>
             </tr>
             <tr>
@@ -35,7 +35,7 @@
                     Element Name:
                 </td>
                 <td>
-                    @Displayable?.SourceInfo.ElementName
+                    @SourceInfo.ElementName
                 </td>
             </tr>
         </tbody>

@@ -15,7 +15,9 @@ public partial class Kassimali_Example8_4 : ModelFixture, IHasExpectedNodeResult
         new(
             "Matrix Analysis Of Structures 2nd Edition by Kassimali",
             FixtureSourceType.Textbook,
-            "Example 8.4"
+            "Example 8.4",
+            null,
+            "https://dokumen.pub/matrix-analysis-of-structures-3nbsped-9780357448304.html#English"
         );
     public static Kassimali_Example8_4 Instance { get; } = new();
     public static Guid IdStatic { get; } = new("ddb1e60a-df17-48b0-810a-60e425acf640");

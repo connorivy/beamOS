@@ -3,6 +3,7 @@
 //using BeamOS.PhysicalModel.Client;
 using BeamOs.ApiClient;
 using BeamOS.WebApp.Client;
+using BeamOS.WebApp.Client.Features.TestExplorer;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;

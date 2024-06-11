@@ -27,5 +27,6 @@ public static class DependencyInjection
         });
 
         _ = services.AddSingleton<TestInfoProvider>();
+        _ = services.AddSingleton<TestInfoStateProvider>();
     }
 }

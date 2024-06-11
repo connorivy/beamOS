@@ -8,12 +8,21 @@ public interface IHasSourceInfo
 public enum FixtureSourceType
 {
     Undefined = 0,
-    Textbook = 1,
+    ExampleProblem = 1,
+    ExampleProblemElement = 2,
+    Textbook = 3,
 }
 
 public record SourceInfo(
     string SourceName,
     FixtureSourceType SourceType,
     string? ModelName,
-    string? ElementName = null
+    string? ElementName = null,
+    string? SourceLink = null
+);
+
+public record SourceInfo2(
+    string SourceName,
+    FixtureSourceType SourceType,
+    SourceInfo2? SourceOfSource = null
 );

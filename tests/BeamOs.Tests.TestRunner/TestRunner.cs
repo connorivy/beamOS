@@ -1,37 +1,10 @@
-using System.Reflection;
 using BeamOS.Tests.Common;
-using BeamOS.Tests.Common.Interfaces;
 
 namespace BeamOs.Tests.TestRunner;
 
-public class TestInfo
+public static class TestRunner
 {
-    public TestInfo(
-        Type testClassType,
-        object[] testData,
-        MethodInfo methodInfo,
-        Dictionary<string, string[]> traitNameToValueDict
-    )
-    {
-        this.TestData = testData;
-        this.MethodInfo = methodInfo;
-        this.TestClassType = testClassType;
-        this.TraitNameToValueDict = traitNameToValueDict;
-        this.Id = $"{testClassType.FullName}.{methodInfo.Name}";
-    }
-
-    public string Id { get; }
-    public object[] TestData { get; }
-    public MethodInfo MethodInfo { get; }
-    public Type TestClassType { get; }
-    public Dictionary<string, string[]> TraitNameToValueDict { get; }
-
-    public ITestFixtureDisplayable? GetDisplayable() =>
-        this.TestData.FirstOrDefault() as ITestFixtureDisplayable;
-
-    public SourceInfo? SourceInfo => this.GetDisplayable()?.SourceInfo;
-
-    public async Task<TestResult> RunTest()
+    public static async Task<TestResult> Run(TestInfo testInfo)
     {
         TaskCompletionSource<TestResult> tcs = new();
         TestResult? result = null;
@@ -51,7 +24,7 @@ public class TestInfo
 
         try
         {
-            await this.RunAndThrow();
+            await RunTest(testInfo);
             tcs.SetResult(result ?? throw new Exception("Result was unset"));
         }
         catch (Xunit.SkipException skipEx)
@@ -72,13 +45,11 @@ public class TestInfo
         return await tcs.Task;
     }
 
-    private async Task RunAndThrow()
+    private static async Task RunTest(TestInfo testInfo)
     {
-        // todo : will fail for tests with constructor
-        object? test = this.MethodInfo.Invoke(
-            Activator.CreateInstance(this.TestClassType),
-            this.TestData
-        );
+        object? test = testInfo
+            .MethodInfo
+            .Invoke(Activator.CreateInstance(testInfo.TestClassType), testInfo.TestData);
         if (test is Task t)
         {
             await t.ConfigureAwait(false);

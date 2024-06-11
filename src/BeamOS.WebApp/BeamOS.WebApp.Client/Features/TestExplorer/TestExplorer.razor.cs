@@ -7,6 +7,7 @@ using BeamOS.WebApp.Client.Pages;
 using Fluxor;
 using Fluxor.Blazor.Web.Components;
 using Microsoft.AspNetCore.Components;
+using static BeamOS.WebApp.Client.Features.TestExplorer.DetailedTestResultsView;
 
 namespace BeamOS.WebApp.Client.Features.TestExplorer;
 
@@ -21,21 +22,27 @@ public partial class TestExplorer : FluxorComponent
     [Inject]
     private TestInfoProvider TestInfoProvider { get; init; }
 
+    [Inject]
+    private TestInfoStateProvider TestInfoStateProvider { get; init; }
+
     private bool open = true;
     private EditorComponent? editorComponent;
-    private string? nameOfAssertionResult { get; set; }
 
-    public double[] ExpectedValues { get; set; } = [];
-    public double[]? CalculatedValues { get; set; }
+    private DetailedTestResultsView DetailedTestResultsView { get; }
 
-    private double? GetDifferenceOrNull(double expected, double? calculated)
-    {
-        if (calculated is not double typedCalculated)
-        {
-            return null;
-        }
-        return Math.Round(expected - typedCalculated, 5);
-    }
+    //private string? nameOfAssertionResult { get; set; }
+
+    //public double[] ExpectedValues { get; set; } = [];
+    //public double[]? CalculatedValues { get; set; }
+
+    //private double? GetDifferenceOrNull(double expected, double? calculated)
+    //{
+    //    if (calculated is not double typedCalculated)
+    //    {
+    //        return null;
+    //    }
+    //    return Math.Round(expected - typedCalculated, 5);
+    //}
 
     string searchTerm = "";
     TestInfo[] testInfos => this.TestInfoProvider.TestInfos;
@@ -50,7 +57,13 @@ public partial class TestExplorer : FluxorComponent
 
     private async Task OnSelectedTestInfoChanged(TestInfo? testInfo)
     {
-        ITestFixtureDisplayable? displayable = testInfo?.GetDisplayable();
+        if (testInfo is null)
+        {
+            await this.editorComponent.EditorApiAlpha.ClearAsync();
+            return;
+        }
+
+        ITestFixtureDisplayable? displayable = testInfo.GetDisplayable();
         if (displayable != this.TestExplorerState.Value.SelectedTestInfo?.GetDisplayable())
         {
             await this.editorComponent.EditorApiAlpha.ClearAsync();
@@ -60,34 +73,17 @@ public partial class TestExplorer : FluxorComponent
             }
         }
 
-        Asserter.DoubleArrayAssertedEqual += this.OnDoubleArrayAssertedEqual;
-        try
-        {
-            await testInfo.RunTest();
-        }
-        finally
-        {
-            Asserter.DoubleArrayAssertedEqual -= this.OnDoubleArrayAssertedEqual;
-        }
+        this.Dispatcher.Dispatch(new ChangeSelectedTestInfoAction(testInfo));
+        this.Dispatcher.Dispatch(new TestExecutionBegun());
 
-        ChangeSelectedTestInfoAction action = new(testInfo);
-        this.Dispatcher.Dispatch(action);
+        TestResult result = await this.TestInfoStateProvider.GetOrComputeTestResult(testInfo);
+
+        this.Dispatcher.Dispatch(new TestExecutionCompleted(result));
     }
 
     private void OnSelectedTraitChanged(IEnumerable<string> selectedTraits)
     {
         ChangeSelectedTraitAction action = new(selectedTraits.First());
         this.Dispatcher.Dispatch(action);
-    }
-
-    private void OnDoubleArrayAssertedEqual(
-        object? _,
-        ComparedObjectEventArgs<double[]> comparedObjectEventArgs
-    )
-    {
-        this.ExpectedValues = comparedObjectEventArgs.Expected;
-        this.CalculatedValues = comparedObjectEventArgs.Calculated;
-        this.nameOfAssertionResult = comparedObjectEventArgs.ComparedObjectName;
-        this.StateHasChanged();
     }
 }

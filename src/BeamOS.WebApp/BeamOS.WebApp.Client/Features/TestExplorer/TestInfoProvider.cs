@@ -1,3 +1,4 @@
+using BeamOS.Tests.Common.Interfaces;
 using BeamOs.Tests.TestRunner;
 
 namespace BeamOS.WebApp.Client.Features.TestExplorer;
@@ -6,6 +7,7 @@ public class TestInfoProvider
 {
     public TestInfo[] TestInfos { get; } = [];
     public Dictionary<string, string[]> AllTraits { get; } = [];
+    public Dictionary<string, string[]> SourceNameToModelNameDict { get; }
 
     //private const string defaultTrait = ProblemSourceAttribute.TRAIT_NAME;
 
@@ -27,5 +29,43 @@ public class TestInfoProvider
                     .ToArray()
             );
         }
+        this.SourceNameToModelNameDict = CreateSourceNameToModelNamesDict(
+            this.TestInfos.Select(t => t.SourceInfo)
+        );
+    }
+
+    private static Dictionary<string, string[]> CreateSourceNameToModelNamesDict(
+        IEnumerable<SourceInfo?> sourceInfos
+    )
+    {
+        Dictionary<string, HashSet<string>> sourceNameToModelNameDict = [];
+        foreach (SourceInfo? sourceInfo in sourceInfos)
+        {
+            if (sourceInfo is null)
+            {
+                continue;
+            }
+
+            if (
+                !sourceNameToModelNameDict.TryGetValue(
+                    sourceInfo.SourceName,
+                    out HashSet<string>? modelNames
+                )
+            )
+            {
+                modelNames =  [];
+                sourceNameToModelNameDict.Add(sourceInfo.SourceName, modelNames);
+            }
+
+            if (sourceInfo.ModelName is not null)
+            {
+                _ = modelNames.Add(sourceInfo.ModelName);
+            }
+        }
+
+        return sourceNameToModelNameDict.ToDictionary(
+            dict => dict.Key,
+            dict => dict.Value.ToArray()
+        );
     }
 }

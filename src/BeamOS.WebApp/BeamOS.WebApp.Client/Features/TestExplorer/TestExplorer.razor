@@ -32,15 +32,30 @@
                         <MudListSubheader>
                             <MudTextField @bind-Value="@searchTerm" AdornmentIcon="@Icons.Material.Filled.Brush"
                                           Adornment="Adornment.End" Immediate="true" Variant="Variant.Outlined" />
-                        <MudSelect T="string" Value="selectedTrait" SelectedValuesChanged="OnSelectedTraitChanged" Label="Pizza" Variant="Variant.Filled" AnchorOrigin="Origin.BottomCenter">
-                            @foreach (var trait in TestInfoProvider.AllTraits.Keys)
-                                {
-                                    <MudSelectItem Value=@trait />
-                                }
-                            </MudSelect>
                         </MudListSubheader>
 
-                    @foreach (var trait in TestInfoProvider.AllTraits.GetValueOrDefault(selectedTrait) ?? [])
+                    @foreach (var kvp in TestInfoProvider.SourceNameToModelNameDict)
+                    {
+                        <MudListItem Icon="@Icons.Material.Filled.Book" Text="@kvp.Key" Expanded="true">
+                            <NestedList>
+                                @foreach (var modelName in kvp.Value)
+                                {
+                                    <MudListItem Icon="@Icons.Material.Outlined.Check" Text="@modelName">
+                                        <NestedList>
+                                            @foreach (var testInfo in TestInfoProvider.TestInfos.Where(t => t.SourceInfo?.SourceName == kvp.Key && t.SourceInfo.ModelName == modelName))
+                                            {
+                                                <MudListItem T="TestInfo" Icon="@Icons.Material.Outlined.Check" Value="@testInfo">
+                                                    @testInfo.MethodInfo.Name
+                                                </MudListItem>
+                                            }
+                                        </NestedList>
+                                    </MudListItem>
+                                }
+                            </NestedList>
+                        </MudListItem>
+                    }
+
+                    @* @foreach (var trait in TestInfoProvider.AllTraits.GetValueOrDefault(selectedTrait) ?? [])
                         {
                             <MudListItem Icon="@Icons.Material.Filled.Inbox" Text="@trait" Expanded="true">
                                 <NestedList>
@@ -52,7 +67,7 @@
                                     }
                                 </NestedList>
                             </MudListItem>
-                        }
+                        } *@
                     </MudList>
                 </MudContainer>
             @* </MudDrawer> *@
@@ -60,43 +75,17 @@
         <EndContent>
             <div class="w-full h-full relative">
                 <EditorComponent @ref="editorComponent" Class="h-full" />
-                <MudContainer MaxWidth="MaxWidth.False" Class="absolute bottom-0 w-full max-h-[50%]">
-                    <TestInfoCompactView TestInfo="@TestExplorerState.Value.SelectedTestInfo"/>
+                <MudStack Row="true" Class="absolute bottom-0 w-full max-h-[40%] p-4 pointer-events-none">
+                    @if (@TestExplorerState.Value.SelectedTestInfo?.GetDisplayable()?.SourceInfo is SourceInfo sourceInfo)
+                    {
+                        <SourceInfoView SourceInfo="@sourceInfo"/>
+                    }
+                    @if (@TestExplorerState.Value.SelectedTestInfo is TestInfo testInfo)
+                    {
+                        <DetailedTestResultsView />
+                    }
                     <MudSpacer></MudSpacer>
-                    <MudContainer MaxWidth="MaxWidth.Medium" Class="h-full overflow-hide">
-                        <MudSimpleTable Striped="true" Dense="true" Class="my-4 mx-4 h-full overflow-scroll">
-                        <thead class="font-bold">
-                            <tr>
-                                <th class="font-bold">
-                                    Calculated @nameOfAssertionResult
-                                </th>
-                                <th>
-                                    Expected @nameOfAssertionResult
-                                </th>
-                                <th class="font-bold">
-                                    Difference
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @for (int i = 0; i < ExpectedValues.Length; i++)
-                            {
-                                <tr>
-                                    <td>@CalculatedValues?.ElementAt(i)</td>
-                                    <td>@ExpectedValues[i]</td>
-                                    <th>
-                                        @(@GetDifferenceOrNull(
-                                            @ExpectedValues[i],
-                                            @CalculatedValues?.ElementAt(i))?
-                                            .ToString() ?? "N/A")
-                                    </th>
-                                </tr>
-                            }
-                        </tbody>
-                    </MudSimpleTable>
-                    </MudContainer>
-                    <MudSpacer></MudSpacer>
-                </MudContainer>
+                </MudStack>
             </div>
         </EndContent>
     </MudSplitter>
