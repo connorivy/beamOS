@@ -50,6 +50,9 @@ public partial class TestExplorer : FluxorComponent
     const string defaultTrait = ProblemSourceAttribute.TRAIT_NAME;
     string selectedTrait => this.TestExplorerState.Value.SelectedTrait ?? defaultTrait;
 
+    private readonly string splitterContentClass = $"s{Guid.NewGuid()}";
+    private double dimension = 20;
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
