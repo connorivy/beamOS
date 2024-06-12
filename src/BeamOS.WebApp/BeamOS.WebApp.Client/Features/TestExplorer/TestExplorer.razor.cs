@@ -46,16 +46,54 @@ public partial class TestExplorer : FluxorComponent
 
     string searchTerm = "";
     TestInfo[] testInfos => this.TestInfoProvider.TestInfos;
-    TestInfo? selectedTestInfo;
     const string defaultTrait = ProblemSourceAttribute.TRAIT_NAME;
     string selectedTrait => this.TestExplorerState.Value.SelectedTrait ?? defaultTrait;
 
     private readonly string splitterContentClass = $"s{Guid.NewGuid()}";
     private double dimension = 20;
 
+    private bool isLoadingAssertionResults;
+    private string? ComparedValueName { get; set; }
+    private AssertionResult<double[]>? AssertionResultArray { get; set; }
+    private AssertionResult<double[,]>? AssertionResultMatrix { get; set; }
+
+    private void ResetAssertionResults()
+    {
+        this.AssertionResultArray = null;
+        this.AssertionResultMatrix = null;
+        this.ComparedValueName = null;
+    }
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
+        this.SubscribeToAction<TestExecutionBegun>(_ => this.isLoadingAssertionResults = true);
+        this.SubscribeToAction<TestExecutionCompleted>(arg =>
+        {
+            switch (arg.Result)
+            {
+                case TestResult<double[]> testResultDoubleArray:
+                    this.ResetAssertionResults();
+                    this.AssertionResultArray = new(
+                        testResultDoubleArray.ExpectedValue,
+                        testResultDoubleArray.CalculatedValue
+                    );
+                    this.ComparedValueName = testResultDoubleArray.ComparedValueName;
+                    break;
+                case TestResult<double[,]> testResultDoubleMatrix:
+                    this.ResetAssertionResults();
+                    this.AssertionResultMatrix = new(
+                        testResultDoubleMatrix.ExpectedValue,
+                        testResultDoubleMatrix.CalculatedValue
+                    );
+                    this.ComparedValueName = testResultDoubleMatrix.ComparedValueName;
+                    break;
+                default:
+                    this.ResetAssertionResults();
+                    break;
+            }
+            this.isLoadingAssertionResults = false;
+        });
     }
 
     private async Task OnSelectedTestInfoChanged(TestInfo? testInfo)

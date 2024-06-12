@@ -1,0 +1,68 @@
+<MudGrid Class="w-max max-h-full pointer-events-auto m-0">
+    <MudSimpleTable Dense="true" Class="w-max max-h-full pointer-events-auto">
+        <thead class="font-bold">
+            <tr>
+                <th colspan="@AssertionResultMatrix.ExpectedValue.GetLength(1)" class="justify-center center-content">
+                    Expected @ComparedValueName
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int rowIndex = 0; rowIndex < AssertionResultMatrix.ExpectedValue.GetLength(0); rowIndex++)
+            {
+                <tr>
+                    @for (int colIndex = 0; colIndex < AssertionResultMatrix.ExpectedValue.GetLength(1); colIndex++)
+                    {
+                        <td class="!px-2 !py-0 border-none">
+                            @AssertionResultMatrix.ExpectedValue[rowIndex, colIndex]
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </MudSimpleTable>
+    <MudSimpleTable Dense="true" Class="w-max max-h-full pointer-events-auto">
+        <thead class="font-bold">
+            <tr>
+                <th colspan="@AssertionResultMatrix.ExpectedValue.GetLength(1)" class="justify-center center-content">
+                    Expected @ComparedValueName
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int rowIndex = 0; rowIndex < AssertionResultMatrix.ExpectedValue.GetLength(0); rowIndex++)
+            {
+                <tr>
+                    @for (int colIndex = 0; colIndex < AssertionResultMatrix.ExpectedValue.GetLength(1); colIndex++)
+                    {
+                        <td class="!px-2 !py-0 border-none">
+                            @AssertionResultMatrix.ExpectedValue[rowIndex, colIndex]
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </MudSimpleTable>
+    <MudSimpleTable Dense="true" Class="w-max max-h-full pointer-events-auto">
+        <thead class="font-bold">
+            <tr>
+                <th colspan="@AssertionResultMatrix.ExpectedValue.GetLength(1)" class="justify-center center-content">
+                    Expected @ComparedValueName
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int rowIndex = 0; rowIndex < AssertionResultMatrix.ExpectedValue.GetLength(0); rowIndex++)
+            {
+                <tr>
+                    @for (int colIndex = 0; colIndex < AssertionResultMatrix.ExpectedValue.GetLength(1); colIndex++)
+                    {
+                        <td class="!px-2 !py-0 border-none">
+                            @AssertionResultMatrix.ExpectedValue[rowIndex, colIndex]
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </MudSimpleTable>
+</MudGrid>
