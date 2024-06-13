@@ -127,4 +127,9 @@ public partial class TestExplorer : FluxorComponent
         ChangeSelectedTraitAction action = new(selectedTraits.First());
         this.Dispatcher.Dispatch(action);
     }
+
+    private bool SelectedTestHasResults()
+    {
+        return this.AssertionResultArray is not null || this.AssertionResultMatrix is not null;
+    }
 }

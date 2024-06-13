@@ -1,7 +1,7 @@
 @* <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="h-full relative"> *@
 <MudSimpleTable Dense="true" Class="w-max">
         <thead>
-            <th colspan="2">
+            <th colspan="2" class="!font-bold">
                 Problem Source Information
             </th>
         </thead>
@@ -14,6 +14,17 @@
                     @SourceInfo.SourceName
                 </td>
             </tr>
+            @if (@SourceInfo.SourceLink is not null)
+            {
+                <tr>
+                    <td>
+                        Source Link:
+                    </td>
+                    <td class="overflow-clip">
+                        @SourceInfo.SourceLink
+                    </td>
+                </tr>
+            }
             <tr>
                 <td>
                     Source Type:
@@ -30,14 +41,17 @@
                     @SourceInfo.ModelName
                 </td>
             </tr>
-            <tr>
-                <td>
-                    Element Name:
-                </td>
-                <td>
-                    @SourceInfo.ElementName
-                </td>
-            </tr>
+            @if (@SourceInfo.ElementName is not null)
+            {
+                <tr>
+                    <td>
+                        Element Name:
+                    </td>
+                    <td>
+                        @SourceInfo.ElementName
+                    </td>
+                </tr>
+            }
         </tbody>
     </MudSimpleTable>
 @* </MudContainer> *@

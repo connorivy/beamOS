@@ -1,68 +1,29 @@
-<MudGrid Class="w-max max-h-full pointer-events-auto m-0">
-    <MudSimpleTable Dense="true" Class="w-max max-h-full pointer-events-auto">
-        <thead class="font-bold">
-            <tr>
-                <th colspan="@AssertionResultMatrix.ExpectedValue.GetLength(1)" class="justify-center center-content">
-                    Expected @ComparedValueName
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @for (int rowIndex = 0; rowIndex < AssertionResultMatrix.ExpectedValue.GetLength(0); rowIndex++)
-            {
-                <tr>
-                    @for (int colIndex = 0; colIndex < AssertionResultMatrix.ExpectedValue.GetLength(1); colIndex++)
+<MudGrid Class="w-fit max-h-full m-0" Spacing="1">
+    @foreach (var (header, matrix) in ExpectedCalculatedDifferenceEnumerable)
+    {
+        <MudItem sm="12" xl="4">
+            <MudSimpleTable Dense="true" Class="w-max max-h-full pointer-events-auto">
+                <thead class="font-bold">
+                    <tr>
+                        <th colspan="@matrix.GetLength(1)" class="justify-center center-content !font-bold">
+                            @header
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int rowIndex = 0; rowIndex < matrix.GetLength(0); rowIndex++)
                     {
-                        <td class="!px-2 !py-0 border-none">
-                            @AssertionResultMatrix.ExpectedValue[rowIndex, colIndex]
-                        </td>
+                        <tr>
+                            @for (int colIndex = 0; colIndex < matrix.GetLength(1); colIndex++)
+                            {
+                                <td class="!px-2 !py-0 border-none">
+                                    @Math.Round(matrix[rowIndex, colIndex], 4)
+                                </td>
+                            }
+                        </tr>
                     }
-                </tr>
-            }
-        </tbody>
-    </MudSimpleTable>
-    <MudSimpleTable Dense="true" Class="w-max max-h-full pointer-events-auto">
-        <thead class="font-bold">
-            <tr>
-                <th colspan="@AssertionResultMatrix.ExpectedValue.GetLength(1)" class="justify-center center-content">
-                    Expected @ComparedValueName
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @for (int rowIndex = 0; rowIndex < AssertionResultMatrix.ExpectedValue.GetLength(0); rowIndex++)
-            {
-                <tr>
-                    @for (int colIndex = 0; colIndex < AssertionResultMatrix.ExpectedValue.GetLength(1); colIndex++)
-                    {
-                        <td class="!px-2 !py-0 border-none">
-                            @AssertionResultMatrix.ExpectedValue[rowIndex, colIndex]
-                        </td>
-                    }
-                </tr>
-            }
-        </tbody>
-    </MudSimpleTable>
-    <MudSimpleTable Dense="true" Class="w-max max-h-full pointer-events-auto">
-        <thead class="font-bold">
-            <tr>
-                <th colspan="@AssertionResultMatrix.ExpectedValue.GetLength(1)" class="justify-center center-content">
-                    Expected @ComparedValueName
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @for (int rowIndex = 0; rowIndex < AssertionResultMatrix.ExpectedValue.GetLength(0); rowIndex++)
-            {
-                <tr>
-                    @for (int colIndex = 0; colIndex < AssertionResultMatrix.ExpectedValue.GetLength(1); colIndex++)
-                    {
-                        <td class="!px-2 !py-0 border-none">
-                            @AssertionResultMatrix.ExpectedValue[rowIndex, colIndex]
-                        </td>
-                    }
-                </tr>
-            }
-        </tbody>
-    </MudSimpleTable>
+                </tbody>
+            </MudSimpleTable>
+        </MudItem>
+    }
 </MudGrid>

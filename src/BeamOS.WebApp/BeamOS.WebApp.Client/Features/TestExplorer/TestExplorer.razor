@@ -30,7 +30,7 @@
             <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="h-full pointer-events-auto">
                     <MudPaper Class="w-full h-full">
 
-                    <MudList T="TestInfo" SelectedValueChanged="OnSelectedTestInfoChanged">
+                    <MudList T="TestInfo" SelectedValueChanged="OnSelectedTestInfoChanged" Class="h-full overflow-scroll">
                         <MudListSubheader>
                             <MudTextField @bind-Value="@searchTerm" AdornmentIcon="@Icons.Material.Filled.Brush"
                                           Adornment="Adornment.End" Immediate="true" Variant="Variant.Outlined" />
@@ -64,20 +64,26 @@
         @if (@TestExplorerState.Value.SelectedTestInfo?.GetDisplayable()?.SourceInfo is SourceInfo sourceInfo)
         {
             <MudTabPanel Icon="@Icons.Material.Filled.Info" ToolTip="Solution Source Information">
-                <SourceInfoView SourceInfo="@sourceInfo"/>
+                <div class="h-fit">
+                    <SourceInfoView SourceInfo="@sourceInfo"/>
+                </div>
             </MudTabPanel>
         }
-        @if (@AssertionResultArray is not null)
+        @if (SelectedTestHasResults())
         {
             var iconAndCssColor = TestInfoStateProvider.GetIconAndCssColorRepresentingTestResult(TestExplorerState.Value.SelectedTestInfo);
             <MudTabPanel Style="" Icon="@iconAndCssColor.Item1" Class="@($"mud-{iconAndCssColor.Item2.ToString().ToLower()}-text")" ToolTip="Test Results">
-                <AssertionResultVectorView AssertionResultArray="@AssertionResultArray" ComparedValueName="@ComparedValueName"/>
-            </MudTabPanel>
-        }
-        else if (@AssertionResultMatrix is not null)
-        {
-            <MudTabPanel Text="Test Results" ToolTip="Test Results">
-                <AssertionResultMatrixView AssertionResultMatrix="@AssertionResultMatrix" ComparedValueName="@ComparedValueName"/>
+
+                <div class="h-fit">
+                @if (@AssertionResultArray is not null)
+                {
+                    <AssertionResultVectorView AssertionResultArray="@AssertionResultArray" ComparedValueName="@ComparedValueName"/>
+                }
+                else if (@AssertionResultMatrix is not null)
+                {
+                    <AssertionResultMatrixView AssertionResultMatrix="@AssertionResultMatrix" ComparedValueName="@ComparedValueName"/>
+                }
+                </div>
             </MudTabPanel>
         }
     </MudTabs>
@@ -141,5 +147,13 @@
 
     .mud-success-text svg {
         color: inherit;
+    }
+
+    .mud-tabs {
+        pointer-events: none;
+    }
+
+    .mud-tabs-tabbar {
+        pointer-events: auto;
     }
 </style>
