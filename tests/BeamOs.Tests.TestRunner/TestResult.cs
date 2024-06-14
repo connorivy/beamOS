@@ -17,3 +17,11 @@ public enum TestResultStatus
     Skipped,
     Success,
 }
+
+public enum TestProgressStatus
+{
+    Undefined = 0,
+    Finished,
+    InProgress,
+    NotStarted
+}

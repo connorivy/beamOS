@@ -42,13 +42,19 @@
                             <NestedList>
                                 @foreach (var modelName in kvp.Value)
                                 {
-                                    <MudListItem Icon="@Icons.Material.Outlined.Build" Text="@modelName">
+                                    <MudListItem Icon="@Icons.Material.Outlined.Build"  Text="@modelName">
                                         <NestedList>
-                                            @foreach (var testInfo in TestInfoProvider.TestInfos.Where(t => t.SourceInfo?.SourceName == kvp.Key && t.SourceInfo.ModelName == modelName))
+                                            @foreach (var testInfo in TestInfoProvider.TestInfos.Values.Where(t => t.SourceInfo?.SourceName == kvp.Key && t.SourceInfo.ModelName == modelName))
                                             {
-                                                var iconAndCssColor = TestInfoStateProvider.GetIconAndCssColorRepresentingTestResult(testInfo);
-                                                <MudListItem T="TestInfo" Icon="@iconAndCssColor.Item1" IconColor="@iconAndCssColor.Item2" Value="@testInfo">
-                                                    @testInfo.MethodInfo.Name
+                                                <MudListItem T="TestInfo" Value="@testInfo">
+                                                    <ChildContent>
+                                                    <MudStack Row="true">
+                                                        <RunTestButton TestId="@testInfo.Id" />
+                                                        <MudText>
+                                                            @testInfo.MethodInfo.Name
+                                                        </MudText>
+                                                    </MudStack>
+                                                </ChildContent>
                                                 </MudListItem>
                                             }
                                         </NestedList>
@@ -63,7 +69,7 @@
         </MudTabPanel>
         @if (@TestExplorerState.Value.SelectedTestInfo?.GetDisplayable()?.SourceInfo is SourceInfo sourceInfo)
         {
-            <MudTabPanel Icon="@Icons.Material.Filled.Info" ToolTip="Solution Source Information">
+            <MudTabPanel Icon="@Icons.Material.Filled.Info" ToolTip="Test Source Information">
                 <div class="h-fit">
                     <SourceInfoView SourceInfo="@sourceInfo"/>
                 </div>
@@ -71,7 +77,7 @@
         }
         @if (SelectedTestHasResults())
         {
-            var iconAndCssColor = TestInfoStateProvider.GetIconAndCssColorRepresentingTestResult(TestExplorerState.Value.SelectedTestInfo);
+            var iconAndCssColor = TestInfoState.Value.GetIconAndCssColorRepresentingTestResult(TestExplorerState.Value.SelectedTestInfo);
             <MudTabPanel Style="" Icon="@iconAndCssColor.Item1" Class="@($"mud-{iconAndCssColor.Item2.ToString().ToLower()}-text")" ToolTip="Test Results">
 
                 <div class="h-fit">
@@ -87,57 +93,6 @@
             </MudTabPanel>
         }
     </MudTabs>
-    @* <MudSplitter  ClassContent="@splitterContentClass" EnableSlide="true" Class="h-full z-10 absolute top-0 pointer-events-none" @bind-Dimension=dimension EnableMargin=false>
-        <StartContent>
-                <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="h-full pointer-events-auto">
-                    <MudPaper Class="w-full h-full">
-
-                    <MudList T="TestInfo" SelectedValueChanged="OnSelectedTestInfoChanged">
-                        <MudListSubheader>
-                            <MudTextField @bind-Value="@searchTerm" AdornmentIcon="@Icons.Material.Filled.Brush"
-                                          Adornment="Adornment.End" Immediate="true" Variant="Variant.Outlined" />
-                        </MudListSubheader>
-
-                    @foreach (var kvp in TestInfoProvider.SourceNameToModelNameDict)
-                    {
-                        <MudListItem Icon="@Icons.Material.Filled.Book" Text="@kvp.Key" Expanded="true">
-                            <NestedList>
-                                @foreach (var modelName in kvp.Value)
-                                {
-                                    <MudListItem Icon="@Icons.Material.Outlined.Check" Text="@modelName">
-                                        <NestedList>
-                                            @foreach (var testInfo in TestInfoProvider.TestInfos.Where(t => t.SourceInfo?.SourceName == kvp.Key && t.SourceInfo.ModelName == modelName))
-                                            {
-                                                <MudListItem T="TestInfo" Icon="@Icons.Material.Outlined.Check" Value="@testInfo">
-                                                    @testInfo.MethodInfo.Name
-                                                </MudListItem>
-                                            }
-                                        </NestedList>
-                                    </MudListItem>
-                                }
-                            </NestedList>
-                        </MudListItem>
-                    }
-                    </MudList>
-                    </MudPaper>
-                </MudContainer>
-        </StartContent>
-        <EndContent>
-            <div class="w-full h-full relative">
-                <MudStack Row="true" Class="absolute bottom-0 w-full max-h-[40%] p-4">
-                    @if (@TestExplorerState.Value.SelectedTestInfo?.GetDisplayable()?.SourceInfo is SourceInfo sourceInfo)
-                    {
-                        <SourceInfoView SourceInfo="@sourceInfo"/>
-                    }
-                    @if (@TestExplorerState.Value.SelectedTestInfo is TestInfo testInfo)
-                    {
-                        <DetailedTestResultsView />
-                    }
-                    <MudSpacer></MudSpacer>
-                </MudStack>
-            </div>
-        </EndContent>
-    </MudSplitter> *@
 </MudContainer>
 
 <style>

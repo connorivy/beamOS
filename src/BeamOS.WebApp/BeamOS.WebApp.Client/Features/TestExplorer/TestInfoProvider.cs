@@ -5,7 +5,7 @@ namespace BeamOS.WebApp.Client.Features.TestExplorer;
 
 public class TestInfoProvider
 {
-    public TestInfo[] TestInfos { get; } = [];
+    public Dictionary<string, TestInfo> TestInfos { get; }
     public Dictionary<string, string[]> AllTraits { get; } = [];
     public Dictionary<string, string[]> SourceNameToModelNameDict { get; }
 
@@ -13,9 +13,10 @@ public class TestInfoProvider
 
     public TestInfoProvider()
     {
-        this.TestInfos = AssemblyScanning.GetAllTestInfo().ToArray();
+        this.TestInfos = AssemblyScanning.GetAllTestInfo().ToDictionary(t => t.Id, t => t);
 
         IEnumerable<string> traitKeys = this.TestInfos
+            .Values
             .SelectMany(i => i.TraitNameToValueDict.Keys)
             .Distinct();
 
@@ -24,13 +25,14 @@ public class TestInfoProvider
             this.AllTraits.Add(
                 key,
                 this.TestInfos
+                    .Values
                     .SelectMany(i => i.TraitNameToValueDict.GetValueOrDefault(key) ?? [])
                     .Distinct()
                     .ToArray()
             );
         }
         this.SourceNameToModelNameDict = CreateSourceNameToModelNamesDict(
-            this.TestInfos.Select(t => t.SourceInfo)
+            this.TestInfos.Values.Select(t => t.SourceInfo)
         );
     }
 

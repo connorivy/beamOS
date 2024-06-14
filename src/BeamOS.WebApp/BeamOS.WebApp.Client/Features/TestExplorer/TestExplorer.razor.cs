@@ -1,4 +1,3 @@
-using BeamOS.Tests.Common;
 using BeamOS.Tests.Common.Interfaces;
 using BeamOS.Tests.Common.Traits;
 using BeamOs.Tests.TestRunner;
@@ -7,7 +6,6 @@ using BeamOS.WebApp.Client.Pages;
 using Fluxor;
 using Fluxor.Blazor.Web.Components;
 using Microsoft.AspNetCore.Components;
-using static BeamOS.WebApp.Client.Features.TestExplorer.DetailedTestResultsView;
 
 namespace BeamOS.WebApp.Client.Features.TestExplorer;
 
@@ -23,12 +21,10 @@ public partial class TestExplorer : FluxorComponent
     private TestInfoProvider TestInfoProvider { get; init; }
 
     [Inject]
-    private TestInfoStateProvider TestInfoStateProvider { get; init; }
+    private IState<TestInfoState> TestInfoState { get; init; }
 
     private bool open = true;
     private EditorComponent? editorComponent;
-
-    private DetailedTestResultsView DetailedTestResultsView { get; }
 
     //private string? nameOfAssertionResult { get; set; }
 
@@ -45,7 +41,6 @@ public partial class TestExplorer : FluxorComponent
     //}
 
     string searchTerm = "";
-    TestInfo[] testInfos => this.TestInfoProvider.TestInfos;
     const string defaultTrait = ProblemSourceAttribute.TRAIT_NAME;
     string selectedTrait => this.TestExplorerState.Value.SelectedTrait ?? defaultTrait;
 
@@ -67,9 +62,14 @@ public partial class TestExplorer : FluxorComponent
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        this.SubscribeToAction<TestExecutionBegun>(_ => this.isLoadingAssertionResults = true);
-        this.SubscribeToAction<TestExecutionCompleted>(arg =>
+        this.SubscribeToAction<ExecutionTestAction>(_ => this.isLoadingAssertionResults = true);
+        this.SubscribeToAction<ExecutionTestActionResult>(arg =>
         {
+            if (arg.TestId != this.TestExplorerState.Value.SelectedTestInfo?.Id)
+            {
+                return;
+            }
+
             switch (arg.Result)
             {
                 case TestResult<double[]> testResultDoubleArray:
@@ -94,6 +94,11 @@ public partial class TestExplorer : FluxorComponent
             }
             this.isLoadingAssertionResults = false;
         });
+
+        //foreach (var testInfo in this.TestInfoProvider.TestInfos.Values)
+        //{
+        //    this.Dispatcher.Dispatch(new CreateSingleTestStateAction(testInfo.Id));
+        //}
     }
 
     private async Task OnSelectedTestInfoChanged(TestInfo? testInfo)
@@ -115,11 +120,12 @@ public partial class TestExplorer : FluxorComponent
         }
 
         this.Dispatcher.Dispatch(new ChangeSelectedTestInfoAction(testInfo));
-        this.Dispatcher.Dispatch(new TestExecutionBegun());
+        this.Dispatcher.Dispatch(new ExecutionTestAction(testInfo));
+        //this.Dispatcher.Dispatch(new TestExecutionBegun());
 
-        TestResult result = await this.TestInfoStateProvider.GetOrComputeTestResult(testInfo);
+        //TestResult result = await this.TestInfoStateProvider.GetOrComputeTestResult(testInfo);
 
-        this.Dispatcher.Dispatch(new TestExecutionCompleted(result));
+        //this.Dispatcher.Dispatch(new TestExecutionCompleted(result));
     }
 
     private void OnSelectedTraitChanged(IEnumerable<string> selectedTraits)

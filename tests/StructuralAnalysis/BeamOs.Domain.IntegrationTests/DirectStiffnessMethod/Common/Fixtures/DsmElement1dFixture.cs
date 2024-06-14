@@ -4,9 +4,12 @@ using BeamOS.WebApp.EditorApi;
 
 namespace BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Fixtures;
 
-public partial class DsmElement1dFixture(Element1dFixture fixture) : ITestFixtureDisplayable
+public partial class DsmElement1dFixture(Element1dFixture fixture)
+    : FixtureBase,
+        ITestFixtureDisplayable
 {
     public Element1dFixture Fixture { get; } = fixture;
+    public override Guid Id => this.Fixture.Id;
 
     public double[,]? ExpectedRotationMatrix { get; init; }
     public double[,]? ExpectedTransformationMatrix { get; init; }

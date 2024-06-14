@@ -1,6 +1,8 @@
 using System.Reflection;
+using System.Text;
 using BeamOS.Tests.Common;
 using BeamOS.Tests.Common.Interfaces;
+using BeamOS.Tests.Common.SolvedProblems.Fixtures;
 
 namespace BeamOs.Tests.TestRunner;
 
@@ -17,7 +19,24 @@ public class TestInfo
         this.MethodInfo = methodInfo;
         this.TestClassType = testClassType;
         this.TraitNameToValueDict = traitNameToValueDict;
-        this.Id = $"{testClassType.FullName}.{methodInfo.Name}";
+
+        StringBuilder sb = new();
+        sb.Append($"{testClassType.FullName}.{methodInfo.Name}");
+        if (testData.Length > 0)
+        {
+            if (testData.Length == 1 && testData[0] is FixtureBase fixture)
+            {
+                sb.Append($".{fixture.Id}");
+            }
+            else
+            {
+                foreach (var item in testData)
+                {
+                    sb.Append(item);
+                }
+            }
+        }
+        this.Id = sb.ToString();
     }
 
     public string Id { get; }
