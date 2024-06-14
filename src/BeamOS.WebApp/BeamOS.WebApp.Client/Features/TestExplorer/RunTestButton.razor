@@ -16,15 +16,15 @@ else if (this.SingleTestState.Value.TestProgressStatus == TestProgressStatus.Fin
     if (this.SingleTestState.Value.TestResult is null
         || this.SingleTestState.Value.TestResult.Status == TestResultStatus.Skipped)
     {
-        <MudFab Class="w-fit h-fit min-h-fit" StartIcon="@Icons.Material.Filled.Warning" IconColor="Color.Warning" />
+        <MudIcon Icon="@Icons.Material.Filled.Warning" Color="Color.Warning" />
     }
     else if (this.SingleTestState.Value.TestResult.Status == TestResultStatus.Success)
     {
-        <MudFab Class="w-fit h-fit min-h-fit" StartIcon="@Icons.Material.Filled.CheckCircle" IconColor="Color.Success" />
+        <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" />
     }
     else if (this.SingleTestState.Value.TestResult.Status == TestResultStatus.Failure)
     {
-        <MudFab Class="w-fit h-fit min-h-fit" StartIcon="@Icons.Material.Filled.Cancel" IconColor="Color.Error" />
+        <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" />
     }
 }
 else

@@ -3,10 +3,9 @@ using BeamOs.Domain.DirectStiffnessMethod;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Fixtures;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Mappers;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.SolvedProblems;
-using BeamOs.Domain.UnitTests.DirectStiffnessMethod.Common.Extensions;
 using BeamOs.Domain.UnitTests.DirectStiffnessMethod.Common.Factories;
+using BeamOS.Tests.Common;
 using BeamOS.Tests.Common.Traits;
-using MathNet.Numerics.LinearAlgebra;
 using UnitsNet;
 using UnitsNet.Units;
 
@@ -32,7 +31,12 @@ public partial class DsmElement1dTests
             )
             .ToArray();
 
-        stiffnessMatrix.AssertAlmostEqual(fixture.ExpectedLocalStiffnessMatrix, 1);
+        Asserter.AssertEqual(
+            "Local Stiffness Matrix",
+            fixture.ExpectedLocalStiffnessMatrix,
+            stiffnessMatrix,
+            1
+        );
     }
 
     [SkippableTheory]
@@ -52,7 +56,12 @@ public partial class DsmElement1dTests
             )
             .ToArray();
 
-        stiffnessMatrix.AssertAlmostEqual(fixture.ExpectedGlobalStiffnessMatrix, 1);
+        Asserter.AssertEqual(
+            "Global Stiffness Matrix",
+            fixture.ExpectedGlobalStiffnessMatrix,
+            stiffnessMatrix,
+            1
+        );
     }
 
     [Fact]
@@ -61,11 +70,13 @@ public partial class DsmElement1dTests
         //AnalyticalElement1D element = Element1DFactory.Create();
         DsmElement1d element = DsmElement1dFactory.CreateWithUnitSiValues();
 
-        Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix(
-            UnitSettings.SI.ForceUnit,
-            UnitSettings.SI.ForcePerLengthUnit,
-            UnitSettings.SI.TorqueUnit
-        );
+        double[,] stiffnessMatrix = element
+            .GetLocalStiffnessMatrix(
+                UnitSettings.SI.ForceUnit,
+                UnitSettings.SI.ForcePerLengthUnit,
+                UnitSettings.SI.TorqueUnit
+            )
+            .ToArray();
 
         double[,] expectedLocalStiffnessMatrix = new double[12, 12]
         {
@@ -83,7 +94,7 @@ public partial class DsmElement1dTests
             { 0, 6, 0, 0, 0, 2, 0, -6, 0, 0, 0, 4 },
         };
 
-        calculatedLocalStiffnessMatrix.ToArray().AssertAlmostEqual(expectedLocalStiffnessMatrix);
+        Asserter.AssertEqual("Stiffness Matrix", expectedLocalStiffnessMatrix, stiffnessMatrix);
     }
 
     [Fact]
@@ -97,11 +108,14 @@ public partial class DsmElement1dTests
             modulusOfElasticity: new(5, UnitSystem.SI)
         );
 
-        Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix(
-            UnitSettings.SI.ForceUnit,
-            UnitSettings.SI.ForcePerLengthUnit,
-            UnitSettings.SI.TorqueUnit
-        );
+        double[,] stiffnessMatrix = element
+            .GetLocalStiffnessMatrix(
+                UnitSettings.SI.ForceUnit,
+                UnitSettings.SI.ForcePerLengthUnit,
+                UnitSettings.SI.TorqueUnit
+            )
+            .ToArray();
+
         double[,] expectedLocalStiffnessMatrix = new double[12, 12]
         {
             { 5 * 1, 0, 0, 0, 0, 0, -5 * 1, 0, 0, 0, 0, 0 },
@@ -118,7 +132,7 @@ public partial class DsmElement1dTests
             { 0, 5 * 6, 0, 0, 0, 5 * 2, 0, -5 * 6, 0, 0, 0, 5 * 4 },
         };
 
-        calculatedLocalStiffnessMatrix.ToArray().AssertAlmostEqual(expectedLocalStiffnessMatrix);
+        Asserter.AssertEqual("Stiffness Matrix", expectedLocalStiffnessMatrix, stiffnessMatrix);
     }
 
     [Fact]
@@ -132,11 +146,14 @@ public partial class DsmElement1dTests
             modulusOfRigidity: new(5, UnitSystem.SI)
         );
 
-        Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix(
-            UnitSettings.SI.ForceUnit,
-            UnitSettings.SI.ForcePerLengthUnit,
-            UnitSettings.SI.TorqueUnit
-        );
+        double[,] stiffnessMatrix = element
+            .GetLocalStiffnessMatrix(
+                UnitSettings.SI.ForceUnit,
+                UnitSettings.SI.ForcePerLengthUnit,
+                UnitSettings.SI.TorqueUnit
+            )
+            .ToArray();
+
         double[,] expectedLocalStiffnessMatrix = new double[12, 12]
         {
             { 1, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0 },
@@ -153,7 +170,7 @@ public partial class DsmElement1dTests
             { 0, 6, 0, 0, 0, 2, 0, -6, 0, 0, 0, 4 },
         };
 
-        calculatedLocalStiffnessMatrix.ToArray().AssertAlmostEqual(expectedLocalStiffnessMatrix);
+        Asserter.AssertEqual("Stiffness Matrix", expectedLocalStiffnessMatrix, stiffnessMatrix);
     }
 
     [Fact]
@@ -165,11 +182,14 @@ public partial class DsmElement1dTests
             area: new(5, UnitSystem.SI)
         );
 
-        Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix(
-            UnitSettings.SI.ForceUnit,
-            UnitSettings.SI.ForcePerLengthUnit,
-            UnitSettings.SI.TorqueUnit
-        );
+        double[,] stiffnessMatrix = element
+            .GetLocalStiffnessMatrix(
+                UnitSettings.SI.ForceUnit,
+                UnitSettings.SI.ForcePerLengthUnit,
+                UnitSettings.SI.TorqueUnit
+            )
+            .ToArray();
+
         double[,] expectedLocalStiffnessMatrix = new double[12, 12]
         {
             { 5 * 1, 0, 0, 0, 0, 0, -5 * 1, 0, 0, 0, 0, 0 },
@@ -186,7 +206,7 @@ public partial class DsmElement1dTests
             { 0, 6, 0, 0, 0, 2, 0, -6, 0, 0, 0, 4 },
         };
 
-        calculatedLocalStiffnessMatrix.ToArray().AssertAlmostEqual(expectedLocalStiffnessMatrix);
+        Asserter.AssertEqual("Stiffness Matrix", expectedLocalStiffnessMatrix, stiffnessMatrix);
     }
 
     [Fact]
@@ -200,11 +220,14 @@ public partial class DsmElement1dTests
             strongAxisMomentOfInertia: new(5, UnitSystem.SI)
         );
 
-        Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix(
-            UnitSettings.SI.ForceUnit,
-            UnitSettings.SI.ForcePerLengthUnit,
-            UnitSettings.SI.TorqueUnit
-        );
+        double[,] stiffnessMatrix = element
+            .GetLocalStiffnessMatrix(
+                UnitSettings.SI.ForceUnit,
+                UnitSettings.SI.ForcePerLengthUnit,
+                UnitSettings.SI.TorqueUnit
+            )
+            .ToArray();
+
         double[,] expectedLocalStiffnessMatrix = new double[12, 12]
         {
             { 1, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0 },
@@ -221,7 +244,7 @@ public partial class DsmElement1dTests
             { 0, 5 * 6, 0, 0, 0, 5 * 2, 0, -5 * 6, 0, 0, 0, 5 * 4 },
         };
 
-        calculatedLocalStiffnessMatrix.ToArray().AssertAlmostEqual(expectedLocalStiffnessMatrix);
+        Asserter.AssertEqual("Stiffness Matrix", expectedLocalStiffnessMatrix, stiffnessMatrix);
     }
 
     [Fact]
@@ -235,11 +258,14 @@ public partial class DsmElement1dTests
             weakAxisMomentOfInertia: new(5, UnitSystem.SI)
         );
 
-        Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix(
-            UnitSettings.SI.ForceUnit,
-            UnitSettings.SI.ForcePerLengthUnit,
-            UnitSettings.SI.TorqueUnit
-        );
+        double[,] stiffnessMatrix = element
+            .GetLocalStiffnessMatrix(
+                UnitSettings.SI.ForceUnit,
+                UnitSettings.SI.ForcePerLengthUnit,
+                UnitSettings.SI.TorqueUnit
+            )
+            .ToArray();
+
         double[,] expectedLocalStiffnessMatrix = new double[12, 12]
         {
             { 1, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0 },
@@ -256,7 +282,7 @@ public partial class DsmElement1dTests
             { 0, 6, 0, 0, 0, 2, 0, -6, 0, 0, 0, 4 },
         };
 
-        calculatedLocalStiffnessMatrix.ToArray().AssertAlmostEqual(expectedLocalStiffnessMatrix);
+        Asserter.AssertEqual("Stiffness Matrix", expectedLocalStiffnessMatrix, stiffnessMatrix);
     }
 
     [Fact]
@@ -270,11 +296,14 @@ public partial class DsmElement1dTests
             polarMomentOfInertia: new(5, UnitSystem.SI)
         );
 
-        Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix(
-            UnitSettings.SI.ForceUnit,
-            UnitSettings.SI.ForcePerLengthUnit,
-            UnitSettings.SI.TorqueUnit
-        );
+        double[,] stiffnessMatrix = element
+            .GetLocalStiffnessMatrix(
+                UnitSettings.SI.ForceUnit,
+                UnitSettings.SI.ForcePerLengthUnit,
+                UnitSettings.SI.TorqueUnit
+            )
+            .ToArray();
+
         double[,] expectedLocalStiffnessMatrix = new double[12, 12]
         {
             { 1, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0 },
@@ -291,7 +320,7 @@ public partial class DsmElement1dTests
             { 0, 6, 0, 0, 0, 2, 0, -6, 0, 0, 0, 4 },
         };
 
-        calculatedLocalStiffnessMatrix.ToArray().AssertAlmostEqual(expectedLocalStiffnessMatrix);
+        Asserter.AssertEqual("Stiffness Matrix", expectedLocalStiffnessMatrix, stiffnessMatrix);
     }
 
     [Fact]
@@ -305,11 +334,14 @@ public partial class DsmElement1dTests
             baseLine: new(0, 0, 0, 5, 0, 0, LengthUnit.Meter)
         );
 
-        Matrix<double> calculatedLocalStiffnessMatrix = element.GetLocalStiffnessMatrix(
-            UnitSettings.SI.ForceUnit,
-            UnitSettings.SI.ForcePerLengthUnit,
-            UnitSettings.SI.TorqueUnit
-        );
+        double[,] stiffnessMatrix = element
+            .GetLocalStiffnessMatrix(
+                UnitSettings.SI.ForceUnit,
+                UnitSettings.SI.ForcePerLengthUnit,
+                UnitSettings.SI.TorqueUnit
+            )
+            .ToArray();
+
         double[,] expectedLocalStiffnessMatrix = new double[12, 12]
         {
             { 1 / 5.0, 0, 0, 0, 0, 0, -1 / 5.0, 0, 0, 0, 0, 0 },
@@ -326,6 +358,6 @@ public partial class DsmElement1dTests
             { 0, 6 / 25.0, 0, 0, 0, 2 / 5.0, 0, -6 / 25.0, 0, 0, 0, 4 / 5.0 },
         };
 
-        calculatedLocalStiffnessMatrix.ToArray().AssertAlmostEqual(expectedLocalStiffnessMatrix);
+        Asserter.AssertEqual("Stiffness Matrix", expectedLocalStiffnessMatrix, stiffnessMatrix);
     }
 }

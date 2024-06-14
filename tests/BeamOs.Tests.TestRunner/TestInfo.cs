@@ -73,11 +73,12 @@ public class TestInfo
             await this.RunAndThrow();
             tcs.SetResult(result ?? throw new Exception("Result was unset"));
         }
-        catch (Xunit.SkipException skipEx)
+        catch (TargetInvocationException ex) when (ex.InnerException is Xunit.SkipException skipEx)
         {
             tcs.SetResult(new TestResult(TestResultStatus.Skipped, skipEx.Message));
         }
-        catch (Xunit.Sdk.XunitException xEx)
+        catch (TargetInvocationException ex)
+            when (ex.InnerException is Xunit.Sdk.XunitException xEx)
         {
             tcs.SetResult(new TestResult(TestResultStatus.Failure, xEx.Message));
         }

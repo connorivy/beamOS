@@ -2,8 +2,8 @@ using BeamOs.Domain.DirectStiffnessMethod;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Fixtures;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Mappers;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.SolvedProblems;
-using BeamOs.Domain.UnitTests.DirectStiffnessMethod.Common.Extensions;
 using BeamOs.Domain.UnitTests.DirectStiffnessMethod.Common.Factories;
+using BeamOS.Tests.Common;
 using BeamOS.Tests.Common.Traits;
 using UnitsNet;
 using UnitsNet.Units;
@@ -29,7 +29,7 @@ public partial class DsmElement1dTests
             .GetRotationMatrix()
             .ToArray();
 
-        rotationMatrix.AssertAlmostEqual(fixture.ExpectedRotationMatrix);
+        Asserter.AssertEqual("Rotation Matrix", fixture.ExpectedRotationMatrix, rotationMatrix);
     }
 
     [Fact]
@@ -48,7 +48,9 @@ public partial class DsmElement1dTests
             { 0, 0, 1.0 },
         };
 
-        element.GetRotationMatrix().ToArray().AssertAlmostEqual(expectedRotationMatrix);
+        double[,] rotationMatrix = element.GetRotationMatrix().ToArray();
+
+        Asserter.AssertEqual("Rotation Matrix", expectedRotationMatrix, rotationMatrix);
     }
 
     [Theory]
@@ -84,7 +86,9 @@ public partial class DsmElement1dTests
             { 0, 0, 1 },
         };
 
-        element.GetRotationMatrix().ToArray().AssertAlmostEqual(expectedRotationMatrix);
+        double[,] rotationMatrix = element.GetRotationMatrix().ToArray();
+
+        Asserter.AssertEqual("Rotation Matrix", expectedRotationMatrix, rotationMatrix);
     }
 
     [Theory]
@@ -118,7 +122,9 @@ public partial class DsmElement1dTests
             { -cz / sqrtCx2Cz2, 0, cx / sqrtCx2Cz2 },
         };
 
-        element.GetRotationMatrix().ToArray().AssertAlmostEqual(expectedRotationMatrix);
+        double[,] rotationMatrix = element.GetRotationMatrix().ToArray();
+
+        Asserter.AssertEqual("Rotation Matrix", expectedRotationMatrix, rotationMatrix);
     }
 
     [Theory]
@@ -149,7 +155,9 @@ public partial class DsmElement1dTests
             { 0, -Math.Sin(rotation.Radians), Math.Cos(rotation.Radians) },
         };
 
-        element.GetRotationMatrix().ToArray().AssertAlmostEqual(expectedRotationMatrix);
+        double[,] rotationMatrix = element.GetRotationMatrix().ToArray();
+
+        Asserter.AssertEqual("Rotation Matrix", expectedRotationMatrix, rotationMatrix);
     }
 
     //[Fact]
@@ -202,7 +210,9 @@ public partial class DsmElement1dTests
             { 0, 0, 1 },
         };
 
-        element.GetRotationMatrix().ToArray().AssertAlmostEqual(expectedRotationMatrix);
+        double[,] rotationMatrix = element.GetRotationMatrix().ToArray();
+
+        Asserter.AssertEqual("Rotation Matrix", expectedRotationMatrix, rotationMatrix);
     }
 
     [Fact]
@@ -229,7 +239,9 @@ public partial class DsmElement1dTests
             { 1.0, 0, 0 }
         };
 
-        element.GetRotationMatrix().ToArray().AssertAlmostEqual(expectedRotationMatrix);
+        double[,] rotationMatrix = element.GetRotationMatrix().ToArray();
+
+        Asserter.AssertEqual("Rotation Matrix", expectedRotationMatrix, rotationMatrix);
     }
 
     [Fact]
@@ -260,7 +272,9 @@ public partial class DsmElement1dTests
             { -.5, 0, 0.86602540378 },
         };
 
-        element.GetRotationMatrix().ToArray().AssertAlmostEqual(expectedRotationMatrix);
+        double[,] rotationMatrix = element.GetRotationMatrix().ToArray();
+
+        Asserter.AssertEqual("Rotation Matrix", expectedRotationMatrix, rotationMatrix);
     }
 
     [Fact]
@@ -285,7 +299,9 @@ public partial class DsmElement1dTests
             { 0, 0, 1 },
         };
 
-        element.GetRotationMatrix().ToArray().AssertAlmostEqual(expectedRotationMatrix);
+        double[,] rotationMatrix = element.GetRotationMatrix().ToArray();
+
+        Asserter.AssertEqual("Rotation Matrix", expectedRotationMatrix, rotationMatrix);
     }
 
     [Fact]
@@ -313,7 +329,9 @@ public partial class DsmElement1dTests
             { -1.0, 0, 0 },
         };
 
-        element.GetRotationMatrix().ToArray().AssertAlmostEqual(expectedRotationMatrix);
+        double[,] rotationMatrix = element.GetRotationMatrix().ToArray();
+
+        Asserter.AssertEqual("Rotation Matrix", expectedRotationMatrix, rotationMatrix);
     }
 
     [Fact]
@@ -337,7 +355,9 @@ public partial class DsmElement1dTests
             { -0.70710678118, 0, 0.70710678118 },
         };
 
-        element.GetRotationMatrix().ToArray().AssertAlmostEqual(expectedRotationMatrix);
+        double[,] rotationMatrix = element.GetRotationMatrix().ToArray();
+
+        Asserter.AssertEqual("Rotation Matrix", expectedRotationMatrix, rotationMatrix);
     }
 
     [Fact]
@@ -364,6 +384,8 @@ public partial class DsmElement1dTests
             { -0.13343, -0.69909, 0.70249 },
         };
 
-        element.GetRotationMatrix().ToArray().AssertAlmostEqual(expectedRotationMatrix);
+        double[,] rotationMatrix = element.GetRotationMatrix().ToArray();
+
+        Asserter.AssertEqual("Rotation Matrix", expectedRotationMatrix, rotationMatrix);
     }
 }
