@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\src\BeamOs.StructuralAnalysis\BeamOs.Domain\BeamOs.Domain.csproj" />
     <ProjectReference Include="..\BeamOs.Domain.IntegrationTests\BeamOs.Domain.IntegrationTests.csproj" />
   </ItemGroup>
 

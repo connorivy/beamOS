@@ -10,7 +10,7 @@ public class TestInfo
 {
     public TestInfo(
         Type testClassType,
-        object[] testData,
+        object[]? testData,
         MethodInfo methodInfo,
         Dictionary<string, string[]> traitNameToValueDict
     )
@@ -22,7 +22,7 @@ public class TestInfo
 
         StringBuilder sb = new();
         sb.Append($"{testClassType.FullName}.{methodInfo.Name}");
-        if (testData.Length > 0)
+        if (testData?.Length > 0)
         {
             if (testData.Length == 1 && testData[0] is FixtureBase fixture)
             {
@@ -40,13 +40,13 @@ public class TestInfo
     }
 
     public string Id { get; }
-    public object[] TestData { get; }
+    public object[]? TestData { get; }
     public MethodInfo MethodInfo { get; }
     public Type TestClassType { get; }
     public Dictionary<string, string[]> TraitNameToValueDict { get; }
 
     public ITestFixtureDisplayable? GetDisplayable() =>
-        this.TestData.FirstOrDefault() as ITestFixtureDisplayable;
+        this.TestData?.FirstOrDefault() as ITestFixtureDisplayable;
 
     public SourceInfo? SourceInfo => this.GetDisplayable()?.SourceInfo;
 

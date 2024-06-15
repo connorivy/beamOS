@@ -3,6 +3,7 @@ using BeamOs.Api.IntegrationTests;
 using BeamOs.Api.UnitTests;
 using BeamOS.Tests.Common.Traits;
 using Microsoft.Extensions.DependencyInjection;
+using Xunit;
 using Xunit.Sdk;
 
 namespace BeamOs.Tests.TestRunner;
@@ -52,8 +53,7 @@ public static class AssemblyScanning
             {
                 foreach (var methodInfo in exportedType.GetMethods())
                 {
-                    TestInfo[] testInfo = GetTestInfoFromMethod(methodInfo, exportedType).ToArray();
-                    foreach (var test in testInfo)
+                    foreach (var test in GetTestInfoFromMethod(methodInfo, exportedType))
                     {
                         yield return test;
                     }
@@ -64,30 +64,54 @@ public static class AssemblyScanning
 
     public static IEnumerable<TestInfo> GetTestInfoFromMethod(MethodInfo methodInfo, Type classType)
     {
-        IEnumerable<DataAttribute> dataAttributes = methodInfo.GetCustomAttributes<DataAttribute>();
-        foreach (var dataAttribute in dataAttributes)
+        if (methodInfo.GetCustomAttribute<FactAttribute>() is null)
         {
-            object[][] data = dataAttribute.GetData(methodInfo).ToArray();
+            yield break;
+        }
 
-            foreach (var dataItem in data)
+        IEnumerable<DataAttribute> dataAttributes = methodInfo.GetCustomAttributes<DataAttribute>();
+        if (dataAttributes.Any())
+        {
+            foreach (var dataAttribute in dataAttributes)
             {
-                if (dataItem.Length == 0)
-                {
-                    continue;
-                }
+                object[][] data = dataAttribute.GetData(methodInfo).ToArray();
 
-                yield return new TestInfo(
-                    classType,
-                    dataItem,
-                    methodInfo,
-                    methodInfo
-                        .GetCustomAttributes<TestBaseAttribute>()
-                        .Concat(classType.GetCustomAttributes<TestBaseAttribute>())
-                        .Concat(dataItem[0].GetType().GetCustomAttributes<TestBaseAttribute>())
-                        .GroupBy(attr => attr.TraitName)
-                        .ToDictionary(g => g.Key, g => g.Select(attr => attr.TraitValue).ToArray())
-                );
+                foreach (var dataItem in data)
+                {
+                    if (dataItem.Length == 0)
+                    {
+                        continue;
+                    }
+
+                    yield return new TestInfo(
+                        classType,
+                        dataItem,
+                        methodInfo,
+                        methodInfo
+                            .GetCustomAttributes<TestBaseAttribute>()
+                            .Concat(classType.GetCustomAttributes<TestBaseAttribute>())
+                            .Concat(dataItem[0].GetType().GetCustomAttributes<TestBaseAttribute>())
+                            .GroupBy(attr => attr.TraitName)
+                            .ToDictionary(
+                                g => g.Key,
+                                g => g.Select(attr => attr.TraitValue).ToArray()
+                            )
+                    );
+                }
             }
+        }
+        else
+        {
+            yield return new TestInfo(
+                classType,
+                null,
+                methodInfo,
+                methodInfo
+                    .GetCustomAttributes<TestBaseAttribute>()
+                    .Concat(classType.GetCustomAttributes<TestBaseAttribute>())
+                    .GroupBy(attr => attr.TraitName)
+                    .ToDictionary(g => g.Key, g => g.Select(attr => attr.TraitValue).ToArray())
+            );
         }
     }
 
