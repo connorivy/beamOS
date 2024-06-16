@@ -16,7 +16,8 @@ public class PointLoad : AggregateRoot<PointLoadId>
         Force force,
         Vector3D direction,
         PointLoadId? id = null
-    ) : base(id ?? new())
+    )
+        : base(id ?? new())
     {
         this.ModelId = modelId;
         this.NodeId = nodeId;
