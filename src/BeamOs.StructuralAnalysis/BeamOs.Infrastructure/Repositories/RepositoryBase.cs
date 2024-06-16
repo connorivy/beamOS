@@ -32,4 +32,12 @@ internal abstract class RepositoryBase<TId, TEntity>(BeamOsStructuralDbContext d
     {
         _ = dbContext.Set<TEntity>().Update(aggregate);
     }
+
+    public async Task RemoveById(TId id, CancellationToken ct = default)
+    {
+        await dbContext
+            .Set<TEntity>()
+            .Where(e => e.Id == id)
+            .ExecuteDeleteAsync(cancellationToken: ct);
+    }
 }

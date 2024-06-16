@@ -1,3 +1,4 @@
+using BeamOs.Application.AnalyticalResults.NodeResults;
 using BeamOs.Application.Common.Interfaces;
 using BeamOs.Application.Common.Interfaces.Repositories;
 using BeamOs.Application.PhysicalModel.Element1dAggregate;
@@ -7,6 +8,7 @@ using BeamOs.Application.PhysicalModel.MomentLoads;
 using BeamOs.Application.PhysicalModel.Nodes.Interfaces;
 using BeamOs.Application.PhysicalModel.PointLoads;
 using BeamOs.Application.PhysicalModel.SectionProfiles;
+using BeamOs.Infrastructure.Repositories.AnalyticalResults.NodeResults;
 using BeamOs.Infrastructure.Repositories.PhysicalModel.Element1Ds;
 using BeamOs.Infrastructure.Repositories.PhysicalModel.Materials;
 using BeamOs.Infrastructure.Repositories.PhysicalModel.Models;
@@ -84,7 +86,8 @@ public static class DependencyInjection
             .AddScoped<IMomentLoadRepository, MomentLoadDbContextRepository>()
             .AddScoped<INodeRepository, NodeDbContextRepository>()
             .AddScoped<IPointLoadRepository, PointLoadDbContextRepository>()
-            .AddScoped<ISectionProfileRepository, SectionProfileDbContextRepository>();
+            .AddScoped<ISectionProfileRepository, SectionProfileDbContextRepository>()
+            .AddScoped<INodeResultRepository, NodeResultDbContextRepository>();
 
         _ = services.AddScoped<IUnitOfWork, UnitOfWork>();
 

@@ -7,7 +7,7 @@ public class CreateModelHydrated : Endpoint<ModelResponseHydrated, string>
 {
     public override void Configure()
     {
-        this.Post("models");
+        this.Post("models/hydrated");
     }
 
     public override Task HandleAsync(ModelResponseHydrated req, CancellationToken ct) =>

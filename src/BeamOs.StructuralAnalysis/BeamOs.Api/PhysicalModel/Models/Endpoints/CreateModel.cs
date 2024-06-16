@@ -14,7 +14,7 @@ public class CreateModel(
     CreateModelRequestMapper commandMapper,
     CreateModelCommandHandler createModelCommandHandler,
     ModelResponseMapper modelResponseMapper
-) : BeamOsFastEndpoint<CreateModelRequest, ModelResponse>(options)
+) : BeamOsFastEndpoint<CreateModelRequest, ModelResponse?>(options)
 {
     public override Http EndpointType => Http.POST;
     public override string Route => "/models";
@@ -36,14 +36,19 @@ public class CreateModel(
             )
         );
 
-    public override async Task<ModelResponse> ExecuteAsync(
+    public override async Task<ModelResponse?> ExecuteAsync(
         CreateModelRequest req,
         CancellationToken ct
     )
     {
         var command = commandMapper.Map(req);
 
-        Model model = await createModelCommandHandler.ExecuteAsync(command, ct);
+        Model? model = await createModelCommandHandler.ExecuteAsync(command, ct);
+
+        if (model is null)
+        {
+            return null;
+        }
 
         var response = modelResponseMapper.Map(model);
 

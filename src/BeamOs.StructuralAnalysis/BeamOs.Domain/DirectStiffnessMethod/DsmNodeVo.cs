@@ -35,15 +35,15 @@ public class DsmNodeVo(
 
         foreach (var linearLoad in this.PointLoads)
         {
-            forceAlongX += linearLoad.Force * linearLoad.NormalizedDirection.X;
-            forceAlongY += linearLoad.Force * linearLoad.NormalizedDirection.Y;
-            forceAlongZ += linearLoad.Force * linearLoad.NormalizedDirection.Z;
+            forceAlongX += linearLoad.Force * linearLoad.Direction.X;
+            forceAlongY += linearLoad.Force * linearLoad.Direction.Y;
+            forceAlongZ += linearLoad.Force * linearLoad.Direction.Z;
         }
         foreach (var momentLoad in this.MomentLoads)
         {
-            momentAboutX += momentLoad.Torque * momentLoad.NormalizedAxisDirection[0];
-            momentAboutY += momentLoad.Torque * momentLoad.NormalizedAxisDirection[1];
-            momentAboutZ += momentLoad.Torque * momentLoad.NormalizedAxisDirection[2];
+            momentAboutX += momentLoad.Torque * momentLoad.AxisDirection[0];
+            momentAboutY += momentLoad.Torque * momentLoad.AxisDirection[1];
+            momentAboutZ += momentLoad.Torque * momentLoad.AxisDirection[2];
         }
         return new(forceAlongX, forceAlongY, forceAlongZ, momentAboutX, momentAboutY, momentAboutZ);
     }
@@ -67,4 +67,7 @@ public class DsmNodeVo(
         yield return this.PointLoads;
         yield return this.MomentLoads;
     }
+
+    public DsmNodeVo()
+        : this(null, null, null) { }
 }

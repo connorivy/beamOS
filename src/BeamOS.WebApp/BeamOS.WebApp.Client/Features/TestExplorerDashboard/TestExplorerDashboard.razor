@@ -1,0 +1,121 @@
+@page "/test-explorer-dashboard"
+@using BeamOS.WebApp.Client.Features.TestExplorer
+@using BeamOS.WebApp.EditorApi
+@using BeamOs.ApiClient
+@using BeamOs.Contracts.AnalyticalResults.Model
+@using BeamOs.Contracts.Common
+@using BeamOs.Contracts.PhysicalModel.Model
+@using BeamOs.Contracts.PhysicalModel.Node
+@using BeamOS.Tests.Common.SolvedProblems
+
+@* @rendermode InteractiveWebAssembly *@
+
+@inject IJSRuntime js
+@inject TestInfoProvider TestInfoProvider
+
+<PageTitle>Test Explorer Dashboard</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.False" Class="h-full overflow-scroll">
+    <MudGrid>
+        <MudItem xs="12" md="6">
+            <MudText Typo="Typo.h3" GutterBottom="true">Are the results accurate?</MudText>
+            <MudText Typo="Typo.subtitle1" GutterBottom="true">
+                Accurate and reliable analysis results are the top priority for beamOS. Find out below how we ensure our results are correct.
+            </MudText>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-4">Get Started</MudButton>
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <MudImage Src="your-image-url-here" Alt="Hero Image" Width="300" />
+        </MudItem>
+    </MudGrid>
+    <MudGrid Spacing="3">
+        <MudItem xs="12" md="6">
+            <MudCard>
+                <MudCardContent>
+                    <MudText Typo="Typo.h6" GutterBottom="true" Class="text-center">Number Of Tests</MudText>
+                    <CounterAnimation TargetValue="@TestInfoProvider.TestInfos.Count" Class="text-center" />
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <MudCard>
+                <MudCardContent>
+                    <MudText Typo="Typo.h6" GutterBottom="true" Class="text-center">Code Coverage</MudText>
+                    <CounterAnimation TargetValue="75" AfterNumber=" %" Class="text-center" />
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+
+    <div class="scroll-section" id="section1">
+        <MudCard>
+            <MudCardContent>
+                <MudText Typo="Typo.h4" GutterBottom="true">Can I trust the results from beamOS?</MudText>
+                <MudText Typo="Typo.body1">This is the content for section 1. It should animate into view when you scroll down.</MudText>
+                <MudContainer Class="h-96" />
+                <MudContainer Class="h-96" />
+                <MudContainer Class="h-96" />
+            </MudCardContent>
+        </MudCard>
+    </div>
+    <div class="scroll-section" id="section2">
+        <MudCard>
+            <MudCardContent>
+                <MudText Typo="Typo.h4" GutterBottom="true">Section 2</MudText>
+                <MudText Typo="Typo.body1">This is the content for section 2. It should animate into view when you scroll down.</MudText>
+            </MudCardContent>
+        </MudCard>
+    </div>
+    <div class="scroll-section" id="section3">
+        <MudCard>
+            <MudCardContent>
+                <MudText Typo="Typo.h4" GutterBottom="true">Section 3</MudText>
+                <MudText Typo="Typo.body1">This is the content for section 3. It should animate into view when you scroll down.</MudText>
+            </MudCardContent>
+        </MudCard>
+    </div>
+</MudContainer>
+
+<style>
+    .scroll-section {
+        opacity: 0;
+        transform: translateY(50px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        margin-bottom: 20px;
+    }
+
+    .scroll-section.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+</style>
+
+<script>
+    // thank you, chat gpt
+    function initializeScrollAnimations() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                } else {
+                    entry.target.classList.remove('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.scroll-section').forEach(section => {
+            observer.observe(section);
+        });
+    }
+</script>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await js.InvokeVoidAsync("initializeScrollAnimations");
+        }
+    }
+}
+

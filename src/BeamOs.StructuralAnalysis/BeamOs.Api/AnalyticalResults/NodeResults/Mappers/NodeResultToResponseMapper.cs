@@ -6,9 +6,9 @@ using Riok.Mapperly.Abstractions;
 namespace BeamOs.Api.AnalyticalResults.NodeResults.Mappers;
 
 [Mapper]
-public partial class NodeResultToResponseMapper : AbstractMapper<NodeResult, AnalyticalNodeResponse>
+public partial class NodeResultToResponseMapper : AbstractMapper<NodeResult, NodeResultResponse>
 {
-    public override AnalyticalNodeResponse Map(NodeResult source) => this.ToResponse(source);
+    public override NodeResultResponse Map(NodeResult source) => this.ToResponse(source);
 
-    public partial AnalyticalNodeResponse ToResponse(NodeResult source);
+    public partial NodeResultResponse ToResponse(NodeResult source);
 }

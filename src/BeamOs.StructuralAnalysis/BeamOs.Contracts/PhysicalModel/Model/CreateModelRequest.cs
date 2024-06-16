@@ -5,7 +5,8 @@ namespace BeamOs.Contracts.PhysicalModel.Model;
 public record CreateModelRequest(
     string Name,
     string Description,
-    PhysicalModelSettingsDto Settings
+    PhysicalModelSettingsDto Settings,
+    string? Id = null
 );
 
 public record PhysicalModelSettingsDto(UnitSettingsDtoVerbose UnitSettings);

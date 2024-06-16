@@ -23,4 +23,13 @@ public static class UnitValueDtoToAreaMapper
     {
         return new(dto.Value, dto.Unit.MapToAreaUnit());
     }
+
+    public static UnitValueDto ToDto(this Area value, AreaUnit? unitOverride = null)
+    {
+        if (unitOverride is not null)
+        {
+            return new(value.As(unitOverride.Value), unitOverride.Value.MapToString());
+        }
+        return new(value.Value, value.Unit.MapToString());
+    }
 }

@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Reflection;
 
 namespace BeamOs.Contracts.PhysicalModel.Common;
 
@@ -16,9 +15,15 @@ public abstract record BeamOsContractBase
             return false;
         }
 
-        foreach (var propertyInfo in this.GetType().GetProperties())
+        var thisType = this.GetType();
+        if (other.GetType() != thisType)
         {
-            if (propertyInfo.Name.Contains("Id"))
+            return false;
+        }
+
+        foreach (var propertyInfo in thisType.GetProperties())
+        {
+            if (propertyInfo.Name.EndsWith("Id"))
             {
                 continue;
             }

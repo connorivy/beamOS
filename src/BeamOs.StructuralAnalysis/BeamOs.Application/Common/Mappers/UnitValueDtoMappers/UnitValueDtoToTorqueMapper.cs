@@ -23,4 +23,9 @@ public static class UnitValueDtoToTorqueMapper
     {
         return new(dto.Value, dto.Unit.MapToTorqueUnit());
     }
+
+    public static UnitValueDto ToDto(this Torque value, TorqueUnit unit)
+    {
+        return new(value.As(unit), unit.MapToString());
+    }
 }

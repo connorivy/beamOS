@@ -19,7 +19,7 @@ public abstract class AbstractMapperProvidedUnits<TFrom, TTo>(
     AreaMomentOfInertiaUnit areaMomentOfInertiaUnit
 ) : AbstractMapper<TFrom, TTo>
 {
-    protected AbstractMapperProvidedUnits(UnitSettings unitSettings)
+    public AbstractMapperProvidedUnits(UnitSettings unitSettings)
         : this(
             unitSettings.LengthUnit,
             unitSettings.AreaUnit,
@@ -158,9 +158,4 @@ public abstract class AbstractMapperProvidedUnits<TFrom, TTo>(
     {
         return VolumeUnitToStringMapper.MapToString(unit);
     }
-}
-
-public interface IMapperWithUnits<TFrom, TTo, TUnit1>
-{
-    public TTo Map(TFrom source, TUnit1 unit1);
 }

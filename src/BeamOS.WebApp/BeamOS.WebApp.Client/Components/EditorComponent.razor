@@ -1,0 +1,68 @@
+@using BeamOS.WebApp.EditorApi
+@using BeamOs.ApiClient
+@using BeamOs.Contracts.Common
+@using BeamOs.Contracts.PhysicalModel.Model
+
+@rendermode InteractiveAuto
+
+@implements IDisposable
+
+@inject IApiAlphaClient analysisApiClient
+@inject EditorApiProxyFactory editorApiAlphaFactory
+
+<MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class=@($"relative {@Class}")>
+    <MudPaper Class="h-full w-full absolute z-0"></MudPaper>
+    @* <div class="bg-gray-900 w-full h-full absolute"></div> *@
+    <canvas id="@elementId" class="h-full w-full absolute z-1"></canvas>
+    <MudOverlay Absolute="true" @bind-Visible="@isLoading">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.Center">
+            <div class="rounded animate-spin ease duration-300 w-10 h-10 border-4 border-white"></div>
+            <h2 class="px-3 font-bold text-white"> @loadingText ...</h2>
+        </MudStack>
+    </MudOverlay>
+</MudContainer>
+
+@code {
+    [Parameter]
+    public string? Class { get; set; }
+
+    private bool isLoading = true;
+    private string loadingText = "Loading beamOS editor";
+    public string elementId { get; } = "id" + Guid.NewGuid().ToString("N");
+    public IEditorApiAlpha? EditorApiAlpha { get; private set; }
+    const string physicalModelId = "00000000-0000-0000-0000-000000000000";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            isLoading = true;
+            EditorApiAlpha ??= await editorApiAlphaFactory.Create(elementId);
+            loadingText = "Fetching Data";
+            StateHasChanged();
+            await LoadModel(physicalModelId);
+            isLoading = false;
+            StateHasChanged();
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    public async Task LoadModel(string modelId)
+    {
+        ModelResponseHydrated response = await analysisApiClient
+            .GetModelHydratedAsync(modelId, PreconfiguredUnits.N_M);
+        var x = await EditorApiAlpha.CreateModelHydratedAsync(response);
+    }
+
+    public void Dispose()
+    {
+        // obj?.Dispose();
+    }
+
+    [FeatureState]
+    public record EditorComponentState(bool IsLoading, string LoadingText, ModelResponse? visibleModel)
+    {
+        private EditorComponentState()
+            : this(true, "Loading beamOS editor", null) { }
+    }
+}

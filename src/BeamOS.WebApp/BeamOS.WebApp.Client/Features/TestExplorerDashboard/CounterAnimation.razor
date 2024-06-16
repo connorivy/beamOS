@@ -1,0 +1,65 @@
+@using System.Timers
+
+<MudText Typo="Typo.h3" Class="@Class">@($"{BeforeNumber}{Math.Round(currentValue, 0)}{AfterNumber}")</MudText>
+
+@code {
+    [Parameter] public required int TargetValue { get; init; }
+    [Parameter] public int Duration { get; init; } = 1000; // Duration in milliseconds
+
+    [Parameter] public string? Class { get; init; }
+    [Parameter] public string? BeforeNumber { get; init; }
+    [Parameter] public string? AfterNumber { get; init; }
+
+    private double currentValue = 0;
+    private string ContainerId { get; set; } = $"counter-{Guid.NewGuid()}";
+
+    private Timer timer;
+    private double increment;
+    private int currentStep = 0;
+    private int totalSteps = 60; // Total animation steps
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        StartAnimation();
+    }
+
+    private void StartAnimation()
+    {
+        currentStep = 0;
+        currentValue = 0;
+        increment = 1;
+        timer = new Timer(Duration / (double)totalSteps);
+        timer.Elapsed += TimerElapsed;
+        timer.Start();
+    }
+
+    private void TimerElapsed(object? sender, ElapsedEventArgs e)
+    {
+        InvokeAsync(() =>
+        {
+            currentStep++;
+            double progress = currentStep / (double)totalSteps;
+            currentValue = TargetValue * EaseOutQuint(progress);
+
+            if (currentStep >= totalSteps)
+            {
+                currentValue = TargetValue;
+                timer.Stop();
+                timer.Dispose();
+            }
+
+            StateHasChanged();
+        });
+    }
+
+    private double EaseOutQuad(double t)
+    {
+        return t * (2 - t);
+    }
+
+    private double EaseOutQuint(double t)
+    {
+        return 1 - Math.Pow(1 - t, 5);
+    }
+}

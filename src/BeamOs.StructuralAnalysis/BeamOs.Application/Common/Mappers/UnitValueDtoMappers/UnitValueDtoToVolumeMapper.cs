@@ -23,4 +23,9 @@ public static class UnitValueDtoToVolumeMapper
     {
         return new(dto.Value, dto.Unit.MapToVolumeUnit());
     }
+
+    public static UnitValueDto ToDto(this Volume value, VolumeUnit unit)
+    {
+        return new(value.As(unit), unit.MapToString());
+    }
 }

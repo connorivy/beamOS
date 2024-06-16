@@ -13,4 +13,6 @@ public interface IRepository<TId, T>
     void Update(T aggregate);
 
     void Remove(T aggregate);
+
+    Task RemoveById(TId id, CancellationToken ct = default);
 }

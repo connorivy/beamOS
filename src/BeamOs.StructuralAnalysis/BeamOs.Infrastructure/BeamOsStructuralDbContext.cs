@@ -1,3 +1,4 @@
+using BeamOs.Domain.AnalyticalResults.NodeResultAggregate;
 using BeamOs.Domain.Common.Utils;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.Diagrams.Common;
@@ -39,6 +40,7 @@ public class BeamOsStructuralDbContext : DbContext
     public DbSet<SectionProfile> SectionProfiles { get; set; }
     public DbSet<PointLoad> PointLoads { get; set; }
     public DbSet<MomentLoad> MomentLoads { get; set; }
+    public DbSet<NodeResult> NodeResults { get; set; }
 
     //public DbSet<ShearForceDiagram> ShearForceDiagrams { get; set; }
 

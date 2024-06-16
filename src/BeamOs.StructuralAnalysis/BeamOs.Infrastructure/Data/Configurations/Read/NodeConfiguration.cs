@@ -23,6 +23,12 @@ internal class NodeReadModelConfiguration : IEntityTypeConfiguration<NodeReadMod
             .WithOne(m => m.Node)
             .HasForeignKey(el => el.NodeId)
             .IsRequired();
+
+        _ = builder
+            .HasOne(n => n.NodeResult)
+            .WithOne(m => m.Node)
+            .HasForeignKey<NodeResultReadModel>(el => el.NodeId)
+            .IsRequired();
     }
 }
 
@@ -48,3 +54,27 @@ internal class NodeReadModelConfiguration2 : IEntityTypeConfiguration<PointLoadR
         //    .IsRequired();
     }
 }
+
+//internal class NodeResultReadModelConfiguration2 : IEntityTypeConfiguration<NodeResultReadModel>
+//{
+//    public void Configure(EntityTypeBuilder<NodeResultReadModel> builder)
+//    {
+//        builder.HasKey(n => n.Id);
+//        builder.ComplexProperty(el => el.Displacements);
+
+//        //_ = builder
+//        //    .HasOne(n => n.Model)
+//        //    .WithMany(m => m.PointLoads)
+//        //    .HasForeignKey(n => n.Node.ModelId);
+
+//        //    .WithOne(m => m.Node)
+//        //    .HasForeignKey(el => el.NodeId)
+//        //    .IsRequired();
+
+//        //_ = builder
+//        //    .HasMany(n => n.MomentLoads)
+//        //    .WithOne(m => m.Node)
+//        //    .HasForeignKey(el => el.NodeId)
+//        //    .IsRequired();
+//    }
+//}

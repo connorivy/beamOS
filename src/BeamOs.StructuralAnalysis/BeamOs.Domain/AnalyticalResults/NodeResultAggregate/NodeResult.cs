@@ -1,6 +1,7 @@
 using BeamOs.Domain.AnalyticalResults.AnalyticalNodeAggregate.ValueObjects;
 using BeamOs.Domain.Common.Models;
 using BeamOs.Domain.Common.ValueObjects;
+using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
 
 namespace BeamOs.Domain.AnalyticalResults.NodeResultAggregate;
@@ -8,6 +9,7 @@ namespace BeamOs.Domain.AnalyticalResults.NodeResultAggregate;
 public class NodeResult : AggregateRoot<NodeResultId>
 {
     public NodeResult(
+        ModelId modelId,
         NodeId nodeId,
         Forces forces,
         Displacements displacements,
@@ -15,12 +17,14 @@ public class NodeResult : AggregateRoot<NodeResultId>
     )
         : base(id ?? new())
     {
+        this.ModelId = modelId;
         this.NodeId = nodeId;
         this.Forces = forces;
         this.Displacements = displacements;
     }
 
-    public NodeId NodeId { get; set; }
+    public ModelId ModelId { get; private set; }
+    public NodeId NodeId { get; private set; }
     public Forces Forces { get; private set; }
     public Displacements Displacements { get; private set; }
 

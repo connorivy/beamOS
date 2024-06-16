@@ -7,5 +7,5 @@ public record PointLoadResponse(
     string ModelId,
     string NodeId,
     UnitValueDto Force,
-    Vector3 NormalizedDirection
+    Vector3 Direction
 );

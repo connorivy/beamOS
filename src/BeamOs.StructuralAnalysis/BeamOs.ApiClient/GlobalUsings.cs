@@ -1,3 +1,4 @@
+global using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
 global using BeamOs.Contracts.AnalyticalResults.Diagrams;
 global using BeamOs.Contracts.AnalyticalResults.Model;
 global using BeamOs.Contracts.Common;
