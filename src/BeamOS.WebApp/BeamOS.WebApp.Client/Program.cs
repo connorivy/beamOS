@@ -3,6 +3,7 @@
 //using BeamOS.PhysicalModel.Client;
 using BeamOs.ApiClient;
 using BeamOS.WebApp.Client;
+using BeamOS.WebApp.Client.Features.TestExplorer;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -21,7 +22,8 @@ var dsmUriString =
     builder.Configuration.GetValue<string>(Constants.DSM_API_BASE_URI) ?? "https://localhost:7110";
 
 var analysisUriString =
-    builder.Configuration.GetValue<string>(Constants.DSM_API_BASE_URI) ?? "https://localhost:7111";
+    builder.Configuration.GetValue<string>(Constants.ANALYSIS_API_BASE_URI)
+    ?? "https://localhost:7111";
 
 //builder
 //    .Services
@@ -41,7 +43,7 @@ builder
         client => client.BaseAddress = new(analysisUriString)
     );
 
-builder.Services.RegisterSharedServices();
+builder.Services.RegisterSharedServices<Program>();
 
 builder.Services.AddAuthorizationCore();
 builder.Services.AddCascadingAuthenticationState();

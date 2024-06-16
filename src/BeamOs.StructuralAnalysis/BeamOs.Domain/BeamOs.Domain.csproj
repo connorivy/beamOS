@@ -8,13 +8,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="PhysicalModel\Common\Extensions\BeamOSEntityExtensions\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="MathNet.Numerics" />
     <PackageReference Include="MathNet.Spatial" />
     <PackageReference Include="UnitsNet" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>BeamOS.IntegrationTests.DirectStiffnessMethod</_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>BeamOs.Domain.IntegrationTests</_Parameter1>
+    </AssemblyAttribute>
   </ItemGroup>
 
 </Project>

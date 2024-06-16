@@ -12,9 +12,9 @@ public record Element1DResponse(
     string EndNodeId,
     string MaterialId,
     string SectionProfileId,
-    UnitValueDto SectionProfileRotation,
-    NodeResponse? StartNode = null,
-    NodeResponse? EndNode = null,
-    MaterialResponse? Material = null,
-    SectionProfileResponse? SectionProfile = null
+    UnitValueDto SectionProfileRotation
+//NodeResponse? StartNode = null,
+//NodeResponse? EndNode = null,
+//MaterialResponse? Material = null,
+//SectionProfileResponse? SectionProfile = null
 );

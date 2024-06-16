@@ -11,6 +11,22 @@ public enum CoordinateSystemDirection3D
     AboutZ = 6,
 }
 
+public enum LinearCoordinateDirection3D
+{
+    Undefined = 0,
+    AlongX = 1,
+    AlongY = 2,
+    AlongZ = 3,
+}
+
+public enum RotationalCoordinateDirection3D
+{
+    Undefined = 0,
+    AboutX = 4,
+    AboutY = 5,
+    AboutZ = 6,
+}
+
 public static class CoordinateSystemDirection3dExtensions
 {
     public static bool IsLinearDirection(this CoordinateSystemDirection3D coord)

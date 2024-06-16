@@ -7,13 +7,13 @@ public class MatrixIdentifiedGeneric<TIdentifier>
 {
     private readonly List<TIdentifier> rowIdentifiers;
     private readonly List<TIdentifier> columnIdentifiers;
-    private readonly double[,] values;
+    public double[,] Values { get; }
 
     public MatrixIdentifiedGeneric(List<TIdentifier> identifiers, double[,]? values = null)
     {
         this.rowIdentifiers = identifiers;
         this.columnIdentifiers = this.rowIdentifiers;
-        this.values = values ?? new double[identifiers.Count, identifiers.Count];
+        this.Values = values ?? new double[identifiers.Count, identifiers.Count];
     }
 
     public double? GetValue(TIdentifier rowIdentifier, TIdentifier columnIdentifier)
@@ -26,7 +26,7 @@ public class MatrixIdentifiedGeneric<TIdentifier>
             return null;
         }
 
-        return this.values[rowIndex, columnIndex];
+        return this.Values[rowIndex, columnIndex];
     }
 
     public void SetValue(TIdentifier rowIdentifier, TIdentifier columnIdentifier, double value)
@@ -34,7 +34,7 @@ public class MatrixIdentifiedGeneric<TIdentifier>
         var rowIndex = this.rowIdentifiers.FindIndex(i => i.Equals(rowIdentifier));
         var columnIndex = this.columnIdentifiers.FindIndex(i => i.Equals(columnIdentifier));
 
-        this.values[rowIndex, columnIndex] = value;
+        this.Values[rowIndex, columnIndex] = value;
     }
 
     // TODO : could optimize for symmetric matrices
@@ -44,7 +44,7 @@ public class MatrixIdentifiedGeneric<TIdentifier>
     {
         for (
             var incomingRowIndex = 0;
-            incomingRowIndex < matrixToBeAdded.values.GetLength(0);
+            incomingRowIndex < matrixToBeAdded.Values.GetLength(0);
             incomingRowIndex++
         )
         {
@@ -58,7 +58,7 @@ public class MatrixIdentifiedGeneric<TIdentifier>
 
             for (
                 var incomingColumnIndex = 0;
-                incomingColumnIndex < matrixToBeAdded.values.GetLength(1);
+                incomingColumnIndex < matrixToBeAdded.Values.GetLength(1);
                 incomingColumnIndex++
             )
             {
@@ -72,7 +72,7 @@ public class MatrixIdentifiedGeneric<TIdentifier>
                     continue;
                 }
 
-                this.values[thisRowIndex, thisColumnIndex] += matrixToBeAdded.values[
+                this.Values[thisRowIndex, thisColumnIndex] += matrixToBeAdded.Values[
                     incomingRowIndex,
                     incomingColumnIndex
                 ];
@@ -82,6 +82,6 @@ public class MatrixIdentifiedGeneric<TIdentifier>
 
     public Matrix<double> Build()
     {
-        return DenseMatrix.OfArray(this.values);
+        return DenseMatrix.OfArray(this.Values);
     }
 }

@@ -5,7 +5,7 @@ namespace BeamOs.Domain.Common.Models;
 public abstract class BeamOSEntity<TId> : IEquatable<BeamOSEntity<TId>>, IBeamOsDomainObject
     where TId : notnull
 {
-    public TId Id { get; protected set; }
+    public TId Id { get; private set; }
 
     protected BeamOSEntity(TId id)
     {

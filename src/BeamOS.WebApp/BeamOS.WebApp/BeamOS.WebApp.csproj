@@ -22,10 +22,11 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="MudBlazor" />
+    <PackageReference Include="MudBlazor.ThemeManager" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\BeamOs.Identity\BeamOs.Identity.Client\BeamOs.Identity.Client.csproj" />
     <ProjectReference Include="..\..\BeamOs.StructuralAnalysis\BeamOs.ApiClient\BeamOs.ApiClient.csproj" />
     <ProjectReference Include="..\..\BeamOs.StructuralAnalysis\BeamOs.Api\BeamOs.Api.csproj" />
     <ProjectReference Include="..\BeamOS.WebApp.Client\BeamOS.WebApp.Client.csproj">
@@ -60,7 +61,7 @@
    -->
   <Target Name="NpmRunBuild" DependsOnTargets="NpmInstall" BeforeTargets="BeforeBuild" Condition="'$(Configuration)' == 'Release' AND '$(ContinuousIntegrationBuild)' == false">
     <Exec WorkingDirectory="$(NpmFolder)" Command="npm run build" />
-    <Exec WorkingDirectory="$(NpmFolder)" Command="npx tailwindcss -i ./src/app.css -o ../wwwroot/css/app.css" />
+    <Exec WorkingDirectory="$(NpmFolder)" Command="npx tailwindcss -i ./src/app.css -o ../wwwroot/css/tailwind.css" />
   </Target>
 
 </Project>

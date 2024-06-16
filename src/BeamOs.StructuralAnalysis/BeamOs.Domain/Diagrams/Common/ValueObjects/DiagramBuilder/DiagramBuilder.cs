@@ -102,7 +102,7 @@ public class DiagramBuilder
                 intervals,
                 distributedValue.StartLocation,
                 distributedValue.EndLocation,
-                distributedValue.PolynomialDescription
+                distributedValue.Polynomial
             );
         }
 
@@ -127,7 +127,7 @@ public class DiagramBuilder
             {
                 intervals.Insert(
                     i + 1,
-                    new(locationAlongBeam, interval.EndLocation, interval.PolynomialDescription)
+                    new(locationAlongBeam, interval.EndLocation, interval.Polynomial)
                 );
                 interval.EndLocation = locationAlongBeam;
             }
@@ -152,7 +152,7 @@ public class DiagramBuilder
 
         foreach (var interval in intervals.Skip(intervalIndex))
         {
-            interval.PolynomialDescription += value;
+            interval.Polynomial += value;
         }
     }
 
@@ -186,14 +186,13 @@ public class DiagramBuilder
             var integralAtStart = integrated.Evaluate(interval.StartLocation.As(this.lengthUnit));
             var integralAtEnd = integrated.Evaluate(interval.EndLocation.As(this.lengthUnit));
 
-            interval.PolynomialDescription +=
-                integrated + new Polynomial(boundedIntegral - integralAtStart);
+            interval.Polynomial += integrated + new Polynomial(boundedIntegral - integralAtStart);
             boundedIntegral += integralAtEnd - integralAtStart;
         }
 
         foreach (var interval in intervals.Skip(startIntervalIndex + indexDiff))
         {
-            interval.PolynomialDescription += boundedIntegral;
+            interval.Polynomial += boundedIntegral;
         }
     }
 
@@ -229,7 +228,7 @@ public class DiagramBuilder
 
         foreach (var interval in intervals)
         {
-            interval.PolynomialDescription += polynomialToAdd;
+            interval.Polynomial += polynomialToAdd;
         }
         this.CheckRedundantBoundaryConditions(
             intervals,
@@ -292,7 +291,7 @@ public class DiagramBuilder
     {
         var containingIntervals = this.GetContainingIntervals(intervals, location).ToList();
         var valInFirstInterval = containingIntervals[0]
-            .PolynomialDescription
+            .Polynomial
             .Evaluate(location.As(this.lengthUnit));
         if (containingIntervals.Count > 1)
         {
@@ -302,7 +301,7 @@ public class DiagramBuilder
             }
 
             var valInLastInterval = containingIntervals[1]
-                .PolynomialDescription
+                .Polynomial
                 .Evaluate(location.As(this.lengthUnit));
             if (
                 Math.Abs(valInFirstInterval - valInLastInterval)

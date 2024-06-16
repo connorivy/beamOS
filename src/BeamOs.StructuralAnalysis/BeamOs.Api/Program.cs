@@ -75,23 +75,7 @@ const string physicalModelBaseNs = $"{contractsBaseNs}.{ApiClientGenerator.Physi
 const string analyticalResultsBaseNs =
     $"{contractsBaseNs}.{ApiClientGenerator.AnalyticalResultsNs}";
 
-await app.GenerateClient(
-    alphaRelease,
-    clientNs,
-    clientName,
-
-    [
-        $"{contractsBaseNs}.{ApiClientGenerator.CommonNs}",
-        $"{physicalModelBaseNs}.{ApiClientGenerator.NodeNs}",
-        $"{physicalModelBaseNs}.{ApiClientGenerator.Element1dNs}",
-        $"{physicalModelBaseNs}.{ApiClientGenerator.ModelNs}",
-        $"{physicalModelBaseNs}.{ApiClientGenerator.PointLoadNs}",
-        $"{physicalModelBaseNs}.{ApiClientGenerator.MomentLoadNs}",
-        $"{physicalModelBaseNs}.{ApiClientGenerator.MaterialNs}",
-        $"{physicalModelBaseNs}.{ApiClientGenerator.SectionProfileNs}",
-        $"{analyticalResultsBaseNs}.{ApiClientGenerator.AnalyticalModelNs}",
-    ]
-);
+await app.GenerateClient(alphaRelease, clientNs, clientName);
 
 //app.MapGet("/user", (ClaimsPrincipal user) => $"Hello user {user.Identity.Name}")
 //.RequireAuthorization();

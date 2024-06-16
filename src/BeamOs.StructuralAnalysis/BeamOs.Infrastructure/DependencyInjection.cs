@@ -1,4 +1,21 @@
+using BeamOs.Application.AnalyticalResults.NodeResults;
 using BeamOs.Application.Common.Interfaces;
+using BeamOs.Application.Common.Interfaces.Repositories;
+using BeamOs.Application.PhysicalModel.Element1dAggregate;
+using BeamOs.Application.PhysicalModel.Materials;
+using BeamOs.Application.PhysicalModel.Models;
+using BeamOs.Application.PhysicalModel.MomentLoads;
+using BeamOs.Application.PhysicalModel.Nodes.Interfaces;
+using BeamOs.Application.PhysicalModel.PointLoads;
+using BeamOs.Application.PhysicalModel.SectionProfiles;
+using BeamOs.Infrastructure.Repositories.AnalyticalResults.NodeResults;
+using BeamOs.Infrastructure.Repositories.PhysicalModel.Element1Ds;
+using BeamOs.Infrastructure.Repositories.PhysicalModel.Materials;
+using BeamOs.Infrastructure.Repositories.PhysicalModel.Models;
+using BeamOs.Infrastructure.Repositories.PhysicalModel.MomentLoads;
+using BeamOs.Infrastructure.Repositories.PhysicalModel.Nodes;
+using BeamOs.Infrastructure.Repositories.PhysicalModel.PointLoads;
+using BeamOs.Infrastructure.Repositories.PhysicalModel.SectionProfiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,34 +63,51 @@ public static class DependencyInjection
 
         foreach (var assemblyType in assemblyTypes)
         {
-            if (GetGenericInterfaceType(assemblyType, typeof(IMapper<,>)) is not null)
+            if (GetInterfaceType(assemblyType, typeof(IMapper<,>)) is not null)
             {
                 _ = services.AddSingleton(assemblyType);
             }
-            else if (
-                GetGenericInterfaceType(assemblyType, typeof(IQueryHandler<,>))
-                is Type interfaceType
-            )
+            else if (GetInterfaceType(assemblyType, typeof(IQueryHandler<,>)) is Type interfaceType)
             {
                 _ = services.AddScoped(interfaceType, assemblyType);
             }
             else if (
-                GetGenericInterfaceType(assemblyType, typeof(IRepository<,>))
-                is Type repoInterfaceType
+                GetInterfaceType(assemblyType, typeof(IRepository<,>)) is Type repoInterfaceType
             )
             {
                 _ = services.AddScoped(repoInterfaceType, assemblyType);
             }
         }
 
+        _ = services
+            .AddScoped<IElement1dRepository, Element1dDbContextRepository>()
+            .AddScoped<IMaterialRepository, MaterialDbContextRepository>()
+            .AddScoped<IModelRepository, ModelDbContextRepository>()
+            .AddScoped<IMomentLoadRepository, MomentLoadDbContextRepository>()
+            .AddScoped<INodeRepository, NodeDbContextRepository>()
+            .AddScoped<IPointLoadRepository, PointLoadDbContextRepository>()
+            .AddScoped<ISectionProfileRepository, SectionProfileDbContextRepository>()
+            .AddScoped<INodeResultRepository, NodeResultDbContextRepository>();
+
+        _ = services.AddScoped<IUnitOfWork, UnitOfWork>();
+
         return services;
     }
 
-    private static Type? GetGenericInterfaceType(Type concreteType, Type genericInterfaceType)
+    private static Type? GetInterfaceType(Type concreteType, Type interfaceType)
     {
+        bool isGeneric = interfaceType.IsGenericType;
         foreach (var inter in concreteType.GetInterfaces())
         {
-            if (inter.IsGenericType && inter.GetGenericTypeDefinition() == genericInterfaceType)
+            if (
+                isGeneric
+                && inter.IsGenericType
+                && inter.GetGenericTypeDefinition() == interfaceType
+            )
+            {
+                return inter;
+            }
+            else if (!isGeneric && inter == interfaceType)
             {
                 return inter;
             }

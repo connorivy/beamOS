@@ -1,8 +1,7 @@
 using System.Text;
 using BeamOs.Api;
+using BeamOs.Api.Common;
 using BeamOs.ApiClient;
-using BeamOS.Common.Api;
-using BeamOs.Identity.Client;
 using BeamOs.Infrastructure;
 using BeamOS.WebApp;
 using BeamOS.WebApp.Client;
@@ -33,6 +32,8 @@ builder
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
+//builder.Services.AddFluentUIComponents();
+
 const string alphaRelease = "Alpha Release";
 builder
     .Services
@@ -51,28 +52,14 @@ builder
         o.EndpointFilter = ed => ed.EndpointType.Assembly == typeof(IAssemblyMarkerApi).Assembly;
     });
 
-//builder
-//    .Services
-//    .AddHttpClient<IPhysicalModelAlphaClient, PhysicalModelAlphaClient>(
-//        client => client.BaseAddress = new("https://localhost:7193")
-//    );
-
-//builder
-//    .Services
-//    .AddHttpClient<IDirectStiffnessMethodAlphaClient, DirectStiffnessMethodAlphaClient>(
-//        client => client.BaseAddress = new("https://localhost:7110")
-//    );
-
-builder
-    .Services
-    .AddHttpClient<IIdentityAlphaClient, IdentityAlphaClient>(
-        client => client.BaseAddress = new("https://localhost:7194")
-    );
+string protocol =
+    builder.Configuration["APPLICATION_URL_PROTOCOL"]
+    ?? throw new Exception("Unable to find protocol in application configuration");
 
 builder
     .Services
     .AddHttpClient<IApiAlphaClient, ApiAlphaClient>(
-        client => client.BaseAddress = new("https://localhost:7111")
+        client => client.BaseAddress = new($"{protocol}://localhost:7111")
     );
 
 builder.Services.AddAnalysisApiServices();
@@ -84,7 +71,7 @@ builder
     .AddDbContext<BeamOsStructuralDbContext>(options => options.UseSqlServer(connectionString))
     .AddPhysicalModelInfrastructureReadModel(connectionString);
 
-UriProvider uriProvider = new("https");
+UriProvider uriProvider = new(protocol);
 builder.Services.AddSingleton<IUriProvider>(uriProvider);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddCascadingAuthenticationState();
@@ -123,7 +110,7 @@ builder
         BlazorAuthorizationMiddlewareResultHandler
     >();
 
-builder.Services.RegisterSharedServices();
+builder.Services.RegisterSharedServices<Program>();
 
 builder
     .Services
@@ -146,7 +133,7 @@ app.MapGet(
                 [Constants.ASSEMBLY_NAME] = typeof(Program).Assembly.GetName().Name,
                 [Constants.PHYSICAL_MODEL_API_BASE_URI] = "https://localhost:7193",
                 [Constants.DSM_API_BASE_URI] = "https://localhost:7110",
-                [Constants.ANALYSIS_API_BASE_URI] = "https://localhost:7111"
+                [Constants.ANALYSIS_API_BASE_URI] = $"{protocol}://localhost:7111"
             }
         )
 );
@@ -154,18 +141,19 @@ app.MapGet(
 app.AddBeamOsEndpointsForAnalysis();
 
 //seed the DB
-using var scope = app.Services.CreateScope();
-var dbContext = scope.ServiceProvider.GetRequiredService<BeamOsStructuralDbContext>();
-await dbContext.SeedAsync();
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<BeamOsStructuralDbContext>();
+    await dbContext.SeedAsync();
+}
 
 app.Use(
     async (context, next) =>
     {
-        var token = context.Request.Cookies[CommonApiConstants.ACCESS_TOKEN_GUID];
-        if (!string.IsNullOrEmpty(token))
-        {
-            context.Request.Headers.Authorization = $"Bearer {token}";
-        }
+        // hard code user bearer token for auth
+        context.Request.Headers.Authorization =
+            "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTUxMiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJ1c2VyQGVtYWlsLmNvbSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJVc2VyIiwiYXVkIjpbImh0dHBzOi8vbG9jYWxob3N0OjcxOTMiLCJodHRwczovL2xvY2FsaG9zdDo3MTk0Il0sImV4cCI6NDg3MDA5MDM2MCwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NzE5NCJ9.CTW9SNJl4kSvAlJGZ7dDpFsCc-6hVeOu6OhJFllzGwkE2FZwBd34i7q8nIaKQDQf3T8-O-GqyF7Jbey2ULDPOA";
+
         await next(context);
     }
 );

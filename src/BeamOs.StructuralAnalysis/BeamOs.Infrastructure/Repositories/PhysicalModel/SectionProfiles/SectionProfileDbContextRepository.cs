@@ -1,21 +1,23 @@
-using BeamOs.Application.Common.Interfaces;
+using BeamOs.Application.PhysicalModel.SectionProfiles;
+using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.Infrastructure.Repositories.PhysicalModel.SectionProfiles;
 
-public class SectionProfileDbContextRepository(BeamOsStructuralDbContext dbContext)
-    : IRepository<SectionProfileId, SectionProfile>
+internal class SectionProfileDbContextRepository(BeamOsStructuralDbContext dbContext)
+    : RepositoryBase<SectionProfileId, SectionProfile>(dbContext),
+        ISectionProfileRepository
 {
-    public async Task Add(SectionProfile aggregate)
+    public async Task<List<SectionProfile>> GetSectionProfilesInModel(
+        ModelId modelId,
+        CancellationToken ct = default
+    )
     {
-        _ = await dbContext.SectionProfiles.AddAsync(aggregate);
-        _ = await dbContext.SaveChangesAsync();
-    }
-
-    public async Task<SectionProfile?> GetById(SectionProfileId id)
-    {
-        return await dbContext.SectionProfiles.FirstOrDefaultAsync(el => el.Id == id);
+        return await this.DbContext
+            .SectionProfiles
+            .Where(s => s.ModelId == modelId)
+            .ToListAsync(cancellationToken: ct);
     }
 }

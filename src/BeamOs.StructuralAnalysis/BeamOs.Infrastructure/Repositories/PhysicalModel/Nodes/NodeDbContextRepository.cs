@@ -1,21 +1,26 @@
-using BeamOs.Application.Common.Interfaces;
+using BeamOs.Application.PhysicalModel.Nodes.Interfaces;
+using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.Infrastructure.Repositories.PhysicalModel.Nodes;
 
-public class NodeDbContextRepository(BeamOsStructuralDbContext dbContext)
-    : IRepository<NodeId, Node>
+internal class NodeDbContextRepository(BeamOsStructuralDbContext dbContext)
+    : RepositoryBase<NodeId, Node>(dbContext),
+        INodeRepository
 {
-    public async Task Add(Node aggregate)
+    public async Task<ModelId> GetModelId(NodeId nodeId, CancellationToken ct = default)
     {
-        _ = await dbContext.Nodes.AddAsync(aggregate);
-        _ = await dbContext.SaveChangesAsync();
+        return await this.DbContext
+            .Nodes
+            .Where(n => n.Id == nodeId)
+            .Select(n => n.ModelId)
+            .SingleAsync(cancellationToken: ct);
     }
 
-    public async Task<Node?> GetById(NodeId id)
+    public async Task<List<Node>> GetNodesInModel(ModelId modelId, CancellationToken ct = default)
     {
-        return await dbContext.Nodes.FirstAsync(el => el.Id == id);
+        return await this.DbContext.Nodes.Where(n => n.ModelId == modelId).ToListAsync(ct);
     }
 }

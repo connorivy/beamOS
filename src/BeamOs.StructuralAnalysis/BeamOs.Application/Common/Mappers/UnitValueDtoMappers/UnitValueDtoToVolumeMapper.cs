@@ -11,10 +11,21 @@ public static partial class StringToVolumeUnitMapper
     public static partial VolumeUnit MapToVolumeUnit(this string unit);
 }
 
+[Mapper]
+public static partial class VolumeUnitToStringMapper
+{
+    public static partial string MapToString(this VolumeUnit unit);
+}
+
 public static class UnitValueDtoToVolumeMapper
 {
     public static Volume MapToVolume(this UnitValueDto dto)
     {
         return new(dto.Value, dto.Unit.MapToVolumeUnit());
+    }
+
+    public static UnitValueDto ToDto(this Volume value, VolumeUnit unit)
+    {
+        return new(value.As(unit), unit.MapToString());
     }
 }

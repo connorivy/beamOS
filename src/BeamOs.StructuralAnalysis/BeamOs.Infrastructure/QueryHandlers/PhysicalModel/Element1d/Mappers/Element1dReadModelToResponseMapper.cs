@@ -1,20 +1,16 @@
-using BeamOs.Application.Common.Models;
+using BeamOs.Application.Common.Mappers;
 using BeamOs.Application.PhysicalModel.Element1dAggregate.Interfaces;
 using BeamOs.Contracts.PhysicalModel.Element1d;
+using BeamOs.Infrastructure.Data.Models;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.Infrastructure.QueryHandlers.PhysicalModel.Element1d.Mappers;
 
 [Mapper]
-internal partial class Element1dReadModelToResponseMapper(
-    NodeReadModelToResponseMapper nodeReadModelToHydratedResponseMapper
-) : AbstractMapper<IElement1dData, Element1dResponseHydrated>
+internal partial class Element1dReadModelToResponseMapper
+    : AbstractMapper<Element1dReadModel, Element1DResponse>
 {
-    [UseMapper]
-    private readonly NodeReadModelToResponseMapper nodeResponseMapper =
-        nodeReadModelToHydratedResponseMapper;
+    public override Element1DResponse Map(Element1dReadModel source) => this.ToResponse(source);
 
-    public override Element1dResponseHydrated Map(IElement1dData source) => this.ToResponse(source);
-
-    public partial Element1dResponseHydrated ToResponse(IElement1dData source);
+    private partial Element1DResponse ToResponse(Element1dReadModel source);
 }

@@ -1,0 +1,65 @@
+@using BeamOs.Tests.TestRunner
+@using Fluxor.Blazor.Web.Components
+
+@inherits FluxorComponent 
+
+@if (this.SingleTestState.Value is null || this.SingleTestState.Value.TestProgressStatus == TestProgressStatus.InProgress)
+{
+    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+}
+else if (this.SingleTestState.Value.TestProgressStatus == TestProgressStatus.NotStarted)
+{
+    <MudFab Class="w-fit h-fit min-h-fit" StartIcon="@Icons.Material.Filled.PlayCircle" OnClick="@OnTestRun"></MudFab>
+}
+else if (this.SingleTestState.Value.TestProgressStatus == TestProgressStatus.Finished)
+{
+    if (this.SingleTestState.Value.TestResult is null
+        || this.SingleTestState.Value.TestResult.Status == TestResultStatus.Skipped)
+    {
+        <MudIcon Icon="@Icons.Material.Filled.Warning" Color="Color.Warning" />
+    }
+    else if (this.SingleTestState.Value.TestResult.Status == TestResultStatus.Success)
+    {
+        <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" />
+    }
+    else if (this.SingleTestState.Value.TestResult.Status == TestResultStatus.Failure)
+    {
+        <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" />
+    }
+}
+else
+{
+    <MudFab StartIcon="@Icons.Material.Filled.Warning"></MudFab>
+}
+
+@code {
+    [Parameter]
+    public required string TestId { get; init; }
+
+    [Inject]
+    private IStateSelection<TestInfoState, SingleTestState?> SingleTestState { get; init; }
+
+    [Inject]
+    private IState<TestInfoState> TestInfoState { get; init; }
+
+    [Inject]
+    private IDispatcher Dispatcher { get; init; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        this.Dispatcher.Dispatch(new CreateSingleTestStateAction(this.TestId));
+        this.SingleTestState.Select(x => x.TestInfoIdToTestResultDict.GetValueOrDefault(this.TestId));
+    }
+
+    private void OnTestRun()
+    {
+        this.Dispatcher.Dispatch(new ExecutionTestActionById(this.TestId));
+    }
+
+    // protected override ValueTask DisposeAsyncCore(bool disposing)
+    // {
+    //     this.Dispatcher.Dispatch(new DisposeSingleTestStateAction(this.TestId));
+    //     return base.DisposeAsyncCore(disposing);
+    // }
+}

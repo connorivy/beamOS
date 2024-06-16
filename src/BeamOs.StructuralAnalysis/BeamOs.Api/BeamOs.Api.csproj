@@ -34,10 +34,6 @@
     <ProjectReference Include="..\BeamOs.Infrastructure\BeamOs.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DirectStiffnessMethod\Materials\Endpoints\" />
-  </ItemGroup>
-
   <Target Name="ClientGen" AfterTargets="Build" Condition="'$(Configuration)'=='GenerateClients'">
     <Exec WorkingDirectory="$(RunWorkingDirectory)" Command="$(RunCommand) --generateclients true --urls https://localhost:7199" />
   </Target>

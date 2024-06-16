@@ -15,7 +15,14 @@ public record AnalyticalModelResponse(
 public record AnalyticalModelResponse2(
     List<UnsupportedStructureDisplacementIdResponse> DegreeOfFreedomIds,
     List<UnsupportedStructureDisplacementIdResponse> BoundaryConditionIds,
-    List<AnalyticalNodeResponse> NodeResponses
+    List<NodeResultResponse> NodeResponses
+//List<string> Element1DIds,
+//List<string> MaterialIds,
+//List<string> SectionProfileIds
+);
+
+public record AnalyticalModelResponse3(
+    List<NodeResultResponse> NodeResponses
 //List<string> Element1DIds,
 //List<string> MaterialIds,
 //List<string> SectionProfileIds
