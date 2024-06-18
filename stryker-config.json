@@ -39,7 +39,7 @@
       "*Exception.ctor",
       "ConfigureAwait"
     ],
-    "report-file-name": "mutation-report",
+    "report-file-name": "index",
     "break-on-initial-test-failure": false
   }
 }

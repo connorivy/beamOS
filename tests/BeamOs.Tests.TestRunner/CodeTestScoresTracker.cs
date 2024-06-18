@@ -1,18 +1,29 @@
+using System.Text;
 using System.Text.Json;
 
-namespace BeamOs.DevOps.PipelineHelper;
+namespace BeamOs.Tests.TestRunner;
 
-public sealed class CodeTestScoresTracker
+public sealed class CodeTestScoresTracker : ICodeTestScoreTracker
 {
     private readonly SortedList<Version, CodeTestScoreSnapshot> releaseVersionToTestScoreSnapshot;
 
-    private readonly string folderLocation = DirectoryHelper.GetPipelineHelperDir();
-    private readonly string fileName = "codeTestScoresData.json";
+    private readonly string folderLocation = Path.Combine(
+        DirectoryHelper.GetWebAppClientDir(),
+        "wwwroot"
+    );
+    public const string JsonFileName = "codeTestScoresData.json";
     private readonly string fullPath;
+    private static readonly JsonSerializerOptions options = new() { WriteIndented = true };
 
     public CodeTestScoresTracker()
     {
-        this.fullPath = Path.Combine(this.folderLocation, this.fileName);
+        this.fullPath = Path.Combine(this.folderLocation, JsonFileName);
+
+        //if (!File.Exists(this.fullPath))
+        //{
+        //    this.releaseVersionToTestScoreSnapshot = [];
+        //    this.Save();
+        //}
 
         string jsonString = File.ReadAllText(this.fullPath);
         this.releaseVersionToTestScoreSnapshot =
@@ -23,15 +34,18 @@ public sealed class CodeTestScoresTracker
     public IReadOnlyDictionary<Version, CodeTestScoreSnapshot> CodeTestScores =>
         this.releaseVersionToTestScoreSnapshot.AsReadOnly();
 
+    public CodeTestScoreSnapshot LatestScores =>
+        this.releaseVersionToTestScoreSnapshot.Last().Value;
+
     internal void AddScore(Version release, CodeTestScoreSnapshot scoreSnapshot)
     {
-        this.releaseVersionToTestScoreSnapshot.Add(release, scoreSnapshot);
+        this.releaseVersionToTestScoreSnapshot[release] = scoreSnapshot;
     }
 
     internal void Save()
     {
         string json =
-            JsonSerializer.Serialize(this.releaseVersionToTestScoreSnapshot)
+            JsonSerializer.Serialize(this.releaseVersionToTestScoreSnapshot, options)
             ?? throw new Exception("Serialized value was null");
 
         File.WriteAllText(this.fullPath, json);
@@ -47,4 +61,14 @@ public sealed class CodeTestScoreSnapshot(
     public int NumTests { get; } = numTests;
     public float CodeCoveragePercent { get; } = codeCoveragePercent;
     public float MutationScore { get; } = mutationScore;
+
+    public override string ToString()
+    {
+        StringBuilder sb = new();
+        sb.AppendLine($"NumTests: {this.NumTests}");
+        sb.AppendLine($"CodeCov%: {this.CodeCoveragePercent}");
+        sb.AppendLine($"MutationScore: {this.MutationScore}");
+
+        return sb.ToString();
+    }
 }

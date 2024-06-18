@@ -3,6 +3,5 @@
 [reportgenerator]
 	reporttypes = Html
 	reports = ./tests/**/coverage.opencover.xml
-	targetdir = ./tests/TestResults
-	filefilter = -*.g.cs
+	filefilter = -*.g.cs # exclude auto generated files
 	filefilter = -Microsoft.NET.Test.Sdk.Program.cs

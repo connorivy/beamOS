@@ -1,7 +1,10 @@
 //using BeamOs.ApiClient;
 //using BeamOS.DirectStiffnessMethod.Client;
 //using BeamOS.PhysicalModel.Client;
+using System.Collections.Generic;
+using System.Net.Http.Json;
 using BeamOs.ApiClient;
+using BeamOs.Tests.TestRunner;
 using BeamOS.WebApp.Client;
 using BeamOS.WebApp.Client.Features.TestExplorer;
 using Blazored.LocalStorage;
@@ -59,5 +62,12 @@ builder
                 return scope.ServiceProvider.GetRequiredService<ILocalStorageService>();
             }
     );
+
+var releaseVersionToTestScoreSnapshot = await client.GetFromJsonAsync<
+    SortedList<Version, CodeTestScoreSnapshot>
+>(CodeTestScoresTracker.JsonFileName);
+CodeTestScoresTrackerWasm codeTestScoresTracker = new(releaseVersionToTestScoreSnapshot);
+
+builder.Services.AddSingleton<ICodeTestScoreTracker>(codeTestScoresTracker);
 
 await builder.Build().RunAsync();

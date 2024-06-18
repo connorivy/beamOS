@@ -7,11 +7,12 @@
 @using BeamOs.Contracts.PhysicalModel.Model
 @using BeamOs.Contracts.PhysicalModel.Node
 @using BeamOS.Tests.Common.SolvedProblems
+@using BeamOs.Tests.TestRunner
 
 @* @rendermode InteractiveWebAssembly *@
 
 @inject IJSRuntime js
-@inject TestInfoProvider TestInfoProvider
+@inject ICodeTestScoreTracker CodeTestScoresTracker
 
 <PageTitle>Test Explorer Dashboard</PageTitle>
 
@@ -29,19 +30,27 @@
         </MudItem>
     </MudGrid>
     <MudGrid Spacing="3">
-        <MudItem xs="12" md="6">
+        <MudItem xs="12" md="4">
             <MudCard>
                 <MudCardContent>
                     <MudText Typo="Typo.h6" GutterBottom="true" Class="text-center">Number Of Tests</MudText>
-                    <CounterAnimation TargetValue="@TestInfoProvider.TestInfos.Count" Class="text-center" />
+                    <CounterAnimation TargetValue="@CodeTestScoresTracker.LatestScores.NumTests" Class="text-center" />
                 </MudCardContent>
             </MudCard>
         </MudItem>
-        <MudItem xs="12" md="6">
+        <MudItem xs="12" md="4">
             <MudCard>
                 <MudCardContent>
                     <MudText Typo="Typo.h6" GutterBottom="true" Class="text-center">Code Coverage</MudText>
-                    <CounterAnimation TargetValue="75" AfterNumber=" %" Class="text-center" />
+                    <CounterAnimation TargetValue="@((int)Math.Round(CodeTestScoresTracker.LatestScores.CodeCoveragePercent))" AfterNumber=" %" Class="text-center" />
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+        <MudItem xs="12" md="4">
+            <MudCard>
+                <MudCardContent>
+                    <MudText Typo="Typo.h6" GutterBottom="true" Class="text-center">Mutation Score</MudText>
+                    <CounterAnimation TargetValue="@((int)Math.Round(CodeTestScoresTracker.LatestScores.MutationScore))" AfterNumber=" %" Class="text-center" />
                 </MudCardContent>
             </MudCard>
         </MudItem>
@@ -106,20 +115,6 @@
         document.querySelectorAll('.scroll-section').forEach(section => {
             observer.observe(section);
         });
-    }
-
-    function querySelectorAllShadows(selector, el = document.body) {
-        // recurse on childShadows
-        const childShadows = Array.from(el.querySelectorAll('*')).
-            map(el => el.shadowRoot).filter(Boolean);
-
-        // console.log('[querySelectorAllShadows]', selector, el, `(${childShadows.length} shadowRoots)`);
-
-        const childResults = childShadows.map(child => querySelectorAllShadows(selector, child));
-
-        // fuse all results into singular, flat array
-        const result = Array.from(el.querySelectorAll(selector));
-        return result.concat(childResults).flat();
     }
 </script>
 

@@ -3,6 +3,7 @@ using BeamOs.Api;
 using BeamOs.Api.Common;
 using BeamOs.ApiClient;
 using BeamOs.Infrastructure;
+using BeamOs.Tests.TestRunner;
 using BeamOS.WebApp;
 using BeamOS.WebApp.Client;
 using BeamOS.WebApp.Components;
@@ -73,6 +74,7 @@ builder
 
 UriProvider uriProvider = new(protocol);
 builder.Services.AddSingleton<IUriProvider>(uriProvider);
+builder.Services.AddSingleton<ICodeTestScoreTracker, CodeTestScoresTracker>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddBlazoredLocalStorage();
@@ -177,6 +179,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseDefaultFiles();
 app.UseStaticFiles();
 app.UseAntiforgery();
 

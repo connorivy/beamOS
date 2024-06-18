@@ -15,7 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\BeamOS.WebApp\BeamOS.WebApp\BeamOS.WebApp.csproj" />
     <ProjectReference Include="..\..\tests\BeamOs.Tests.TestRunner\BeamOs.Tests.TestRunner.csproj" />
   </ItemGroup>
 

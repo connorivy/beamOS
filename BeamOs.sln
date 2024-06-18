@@ -54,9 +54,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOs.Api.IntegrationTests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOs.Tests.TestRunner", "tests\BeamOs.Tests.TestRunner\BeamOs.Tests.TestRunner.csproj", "{A6627A57-F87E-4A33-8C8F-A919764D0B7B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "devOps", "devOps", "{60F382B9-8B4B-4828-8F4C-64AD5A1BED18}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "codeGen", "codeGen", "{FDE41AEB-4A12-4F40-B50F-18BD2E437796}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOs.DevOps.PipelineHelper", "devOps\BeamOs.DevOps.PipelineHelper\BeamOs.DevOps.PipelineHelper.csproj", "{EE1E734C-DD41-4514-B3F5-992238472C2B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOs.CodeGen.TestResults", "codeGen\BeamOs.CodeGen.TestResults\BeamOs.CodeGen.TestResults.csproj", "{B37767F5-2DA7-4D16-B0B5-92FF197002E9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -155,12 +155,10 @@ Global
 		{A6627A57-F87E-4A33-8C8F-A919764D0B7B}.GenerateClients|Any CPU.Build.0 = Debug|Any CPU
 		{A6627A57-F87E-4A33-8C8F-A919764D0B7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6627A57-F87E-4A33-8C8F-A919764D0B7B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EE1E734C-DD41-4514-B3F5-992238472C2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EE1E734C-DD41-4514-B3F5-992238472C2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EE1E734C-DD41-4514-B3F5-992238472C2B}.GenerateClients|Any CPU.ActiveCfg = Debug|Any CPU
-		{EE1E734C-DD41-4514-B3F5-992238472C2B}.GenerateClients|Any CPU.Build.0 = Debug|Any CPU
-		{EE1E734C-DD41-4514-B3F5-992238472C2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EE1E734C-DD41-4514-B3F5-992238472C2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B37767F5-2DA7-4D16-B0B5-92FF197002E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B37767F5-2DA7-4D16-B0B5-92FF197002E9}.GenerateClients|Any CPU.ActiveCfg = Debug|Any CPU
+		{B37767F5-2DA7-4D16-B0B5-92FF197002E9}.GenerateClients|Any CPU.Build.0 = Debug|Any CPU
+		{B37767F5-2DA7-4D16-B0B5-92FF197002E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -184,7 +182,7 @@ Global
 		{A7E8BBC6-41A1-4321-B047-3A4B651557DE} = {8833CB72-49BA-43E7-8827-FE58EADD0D92}
 		{7F677B7F-7F65-40D0-8420-A446C225F832} = {8833CB72-49BA-43E7-8827-FE58EADD0D92}
 		{A6627A57-F87E-4A33-8C8F-A919764D0B7B} = {47A3A027-45D0-44EA-95F2-D775D0C97686}
-		{EE1E734C-DD41-4514-B3F5-992238472C2B} = {60F382B9-8B4B-4828-8F4C-64AD5A1BED18}
+		{B37767F5-2DA7-4D16-B0B5-92FF197002E9} = {FDE41AEB-4A12-4F40-B50F-18BD2E437796}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0E917AFB-AF19-41C1-9F0B-17BD02FD96BE}

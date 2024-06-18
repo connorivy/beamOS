@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using BeamOs.Tests.TestRunner;
 using HtmlAgilityPack;
 using PuppeteerSharp;
@@ -10,26 +11,91 @@ internal class TestResultCreator
     private const string CodeCovResultDirName = "code-coverage";
     private const string CodeCovResultFileName = "index.html";
     private const string StrykerResultDirName = "stryker";
-    private const string StrykerResultFileName = "mutation-report.html";
+    private const string StrykerResultFileName = "index.html";
 
     private readonly string testResultsPath = Path.Combine(
         DirectoryHelper.GetServerWwwrootDir(),
         PathToTestResults
     );
 
-    private static Version GetVersion()
+    public async Task<CodeTestScoreSnapshot> CreateNewDataPointForVersion()
     {
-        return typeof(BeamOS.WebApp.Program).Assembly.GetName().Version
-            ?? throw new Exception("Could not get version");
-    }
+        await this.GenerateTestReports();
 
-    public async Task<(Version, CodeTestScoreSnapshot)> CreateNewDataPointForVersion()
-    {
         var numTests = GetNumTests();
         var codCov = this.GetCodeCov();
         var mutationScore = await this.GetMutationScore();
 
-        return (GetVersion(), new CodeTestScoreSnapshot(numTests, codCov, mutationScore));
+        return new CodeTestScoreSnapshot(numTests, codCov, mutationScore);
+    }
+
+    public async Task GenerateTestReports()
+    {
+        Process testProcess = new Process()
+        {
+            StartInfo = new ProcessStartInfo()
+            {
+                FileName = "dotnet",
+                Arguments =
+                    "test -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:ExcludeByAttribute=\"Obsolete%2cGeneratedCodeAttribute%2cCompilerGeneratedAttribute\"",
+                WorkingDirectory = DirectoryHelper.GetRootDirectory()
+            }
+        };
+        testProcess.Start();
+        await testProcess.WaitForExitAsync();
+
+        Process codeCovProcess = new Process()
+        {
+            StartInfo = new ProcessStartInfo()
+            {
+                FileName = "dotnet",
+                Arguments =
+                    $"reportgenerator -targetdir:{Path.Combine(this.testResultsPath, CodeCovResultDirName)}",
+                WorkingDirectory = DirectoryHelper.GetRootDirectory()
+            }
+        };
+
+        codeCovProcess.Start();
+        await codeCovProcess.WaitForExitAsync();
+
+        Process strykerProcess = new Process()
+        {
+            StartInfo = new ProcessStartInfo()
+            {
+                FileName = "dotnet",
+                Arguments =
+                    $"stryker --output {Path.Combine(this.testResultsPath, StrykerResultDirName)}",
+                WorkingDirectory = DirectoryHelper.GetRootDirectory()
+            }
+        };
+
+        strykerProcess.Start();
+        await strykerProcess.WaitForExitAsync();
+
+        this.MoveStrykerOutputToCorrectLocation();
+    }
+
+    private void MoveStrykerOutputToCorrectLocation()
+    {
+        string defaultStrykerOutputFile = Path.Combine(
+            this.testResultsPath,
+            StrykerResultDirName,
+            "reports",
+            StrykerResultFileName
+        );
+        string desiredStrykerOutputFile = Path.Combine(
+            this.testResultsPath,
+            StrykerResultDirName,
+            StrykerResultFileName
+        );
+
+        if (File.Exists(desiredStrykerOutputFile))
+        {
+            File.Delete(desiredStrykerOutputFile);
+        }
+
+        File.Move(defaultStrykerOutputFile, desiredStrykerOutputFile);
+        Directory.Delete(Path.Combine(this.testResultsPath, StrykerResultDirName, "reports"));
     }
 
     private float GetCodeCov()
@@ -93,26 +159,5 @@ internal class TestResultCreator
     private static int GetNumTests()
     {
         return AssemblyScanning.GetAllTestInfo().Count();
-    }
-}
-
-public static class IElementExtensions
-{
-    public static async Task<IElementHandle> QuerySelectorAsyncFluent(
-        this Task<IElementHandle> task,
-        string selector
-    )
-    {
-        return await (await task).QuerySelectorAsync(selector);
-    }
-
-    public static async Task<string> GetInnerTextAsync(this IElementHandle elementHandle)
-    {
-        return await elementHandle.EvaluateFunctionAsync<string>("e => e.innerText");
-    }
-
-    public static async Task<string> GetInnerTextAsync(this Task<IElementHandle> elementTask)
-    {
-        return await (await elementTask).EvaluateFunctionAsync<string>("e => e.innerText");
     }
 }
