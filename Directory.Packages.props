@@ -7,7 +7,7 @@
     <MicrosoftExtensionsVersion>8.0.0</MicrosoftExtensionsVersion>
     <EfVersion>8.0.0</EfVersion>
     <FastEndpointVersion>5.25.0</FastEndpointVersion>
-    <FluxorVersion>6.0.0-Beta2</FluxorVersion>
+    <FluxorVersion>6.0.0</FluxorVersion>
   </PropertyGroup>
   <ItemGroup>
     <!-- ASP.NET -->

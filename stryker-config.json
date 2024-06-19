@@ -31,7 +31,7 @@
     },
     "dashboard-url": "https://dashboard.stryker-mutator.io",
     "test-projects": [],
-    "test-case-filter": "",
+    "test-case-filter": "BeamOs.Domain.UnitTests.DirectStiffnessMethod.DsmElement1dTests.GetRotationMatrix_ForVerticalMember_ShouldEqualExpectedValue",
     "ignore-mutations": [],
     "ignore-methods": [
       "*Log",

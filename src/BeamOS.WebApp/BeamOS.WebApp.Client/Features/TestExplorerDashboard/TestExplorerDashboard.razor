@@ -13,10 +13,11 @@
 
 @inject IJSRuntime js
 @inject ICodeTestScoreTracker CodeTestScoresTracker
+@inject NavigationManager NavigationManager
 
 <PageTitle>Test Explorer Dashboard</PageTitle>
 
-<MudContainer MaxWidth="MaxWidth.False" Class="h-full overflow-scroll">
+<MudContainer MaxWidth="MaxWidth.False" Class="h-full overflow-scroll p-4">
     <MudGrid>
         <MudItem xs="12" md="6">
             <MudText Typo="Typo.h3" GutterBottom="true">Are the results accurate?</MudText>
@@ -25,13 +26,14 @@
             </MudText>
             <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-4">Get Started</MudButton>
         </MudItem>
-        <MudItem xs="12" md="6">
+        <MudItem xs="12" md="6" Class="d-flex justify-content-center align-items-center">
             <MudImage Src="your-image-url-here" Alt="Hero Image" Width="300" />
         </MudItem>
     </MudGrid>
-    <MudGrid Spacing="3">
+
+    <MudGrid Spacing="3" Class="mt-6">
         <MudItem xs="12" md="4">
-            <MudCard>
+            <MudCard Class="shadow hover:shadow-lg">
                 <MudCardContent>
                     <MudText Typo="Typo.h6" GutterBottom="true" Class="text-center">Number Of Tests</MudText>
                     <CounterAnimation TargetValue="@CodeTestScoresTracker.LatestScores.NumTests" Class="text-center" />
@@ -39,7 +41,7 @@
             </MudCard>
         </MudItem>
         <MudItem xs="12" md="4">
-            <MudCard>
+            <MudCard Class="shadow hover:shadow-lg">
                 <MudCardContent>
                     <MudText Typo="Typo.h6" GutterBottom="true" Class="text-center">Code Coverage</MudText>
                     <CounterAnimation TargetValue="@((int)Math.Round(CodeTestScoresTracker.LatestScores.CodeCoveragePercent))" AfterNumber=" %" Class="text-center" />
@@ -47,7 +49,7 @@
             </MudCard>
         </MudItem>
         <MudItem xs="12" md="4">
-            <MudCard>
+            <MudCard Class="shadow hover:shadow-lg">
                 <MudCardContent>
                     <MudText Typo="Typo.h6" GutterBottom="true" Class="text-center">Mutation Score</MudText>
                     <CounterAnimation TargetValue="@((int)Math.Round(CodeTestScoresTracker.LatestScores.MutationScore))" AfterNumber=" %" Class="text-center" />
@@ -56,30 +58,108 @@
         </MudItem>
     </MudGrid>
 
+    <MudDivider Class="mt-6 mb-6" />
+
     <div class="scroll-section" id="section1">
-        <MudCard>
+        <MudCard Class="shadow hover:shadow-lg animate-scroll">
             <MudCardContent>
-                <MudText Typo="Typo.h4" GutterBottom="true">Can I trust the results from beamOS?</MudText>
-                <MudText Typo="Typo.body1">This is the content for section 1. It should animate into view when you scroll down.</MudText>
-                <MudContainer Class="h-96" />
-                <MudContainer Class="h-96" />
-                <MudContainer Class="h-96" />
+                <MudGrid>
+                    <MudItem xs="12" md="6">
+                        <MudText Typo="Typo.h3" GutterBottom="true" Class="my-5 mb-5">Number of tests</MudText>
+                        <MudText Typo="Typo.body1" Class="mb-5">
+                            What exactly are tests and why do they matter? Tests are automated scripts that ensure that a part of the application behaves as expected. To the right is an example of a test that you will find in our codebase that tests the behavior of the "GetRotationMatrix" function
+                        </MudText>
+                        <MudText Typo="Typo.body1" Class="mb-5">
+                            This test makes sure that beamOS is computing the correct rotation matrix for a vertical member. This test is run every time a beamOS team member wants to make a change to the code base, and if the 'AssertEqual' method ever fails, then the proposed change will be rejected.
+                        </MudText>
+                        <MudText Typo="Typo.body1" Class="mb-5">
+                            To browse all code tests, including the more involved ones, checkout the <MudLink Href="/test-explorer">Test Explorer</MudLink>
+                        </MudText>
+                    </MudItem>
+                    <MudItem xs="12" md="6">
+                       @*  <CodeSnippet>
+/// with no profile rotation, a vertical member will end up with it's
+/// local x axis aligned in the global y direction
+/// local y axis aligned in the global -x direction
+/// local z axis aligned in the global z direction
+[Fact]
+public void GetRotationMatrix_ForVerticalMember_ShouldEqualExpectedValue()
+{
+    var element = Element1d.Create(
+        startNode: new(0, 0, 0),
+        endNode: new(0, 8, 0)
+    );
+
+    double[,] expectedRotationMatrix = new[,]
+    {
+        {  0, 1, 0 },
+        { -1, 0, 0 },
+        {  0, 0, 1 },
+    };
+
+    double[,] calculatedRotationMatrix = element.GetRotationMatrix();
+
+    AssertEqual(expectedRotationMatrix, calculatedRotationMatrix);
+}
+                        </CodeSnippet> *@
+                    </MudItem>
+                </MudGrid>
             </MudCardContent>
         </MudCard>
     </div>
-    <div class="scroll-section" id="section2">
-        <MudCard>
+
+    <div class="scroll-section" id="section2" style="margin-top: 50px;">
+        <MudCard Class="shadow hover:shadow-lg animate-scroll">
             <MudCardContent>
-                <MudText Typo="Typo.h4" GutterBottom="true">Section 2</MudText>
-                <MudText Typo="Typo.body1">This is the content for section 2. It should animate into view when you scroll down.</MudText>
+                <MudGrid>
+                    <MudItem xs="12" md="7">
+                        @* <MudImage Src="images/get_rot_matrix_code_cov.png" Alt="Code Coverage Image" /> *@
+                        <CodeCoverageSnippet />
+                    </MudItem>
+                    <MudItem xs="12" md="5">
+                        <MudText Typo="Typo.h3" GutterBottom="true" Class="my-5 mb-5">Code Coverage</MudText>
+                        <MudText Typo="Typo.body1" Class="mb-5">
+                            Code coverage is a measure of the percentage of a code base that is covered by tests.
+                        </MudText>
+                        <MudText Typo="Typo.body1" Class="mb-5">
+                            The accompanying image is the coverage report of the single test shown in the block above. You can see from the coverage report that the selected test covers only a subset of the possible paths in this method, resulting in a block of untested code, shown in red.
+                        </MudText>
+                        <MudText Typo="Typo.body1" Class="mb-5">
+                            It is often impractical and unneccesary to get all the way up to 100% code coverage, but beamOS aims to get as close as possible. Click here to view the latest
+                            <MudButton Target="_blank" Href="/test-results/code-coverage/" EndIcon="@Icons.Material.Filled.ArrowOutward" Variant="Variant.Text" Color="Color.Primary" Class="p-0">
+                                Coverage Report
+                            </MudButton>
+                        </MudText>
+                    </MudItem>
+                </MudGrid>
             </MudCardContent>
         </MudCard>
     </div>
-    <div class="scroll-section" id="section3">
-        <MudCard>
+
+    <div class="scroll-section" id="section3" style="margin-top: 50px;">
+        <MudCard Class="shadow hover:shadow-lg animate-scroll">
             <MudCardContent>
-                <MudText Typo="Typo.h4" GutterBottom="true">Section 3</MudText>
-                <MudText Typo="Typo.body1">This is the content for section 3. It should animate into view when you scroll down.</MudText>
+                <MudGrid>
+                    <MudItem xs="12" md="5">
+                        <MudText Typo="Typo.h3" GutterBottom="true" Class="my-5 mb-5">Code Coverage</MudText>
+                        <MudText Typo="Typo.body1" Class="mb-5">
+                            Code coverage is a measure of the percentage of a code base that is covered by tests.
+                        </MudText>
+                        <MudText Typo="Typo.body1" Class="mb-5">
+                            The accompanying image is the coverage report of the single test shown in the block above. You can see from the coverage report that the selected test covers only a subset of the possible paths in this method, resulting in a block of untested code, shown in red.
+                        </MudText>
+                        <MudText Typo="Typo.body1" Class="mb-5">
+                            It is often impractical and unneccesary to get all the way up to 100% code coverage, but beamOS aims to get as close as possible. Click here to view the latest
+                            <MudButton Target="_blank" Href="/test-results/code-coverage/" EndIcon="@Icons.Material.Filled.ArrowOutward" Variant="Variant.Text" Color="Color.Primary" Class="p-0">
+                                Coverage Report
+                            </MudButton>
+                        </MudText>
+                    </MudItem>
+                    <MudItem xs="12" md="7">
+                        @* <MudImage Src="images/get_rot_matrix_code_cov.png" Alt="Code Coverage Image" /> *@
+                        <MutationReportSnippet />
+                    </MudItem>
+                </MudGrid>
             </MudCardContent>
         </MudCard>
     </div>
