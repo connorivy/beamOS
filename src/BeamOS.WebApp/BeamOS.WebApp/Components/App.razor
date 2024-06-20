@@ -16,6 +16,14 @@
     <link rel="stylesheet" href=@($"{Configuration[Constants.ASSEMBLY_NAME]}.styles.css") />
     <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
     <link href="_content/CodeBeam.MudBlazor.Extensions/MudExtensions.min.css" rel="stylesheet" />
+
+    @* Highlight.js *@
+    @* todo: npm install instead *@
+    @* <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/csharp.min.js" defer></script>
+    <script>hljs.highlightAll();</script> *@
+
     @* https://github.com/MudBlazor/MudBlazor/issues/7805 *@
     <HeadOutlet @rendermode="InteractiveWebAssembly" />
 </head>
@@ -29,6 +37,19 @@
     <environment names="Development">
         <script src="/_framework/aspnetcore-browser-refresh.js"></script>
     </environment>
+
+    <script type="module">
+        // be sure to specify the exact version
+        import { codeToHtml } from 'https://esm.sh/shiki@1.7.0'
+        // or
+        // import { codeToHtml } from 'https://esm.run/shiki@1.7.0'
+
+        // const foo = document.getElementById('foo')
+        // foo.innerHTML = await codeToHtml('console.log("Hi, Shiki on CDN :)")', {
+        //     lang: 'js',
+        //     theme: 'rose-pine'
+        // })
+    </script>
 </body>
 
 </html>

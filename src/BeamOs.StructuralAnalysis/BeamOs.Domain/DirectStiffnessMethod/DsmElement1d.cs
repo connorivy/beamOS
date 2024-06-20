@@ -93,7 +93,7 @@ public class DsmElement1d(
         var cosG = Math.Cos(this.SectionProfileRotation.Radians);
         var sinG = Math.Sin(this.SectionProfileRotation.Radians);
 
-        var sqrtRxx2Rxz2 = Math.Sqrt(rxx * rxx + rxz * rxz);
+        var sqrtRxx2Rxz2 = Math.Sqrt((rxx * rxx) + (rxz * rxz));
 
         double r21,
             r22,
@@ -113,12 +113,12 @@ public class DsmElement1d(
         }
         else
         {
-            r21 = (-rxx * rxy * cosG - rxz * sinG) / sqrtRxx2Rxz2;
+            r21 = ((-rxx * rxy * cosG) - (rxz * sinG)) / sqrtRxx2Rxz2;
             r22 = sqrtRxx2Rxz2 * cosG;
-            r23 = (-rxy * rxz * cosG + rxx * sinG) / sqrtRxx2Rxz2;
-            r31 = (rxx * rxy * sinG - rxz * cosG) / sqrtRxx2Rxz2;
+            r23 = ((-rxy * rxz * cosG) + (rxx * sinG)) / sqrtRxx2Rxz2;
+            r31 = ((rxx * rxy * sinG) - (rxz * cosG)) / sqrtRxx2Rxz2;
             r32 = -sqrtRxx2Rxz2 * sinG;
-            r33 = (rxy * rxz * sinG + rxx * cosG) / sqrtRxx2Rxz2;
+            r33 = ((rxy * rxz * sinG) + (rxx * cosG)) / sqrtRxx2Rxz2;
         }
 
         return DenseMatrix.OfArray(

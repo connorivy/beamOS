@@ -8,7 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Common\Models\" />
+    <Compile Remove="Common\Models\**" />
+    <EmbeddedResource Remove="Common\Models\**" />
+    <None Remove="Common\Models\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="PhysicalModel\Nodes\Common\" />
     <Folder Include="PhysicalModel\Nodes\Queries\" />
   </ItemGroup>

@@ -189,7 +189,7 @@ public partial class DsmElement1dTests
     //}
 
     [Fact]
-    public void GetRotationMatrix_VerticalSimple_ShouldEqualExpectedValue()
+    public void GetRotationMatrix_ForVerticalMember_ShouldEqualExpectedValue()
     {
         // by default (aka no profile rotation), a vertical member will end up with it's local
         // y axis aligned in the global -x direction

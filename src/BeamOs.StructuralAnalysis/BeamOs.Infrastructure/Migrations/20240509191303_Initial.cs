@@ -1,3 +1,4 @@
+using System.CodeDom.Compiler;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -5,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BeamOs.Infrastructure.Migrations
 {
     /// <inheritdoc />
+    [GeneratedCode("EF Core", "")]
     public partial class Initial : Migration
     {
         /// <inheritdoc />
