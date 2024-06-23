@@ -146,7 +146,7 @@ public void GetRotationMatrix_ForVerticalMember_ShouldEqualExpectedValue()
                             Mutation score is a measure of how meaningful the automated tests are. Just because a line is covered by a test doesn't mean that the test will protect you from unwanted changes or side-effects in your codebase. Sometimes projects will even introduce tests that don't make any assertions (this means they can never fail) just to increase their code coverage.
                         </MudText>
                         <MudText Typo="Typo.body1" Class="mb-5">
-                            A mutation score is calculated by a tool called <MudLink>Stryker.NET</MudLink> which makes thousands of mutations to the beamOS codebase and then runs the automated tests against the changed code. It is expected that the tests will now fail. If they don't fail, it might indicate that the tests do not sufficiently cover the code.
+                            A mutation score is calculated by a tool called <MudLink Href="https://stryker-mutator.io/" Target="_blank">Stryker.NET</MudLink> which makes thousands of mutations to the beamOS codebase and then runs the automated tests against the changed code. It is expected that the tests will now fail. If they don't fail, it might indicate that the tests do not sufficiently cover the code.
                         </MudText>
                         <MudText Typo="Typo.body1" Class="mb-5">
                             To put it more simply, Stryker.NET will change a '+' to a '-' in a method such as the 'GetRotationMatrix' method. Then we would expect that at least some of our tests that makes sure we are accurately computing the rotation matrix would fail. If not, then there is likely an issue with our tests.
