@@ -5,6 +5,7 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <PropertyGroup Label="General Config">
+    <TargetFramework>net9.0</TargetFramework>
     <ContinuousIntegrationBuild Condition="'$(ContinuousIntegrationBuild)' == ''">false</ContinuousIntegrationBuild>
     <NoWarn>
       CA1707; <!-- Remove the underscores from method name -->
