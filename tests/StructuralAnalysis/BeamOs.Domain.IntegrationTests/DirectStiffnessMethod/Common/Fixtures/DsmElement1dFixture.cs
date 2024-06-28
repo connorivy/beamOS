@@ -1,6 +1,6 @@
+using BeamOS.CodeGen.Apis.EditorApi;
 using BeamOS.Tests.Common.Interfaces;
 using BeamOS.Tests.Common.SolvedProblems.Fixtures;
-using BeamOS.WebApp.EditorApi;
 
 namespace BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Fixtures;
 

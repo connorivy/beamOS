@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     <PackageReference Include="FastEndpoints" />
     <PackageReference Include="FastEndpoints.ClientGen" />
     <PackageReference Include="FastEndpoints.Swagger" />
@@ -16,8 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\BeamOs.StructuralAnalysis\BeamOs.Api\BeamOs.Api.csproj" />
-    <ProjectReference Include="..\..\BeamOs.StructuralAnalysis\BeamOs.Contracts\BeamOs.Contracts.csproj" />
+    <ProjectReference Include="..\..\..\src\BeamOs.Common\BeamOs.Common.Api\BeamOs.Common.Api.csproj" />
+    <ProjectReference Include="..\..\..\src\BeamOs.StructuralAnalysis\BeamOs.Contracts\BeamOs.Contracts.csproj" />
   </ItemGroup>
 
   <Target Name="ClientGen" AfterTargets="Build" Condition="'$(Configuration)'=='GenerateClients'">

@@ -7,7 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\BeamOs.StructuralAnalysis\BeamOs.ApiClient\BeamOs.ApiClient.csproj" />
+    <ProjectReference Include="..\..\..\src\BeamOs.Common\BeamOs.Common.Api\BeamOs.Common.Api.csproj" />
+    <ProjectReference Include="..\..\..\src\BeamOs.StructuralAnalysis\BeamOs.Contracts\BeamOs.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

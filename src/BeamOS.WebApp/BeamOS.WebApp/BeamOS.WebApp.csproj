@@ -31,7 +31,6 @@
     <ProjectReference Include="..\BeamOS.WebApp.Client\BeamOS.WebApp.Client.csproj">
       <PrivateAssets>all</PrivateAssets>
     </ProjectReference>
-    <ProjectReference Include="..\BeamOS.WebApp.EditorApi\BeamOS.WebApp.EditorApi.csproj" />
   </ItemGroup>
 
   <ItemGroup>

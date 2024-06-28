@@ -1,6 +1,6 @@
+using BeamOS.CodeGen.Apis.EditorApi;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOS.Tests.Common.Interfaces;
-using BeamOS.WebApp.EditorApi;
 using UnitsNet;
 
 namespace BeamOS.Tests.Common.SolvedProblems.Fixtures;

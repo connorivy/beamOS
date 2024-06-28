@@ -29,14 +29,3 @@ public record AnalyticalModelResponse3(
 );
 
 public record UnsupportedStructureDisplacementIdResponse(string AnalyticalNodeId, string Direction);
-
-public record ModelSettingsResponse(UnitSettingsResponse UnitSettings);
-
-public record UnitSettingsResponse(
-    string LengthUnit,
-    string AreaUnit,
-    string VolumeUnit,
-    string ForceUnit,
-    string ForcePerLengthUnit,
-    string TorqueUnit
-);

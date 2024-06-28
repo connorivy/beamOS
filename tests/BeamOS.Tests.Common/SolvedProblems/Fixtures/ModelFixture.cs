@@ -1,6 +1,7 @@
 using BeamOs.Api.Common.Mappers;
 using BeamOs.ApiClient;
 using BeamOs.Application.Common.Mappers;
+using BeamOS.CodeGen.Apis.EditorApi;
 using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
 using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Domain.Common.ValueObjects;
@@ -11,7 +12,6 @@ using BeamOs.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate;
 using BeamOS.Tests.Common.Interfaces;
-using BeamOS.WebApp.EditorApi;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Spatial.Euclidean;
 using Riok.Mapperly.Abstractions;
