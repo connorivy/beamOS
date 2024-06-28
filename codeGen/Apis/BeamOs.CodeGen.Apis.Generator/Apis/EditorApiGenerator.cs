@@ -10,32 +10,24 @@ public class EditorApiGenerator : AbstractGenerator
     public EditorApiGenerator(WebApplication app)
         : base(app)
     {
-        _ = this.AddMethodToApi("CreateElement1d").Accepts<Element1DResponse>().Produces<Result>();
+        _ = this.AddMethodToApi("CreateElement1d").Accepts<Element1DResponse>();
 
-        _ = this.AddMethodToApi("CreateModel").Accepts<ModelResponse>().Produces<Result>();
+        _ = this.AddMethodToApi("CreateModel").Accepts<ModelResponse>();
 
-        _ = this.AddMethodToApi("CreateModelHydrated")
-            .Accepts<ModelResponseHydrated>()
-            .Produces<Result>();
+        _ = this.AddMethodToApi("CreateModelHydrated").Accepts<ModelResponseHydrated>();
 
-        _ = this.AddMethodToApi("CreateNode").Accepts<NodeResponse>().Produces<Result>();
+        _ = this.AddMethodToApi("CreateNode").Accepts<NodeResponse>();
 
-        _ = this.AddMethodToApi("Clear").Produces<Result>();
+        _ = this.AddMethodToApi("Clear");
     }
 
     public const string EditorApiDocumentName = "EditorApiAlpha";
     protected override string ClientName => EditorApiDocumentName;
-    protected override string ClientNamespace => "BeamOS.CodeGen.Apis.EditorApi";
+    protected override string ClientNamespace => "BeamOs.CodeGen.Apis.EditorApi";
     protected override string DestinationPath => $"../{this.ClientNamespace}/";
     protected override string OpenApiDefinitionUrl =>
         $"{this.App.Configuration[$"URLS"].Split(';').First()}/swagger/{this.ClientName}/swagger.json";
-}
 
-public static class EditorApiGeneratorUtils
-{
-    public static async Task GenerateEditorApi(this WebApplication app)
-    {
-        EditorApiGenerator editorApiGenerator = new(app);
-        await editorApiGenerator.GenerateClients();
-    }
+    protected override RouteHandlerBuilder AddMethodToApi(string methodName) =>
+        base.AddMethodToApi(methodName).Produces<Result>();
 }

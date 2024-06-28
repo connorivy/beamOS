@@ -4,11 +4,8 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-const string contracts = "contracts";
-
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
 builder
     .Services
     .AddSwaggerGen(config =>
@@ -32,9 +29,23 @@ var app = builder.Build();
 
 //app.MapOpenApi();
 app.UseSwagger();
-app.UseSwaggerUI();
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint(
+        $"/swagger/{StructuralAnalysisContractsTypesApiGenerator.StructuralAnalysisContractsApiDocumentName}/swagger.json",
+        StructuralAnalysisContractsTypesApiGenerator.StructuralAnalysisContractsApiDocumentName
+    );
+    options.SwaggerEndpoint(
+        $"/swagger/{EditorApiGenerator.EditorApiDocumentName}/swagger.json",
+        EditorApiGenerator.EditorApiDocumentName
+    );
+});
 
-await app.GenerateEditorApi();
-await app.GenerateStructuralAnalysisContractsApi();
+EditorApiGenerator editorApiGenerator = new(app);
+StructuralAnalysisContractsTypesApiGenerator contractsTypesApiGenerator = new(app);
 
 //app.Run();
+
+await app.StartAsync();
+await editorApiGenerator.GenerateClients();
+await contractsTypesApiGenerator.GenerateClients();

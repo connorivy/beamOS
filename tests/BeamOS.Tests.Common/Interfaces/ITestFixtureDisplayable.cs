@@ -1,4 +1,4 @@
-using BeamOS.CodeGen.Apis.EditorApi;
+using BeamOs.CodeGen.Apis.EditorApi;
 
 namespace BeamOS.Tests.Common.Interfaces;
 

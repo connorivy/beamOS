@@ -1,7 +1,7 @@
 using BeamOs.Api.Common.Mappers;
 using BeamOs.ApiClient;
 using BeamOs.Application.Common.Mappers;
-using BeamOS.CodeGen.Apis.EditorApi;
+using BeamOs.CodeGen.Apis.EditorApi;
 using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
 using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Domain.Common.ValueObjects;

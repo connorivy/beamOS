@@ -957,7 +957,6 @@ export interface IRestraintResponse {
 
 export class Result implements IResult {
     readonly isSuccess!: boolean;
-    readonly isFailure!: boolean;
     error!: BeamOsError;
 
     constructor(data?: IResult) {
@@ -975,7 +974,6 @@ export class Result implements IResult {
     init(_data?: any) {
         if (_data) {
             (<any>this).isSuccess = _data["isSuccess"];
-            (<any>this).isFailure = _data["isFailure"];
             this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : new BeamOsError();
         }
     }
@@ -990,7 +988,6 @@ export class Result implements IResult {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["isSuccess"] = this.isSuccess;
-        data["isFailure"] = this.isFailure;
         data["error"] = this.error ? this.error.toJSON() : <any>undefined;
         return data;
     }
@@ -998,7 +995,6 @@ export class Result implements IResult {
 
 export interface IResult {
     isSuccess: boolean;
-    isFailure: boolean;
     error: BeamOsError;
 }
 

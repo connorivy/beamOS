@@ -38,18 +38,21 @@
         <script src="/_framework/aspnetcore-browser-refresh.js"></script>
     </environment>
 
-    <script type="module">
-        // be sure to specify the exact version
-        import { codeToHtml } from 'https://esm.sh/shiki@1.7.0'
-        // or
-        // import { codeToHtml } from 'https://esm.run/shiki@1.7.0'
+    @if (Configuration[Constants.EDITOR_USE_SERVED_CONFIG_NAME] == "True")
+    {
+        <script type="module">
+            import { BeamOsEditor } from 'http://localhost:@Configuration[Constants.EDITOR_PORT_CONFIG_NAME]/lib/main.ts';
 
-        // const foo = document.getElementById('foo')
-        // foo.innerHTML = await codeToHtml('console.log("Hi, Shiki on CDN :)")', {
-        //     lang: 'js',
-        //     theme: 'rose-pine'
-        // })
-    </script>
+            // WARNING : the string "createEditorFromId" must match the string in EditorApiProxy.cs
+            window.createEditorFromId = (editorId) => {
+                return BeamOsEditor.createFromId(editorId)
+            }
+        </script>
+    }
+    else
+    {
+        <script src="js/index.bundle.js"></script>
+    }
 </body>
 
 </html>

@@ -19,11 +19,10 @@ public static class DirectoryHelper
 
     public static string GetSrcDir() => Path.Combine(GetRootDirectory(), "src");
 
-    public static string GetWebAppDir() =>
-        Path.Combine(GetSrcDir(), $"{nameof(BeamOS)}.{nameof(BeamOS.WebApp)}");
+    public static string GetWebAppDir() => Path.Combine(GetSrcDir(), $"{nameof(BeamOS)}.WebApp");
 
     public static string GetWebAppServerDir() =>
-        Path.Combine(GetWebAppDir(), $"{nameof(BeamOS)}.{nameof(BeamOS.WebApp)}");
+        Path.Combine(GetWebAppDir(), $"{nameof(BeamOS)}.WebApp");
 
     public static string GetWebAppClientDir() =>
         Path.Combine(GetWebAppDir(), "BeamOS.WebApp.Client");

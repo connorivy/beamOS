@@ -16,7 +16,7 @@
 #pragma warning disable 8604 // Disable "CS8604 Possible null reference argument for parameter"
 #pragma warning disable 8625 // Disable "CS8625 Cannot convert null literal to non-nullable reference type"
 
-namespace BeamOS.CodeGen.Apis.EditorApi
+namespace BeamOs.CodeGen.Apis.EditorApi
 {
     using System = global::System;
 

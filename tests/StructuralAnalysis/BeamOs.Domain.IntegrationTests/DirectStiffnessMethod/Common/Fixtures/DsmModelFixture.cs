@@ -1,4 +1,4 @@
-using BeamOS.CodeGen.Apis.EditorApi;
+using BeamOs.CodeGen.Apis.EditorApi;
 using BeamOs.Domain.DirectStiffnessMethod;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Interfaces;
 using BeamOS.Tests.Common.Interfaces;

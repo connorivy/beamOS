@@ -1,5 +1,6 @@
 using System.Reflection;
-using BeamOS.WebApp.EditorApi;
+using BeamOs.CodeGen.Apis.EditorApi;
+using BeamOs.Common.Api;
 using Microsoft.JSInterop;
 
 namespace BeamOS.WebApp.Client;
@@ -34,7 +35,7 @@ public class EditorApiProxy : DispatchProxy
         }
 
         return this.editorReference
-            .InvokeAsync<string>(
+            .InvokeAsync<Result>(
                 $"api.{GetTsMethodName(targetMethod?.Name ?? throw new ArgumentNullException())}",
                 args
             )

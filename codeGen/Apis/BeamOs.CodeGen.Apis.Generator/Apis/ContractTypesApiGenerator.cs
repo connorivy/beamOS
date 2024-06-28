@@ -25,18 +25,9 @@ public class StructuralAnalysisContractsTypesApiGenerator : AbstractGenerator
 
     public const string StructuralAnalysisContractsApiDocumentName = "StructuralAnalysisContracts";
     protected override string ClientName => StructuralAnalysisContractsApiDocumentName;
-    protected override string ClientNamespace => "BeamOS.CodeGen.Apis";
+    protected override string ClientNamespace => "BeamOs.CodeGen.Apis";
     protected override string DestinationPath => $"../{this.ClientNamespace}/{this.ClientName}/";
     protected override string OpenApiDefinitionUrl =>
         $"{this.App.Configuration[$"URLS"].Split(';').First()}/swagger/{this.ClientName}/swagger.json";
     protected override bool GenerateCsClient => false;
-}
-
-public static class StructuralAnalysisContractsApiGeneratorUtils
-{
-    public static async Task GenerateStructuralAnalysisContractsApi(this WebApplication app)
-    {
-        StructuralAnalysisContractsTypesApiGenerator generator = new(app);
-        await generator.GenerateClients();
-    }
 }

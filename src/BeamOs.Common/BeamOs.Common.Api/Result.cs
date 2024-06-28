@@ -1,7 +1,10 @@
+using System.Text.Json.Serialization;
+
 namespace BeamOs.Common.Api;
 
 public class Result
 {
+    [JsonConstructor]
     private Result(bool isSuccess, BeamOsError error)
     {
         if (isSuccess && error != BeamOsError.None || !isSuccess && error == BeamOsError.None)
@@ -15,6 +18,7 @@ public class Result
 
     public bool IsSuccess { get; }
 
+    [JsonIgnore]
     public bool IsFailure => !this.IsSuccess;
 
     public BeamOsError Error { get; }

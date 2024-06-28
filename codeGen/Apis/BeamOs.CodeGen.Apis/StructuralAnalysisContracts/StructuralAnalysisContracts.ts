@@ -8,5 +8,4768 @@
 /* eslint-disable */
 // ReSharper disable InconsistentNaming
 
+export interface IStructuralAnalysisContracts {
 
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_SectionProfile_CreateSectionProfileRequest(): Promise<CreateSectionProfileRequest>;
 
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_SectionProfile_SectionProfileResponse(): Promise<SectionProfileResponse>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_PointLoad_CreatePointLoadRequest(): Promise<CreatePointLoadRequest>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_PointLoad_PointLoadResponse(): Promise<PointLoadResponse>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Node_CreateNodeRequest(): Promise<CreateNodeRequest>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Node_PointRequest(): Promise<PointRequest>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Node_RestraintRequest(): Promise<RestraintRequest>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Node_NodeResponse(): Promise<NodeResponse>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Node_PointResponse(): Promise<PointResponse>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Node_RestraintResponse(): Promise<RestraintResponse>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_MomentLoad_CreateMomentLoadRequest(): Promise<CreateMomentLoadRequest>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_MomentLoad_GetMomentLoadRequest(): Promise<GetMomentLoadRequest>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_MomentLoad_MomentLoadResponse(): Promise<MomentLoadResponse>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Model_CreateModelRequest(): Promise<CreateModelRequest>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Model_PhysicalModelSettingsDto(): Promise<PhysicalModelSettingsDto>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Model_GetElementsInModelRequest(): Promise<GetElementsInModelRequest>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Model_GetModelHydratedRequest(): Promise<GetModelHydratedRequest>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Model_ModelResponse(): Promise<ModelResponse>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Model_ModelSettingsResponse(): Promise<ModelSettingsResponse>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Model_UnitSettingsResponse(): Promise<UnitSettingsResponse>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Model_ModelResponseHydrated(): Promise<ModelResponseHydrated>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Material_CreateMaterialRequest(): Promise<CreateMaterialRequest>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Material_MaterialResponse(): Promise<MaterialResponse>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Element1d_CreateElement1dRequest(): Promise<CreateElement1dRequest>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Element1d_Element1DResponse(): Promise<Element1DResponse>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Element1d_Element1dResponseHydrated(): Promise<Element1dResponseHydrated>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Element1d_GetElement1dsRequest(): Promise<GetElement1dsRequest>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_Common_EmptyResquest(): Promise<EmptyResquest>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_Common_IdRequest(): Promise<IdRequest>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_Common_IdRequestWithProperties(): Promise<IdRequestWithProperties>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_Common_GetNodeResultsRequest(): Promise<GetNodeResultsRequest>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_Common_UnitSettingsDto(): Promise<UnitSettingsDto>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_Common_UnitSettingsDtoVerbose(): Promise<UnitSettingsDtoVerbose>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_Common_PreconfiguredUnits(): Promise<PreconfiguredUnits>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_Common_UnitValueDto(): Promise<UnitValueDto>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_Common_Vector3(): Promise<Vector3>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_AnalyticalResults_DisplacementsResponse(): Promise<DisplacementsResponse>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_AnalyticalResults_Model_AnalyticalModelResponse(): Promise<AnalyticalModelResponse>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_AnalyticalResults_Model_AnalyticalModelResponse2(): Promise<AnalyticalModelResponse2>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_AnalyticalResults_Model_AnalyticalModelResponse3(): Promise<AnalyticalModelResponse3>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_AnalyticalResults_Model_UnsupportedStructureDisplacementIdResponse(): Promise<UnsupportedStructureDisplacementIdResponse>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_AnalyticalResults_Model_RunAnalysisRequest(): Promise<RunAnalysisRequest>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_AnalyticalResults_Model_ModelSettingsRequest(): Promise<ModelSettingsRequest>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_AnalyticalResults_Model_UnitSettingsRequest(): Promise<UnitSettingsRequest>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_AnalyticalResults_Forces_ForcesResponse(): Promise<ForcesResponse>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_AnalyticalResults_Diagrams_DiagramResponse(): Promise<DiagramResponse>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_AnalyticalResults_Diagrams_DiagramConsistantIntervalResponse(): Promise<DiagramConsistantIntervalResponse>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_AnalyticalResults_Diagrams_ShearDiagramResponse(): Promise<ShearDiagramResponse>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_AnalyticalResults_AnalyticalNode_NodeResultResponse(): Promise<NodeResultResponse>;
+}
+
+export class StructuralAnalysisContracts implements IStructuralAnalysisContracts {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_SectionProfile_CreateSectionProfileRequest(): Promise<CreateSectionProfileRequest> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.SectionProfile.CreateSectionProfileRequest";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_PhysicalModel_SectionProfile_CreateSectionProfileRequest(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_PhysicalModel_SectionProfile_CreateSectionProfileRequest(response: Response): Promise<CreateSectionProfileRequest> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CreateSectionProfileRequest.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CreateSectionProfileRequest>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_SectionProfile_SectionProfileResponse(): Promise<SectionProfileResponse> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.SectionProfile.SectionProfileResponse";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_PhysicalModel_SectionProfile_SectionProfileResponse(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_PhysicalModel_SectionProfile_SectionProfileResponse(response: Response): Promise<SectionProfileResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SectionProfileResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SectionProfileResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_PointLoad_CreatePointLoadRequest(): Promise<CreatePointLoadRequest> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.PointLoad.CreatePointLoadRequest";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_PhysicalModel_PointLoad_CreatePointLoadRequest(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_PhysicalModel_PointLoad_CreatePointLoadRequest(response: Response): Promise<CreatePointLoadRequest> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CreatePointLoadRequest.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CreatePointLoadRequest>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_PointLoad_PointLoadResponse(): Promise<PointLoadResponse> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.PointLoad.PointLoadResponse";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_PhysicalModel_PointLoad_PointLoadResponse(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_PhysicalModel_PointLoad_PointLoadResponse(response: Response): Promise<PointLoadResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PointLoadResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PointLoadResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Node_CreateNodeRequest(): Promise<CreateNodeRequest> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.Node.CreateNodeRequest";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_PhysicalModel_Node_CreateNodeRequest(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_PhysicalModel_Node_CreateNodeRequest(response: Response): Promise<CreateNodeRequest> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CreateNodeRequest.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CreateNodeRequest>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Node_PointRequest(): Promise<PointRequest> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.Node.PointRequest";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_PhysicalModel_Node_PointRequest(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_PhysicalModel_Node_PointRequest(response: Response): Promise<PointRequest> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PointRequest.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PointRequest>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Node_RestraintRequest(): Promise<RestraintRequest> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.Node.RestraintRequest";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_PhysicalModel_Node_RestraintRequest(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_PhysicalModel_Node_RestraintRequest(response: Response): Promise<RestraintRequest> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = RestraintRequest.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<RestraintRequest>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Node_NodeResponse(): Promise<NodeResponse> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.Node.NodeResponse";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_PhysicalModel_Node_NodeResponse(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_PhysicalModel_Node_NodeResponse(response: Response): Promise<NodeResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = NodeResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<NodeResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Node_PointResponse(): Promise<PointResponse> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.Node.PointResponse";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_PhysicalModel_Node_PointResponse(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_PhysicalModel_Node_PointResponse(response: Response): Promise<PointResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PointResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PointResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Node_RestraintResponse(): Promise<RestraintResponse> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.Node.RestraintResponse";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_PhysicalModel_Node_RestraintResponse(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_PhysicalModel_Node_RestraintResponse(response: Response): Promise<RestraintResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = RestraintResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<RestraintResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_MomentLoad_CreateMomentLoadRequest(): Promise<CreateMomentLoadRequest> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.MomentLoad.CreateMomentLoadRequest";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_PhysicalModel_MomentLoad_CreateMomentLoadRequest(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_PhysicalModel_MomentLoad_CreateMomentLoadRequest(response: Response): Promise<CreateMomentLoadRequest> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CreateMomentLoadRequest.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CreateMomentLoadRequest>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_MomentLoad_GetMomentLoadRequest(): Promise<GetMomentLoadRequest> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.MomentLoad.GetMomentLoadRequest";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_PhysicalModel_MomentLoad_GetMomentLoadRequest(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_PhysicalModel_MomentLoad_GetMomentLoadRequest(response: Response): Promise<GetMomentLoadRequest> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GetMomentLoadRequest.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetMomentLoadRequest>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_MomentLoad_MomentLoadResponse(): Promise<MomentLoadResponse> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.MomentLoad.MomentLoadResponse";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_PhysicalModel_MomentLoad_MomentLoadResponse(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_PhysicalModel_MomentLoad_MomentLoadResponse(response: Response): Promise<MomentLoadResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MomentLoadResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<MomentLoadResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Model_CreateModelRequest(): Promise<CreateModelRequest> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.Model.CreateModelRequest";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_PhysicalModel_Model_CreateModelRequest(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_PhysicalModel_Model_CreateModelRequest(response: Response): Promise<CreateModelRequest> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CreateModelRequest.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CreateModelRequest>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Model_PhysicalModelSettingsDto(): Promise<PhysicalModelSettingsDto> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.Model.PhysicalModelSettingsDto";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_PhysicalModel_Model_PhysicalModelSettingsDto(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_PhysicalModel_Model_PhysicalModelSettingsDto(response: Response): Promise<PhysicalModelSettingsDto> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PhysicalModelSettingsDto.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PhysicalModelSettingsDto>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Model_GetElementsInModelRequest(): Promise<GetElementsInModelRequest> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.Model.GetElementsInModelRequest";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_PhysicalModel_Model_GetElementsInModelRequest(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_PhysicalModel_Model_GetElementsInModelRequest(response: Response): Promise<GetElementsInModelRequest> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GetElementsInModelRequest.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetElementsInModelRequest>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Model_GetModelHydratedRequest(): Promise<GetModelHydratedRequest> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.Model.GetModelHydratedRequest";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_PhysicalModel_Model_GetModelHydratedRequest(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_PhysicalModel_Model_GetModelHydratedRequest(response: Response): Promise<GetModelHydratedRequest> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GetModelHydratedRequest.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetModelHydratedRequest>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Model_ModelResponse(): Promise<ModelResponse> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.Model.ModelResponse";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_PhysicalModel_Model_ModelResponse(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_PhysicalModel_Model_ModelResponse(response: Response): Promise<ModelResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ModelResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ModelResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Model_ModelSettingsResponse(): Promise<ModelSettingsResponse> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.Model.ModelSettingsResponse";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_PhysicalModel_Model_ModelSettingsResponse(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_PhysicalModel_Model_ModelSettingsResponse(response: Response): Promise<ModelSettingsResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ModelSettingsResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ModelSettingsResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Model_UnitSettingsResponse(): Promise<UnitSettingsResponse> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.Model.UnitSettingsResponse";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_PhysicalModel_Model_UnitSettingsResponse(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_PhysicalModel_Model_UnitSettingsResponse(response: Response): Promise<UnitSettingsResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = UnitSettingsResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<UnitSettingsResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Model_ModelResponseHydrated(): Promise<ModelResponseHydrated> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.Model.ModelResponseHydrated";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_PhysicalModel_Model_ModelResponseHydrated(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_PhysicalModel_Model_ModelResponseHydrated(response: Response): Promise<ModelResponseHydrated> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ModelResponseHydrated.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ModelResponseHydrated>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Material_CreateMaterialRequest(): Promise<CreateMaterialRequest> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.Material.CreateMaterialRequest";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_PhysicalModel_Material_CreateMaterialRequest(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_PhysicalModel_Material_CreateMaterialRequest(response: Response): Promise<CreateMaterialRequest> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CreateMaterialRequest.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CreateMaterialRequest>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Material_MaterialResponse(): Promise<MaterialResponse> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.Material.MaterialResponse";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_PhysicalModel_Material_MaterialResponse(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_PhysicalModel_Material_MaterialResponse(response: Response): Promise<MaterialResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MaterialResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<MaterialResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Element1d_CreateElement1dRequest(): Promise<CreateElement1dRequest> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.Element1d.CreateElement1dRequest";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_PhysicalModel_Element1d_CreateElement1dRequest(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_PhysicalModel_Element1d_CreateElement1dRequest(response: Response): Promise<CreateElement1dRequest> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CreateElement1dRequest.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CreateElement1dRequest>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Element1d_Element1DResponse(): Promise<Element1DResponse> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.Element1d.Element1DResponse";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_PhysicalModel_Element1d_Element1DResponse(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_PhysicalModel_Element1d_Element1DResponse(response: Response): Promise<Element1DResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Element1DResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Element1DResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Element1d_Element1dResponseHydrated(): Promise<Element1dResponseHydrated> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.Element1d.Element1dResponseHydrated";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_PhysicalModel_Element1d_Element1dResponseHydrated(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_PhysicalModel_Element1d_Element1dResponseHydrated(response: Response): Promise<Element1dResponseHydrated> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Element1dResponseHydrated.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Element1dResponseHydrated>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_PhysicalModel_Element1d_GetElement1dsRequest(): Promise<GetElement1dsRequest> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.Element1d.GetElement1dsRequest";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_PhysicalModel_Element1d_GetElement1dsRequest(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_PhysicalModel_Element1d_GetElement1dsRequest(response: Response): Promise<GetElement1dsRequest> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GetElement1dsRequest.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetElement1dsRequest>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_Common_EmptyResquest(): Promise<EmptyResquest> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.Common.EmptyResquest";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_Common_EmptyResquest(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_Common_EmptyResquest(response: Response): Promise<EmptyResquest> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = EmptyResquest.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<EmptyResquest>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_Common_IdRequest(): Promise<IdRequest> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.Common.IdRequest";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_Common_IdRequest(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_Common_IdRequest(response: Response): Promise<IdRequest> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = IdRequest.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<IdRequest>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_Common_IdRequestWithProperties(): Promise<IdRequestWithProperties> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.Common.IdRequestWithProperties";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_Common_IdRequestWithProperties(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_Common_IdRequestWithProperties(response: Response): Promise<IdRequestWithProperties> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = IdRequestWithProperties.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<IdRequestWithProperties>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_Common_GetNodeResultsRequest(): Promise<GetNodeResultsRequest> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.Common.GetNodeResultsRequest";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_Common_GetNodeResultsRequest(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_Common_GetNodeResultsRequest(response: Response): Promise<GetNodeResultsRequest> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GetNodeResultsRequest.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetNodeResultsRequest>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_Common_UnitSettingsDto(): Promise<UnitSettingsDto> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.Common.UnitSettingsDto";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_Common_UnitSettingsDto(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_Common_UnitSettingsDto(response: Response): Promise<UnitSettingsDto> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = UnitSettingsDto.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<UnitSettingsDto>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_Common_UnitSettingsDtoVerbose(): Promise<UnitSettingsDtoVerbose> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.Common.UnitSettingsDtoVerbose";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_Common_UnitSettingsDtoVerbose(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_Common_UnitSettingsDtoVerbose(response: Response): Promise<UnitSettingsDtoVerbose> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = UnitSettingsDtoVerbose.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<UnitSettingsDtoVerbose>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_Common_PreconfiguredUnits(): Promise<PreconfiguredUnits> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.Common.PreconfiguredUnits";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_Common_PreconfiguredUnits(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_Common_PreconfiguredUnits(response: Response): Promise<PreconfiguredUnits> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PreconfiguredUnits>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_Common_UnitValueDto(): Promise<UnitValueDto> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.Common.UnitValueDto";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_Common_UnitValueDto(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_Common_UnitValueDto(response: Response): Promise<UnitValueDto> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = UnitValueDto.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<UnitValueDto>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_Common_Vector3(): Promise<Vector3> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.Common.Vector3";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_Common_Vector3(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_Common_Vector3(response: Response): Promise<Vector3> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Vector3.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Vector3>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_AnalyticalResults_DisplacementsResponse(): Promise<DisplacementsResponse> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.AnalyticalResults.DisplacementsResponse";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_AnalyticalResults_DisplacementsResponse(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_AnalyticalResults_DisplacementsResponse(response: Response): Promise<DisplacementsResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = DisplacementsResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<DisplacementsResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_AnalyticalResults_Model_AnalyticalModelResponse(): Promise<AnalyticalModelResponse> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.AnalyticalResults.Model.AnalyticalModelResponse";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_AnalyticalResults_Model_AnalyticalModelResponse(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_AnalyticalResults_Model_AnalyticalModelResponse(response: Response): Promise<AnalyticalModelResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AnalyticalModelResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<AnalyticalModelResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_AnalyticalResults_Model_AnalyticalModelResponse2(): Promise<AnalyticalModelResponse2> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.AnalyticalResults.Model.AnalyticalModelResponse2";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_AnalyticalResults_Model_AnalyticalModelResponse2(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_AnalyticalResults_Model_AnalyticalModelResponse2(response: Response): Promise<AnalyticalModelResponse2> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AnalyticalModelResponse2.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<AnalyticalModelResponse2>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_AnalyticalResults_Model_AnalyticalModelResponse3(): Promise<AnalyticalModelResponse3> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.AnalyticalResults.Model.AnalyticalModelResponse3";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_AnalyticalResults_Model_AnalyticalModelResponse3(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_AnalyticalResults_Model_AnalyticalModelResponse3(response: Response): Promise<AnalyticalModelResponse3> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AnalyticalModelResponse3.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<AnalyticalModelResponse3>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_AnalyticalResults_Model_UnsupportedStructureDisplacementIdResponse(): Promise<UnsupportedStructureDisplacementIdResponse> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.AnalyticalResults.Model.UnsupportedStructureDisplacementIdResponse";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_AnalyticalResults_Model_UnsupportedStructureDisplacementIdResponse(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_AnalyticalResults_Model_UnsupportedStructureDisplacementIdResponse(response: Response): Promise<UnsupportedStructureDisplacementIdResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = UnsupportedStructureDisplacementIdResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<UnsupportedStructureDisplacementIdResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_AnalyticalResults_Model_RunAnalysisRequest(): Promise<RunAnalysisRequest> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.AnalyticalResults.Model.RunAnalysisRequest";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_AnalyticalResults_Model_RunAnalysisRequest(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_AnalyticalResults_Model_RunAnalysisRequest(response: Response): Promise<RunAnalysisRequest> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = RunAnalysisRequest.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<RunAnalysisRequest>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_AnalyticalResults_Model_ModelSettingsRequest(): Promise<ModelSettingsRequest> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.AnalyticalResults.Model.ModelSettingsRequest";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_AnalyticalResults_Model_ModelSettingsRequest(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_AnalyticalResults_Model_ModelSettingsRequest(response: Response): Promise<ModelSettingsRequest> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ModelSettingsRequest.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ModelSettingsRequest>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_AnalyticalResults_Model_UnitSettingsRequest(): Promise<UnitSettingsRequest> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.AnalyticalResults.Model.UnitSettingsRequest";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_AnalyticalResults_Model_UnitSettingsRequest(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_AnalyticalResults_Model_UnitSettingsRequest(response: Response): Promise<UnitSettingsRequest> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = UnitSettingsRequest.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<UnitSettingsRequest>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_AnalyticalResults_Forces_ForcesResponse(): Promise<ForcesResponse> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.AnalyticalResults.Forces.ForcesResponse";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_AnalyticalResults_Forces_ForcesResponse(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_AnalyticalResults_Forces_ForcesResponse(response: Response): Promise<ForcesResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ForcesResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ForcesResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_AnalyticalResults_Diagrams_DiagramResponse(): Promise<DiagramResponse> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.AnalyticalResults.Diagrams.DiagramResponse";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_AnalyticalResults_Diagrams_DiagramResponse(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_AnalyticalResults_Diagrams_DiagramResponse(response: Response): Promise<DiagramResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = DiagramResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<DiagramResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_AnalyticalResults_Diagrams_DiagramConsistantIntervalResponse(): Promise<DiagramConsistantIntervalResponse> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.AnalyticalResults.Diagrams.DiagramConsistantIntervalResponse";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_AnalyticalResults_Diagrams_DiagramConsistantIntervalResponse(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_AnalyticalResults_Diagrams_DiagramConsistantIntervalResponse(response: Response): Promise<DiagramConsistantIntervalResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = DiagramConsistantIntervalResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<DiagramConsistantIntervalResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_AnalyticalResults_Diagrams_ShearDiagramResponse(): Promise<ShearDiagramResponse> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.AnalyticalResults.Diagrams.ShearDiagramResponse";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_AnalyticalResults_Diagrams_ShearDiagramResponse(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_AnalyticalResults_Diagrams_ShearDiagramResponse(response: Response): Promise<ShearDiagramResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ShearDiagramResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ShearDiagramResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_AnalyticalResults_AnalyticalNode_NodeResultResponse(): Promise<NodeResultResponse> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.AnalyticalResults.AnalyticalNode.NodeResultResponse";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_AnalyticalResults_AnalyticalNode_NodeResultResponse(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_AnalyticalResults_AnalyticalNode_NodeResultResponse(response: Response): Promise<NodeResultResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = NodeResultResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<NodeResultResponse>(null as any);
+    }
+}
+
+export class AnalyticalModelResponse implements IAnalyticalModelResponse {
+    degreeOfFreedomIds!: UnsupportedStructureDisplacementIdResponse[];
+    boundaryConditionIds!: UnsupportedStructureDisplacementIdResponse[];
+    analyticalNodeDisplacements!: number[];
+    analyticalNodeReactions!: number[];
+
+    constructor(data?: IAnalyticalModelResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.degreeOfFreedomIds = [];
+            this.boundaryConditionIds = [];
+            this.analyticalNodeDisplacements = [];
+            this.analyticalNodeReactions = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["degreeOfFreedomIds"])) {
+                this.degreeOfFreedomIds = [] as any;
+                for (let item of _data["degreeOfFreedomIds"])
+                    this.degreeOfFreedomIds!.push(UnsupportedStructureDisplacementIdResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["boundaryConditionIds"])) {
+                this.boundaryConditionIds = [] as any;
+                for (let item of _data["boundaryConditionIds"])
+                    this.boundaryConditionIds!.push(UnsupportedStructureDisplacementIdResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["analyticalNodeDisplacements"])) {
+                this.analyticalNodeDisplacements = [] as any;
+                for (let item of _data["analyticalNodeDisplacements"])
+                    this.analyticalNodeDisplacements!.push(item);
+            }
+            if (Array.isArray(_data["analyticalNodeReactions"])) {
+                this.analyticalNodeReactions = [] as any;
+                for (let item of _data["analyticalNodeReactions"])
+                    this.analyticalNodeReactions!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): AnalyticalModelResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new AnalyticalModelResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.degreeOfFreedomIds)) {
+            data["degreeOfFreedomIds"] = [];
+            for (let item of this.degreeOfFreedomIds)
+                data["degreeOfFreedomIds"].push(item.toJSON());
+        }
+        if (Array.isArray(this.boundaryConditionIds)) {
+            data["boundaryConditionIds"] = [];
+            for (let item of this.boundaryConditionIds)
+                data["boundaryConditionIds"].push(item.toJSON());
+        }
+        if (Array.isArray(this.analyticalNodeDisplacements)) {
+            data["analyticalNodeDisplacements"] = [];
+            for (let item of this.analyticalNodeDisplacements)
+                data["analyticalNodeDisplacements"].push(item);
+        }
+        if (Array.isArray(this.analyticalNodeReactions)) {
+            data["analyticalNodeReactions"] = [];
+            for (let item of this.analyticalNodeReactions)
+                data["analyticalNodeReactions"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IAnalyticalModelResponse {
+    degreeOfFreedomIds: UnsupportedStructureDisplacementIdResponse[];
+    boundaryConditionIds: UnsupportedStructureDisplacementIdResponse[];
+    analyticalNodeDisplacements: number[];
+    analyticalNodeReactions: number[];
+}
+
+export class AnalyticalModelResponse2 implements IAnalyticalModelResponse2 {
+    degreeOfFreedomIds!: UnsupportedStructureDisplacementIdResponse[];
+    boundaryConditionIds!: UnsupportedStructureDisplacementIdResponse[];
+    nodeResponses!: NodeResultResponse[];
+
+    constructor(data?: IAnalyticalModelResponse2) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.degreeOfFreedomIds = [];
+            this.boundaryConditionIds = [];
+            this.nodeResponses = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["degreeOfFreedomIds"])) {
+                this.degreeOfFreedomIds = [] as any;
+                for (let item of _data["degreeOfFreedomIds"])
+                    this.degreeOfFreedomIds!.push(UnsupportedStructureDisplacementIdResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["boundaryConditionIds"])) {
+                this.boundaryConditionIds = [] as any;
+                for (let item of _data["boundaryConditionIds"])
+                    this.boundaryConditionIds!.push(UnsupportedStructureDisplacementIdResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["nodeResponses"])) {
+                this.nodeResponses = [] as any;
+                for (let item of _data["nodeResponses"])
+                    this.nodeResponses!.push(NodeResultResponse.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): AnalyticalModelResponse2 {
+        data = typeof data === 'object' ? data : {};
+        let result = new AnalyticalModelResponse2();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.degreeOfFreedomIds)) {
+            data["degreeOfFreedomIds"] = [];
+            for (let item of this.degreeOfFreedomIds)
+                data["degreeOfFreedomIds"].push(item.toJSON());
+        }
+        if (Array.isArray(this.boundaryConditionIds)) {
+            data["boundaryConditionIds"] = [];
+            for (let item of this.boundaryConditionIds)
+                data["boundaryConditionIds"].push(item.toJSON());
+        }
+        if (Array.isArray(this.nodeResponses)) {
+            data["nodeResponses"] = [];
+            for (let item of this.nodeResponses)
+                data["nodeResponses"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IAnalyticalModelResponse2 {
+    degreeOfFreedomIds: UnsupportedStructureDisplacementIdResponse[];
+    boundaryConditionIds: UnsupportedStructureDisplacementIdResponse[];
+    nodeResponses: NodeResultResponse[];
+}
+
+export class AnalyticalModelResponse3 implements IAnalyticalModelResponse3 {
+    nodeResponses!: NodeResultResponse[];
+
+    constructor(data?: IAnalyticalModelResponse3) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.nodeResponses = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["nodeResponses"])) {
+                this.nodeResponses = [] as any;
+                for (let item of _data["nodeResponses"])
+                    this.nodeResponses!.push(NodeResultResponse.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): AnalyticalModelResponse3 {
+        data = typeof data === 'object' ? data : {};
+        let result = new AnalyticalModelResponse3();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.nodeResponses)) {
+            data["nodeResponses"] = [];
+            for (let item of this.nodeResponses)
+                data["nodeResponses"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IAnalyticalModelResponse3 {
+    nodeResponses: NodeResultResponse[];
+}
+
+export class CreateElement1dRequest implements ICreateElement1dRequest {
+    modelId!: string;
+    startNodeId!: string;
+    endNodeId!: string;
+    materialId!: string;
+    sectionProfileId!: string;
+    sectionProfileRotation!: UnitValueDto;
+
+    constructor(data?: ICreateElement1dRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.sectionProfileRotation = new UnitValueDto();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.modelId = _data["modelId"];
+            this.startNodeId = _data["startNodeId"];
+            this.endNodeId = _data["endNodeId"];
+            this.materialId = _data["materialId"];
+            this.sectionProfileId = _data["sectionProfileId"];
+            this.sectionProfileRotation = _data["sectionProfileRotation"] ? UnitValueDto.fromJS(_data["sectionProfileRotation"]) : new UnitValueDto();
+        }
+    }
+
+    static fromJS(data: any): CreateElement1dRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateElement1dRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["modelId"] = this.modelId;
+        data["startNodeId"] = this.startNodeId;
+        data["endNodeId"] = this.endNodeId;
+        data["materialId"] = this.materialId;
+        data["sectionProfileId"] = this.sectionProfileId;
+        data["sectionProfileRotation"] = this.sectionProfileRotation ? this.sectionProfileRotation.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ICreateElement1dRequest {
+    modelId: string;
+    startNodeId: string;
+    endNodeId: string;
+    materialId: string;
+    sectionProfileId: string;
+    sectionProfileRotation: UnitValueDto;
+}
+
+export class CreateMaterialRequest implements ICreateMaterialRequest {
+    modelId!: string;
+    modulusOfElasticity!: UnitValueDto;
+    modulusOfRigidity!: UnitValueDto;
+
+    constructor(data?: ICreateMaterialRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.modulusOfElasticity = new UnitValueDto();
+            this.modulusOfRigidity = new UnitValueDto();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.modelId = _data["modelId"];
+            this.modulusOfElasticity = _data["modulusOfElasticity"] ? UnitValueDto.fromJS(_data["modulusOfElasticity"]) : new UnitValueDto();
+            this.modulusOfRigidity = _data["modulusOfRigidity"] ? UnitValueDto.fromJS(_data["modulusOfRigidity"]) : new UnitValueDto();
+        }
+    }
+
+    static fromJS(data: any): CreateMaterialRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateMaterialRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["modelId"] = this.modelId;
+        data["modulusOfElasticity"] = this.modulusOfElasticity ? this.modulusOfElasticity.toJSON() : <any>undefined;
+        data["modulusOfRigidity"] = this.modulusOfRigidity ? this.modulusOfRigidity.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ICreateMaterialRequest {
+    modelId: string;
+    modulusOfElasticity: UnitValueDto;
+    modulusOfRigidity: UnitValueDto;
+}
+
+export class CreateModelRequest implements ICreateModelRequest {
+    name!: string;
+    description!: string;
+    settings!: PhysicalModelSettingsDto;
+    id?: string | undefined;
+
+    constructor(data?: ICreateModelRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.settings = new PhysicalModelSettingsDto();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.description = _data["description"];
+            this.settings = _data["settings"] ? PhysicalModelSettingsDto.fromJS(_data["settings"]) : new PhysicalModelSettingsDto();
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): CreateModelRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateModelRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["description"] = this.description;
+        data["settings"] = this.settings ? this.settings.toJSON() : <any>undefined;
+        data["id"] = this.id;
+        return data;
+    }
+}
+
+export interface ICreateModelRequest {
+    name: string;
+    description: string;
+    settings: PhysicalModelSettingsDto;
+    id?: string | undefined;
+}
+
+export class CreateMomentLoadRequest implements ICreateMomentLoadRequest {
+    nodeId!: string;
+    torque!: UnitValueDto;
+    axisDirection!: Vector3;
+
+    constructor(data?: ICreateMomentLoadRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.torque = new UnitValueDto();
+            this.axisDirection = new Vector3();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.nodeId = _data["nodeId"];
+            this.torque = _data["torque"] ? UnitValueDto.fromJS(_data["torque"]) : new UnitValueDto();
+            this.axisDirection = _data["axisDirection"] ? Vector3.fromJS(_data["axisDirection"]) : new Vector3();
+        }
+    }
+
+    static fromJS(data: any): CreateMomentLoadRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateMomentLoadRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["nodeId"] = this.nodeId;
+        data["torque"] = this.torque ? this.torque.toJSON() : <any>undefined;
+        data["axisDirection"] = this.axisDirection ? this.axisDirection.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ICreateMomentLoadRequest {
+    nodeId: string;
+    torque: UnitValueDto;
+    axisDirection: Vector3;
+}
+
+export class CreateNodeRequest implements ICreateNodeRequest {
+    modelId!: string;
+    locationPoint!: PointRequest;
+    restraint!: RestraintRequest;
+
+    constructor(data?: ICreateNodeRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.locationPoint = new PointRequest();
+            this.restraint = new RestraintRequest();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.modelId = _data["modelId"];
+            this.locationPoint = _data["locationPoint"] ? PointRequest.fromJS(_data["locationPoint"]) : new PointRequest();
+            this.restraint = _data["restraint"] ? RestraintRequest.fromJS(_data["restraint"]) : new RestraintRequest();
+        }
+    }
+
+    static fromJS(data: any): CreateNodeRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateNodeRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["modelId"] = this.modelId;
+        data["locationPoint"] = this.locationPoint ? this.locationPoint.toJSON() : <any>undefined;
+        data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ICreateNodeRequest {
+    modelId: string;
+    locationPoint: PointRequest;
+    restraint: RestraintRequest;
+}
+
+export class CreatePointLoadRequest implements ICreatePointLoadRequest {
+    nodeId!: string;
+    force!: UnitValueDto;
+    direction!: Vector3;
+
+    constructor(data?: ICreatePointLoadRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.force = new UnitValueDto();
+            this.direction = new Vector3();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.nodeId = _data["nodeId"];
+            this.force = _data["force"] ? UnitValueDto.fromJS(_data["force"]) : new UnitValueDto();
+            this.direction = _data["direction"] ? Vector3.fromJS(_data["direction"]) : new Vector3();
+        }
+    }
+
+    static fromJS(data: any): CreatePointLoadRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreatePointLoadRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["nodeId"] = this.nodeId;
+        data["force"] = this.force ? this.force.toJSON() : <any>undefined;
+        data["direction"] = this.direction ? this.direction.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ICreatePointLoadRequest {
+    nodeId: string;
+    force: UnitValueDto;
+    direction: Vector3;
+}
+
+export class CreateSectionProfileRequest implements ICreateSectionProfileRequest {
+    modelId!: string;
+    area!: UnitValueDto;
+    strongAxisMomentOfInertia!: UnitValueDto;
+    weakAxisMomentOfInertia!: UnitValueDto;
+    polarMomentOfInertia!: UnitValueDto;
+
+    constructor(data?: ICreateSectionProfileRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.area = new UnitValueDto();
+            this.strongAxisMomentOfInertia = new UnitValueDto();
+            this.weakAxisMomentOfInertia = new UnitValueDto();
+            this.polarMomentOfInertia = new UnitValueDto();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.modelId = _data["modelId"];
+            this.area = _data["area"] ? UnitValueDto.fromJS(_data["area"]) : new UnitValueDto();
+            this.strongAxisMomentOfInertia = _data["strongAxisMomentOfInertia"] ? UnitValueDto.fromJS(_data["strongAxisMomentOfInertia"]) : new UnitValueDto();
+            this.weakAxisMomentOfInertia = _data["weakAxisMomentOfInertia"] ? UnitValueDto.fromJS(_data["weakAxisMomentOfInertia"]) : new UnitValueDto();
+            this.polarMomentOfInertia = _data["polarMomentOfInertia"] ? UnitValueDto.fromJS(_data["polarMomentOfInertia"]) : new UnitValueDto();
+        }
+    }
+
+    static fromJS(data: any): CreateSectionProfileRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateSectionProfileRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["modelId"] = this.modelId;
+        data["area"] = this.area ? this.area.toJSON() : <any>undefined;
+        data["strongAxisMomentOfInertia"] = this.strongAxisMomentOfInertia ? this.strongAxisMomentOfInertia.toJSON() : <any>undefined;
+        data["weakAxisMomentOfInertia"] = this.weakAxisMomentOfInertia ? this.weakAxisMomentOfInertia.toJSON() : <any>undefined;
+        data["polarMomentOfInertia"] = this.polarMomentOfInertia ? this.polarMomentOfInertia.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ICreateSectionProfileRequest {
+    modelId: string;
+    area: UnitValueDto;
+    strongAxisMomentOfInertia: UnitValueDto;
+    weakAxisMomentOfInertia: UnitValueDto;
+    polarMomentOfInertia: UnitValueDto;
+}
+
+export class DiagramConsistantIntervalResponse implements IDiagramConsistantIntervalResponse {
+    startLocation!: UnitValueDto;
+    endLocation!: UnitValueDto;
+    polynomialCoefficients!: number[];
+
+    constructor(data?: IDiagramConsistantIntervalResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.startLocation = new UnitValueDto();
+            this.endLocation = new UnitValueDto();
+            this.polynomialCoefficients = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.startLocation = _data["startLocation"] ? UnitValueDto.fromJS(_data["startLocation"]) : new UnitValueDto();
+            this.endLocation = _data["endLocation"] ? UnitValueDto.fromJS(_data["endLocation"]) : new UnitValueDto();
+            if (Array.isArray(_data["polynomialCoefficients"])) {
+                this.polynomialCoefficients = [] as any;
+                for (let item of _data["polynomialCoefficients"])
+                    this.polynomialCoefficients!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): DiagramConsistantIntervalResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new DiagramConsistantIntervalResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["startLocation"] = this.startLocation ? this.startLocation.toJSON() : <any>undefined;
+        data["endLocation"] = this.endLocation ? this.endLocation.toJSON() : <any>undefined;
+        if (Array.isArray(this.polynomialCoefficients)) {
+            data["polynomialCoefficients"] = [];
+            for (let item of this.polynomialCoefficients)
+                data["polynomialCoefficients"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IDiagramConsistantIntervalResponse {
+    startLocation: UnitValueDto;
+    endLocation: UnitValueDto;
+    polynomialCoefficients: number[];
+}
+
+export class DiagramResponse implements IDiagramResponse {
+    id!: string;
+    element1DId!: string;
+    lengthUnit!: string;
+    diagramValueUnit!: string;
+    elementLength!: UnitValueDto;
+    intervals!: DiagramConsistantIntervalResponse[];
+
+    constructor(data?: IDiagramResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.elementLength = new UnitValueDto();
+            this.intervals = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.element1DId = _data["element1DId"];
+            this.lengthUnit = _data["lengthUnit"];
+            this.diagramValueUnit = _data["diagramValueUnit"];
+            this.elementLength = _data["elementLength"] ? UnitValueDto.fromJS(_data["elementLength"]) : new UnitValueDto();
+            if (Array.isArray(_data["intervals"])) {
+                this.intervals = [] as any;
+                for (let item of _data["intervals"])
+                    this.intervals!.push(DiagramConsistantIntervalResponse.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): DiagramResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new DiagramResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["element1DId"] = this.element1DId;
+        data["lengthUnit"] = this.lengthUnit;
+        data["diagramValueUnit"] = this.diagramValueUnit;
+        data["elementLength"] = this.elementLength ? this.elementLength.toJSON() : <any>undefined;
+        if (Array.isArray(this.intervals)) {
+            data["intervals"] = [];
+            for (let item of this.intervals)
+                data["intervals"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IDiagramResponse {
+    id: string;
+    element1DId: string;
+    lengthUnit: string;
+    diagramValueUnit: string;
+    elementLength: UnitValueDto;
+    intervals: DiagramConsistantIntervalResponse[];
+}
+
+export class DisplacementsResponse implements IDisplacementsResponse {
+    displacementAlongX!: UnitValueDto;
+    displacementAlongY!: UnitValueDto;
+    displacementAlongZ!: UnitValueDto;
+    rotationAboutX!: UnitValueDto;
+    rotationAboutY!: UnitValueDto;
+    rotationAboutZ!: UnitValueDto;
+
+    constructor(data?: IDisplacementsResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.displacementAlongX = new UnitValueDto();
+            this.displacementAlongY = new UnitValueDto();
+            this.displacementAlongZ = new UnitValueDto();
+            this.rotationAboutX = new UnitValueDto();
+            this.rotationAboutY = new UnitValueDto();
+            this.rotationAboutZ = new UnitValueDto();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.displacementAlongX = _data["displacementAlongX"] ? UnitValueDto.fromJS(_data["displacementAlongX"]) : new UnitValueDto();
+            this.displacementAlongY = _data["displacementAlongY"] ? UnitValueDto.fromJS(_data["displacementAlongY"]) : new UnitValueDto();
+            this.displacementAlongZ = _data["displacementAlongZ"] ? UnitValueDto.fromJS(_data["displacementAlongZ"]) : new UnitValueDto();
+            this.rotationAboutX = _data["rotationAboutX"] ? UnitValueDto.fromJS(_data["rotationAboutX"]) : new UnitValueDto();
+            this.rotationAboutY = _data["rotationAboutY"] ? UnitValueDto.fromJS(_data["rotationAboutY"]) : new UnitValueDto();
+            this.rotationAboutZ = _data["rotationAboutZ"] ? UnitValueDto.fromJS(_data["rotationAboutZ"]) : new UnitValueDto();
+        }
+    }
+
+    static fromJS(data: any): DisplacementsResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new DisplacementsResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["displacementAlongX"] = this.displacementAlongX ? this.displacementAlongX.toJSON() : <any>undefined;
+        data["displacementAlongY"] = this.displacementAlongY ? this.displacementAlongY.toJSON() : <any>undefined;
+        data["displacementAlongZ"] = this.displacementAlongZ ? this.displacementAlongZ.toJSON() : <any>undefined;
+        data["rotationAboutX"] = this.rotationAboutX ? this.rotationAboutX.toJSON() : <any>undefined;
+        data["rotationAboutY"] = this.rotationAboutY ? this.rotationAboutY.toJSON() : <any>undefined;
+        data["rotationAboutZ"] = this.rotationAboutZ ? this.rotationAboutZ.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IDisplacementsResponse {
+    displacementAlongX: UnitValueDto;
+    displacementAlongY: UnitValueDto;
+    displacementAlongZ: UnitValueDto;
+    rotationAboutX: UnitValueDto;
+    rotationAboutY: UnitValueDto;
+    rotationAboutZ: UnitValueDto;
+}
+
+export class Element1DResponse implements IElement1DResponse {
+    id!: string;
+    modelId!: string;
+    startNodeId!: string;
+    endNodeId!: string;
+    materialId!: string;
+    sectionProfileId!: string;
+    sectionProfileRotation!: UnitValueDto;
+
+    constructor(data?: IElement1DResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.sectionProfileRotation = new UnitValueDto();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.modelId = _data["modelId"];
+            this.startNodeId = _data["startNodeId"];
+            this.endNodeId = _data["endNodeId"];
+            this.materialId = _data["materialId"];
+            this.sectionProfileId = _data["sectionProfileId"];
+            this.sectionProfileRotation = _data["sectionProfileRotation"] ? UnitValueDto.fromJS(_data["sectionProfileRotation"]) : new UnitValueDto();
+        }
+    }
+
+    static fromJS(data: any): Element1DResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new Element1DResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["modelId"] = this.modelId;
+        data["startNodeId"] = this.startNodeId;
+        data["endNodeId"] = this.endNodeId;
+        data["materialId"] = this.materialId;
+        data["sectionProfileId"] = this.sectionProfileId;
+        data["sectionProfileRotation"] = this.sectionProfileRotation ? this.sectionProfileRotation.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IElement1DResponse {
+    id: string;
+    modelId: string;
+    startNodeId: string;
+    endNodeId: string;
+    materialId: string;
+    sectionProfileId: string;
+    sectionProfileRotation: UnitValueDto;
+}
+
+export class Element1dResponseHydrated implements IElement1dResponseHydrated {
+    id!: string;
+    modelId!: string;
+    startNodeId!: string;
+    endNodeId!: string;
+    materialId!: string;
+    sectionProfileId!: string;
+    sectionProfileRotation!: UnitValueDto;
+    startNode!: NodeResponse;
+    endNode!: NodeResponse;
+    material!: MaterialResponse;
+    sectionProfile!: SectionProfileResponse;
+
+    constructor(data?: IElement1dResponseHydrated) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.sectionProfileRotation = new UnitValueDto();
+            this.startNode = new NodeResponse();
+            this.endNode = new NodeResponse();
+            this.material = new MaterialResponse();
+            this.sectionProfile = new SectionProfileResponse();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.modelId = _data["modelId"];
+            this.startNodeId = _data["startNodeId"];
+            this.endNodeId = _data["endNodeId"];
+            this.materialId = _data["materialId"];
+            this.sectionProfileId = _data["sectionProfileId"];
+            this.sectionProfileRotation = _data["sectionProfileRotation"] ? UnitValueDto.fromJS(_data["sectionProfileRotation"]) : new UnitValueDto();
+            this.startNode = _data["startNode"] ? NodeResponse.fromJS(_data["startNode"]) : new NodeResponse();
+            this.endNode = _data["endNode"] ? NodeResponse.fromJS(_data["endNode"]) : new NodeResponse();
+            this.material = _data["material"] ? MaterialResponse.fromJS(_data["material"]) : new MaterialResponse();
+            this.sectionProfile = _data["sectionProfile"] ? SectionProfileResponse.fromJS(_data["sectionProfile"]) : new SectionProfileResponse();
+        }
+    }
+
+    static fromJS(data: any): Element1dResponseHydrated {
+        data = typeof data === 'object' ? data : {};
+        let result = new Element1dResponseHydrated();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["modelId"] = this.modelId;
+        data["startNodeId"] = this.startNodeId;
+        data["endNodeId"] = this.endNodeId;
+        data["materialId"] = this.materialId;
+        data["sectionProfileId"] = this.sectionProfileId;
+        data["sectionProfileRotation"] = this.sectionProfileRotation ? this.sectionProfileRotation.toJSON() : <any>undefined;
+        data["startNode"] = this.startNode ? this.startNode.toJSON() : <any>undefined;
+        data["endNode"] = this.endNode ? this.endNode.toJSON() : <any>undefined;
+        data["material"] = this.material ? this.material.toJSON() : <any>undefined;
+        data["sectionProfile"] = this.sectionProfile ? this.sectionProfile.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IElement1dResponseHydrated {
+    id: string;
+    modelId: string;
+    startNodeId: string;
+    endNodeId: string;
+    materialId: string;
+    sectionProfileId: string;
+    sectionProfileRotation: UnitValueDto;
+    startNode: NodeResponse;
+    endNode: NodeResponse;
+    material: MaterialResponse;
+    sectionProfile: SectionProfileResponse;
+}
+
+export class EmptyResquest implements IEmptyResquest {
+
+    constructor(data?: IEmptyResquest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+    }
+
+    static fromJS(data: any): EmptyResquest {
+        data = typeof data === 'object' ? data : {};
+        let result = new EmptyResquest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data;
+    }
+}
+
+export interface IEmptyResquest {
+}
+
+export class ForcesResponse implements IForcesResponse {
+    forceAlongX!: UnitValueDto;
+    forceAlongY!: UnitValueDto;
+    forceAlongZ!: UnitValueDto;
+    momentAboutX!: UnitValueDto;
+    momentAboutY!: UnitValueDto;
+    momentAboutZ!: UnitValueDto;
+
+    constructor(data?: IForcesResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.forceAlongX = new UnitValueDto();
+            this.forceAlongY = new UnitValueDto();
+            this.forceAlongZ = new UnitValueDto();
+            this.momentAboutX = new UnitValueDto();
+            this.momentAboutY = new UnitValueDto();
+            this.momentAboutZ = new UnitValueDto();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.forceAlongX = _data["forceAlongX"] ? UnitValueDto.fromJS(_data["forceAlongX"]) : new UnitValueDto();
+            this.forceAlongY = _data["forceAlongY"] ? UnitValueDto.fromJS(_data["forceAlongY"]) : new UnitValueDto();
+            this.forceAlongZ = _data["forceAlongZ"] ? UnitValueDto.fromJS(_data["forceAlongZ"]) : new UnitValueDto();
+            this.momentAboutX = _data["momentAboutX"] ? UnitValueDto.fromJS(_data["momentAboutX"]) : new UnitValueDto();
+            this.momentAboutY = _data["momentAboutY"] ? UnitValueDto.fromJS(_data["momentAboutY"]) : new UnitValueDto();
+            this.momentAboutZ = _data["momentAboutZ"] ? UnitValueDto.fromJS(_data["momentAboutZ"]) : new UnitValueDto();
+        }
+    }
+
+    static fromJS(data: any): ForcesResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ForcesResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["forceAlongX"] = this.forceAlongX ? this.forceAlongX.toJSON() : <any>undefined;
+        data["forceAlongY"] = this.forceAlongY ? this.forceAlongY.toJSON() : <any>undefined;
+        data["forceAlongZ"] = this.forceAlongZ ? this.forceAlongZ.toJSON() : <any>undefined;
+        data["momentAboutX"] = this.momentAboutX ? this.momentAboutX.toJSON() : <any>undefined;
+        data["momentAboutY"] = this.momentAboutY ? this.momentAboutY.toJSON() : <any>undefined;
+        data["momentAboutZ"] = this.momentAboutZ ? this.momentAboutZ.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IForcesResponse {
+    forceAlongX: UnitValueDto;
+    forceAlongY: UnitValueDto;
+    forceAlongZ: UnitValueDto;
+    momentAboutX: UnitValueDto;
+    momentAboutY: UnitValueDto;
+    momentAboutZ: UnitValueDto;
+}
+
+export class GetElement1dsRequest implements IGetElement1dsRequest {
+    modelId!: string;
+    element1dIds?: string[] | undefined;
+
+    constructor(data?: IGetElement1dsRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.modelId = _data["modelId"];
+            if (Array.isArray(_data["element1dIds"])) {
+                this.element1dIds = [] as any;
+                for (let item of _data["element1dIds"])
+                    this.element1dIds!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): GetElement1dsRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetElement1dsRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["modelId"] = this.modelId;
+        if (Array.isArray(this.element1dIds)) {
+            data["element1dIds"] = [];
+            for (let item of this.element1dIds)
+                data["element1dIds"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IGetElement1dsRequest {
+    modelId: string;
+    element1dIds?: string[] | undefined;
+}
+
+export class GetElementsInModelRequest implements IGetElementsInModelRequest {
+    modelId!: string;
+    childIds?: string[] | undefined;
+
+    constructor(data?: IGetElementsInModelRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.modelId = _data["modelId"];
+            if (Array.isArray(_data["childIds"])) {
+                this.childIds = [] as any;
+                for (let item of _data["childIds"])
+                    this.childIds!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): GetElementsInModelRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetElementsInModelRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["modelId"] = this.modelId;
+        if (Array.isArray(this.childIds)) {
+            data["childIds"] = [];
+            for (let item of this.childIds)
+                data["childIds"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IGetElementsInModelRequest {
+    modelId: string;
+    childIds?: string[] | undefined;
+}
+
+export class GetModelHydratedRequest implements IGetModelHydratedRequest {
+    modelId!: string;
+    units!: PreconfiguredUnits;
+
+    constructor(data?: IGetModelHydratedRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.modelId = _data["modelId"];
+            this.units = _data["units"];
+        }
+    }
+
+    static fromJS(data: any): GetModelHydratedRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetModelHydratedRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["modelId"] = this.modelId;
+        data["units"] = this.units;
+        return data;
+    }
+}
+
+export interface IGetModelHydratedRequest {
+    modelId: string;
+    units: PreconfiguredUnits;
+}
+
+export class GetMomentLoadRequest implements IGetMomentLoadRequest {
+    modelId!: string;
+    momentLoadIds?: string[] | undefined;
+
+    constructor(data?: IGetMomentLoadRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.modelId = _data["modelId"];
+            if (Array.isArray(_data["momentLoadIds"])) {
+                this.momentLoadIds = [] as any;
+                for (let item of _data["momentLoadIds"])
+                    this.momentLoadIds!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): GetMomentLoadRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetMomentLoadRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["modelId"] = this.modelId;
+        if (Array.isArray(this.momentLoadIds)) {
+            data["momentLoadIds"] = [];
+            for (let item of this.momentLoadIds)
+                data["momentLoadIds"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IGetMomentLoadRequest {
+    modelId: string;
+    momentLoadIds?: string[] | undefined;
+}
+
+export class GetNodeResultsRequest implements IGetNodeResultsRequest {
+    modelId!: string;
+    nodeIds?: string[] | undefined;
+
+    constructor(data?: IGetNodeResultsRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.modelId = _data["modelId"];
+            if (Array.isArray(_data["nodeIds"])) {
+                this.nodeIds = [] as any;
+                for (let item of _data["nodeIds"])
+                    this.nodeIds!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): GetNodeResultsRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetNodeResultsRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["modelId"] = this.modelId;
+        if (Array.isArray(this.nodeIds)) {
+            data["nodeIds"] = [];
+            for (let item of this.nodeIds)
+                data["nodeIds"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IGetNodeResultsRequest {
+    modelId: string;
+    nodeIds?: string[] | undefined;
+}
+
+export class IdRequest implements IIdRequest {
+    id!: string;
+
+    constructor(data?: IIdRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): IdRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new IdRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        return data;
+    }
+}
+
+export interface IIdRequest {
+    id: string;
+}
+
+export class IdRequestWithProperties implements IIdRequestWithProperties {
+    id!: string;
+    properties?: string[] | undefined;
+
+    constructor(data?: IIdRequestWithProperties) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            if (Array.isArray(_data["properties"])) {
+                this.properties = [] as any;
+                for (let item of _data["properties"])
+                    this.properties!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): IdRequestWithProperties {
+        data = typeof data === 'object' ? data : {};
+        let result = new IdRequestWithProperties();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        if (Array.isArray(this.properties)) {
+            data["properties"] = [];
+            for (let item of this.properties)
+                data["properties"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IIdRequestWithProperties {
+    id: string;
+    properties?: string[] | undefined;
+}
+
+export class MaterialResponse implements IMaterialResponse {
+    id!: string;
+    modulusOfElasticity!: UnitValueDto;
+    modulusOfRigidity!: UnitValueDto;
+
+    constructor(data?: IMaterialResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.modulusOfElasticity = new UnitValueDto();
+            this.modulusOfRigidity = new UnitValueDto();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.modulusOfElasticity = _data["modulusOfElasticity"] ? UnitValueDto.fromJS(_data["modulusOfElasticity"]) : new UnitValueDto();
+            this.modulusOfRigidity = _data["modulusOfRigidity"] ? UnitValueDto.fromJS(_data["modulusOfRigidity"]) : new UnitValueDto();
+        }
+    }
+
+    static fromJS(data: any): MaterialResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new MaterialResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["modulusOfElasticity"] = this.modulusOfElasticity ? this.modulusOfElasticity.toJSON() : <any>undefined;
+        data["modulusOfRigidity"] = this.modulusOfRigidity ? this.modulusOfRigidity.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IMaterialResponse {
+    id: string;
+    modulusOfElasticity: UnitValueDto;
+    modulusOfRigidity: UnitValueDto;
+}
+
+export class ModelResponse implements IModelResponse {
+    id!: string;
+    name!: string;
+    description!: string;
+    settings!: ModelSettingsResponse;
+    nodes?: NodeResponse[] | undefined;
+    element1ds?: Element1DResponse[] | undefined;
+    materials?: MaterialResponse[] | undefined;
+    sectionProfiles?: SectionProfileResponse[] | undefined;
+    pointLoads?: PointLoadResponse[] | undefined;
+    momentLoads?: MomentLoadResponse[] | undefined;
+
+    constructor(data?: IModelResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.settings = new ModelSettingsResponse();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.description = _data["description"];
+            this.settings = _data["settings"] ? ModelSettingsResponse.fromJS(_data["settings"]) : new ModelSettingsResponse();
+            if (Array.isArray(_data["nodes"])) {
+                this.nodes = [] as any;
+                for (let item of _data["nodes"])
+                    this.nodes!.push(NodeResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["element1ds"])) {
+                this.element1ds = [] as any;
+                for (let item of _data["element1ds"])
+                    this.element1ds!.push(Element1DResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["materials"])) {
+                this.materials = [] as any;
+                for (let item of _data["materials"])
+                    this.materials!.push(MaterialResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["sectionProfiles"])) {
+                this.sectionProfiles = [] as any;
+                for (let item of _data["sectionProfiles"])
+                    this.sectionProfiles!.push(SectionProfileResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["pointLoads"])) {
+                this.pointLoads = [] as any;
+                for (let item of _data["pointLoads"])
+                    this.pointLoads!.push(PointLoadResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["momentLoads"])) {
+                this.momentLoads = [] as any;
+                for (let item of _data["momentLoads"])
+                    this.momentLoads!.push(MomentLoadResponse.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ModelResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ModelResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["description"] = this.description;
+        data["settings"] = this.settings ? this.settings.toJSON() : <any>undefined;
+        if (Array.isArray(this.nodes)) {
+            data["nodes"] = [];
+            for (let item of this.nodes)
+                data["nodes"].push(item.toJSON());
+        }
+        if (Array.isArray(this.element1ds)) {
+            data["element1ds"] = [];
+            for (let item of this.element1ds)
+                data["element1ds"].push(item.toJSON());
+        }
+        if (Array.isArray(this.materials)) {
+            data["materials"] = [];
+            for (let item of this.materials)
+                data["materials"].push(item.toJSON());
+        }
+        if (Array.isArray(this.sectionProfiles)) {
+            data["sectionProfiles"] = [];
+            for (let item of this.sectionProfiles)
+                data["sectionProfiles"].push(item.toJSON());
+        }
+        if (Array.isArray(this.pointLoads)) {
+            data["pointLoads"] = [];
+            for (let item of this.pointLoads)
+                data["pointLoads"].push(item.toJSON());
+        }
+        if (Array.isArray(this.momentLoads)) {
+            data["momentLoads"] = [];
+            for (let item of this.momentLoads)
+                data["momentLoads"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IModelResponse {
+    id: string;
+    name: string;
+    description: string;
+    settings: ModelSettingsResponse;
+    nodes?: NodeResponse[] | undefined;
+    element1ds?: Element1DResponse[] | undefined;
+    materials?: MaterialResponse[] | undefined;
+    sectionProfiles?: SectionProfileResponse[] | undefined;
+    pointLoads?: PointLoadResponse[] | undefined;
+    momentLoads?: MomentLoadResponse[] | undefined;
+}
+
+export class ModelResponseHydrated implements IModelResponseHydrated {
+    id!: string;
+    name!: string;
+    description!: string;
+    settings!: ModelSettingsResponse;
+    nodes!: NodeResponse[];
+    element1Ds!: Element1DResponse[];
+    materials!: MaterialResponse[];
+    sectionProfiles!: SectionProfileResponse[];
+    pointLoads!: PointLoadResponse[];
+    momentLoads!: MomentLoadResponse[];
+
+    constructor(data?: IModelResponseHydrated) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.settings = new ModelSettingsResponse();
+            this.nodes = [];
+            this.element1Ds = [];
+            this.materials = [];
+            this.sectionProfiles = [];
+            this.pointLoads = [];
+            this.momentLoads = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.description = _data["description"];
+            this.settings = _data["settings"] ? ModelSettingsResponse.fromJS(_data["settings"]) : new ModelSettingsResponse();
+            if (Array.isArray(_data["nodes"])) {
+                this.nodes = [] as any;
+                for (let item of _data["nodes"])
+                    this.nodes!.push(NodeResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["element1Ds"])) {
+                this.element1Ds = [] as any;
+                for (let item of _data["element1Ds"])
+                    this.element1Ds!.push(Element1DResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["materials"])) {
+                this.materials = [] as any;
+                for (let item of _data["materials"])
+                    this.materials!.push(MaterialResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["sectionProfiles"])) {
+                this.sectionProfiles = [] as any;
+                for (let item of _data["sectionProfiles"])
+                    this.sectionProfiles!.push(SectionProfileResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["pointLoads"])) {
+                this.pointLoads = [] as any;
+                for (let item of _data["pointLoads"])
+                    this.pointLoads!.push(PointLoadResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["momentLoads"])) {
+                this.momentLoads = [] as any;
+                for (let item of _data["momentLoads"])
+                    this.momentLoads!.push(MomentLoadResponse.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ModelResponseHydrated {
+        data = typeof data === 'object' ? data : {};
+        let result = new ModelResponseHydrated();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["description"] = this.description;
+        data["settings"] = this.settings ? this.settings.toJSON() : <any>undefined;
+        if (Array.isArray(this.nodes)) {
+            data["nodes"] = [];
+            for (let item of this.nodes)
+                data["nodes"].push(item.toJSON());
+        }
+        if (Array.isArray(this.element1Ds)) {
+            data["element1Ds"] = [];
+            for (let item of this.element1Ds)
+                data["element1Ds"].push(item.toJSON());
+        }
+        if (Array.isArray(this.materials)) {
+            data["materials"] = [];
+            for (let item of this.materials)
+                data["materials"].push(item.toJSON());
+        }
+        if (Array.isArray(this.sectionProfiles)) {
+            data["sectionProfiles"] = [];
+            for (let item of this.sectionProfiles)
+                data["sectionProfiles"].push(item.toJSON());
+        }
+        if (Array.isArray(this.pointLoads)) {
+            data["pointLoads"] = [];
+            for (let item of this.pointLoads)
+                data["pointLoads"].push(item.toJSON());
+        }
+        if (Array.isArray(this.momentLoads)) {
+            data["momentLoads"] = [];
+            for (let item of this.momentLoads)
+                data["momentLoads"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IModelResponseHydrated {
+    id: string;
+    name: string;
+    description: string;
+    settings: ModelSettingsResponse;
+    nodes: NodeResponse[];
+    element1Ds: Element1DResponse[];
+    materials: MaterialResponse[];
+    sectionProfiles: SectionProfileResponse[];
+    pointLoads: PointLoadResponse[];
+    momentLoads: MomentLoadResponse[];
+}
+
+export class ModelSettingsRequest implements IModelSettingsRequest {
+    unitSettings!: UnitSettingsRequest;
+
+    constructor(data?: IModelSettingsRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.unitSettings = new UnitSettingsRequest();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.unitSettings = _data["unitSettings"] ? UnitSettingsRequest.fromJS(_data["unitSettings"]) : new UnitSettingsRequest();
+        }
+    }
+
+    static fromJS(data: any): ModelSettingsRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new ModelSettingsRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["unitSettings"] = this.unitSettings ? this.unitSettings.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IModelSettingsRequest {
+    unitSettings: UnitSettingsRequest;
+}
+
+export class ModelSettingsResponse implements IModelSettingsResponse {
+    unitSettings!: UnitSettingsResponse;
+
+    constructor(data?: IModelSettingsResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.unitSettings = new UnitSettingsResponse();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.unitSettings = _data["unitSettings"] ? UnitSettingsResponse.fromJS(_data["unitSettings"]) : new UnitSettingsResponse();
+        }
+    }
+
+    static fromJS(data: any): ModelSettingsResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ModelSettingsResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["unitSettings"] = this.unitSettings ? this.unitSettings.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IModelSettingsResponse {
+    unitSettings: UnitSettingsResponse;
+}
+
+export class MomentLoadResponse implements IMomentLoadResponse {
+    id!: string;
+    nodeId!: string;
+    torque!: UnitValueDto;
+    axisDirection!: Vector3;
+
+    constructor(data?: IMomentLoadResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.torque = new UnitValueDto();
+            this.axisDirection = new Vector3();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.nodeId = _data["nodeId"];
+            this.torque = _data["torque"] ? UnitValueDto.fromJS(_data["torque"]) : new UnitValueDto();
+            this.axisDirection = _data["axisDirection"] ? Vector3.fromJS(_data["axisDirection"]) : new Vector3();
+        }
+    }
+
+    static fromJS(data: any): MomentLoadResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new MomentLoadResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["nodeId"] = this.nodeId;
+        data["torque"] = this.torque ? this.torque.toJSON() : <any>undefined;
+        data["axisDirection"] = this.axisDirection ? this.axisDirection.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IMomentLoadResponse {
+    id: string;
+    nodeId: string;
+    torque: UnitValueDto;
+    axisDirection: Vector3;
+}
+
+export class NodeResponse implements INodeResponse {
+    id!: string;
+    modelId!: string;
+    locationPoint!: PointResponse;
+    restraint!: RestraintResponse;
+
+    constructor(data?: INodeResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.locationPoint = new PointResponse();
+            this.restraint = new RestraintResponse();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.modelId = _data["modelId"];
+            this.locationPoint = _data["locationPoint"] ? PointResponse.fromJS(_data["locationPoint"]) : new PointResponse();
+            this.restraint = _data["restraint"] ? RestraintResponse.fromJS(_data["restraint"]) : new RestraintResponse();
+        }
+    }
+
+    static fromJS(data: any): NodeResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new NodeResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["modelId"] = this.modelId;
+        data["locationPoint"] = this.locationPoint ? this.locationPoint.toJSON() : <any>undefined;
+        data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface INodeResponse {
+    id: string;
+    modelId: string;
+    locationPoint: PointResponse;
+    restraint: RestraintResponse;
+}
+
+export class NodeResultResponse implements INodeResultResponse {
+    nodeId!: string;
+    forces!: ForcesResponse;
+    displacements!: DisplacementsResponse;
+
+    constructor(data?: INodeResultResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.forces = new ForcesResponse();
+            this.displacements = new DisplacementsResponse();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.nodeId = _data["nodeId"];
+            this.forces = _data["forces"] ? ForcesResponse.fromJS(_data["forces"]) : new ForcesResponse();
+            this.displacements = _data["displacements"] ? DisplacementsResponse.fromJS(_data["displacements"]) : new DisplacementsResponse();
+        }
+    }
+
+    static fromJS(data: any): NodeResultResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new NodeResultResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["nodeId"] = this.nodeId;
+        data["forces"] = this.forces ? this.forces.toJSON() : <any>undefined;
+        data["displacements"] = this.displacements ? this.displacements.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface INodeResultResponse {
+    nodeId: string;
+    forces: ForcesResponse;
+    displacements: DisplacementsResponse;
+}
+
+export class PhysicalModelSettingsDto implements IPhysicalModelSettingsDto {
+    unitSettings!: UnitSettingsDtoVerbose;
+
+    constructor(data?: IPhysicalModelSettingsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.unitSettings = new UnitSettingsDtoVerbose();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.unitSettings = _data["unitSettings"] ? UnitSettingsDtoVerbose.fromJS(_data["unitSettings"]) : new UnitSettingsDtoVerbose();
+        }
+    }
+
+    static fromJS(data: any): PhysicalModelSettingsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PhysicalModelSettingsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["unitSettings"] = this.unitSettings ? this.unitSettings.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IPhysicalModelSettingsDto {
+    unitSettings: UnitSettingsDtoVerbose;
+}
+
+export class PointLoadResponse implements IPointLoadResponse {
+    id!: string;
+    modelId!: string;
+    nodeId!: string;
+    force!: UnitValueDto;
+    direction!: Vector3;
+
+    constructor(data?: IPointLoadResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.force = new UnitValueDto();
+            this.direction = new Vector3();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.modelId = _data["modelId"];
+            this.nodeId = _data["nodeId"];
+            this.force = _data["force"] ? UnitValueDto.fromJS(_data["force"]) : new UnitValueDto();
+            this.direction = _data["direction"] ? Vector3.fromJS(_data["direction"]) : new Vector3();
+        }
+    }
+
+    static fromJS(data: any): PointLoadResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new PointLoadResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["modelId"] = this.modelId;
+        data["nodeId"] = this.nodeId;
+        data["force"] = this.force ? this.force.toJSON() : <any>undefined;
+        data["direction"] = this.direction ? this.direction.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IPointLoadResponse {
+    id: string;
+    modelId: string;
+    nodeId: string;
+    force: UnitValueDto;
+    direction: Vector3;
+}
+
+export class PointRequest implements IPointRequest {
+    xCoordinate!: UnitValueDto;
+    yCoordinate!: UnitValueDto;
+    zCoordinate!: UnitValueDto;
+
+    constructor(data?: IPointRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.xCoordinate = new UnitValueDto();
+            this.yCoordinate = new UnitValueDto();
+            this.zCoordinate = new UnitValueDto();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.xCoordinate = _data["xCoordinate"] ? UnitValueDto.fromJS(_data["xCoordinate"]) : new UnitValueDto();
+            this.yCoordinate = _data["yCoordinate"] ? UnitValueDto.fromJS(_data["yCoordinate"]) : new UnitValueDto();
+            this.zCoordinate = _data["zCoordinate"] ? UnitValueDto.fromJS(_data["zCoordinate"]) : new UnitValueDto();
+        }
+    }
+
+    static fromJS(data: any): PointRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new PointRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["xCoordinate"] = this.xCoordinate ? this.xCoordinate.toJSON() : <any>undefined;
+        data["yCoordinate"] = this.yCoordinate ? this.yCoordinate.toJSON() : <any>undefined;
+        data["zCoordinate"] = this.zCoordinate ? this.zCoordinate.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IPointRequest {
+    xCoordinate: UnitValueDto;
+    yCoordinate: UnitValueDto;
+    zCoordinate: UnitValueDto;
+}
+
+export class PointResponse implements IPointResponse {
+    xCoordinate!: UnitValueDto;
+    yCoordinate!: UnitValueDto;
+    zCoordinate!: UnitValueDto;
+
+    constructor(data?: IPointResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.xCoordinate = new UnitValueDto();
+            this.yCoordinate = new UnitValueDto();
+            this.zCoordinate = new UnitValueDto();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.xCoordinate = _data["xCoordinate"] ? UnitValueDto.fromJS(_data["xCoordinate"]) : new UnitValueDto();
+            this.yCoordinate = _data["yCoordinate"] ? UnitValueDto.fromJS(_data["yCoordinate"]) : new UnitValueDto();
+            this.zCoordinate = _data["zCoordinate"] ? UnitValueDto.fromJS(_data["zCoordinate"]) : new UnitValueDto();
+        }
+    }
+
+    static fromJS(data: any): PointResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new PointResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["xCoordinate"] = this.xCoordinate ? this.xCoordinate.toJSON() : <any>undefined;
+        data["yCoordinate"] = this.yCoordinate ? this.yCoordinate.toJSON() : <any>undefined;
+        data["zCoordinate"] = this.zCoordinate ? this.zCoordinate.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IPointResponse {
+    xCoordinate: UnitValueDto;
+    yCoordinate: UnitValueDto;
+    zCoordinate: UnitValueDto;
+}
+
+export enum PreconfiguredUnits {
+    _0 = 0,
+    _1 = 1,
+    _2 = 2,
+}
+
+export class RestraintRequest implements IRestraintRequest {
+    canTranslateAlongX!: boolean;
+    canTranslateAlongY!: boolean;
+    canTranslateAlongZ!: boolean;
+    canRotateAboutX!: boolean;
+    canRotateAboutY!: boolean;
+    canRotateAboutZ!: boolean;
+
+    constructor(data?: IRestraintRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.canTranslateAlongX = _data["canTranslateAlongX"];
+            this.canTranslateAlongY = _data["canTranslateAlongY"];
+            this.canTranslateAlongZ = _data["canTranslateAlongZ"];
+            this.canRotateAboutX = _data["canRotateAboutX"];
+            this.canRotateAboutY = _data["canRotateAboutY"];
+            this.canRotateAboutZ = _data["canRotateAboutZ"];
+        }
+    }
+
+    static fromJS(data: any): RestraintRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new RestraintRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["canTranslateAlongX"] = this.canTranslateAlongX;
+        data["canTranslateAlongY"] = this.canTranslateAlongY;
+        data["canTranslateAlongZ"] = this.canTranslateAlongZ;
+        data["canRotateAboutX"] = this.canRotateAboutX;
+        data["canRotateAboutY"] = this.canRotateAboutY;
+        data["canRotateAboutZ"] = this.canRotateAboutZ;
+        return data;
+    }
+}
+
+export interface IRestraintRequest {
+    canTranslateAlongX: boolean;
+    canTranslateAlongY: boolean;
+    canTranslateAlongZ: boolean;
+    canRotateAboutX: boolean;
+    canRotateAboutY: boolean;
+    canRotateAboutZ: boolean;
+}
+
+export class RestraintResponse implements IRestraintResponse {
+    canTranslateAlongX!: boolean;
+    canTranslateAlongY!: boolean;
+    canTranslateAlongZ!: boolean;
+    canRotateAboutX!: boolean;
+    canRotateAboutY!: boolean;
+    canRotateAboutZ!: boolean;
+
+    constructor(data?: IRestraintResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.canTranslateAlongX = _data["canTranslateAlongX"];
+            this.canTranslateAlongY = _data["canTranslateAlongY"];
+            this.canTranslateAlongZ = _data["canTranslateAlongZ"];
+            this.canRotateAboutX = _data["canRotateAboutX"];
+            this.canRotateAboutY = _data["canRotateAboutY"];
+            this.canRotateAboutZ = _data["canRotateAboutZ"];
+        }
+    }
+
+    static fromJS(data: any): RestraintResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new RestraintResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["canTranslateAlongX"] = this.canTranslateAlongX;
+        data["canTranslateAlongY"] = this.canTranslateAlongY;
+        data["canTranslateAlongZ"] = this.canTranslateAlongZ;
+        data["canRotateAboutX"] = this.canRotateAboutX;
+        data["canRotateAboutY"] = this.canRotateAboutY;
+        data["canRotateAboutZ"] = this.canRotateAboutZ;
+        return data;
+    }
+}
+
+export interface IRestraintResponse {
+    canTranslateAlongX: boolean;
+    canTranslateAlongY: boolean;
+    canTranslateAlongZ: boolean;
+    canRotateAboutX: boolean;
+    canRotateAboutY: boolean;
+    canRotateAboutZ: boolean;
+}
+
+export class RunAnalysisRequest implements IRunAnalysisRequest {
+    modelId!: string;
+
+    constructor(data?: IRunAnalysisRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.modelId = _data["modelId"];
+        }
+    }
+
+    static fromJS(data: any): RunAnalysisRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new RunAnalysisRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["modelId"] = this.modelId;
+        return data;
+    }
+}
+
+export interface IRunAnalysisRequest {
+    modelId: string;
+}
+
+export class SectionProfileResponse implements ISectionProfileResponse {
+    id!: string;
+    area!: UnitValueDto;
+    strongAxisMomentOfInertia!: UnitValueDto;
+    weakAxisMomentOfInertia!: UnitValueDto;
+    polarMomentOfInertia!: UnitValueDto;
+
+    constructor(data?: ISectionProfileResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.area = new UnitValueDto();
+            this.strongAxisMomentOfInertia = new UnitValueDto();
+            this.weakAxisMomentOfInertia = new UnitValueDto();
+            this.polarMomentOfInertia = new UnitValueDto();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.area = _data["area"] ? UnitValueDto.fromJS(_data["area"]) : new UnitValueDto();
+            this.strongAxisMomentOfInertia = _data["strongAxisMomentOfInertia"] ? UnitValueDto.fromJS(_data["strongAxisMomentOfInertia"]) : new UnitValueDto();
+            this.weakAxisMomentOfInertia = _data["weakAxisMomentOfInertia"] ? UnitValueDto.fromJS(_data["weakAxisMomentOfInertia"]) : new UnitValueDto();
+            this.polarMomentOfInertia = _data["polarMomentOfInertia"] ? UnitValueDto.fromJS(_data["polarMomentOfInertia"]) : new UnitValueDto();
+        }
+    }
+
+    static fromJS(data: any): SectionProfileResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new SectionProfileResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["area"] = this.area ? this.area.toJSON() : <any>undefined;
+        data["strongAxisMomentOfInertia"] = this.strongAxisMomentOfInertia ? this.strongAxisMomentOfInertia.toJSON() : <any>undefined;
+        data["weakAxisMomentOfInertia"] = this.weakAxisMomentOfInertia ? this.weakAxisMomentOfInertia.toJSON() : <any>undefined;
+        data["polarMomentOfInertia"] = this.polarMomentOfInertia ? this.polarMomentOfInertia.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ISectionProfileResponse {
+    id: string;
+    area: UnitValueDto;
+    strongAxisMomentOfInertia: UnitValueDto;
+    weakAxisMomentOfInertia: UnitValueDto;
+    polarMomentOfInertia: UnitValueDto;
+}
+
+export class ShearDiagramResponse implements IShearDiagramResponse {
+    id!: string;
+    element1DId!: string;
+    lengthUnit!: string;
+    forceUnit!: string;
+    elementLength!: UnitValueDto;
+    intervals!: DiagramConsistantIntervalResponse[];
+
+    constructor(data?: IShearDiagramResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.elementLength = new UnitValueDto();
+            this.intervals = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.element1DId = _data["element1DId"];
+            this.lengthUnit = _data["lengthUnit"];
+            this.forceUnit = _data["forceUnit"];
+            this.elementLength = _data["elementLength"] ? UnitValueDto.fromJS(_data["elementLength"]) : new UnitValueDto();
+            if (Array.isArray(_data["intervals"])) {
+                this.intervals = [] as any;
+                for (let item of _data["intervals"])
+                    this.intervals!.push(DiagramConsistantIntervalResponse.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ShearDiagramResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ShearDiagramResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["element1DId"] = this.element1DId;
+        data["lengthUnit"] = this.lengthUnit;
+        data["forceUnit"] = this.forceUnit;
+        data["elementLength"] = this.elementLength ? this.elementLength.toJSON() : <any>undefined;
+        if (Array.isArray(this.intervals)) {
+            data["intervals"] = [];
+            for (let item of this.intervals)
+                data["intervals"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IShearDiagramResponse {
+    id: string;
+    element1DId: string;
+    lengthUnit: string;
+    forceUnit: string;
+    elementLength: UnitValueDto;
+    intervals: DiagramConsistantIntervalResponse[];
+}
+
+export class UnitSettingsDto implements IUnitSettingsDto {
+    lengthUnit!: string;
+    forceUnit!: string;
+
+    constructor(data?: IUnitSettingsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.lengthUnit = _data["lengthUnit"];
+            this.forceUnit = _data["forceUnit"];
+        }
+    }
+
+    static fromJS(data: any): UnitSettingsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UnitSettingsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["lengthUnit"] = this.lengthUnit;
+        data["forceUnit"] = this.forceUnit;
+        return data;
+    }
+}
+
+export interface IUnitSettingsDto {
+    lengthUnit: string;
+    forceUnit: string;
+}
+
+export class UnitSettingsDtoVerbose implements IUnitSettingsDtoVerbose {
+    lengthUnit!: string;
+    areaUnit!: string;
+    volumeUnit!: string;
+    areaMomentOfInertiaUnit!: string;
+    forceUnit!: string;
+    torqueUnit!: string;
+    forcePerLengthUnit!: string;
+    pressureUnit!: string;
+
+    constructor(data?: IUnitSettingsDtoVerbose) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.lengthUnit = _data["lengthUnit"];
+            this.areaUnit = _data["areaUnit"];
+            this.volumeUnit = _data["volumeUnit"];
+            this.areaMomentOfInertiaUnit = _data["areaMomentOfInertiaUnit"];
+            this.forceUnit = _data["forceUnit"];
+            this.torqueUnit = _data["torqueUnit"];
+            this.forcePerLengthUnit = _data["forcePerLengthUnit"];
+            this.pressureUnit = _data["pressureUnit"];
+        }
+    }
+
+    static fromJS(data: any): UnitSettingsDtoVerbose {
+        data = typeof data === 'object' ? data : {};
+        let result = new UnitSettingsDtoVerbose();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["lengthUnit"] = this.lengthUnit;
+        data["areaUnit"] = this.areaUnit;
+        data["volumeUnit"] = this.volumeUnit;
+        data["areaMomentOfInertiaUnit"] = this.areaMomentOfInertiaUnit;
+        data["forceUnit"] = this.forceUnit;
+        data["torqueUnit"] = this.torqueUnit;
+        data["forcePerLengthUnit"] = this.forcePerLengthUnit;
+        data["pressureUnit"] = this.pressureUnit;
+        return data;
+    }
+}
+
+export interface IUnitSettingsDtoVerbose {
+    lengthUnit: string;
+    areaUnit: string;
+    volumeUnit: string;
+    areaMomentOfInertiaUnit: string;
+    forceUnit: string;
+    torqueUnit: string;
+    forcePerLengthUnit: string;
+    pressureUnit: string;
+}
+
+export class UnitSettingsRequest implements IUnitSettingsRequest {
+    lengthUnit!: string;
+    areaUnit!: string;
+    volumeUnit!: string;
+    forceUnit!: string;
+    forcePerLengthUnit!: string;
+    torqueUnit!: string;
+
+    constructor(data?: IUnitSettingsRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.lengthUnit = _data["lengthUnit"];
+            this.areaUnit = _data["areaUnit"];
+            this.volumeUnit = _data["volumeUnit"];
+            this.forceUnit = _data["forceUnit"];
+            this.forcePerLengthUnit = _data["forcePerLengthUnit"];
+            this.torqueUnit = _data["torqueUnit"];
+        }
+    }
+
+    static fromJS(data: any): UnitSettingsRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new UnitSettingsRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["lengthUnit"] = this.lengthUnit;
+        data["areaUnit"] = this.areaUnit;
+        data["volumeUnit"] = this.volumeUnit;
+        data["forceUnit"] = this.forceUnit;
+        data["forcePerLengthUnit"] = this.forcePerLengthUnit;
+        data["torqueUnit"] = this.torqueUnit;
+        return data;
+    }
+}
+
+export interface IUnitSettingsRequest {
+    lengthUnit: string;
+    areaUnit: string;
+    volumeUnit: string;
+    forceUnit: string;
+    forcePerLengthUnit: string;
+    torqueUnit: string;
+}
+
+export class UnitSettingsResponse implements IUnitSettingsResponse {
+    lengthUnit!: string;
+    areaUnit!: string;
+    volumeUnit!: string;
+    forceUnit!: string;
+    forcePerLengthUnit!: string;
+    torqueUnit!: string;
+    pressureUnit!: string;
+    areaMomentOfInertiaUnit!: string;
+
+    constructor(data?: IUnitSettingsResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.lengthUnit = _data["lengthUnit"];
+            this.areaUnit = _data["areaUnit"];
+            this.volumeUnit = _data["volumeUnit"];
+            this.forceUnit = _data["forceUnit"];
+            this.forcePerLengthUnit = _data["forcePerLengthUnit"];
+            this.torqueUnit = _data["torqueUnit"];
+            this.pressureUnit = _data["pressureUnit"];
+            this.areaMomentOfInertiaUnit = _data["areaMomentOfInertiaUnit"];
+        }
+    }
+
+    static fromJS(data: any): UnitSettingsResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new UnitSettingsResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["lengthUnit"] = this.lengthUnit;
+        data["areaUnit"] = this.areaUnit;
+        data["volumeUnit"] = this.volumeUnit;
+        data["forceUnit"] = this.forceUnit;
+        data["forcePerLengthUnit"] = this.forcePerLengthUnit;
+        data["torqueUnit"] = this.torqueUnit;
+        data["pressureUnit"] = this.pressureUnit;
+        data["areaMomentOfInertiaUnit"] = this.areaMomentOfInertiaUnit;
+        return data;
+    }
+}
+
+export interface IUnitSettingsResponse {
+    lengthUnit: string;
+    areaUnit: string;
+    volumeUnit: string;
+    forceUnit: string;
+    forcePerLengthUnit: string;
+    torqueUnit: string;
+    pressureUnit: string;
+    areaMomentOfInertiaUnit: string;
+}
+
+export class UnitValueDto implements IUnitValueDto {
+    value!: number;
+    unit!: string;
+
+    constructor(data?: IUnitValueDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.value = _data["value"];
+            this.unit = _data["unit"];
+        }
+    }
+
+    static fromJS(data: any): UnitValueDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UnitValueDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["value"] = this.value;
+        data["unit"] = this.unit;
+        return data;
+    }
+}
+
+export interface IUnitValueDto {
+    value: number;
+    unit: string;
+}
+
+export class UnsupportedStructureDisplacementIdResponse implements IUnsupportedStructureDisplacementIdResponse {
+    analyticalNodeId!: string;
+    direction!: string;
+
+    constructor(data?: IUnsupportedStructureDisplacementIdResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.analyticalNodeId = _data["analyticalNodeId"];
+            this.direction = _data["direction"];
+        }
+    }
+
+    static fromJS(data: any): UnsupportedStructureDisplacementIdResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new UnsupportedStructureDisplacementIdResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["analyticalNodeId"] = this.analyticalNodeId;
+        data["direction"] = this.direction;
+        return data;
+    }
+}
+
+export interface IUnsupportedStructureDisplacementIdResponse {
+    analyticalNodeId: string;
+    direction: string;
+}
+
+export class Vector3 implements IVector3 {
+    x!: number;
+    y!: number;
+    z!: number;
+
+    constructor(data?: IVector3) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.x = _data["x"];
+            this.y = _data["y"];
+            this.z = _data["z"];
+        }
+    }
+
+    static fromJS(data: any): Vector3 {
+        data = typeof data === 'object' ? data : {};
+        let result = new Vector3();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["x"] = this.x;
+        data["y"] = this.y;
+        data["z"] = this.z;
+        return data;
+    }
+}
+
+export interface IVector3 {
+    x: number;
+    y: number;
+    z: number;
+}
+
+export class ApiException extends Error {
+    message: string;
+    status: number;
+    response: string;
+    headers: { [key: string]: any; };
+    result: any;
+
+    constructor(message: string, status: number, response: string, headers: { [key: string]: any; }, result: any) {
+        super();
+
+        this.message = message;
+        this.status = status;
+        this.response = response;
+        this.headers = headers;
+        this.result = result;
+    }
+
+    protected isApiException = true;
+
+    static isApiException(obj: any): obj is ApiException {
+        return obj.isApiException === true;
+    }
+}
+
+function throwException(message: string, status: number, response: string, headers: { [key: string]: any; }, result?: any): any {
+    if (result !== null && result !== undefined)
+        throw result;
+    else
+        throw new ApiException(message, status, response, headers, null);
+}

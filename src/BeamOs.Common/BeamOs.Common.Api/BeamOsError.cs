@@ -1,6 +1,10 @@
 namespace BeamOs.Common.Api;
 
-public sealed record BeamOsError(string Code, string Description)
+public sealed record BeamOsError
 {
-    public static readonly BeamOsError None = new(string.Empty, string.Empty);
+    public required string Code { get; init; }
+    public required string Description { get; init; }
+
+    public static readonly BeamOsError None =
+        new() { Code = string.Empty, Description = string.Empty };
 }

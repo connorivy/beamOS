@@ -26,28 +26,28 @@ public abstract class AbstractGenerator
     protected virtual bool GenerateCsClient { get; } = true;
     protected virtual bool GenerateTsClient { get; } = true;
 
-    protected RouteHandlerBuilder AddMethodToApi(string methodName)
+    protected virtual RouteHandlerBuilder AddMethodToApi(string methodName)
     {
         return this.routeGroupBuilder.MapPost(methodName, () => TypedResults.Ok());
     }
 
     public async Task GenerateClients()
     {
-        var httpClient = new HttpClient();
-        HttpRequestMessage request = new HttpRequestMessage
-        {
-            RequestUri = new Uri(this.OpenApiDefinitionUrl),
-            Method = HttpMethod.Get
-        };
+        //var httpClient = new HttpClient();
+        //HttpRequestMessage request = new HttpRequestMessage
+        //{
+        //    RequestUri = new Uri(this.OpenApiDefinitionUrl),
+        //    Method = HttpMethod.Get
+        //};
 
-        try
-        {
-            var result = await httpClient.SendAsync(request);
-        }
-        catch (System.Net.Http.HttpRequestException)
-        {
-            await this.App.StartAsync();
-        }
+        //try
+        //{
+        //    var result = await httpClient.SendAsync(request);
+        //}
+        //catch (HttpRequestException)
+        //{
+        //    await this.App.StartAsync();
+        //}
 
         var logger = this.App.Services.GetRequiredService<ILogger<Runner>>();
         logger.LogInformation("Api client generation starting...");

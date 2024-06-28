@@ -1,4 +1,4 @@
-using BeamOS.CodeGen.Apis.EditorApi;
+using BeamOs.CodeGen.Apis.EditorApi;
 using BeamOS.Tests.Common.Interfaces;
 using BeamOS.Tests.Common.SolvedProblems.Fixtures;
 
