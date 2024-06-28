@@ -7,27 +7,25 @@ namespace BeamOs.CodeGen.Apis.Generator.Apis;
 
 public class EditorApiGenerator : AbstractGenerator
 {
-    public EditorApiGenerator(WebApplication app)
-        : base(app)
-    {
-        _ = this.AddMethodToApi("CreateElement1d").Accepts<Element1DResponse>();
-
-        _ = this.AddMethodToApi("CreateModel").Accepts<ModelResponse>();
-
-        _ = this.AddMethodToApi("CreateModelHydrated").Accepts<ModelResponseHydrated>();
-
-        _ = this.AddMethodToApi("CreateNode").Accepts<NodeResponse>();
-
-        _ = this.AddMethodToApi("Clear");
-    }
-
-    public const string EditorApiDocumentName = "EditorApiAlpha";
-    protected override string ClientName => EditorApiDocumentName;
+    public override string ClientName => "EditorApiAlpha";
     protected override string ClientNamespace => "BeamOs.CodeGen.Apis.EditorApi";
     protected override string DestinationPath => $"../{this.ClientNamespace}/";
-    protected override string OpenApiDefinitionUrl =>
-        $"{this.App.Configuration[$"URLS"].Split(';').First()}/swagger/{this.ClientName}/swagger.json";
+    protected override string OpenApiDefinitionPath => $"/swagger/{this.ClientName}/swagger.json";
 
-    protected override RouteHandlerBuilder AddMethodToApi(string methodName) =>
-        base.AddMethodToApi(methodName).Produces<Result>();
+    protected override void AddApiMethods(Func<string, RouteHandlerBuilder> addMethod)
+    {
+        _ = addMethod("CreateElement1d").Accepts<Element1DResponse>();
+
+        _ = addMethod("CreateModel").Accepts<ModelResponse>();
+
+        _ = addMethod("CreateModelHydrated").Accepts<ModelResponseHydrated>();
+
+        _ = addMethod("CreateNode").Accepts<NodeResponse>();
+
+        _ = addMethod("Clear");
+    }
+
+    protected override RouteHandlerBuilder ConfigEachMethod(
+        RouteHandlerBuilder routeGroupBuilder
+    ) => base.ConfigEachMethod(routeGroupBuilder).Produces<Result>();
 }

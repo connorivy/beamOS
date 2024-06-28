@@ -1,5 +1,4 @@
 using BeamOs.CodeGen.Apis.Generator.Apis;
-using FastEndpoints.ClientGen;
 using NSwag;
 using NSwag.CodeGeneration.CSharp;
 using NSwag.CodeGeneration.TypeScript;
@@ -8,51 +7,55 @@ namespace BeamOs.CodeGen.Apis.Generator.Apis;
 
 public abstract class AbstractGenerator
 {
-    protected WebApplication App { get; }
-    private readonly RouteGroupBuilder routeGroupBuilder;
-
-    public AbstractGenerator(WebApplication app)
-    {
-        this.App = app;
-        this.routeGroupBuilder = app.MapGroup(this.ClientName)
-            .WithGroupName(this.ClientName)
-            .WithOpenApi();
-    }
-
     protected abstract string DestinationPath { get; }
-    protected abstract string ClientName { get; }
+    public abstract string ClientName { get; }
     protected virtual string ClientNamespace { get; } = "";
-    protected abstract string OpenApiDefinitionUrl { get; }
+    protected abstract string OpenApiDefinitionPath { get; }
     protected virtual bool GenerateCsClient { get; } = true;
     protected virtual bool GenerateTsClient { get; } = true;
 
-    protected virtual RouteHandlerBuilder AddMethodToApi(string methodName)
+    private string? baseUrl;
+
+    public void AddMethods(WebApplication app)
     {
-        return this.routeGroupBuilder.MapPost(methodName, () => TypedResults.Ok());
+        this.baseUrl = app.Configuration[$"URLS"].Split(';').First();
+
+        RouteGroupBuilder builder = app.MapGroup(this.ClientName)
+            .WithGroupName(this.ClientName)
+            .WithOpenApi();
+
+        this.AddApiMethods(this.AddSingleMethodToApi(builder));
     }
 
-    public async Task GenerateClients()
+    private Func<string, RouteHandlerBuilder> AddSingleMethodToApi(
+        RouteGroupBuilder routeGroupBuilder
+    )
     {
-        //var httpClient = new HttpClient();
-        //HttpRequestMessage request = new HttpRequestMessage
-        //{
-        //    RequestUri = new Uri(this.OpenApiDefinitionUrl),
-        //    Method = HttpMethod.Get
-        //};
+        return (methodName) =>
+            this.ConfigEachMethod(routeGroupBuilder.MapPost(methodName, () => TypedResults.Ok()));
+    }
 
-        //try
-        //{
-        //    var result = await httpClient.SendAsync(request);
-        //}
-        //catch (HttpRequestException)
-        //{
-        //    await this.App.StartAsync();
-        //}
+    protected virtual RouteHandlerBuilder ConfigEachMethod(RouteHandlerBuilder routeGroupBuilder) =>
+        routeGroupBuilder;
 
-        var logger = this.App.Services.GetRequiredService<ILogger<Runner>>();
+    protected abstract void AddApiMethods(Func<string, RouteHandlerBuilder> addMethod);
+
+    public async Task GenerateClients(ILogger logger)
+    {
         logger.LogInformation("Api client generation starting...");
 
-        var doc = await OpenApiDocument.FromUrlAsync(this.OpenApiDefinitionUrl);
+        UriBuilder uriBuilder =
+            new(
+                this.baseUrl
+                    ?? throw new Exception(
+                        $"baseUrl was null. Need to call the '{nameof(AddMethods)}' method before client can be generated"
+                    )
+            )
+            {
+                Path = this.OpenApiDefinitionPath
+            };
+
+        var doc = await OpenApiDocument.FromUrlAsync(uriBuilder.ToString());
 
         if (this.GenerateCsClient)
         {
@@ -95,15 +98,13 @@ public abstract class AbstractGenerator
             );
             logger.LogInformation("TypeScript api client generation successful!");
         }
-
-        //await this.App.StopAsync();
-        //Environment.Exit(0);
     }
 }
 
 public static class ApiGeneratorUtils
 {
     public static RouteHandlerBuilder Accepts<T>(this RouteHandlerBuilder routeHandlerBuilder)
+        where T : notnull
     {
         return routeHandlerBuilder.Accepts<T>("application/json");
     }
