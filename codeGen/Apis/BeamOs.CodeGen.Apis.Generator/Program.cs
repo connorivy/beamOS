@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 AbstractGenerator[] generators =
 [
     new EditorApiGenerator(),
+    new EditorEventsApi(),
     new StructuralAnalysisContractsTypesApiGenerator(),
 ];
 

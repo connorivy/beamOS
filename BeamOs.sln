@@ -64,7 +64,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOs.CodeGen.Apis", "code
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOs.CodeGen.Apis.Generator", "codeGen\Apis\BeamOs.CodeGen.Apis.Generator\BeamOs.CodeGen.Apis.Generator.csproj", "{3523FF89-0246-43A5-A73B-B291C366768B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.CodeGen.Apis.EditorApi", "codeGen\Apis\BeamOs.CodeGen.Apis.EditorApi\BeamOs.CodeGen.Apis.EditorApi.csproj", "{69328938-D25C-46C6-B89F-B2C24A9C54E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOs.CodeGen.Apis.EditorApi", "codeGen\Apis\BeamOs.CodeGen.Apis.EditorApi\BeamOs.CodeGen.Apis.EditorApi.csproj", "{69328938-D25C-46C6-B89F-B2C24A9C54E6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.WebApp.EditorEvents", "src\BeamOS.WebApp\BeamOs.WebApp.EditorActionsAndEvents\BeamOs.WebApp.EditorEvents.csproj", "{81708699-96DB-4D68-A8D2-89D7C1A8651B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -179,6 +181,12 @@ Global
 		{69328938-D25C-46C6-B89F-B2C24A9C54E6}.GenerateClients|Any CPU.Build.0 = Debug|Any CPU
 		{69328938-D25C-46C6-B89F-B2C24A9C54E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{69328938-D25C-46C6-B89F-B2C24A9C54E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81708699-96DB-4D68-A8D2-89D7C1A8651B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81708699-96DB-4D68-A8D2-89D7C1A8651B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81708699-96DB-4D68-A8D2-89D7C1A8651B}.GenerateClients|Any CPU.ActiveCfg = Debug|Any CPU
+		{81708699-96DB-4D68-A8D2-89D7C1A8651B}.GenerateClients|Any CPU.Build.0 = Debug|Any CPU
+		{81708699-96DB-4D68-A8D2-89D7C1A8651B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81708699-96DB-4D68-A8D2-89D7C1A8651B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -207,6 +215,7 @@ Global
 		{CDCD5893-4037-4D5A-B7B0-0260AC918E2C} = {FBF4B9B2-FF9C-4F69-9E42-6FDC16DAACC9}
 		{3523FF89-0246-43A5-A73B-B291C366768B} = {FBF4B9B2-FF9C-4F69-9E42-6FDC16DAACC9}
 		{69328938-D25C-46C6-B89F-B2C24A9C54E6} = {FBF4B9B2-FF9C-4F69-9E42-6FDC16DAACC9}
+		{81708699-96DB-4D68-A8D2-89D7C1A8651B} = {B58C021C-7297-48C9-9857-4B4C0E856CF4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0E917AFB-AF19-41C1-9F0B-17BD02FD96BE}

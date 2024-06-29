@@ -13,6 +13,7 @@ public static class DependencyInjection
     {
         //_ = services.AddScoped(x => EditorApiProxy.Create(x.GetRequiredService<IJSRuntime>()));
         _ = services.AddTransient<EditorApiProxyFactory>();
+        _ = services.AddTransient<EditorEventsApi>();
         _ = services.AddMudServices().AddMudExtensions();
 
         _ = services.AddFluxor(o =>

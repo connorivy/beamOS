@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\BeamOs.Common\BeamOs.Common.Api\BeamOs.Common.Api.csproj" />
     <ProjectReference Include="..\..\..\src\BeamOs.StructuralAnalysis\BeamOs.Contracts\BeamOs.Contracts.csproj" />
+    <ProjectReference Include="..\..\..\src\BeamOS.WebApp\BeamOs.WebApp.EditorActionsAndEvents\BeamOs.WebApp.EditorEvents.csproj" />
   </ItemGroup>
 
   <Target Name="ClientGen" AfterTargets="Build" Condition="'$(Configuration)'=='GenerateClients'">

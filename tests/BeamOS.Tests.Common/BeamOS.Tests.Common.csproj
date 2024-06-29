@@ -25,7 +25,6 @@
     <ProjectReference Include="..\..\src\BeamOs.StructuralAnalysis\BeamOs.Application\BeamOs.Application.csproj" />
     <ProjectReference Include="..\..\src\BeamOs.StructuralAnalysis\BeamOs.Contracts\BeamOs.Contracts.csproj" />
     <ProjectReference Include="..\..\src\BeamOs.StructuralAnalysis\BeamOs.Domain\BeamOs.Domain.csproj" />
-    <ProjectReference Include="..\..\src\BeamOS.WebApp\BeamOS.WebApp.EditorApi\BeamOs.CodeGen.Apis.csproj" />
   </ItemGroup>
 
 </Project>

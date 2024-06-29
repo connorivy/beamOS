@@ -9,15 +9,23 @@ public class EditorApiProxy : DispatchProxy
 {
     private IJSObjectReference? editorReference;
 
-    public static async Task<IEditorApiAlpha> Create(IJSRuntime js, string canvasId)
+    public static async Task<IEditorApiAlpha> Create(
+        IJSRuntime js,
+        IEditorEventsApi editorEventsApi,
+        string canvasId
+    )
     {
         var proxyInterface = Create<IEditorApiAlpha, EditorApiProxy>();
         var proxy = proxyInterface as EditorApiProxy ?? throw new Exception();
 
+        DotNetObjectReference<IEditorEventsApi> dotNetObjectReference =
+            DotNetObjectReference.Create(editorEventsApi);
+
         // WARNING : the string "createEditorFromId" must match the string in index.js
         proxy.editorReference = await js.InvokeAsync<IJSObjectReference>(
             "createEditorFromId",
-            canvasId
+            canvasId,
+            dotNetObjectReference
         );
         return proxyInterface;
     }
@@ -60,10 +68,10 @@ public class EditorApiProxy : DispatchProxy
     }
 }
 
-public class EditorApiProxyFactory(IJSRuntime js)
+public class EditorApiProxyFactory(IJSRuntime js, EditorEventsApi editorEventsApi)
 {
     public async Task<IEditorApiAlpha> Create(string canvasId)
     {
-        return await EditorApiProxy.Create(js, canvasId);
+        return await EditorApiProxy.Create(js, editorEventsApi, canvasId);
     }
 }

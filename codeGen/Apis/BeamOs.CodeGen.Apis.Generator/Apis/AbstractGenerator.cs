@@ -108,4 +108,9 @@ public static class ApiGeneratorUtils
     {
         return routeHandlerBuilder.Accepts<T>("application/json");
     }
+
+    public static RouteHandlerBuilder Accepts(this RouteHandlerBuilder routeHandlerBuilder, Type t)
+    {
+        return routeHandlerBuilder.Accepts(t, "application/json");
+    }
 }

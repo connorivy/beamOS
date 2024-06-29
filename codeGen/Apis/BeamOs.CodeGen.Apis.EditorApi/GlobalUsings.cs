@@ -12,3 +12,5 @@ global using BeamOs.Contracts.PhysicalModel.MomentLoad;
 global using BeamOs.Contracts.PhysicalModel.Node;
 global using BeamOs.Contracts.PhysicalModel.PointLoad;
 global using BeamOs.Contracts.PhysicalModel.SectionProfile;
+// events api
+global using BeamOs.WebApp.EditorActionsAndEvents.Nodes;
