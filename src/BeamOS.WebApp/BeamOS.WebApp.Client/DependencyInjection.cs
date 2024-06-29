@@ -1,5 +1,6 @@
 using BeamOs.Tests.TestRunner;
 using BeamOS.WebApp.Client.Features.TestExplorer;
+using BeamOS.WebApp.Client.State;
 using Fluxor;
 using Fluxor.Blazor.Web.ReduxDevTools;
 using MudBlazor.Services;
@@ -18,7 +19,8 @@ public static class DependencyInjection
 
         _ = services.AddFluxor(o =>
         {
-            o.ScanAssemblies(typeof(TAssembly).Assembly);
+            o.ScanAssemblies(typeof(TAssembly).Assembly).AddMiddleware<UndoRedoMiddleware>();
+
             if (typeof(TAssembly) != typeof(DependencyInjection))
             {
                 o.ScanAssemblies(typeof(DependencyInjection).Assembly);
@@ -30,5 +32,6 @@ public static class DependencyInjection
 
         _ = services.AddSingleton<TestInfoProvider>();
         _ = services.AddSingleton<TestInfoStateProvider>();
+        _ = services.AddScoped<HistoryDeque>();
     }
 }

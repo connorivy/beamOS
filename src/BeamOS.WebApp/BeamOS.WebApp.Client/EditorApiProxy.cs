@@ -5,9 +5,10 @@ using Microsoft.JSInterop;
 
 namespace BeamOS.WebApp.Client;
 
-public class EditorApiProxy : DispatchProxy
+public class EditorApiProxy : DispatchProxy, IAsyncDisposable
 {
     private IJSObjectReference? editorReference;
+    private DotNetObjectReference<IEditorEventsApi>? dotNetObjectReference;
 
     public static async Task<IEditorApiAlpha> Create(
         IJSRuntime js,
@@ -18,14 +19,13 @@ public class EditorApiProxy : DispatchProxy
         var proxyInterface = Create<IEditorApiAlpha, EditorApiProxy>();
         var proxy = proxyInterface as EditorApiProxy ?? throw new Exception();
 
-        DotNetObjectReference<IEditorEventsApi> dotNetObjectReference =
-            DotNetObjectReference.Create(editorEventsApi);
+        proxy.dotNetObjectReference = DotNetObjectReference.Create(editorEventsApi);
 
         // WARNING : the string "createEditorFromId" must match the string in index.js
         proxy.editorReference = await js.InvokeAsync<IJSObjectReference>(
             "createEditorFromId",
             canvasId,
-            dotNetObjectReference
+            proxy.dotNetObjectReference
         );
         return proxyInterface;
     }
@@ -65,6 +65,15 @@ public class EditorApiProxy : DispatchProxy
         }
 
         return tsMethodName;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        this.dotNetObjectReference?.Dispose();
+        if (this.editorReference is not null)
+        {
+            await this.editorReference.DisposeAsync();
+        }
     }
 }
 

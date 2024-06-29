@@ -31,8 +31,4 @@
     <PackageReference Include="Fluxor.Blazor.Web.ReduxDevTools" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="State\" />
-  </ItemGroup>
-
 </Project>

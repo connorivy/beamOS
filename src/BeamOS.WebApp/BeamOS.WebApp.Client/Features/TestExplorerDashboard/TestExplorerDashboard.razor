@@ -211,6 +211,7 @@ public void GetRotationMatrix_ForVerticalMember_ShouldEqualExpectedValue()
         {
             await js.InvokeVoidAsync("initializeScrollAnimations");
         }
+        await base.OnAfterRenderAsync(firstRender);
     }
 }
 

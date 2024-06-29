@@ -21,7 +21,6 @@ public class EditorEventsApi : IEditorEventsApi
         return Task.CompletedTask;
     }
 
-    [JSInvokable]
     public Task HandleNodeMovedEventAsync(
         NodeMovedEvent body,
         CancellationToken cancellationToken

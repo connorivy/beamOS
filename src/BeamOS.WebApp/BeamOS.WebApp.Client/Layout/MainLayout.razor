@@ -1,6 +1,9 @@
 @inherits LayoutComponentBase
 @rendermode InteractiveAuto
 
+@inject IDispatcher Dispatcher;
+@inject IJSRuntime js;
+
 <MudThemeProvider Theme="@_baseTheme"
                   IsDarkMode="@isDarkMode" />
 <MudPopoverProvider />
@@ -25,6 +28,16 @@
     <a class="dismiss">🗙</a>
 </div>
 
+<script>
+    function addKeyboardListenerEvents(dotnetRef) {
+        window.document.addEventListener('keydown', (e) => onKeyDown(dotnetRef, e))
+    }
+
+    function onKeyDown(dotnetRef, e) {
+        dotnetRef.invokeMethodAsync('OnKeyDown', e)
+    }
+</script>
+
 @code {
     private string inputValue = "initial";
     private bool open = false;
@@ -32,4 +45,29 @@
     private bool isDarkMode = true;
     private MudThemeProvider _mudThemeProvider;
     private MudTheme _baseTheme = new();
+
+    private DotNetObjectReference<MainLayout>? mainLayoutDotnetRef;
+
+    protected override void OnInitialized()
+    {
+        mainLayoutDotnetRef = DotNetObjectReference.Create(this);
+        base.OnInitialized();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await js.InvokeVoidAsync("addKeyboardListenerEvents", mainLayoutDotnetRef);
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    [JSInvokable]
+    public Task OnKeyDown(KeyboardEventArgs e)
+    {
+        Dispatcher.Dispatch(e);
+
+        return Task.CompletedTask;
+    }
 }
