@@ -1,5 +1,6 @@
 using BeamOs.CodeGen.Apis.EditorApi;
 using BeamOs.WebApp.EditorActionsAndEvents.Nodes;
+using BeamOs.WebApp.EditorEvents;
 using Fluxor;
 using Microsoft.JSInterop;
 
@@ -14,11 +15,17 @@ public class EditorEventsApi : IEditorEventsApi
         this.dispatcher = dispatcher;
     }
 
+    private Task HandleAllEditorCommands<T>(T action)
+        where T : struct, IEditorAction
+    {
+        this.dispatcher.Dispatch(action with { UiAlreadyUpdated = true });
+        return Task.CompletedTask;
+    }
+
     [JSInvokable]
     public Task HandleNodeMovedEventAsync(NodeMovedEvent body)
     {
-        this.dispatcher.Dispatch(body);
-        return Task.CompletedTask;
+        return this.HandleAllEditorCommands(body);
     }
 
     public Task HandleNodeMovedEventAsync(

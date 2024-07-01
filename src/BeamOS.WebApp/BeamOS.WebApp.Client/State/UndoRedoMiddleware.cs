@@ -1,18 +1,22 @@
+using BeamOs.WebApp.EditorEvents;
 using Fluxor;
 
 namespace BeamOS.WebApp.Client.State;
 
 public class UndoRedoMiddleware : Middleware
 {
-    private readonly HistoryDeque historyDeque;
+    private readonly HistoryManager historyManager;
 
-    public UndoRedoMiddleware(HistoryDeque historyDeque)
+    public UndoRedoMiddleware(HistoryManager historyManager)
     {
-        this.historyDeque = historyDeque;
+        this.historyManager = historyManager;
     }
 
     public override void AfterDispatch(object action)
     {
-        this.historyDeque.PushFirst(action);
+        if (action is IUndoable undoable)
+        {
+            this.historyManager.AddItem(undoable);
+        }
     }
 }

@@ -24,49 +24,58 @@ namespace BeamOs.CodeGen.Apis.EditorApi
     public partial interface IEditorApiAlpha
     {
         /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
+        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<Result> CreateElement1dAsync(Element1DResponse body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
+        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<Result> CreateElement1dAsync(Element1DResponse body, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
+        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<Result> CreateModelAsync(ModelResponse body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
+        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<Result> CreateModelAsync(ModelResponse body, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
+        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<Result> CreateModelHydratedAsync(ModelResponseHydrated body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
+        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<Result> CreateModelHydratedAsync(ModelResponseHydrated body, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
+        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<Result> CreateNodeAsync(NodeResponse body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
+        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<Result> CreateNodeAsync(NodeResponse body, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
+        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<Result> ClearAsync();
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
+        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<Result> ClearAsync(System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>OK</returns>
+        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Result> NodeMovedEventEffectAsync(NodeMovedEvent body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Result> NodeMovedEventEffectAsync(NodeMovedEvent body, System.Threading.CancellationToken cancellationToken);
 
     }
 
@@ -101,7 +110,7 @@ namespace BeamOs.CodeGen.Apis.EditorApi
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
 
         /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
+        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<Result> CreateElement1dAsync(Element1DResponse body)
         {
             return CreateElement1dAsync(body, System.Threading.CancellationToken.None);
@@ -109,7 +118,7 @@ namespace BeamOs.CodeGen.Apis.EditorApi
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
+        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<Result> CreateElement1dAsync(Element1DResponse body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
@@ -161,14 +170,14 @@ namespace BeamOs.CodeGen.Apis.EditorApi
                             var objectResponse_ = await ReadObjectResponseAsync<Result>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                                throw new EditorApiAlphaException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
                         }
                         else
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new EditorApiAlphaException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
                         }
                     }
                     finally
@@ -186,7 +195,7 @@ namespace BeamOs.CodeGen.Apis.EditorApi
         }
 
         /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
+        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<Result> CreateModelAsync(ModelResponse body)
         {
             return CreateModelAsync(body, System.Threading.CancellationToken.None);
@@ -194,7 +203,7 @@ namespace BeamOs.CodeGen.Apis.EditorApi
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
+        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<Result> CreateModelAsync(ModelResponse body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
@@ -246,14 +255,14 @@ namespace BeamOs.CodeGen.Apis.EditorApi
                             var objectResponse_ = await ReadObjectResponseAsync<Result>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                                throw new EditorApiAlphaException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
                         }
                         else
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new EditorApiAlphaException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
                         }
                     }
                     finally
@@ -271,7 +280,7 @@ namespace BeamOs.CodeGen.Apis.EditorApi
         }
 
         /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
+        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<Result> CreateModelHydratedAsync(ModelResponseHydrated body)
         {
             return CreateModelHydratedAsync(body, System.Threading.CancellationToken.None);
@@ -279,7 +288,7 @@ namespace BeamOs.CodeGen.Apis.EditorApi
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
+        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<Result> CreateModelHydratedAsync(ModelResponseHydrated body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
@@ -331,14 +340,14 @@ namespace BeamOs.CodeGen.Apis.EditorApi
                             var objectResponse_ = await ReadObjectResponseAsync<Result>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                                throw new EditorApiAlphaException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
                         }
                         else
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new EditorApiAlphaException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
                         }
                     }
                     finally
@@ -356,7 +365,7 @@ namespace BeamOs.CodeGen.Apis.EditorApi
         }
 
         /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
+        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<Result> CreateNodeAsync(NodeResponse body)
         {
             return CreateNodeAsync(body, System.Threading.CancellationToken.None);
@@ -364,7 +373,7 @@ namespace BeamOs.CodeGen.Apis.EditorApi
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
+        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<Result> CreateNodeAsync(NodeResponse body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
@@ -416,14 +425,14 @@ namespace BeamOs.CodeGen.Apis.EditorApi
                             var objectResponse_ = await ReadObjectResponseAsync<Result>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                                throw new EditorApiAlphaException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
                         }
                         else
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new EditorApiAlphaException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
                         }
                     }
                     finally
@@ -441,7 +450,7 @@ namespace BeamOs.CodeGen.Apis.EditorApi
         }
 
         /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
+        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<Result> ClearAsync()
         {
             return ClearAsync(System.Threading.CancellationToken.None);
@@ -449,7 +458,7 @@ namespace BeamOs.CodeGen.Apis.EditorApi
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
+        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<Result> ClearAsync(System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
@@ -495,14 +504,99 @@ namespace BeamOs.CodeGen.Apis.EditorApi
                             var objectResponse_ = await ReadObjectResponseAsync<Result>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                                throw new EditorApiAlphaException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
                         }
                         else
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new EditorApiAlphaException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <returns>OK</returns>
+        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<Result> NodeMovedEventEffectAsync(NodeMovedEvent body)
+        {
+            return NodeMovedEventEffectAsync(body, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<Result> NodeMovedEventEffectAsync(NodeMovedEvent body, System.Threading.CancellationToken cancellationToken)
+        {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    var json_ = Newtonsoft.Json.JsonConvert.SerializeObject(body, _settings.Value);
+                    var content_ = new System.Net.Http.StringContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "EditorApiAlpha/NodeMovedEventEffect"
+                    urlBuilder_.Append("EditorApiAlpha/NodeMovedEventEffect");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<Result>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new EditorApiAlphaException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new EditorApiAlphaException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
                         }
                     }
                     finally
@@ -552,7 +646,7 @@ namespace BeamOs.CodeGen.Apis.EditorApi
                 catch (Newtonsoft.Json.JsonException exception)
                 {
                     var message = "Could not deserialize the response body string as " + typeof(T).FullName + ".";
-                    throw new ApiException(message, (int)response.StatusCode, responseText, headers, exception);
+                    throw new EditorApiAlphaException(message, (int)response.StatusCode, responseText, headers, exception);
                 }
             }
             else
@@ -571,7 +665,7 @@ namespace BeamOs.CodeGen.Apis.EditorApi
                 catch (Newtonsoft.Json.JsonException exception)
                 {
                     var message = "Could not deserialize the response body stream as " + typeof(T).FullName + ".";
-                    throw new ApiException(message, (int)response.StatusCode, string.Empty, headers, exception);
+                    throw new EditorApiAlphaException(message, (int)response.StatusCode, string.Empty, headers, exception);
                 }
             }
         }
@@ -636,7 +730,7 @@ namespace BeamOs.CodeGen.Apis.EditorApi
 
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class ApiException : System.Exception
+    public partial class EditorApiAlphaException : System.Exception
     {
         public int StatusCode { get; private set; }
 
@@ -644,7 +738,7 @@ namespace BeamOs.CodeGen.Apis.EditorApi
 
         public System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> Headers { get; private set; }
 
-        public ApiException(string message, int statusCode, string response, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers, System.Exception innerException)
+        public EditorApiAlphaException(string message, int statusCode, string response, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers, System.Exception innerException)
             : base(message + "\n\nStatus: " + statusCode + "\nResponse: \n" + ((response == null) ? "(null)" : response.Substring(0, response.Length >= 512 ? 512 : response.Length)), innerException)
         {
             StatusCode = statusCode;
@@ -659,11 +753,11 @@ namespace BeamOs.CodeGen.Apis.EditorApi
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class ApiException<TResult> : ApiException
+    public partial class EditorApiAlphaException<TResult> : EditorApiAlphaException
     {
         public TResult Result { get; private set; }
 
-        public ApiException(string message, int statusCode, string response, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers, TResult result, System.Exception innerException)
+        public EditorApiAlphaException(string message, int statusCode, string response, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers, TResult result, System.Exception innerException)
             : base(message, statusCode, response, headers, innerException)
         {
             Result = result;

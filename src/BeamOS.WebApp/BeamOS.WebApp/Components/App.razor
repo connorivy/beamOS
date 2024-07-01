@@ -1,3 +1,4 @@
+@using BeamOS.WebApp.Client.Features.KeyBindings
 @using Microsoft.Extensions.Configuration
 @using BeamOS.WebApp.Client
 @inject IConfiguration Configuration
@@ -53,6 +54,27 @@
     {
         <script src="js/index.bundle.js"></script>
     }
+
+    <script>
+        function serializeEvent(e) {
+            return {
+                key: e.key,
+                code: e.keyCode.toString(),
+                location: e.location,
+                repeat: e.repeat,
+                ctrlKey: e.ctrlKey,
+                shiftKey: e.shiftKey,
+                altKey: e.altKey,
+                metaKey: e.metaKey,
+                type: e.type
+            };
+        }
+
+        document.addEventListener('keydown', function (e) {
+            DotNet.invokeMethodAsync('BeamOS.WebApp.Client', "@(nameof(DocumentEvents.FireOnKeyDownEvent))", serializeEvent(e))
+        });
+    </script>
+
 </body>
 
 </html>

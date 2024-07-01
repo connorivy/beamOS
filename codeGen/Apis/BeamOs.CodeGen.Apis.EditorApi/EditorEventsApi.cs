@@ -24,12 +24,12 @@ namespace BeamOs.CodeGen.Apis.EditorApi
     public partial interface IEditorEventsApi
     {
         /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
+        /// <exception cref="EditorEventsApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task HandleNodeMovedEventAsync(NodeMovedEvent body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
+        /// <exception cref="EditorEventsApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task HandleNodeMovedEventAsync(NodeMovedEvent body, System.Threading.CancellationToken cancellationToken);
 
     }
@@ -65,7 +65,7 @@ namespace BeamOs.CodeGen.Apis.EditorApi
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
 
         /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
+        /// <exception cref="EditorEventsApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task HandleNodeMovedEventAsync(NodeMovedEvent body)
         {
             return HandleNodeMovedEventAsync(body, System.Threading.CancellationToken.None);
@@ -73,7 +73,7 @@ namespace BeamOs.CodeGen.Apis.EditorApi
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
+        /// <exception cref="EditorEventsApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task HandleNodeMovedEventAsync(NodeMovedEvent body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
@@ -126,7 +126,7 @@ namespace BeamOs.CodeGen.Apis.EditorApi
                         else
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new EditorEventsApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
                         }
                     }
                     finally
@@ -176,7 +176,7 @@ namespace BeamOs.CodeGen.Apis.EditorApi
                 catch (Newtonsoft.Json.JsonException exception)
                 {
                     var message = "Could not deserialize the response body string as " + typeof(T).FullName + ".";
-                    throw new ApiException(message, (int)response.StatusCode, responseText, headers, exception);
+                    throw new EditorEventsApiException(message, (int)response.StatusCode, responseText, headers, exception);
                 }
             }
             else
@@ -195,7 +195,7 @@ namespace BeamOs.CodeGen.Apis.EditorApi
                 catch (Newtonsoft.Json.JsonException exception)
                 {
                     var message = "Could not deserialize the response body stream as " + typeof(T).FullName + ".";
-                    throw new ApiException(message, (int)response.StatusCode, string.Empty, headers, exception);
+                    throw new EditorEventsApiException(message, (int)response.StatusCode, string.Empty, headers, exception);
                 }
             }
         }
@@ -254,6 +254,46 @@ namespace BeamOs.CodeGen.Apis.EditorApi
             return result == null ? "" : result;
         }
     }
+
+    
+
+
+
+    [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class EditorEventsApiException : System.Exception
+    {
+        public int StatusCode { get; private set; }
+
+        public string Response { get; private set; }
+
+        public System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> Headers { get; private set; }
+
+        public EditorEventsApiException(string message, int statusCode, string response, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers, System.Exception innerException)
+            : base(message + "\n\nStatus: " + statusCode + "\nResponse: \n" + ((response == null) ? "(null)" : response.Substring(0, response.Length >= 512 ? 512 : response.Length)), innerException)
+        {
+            StatusCode = statusCode;
+            Response = response;
+            Headers = headers;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("HTTP Response: \n\n{0}\n\n{1}", Response, base.ToString());
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class EditorEventsApiException<TResult> : EditorEventsApiException
+    {
+        public TResult Result { get; private set; }
+
+        public EditorEventsApiException(string message, int statusCode, string response, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers, TResult result, System.Exception innerException)
+            : base(message, statusCode, response, headers, innerException)
+        {
+            Result = result;
+        }
+    }
+
 }
 
 #pragma warning restore  108

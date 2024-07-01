@@ -2,6 +2,7 @@ using BeamOs.Common.Api;
 using BeamOs.Contracts.PhysicalModel.Element1d;
 using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Contracts.PhysicalModel.Node;
+using BeamOs.WebApp.EditorEvents;
 
 namespace BeamOs.CodeGen.Apis.Generator.Apis;
 
@@ -23,6 +24,18 @@ public class EditorApiGenerator : AbstractGenerator
         _ = addMethod("CreateNode").Accepts<NodeResponse>();
 
         _ = addMethod("Clear");
+
+        foreach (
+            Type contractType in typeof(IAssemblyMarkerEditorEvents)
+                .Assembly
+                .ExportedTypes
+                .Where(
+                    t => !t.IsInterface && !t.IsAbstract && t.IsAssignableTo(typeof(IEditorAction))
+                )
+        )
+        {
+            _ = addMethod($"{contractType.Name}Effect").Accepts(contractType);
+        }
     }
 
     protected override RouteHandlerBuilder ConfigEachMethod(

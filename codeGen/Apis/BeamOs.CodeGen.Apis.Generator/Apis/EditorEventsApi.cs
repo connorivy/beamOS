@@ -15,7 +15,9 @@ public class EditorEventsApi : AbstractGenerator
             Type contractType in typeof(IAssemblyMarkerEditorEvents)
                 .Assembly
                 .ExportedTypes
-                .Where(t => !t.IsInterface && !t.IsAbstract)
+                .Where(
+                    t => !t.IsInterface && !t.IsAbstract && t.IsAssignableTo(typeof(IEditorAction))
+                )
         )
         {
             _ = addMethod($"Handle{contractType.Name}").Accepts(contractType);

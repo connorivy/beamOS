@@ -1,14 +1,19 @@
+@using BeamOS.WebApp.Client.Features.KeyBindings.UndoRedo
 @using BeamOs.CodeGen.Apis.EditorApi
 @using BeamOs.ApiClient
 @using BeamOs.Contracts.Common
 @using BeamOs.Contracts.PhysicalModel.Model
+@using BeamOs.WebApp.EditorActionsAndEvents.Nodes
+@using Fluxor.Blazor.Web.Components
 
 @rendermode InteractiveAuto
 
+@inherits FluxorComponent
 @implements IDisposable
 
 @inject IApiAlphaClient analysisApiClient
 @inject EditorApiProxyFactory editorApiAlphaFactory
+@inject UndoRedoFunctionality UndoRedo
 
 <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class=@($"relative {@Class}")>
     <MudPaper Class="h-full w-full absolute z-0"></MudPaper>
@@ -38,6 +43,8 @@
         {
             isLoading = true;
             EditorApiAlpha ??= await editorApiAlphaFactory.Create(elementId);
+            SubscribeToEditorActions(EditorApiAlpha);
+
             loadingText = "Fetching Data";
             StateHasChanged();
             await LoadModel(physicalModelId);
@@ -56,7 +63,19 @@
 
     public void Dispose()
     {
+        UndoRedo?.Dispose();
         // obj?.Dispose();
+    }
+
+    private void SubscribeToEditorActions(IEditorApiAlpha editorApiAlpha)
+    {
+        this.SubscribeToAction<NodeMovedEvent>(async e =>
+        {
+            if (!e.UiAlreadyUpdated)
+            {
+                await editorApiAlpha.NodeMovedEventEffectAsync(e);
+            }
+        });
     }
 
     [FeatureState]

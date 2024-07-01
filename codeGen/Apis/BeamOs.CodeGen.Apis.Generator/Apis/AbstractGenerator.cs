@@ -65,7 +65,8 @@ public abstract class AbstractGenerator
                 CSharpGeneratorSettings = { Namespace = this.ClientNamespace },
                 GenerateClientInterfaces = true,
                 GenerateDtoTypes = false,
-                UseBaseUrl = false
+                UseBaseUrl = false,
+                ExceptionClass = $"{this.ClientName}Exception"
             };
 
             var source = new CSharpClientGenerator(doc, csGenSettings).GenerateFile();

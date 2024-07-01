@@ -1,4 +1,4 @@
-using BeamOs.Tests.TestRunner;
+using BeamOS.WebApp.Client.Features.KeyBindings.UndoRedo;
 using BeamOS.WebApp.Client.Features.TestExplorer;
 using BeamOS.WebApp.Client.State;
 using Fluxor;
@@ -32,6 +32,7 @@ public static class DependencyInjection
 
         _ = services.AddSingleton<TestInfoProvider>();
         _ = services.AddSingleton<TestInfoStateProvider>();
-        _ = services.AddScoped<HistoryDeque>();
+        _ = services.AddScoped<HistoryManager>();
+        _ = services.AddScoped<UndoRedoFunctionality>();
     }
 }

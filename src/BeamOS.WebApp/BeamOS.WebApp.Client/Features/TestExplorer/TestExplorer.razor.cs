@@ -1,7 +1,7 @@
 using BeamOS.Tests.Common.Interfaces;
 using BeamOS.Tests.Common.Traits;
 using BeamOs.Tests.TestRunner;
-using BeamOS.WebApp.Client.Components;
+using BeamOS.WebApp.Client.Components.Editor;
 using BeamOS.WebApp.Client.Pages;
 using Fluxor;
 using Fluxor.Blazor.Web.Components;

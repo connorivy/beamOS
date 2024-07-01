@@ -1,26 +1,22 @@
+using BeamOs.WebApp.EditorEvents;
+
 namespace BeamOs.WebApp.EditorActionsAndEvents.Nodes;
 
-public readonly record struct NodeMovedEvent
+public readonly record struct NodeMovedEvent : IUndoable, IEditorAction
 {
     public required string NodeId { get; init; }
     public required EditorLocation PreviousLocation { get; init; }
     public required EditorLocation NewLocation { get; init; }
+    public bool UiAlreadyUpdated { get; init; }
+    public bool IsUndoAction { get; init; }
+    public bool IsRedoAction { get; init; }
 
-    public void Undo(Action<object> dispatcher)
-    {
-        dispatcher(
-            this with
-            {
-                NewLocation = this.PreviousLocation,
-                PreviousLocation = this.NewLocation
-            }
-        );
-    }
-
-    public void Redo(Action<object> dispatcher)
-    {
-        dispatcher(this);
-    }
+    public IUndoable GetUndoAction() =>
+        this with
+        {
+            NewLocation = this.PreviousLocation,
+            PreviousLocation = this.NewLocation
+        };
 }
 
 public readonly record struct EditorLocation
