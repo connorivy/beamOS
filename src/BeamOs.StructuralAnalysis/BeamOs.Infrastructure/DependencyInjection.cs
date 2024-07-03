@@ -8,6 +8,7 @@ using BeamOs.Application.PhysicalModel.MomentLoads;
 using BeamOs.Application.PhysicalModel.Nodes.Interfaces;
 using BeamOs.Application.PhysicalModel.PointLoads;
 using BeamOs.Application.PhysicalModel.SectionProfiles;
+using BeamOs.Infrastructure.Interceptors;
 using BeamOs.Infrastructure.Repositories.AnalyticalResults.NodeResults;
 using BeamOs.Infrastructure.Repositories.PhysicalModel.Element1Ds;
 using BeamOs.Infrastructure.Repositories.PhysicalModel.Materials;
@@ -90,6 +91,7 @@ public static class DependencyInjection
             .AddScoped<INodeResultRepository, NodeResultDbContextRepository>();
 
         _ = services.AddScoped<IUnitOfWork, UnitOfWork>();
+        _ = services.AddScoped<PublishIntegrationEventsInterceptor>();
 
         return services;
     }

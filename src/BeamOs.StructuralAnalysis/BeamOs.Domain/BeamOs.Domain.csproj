@@ -21,4 +21,8 @@
     </AssemblyAttribute>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BeamOs.IntegrationEvents\BeamOs.IntegrationEvents.csproj" />
+  </ItemGroup>
+
 </Project>

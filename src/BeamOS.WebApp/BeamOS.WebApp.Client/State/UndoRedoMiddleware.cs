@@ -1,4 +1,4 @@
-using BeamOs.WebApp.EditorEvents;
+using BeamOs.IntegrationEvents.Common;
 using Fluxor;
 
 namespace BeamOS.WebApp.Client.State;

@@ -4,18 +4,25 @@
 @using BeamOs.ApiClient
 @using BeamOs.Contracts.Common
 @using BeamOs.Contracts.PhysicalModel.Model
+@using BeamOs.IntegrationEvents
+@using BeamOs.IntegrationEvents.Common
+@using BeamOs.IntegrationEvents.PhysicalModel.Nodes
 @using BeamOs.WebApp.EditorActionsAndEvents.Nodes
 @using Fluxor.Blazor.Web.Components
+@using Microsoft.AspNetCore.SignalR.Client
 
 @rendermode InteractiveAuto
 
 @inherits FluxorComponent
 @implements IDisposable
+@implements IAsyncDisposable
 
 @inject IApiAlphaClient analysisApiClient
 @inject EditorApiProxyFactory editorApiAlphaFactory
 @inject UndoRedoFunctionality UndoRedo
 @inject HistoryManager History
+@inject NavigationManager NavigationManager
+@inject IDispatcher Dispatcher
 
 <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class=@($"relative {@Class}")>
     <MudPaper Class="h-full w-full absolute z-0"></MudPaper>
@@ -38,6 +45,23 @@
     public string elementId { get; } = "id" + Guid.NewGuid().ToString("N");
     public IEditorApiAlpha? EditorApiAlpha { get; private set; }
     const string physicalModelId = "00000000-0000-0000-0000-000000000000";
+
+    private HubConnection hubConnection;
+
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder()
+                .WithUrl(NavigationManager.ToAbsoluteUri(IStructuralAnalysisHubClient.HubEndpointPattern))
+                .Build();
+
+        hubConnection.On<NodeMovedEvent>("StructuralAnalysisIntegrationEventFired", @event =>
+        {
+            this.Dispatcher.Dispatch(@event);
+        });
+
+        await hubConnection.StartAsync();
+        await base.OnInitializedAsync();
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -73,11 +97,17 @@
     {
         this.SubscribeToAction<NodeMovedEvent>(async e =>
         {
-            if (!e.UiAlreadyUpdated)
+            if (e.EditorNeedsUpdating)
             {
-                await editorApiAlpha.NodeMovedEventEffectAsync(e);
+                await editorApiAlpha.ReduceNodeMovedEventAsync(e);
             }
         });
+    }
+
+    protected override async ValueTask DisposeAsyncCore(bool disposing)
+    {
+        await this.hubConnection.DisposeAsync();
+        await base.DisposeAsyncCore(disposing);
     }
 
     [FeatureState]

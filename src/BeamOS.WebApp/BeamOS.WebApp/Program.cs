@@ -6,7 +6,9 @@ using BeamOs.Infrastructure;
 using BeamOs.Tests.TestRunner;
 using BeamOS.WebApp;
 using BeamOS.WebApp.Client;
+using BeamOS.WebApp.Client.Components.Editor;
 using BeamOS.WebApp.Components;
+using BeamOS.WebApp.Hubs;
 using Blazored.LocalStorage;
 using FastEndpoints;
 using FastEndpoints.Swagger;
@@ -25,6 +27,8 @@ builder
             [Constants.ASSEMBLY_NAME] = typeof(Program).Assembly.GetName().Name
         }
     );
+
+builder.Services.AddSignalR();
 
 // Add services to the container.
 builder
@@ -78,6 +82,7 @@ builder.Services.AddSingleton<ICodeTestScoreTracker, CodeTestScoresTracker>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddSingleton<BeamOs.IntegrationEvents.IEventBus, StructuralAnalysisHubEventBus>();
 
 builder
     .Services
@@ -171,6 +176,8 @@ else
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+app.MapHub<StructuralAnalysisHub>(IStructuralAnalysisHubClient.HubEndpointPattern);
 
 app.UseStatusCodePagesWithRedirects("/404");
 

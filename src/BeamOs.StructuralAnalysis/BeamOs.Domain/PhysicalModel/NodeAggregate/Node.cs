@@ -2,6 +2,7 @@ using BeamOs.Domain.Common.Models;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
+using BeamOs.IntegrationEvents.PhysicalModel.Nodes;
 using UnitsNet;
 using UnitsNet.Units;
 
@@ -10,7 +11,32 @@ namespace BeamOs.Domain.PhysicalModel.NodeAggregate;
 public class Node : AggregateRoot<NodeId>
 {
     public ModelId ModelId { get; private set; }
-    public Point LocationPoint { get; set; }
+
+    private Point locationPoint;
+    public Point LocationPoint
+    {
+        get => this.locationPoint;
+        set
+        {
+            this.AddEvent(
+                new NodeMovedEvent
+                {
+                    NodeId = this.Id.Id,
+                    PreviousLocation = new(
+                        this.locationPoint.XCoordinate.Meters,
+                        this.locationPoint.XCoordinate.Meters,
+                        this.locationPoint.XCoordinate.Meters
+                    ),
+                    NewLocation = new(
+                        value.XCoordinate.Meters,
+                        value.YCoordinate.Meters,
+                        value.ZCoordinate.Meters
+                    )
+                }
+            );
+            this.locationPoint = value;
+        }
+    }
 
     public Node(
         ModelId modelId,

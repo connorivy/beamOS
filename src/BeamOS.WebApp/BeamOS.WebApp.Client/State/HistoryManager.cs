@@ -1,4 +1,4 @@
-using BeamOs.WebApp.EditorEvents;
+using BeamOs.IntegrationEvents.Common;
 using Fluxor;
 
 namespace BeamOS.WebApp.Client.State;
@@ -24,47 +24,30 @@ public sealed class HistoryManager(IDispatcher dispatcher)
         if (undoable is IEditorAction)
         {
             // todo: I know it's ugly, but how to do this otherwise?
-            undoAction = CreateUndoActionForEditorAction((dynamic)undoable.GetUndoAction());
+            undoAction = MarkHistoryAsUpdatedForEditorAction((dynamic)undoable.GetUndoAction());
         }
         else
         {
-            undoAction = CreateUndoAction((dynamic)undoable.GetUndoAction());
+            undoAction = MarkHistoryAsUpdated((dynamic)undoable.GetUndoAction());
         }
 
         dispatcher.Dispatch(undoAction);
     }
 
-    public IUndoable CreateUndoAction<T>(T undoable)
+    public static IUndoable MarkHistoryAsUpdated<T>(T undoable)
         where T : struct, IUndoable
     {
-        return undoable with { IsUndoAction = true, IsRedoAction = false };
+        return undoable with { DbNeedsUpdating = true, HistoryNeedsUpdating = false };
     }
 
-    public IUndoable CreateUndoActionForEditorAction<T>(T undoable)
+    public static IUndoable MarkHistoryAsUpdatedForEditorAction<T>(T undoable)
         where T : struct, IUndoable, IEditorAction
     {
         return undoable with
         {
-            IsUndoAction = true,
-            IsRedoAction = false,
-            UiAlreadyUpdated = false
-        };
-    }
-
-    public IUndoable CreateRedoAction<T>(T undoable)
-        where T : struct, IUndoable
-    {
-        return undoable with { IsUndoAction = false, IsRedoAction = true, };
-    }
-
-    public IUndoable CreateRedoActionForEditorAction<T>(T undoable)
-        where T : struct, IUndoable, IEditorAction
-    {
-        return undoable with
-        {
-            IsUndoAction = false,
-            IsRedoAction = true,
-            UiAlreadyUpdated = false
+            DbNeedsUpdating = true,
+            EditorNeedsUpdating = true,
+            HistoryNeedsUpdating = false
         };
     }
 
@@ -82,11 +65,11 @@ public sealed class HistoryManager(IDispatcher dispatcher)
         if (undoable is IEditorAction)
         {
             // todo: I know it's ugly, but how to do this otherwise?
-            redoAction = CreateRedoActionForEditorAction((dynamic)undoable);
+            redoAction = MarkHistoryAsUpdatedForEditorAction((dynamic)undoable);
         }
         else
         {
-            redoAction = CreateRedoAction((dynamic)undoable);
+            redoAction = MarkHistoryAsUpdated((dynamic)undoable);
         }
 
         dispatcher.Dispatch(redoAction);
@@ -95,7 +78,7 @@ public sealed class HistoryManager(IDispatcher dispatcher)
     public void AddItem(IUndoable action)
     {
         // don't add the item to the undo actions if this was an action being done
-        if (action.IsUndoAction || action.IsRedoAction)
+        if (!action.HistoryNeedsUpdating)
         {
             return;
         }

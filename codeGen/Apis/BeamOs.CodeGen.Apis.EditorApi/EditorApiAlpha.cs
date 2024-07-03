@@ -70,12 +70,12 @@ namespace BeamOs.CodeGen.Apis.EditorApi
 
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> NodeMovedEventEffectAsync(NodeMovedEvent body);
+        System.Threading.Tasks.Task<Result> ReduceNodeMovedEventAsync(NodeMovedEvent body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> NodeMovedEventEffectAsync(NodeMovedEvent body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<Result> ReduceNodeMovedEventAsync(NodeMovedEvent body, System.Threading.CancellationToken cancellationToken);
 
     }
 
@@ -530,15 +530,15 @@ namespace BeamOs.CodeGen.Apis.EditorApi
 
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> NodeMovedEventEffectAsync(NodeMovedEvent body)
+        public virtual System.Threading.Tasks.Task<Result> ReduceNodeMovedEventAsync(NodeMovedEvent body)
         {
-            return NodeMovedEventEffectAsync(body, System.Threading.CancellationToken.None);
+            return ReduceNodeMovedEventAsync(body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> NodeMovedEventEffectAsync(NodeMovedEvent body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> ReduceNodeMovedEventAsync(NodeMovedEvent body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -558,8 +558,8 @@ namespace BeamOs.CodeGen.Apis.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/NodeMovedEventEffect"
-                    urlBuilder_.Append("EditorApiAlpha/NodeMovedEventEffect");
+                    // Operation Path: "EditorApiAlpha/ReduceNodeMovedEvent"
+                    urlBuilder_.Append("EditorApiAlpha/ReduceNodeMovedEvent");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 

@@ -1,6 +1,6 @@
 using BeamOs.CodeGen.Apis.EditorApi;
-using BeamOs.WebApp.EditorActionsAndEvents.Nodes;
-using BeamOs.WebApp.EditorEvents;
+using BeamOs.IntegrationEvents.Common;
+using BeamOs.IntegrationEvents.PhysicalModel.Nodes;
 using Fluxor;
 using Microsoft.JSInterop;
 
@@ -18,7 +18,7 @@ public class EditorEventsApi : IEditorEventsApi
     private Task HandleAllEditorCommands<T>(T action)
         where T : struct, IEditorAction
     {
-        this.dispatcher.Dispatch(action with { UiAlreadyUpdated = true });
+        this.dispatcher.Dispatch(action with { EditorNeedsUpdating = false });
         return Task.CompletedTask;
     }
 

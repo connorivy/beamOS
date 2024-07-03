@@ -22,7 +22,7 @@ public partial class ModelFixtureInDb
 
     public partial MomentLoadResponse ToResponse(MomentLoadFixture fixture);
 
-    public partial PointResponse ToResponse(Point source);
+    public partial PointResponse ToResponse(BeamOs.Domain.Common.ValueObjects.Point source);
 
     public partial RestraintResponse ToResponse(Restraint source);
 }

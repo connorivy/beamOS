@@ -1,8 +1,12 @@
 using BeamOs.Domain.Common.Interfaces;
+using BeamOs.IntegrationEvents.Common;
 
 namespace BeamOs.Domain.Common.Models;
 
-public abstract class BeamOSEntity<TId> : IEquatable<BeamOSEntity<TId>>, IBeamOsDomainObject
+public abstract class BeamOSEntity<TId>
+    : IEquatable<BeamOSEntity<TId>>,
+        IBeamOsDomainObject,
+        IHasIntegrationEvents
     where TId : notnull
 {
     public TId Id { get; private set; }
@@ -11,6 +15,14 @@ public abstract class BeamOSEntity<TId> : IEquatable<BeamOSEntity<TId>>, IBeamOs
     {
         this.Id = id;
     }
+
+    private readonly List<IIntegrationEvent> integrationEvents = [];
+    public IReadOnlyList<IIntegrationEvent> IntegrationEvents =>
+        this.integrationEvents.AsReadOnly();
+
+    public void AddEvent(IIntegrationEvent @event) => this.integrationEvents.Add(@event);
+
+    public void ClearIntegrationEvents() => this.integrationEvents.Clear();
 
     public override bool Equals(object? obj)
     {

@@ -12,6 +12,8 @@ using BeamOs.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate;
 using BeamOs.Infrastructure.Data.Configurations.Write;
+using BeamOs.Infrastructure.Interceptors;
+using BeamOs.IntegrationEvents.Common;
 using MathNet.Spatial.Euclidean;
 using Microsoft.EntityFrameworkCore;
 using UnitsNet;
@@ -27,11 +29,25 @@ namespace BeamOs.Infrastructure;
 /// </summary>
 public class BeamOsStructuralDbContext : DbContext
 {
-    public BeamOsStructuralDbContext(DbContextOptions<BeamOsStructuralDbContext> options)
-        : base(options) { }
+    private readonly PublishIntegrationEventsInterceptor publishIntegrationEventsInterceptor;
 
-    protected BeamOsStructuralDbContext(DbContextOptions options)
-        : base(options) { }
+    public BeamOsStructuralDbContext(
+        DbContextOptions<BeamOsStructuralDbContext> options,
+        PublishIntegrationEventsInterceptor publishIntegrationEventsInterceptor
+    )
+        : base(options)
+    {
+        this.publishIntegrationEventsInterceptor = publishIntegrationEventsInterceptor;
+    }
+
+    protected BeamOsStructuralDbContext(
+        DbContextOptions options,
+        PublishIntegrationEventsInterceptor publishIntegrationEventsInterceptor
+    )
+        : base(options)
+    {
+        this.publishIntegrationEventsInterceptor = publishIntegrationEventsInterceptor;
+    }
 
     public DbSet<Model> Models { get; set; }
     public DbSet<Element1D> Element1Ds { get; set; }
@@ -52,12 +68,20 @@ public class BeamOsStructuralDbContext : DbContext
         configurationBuilder.AddPhysicalModelInfrastructure();
     }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.AddInterceptors(this.publishIntegrationEventsInterceptor);
+        base.OnConfiguring(optionsBuilder);
+    }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        _ = builder.ApplyConfigurationsFromAssembly(
-            typeof(NodeConfiguration).Assembly,
-            WriteConfigurationsFilter
-        );
+        _ = builder
+            .Ignore<List<IIntegrationEvent>>()
+            .ApplyConfigurationsFromAssembly(
+                typeof(NodeConfiguration).Assembly,
+                WriteConfigurationsFilter
+            );
 
         builder
             .Model

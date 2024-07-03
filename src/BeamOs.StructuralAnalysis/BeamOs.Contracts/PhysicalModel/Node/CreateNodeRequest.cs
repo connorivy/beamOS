@@ -33,7 +33,7 @@ namespace BeamOs.Contracts.PhysicalModel.Node;
 public record CreateNodeRequest
 {
     public string ModelId { get; init; }
-    public PointRequest LocationPoint { get; init; }
+    public Point LocationPoint { get; init; }
     public RestraintRequest? Restraint { get; init; }
 
     public CreateNodeRequest(
@@ -47,11 +47,7 @@ public record CreateNodeRequest
         : this(modelId, new(xCoordinate, yCoordinate, zCoordinate, lengthUnit), restraint) { }
 
     [JsonConstructor]
-    public CreateNodeRequest(
-        string modelId,
-        PointRequest locationPoint,
-        RestraintRequest? restraint
-    )
+    public CreateNodeRequest(string modelId, Point locationPoint, RestraintRequest? restraint)
     {
         this.ModelId = modelId;
         this.LocationPoint = locationPoint;
@@ -59,18 +55,9 @@ public record CreateNodeRequest
     }
 }
 
-public record PointRequest(
-    UnitValueDto XCoordinate,
-    UnitValueDto YCoordinate,
-    UnitValueDto ZCoordinate
-)
+public record Point(UnitValueDto XCoordinate, UnitValueDto YCoordinate, UnitValueDto ZCoordinate)
 {
-    public PointRequest(
-        double xCoordinate,
-        double yCoordinate,
-        double zCoordinate,
-        string lengthUnit
-    )
+    public Point(double xCoordinate, double yCoordinate, double zCoordinate, string lengthUnit)
         : this(
             new(xCoordinate, lengthUnit),
             new(yCoordinate, lengthUnit),
