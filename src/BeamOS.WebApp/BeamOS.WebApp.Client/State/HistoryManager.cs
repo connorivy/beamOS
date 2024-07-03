@@ -108,4 +108,10 @@ public sealed class HistoryManager(IDispatcher dispatcher)
             this.redoActions.Clear();
         }
     }
+
+    public void Clear()
+    {
+        this.undoActions.Clear();
+        this.redoActions.Clear();
+    }
 }

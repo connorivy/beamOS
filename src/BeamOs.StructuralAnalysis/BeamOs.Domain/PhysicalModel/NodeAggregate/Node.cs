@@ -10,7 +10,7 @@ namespace BeamOs.Domain.PhysicalModel.NodeAggregate;
 public class Node : AggregateRoot<NodeId>
 {
     public ModelId ModelId { get; private set; }
-    public Point LocationPoint { get; private set; }
+    public Point LocationPoint { get; set; }
 
     public Node(
         ModelId modelId,

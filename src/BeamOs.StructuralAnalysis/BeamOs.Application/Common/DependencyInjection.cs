@@ -11,6 +11,7 @@ public static class DependencyInjection
             scan =>
                 scan.FromAssemblyOf<T>()
                     .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<,>)))
+                    .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandlerSync<,>)))
                     .AsSelf()
                     //.AsImplementedInterfaces()
                     .WithTransientLifetime()

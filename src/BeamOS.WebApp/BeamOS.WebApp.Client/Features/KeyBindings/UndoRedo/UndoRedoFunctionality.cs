@@ -1,5 +1,4 @@
 using BeamOS.WebApp.Client.State;
-using Fluxor;
 using Microsoft.AspNetCore.Components.Web;
 
 namespace BeamOS.WebApp.Client.Features.KeyBindings.UndoRedo;
