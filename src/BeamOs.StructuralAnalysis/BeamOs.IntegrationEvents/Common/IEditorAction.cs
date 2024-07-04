@@ -5,5 +5,5 @@ namespace BeamOs.IntegrationEvents.Common;
 public interface IEditorAction
 {
     [JsonIgnore]
-    public bool EditorNeedsUpdating { get; init; }
+    public bool EditorUpdated { get; init; }
 }

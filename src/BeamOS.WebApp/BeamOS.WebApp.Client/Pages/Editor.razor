@@ -14,17 +14,7 @@
 
 <PageTitle>Editor</PageTitle>
 
-<MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="h-full w-full relative">
-    <MudPaper Class="h-full w-full absolute z-0"></MudPaper>
-    @* <div class="bg-gray-900 w-full h-full absolute"></div> *@
-    <canvas id="@elementId" class="h-full w-full absolute z-1"></canvas>
-    <MudOverlay Absolute="true" @bind-Visible="@isLoading">
-        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.Center">
-        <div class="rounded animate-spin ease duration-300 w-10 h-10 border-4 border-white"></div>
-        <h2 class="px-3 font-bold text-white"> @loadingText ...</h2>
-        </MudStack>
-    </MudOverlay>
-</MudContainer>
+<BeamOS.WebApp.Client.Components.Editor.EditorComponent Class="h-full w-full"></BeamOS.WebApp.Client.Components.Editor.EditorComponent>
 
 
 @code {

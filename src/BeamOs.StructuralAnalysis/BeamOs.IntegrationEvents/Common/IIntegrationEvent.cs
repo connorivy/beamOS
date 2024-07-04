@@ -4,6 +4,7 @@ namespace BeamOs.IntegrationEvents.Common;
 
 public interface IIntegrationEvent
 {
-    [JsonIgnore]
-    public bool DbNeedsUpdating { get; init; }
+    public bool DbUpdated { get; init; }
+
+    public string FullType { get; }
 }

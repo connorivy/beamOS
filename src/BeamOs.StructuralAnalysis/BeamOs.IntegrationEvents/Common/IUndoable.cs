@@ -5,6 +5,6 @@ namespace BeamOs.IntegrationEvents.Common;
 public interface IUndoable : IIntegrationEvent
 {
     [JsonIgnore]
-    public bool HistoryNeedsUpdating { get; init; }
+    public bool HistoryUpdated { get; init; }
     public IUndoable GetUndoAction();
 }

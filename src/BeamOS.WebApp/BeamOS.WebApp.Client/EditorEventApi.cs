@@ -18,7 +18,7 @@ public class EditorEventsApi : IEditorEventsApi
     private Task HandleAllEditorCommands<T>(T action)
         where T : struct, IEditorAction
     {
-        this.dispatcher.Dispatch(action with { EditorNeedsUpdating = false });
+        this.dispatcher.Dispatch(action with { EditorUpdated = true });
         return Task.CompletedTask;
     }
 

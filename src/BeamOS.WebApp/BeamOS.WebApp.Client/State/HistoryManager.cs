@@ -37,18 +37,13 @@ public sealed class HistoryManager(IDispatcher dispatcher)
     public static IUndoable MarkHistoryAsUpdated<T>(T undoable)
         where T : struct, IUndoable
     {
-        return undoable with { DbNeedsUpdating = true, HistoryNeedsUpdating = false };
+        return undoable with { DbUpdated = false, HistoryUpdated = true };
     }
 
     public static IUndoable MarkHistoryAsUpdatedForEditorAction<T>(T undoable)
         where T : struct, IUndoable, IEditorAction
     {
-        return undoable with
-        {
-            DbNeedsUpdating = true,
-            EditorNeedsUpdating = true,
-            HistoryNeedsUpdating = false
-        };
+        return undoable with { DbUpdated = false, EditorUpdated = false, HistoryUpdated = true };
     }
 
     public void Redo()
@@ -78,7 +73,7 @@ public sealed class HistoryManager(IDispatcher dispatcher)
     public void AddItem(IUndoable action)
     {
         // don't add the item to the undo actions if this was an action being done
-        if (!action.HistoryNeedsUpdating)
+        if (!action.HistoryUpdated)
         {
             return;
         }

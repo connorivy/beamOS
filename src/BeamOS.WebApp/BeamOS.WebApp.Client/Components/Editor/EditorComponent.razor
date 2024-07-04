@@ -10,6 +10,7 @@
 @using BeamOs.WebApp.EditorActionsAndEvents.Nodes
 @using Fluxor.Blazor.Web.Components
 @using Microsoft.AspNetCore.SignalR.Client
+@using System.Text.Json
 
 @rendermode InteractiveAuto
 
@@ -48,15 +49,22 @@
 
     private HubConnection hubConnection;
 
+    private List<IIntegrationEvent> integrationEvents = [];
+
     protected override async Task OnInitializedAsync()
     {
         hubConnection = new HubConnectionBuilder()
                 .WithUrl(NavigationManager.ToAbsoluteUri(IStructuralAnalysisHubClient.HubEndpointPattern))
                 .Build();
 
-        hubConnection.On<NodeMovedEvent>("StructuralAnalysisIntegrationEventFired", @event =>
+        hubConnection.On<System.Text.Json.JsonElement>("StructuralAnalysisIntegrationEventFired", @event =>
         {
-            this.Dispatcher.Dispatch(@event);
+            if (@event.TryGetProperty("fullType", out var property))
+            {
+                Type? eventType = Type.GetType($"{property.ToString()},BeamOs.IntegrationEvents");
+                var strongEvent = JsonSerializer.Deserialize(@event, eventType, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+                this.Dispatcher.Dispatch(strongEvent);
+            }
         });
 
         await hubConnection.StartAsync();
@@ -69,7 +77,9 @@
         {
             isLoading = true;
             EditorApiAlpha ??= await editorApiAlphaFactory.Create(elementId);
-            SubscribeToEditorActions(EditorApiAlpha);
+            // SubscribeToEditorActions(EditorApiAlpha);
+
+            this.SubscribeToAction<IIntegrationEvent>(async e => await HandleIntegrationEvent(e));
 
             loadingText = "Fetching Data";
             StateHasChanged();
@@ -95,13 +105,82 @@
 
     private void SubscribeToEditorActions(IEditorApiAlpha editorApiAlpha)
     {
+        this.SubscribeToAction<IIntegrationEvent>(e =>
+        {
+            Console.WriteLine(e);
+        });
+
         this.SubscribeToAction<NodeMovedEvent>(async e =>
         {
-            if (e.EditorNeedsUpdating)
+            if (!e.EditorUpdated)
             {
                 await editorApiAlpha.ReduceNodeMovedEventAsync(e);
             }
         });
+
+        // this.SubscribeToAction<NodeMovedEvent>(async e =>
+        // {
+        //     if (!e.DbUpdated)
+        //     {
+        //         await analysisApiClient.
+        //     }
+        // });
+    }
+
+    private async Task HandleIntegrationEvent(IIntegrationEvent integrationEvent)
+    {
+        if (this.EventIsServerResponseToUserInteraction(integrationEvent))
+        {
+            return;
+        }
+
+        if (integrationEvent is IEditorAction editorAction && editorAction.EditorUpdated)
+        {
+            this.integrationEvents.Add(integrationEvent);
+        }
+
+        switch (integrationEvent)
+        {
+            case NodeMovedEvent nodeMovedEvent:
+                if (!nodeMovedEvent.EditorUpdated)
+                {
+                    await this.EditorApiAlpha.ReduceNodeMovedEventAsync(nodeMovedEvent);  
+                }
+                if (!nodeMovedEvent.DbUpdated)
+                {
+                    await this.analysisApiClient.PatchNodeAsync(new()
+                        {
+                            NodeId = nodeMovedEvent.NodeId.ToString(),
+                            LocationPoint = new()
+                            {
+                                LengthUnit = "Meter",
+                                XCoordinate = nodeMovedEvent.NewLocation.X,
+                                YCoordinate = nodeMovedEvent.NewLocation.Y,
+                                ZCoordinate = nodeMovedEvent.NewLocation.Z
+                            }
+                        }, nodeMovedEvent.NodeId.ToString());
+                }
+                break;
+        }
+    }
+
+    private bool EventIsServerResponseToUserInteraction(IIntegrationEvent integrationEvent)
+    {
+        if (!integrationEvent.DbUpdated)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < this.integrationEvents.Count; i++)
+        {
+            if (this.integrationEvents[i] == integrationEvent)
+            {
+                this.integrationEvents.RemoveAt(i);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     protected override async ValueTask DisposeAsyncCore(bool disposing)

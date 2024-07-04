@@ -10,15 +10,15 @@ public readonly record struct NodeMovedEvent : IIntegrationEvent, IUndoable, IEd
     public required Guid NodeId { get; init; }
     public required Coordinate3D PreviousLocation { get; init; }
     public required Coordinate3D NewLocation { get; init; }
+    public string FullType => typeof(NodeMovedEvent).FullName;
 
     [JsonIgnore]
-    public bool HistoryNeedsUpdating { get; init; } = true;
+    public bool HistoryUpdated { get; init; }
 
     [JsonIgnore]
-    public bool EditorNeedsUpdating { get; init; } = true;
+    public bool EditorUpdated { get; init; }
 
-    [JsonIgnore]
-    public bool DbNeedsUpdating { get; init; } = true;
+    public bool DbUpdated { get; init; }
 
     public IUndoable GetUndoAction() =>
         this with

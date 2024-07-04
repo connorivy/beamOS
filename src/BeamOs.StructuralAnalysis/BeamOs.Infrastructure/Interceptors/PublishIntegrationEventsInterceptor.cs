@@ -1,5 +1,6 @@
 using BeamOs.Domain.Common.Interfaces;
 using BeamOs.IntegrationEvents;
+using BeamOs.IntegrationEvents.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
@@ -45,7 +46,13 @@ public class PublishIntegrationEventsInterceptor(IEventBus eventBus) : SaveChang
 
         foreach (var integrationEvent in integrationEvents)
         {
-            await eventBus.PublishAsync(integrationEvent);
+            await eventBus.PublishAsync(MarkAsDbUpdated((dynamic)integrationEvent));
         }
+    }
+
+    private static IIntegrationEvent MarkAsDbUpdated<T>(T integrationEvent)
+        where T : struct, IIntegrationEvent
+    {
+        return integrationEvent with { DbUpdated = true };
     }
 }

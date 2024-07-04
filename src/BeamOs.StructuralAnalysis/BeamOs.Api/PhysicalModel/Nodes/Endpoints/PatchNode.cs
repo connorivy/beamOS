@@ -18,11 +18,12 @@ public class PatchNode(
     public override string Route => "nodes/{nodeId}";
 
     public override PatchNodeRequest? ExampleRequest { get; } =
-        new PatchNodeRequest(
-            "00000000-0000-0000-0000-000000000000",
-            new PatchPointRequest { LengthUnit = "Foot", YCoordinate = 15 },
-            new PatchRestraintRequest(CanTranslateAlongX: false, CanRotateAboutY: true)
-        );
+        new PatchNodeRequest()
+        {
+            NodeId = "00000000-0000-0000-0000-000000000000",
+            LocationPoint = new PatchPointRequest { LengthUnit = "Foot", YCoordinate = 15 },
+            Restraint = new PatchRestraintRequest(CanTranslateAlongX: false, CanRotateAboutY: true)
+        };
 
     public override async Task<NodeResponse> ExecuteAsync(
         PatchNodeRequest req,

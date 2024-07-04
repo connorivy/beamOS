@@ -47,6 +47,7 @@ builder
     .Services
     .AddDbContext<BeamOsStructuralDbContext>(options => options.UseSqlServer(connectionString))
     .AddPhysicalModelInfrastructureReadModel(connectionString);
+builder.Services.AddScoped<BeamOs.IntegrationEvents.IEventBus, DummyEventBus>();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

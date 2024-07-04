@@ -24,8 +24,8 @@ public class Node : AggregateRoot<NodeId>
                     NodeId = this.Id.Id,
                     PreviousLocation = new(
                         this.locationPoint.XCoordinate.Meters,
-                        this.locationPoint.XCoordinate.Meters,
-                        this.locationPoint.XCoordinate.Meters
+                        this.locationPoint.YCoordinate.Meters,
+                        this.locationPoint.ZCoordinate.Meters
                     ),
                     NewLocation = new(
                         value.XCoordinate.Meters,
@@ -84,7 +84,31 @@ public class Node : AggregateRoot<NodeId>
 
     //public List<PointLoadId> PointLoadIds { get; private set; } = [];
     //public List<MomentLoad> MomentLoads { get; } = [];
-    public Restraint Restraint { get; set; }
+    private Restraint restraint;
+    public Restraint Restraint
+    {
+        get => this.restraint;
+        set
+        {
+            //this.AddEvent(
+            //    new NodeMovedEvent
+            //    {
+            //        NodeId = this.Id.Id,
+            //        PreviousLocation = new(
+            //            this.locationPoint.XCoordinate.Meters,
+            //            this.locationPoint.XCoordinate.Meters,
+            //            this.locationPoint.XCoordinate.Meters
+            //        ),
+            //        NewLocation = new(
+            //            value.XCoordinate.Meters,
+            //            value.YCoordinate.Meters,
+            //            value.ZCoordinate.Meters
+            //        )
+            //    }
+            //);
+            this.restraint = value;
+        }
+    }
 
     public NodeData GetData()
     {

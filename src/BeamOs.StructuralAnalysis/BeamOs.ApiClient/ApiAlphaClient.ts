@@ -81,6 +81,11 @@ export interface IApiAlphaClient {
     /**
      * @return Success
      */
+    patchNode(patchNodeRequest: PatchNodeRequest, nodeId: string): Promise<NodeResponse>;
+
+    /**
+     * @return Success
+     */
     getShearDiagram(id: string): Promise<ShearDiagramResponse>;
 
     /**
@@ -640,6 +645,50 @@ export class ApiAlphaClient implements IApiAlphaClient {
     }
 
     protected processGetSingleNode(response: Response): Promise<NodeResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = NodeResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<NodeResponse>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    patchNode(patchNodeRequest: PatchNodeRequest, nodeId: string): Promise<NodeResponse> {
+        let url_ = this.baseUrl + "/api/nodes/{nodeId}";
+        if (nodeId === undefined || nodeId === null)
+            throw new Error("The parameter 'nodeId' must be defined.");
+        url_ = url_.replace("{nodeId}", encodeURIComponent("" + nodeId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(patchNodeRequest);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPatchNode(_response);
+        });
+    }
+
+    protected processPatchNode(response: Response): Promise<NodeResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -2443,7 +2492,7 @@ export interface IGetNodeResultsRequest {
 
 export class CreateNodeRequest implements ICreateNodeRequest {
     modelId!: string;
-    locationPoint!: PointRequest;
+    locationPoint!: Point;
     restraint?: RestraintRequest | undefined;
 
     constructor(data?: ICreateNodeRequest) {
@@ -2454,14 +2503,14 @@ export class CreateNodeRequest implements ICreateNodeRequest {
             }
         }
         if (!data) {
-            this.locationPoint = new PointRequest();
+            this.locationPoint = new Point();
         }
     }
 
     init(_data?: any) {
         if (_data) {
             this.modelId = _data["modelId"];
-            this.locationPoint = _data["locationPoint"] ? PointRequest.fromJS(_data["locationPoint"]) : new PointRequest();
+            this.locationPoint = _data["locationPoint"] ? Point.fromJS(_data["locationPoint"]) : new Point();
             this.restraint = _data["restraint"] ? RestraintRequest.fromJS(_data["restraint"]) : <any>undefined;
         }
     }
@@ -2484,16 +2533,16 @@ export class CreateNodeRequest implements ICreateNodeRequest {
 
 export interface ICreateNodeRequest {
     modelId: string;
-    locationPoint: PointRequest;
+    locationPoint: Point;
     restraint?: RestraintRequest | undefined;
 }
 
-export class PointRequest implements IPointRequest {
+export class Point implements IPoint {
     xCoordinate!: UnitValueDto;
     yCoordinate!: UnitValueDto;
     zCoordinate!: UnitValueDto;
 
-    constructor(data?: IPointRequest) {
+    constructor(data?: IPoint) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -2515,9 +2564,9 @@ export class PointRequest implements IPointRequest {
         }
     }
 
-    static fromJS(data: any): PointRequest {
+    static fromJS(data: any): Point {
         data = typeof data === 'object' ? data : {};
-        let result = new PointRequest();
+        let result = new Point();
         result.init(data);
         return result;
     }
@@ -2531,7 +2580,7 @@ export class PointRequest implements IPointRequest {
     }
 }
 
-export interface IPointRequest {
+export interface IPoint {
     xCoordinate: UnitValueDto;
     yCoordinate: UnitValueDto;
     zCoordinate: UnitValueDto;
@@ -2591,6 +2640,150 @@ export interface IRestraintRequest {
     canRotateAboutX: boolean;
     canRotateAboutY: boolean;
     canRotateAboutZ: boolean;
+}
+
+export class PatchNodeRequest implements IPatchNodeRequest {
+    locationPoint?: PatchPointRequest | undefined;
+    restraint?: PatchRestraintRequest | undefined;
+
+    constructor(data?: IPatchNodeRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.locationPoint = _data["locationPoint"] ? PatchPointRequest.fromJS(_data["locationPoint"]) : <any>undefined;
+            this.restraint = _data["restraint"] ? PatchRestraintRequest.fromJS(_data["restraint"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): PatchNodeRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new PatchNodeRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["locationPoint"] = this.locationPoint ? this.locationPoint.toJSON() : <any>undefined;
+        data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IPatchNodeRequest {
+    locationPoint?: PatchPointRequest | undefined;
+    restraint?: PatchRestraintRequest | undefined;
+}
+
+export class PatchPointRequest implements IPatchPointRequest {
+    lengthUnit!: string;
+    xCoordinate?: number | undefined;
+    yCoordinate?: number | undefined;
+    zCoordinate?: number | undefined;
+
+    constructor(data?: IPatchPointRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.lengthUnit = _data["lengthUnit"];
+            this.xCoordinate = _data["xCoordinate"];
+            this.yCoordinate = _data["yCoordinate"];
+            this.zCoordinate = _data["zCoordinate"];
+        }
+    }
+
+    static fromJS(data: any): PatchPointRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new PatchPointRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["lengthUnit"] = this.lengthUnit;
+        data["xCoordinate"] = this.xCoordinate;
+        data["yCoordinate"] = this.yCoordinate;
+        data["zCoordinate"] = this.zCoordinate;
+        return data;
+    }
+}
+
+export interface IPatchPointRequest {
+    lengthUnit: string;
+    xCoordinate?: number | undefined;
+    yCoordinate?: number | undefined;
+    zCoordinate?: number | undefined;
+}
+
+export class PatchRestraintRequest implements IPatchRestraintRequest {
+    canTranslateAlongX?: boolean | undefined;
+    canTranslateAlongY?: boolean | undefined;
+    canTranslateAlongZ?: boolean | undefined;
+    canRotateAboutX?: boolean | undefined;
+    canRotateAboutY?: boolean | undefined;
+    canRotateAboutZ?: boolean | undefined;
+
+    constructor(data?: IPatchRestraintRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.canTranslateAlongX = _data["canTranslateAlongX"];
+            this.canTranslateAlongY = _data["canTranslateAlongY"];
+            this.canTranslateAlongZ = _data["canTranslateAlongZ"];
+            this.canRotateAboutX = _data["canRotateAboutX"];
+            this.canRotateAboutY = _data["canRotateAboutY"];
+            this.canRotateAboutZ = _data["canRotateAboutZ"];
+        }
+    }
+
+    static fromJS(data: any): PatchRestraintRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new PatchRestraintRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["canTranslateAlongX"] = this.canTranslateAlongX;
+        data["canTranslateAlongY"] = this.canTranslateAlongY;
+        data["canTranslateAlongZ"] = this.canTranslateAlongZ;
+        data["canRotateAboutX"] = this.canRotateAboutX;
+        data["canRotateAboutY"] = this.canRotateAboutY;
+        data["canRotateAboutZ"] = this.canRotateAboutZ;
+        return data;
+    }
+}
+
+export interface IPatchRestraintRequest {
+    canTranslateAlongX?: boolean | undefined;
+    canTranslateAlongY?: boolean | undefined;
+    canTranslateAlongZ?: boolean | undefined;
+    canRotateAboutX?: boolean | undefined;
+    canRotateAboutY?: boolean | undefined;
+    canRotateAboutZ?: boolean | undefined;
 }
 
 export class ShearDiagramResponse implements IShearDiagramResponse {

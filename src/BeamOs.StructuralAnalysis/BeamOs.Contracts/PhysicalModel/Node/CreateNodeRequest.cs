@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using BeamOs.Contracts.Common;
+using FastEndpoints;
 
 namespace BeamOs.Contracts.PhysicalModel.Node;
 
@@ -117,7 +118,7 @@ public record PatchRestraintRequest(
 
 public record PatchNodeRequest
 {
-    public string NodeId { get; init; }
+    public required string NodeId { get; init; }
     public PatchPointRequest? LocationPoint { get; init; }
     public PatchRestraintRequest? Restraint { get; init; }
 
@@ -131,15 +132,15 @@ public record PatchNodeRequest
     //)
     //    : this(modelId, new(lengthUnit, xCoordinate, yCoordinate, zCoordinate), restraint) { }
 
-    [JsonConstructor]
-    public PatchNodeRequest(
-        string nodeId,
-        PatchPointRequest? locationPoint,
-        PatchRestraintRequest? restraint
-    )
-    {
-        this.NodeId = nodeId;
-        this.LocationPoint = locationPoint;
-        this.Restraint = restraint;
-    }
+    //[JsonConstructor]
+    //public PatchNodeRequest(
+    //    string nodeId,
+    //    PatchPointRequest? locationPoint,
+    //    PatchRestraintRequest? restraint
+    //)
+    //{
+    //    this.NodeId = nodeId;
+    //    this.LocationPoint = locationPoint;
+    //    this.Restraint = restraint;
+    //}
 }
