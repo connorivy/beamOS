@@ -1,6 +1,6 @@
 using BeamOs.Contracts;
 
-namespace BeamOs.CodeGen.Apis.Generator.Apis;
+namespace BeamOs.CodeGen.Apis.Generator.ApiGenerators;
 
 public class StructuralAnalysisContractsTypesApiGenerator : AbstractGenerator
 {

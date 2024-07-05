@@ -1,4 +1,4 @@
-using BeamOs.CodeGen.Apis.Generator.Apis;
+using BeamOs.CodeGen.Apis.Generator.ApiGenerators;
 using BeamOs.CodeGen.Apis.Generator.Utils;
 using Microsoft.OpenApi.Models;
 
@@ -10,6 +10,7 @@ AbstractGenerator[] generators =
     new EditorApiGenerator(),
     new EditorEventsApi(),
     new StructuralAnalysisContractsTypesApiGenerator(),
+    new StructuralAnalysisApi()
 ];
 
 /*

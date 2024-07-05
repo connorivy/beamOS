@@ -5,7 +5,7 @@ using BeamOs.Contracts.PhysicalModel.Node;
 using BeamOs.IntegrationEvents;
 using BeamOs.IntegrationEvents.Common;
 
-namespace BeamOs.CodeGen.Apis.Generator.Apis;
+namespace BeamOs.CodeGen.Apis.Generator.ApiGenerators;
 
 public class EditorApiGenerator : AbstractGenerator
 {

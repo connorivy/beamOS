@@ -1,7 +1,7 @@
 using BeamOs.IntegrationEvents;
 using BeamOs.IntegrationEvents.Common;
 
-namespace BeamOs.CodeGen.Apis.Generator.Apis;
+namespace BeamOs.CodeGen.Apis.Generator.ApiGenerators;
 
 public class EditorEventsApi : AbstractGenerator
 {

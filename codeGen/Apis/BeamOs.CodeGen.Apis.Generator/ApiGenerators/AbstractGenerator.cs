@@ -1,9 +1,9 @@
-using BeamOs.CodeGen.Apis.Generator.Apis;
+using BeamOs.CodeGen.Apis.Generator.ApiGenerators;
 using NSwag;
 using NSwag.CodeGeneration.CSharp;
 using NSwag.CodeGeneration.TypeScript;
 
-namespace BeamOs.CodeGen.Apis.Generator.Apis;
+namespace BeamOs.CodeGen.Apis.Generator.ApiGenerators;
 
 public abstract class AbstractGenerator
 {
@@ -70,6 +70,12 @@ public abstract class AbstractGenerator
             };
 
             var source = new CSharpClientGenerator(doc, csGenSettings).GenerateFile();
+
+            if (!Path.Exists(this.DestinationPath))
+            {
+                Directory.CreateDirectory(this.DestinationPath);
+            }
+
             await File.WriteAllTextAsync(
                 Path.Combine(this.DestinationPath, csGenSettings.ClassName + ".cs"),
                 source
