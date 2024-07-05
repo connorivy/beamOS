@@ -63,7 +63,12 @@
             {
                 Type? eventType = Type.GetType($"{property.ToString()},BeamOs.IntegrationEvents");
                 var strongEvent = JsonSerializer.Deserialize(@event, eventType, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
-                this.Dispatcher.Dispatch(strongEvent);
+
+
+                this.Dispatcher.Dispatch(new StatefulIntegrationEvent(){
+                        IntegrationEvent = (IIntegrationEvent)strongEvent,
+                        DbUpdated = true
+                });
             }
         });
 
@@ -79,7 +84,11 @@
             EditorApiAlpha ??= await editorApiAlphaFactory.Create(elementId);
             // SubscribeToEditorActions(EditorApiAlpha);
 
-            this.SubscribeToAction<IIntegrationEvent>(async e => await HandleIntegrationEvent(e));
+            this.SubscribeToAction<StatefulIntegrationEvent>(async e => await HandleStatefulIntegrationEvent(e));
+            this.SubscribeToAction<IIntegrationEvent>(e =>
+            {
+                Console.WriteLine(e);
+            });
 
             loadingText = "Fetching Data";
             StateHasChanged();
@@ -103,50 +112,28 @@
         // obj?.Dispose();
     }
 
-    private void SubscribeToEditorActions(IEditorApiAlpha editorApiAlpha)
+
+    private async Task HandleStatefulIntegrationEvent(StatefulIntegrationEvent statefulIntegrationEvent)
     {
-        this.SubscribeToAction<IIntegrationEvent>(e =>
-        {
-            Console.WriteLine(e);
-        });
-
-        this.SubscribeToAction<NodeMovedEvent>(async e =>
-        {
-            if (!e.EditorUpdated)
-            {
-                await editorApiAlpha.ReduceNodeMovedEventAsync(e);
-            }
-        });
-
-        // this.SubscribeToAction<NodeMovedEvent>(async e =>
-        // {
-        //     if (!e.DbUpdated)
-        //     {
-        //         await analysisApiClient.
-        //     }
-        // });
-    }
-
-    private async Task HandleIntegrationEvent(IIntegrationEvent integrationEvent)
-    {
-        if (this.EventIsServerResponseToUserInteraction(integrationEvent))
+        if (this.EventIsServerResponseToUserInteraction(statefulIntegrationEvent))
         {
             return;
         }
 
-        if (integrationEvent is IEditorAction editorAction && editorAction.EditorUpdated)
+        // if db is not updated, then the event originated from the client, not the server
+        if (!statefulIntegrationEvent.DbUpdated)
         {
-            this.integrationEvents.Add(integrationEvent);
+            this.integrationEvents.Add(statefulIntegrationEvent.IntegrationEvent);
         }
 
-        switch (integrationEvent)
+        switch (statefulIntegrationEvent.IntegrationEvent)
         {
             case NodeMovedEvent nodeMovedEvent:
-                if (!nodeMovedEvent.EditorUpdated)
+                if (!statefulIntegrationEvent.EditorUpdated)
                 {
                     await this.EditorApiAlpha.ReduceNodeMovedEventAsync(nodeMovedEvent);  
                 }
-                if (!nodeMovedEvent.DbUpdated)
+                if (!statefulIntegrationEvent.DbUpdated)
                 {
                     await this.analysisApiClient.PatchNodeAsync(new()
                         {
@@ -164,16 +151,17 @@
         }
     }
 
-    private bool EventIsServerResponseToUserInteraction(IIntegrationEvent integrationEvent)
+    private bool EventIsServerResponseToUserInteraction(StatefulIntegrationEvent statefulIntegrationEvent)
     {
-        if (!integrationEvent.DbUpdated)
+        if (!statefulIntegrationEvent.DbUpdated)
         {
             return false;
         }
 
         for (int i = 0; i < this.integrationEvents.Count; i++)
         {
-            if (this.integrationEvents[i] == integrationEvent)
+            // compare with .Equals() because we need to compare with the value object comparison
+            if (this.integrationEvents[i].Equals(statefulIntegrationEvent.IntegrationEvent))
             {
                 this.integrationEvents.RemoveAt(i);
                 return true;

@@ -46,13 +46,7 @@ public class PublishIntegrationEventsInterceptor(IEventBus eventBus) : SaveChang
 
         foreach (var integrationEvent in integrationEvents)
         {
-            await eventBus.PublishAsync(MarkAsDbUpdated((dynamic)integrationEvent));
+            await eventBus.PublishAsync(integrationEvent);
         }
-    }
-
-    private static IIntegrationEvent MarkAsDbUpdated<T>(T integrationEvent)
-        where T : struct, IIntegrationEvent
-    {
-        return integrationEvent with { DbUpdated = true };
     }
 }

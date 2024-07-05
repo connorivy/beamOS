@@ -1,6 +1,7 @@
 using BeamOs.CodeGen.Apis.EditorApi;
 using BeamOs.IntegrationEvents.Common;
 using BeamOs.IntegrationEvents.PhysicalModel.Nodes;
+using BeamOS.WebApp.Client.State;
 using Fluxor;
 using Microsoft.JSInterop;
 
@@ -15,10 +16,11 @@ public class EditorEventsApi : IEditorEventsApi
         this.dispatcher = dispatcher;
     }
 
-    private Task HandleAllEditorCommands<T>(T action)
-        where T : struct, IEditorAction
+    private Task HandleAllEditorCommands(IIntegrationEvent action)
     {
-        this.dispatcher.Dispatch(action with { EditorUpdated = true });
+        this.dispatcher.Dispatch(
+            new StatefulIntegrationEvent() { IntegrationEvent = action, EditorUpdated = true }
+        );
         return Task.CompletedTask;
     }
 

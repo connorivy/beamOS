@@ -68,6 +68,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOs.CodeGen.Apis.EditorA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOs.IntegrationEvents", "src\BeamOs.StructuralAnalysis\BeamOs.IntegrationEvents\BeamOs.IntegrationEvents.csproj", "{3DB161AF-6671-4BA6-A7C2-55218DECD7CB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.Common.Domain", "src\BeamOs.Common\BeamOs.Common.Domain\BeamOs.Common.Domain.csproj", "{C0DA037C-1F2B-4807-9263-9F6AFCF7FCBC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -187,6 +189,12 @@ Global
 		{3DB161AF-6671-4BA6-A7C2-55218DECD7CB}.GenerateClients|Any CPU.Build.0 = Debug|Any CPU
 		{3DB161AF-6671-4BA6-A7C2-55218DECD7CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3DB161AF-6671-4BA6-A7C2-55218DECD7CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0DA037C-1F2B-4807-9263-9F6AFCF7FCBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0DA037C-1F2B-4807-9263-9F6AFCF7FCBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0DA037C-1F2B-4807-9263-9F6AFCF7FCBC}.GenerateClients|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0DA037C-1F2B-4807-9263-9F6AFCF7FCBC}.GenerateClients|Any CPU.Build.0 = Debug|Any CPU
+		{C0DA037C-1F2B-4807-9263-9F6AFCF7FCBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0DA037C-1F2B-4807-9263-9F6AFCF7FCBC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -216,6 +224,7 @@ Global
 		{3523FF89-0246-43A5-A73B-B291C366768B} = {FBF4B9B2-FF9C-4F69-9E42-6FDC16DAACC9}
 		{69328938-D25C-46C6-B89F-B2C24A9C54E6} = {FBF4B9B2-FF9C-4F69-9E42-6FDC16DAACC9}
 		{3DB161AF-6671-4BA6-A7C2-55218DECD7CB} = {AAA311E5-CD84-4E27-8F40-F82AE599D3E0}
+		{C0DA037C-1F2B-4807-9263-9F6AFCF7FCBC} = {FE5D3FD8-4840-4839-B980-1E8D457814D2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0E917AFB-AF19-41C1-9F0B-17BD02FD96BE}

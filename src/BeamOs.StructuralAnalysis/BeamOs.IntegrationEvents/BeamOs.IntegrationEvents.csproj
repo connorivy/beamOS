@@ -5,4 +5,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\BeamOs.Common\BeamOs.Common.Domain\BeamOs.Common.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

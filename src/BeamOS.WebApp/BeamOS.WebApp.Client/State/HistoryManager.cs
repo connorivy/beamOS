@@ -20,30 +20,13 @@ public sealed class HistoryManager(IDispatcher dispatcher)
         this.undoActions.RemoveFirst();
         this.redoActions.AddFirst(undoable);
 
-        IUndoable undoAction;
-        if (undoable is IEditorAction)
-        {
-            // todo: I know it's ugly, but how to do this otherwise?
-            undoAction = MarkHistoryAsUpdatedForEditorAction((dynamic)undoable.GetUndoAction());
-        }
-        else
-        {
-            undoAction = MarkHistoryAsUpdated((dynamic)undoable.GetUndoAction());
-        }
-
-        dispatcher.Dispatch(undoAction);
-    }
-
-    public static IUndoable MarkHistoryAsUpdated<T>(T undoable)
-        where T : struct, IUndoable
-    {
-        return undoable with { DbUpdated = false, HistoryUpdated = true };
-    }
-
-    public static IUndoable MarkHistoryAsUpdatedForEditorAction<T>(T undoable)
-        where T : struct, IUndoable, IEditorAction
-    {
-        return undoable with { DbUpdated = false, EditorUpdated = false, HistoryUpdated = true };
+        dispatcher.Dispatch(
+            new StatefulIntegrationEvent
+            {
+                IntegrationEvent = undoable.GetUndoAction(),
+                HistoryUpdated = true
+            }
+        );
     }
 
     public void Redo()
@@ -56,29 +39,23 @@ public sealed class HistoryManager(IDispatcher dispatcher)
         this.redoActions.RemoveFirst();
         this.undoActions.AddFirst(undoable);
 
-        IUndoable redoAction;
-        if (undoable is IEditorAction)
-        {
-            // todo: I know it's ugly, but how to do this otherwise?
-            redoAction = MarkHistoryAsUpdatedForEditorAction((dynamic)undoable);
-        }
-        else
-        {
-            redoAction = MarkHistoryAsUpdated((dynamic)undoable);
-        }
-
-        dispatcher.Dispatch(redoAction);
+        dispatcher.Dispatch(
+            new StatefulIntegrationEvent { IntegrationEvent = undoable, HistoryUpdated = true }
+        );
     }
 
-    public void AddItem(IUndoable action)
+    public void AddItem(StatefulIntegrationEvent statefulIntegrationEvent)
     {
         // don't add the item to the undo actions if this was an action being done
-        if (!action.HistoryUpdated)
+        if (
+            statefulIntegrationEvent.HistoryUpdated
+            || statefulIntegrationEvent.IntegrationEvent is not IUndoable undoable
+        )
         {
             return;
         }
 
-        this.undoActions.AddFirst(action);
+        this.undoActions.AddFirst(undoable);
 
         if (this.redoActions.Count > 0)
         {

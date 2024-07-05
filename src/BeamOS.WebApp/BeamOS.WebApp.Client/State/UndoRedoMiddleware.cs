@@ -14,9 +14,9 @@ public class UndoRedoMiddleware : Middleware
 
     public override void AfterDispatch(object action)
     {
-        if (action is IUndoable undoable)
+        if (action is StatefulIntegrationEvent statefulIntegrationEvent)
         {
-            this.historyManager.AddItem(undoable);
+            this.historyManager.AddItem(statefulIntegrationEvent);
         }
     }
 }
