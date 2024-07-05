@@ -836,6 +836,7 @@ export class NodeMovedEvent implements INodeMovedEvent {
     nodeId!: string;
     previousLocation!: Coordinate3D;
     newLocation!: Coordinate3D;
+    readonly fullType!: string;
 
     constructor(data?: INodeMovedEvent) {
         if (data) {
@@ -855,6 +856,7 @@ export class NodeMovedEvent implements INodeMovedEvent {
             this.nodeId = _data["nodeId"];
             this.previousLocation = _data["previousLocation"] ? Coordinate3D.fromJS(_data["previousLocation"]) : new Coordinate3D();
             this.newLocation = _data["newLocation"] ? Coordinate3D.fromJS(_data["newLocation"]) : new Coordinate3D();
+            (<any>this).fullType = _data["fullType"];
         }
     }
 
@@ -870,6 +872,7 @@ export class NodeMovedEvent implements INodeMovedEvent {
         data["nodeId"] = this.nodeId;
         data["previousLocation"] = this.previousLocation ? this.previousLocation.toJSON() : <any>undefined;
         data["newLocation"] = this.newLocation ? this.newLocation.toJSON() : <any>undefined;
+        data["fullType"] = this.fullType;
         return data;
     }
 }
@@ -878,6 +881,7 @@ export interface INodeMovedEvent {
     nodeId: string;
     previousLocation: Coordinate3D;
     newLocation: Coordinate3D;
+    fullType: string;
 }
 
 export class NodeResponse implements INodeResponse {
