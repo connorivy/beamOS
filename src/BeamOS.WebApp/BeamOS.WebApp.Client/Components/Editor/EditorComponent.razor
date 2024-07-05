@@ -57,19 +57,17 @@
                 .WithUrl(NavigationManager.ToAbsoluteUri(IStructuralAnalysisHubClient.HubEndpointPattern))
                 .Build();
 
-        hubConnection.On<System.Text.Json.JsonElement>("StructuralAnalysisIntegrationEventFired", @event =>
+        hubConnection.On<IntegrationEventWithTypeName>("StructuralAnalysisIntegrationEventFired", @event =>
         {
-            if (@event.TryGetProperty("fullType", out var property))
+            Type? eventType = Type.GetType($"{@event.typeFullName},BeamOs.IntegrationEvents");
+            var strongEvent = JsonSerializer.Deserialize(@event.IntegrationEvent, eventType, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+
+
+            this.Dispatcher.Dispatch(new StatefulIntegrationEvent()
             {
-                Type? eventType = Type.GetType($"{property.ToString()},BeamOs.IntegrationEvents");
-                var strongEvent = JsonSerializer.Deserialize(@event, eventType, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
-
-
-                this.Dispatcher.Dispatch(new StatefulIntegrationEvent(){
-                        IntegrationEvent = (IIntegrationEvent)strongEvent,
-                        DbUpdated = true
-                });
-            }
+                IntegrationEvent = (IIntegrationEvent)strongEvent,
+                DbUpdated = true
+            });
         });
 
         await hubConnection.StartAsync();

@@ -1,6 +1,8 @@
+using System.Text.Json;
 using BeamOs.IntegrationEvents;
 using BeamOs.IntegrationEvents.Common;
 using BeamOS.WebApp.Client.Components.Editor;
+using BeamOS.WebApp.Client.State;
 using Microsoft.AspNetCore.SignalR;
 
 namespace BeamOS.WebApp.Hubs;
@@ -12,5 +14,17 @@ public class StructuralAnalysisHubEventBus(
 ) : IEventBus
 {
     public async Task PublishAsync(IIntegrationEvent integrationEvent) =>
-        await hubContext.Clients.All.StructuralAnalysisIntegrationEventFired(integrationEvent);
+        await hubContext
+            .Clients
+            .All
+            .StructuralAnalysisIntegrationEventFired(
+                new IntegrationEventWithTypeName
+                {
+                    IntegrationEvent = JsonSerializer.SerializeToElement(
+                        integrationEvent,
+                        integrationEvent.GetType()
+                    ),
+                    typeFullName = integrationEvent.GetType().FullName
+                }
+            );
 }

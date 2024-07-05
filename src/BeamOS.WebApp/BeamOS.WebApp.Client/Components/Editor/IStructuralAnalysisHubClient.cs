@@ -10,4 +10,7 @@ public interface IStructuralAnalysisHubClient
     public Task StructuralAnalysisIntegrationEventFired(
         StatefulIntegrationEvent statefulIntegrationEventntegrationEvent
     );
+    public Task StructuralAnalysisIntegrationEventFired(
+        IntegrationEventWithTypeName integrationEventWithTypeName
+    );
 }
