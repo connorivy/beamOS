@@ -3,7 +3,6 @@
   <PropertyGroup>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Configurations>Debug;Release;GenerateClients</Configurations>
     <IsPackable>true</IsPackable>
   </PropertyGroup>
 
@@ -32,9 +31,5 @@
     <ProjectReference Include="..\BeamOs.Contracts\BeamOs.Contracts.csproj" />
     <ProjectReference Include="..\BeamOs.Infrastructure\BeamOs.Infrastructure.csproj" />
   </ItemGroup>
-
-  <Target Name="ClientGen" AfterTargets="Build" Condition="'$(Configuration)'=='GenerateClients'">
-    <Exec WorkingDirectory="$(RunWorkingDirectory)" Command="$(RunCommand) --generateclients true --urls https://localhost:7199" />
-  </Target>
 
 </Project>
