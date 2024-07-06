@@ -55,6 +55,12 @@ public sealed class HistoryManager(IDispatcher dispatcher)
             return;
         }
 
+        // only add client-originating events to history
+        if (statefulIntegrationEvent.DbUpdated)
+        {
+            return;
+        }
+
         this.undoActions.AddFirst(undoable);
 
         if (this.redoActions.Count > 0)
