@@ -42,6 +42,7 @@ public sealed class HistoryManager(IDispatcher dispatcher)
         // don't add the item to the undo actions if this was an action being done
         if (
             integrationEventWrapper is HistoryEvent
+            || integrationEventWrapper is DbEvent
             || integrationEventWrapper.IntegrationEvent is not IUndoable undoable
         )
         {
