@@ -18,22 +18,25 @@ public class Node : AggregateRoot<NodeId>
         get => this.locationPoint;
         set
         {
-            this.AddEvent(
-                new NodeMovedEvent
-                {
-                    NodeId = this.Id.Id,
-                    PreviousLocation = new(
-                        this.locationPoint.XCoordinate.Meters,
-                        this.locationPoint.YCoordinate.Meters,
-                        this.locationPoint.ZCoordinate.Meters
-                    ),
-                    NewLocation = new(
-                        value.XCoordinate.Meters,
-                        value.YCoordinate.Meters,
-                        value.ZCoordinate.Meters
-                    )
-                }
-            );
+            if (this.locationPoint != null)
+            {
+                this.AddEvent(
+                    new NodeMovedEvent
+                    {
+                        NodeId = this.Id.Id,
+                        PreviousLocation = new(
+                            this.locationPoint.XCoordinate.Meters,
+                            this.locationPoint.YCoordinate.Meters,
+                            this.locationPoint.ZCoordinate.Meters
+                        ),
+                        NewLocation = new(
+                            value.XCoordinate.Meters,
+                            value.YCoordinate.Meters,
+                            value.ZCoordinate.Meters
+                        )
+                    }
+                );
+            }
             this.locationPoint = value;
         }
     }

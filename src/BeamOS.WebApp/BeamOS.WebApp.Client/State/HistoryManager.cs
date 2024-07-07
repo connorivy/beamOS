@@ -1,4 +1,5 @@
 using BeamOs.IntegrationEvents.Common;
+using BeamOS.WebApp.Client.Features.Common.Flux;
 using Fluxor;
 
 namespace BeamOS.WebApp.Client.State;
@@ -20,13 +21,7 @@ public sealed class HistoryManager(IDispatcher dispatcher)
         this.undoActions.RemoveFirst();
         this.redoActions.AddFirst(undoable);
 
-        dispatcher.Dispatch(
-            new StatefulIntegrationEvent
-            {
-                IntegrationEvent = undoable.GetUndoAction(),
-                HistoryUpdated = true
-            }
-        );
+        dispatcher.Dispatch(new HistoryEvent(undoable.GetUndoAction()));
     }
 
     public void Redo()
@@ -39,24 +34,16 @@ public sealed class HistoryManager(IDispatcher dispatcher)
         this.redoActions.RemoveFirst();
         this.undoActions.AddFirst(undoable);
 
-        dispatcher.Dispatch(
-            new StatefulIntegrationEvent { IntegrationEvent = undoable, HistoryUpdated = true }
-        );
+        dispatcher.Dispatch(new HistoryEvent(undoable));
     }
 
-    public void AddItem(StatefulIntegrationEvent statefulIntegrationEvent)
+    public void AddItem(IIntegrationEventWrapper integrationEventWrapper)
     {
         // don't add the item to the undo actions if this was an action being done
         if (
-            statefulIntegrationEvent.HistoryUpdated
-            || statefulIntegrationEvent.IntegrationEvent is not IUndoable undoable
+            integrationEventWrapper is HistoryEvent
+            || integrationEventWrapper.IntegrationEvent is not IUndoable undoable
         )
-        {
-            return;
-        }
-
-        // only add client-originating events to history
-        if (statefulIntegrationEvent.DbUpdated)
         {
             return;
         }

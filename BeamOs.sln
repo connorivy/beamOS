@@ -70,7 +70,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOs.IntegrationEvents", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOs.Common.Domain", "src\BeamOs.Common\BeamOs.Common.Domain\BeamOs.Common.Domain.csproj", "{C0DA037C-1F2B-4807-9263-9F6AFCF7FCBC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.CodeGen.Apis.StructuralAnalysisApi", "codeGen\Apis\BeamOs.CodeGen.Apis.StructuralAnalysisApi\BeamOs.CodeGen.Apis.StructuralAnalysisApi.csproj", "{5410EF34-8573-4372-A7EA-606E48EDD0C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOs.CodeGen.Apis.StructuralAnalysisApi", "codeGen\Apis\BeamOs.CodeGen.Apis.StructuralAnalysisApi\BeamOs.CodeGen.Apis.StructuralAnalysisApi.csproj", "{5410EF34-8573-4372-A7EA-606E48EDD0C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

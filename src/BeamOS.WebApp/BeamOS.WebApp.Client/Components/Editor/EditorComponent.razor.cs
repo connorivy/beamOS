@@ -3,8 +3,10 @@ using BeamOs.ApiClient;
 using BeamOs.CodeGen.Apis.EditorApi;
 using BeamOs.Contracts.Common;
 using BeamOs.Contracts.PhysicalModel.Model;
+using BeamOs.IntegrationEvents;
 using BeamOs.IntegrationEvents.Common;
 using BeamOs.IntegrationEvents.PhysicalModel.Nodes;
+using BeamOS.WebApp.Client.Features.Common.Flux;
 using BeamOS.WebApp.Client.Features.KeyBindings.UndoRedo;
 using BeamOS.WebApp.Client.State;
 using Fluxor;
@@ -68,13 +70,7 @@ public partial class EditorComponent : FluxorComponent
                     new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
                 );
 
-                this.Dispatcher.Dispatch(
-                    new StatefulIntegrationEvent()
-                    {
-                        IntegrationEvent = (IIntegrationEvent)strongEvent,
-                        DbUpdated = true
-                    }
-                );
+                this.Dispatcher.Dispatch(new DbEvent((IIntegrationEvent)strongEvent));
             }
         );
 
@@ -90,9 +86,9 @@ public partial class EditorComponent : FluxorComponent
             this.EditorApiAlpha ??= await this.EditorApiProxyFactory.Create(this.elementId);
             // SubscribeToEditorActions(EditorApiAlpha);
 
-            this.SubscribeToAction<StatefulIntegrationEvent>(
-                async e => await this.HandleStatefulIntegrationEvent(e)
-            );
+            this.SubscribeToAction<EditorEvent>(async e => await this.HandleEditorEvent(e));
+            this.SubscribeToAction<DbEvent>(async e => await this.HandleDbEvent(e));
+            this.SubscribeToAction<HistoryEvent>(async e => await this.HandleHistoryEvent(e));
 
             this.loadingText = "Fetching Data";
             this.StateHasChanged();
@@ -112,64 +108,73 @@ public partial class EditorComponent : FluxorComponent
         var x = await this.EditorApiAlpha.CreateModelHydratedAsync(response);
     }
 
-    private async Task HandleStatefulIntegrationEvent(
-        StatefulIntegrationEvent statefulIntegrationEvent
-    )
+    private async Task HandleDbEvent(DbEvent integrationEvent)
     {
-        if (this.EventIsServerResponseToUserInteraction(statefulIntegrationEvent))
+        if (this.EventIsServerResponseToUserInteraction(integrationEvent))
         {
             return;
         }
 
-        // if db is not updated, then the event originated from the client, not the server
-        if (!statefulIntegrationEvent.DbUpdated)
-        {
-            this.integrationEvents.Add(statefulIntegrationEvent.IntegrationEvent);
-        }
+        await this.DispatchEventToEditor(integrationEvent.IntegrationEvent);
+    }
 
-        switch (statefulIntegrationEvent.IntegrationEvent)
+    private async Task HandleEditorEvent(EditorEvent integrationEvent)
+    {
+        this.integrationEvents.Add(integrationEvent.IntegrationEvent);
+
+        await this.DispatchEventToDb(integrationEvent.IntegrationEvent);
+    }
+
+    private async Task HandleHistoryEvent(HistoryEvent historyIntegrationEvent)
+    {
+        this.integrationEvents.Add(historyIntegrationEvent.IntegrationEvent);
+
+        await this.DispatchEventToEditor(historyIntegrationEvent.IntegrationEvent);
+        await this.DispatchEventToDb(historyIntegrationEvent.IntegrationEvent);
+    }
+
+    private async Task DispatchEventToDb(IIntegrationEvent integrationEvent)
+    {
+        switch (integrationEvent)
         {
             case NodeMovedEvent nodeMovedEvent:
-                if (!statefulIntegrationEvent.EditorUpdated)
-                {
-                    await this.EditorApiAlpha.ReduceNodeMovedEventAsync(nodeMovedEvent);
-                }
-                if (!statefulIntegrationEvent.DbUpdated)
-                {
-                    await this.ApiAlphaClient.PatchNodeAsync(
-                        new()
+                await this.ApiAlphaClient.PatchNodeAsync(
+                    new()
+                    {
+                        NodeId = nodeMovedEvent.NodeId.ToString(),
+                        LocationPoint = new()
                         {
-                            NodeId = nodeMovedEvent.NodeId.ToString(),
-                            LocationPoint = new()
-                            {
-                                LengthUnit = "Meter",
-                                XCoordinate = nodeMovedEvent.NewLocation.X,
-                                YCoordinate = nodeMovedEvent.NewLocation.Y,
-                                ZCoordinate = nodeMovedEvent.NewLocation.Z
-                            }
-                        },
-                        nodeMovedEvent.NodeId.ToString()
-                    );
-                }
+                            LengthUnit = "Meter",
+                            XCoordinate = nodeMovedEvent.NewLocation.X,
+                            YCoordinate = nodeMovedEvent.NewLocation.Y,
+                            ZCoordinate = nodeMovedEvent.NewLocation.Z
+                        }
+                    },
+                    nodeMovedEvent.NodeId.ToString()
+                );
                 break;
             default:
                 break;
         }
     }
 
-    private bool EventIsServerResponseToUserInteraction(
-        StatefulIntegrationEvent statefulIntegrationEvent
-    )
+    private async Task DispatchEventToEditor(IIntegrationEvent integrationEvent)
     {
-        if (!statefulIntegrationEvent.DbUpdated)
+        switch (integrationEvent)
         {
-            return false;
+            case NodeMovedEvent nodeMovedEvent:
+                await this.EditorApiAlpha.ReduceNodeMovedEventAsync(nodeMovedEvent);
+                break;
+            default:
+                break;
         }
+    }
 
+    private bool EventIsServerResponseToUserInteraction(DbEvent integrationEvent)
+    {
         for (int i = 0; i < this.integrationEvents.Count; i++)
         {
-            // compare with .Equals() because we need to compare with the value object comparison
-            if (this.integrationEvents[i].Equals(statefulIntegrationEvent.IntegrationEvent))
+            if (this.integrationEvents[i].AlmostEquals(integrationEvent.IntegrationEvent))
             {
                 this.integrationEvents.RemoveAt(i);
                 return true;

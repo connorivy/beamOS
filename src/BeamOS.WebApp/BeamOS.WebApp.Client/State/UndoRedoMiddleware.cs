@@ -1,4 +1,4 @@
-using BeamOs.IntegrationEvents.Common;
+using BeamOS.WebApp.Client.Features.Common.Flux;
 using Fluxor;
 
 namespace BeamOS.WebApp.Client.State;
@@ -14,9 +14,9 @@ public class UndoRedoMiddleware : Middleware
 
     public override void AfterDispatch(object action)
     {
-        if (action is StatefulIntegrationEvent statefulIntegrationEvent)
+        if (action is IIntegrationEventWrapper integrationEventWrapper)
         {
-            this.historyManager.AddItem(statefulIntegrationEvent);
+            this.historyManager.AddItem(integrationEventWrapper);
         }
     }
 }
