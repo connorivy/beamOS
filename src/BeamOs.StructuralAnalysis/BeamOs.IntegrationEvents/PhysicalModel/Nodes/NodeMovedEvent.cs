@@ -9,9 +9,8 @@ public readonly record struct NodeMovedEvent : IUndoable, IEditorAction
     public required Coordinate3D NewLocation { get; init; }
 
     public IUndoable GetUndoAction() =>
-        new NodeMovedEvent
+        this with
         {
-            NodeId = this.NodeId,
             NewLocation = this.PreviousLocation,
             PreviousLocation = this.NewLocation
         };
