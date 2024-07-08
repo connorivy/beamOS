@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using BeamOs.Contracts.Common;
 using FastEndpoints;
@@ -56,14 +57,28 @@ public record CreateNodeRequest
     }
 }
 
-public record Point(UnitValueDto XCoordinate, UnitValueDto YCoordinate, UnitValueDto ZCoordinate)
+public record Point
 {
+    public required UnitValueDto XCoordinate { get; init; }
+    public required UnitValueDto YCoordinate { get; init; }
+    public required UnitValueDto ZCoordinate { get; init; }
+
+    [SetsRequiredMembers]
     public Point(double xCoordinate, double yCoordinate, double zCoordinate, string lengthUnit)
         : this(
             new(xCoordinate, lengthUnit),
             new(yCoordinate, lengthUnit),
             new(zCoordinate, lengthUnit)
         ) { }
+
+    [SetsRequiredMembers]
+    [JsonConstructor]
+    public Point(UnitValueDto xCoordinate, UnitValueDto yCoordinate, UnitValueDto zCoordinate)
+    {
+        this.XCoordinate = xCoordinate;
+        this.YCoordinate = yCoordinate;
+        this.ZCoordinate = zCoordinate;
+    }
 }
 
 //public record PatchPointRequest(
