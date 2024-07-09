@@ -1,6 +1,6 @@
 using BeamOs.Api.Common.Mappers;
-using BeamOs.Application.Common.Interfaces;
 using BeamOs.Application.PhysicalModel.SectionProfiles;
+using BeamOs.Common.Application.Interfaces;
 using BeamOs.Contracts.PhysicalModel.SectionProfile;
 using Riok.Mapperly.Abstractions;
 

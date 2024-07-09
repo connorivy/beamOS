@@ -1,4 +1,4 @@
-using BeamOs.IntegrationEvents.Common;
+using BeamOs.Common.Events;
 
 namespace BeamOs.Domain.Common.Interfaces;
 

@@ -1,4 +1,5 @@
-using BeamOs.IntegrationEvents.Common;
+using BeamOs.Common.Events;
+using BeamOs.WebApp.Client.Events.Interfaces;
 
 namespace BeamOs.IntegrationEvents.PhysicalModel.Nodes;
 

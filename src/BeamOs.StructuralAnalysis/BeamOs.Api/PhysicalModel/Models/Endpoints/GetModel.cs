@@ -1,9 +1,9 @@
 using BeamOs.Api.Common;
 using BeamOS.Api.Common;
 using BeamOs.Api.PhysicalModel.Models.Mappers;
-using BeamOs.Application.Common.Interfaces;
 using BeamOs.Application.Common.Queries;
 using BeamOs.Application.PhysicalModel.Models.Interfaces;
+using BeamOs.Common.Application.Interfaces;
 using BeamOs.Contracts.Common;
 using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Domain.PhysicalModel.Common.Extensions;

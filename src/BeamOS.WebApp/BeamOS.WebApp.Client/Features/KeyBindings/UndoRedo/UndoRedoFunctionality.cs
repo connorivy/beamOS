@@ -6,14 +6,16 @@ namespace BeamOS.WebApp.Client.Features.KeyBindings.UndoRedo;
 public sealed class UndoRedoFunctionality : IDisposable
 {
     private readonly HistoryManager history;
+    private readonly EventHandler<KeyboardEventArgs> eventHandler;
 
     public UndoRedoFunctionality(HistoryManager history)
     {
-        DocumentEvents.OnKeyDown += this.DocumentEvents_OnKeyDown;
+        this.eventHandler = async (s, e) => await this.DocumentEvents_OnKeyDown(e);
+        DocumentEvents.OnKeyDown += this.eventHandler;
         this.history = history;
     }
 
-    private void DocumentEvents_OnKeyDown(object? sender, KeyboardEventArgs e)
+    private async Task DocumentEvents_OnKeyDown(KeyboardEventArgs e)
     {
         if (!e.CtrlKey)
         {
@@ -24,12 +26,12 @@ public sealed class UndoRedoFunctionality : IDisposable
         {
             // y
             case "89":
-                this.history.Redo();
+                await this.history.Redo();
                 break;
 
             // z
             case "90":
-                this.history.UndoLast();
+                await this.history.UndoLast();
                 break;
 
             default:
@@ -39,6 +41,6 @@ public sealed class UndoRedoFunctionality : IDisposable
 
     public void Dispose()
     {
-        DocumentEvents.OnKeyDown -= this.DocumentEvents_OnKeyDown;
+        DocumentEvents.OnKeyDown -= this.eventHandler;
     }
 }

@@ -1,5 +1,5 @@
 using BeamOs.Api.Common.Interfaces;
-using BeamOs.Application.Common.Interfaces;
+using BeamOs.Common.Application.Interfaces;
 
 namespace BeamOs.Api.Common;
 

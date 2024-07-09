@@ -1,5 +1,5 @@
+using BeamOs.Common.Events;
 using BeamOs.IntegrationEvents;
-using BeamOs.IntegrationEvents.Common;
 
 namespace BeamOs.Api.Common;
 

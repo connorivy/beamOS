@@ -1,4 +1,4 @@
-namespace BeamOs.IntegrationEvents.Common;
+namespace BeamOs.Common.Events;
 
 public interface IUndoable : IIntegrationEvent
 {

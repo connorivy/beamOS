@@ -1,6 +1,7 @@
 using System.Reflection;
 using BeamOs.CodeGen.Apis.EditorApi;
 using BeamOs.Common.Api;
+using BeamOS.WebApp.Client.Repositories;
 using Microsoft.JSInterop;
 
 namespace BeamOS.WebApp.Client;
@@ -9,14 +10,18 @@ public class EditorApiProxy : DispatchProxy, IAsyncDisposable
 {
     private IJSObjectReference? editorReference;
     private DotNetObjectReference<IEditorEventsApi>? dotNetObjectReference;
+    private EditorApiRepository? editorApiRepository;
+    private string? canvasId;
 
     public static async Task<IEditorApiAlpha> Create(
         IJSRuntime js,
         IEditorEventsApi editorEventsApi,
+        EditorApiRepository editorApiRepository,
         string canvasId
     )
     {
         var proxyInterface = Create<IEditorApiAlpha, EditorApiProxy>();
+        editorApiRepository.AddEditorApiByCanvasId(canvasId, proxyInterface);
         var proxy = proxyInterface as EditorApiProxy ?? throw new Exception();
 
         proxy.dotNetObjectReference = DotNetObjectReference.Create(editorEventsApi);
@@ -27,6 +32,9 @@ public class EditorApiProxy : DispatchProxy, IAsyncDisposable
             canvasId,
             proxy.dotNetObjectReference
         );
+
+        proxy.editorApiRepository = editorApiRepository;
+        proxy.canvasId = canvasId;
         return proxyInterface;
     }
 
@@ -69,6 +77,7 @@ public class EditorApiProxy : DispatchProxy, IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
+        this.editorApiRepository?.RemoveEditorApiByCanvasId(this.canvasId);
         this.dotNetObjectReference?.Dispose();
         if (this.editorReference is not null)
         {
@@ -77,10 +86,14 @@ public class EditorApiProxy : DispatchProxy, IAsyncDisposable
     }
 }
 
-public class EditorApiProxyFactory(IJSRuntime js, EditorEventsApi editorEventsApi)
+public class EditorApiProxyFactory(
+    IJSRuntime js,
+    EditorEventsApi editorEventsApi,
+    EditorApiRepository editorApiRepository
+)
 {
     public async Task<IEditorApiAlpha> Create(string canvasId)
     {
-        return await EditorApiProxy.Create(js, editorEventsApi, canvasId);
+        return await EditorApiProxy.Create(js, editorEventsApi, editorApiRepository, canvasId);
     }
 }

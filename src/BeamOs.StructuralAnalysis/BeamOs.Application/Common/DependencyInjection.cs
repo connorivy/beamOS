@@ -1,4 +1,4 @@
-using BeamOs.Application.Common.Interfaces;
+using BeamOs.Common.Application.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BeamOs.Application.Common;

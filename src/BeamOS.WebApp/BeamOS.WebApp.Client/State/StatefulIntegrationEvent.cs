@@ -1,5 +1,5 @@
 using System.Text.Json;
-using BeamOs.IntegrationEvents.Common;
+using BeamOs.Common.Events;
 
 namespace BeamOS.WebApp.Client.State;
 

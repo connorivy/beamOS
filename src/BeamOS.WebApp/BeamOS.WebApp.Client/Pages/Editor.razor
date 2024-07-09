@@ -1,14 +1,40 @@
 @page "/editor"
+@using BeamOS.WebApp.Client.Features.Common.Flux
 @using BeamOs.CodeGen.Apis.EditorApi
 @using BeamOs.ApiClient
 @using BeamOs.Contracts.AnalyticalResults.Model
 @using BeamOs.Contracts.Common
 @using BeamOs.Contracts.PhysicalModel.Model
 @using BeamOs.Contracts.PhysicalModel.Node
+@using Fluxor.Blazor.Web.Components
+@using static BeamOS.WebApp.Client.Components.Editor.EditorComponent
 
 @rendermode InteractiveAuto
 
+@inherits FluxorComponent
+
 <PageTitle>Editor</PageTitle>
 
-<BeamOS.WebApp.Client.Components.Editor.EditorComponent Class="h-full w-full"></BeamOS.WebApp.Client.Components.Editor.EditorComponent>
+<MudDrawerContainer Class="h-full w-full">
+    <MudPopover Open="@(EditorComponentState.Value.SelectedObjects.Length > 0)" Fixed="true" Class="m-2">
+        <BeamOS.WebApp.Client.Components.Editor.SelectionInfoComponent></BeamOS.WebApp.Client.Components.Editor.SelectionInfoComponent>
+    </MudPopover>
+    <BeamOS.WebApp.Client.Components.Editor.EditorComponent Class="h-full"></BeamOS.WebApp.Client.Components.Editor.EditorComponent>
+</MudDrawerContainer>
 
+<style>
+    .mud-drawer-content {
+        background-color: transparent;
+    }
+</style>
+
+@code {
+    [Inject]
+    private IState<EditorComponentState> EditorComponentState { get; init; }
+
+    protected override void OnInitialized()
+    {
+        // this.SubscribeToAction<EditorEvent>(this.HandleEditorEvent);
+        base.OnInitialized();
+    }
+}

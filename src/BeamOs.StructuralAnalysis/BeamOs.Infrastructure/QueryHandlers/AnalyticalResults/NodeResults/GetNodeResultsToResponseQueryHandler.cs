@@ -1,5 +1,5 @@
-using BeamOs.Application.Common.Interfaces;
 using BeamOs.Application.Common.Queries;
+using BeamOs.Common.Application.Interfaces;
 using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Infrastructure.Data.Models;

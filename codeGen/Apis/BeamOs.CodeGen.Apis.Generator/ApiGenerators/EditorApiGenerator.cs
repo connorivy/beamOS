@@ -3,7 +3,7 @@ using BeamOs.Contracts.PhysicalModel.Element1d;
 using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Contracts.PhysicalModel.Node;
 using BeamOs.IntegrationEvents;
-using BeamOs.IntegrationEvents.Common;
+using BeamOs.WebApp.Client.Events.Interfaces;
 
 namespace BeamOs.CodeGen.Apis.Generator.ApiGenerators;
 
@@ -27,7 +27,7 @@ public class EditorApiGenerator : AbstractGenerator
         _ = addMethod("Clear");
 
         foreach (
-            Type contractType in typeof(IAssemblyMarkerIntegrationEvents)
+            Type contractType in typeof(IAssemblyMarkerClientActions)
                 .Assembly
                 .ExportedTypes
                 .Where(

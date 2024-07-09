@@ -1,5 +1,4 @@
-using BeamOs.IntegrationEvents;
-using BeamOs.IntegrationEvents.Common;
+using BeamOs.WebApp.Client.Events.Interfaces;
 
 namespace BeamOs.CodeGen.Apis.Generator.ApiGenerators;
 
@@ -13,7 +12,7 @@ public class EditorEventsApi : AbstractGenerator
     protected override void AddApiMethods(Func<string, RouteHandlerBuilder> addMethod)
     {
         foreach (
-            Type contractType in typeof(IAssemblyMarkerIntegrationEvents)
+            Type contractType in typeof(IAssemblyMarkerClientActions)
                 .Assembly
                 .ExportedTypes
                 .Where(
@@ -21,7 +20,7 @@ public class EditorEventsApi : AbstractGenerator
                 )
         )
         {
-            _ = addMethod($"Handle{contractType.Name}").Accepts(contractType);
+            _ = addMethod($"Dispatch{contractType.Name}").Accepts(contractType);
         }
     }
 }

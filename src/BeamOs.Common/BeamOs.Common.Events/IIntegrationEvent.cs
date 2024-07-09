@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Reflection;
 
-namespace BeamOs.IntegrationEvents.Common;
+namespace BeamOs.Common.Events;
 
 public interface IIntegrationEvent
 {

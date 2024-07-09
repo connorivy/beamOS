@@ -1,60 +1,64 @@
-using BeamOs.IntegrationEvents.Common;
-using BeamOS.WebApp.Client.Features.Common.Flux;
-using Fluxor;
+using BeamOS.WebApp.Client.Components.Editor.CommandHandlers;
+using BeamOs.WebApp.Client.Events.Interfaces;
 
 namespace BeamOS.WebApp.Client.State;
 
-public sealed class HistoryManager(IDispatcher dispatcher)
+public sealed class HistoryManager(GenericCommandHandlerWithoutHistory genericCommandHandler)
 {
-    private readonly LinkedList<IUndoable> undoActions = new();
-    private readonly LinkedList<IUndoable> redoActions = new();
+    private readonly LinkedList<IClientActionUndoable> undoActions = new();
+    private readonly LinkedList<IClientActionUndoable> redoActions = new();
     private readonly int itemLimit = 50;
 
-    public void UndoLast()
+    public async Task UndoLast()
     {
-        if (this.undoActions.FirstOrDefault() is not IUndoable undoable)
+        if (this.undoActions.FirstOrDefault() is not IClientActionUndoable undoable)
         {
             // no undo history
             return;
         }
 
-        this.undoActions.RemoveFirst();
-        this.redoActions.AddFirst(undoable);
-
-        dispatcher.Dispatch(new HistoryEvent(undoable.GetUndoAction()));
+        await genericCommandHandler.ExecuteCommandWithoutAddingToHistory(
+            undoable.GetUndoAction(ClientActionSource.CSharp)
+        );
     }
 
-    public void Redo()
+    public async Task Redo()
     {
-        if (this.redoActions.FirstOrDefault() is not IUndoable undoable)
+        if (this.redoActions.FirstOrDefault() is not IClientActionUndoable undoable)
         {
             // no redo history
             return;
         }
-        this.redoActions.RemoveFirst();
-        this.undoActions.AddFirst(undoable);
 
-        dispatcher.Dispatch(new HistoryEvent(undoable));
+        await genericCommandHandler.ExecuteCommandWithoutAddingToHistory(
+            undoable.WithSource(ClientActionSource.CSharp)
+        );
     }
 
-    public void AddItem(IIntegrationEventWrapper integrationEventWrapper)
+    public void AddItem(IClientActionUndoable clientEvent)
     {
-        // don't add the item to the undo actions if this was an action being done
-        if (
-            integrationEventWrapper is HistoryEvent
-            || integrationEventWrapper is DbEvent
-            || integrationEventWrapper.IntegrationEvent is not IUndoable undoable
-        )
+        if (clientEvent.Id == this.undoActions.FirstOrDefault()?.Id)
         {
-            return;
+            // this is undo event
+            this.undoActions.RemoveFirst();
+            this.redoActions.AddFirst(clientEvent);
         }
-
-        this.undoActions.AddFirst(undoable);
-
-        if (this.redoActions.Count > 0)
+        else if (clientEvent.Id == this.redoActions.FirstOrDefault()?.Id)
         {
-            // doing a new action will clear the list of redo actions
-            this.redoActions.Clear();
+            // this is redo event
+            this.redoActions.RemoveFirst();
+            this.undoActions.AddFirst(clientEvent);
+        }
+        else
+        {
+            // this is brand new event
+            this.undoActions.AddFirst(clientEvent);
+
+            if (this.redoActions.Count > 0)
+            {
+                // doing a new action will clear the list of redo actions
+                this.redoActions.Clear();
+            }
         }
     }
 

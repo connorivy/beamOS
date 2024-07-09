@@ -1,4 +1,4 @@
-namespace BeamOs.Application.Common.Interfaces;
+namespace BeamOs.Common.Application.Interfaces;
 
 public interface IQueryHandler<TQuery, TResponse>
 {

@@ -8,6 +8,7 @@ using BeamOs.Application.PhysicalModel.MomentLoads;
 using BeamOs.Application.PhysicalModel.Nodes.Interfaces;
 using BeamOs.Application.PhysicalModel.PointLoads;
 using BeamOs.Application.PhysicalModel.SectionProfiles;
+using BeamOs.Common.Application.Interfaces;
 using BeamOs.Infrastructure.Interceptors;
 using BeamOs.Infrastructure.Repositories.AnalyticalResults.NodeResults;
 using BeamOs.Infrastructure.Repositories.PhysicalModel.Element1Ds;

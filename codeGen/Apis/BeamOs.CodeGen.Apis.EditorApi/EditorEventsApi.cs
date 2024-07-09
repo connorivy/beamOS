@@ -25,12 +25,21 @@ namespace BeamOs.CodeGen.Apis.EditorApi
     {
         /// <returns>OK</returns>
         /// <exception cref="EditorEventsApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task HandleNodeMovedEventAsync(NodeMovedEvent body);
+        System.Threading.Tasks.Task DispatchChangeSelectionActionAsync(ChangeSelectionAction body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorEventsApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task HandleNodeMovedEventAsync(NodeMovedEvent body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task DispatchChangeSelectionActionAsync(ChangeSelectionAction body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>OK</returns>
+        /// <exception cref="EditorEventsApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task DispatchMoveNodeActionAsync(MoveNodeAction body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="EditorEventsApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task DispatchMoveNodeActionAsync(MoveNodeAction body, System.Threading.CancellationToken cancellationToken);
 
     }
 
@@ -66,15 +75,15 @@ namespace BeamOs.CodeGen.Apis.EditorApi
 
         /// <returns>OK</returns>
         /// <exception cref="EditorEventsApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task HandleNodeMovedEventAsync(NodeMovedEvent body)
+        public virtual System.Threading.Tasks.Task DispatchChangeSelectionActionAsync(ChangeSelectionAction body)
         {
-            return HandleNodeMovedEventAsync(body, System.Threading.CancellationToken.None);
+            return DispatchChangeSelectionActionAsync(body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorEventsApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task HandleNodeMovedEventAsync(NodeMovedEvent body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task DispatchChangeSelectionActionAsync(ChangeSelectionAction body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -93,8 +102,87 @@ namespace BeamOs.CodeGen.Apis.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorEventsApi/HandleNodeMovedEvent"
-                    urlBuilder_.Append("EditorEventsApi/HandleNodeMovedEvent");
+                    // Operation Path: "EditorEventsApi/DispatchChangeSelectionAction"
+                    urlBuilder_.Append("EditorEventsApi/DispatchChangeSelectionAction");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            return;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new EditorEventsApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <returns>OK</returns>
+        /// <exception cref="EditorEventsApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task DispatchMoveNodeActionAsync(MoveNodeAction body)
+        {
+            return DispatchMoveNodeActionAsync(body, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="EditorEventsApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task DispatchMoveNodeActionAsync(MoveNodeAction body, System.Threading.CancellationToken cancellationToken)
+        {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    var json_ = Newtonsoft.Json.JsonConvert.SerializeObject(body, _settings.Value);
+                    var content_ = new System.Net.Http.StringContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "EditorEventsApi/DispatchMoveNodeAction"
+                    urlBuilder_.Append("EditorEventsApi/DispatchMoveNodeAction");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 

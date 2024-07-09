@@ -1,5 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
-using BeamOs.IntegrationEvents.Common;
+using BeamOs.Common.Events;
 
 namespace BeamOS.WebApp.Client.Features.Common.Flux;
 

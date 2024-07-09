@@ -19,6 +19,7 @@
     <ProjectReference Include="..\..\..\src\BeamOs.StructuralAnalysis\BeamOs.Api\BeamOs.Api.csproj" />
     <ProjectReference Include="..\..\..\src\BeamOs.StructuralAnalysis\BeamOs.Contracts\BeamOs.Contracts.csproj" />
     <ProjectReference Include="..\..\..\src\BeamOs.StructuralAnalysis\BeamOs.IntegrationEvents\BeamOs.IntegrationEvents.csproj" />
+    <ProjectReference Include="..\..\..\src\BeamOS.WebApp\BeamOs.WebApp.EditorEvents\BeamOs.WebApp.Client.Actions.csproj" />
   </ItemGroup>
 
 </Project>

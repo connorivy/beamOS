@@ -1,6 +1,5 @@
 using BeamOs.Domain.Common.Interfaces;
 using BeamOs.IntegrationEvents;
-using BeamOs.IntegrationEvents.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 

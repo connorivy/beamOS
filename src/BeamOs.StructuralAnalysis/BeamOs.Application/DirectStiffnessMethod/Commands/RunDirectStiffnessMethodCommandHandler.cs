@@ -7,6 +7,7 @@ using BeamOs.Application.PhysicalModel.MomentLoads;
 using BeamOs.Application.PhysicalModel.Nodes.Interfaces;
 using BeamOs.Application.PhysicalModel.PointLoads;
 using BeamOs.Application.PhysicalModel.SectionProfiles;
+using BeamOs.Common.Application.Interfaces;
 using BeamOs.Domain.AnalyticalResults.Common.ValueObjects;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.DirectStiffnessMethod;

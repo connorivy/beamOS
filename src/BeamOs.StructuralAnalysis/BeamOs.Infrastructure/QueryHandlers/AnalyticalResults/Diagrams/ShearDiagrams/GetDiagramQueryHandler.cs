@@ -1,6 +1,6 @@
 using BeamOs.Application.AnalyticalResults.Diagrams.ShearDiagrams.Interfaces;
-using BeamOs.Application.Common.Interfaces;
 using BeamOs.Application.Common.Queries;
+using BeamOs.Common.Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.Infrastructure.QueryHandlers.AnalyticalResults.Diagrams.ShearDiagrams;

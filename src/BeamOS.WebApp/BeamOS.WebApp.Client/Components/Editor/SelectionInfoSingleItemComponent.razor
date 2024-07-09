@@ -1,0 +1,55 @@
+@using System.Reflection
+@foreach (var propInfo in propertyInfos)
+{
+    if (IsSimpleType(propInfo.PropertyType))
+    {
+        <MudGrid>
+            <MudItem xs="4">
+                <MudText Typo="Typo.body2">@propInfo.Name</MudText>
+            </MudItem>
+            <MudItem>
+                <MudText Typo="Typo.body2">@propInfo.GetValue(this.ObjectToDisplay)</MudText>
+            </MudItem>
+        </MudGrid>
+    }
+    else
+    {
+        <MudExpansionPanel Text="@propInfo.Name">
+            @{
+                var newObject = propInfo.GetValue(this.ObjectToDisplay);
+            }
+            <SelectionInfoSingleItemComponent ObjectToDisplay="@newObject" @key="@newObject"></SelectionInfoSingleItemComponent>
+        </MudExpansionPanel>
+    }
+}
+
+@code {
+    [Parameter]
+    public required object ObjectToDisplay { get; init; }
+
+    public PropertyInfo[] propertyInfos { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        this.propertyInfos = this.ObjectToDisplay.GetType().GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+
+        base.OnParametersSet();
+    }
+
+    public PropertyInfo[] GetPublicInstanceProps(object obj) => obj.GetType().GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+
+    private static readonly HashSet<Type> simpleTypes =
+    [
+        typeof(bool),
+        typeof(double),
+        typeof(float),
+        typeof(string),
+        typeof(decimal),
+        typeof(DateTime),
+        typeof(DateTimeOffset),
+        typeof(TimeSpan),
+        typeof(Guid)
+    ];
+
+    public bool IsSimpleType(Type t) => simpleTypes.Contains(t);
+}

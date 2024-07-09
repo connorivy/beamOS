@@ -26,6 +26,8 @@
     <ProjectReference Include="..\..\..\codeGen\Apis\BeamOs.CodeGen.Apis.EditorApi\BeamOs.CodeGen.Apis.EditorApi.csproj" />
     <ProjectReference Include="..\..\..\tests\BeamOs.Tests.TestRunner\BeamOs.Tests.TestRunner.csproj" />
     <ProjectReference Include="..\..\BeamOs.Common\BeamOs.Common.Api\BeamOs.Common.Api.csproj" />
+    <ProjectReference Include="..\..\BeamOs.Common\BeamOs.Common.Application\BeamOs.Common.Application.csproj" />
+    <ProjectReference Include="..\BeamOs.WebApp.EditorEvents\BeamOs.WebApp.Client.Actions.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="$(Configuration)=='Debug'">

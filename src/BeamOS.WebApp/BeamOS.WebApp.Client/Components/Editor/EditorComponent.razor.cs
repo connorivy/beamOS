@@ -1,13 +1,23 @@
+using System.Collections.Immutable;
 using System.Text.Json;
 using BeamOs.ApiClient;
 using BeamOs.CodeGen.Apis.EditorApi;
+using BeamOs.Common.Events;
 using BeamOs.Contracts.Common;
+using BeamOs.Contracts.PhysicalModel.Element1d;
 using BeamOs.Contracts.PhysicalModel.Model;
+using BeamOs.Contracts.PhysicalModel.Node;
 using BeamOs.IntegrationEvents;
-using BeamOs.IntegrationEvents.Common;
 using BeamOs.IntegrationEvents.PhysicalModel.Nodes;
+using BeamOs.WebApp.Client.Actions.EditorActions;
+using BeamOS.WebApp.Client.Components.Editor.CommandHandlers;
+using BeamOS.WebApp.Client.Components.Editor.Commands;
+using BeamOS.WebApp.Client.Components.Editor.Flux.Actions;
+using BeamOS.WebApp.Client.Components.Editor.Flux.Events;
+using BeamOs.WebApp.Client.Events.Interfaces;
 using BeamOS.WebApp.Client.Features.Common.Flux;
 using BeamOS.WebApp.Client.Features.KeyBindings.UndoRedo;
+using BeamOS.WebApp.Client.Repositories;
 using BeamOS.WebApp.Client.State;
 using Fluxor;
 using Fluxor.Blazor.Web.Components;
@@ -37,7 +47,7 @@ public partial class EditorComponent : FluxorComponent
     private NavigationManager NavigationManager { get; init; }
 
     [Inject]
-    private IDispatcher Dispatcher { get; init; }
+    private LoadModelCommandHandler LoadModelCommandHandler { get; init; }
 
     private bool isLoading = true;
     private string loadingText = "Loading beamOS editor";
@@ -70,7 +80,7 @@ public partial class EditorComponent : FluxorComponent
                     new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
                 );
 
-                this.Dispatcher.Dispatch(new DbEvent((IIntegrationEvent)strongEvent));
+                //this.Dispatcher.Dispatch(new DbEvent((IIntegrationEvent)strongEvent));
             }
         );
 
@@ -84,11 +94,6 @@ public partial class EditorComponent : FluxorComponent
         {
             this.isLoading = true;
             this.EditorApiAlpha ??= await this.EditorApiProxyFactory.Create(this.elementId);
-            // SubscribeToEditorActions(EditorApiAlpha);
-
-            this.SubscribeToAction<EditorEvent>(async e => await this.HandleEditorEvent(e));
-            this.SubscribeToAction<DbEvent>(async e => await this.HandleDbEvent(e));
-            this.SubscribeToAction<HistoryEvent>(async e => await this.HandleHistoryEvent(e));
 
             this.loadingText = "Fetching Data";
             this.StateHasChanged();
@@ -101,73 +106,9 @@ public partial class EditorComponent : FluxorComponent
 
     public async Task LoadModel(string modelId)
     {
-        ModelResponseHydrated response = await this.ApiAlphaClient.GetModelHydratedAsync(
-            modelId,
-            PreconfiguredUnits.N_M
+        await this.LoadModelCommandHandler.ExecuteAsync(
+            new LoadModelCommand(this.elementId, modelId)
         );
-        var x = await this.EditorApiAlpha.CreateModelHydratedAsync(response);
-    }
-
-    private async Task HandleDbEvent(DbEvent integrationEvent)
-    {
-        if (this.EventIsServerResponseToUserInteraction(integrationEvent))
-        {
-            return;
-        }
-
-        await this.DispatchEventToEditor(integrationEvent.IntegrationEvent);
-    }
-
-    private async Task HandleEditorEvent(EditorEvent integrationEvent)
-    {
-        this.integrationEvents.Add(integrationEvent.IntegrationEvent);
-
-        await this.DispatchEventToDb(integrationEvent.IntegrationEvent);
-    }
-
-    private async Task HandleHistoryEvent(HistoryEvent historyIntegrationEvent)
-    {
-        this.integrationEvents.Add(historyIntegrationEvent.IntegrationEvent);
-
-        await this.DispatchEventToEditor(historyIntegrationEvent.IntegrationEvent);
-        await this.DispatchEventToDb(historyIntegrationEvent.IntegrationEvent);
-    }
-
-    private async Task DispatchEventToDb(IIntegrationEvent integrationEvent)
-    {
-        switch (integrationEvent)
-        {
-            case NodeMovedEvent nodeMovedEvent:
-                await this.ApiAlphaClient.PatchNodeAsync(
-                    new()
-                    {
-                        NodeId = nodeMovedEvent.NodeId.ToString(),
-                        LocationPoint = new()
-                        {
-                            LengthUnit = "Meter",
-                            XCoordinate = nodeMovedEvent.NewLocation.X,
-                            YCoordinate = nodeMovedEvent.NewLocation.Y,
-                            ZCoordinate = nodeMovedEvent.NewLocation.Z
-                        }
-                    },
-                    nodeMovedEvent.NodeId.ToString()
-                );
-                break;
-            default:
-                break;
-        }
-    }
-
-    private async Task DispatchEventToEditor(IIntegrationEvent integrationEvent)
-    {
-        switch (integrationEvent)
-        {
-            case NodeMovedEvent nodeMovedEvent:
-                await this.EditorApiAlpha.ReduceNodeMovedEventAsync(nodeMovedEvent);
-                break;
-            default:
-                break;
-        }
     }
 
     private bool EventIsServerResponseToUserInteraction(DbEvent integrationEvent)
@@ -186,6 +127,7 @@ public partial class EditorComponent : FluxorComponent
 
     protected override async ValueTask DisposeAsyncCore(bool disposing)
     {
+        await this.EditorApiAlpha.DisposeAsync();
         this.UndoRedoFunctionality?.Dispose();
         await this.hubConnection.DisposeAsync();
         await base.DisposeAsyncCore(disposing);
@@ -195,10 +137,22 @@ public partial class EditorComponent : FluxorComponent
     public record EditorComponentState(
         bool IsLoading,
         string LoadingText,
-        ModelResponse? visibleModel
+        string? LoadedModelId,
+        SelectedObject[] SelectedObjects,
+        Dictionary<string, NodeResponse> NodeIdToResponsesDict,
+        Dictionary<string, Element1DResponse> Element1dIdToResponsesDict
     )
     {
         private EditorComponentState()
-            : this(true, "Loading beamOS editor", null) { }
+            : this(true, "Loading beamOS editor", null, [], [], []) { }
+    }
+
+    [FeatureState]
+    public record EditorComponentStates(
+        ImmutableDictionary<string, EditorComponentState> CanvasIdToEditorComponentStates
+    )
+    {
+        private EditorComponentStates()
+            : this(ImmutableDictionary<string, EditorComponentState>.Empty) { }
     }
 }

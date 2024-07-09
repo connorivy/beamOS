@@ -1,4 +1,4 @@
-using BeamOs.IntegrationEvents.Common;
+using BeamOs.Common.Events;
 using BeamOS.WebApp.Client.State;
 
 namespace BeamOS.WebApp.Client.Components.Editor;

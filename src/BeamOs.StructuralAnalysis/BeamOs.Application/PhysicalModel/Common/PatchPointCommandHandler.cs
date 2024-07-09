@@ -1,5 +1,5 @@
 using BeamOs.Api.Common.Mappers;
-using BeamOs.Application.Common.Interfaces;
+using BeamOs.Common.Application.Interfaces;
 using BeamOs.Domain.Common.ValueObjects;
 using UnitsNet;
 using UnitsNet.Units;

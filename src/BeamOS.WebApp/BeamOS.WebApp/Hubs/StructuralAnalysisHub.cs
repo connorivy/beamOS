@@ -1,6 +1,6 @@
 using System.Text.Json;
+using BeamOs.Common.Events;
 using BeamOs.IntegrationEvents;
-using BeamOs.IntegrationEvents.Common;
 using BeamOS.WebApp.Client.Components.Editor;
 using BeamOS.WebApp.Client.State;
 using Microsoft.AspNetCore.SignalR;

@@ -1,5 +1,5 @@
+using BeamOs.Common.Events;
 using BeamOs.Domain.Common.Interfaces;
-using BeamOs.IntegrationEvents.Common;
 
 namespace BeamOs.Domain.Common.Models;
 

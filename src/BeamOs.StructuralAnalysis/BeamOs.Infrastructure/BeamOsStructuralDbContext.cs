@@ -1,3 +1,4 @@
+using BeamOs.Common.Events;
 using BeamOs.Domain.AnalyticalResults.NodeResultAggregate;
 using BeamOs.Domain.Common.Utils;
 using BeamOs.Domain.Common.ValueObjects;
@@ -13,7 +14,6 @@ using BeamOs.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate;
 using BeamOs.Infrastructure.Data.Configurations.Write;
 using BeamOs.Infrastructure.Interceptors;
-using BeamOs.IntegrationEvents.Common;
 using MathNet.Spatial.Euclidean;
 using Microsoft.EntityFrameworkCore;
 using UnitsNet;
