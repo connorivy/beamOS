@@ -5,29 +5,26 @@ using BeamOS.WebApp.Client.State;
 
 namespace BeamOS.WebApp.Client.Components.Editor.CommandHandlers;
 
-public abstract class CommandHandlerBase<TCommand>
+public abstract class CommandHandlerBase<TCommand>(HistoryManager historyManager)
     : ICommandHandler<TCommand, Result>,
         IClientCommandHandler<TCommand>
     where TCommand : IClientAction
 {
-    private readonly HistoryManager historyManager;
-    protected virtual bool SkipAddingToHistory { get; }
-
-    protected CommandHandlerBase(HistoryManager historyManager)
-    {
-        this.historyManager = historyManager;
-    }
-
     public async Task<Result> ExecuteAsync(TCommand command, CancellationToken ct = default)
     {
         Result reponse = await this.ExecuteCommandAsync(command, ct);
 
-        if (command is IClientActionUndoable clientEvent && !this.SkipAddingToHistory)
-        {
-            this.historyManager.AddItem(clientEvent);
-        }
+        this.PostProcess(command);
 
         return reponse;
+    }
+
+    protected virtual void PostProcess(TCommand command)
+    {
+        if (command is IClientActionUndoable clientEvent)
+        {
+            historyManager.AddItem(clientEvent);
+        }
     }
 
     protected abstract Task<Result> ExecuteCommandAsync(

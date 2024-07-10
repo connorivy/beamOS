@@ -7,8 +7,8 @@ namespace BeamOS.WebApp.Client.Components.Editor.Flux.Reducers;
 public static class EditorEventReducers
 {
     [ReducerMethod]
-    public static EditorComponentState ReduceSelectionChangedEvent(
-        EditorComponentState state,
+    public static EditorComponentState2 ReduceSelectionChangedEvent(
+        EditorComponentState2 state,
         ChangeSelectionAction selectionChangedEvent
     ) => state with { SelectedObjects = selectionChangedEvent.SelectedObjects };
 }

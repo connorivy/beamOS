@@ -8,7 +8,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\BeamOs.Common\BeamOs.Common.Domain\BeamOs.Common.Domain.csproj" />
     <ProjectReference Include="..\..\BeamOs.Common\BeamOs.Common.Events\BeamOs.Common.Events.csproj" />
-    <ProjectReference Include="..\..\BeamOS.WebApp\BeamOs.WebApp.EditorEvents\BeamOs.WebApp.Client.Actions.csproj" />
   </ItemGroup>
 
 </Project>

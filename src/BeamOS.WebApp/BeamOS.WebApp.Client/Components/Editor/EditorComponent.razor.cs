@@ -3,21 +3,13 @@ using System.Text.Json;
 using BeamOs.ApiClient;
 using BeamOs.CodeGen.Apis.EditorApi;
 using BeamOs.Common.Events;
-using BeamOs.Contracts.Common;
 using BeamOs.Contracts.PhysicalModel.Element1d;
-using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Contracts.PhysicalModel.Node;
-using BeamOs.IntegrationEvents;
-using BeamOs.IntegrationEvents.PhysicalModel.Nodes;
 using BeamOs.WebApp.Client.Actions.EditorActions;
 using BeamOS.WebApp.Client.Components.Editor.CommandHandlers;
 using BeamOS.WebApp.Client.Components.Editor.Commands;
-using BeamOS.WebApp.Client.Components.Editor.Flux.Actions;
-using BeamOS.WebApp.Client.Components.Editor.Flux.Events;
-using BeamOs.WebApp.Client.Events.Interfaces;
 using BeamOS.WebApp.Client.Features.Common.Flux;
 using BeamOS.WebApp.Client.Features.KeyBindings.UndoRedo;
-using BeamOS.WebApp.Client.Repositories;
 using BeamOS.WebApp.Client.State;
 using Fluxor;
 using Fluxor.Blazor.Web.Components;
@@ -134,7 +126,7 @@ public partial class EditorComponent : FluxorComponent
     }
 
     [FeatureState]
-    public record EditorComponentState(
+    public record EditorComponentState2(
         bool IsLoading,
         string LoadingText,
         string? LoadedModelId,
@@ -143,16 +135,27 @@ public partial class EditorComponent : FluxorComponent
         Dictionary<string, Element1DResponse> Element1dIdToResponsesDict
     )
     {
-        private EditorComponentState()
+        private EditorComponentState2()
             : this(true, "Loading beamOS editor", null, [], [], []) { }
     }
 
     [FeatureState]
     public record EditorComponentStates(
-        ImmutableDictionary<string, EditorComponentState> CanvasIdToEditorComponentStates
+        ImmutableDictionary<string, EditorComponentState2> CanvasIdToEditorComponentStates
     )
     {
         private EditorComponentStates()
-            : this(ImmutableDictionary<string, EditorComponentState>.Empty) { }
+            : this(ImmutableDictionary<string, EditorComponentState2>.Empty) { }
     }
+}
+
+public record EditorComponentState(
+    bool IsLoading,
+    string LoadingText,
+    string? LoadedModelId,
+    SelectedObject[] SelectedObjects
+)
+{
+    private EditorComponentState()
+        : this(true, "Loading beamOS editor", null, []) { }
 }

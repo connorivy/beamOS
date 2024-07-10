@@ -27,8 +27,8 @@ public static class ClientActionReducers
     }
 
     [ReducerMethod]
-    public static EditorComponentState ReduceAddElement1dAction(
-        EditorComponentState state,
+    public static EditorComponentState2 ReduceAddElement1dAction(
+        EditorComponentState2 state,
         AddElement1dAction action
     )
     {
@@ -47,7 +47,7 @@ public static class ClientActionReducers
         ModelLoadedAction action
     )
     {
-        Dictionary<string, EditorComponentState> dictCopy =
+        Dictionary<string, EditorComponentState2> dictCopy =
             new(state.CanvasIdToEditorComponentStates)
             {
                 { action.ModelId, new(false, "", action.ModelId, [], [], []) }
@@ -65,7 +65,7 @@ public static class ClientActionReducers
         ModelUnloadedAction action
     )
     {
-        Dictionary<string, EditorComponentState> dictCopy =
+        Dictionary<string, EditorComponentState2> dictCopy =
             new(state.CanvasIdToEditorComponentStates);
         dictCopy.Remove(action.ModelId);
 

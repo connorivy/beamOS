@@ -1,9 +1,8 @@
 using BeamOs.Common.Events;
-using BeamOs.WebApp.Client.Events.Interfaces;
 
 namespace BeamOs.IntegrationEvents.PhysicalModel.Nodes;
 
-public readonly record struct NodeMovedEvent : IUndoable, IEditorAction
+public readonly record struct NodeMovedEvent : IUndoable
 {
     public required Guid NodeId { get; init; }
     public required Coordinate3D PreviousLocation { get; init; }

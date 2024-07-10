@@ -72,11 +72,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOs.Common.Domain", "src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOs.CodeGen.Apis.StructuralAnalysisApi", "codeGen\Apis\BeamOs.CodeGen.Apis.StructuralAnalysisApi\BeamOs.CodeGen.Apis.StructuralAnalysisApi.csproj", "{5410EF34-8573-4372-A7EA-606E48EDD0C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.WebApp.Client.Actions", "src\BeamOS.WebApp\BeamOs.WebApp.EditorEvents\BeamOs.WebApp.Client.Actions.csproj", "{C664BD00-1947-48AF-82BF-E2BDF96D05ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOs.WebApp.Client.EditorCommands", "src\BeamOS.WebApp\BeamOs.WebApp.EditorEvents\BeamOs.WebApp.Client.EditorCommands.csproj", "{C664BD00-1947-48AF-82BF-E2BDF96D05ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.Common.Events", "src\BeamOs.Common\BeamOs.Common.Events\BeamOs.Common.Events.csproj", "{144B71D2-B69A-44F9-A693-6CE47C8D5A8F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOs.Common.Events", "src\BeamOs.Common\BeamOs.Common.Events\BeamOs.Common.Events.csproj", "{144B71D2-B69A-44F9-A693-6CE47C8D5A8F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.Common.Application", "src\BeamOs.Common\BeamOs.Common.Application\BeamOs.Common.Application.csproj", "{B7765570-4A3F-47A3-8FD0-A8AFCB6CD483}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOs.Common.Application", "src\BeamOs.Common\BeamOs.Common.Application\BeamOs.Common.Application.csproj", "{B7765570-4A3F-47A3-8FD0-A8AFCB6CD483}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
