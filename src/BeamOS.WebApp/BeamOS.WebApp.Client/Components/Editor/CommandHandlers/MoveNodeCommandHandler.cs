@@ -15,7 +15,7 @@ public class MoveNodeCommandHandler(
     ModelIdRepository modelIdRepository,
     EditorApiRepository editorApiRepository,
     IApiAlphaClient apiAlphaClient
-) : CommandHandlerBase<MoveNodeCommand>(historyManager)
+) : VisibleStateCommandHandlerBase<MoveNodeCommand>(historyManager)
 {
     protected override async Task<Result> ExecuteCommandAsync(
         MoveNodeCommand command,
@@ -33,7 +33,7 @@ public class MoveNodeCommandHandler(
             await editorApi.ReduceMoveNodeCommandAsync(command);
         }
 
-        await apiAlphaClient.PatchNodeAsync(
+        structuralAnalysisModelCache.NodeIdToNodeResponseDict[command.NodeId.ToString()] = await apiAlphaClient.PatchNodeAsync(
             new PatchNodeRequest()
             {
                 NodeId = command.NodeId.ToString(),

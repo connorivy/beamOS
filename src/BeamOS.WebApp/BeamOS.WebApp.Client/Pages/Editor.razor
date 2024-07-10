@@ -21,7 +21,7 @@
 <MudDrawerContainer Class="h-full w-full">
     @if (editorComponent is not null)
     {
-        <MudPopover Open="@(editorComponent.EditorComponentState.SelectedObjects.Length > 0)" Fixed="true" Class="m-2">
+        <MudPopover Open="@(editorComponent.EditorComponentState.SelectedObjects.Length > 0)" Fixed="true" Class="w-80 m-2">
             <SelectionInfoComponent SelectedObjects="@editorComponent.EditorComponentState.SelectedObjects" ModelId="@editorComponent.EditorComponentState.LoadedModelId"></SelectionInfoComponent>
         </MudPopover>
     }

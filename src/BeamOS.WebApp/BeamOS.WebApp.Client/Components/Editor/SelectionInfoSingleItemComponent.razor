@@ -1,27 +1,32 @@
 @using System.Reflection
+        <MudGrid Spacing="1">
 @foreach (var propInfo in propertyInfos)
 {
+    var value = propInfo.GetValue(this.ObjectToDisplay);
     if (IsSimpleType(propInfo.PropertyType))
     {
-        <MudGrid>
             <MudItem xs="4">
-                <MudText Typo="Typo.body2">@propInfo.Name</MudText>
+                <MudTooltip Text="@propInfo.Name" RootClass="w-full">
+                    <MudText Typo="Typo.body2" Class="truncate">@propInfo.Name</MudText>
+                </MudTooltip>
             </MudItem>
-            <MudItem>
-                <MudText Typo="Typo.body2">@propInfo.GetValue(this.ObjectToDisplay)</MudText>
+            <MudItem xs="8">
+                <MudTooltip Text="@value?.ToString()" RootClass="w-full">
+                    <MudText Typo="Typo.body2" Class="truncate">@value</MudText>
+                </MudTooltip>
             </MudItem>
-        </MudGrid>
     }
     else
     {
+        <MudItem xs="12">
+
         <MudExpansionPanel Text="@propInfo.Name">
-            @{
-                var newObject = propInfo.GetValue(this.ObjectToDisplay);
-            }
-            <SelectionInfoSingleItemComponent ObjectToDisplay="@newObject" @key="@newObject"></SelectionInfoSingleItemComponent>
+                    <SelectionInfoSingleItemComponent ObjectToDisplay="@value" @key="@value"></SelectionInfoSingleItemComponent>
         </MudExpansionPanel>
+        </MudItem>
     }
 }
+        </MudGrid>
 
 @code {
     [Parameter]
