@@ -70,21 +70,21 @@ namespace BeamOs.CodeGen.Apis.EditorApi
 
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> ReduceChangeSelectionActionAsync(ChangeSelectionAction body);
+        System.Threading.Tasks.Task<Result> ReduceChangeSelectionCommandAsync(ChangeSelectionCommand body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> ReduceChangeSelectionActionAsync(ChangeSelectionAction body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<Result> ReduceChangeSelectionCommandAsync(ChangeSelectionCommand body, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> ReduceMoveNodeActionAsync(MoveNodeAction body);
+        System.Threading.Tasks.Task<Result> ReduceMoveNodeCommandAsync(MoveNodeCommand body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> ReduceMoveNodeActionAsync(MoveNodeAction body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<Result> ReduceMoveNodeCommandAsync(MoveNodeCommand body, System.Threading.CancellationToken cancellationToken);
 
     }
 
@@ -539,15 +539,15 @@ namespace BeamOs.CodeGen.Apis.EditorApi
 
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> ReduceChangeSelectionActionAsync(ChangeSelectionAction body)
+        public virtual System.Threading.Tasks.Task<Result> ReduceChangeSelectionCommandAsync(ChangeSelectionCommand body)
         {
-            return ReduceChangeSelectionActionAsync(body, System.Threading.CancellationToken.None);
+            return ReduceChangeSelectionCommandAsync(body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> ReduceChangeSelectionActionAsync(ChangeSelectionAction body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> ReduceChangeSelectionCommandAsync(ChangeSelectionCommand body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -567,8 +567,8 @@ namespace BeamOs.CodeGen.Apis.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/ReduceChangeSelectionAction"
-                    urlBuilder_.Append("EditorApiAlpha/ReduceChangeSelectionAction");
+                    // Operation Path: "EditorApiAlpha/ReduceChangeSelectionCommand"
+                    urlBuilder_.Append("EditorApiAlpha/ReduceChangeSelectionCommand");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -624,15 +624,15 @@ namespace BeamOs.CodeGen.Apis.EditorApi
 
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> ReduceMoveNodeActionAsync(MoveNodeAction body)
+        public virtual System.Threading.Tasks.Task<Result> ReduceMoveNodeCommandAsync(MoveNodeCommand body)
         {
-            return ReduceMoveNodeActionAsync(body, System.Threading.CancellationToken.None);
+            return ReduceMoveNodeCommandAsync(body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> ReduceMoveNodeActionAsync(MoveNodeAction body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> ReduceMoveNodeCommandAsync(MoveNodeCommand body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -652,8 +652,8 @@ namespace BeamOs.CodeGen.Apis.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/ReduceMoveNodeAction"
-                    urlBuilder_.Append("EditorApiAlpha/ReduceMoveNodeAction");
+                    // Operation Path: "EditorApiAlpha/ReduceMoveNodeCommand"
+                    urlBuilder_.Append("EditorApiAlpha/ReduceMoveNodeCommand");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 

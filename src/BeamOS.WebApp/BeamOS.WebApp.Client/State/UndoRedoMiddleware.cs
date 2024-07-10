@@ -14,7 +14,7 @@ public class UndoRedoMiddleware : Middleware
 
     public override void AfterDispatch(object action)
     {
-        if (action is IClientActionUndoable clientEvent)
+        if (action is IClientCommandUndoable clientEvent)
         {
             this.historyManager.AddItem(clientEvent);
         }

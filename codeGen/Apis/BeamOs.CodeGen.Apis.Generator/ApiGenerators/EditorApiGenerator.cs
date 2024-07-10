@@ -2,7 +2,7 @@ using BeamOs.Common.Api;
 using BeamOs.Contracts.PhysicalModel.Element1d;
 using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Contracts.PhysicalModel.Node;
-using BeamOs.IntegrationEvents;
+using BeamOs.WebApp.Client.EditorCommands;
 using BeamOs.WebApp.Client.Events.Interfaces;
 
 namespace BeamOs.CodeGen.Apis.Generator.ApiGenerators;
@@ -31,7 +31,7 @@ public class EditorApiGenerator : AbstractGenerator
                 .Assembly
                 .ExportedTypes
                 .Where(
-                    t => !t.IsInterface && !t.IsAbstract && t.IsAssignableTo(typeof(IEditorAction))
+                    t => !t.IsInterface && !t.IsAbstract && t.IsAssignableTo(typeof(IEditorCommand))
                 )
         )
         {

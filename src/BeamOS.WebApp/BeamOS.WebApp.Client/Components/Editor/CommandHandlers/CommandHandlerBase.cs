@@ -8,7 +8,7 @@ namespace BeamOS.WebApp.Client.Components.Editor.CommandHandlers;
 public abstract class CommandHandlerBase<TCommand>(HistoryManager historyManager)
     : ICommandHandler<TCommand, Result>,
         IClientCommandHandler<TCommand>
-    where TCommand : IClientAction
+    where TCommand : IClientCommand
 {
     public async Task<Result> ExecuteAsync(TCommand command, CancellationToken ct = default)
     {
@@ -21,7 +21,7 @@ public abstract class CommandHandlerBase<TCommand>(HistoryManager historyManager
 
     protected virtual void PostProcess(TCommand command)
     {
-        if (command is IClientActionUndoable clientEvent)
+        if (command is IClientCommandUndoable clientEvent)
         {
             historyManager.AddItem(clientEvent);
         }
@@ -32,7 +32,7 @@ public abstract class CommandHandlerBase<TCommand>(HistoryManager historyManager
         CancellationToken ct = default
     );
 
-    public Task<Result> ExecuteAsync(IClientAction command, CancellationToken ct = default) =>
+    public Task<Result> ExecuteAsync(IClientCommand command, CancellationToken ct = default) =>
         this.ExecuteAsync((TCommand)command, ct);
 }
 
@@ -40,5 +40,5 @@ public interface IClientCommandHandler<TCommand> : IClientCommandHandler { }
 
 public interface IClientCommandHandler
 {
-    public Task<Result> ExecuteAsync(IClientAction command, CancellationToken ct = default);
+    public Task<Result> ExecuteAsync(IClientCommand command, CancellationToken ct = default);
 }

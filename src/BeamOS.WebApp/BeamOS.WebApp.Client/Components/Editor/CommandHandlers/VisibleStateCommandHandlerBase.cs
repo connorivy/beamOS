@@ -1,32 +1,25 @@
-using BeamOs.Common.Api;
+using BeamOs.WebApp.Client.Events.Interfaces;
+using BeamOS.WebApp.Client.State;
 
 namespace BeamOS.WebApp.Client.Components.Editor.CommandHandlers;
 
-public abstract class VisibleStateCommandHandlerBase<TCommand>
-    : IVisibleStateCommandHandler<TCommand>
+public abstract class VisibleStateCommandHandlerBase<TCommand>(HistoryManager historyManager)
+    : CommandHandlerBase<TCommand>(historyManager)
+    where TCommand : IClientCommand
 {
-    public Task<Result> ExecuteCommandAsync(
-        TCommand command,
-        Action stateCallback,
-        CancellationToken ct = default
-    ) => throw new NotImplementedException();
-}
-
-public interface IVisibleStateCommandHandler<TCommand>
-{
-    Task<Result> ExecuteCommandAsync(
-        TCommand command,
-        Action stateCallback,
-        CancellationToken ct = default
-    );
+    protected override void PostProcess(TCommand command)
+    {
+        EventEmitter.EmitVisibleStateChangedEvent();
+        base.PostProcess(command);
+    }
 }
 
 public static class EventEmitter
 {
     public static event EventHandler? VisibleStateChanged;
 
-    public void VisibleStateChanged()
+    public static void EmitVisibleStateChangedEvent()
     {
-        VisibleStateChanged.Raise(this);
+        VisibleStateChanged?.Invoke(typeof(EventEmitter), EventArgs.Empty);
     }
 }

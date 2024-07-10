@@ -25,21 +25,21 @@ namespace BeamOs.CodeGen.Apis.EditorApi
     {
         /// <returns>OK</returns>
         /// <exception cref="EditorEventsApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task DispatchChangeSelectionActionAsync(ChangeSelectionAction body);
+        System.Threading.Tasks.Task DispatchChangeSelectionCommandAsync(ChangeSelectionCommand body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorEventsApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task DispatchChangeSelectionActionAsync(ChangeSelectionAction body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task DispatchChangeSelectionCommandAsync(ChangeSelectionCommand body, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>OK</returns>
         /// <exception cref="EditorEventsApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task DispatchMoveNodeActionAsync(MoveNodeAction body);
+        System.Threading.Tasks.Task DispatchMoveNodeCommandAsync(MoveNodeCommand body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorEventsApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task DispatchMoveNodeActionAsync(MoveNodeAction body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task DispatchMoveNodeCommandAsync(MoveNodeCommand body, System.Threading.CancellationToken cancellationToken);
 
     }
 
@@ -75,15 +75,15 @@ namespace BeamOs.CodeGen.Apis.EditorApi
 
         /// <returns>OK</returns>
         /// <exception cref="EditorEventsApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task DispatchChangeSelectionActionAsync(ChangeSelectionAction body)
+        public virtual System.Threading.Tasks.Task DispatchChangeSelectionCommandAsync(ChangeSelectionCommand body)
         {
-            return DispatchChangeSelectionActionAsync(body, System.Threading.CancellationToken.None);
+            return DispatchChangeSelectionCommandAsync(body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorEventsApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task DispatchChangeSelectionActionAsync(ChangeSelectionAction body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task DispatchChangeSelectionCommandAsync(ChangeSelectionCommand body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -102,8 +102,8 @@ namespace BeamOs.CodeGen.Apis.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorEventsApi/DispatchChangeSelectionAction"
-                    urlBuilder_.Append("EditorEventsApi/DispatchChangeSelectionAction");
+                    // Operation Path: "EditorEventsApi/DispatchChangeSelectionCommand"
+                    urlBuilder_.Append("EditorEventsApi/DispatchChangeSelectionCommand");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -154,15 +154,15 @@ namespace BeamOs.CodeGen.Apis.EditorApi
 
         /// <returns>OK</returns>
         /// <exception cref="EditorEventsApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task DispatchMoveNodeActionAsync(MoveNodeAction body)
+        public virtual System.Threading.Tasks.Task DispatchMoveNodeCommandAsync(MoveNodeCommand body)
         {
-            return DispatchMoveNodeActionAsync(body, System.Threading.CancellationToken.None);
+            return DispatchMoveNodeCommandAsync(body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorEventsApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task DispatchMoveNodeActionAsync(MoveNodeAction body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task DispatchMoveNodeCommandAsync(MoveNodeCommand body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -181,8 +181,8 @@ namespace BeamOs.CodeGen.Apis.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorEventsApi/DispatchMoveNodeAction"
-                    urlBuilder_.Append("EditorEventsApi/DispatchMoveNodeAction");
+                    // Operation Path: "EditorEventsApi/DispatchMoveNodeCommand"
+                    urlBuilder_.Append("EditorEventsApi/DispatchMoveNodeCommand");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 

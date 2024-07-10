@@ -1,43 +1,30 @@
 using BeamOs.CodeGen.Apis.EditorApi;
-using BeamOs.WebApp.Client.Actions.EditorActions;
 using BeamOS.WebApp.Client.Components.Editor.CommandHandlers;
-using BeamOs.WebApp.Client.Events.Interfaces;
-using Fluxor;
+using BeamOs.WebApp.Client.EditorCommands;
 using Microsoft.JSInterop;
 
 namespace BeamOS.WebApp.Client;
 
-public class EditorEventsApi(IDispatcher dispatcher, MoveNodeCommandHandler moveNodeCommandHandler)
-    : IEditorEventsApi
+public class EditorEventsApi(
+    MoveNodeCommandHandler moveNodeCommandHandler,
+    ChangeSelectionCommandHandler changeSelectionCommandHandler
+) : IEditorEventsApi
 {
-    private Task DispatchAllEditorCommands(IClientAction action)
-    {
-        if (action is IClientActionWithSource actionWithSource)
-        {
-            dispatcher.Dispatch(actionWithSource.WithSource(ClientActionSource.Editor));
-        }
-        else
-        {
-            dispatcher.Dispatch(action);
-        }
-        return Task.CompletedTask;
-    }
-
     [JSInvokable]
-    public Task DispatchChangeSelectionActionAsync(ChangeSelectionAction body) =>
-        this.DispatchAllEditorCommands(body);
+    public async Task DispatchChangeSelectionCommandAsync(ChangeSelectionCommand body) =>
+        await changeSelectionCommandHandler.ExecuteAsync(body);
 
-    public Task DispatchChangeSelectionActionAsync(
-        ChangeSelectionAction body,
+    public Task DispatchChangeSelectionCommandAsync(
+        ChangeSelectionCommand body,
         CancellationToken cancellationToken
     ) => throw new NotImplementedException();
 
     [JSInvokable]
-    public async Task DispatchMoveNodeActionAsync(MoveNodeAction body) =>
+    public async Task DispatchMoveNodeCommandAsync(MoveNodeCommand body) =>
         await moveNodeCommandHandler.ExecuteAsync(body);
 
-    public Task DispatchMoveNodeActionAsync(
-        MoveNodeAction body,
+    public Task DispatchMoveNodeCommandAsync(
+        MoveNodeCommand body,
         CancellationToken cancellationToken
     ) => throw new NotImplementedException();
 }

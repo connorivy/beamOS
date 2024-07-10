@@ -3,7 +3,6 @@ using BeamOs.Common.Api;
 using BeamOs.Contracts.Common;
 using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOS.WebApp.Client.Components.Editor.Commands;
-using BeamOS.WebApp.Client.Components.Editor.Flux.Events;
 using BeamOS.WebApp.Client.Repositories;
 using BeamOS.WebApp.Client.State;
 
@@ -14,7 +13,10 @@ public class LoadModelCommandHandler(
     HistoryManager historyManager,
     AddNodeCommandHandler addNodeCommandHandler,
     AddElement1dCommandHandler addElement1dCommandHandler,
-    ModelIdRepository modelIdRepository
+    ModelIdRepository modelIdRepository,
+    AddElement1dToCacheCommandHandler addElement1DToCacheCommandHandler,
+    AddNodeToCacheCommandHandler addNodeToCacheCommandHandler,
+    ChangeComponentStateCommandHandler<EditorComponentState> changeComponentStateCommandHandler
 ) : CommandHandlerBase<LoadModelCommand>(historyManager)
 {
     protected override async Task<Result> ExecuteCommandAsync(
@@ -28,20 +30,27 @@ public class LoadModelCommandHandler(
             ct
         );
 
+        await changeComponentStateCommandHandler.ExecuteAsync(new(command.CanvasId, state => state with
+        {
+            LoadedModelId = command.ModelId,
+        }), CancellationToken.None);
+
         modelIdRepository.SetModelIdForCanvasId(command.CanvasId, command.ModelId);
 
         foreach (var node in response.Nodes)
         {
+            await addNodeToCacheCommandHandler.ExecuteAsync(new(command.ModelId, node), CancellationToken.None);
             await addNodeCommandHandler.ExecuteAsync(
-                new AddNodeAction(command.CanvasId, node),
+                new AddNodeToEditorCommand(command.CanvasId, node),
                 CancellationToken.None
             );
         }
 
         foreach (var el in response.Element1Ds)
         {
+            await addElement1DToCacheCommandHandler.ExecuteAsync(new(command.ModelId, el), CancellationToken.None);
             await addElement1dCommandHandler.ExecuteAsync(
-                new AddElement1dAction(command.CanvasId, el),
+                new AddElement1dToEditorCommand(command.CanvasId, el),
                 CancellationToken.None
             );
         }

@@ -1,6 +1,6 @@
 using BeamOs.CodeGen.Apis.EditorApi;
 using BeamOs.Common.Api;
-using BeamOS.WebApp.Client.Components.Editor.Flux.Events;
+using BeamOS.WebApp.Client.Components.Editor.Commands;
 using BeamOS.WebApp.Client.Repositories;
 using BeamOS.WebApp.Client.State;
 
@@ -9,10 +9,10 @@ namespace BeamOS.WebApp.Client.Components.Editor.CommandHandlers;
 public class AddNodeCommandHandler(
     EditorApiRepository editorApiRepository,
     HistoryManager historyManager
-) : CommandHandlerBase<AddNodeAction>(historyManager)
+) : CommandHandlerBase<AddNodeToEditorCommand>(historyManager)
 {
     protected override async Task<Result> ExecuteCommandAsync(
-        AddNodeAction command,
+        AddNodeToEditorCommand command,
         CancellationToken ct = default
     )
     {
@@ -26,10 +26,10 @@ public class AddNodeCommandHandler(
 public class AddElement1dCommandHandler(
     EditorApiRepository editorApiRepository,
     HistoryManager historyManager
-) : CommandHandlerBase<AddElement1dAction>(historyManager)
+) : CommandHandlerBase<AddElement1dToEditorCommand>(historyManager)
 {
     protected override async Task<Result> ExecuteCommandAsync(
-        AddElement1dAction command,
+        AddElement1dToEditorCommand command,
         CancellationToken ct = default
     )
     {

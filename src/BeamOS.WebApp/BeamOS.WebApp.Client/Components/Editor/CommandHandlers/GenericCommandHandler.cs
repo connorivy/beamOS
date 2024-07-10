@@ -6,7 +6,7 @@ namespace BeamOS.WebApp.Client.Components.Editor.CommandHandlers;
 public class GenericCommandHandlerWithoutHistory(IServiceProvider services)
 {
     public async Task<Result> ExecuteCommandWithoutAddingToHistory(
-        IClientAction command,
+        IClientCommand command,
         CancellationToken ct = default
     )
     {

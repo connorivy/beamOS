@@ -1,5 +1,7 @@
 @page "/editor"
+@using BeamOS.WebApp.Client.Components.Editor
 @using BeamOS.WebApp.Client.Features.Common.Flux
+@using BeamOS.WebApp.Client.Repositories
 @using BeamOs.CodeGen.Apis.EditorApi
 @using BeamOs.ApiClient
 @using BeamOs.Contracts.AnalyticalResults.Model
@@ -8,6 +10,7 @@
 @using BeamOs.Contracts.PhysicalModel.Node
 @using Fluxor.Blazor.Web.Components
 @using static BeamOS.WebApp.Client.Components.Editor.EditorComponent
+@using BeamOS.WebApp.Client.Components.Editor.CommandHandlers;
 
 @rendermode InteractiveAuto
 
@@ -16,25 +19,24 @@
 <PageTitle>Editor</PageTitle>
 
 <MudDrawerContainer Class="h-full w-full">
-    <MudPopover Open="@(EditorComponentState.Value.SelectedObjects.Length > 0)" Fixed="true" Class="m-2">
-        <BeamOS.WebApp.Client.Components.Editor.SelectionInfoComponent></BeamOS.WebApp.Client.Components.Editor.SelectionInfoComponent>
-    </MudPopover>
-    <BeamOS.WebApp.Client.Components.Editor.EditorComponent Class="h-full"></BeamOS.WebApp.Client.Components.Editor.EditorComponent>
+    @if (editorComponent is not null)
+    {
+        <MudPopover Open="@(editorComponent.EditorComponentState.SelectedObjects.Length > 0)" Fixed="true" Class="m-2">
+            <SelectionInfoComponent SelectedObjects="@editorComponent.EditorComponentState.SelectedObjects" ModelId="@editorComponent.EditorComponentState.LoadedModelId"></SelectionInfoComponent>
+        </MudPopover>
+    }
+    <EditorComponent Class="h-full" @ref="editorComponent"></EditorComponent>
 </MudDrawerContainer>
 
-<style>
-    .mud-drawer-content {
-        background-color: transparent;
-    }
-</style>
-
 @code {
-    [Inject]
-    private IState<EditorComponentState2> EditorComponentState { get; init; }
+    private EditorComponent editorComponent;
 
     protected override void OnInitialized()
     {
-        // this.SubscribeToAction<EditorEvent>(this.HandleEditorEvent);
+        EventEmitter.VisibleStateChanged += this.EventEmitter_VisibleStateChanged;
         base.OnInitialized();
     }
+
+    private void EventEmitter_VisibleStateChanged(object? sender, EventArgs _) =>
+        this.StateHasChanged();
 }

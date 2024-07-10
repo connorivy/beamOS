@@ -38,12 +38,12 @@ export interface IEditorApiAlpha {
     /**
      * @return OK
      */
-    reduceChangeSelectionAction(body: ChangeSelectionAction): Promise<Result>;
+    reduceChangeSelectionCommand(body: ChangeSelectionCommand): Promise<Result>;
 
     /**
      * @return OK
      */
-    reduceMoveNodeAction(body: MoveNodeAction): Promise<Result>;
+    reduceMoveNodeCommand(body: MoveNodeCommand): Promise<Result>;
 }
 
 export class EditorApiAlpha implements IEditorApiAlpha {
@@ -260,8 +260,8 @@ export class EditorApiAlpha implements IEditorApiAlpha {
     /**
      * @return OK
      */
-    reduceChangeSelectionAction(body: ChangeSelectionAction): Promise<Result> {
-        let url_ = this.baseUrl + "/EditorApiAlpha/ReduceChangeSelectionAction";
+    reduceChangeSelectionCommand(body: ChangeSelectionCommand): Promise<Result> {
+        let url_ = this.baseUrl + "/EditorApiAlpha/ReduceChangeSelectionCommand";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -276,11 +276,11 @@ export class EditorApiAlpha implements IEditorApiAlpha {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processReduceChangeSelectionAction(_response);
+            return this.processReduceChangeSelectionCommand(_response);
         });
     }
 
-    protected processReduceChangeSelectionAction(response: Response): Promise<Result> {
+    protected processReduceChangeSelectionCommand(response: Response): Promise<Result> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -301,8 +301,8 @@ export class EditorApiAlpha implements IEditorApiAlpha {
     /**
      * @return OK
      */
-    reduceMoveNodeAction(body: MoveNodeAction): Promise<Result> {
-        let url_ = this.baseUrl + "/EditorApiAlpha/ReduceMoveNodeAction";
+    reduceMoveNodeCommand(body: MoveNodeCommand): Promise<Result> {
+        let url_ = this.baseUrl + "/EditorApiAlpha/ReduceMoveNodeCommand";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -317,11 +317,11 @@ export class EditorApiAlpha implements IEditorApiAlpha {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processReduceMoveNodeAction(_response);
+            return this.processReduceMoveNodeCommand(_response);
         });
     }
 
-    protected processReduceMoveNodeAction(response: Response): Promise<Result> {
+    protected processReduceMoveNodeCommand(response: Response): Promise<Result> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -380,10 +380,11 @@ export interface IBeamOsError {
     description: string;
 }
 
-export class ChangeSelectionAction implements IChangeSelectionAction {
+export class ChangeSelectionCommand implements IChangeSelectionCommand {
+    canvasId!: string;
     selectedObjects!: SelectedObject[];
 
-    constructor(data?: IChangeSelectionAction) {
+    constructor(data?: IChangeSelectionCommand) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -397,6 +398,7 @@ export class ChangeSelectionAction implements IChangeSelectionAction {
 
     init(_data?: any) {
         if (_data) {
+            this.canvasId = _data["canvasId"];
             if (Array.isArray(_data["selectedObjects"])) {
                 this.selectedObjects = [] as any;
                 for (let item of _data["selectedObjects"])
@@ -405,15 +407,16 @@ export class ChangeSelectionAction implements IChangeSelectionAction {
         }
     }
 
-    static fromJS(data: any): ChangeSelectionAction {
+    static fromJS(data: any): ChangeSelectionCommand {
         data = typeof data === 'object' ? data : {};
-        let result = new ChangeSelectionAction();
+        let result = new ChangeSelectionCommand();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["canvasId"] = this.canvasId;
         if (Array.isArray(this.selectedObjects)) {
             data["selectedObjects"] = [];
             for (let item of this.selectedObjects)
@@ -423,7 +426,8 @@ export class ChangeSelectionAction implements IChangeSelectionAction {
     }
 }
 
-export interface IChangeSelectionAction {
+export interface IChangeSelectionCommand {
+    canvasId: string;
     selectedObjects: SelectedObject[];
 }
 
@@ -931,14 +935,14 @@ export interface IMomentLoadResponse {
     axisDirection: Vector3;
 }
 
-export class MoveNodeAction implements IMoveNodeAction {
+export class MoveNodeCommand implements IMoveNodeCommand {
     canvasId!: string;
     nodeId!: string;
     previousLocation!: Coordinate3D;
     newLocation!: Coordinate3D;
     source!: ClientActionSource;
 
-    constructor(data?: IMoveNodeAction) {
+    constructor(data?: IMoveNodeCommand) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -961,9 +965,9 @@ export class MoveNodeAction implements IMoveNodeAction {
         }
     }
 
-    static fromJS(data: any): MoveNodeAction {
+    static fromJS(data: any): MoveNodeCommand {
         data = typeof data === 'object' ? data : {};
-        let result = new MoveNodeAction();
+        let result = new MoveNodeCommand();
         result.init(data);
         return result;
     }
@@ -979,7 +983,7 @@ export class MoveNodeAction implements IMoveNodeAction {
     }
 }
 
-export interface IMoveNodeAction {
+export interface IMoveNodeCommand {
     canvasId: string;
     nodeId: string;
     previousLocation: Coordinate3D;

@@ -1,3 +1,5 @@
+@using BeamOS.WebApp.Client.Caches
+@using BeamOs.WebApp.Client.EditorCommands
 @using Fluxor.Blazor.Web.Components
 @using static BeamOS.WebApp.Client.Components.Editor.EditorComponent
 
@@ -9,10 +11,10 @@
         <MudText Typo="Typo.body2" Class="px-4 mud-text-secondary">Secondary Text</MudText>
         <MudDivider Class="my-2" />
         <MudExpansionPanels MultiExpansion="true">
-            @foreach (var selectedObjectInfo in EditorComponentState.Value.SelectedObjects)
+            @foreach (var selectedObjectInfo in SelectedObjects)
             {
                 <MudExpansionPanel Text="@($"{selectedObjectInfo.TypeName} {selectedObjectInfo.Id}")">
-                    @* <SelectionInfoSingleItemComponent ObjectToDisplay="@GetBeamOsObjectByIdAndTypeName(selectedObjectInfo.Id, selectedObjectInfo.TypeName)"></SelectionInfoSingleItemComponent> *@
+                    <SelectionInfoSingleItemComponent ObjectToDisplay="@GetBeamOsObjectByIdAndTypeName(selectedObjectInfo.Id, selectedObjectInfo.TypeName)"></SelectionInfoSingleItemComponent>
                 </MudExpansionPanel>
             }
         </MudExpansionPanels>
@@ -20,11 +22,19 @@
 </MudContainer>
 
 @code {
+    [Parameter]
+    public required SelectedObject[] SelectedObjects { get; init; }
+
+    [Parameter]
+    public required string ModelId { get; init; }
+
     [Inject]
-    private IState<EditorComponentState2> EditorComponentState { get; init; }
+    private AllStructuralAnalysisModelCaches AllStructuralAnalysisModelCaches { get; init; }
+
+    private StructuralAnalysisModelCache StructuralAnalysisModelCache => this.AllStructuralAnalysisModelCaches.GetByModelId(this.ModelId);
 
     private object GetBeamOsObjectByIdAndTypeName(string id, string typeName)
     {
-        return this.EditorComponentState.Value.NodeIdToResponsesDict.GetValueOrDefault(id);   
+        return this.StructuralAnalysisModelCache.NodeIdToNodeResponseDict.GetValueOrDefault(id);   
     }
 }

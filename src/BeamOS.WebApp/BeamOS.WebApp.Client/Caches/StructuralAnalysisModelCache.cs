@@ -10,6 +10,9 @@ public class AllStructuralAnalysisModelCaches
         StructuralAnalysisModelCache
     > modelIdToModelElementCacheDict = [];
 
+    public StructuralAnalysisModelCache GetByModelId(string modelId) =>
+        this.modelIdToModelElementCacheDict[modelId];
+
     public StructuralAnalysisModelCache GetOrCreateByModelId(string modelId)
     {
         if (

@@ -1,11 +1,11 @@
 using System.Text.Json.Serialization;
 using BeamOs.WebApp.Client.Events.Interfaces;
 
-namespace BeamOs.WebApp.Client.Actions.EditorActions;
+namespace BeamOs.WebApp.Client.EditorCommands;
 
-public readonly record struct MoveNodeAction : IEditorActionUndoable
+public readonly record struct MoveNodeCommand : IEditorCommandUndoable
 {
-    public MoveNodeAction() { }
+    public MoveNodeCommand() { }
 
     [JsonIgnore]
     public Guid Id { get; } = Guid.NewGuid();
@@ -15,7 +15,7 @@ public readonly record struct MoveNodeAction : IEditorActionUndoable
     public required Coordinate3D NewLocation { get; init; }
     public required ClientActionSource Source { get; init; }
 
-    public IClientActionUndoable GetUndoAction(ClientActionSource clientEventSource) =>
+    public IClientCommandUndoable GetUndoCommand(ClientActionSource clientEventSource) =>
         this with
         {
             NewLocation = this.PreviousLocation,
@@ -23,7 +23,7 @@ public readonly record struct MoveNodeAction : IEditorActionUndoable
             Source = clientEventSource
         };
 
-    public IClientAction WithSource(ClientActionSource clientEventSource) =>
+    public IClientCommand WithSource(ClientActionSource clientEventSource) =>
         this with
         {
             Source = clientEventSource

@@ -1,3 +1,4 @@
+using BeamOs.WebApp.Client.EditorCommands;
 using BeamOs.WebApp.Client.Events.Interfaces;
 
 namespace BeamOs.CodeGen.Apis.Generator.ApiGenerators;
@@ -16,7 +17,7 @@ public class EditorEventsApi : AbstractGenerator
                 .Assembly
                 .ExportedTypes
                 .Where(
-                    t => !t.IsInterface && !t.IsAbstract && t.IsAssignableTo(typeof(IEditorAction))
+                    t => !t.IsInterface && !t.IsAbstract && t.IsAssignableTo(typeof(IEditorCommand))
                 )
         )
         {

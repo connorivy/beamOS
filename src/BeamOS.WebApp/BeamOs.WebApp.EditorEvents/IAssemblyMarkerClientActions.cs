@@ -1,3 +1,3 @@
-namespace BeamOs.WebApp.Client.Events.Interfaces;
+namespace BeamOs.WebApp.Client.EditorCommands;
 
 public interface IAssemblyMarkerClientActions { }

@@ -8,6 +8,8 @@ public sealed record BeamOsError
     public static readonly BeamOsError None =
         new() { Code = string.Empty, Description = string.Empty };
 
+    public static readonly BeamOsError Todo = new() { Code = "Todo", Description = string.Empty };
+
     public static BeamOsError ServiceNotFound(string serviceName)
     {
         return new()

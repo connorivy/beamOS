@@ -1,11 +1,11 @@
 using BeamOs.ApiClient;
 using BeamOs.Common.Api;
 using BeamOs.Contracts.PhysicalModel.Node;
-using BeamOs.WebApp.Client.Actions.EditorActions;
 using BeamOS.WebApp.Client.Caches;
 using BeamOs.WebApp.Client.Events.Interfaces;
 using BeamOS.WebApp.Client.Repositories;
 using BeamOS.WebApp.Client.State;
+using BeamOs.WebApp.Client.EditorCommands;
 
 namespace BeamOS.WebApp.Client.Components.Editor.CommandHandlers;
 
@@ -15,10 +15,10 @@ public class MoveNodeCommandHandler(
     ModelIdRepository modelIdRepository,
     EditorApiRepository editorApiRepository,
     IApiAlphaClient apiAlphaClient
-) : CommandHandlerBase<MoveNodeAction>(historyManager)
+) : CommandHandlerBase<MoveNodeCommand>(historyManager)
 {
     protected override async Task<Result> ExecuteCommandAsync(
-        MoveNodeAction command,
+        MoveNodeCommand command,
         CancellationToken ct = default
     )
     {
@@ -30,7 +30,7 @@ public class MoveNodeCommandHandler(
         if (command.Source != ClientActionSource.Editor)
         {
             var editorApi = editorApiRepository.GetEditorApiByCanvasId(command.CanvasId);
-            await editorApi.ReduceMoveNodeActionAsync(command);
+            await editorApi.ReduceMoveNodeCommandAsync(command);
         }
 
         await apiAlphaClient.PatchNodeAsync(

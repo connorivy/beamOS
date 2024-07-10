@@ -5,26 +5,26 @@ namespace BeamOS.WebApp.Client.State;
 
 public sealed class HistoryManager(GenericCommandHandlerWithoutHistory genericCommandHandler)
 {
-    private readonly LinkedList<IClientActionUndoable> undoActions = new();
-    private readonly LinkedList<IClientActionUndoable> redoActions = new();
+    private readonly LinkedList<IClientCommandUndoable> undoActions = new();
+    private readonly LinkedList<IClientCommandUndoable> redoActions = new();
     private readonly int itemLimit = 50;
 
     public async Task UndoLast()
     {
-        if (this.undoActions.FirstOrDefault() is not IClientActionUndoable undoable)
+        if (this.undoActions.FirstOrDefault() is not IClientCommandUndoable undoable)
         {
             // no undo history
             return;
         }
 
         await genericCommandHandler.ExecuteCommandWithoutAddingToHistory(
-            undoable.GetUndoAction(ClientActionSource.CSharp)
+            undoable.GetUndoCommand(ClientActionSource.CSharp)
         );
     }
 
     public async Task Redo()
     {
-        if (this.redoActions.FirstOrDefault() is not IClientActionUndoable undoable)
+        if (this.redoActions.FirstOrDefault() is not IClientCommandUndoable undoable)
         {
             // no redo history
             return;
@@ -35,7 +35,7 @@ public sealed class HistoryManager(GenericCommandHandlerWithoutHistory genericCo
         );
     }
 
-    public void AddItem(IClientActionUndoable clientEvent)
+    public void AddItem(IClientCommandUndoable clientEvent)
     {
         if (clientEvent.Id == this.undoActions.FirstOrDefault()?.Id)
         {

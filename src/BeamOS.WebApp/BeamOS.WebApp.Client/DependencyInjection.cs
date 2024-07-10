@@ -1,4 +1,5 @@
 using BeamOS.WebApp.Client.Caches;
+using BeamOS.WebApp.Client.Components.Editor;
 using BeamOS.WebApp.Client.Components.Editor.CommandHandlers;
 using BeamOS.WebApp.Client.Features.KeyBindings.UndoRedo;
 using BeamOS.WebApp.Client.Features.TestExplorer;
@@ -42,6 +43,11 @@ public static class DependencyInjection
         _ = services.AddScoped<AllStructuralAnalysisModelCaches>();
         _ = services.AddScoped<EditorApiRepository>();
         _ = services.AddScoped<ModelIdRepository>();
+        _ = services.AddScoped<
+            IStateRepository<EditorComponentState>,
+            GenericComponentStateRepository<EditorComponentState>
+        >();
+        _ = services.AddScoped<ChangeComponentStateCommandHandler<EditorComponentState>>();
 
         _ = services.AddCommandHandlers();
         _ = services.AddScoped<GenericCommandHandlerWithoutHistory>();
@@ -57,6 +63,11 @@ public static class DependencyInjection
 
         foreach (var assemblyType in assemblyTypes)
         {
+            if (assemblyType.IsGenericType)
+            {
+                continue;
+            }
+
             if (
                 GetInterfaceType(assemblyType, typeof(IClientCommandHandler<>))
                 is Type clientCommandHandler
