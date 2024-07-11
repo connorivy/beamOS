@@ -1,4 +1,5 @@
 using BeamOs.Api.Common;
+using BeamOs.Api.Common.Extensions;
 using BeamOs.Application;
 using BeamOs.Application.Common;
 using BeamOs.Infrastructure;
@@ -28,6 +29,7 @@ public static class DependencyInjection
                 c.Endpoints.ShortNames = true;
                 c.Endpoints.Filter = ed =>
                     ed.EndpointType.Assembly == typeof(IAssemblyMarkerApi).Assembly;
+                c.Serializer.Options.IgnoreRequiredKeyword();
             })
             .UseSwaggerGen(config =>
             {

@@ -1,5 +1,6 @@
 using BeamOs.Api;
 using BeamOs.Api.Common;
+using BeamOs.Api.Common.Extensions;
 using BeamOs.Infrastructure;
 using FastEndpoints;
 using FastEndpoints.Swagger;
@@ -62,6 +63,7 @@ app.UseFastEndpoints(c =>
         c.Endpoints.RoutePrefix = "api";
         c.Versioning.Prefix = "v";
         c.Endpoints.ShortNames = true;
+        c.Serializer.Options.IgnoreRequiredKeyword();
     })
     .UseSwaggerGen();
 
@@ -76,6 +78,7 @@ const string physicalModelBaseNs = $"{contractsBaseNs}.{ApiClientGenerator.Physi
 const string analyticalResultsBaseNs =
     $"{contractsBaseNs}.{ApiClientGenerator.AnalyticalResultsNs}";
 
+//app.Configuration["generateclients"] = "true";
 await app.GenerateClient(alphaRelease, clientNs, clientName);
 
 //app.MapGet("/user", (ClaimsPrincipal user) => $"Hello user {user.Identity.Name}")

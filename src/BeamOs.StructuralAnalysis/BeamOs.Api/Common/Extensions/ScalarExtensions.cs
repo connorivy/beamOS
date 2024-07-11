@@ -1,4 +1,4 @@
-namespace BeamOs.Api;
+namespace BeamOs.Api.Common.Extensions;
 
 public static class ScalarExtensions
 {

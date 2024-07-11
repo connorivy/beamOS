@@ -32,7 +32,6 @@ public abstract class BeamOsFastEndpoint<TRequest, TResponse>(BeamOsFastEndpoint
         this.Verbs(this.EndpointType);
         this.Routes(this.Route);
         this.ConfigureAuthentication();
-        this.Description(d => d.Accepts<TRequest>().Produces<TResponse>());
 
         if (this.ExampleRequest is not null)
         {
