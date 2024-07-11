@@ -141,7 +141,7 @@ public partial class EditorComponent : FluxorComponent
     {
         EventEmitter.VisibleStateChanged -= this.EventEmitter_VisibleStateChanged;
         this.EditorComponentStateRepository.RemoveEditorComponentStateForCanvasId(this.ElementId);
-        await this.EditorApiAlpha.DisposeAsync();
+        //await this.EditorApiAlpha.DisposeAsync();
         this.UndoRedoFunctionality?.Dispose();
         await this.hubConnection.DisposeAsync();
         await base.DisposeAsyncCore(disposing);
