@@ -65,7 +65,7 @@ public abstract partial class ModelFixture : FixtureBase, ITestFixtureDisplayabl
     public ModelResponse GetExpectedResponse(UnitSettings? unitSettingsOverride = null)
     {
         // todo : this is not thread safe and is just generally not good.
-        // we probably need to bit the bullet and write mappers that accept units
+        // we probably need to bite the bullet and write mappers that accept units
         UnitMapperWithOptionalUnits? existingUnitMapper = null;
         if (unitSettingsOverride is not null)
         {

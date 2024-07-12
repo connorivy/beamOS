@@ -1,3 +1,4 @@
+using BeamOs.Contracts.PhysicalModel.Common;
 using BeamOs.Contracts.PhysicalModel.Element1d;
 using BeamOs.Contracts.PhysicalModel.Node;
 
@@ -7,22 +8,22 @@ public class AllStructuralAnalysisModelCaches
 {
     private readonly Dictionary<
         string,
-        StructuralAnalysisModelCache
+        SingleStructuralAnalysisModelCache
     > modelIdToModelElementCacheDict = [];
 
-    public StructuralAnalysisModelCache GetByModelId(string modelId) =>
+    public SingleStructuralAnalysisModelCache GetByModelId(string modelId) =>
         this.modelIdToModelElementCacheDict[modelId];
 
-    public StructuralAnalysisModelCache GetOrCreateByModelId(string modelId)
+    public SingleStructuralAnalysisModelCache GetOrCreateByModelId(string modelId)
     {
         if (
             !this.modelIdToModelElementCacheDict.TryGetValue(
                 modelId,
-                out StructuralAnalysisModelCache model
+                out SingleStructuralAnalysisModelCache model
             )
         )
         {
-            model = new StructuralAnalysisModelCache(modelId);
+            model = new SingleStructuralAnalysisModelCache();
             this.modelIdToModelElementCacheDict[modelId] = model;
         }
 
@@ -32,6 +33,35 @@ public class AllStructuralAnalysisModelCaches
     public void DisposeCache(string modelId)
     {
         this.modelIdToModelElementCacheDict.Remove(modelId);
+    }
+}
+
+public sealed class SingleStructuralAnalysisModelCache
+{
+    private readonly Dictionary<Type, Dictionary<string, BeamOsEntityContractBase>> elementStore =
+    [];
+
+    public void AddOrReplace<T>(T element)
+        where T : BeamOsEntityContractBase
+    {
+        if (!this.elementStore.TryGetValue(typeof(T), out var subStore))
+        {
+            subStore =  [];
+            this.elementStore.Add(typeof(T), subStore);
+        }
+
+        subStore[element.Id] = element;
+    }
+
+    public T GetById<T>(string id)
+        where T : BeamOsEntityContractBase
+    {
+        if (this.elementStore.TryGetValue(typeof(T), out var subStore))
+        {
+            return (T)subStore[id];
+        }
+
+        throw new Exception($"Could not find resource with id = {id}");
     }
 }
 

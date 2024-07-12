@@ -3,7 +3,7 @@ using BeamOs.WebApp.Client.Events.Interfaces;
 
 namespace BeamOS.WebApp.Client.State;
 
-public sealed class HistoryManager(GenericCommandHandlerWithoutHistory genericCommandHandler)
+public sealed class HistoryManager(GenericCommandHandler genericCommandHandler)
 {
     private readonly LinkedList<IClientCommandUndoable> undoActions = new();
     private readonly LinkedList<IClientCommandUndoable> redoActions = new();
@@ -17,7 +17,7 @@ public sealed class HistoryManager(GenericCommandHandlerWithoutHistory genericCo
             return;
         }
 
-        await genericCommandHandler.ExecuteCommandWithoutAddingToHistory(
+        await genericCommandHandler.ExecuteAsync(
             undoable.GetUndoCommand(ClientActionSource.CSharp)
         );
     }
@@ -30,9 +30,7 @@ public sealed class HistoryManager(GenericCommandHandlerWithoutHistory genericCo
             return;
         }
 
-        await genericCommandHandler.ExecuteCommandWithoutAddingToHistory(
-            undoable.WithSource(ClientActionSource.CSharp)
-        );
+        await genericCommandHandler.ExecuteAsync(undoable.WithSource(ClientActionSource.CSharp));
     }
 
     public void AddItem(IClientCommandUndoable clientEvent)

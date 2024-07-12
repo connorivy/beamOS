@@ -2,6 +2,7 @@ using BeamOs.Common.Api;
 using BeamOs.Contracts.PhysicalModel.Element1d;
 using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Contracts.PhysicalModel.Node;
+using BeamOs.Contracts.PhysicalModel.PointLoad;
 using BeamOs.WebApp.Client.EditorCommands;
 using BeamOs.WebApp.Client.Events.Interfaces;
 
@@ -23,6 +24,8 @@ public class EditorApiGenerator : AbstractGenerator
         _ = addMethod("CreateModelHydrated").Accepts<ModelResponseHydrated>();
 
         _ = addMethod("CreateNode").Accepts<NodeResponse>();
+
+        _ = addMethod("CreatePointLoad").Accepts<PointLoadResponse>();
 
         _ = addMethod("Clear");
 

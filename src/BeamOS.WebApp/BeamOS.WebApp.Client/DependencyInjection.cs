@@ -50,7 +50,7 @@ public static class DependencyInjection
         _ = services.AddScoped<ChangeComponentStateCommandHandler<EditorComponentState>>();
 
         _ = services.AddCommandHandlers();
-        _ = services.AddScoped<GenericCommandHandlerWithoutHistory>();
+        _ = services.AddScoped<GenericCommandHandler>();
     }
 
     public static IServiceCollection AddCommandHandlers(this IServiceCollection services)

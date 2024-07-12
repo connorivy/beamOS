@@ -7,6 +7,7 @@
 @using BeamOS.Tests.Common.Traits
 @using BeamOS.WebApp.Client.Components
 @using BeamOS.WebApp.Client.Components.Editor
+@using BeamOS.WebApp.Client.Features.Editors.ReadOnlyEditor
 @using BeamOS.WebApp.Client.Pages
 @using BeamOs.ApiClient
 @using BeamOs.Contracts.AnalyticalResults.Model
@@ -19,12 +20,10 @@
 @using Fluxor.Blazor.Web.Components
 @using MudExtensions
 
-@rendermode InteractiveWebAssembly
-
 <PageTitle>Test Explorer</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="h-full relative">
-    <EditorComponent @ref="editorComponent" Class="h-full w-full z-0" />
+    <ReadOnlyEditor @ref="readOnlyEditor" Class="h-full w-full z-0" />
     <MudTabs MinimumTabWidth="20px" Elevation="1" Rounded="true" PanelClass="pa-6" Position="Position.Left" Class="h-full z-10 absolute top-0">
         <MudTabPanel Icon="@Icons.Material.Filled.MenuBook" ToolTip="Select Test To Explore">
             <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="h-full pointer-events-auto">

@@ -1,7 +1,7 @@
 using BeamOS.Tests.Common.Interfaces;
 using BeamOS.Tests.Common.Traits;
 using BeamOs.Tests.TestRunner;
-using BeamOS.WebApp.Client.Components.Editor;
+using BeamOS.WebApp.Client.Features.Editors.ReadOnlyEditor;
 using BeamOS.WebApp.Client.Pages;
 using Fluxor;
 using Fluxor.Blazor.Web.Components;
@@ -24,7 +24,7 @@ public partial class TestExplorer : FluxorComponent
     private IState<TestInfoState> TestInfoState { get; init; }
 
     private bool open = true;
-    private EditorComponent? editorComponent;
+    private ReadOnlyEditor readOnlyEditor;
 
     //private string? nameOfAssertionResult { get; set; }
 
@@ -105,17 +105,17 @@ public partial class TestExplorer : FluxorComponent
     {
         if (testInfo is null)
         {
-            await this.editorComponent.EditorApiAlpha.ClearAsync();
+            await this.readOnlyEditor.EditorApiAlpha.ClearAsync();
             return;
         }
 
         ITestFixtureDisplayable? displayable = testInfo.GetDisplayable();
         if (displayable != this.TestExplorerState.Value.SelectedTestInfo?.GetDisplayable())
         {
-            await this.editorComponent.EditorApiAlpha.ClearAsync();
+            await this.readOnlyEditor.EditorApiAlpha.ClearAsync();
             if (displayable is not null)
             {
-                await displayable.Display(this.editorComponent.EditorApiAlpha);
+                await displayable.Display(this.readOnlyEditor.EditorApiAlpha);
             }
         }
 

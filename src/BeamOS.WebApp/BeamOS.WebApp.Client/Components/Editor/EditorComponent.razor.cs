@@ -1,11 +1,8 @@
-using System.Collections.Immutable;
 using System.Text.Json;
 using BeamOs.ApiClient;
 using BeamOs.CodeGen.Apis.EditorApi;
 using BeamOs.Common.Api;
 using BeamOs.Common.Events;
-using BeamOs.Contracts.PhysicalModel.Element1d;
-using BeamOs.Contracts.PhysicalModel.Node;
 using BeamOS.WebApp.Client.Components.Editor.CommandHandlers;
 using BeamOS.WebApp.Client.Components.Editor.Commands;
 using BeamOs.WebApp.Client.EditorCommands;
@@ -13,7 +10,6 @@ using BeamOS.WebApp.Client.Features.Common.Flux;
 using BeamOS.WebApp.Client.Features.KeyBindings.UndoRedo;
 using BeamOS.WebApp.Client.Repositories;
 using BeamOS.WebApp.Client.State;
-using Fluxor;
 using Fluxor.Blazor.Web.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -47,10 +43,10 @@ public partial class EditorComponent : FluxorComponent
     private IStateRepository<EditorComponentState> EditorComponentStateRepository { get; init; }
 
     [Inject]
-    private ChangeComponentStateCommandHandler ChangeComponentStateCommandHandler { get; init; }
+    private ChangeComponentStateCommandHandler<EditorComponentState> ChangeComponentStateCommandHandler { get; init; }
 
     public EditorComponentState EditorComponentState =>
-        EditorComponentStateRepository.GetOrSetComponentStateByCanvasId(this.ElementId);
+        this.EditorComponentStateRepository.GetOrSetComponentStateByCanvasId(this.ElementId);
 
     public string ElementId { get; } = "id" + Guid.NewGuid().ToString("N");
     public IEditorApiAlpha? EditorApiAlpha { get; private set; }
@@ -91,13 +87,13 @@ public partial class EditorComponent : FluxorComponent
     }
 
     private void EventEmitter_VisibleStateChanged(object? sender, EventArgs _) =>
-        this.StateHasChanged();
+        this.InvokeAsync(this.StateHasChanged);
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            this.EditorApiAlpha ??= await this.EditorApiProxyFactory.Create(this.ElementId);
+            this.EditorApiAlpha ??= await this.EditorApiProxyFactory.Create(this.ElementId, false);
 
             await this.ChangeComponentState(state => state with { LoadingText = "Fetching Data" });
             await this.LoadModel(physicalModelId);
@@ -133,41 +129,24 @@ public partial class EditorComponent : FluxorComponent
     )
     {
         return await this.ChangeComponentStateCommandHandler.ExecuteAsync(
-            new(this.ElementId, stateMutation(this.EditorComponentState))
+            new(this.ElementId, stateMutation)
         );
     }
 
     protected override async ValueTask DisposeAsyncCore(bool disposing)
     {
         EventEmitter.VisibleStateChanged -= this.EventEmitter_VisibleStateChanged;
+
+        if (this.EditorComponentState.EditorApi is IAsyncDisposable asyncDisposable)
+        {
+            await asyncDisposable.DisposeAsync();
+        }
+
         this.EditorComponentStateRepository.RemoveEditorComponentStateForCanvasId(this.ElementId);
         //await this.EditorApiAlpha.DisposeAsync();
         this.UndoRedoFunctionality?.Dispose();
         await this.hubConnection.DisposeAsync();
         await base.DisposeAsyncCore(disposing);
-    }
-
-    [FeatureState]
-    public record EditorComponentState2(
-        bool IsLoading,
-        string LoadingText,
-        string? LoadedModelId,
-        SelectedObject[] SelectedObjects,
-        Dictionary<string, NodeResponse> NodeIdToResponsesDict,
-        Dictionary<string, Element1DResponse> Element1dIdToResponsesDict
-    )
-    {
-        private EditorComponentState2()
-            : this(true, "Loading beamOS editor", null, [], [], []) { }
-    }
-
-    [FeatureState]
-    public record EditorComponentStates(
-        ImmutableDictionary<string, EditorComponentState2> CanvasIdToEditorComponentStates
-    )
-    {
-        private EditorComponentStates()
-            : this(ImmutableDictionary<string, EditorComponentState2>.Empty) { }
     }
 }
 
@@ -175,9 +154,10 @@ public record EditorComponentState(
     bool IsLoading,
     string LoadingText,
     string? LoadedModelId,
+    IEditorApiAlpha? EditorApi,
     SelectedObject[] SelectedObjects
 )
 {
     public EditorComponentState()
-        : this(true, "Loading beamOS editor", null, []) { }
+        : this(true, "Loading beamOS editor", null, null, []) { }
 }

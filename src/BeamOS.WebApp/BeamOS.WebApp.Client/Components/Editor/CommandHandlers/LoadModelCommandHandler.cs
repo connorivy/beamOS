@@ -3,7 +3,6 @@ using BeamOs.Common.Api;
 using BeamOs.Contracts.Common;
 using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOS.WebApp.Client.Components.Editor.Commands;
-using BeamOS.WebApp.Client.Repositories;
 using BeamOS.WebApp.Client.State;
 
 namespace BeamOS.WebApp.Client.Components.Editor.CommandHandlers;
@@ -11,11 +10,8 @@ namespace BeamOS.WebApp.Client.Components.Editor.CommandHandlers;
 public class LoadModelCommandHandler(
     IApiAlphaClient apiAlphaClient,
     HistoryManager historyManager,
-    AddNodeCommandHandler addNodeCommandHandler,
-    AddElement1dCommandHandler addElement1dCommandHandler,
-    ModelIdRepository modelIdRepository,
-    AddElement1dToCacheCommandHandler addElement1DToCacheCommandHandler,
-    AddNodeToCacheCommandHandler addNodeToCacheCommandHandler,
+    AddEntityContractToEditorCommandHandler addEntityContractToEditorCommandHandler,
+    AddEntityContractToCacheCommandHandler addEntityContractToCacheCommandHandler,
     ChangeComponentStateCommandHandler<EditorComponentState> changeComponentStateCommandHandler
 ) : CommandHandlerBase<LoadModelCommand>(historyManager)
 {
@@ -30,27 +26,43 @@ public class LoadModelCommandHandler(
             ct
         );
 
-        await changeComponentStateCommandHandler.ExecuteAsync(new(command.CanvasId, state => state with
-        {
-            LoadedModelId = command.ModelId,
-        }), CancellationToken.None);
-
-        modelIdRepository.SetModelIdForCanvasId(command.CanvasId, command.ModelId);
+        await changeComponentStateCommandHandler.ExecuteAsync(
+            new(command.CanvasId, state => state with { LoadedModelId = command.ModelId, }),
+            CancellationToken.None
+        );
 
         foreach (var node in response.Nodes)
         {
-            await addNodeToCacheCommandHandler.ExecuteAsync(new(command.ModelId, node), CancellationToken.None);
-            await addNodeCommandHandler.ExecuteAsync(
-                new AddNodeToEditorCommand(command.CanvasId, node),
+            await addEntityContractToCacheCommandHandler.ExecuteAsync(
+                new(command.ModelId, node),
+                CancellationToken.None
+            );
+            await addEntityContractToEditorCommandHandler.ExecuteAsync(
+                new(command.CanvasId, node),
                 CancellationToken.None
             );
         }
 
         foreach (var el in response.Element1Ds)
         {
-            await addElement1DToCacheCommandHandler.ExecuteAsync(new(command.ModelId, el), CancellationToken.None);
-            await addElement1dCommandHandler.ExecuteAsync(
-                new AddElement1dToEditorCommand(command.CanvasId, el),
+            await addEntityContractToCacheCommandHandler.ExecuteAsync(
+                new(command.ModelId, el),
+                CancellationToken.None
+            );
+            await addEntityContractToEditorCommandHandler.ExecuteAsync(
+                new(command.CanvasId, el),
+                CancellationToken.None
+            );
+        }
+
+        foreach (var el in response.PointLoads)
+        {
+            await addEntityContractToCacheCommandHandler.ExecuteAsync(
+                new(command.ModelId, el),
+                CancellationToken.None
+            );
+            await addEntityContractToEditorCommandHandler.ExecuteAsync(
+                new(command.CanvasId, el),
                 CancellationToken.None
             );
         }

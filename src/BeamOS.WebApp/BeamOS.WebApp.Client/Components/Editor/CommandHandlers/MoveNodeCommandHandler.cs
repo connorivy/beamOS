@@ -2,18 +2,17 @@ using BeamOs.ApiClient;
 using BeamOs.Common.Api;
 using BeamOs.Contracts.PhysicalModel.Node;
 using BeamOS.WebApp.Client.Caches;
+using BeamOs.WebApp.Client.EditorCommands;
 using BeamOs.WebApp.Client.Events.Interfaces;
 using BeamOS.WebApp.Client.Repositories;
 using BeamOS.WebApp.Client.State;
-using BeamOs.WebApp.Client.EditorCommands;
 
 namespace BeamOS.WebApp.Client.Components.Editor.CommandHandlers;
 
 public class MoveNodeCommandHandler(
     HistoryManager historyManager,
     AllStructuralAnalysisModelCaches allStructuralAnalysisModelCaches,
-    ModelIdRepository modelIdRepository,
-    EditorApiRepository editorApiRepository,
+    IStateRepository<EditorComponentState> editorComponentStateRepository,
     IApiAlphaClient apiAlphaClient
 ) : VisibleStateCommandHandlerBase<MoveNodeCommand>(historyManager)
 {
@@ -22,18 +21,21 @@ public class MoveNodeCommandHandler(
         CancellationToken ct = default
     )
     {
-        var modelId = modelIdRepository.GetModelIdByCanvasId(command.CanvasId);
+        var editorComponentState = editorComponentStateRepository.GetComponentStateByCanvasId(
+            command.CanvasId
+        );
+        var modelId = editorComponentState.LoadedModelId;
+
         var structuralAnalysisModelCache = allStructuralAnalysisModelCaches.GetOrCreateByModelId(
             modelId.ToString()
         );
 
         if (command.Source != ClientActionSource.Editor)
         {
-            var editorApi = editorApiRepository.GetEditorApiByCanvasId(command.CanvasId);
-            await editorApi.ReduceMoveNodeCommandAsync(command);
+            await editorComponentState.EditorApi.ReduceMoveNodeCommandAsync(command);
         }
 
-        structuralAnalysisModelCache.NodeIdToNodeResponseDict[command.NodeId.ToString()] = await apiAlphaClient.PatchNodeAsync(
+        var nodeResponse = await apiAlphaClient.PatchNodeAsync(
             new PatchNodeRequest()
             {
                 NodeId = command.NodeId.ToString(),
@@ -47,6 +49,7 @@ public class MoveNodeCommandHandler(
             },
             command.NodeId.ToString()
         );
+        structuralAnalysisModelCache.AddOrReplace(nodeResponse);
 
         return Result.Success();
     }
