@@ -21,9 +21,9 @@ public abstract class DsmModelFixture : IDsmModelFixture, ITestFixtureDisplayabl
 
     public Task Display(IEditorApiAlpha editorApiAlpha) => this.Fixture.Display(editorApiAlpha);
 
-    public DsmNodeVo ToDsm(NodeFixture fixture)
+    public DsmNodeVo3 ToDsm(NodeFixture fixture)
     {
-        return new DsmNodeVo(
+        return new DsmNodeVo3(
             new(fixture.Id),
             fixture.LocationPoint,
             fixture.Restraint,
@@ -40,7 +40,7 @@ public abstract class DsmModelFixture : IDsmModelFixture, ITestFixtureDisplayabl
         );
     }
 
-    public DsmElement1d ToDsm(Element1dFixture fixture)
+    public DsmElement1d3 ToDsm(Element1dFixture fixture)
     {
         return new(
             fixture.SectionProfileRotation,
@@ -51,12 +51,12 @@ public abstract class DsmModelFixture : IDsmModelFixture, ITestFixtureDisplayabl
         );
     }
 
-    public DsmElement1d ToDsm(DsmElement1dFixture fixture)
+    public DsmElement1d3 ToDsm(DsmElement1dFixture fixture)
     {
         return this.ToDsm(fixture.Fixture);
     }
 
-    public DsmNodeVo ToDsm(DsmNodeFixture fixture)
+    public DsmNodeVo3 ToDsm(DsmNodeFixture fixture)
     {
         return this.ToDsm(fixture.Fixture);
     }

@@ -26,6 +26,9 @@ public class Model : AggregateRoot<ModelId>
     public string Description { get; private set; }
     public ModelSettings Settings { get; private set; }
 
+    public ICollection<Node> Nodes { get; private set; } = [];
+    public ICollection<Element1D> Element1ds { get; private set; } = [];
+
     //private readonly List<NodeId> nodeIds = [];
     //public IReadOnlyList<NodeId> NodeIds => this.nodeIds.AsReadOnly();
 

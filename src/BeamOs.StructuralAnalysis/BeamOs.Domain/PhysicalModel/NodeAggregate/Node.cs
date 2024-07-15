@@ -1,7 +1,10 @@
 using BeamOs.Domain.Common.Models;
 using BeamOs.Domain.Common.ValueObjects;
+using BeamOs.Domain.PhysicalModel.Element1DAggregate;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
+using BeamOs.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
+using BeamOs.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.IntegrationEvents.PhysicalModel.Nodes;
 using UnitsNet;
 using UnitsNet.Units;
@@ -112,6 +115,9 @@ public class Node : AggregateRoot<NodeId>
             this.restraint = value;
         }
     }
+
+    public ICollection<PointLoad>? PointLoads { get; private set; } = [];
+    public ICollection<MomentLoad>? MomentLoads { get; private set; } = [];
 
     public NodeData GetData()
     {

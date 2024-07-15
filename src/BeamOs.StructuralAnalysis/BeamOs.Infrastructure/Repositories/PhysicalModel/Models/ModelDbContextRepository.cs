@@ -1,9 +1,27 @@
 using BeamOs.Application.PhysicalModel.Models;
 using BeamOs.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
+using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.Infrastructure.Repositories.PhysicalModel.Models;
 
 internal class ModelDbContextRepository(BeamOsStructuralDbContext dbContext)
     : RepositoryBase<ModelId, Model>(dbContext),
-        IModelRepository { }
+        IModelRepository
+{
+    public async Task<Model?> GetById(
+        ModelId id,
+        CancellationToken ct = default,
+        params string[] propertiesToLoad
+    )
+    {
+        IQueryable<Model> queryable = this.DbContext.Models;
+
+        foreach (var property in propertiesToLoad)
+        {
+            queryable = queryable.Include(property);
+        }
+
+        return await queryable.FirstOrDefaultAsync(ct);
+    }
+}

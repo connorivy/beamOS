@@ -6,6 +6,7 @@ using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
 using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.PhysicalModel.MaterialAggregate;
+using BeamOs.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.Domain.PhysicalModel.NodeAggregate;
@@ -46,6 +47,8 @@ public abstract partial class ModelFixture : FixtureBase, ITestFixtureDisplayabl
     }
 
     public ModelId StrongModelId { get; }
+
+    public partial Model ToDomainObject(ModelFixture modelFixture);
 
     public partial PointLoad ToDomainObjectWithLocalIds(PointLoadFixture fixture);
 

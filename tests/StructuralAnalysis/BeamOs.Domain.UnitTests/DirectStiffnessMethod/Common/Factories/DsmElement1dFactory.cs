@@ -8,7 +8,7 @@ namespace BeamOs.Domain.UnitTests.DirectStiffnessMethod.Common.Factories;
 
 internal static class DsmElement1dFactory
 {
-    public static DsmElement1d Create(
+    public static DsmElement1d3 Create(
         Angle sectionProfileRotation = default,
         Pressure modulusOfElasticity = default,
         Pressure modulusOfRigidity = default,
@@ -35,7 +35,7 @@ internal static class DsmElement1dFactory
         );
     }
 
-    public static DsmElement1d CreateWithUnitSiValues(
+    public static DsmElement1d3 CreateWithUnitSiValues(
         Angle? sectionProfileRotation = default,
         Pressure? modulusOfElasticity = default,
         Pressure? modulusOfRigidity = default,

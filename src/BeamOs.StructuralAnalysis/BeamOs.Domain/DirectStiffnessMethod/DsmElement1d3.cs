@@ -2,21 +2,69 @@ using BeamOs.Domain.AnalyticalResults.Common.ValueObjects;
 using BeamOs.Domain.Common.Enums;
 using BeamOs.Domain.Common.Extensions;
 using BeamOs.Domain.Common.Models;
+using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.DirectStiffnessMethod.Common.ValueObjects;
-using BeamOs.Domain.PhysicalModel.Element1DAggregate;
+using BeamOs.Domain.PhysicalModel.MaterialAggregate;
+using BeamOs.Domain.PhysicalModel.NodeAggregate;
+using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
+using BeamOs.Domain.PhysicalModel.SectionProfileAggregate;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
+using UnitsNet;
 using UnitsNet.Units;
 
 namespace BeamOs.Domain.DirectStiffnessMethod;
 
-public class DsmElement1d2(Element1D element1d) : BeamOSValueObject
+public class DsmElement1d(
+    Angle sectionProfileRotation,
+    Pressure modulusOfElasticity,
+    Pressure modulusOfRigidity,
+    Area area,
+    AreaMomentOfInertia strongAxisMomentOfInertia,
+    AreaMomentOfInertia weakAxisMomentOfInertia,
+    AreaMomentOfInertia polarMomentOfInertia,
+    Line baseLine,
+    NodeId startNodeId,
+    NodeId endNodeId
+) : BeamOSValueObject
 {
+    public DsmElement1d(
+        Angle sectionProfileRotation,
+        Node startNode,
+        Node endNode,
+        Material material,
+        SectionProfile sectionProfile
+    )
+        : this(
+            sectionProfileRotation,
+            material.ModulusOfElasticity,
+            material.ModulusOfRigidity,
+            sectionProfile.Area,
+            sectionProfile.StrongAxisMomentOfInertia,
+            sectionProfile.WeakAxisMomentOfInertia,
+            sectionProfile.PolarMomentOfInertia,
+            new Line(startNode.LocationPoint, endNode.LocationPoint),
+            startNode.Id,
+            endNode.Id
+        ) { }
+
+    public Angle SectionProfileRotation { get; } = sectionProfileRotation;
+    public Pressure ModulusOfElasticity { get; } = modulusOfElasticity;
+    public Pressure ModulusOfRigidity { get; } = modulusOfRigidity;
+    public Area Area { get; } = area;
+    public AreaMomentOfInertia StrongAxisMomentOfInertia { get; } = strongAxisMomentOfInertia;
+    public AreaMomentOfInertia WeakAxisMomentOfInertia { get; } = weakAxisMomentOfInertia;
+    public AreaMomentOfInertia PolarMomentOfInertia { get; } = polarMomentOfInertia;
+    public Line BaseLine { get; } = baseLine;
+    public Length Length => this.BaseLine.Length;
+    public NodeId StartNodeId { get; } = startNodeId;
+    public NodeId EndNodeId { get; } = endNodeId;
+
     public IEnumerable<UnsupportedStructureDisplacementId2> GetUnsupportedStructureDisplacementIds()
     {
         for (var i = 0; i < 2; i++)
         {
-            var nodeId = i == 0 ? element1d.StartNodeId : element1d.EndNodeId;
+            var nodeId = i == 0 ? this.StartNodeId : this.EndNodeId;
             foreach (
                 CoordinateSystemDirection3D direction in Enum.GetValues<CoordinateSystemDirection3D>()
             )
@@ -30,9 +78,62 @@ public class DsmElement1d2(Element1D element1d) : BeamOSValueObject
         }
     }
 
+    public Matrix<double> GetRotationMatrix()
+    {
+        var rxx =
+            (this.BaseLine.EndPoint.XCoordinate - this.BaseLine.StartPoint.XCoordinate)
+            / this.Length;
+        var rxy =
+            (this.BaseLine.EndPoint.YCoordinate - this.BaseLine.StartPoint.YCoordinate)
+            / this.Length;
+        var rxz =
+            (this.BaseLine.EndPoint.ZCoordinate - this.BaseLine.StartPoint.ZCoordinate)
+            / this.Length;
+
+        var cosG = Math.Cos(this.SectionProfileRotation.Radians);
+        var sinG = Math.Sin(this.SectionProfileRotation.Radians);
+
+        var sqrtRxx2Rxz2 = Math.Sqrt((rxx * rxx) + (rxz * rxz));
+
+        double r21,
+            r22,
+            r23,
+            r31,
+            r32,
+            r33;
+
+        if (sqrtRxx2Rxz2 < .0001)
+        {
+            r21 = -rxy * cosG;
+            r22 = 0;
+            r23 = sinG;
+            r31 = rxy * sinG;
+            r32 = 0;
+            r33 = cosG;
+        }
+        else
+        {
+            r21 = ((-rxx * rxy * cosG) - (rxz * sinG)) / sqrtRxx2Rxz2;
+            r22 = sqrtRxx2Rxz2 * cosG;
+            r23 = ((-rxy * rxz * cosG) + (rxx * sinG)) / sqrtRxx2Rxz2;
+            r31 = ((rxx * rxy * sinG) - (rxz * cosG)) / sqrtRxx2Rxz2;
+            r32 = -sqrtRxx2Rxz2 * sinG;
+            r33 = ((rxy * rxz * sinG) + (rxx * cosG)) / sqrtRxx2Rxz2;
+        }
+
+        return DenseMatrix.OfArray(
+            new[,]
+            {
+                { rxx, rxy, rxz },
+                { r21, r22, r23 },
+                { r31, r32, r33 },
+            }
+        );
+    }
+
     public Matrix<double> GetTransformationMatrix()
     {
-        var rotationMatrix = DenseMatrix.OfArray(element1d.GetRotationMatrix());
+        var rotationMatrix = this.GetRotationMatrix();
         var transformationMatrix = Matrix<double>.Build.Dense(12, 12);
         transformationMatrix.SetSubMatrix(0, 0, rotationMatrix);
         transformationMatrix.SetSubMatrix(3, 3, rotationMatrix);
@@ -48,13 +149,13 @@ public class DsmElement1d2(Element1D element1d) : BeamOSValueObject
     )
     {
 #pragma warning disable IDE1006 // Naming Styles
-        var E = element1d.Material.ModulusOfElasticity;
-        var G = element1d.Material.ModulusOfRigidity;
-        var A = element1d.SectionProfile.Area;
-        var L = element1d.Length;
-        var Is = element1d.SectionProfile.StrongAxisMomentOfInertia;
-        var Iw = element1d.SectionProfile.WeakAxisMomentOfInertia;
-        var J = element1d.SectionProfile.PolarMomentOfInertia;
+        var E = this.ModulusOfElasticity;
+        var G = this.ModulusOfRigidity;
+        var A = this.Area;
+        var L = this.Length;
+        var Is = this.StrongAxisMomentOfInertia;
+        var Iw = this.WeakAxisMomentOfInertia;
+        var J = this.PolarMomentOfInertia;
         var L2 = L * L;
         var L3 = L2 * L;
 
@@ -184,6 +285,15 @@ public class DsmElement1d2(Element1D element1d) : BeamOSValueObject
 
     protected override IEnumerable<object> GetEqualityComponents()
     {
-        yield return element1d;
+        yield return this.SectionProfileRotation;
+        yield return this.ModulusOfElasticity;
+        yield return this.ModulusOfRigidity;
+        yield return this.Area;
+        yield return this.StrongAxisMomentOfInertia;
+        yield return this.WeakAxisMomentOfInertia;
+        yield return this.PolarMomentOfInertia;
+        yield return this.BaseLine;
+        yield return this.StartNodeId;
+        yield return this.EndNodeId;
     }
 }

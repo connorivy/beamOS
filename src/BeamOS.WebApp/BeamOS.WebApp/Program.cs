@@ -19,6 +19,12 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
+if (builder.Configuration["APPLICATION_URL_PROTOCOL"] is null)
+{
+    // ef core design run. define dummy variables
+    builder.Configuration["APPLICATION_URL_PROTOCOL"] = "dummy";
+}
+
 builder
     .Configuration
     .AddInMemoryCollection(

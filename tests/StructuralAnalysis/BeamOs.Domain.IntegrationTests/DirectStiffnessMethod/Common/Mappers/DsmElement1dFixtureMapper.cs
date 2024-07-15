@@ -8,8 +8,8 @@ namespace BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Mappers;
 [Mapper]
 public static partial class DsmElement1dFixtureMapper
 {
-    public static DsmElement1d ToDomainObjectWithLocalIds(this DsmElement1dFixture fixture) =>
+    public static DsmElement1d3 ToDomainObjectWithLocalIds(this DsmElement1dFixture fixture) =>
         fixture.Fixture.ToDomainObjectWithLocalIds();
 
-    public static partial DsmElement1d ToDomainObjectWithLocalIds(this Element1dFixture fixture);
+    public static partial DsmElement1d3 ToDomainObjectWithLocalIds(this Element1dFixture fixture);
 }

@@ -2,14 +2,28 @@ using BeamOs.Domain.Common.Models;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.DirectStiffnessMethod.Common.Extensions;
 using BeamOs.Domain.DirectStiffnessMethod.Common.ValueObjects;
-using BeamOs.Domain.PhysicalModel.NodeAggregate;
+using BeamOs.Domain.PhysicalModel.MomentLoadAggregate;
+using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
+using BeamOs.Domain.PhysicalModel.PointLoadAggregate;
 using UnitsNet;
 using UnitsNet.Units;
 
 namespace BeamOs.Domain.DirectStiffnessMethod;
 
-public class DsmNodeVo2(Node node) : BeamOSValueObject
+public class DsmNodeVo(
+    NodeId nodeId,
+    Point locationPoint,
+    Restraint restraint,
+    List<PointLoad>? pointLoads = null,
+    List<MomentLoad>? momentLoads = null
+) : BeamOSValueObject
 {
+    public NodeId NodeId { get; } = nodeId;
+    public Point LocationPoint { get; } = locationPoint;
+    public Restraint Restraint { get; } = restraint;
+    public List<PointLoad> PointLoads { get; } = pointLoads ?? [];
+    public List<MomentLoad> MomentLoads { get; } = momentLoads ?? [];
+
     public Forces GetForcesInGlobalCoordinates()
     {
         var forceAlongX = Force.Zero;
@@ -19,13 +33,13 @@ public class DsmNodeVo2(Node node) : BeamOSValueObject
         var momentAboutY = Torque.Zero;
         var momentAboutZ = Torque.Zero;
 
-        foreach (var linearLoad in node.PointLoads)
+        foreach (var linearLoad in this.PointLoads)
         {
             forceAlongX += linearLoad.Force * linearLoad.Direction.X;
             forceAlongY += linearLoad.Force * linearLoad.Direction.Y;
             forceAlongZ += linearLoad.Force * linearLoad.Direction.Z;
         }
-        foreach (var momentLoad in node.MomentLoads)
+        foreach (var momentLoad in this.MomentLoads)
         {
             momentAboutX += momentLoad.Torque * momentLoad.AxisDirection[0];
             momentAboutY += momentLoad.Torque * momentLoad.AxisDirection[1];
@@ -40,13 +54,20 @@ public class DsmNodeVo2(Node node) : BeamOSValueObject
     )
     {
         return new(
-            node.Id.GetUnsupportedStructureDisplacementIds().ToList(),
+            this.NodeId.GetUnsupportedStructureDisplacementIds().ToList(),
             this.GetForcesInGlobalCoordinates().ToArray(forceUnit, torqueUnit)
         );
     }
 
     protected override IEnumerable<object> GetEqualityComponents()
     {
-        yield return node;
+        yield return this.NodeId;
+        yield return this.LocationPoint;
+        yield return this.Restraint;
+        yield return this.PointLoads;
+        yield return this.MomentLoads;
     }
+
+    public DsmNodeVo()
+        : this(null, null, null) { }
 }
