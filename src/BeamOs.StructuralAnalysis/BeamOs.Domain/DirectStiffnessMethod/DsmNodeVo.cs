@@ -8,7 +8,7 @@ using UnitsNet.Units;
 
 namespace BeamOs.Domain.DirectStiffnessMethod;
 
-public class DsmNodeVo2(Node node) : BeamOSValueObject
+public class DsmNodeVo(Node node) : BeamOSValueObject
 {
     public Forces GetForcesInGlobalCoordinates()
     {

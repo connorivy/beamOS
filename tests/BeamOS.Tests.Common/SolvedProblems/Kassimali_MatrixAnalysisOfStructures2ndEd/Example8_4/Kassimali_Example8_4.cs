@@ -1,5 +1,6 @@
 using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
 using BeamOs.Domain.Common.ValueObjects;
+using BeamOS.Tests.Common.Fixtures;
 using BeamOS.Tests.Common.Interfaces;
 using BeamOS.Tests.Common.SolvedProblems.Fixtures;
 using BeamOS.Tests.Common.Traits;
@@ -24,7 +25,7 @@ public partial class Kassimali_Example8_4 : ModelFixture, IHasExpectedNodeResult
     public override Guid Id => IdStatic;
     public static UnitSettings StaticUnitSettings { get; } = UnitSettings.K_IN;
     public override UnitSettings UnitSettings { get; protected set; } = UnitSettings.K_IN;
-    public override NodeFixture[] NodeFixtures => Kassimali_Example8_4_Nodes.All;
+    public override NodeFixture[] Nodes => Kassimali_Example8_4_Nodes.All;
     public override MaterialFixture[] MaterialFixtures =>
         [Kassimali_Example8_4_Materials.Steel29000Ksi];
     public override SectionProfileFixture[] SectionProfileFixtures =>

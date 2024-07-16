@@ -2,6 +2,7 @@ using BeamOs.Api.Common.Mappers;
 using BeamOs.ApiClient;
 using BeamOs.Application.Common.Mappers;
 using BeamOs.Contracts.PhysicalModel.Model;
+using BeamOS.Tests.Common.Fixtures;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOS.Tests.Common.SolvedProblems.Fixtures;
@@ -37,7 +38,7 @@ public partial class ModelFixtureInDb
             ).Id;
         }
 
-        foreach (var nodeFixture in this.ModelFixture.NodeFixtures)
+        foreach (var nodeFixture in this.ModelFixture.Nodes)
         {
             this.RuntimeIdToDbIdDict[nodeFixture.Id] = (
                 await client.CreateNodeAsync(this.ToRequest(nodeFixture))
@@ -87,7 +88,7 @@ public partial class ModelFixtureInDb
 
     public ModelResponse GetExpectedResponse()
     {
-        var nodeResponses = this.ModelFixture.NodeFixtures.Select(this.ToResponse).ToList();
+        var nodeResponses = this.ModelFixture.Nodes.Select(this.ToResponse).ToList();
         var element1dResponse = this.ModelFixture
             .Element1dFixtures
             .Value

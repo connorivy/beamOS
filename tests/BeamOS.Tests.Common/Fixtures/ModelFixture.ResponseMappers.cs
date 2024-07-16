@@ -5,6 +5,7 @@ using BeamOs.Contracts.PhysicalModel.Node;
 using BeamOs.Contracts.PhysicalModel.PointLoad;
 using BeamOs.Contracts.PhysicalModel.SectionProfile;
 using BeamOs.Domain.Common.ValueObjects;
+using BeamOS.Tests.Common.Fixtures;
 
 namespace BeamOS.Tests.Common.SolvedProblems.Fixtures;
 

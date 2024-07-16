@@ -12,6 +12,7 @@ using BeamOs.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate;
+using BeamOS.Tests.Common.Fixtures;
 using BeamOS.Tests.Common.Interfaces;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Spatial.Euclidean;
@@ -34,7 +35,7 @@ public abstract partial class ModelFixture : FixtureBase, ITestFixtureDisplayabl
     public abstract UnitSettings UnitSettings { get; protected set; }
     public virtual string Name { get; } = "Test Model";
     public virtual string Description { get; } = "Test Model Description";
-    public virtual NodeFixture[] NodeFixtures { get; } = [];
+    public virtual NodeFixture[] Nodes { get; } = [];
     public virtual MaterialFixture[] MaterialFixtures { get; } = [];
     public virtual SectionProfileFixture[] SectionProfileFixtures { get; } = [];
     public virtual Lazy<Element1dFixture[]> Element1dFixtures { get; } = new(() => []);
@@ -77,7 +78,7 @@ public abstract partial class ModelFixture : FixtureBase, ITestFixtureDisplayabl
         }
         try
         {
-            var nodeResponses = this.NodeFixtures.Select(this.ToResponse).ToList();
+            var nodeResponses = this.Nodes.Select(this.ToResponse).ToList();
             var element1dResponse = this.Element1dFixtures.Value.Select(this.ToResponse).ToList();
             var materialResponse = this.MaterialFixtures.Select(this.ToResponse).ToList();
             var sectionProfileResponses = this.SectionProfileFixtures

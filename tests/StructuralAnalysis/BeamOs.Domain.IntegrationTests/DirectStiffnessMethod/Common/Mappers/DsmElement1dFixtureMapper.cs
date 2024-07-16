@@ -1,6 +1,6 @@
 ﻿using BeamOs.Domain.DirectStiffnessMethod;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Fixtures;
-using BeamOS.Tests.Common.SolvedProblems.Fixtures;
+using BeamOS.Tests.Common.Fixtures;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Mappers;

@@ -1,7 +1,8 @@
 ﻿using BeamOs.Api.Common.Mappers;
 using BeamOs.Contracts.PhysicalModel.SectionProfile;
+using BeamOS.Tests.Common.Fixtures;
 
-namespace BeamOS.Tests.Common.SolvedProblems.Fixtures.Mappers.ToRequest;
+namespace BeamOS.Tests.Common.Fixtures.Mappers.ToRequest;
 
 internal static partial class SectionProfileFixtureToCreateNodeRequestMapper
 {

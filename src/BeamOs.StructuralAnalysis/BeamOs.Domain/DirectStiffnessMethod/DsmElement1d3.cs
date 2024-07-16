@@ -15,7 +15,7 @@ using UnitsNet.Units;
 
 namespace BeamOs.Domain.DirectStiffnessMethod;
 
-public class DsmElement1d(
+public class DsmElement1d3(
     Angle sectionProfileRotation,
     Pressure modulusOfElasticity,
     Pressure modulusOfRigidity,
@@ -28,7 +28,7 @@ public class DsmElement1d(
     NodeId endNodeId
 ) : BeamOSValueObject
 {
-    public DsmElement1d(
+    public DsmElement1d3(
         Angle sectionProfileRotation,
         Node startNode,
         Node endNode,

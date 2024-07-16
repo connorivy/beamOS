@@ -1,8 +1,8 @@
 using System.Reflection;
 using System.Text;
 using BeamOS.Tests.Common;
+using BeamOS.Tests.Common.Fixtures;
 using BeamOS.Tests.Common.Interfaces;
-using BeamOS.Tests.Common.SolvedProblems.Fixtures;
 
 namespace BeamOs.Tests.TestRunner;
 

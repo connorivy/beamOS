@@ -6,6 +6,7 @@ using BeamOs.Contracts.PhysicalModel.MomentLoad;
 using BeamOs.Contracts.PhysicalModel.Node;
 using BeamOs.Contracts.PhysicalModel.PointLoad;
 using BeamOs.Contracts.PhysicalModel.SectionProfile;
+using BeamOS.Tests.Common.Fixtures;
 
 namespace BeamOS.Tests.Common.SolvedProblems.Fixtures;
 

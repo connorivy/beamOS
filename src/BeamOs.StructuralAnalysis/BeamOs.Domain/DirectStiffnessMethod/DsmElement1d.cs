@@ -10,7 +10,7 @@ using UnitsNet.Units;
 
 namespace BeamOs.Domain.DirectStiffnessMethod;
 
-public class DsmElement1d2(Element1D element1d) : BeamOSValueObject
+public class DsmElement1d(Element1D element1d) : BeamOSValueObject
 {
     public IEnumerable<UnsupportedStructureDisplacementId2> GetUnsupportedStructureDisplacementIds()
     {

@@ -1,9 +1,10 @@
 using BeamOs.CodeGen.Apis.EditorApi;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOS.Tests.Common.Interfaces;
+using BeamOS.Tests.Common.SolvedProblems.Fixtures;
 using UnitsNet;
 
-namespace BeamOS.Tests.Common.SolvedProblems.Fixtures;
+namespace BeamOS.Tests.Common.Fixtures;
 
 public class Element1dFixture(
     ModelFixture model,
@@ -37,4 +38,20 @@ public class Element1dFixture(
         await this.Model.Display(editorApiAlpha);
         // todo : isolate element
     }
+}
+
+public record Element1dFixture2 : FixtureBase2, IModelMember
+{
+    //public required Guid ModelId { get; init; }
+    public ModelFixture Model { get; init; }
+    public required NodeFixture StartNode { get; init; }
+    public required NodeFixture EndNode { get; init; }
+    public required MaterialFixture Material { get; init; }
+    public required SectionProfileFixture SectionProfile { get; init; }
+
+    /// <summary>
+    /// counter-clockwise rotation in radians when looking in the negative (local) x direction
+    /// </summary>
+    public Angle SectionProfileRotation { get; init; } = Angle.Zero;
+    public string? ElementName { get; init; }
 }

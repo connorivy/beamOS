@@ -1,4 +1,4 @@
-using BeamOS.Tests.Common.SolvedProblems.Fixtures;
+using BeamOS.Tests.Common.Fixtures;
 using MathNet.Spatial.Euclidean;
 
 namespace BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd.Example8_4;

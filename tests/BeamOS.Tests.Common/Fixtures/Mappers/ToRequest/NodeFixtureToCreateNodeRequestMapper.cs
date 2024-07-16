@@ -1,6 +1,7 @@
 using BeamOs.Api.Common.Mappers;
 using BeamOs.Contracts.PhysicalModel.Node;
 using BeamOs.Domain.Common.ValueObjects;
+using BeamOS.Tests.Common.Fixtures;
 using Riok.Mapperly.Abstractions;
 using UnitsNet.Units;
 

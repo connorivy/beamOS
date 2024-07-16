@@ -1,5 +1,5 @@
 using BeamOs.Domain.Common.ValueObjects;
-using BeamOS.Tests.Common.SolvedProblems.Fixtures;
+using BeamOS.Tests.Common.Fixtures;
 using UnitsNet.Units;
 
 namespace BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd.Example8_4;

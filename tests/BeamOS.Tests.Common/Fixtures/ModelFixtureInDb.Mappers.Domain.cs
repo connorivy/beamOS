@@ -10,6 +10,7 @@ using BeamOs.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.Domain.PhysicalModel.PointLoadAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate.ValueObjects;
+using BeamOS.Tests.Common.Fixtures;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Spatial.Euclidean;
 

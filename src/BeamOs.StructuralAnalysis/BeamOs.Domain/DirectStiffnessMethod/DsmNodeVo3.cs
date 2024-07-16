@@ -10,7 +10,7 @@ using UnitsNet.Units;
 
 namespace BeamOs.Domain.DirectStiffnessMethod;
 
-public class DsmNodeVo(
+public class DsmNodeVo3(
     NodeId nodeId,
     Point locationPoint,
     Restraint restraint,
@@ -68,6 +68,6 @@ public class DsmNodeVo(
         yield return this.MomentLoads;
     }
 
-    public DsmNodeVo()
+    public DsmNodeVo3()
         : this(null, null, null) { }
 }

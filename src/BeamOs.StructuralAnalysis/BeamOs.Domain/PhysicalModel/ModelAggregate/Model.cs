@@ -97,5 +97,22 @@ public class Model : AggregateRoot<ModelId>
     [Obsolete("EF Core Constructor", true)]
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private Model() { }
+
+    public Model(
+        string name,
+        string description,
+        ModelSettings settings,
+        ICollection<Node> nodes,
+        ICollection<Element1D> element1ds,
+        ModelId? id = null
+    )
+        : base(id ?? new())
+    {
+        this.Name = name;
+        this.Description = description;
+        this.Settings = settings;
+        this.Nodes = nodes;
+        this.Element1ds = element1ds;
+    }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }

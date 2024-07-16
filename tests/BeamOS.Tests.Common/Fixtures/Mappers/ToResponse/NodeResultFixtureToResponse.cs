@@ -2,6 +2,7 @@ using BeamOs.Contracts.AnalyticalResults;
 using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
 using BeamOs.Contracts.AnalyticalResults.Forces;
 using BeamOs.Domain.Common.ValueObjects;
+using BeamOS.Tests.Common.Fixtures;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOS.Tests.Common.SolvedProblems.Fixtures.Mappers.ToResponse;

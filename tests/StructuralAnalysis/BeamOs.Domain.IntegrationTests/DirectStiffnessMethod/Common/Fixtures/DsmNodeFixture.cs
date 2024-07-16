@@ -1,4 +1,4 @@
-﻿using BeamOS.Tests.Common.SolvedProblems.Fixtures;
+﻿using BeamOS.Tests.Common.Fixtures;
 
 namespace BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Fixtures;
 
