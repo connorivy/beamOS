@@ -1,6 +1,5 @@
 using BeamOs.Domain.DirectStiffnessMethod;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Fixtures;
-using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Mappers;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.SolvedProblems;
 using BeamOs.Domain.UnitTests.DirectStiffnessMethod.Common.Factories;
 using BeamOS.Tests.Common;
@@ -35,7 +34,7 @@ public partial class DsmElement1dTests
     {
         // if the beam is oriented in the same direction as the global coordinate system,
         // then the unit vectors of the global domain should be returned
-        DsmElement1d3 element = DsmElement1dFactory.Create(
+        DsmElement1d element = DsmElement1dFactory.Create(
             baseLine: new(10, 7, -3, 20, 7, -3, LengthUnit.Foot)
         );
 
@@ -46,7 +45,7 @@ public partial class DsmElement1dTests
             { 0, 0, 1.0 },
         };
 
-        double[,] rotationMatrix = element.GetRotationMatrix().ToArray();
+        double[,] rotationMatrix = element.GetRotationMatrix();
 
         Asserter.AssertEqual("Rotation Matrix", expectedRotationMatrix, rotationMatrix);
     }
@@ -65,17 +64,14 @@ public partial class DsmElement1dTests
     {
         // if an elements local xy plane is equal to or parallel with the global xy plane,
         // return the following matrix (ref Advanced Structural Analysis with MATLAB eqn 4.17)
-        DsmElement1d3 element = DsmElement1dFactory.Create(
+        DsmElement1d element = DsmElement1dFactory.Create(
             baseLine: new(x0, y0, z0, x1, y1, z1, LengthUnit.Foot)
         );
 
         var L = element.Length;
-        var cx =
-            (element.BaseLine.EndPoint.XCoordinate - element.BaseLine.StartPoint.XCoordinate) / L;
-        var cy =
-            (element.BaseLine.EndPoint.YCoordinate - element.BaseLine.StartPoint.YCoordinate) / L;
-        var cz =
-            (element.BaseLine.EndPoint.ZCoordinate - element.BaseLine.StartPoint.ZCoordinate) / L;
+        var cx = (element.EndPoint.XCoordinate - element.StartPoint.XCoordinate) / L;
+        var cy = (element.EndPoint.YCoordinate - element.StartPoint.YCoordinate) / L;
+        var cz = (element.EndPoint.ZCoordinate - element.StartPoint.ZCoordinate) / L;
         var sqrtCx2Cz2 = Math.Sqrt(Math.Pow(cx, 2) + Math.Pow(cz, 2));
         double[,] expectedRotationMatrix = new[,]
         {
@@ -84,7 +80,7 @@ public partial class DsmElement1dTests
             { 0, 0, 1 },
         };
 
-        double[,] rotationMatrix = element.GetRotationMatrix().ToArray();
+        double[,] rotationMatrix = element.GetRotationMatrix();
 
         Asserter.AssertEqual("Rotation Matrix", expectedRotationMatrix, rotationMatrix);
     }
@@ -103,15 +99,13 @@ public partial class DsmElement1dTests
     {
         // if an elements local xz is equal to or parallel with the global xz plane,
         // return the following matrix (ref Advanced Structural Analysis with MATLAB eqn 4.16)
-        DsmElement1d3 element = DsmElement1dFactory.Create(
+        DsmElement1d element = DsmElement1dFactory.Create(
             baseLine: new(x0, y0, z0, x1, y1, z1, LengthUnit.Foot)
         );
 
         var L = element.Length;
-        var cx =
-            (element.BaseLine.EndPoint.XCoordinate - element.BaseLine.StartPoint.XCoordinate) / L;
-        var cz =
-            (element.BaseLine.EndPoint.ZCoordinate - element.BaseLine.StartPoint.ZCoordinate) / L;
+        var cx = (element.EndPoint.XCoordinate - element.StartPoint.XCoordinate) / L;
+        var cz = (element.EndPoint.ZCoordinate - element.StartPoint.ZCoordinate) / L;
         var sqrtCx2Cz2 = Math.Sqrt(Math.Pow(cx, 2) + Math.Pow(cz, 2));
         double[,] expectedRotationMatrix = new[,]
         {
@@ -120,7 +114,7 @@ public partial class DsmElement1dTests
             { -cz / sqrtCx2Cz2, 0, cx / sqrtCx2Cz2 },
         };
 
-        double[,] rotationMatrix = element.GetRotationMatrix().ToArray();
+        double[,] rotationMatrix = element.GetRotationMatrix();
 
         Asserter.AssertEqual("Rotation Matrix", expectedRotationMatrix, rotationMatrix);
     }
@@ -141,7 +135,7 @@ public partial class DsmElement1dTests
         // if an element is aligned with the global coord system, but has a non 0 rotation,
         // return the following matrix (ref Advanced Structural Analysis with MATLAB eqn 4.18)
         Angle rotation = new(rotationDegrees, AngleUnit.Degree);
-        DsmElement1d3 element = DsmElement1dFactory.Create(
+        DsmElement1d element = DsmElement1dFactory.Create(
             sectionProfileRotation: rotation,
             baseLine: new(x0, y0, z0, x1, y1, z1, LengthUnit.Foot)
         );
@@ -153,7 +147,7 @@ public partial class DsmElement1dTests
             { 0, -Math.Sin(rotation.Radians), Math.Cos(rotation.Radians) },
         };
 
-        double[,] rotationMatrix = element.GetRotationMatrix().ToArray();
+        double[,] rotationMatrix = element.GetRotationMatrix();
 
         Asserter.AssertEqual("Rotation Matrix", expectedRotationMatrix, rotationMatrix);
     }
@@ -197,7 +191,7 @@ public partial class DsmElement1dTests
         //    startNode: startNode,
         //    endNode: endNode
         //);
-        DsmElement1d3 element = DsmElement1dFactory.Create(
+        DsmElement1d element = DsmElement1dFactory.Create(
             baseLine: new(10, 10, 5, 10, 18, 5, LengthUnit.Foot)
         );
 
@@ -208,7 +202,7 @@ public partial class DsmElement1dTests
             { 0, 0, 1 },
         };
 
-        double[,] rotationMatrix = element.GetRotationMatrix().ToArray();
+        double[,] rotationMatrix = element.GetRotationMatrix();
 
         Asserter.AssertEqual("Rotation Matrix", expectedRotationMatrix, rotationMatrix);
     }
@@ -225,7 +219,7 @@ public partial class DsmElement1dTests
         //    endNode: endNode,
         //    rotation: rotation
         //);
-        DsmElement1d3 element = DsmElement1dFactory.Create(
+        DsmElement1d element = DsmElement1dFactory.Create(
             sectionProfileRotation: new(90, AngleUnit.Degree),
             baseLine: new(-9, -7, 5, -9, 0, 5, LengthUnit.Foot)
         );
@@ -237,7 +231,7 @@ public partial class DsmElement1dTests
             { 1.0, 0, 0 }
         };
 
-        double[,] rotationMatrix = element.GetRotationMatrix().ToArray();
+        double[,] rotationMatrix = element.GetRotationMatrix();
 
         Asserter.AssertEqual("Rotation Matrix", expectedRotationMatrix, rotationMatrix);
     }
@@ -256,7 +250,7 @@ public partial class DsmElement1dTests
         //    endNode: endNode,
         //    rotation: rotation
         //);
-        DsmElement1d3 element = DsmElement1dFactory.Create(
+        DsmElement1d element = DsmElement1dFactory.Create(
             sectionProfileRotation: new(-30, AngleUnit.Degree),
             baseLine: new(10, -7, -15, 10, 18, -15, LengthUnit.Foot)
         );
@@ -270,7 +264,7 @@ public partial class DsmElement1dTests
             { -.5, 0, 0.86602540378 },
         };
 
-        double[,] rotationMatrix = element.GetRotationMatrix().ToArray();
+        double[,] rotationMatrix = element.GetRotationMatrix();
 
         Asserter.AssertEqual("Rotation Matrix", expectedRotationMatrix, rotationMatrix);
     }
@@ -286,7 +280,7 @@ public partial class DsmElement1dTests
         //    startNode: startNode,
         //    endNode: endNode
         //);
-        DsmElement1d3 element = DsmElement1dFactory.Create(
+        DsmElement1d element = DsmElement1dFactory.Create(
             baseLine: new(10, 36, 5, 10, 18, 5, LengthUnit.Foot)
         );
 
@@ -297,7 +291,7 @@ public partial class DsmElement1dTests
             { 0, 0, 1 },
         };
 
-        double[,] rotationMatrix = element.GetRotationMatrix().ToArray();
+        double[,] rotationMatrix = element.GetRotationMatrix();
 
         Asserter.AssertEqual("Rotation Matrix", expectedRotationMatrix, rotationMatrix);
     }
@@ -315,7 +309,7 @@ public partial class DsmElement1dTests
         //    endNode: endNode,
         //    rotation: rotation
         //);
-        DsmElement1d3 element = DsmElement1dFactory.Create(
+        DsmElement1d element = DsmElement1dFactory.Create(
             sectionProfileRotation: new(90, AngleUnit.Degree),
             baseLine: new(10, 36, -15, 10, 18, -15, LengthUnit.Foot)
         );
@@ -327,7 +321,7 @@ public partial class DsmElement1dTests
             { -1.0, 0, 0 },
         };
 
-        double[,] rotationMatrix = element.GetRotationMatrix().ToArray();
+        double[,] rotationMatrix = element.GetRotationMatrix();
 
         Asserter.AssertEqual("Rotation Matrix", expectedRotationMatrix, rotationMatrix);
     }
@@ -342,7 +336,7 @@ public partial class DsmElement1dTests
         //    startNode: startNode,
         //    endNode: endNode
         //);
-        DsmElement1d3 element = DsmElement1dFactory.Create(
+        DsmElement1d element = DsmElement1dFactory.Create(
             baseLine: new(0, 0, 0, 1, 1, 1, LengthUnit.Foot)
         );
 
@@ -353,7 +347,7 @@ public partial class DsmElement1dTests
             { -0.70710678118, 0, 0.70710678118 },
         };
 
-        double[,] rotationMatrix = element.GetRotationMatrix().ToArray();
+        double[,] rotationMatrix = element.GetRotationMatrix();
 
         Asserter.AssertEqual("Rotation Matrix", expectedRotationMatrix, rotationMatrix);
     }
@@ -370,7 +364,7 @@ public partial class DsmElement1dTests
         //    endNode: endNode,
         //    rotation: rotation
         //);
-        DsmElement1d3 element = DsmElement1dFactory.Create(
+        DsmElement1d element = DsmElement1dFactory.Create(
             sectionProfileRotation: new(0.857302717, AngleUnit.Radian),
             baseLine: new(4, 7, 6, 20, 15, 17, LengthUnit.Foot)
         );
@@ -382,7 +376,7 @@ public partial class DsmElement1dTests
             { -0.13343, -0.69909, 0.70249 },
         };
 
-        double[,] rotationMatrix = element.GetRotationMatrix().ToArray();
+        double[,] rotationMatrix = element.GetRotationMatrix();
 
         Asserter.AssertEqual("Rotation Matrix", expectedRotationMatrix, rotationMatrix);
     }

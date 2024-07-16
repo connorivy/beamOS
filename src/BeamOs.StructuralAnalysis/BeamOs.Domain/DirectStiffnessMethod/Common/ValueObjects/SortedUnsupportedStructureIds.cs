@@ -1,7 +1,7 @@
 using BeamOs.Domain.AnalyticalResults.Common.ValueObjects;
 using BeamOs.Domain.Common.Models;
 
-namespace BeamOs.Domain.DirectStiffnessMethod.Services.ValueObjects;
+namespace BeamOs.Domain.DirectStiffnessMethod.Common.ValueObjects;
 
 public class SortedUnsupportedStructureIds(
     List<UnsupportedStructureDisplacementId2> degreeOfFreedomIds,

@@ -8,7 +8,7 @@ namespace BeamOs.Domain.UnitTests.DirectStiffnessMethod.Common.Factories;
 
 internal static class DsmElement1dFactory
 {
-    public static DsmElement1d3 Create(
+    public static DsmElement1d Create(
         Angle sectionProfileRotation = default,
         Pressure modulusOfElasticity = default,
         Pressure modulusOfRigidity = default,
@@ -29,13 +29,14 @@ internal static class DsmElement1dFactory
             strongAxisMomentOfInertia,
             weakAxisMomentOfInertia,
             polarMomentOfInertia,
-            baseLine,
+            baseLine?.StartPoint ?? new(0, 0, 0, LengthUnit.Meter),
+            baseLine?.EndPoint ?? new(1, 0, 0, LengthUnit.Meter),
             startNodeId ?? new(),
             endNodeId ?? new()
         );
     }
 
-    public static DsmElement1d3 CreateWithUnitSiValues(
+    public static DsmElement1d CreateWithUnitSiValues(
         Angle? sectionProfileRotation = default,
         Pressure? modulusOfElasticity = default,
         Pressure? modulusOfRigidity = default,
@@ -56,7 +57,8 @@ internal static class DsmElement1dFactory
             strongAxisMomentOfInertia ?? new(1, AreaMomentOfInertiaUnit.MeterToTheFourth),
             weakAxisMomentOfInertia ?? new(1, AreaMomentOfInertiaUnit.MeterToTheFourth),
             polarMomentOfInertia ?? new(1, AreaMomentOfInertiaUnit.MeterToTheFourth),
-            baseLine ?? new(0, 0, 0, 1, 0, 0, LengthUnit.Meter),
+            baseLine?.StartPoint ?? new(0, 0, 0, LengthUnit.Meter),
+            baseLine?.EndPoint ?? new(1, 0, 0, LengthUnit.Meter),
             startNodeId ?? new(),
             endNodeId ?? new()
         );

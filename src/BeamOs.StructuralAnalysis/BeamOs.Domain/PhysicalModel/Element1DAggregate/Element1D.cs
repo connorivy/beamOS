@@ -72,20 +72,26 @@ public class Element1D : AggregateRoot<Element1DId>
     //    this.PointLoads.Add(locationAlongBeam, new(new(), pointLoad));
     //}
 
-    public double[,] GetRotationMatrix()
-    {
-        var rxx =
-            (this.EndNode.LocationPoint.XCoordinate - this.StartNode.LocationPoint.XCoordinate)
-            / this.Length;
-        var rxy =
-            (this.EndNode.LocationPoint.YCoordinate - this.StartNode.LocationPoint.YCoordinate)
-            / this.Length;
-        var rxz =
-            (this.EndNode.LocationPoint.ZCoordinate - this.StartNode.LocationPoint.ZCoordinate)
-            / this.Length;
+    public double[,] GetRotationMatrix() =>
+        GetRotationMatrix(
+            this.EndNode.LocationPoint,
+            this.StartNode.LocationPoint,
+            this.SectionProfileRotation
+        );
 
-        var cosG = Math.Cos(this.SectionProfileRotation.Radians);
-        var sinG = Math.Sin(this.SectionProfileRotation.Radians);
+    public static double[,] GetRotationMatrix(
+        Point endLocation,
+        Point startLocation,
+        Angle sectionProfileRotation
+    )
+    {
+        Length length = Line.GetLength(startLocation, endLocation);
+        var rxx = (endLocation.XCoordinate - startLocation.XCoordinate) / length;
+        var rxy = (endLocation.YCoordinate - startLocation.YCoordinate) / length;
+        var rxz = (endLocation.ZCoordinate - startLocation.ZCoordinate) / length;
+
+        var cosG = Math.Cos(sectionProfileRotation.Radians);
+        var sinG = Math.Sin(sectionProfileRotation.Radians);
 
         var sqrtRxx2Rxz2 = Math.Sqrt((rxx * rxx) + (rxz * rxz));
 

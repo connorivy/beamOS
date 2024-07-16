@@ -3,7 +3,6 @@ using BeamOs.Domain.AnalyticalResults.NodeResultAggregate;
 using BeamOs.Domain.Common.Enums;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.DirectStiffnessMethod.Common.ValueObjects;
-using BeamOs.Domain.DirectStiffnessMethod.Services.ValueObjects;
 using BeamOs.Domain.PhysicalModel.ModelAggregate;
 using UnitsNet;
 using UnitsNet.Units;

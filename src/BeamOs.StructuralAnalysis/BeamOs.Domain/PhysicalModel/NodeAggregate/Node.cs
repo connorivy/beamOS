@@ -1,6 +1,5 @@
 using BeamOs.Domain.Common.Models;
 using BeamOs.Domain.Common.ValueObjects;
-using BeamOs.Domain.PhysicalModel.Element1DAggregate;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
@@ -116,8 +115,32 @@ public class Node : AggregateRoot<NodeId>
         }
     }
 
-    public ICollection<PointLoad>? PointLoads { get; private set; } = [];
-    public ICollection<MomentLoad>? MomentLoads { get; private set; } = [];
+    public ICollection<PointLoad> PointLoads { get; private set; } = [];
+    public ICollection<MomentLoad> MomentLoads { get; private set; } = [];
+
+    public Forces GetForcesInGlobalCoordinates()
+    {
+        var forceAlongX = Force.Zero;
+        var forceAlongY = Force.Zero;
+        var forceAlongZ = Force.Zero;
+        var momentAboutX = Torque.Zero;
+        var momentAboutY = Torque.Zero;
+        var momentAboutZ = Torque.Zero;
+
+        foreach (var linearLoad in this.PointLoads)
+        {
+            forceAlongX += linearLoad.Force * linearLoad.Direction.X;
+            forceAlongY += linearLoad.Force * linearLoad.Direction.Y;
+            forceAlongZ += linearLoad.Force * linearLoad.Direction.Z;
+        }
+        foreach (var momentLoad in this.MomentLoads)
+        {
+            momentAboutX += momentLoad.Torque * momentLoad.AxisDirection[0];
+            momentAboutY += momentLoad.Torque * momentLoad.AxisDirection[1];
+            momentAboutZ += momentLoad.Torque * momentLoad.AxisDirection[2];
+        }
+        return new(forceAlongX, forceAlongY, forceAlongZ, momentAboutX, momentAboutY, momentAboutZ);
+    }
 
     public NodeData GetData()
     {
