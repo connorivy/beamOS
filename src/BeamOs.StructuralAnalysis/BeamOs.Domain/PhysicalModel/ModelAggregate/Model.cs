@@ -28,6 +28,8 @@ public class Model : AggregateRoot<ModelId>
 
     public ICollection<Node> Nodes { get; init; } = [];
     public ICollection<Element1D> Element1ds { get; init; } = [];
+    public ICollection<Material> Materials { get; init; } = [];
+    public ICollection<SectionProfile> SectionProfiles { get; init; } = [];
 
     //private readonly List<NodeId> nodeIds = [];
     //public IReadOnlyList<NodeId> NodeIds => this.nodeIds.AsReadOnly();

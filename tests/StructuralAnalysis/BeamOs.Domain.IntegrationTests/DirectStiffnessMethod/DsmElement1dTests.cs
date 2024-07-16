@@ -1,5 +1,5 @@
+using BeamOs.Domain.DirectStiffnessMethod;
 using BeamOs.Domain.DirectStiffnessMethod.Common.ValueObjects;
-using BeamOs.Domain.DirectStiffnessMethod.Services;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Fixtures;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Mappers;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.SolvedProblems;
@@ -17,42 +17,26 @@ public partial class DsmElement1dTests
         DsmModelFixture modelFixture
     )
     {
-        var unitSettings = modelFixture.Fixture.UnitSettings;
-        var nodes = modelFixture.DsmNodeFixtures.Select(modelFixture.ToDsm).ToArray();
-        var element1ds = modelFixture.DsmElement1dFixtures.Select(modelFixture.ToDsm).ToArray();
+        DsmAnalysisModel dsmAnalysisModel = modelFixture.ToDsm();
 
         var (degreeOfFreedomIds, boundaryConditionIds) =
-            DirectStiffnessMethodSolver.GetSortedUnsupportedStructureIds(nodes);
-        MatrixIdentified structureStiffnessMatrix =
-            DirectStiffnessMethodSolver.BuildStructureStiffnessMatrix(
-                degreeOfFreedomIds,
-                element1ds,
-                unitSettings.ForceUnit,
-                unitSettings.ForcePerLengthUnit,
-                unitSettings.TorqueUnit
-            );
-        VectorIdentified knownReactionVector =
-            DirectStiffnessMethodSolver.BuildKnownJointReactionVector(
-                degreeOfFreedomIds,
-                nodes,
-                unitSettings.ForceUnit,
-                unitSettings.TorqueUnit
-            );
+            dsmAnalysisModel.GetSortedUnsupportedStructureIds();
+        MatrixIdentified structureStiffnessMatrix = dsmAnalysisModel.BuildStructureStiffnessMatrix(
+            degreeOfFreedomIds
+        );
+        VectorIdentified knownReactionVector = dsmAnalysisModel.BuildKnownJointReactionVector(
+            degreeOfFreedomIds
+        );
         VectorIdentified jointDisplacementVector =
-            DirectStiffnessMethodSolver.GetUnknownJointDisplacementVector(
+            dsmAnalysisModel.GetUnknownJointDisplacementVector(
                 structureStiffnessMatrix,
                 knownReactionVector,
                 degreeOfFreedomIds
             );
-        VectorIdentified jointReactionVector =
-            DirectStiffnessMethodSolver.GetUnknownJointReactionVector(
-                boundaryConditionIds,
-                jointDisplacementVector,
-                element1ds,
-                unitSettings.ForceUnit,
-                unitSettings.ForcePerLengthUnit,
-                unitSettings.TorqueUnit
-            );
+        VectorIdentified jointReactionVector = dsmAnalysisModel.GetUnknownJointReactionVector(
+            boundaryConditionIds,
+            jointDisplacementVector
+        );
 
         foreach (var el in modelFixture.DsmElement1dFixtures)
         {
@@ -61,7 +45,7 @@ public partial class DsmElement1dTests
                 continue;
             }
 
-            el.ToDomainObjectWithLocalIds()
+            el.ToDomain()
                 .GetGlobalEndDisplacementVector(jointDisplacementVector)
                 .AsArray()
                 .AssertAlmostEqual(el.ExpectedGlobalEndDisplacements);

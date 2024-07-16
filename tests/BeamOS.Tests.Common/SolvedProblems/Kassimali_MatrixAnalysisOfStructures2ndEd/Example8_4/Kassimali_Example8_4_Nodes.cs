@@ -6,21 +6,50 @@ namespace BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructure
 
 public class Kassimali_Example8_4_Nodes
 {
-    public static NodeFixture Node1 { get; } =
-        new(new Point(0, 0, 0, LengthUnit.Foot), Restraint.Free, Kassimali_Example8_4.IdStatic);
+    public static NodeFixture2 Node1 { get; } =
+        new()
+        {
+            LocationPoint = new Point(0, 0, 0, LengthUnit.Foot),
+            Restraint = Restraint.Free,
+            ModelId = Kassimali_Example8_4.IdStatic,
+            PointLoads =  [Kassimali_Example8_4_PointLoads.PointLoad1],
+            MomentLoads =
+            [
+                Kassimali_Example8_4_MomentLoads.MomentLoad1,
+                Kassimali_Example8_4_MomentLoads.MomentLoad2,
+                Kassimali_Example8_4_MomentLoads.MomentLoad3
+            ],
+        };
 
-    public static NodeFixture Node2 { get; } =
-        new(new Point(-20, 0, 0, LengthUnit.Foot), Restraint.Fixed, Kassimali_Example8_4.IdStatic);
+    public static NodeFixture2 Node2 { get; } =
+        new()
+        {
+            LocationPoint = new Point(-20, 0, 0, LengthUnit.Foot),
+            Restraint = Restraint.Fixed,
+            ModelId = Kassimali_Example8_4.IdStatic,
+            PointLoads =  [Kassimali_Example8_4_PointLoads.PointLoad2],
+            MomentLoads =  [Kassimali_Example8_4_MomentLoads.MomentLoad4]
+        };
 
-    public static NodeFixture Node3 { get; } =
-        new(new Point(0, -20, 0, LengthUnit.Foot), Restraint.Fixed, Kassimali_Example8_4.IdStatic);
+    public static NodeFixture2 Node3 { get; } =
+        new()
+        {
+            LocationPoint = new Point(0, -20, 0, LengthUnit.Foot),
+            Restraint = Restraint.Fixed,
+            ModelId = Kassimali_Example8_4.IdStatic
+        };
 
-    public static NodeFixture Node4 { get; } =
-        new(new Point(0, 0, -20, LengthUnit.Foot), Restraint.Fixed, Kassimali_Example8_4.IdStatic);
+    public static NodeFixture2 Node4 { get; } =
+        new()
+        {
+            LocationPoint = new Point(0, 0, -20, LengthUnit.Foot),
+            Restraint = Restraint.Fixed,
+            ModelId = Kassimali_Example8_4.IdStatic
+        };
 
-    public static NodeFixture[] All => [Node1, Node2, Node3, Node4];
+    public static NodeFixture2[] All => [Node1, Node2, Node3, Node4];
 
-    public static NodeResultFixture Node1ExpectedResult { get; } =
+    public static NodeResultFixture2 Node1ExpectedResult { get; } =
         new(
             Node1,
             new Forces(
@@ -45,7 +74,7 @@ public class Kassimali_Example8_4_Nodes
             )
         );
 
-    public static NodeResultFixture Node2ExpectedResult { get; } =
+    public static NodeResultFixture2 Node2ExpectedResult { get; } =
         new(
             Node2,
             new Forces(
@@ -61,7 +90,7 @@ public class Kassimali_Example8_4_Nodes
             new Displacements(0, 0, 0, 0, 0, 0, LengthUnit.Inch, AngleUnit.Radian)
         );
 
-    public static NodeResultFixture Node3ExpectedResult { get; } =
+    public static NodeResultFixture2 Node3ExpectedResult { get; } =
         new(
             Node3,
             new Forces(
@@ -77,7 +106,7 @@ public class Kassimali_Example8_4_Nodes
             new Displacements(0, 0, 0, 0, 0, 0, LengthUnit.Inch, AngleUnit.Radian)
         );
 
-    public static NodeResultFixture Node4ExpectedResult { get; } =
+    public static NodeResultFixture2 Node4ExpectedResult { get; } =
         new(
             Node4,
             new Forces(

@@ -24,4 +24,14 @@ internal class ModelDbContextRepository(BeamOsStructuralDbContext dbContext)
 
         return await queryable.FirstOrDefaultAsync(ct);
     }
+
+    public override async Task RemoveById(ModelId id, CancellationToken ct = default)
+    {
+        await dbContext
+            .Models
+            .Include(m => m.Element1ds)
+            .Include(m => m.Materials)
+            .Where(e => e.Id == id)
+            .ExecuteDeleteAsync(cancellationToken: ct);
+    }
 }

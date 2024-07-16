@@ -15,7 +15,7 @@ public class SectionProfileFixture(
     public AreaMomentOfInertia PolarMomentOfInertia { get; } = polarMomentOfInertia;
 }
 
-public record SectionProfileFixture2 : FixtureBase2
+public class SectionProfileFixture2 : FixtureBase2
 {
     public required Guid ModelId { get; init; }
     public required Area Area { get; init; }

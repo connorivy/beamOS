@@ -23,11 +23,11 @@ public partial class DsmElement1dTests
         Skip.If(fixture.ExpectedLocalStiffnessMatrix is null);
 
         double[,] stiffnessMatrix = fixture
-            .ToDomainObjectWithLocalIds()
+            .ToDomain()
             .GetLocalStiffnessMatrix(
-                fixture.Fixture.UnitSettings.ForceUnit,
-                fixture.Fixture.UnitSettings.ForcePerLengthUnit,
-                fixture.Fixture.UnitSettings.TorqueUnit
+                fixture.Fixture.Model.Value.Settings.UnitSettings.ForceUnit,
+                fixture.Fixture.Model.Value.Settings.UnitSettings.ForcePerLengthUnit,
+                fixture.Fixture.Model.Value.Settings.UnitSettings.TorqueUnit
             )
             .ToArray();
 
@@ -48,11 +48,11 @@ public partial class DsmElement1dTests
         Skip.If(fixture.ExpectedGlobalStiffnessMatrix is null);
 
         double[,] stiffnessMatrix = fixture
-            .ToDomainObjectWithLocalIds()
+            .ToDomain()
             .GetGlobalStiffnessMatrix(
-                fixture.Fixture.UnitSettings.ForceUnit,
-                fixture.Fixture.UnitSettings.ForcePerLengthUnit,
-                fixture.Fixture.UnitSettings.TorqueUnit
+                fixture.Fixture.Model.Value.Settings.UnitSettings.ForceUnit,
+                fixture.Fixture.Model.Value.Settings.UnitSettings.ForcePerLengthUnit,
+                fixture.Fixture.Model.Value.Settings.UnitSettings.TorqueUnit
             )
             .ToArray();
 

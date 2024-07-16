@@ -1,14 +1,12 @@
-using BeamOs.CodeGen.Apis.EditorApi;
+using BeamOs.Domain.DirectStiffnessMethod;
 using BeamOS.Tests.Common.Fixtures;
-using BeamOS.Tests.Common.Interfaces;
+using BeamOS.Tests.Common.SolvedProblems.Fixtures.Mappers.ToDomain;
 
 namespace BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Fixtures;
 
-public partial class DsmElement1dFixture(Element1dFixture fixture)
-    : FixtureBase,
-        ITestFixtureDisplayable
+public partial class DsmElement1dFixture(Element1dFixture2 fixture) : FixtureBase2
 {
-    public Element1dFixture Fixture { get; } = fixture;
+    public Element1dFixture2 Fixture { get; } = fixture;
     public override Guid Id => this.Fixture.Id;
 
     public double[,]? ExpectedRotationMatrix { get; init; }
@@ -21,7 +19,6 @@ public partial class DsmElement1dFixture(Element1dFixture fixture)
     public double[]? ExpectedGlobalEndDisplacements { get; init; }
     public double[]? ExpectedLocalEndForces { get; init; }
     public double[]? ExpectedGlobalEndForces { get; init; }
-    public SourceInfo SourceInfo => this.Fixture.SourceInfo;
 
-    public Task Display(IEditorApiAlpha editorApiAlpha) => this.Fixture.Display(editorApiAlpha);
+    public DsmElement1d ToDomain() => new(this.Fixture.ToDomain());
 }

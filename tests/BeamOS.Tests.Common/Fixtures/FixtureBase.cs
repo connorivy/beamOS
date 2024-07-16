@@ -20,7 +20,7 @@ public interface IModelMember
     public ModelFixture Model { get; }
 }
 
-public record FixtureBase2
+public class FixtureBase2
 {
-    public Guid Id { get; init; } = Guid.NewGuid();
+    public virtual Guid Id { get; init; } = Guid.NewGuid();
 }

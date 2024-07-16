@@ -23,12 +23,14 @@ public class Element1dConfiguration : IEntityTypeConfiguration<Element1D>
             .HasOne(el => el.Material)
             .WithMany()
             .HasForeignKey(el => el.MaterialId)
+            .IsRequired()
             .OnDelete(DeleteBehavior.ClientCascade);
 
         _ = builder
             .HasOne(el => el.SectionProfile)
             .WithMany()
             .HasForeignKey(el => el.SectionProfileId)
+            .IsRequired()
             .OnDelete(DeleteBehavior.ClientCascade);
 
         //_ = builder

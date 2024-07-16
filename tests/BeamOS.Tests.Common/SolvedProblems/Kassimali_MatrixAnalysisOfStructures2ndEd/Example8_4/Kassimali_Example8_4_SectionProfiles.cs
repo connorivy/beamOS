@@ -4,11 +4,22 @@ namespace BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructure
 
 internal class Kassimali_Example8_4_SectionProfiles
 {
-    public static SectionProfileFixture Profile33in2 { get; } =
-        new(
-            new(32.9, UnitsNet.Units.AreaUnit.SquareInch),
-            new(716, UnitsNet.Units.AreaMomentOfInertiaUnit.InchToTheFourth),
-            new(236, UnitsNet.Units.AreaMomentOfInertiaUnit.InchToTheFourth),
-            new(15.1, UnitsNet.Units.AreaMomentOfInertiaUnit.InchToTheFourth)
-        );
+    public static SectionProfileFixture2 Profile33in2 { get; } =
+        new()
+        {
+            Area = new(32.9, UnitsNet.Units.AreaUnit.SquareInch),
+            StrongAxisMomentOfInertia = new(
+                716,
+                UnitsNet.Units.AreaMomentOfInertiaUnit.InchToTheFourth
+            ),
+            WeakAxisMomentOfInertia = new(
+                236,
+                UnitsNet.Units.AreaMomentOfInertiaUnit.InchToTheFourth
+            ),
+            PolarMomentOfInertia = new(
+                15.1,
+                UnitsNet.Units.AreaMomentOfInertiaUnit.InchToTheFourth
+            ),
+            ModelId = Kassimali_Example8_4.IdStatic
+        };
 }

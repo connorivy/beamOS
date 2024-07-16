@@ -8,7 +8,7 @@ public class MaterialFixture(Pressure modulusOfElasticity, Pressure modulusOfRig
     public Pressure ModulusOfRigidity { get; } = modulusOfRigidity;
 }
 
-public record MaterialFixture2 : FixtureBase2
+public class MaterialFixture2 : FixtureBase2
 {
     public required Guid ModelId { get; init; }
     public required Pressure ModulusOfElasticity { get; init; }

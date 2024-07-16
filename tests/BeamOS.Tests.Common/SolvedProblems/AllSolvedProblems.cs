@@ -3,12 +3,10 @@ using BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2nd
 
 namespace BeamOS.Tests.Common.SolvedProblems;
 
-public class AllSolvedProblems : TheoryDataBase<ModelFixture>
+public class AllSolvedProblems : TheoryDataBase<ModelFixture2>
 {
-    public static Kassimali_Example8_4 Kassimali_Examples8_4 { get; } = new();
-
     public AllSolvedProblems()
     {
-        this.Add(Kassimali_Examples8_4);
+        this.Add(Kassimali_Example8_4.Instance);
     }
 }

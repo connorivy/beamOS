@@ -135,7 +135,7 @@ public class DsmAnalysisModel(Model model)
         return loadVector;
     }
 
-    internal static VectorIdentified GetUnknownJointDisplacementVector(
+    internal VectorIdentified GetUnknownJointDisplacementVector(
         MatrixIdentified structureStiffnessMatrix,
         VectorIdentified knownReactionVector,
         List<UnsupportedStructureDisplacementId2> degreeOfFreedomIds

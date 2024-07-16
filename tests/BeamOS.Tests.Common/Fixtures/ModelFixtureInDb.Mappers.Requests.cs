@@ -17,20 +17,20 @@ public partial class ModelFixtureInDb
         return new(
             fixture.ModelFixture.Name,
             fixture.ModelFixture.Description,
-            new PhysicalModelSettingsDto(fixture.ModelFixture.UnitSettings.ToContract()),
+            new PhysicalModelSettingsDto(fixture.ModelFixture.Settings.UnitSettings.ToContract()),
             fixture.ModelFixture.Id.ToString()
         );
     }
 
-    public partial CreateElement1dRequest ToRequest(Element1dFixture fixture);
+    public partial CreateElement1dRequest ToRequest(Element1dFixture2 fixture);
 
-    public partial CreatePointLoadRequest ToRequest(PointLoadFixture fixture);
+    public partial CreatePointLoadRequest ToRequest(PointLoadFixture2 fixture);
 
-    public partial CreateMomentLoadRequest ToRequest(MomentLoadFixture fixture);
+    public partial CreateMomentLoadRequest ToRequest(MomentLoadFixture2 fixture);
 
-    public partial CreateMaterialRequest ToRequest(MaterialFixture fixture);
+    public partial CreateMaterialRequest ToRequest(MaterialFixture2 fixture);
 
-    public partial CreateSectionProfileRequest ToRequest(SectionProfileFixture fixture);
+    public partial CreateSectionProfileRequest ToRequest(SectionProfileFixture2 fixture);
 
-    public partial CreateNodeRequest ToRequest(NodeFixture fixture);
+    public partial CreateNodeRequest ToRequest(NodeFixture2 fixture);
 }

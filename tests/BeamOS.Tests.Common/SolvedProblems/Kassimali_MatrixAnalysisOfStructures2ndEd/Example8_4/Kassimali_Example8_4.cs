@@ -1,5 +1,5 @@
-using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
 using BeamOs.Domain.Common.ValueObjects;
+using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOS.Tests.Common.Fixtures;
 using BeamOS.Tests.Common.Interfaces;
 using BeamOS.Tests.Common.SolvedProblems.Fixtures;
@@ -10,7 +10,7 @@ namespace BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructure
 
 [Mapper]
 [Kassimali_MatrixAnalysisOfStructures2ndEd]
-public partial class Kassimali_Example8_4 : ModelFixture, IHasExpectedNodeResults
+public partial class Kassimali_Example8_4 : ModelFixture2, IHasExpectedNodeResults2
 {
     public override SourceInfo SourceInfo { get; } =
         new(
@@ -20,29 +20,24 @@ public partial class Kassimali_Example8_4 : ModelFixture, IHasExpectedNodeResult
             null,
             "https://dokumen.pub/matrix-analysis-of-structures-3nbsped-9780357448304.html#English"
         );
-    public static Kassimali_Example8_4 Instance { get; } = new();
     public static Guid IdStatic { get; } = new("ddb1e60a-df17-48b0-810a-60e425acf640");
     public override Guid Id => IdStatic;
-    public static UnitSettings StaticUnitSettings { get; } = UnitSettings.K_IN;
-    public override UnitSettings UnitSettings { get; protected set; } = UnitSettings.K_IN;
-    public override NodeFixture[] Nodes => Kassimali_Example8_4_Nodes.All;
-    public override MaterialFixture[] MaterialFixtures =>
-        [Kassimali_Example8_4_Materials.Steel29000Ksi];
-    public override SectionProfileFixture[] SectionProfileFixtures =>
+    public static Kassimali_Example8_4 Instance { get; }
+    public override ModelSettings Settings { get; } = new(UnitSettings.K_IN);
+    public override NodeFixture2[] Nodes => Kassimali_Example8_4_Nodes.All;
+    public override MaterialFixture2[] Materials => [Kassimali_Example8_4_Materials.Steel29000Ksi];
+    public override SectionProfileFixture2[] SectionProfiles =>
         [Kassimali_Example8_4_SectionProfiles.Profile33in2];
-    public override Lazy<Element1dFixture[]> Element1dFixtures { get; } =
-        new(
-            () =>
+    public override Element1dFixture2[] Element1ds { get; } =
 
-                [
-                    Kassimali_Example8_4_Element1ds.Element1,
-                    Kassimali_Example8_4_Element1ds.Element2,
-                    Kassimali_Example8_4_Element1ds.Element3
-                ]
-        );
-    public override PointLoadFixture[] PointLoadFixtures =>
+        [
+            Kassimali_Example8_4_Element1ds.Element1,
+            Kassimali_Example8_4_Element1ds.Element2,
+            Kassimali_Example8_4_Element1ds.Element3
+        ];
+    public override PointLoadFixture2[] PointLoads =>
         [Kassimali_Example8_4_PointLoads.PointLoad1, Kassimali_Example8_4_PointLoads.PointLoad2];
-    public override MomentLoadFixture[] MomentLoadFixtures =>
+    public override MomentLoadFixture2[] MomentLoads =>
 
         [
             Kassimali_Example8_4_MomentLoads.MomentLoad1,
@@ -51,12 +46,7 @@ public partial class Kassimali_Example8_4 : ModelFixture, IHasExpectedNodeResult
             Kassimali_Example8_4_MomentLoads.MomentLoad4
         ];
 
-    public NodeResultResponse ToResponse(NodeResultFixture fixture) =>
-        this.ToResponseSourceGenerated(fixture);
-
-    public partial NodeResultResponse ToResponseSourceGenerated(NodeResultFixture fixture);
-
-    public NodeResultFixture[] ExpectedNodeResults { get; } =
+    public NodeResultFixture2[] ExpectedNodeResults { get; } =
 
         [
             Kassimali_Example8_4_Nodes.Node1ExpectedResult,
@@ -64,4 +54,9 @@ public partial class Kassimali_Example8_4 : ModelFixture, IHasExpectedNodeResult
             Kassimali_Example8_4_Nodes.Node3ExpectedResult,
             Kassimali_Example8_4_Nodes.Node4ExpectedResult
         ];
+
+    static Kassimali_Example8_4()
+    {
+        Instance = new();
+    }
 }

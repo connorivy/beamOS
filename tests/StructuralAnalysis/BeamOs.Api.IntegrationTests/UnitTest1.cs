@@ -9,7 +9,7 @@ public class UnitTest1(CustomWebApplicationFactory<Program> webApplicationFactor
 {
     [SkippableTheory]
     [ClassData(typeof(AllSolvedProblems))]
-    public async Task Test1(ModelFixture modelFixture)
+    public async Task Test1(ModelFixture2 modelFixture)
     {
         var httpClient = webApplicationFactory.CreateClient();
         var client = new ApiAlphaClient(httpClient);

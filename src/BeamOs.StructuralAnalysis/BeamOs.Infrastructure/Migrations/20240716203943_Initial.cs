@@ -193,7 +193,8 @@ namespace BeamOs.Infrastructure.Migrations
                         name: "FK_Element1Ds_Models_ModelId",
                         column: x => x.ModelId,
                         principalTable: "Models",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Element1Ds_Nodes_EndNodeId",
                         column: x => x.EndNodeId,

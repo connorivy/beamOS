@@ -343,9 +343,9 @@ namespace BeamOs.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("BeamOs.Domain.PhysicalModel.ModelAggregate.Model", null)
-                        .WithMany("Element1Ds")
+                        .WithMany("Element1ds")
                         .HasForeignKey("ModelId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BeamOs.Domain.PhysicalModel.SectionProfileAggregate.SectionProfile", "SectionProfile")
@@ -372,7 +372,7 @@ namespace BeamOs.Infrastructure.Migrations
             modelBuilder.Entity("BeamOs.Domain.PhysicalModel.MaterialAggregate.Material", b =>
                 {
                     b.HasOne("BeamOs.Domain.PhysicalModel.ModelAggregate.Model", null)
-                        .WithMany()
+                        .WithMany("Materials")
                         .HasForeignKey("ModelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -408,7 +408,7 @@ namespace BeamOs.Infrastructure.Migrations
             modelBuilder.Entity("BeamOs.Domain.PhysicalModel.SectionProfileAggregate.SectionProfile", b =>
                 {
                     b.HasOne("BeamOs.Domain.PhysicalModel.ModelAggregate.Model", null)
-                        .WithMany()
+                        .WithMany("SectionProfiles")
                         .HasForeignKey("ModelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -416,9 +416,13 @@ namespace BeamOs.Infrastructure.Migrations
 
             modelBuilder.Entity("BeamOs.Domain.PhysicalModel.ModelAggregate.Model", b =>
                 {
-                    b.Navigation("Element1Ds");
+                    b.Navigation("Element1ds");
+
+                    b.Navigation("Materials");
 
                     b.Navigation("Nodes");
+
+                    b.Navigation("SectionProfiles");
                 });
 
             modelBuilder.Entity("BeamOs.Domain.PhysicalModel.NodeAggregate.Node", b =>

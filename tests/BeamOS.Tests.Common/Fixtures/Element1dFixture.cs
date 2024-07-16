@@ -40,11 +40,10 @@ public class Element1dFixture(
     }
 }
 
-public record Element1dFixture2 : FixtureBase2
+public class Element1dFixture2 : FixtureBase2
 {
-    public required Guid ModelId { get; init; }
-
-    //public ModelFixture Model { get; init; }
+    public Guid ModelId => this.Model.Value.Id;
+    public required Lazy<ModelFixture2> Model { get; init; }
     public required NodeFixture2 StartNode { get; init; }
 
     public required NodeFixture2 EndNode { get; init; }

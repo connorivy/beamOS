@@ -24,14 +24,21 @@ internal class ModelConfiguration : IEntityTypeConfiguration<Model>
             .WithOne()
             .HasForeignKey(el => el.ModelId)
             .IsRequired()
-            .OnDelete(DeleteBehavior.ClientCascade);
+            .OnDelete(DeleteBehavior.Cascade);
 
-        _ = builder.HasMany<Material>().WithOne().HasForeignKey(el => el.ModelId).IsRequired();
         _ = builder
-            .HasMany<SectionProfile>()
+            .HasMany(m => m.Materials)
             .WithOne()
             .HasForeignKey(el => el.ModelId)
-            .IsRequired();
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+
+        _ = builder
+            .HasMany(m => m.SectionProfiles)
+            .WithOne()
+            .HasForeignKey(el => el.ModelId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
 
         // these belong to the node
         //_ = builder.HasMany<PointLoad>().WithOne().HasForeignKey(el => el.ModelId).IsRequired();

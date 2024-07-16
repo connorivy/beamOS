@@ -49,7 +49,8 @@ public abstract partial class ModelFixture : FixtureBase, ITestFixtureDisplayabl
 
     public ModelId StrongModelId { get; }
 
-    public partial Model ToDomainObject(ModelFixture modelFixture);
+    //public partial Model ToDomainObject(ModelFixture modelFixture);
+    public Model ToDomainObject(ModelFixture modelFixture) => null;
 
     public partial PointLoad ToDomainObjectWithLocalIds(PointLoadFixture fixture);
 
@@ -123,6 +124,11 @@ public interface IHasExpectedNodeResults
     public NodeResultResponse ToResponse(NodeResultFixture source);
 }
 
+public interface IHasExpectedNodeResults2
+{
+    public NodeResultFixture2[] ExpectedNodeResults { get; }
+}
+
 [Mapper]
 public static partial class IHasExpectedNodeResultsExtensions
 {
@@ -134,17 +140,17 @@ public static partial class IHasExpectedNodeResultsExtensions
     }
 }
 
-public abstract record ModelFixture2 : FixtureBase2
+public abstract class ModelFixture2 : FixtureBase2
 {
-    public required ModelSettings Settings { get; init; }
+    public abstract ModelSettings Settings { get; }
     public virtual string Name { get; } = "Test Model";
     public virtual string Description { get; } = "Test Model Description";
-    public virtual List<NodeFixture2> Nodes { get; init; } = [];
-    public virtual List<Element1dFixture2> Element1ds { get; init; } = [];
+    public virtual NodeFixture2[] Nodes { get; } = [];
+    public virtual Element1dFixture2[] Element1ds { get; } = [];
 
-    public virtual MaterialFixture[] Materials { get; } = [];
-    public virtual SectionProfileFixture[] SectionProfiles { get; } = [];
-    public virtual PointLoadFixture[] PointLoads { get; } = [];
-    public virtual MomentLoadFixture[] MomentLoads { get; } = [];
-    public required SourceInfo SourceInfo { get; init; }
+    public virtual MaterialFixture2[] Materials { get; } = [];
+    public virtual SectionProfileFixture2[] SectionProfiles { get; } = [];
+    public virtual PointLoadFixture2[] PointLoads { get; } = [];
+    public virtual MomentLoadFixture2[] MomentLoads { get; } = [];
+    public abstract SourceInfo SourceInfo { get; }
 }

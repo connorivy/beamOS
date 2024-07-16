@@ -15,25 +15,27 @@ namespace BeamOS.Tests.Common.SolvedProblems.Fixtures.Mappers.ToDomain;
 [Mapper]
 public static partial class PointLoadFixtureToDomainMapper
 {
-    public static partial PointLoad ToDomain(PointLoadFixture2 fixture);
+    public static partial PointLoad ToDomain(this PointLoadFixture2 fixture);
 }
 
 [Mapper]
 public static partial class SectionProfileFixtureToDomainMapper
 {
-    public static partial SectionProfile ToDomain(SectionProfileFixture2 fixture);
+    public static partial SectionProfile ToDomain(this SectionProfileFixture2 fixture);
 }
 
 [Mapper]
+[UseStaticMapper(typeof(PointLoadFixtureToDomainMapper))]
+[UseStaticMapper(typeof(MomentLoadFixtureToDomainMapper))]
 public static partial class NodeFixtureToDomainMapper
 {
-    public static partial Node ToDomain(NodeFixture2 fixture);
+    public static partial Node ToDomain(this NodeFixture2 fixture);
 }
 
 [Mapper]
 public static partial class MomentLoadFixtureToDomainMapper
 {
-    public static partial MomentLoad ToDomain(MomentLoadFixture2 fixture);
+    public static partial MomentLoad ToDomain(this MomentLoadFixture2 fixture);
 
     public static Vector<double> ToVector(Vector3D vector3D) => vector3D.ToVector();
 }
@@ -41,7 +43,7 @@ public static partial class MomentLoadFixtureToDomainMapper
 [Mapper]
 public static partial class MaterialFixtureToDomainMapper
 {
-    public static partial Material ToDomain(MaterialFixture2 fixture);
+    public static partial Material ToDomain(this MaterialFixture2 fixture);
 }
 
 [Mapper]
@@ -50,7 +52,7 @@ public static partial class MaterialFixtureToDomainMapper
 [UseStaticMapper(typeof(SectionProfileFixtureToDomainMapper))]
 public static partial class Element1dFixtureToDomainMapper
 {
-    public static partial Element1D ToDomain(Element1dFixture2 fixture);
+    public static partial Element1D ToDomain(this Element1dFixture2 fixture);
 }
 
 [Mapper]
@@ -58,5 +60,5 @@ public static partial class Element1dFixtureToDomainMapper
 [UseStaticMapper(typeof(Element1dFixtureToDomainMapper))]
 public static partial class ModelFixtureToDomainMapper
 {
-    public static partial Model ToDomain(ModelFixture2 fixture);
+    public static partial Model ToDomain(this ModelFixture2 fixture);
 }

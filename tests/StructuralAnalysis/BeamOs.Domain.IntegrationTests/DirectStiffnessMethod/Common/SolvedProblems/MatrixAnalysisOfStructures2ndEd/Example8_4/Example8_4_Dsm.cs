@@ -13,7 +13,9 @@ public class Example8_4_Dsm
         IHasExpectedReactionVector,
         IHasExpectedDisplacementVector
 {
-    public Example8_4_Dsm(Kassimali_Example8_4 modelFixture)
+    public static Example8_4_Dsm Instance { get; } = new(Kassimali_Example8_4.Instance);
+
+    private Example8_4_Dsm(Kassimali_Example8_4 modelFixture)
         : base(modelFixture) { }
 
     public override DsmNodeFixture[] DsmNodeFixtures { get; } =

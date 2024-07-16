@@ -4,6 +4,7 @@ using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Mappers;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.SolvedProblems;
 using BeamOs.Domain.UnitTests.DirectStiffnessMethod.Common.Factories;
 using BeamOS.Tests.Common;
+using BeamOS.Tests.Common.SolvedProblems.Fixtures.Mappers.ToDomain;
 using BeamOS.Tests.Common.Traits;
 using UnitsNet;
 using UnitsNet.Units;
@@ -24,10 +25,7 @@ public partial class DsmElement1dTests
             throw new SkipException("No expected value to test against calculated value");
         }
 
-        double[,] rotationMatrix = fixture
-            .ToDomainObjectWithLocalIds()
-            .GetRotationMatrix()
-            .ToArray();
+        double[,] rotationMatrix = fixture.Fixture.ToDomain().GetRotationMatrix();
 
         Asserter.AssertEqual("Rotation Matrix", fixture.ExpectedRotationMatrix, rotationMatrix);
     }
