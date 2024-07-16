@@ -133,3 +133,18 @@ public static partial class IHasExpectedNodeResultsExtensions
         return modelFixture.ExpectedNodeResults.Select(modelFixture.ToResponse).ToArray();
     }
 }
+
+public abstract record ModelFixture2 : FixtureBase2
+{
+    public required ModelSettings Settings { get; init; }
+    public virtual string Name { get; } = "Test Model";
+    public virtual string Description { get; } = "Test Model Description";
+    public virtual List<NodeFixture2> Nodes { get; init; } = [];
+    public virtual List<Element1dFixture2> Element1ds { get; init; } = [];
+
+    public virtual MaterialFixture[] Materials { get; } = [];
+    public virtual SectionProfileFixture[] SectionProfiles { get; } = [];
+    public virtual PointLoadFixture[] PointLoads { get; } = [];
+    public virtual MomentLoadFixture[] MomentLoads { get; } = [];
+    public required SourceInfo SourceInfo { get; init; }
+}

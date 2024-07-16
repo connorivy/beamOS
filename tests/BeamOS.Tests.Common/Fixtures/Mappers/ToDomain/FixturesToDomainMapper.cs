@@ -1,5 +1,6 @@
 using BeamOs.Domain.PhysicalModel.Element1DAggregate;
 using BeamOs.Domain.PhysicalModel.MaterialAggregate;
+using BeamOs.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.Domain.PhysicalModel.PointLoadAggregate;
@@ -43,8 +44,19 @@ public static partial class MaterialFixtureToDomainMapper
     public static partial Material ToDomain(MaterialFixture2 fixture);
 }
 
-// [Mapper]
+[Mapper]
+[UseStaticMapper(typeof(NodeFixtureToDomainMapper))]
+[UseStaticMapper(typeof(MaterialFixtureToDomainMapper))]
+[UseStaticMapper(typeof(SectionProfileFixtureToDomainMapper))]
 public static partial class Element1dFixtureToDomainMapper
 {
     public static partial Element1D ToDomain(Element1dFixture2 fixture);
+}
+
+[Mapper]
+[UseStaticMapper(typeof(NodeFixtureToDomainMapper))]
+[UseStaticMapper(typeof(Element1dFixtureToDomainMapper))]
+public static partial class ModelFixtureToDomainMapper
+{
+    public static partial Model ToDomain(ModelFixture2 fixture);
 }

@@ -26,8 +26,8 @@ public class Model : AggregateRoot<ModelId>
     public string Description { get; private set; }
     public ModelSettings Settings { get; private set; }
 
-    public ICollection<Node> Nodes { get; private set; } = [];
-    public ICollection<Element1D> Element1ds { get; private set; } = [];
+    public ICollection<Node> Nodes { get; init; } = [];
+    public ICollection<Element1D> Element1ds { get; init; } = [];
 
     //private readonly List<NodeId> nodeIds = [];
     //public IReadOnlyList<NodeId> NodeIds => this.nodeIds.AsReadOnly();
@@ -98,21 +98,5 @@ public class Model : AggregateRoot<ModelId>
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private Model() { }
 
-    public Model(
-        string name,
-        string description,
-        ModelSettings settings,
-        ICollection<Node> nodes,
-        ICollection<Element1D> element1ds,
-        ModelId? id = null
-    )
-        : base(id ?? new())
-    {
-        this.Name = name;
-        this.Description = description;
-        this.Settings = settings;
-        this.Nodes = nodes;
-        this.Element1ds = element1ds;
-    }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }

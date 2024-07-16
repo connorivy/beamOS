@@ -34,13 +34,13 @@ public class Element1D : AggregateRoot<Element1DId>
 
     public ModelId ModelId { get; private set; }
     public NodeId StartNodeId { get; private set; }
-    public Node? StartNode { get; private set; }
+    public Node? StartNode { get; init; }
     public NodeId EndNodeId { get; private set; }
-    public Node? EndNode { get; private set; }
+    public Node? EndNode { get; init; }
     public MaterialId MaterialId { get; private set; }
-    public Material? Material { get; private set; }
+    public Material? Material { get; init; }
     public SectionProfileId SectionProfileId { get; private set; }
-    public SectionProfile? SectionProfile { get; private set; }
+    public SectionProfile? SectionProfile { get; init; }
 
     public Length Length =>
         Line.GetLength(this.StartNode.LocationPoint, this.EndNode.LocationPoint);

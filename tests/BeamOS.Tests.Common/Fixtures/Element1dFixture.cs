@@ -40,14 +40,16 @@ public class Element1dFixture(
     }
 }
 
-public record Element1dFixture2 : FixtureBase2, IModelMember
+public record Element1dFixture2 : FixtureBase2
 {
-    //public required Guid ModelId { get; init; }
-    public ModelFixture Model { get; init; }
-    public required NodeFixture StartNode { get; init; }
-    public required NodeFixture EndNode { get; init; }
-    public required MaterialFixture Material { get; init; }
-    public required SectionProfileFixture SectionProfile { get; init; }
+    public required Guid ModelId { get; init; }
+
+    //public ModelFixture Model { get; init; }
+    public required NodeFixture2 StartNode { get; init; }
+
+    public required NodeFixture2 EndNode { get; init; }
+    public required MaterialFixture2 Material { get; init; }
+    public required SectionProfileFixture2 SectionProfile { get; init; }
 
     /// <summary>
     /// counter-clockwise rotation in radians when looking in the negative (local) x direction
