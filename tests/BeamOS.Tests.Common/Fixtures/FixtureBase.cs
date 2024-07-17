@@ -1,5 +1,3 @@
-using BeamOS.Tests.Common.SolvedProblems.Fixtures;
-
 namespace BeamOS.Tests.Common.Fixtures;
 
 public class FixtureBase
@@ -14,11 +12,6 @@ public class FixtureBase
 /// </summary>
 /// <param name="ModelId"></param>
 public record struct GuidWrapperForModelId(Guid? ModelId = null);
-
-public interface IModelMember
-{
-    public ModelFixture Model { get; }
-}
 
 public class FixtureBase2
 {

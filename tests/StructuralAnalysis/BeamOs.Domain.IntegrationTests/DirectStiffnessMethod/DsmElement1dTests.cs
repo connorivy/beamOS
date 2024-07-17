@@ -1,8 +1,9 @@
 using BeamOs.Domain.DirectStiffnessMethod;
 using BeamOs.Domain.DirectStiffnessMethod.Common.ValueObjects;
-using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Fixtures;
+using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Interfaces;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.SolvedProblems;
 using BeamOS.Tests.Common.Extensions;
+using BeamOS.Tests.Common.SolvedProblems.Fixtures.Mappers.ToDomain;
 using BeamOS.Tests.Common.Traits;
 
 namespace BeamOs.Domain.IntegrationTests.DirectStiffnessMethod;
@@ -13,10 +14,10 @@ public partial class DsmElement1dTests
     [Theory]
     [ClassData(typeof(AllSolvedDsmProblems))]
     public void JointReactionVector_ForSampleProblem_ShouldResultInExpectedValues(
-        DsmModelFixture modelFixture
+        IDsmModelFixture modelFixture
     )
     {
-        DsmAnalysisModel dsmAnalysisModel = modelFixture.ToDsm();
+        DsmAnalysisModel dsmAnalysisModel = modelFixture.ToDomain();
 
         var (degreeOfFreedomIds, boundaryConditionIds) =
             dsmAnalysisModel.GetSortedUnsupportedStructureIds();

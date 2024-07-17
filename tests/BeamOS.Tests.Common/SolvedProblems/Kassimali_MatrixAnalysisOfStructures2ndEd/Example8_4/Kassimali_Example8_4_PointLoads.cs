@@ -22,6 +22,8 @@ internal class Kassimali_Example8_4_PointLoads
             Node = new(() => Kassimali_Example8_4_Nodes.Node1)
         };
 
+    public static PointLoadFixture2[] All { get; } = [PointLoad1, PointLoad2];
+
     //private static PointLoadFixture2 pointLoad1;
 
     //public static PointLoadFixture2 PointLoad1(Guid nodeId) =>

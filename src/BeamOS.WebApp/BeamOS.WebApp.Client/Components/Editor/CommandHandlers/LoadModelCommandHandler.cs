@@ -20,52 +20,53 @@ public class LoadModelCommandHandler(
         CancellationToken ct = default
     )
     {
-        ModelResponseHydrated response = await apiAlphaClient.GetModelHydratedAsync(
-            command.ModelId,
-            PreconfiguredUnits.N_M,
+        ModelResponse response = await apiAlphaClient.GetModelAsync(command.ModelId, null, ct);
+
+        //await changeComponentStateCommandHandler.ExecuteAsync(
+        //    new(command.CanvasId, state => state with { LoadedModelId = command.ModelId, }),
+        //    CancellationToken.None
+        //);
+
+        await addEntityContractToEditorCommandHandler.ExecuteAsync(
+            new(command.CanvasId, response),
             ct
         );
 
-        await changeComponentStateCommandHandler.ExecuteAsync(
-            new(command.CanvasId, state => state with { LoadedModelId = command.ModelId, }),
-            CancellationToken.None
-        );
+        //foreach (var node in response.Nodes)
+        //{
+        //    await addEntityContractToCacheCommandHandler.ExecuteAsync(
+        //        new(command.ModelId, node),
+        //        CancellationToken.None
+        //    );
+        //    await addEntityContractToEditorCommandHandler.ExecuteAsync(
+        //        new(command.CanvasId, node),
+        //        CancellationToken.None
+        //    );
+        //}
 
-        foreach (var node in response.Nodes)
-        {
-            await addEntityContractToCacheCommandHandler.ExecuteAsync(
-                new(command.ModelId, node),
-                CancellationToken.None
-            );
-            await addEntityContractToEditorCommandHandler.ExecuteAsync(
-                new(command.CanvasId, node),
-                CancellationToken.None
-            );
-        }
+        //foreach (var el in response.Element1Ds)
+        //{
+        //    await addEntityContractToCacheCommandHandler.ExecuteAsync(
+        //        new(command.ModelId, el),
+        //        CancellationToken.None
+        //    );
+        //    await addEntityContractToEditorCommandHandler.ExecuteAsync(
+        //        new(command.CanvasId, el),
+        //        CancellationToken.None
+        //    );
+        //}
 
-        foreach (var el in response.Element1Ds)
-        {
-            await addEntityContractToCacheCommandHandler.ExecuteAsync(
-                new(command.ModelId, el),
-                CancellationToken.None
-            );
-            await addEntityContractToEditorCommandHandler.ExecuteAsync(
-                new(command.CanvasId, el),
-                CancellationToken.None
-            );
-        }
-
-        foreach (var el in response.PointLoads)
-        {
-            await addEntityContractToCacheCommandHandler.ExecuteAsync(
-                new(command.ModelId, el),
-                CancellationToken.None
-            );
-            await addEntityContractToEditorCommandHandler.ExecuteAsync(
-                new(command.CanvasId, el),
-                CancellationToken.None
-            );
-        }
+        //foreach (var el in response.PointLoads)
+        //{
+        //    await addEntityContractToCacheCommandHandler.ExecuteAsync(
+        //        new(command.ModelId, el),
+        //        CancellationToken.None
+        //    );
+        //    await addEntityContractToEditorCommandHandler.ExecuteAsync(
+        //        new(command.CanvasId, el),
+        //        CancellationToken.None
+        //    );
+        //}
 
         return Result.Success();
     }

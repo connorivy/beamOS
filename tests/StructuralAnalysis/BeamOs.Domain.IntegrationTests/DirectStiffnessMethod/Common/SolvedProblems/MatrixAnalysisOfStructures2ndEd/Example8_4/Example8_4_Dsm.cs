@@ -8,17 +8,18 @@ namespace BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.SolvedProb
 [Kassimali_MatrixAnalysisOfStructures2ndEd]
 [ProblemName("Example 8.4")]
 public class Example8_4_Dsm
-    : DsmModelFixture,
+    : Kassimali_Example8_4,
+        IDsmModelFixture,
         IHasStructuralStiffnessMatrix,
         IHasExpectedReactionVector,
         IHasExpectedDisplacementVector
 {
-    public static Example8_4_Dsm Instance { get; } = new(Kassimali_Example8_4.Instance);
+    public static Example8_4_Dsm DsmInstance { get; } = new();
 
-    private Example8_4_Dsm(Kassimali_Example8_4 modelFixture)
-        : base(modelFixture) { }
+    //private Example8_4_Dsm(Kassimali_Example8_4 modelFixture)
+    //    : base(modelFixture) { }
 
-    public override DsmNodeFixture[] DsmNodeFixtures { get; } =
+    public DsmNodeFixture[] DsmNodeFixtures { get; } =
 
         [
             new(Kassimali_Example8_4_Nodes.Node1),
@@ -26,7 +27,7 @@ public class Example8_4_Dsm
             new(Kassimali_Example8_4_Nodes.Node3),
             new(Kassimali_Example8_4_Nodes.Node4),
         ];
-    public override DsmElement1dFixture[] DsmElement1dFixtures { get; } =
+    public DsmElement1dFixture[] DsmElement1dFixtures { get; } =
 
         [
             Example8_4.DsmElement1dFixtures.Element1,

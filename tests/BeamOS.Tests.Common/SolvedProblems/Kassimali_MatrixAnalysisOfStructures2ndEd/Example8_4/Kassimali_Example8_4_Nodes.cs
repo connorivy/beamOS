@@ -47,7 +47,7 @@ public class Kassimali_Example8_4_Nodes
             ModelId = Kassimali_Example8_4.IdStatic
         };
 
-    public static NodeFixture2[] All => [Node1, Node2, Node3, Node4];
+    public static NodeFixture2[] All { get; } = [Node1, Node2, Node3, Node4];
 
     public static NodeResultFixture2 Node1ExpectedResult { get; } =
         new(

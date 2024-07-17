@@ -19,7 +19,7 @@ public record ModelResponse(
     List<SectionProfileResponse>? SectionProfiles = null,
     List<PointLoadResponse>? PointLoads = null,
     List<MomentLoadResponse>? MomentLoads = null
-) : BeamOsContractBase;
+) : BeamOsEntityContractBase(Id);
 
 public record ModelSettingsResponse(UnitSettingsResponse UnitSettings);
 

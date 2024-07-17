@@ -21,7 +21,7 @@ internal abstract class RepositoryBase<TId, TEntity>(BeamOsStructuralDbContext d
         _ = dbContext.Set<TEntity>().Remove(aggregate);
     }
 
-    public async Task<TEntity?> GetById(TId id, CancellationToken ct = default)
+    public virtual async Task<TEntity?> GetById(TId id, CancellationToken ct = default)
     {
         return await dbContext
             .Set<TEntity>()

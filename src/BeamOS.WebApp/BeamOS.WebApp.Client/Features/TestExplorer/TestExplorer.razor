@@ -66,7 +66,7 @@
                     </MudPaper>
                 </MudContainer>
         </MudTabPanel>
-        @if (@TestExplorerState.Value.SelectedTestInfo?.GetDisplayable()?.SourceInfo is SourceInfo sourceInfo)
+        @if (@TestExplorerState.Value.SelectedTestInfo?.SourceInfo is SourceInfo sourceInfo)
         {
             <MudTabPanel Icon="@Icons.Material.Filled.Info" ToolTip="Test Source Information">
                 <div class="h-fit">

@@ -17,4 +17,6 @@ internal class Kassimali_Example8_4_Materials
             ),
             ModelId = Kassimali_Example8_4.IdStatic
         };
+
+    public static MaterialFixture2[] All { get; } = [Steel29000Ksi];
 }

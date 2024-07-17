@@ -20,9 +20,3 @@ public record SourceInfo(
     string? ElementName = null,
     string? SourceLink = null
 );
-
-public record SourceInfo2(
-    string SourceName,
-    FixtureSourceType SourceType,
-    SourceInfo2? SourceOfSource = null
-);

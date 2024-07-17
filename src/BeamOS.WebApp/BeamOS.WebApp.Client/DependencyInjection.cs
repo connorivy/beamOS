@@ -1,3 +1,6 @@
+using BeamOs.Application.Common;
+using BeamOS.Tests.Common.Fixtures.Mappers;
+using BeamOS.Tests.Common.Interfaces;
 using BeamOS.WebApp.Client.Caches;
 using BeamOS.WebApp.Client.Components.Editor;
 using BeamOS.WebApp.Client.Components.Editor.CommandHandlers;
@@ -51,6 +54,10 @@ public static class DependencyInjection
 
         _ = services.AddCommandHandlers();
         _ = services.AddScoped<GenericCommandHandler>();
+
+        _ = services.AddScoped<TestFixtureDisplayer>();
+
+        _ = services.AddTestServices();
     }
 
     public static IServiceCollection AddCommandHandlers(this IServiceCollection services)
@@ -81,7 +88,7 @@ public static class DependencyInjection
         return services;
     }
 
-    private static Type? GetInterfaceType(Type concreteType, Type interfaceType)
+    public static Type? GetInterfaceType(Type concreteType, Type interfaceType)
     {
         bool isGeneric = interfaceType.IsGenericType;
         foreach (var inter in concreteType.GetInterfaces())
@@ -124,5 +131,13 @@ public static class DependencyInjection
             return baseType;
         }
         return GetBaseType(concreteType.BaseType, baseType);
+    }
+
+    public static IServiceCollection AddTestServices(this IServiceCollection services)
+    {
+        return services.AddServicesAsType<IHasSourceInfo>(
+            typeof(IFixtureMapper),
+            BeamOs.Application.Common.ServiceLifetime.Singleton
+        );
     }
 }

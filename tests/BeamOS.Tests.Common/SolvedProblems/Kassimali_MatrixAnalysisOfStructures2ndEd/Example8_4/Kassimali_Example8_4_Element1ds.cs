@@ -41,4 +41,6 @@ public class Kassimali_Example8_4_Element1ds
             //ModelId = Kassimali_Example8_4.IdStatic,
             SectionProfileRotation = new(30, UnitsNet.Units.AngleUnit.Degree)
         };
+
+    public static Element1dFixture2[] All { get; } = [Element1, Element2, Element3];
 }

@@ -22,4 +22,6 @@ internal class Kassimali_Example8_4_SectionProfiles
             ),
             ModelId = Kassimali_Example8_4.IdStatic
         };
+
+    public static SectionProfileFixture2[] All { get; } = [Profile33in2];
 }

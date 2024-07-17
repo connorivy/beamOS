@@ -1,3 +1,4 @@
+using BeamOS.Tests.Common.Fixtures;
 using BeamOS.Tests.Common.Interfaces;
 using BeamOS.Tests.Common.Traits;
 using BeamOs.Tests.TestRunner;
@@ -22,6 +23,9 @@ public partial class TestExplorer : FluxorComponent
 
     [Inject]
     private IState<TestInfoState> TestInfoState { get; init; }
+
+    [Inject]
+    private TestFixtureDisplayer TestFixtureDisplayer { get; init; }
 
     private bool open = true;
     private ReadOnlyEditor readOnlyEditor;
@@ -93,6 +97,7 @@ public partial class TestExplorer : FluxorComponent
                     break;
             }
             this.isLoadingAssertionResults = false;
+            this.StateHasChanged();
         });
 
         //foreach (var testInfo in this.TestInfoProvider.TestInfos.Values)
@@ -109,15 +114,21 @@ public partial class TestExplorer : FluxorComponent
             return;
         }
 
-        ITestFixtureDisplayable? displayable = testInfo.GetDisplayable();
-        if (displayable != this.TestExplorerState.Value.SelectedTestInfo?.GetDisplayable())
+        if (testInfo.GetTestFixture() is FixtureBase2 fixtureBase)
         {
             await this.readOnlyEditor.EditorApiAlpha.ClearAsync();
-            if (displayable is not null)
-            {
-                await displayable.Display(this.readOnlyEditor.EditorApiAlpha);
-            }
+            await this.TestFixtureDisplayer.Display(fixtureBase, this.readOnlyEditor.ElementId);
         }
+
+        //ITestFixtureDisplayable? displayable = testInfo.GetDisplayable();
+        //if (displayable != this.TestExplorerState.Value.SelectedTestInfo?.GetDisplayable())
+        //{
+        //    await this.readOnlyEditor.EditorApiAlpha.ClearAsync();
+        //    if (displayable is not null)
+        //    {
+        //        await displayable.Display(this.readOnlyEditor.EditorApiAlpha);
+        //    }
+        //}
 
         this.Dispatcher.Dispatch(new ChangeSelectedTestInfoAction(testInfo));
         this.Dispatcher.Dispatch(new ExecutionTestAction(testInfo));

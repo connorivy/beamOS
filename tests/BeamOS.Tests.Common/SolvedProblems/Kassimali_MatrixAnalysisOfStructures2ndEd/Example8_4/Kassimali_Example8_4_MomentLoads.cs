@@ -39,4 +39,7 @@ internal class Kassimali_Example8_4_MomentLoads
             ModelId = Kassimali_Example8_4.IdStatic,
             Node = new(() => Kassimali_Example8_4_Nodes.Node2)
         };
+
+    public static MomentLoadFixture2[] All { get; } =
+        [MomentLoad1, MomentLoad2, MomentLoad3, MomentLoad4];
 }

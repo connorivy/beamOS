@@ -61,4 +61,6 @@ public static partial class Element1dFixtureToDomainMapper
 public static partial class ModelFixtureToDomainMapper
 {
     public static partial Model ToDomain(this ModelFixture2 fixture);
+
+    public static partial Model ToDomain(this IModelFixture2 fixture);
 }
