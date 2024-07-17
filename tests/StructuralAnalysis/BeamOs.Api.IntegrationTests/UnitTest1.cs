@@ -21,7 +21,7 @@ public class UnitTest1(CustomWebApplicationFactory<Program> webApplicationFactor
             dbModelFixture.ModelFixture.Id.ToString(),
             null
         );
-        var expectedModelResponse = dbModelFixture.GetExpectedResponse();
+        var expectedModelResponse = dbModelFixture.ToResponse(dbModelFixture.ModelFixture);
 
         ContractComparer.AssertContractsEqual(modelResponse, expectedModelResponse);
     }

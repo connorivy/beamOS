@@ -1,26 +1,18 @@
-using BeamOs.Api.Common.Mappers;
 using BeamOs.ApiClient;
 using BeamOs.Application.Common.Mappers;
-using BeamOs.Contracts.PhysicalModel.Model;
-using BeamOS.Tests.Common.Fixtures;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOS.Tests.Common.SolvedProblems.Fixtures;
 
 [Mapper]
-public partial class ModelFixtureInDb
+public partial class ModelFixtureInDb(ModelFixture2 modelFixture)
 {
-    public ModelFixture2 ModelFixture { get; }
+    public ModelFixture2 ModelFixture { get; } = modelFixture;
 
     [UseMapper]
-    public UnitMapperWithOptionalUnits UnitMapperWithOptionalUnits { get; }
+    public UnitMapperWithOptionalUnits UnitMapperWithOptionalUnits { get; } =
+        new(modelFixture.Settings.UnitSettings);
     public Dictionary<Guid, string> RuntimeIdToDbIdDict { get; } = [];
-
-    public ModelFixtureInDb(ModelFixture2 modelFixture)
-    {
-        this.ModelFixture = modelFixture;
-        this.UnitMapperWithOptionalUnits = new(modelFixture.Settings.UnitSettings);
-    }
 
     public async Task Create(ApiAlphaClient client)
     {
@@ -83,33 +75,4 @@ public partial class ModelFixtureInDb
     }
 
     protected string RuntimeIdToDbId(Guid id) => this.RuntimeIdToDbIdDict[id];
-
-    protected string RuntimeModelIdToDbId(GuidWrapperForModelId modelId) =>
-        modelId.ModelId?.ToString() ?? this.ModelFixture.Id.ToString();
-
-    public ModelResponse GetExpectedResponse()
-    {
-        var nodeResponses = this.ModelFixture.Nodes.Select(this.ToResponse).ToList();
-        var element1dResponse = this.ModelFixture.Element1ds.Select(this.ToResponse).ToList();
-        var materialResponse = this.ModelFixture.Materials.Select(this.ToResponse).ToList();
-        var sectionProfileResponses = this.ModelFixture
-            .SectionProfiles
-            .Select(this.ToResponse)
-            .ToList();
-        var pointLoadResponses = this.ModelFixture.PointLoads.Select(this.ToResponse).ToList();
-        var momentLoadResponses = this.ModelFixture.MomentLoads.Select(this.ToResponse).ToList();
-
-        return new ModelResponse(
-            this.ModelFixture.Id.ToString(),
-            this.ModelFixture.Name,
-            this.ModelFixture.Description,
-            new ModelSettingsResponse(this.ModelFixture.Settings.UnitSettings.ToResponse()),
-            nodeResponses,
-            element1dResponse,
-            materialResponse,
-            sectionProfileResponses,
-            pointLoadResponses,
-            momentLoadResponses
-        );
-    }
 }

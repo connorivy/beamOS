@@ -33,7 +33,4 @@ internal class Kassimali_Example3_8 : ModelFixture2, IHasExpectedNodeResults2
     public override ModelSettings Settings { get; } = new(UnitSettings.K_IN);
     public override SourceInfo SourceInfo { get; }
     public NodeResultFixture2[] ExpectedNodeResults { get; }
-
-    public NodeResultResponse ToResponse(NodeResultFixture source) =>
-        throw new NotImplementedException();
 }
