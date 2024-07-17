@@ -12,8 +12,7 @@ public class Kassimali_Example8_4_Element1ds
             EndNode = Kassimali_Example8_4_Nodes.Node1,
             Material = Kassimali_Example8_4_Materials.Steel29000Ksi,
             SectionProfile = Kassimali_Example8_4_SectionProfiles.Profile33in2,
-            ElementName = nameof(Element1),
-            //ModelId = Kassimali_Example8_4.IdStatic
+            ElementName = nameof(Element1)
         };
 
     public static Element1dFixture2 Element2 { get; } =
@@ -25,7 +24,6 @@ public class Kassimali_Example8_4_Element1ds
             Material = Kassimali_Example8_4_Materials.Steel29000Ksi,
             SectionProfile = Kassimali_Example8_4_SectionProfiles.Profile33in2,
             ElementName = nameof(Element2),
-            //ModelId = Kassimali_Example8_4.IdStatic,
             SectionProfileRotation = new(90, UnitsNet.Units.AngleUnit.Degree)
         };
 
@@ -38,7 +36,6 @@ public class Kassimali_Example8_4_Element1ds
             Material = Kassimali_Example8_4_Materials.Steel29000Ksi,
             SectionProfile = Kassimali_Example8_4_SectionProfiles.Profile33in2,
             ElementName = nameof(Element3),
-            //ModelId = Kassimali_Example8_4.IdStatic,
             SectionProfileRotation = new(30, UnitsNet.Units.AngleUnit.Degree)
         };
 

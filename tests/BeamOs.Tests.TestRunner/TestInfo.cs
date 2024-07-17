@@ -45,9 +45,6 @@ public class TestInfo
     public Type TestClassType { get; }
     public Dictionary<string, string[]> TraitNameToValueDict { get; }
 
-    public ITestFixtureDisplayable? GetDisplayable() =>
-        this.TestData?.FirstOrDefault() as ITestFixtureDisplayable;
-
     public FixtureBase2? GetTestFixture() => this.TestData?.FirstOrDefault() as FixtureBase2;
 
     public SourceInfo? SourceInfo =>

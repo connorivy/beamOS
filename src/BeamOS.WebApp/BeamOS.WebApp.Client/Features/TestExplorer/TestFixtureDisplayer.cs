@@ -34,7 +34,14 @@ public class TestFixtureDisplayer
 
     public async Task Display(FixtureBase2 fixture, string canvasId)
     {
+        if (fixture is Element1dFixture2 element1DFixture)
+        {
+            // todo: this is a hack. make proper, individual, test fixture displayers
+            fixture = element1DFixture.Model.Value;
+        }
+
         var fixtureToContractMapper = this.GetFixtureMapperForType(fixture.GetType());
+
         var contract = fixtureToContractMapper.Map(fixture);
 
         await this.addEntityContractToEditorCommandHandler.ExecuteAsync(new(canvasId, contract));
