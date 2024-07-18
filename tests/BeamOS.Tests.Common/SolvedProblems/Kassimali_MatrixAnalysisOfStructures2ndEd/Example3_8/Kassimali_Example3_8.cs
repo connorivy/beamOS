@@ -1,8 +1,4 @@
-using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
-using BeamOs.Contracts.Common;
-using BeamOs.Contracts.PhysicalModel.Element1d;
-using BeamOs.Contracts.PhysicalModel.Model;
-using BeamOs.Contracts.PhysicalModel.Node;
+using BeamOs.Domain.Common.Utils;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOS.Tests.Common.Fixtures;
@@ -11,26 +7,26 @@ using BeamOS.Tests.Common.SolvedProblems.Fixtures;
 
 namespace BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd.Example3_8;
 
-internal class Kassimali_Example3_8 : ModelFixture2, IHasExpectedNodeResults2
+public class Kassimali_Example3_8 : ModelFixture2
 {
-    public CreateModelRequest CreateModelRequest { get; } =
+    public static Guid IdStatic { get; } = TypedGuids.G0;
+    public override Guid Id => IdStatic;
+    public override ModelSettings Settings { get; } = new(UnitSettings.K_IN);
+    public override SourceInfo SourceInfo { get; } =
         new(
+            "Matrix Analysis Of Structures 2nd Edition by Kassimali",
+            FixtureSourceType.Textbook,
             "Example 3.8",
-            "Plane truss direct stiffness method problem",
-            new PhysicalModelSettingsDto(UnitSettingsDtoVerbose.K_IN)
+            null,
+            "https://dokumen.pub/matrix-analysis-of-structures-3nbsped-9780357448304.html#English"
         );
 
-    public IEnumerable<CreateElement1dRequest> CreateElement1dRequests = [];
+    public override PointLoadFixture2[] PointLoads => Kassimali_Example3_8_PointLoads.All;
+    public override NodeFixture2[] Nodes => Kassimali_Example3_8_Nodes.All;
+    public override MaterialFixture2[] Materials => Kassimali_Example3_8_Materials.All;
+    public override SectionProfileFixture2[] SectionProfiles =>
+        Kassimali_Example3_8_SectionProfiles.All;
+    public override Element1dFixture2[] Element1ds => Kassimali_Example3_8_Element1ds.All;
 
-    private static string modelId;
-    private static RestraintRequest free2D = new(true, true, false, false, false, true);
-    private static RestraintRequest pinned2d = new(false, false, false, false, false, true);
-
-    private static CreateNodeRequest Node1 { get; } =
-        new(modelId, 12, 16, 0, "Foot", restraint: free2D);
-
-    public override Guid Id { get; init; }
-    public override ModelSettings Settings { get; } = new(UnitSettings.K_IN);
-    public override SourceInfo SourceInfo { get; }
-    public NodeResultFixture2[] ExpectedNodeResults { get; }
+    public static Kassimali_Example3_8 Instance { get; } = new();
 }

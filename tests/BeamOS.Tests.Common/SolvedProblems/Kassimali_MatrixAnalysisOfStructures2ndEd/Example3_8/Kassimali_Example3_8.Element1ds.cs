@@ -1,31 +1,41 @@
-using BeamOs.Contracts.Common;
-using BeamOs.Contracts.PhysicalModel.Element1d;
-using BeamOs.Contracts.PhysicalModel.Model;
-using BeamOs.Contracts.PhysicalModel.Node;
-using BeamOs.Domain.Common.ValueObjects;
+using BeamOS.Tests.Common.Fixtures;
 
 namespace BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd.Example3_8;
 
-internal class Example3_8
+public static class Kassimali_Example3_8_Element1ds
 {
-    public CreateModelRequest CreateModelRequest { get; } =
-        new(
-            "Example 3.8",
-            "Plane truss direct stiffness method problem",
-            new PhysicalModelSettingsDto(UnitSettingsDtoVerbose.K_IN)
-        );
+    public static Element1dFixture2 Element1 { get; } =
+        new()
+        {
+            Model = new(() => Kassimali_Example3_8.Instance),
+            StartNode = Kassimali_Example3_8_Nodes.Node2,
+            EndNode = Kassimali_Example3_8_Nodes.Node1,
+            Material = Kassimali_Example3_8_Materials.Default,
+            SectionProfile = Kassimali_Example3_8_SectionProfiles.Profile8in2,
+            ElementName = nameof(Element1)
+        };
 
-    public IEnumerable<CreateElement1dRequest> CreateElement1dRequests = [];
+    public static Element1dFixture2 Element2 { get; } =
+        new()
+        {
+            Model = new(() => Kassimali_Example3_8.Instance),
+            StartNode = Kassimali_Example3_8_Nodes.Node3,
+            EndNode = Kassimali_Example3_8_Nodes.Node1,
+            Material = Kassimali_Example3_8_Materials.Default,
+            SectionProfile = Kassimali_Example3_8_SectionProfiles.Profile6in2,
+            ElementName = nameof(Element2)
+        };
 
-    private static string modelId;
-    private static RestraintRequest free2D = new(true, true, false, false, false, true);
-    private static RestraintRequest pinned2d = new(false, false, false, false, false, true);
+    public static Element1dFixture2 Element3 { get; } =
+        new()
+        {
+            Model = new(() => Kassimali_Example3_8.Instance),
+            StartNode = Kassimali_Example3_8_Nodes.Node4,
+            EndNode = Kassimali_Example3_8_Nodes.Node1,
+            Material = Kassimali_Example3_8_Materials.Default,
+            SectionProfile = Kassimali_Example3_8_SectionProfiles.Profile8in2,
+            ElementName = nameof(Element3)
+        };
 
-    private static CreateNodeRequest Node1 { get; } =
-        new(modelId, 12, 16, 0, "Foot", restraint: free2D);
-
-    //private static CreateElement1dRequest Element1(string modelId)
-    //{
-    //    //return new(modelId);
-    //}
+    public static Element1dFixture2[] All { get; } = [Element1, Element2, Element3];
 }

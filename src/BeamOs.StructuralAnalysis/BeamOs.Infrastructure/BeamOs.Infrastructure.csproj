@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\tests\BeamOS.Tests.Common\BeamOS.Tests.Common.csproj" />
     <ProjectReference Include="..\BeamOs.Application\BeamOs.Application.csproj" />
   </ItemGroup>
 

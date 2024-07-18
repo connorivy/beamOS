@@ -68,6 +68,9 @@ public class DsmAnalysisModel(Model model)
             shearForceDiagrams.Add(
                 ShearForceDiagram.Create(
                     dsmElement1d.Element1DId,
+                    dsmElement1d.StartPoint,
+                    dsmElement1d.EndPoint,
+                    dsmElement1d.SectionProfileRotation,
                     dsmElement1d.Length,
                     localMemberEndForcesVector,
                     model.Settings.UnitSettings.LengthUnit,

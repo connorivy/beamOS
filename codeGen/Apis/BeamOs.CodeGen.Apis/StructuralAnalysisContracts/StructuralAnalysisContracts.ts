@@ -4608,6 +4608,7 @@ export interface ISectionProfileResponse {
 export class ShearDiagramResponse implements IShearDiagramResponse {
     id!: string;
     element1DId!: string;
+    globalShearDirection!: Vector3;
     lengthUnit!: string;
     forceUnit!: string;
     elementLength!: UnitValueDto;
@@ -4621,6 +4622,7 @@ export class ShearDiagramResponse implements IShearDiagramResponse {
             }
         }
         if (!data) {
+            this.globalShearDirection = new Vector3();
             this.elementLength = new UnitValueDto();
             this.intervals = [];
         }
@@ -4630,6 +4632,7 @@ export class ShearDiagramResponse implements IShearDiagramResponse {
         if (_data) {
             this.id = _data["id"];
             this.element1DId = _data["element1DId"];
+            this.globalShearDirection = _data["globalShearDirection"] ? Vector3.fromJS(_data["globalShearDirection"]) : new Vector3();
             this.lengthUnit = _data["lengthUnit"];
             this.forceUnit = _data["forceUnit"];
             this.elementLength = _data["elementLength"] ? UnitValueDto.fromJS(_data["elementLength"]) : new UnitValueDto();
@@ -4652,6 +4655,7 @@ export class ShearDiagramResponse implements IShearDiagramResponse {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
         data["element1DId"] = this.element1DId;
+        data["globalShearDirection"] = this.globalShearDirection ? this.globalShearDirection.toJSON() : <any>undefined;
         data["lengthUnit"] = this.lengthUnit;
         data["forceUnit"] = this.forceUnit;
         data["elementLength"] = this.elementLength ? this.elementLength.toJSON() : <any>undefined;
@@ -4667,6 +4671,7 @@ export class ShearDiagramResponse implements IShearDiagramResponse {
 export interface IShearDiagramResponse {
     id: string;
     element1DId: string;
+    globalShearDirection: Vector3;
     lengthUnit: string;
     forceUnit: string;
     elementLength: UnitValueDto;
