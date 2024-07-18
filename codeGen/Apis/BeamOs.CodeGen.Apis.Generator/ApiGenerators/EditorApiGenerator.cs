@@ -1,4 +1,5 @@
 using BeamOs.Common.Api;
+using BeamOs.Contracts.AnalyticalResults.Diagrams;
 using BeamOs.Contracts.PhysicalModel.Element1d;
 using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Contracts.PhysicalModel.Node;
@@ -26,6 +27,8 @@ public class EditorApiGenerator : AbstractGenerator
         _ = addMethod("CreateNode").Accepts<NodeResponse>();
 
         _ = addMethod("CreatePointLoad").Accepts<PointLoadResponse>();
+
+        _ = addMethod("CreateShearDiagram").Accepts<ShearDiagramResponse>();
 
         _ = addMethod("Clear");
 

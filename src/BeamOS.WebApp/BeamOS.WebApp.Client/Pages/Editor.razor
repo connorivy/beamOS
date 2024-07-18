@@ -26,9 +26,13 @@
         </MudPopover>
     }
     <EditorComponent Class="h-full" @ref="editorComponent"></EditorComponent>
+    <MudButton OnClick="LoadDiagram">Load Diagram</MudButton>
 </MudDrawerContainer>
 
 @code {
+    [Inject]
+    private IApiAlphaClient ApiAlphaClient { get; init; }
+
     private EditorComponent editorComponent;
 
     protected override void OnInitialized()
@@ -39,4 +43,11 @@
 
     private void EventEmitter_VisibleStateChanged(object? sender, EventArgs _) =>
         InvokeAsync(StateHasChanged);
+
+    private async Task LoadDiagram()
+    {
+        // await ApiAlphaClient.RunDirectStiffnessMethodAsync(new IdRequest(editorComponent.EditorComponentState.LoadedModelId));
+        var shearDiagram = await ApiAlphaClient.GetShearDiagramAsync("00000000-0000-0000-0000-000000000003");
+        await editorComponent.EditorComponentState.EditorApi.CreateShearDiagramAsync(shearDiagram);
+    }
 }

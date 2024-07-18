@@ -38,6 +38,11 @@ export interface IEditorApiAlpha {
     /**
      * @return OK
      */
+    createShearDiagram(body: ShearDiagramResponse): Promise<Result>;
+
+    /**
+     * @return OK
+     */
     clear(): Promise<Result>;
 
     /**
@@ -249,6 +254,47 @@ export class EditorApiAlpha implements IEditorApiAlpha {
     }
 
     protected processCreatePointLoad(response: Response): Promise<Result> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    createShearDiagram(body: ShearDiagramResponse): Promise<Result> {
+        let url_ = this.baseUrl + "/EditorApiAlpha/CreateShearDiagram";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateShearDiagram(_response);
+        });
+    }
+
+    protected processCreateShearDiagram(response: Response): Promise<Result> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -525,6 +571,63 @@ export interface ICoordinate3D {
     x: number;
     y: number;
     z: number;
+}
+
+export class DiagramConsistantIntervalResponse implements IDiagramConsistantIntervalResponse {
+    startLocation!: UnitValueDto;
+    endLocation!: UnitValueDto;
+    polynomialCoefficients!: number[];
+
+    constructor(data?: IDiagramConsistantIntervalResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.startLocation = new UnitValueDto();
+            this.endLocation = new UnitValueDto();
+            this.polynomialCoefficients = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.startLocation = _data["startLocation"] ? UnitValueDto.fromJS(_data["startLocation"]) : new UnitValueDto();
+            this.endLocation = _data["endLocation"] ? UnitValueDto.fromJS(_data["endLocation"]) : new UnitValueDto();
+            if (Array.isArray(_data["polynomialCoefficients"])) {
+                this.polynomialCoefficients = [] as any;
+                for (let item of _data["polynomialCoefficients"])
+                    this.polynomialCoefficients!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): DiagramConsistantIntervalResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new DiagramConsistantIntervalResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["startLocation"] = this.startLocation ? this.startLocation.toJSON() : <any>undefined;
+        data["endLocation"] = this.endLocation ? this.endLocation.toJSON() : <any>undefined;
+        if (Array.isArray(this.polynomialCoefficients)) {
+            data["polynomialCoefficients"] = [];
+            for (let item of this.polynomialCoefficients)
+                data["polynomialCoefficients"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IDiagramConsistantIntervalResponse {
+    startLocation: UnitValueDto;
+    endLocation: UnitValueDto;
+    polynomialCoefficients: number[];
 }
 
 export class Element1DResponse implements IElement1DResponse {
@@ -1389,6 +1492,74 @@ export class SelectedObject implements ISelectedObject {
 export interface ISelectedObject {
     id: string;
     typeName: string;
+}
+
+export class ShearDiagramResponse implements IShearDiagramResponse {
+    id!: string;
+    element1DId!: string;
+    lengthUnit!: string;
+    forceUnit!: string;
+    elementLength!: UnitValueDto;
+    intervals!: DiagramConsistantIntervalResponse[];
+
+    constructor(data?: IShearDiagramResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.elementLength = new UnitValueDto();
+            this.intervals = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.element1DId = _data["element1DId"];
+            this.lengthUnit = _data["lengthUnit"];
+            this.forceUnit = _data["forceUnit"];
+            this.elementLength = _data["elementLength"] ? UnitValueDto.fromJS(_data["elementLength"]) : new UnitValueDto();
+            if (Array.isArray(_data["intervals"])) {
+                this.intervals = [] as any;
+                for (let item of _data["intervals"])
+                    this.intervals!.push(DiagramConsistantIntervalResponse.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ShearDiagramResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ShearDiagramResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["element1DId"] = this.element1DId;
+        data["lengthUnit"] = this.lengthUnit;
+        data["forceUnit"] = this.forceUnit;
+        data["elementLength"] = this.elementLength ? this.elementLength.toJSON() : <any>undefined;
+        if (Array.isArray(this.intervals)) {
+            data["intervals"] = [];
+            for (let item of this.intervals)
+                data["intervals"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IShearDiagramResponse {
+    id: string;
+    element1DId: string;
+    lengthUnit: string;
+    forceUnit: string;
+    elementLength: UnitValueDto;
+    intervals: DiagramConsistantIntervalResponse[];
 }
 
 export class UnitSettingsResponse implements IUnitSettingsResponse {

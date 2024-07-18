@@ -42,8 +42,9 @@ public class Element1D : AggregateRoot<Element1DId>
     public SectionProfileId SectionProfileId { get; private set; }
     public SectionProfile? SectionProfile { get; init; }
 
-    public Length Length =>
-        Line.GetLength(this.StartNode.LocationPoint, this.EndNode.LocationPoint);
+    public Length Length => this.BaseLine.Length;
+
+    public Line BaseLine => new(this.StartNode.LocationPoint, this.EndNode.LocationPoint);
 
     /// <summary>
     /// counter-clockwise rotation in radians when looking in the negative (local) x direction

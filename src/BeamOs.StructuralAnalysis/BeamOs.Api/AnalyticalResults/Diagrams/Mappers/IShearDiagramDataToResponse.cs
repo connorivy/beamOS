@@ -1,15 +1,15 @@
-using BeamOs.Application.AnalyticalResults.Diagrams.ShearDiagrams.Interfaces;
 using BeamOs.Application.Common.Mappers;
 using BeamOs.Contracts.AnalyticalResults.Diagrams;
+using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.Api.AnalyticalResults.Diagrams.Mappers;
 
 [Mapper]
-public partial class IShearDiagramDataToResponse
-    : AbstractMapper<IShearDiagramData, ShearDiagramResponse>
+public partial class ShearDiagramDataToResponse
+    : AbstractMapper<ShearForceDiagram, ShearDiagramResponse>
 {
-    public override ShearDiagramResponse Map(IShearDiagramData source) => this.ToResponse(source);
+    public override ShearDiagramResponse Map(ShearForceDiagram source) => this.ToResponse(source);
 
-    public partial ShearDiagramResponse ToResponse(IShearDiagramData source);
+    public partial ShearDiagramResponse ToResponse(ShearForceDiagram source);
 }

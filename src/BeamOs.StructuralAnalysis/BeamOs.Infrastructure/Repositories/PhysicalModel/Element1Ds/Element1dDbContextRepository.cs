@@ -1,3 +1,4 @@
+using System.Threading;
 using BeamOs.Application.PhysicalModel.Element1dAggregate;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate.ValueObjects;
@@ -20,4 +21,20 @@ internal class Element1dDbContextRepository(BeamOsStructuralDbContext dbContext)
             .Where(el => el.ModelId == modelId)
             .ToListAsync(cancellationToken: ct);
     }
+
+    public override Task<Element1D?> GetById(Element1DId id, CancellationToken ct = default) =>
+        this.DbContext
+            .Element1Ds
+            .Include(el => el.StartNode)
+            .ThenInclude(el => el.PointLoads)
+            .Include(el => el.StartNode)
+            .ThenInclude(el => el.MomentLoads)
+            .Include(el => el.EndNode)
+            .ThenInclude(el => el.PointLoads)
+            .Include(el => el.EndNode)
+            .ThenInclude(el => el.MomentLoads)
+            .Include(el => el.Material)
+            .Include(el => el.SectionProfile)
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(el => el.Id == id, cancellationToken: ct);
 }
