@@ -1,3 +1,4 @@
+using BeamOs.Domain.AnalyticalResults.NodeResultAggregate;
 using BeamOs.Domain.Common.Models;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
@@ -117,6 +118,8 @@ public class Node : AggregateRoot<NodeId>
 
     public ICollection<PointLoad> PointLoads { get; private set; } = [];
     public ICollection<MomentLoad> MomentLoads { get; private set; } = [];
+
+    public NodeResult? NodeResult { get; private set; }
 
     public Forces GetForcesInGlobalCoordinates()
     {

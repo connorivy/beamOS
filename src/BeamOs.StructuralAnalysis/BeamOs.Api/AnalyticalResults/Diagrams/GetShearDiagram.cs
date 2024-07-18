@@ -8,13 +8,14 @@ using BeamOs.Application.PhysicalModel.Models.Interfaces;
 using BeamOs.Common.Application.Interfaces;
 using BeamOs.Contracts.AnalyticalResults.Diagrams;
 using BeamOs.Contracts.Common;
+using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate;
 using FastEndpoints;
 
 namespace BeamOs.Api.PhysicalModel.Element1ds.Endpoints;
 
 public class GetShearDiagram(
     BeamOsFastEndpointOptions options,
-    IQueryHandler<GetResourceByIdQuery, IShearDiagramData> getShearDiagramQueryHandler,
+    IQueryHandler<GetResourceByIdQuery, ShearForceDiagram> getShearDiagramQueryHandler,
     IQueryHandler<GetResourceByIdWithPropertiesQuery, IModelData> getModelQueryHandler,
     CreateShearDiagramCommandHandler createShearDiagramCommandHandler,
     ShearDiagramDataToResponse responseMapper
@@ -31,11 +32,7 @@ public class GetShearDiagram(
     {
         GetResourceByIdQuery query = new(Guid.Parse(req.Id));
 
-        var data = await createShearDiagramCommandHandler.ExecuteAsync(
-            new(req.Id, Domain.Common.Enums.LinearCoordinateDirection3D.AlongY)
-        );
-
-        //IShearDiagramData? data = await getShearDiagramQueryHandler.ExecuteAsync(query, ct);
+        ShearForceDiagram? data = await getShearDiagramQueryHandler.ExecuteAsync(query, ct);
 
         if (data is null)
         {

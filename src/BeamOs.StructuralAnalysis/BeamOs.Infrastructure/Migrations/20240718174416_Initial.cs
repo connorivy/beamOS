@@ -34,28 +34,19 @@ namespace BeamOs.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "NodeResults",
+                name: "ShearForceDiagrams",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ModelId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    NodeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Displacements_DisplacementAlongX = table.Column<double>(type: "float", nullable: false),
-                    Displacements_DisplacementAlongY = table.Column<double>(type: "float", nullable: false),
-                    Displacements_DisplacementAlongZ = table.Column<double>(type: "float", nullable: false),
-                    Displacements_RotationAboutX = table.Column<double>(type: "float", nullable: false),
-                    Displacements_RotationAboutY = table.Column<double>(type: "float", nullable: false),
-                    Displacements_RotationAboutZ = table.Column<double>(type: "float", nullable: false),
-                    Forces_ForceAlongX = table.Column<double>(type: "float", nullable: false),
-                    Forces_ForceAlongY = table.Column<double>(type: "float", nullable: false),
-                    Forces_ForceAlongZ = table.Column<double>(type: "float", nullable: false),
-                    Forces_MomentAboutX = table.Column<double>(type: "float", nullable: false),
-                    Forces_MomentAboutY = table.Column<double>(type: "float", nullable: false),
-                    Forces_MomentAboutZ = table.Column<double>(type: "float", nullable: false)
+                    Element1DId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ShearDirection = table.Column<int>(type: "int", nullable: false),
+                    ElementLength = table.Column<double>(type: "float", nullable: false),
+                    EqualityTolerance = table.Column<double>(type: "float", nullable: false),
+                    LengthUnit = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_NodeResults", x => x.Id);
+                    table.PrimaryKey("PK_ShearForceDiagrams", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -128,6 +119,27 @@ namespace BeamOs.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DiagramConsistantIntervals",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StartLocation = table.Column<double>(type: "float", nullable: false),
+                    EndLocation = table.Column<double>(type: "float", nullable: false),
+                    Polynomial = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LengthUnit = table.Column<int>(type: "int", nullable: false),
+                    ShearForceDiagramId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DiagramConsistantIntervals", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DiagramConsistantIntervals_ShearForceDiagrams_ShearForceDiagramId",
+                        column: x => x.ShearForceDiagramId,
+                        principalTable: "ShearForceDiagrams",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "MomentLoads",
                 columns: table => new
                 {
@@ -146,6 +158,36 @@ namespace BeamOs.Infrastructure.Migrations
                         principalTable: "Nodes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "NodeResults",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ModelId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    NodeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Displacements_DisplacementAlongX = table.Column<double>(type: "float", nullable: false),
+                    Displacements_DisplacementAlongY = table.Column<double>(type: "float", nullable: false),
+                    Displacements_DisplacementAlongZ = table.Column<double>(type: "float", nullable: false),
+                    Displacements_RotationAboutX = table.Column<double>(type: "float", nullable: false),
+                    Displacements_RotationAboutY = table.Column<double>(type: "float", nullable: false),
+                    Displacements_RotationAboutZ = table.Column<double>(type: "float", nullable: false),
+                    Forces_ForceAlongX = table.Column<double>(type: "float", nullable: false),
+                    Forces_ForceAlongY = table.Column<double>(type: "float", nullable: false),
+                    Forces_ForceAlongZ = table.Column<double>(type: "float", nullable: false),
+                    Forces_MomentAboutX = table.Column<double>(type: "float", nullable: false),
+                    Forces_MomentAboutY = table.Column<double>(type: "float", nullable: false),
+                    Forces_MomentAboutZ = table.Column<double>(type: "float", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NodeResults", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_NodeResults_Nodes_NodeId",
+                        column: x => x.NodeId,
+                        principalTable: "Nodes",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -213,6 +255,11 @@ namespace BeamOs.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_DiagramConsistantIntervals_ShearForceDiagramId",
+                table: "DiagramConsistantIntervals",
+                column: "ShearForceDiagramId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Element1Ds_EndNodeId",
                 table: "Element1Ds",
                 column: "EndNodeId");
@@ -248,6 +295,12 @@ namespace BeamOs.Infrastructure.Migrations
                 column: "NodeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_NodeResults_NodeId",
+                table: "NodeResults",
+                column: "NodeId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Nodes_ModelId",
                 table: "Nodes",
                 column: "ModelId");
@@ -267,6 +320,9 @@ namespace BeamOs.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "DiagramConsistantIntervals");
+
+            migrationBuilder.DropTable(
                 name: "Element1Ds");
 
             migrationBuilder.DropTable(
@@ -277,6 +333,9 @@ namespace BeamOs.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "PointLoads");
+
+            migrationBuilder.DropTable(
+                name: "ShearForceDiagrams");
 
             migrationBuilder.DropTable(
                 name: "Materials");

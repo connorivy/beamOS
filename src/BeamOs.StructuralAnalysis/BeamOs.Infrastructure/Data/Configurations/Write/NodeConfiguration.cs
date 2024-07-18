@@ -1,3 +1,4 @@
+using BeamOs.Domain.AnalyticalResults.NodeResultAggregate;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate;
 using BeamOs.Domain.PhysicalModel.NodeAggregate;
 using Microsoft.EntityFrameworkCore;
@@ -31,7 +32,36 @@ public class NodeConfiguration : IEntityTypeConfiguration<Node>
             .IsRequired()
             .OnDelete(DeleteBehavior.ClientCascade);
 
+        builder
+            .HasOne(el => el.NodeResult)
+            .WithOne()
+            .HasForeignKey<NodeResult>(el => el.NodeId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.ClientCascade);
+
         // needed for some reason?
         builder.ComplexProperty(n => n.Restraint);
     }
 }
+
+//public class NodeResultConfiguration : IEntityTypeConfiguration<NodeResult>
+//{
+//    public void Configure(EntityTypeBuilder<NodeResult> builder)
+//    {
+//        //builder.HasMany<PointLoad>().WithOne().HasForeignKey(el => el.NodeId).IsRequired();
+//        //builder.HasMany<MomentLoad>().WithOne().HasForeignKey(el => el.NodeId).IsRequired();
+//        //builder
+//        //    .HasOne<NodeResult>()
+//        //    .WithOne()
+//        //    .HasForeignKey<NodeResult>(el => el.NodeId)
+//        //    .IsRequired();
+
+//        builder
+//            .HasOne<Node>()
+//            .WithOne(n => n.NodeResult)
+//            .HasForeignKey(n => n.N)
+
+//        // needed for some reason?
+//        builder.ComplexProperty(n => n.Restraint);
+//    }
+//}

@@ -13,7 +13,7 @@ export interface IApiAlphaClient {
     /**
      * @return Success
      */
-    runDirectStiffnessMethod(idRequest: IdRequest): Promise<AnalyticalModelResponse3>;
+    runDirectStiffnessMethod(id: string): Promise<AnalyticalModelResponse3>;
 
     /**
      * @return Success
@@ -117,17 +117,16 @@ export class ApiAlphaClient implements IApiAlphaClient {
     /**
      * @return Success
      */
-    runDirectStiffnessMethod(idRequest: IdRequest): Promise<AnalyticalModelResponse3> {
-        let url_ = this.baseUrl + "/api/direct-stiffness-method/run/";
+    runDirectStiffnessMethod(id: string): Promise<AnalyticalModelResponse3> {
+        let url_ = this.baseUrl + "/api/direct-stiffness-method/run/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(idRequest);
-
         let options_: RequestInit = {
-            body: content_,
-            method: "POST",
+            method: "GET",
             headers: {
-                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -1306,20 +1305,45 @@ export interface ICreateSectionProfileRequest {
     polarMomentOfInertia: UnitValueDto;
 }
 
-export class PointLoadResponse implements IPointLoadResponse {
+export abstract class BeamOsEntityContractBase extends BeamOsContractBase implements IBeamOsEntityContractBase {
     id!: string;
+
+    constructor(data?: IBeamOsEntityContractBase) {
+        super(data);
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): BeamOsEntityContractBase {
+        data = typeof data === 'object' ? data : {};
+        throw new Error("The abstract class 'BeamOsEntityContractBase' cannot be instantiated.");
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IBeamOsEntityContractBase extends IBeamOsContractBase {
+    id: string;
+}
+
+export class PointLoadResponse extends BeamOsEntityContractBase implements IPointLoadResponse {
     modelId!: string;
     nodeId!: string;
     force!: UnitValueDto;
     direction!: Vector3;
 
     constructor(data?: IPointLoadResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+        super(data);
         if (!data) {
             this.force = new UnitValueDto();
             this.direction = new Vector3();
@@ -1327,8 +1351,8 @@ export class PointLoadResponse implements IPointLoadResponse {
     }
 
     init(_data?: any) {
+        super.init(_data);
         if (_data) {
-            this.id = _data["id"];
             this.modelId = _data["modelId"];
             this.nodeId = _data["nodeId"];
             this.force = _data["force"] ? UnitValueDto.fromJS(_data["force"]) : new UnitValueDto();
@@ -1345,17 +1369,16 @@ export class PointLoadResponse implements IPointLoadResponse {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
         data["modelId"] = this.modelId;
         data["nodeId"] = this.nodeId;
         data["force"] = this.force ? this.force.toJSON() : <any>undefined;
         data["direction"] = this.direction ? this.direction.toJSON() : <any>undefined;
+        super.toJSON(data);
         return data;
     }
 }
 
-export interface IPointLoadResponse {
-    id: string;
+export interface IPointLoadResponse extends IBeamOsEntityContractBase {
     modelId: string;
     nodeId: string;
     force: UnitValueDto;
@@ -1584,8 +1607,7 @@ export class GetMomentLoadRequest implements IGetMomentLoadRequest {
 export interface IGetMomentLoadRequest {
 }
 
-export class ModelResponse extends BeamOsContractBase implements IModelResponse {
-    id!: string;
+export class ModelResponse extends BeamOsEntityContractBase implements IModelResponse {
     name!: string;
     description!: string;
     settings!: ModelSettingsResponse;
@@ -1606,7 +1628,6 @@ export class ModelResponse extends BeamOsContractBase implements IModelResponse 
     init(_data?: any) {
         super.init(_data);
         if (_data) {
-            this.id = _data["id"];
             this.name = _data["name"];
             this.description = _data["description"];
             this.settings = _data["settings"] ? ModelSettingsResponse.fromJS(_data["settings"]) : new ModelSettingsResponse();
@@ -1652,7 +1673,6 @@ export class ModelResponse extends BeamOsContractBase implements IModelResponse 
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
         data["name"] = this.name;
         data["description"] = this.description;
         data["settings"] = this.settings ? this.settings.toJSON() : <any>undefined;
@@ -1691,8 +1711,7 @@ export class ModelResponse extends BeamOsContractBase implements IModelResponse 
     }
 }
 
-export interface IModelResponse extends IBeamOsContractBase {
-    id: string;
+export interface IModelResponse extends IBeamOsEntityContractBase {
     name: string;
     description: string;
     settings: ModelSettingsResponse;
@@ -1807,8 +1826,7 @@ export interface IUnitSettingsResponse {
     areaMomentOfInertiaUnit: string;
 }
 
-export class NodeResponse extends BeamOsContractBase implements INodeResponse {
-    id!: string;
+export class NodeResponse extends BeamOsEntityContractBase implements INodeResponse {
     modelId!: string;
     locationPoint!: PointResponse;
     restraint!: RestraintResponse;
@@ -1824,7 +1842,6 @@ export class NodeResponse extends BeamOsContractBase implements INodeResponse {
     init(_data?: any) {
         super.init(_data);
         if (_data) {
-            this.id = _data["id"];
             this.modelId = _data["modelId"];
             this.locationPoint = _data["locationPoint"] ? PointResponse.fromJS(_data["locationPoint"]) : new PointResponse();
             this.restraint = _data["restraint"] ? RestraintResponse.fromJS(_data["restraint"]) : new RestraintResponse();
@@ -1840,7 +1857,6 @@ export class NodeResponse extends BeamOsContractBase implements INodeResponse {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
         data["modelId"] = this.modelId;
         data["locationPoint"] = this.locationPoint ? this.locationPoint.toJSON() : <any>undefined;
         data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
@@ -1849,8 +1865,7 @@ export class NodeResponse extends BeamOsContractBase implements INodeResponse {
     }
 }
 
-export interface INodeResponse extends IBeamOsContractBase {
-    id: string;
+export interface INodeResponse extends IBeamOsEntityContractBase {
     modelId: string;
     locationPoint: PointResponse;
     restraint: RestraintResponse;
@@ -1955,8 +1970,7 @@ export interface IRestraintResponse extends IBeamOsContractBase {
     canRotateAboutZ: boolean;
 }
 
-export class Element1DResponse implements IElement1DResponse {
-    id!: string;
+export class Element1DResponse extends BeamOsEntityContractBase implements IElement1DResponse {
     modelId!: string;
     startNodeId!: string;
     endNodeId!: string;
@@ -1965,20 +1979,15 @@ export class Element1DResponse implements IElement1DResponse {
     sectionProfileRotation!: UnitValueDto;
 
     constructor(data?: IElement1DResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+        super(data);
         if (!data) {
             this.sectionProfileRotation = new UnitValueDto();
         }
     }
 
     init(_data?: any) {
+        super.init(_data);
         if (_data) {
-            this.id = _data["id"];
             this.modelId = _data["modelId"];
             this.startNodeId = _data["startNodeId"];
             this.endNodeId = _data["endNodeId"];
@@ -1997,19 +2006,18 @@ export class Element1DResponse implements IElement1DResponse {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
         data["modelId"] = this.modelId;
         data["startNodeId"] = this.startNodeId;
         data["endNodeId"] = this.endNodeId;
         data["materialId"] = this.materialId;
         data["sectionProfileId"] = this.sectionProfileId;
         data["sectionProfileRotation"] = this.sectionProfileRotation ? this.sectionProfileRotation.toJSON() : <any>undefined;
+        super.toJSON(data);
         return data;
     }
 }
 
-export interface IElement1DResponse {
-    id: string;
+export interface IElement1DResponse extends IBeamOsEntityContractBase {
     modelId: string;
     startNodeId: string;
     endNodeId: string;

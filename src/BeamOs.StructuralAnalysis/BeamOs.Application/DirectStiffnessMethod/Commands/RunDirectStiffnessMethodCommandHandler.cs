@@ -1,8 +1,11 @@
+using BeamOs.Application.AnalyticalResults.Diagrams.ShearDiagrams.Interfaces;
 using BeamOs.Application.AnalyticalResults.NodeResults;
 using BeamOs.Application.Common.Interfaces;
 using BeamOs.Application.PhysicalModel.Models;
 using BeamOs.Common.Application.Interfaces;
 using BeamOs.Domain.AnalyticalResults.Common.ValueObjects;
+using BeamOs.Domain.AnalyticalResults.NodeResultAggregate;
+using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate;
 using BeamOs.Domain.DirectStiffnessMethod;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate;
 using BeamOs.Domain.PhysicalModel.ModelAggregate;
@@ -13,6 +16,7 @@ namespace BeamOs.Application.DirectStiffnessMethod.Commands;
 public class RunDirectStiffnessMethodCommandHandler(
     IModelRepository modelRepository,
     INodeResultRepository nodeResultRepository,
+    IShearDiagramRepository shearDiagramRepository,
     IUnitOfWork unitOfWork
 ) : ICommandHandler<RunDirectStiffnessMethodCommand, ModelResults>
 {
@@ -35,9 +39,17 @@ public class RunDirectStiffnessMethodCommandHandler(
 
         ModelResults results = dsmModel.RunAnalysis();
 
-        foreach (var nodeResult in results.NodeResults)
+        foreach (var nodeResult in results.NodeResults ?? Enumerable.Empty<NodeResult>())
         {
             nodeResultRepository.Add(nodeResult);
+        }
+
+        foreach (
+            var shearForceDiagram in results.ShearForceDiagrams
+                ?? Enumerable.Empty<ShearForceDiagram>()
+        )
+        {
+            shearDiagramRepository.Add(shearForceDiagram);
         }
 
         await unitOfWork.SaveChangesAsync(ct);

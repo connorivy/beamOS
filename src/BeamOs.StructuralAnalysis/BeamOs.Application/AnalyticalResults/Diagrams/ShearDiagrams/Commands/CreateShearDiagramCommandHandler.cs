@@ -24,23 +24,24 @@ public class CreateShearDiagramCommandHandler(
         CancellationToken ct = default
     )
     {
-        Element1D? element1D = await element1DRepository.GetById(
-            new(Guid.Parse(command.Element1dId)),
-            ct
-        );
-        var unitSettings = (await modelRepository.GetById(element1D.ModelId)).Settings.UnitSettings;
+        return null;
+        //Element1D? element1D = await element1DRepository.GetById(
+        //    new(Guid.Parse(command.Element1dId)),
+        //    ct
+        //);
+        //var unitSettings = (await modelRepository.GetById(element1D.ModelId)).Settings.UnitSettings;
 
-        var pointLoads = await pointLoadRepository.GetPointLoadsBelongingToNodes(
-            [element1D.StartNodeId, element1D.EndNodeId]
-        );
+        //var pointLoads = await pointLoadRepository.GetPointLoadsBelongingToNodes(
+        //    [element1D.StartNodeId, element1D.EndNodeId]
+        //);
 
-        return ShearForceDiagram.Create(
-            element1D,
-            unitSettings.LengthUnit,
-            unitSettings.ForceUnit,
-            unitSettings.TorqueUnit,
-            command.LinearCoordinateDirection3D
-        );
+        //return ShearForceDiagram.Create(
+        //    element1D,
+        //    unitSettings.LengthUnit,
+        //    unitSettings.ForceUnit,
+        //    unitSettings.TorqueUnit,
+        //    command.LinearCoordinateDirection3D
+        //);
     }
 }
 

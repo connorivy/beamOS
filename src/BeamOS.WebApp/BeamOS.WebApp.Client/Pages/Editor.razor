@@ -46,7 +46,7 @@
 
     private async Task LoadDiagram()
     {
-        // await ApiAlphaClient.RunDirectStiffnessMethodAsync(new IdRequest(editorComponent.EditorComponentState.LoadedModelId));
+        // await ApiAlphaClient.RunDirectStiffnessMethodAsync(editorComponent.EditorComponentState.LoadedModelId);
         var shearDiagram = await ApiAlphaClient.GetShearDiagramAsync("00000000-0000-0000-0000-000000000003");
         await editorComponent.EditorComponentState.EditorApi.CreateShearDiagramAsync(shearDiagram);
     }

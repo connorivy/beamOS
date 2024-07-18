@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeamOs.Infrastructure.Migrations
 {
     [DbContext(typeof(BeamOsStructuralDbContext))]
-    [Migration("20240716203943_Initial")]
+    [Migration("20240718174416_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -85,7 +85,63 @@ namespace BeamOs.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("NodeId")
+                        .IsUnique();
+
                     b.ToTable("NodeResults");
+                });
+
+            modelBuilder.Entity("BeamOs.Domain.Diagrams.Common.DiagramConsistantInterval", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("EndLocation")
+                        .HasColumnType("float");
+
+                    b.Property<int>("LengthUnit")
+                        .HasColumnType("int");
+
+                    b.Property<IEnumerable<double>>("Polynomial")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("ShearForceDiagramId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("StartLocation")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ShearForceDiagramId");
+
+                    b.ToTable("DiagramConsistantIntervals");
+                });
+
+            modelBuilder.Entity("BeamOs.Domain.Diagrams.ShearForceDiagramAggregate.ShearForceDiagram", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("Element1DId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("ElementLength")
+                        .HasColumnType("float");
+
+                    b.Property<double>("EqualityTolerance")
+                        .HasColumnType("float");
+
+                    b.Property<int>("LengthUnit")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ShearDirection")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ShearForceDiagrams");
                 });
 
             modelBuilder.Entity("BeamOs.Domain.PhysicalModel.Element1DAggregate.Element1D", b =>
@@ -331,6 +387,22 @@ namespace BeamOs.Infrastructure.Migrations
                     b.ToTable("SectionProfiles");
                 });
 
+            modelBuilder.Entity("BeamOs.Domain.AnalyticalResults.NodeResultAggregate.NodeResult", b =>
+                {
+                    b.HasOne("BeamOs.Domain.PhysicalModel.NodeAggregate.Node", null)
+                        .WithOne("NodeResult")
+                        .HasForeignKey("BeamOs.Domain.AnalyticalResults.NodeResultAggregate.NodeResult", "NodeId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("BeamOs.Domain.Diagrams.Common.DiagramConsistantInterval", b =>
+                {
+                    b.HasOne("BeamOs.Domain.Diagrams.ShearForceDiagramAggregate.ShearForceDiagram", null)
+                        .WithMany("Intervals")
+                        .HasForeignKey("ShearForceDiagramId");
+                });
+
             modelBuilder.Entity("BeamOs.Domain.PhysicalModel.Element1DAggregate.Element1D", b =>
                 {
                     b.HasOne("BeamOs.Domain.PhysicalModel.NodeAggregate.Node", "EndNode")
@@ -417,6 +489,11 @@ namespace BeamOs.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("BeamOs.Domain.Diagrams.ShearForceDiagramAggregate.ShearForceDiagram", b =>
+                {
+                    b.Navigation("Intervals");
+                });
+
             modelBuilder.Entity("BeamOs.Domain.PhysicalModel.ModelAggregate.Model", b =>
                 {
                     b.Navigation("Element1ds");
@@ -431,6 +508,8 @@ namespace BeamOs.Infrastructure.Migrations
             modelBuilder.Entity("BeamOs.Domain.PhysicalModel.NodeAggregate.Node", b =>
                 {
                     b.Navigation("MomentLoads");
+
+                    b.Navigation("NodeResult");
 
                     b.Navigation("PointLoads");
                 });

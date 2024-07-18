@@ -1,3 +1,4 @@
+using MathNet.Spatial.Euclidean;
 using UnitsNet;
 using UnitsNet.Units;
 
@@ -63,6 +64,16 @@ public sealed class Forces : CoordinateDirectionBase<Force, Torque>
     {
         get => this.AboutZ;
         private set => this.AboutZ = value;
+    }
+
+    public Force GetForceInDirection(Vector3D direction) =>
+        this.GetForceInDirection(direction.Normalize());
+
+    public Force GetForceInDirection(UnitVector3D direction)
+    {
+        return this.ForceAlongX * direction.X
+            + this.ForceAlongY * direction.Y
+            + this.ForceAlongZ * direction.Z;
     }
 
     public double[] ToArray(ForceUnit forceUnit, TorqueUnit torqueUnit)

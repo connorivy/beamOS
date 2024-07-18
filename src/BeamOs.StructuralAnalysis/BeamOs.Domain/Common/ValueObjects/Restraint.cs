@@ -1,3 +1,5 @@
+using MathNet.Spatial.Euclidean;
+
 namespace BeamOs.Domain.Common.ValueObjects;
 
 /// <summary>
@@ -51,6 +53,25 @@ public class Restraint(
         get => this.AboutZ;
         private set => this.AboutZ = value;
     }
+
+    public bool IsFullyRestrainedInDirection(Vector3D direction)
+    {
+        if (direction.X > .001 && this.CanTranslateAlongX)
+        {
+            return false;
+        }
+        if (direction.Y > .001 && this.CanTranslateAlongY)
+        {
+            return false;
+        }
+        if (direction.Z > .001 && this.CanTranslateAlongZ)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     public static Restraint Free { get; } = new(true, true, true, true, true, true);
     public static Restraint Fixed { get; } = new(false, false, false, false, false, false);
 }

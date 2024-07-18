@@ -5,6 +5,7 @@ using BeamOs.Domain.Common.Models;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.DirectStiffnessMethod.Common.ValueObjects;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate;
+using BeamOs.Domain.PhysicalModel.Element1DAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
@@ -17,6 +18,7 @@ using UnitsNet.Units;
 namespace BeamOs.Domain.DirectStiffnessMethod;
 
 public class DsmElement1d(
+    Element1DId element1DId,
     Angle sectionProfileRotation,
     Pressure modulusOfElasticity,
     Pressure modulusOfRigidity,
@@ -31,6 +33,7 @@ public class DsmElement1d(
 ) : BeamOSValueObject
 {
     public DsmElement1d(
+        Element1DId element1DId,
         Angle sectionProfileRotation,
         Node startNode,
         Node endNode,
@@ -38,6 +41,7 @@ public class DsmElement1d(
         SectionProfile sectionProfile
     )
         : this(
+            element1DId,
             sectionProfileRotation,
             material.ModulusOfElasticity,
             material.ModulusOfRigidity,
@@ -53,6 +57,7 @@ public class DsmElement1d(
 
     public DsmElement1d(Element1D element1d)
         : this(
+            element1d.Id,
             element1d.SectionProfileRotation,
             element1d.Material.ModulusOfElasticity,
             element1d.Material.ModulusOfRigidity,
@@ -66,6 +71,7 @@ public class DsmElement1d(
             element1d.EndNode.Id
         ) { }
 
+    public Element1DId Element1DId { get; } = element1DId;
     public Angle SectionProfileRotation { get; } = sectionProfileRotation;
     public Pressure ModulusOfElasticity { get; } = modulusOfElasticity;
     public Pressure ModulusOfRigidity { get; } = modulusOfRigidity;
@@ -261,7 +267,8 @@ public class DsmElement1d(
         yield return this.StrongAxisMomentOfInertia;
         yield return this.WeakAxisMomentOfInertia;
         yield return this.PolarMomentOfInertia;
-        yield return this;
+        yield return this.StartPoint;
+        yield return this.EndPoint;
         yield return this.StartNodeId;
         yield return this.EndNodeId;
     }

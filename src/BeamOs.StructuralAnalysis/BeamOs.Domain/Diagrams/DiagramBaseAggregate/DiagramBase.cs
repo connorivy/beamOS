@@ -1,7 +1,6 @@
 using BeamOs.Domain.Common.Models;
 using BeamOs.Domain.Diagrams.Common;
 using BeamOs.Domain.Diagrams.Common.ValueObjects.DiagramBuilder;
-using MathNet.Numerics.LinearAlgebra;
 using UnitsNet;
 using UnitsNet.Units;
 
@@ -14,7 +13,6 @@ public abstract class DiagramBase<TId> : AggregateRoot<TId>
     public Length EqualityTolerance { get; private set; }
     public LengthUnit LengthUnit { get; private set; }
     public List<DiagramConsistantInterval> Intervals { get; private set; }
-    public Vector<double> Direction { get; private set; }
 
     protected DiagramBase(
         Length elementLength,

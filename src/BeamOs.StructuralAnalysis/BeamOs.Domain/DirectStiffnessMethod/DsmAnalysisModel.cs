@@ -1,8 +1,11 @@
+using System.Collections.Generic;
 using BeamOs.Domain.AnalyticalResults.Common.ValueObjects;
 using BeamOs.Domain.AnalyticalResults.NodeResultAggregate;
 using BeamOs.Domain.Common.Enums;
 using BeamOs.Domain.Common.ValueObjects;
+using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate;
 using BeamOs.Domain.DirectStiffnessMethod.Common.ValueObjects;
+using BeamOs.Domain.PhysicalModel.Element1DAggregate;
 using BeamOs.Domain.PhysicalModel.ModelAggregate;
 using UnitsNet;
 using UnitsNet.Units;
@@ -52,7 +55,34 @@ public class DsmAnalysisModel(Model model)
             knownReactionVector
         );
 
-        return new(nodeResults, []);
+        List<ShearForceDiagram> shearForceDiagrams = [];
+
+        foreach (var dsmElement1d in this.dsmElement1Ds)
+        {
+            var localMemberEndForcesVector = dsmElement1d.GetLocalMemberEndForcesVector(
+                unknownJointDisplacementVector,
+                model.Settings.UnitSettings.ForceUnit,
+                model.Settings.UnitSettings.ForcePerLengthUnit,
+                model.Settings.UnitSettings.TorqueUnit
+            );
+            shearForceDiagrams.Add(
+                ShearForceDiagram.Create(
+                    dsmElement1d.Element1DId,
+                    dsmElement1d.Length,
+                    localMemberEndForcesVector,
+                    model.Settings.UnitSettings.LengthUnit,
+                    model.Settings.UnitSettings.ForceUnit,
+                    model.Settings.UnitSettings.TorqueUnit,
+                    LinearCoordinateDirection3D.AlongY
+                )
+            );
+        }
+
+        return new ModelResults
+        {
+            NodeResults = nodeResults,
+            ShearForceDiagrams = shearForceDiagrams
+        };
     }
 
     internal SortedUnsupportedStructureIds GetSortedUnsupportedStructureIds()

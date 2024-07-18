@@ -3,13 +3,10 @@ using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.Diagrams.Common;
 using BeamOs.Domain.Diagrams.Common.ValueObjects.DiagramBuilder;
 using BeamOs.Domain.Diagrams.DiagramBaseAggregate;
-using BeamOs.Domain.Diagrams.MomentDiagramAggregate;
 using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate.ValueObjects;
-using BeamOs.Domain.PhysicalModel.MomentLoadAggregate.ValueObjects;
-using BeamOs.Domain.PhysicalModel.PointLoadAggregate.ValueObjects;
-using MathNet.Numerics.LinearAlgebra.Double;
+using MathNet.Numerics.LinearAlgebra;
 using MathNet.Spatial.Euclidean;
 using UnitsNet;
 using UnitsNet.Units;
@@ -19,14 +16,12 @@ namespace BeamOs.Domain.Diagrams.ShearForceDiagramAggregate;
 public class ShearForceDiagram : DiagramBase<ShearForceDiagramId>
 {
     public Element1DId Element1DId { get; private set; }
-    public Vector3D ElementDirection { get; private set; }
-    public Vector3D ShearDirection { get; private set; }
+    public LinearCoordinateDirection3D ShearDirection { get; private set; }
     public ForceUnit ForceUnit { get; }
 
     protected ShearForceDiagram(
         Element1DId element1DId,
-        Vector3D elementDirection,
-        Vector3D shearDirection,
+        LinearCoordinateDirection3D shearDirection,
         Length elementLength,
         LengthUnit lengthUnit,
         ForceUnit forceUnit,
@@ -36,20 +31,140 @@ public class ShearForceDiagram : DiagramBase<ShearForceDiagramId>
         : base(elementLength, lengthUnit, intervals, id ?? new())
     {
         this.Element1DId = element1DId;
-        this.ElementDirection = elementDirection;
         this.ShearDirection = shearDirection;
         this.ForceUnit = forceUnit;
     }
 
+    //public static ShearForceDiagram Create(
+    //    Element1D element1d,
+    //    LengthUnit lengthUnit,
+    //    ForceUnit forceUnit,
+    //    TorqueUnit torqueUnit,
+    //    LinearCoordinateDirection3D localShearDirection
+    //)
+    //{
+    //    var initialDirection = localShearDirection switch
+    //    {
+    //        LinearCoordinateDirection3D.AlongX => new Vector3D(1, 0, 0),
+    //        LinearCoordinateDirection3D.AlongY => new Vector3D(0, 1, 0),
+    //        LinearCoordinateDirection3D.AlongZ => new Vector3D(0, 0, 1),
+    //        LinearCoordinateDirection3D.Undefined => throw new NotImplementedException(),
+    //    };
+
+    //    var origin = new Point3D(
+    //        element1d.StartNode.LocationPoint.XCoordinate.As(lengthUnit),
+    //        element1d.StartNode.LocationPoint.YCoordinate.As(lengthUnit),
+    //        element1d.StartNode.LocationPoint.ZCoordinate.As(lengthUnit)
+    //    );
+    //    var newCoordSys = element1d.GetRotationMatrix();
+    //    var coordinateSys = new CoordinateSystem(
+    //        origin,
+    //        UnitVector3D.Create(newCoordSys[0, 0], newCoordSys[0, 1], newCoordSys[0, 2]),
+    //        UnitVector3D.Create(newCoordSys[1, 0], newCoordSys[1, 1], newCoordSys[1, 2]),
+    //        UnitVector3D.Create(newCoordSys[2, 0], newCoordSys[2, 1], newCoordSys[2, 2])
+    //    );
+    //    var shearDirection = initialDirection.TransformBy(coordinateSys);
+    //    // shearDirection
+    //    // elementDirection
+    //    Vector3D elementDirection = element1d.BaseLine.GetDirection(lengthUnit);
+    //    double[,] rotationMatrix = element1d.GetRotationMatrix();
+
+    //    List<DiagramPointValue> pointValues = [];
+    //    List<DiagramPointValue> boundaryConditions = [];
+
+    //    //foreach (var pointLoad in element1d.StartNode.PointLoads)
+    //    //{
+    //    //    Force forceDueToLoad = pointLoad.GetForceInDirection(shearDirection);
+    //    //    pointValues.Add(new DiagramPointValue(Length.Zero, forceDueToLoad.As(forceUnit)));
+    //    //}
+    //    var startReaction = element1d
+    //        .StartNode
+    //        .NodeResult
+    //        .Forces
+    //        .GetForceInDirection(shearDirection);
+    //    pointValues.Add(new DiagramPointValue(Length.Zero, startReaction.As(forceUnit)));
+
+    //    if (element1d.StartNode.Restraint.IsFullyRestrainedInDirection(shearDirection))
+    //    {
+    //        boundaryConditions.Add(new DiagramPointValue(Length.Zero, 0));
+    //    }
+
+    //    //foreach (var pointLoad in element1d.EndNode.PointLoads)
+    //    //{
+    //    //    Force forceDueToLoad = pointLoad.GetForceInDirection(shearDirection);
+    //    //    pointValues.Add(new DiagramPointValue(element1d.Length, forceDueToLoad.As(forceUnit)));
+    //    //}
+    //    var endReaction = element1d.EndNode.NodeResult.Forces.GetForceInDirection(shearDirection);
+    //    pointValues.Add(new DiagramPointValue(element1d.Length, endReaction.As(forceUnit)));
+
+    //    if (element1d.EndNode.Restraint.IsFullyRestrainedInDirection(shearDirection))
+    //    {
+    //        boundaryConditions.Add(new DiagramPointValue(element1d.Length, 0));
+    //    }
+
+    //    //List<DiagramDistributedValue> distributedValues = [];
+    //    //foreach (var momLoad in element1d.StartNode.MomentLoads)
+    //    //{
+    //    //    var forceDueToLoad = momLoad.GetForceAboutAxis(shearDirection);
+    //    //    pointValues.Add(new DiagramPointValue(Length.Zero, forceDueToLoad.As(torqueUnit)));
+    //    //}
+    //    //foreach (var momLoad in element1d.EndNode.MomentLoads)
+    //    //{
+    //    //    var forceDueToLoad = momLoad.GetForceAboutAxis(shearDirection);
+    //    //    pointValues.Add(new DiagramPointValue(element1d.Length, forceDueToLoad.As(torqueUnit)));
+    //    //}
+
+    //    var db = new DiagramBuilder(
+    //        element1d.Length,
+    //        new Length(1, LengthUnit.Inch),
+    //        lengthUnit,
+    //        pointValues,
+    //        [],
+    //        [],
+    //        [],
+    //        0
+    //    ).Build();
+
+    //    return new(
+    //        element1d.Id,
+    //        shearDirection,
+    //        element1d.Length,
+    //        lengthUnit,
+    //        forceUnit,
+    //        db.Intervals
+    //    );
+    //}
+
     public static ShearForceDiagram Create(
-        Element1D element1d,
+        Element1DId element1d,
+        Length elementLength,
+        Vector<double> localMemberForces,
         LengthUnit lengthUnit,
         ForceUnit forceUnit,
         TorqueUnit torqueUnit,
         LinearCoordinateDirection3D localShearDirection
     )
     {
-        var initialDirection = localShearDirection switch
+        Forces startForces =
+            new(
+                new(localMemberForces[0], forceUnit),
+                new(localMemberForces[1], forceUnit),
+                new(localMemberForces[2], forceUnit),
+                Torque.Zero,
+                Torque.Zero,
+                Torque.Zero
+            );
+        Forces endForces =
+            new(
+                new(localMemberForces[6], forceUnit),
+                new(localMemberForces[7], forceUnit),
+                new(localMemberForces[8], forceUnit),
+                Torque.Zero,
+                Torque.Zero,
+                Torque.Zero
+            );
+
+        var shearDirection = localShearDirection switch
         {
             LinearCoordinateDirection3D.AlongX => new Vector3D(1, 0, 0),
             LinearCoordinateDirection3D.AlongY => new Vector3D(0, 1, 0),
@@ -57,36 +172,60 @@ public class ShearForceDiagram : DiagramBase<ShearForceDiagramId>
             LinearCoordinateDirection3D.Undefined => throw new NotImplementedException(),
         };
 
-        var origin = new Point3D(
-            element1d.StartNode.LocationPoint.XCoordinate.As(lengthUnit),
-            element1d.StartNode.LocationPoint.YCoordinate.As(lengthUnit),
-            element1d.StartNode.LocationPoint.ZCoordinate.As(lengthUnit)
-        );
-        var newCoordSys = element1d.GetRotationMatrix();
-        var coordinateSys = new CoordinateSystem(
-            origin,
-            UnitVector3D.Create(newCoordSys[0, 0], newCoordSys[0, 1], newCoordSys[0, 2]),
-            UnitVector3D.Create(newCoordSys[1, 0], newCoordSys[1, 1], newCoordSys[1, 2]),
-            UnitVector3D.Create(newCoordSys[2, 0], newCoordSys[2, 1], newCoordSys[2, 2])
-        );
-        var shearDirection = initialDirection.TransformBy(coordinateSys);
-        // shearDirection
-        // elementDirection
-        Vector3D elementDirection = element1d.BaseLine.GetDirection(lengthUnit);
-        double[,] rotationMatrix = element1d.GetRotationMatrix();
+        //var origin = new Point3D(
+        //    element1d.StartPoint.XCoordinate.As(lengthUnit),
+        //    element1d.StartPoint.YCoordinate.As(lengthUnit),
+        //    element1d.StartPoint.ZCoordinate.As(lengthUnit)
+        //);
+        //var newCoordSys = element1d.GetRotationMatrix();
+        //var coordinateSys = new CoordinateSystem(
+        //    origin,
+        //    UnitVector3D.Create(newCoordSys[0, 0], newCoordSys[0, 1], newCoordSys[0, 2]),
+        //    UnitVector3D.Create(newCoordSys[1, 0], newCoordSys[1, 1], newCoordSys[1, 2]),
+        //    UnitVector3D.Create(newCoordSys[2, 0], newCoordSys[2, 1], newCoordSys[2, 2])
+        //);
+        //var shearDirection = initialDirection.TransformBy(coordinateSys);
+        //// shearDirection
+        //// elementDirection
+        //Vector3D elementDirection = element1d.BaseLine.GetDirection(lengthUnit);
+        ////double[,] rotationMatrix = element1d.GetRotationMatrix();
 
         List<DiagramPointValue> pointValues = [];
+        List<DiagramPointValue> boundaryConditions = [];
 
-        foreach (var pointLoad in element1d.StartNode.PointLoads)
-        {
-            Force forceDueToLoad = pointLoad.GetForceInDirection(shearDirection);
-            pointValues.Add(new DiagramPointValue(Length.Zero, forceDueToLoad.As(forceUnit)));
-        }
-        foreach (var pointLoad in element1d.EndNode.PointLoads)
-        {
-            Force forceDueToLoad = pointLoad.GetForceInDirection(shearDirection);
-            pointValues.Add(new DiagramPointValue(element1d.Length, forceDueToLoad.As(forceUnit)));
-        }
+        ////foreach (var pointLoad in element1d.StartNode.PointLoads)
+        ////{
+        ////    Force forceDueToLoad = pointLoad.GetForceInDirection(shearDirection);
+        ////    pointValues.Add(new DiagramPointValue(Length.Zero, forceDueToLoad.As(forceUnit)));
+        ////}
+        //for (var i = 0; i < 3; i++)
+        //{
+        //var x = element1d
+        //    .GetLocalMemberEndForcesVector()
+
+        //}
+
+
+        var startReaction = startForces.GetForceInDirection(shearDirection);
+        pointValues.Add(new DiagramPointValue(Length.Zero, startReaction.As(forceUnit)));
+
+        //if (element1d.StartNode.Restraint.IsFullyRestrainedInDirection(shearDirection))
+        //{
+        //    boundaryConditions.Add(new DiagramPointValue(Length.Zero, 0));
+        //}
+
+        //foreach (var pointLoad in element1d.EndNode.PointLoads)
+        //{
+        //    Force forceDueToLoad = pointLoad.GetForceInDirection(shearDirection);
+        //    pointValues.Add(new DiagramPointValue(element1d.Length, forceDueToLoad.As(forceUnit)));
+        //}
+        var endReaction = endForces.GetForceInDirection(shearDirection);
+        pointValues.Add(new DiagramPointValue(elementLength, endReaction.As(forceUnit)));
+
+        //if (element1d.EndNode.Restraint.IsFullyRestrainedInDirection(shearDirection))
+        //{
+        //    boundaryConditions.Add(new DiagramPointValue(element1d.Length, 0));
+        //}
 
         //List<DiagramDistributedValue> distributedValues = [];
         //foreach (var momLoad in element1d.StartNode.MomentLoads)
@@ -101,7 +240,7 @@ public class ShearForceDiagram : DiagramBase<ShearForceDiagramId>
         //}
 
         var db = new DiagramBuilder(
-            element1d.Length,
+            elementLength,
             new Length(1, LengthUnit.Inch),
             lengthUnit,
             pointValues,
@@ -112,53 +251,9 @@ public class ShearForceDiagram : DiagramBase<ShearForceDiagramId>
         ).Build();
 
         return new(
-            element1d.Id,
-            elementDirection,
-            shearDirection,
-            element1d.Length,
-            lengthUnit,
-            forceUnit,
-            db.Intervals
-        );
-    }
-
-    public static ShearForceDiagram Create(
-        Element1D element1D,
-        LengthUnit lengthUnit,
-        ForceUnit forceUnit,
-        LinearCoordinateDirection3D localShearDirection,
-        Vector3D shearDirection,
-        Element1dData element1DData,
-        List<(Length length, PointLoadData pointLoad)> pointLoads
-    )
-    {
-        // shearDirection
-        // elementDirection
-        Vector3D elementDirection = element1DData.BaseLine.GetDirection(lengthUnit);
-
-        List<DiagramPointValue> pointValues = [];
-        foreach (var (length, pointLoad) in pointLoads)
-        {
-            Force forceDueToLoad = pointLoad.GetForceInLocalAxisDirection(localShearDirection);
-            pointValues.Add(new DiagramPointValue(length, forceDueToLoad.As(forceUnit)));
-        }
-
-        var db = new DiagramBuilder(
-            element1DData.BaseLine.Length,
-            new Length(1, LengthUnit.Inch),
-            lengthUnit,
-            pointValues,
-            [],
-            [],
-            [],
-            0
-        ).Build();
-
-        return new(
-            element1D.Id,
-            elementDirection,
-            shearDirection,
-            element1DData.BaseLine.Length,
+            element1d,
+            localShearDirection,
+            elementLength,
             lengthUnit,
             forceUnit,
             db.Intervals
@@ -292,4 +387,10 @@ public class ShearForceDiagram : DiagramBase<ShearForceDiagramId>
     //            previousEndValue += boundedIntegral;
     //        }
     //    }
+
+    [Obsolete("EF Core Constructor", true)]
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    private ShearForceDiagram()
+        : base(Length.Zero, LengthUnit.Meter, null, null) { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }

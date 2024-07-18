@@ -78,7 +78,7 @@ const string physicalModelBaseNs = $"{contractsBaseNs}.{ApiClientGenerator.Physi
 const string analyticalResultsBaseNs =
     $"{contractsBaseNs}.{ApiClientGenerator.AnalyticalResultsNs}";
 
-//app.Configuration["generateclients"] = "true";
+// app.Configuration["generateclients"] = "true";
 await app.GenerateClient(alphaRelease, clientNs, clientName);
 
 //app.MapGet("/user", (ClaimsPrincipal user) => $"Hello user {user.Identity.Name}")
