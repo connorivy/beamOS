@@ -38,30 +38,36 @@ public class AllStructuralAnalysisModelCaches
 
 public sealed class SingleStructuralAnalysisModelCache
 {
-    private readonly Dictionary<Type, Dictionary<string, BeamOsEntityContractBase>> elementStore =
-    [];
+    private readonly Dictionary<string, BeamOsEntityContractBase> cachedEntities = [];
+    private readonly Dictionary<Type, List<string>> entityTypeToCachedEntityIdsDict = [];
 
-    public void AddOrReplace<T>(T element)
-        where T : BeamOsEntityContractBase
+    public void AddOrReplace(BeamOsEntityContractBase element)
     {
-        if (!this.elementStore.TryGetValue(typeof(T), out var subStore))
-        {
-            subStore =  [];
-            this.elementStore.Add(typeof(T), subStore);
-        }
+        Type elementType = element.GetType();
+        this.cachedEntities[element.Id] = element;
 
-        subStore[element.Id] = element;
+        if (!this.entityTypeToCachedEntityIdsDict.TryGetValue(elementType, out var idList))
+        {
+            idList =  [element.Id];
+            this.entityTypeToCachedEntityIdsDict[elementType] = idList;
+        }
+        else if (!idList.Contains(element.Id))
+        {
+            idList.Add(element.Id);
+        }
     }
 
     public T GetById<T>(string id)
         where T : BeamOsEntityContractBase
     {
-        if (this.elementStore.TryGetValue(typeof(T), out var subStore))
-        {
-            return (T)subStore[id];
-        }
+        return (T)this.cachedEntities[id]
+            ?? throw new Exception($"Could not find resource with id = {id}");
+    }
 
-        throw new Exception($"Could not find resource with id = {id}");
+    public List<string> GetEntityIdsOfType<T>()
+    {
+        return this.entityTypeToCachedEntityIdsDict[typeof(T)]
+            ?? throw new Exception($"Could not find any entities of type {typeof(T)}");
     }
 }
 

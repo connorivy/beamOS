@@ -30,6 +30,8 @@ public class EditorApiGenerator : AbstractGenerator
 
         _ = addMethod("CreateShearDiagram").Accepts<ShearDiagramResponse>();
 
+        _ = addMethod("CreateMomentDiagram").Accepts<MomentDiagramResponse>();
+
         _ = addMethod("Clear");
 
         foreach (

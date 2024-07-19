@@ -1,5 +1,6 @@
 using BeamOs.Application.Common.Queries;
 using BeamOs.Common.Application.Interfaces;
+using BeamOs.Domain.Diagrams.MomentDiagramAggregate;
 using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate.ValueObjects;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,25 @@ internal class GetDiagramQueryHandler(BeamOsStructuralDbContext dbContext)
     {
         return await this.dbContext
             .ShearForceDiagrams
+            .AsNoTracking()
+            .Include(el => el.Intervals.OrderBy(i => i.StartLocation))
+            .Where(s => s.Element1DId == new Element1DId(query.Id))
+            .FirstOrDefaultAsync(cancellationToken: ct);
+    }
+}
+
+internal class GetMomentDiagramQueryHandler(BeamOsStructuralDbContext dbContext)
+    : IQueryHandler<GetResourceByIdQuery, MomentDiagram>
+{
+    private readonly BeamOsStructuralDbContext dbContext = dbContext;
+
+    public async Task<MomentDiagram?> ExecuteAsync(
+        GetResourceByIdQuery query,
+        CancellationToken ct = default
+    )
+    {
+        return await this.dbContext
+            .MomentDiagrams
             .AsNoTracking()
             .Include(el => el.Intervals.OrderBy(i => i.StartLocation))
             .Where(s => s.Element1DId == new Element1DId(query.Id))

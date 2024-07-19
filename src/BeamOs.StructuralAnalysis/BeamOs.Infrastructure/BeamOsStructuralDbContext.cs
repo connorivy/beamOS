@@ -4,6 +4,7 @@ using BeamOs.Domain.Common.Interfaces;
 using BeamOs.Domain.Common.Utils;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.Diagrams.Common;
+using BeamOs.Domain.Diagrams.MomentDiagramAggregate;
 using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate;
 using BeamOs.Domain.PhysicalModel.MaterialAggregate;
@@ -18,6 +19,8 @@ using BeamOs.Infrastructure.Interceptors;
 using BeamOS.Tests.Common.SolvedProblems.Fixtures.Mappers.ToDomain;
 using BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd.Example3_8;
 using BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd.Example8_4;
+using BeamOS.Tests.Common.SolvedProblems.Udoeyo_StructuralAnalysis.Example10_7;
+using MathNet.Numerics.LinearAlgebra;
 using MathNet.Spatial.Euclidean;
 using Microsoft.EntityFrameworkCore;
 using UnitsNet;
@@ -62,6 +65,7 @@ public class BeamOsStructuralDbContext : DbContext
     public DbSet<MomentLoad> MomentLoads { get; set; }
     public DbSet<NodeResult> NodeResults { get; set; }
     public DbSet<ShearForceDiagram> ShearForceDiagrams { get; set; }
+    public DbSet<MomentDiagram> MomentDiagrams { get; set; }
     public DbSet<DiagramConsistantInterval> DiagramConsistantIntervals { get; set; }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
@@ -104,20 +108,21 @@ public class BeamOsStructuralDbContext : DbContext
     public async Task SeedAsync()
     {
         _ = this.Database.EnsureCreated();
-        ModelId zeroId = new(TypedGuids.G0);
-        if (await this.Models.AnyAsync(m => m.Id == zeroId))
-        {
-            return;
-        }
 
-        var kass_3_8 = Kassimali_Example3_8.Instance.ToDomain();
-        this.InsertIntoEfCore(kass_3_8);
+        await this.InsertIntoEfCore(Kassimali_Example3_8.Instance.ToDomain());
+        await this.InsertIntoEfCore(Kassimali_Example8_4.Instance.ToDomain());
+        await this.InsertIntoEfCore(Udoeyo_StructuralAnalysis_Example10_7.Instance.ToDomain());
 
         _ = await this.SaveChangesAsync();
     }
 
-    private void InsertIntoEfCore(Model model)
+    private async Task InsertIntoEfCore(Model model)
     {
+        if (await this.Models.AnyAsync(m => m.Id == model.Id))
+        {
+            return;
+        }
+
         this.Models.Add(new Model(model.Name, model.Description, model.Settings, model.Id));
         this.AddEntities(
             model

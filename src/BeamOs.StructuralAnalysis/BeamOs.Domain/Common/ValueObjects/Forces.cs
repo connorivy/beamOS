@@ -76,6 +76,15 @@ public sealed class Forces : CoordinateDirectionBase<Force, Torque>
             + this.ForceAlongZ * direction.Z;
     }
 
+    public Torque GetTorqueAboutAxis(Vector3D axis) => this.GetTorqueAboutAxis(axis.Normalize());
+
+    public Torque GetTorqueAboutAxis(UnitVector3D direction)
+    {
+        return this.MomentAboutX * direction.X
+            + this.MomentAboutY * direction.Y
+            + this.MomentAboutZ * direction.Z;
+    }
+
     public double[] ToArray(ForceUnit forceUnit, TorqueUnit torqueUnit)
     {
         return

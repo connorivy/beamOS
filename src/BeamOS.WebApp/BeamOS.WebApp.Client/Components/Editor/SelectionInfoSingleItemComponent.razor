@@ -1,20 +1,32 @@
 @using System.Reflection
+@using System.Collections
+
         <MudGrid Spacing="1">
 @foreach (var propInfo in propertyInfos)
 {
     var value = propInfo.GetValue(this.ObjectToDisplay);
     if (IsSimpleType(propInfo.PropertyType))
     {
-            <MudItem xs="4">
-                <MudTooltip Text="@propInfo.Name" RootClass="w-full">
-                    <MudText Typo="Typo.body2" Class="truncate">@propInfo.Name</MudText>
-                </MudTooltip>
-            </MudItem>
-            <MudItem xs="8">
-                <MudTooltip Text="@value?.ToString()" RootClass="w-full">
-                    <MudText Typo="Typo.body2" Class="truncate">@value</MudText>
-                </MudTooltip>
-            </MudItem>
+        <MudItem xs="4">
+            <MudTooltip Text="@propInfo.Name" RootClass="w-full">
+                <MudText Typo="Typo.body2" Class="truncate">@propInfo.Name</MudText>
+            </MudTooltip>
+        </MudItem>
+        <MudItem xs="8">
+            <MudTooltip Text="@value?.ToString()" RootClass="w-full">
+                <MudText Typo="Typo.body2" Class="truncate">@value</MudText>
+            </MudTooltip>
+        </MudItem>
+    }
+    else if (value is IEnumerable enumerable)
+    {
+        int counter = 0;
+        foreach (var item in enumerable)
+        {
+            <MudExpansionPanel Text=@($"{propInfo.Name}-{counter++}")>
+                <SelectionInfoSingleItemComponent ObjectToDisplay="@item" @key="@item"></SelectionInfoSingleItemComponent>
+            </MudExpansionPanel>
+        }
     }
     else
     {
@@ -46,10 +58,11 @@
     private static readonly HashSet<Type> simpleTypes =
     [
         typeof(bool),
-        typeof(double),
+        typeof(int),
         typeof(float),
-        typeof(string),
+        typeof(double),
         typeof(decimal),
+        typeof(string),
         typeof(DateTime),
         typeof(DateTimeOffset),
         typeof(TimeSpan),

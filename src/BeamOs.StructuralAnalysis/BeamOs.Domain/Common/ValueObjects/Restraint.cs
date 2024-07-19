@@ -72,6 +72,24 @@ public class Restraint(
         return true;
     }
 
+    public bool IsFullyRestrainedAboutDirection(Vector3D direction)
+    {
+        if (direction.X > .001 && this.CanRotateAboutX)
+        {
+            return false;
+        }
+        if (direction.Y > .001 && this.CanRotateAboutY)
+        {
+            return false;
+        }
+        if (direction.Z > .001 && this.CanRotateAboutZ)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     public static Restraint Free { get; } = new(true, true, true, true, true, true);
     public static Restraint Fixed { get; } = new(false, false, false, false, false, false);
 }

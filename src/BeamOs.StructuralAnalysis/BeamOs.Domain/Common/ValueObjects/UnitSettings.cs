@@ -98,6 +98,17 @@ public class UnitSettings : BeamOSValueObject
             PressureUnit.NewtonPerSquareMeter,
             AreaMomentOfInertiaUnit.MeterToTheFourth
         );
+    public static UnitSettings kN_M { get; } =
+        new(
+            LengthUnit.Meter,
+            AreaUnit.SquareMeter,
+            VolumeUnit.CubicMeter,
+            ForceUnit.Kilonewton,
+            ForcePerLengthUnit.KilonewtonPerMeter,
+            TorqueUnit.KilonewtonMeter,
+            PressureUnit.KilonewtonPerSquareMeter,
+            AreaMomentOfInertiaUnit.MeterToTheFourth
+        );
     public static UnitSettings K_IN { get; } =
         new(
             LengthUnit.Inch,

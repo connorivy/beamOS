@@ -91,6 +91,11 @@ export interface IApiAlphaClient {
     /**
      * @return Success
      */
+    getMomentDiagram(id: string): Promise<MomentDiagramResponse>;
+
+    /**
+     * @return Success
+     */
     createElement1d(createElement1dRequest: CreateElement1dRequest): Promise<Element1DResponse>;
 
     /**
@@ -743,6 +748,46 @@ export class ApiAlphaClient implements IApiAlphaClient {
             });
         }
         return Promise.resolve<ShearDiagramResponse>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    getMomentDiagram(id: string): Promise<MomentDiagramResponse> {
+        let url_ = this.baseUrl + "/api/element1Ds/{id}/diagrams/moment/";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetMomentDiagram(_response);
+        });
+    }
+
+    protected processGetMomentDiagram(response: Response): Promise<MomentDiagramResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MomentDiagramResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<MomentDiagramResponse>(null as any);
     }
 
     /**
@@ -2794,31 +2839,28 @@ export interface IPatchRestraintRequest {
     canRotateAboutZ?: boolean | undefined;
 }
 
-export class ShearDiagramResponse implements IShearDiagramResponse {
-    id!: string;
+export class ShearDiagramResponse extends BeamOsEntityContractBase implements IShearDiagramResponse {
     element1DId!: string;
+    globalShearDirection!: Vector3;
     lengthUnit!: string;
     forceUnit!: string;
     elementLength!: UnitValueDto;
     intervals!: DiagramConsistantIntervalResponse[];
 
     constructor(data?: IShearDiagramResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+        super(data);
         if (!data) {
+            this.globalShearDirection = new Vector3();
             this.elementLength = new UnitValueDto();
             this.intervals = [];
         }
     }
 
     init(_data?: any) {
+        super.init(_data);
         if (_data) {
-            this.id = _data["id"];
             this.element1DId = _data["element1DId"];
+            this.globalShearDirection = _data["globalShearDirection"] ? Vector3.fromJS(_data["globalShearDirection"]) : new Vector3();
             this.lengthUnit = _data["lengthUnit"];
             this.forceUnit = _data["forceUnit"];
             this.elementLength = _data["elementLength"] ? UnitValueDto.fromJS(_data["elementLength"]) : new UnitValueDto();
@@ -2839,8 +2881,8 @@ export class ShearDiagramResponse implements IShearDiagramResponse {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
         data["element1DId"] = this.element1DId;
+        data["globalShearDirection"] = this.globalShearDirection ? this.globalShearDirection.toJSON() : <any>undefined;
         data["lengthUnit"] = this.lengthUnit;
         data["forceUnit"] = this.forceUnit;
         data["elementLength"] = this.elementLength ? this.elementLength.toJSON() : <any>undefined;
@@ -2849,13 +2891,14 @@ export class ShearDiagramResponse implements IShearDiagramResponse {
             for (let item of this.intervals)
                 data["intervals"].push(item.toJSON());
         }
+        super.toJSON(data);
         return data;
     }
 }
 
-export interface IShearDiagramResponse {
-    id: string;
+export interface IShearDiagramResponse extends IBeamOsEntityContractBase {
     element1DId: string;
+    globalShearDirection: Vector3;
     lengthUnit: string;
     forceUnit: string;
     elementLength: UnitValueDto;
@@ -2917,6 +2960,67 @@ export interface IDiagramConsistantIntervalResponse {
     startLocation: UnitValueDto;
     endLocation: UnitValueDto;
     polynomialCoefficients: number[];
+}
+
+export class MomentDiagramResponse extends BeamOsEntityContractBase implements IMomentDiagramResponse {
+    element1DId!: string;
+    lengthUnit!: string;
+    forceUnit!: string;
+    elementLength!: UnitValueDto;
+    intervals!: DiagramConsistantIntervalResponse[];
+
+    constructor(data?: IMomentDiagramResponse) {
+        super(data);
+        if (!data) {
+            this.elementLength = new UnitValueDto();
+            this.intervals = [];
+        }
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.element1DId = _data["element1DId"];
+            this.lengthUnit = _data["lengthUnit"];
+            this.forceUnit = _data["forceUnit"];
+            this.elementLength = _data["elementLength"] ? UnitValueDto.fromJS(_data["elementLength"]) : new UnitValueDto();
+            if (Array.isArray(_data["intervals"])) {
+                this.intervals = [] as any;
+                for (let item of _data["intervals"])
+                    this.intervals!.push(DiagramConsistantIntervalResponse.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): MomentDiagramResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new MomentDiagramResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["element1DId"] = this.element1DId;
+        data["lengthUnit"] = this.lengthUnit;
+        data["forceUnit"] = this.forceUnit;
+        data["elementLength"] = this.elementLength ? this.elementLength.toJSON() : <any>undefined;
+        if (Array.isArray(this.intervals)) {
+            data["intervals"] = [];
+            for (let item of this.intervals)
+                data["intervals"].push(item.toJSON());
+        }
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IMomentDiagramResponse extends IBeamOsEntityContractBase {
+    element1DId: string;
+    lengthUnit: string;
+    forceUnit: string;
+    elementLength: UnitValueDto;
+    intervals: DiagramConsistantIntervalResponse[];
 }
 
 export class CreateElement1dRequest implements ICreateElement1dRequest {

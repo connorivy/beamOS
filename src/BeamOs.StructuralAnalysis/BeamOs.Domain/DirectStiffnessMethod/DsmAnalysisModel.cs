@@ -1,11 +1,10 @@
-using System.Collections.Generic;
 using BeamOs.Domain.AnalyticalResults.Common.ValueObjects;
 using BeamOs.Domain.AnalyticalResults.NodeResultAggregate;
 using BeamOs.Domain.Common.Enums;
 using BeamOs.Domain.Common.ValueObjects;
+using BeamOs.Domain.Diagrams.MomentDiagramAggregate;
 using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate;
 using BeamOs.Domain.DirectStiffnessMethod.Common.ValueObjects;
-using BeamOs.Domain.PhysicalModel.Element1DAggregate;
 using BeamOs.Domain.PhysicalModel.ModelAggregate;
 using UnitsNet;
 using UnitsNet.Units;
@@ -37,7 +36,7 @@ public class DsmAnalysisModel(Model model)
             degreeOfFreedomIds
         );
 
-        VectorIdentified unknownJointDisplacementVector = GetUnknownJointDisplacementVector(
+        VectorIdentified unknownJointDisplacementVector = this.GetUnknownJointDisplacementVector(
             structureStiffnessMatrix,
             knownReactionVector,
             degreeOfFreedomIds
@@ -56,6 +55,7 @@ public class DsmAnalysisModel(Model model)
         );
 
         List<ShearForceDiagram> shearForceDiagrams = [];
+        List<MomentDiagram> momentDiagrams = [];
 
         foreach (var dsmElement1d in this.dsmElement1Ds)
         {
@@ -65,8 +65,23 @@ public class DsmAnalysisModel(Model model)
                 model.Settings.UnitSettings.ForcePerLengthUnit,
                 model.Settings.UnitSettings.TorqueUnit
             );
-            shearForceDiagrams.Add(
-                ShearForceDiagram.Create(
+
+            var sfd = ShearForceDiagram.Create(
+                dsmElement1d.Element1DId,
+                dsmElement1d.StartPoint,
+                dsmElement1d.EndPoint,
+                dsmElement1d.SectionProfileRotation,
+                dsmElement1d.Length,
+                localMemberEndForcesVector,
+                model.Settings.UnitSettings.LengthUnit,
+                model.Settings.UnitSettings.ForceUnit,
+                model.Settings.UnitSettings.TorqueUnit,
+                LinearCoordinateDirection3D.AlongY
+            );
+            shearForceDiagrams.Add(sfd);
+
+            momentDiagrams.Add(
+                MomentDiagram.Create(
                     dsmElement1d.Element1DId,
                     dsmElement1d.StartPoint,
                     dsmElement1d.EndPoint,
@@ -76,7 +91,8 @@ public class DsmAnalysisModel(Model model)
                     model.Settings.UnitSettings.LengthUnit,
                     model.Settings.UnitSettings.ForceUnit,
                     model.Settings.UnitSettings.TorqueUnit,
-                    LinearCoordinateDirection3D.AlongY
+                    LinearCoordinateDirection3D.AlongY,
+                    sfd
                 )
             );
         }
@@ -84,7 +100,8 @@ public class DsmAnalysisModel(Model model)
         return new ModelResults
         {
             NodeResults = nodeResults,
-            ShearForceDiagrams = shearForceDiagrams
+            ShearForceDiagrams = shearForceDiagrams,
+            MomentDiagrams = momentDiagrams,
         };
     }
 

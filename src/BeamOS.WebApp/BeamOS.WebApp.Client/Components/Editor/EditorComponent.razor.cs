@@ -50,7 +50,7 @@ public partial class EditorComponent : FluxorComponent
 
     public string ElementId { get; } = "id" + Guid.NewGuid().ToString("N");
     public IEditorApiAlpha? EditorApiAlpha { get; private set; }
-    const string physicalModelId = "00000000-0000-0000-0000-000000000000";
+    const string physicalModelId = "ddb1e60a-df17-48b0-810a-60e425acf640";
 
     private HubConnection hubConnection;
 

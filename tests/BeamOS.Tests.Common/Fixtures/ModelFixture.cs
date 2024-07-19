@@ -11,7 +11,9 @@ public interface IHasExpectedNodeResults2
 
 public abstract class ModelFixture2 : FixtureBase2, IHasSourceInfo, IModelFixture2
 {
+    public abstract override Guid Id { get; }
     public abstract ModelSettings Settings { get; }
+    public abstract SourceInfo SourceInfo { get; }
     public virtual string Name { get; } = "Test Model";
     public virtual string Description { get; } = "Test Model Description";
     public virtual NodeFixture2[] Nodes { get; } = [];
@@ -21,5 +23,4 @@ public abstract class ModelFixture2 : FixtureBase2, IHasSourceInfo, IModelFixtur
     public virtual SectionProfileFixture2[] SectionProfiles { get; } = [];
     public virtual PointLoadFixture2[] PointLoads { get; } = [];
     public virtual MomentLoadFixture2[] MomentLoads { get; } = [];
-    public abstract SourceInfo SourceInfo { get; }
 }

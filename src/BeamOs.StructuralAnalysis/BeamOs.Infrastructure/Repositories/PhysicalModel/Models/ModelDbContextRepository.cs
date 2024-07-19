@@ -22,7 +22,7 @@ internal class ModelDbContextRepository(BeamOsStructuralDbContext dbContext)
             queryable = queryable.Include(property);
         }
 
-        return await queryable.FirstOrDefaultAsync(ct);
+        return await queryable.FirstOrDefaultAsync(el => el.Id == id, ct);
     }
 
     public override Task<Model?> GetById(ModelId id, CancellationToken ct = default)

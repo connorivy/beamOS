@@ -64,7 +64,7 @@ public class DiagramBuilder
     {
         List<DiagramConsistantInterval> intervals =
         [
-            new(new Length(0, this.elementLength.Unit), this.elementLength, new())
+            new(new Length(0, this.lengthUnit), this.elementLength, new())
         ];
 
         var orderedLengths = this.pointValues

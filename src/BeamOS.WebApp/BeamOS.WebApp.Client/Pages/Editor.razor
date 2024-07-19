@@ -1,11 +1,14 @@
 @page "/editor"
+@using BeamOS.WebApp.Client.Caches
 @using BeamOS.WebApp.Client.Components.Editor
+@using BeamOS.WebApp.Client.Components.Editor.Commands
 @using BeamOS.WebApp.Client.Features.Common.Flux
 @using BeamOS.WebApp.Client.Repositories
 @using BeamOs.CodeGen.Apis.EditorApi
 @using BeamOs.ApiClient
 @using BeamOs.Contracts.AnalyticalResults.Model
 @using BeamOs.Contracts.Common
+@using BeamOs.Contracts.PhysicalModel.Element1d
 @using BeamOs.Contracts.PhysicalModel.Model
 @using BeamOs.Contracts.PhysicalModel.Node
 @using Fluxor.Blazor.Web.Components
@@ -19,6 +22,11 @@
 <PageTitle>Editor</PageTitle>
 
 <MudDrawerContainer Class="h-full w-full">
+    <MudTextField @bind-Value="modelIdInput" Label="Filled" Variant="Variant.Filled"></MudTextField>
+    <MudButton OnClick="LoadModel">Load Model</MudButton>
+    <MudButton OnClick="RunAnalysis">Run DSM</MudButton>
+    <MudButton OnClick="LoadShearDiagrams">Show Shear Diagrams</MudButton>
+    <MudButton OnClick="LoadMomentDiagrams">Show Moment Diagrams</MudButton>
     @if (editorComponent is not null)
     {
         <MudPopover Open="@(editorComponent.EditorComponentState.SelectedObjects.Length > 0)" Fixed="true" Class="w-80 m-2">
@@ -26,13 +34,19 @@
         </MudPopover>
     }
     <EditorComponent Class="h-full" @ref="editorComponent"></EditorComponent>
-    <MudButton OnClick="LoadDiagram">Load Diagram</MudButton>
 </MudDrawerContainer>
 
 @code {
     [Inject]
     private IApiAlphaClient ApiAlphaClient { get; init; }
 
+    [Inject]
+    private AddEntityContractToEditorCommandHandler AddEntityContractToEditorCommandHandler { get; init; }
+
+    [Inject]
+    private AllStructuralAnalysisModelCaches allStructuralAnalysisModelCaches { get; init; }
+
+    public string modelIdInput { get; set; }
     private EditorComponent editorComponent;
 
     protected override void OnInitialized()
@@ -44,10 +58,37 @@
     private void EventEmitter_VisibleStateChanged(object? sender, EventArgs _) =>
         InvokeAsync(StateHasChanged);
 
-    private async Task LoadDiagram()
+    private async Task LoadShearDiagrams()
     {
-        // await ApiAlphaClient.RunDirectStiffnessMethodAsync(editorComponent.EditorComponentState.LoadedModelId);
-        var shearDiagram = await ApiAlphaClient.GetShearDiagramAsync(editorComponent.EditorComponentState.SelectedObjects.First().Id);
-        await editorComponent.EditorComponentState.EditorApi.CreateShearDiagramAsync(shearDiagram);
+        var loadedElement1dIds = this.allStructuralAnalysisModelCaches.GetByModelId(editorComponent.EditorComponentState.LoadedModelId)
+        .GetEntityIdsOfType<Element1DResponse>();
+
+        foreach (var element1dId in loadedElement1dIds)
+        {
+            var shearDiagram = await ApiAlphaClient.GetShearDiagramAsync(element1dId);
+            await AddEntityContractToEditorCommandHandler.ExecuteAsync(new AddEntityToEditorCommand(this.editorComponent.ElementId, shearDiagram));
+        }
+    }
+
+    private async Task LoadMomentDiagrams()
+    {
+        var loadedElement1dIds = this.allStructuralAnalysisModelCaches.GetByModelId(editorComponent.EditorComponentState.LoadedModelId)
+        .GetEntityIdsOfType<Element1DResponse>();
+
+        foreach (var element1dId in loadedElement1dIds)
+        {
+            var shearDiagram = await ApiAlphaClient.GetMomentDiagramAsync(element1dId);
+            await AddEntityContractToEditorCommandHandler.ExecuteAsync(new AddEntityToEditorCommand(this.editorComponent.ElementId, shearDiagram));
+        }
+    }
+
+    private async Task LoadModel()
+    {
+        await this.editorComponent.LoadModel(modelIdInput);
+    }
+
+    private async Task RunAnalysis()
+    {
+        await ApiAlphaClient.RunDirectStiffnessMethodAsync(editorComponent.EditorComponentState.LoadedModelId);
     }
 }

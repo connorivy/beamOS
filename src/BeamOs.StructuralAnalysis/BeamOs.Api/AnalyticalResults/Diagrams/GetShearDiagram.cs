@@ -8,6 +8,7 @@ using BeamOs.Application.PhysicalModel.Models.Interfaces;
 using BeamOs.Common.Application.Interfaces;
 using BeamOs.Contracts.AnalyticalResults.Diagrams;
 using BeamOs.Contracts.Common;
+using BeamOs.Domain.Diagrams.MomentDiagramAggregate;
 using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate;
 using FastEndpoints;
 
@@ -41,6 +42,34 @@ public class GetShearDiagram(
 
         //var modelData = await getModelQueryHandler.ExecuteAsync(new(data.ModelId, []), ct);
         //data.UseUnitSettings(modelData.Settings.UnitSettings);
+
+        return responseMapper.Map(data);
+    }
+}
+
+public class GetMomentDiagram(
+    BeamOsFastEndpointOptions options,
+    IQueryHandler<GetResourceByIdQuery, MomentDiagram> getShearDiagramQueryHandler,
+    MomentDiagramDataToResponse responseMapper
+) : BeamOsFastEndpoint<IdRequest, MomentDiagramResponse?>(options)
+{
+    public override Http EndpointType => Http.GET;
+
+    public override string Route => "element1Ds/{id}/diagrams/moment/";
+
+    public override async Task<MomentDiagramResponse?> ExecuteAsync(
+        IdRequest req,
+        CancellationToken ct
+    )
+    {
+        GetResourceByIdQuery query = new(Guid.Parse(req.Id));
+
+        MomentDiagram? data = await getShearDiagramQueryHandler.ExecuteAsync(query, ct);
+
+        if (data is null)
+        {
+            return null;
+        }
 
         return responseMapper.Map(data);
     }
