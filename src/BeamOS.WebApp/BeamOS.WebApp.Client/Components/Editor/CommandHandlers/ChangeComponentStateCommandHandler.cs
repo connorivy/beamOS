@@ -10,16 +10,24 @@ public class ChangeComponentStateCommandHandler(
     HistoryManager historyManager
 ) : VisibleStateCommandHandlerBase<ChangeComponentStateCommand>(historyManager)
 {
-    protected override Task<Result> ExecuteCommandAsync(ChangeComponentStateCommand command, CancellationToken ct = default)
+    protected override Task<Result> ExecuteCommandAsync(
+        ChangeComponentStateCommand command,
+        CancellationToken ct = default
+    )
     {
-        EditorComponentState? state = editorComponentStateRepository.GetComponentStateByCanvasId(command.CanvasId);
+        EditorComponentState? state = editorComponentStateRepository.GetComponentStateByCanvasId(
+            command.CanvasId
+        );
 
         if (state == null)
         {
             return Task.FromResult(Result.Failure(BeamOsError.Todo));
         }
 
-        editorComponentStateRepository.SetComponentStateForCanvasId(command.CanvasId, command.NewEditorComponentState);
+        editorComponentStateRepository.SetComponentStateForCanvasId(
+            command.CanvasId,
+            command.NewEditorComponentState
+        );
 
         return Task.FromResult(Result.Success());
     }
@@ -30,7 +38,10 @@ public class ChangeComponentStateCommandHandler<TState>(
     HistoryManager historyManager
 ) : VisibleStateCommandHandlerBase<ChangeComponentStateCommand<TState>>(historyManager)
 {
-    protected override Task<Result> ExecuteCommandAsync(ChangeComponentStateCommand<TState> command, CancellationToken ct = default)
+    protected override Task<Result> ExecuteCommandAsync(
+        ChangeComponentStateCommand<TState> command,
+        CancellationToken ct = default
+    )
     {
         TState? state = stateRepository.GetComponentStateByCanvasId(command.CanvasId);
 
@@ -39,7 +50,10 @@ public class ChangeComponentStateCommandHandler<TState>(
             return Task.FromResult(Result.Failure(BeamOsError.Todo));
         }
 
-        stateRepository.SetComponentStateForCanvasId(command.CanvasId, command.StateMutation(state));
+        stateRepository.SetComponentStateForCanvasId(
+            command.CanvasId,
+            command.StateMutation(state)
+        );
 
         return Task.FromResult(Result.Success());
     }

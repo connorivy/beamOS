@@ -15,17 +15,22 @@ public class ChangeSelectionCommandHandler(
         CancellationToken ct = default
     )
     {
-        EditorComponentState? state = editorComponentStateRepository.GetComponentStateByCanvasId(command.CanvasId);
+        EditorComponentState? state = editorComponentStateRepository.GetComponentStateByCanvasId(
+            command.CanvasId
+        );
 
         if (state == null)
         {
             return Task.FromResult(Result.Failure(BeamOsError.Todo));
         }
 
-        editorComponentStateRepository.SetComponentStateForCanvasId(command.CanvasId, state with
-        {
-            SelectedObjects = command.SelectedObjects
-        });
+        editorComponentStateRepository.SetComponentStateForCanvasId(
+            command.CanvasId,
+            state with
+            {
+                SelectedObjects = command.SelectedObjects
+            }
+        );
 
         return Task.FromResult(Result.Success());
     }

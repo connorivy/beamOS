@@ -6,5 +6,4 @@ namespace BeamOs.Infrastructure.Repositories.AnalyticalResults.Diagrams.ShearDia
 
 internal class MomentDiagramDbContextRepository(BeamOsStructuralDbContext dbContext)
     : RepositoryBase<MomentDiagramId, MomentDiagram>(dbContext),
-        IMomentDiagramRepository
-{ }
+        IMomentDiagramRepository { }

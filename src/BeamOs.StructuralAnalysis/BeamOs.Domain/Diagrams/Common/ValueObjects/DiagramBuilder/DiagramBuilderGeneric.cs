@@ -7,6 +7,7 @@ using UnitsNet.Units;
 namespace BeamOs.Domain.Diagrams.Common.ValueObjects.DiagramBuilder;
 
 
+
 //public class DiagramBuilderGeneric<TUnit, TUnitType>
 //    where TUnitType : Enum
 //    where TUnit : IArithmeticQuantity<TUnit, TUnitType, double>
