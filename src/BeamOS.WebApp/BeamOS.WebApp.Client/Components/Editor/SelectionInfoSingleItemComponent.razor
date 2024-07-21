@@ -16,16 +16,32 @@
             <MudTooltip Text="@value?.ToString()" RootClass="w-full">
                 <MudText Typo="Typo.body2" Class="truncate">@value</MudText>
             </MudTooltip>
-        </MudItem>
-    }
-    else if (value is IEnumerable enumerable)
-    {
-        int counter = 0;
-        foreach (var item in enumerable)
+            </MudItem>
+        }
+        else if (value is IEnumerable enumerable)
         {
-            <MudExpansionPanel Text=@($"{propInfo.Name}-{counter++}")>
-                <SelectionInfoSingleItemComponent ObjectToDisplay="@item" @key="@item"></SelectionInfoSingleItemComponent>
-            </MudExpansionPanel>
+            int counter = 0;
+            foreach (var item in enumerable)
+            {
+                if (IsSimpleType(item.GetType()))
+                {
+                    <MudItem xs="4">
+                        <MudTooltip Text=@($"{propInfo.Name}-{counter++}") RootClass="w-full">
+                            <MudText Typo="Typo.body2" Class="truncate">@($"{propInfo.Name}-{counter++}")</MudText>
+                        </MudTooltip>
+                    </MudItem>
+                    <MudItem xs="8">
+                        <MudTooltip Text="@item?.ToString()" RootClass="w-full">
+                            <MudText Typo="Typo.body2" Class="truncate">@item</MudText>
+                        </MudTooltip>
+                    </MudItem>
+                }
+                else
+                {
+                    <MudExpansionPanel Text=@($"{propInfo.Name}-{counter++}")>
+                    <SelectionInfoSingleItemComponent ObjectToDisplay="@item" @key="@item"></SelectionInfoSingleItemComponent>
+                </MudExpansionPanel>
+                }
         }
     }
     else

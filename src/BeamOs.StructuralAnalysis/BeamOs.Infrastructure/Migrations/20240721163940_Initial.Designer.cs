@@ -13,8 +13,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeamOs.Infrastructure.Migrations
 {
     [DbContext(typeof(BeamOsStructuralDbContext))]
-    [Migration("20240719222902_Initial3")]
-    partial class Initial3
+    [Migration("20240721163940_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -144,6 +144,9 @@ namespace BeamOs.Infrastructure.Migrations
 
                     b.Property<int>("LengthUnit")
                         .HasColumnType("int");
+
+                    b.Property<Guid>("ModelId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("ShearDirection")
                         .HasColumnType("int");

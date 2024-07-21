@@ -92,7 +92,8 @@ public static class DependencyInjection
             .AddScoped<IPointLoadRepository, PointLoadDbContextRepository>()
             .AddScoped<ISectionProfileRepository, SectionProfileDbContextRepository>()
             .AddScoped<INodeResultRepository, NodeResultDbContextRepository>()
-            .AddScoped<IShearDiagramRepository, ShearForceDiagramDbContextRepository>();
+            .AddScoped<IShearDiagramRepository, ShearForceDiagramDbContextRepository>()
+            .AddScoped<IMomentDiagramRepository, MomentDiagramDbContextRepository>();
 
         _ = services.AddScoped<IUnitOfWork, UnitOfWork>();
         _ = services.AddScoped<PublishIntegrationEventsInterceptor>();

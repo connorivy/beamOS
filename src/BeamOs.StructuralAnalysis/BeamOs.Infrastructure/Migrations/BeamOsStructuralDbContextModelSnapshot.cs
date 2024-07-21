@@ -142,6 +142,9 @@ namespace BeamOs.Infrastructure.Migrations
                     b.Property<int>("LengthUnit")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("ModelId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("ShearDirection")
                         .HasColumnType("int");
 

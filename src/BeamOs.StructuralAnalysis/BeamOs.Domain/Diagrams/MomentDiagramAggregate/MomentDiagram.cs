@@ -7,6 +7,7 @@ using BeamOs.Domain.Diagrams.MomentDiagramAggregate.ValueObjects;
 using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate.ValueObjects;
+using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Spatial.Euclidean;
 using UnitsNet;
@@ -16,12 +17,14 @@ namespace BeamOs.Domain.Diagrams.MomentDiagramAggregate;
 
 public sealed class MomentDiagram : DiagramBase<MomentDiagramId>
 {
+    public ModelId ModelId { get; private set; }
     public Element1DId Element1DId { get; private set; }
     public LinearCoordinateDirection3D ShearDirection { get; private set; }
     public Vector3D GlobalShearDirection { get; private init; }
     public ForceUnit ForceUnit { get; }
 
     protected MomentDiagram(
+        ModelId modelId,
         Element1DId element1DId,
         LinearCoordinateDirection3D shearDirection,
         Length elementLength,
@@ -35,9 +38,11 @@ public sealed class MomentDiagram : DiagramBase<MomentDiagramId>
         this.Element1DId = element1DId;
         this.ShearDirection = shearDirection;
         this.ForceUnit = forceUnit;
+        this.ModelId = modelId;
     }
 
     public static MomentDiagram Create(
+        ModelId modelId,
         Element1DId element1d,
         Point startPoint,
         Point endPoint,
@@ -83,19 +88,21 @@ public sealed class MomentDiagram : DiagramBase<MomentDiagramId>
         List<DiagramPointValue> boundaryConditions = [];
 
         var startReaction = startForces.GetTorqueAboutAxis(localAxisDirection);
-        var startPointValue = new DiagramPointValue(Length.Zero, startReaction.As(torqueUnit));
+        // point moments get applied with a flipped sign in bending moment diagram
+        // https://youtu.be/paHXLFuqap0?si=qdxoWmB5OkQGmAwJ&t=790
+        var startPointValue = new DiagramPointValue(Length.Zero, -1 * startReaction.As(torqueUnit));
         pointValues.Add(startPointValue);
         //boundaryConditions.Add(startPointValue);
 
         var endReaction = endForces.GetTorqueAboutAxis(localAxisDirection);
-        var endPointValue = new DiagramPointValue(elementLength, endReaction.As(torqueUnit));
+        var endPointValue = new DiagramPointValue(elementLength, -1 * endReaction.As(torqueUnit));
         pointValues.Add(endPointValue);
         //boundaryConditions.Add(endPointValue);
 
         var db = shearForceDiagram
             .Integrate()
             .AddPointLoads([.. pointValues])
-            //.ApplyIntegrationBoundaryConditions(1, startPointValue, endPointValue)
+            //.ApplyIntegrationBoundaryConditions(1, startPointValue)
             .Build();
 
         var origin = new Point3D(
@@ -115,6 +122,7 @@ public sealed class MomentDiagram : DiagramBase<MomentDiagramId>
         //List<DiagramPointValue> boundaryConditions = [
 
         return new(
+            modelId,
             element1d,
             localShearDirection,
             elementLength,

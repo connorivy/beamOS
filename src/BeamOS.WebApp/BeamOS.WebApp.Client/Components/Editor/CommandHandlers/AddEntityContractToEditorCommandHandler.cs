@@ -74,6 +74,12 @@ public class AddEntityContractToEditorCommandHandler(
                     CancellationToken.None
                 );
                 break;
+            case MomentDiagramResponse momentDiagramResponse:
+                await editorApi.CreateMomentDiagramAsync(
+                    momentDiagramResponse,
+                    CancellationToken.None
+                );
+                break;
             default:
                 throw new Exception($"Unsupported type {entity.GetType()}");
         }

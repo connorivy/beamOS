@@ -1,4 +1,5 @@
 using BeamOs.Application.PhysicalModel.Models;
+using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using Microsoft.EntityFrameworkCore;
@@ -41,4 +42,9 @@ internal class ModelDbContextRepository(BeamOsStructuralDbContext dbContext)
             .Include(m => m.SectionProfiles)
             .FirstOrDefaultAsync(el => el.Id == id, ct);
     }
+
+    public async Task<UnitSettings> GetUnits(ModelId id, CancellationToken ct) =>
+        (await this.DbContext.Models.FirstOrDefaultAsync(el => el.Id == id, ct))
+            ?.Settings
+            .UnitSettings ?? throw new Exception($"Could not find model with id {id.Id}");
 }

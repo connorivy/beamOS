@@ -1,5 +1,6 @@
 using BeamOs.Application.Common.Mappers;
 using BeamOs.Contracts.AnalyticalResults.Diagrams;
+using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.Diagrams.MomentDiagramAggregate;
 using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate;
 using Riok.Mapperly.Abstractions;
@@ -17,8 +18,20 @@ public partial class ShearDiagramDataToResponse
 
 [Mapper]
 public partial class MomentDiagramDataToResponse
-    : AbstractMapper<MomentDiagram, MomentDiagramResponse>
+    : AbstractMapperProvidedUnits<MomentDiagram, MomentDiagramResponse>
 {
+    [Obsolete("This is just here to make DI registration work. I'm too lazy to change it.", true)]
+    public MomentDiagramDataToResponse()
+        : base(null) { }
+
+    private MomentDiagramDataToResponse(UnitSettings unitSettings)
+        : base(unitSettings) { }
+
+    public static MomentDiagramDataToResponse Create(UnitSettings unitSettings)
+    {
+        return new(unitSettings);
+    }
+
     public override MomentDiagramResponse Map(MomentDiagram source) => this.ToResponse(source);
 
     public partial MomentDiagramResponse ToResponse(MomentDiagram source);

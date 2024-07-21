@@ -1,4 +1,5 @@
 using BeamOs.Application.Common.Interfaces.Repositories;
+using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 
@@ -11,4 +12,6 @@ public interface IModelRepository : IRepository<ModelId, Model>
         CancellationToken ct = default,
         params string[] propertiesToLoad
     );
+
+    Task<UnitSettings> GetUnits(ModelId id, CancellationToken ct);
 }

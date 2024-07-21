@@ -65,6 +65,7 @@ public class DsmAnalysisModel(Model model)
                 model.Settings.UnitSettings.ForcePerLengthUnit,
                 model.Settings.UnitSettings.TorqueUnit
             );
+            var rotationMatrix = dsmElement1d.GetRotationMatrix();
 
             var sfd = ShearForceDiagram.Create(
                 dsmElement1d.Element1DId,
@@ -82,6 +83,7 @@ public class DsmAnalysisModel(Model model)
 
             momentDiagrams.Add(
                 MomentDiagram.Create(
+                    model.Id,
                     dsmElement1d.Element1DId,
                     dsmElement1d.StartPoint,
                     dsmElement1d.EndPoint,
