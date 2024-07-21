@@ -17,12 +17,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
+		.netconfig = .netconfig
 		Directory.Build.props = Directory.Build.props
 		Directory.Packages.props = Directory.Packages.props
 		DirectStiffnessMethodCheatSheet.md = DirectStiffnessMethodCheatSheet.md
 		.config\dotnet-tools.json = .config\dotnet-tools.json
 		global.json = global.json
 		README.md = README.md
+		stryker-config.json = stryker-config.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StructuralAnalysis", "StructuralAnalysis", "{AAA311E5-CD84-4E27-8F40-F82AE599D3E0}"

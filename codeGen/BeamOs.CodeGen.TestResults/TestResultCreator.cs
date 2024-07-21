@@ -31,6 +31,19 @@ internal class TestResultCreator
 
     public async Task GenerateTestReports()
     {
+        Process toolRestore = new Process()
+        {
+            StartInfo = new ProcessStartInfo()
+            {
+                FileName = "dotnet",
+                Arguments = $"tool restore",
+                WorkingDirectory = DirectoryHelper.GetRootDirectory()
+            }
+        };
+
+        toolRestore.Start();
+        await toolRestore.WaitForExitAsync();
+
         Process testProcess = new Process()
         {
             StartInfo = new ProcessStartInfo()

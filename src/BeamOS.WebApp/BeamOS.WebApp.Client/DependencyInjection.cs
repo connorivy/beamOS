@@ -9,9 +9,11 @@ using BeamOS.WebApp.Client.Features.TestExplorer;
 using BeamOS.WebApp.Client.Repositories;
 using BeamOS.WebApp.Client.State;
 using Fluxor;
-using Fluxor.Blazor.Web.ReduxDevTools;
 using MudBlazor.Services;
 using MudExtensions.Services;
+#if DEBUG
+using Fluxor.Blazor.Web.ReduxDevTools;
+#endif
 
 namespace BeamOS.WebApp.Client;
 
