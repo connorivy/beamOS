@@ -1,8 +1,8 @@
 using System.Reflection;
 using System.Text;
 using BeamOS.Tests.Common;
+using BeamOS.Tests.Common.Fixtures;
 using BeamOS.Tests.Common.Interfaces;
-using BeamOS.Tests.Common.SolvedProblems.Fixtures;
 
 namespace BeamOs.Tests.TestRunner;
 
@@ -24,7 +24,7 @@ public class TestInfo
         sb.Append($"{testClassType.FullName}.{methodInfo.Name}");
         if (testData?.Length > 0)
         {
-            if (testData.Length == 1 && testData[0] is FixtureBase fixture)
+            if (testData.Length == 1 && testData[0] is FixtureBase2 fixture)
             {
                 sb.Append($".{fixture.Id}");
             }
@@ -45,10 +45,10 @@ public class TestInfo
     public Type TestClassType { get; }
     public Dictionary<string, string[]> TraitNameToValueDict { get; }
 
-    public ITestFixtureDisplayable? GetDisplayable() =>
-        this.TestData?.FirstOrDefault() as ITestFixtureDisplayable;
+    public FixtureBase2? GetTestFixture() => this.TestData?.FirstOrDefault() as FixtureBase2;
 
-    public SourceInfo? SourceInfo => this.GetDisplayable()?.SourceInfo;
+    public SourceInfo? SourceInfo =>
+        (this.TestData?.FirstOrDefault() as IHasSourceInfo)?.SourceInfo;
 
     public async Task<TestResult> RunTest()
     {

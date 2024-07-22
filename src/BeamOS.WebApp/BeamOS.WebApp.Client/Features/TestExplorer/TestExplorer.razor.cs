@@ -1,7 +1,8 @@
+using BeamOS.Tests.Common.Fixtures;
 using BeamOS.Tests.Common.Interfaces;
 using BeamOS.Tests.Common.Traits;
 using BeamOs.Tests.TestRunner;
-using BeamOS.WebApp.Client.Components;
+using BeamOS.WebApp.Client.Features.Editors.ReadOnlyEditor;
 using BeamOS.WebApp.Client.Pages;
 using Fluxor;
 using Fluxor.Blazor.Web.Components;
@@ -23,8 +24,11 @@ public partial class TestExplorer : FluxorComponent
     [Inject]
     private IState<TestInfoState> TestInfoState { get; init; }
 
+    [Inject]
+    private TestFixtureDisplayer TestFixtureDisplayer { get; init; }
+
     private bool open = true;
-    private EditorComponent? editorComponent;
+    private ReadOnlyEditor readOnlyEditor;
 
     //private string? nameOfAssertionResult { get; set; }
 
@@ -93,6 +97,7 @@ public partial class TestExplorer : FluxorComponent
                     break;
             }
             this.isLoadingAssertionResults = false;
+            this.StateHasChanged();
         });
 
         //foreach (var testInfo in this.TestInfoProvider.TestInfos.Values)
@@ -105,19 +110,25 @@ public partial class TestExplorer : FluxorComponent
     {
         if (testInfo is null)
         {
-            await this.editorComponent.EditorApiAlpha.ClearAsync();
+            await this.readOnlyEditor.EditorApiAlpha.ClearAsync();
             return;
         }
 
-        ITestFixtureDisplayable? displayable = testInfo.GetDisplayable();
-        if (displayable != this.TestExplorerState.Value.SelectedTestInfo?.GetDisplayable())
+        if (testInfo.GetTestFixture() is FixtureBase2 fixtureBase)
         {
-            await this.editorComponent.EditorApiAlpha.ClearAsync();
-            if (displayable is not null)
-            {
-                await displayable.Display(this.editorComponent.EditorApiAlpha);
-            }
+            await this.readOnlyEditor.EditorApiAlpha.ClearAsync();
+            await this.TestFixtureDisplayer.Display(fixtureBase, this.readOnlyEditor.ElementId);
         }
+
+        //ITestFixtureDisplayable? displayable = testInfo.GetDisplayable();
+        //if (displayable != this.TestExplorerState.Value.SelectedTestInfo?.GetDisplayable())
+        //{
+        //    await this.readOnlyEditor.EditorApiAlpha.ClearAsync();
+        //    if (displayable is not null)
+        //    {
+        //        await displayable.Display(this.readOnlyEditor.EditorApiAlpha);
+        //    }
+        //}
 
         this.Dispatcher.Dispatch(new ChangeSelectedTestInfoAction(testInfo));
         this.Dispatcher.Dispatch(new ExecutionTestAction(testInfo));

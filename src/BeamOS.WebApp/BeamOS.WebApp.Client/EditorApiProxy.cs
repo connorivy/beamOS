@@ -1,29 +1,48 @@
 using System.Reflection;
-using BeamOS.WebApp.EditorApi;
+using BeamOs.CodeGen.Apis.EditorApi;
+using BeamOs.Common.Api;
+using BeamOS.WebApp.Client.Components.Editor;
+using BeamOS.WebApp.Client.Components.Editor.CommandHandlers;
 using Microsoft.JSInterop;
 
 namespace BeamOS.WebApp.Client;
 
-public class EditorApiProxy : DispatchProxy
+public class EditorApiProxy : DispatchProxy, IAsyncDisposable
 {
     private IJSObjectReference? editorReference;
+    private DotNetObjectReference<IEditorEventsApi>? dotNetObjectReference;
 
-    public static async Task<IEditorApiAlpha> Create(IJSRuntime js, string canvasId)
+    public static async Task<IEditorApiAlpha> Create(
+        IJSRuntime js,
+        IEditorEventsApi editorEventsApi,
+        ChangeComponentStateCommandHandler<EditorComponentState> changeComponentStateCommandHandler,
+        string canvasId,
+        bool isReadOnly
+    )
     {
         var proxyInterface = Create<IEditorApiAlpha, EditorApiProxy>();
+        await changeComponentStateCommandHandler.ExecuteAsync(
+            new(canvasId, state => state with { EditorApi = proxyInterface })
+        );
+
         var proxy = proxyInterface as EditorApiProxy ?? throw new Exception();
+
+        proxy.dotNetObjectReference = DotNetObjectReference.Create(editorEventsApi);
 
         // WARNING : the string "createEditorFromId" must match the string in index.js
         proxy.editorReference = await js.InvokeAsync<IJSObjectReference>(
             "createEditorFromId",
-            canvasId
+            canvasId,
+            proxy.dotNetObjectReference,
+            isReadOnly
         );
+
         return proxyInterface;
     }
 
     protected override object? Invoke(MethodInfo? targetMethod, object?[]? args)
     {
-        if (args is not null && args.Length > 0 && args.Last() is CancellationToken ct)
+        if (args is not null && args.Length > 0 && args.Last() is CancellationToken)
         {
             args = args[..^1];
         }
@@ -34,7 +53,7 @@ public class EditorApiProxy : DispatchProxy
         }
 
         return this.editorReference
-            .InvokeAsync<string>(
+            .InvokeAsync<Result>(
                 $"api.{GetTsMethodName(targetMethod?.Name ?? throw new ArgumentNullException())}",
                 args
             )
@@ -57,12 +76,38 @@ public class EditorApiProxy : DispatchProxy
 
         return tsMethodName;
     }
+
+    public async ValueTask DisposeAsync()
+    {
+        this.dotNetObjectReference?.Dispose();
+        if (this.editorReference is not null)
+        {
+            try
+            {
+                await this.editorReference.DisposeAsync();
+            }
+            catch (JSDisconnectedException)
+            {
+                // okay to swallow this exception
+            }
+        }
+    }
 }
 
-public class EditorApiProxyFactory(IJSRuntime js)
+public class EditorApiProxyFactory(
+    IJSRuntime js,
+    EditorEventsApi editorEventsApi,
+    ChangeComponentStateCommandHandler<EditorComponentState> changeComponentStateCommandHandler
+)
 {
-    public async Task<IEditorApiAlpha> Create(string canvasId)
+    public async Task<IEditorApiAlpha> Create(string canvasId, bool isReadOnly)
     {
-        return await EditorApiProxy.Create(js, canvasId);
+        return await EditorApiProxy.Create(
+            js,
+            editorEventsApi,
+            changeComponentStateCommandHandler,
+            canvasId,
+            isReadOnly
+        );
     }
 }

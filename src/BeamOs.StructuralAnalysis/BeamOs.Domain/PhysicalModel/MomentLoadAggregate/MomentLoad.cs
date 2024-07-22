@@ -4,6 +4,7 @@ using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.MomentLoadAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
 using MathNet.Numerics.LinearAlgebra;
+using MathNet.Spatial.Euclidean;
 using UnitsNet;
 
 namespace BeamOs.Domain.PhysicalModel.MomentLoadAggregate;
@@ -45,6 +46,18 @@ public class MomentLoad : AggregateRoot<MomentLoadId>
                 => throw new ArgumentException("Unexpected value for direction, Undefined"),
             _ => throw new NotImplementedException(),
         };
+    }
+
+    public Torque GetForceAboutAxis(Vector3D direction)
+    {
+        // magnitude of projection of A onto B = (A . B) / | B |
+        double magnitudeOfProjection =
+            new Vector3D(
+                this.AxisDirection[0],
+                this.AxisDirection[1],
+                this.AxisDirection[2]
+            ).DotProduct(direction) / direction.Length;
+        return this.Torque * magnitudeOfProjection;
     }
 
     [Obsolete("EF Core Constructor", true)]

@@ -1,6 +1,9 @@
 @inherits LayoutComponentBase
 @rendermode InteractiveAuto
 
+@inject IDispatcher Dispatcher;
+@inject IJSRuntime js;
+
 <MudThemeProvider Theme="@_baseTheme"
                   IsDarkMode="@isDarkMode" />
 <MudPopoverProvider />

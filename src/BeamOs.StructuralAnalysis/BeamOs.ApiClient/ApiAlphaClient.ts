@@ -13,7 +13,7 @@ export interface IApiAlphaClient {
     /**
      * @return Success
      */
-    runDirectStiffnessMethod(idRequest: IdRequest): Promise<AnalyticalModelResponse3>;
+    runDirectStiffnessMethod(id: string): Promise<AnalyticalModelResponse3>;
 
     /**
      * @return Success
@@ -81,7 +81,17 @@ export interface IApiAlphaClient {
     /**
      * @return Success
      */
+    patchNode(patchNodeRequest: PatchNodeRequest, nodeId: string): Promise<NodeResponse>;
+
+    /**
+     * @return Success
+     */
     getShearDiagram(id: string): Promise<ShearDiagramResponse>;
+
+    /**
+     * @return Success
+     */
+    getMomentDiagram(id: string): Promise<MomentDiagramResponse>;
 
     /**
      * @return Success
@@ -112,17 +122,16 @@ export class ApiAlphaClient implements IApiAlphaClient {
     /**
      * @return Success
      */
-    runDirectStiffnessMethod(idRequest: IdRequest): Promise<AnalyticalModelResponse3> {
-        let url_ = this.baseUrl + "/api/direct-stiffness-method/run/";
+    runDirectStiffnessMethod(id: string): Promise<AnalyticalModelResponse3> {
+        let url_ = this.baseUrl + "/api/direct-stiffness-method/run/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(idRequest);
-
         let options_: RequestInit = {
-            body: content_,
-            method: "POST",
+            method: "GET",
             headers: {
-                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -660,6 +669,50 @@ export class ApiAlphaClient implements IApiAlphaClient {
     /**
      * @return Success
      */
+    patchNode(patchNodeRequest: PatchNodeRequest, nodeId: string): Promise<NodeResponse> {
+        let url_ = this.baseUrl + "/api/nodes/{nodeId}";
+        if (nodeId === undefined || nodeId === null)
+            throw new Error("The parameter 'nodeId' must be defined.");
+        url_ = url_.replace("{nodeId}", encodeURIComponent("" + nodeId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(patchNodeRequest);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPatchNode(_response);
+        });
+    }
+
+    protected processPatchNode(response: Response): Promise<NodeResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = NodeResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<NodeResponse>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
     getShearDiagram(id: string): Promise<ShearDiagramResponse> {
         let url_ = this.baseUrl + "/api/element1Ds/{id}/diagrams/shear/";
         if (id === undefined || id === null)
@@ -695,6 +748,46 @@ export class ApiAlphaClient implements IApiAlphaClient {
             });
         }
         return Promise.resolve<ShearDiagramResponse>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    getMomentDiagram(id: string): Promise<MomentDiagramResponse> {
+        let url_ = this.baseUrl + "/api/element1Ds/{id}/diagrams/moment/";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetMomentDiagram(_response);
+        });
+    }
+
+    protected processGetMomentDiagram(response: Response): Promise<MomentDiagramResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MomentDiagramResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<MomentDiagramResponse>(null as any);
     }
 
     /**
@@ -1257,20 +1350,45 @@ export interface ICreateSectionProfileRequest {
     polarMomentOfInertia: UnitValueDto;
 }
 
-export class PointLoadResponse implements IPointLoadResponse {
+export abstract class BeamOsEntityContractBase extends BeamOsContractBase implements IBeamOsEntityContractBase {
     id!: string;
+
+    constructor(data?: IBeamOsEntityContractBase) {
+        super(data);
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): BeamOsEntityContractBase {
+        data = typeof data === 'object' ? data : {};
+        throw new Error("The abstract class 'BeamOsEntityContractBase' cannot be instantiated.");
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IBeamOsEntityContractBase extends IBeamOsContractBase {
+    id: string;
+}
+
+export class PointLoadResponse extends BeamOsEntityContractBase implements IPointLoadResponse {
     modelId!: string;
     nodeId!: string;
     force!: UnitValueDto;
     direction!: Vector3;
 
     constructor(data?: IPointLoadResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+        super(data);
         if (!data) {
             this.force = new UnitValueDto();
             this.direction = new Vector3();
@@ -1278,8 +1396,8 @@ export class PointLoadResponse implements IPointLoadResponse {
     }
 
     init(_data?: any) {
+        super.init(_data);
         if (_data) {
-            this.id = _data["id"];
             this.modelId = _data["modelId"];
             this.nodeId = _data["nodeId"];
             this.force = _data["force"] ? UnitValueDto.fromJS(_data["force"]) : new UnitValueDto();
@@ -1296,17 +1414,16 @@ export class PointLoadResponse implements IPointLoadResponse {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
         data["modelId"] = this.modelId;
         data["nodeId"] = this.nodeId;
         data["force"] = this.force ? this.force.toJSON() : <any>undefined;
         data["direction"] = this.direction ? this.direction.toJSON() : <any>undefined;
+        super.toJSON(data);
         return data;
     }
 }
 
-export interface IPointLoadResponse {
-    id: string;
+export interface IPointLoadResponse extends IBeamOsEntityContractBase {
     modelId: string;
     nodeId: string;
     force: UnitValueDto;
@@ -1535,8 +1652,7 @@ export class GetMomentLoadRequest implements IGetMomentLoadRequest {
 export interface IGetMomentLoadRequest {
 }
 
-export class ModelResponse extends BeamOsContractBase implements IModelResponse {
-    id!: string;
+export class ModelResponse extends BeamOsEntityContractBase implements IModelResponse {
     name!: string;
     description!: string;
     settings!: ModelSettingsResponse;
@@ -1557,7 +1673,6 @@ export class ModelResponse extends BeamOsContractBase implements IModelResponse 
     init(_data?: any) {
         super.init(_data);
         if (_data) {
-            this.id = _data["id"];
             this.name = _data["name"];
             this.description = _data["description"];
             this.settings = _data["settings"] ? ModelSettingsResponse.fromJS(_data["settings"]) : new ModelSettingsResponse();
@@ -1603,7 +1718,6 @@ export class ModelResponse extends BeamOsContractBase implements IModelResponse 
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
         data["name"] = this.name;
         data["description"] = this.description;
         data["settings"] = this.settings ? this.settings.toJSON() : <any>undefined;
@@ -1642,8 +1756,7 @@ export class ModelResponse extends BeamOsContractBase implements IModelResponse 
     }
 }
 
-export interface IModelResponse extends IBeamOsContractBase {
-    id: string;
+export interface IModelResponse extends IBeamOsEntityContractBase {
     name: string;
     description: string;
     settings: ModelSettingsResponse;
@@ -1758,8 +1871,7 @@ export interface IUnitSettingsResponse {
     areaMomentOfInertiaUnit: string;
 }
 
-export class NodeResponse extends BeamOsContractBase implements INodeResponse {
-    id!: string;
+export class NodeResponse extends BeamOsEntityContractBase implements INodeResponse {
     modelId!: string;
     locationPoint!: PointResponse;
     restraint!: RestraintResponse;
@@ -1775,7 +1887,6 @@ export class NodeResponse extends BeamOsContractBase implements INodeResponse {
     init(_data?: any) {
         super.init(_data);
         if (_data) {
-            this.id = _data["id"];
             this.modelId = _data["modelId"];
             this.locationPoint = _data["locationPoint"] ? PointResponse.fromJS(_data["locationPoint"]) : new PointResponse();
             this.restraint = _data["restraint"] ? RestraintResponse.fromJS(_data["restraint"]) : new RestraintResponse();
@@ -1791,7 +1902,6 @@ export class NodeResponse extends BeamOsContractBase implements INodeResponse {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
         data["modelId"] = this.modelId;
         data["locationPoint"] = this.locationPoint ? this.locationPoint.toJSON() : <any>undefined;
         data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
@@ -1800,8 +1910,7 @@ export class NodeResponse extends BeamOsContractBase implements INodeResponse {
     }
 }
 
-export interface INodeResponse extends IBeamOsContractBase {
-    id: string;
+export interface INodeResponse extends IBeamOsEntityContractBase {
     modelId: string;
     locationPoint: PointResponse;
     restraint: RestraintResponse;
@@ -1906,8 +2015,7 @@ export interface IRestraintResponse extends IBeamOsContractBase {
     canRotateAboutZ: boolean;
 }
 
-export class Element1DResponse implements IElement1DResponse {
-    id!: string;
+export class Element1DResponse extends BeamOsEntityContractBase implements IElement1DResponse {
     modelId!: string;
     startNodeId!: string;
     endNodeId!: string;
@@ -1916,20 +2024,15 @@ export class Element1DResponse implements IElement1DResponse {
     sectionProfileRotation!: UnitValueDto;
 
     constructor(data?: IElement1DResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+        super(data);
         if (!data) {
             this.sectionProfileRotation = new UnitValueDto();
         }
     }
 
     init(_data?: any) {
+        super.init(_data);
         if (_data) {
-            this.id = _data["id"];
             this.modelId = _data["modelId"];
             this.startNodeId = _data["startNodeId"];
             this.endNodeId = _data["endNodeId"];
@@ -1948,19 +2051,18 @@ export class Element1DResponse implements IElement1DResponse {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
         data["modelId"] = this.modelId;
         data["startNodeId"] = this.startNodeId;
         data["endNodeId"] = this.endNodeId;
         data["materialId"] = this.materialId;
         data["sectionProfileId"] = this.sectionProfileId;
         data["sectionProfileRotation"] = this.sectionProfileRotation ? this.sectionProfileRotation.toJSON() : <any>undefined;
+        super.toJSON(data);
         return data;
     }
 }
 
-export interface IElement1DResponse {
-    id: string;
+export interface IElement1DResponse extends IBeamOsEntityContractBase {
     modelId: string;
     startNodeId: string;
     endNodeId: string;
@@ -2443,7 +2545,7 @@ export interface IGetNodeResultsRequest {
 
 export class CreateNodeRequest implements ICreateNodeRequest {
     modelId!: string;
-    locationPoint!: PointRequest;
+    locationPoint!: Point;
     restraint?: RestraintRequest | undefined;
 
     constructor(data?: ICreateNodeRequest) {
@@ -2454,14 +2556,14 @@ export class CreateNodeRequest implements ICreateNodeRequest {
             }
         }
         if (!data) {
-            this.locationPoint = new PointRequest();
+            this.locationPoint = new Point();
         }
     }
 
     init(_data?: any) {
         if (_data) {
             this.modelId = _data["modelId"];
-            this.locationPoint = _data["locationPoint"] ? PointRequest.fromJS(_data["locationPoint"]) : new PointRequest();
+            this.locationPoint = _data["locationPoint"] ? Point.fromJS(_data["locationPoint"]) : new Point();
             this.restraint = _data["restraint"] ? RestraintRequest.fromJS(_data["restraint"]) : <any>undefined;
         }
     }
@@ -2484,16 +2586,16 @@ export class CreateNodeRequest implements ICreateNodeRequest {
 
 export interface ICreateNodeRequest {
     modelId: string;
-    locationPoint: PointRequest;
+    locationPoint: Point;
     restraint?: RestraintRequest | undefined;
 }
 
-export class PointRequest implements IPointRequest {
+export class Point implements IPoint {
     xCoordinate!: UnitValueDto;
     yCoordinate!: UnitValueDto;
     zCoordinate!: UnitValueDto;
 
-    constructor(data?: IPointRequest) {
+    constructor(data?: IPoint) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -2515,9 +2617,9 @@ export class PointRequest implements IPointRequest {
         }
     }
 
-    static fromJS(data: any): PointRequest {
+    static fromJS(data: any): Point {
         data = typeof data === 'object' ? data : {};
-        let result = new PointRequest();
+        let result = new Point();
         result.init(data);
         return result;
     }
@@ -2531,7 +2633,7 @@ export class PointRequest implements IPointRequest {
     }
 }
 
-export interface IPointRequest {
+export interface IPoint {
     xCoordinate: UnitValueDto;
     yCoordinate: UnitValueDto;
     zCoordinate: UnitValueDto;
@@ -2593,31 +2695,172 @@ export interface IRestraintRequest {
     canRotateAboutZ: boolean;
 }
 
-export class ShearDiagramResponse implements IShearDiagramResponse {
-    id!: string;
-    element1DId!: string;
-    lengthUnit!: string;
-    forceUnit!: string;
-    elementLength!: UnitValueDto;
-    intervals!: DiagramConsistantIntervalResponse[];
+export class PatchNodeRequest implements IPatchNodeRequest {
+    locationPoint?: PatchPointRequest | undefined;
+    restraint?: PatchRestraintRequest | undefined;
 
-    constructor(data?: IShearDiagramResponse) {
+    constructor(data?: IPatchNodeRequest) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
                     (<any>this)[property] = (<any>data)[property];
             }
         }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.locationPoint = _data["locationPoint"] ? PatchPointRequest.fromJS(_data["locationPoint"]) : <any>undefined;
+            this.restraint = _data["restraint"] ? PatchRestraintRequest.fromJS(_data["restraint"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): PatchNodeRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new PatchNodeRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["locationPoint"] = this.locationPoint ? this.locationPoint.toJSON() : <any>undefined;
+        data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IPatchNodeRequest {
+    locationPoint?: PatchPointRequest | undefined;
+    restraint?: PatchRestraintRequest | undefined;
+}
+
+export class PatchPointRequest implements IPatchPointRequest {
+    lengthUnit!: string;
+    xCoordinate?: number | undefined;
+    yCoordinate?: number | undefined;
+    zCoordinate?: number | undefined;
+
+    constructor(data?: IPatchPointRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.lengthUnit = _data["lengthUnit"];
+            this.xCoordinate = _data["xCoordinate"];
+            this.yCoordinate = _data["yCoordinate"];
+            this.zCoordinate = _data["zCoordinate"];
+        }
+    }
+
+    static fromJS(data: any): PatchPointRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new PatchPointRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["lengthUnit"] = this.lengthUnit;
+        data["xCoordinate"] = this.xCoordinate;
+        data["yCoordinate"] = this.yCoordinate;
+        data["zCoordinate"] = this.zCoordinate;
+        return data;
+    }
+}
+
+export interface IPatchPointRequest {
+    lengthUnit: string;
+    xCoordinate?: number | undefined;
+    yCoordinate?: number | undefined;
+    zCoordinate?: number | undefined;
+}
+
+export class PatchRestraintRequest implements IPatchRestraintRequest {
+    canTranslateAlongX?: boolean | undefined;
+    canTranslateAlongY?: boolean | undefined;
+    canTranslateAlongZ?: boolean | undefined;
+    canRotateAboutX?: boolean | undefined;
+    canRotateAboutY?: boolean | undefined;
+    canRotateAboutZ?: boolean | undefined;
+
+    constructor(data?: IPatchRestraintRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.canTranslateAlongX = _data["canTranslateAlongX"];
+            this.canTranslateAlongY = _data["canTranslateAlongY"];
+            this.canTranslateAlongZ = _data["canTranslateAlongZ"];
+            this.canRotateAboutX = _data["canRotateAboutX"];
+            this.canRotateAboutY = _data["canRotateAboutY"];
+            this.canRotateAboutZ = _data["canRotateAboutZ"];
+        }
+    }
+
+    static fromJS(data: any): PatchRestraintRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new PatchRestraintRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["canTranslateAlongX"] = this.canTranslateAlongX;
+        data["canTranslateAlongY"] = this.canTranslateAlongY;
+        data["canTranslateAlongZ"] = this.canTranslateAlongZ;
+        data["canRotateAboutX"] = this.canRotateAboutX;
+        data["canRotateAboutY"] = this.canRotateAboutY;
+        data["canRotateAboutZ"] = this.canRotateAboutZ;
+        return data;
+    }
+}
+
+export interface IPatchRestraintRequest {
+    canTranslateAlongX?: boolean | undefined;
+    canTranslateAlongY?: boolean | undefined;
+    canTranslateAlongZ?: boolean | undefined;
+    canRotateAboutX?: boolean | undefined;
+    canRotateAboutY?: boolean | undefined;
+    canRotateAboutZ?: boolean | undefined;
+}
+
+export class ShearDiagramResponse extends BeamOsEntityContractBase implements IShearDiagramResponse {
+    element1DId!: string;
+    globalShearDirection!: Vector3;
+    lengthUnit!: string;
+    forceUnit!: string;
+    elementLength!: UnitValueDto;
+    intervals!: DiagramConsistantIntervalResponse[];
+
+    constructor(data?: IShearDiagramResponse) {
+        super(data);
         if (!data) {
+            this.globalShearDirection = new Vector3();
             this.elementLength = new UnitValueDto();
             this.intervals = [];
         }
     }
 
     init(_data?: any) {
+        super.init(_data);
         if (_data) {
-            this.id = _data["id"];
             this.element1DId = _data["element1DId"];
+            this.globalShearDirection = _data["globalShearDirection"] ? Vector3.fromJS(_data["globalShearDirection"]) : new Vector3();
             this.lengthUnit = _data["lengthUnit"];
             this.forceUnit = _data["forceUnit"];
             this.elementLength = _data["elementLength"] ? UnitValueDto.fromJS(_data["elementLength"]) : new UnitValueDto();
@@ -2638,8 +2881,8 @@ export class ShearDiagramResponse implements IShearDiagramResponse {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
         data["element1DId"] = this.element1DId;
+        data["globalShearDirection"] = this.globalShearDirection ? this.globalShearDirection.toJSON() : <any>undefined;
         data["lengthUnit"] = this.lengthUnit;
         data["forceUnit"] = this.forceUnit;
         data["elementLength"] = this.elementLength ? this.elementLength.toJSON() : <any>undefined;
@@ -2648,13 +2891,14 @@ export class ShearDiagramResponse implements IShearDiagramResponse {
             for (let item of this.intervals)
                 data["intervals"].push(item.toJSON());
         }
+        super.toJSON(data);
         return data;
     }
 }
 
-export interface IShearDiagramResponse {
-    id: string;
+export interface IShearDiagramResponse extends IBeamOsEntityContractBase {
     element1DId: string;
+    globalShearDirection: Vector3;
     lengthUnit: string;
     forceUnit: string;
     elementLength: UnitValueDto;
@@ -2716,6 +2960,67 @@ export interface IDiagramConsistantIntervalResponse {
     startLocation: UnitValueDto;
     endLocation: UnitValueDto;
     polynomialCoefficients: number[];
+}
+
+export class MomentDiagramResponse extends BeamOsEntityContractBase implements IMomentDiagramResponse {
+    element1DId!: string;
+    lengthUnit!: string;
+    forceUnit!: string;
+    elementLength!: UnitValueDto;
+    intervals!: DiagramConsistantIntervalResponse[];
+
+    constructor(data?: IMomentDiagramResponse) {
+        super(data);
+        if (!data) {
+            this.elementLength = new UnitValueDto();
+            this.intervals = [];
+        }
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.element1DId = _data["element1DId"];
+            this.lengthUnit = _data["lengthUnit"];
+            this.forceUnit = _data["forceUnit"];
+            this.elementLength = _data["elementLength"] ? UnitValueDto.fromJS(_data["elementLength"]) : new UnitValueDto();
+            if (Array.isArray(_data["intervals"])) {
+                this.intervals = [] as any;
+                for (let item of _data["intervals"])
+                    this.intervals!.push(DiagramConsistantIntervalResponse.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): MomentDiagramResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new MomentDiagramResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["element1DId"] = this.element1DId;
+        data["lengthUnit"] = this.lengthUnit;
+        data["forceUnit"] = this.forceUnit;
+        data["elementLength"] = this.elementLength ? this.elementLength.toJSON() : <any>undefined;
+        if (Array.isArray(this.intervals)) {
+            data["intervals"] = [];
+            for (let item of this.intervals)
+                data["intervals"].push(item.toJSON());
+        }
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IMomentDiagramResponse extends IBeamOsEntityContractBase {
+    element1DId: string;
+    lengthUnit: string;
+    forceUnit: string;
+    elementLength: UnitValueDto;
+    intervals: DiagramConsistantIntervalResponse[];
 }
 
 export class CreateElement1dRequest implements ICreateElement1dRequest {

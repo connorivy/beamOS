@@ -6,7 +6,9 @@ using BeamOs.Infrastructure;
 using BeamOs.Tests.TestRunner;
 using BeamOS.WebApp;
 using BeamOS.WebApp.Client;
+using BeamOS.WebApp.Client.Components.Editor;
 using BeamOS.WebApp.Components;
+using BeamOS.WebApp.Hubs;
 using Blazored.LocalStorage;
 using FastEndpoints;
 using FastEndpoints.Swagger;
@@ -17,6 +19,12 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
+if (builder.Configuration["APPLICATION_URL_PROTOCOL"] is null)
+{
+    // ef core design run. define dummy variables
+    builder.Configuration["APPLICATION_URL_PROTOCOL"] = "dummy";
+}
+
 builder
     .Configuration
     .AddInMemoryCollection(
@@ -25,6 +33,8 @@ builder
             [Constants.ASSEMBLY_NAME] = typeof(Program).Assembly.GetName().Name
         }
     );
+
+builder.Services.AddSignalR();
 
 // Add services to the container.
 builder
@@ -78,6 +88,7 @@ builder.Services.AddSingleton<ICodeTestScoreTracker, CodeTestScoresTracker>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddSingleton<BeamOs.IntegrationEvents.IEventBus, StructuralAnalysisHubEventBus>();
 
 builder
     .Services
@@ -149,16 +160,16 @@ using (var scope = app.Services.CreateScope())
     await dbContext.SeedAsync();
 }
 
-app.Use(
-    async (context, next) =>
-    {
-        // hard code user bearer token for auth
-        context.Request.Headers.Authorization =
-            "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTUxMiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJ1c2VyQGVtYWlsLmNvbSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJVc2VyIiwiYXVkIjpbImh0dHBzOi8vbG9jYWxob3N0OjcxOTMiLCJodHRwczovL2xvY2FsaG9zdDo3MTk0Il0sImV4cCI6NDg3MDA5MDM2MCwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NzE5NCJ9.CTW9SNJl4kSvAlJGZ7dDpFsCc-6hVeOu6OhJFllzGwkE2FZwBd34i7q8nIaKQDQf3T8-O-GqyF7Jbey2ULDPOA";
+//app.Use(
+//    async (context, next) =>
+//    {
+//        // hard code user bearer token for auth
+//        context.Request.Headers.Authorization =
+//            "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTUxMiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJ1c2VyQGVtYWlsLmNvbSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJVc2VyIiwiYXVkIjpbImh0dHBzOi8vbG9jYWxob3N0OjcxOTMiLCJodHRwczovL2xvY2FsaG9zdDo3MTk0Il0sImV4cCI6NDg3MDA5MDM2MCwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NzE5NCJ9.CTW9SNJl4kSvAlJGZ7dDpFsCc-6hVeOu6OhJFllzGwkE2FZwBd34i7q8nIaKQDQf3T8-O-GqyF7Jbey2ULDPOA";
 
-        await next(context);
-    }
-);
+//        await next(context);
+//    }
+//);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -171,6 +182,8 @@ else
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+app.MapHub<StructuralAnalysisHub>(IStructuralAnalysisHubClient.HubEndpointPattern);
 
 app.UseStatusCodePagesWithRedirects("/404");
 

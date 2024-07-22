@@ -1,3 +1,4 @@
+@using BeamOS.WebApp.Client.Features.KeyBindings
 @using Microsoft.Extensions.Configuration
 @using BeamOS.WebApp.Client
 @inject IConfiguration Configuration
@@ -25,11 +26,11 @@
     <script>hljs.highlightAll();</script> *@
 
     @* https://github.com/MudBlazor/MudBlazor/issues/7805 *@
-    <HeadOutlet @rendermode="InteractiveWebAssembly" />
+    <HeadOutlet @rendermode="new InteractiveServerRenderMode(prerender: false)" />
 </head>
 
 <body class="h-screen">
-    <Routes @rendermode="InteractiveWebAssembly" />
+    <Routes @rendermode="new InteractiveServerRenderMode(prerender: false)" />
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
     <script src="_content/CodeBeam.MudBlazor.Extensions/MudExtensions.min.js"></script>
     <script src="_framework/blazor.web.js"></script>
@@ -38,18 +39,42 @@
         <script src="/_framework/aspnetcore-browser-refresh.js"></script>
     </environment>
 
-    <script type="module">
-        // be sure to specify the exact version
-        import { codeToHtml } from 'https://esm.sh/shiki@1.7.0'
-        // or
-        // import { codeToHtml } from 'https://esm.run/shiki@1.7.0'
+    @if (Configuration[Constants.EDITOR_USE_SERVED_CONFIG_NAME] == "True")
+    {
+        <script type="module">
+            import { BeamOsEditor } from 'http://localhost:@Configuration[Constants.EDITOR_PORT_CONFIG_NAME]/lib/main.ts';
 
-        // const foo = document.getElementById('foo')
-        // foo.innerHTML = await codeToHtml('console.log("Hi, Shiki on CDN :)")', {
-        //     lang: 'js',
-        //     theme: 'rose-pine'
-        // })
+            // WARNING : the string "createEditorFromId" must match the string in EditorApiProxy.cs
+            window.createEditorFromId = (editorId, dispatcher, isReadOnly) => {
+                return BeamOsEditor.createFromId(editorId, dispatcher, isReadOnly)
+            }
+        </script>
+    }
+    else
+    {
+        <script src="js/index.bundle.js"></script>
+    }
+
+    <script>
+        function serializeEvent(e) {
+            return {
+                key: e.key,
+                code: e.keyCode.toString(),
+                location: e.location,
+                repeat: e.repeat,
+                ctrlKey: e.ctrlKey,
+                shiftKey: e.shiftKey,
+                altKey: e.altKey,
+                metaKey: e.metaKey,
+                type: e.type
+            };
+        }
+
+        document.addEventListener('keydown', function (e) {
+            DotNet.invokeMethodAsync('BeamOS.WebApp.Client', "@(nameof(DocumentEvents.FireOnKeyDownEvent))", serializeEvent(e))
+        });
     </script>
+
 </body>
 
 </html>

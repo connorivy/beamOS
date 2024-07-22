@@ -35,7 +35,7 @@ public class Line : BeamOSValueObject
     public Point EndPoint { get; }
     public Length Length { get; }
 
-    private static Length GetLength(Point startPoint, Point endPoint)
+    public static Length GetLength(Point startPoint, Point endPoint)
     {
         var deltaX = endPoint.XCoordinate - startPoint.XCoordinate;
         var deltaY = endPoint.YCoordinate - startPoint.YCoordinate;

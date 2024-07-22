@@ -12,8 +12,10 @@ To run this project, simply:
 1. install and use npm version >= 20
 1. build the project IN RELEASE MODE
     - building the project in release mode will trigger an npm install and populate a 'js' folder under the wwwroot of the WebApp project
-1. set BeamOS.WebApp, BeamOS.PhysicalModel.Api, and BeamOS.DirectStiffnessMethod.Api as startup projects
-1. run the project
+1. *optional*: build and run 'BeamOs.CodeGen.TestResults' project in Release mode.
+    - warning: this will take roughly 15 minutes
+    - this will generate the testing reports (code coverage and mutation score) that are linked on the test explorer dashboard
+1. set BeamOS.WebAppas startup project and run
 
 #### What to expect
 

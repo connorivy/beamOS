@@ -1,7 +1,5 @@
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Fixtures;
-using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Mappers;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.SolvedProblems;
-using BeamOs.Domain.UnitTests.DirectStiffnessMethod.Common.Extensions;
 using BeamOS.Tests.Common;
 using BeamOS.Tests.Common.Traits;
 
@@ -21,7 +19,7 @@ public partial class DsmElement1dTests
             throw new SkipException("No expected value to test against calculated value");
         }
 
-        double[,] matrix = fixture.ToDomainObjectWithLocalIds().GetTransformationMatrix().ToArray();
+        double[,] matrix = fixture.ToDomain().GetTransformationMatrix().ToArray();
 
         Asserter.AssertEqual("Transformation Matrix", fixture.ExpectedTransformationMatrix, matrix);
     }

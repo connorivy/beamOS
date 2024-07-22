@@ -1,5 +1,6 @@
 using BeamOs.Application.Common.Interfaces;
 using BeamOs.Application.Common.Interfaces.Repositories;
+using BeamOs.Common.Application.Interfaces;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate.ValueObjects;
 using Riok.Mapperly.Abstractions;

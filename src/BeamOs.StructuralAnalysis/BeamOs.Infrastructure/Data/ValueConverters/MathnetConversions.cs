@@ -1,3 +1,4 @@
+using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Spatial.Euclidean;
@@ -26,6 +27,12 @@ public class Vector3dConverter : ValueConverter<Vector3D, string>
 {
     public Vector3dConverter()
         : base(x => x.ToString(), x => Vector3D.Parse(x, null), null) { }
+}
+
+public class PolynomialConverter : ValueConverter<Polynomial, IEnumerable<double>>
+{
+    public PolynomialConverter()
+        : base(x => x.Coefficients, x => new(x)) { }
 }
 
 //public class Vector : BeamOSValueObject

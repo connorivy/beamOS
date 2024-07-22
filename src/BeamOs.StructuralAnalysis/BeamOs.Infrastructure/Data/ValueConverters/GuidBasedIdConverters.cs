@@ -1,4 +1,7 @@
 using BeamOs.Domain.AnalyticalResults.AnalyticalNodeAggregate.ValueObjects;
+using BeamOs.Domain.Diagrams.Common.ValueObjects;
+using BeamOs.Domain.Diagrams.MomentDiagramAggregate.ValueObjects;
+using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.MaterialAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
@@ -62,5 +65,24 @@ public class MomentLoadIdConverter : ValueConverter<MomentLoadId, Guid>
 public class NodeResultIdConverter : ValueConverter<NodeResultId, Guid>
 {
     public NodeResultIdConverter()
+        : base(x => x.Id, x => new(x), null) { }
+}
+
+public class ShearForceDiagramIdConverter : ValueConverter<ShearForceDiagramId, Guid>
+{
+    public ShearForceDiagramIdConverter()
+        : base(x => x.Id, x => new(x), null) { }
+}
+
+public class MomentDiagramIdConverter : ValueConverter<MomentDiagramId, Guid>
+{
+    public MomentDiagramIdConverter()
+        : base(x => x.Id, x => new(x), null) { }
+}
+
+public class DiagramConsistantIntervalIdConverter
+    : ValueConverter<DiagramConsistantIntervalId, Guid>
+{
+    public DiagramConsistantIntervalIdConverter()
         : base(x => x.Id, x => new(x), null) { }
 }

@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\BeamOs.Common\BeamOs.Common.Api\BeamOs.Common.Api.csproj" />
+    <ProjectReference Include="..\..\..\src\BeamOs.StructuralAnalysis\BeamOs.Contracts\BeamOs.Contracts.csproj" />
+    <ProjectReference Include="..\..\..\src\BeamOs.StructuralAnalysis\BeamOs.IntegrationEvents\BeamOs.IntegrationEvents.csproj" />
+    <ProjectReference Include="..\..\..\src\BeamOS.WebApp\BeamOs.WebApp.EditorEvents\BeamOs.WebApp.Client.EditorCommands.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,6 +1,5 @@
 @page "/test-explorer-dashboard"
 @using BeamOS.WebApp.Client.Features.TestExplorer
-@using BeamOS.WebApp.EditorApi
 @using BeamOs.ApiClient
 @using BeamOs.Contracts.AnalyticalResults.Model
 @using BeamOs.Contracts.Common
@@ -212,6 +211,7 @@ public void GetRotationMatrix_ForVerticalMember_ShouldEqualExpectedValue()
         {
             await js.InvokeVoidAsync("initializeScrollAnimations");
         }
+        await base.OnAfterRenderAsync(firstRender);
     }
 }
 

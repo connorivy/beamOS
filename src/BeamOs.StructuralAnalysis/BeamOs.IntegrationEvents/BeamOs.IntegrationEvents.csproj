@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\BeamOs.Common\BeamOs.Common.Domain\BeamOs.Common.Domain.csproj" />
+    <ProjectReference Include="..\..\BeamOs.Common\BeamOs.Common.Events\BeamOs.Common.Events.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,6 +1,5 @@
 using BeamOs.Domain.DirectStiffnessMethod;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Fixtures;
-using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Mappers;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.SolvedProblems;
 using BeamOs.Domain.UnitTests.DirectStiffnessMethod.Common.Factories;
 using BeamOS.Tests.Common;
@@ -24,10 +23,7 @@ public partial class DsmElement1dTests
             throw new SkipException("No expected value to test against calculated value");
         }
 
-        double[,] rotationMatrix = fixture
-            .ToDomainObjectWithLocalIds()
-            .GetRotationMatrix()
-            .ToArray();
+        double[,] rotationMatrix = fixture.ToDomain().GetRotationMatrix();
 
         Asserter.AssertEqual("Rotation Matrix", fixture.ExpectedRotationMatrix, rotationMatrix);
     }
@@ -48,7 +44,7 @@ public partial class DsmElement1dTests
             { 0, 0, 1.0 },
         };
 
-        double[,] rotationMatrix = element.GetRotationMatrix().ToArray();
+        double[,] rotationMatrix = element.GetRotationMatrix();
 
         Asserter.AssertEqual("Rotation Matrix", expectedRotationMatrix, rotationMatrix);
     }
@@ -72,12 +68,9 @@ public partial class DsmElement1dTests
         );
 
         var L = element.Length;
-        var cx =
-            (element.BaseLine.EndPoint.XCoordinate - element.BaseLine.StartPoint.XCoordinate) / L;
-        var cy =
-            (element.BaseLine.EndPoint.YCoordinate - element.BaseLine.StartPoint.YCoordinate) / L;
-        var cz =
-            (element.BaseLine.EndPoint.ZCoordinate - element.BaseLine.StartPoint.ZCoordinate) / L;
+        var cx = (element.EndPoint.XCoordinate - element.StartPoint.XCoordinate) / L;
+        var cy = (element.EndPoint.YCoordinate - element.StartPoint.YCoordinate) / L;
+        var cz = (element.EndPoint.ZCoordinate - element.StartPoint.ZCoordinate) / L;
         var sqrtCx2Cz2 = Math.Sqrt(Math.Pow(cx, 2) + Math.Pow(cz, 2));
         double[,] expectedRotationMatrix = new[,]
         {
@@ -86,7 +79,7 @@ public partial class DsmElement1dTests
             { 0, 0, 1 },
         };
 
-        double[,] rotationMatrix = element.GetRotationMatrix().ToArray();
+        double[,] rotationMatrix = element.GetRotationMatrix();
 
         Asserter.AssertEqual("Rotation Matrix", expectedRotationMatrix, rotationMatrix);
     }
@@ -110,10 +103,8 @@ public partial class DsmElement1dTests
         );
 
         var L = element.Length;
-        var cx =
-            (element.BaseLine.EndPoint.XCoordinate - element.BaseLine.StartPoint.XCoordinate) / L;
-        var cz =
-            (element.BaseLine.EndPoint.ZCoordinate - element.BaseLine.StartPoint.ZCoordinate) / L;
+        var cx = (element.EndPoint.XCoordinate - element.StartPoint.XCoordinate) / L;
+        var cz = (element.EndPoint.ZCoordinate - element.StartPoint.ZCoordinate) / L;
         var sqrtCx2Cz2 = Math.Sqrt(Math.Pow(cx, 2) + Math.Pow(cz, 2));
         double[,] expectedRotationMatrix = new[,]
         {
@@ -122,7 +113,7 @@ public partial class DsmElement1dTests
             { -cz / sqrtCx2Cz2, 0, cx / sqrtCx2Cz2 },
         };
 
-        double[,] rotationMatrix = element.GetRotationMatrix().ToArray();
+        double[,] rotationMatrix = element.GetRotationMatrix();
 
         Asserter.AssertEqual("Rotation Matrix", expectedRotationMatrix, rotationMatrix);
     }
@@ -155,7 +146,7 @@ public partial class DsmElement1dTests
             { 0, -Math.Sin(rotation.Radians), Math.Cos(rotation.Radians) },
         };
 
-        double[,] rotationMatrix = element.GetRotationMatrix().ToArray();
+        double[,] rotationMatrix = element.GetRotationMatrix();
 
         Asserter.AssertEqual("Rotation Matrix", expectedRotationMatrix, rotationMatrix);
     }
@@ -210,7 +201,7 @@ public partial class DsmElement1dTests
             { 0, 0, 1 },
         };
 
-        double[,] rotationMatrix = element.GetRotationMatrix().ToArray();
+        double[,] rotationMatrix = element.GetRotationMatrix();
 
         Asserter.AssertEqual("Rotation Matrix", expectedRotationMatrix, rotationMatrix);
     }
@@ -239,7 +230,7 @@ public partial class DsmElement1dTests
             { 1.0, 0, 0 }
         };
 
-        double[,] rotationMatrix = element.GetRotationMatrix().ToArray();
+        double[,] rotationMatrix = element.GetRotationMatrix();
 
         Asserter.AssertEqual("Rotation Matrix", expectedRotationMatrix, rotationMatrix);
     }
@@ -272,7 +263,7 @@ public partial class DsmElement1dTests
             { -.5, 0, 0.86602540378 },
         };
 
-        double[,] rotationMatrix = element.GetRotationMatrix().ToArray();
+        double[,] rotationMatrix = element.GetRotationMatrix();
 
         Asserter.AssertEqual("Rotation Matrix", expectedRotationMatrix, rotationMatrix);
     }
@@ -299,7 +290,7 @@ public partial class DsmElement1dTests
             { 0, 0, 1 },
         };
 
-        double[,] rotationMatrix = element.GetRotationMatrix().ToArray();
+        double[,] rotationMatrix = element.GetRotationMatrix();
 
         Asserter.AssertEqual("Rotation Matrix", expectedRotationMatrix, rotationMatrix);
     }
@@ -329,7 +320,7 @@ public partial class DsmElement1dTests
             { -1.0, 0, 0 },
         };
 
-        double[,] rotationMatrix = element.GetRotationMatrix().ToArray();
+        double[,] rotationMatrix = element.GetRotationMatrix();
 
         Asserter.AssertEqual("Rotation Matrix", expectedRotationMatrix, rotationMatrix);
     }
@@ -355,7 +346,7 @@ public partial class DsmElement1dTests
             { -0.70710678118, 0, 0.70710678118 },
         };
 
-        double[,] rotationMatrix = element.GetRotationMatrix().ToArray();
+        double[,] rotationMatrix = element.GetRotationMatrix();
 
         Asserter.AssertEqual("Rotation Matrix", expectedRotationMatrix, rotationMatrix);
     }
@@ -384,7 +375,7 @@ public partial class DsmElement1dTests
             { -0.13343, -0.69909, 0.70249 },
         };
 
-        double[,] rotationMatrix = element.GetRotationMatrix().ToArray();
+        double[,] rotationMatrix = element.GetRotationMatrix();
 
         Asserter.AssertEqual("Rotation Matrix", expectedRotationMatrix, rotationMatrix);
     }

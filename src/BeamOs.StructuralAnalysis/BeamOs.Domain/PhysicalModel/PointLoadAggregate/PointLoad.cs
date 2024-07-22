@@ -47,6 +47,13 @@ public class PointLoad : AggregateRoot<PointLoadId>
         };
     }
 
+    public Force GetForceInDirection(Vector3D direction)
+    {
+        // magnitude of projection of A onto B = (A . B) / | B |
+        double magnitudeOfProjection = this.Direction.DotProduct(direction) / direction.Length;
+        return this.Force * magnitudeOfProjection;
+    }
+
     public PointLoadData GetData()
     {
         return new(this.Force, this.Direction);

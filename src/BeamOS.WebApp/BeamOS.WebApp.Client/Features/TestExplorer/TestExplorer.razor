@@ -6,8 +6,9 @@
 @using BeamOS.Tests.Common.SolvedProblems.Fixtures
 @using BeamOS.Tests.Common.Traits
 @using BeamOS.WebApp.Client.Components
+@using BeamOS.WebApp.Client.Components.Editor
+@using BeamOS.WebApp.Client.Features.Editors.ReadOnlyEditor
 @using BeamOS.WebApp.Client.Pages
-@using BeamOS.WebApp.EditorApi
 @using BeamOs.ApiClient
 @using BeamOs.Contracts.AnalyticalResults.Model
 @using BeamOs.Contracts.Common
@@ -19,12 +20,10 @@
 @using Fluxor.Blazor.Web.Components
 @using MudExtensions
 
-@rendermode InteractiveWebAssembly
-
 <PageTitle>Test Explorer</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="h-full relative">
-    <EditorComponent @ref="editorComponent" Class="h-full w-full z-0" />
+    <ReadOnlyEditor @ref="readOnlyEditor" Class="h-full w-full z-0" />
     <MudTabs MinimumTabWidth="20px" Elevation="1" Rounded="true" PanelClass="pa-6" Position="Position.Left" Class="h-full z-10 absolute top-0">
         <MudTabPanel Icon="@Icons.Material.Filled.MenuBook" ToolTip="Select Test To Explore">
             <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="h-full pointer-events-auto">
@@ -67,7 +66,7 @@
                     </MudPaper>
                 </MudContainer>
         </MudTabPanel>
-        @if (@TestExplorerState.Value.SelectedTestInfo?.GetDisplayable()?.SourceInfo is SourceInfo sourceInfo)
+        @if (@TestExplorerState.Value.SelectedTestInfo?.SourceInfo is SourceInfo sourceInfo)
         {
             <MudTabPanel Icon="@Icons.Material.Filled.Info" ToolTip="Test Source Information">
                 <div class="h-fit">

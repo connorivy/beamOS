@@ -1,3 +1,4 @@
+using BeamOs.Application.AnalyticalResults.Diagrams.ShearDiagrams.Interfaces;
 using BeamOs.Application.AnalyticalResults.NodeResults;
 using BeamOs.Application.Common.Interfaces;
 using BeamOs.Application.Common.Interfaces.Repositories;
@@ -8,6 +9,9 @@ using BeamOs.Application.PhysicalModel.MomentLoads;
 using BeamOs.Application.PhysicalModel.Nodes.Interfaces;
 using BeamOs.Application.PhysicalModel.PointLoads;
 using BeamOs.Application.PhysicalModel.SectionProfiles;
+using BeamOs.Common.Application.Interfaces;
+using BeamOs.Infrastructure.Interceptors;
+using BeamOs.Infrastructure.Repositories.AnalyticalResults.Diagrams.ShearDiagrams;
 using BeamOs.Infrastructure.Repositories.AnalyticalResults.NodeResults;
 using BeamOs.Infrastructure.Repositories.PhysicalModel.Element1Ds;
 using BeamOs.Infrastructure.Repositories.PhysicalModel.Materials;
@@ -87,9 +91,12 @@ public static class DependencyInjection
             .AddScoped<INodeRepository, NodeDbContextRepository>()
             .AddScoped<IPointLoadRepository, PointLoadDbContextRepository>()
             .AddScoped<ISectionProfileRepository, SectionProfileDbContextRepository>()
-            .AddScoped<INodeResultRepository, NodeResultDbContextRepository>();
+            .AddScoped<INodeResultRepository, NodeResultDbContextRepository>()
+            .AddScoped<IShearDiagramRepository, ShearForceDiagramDbContextRepository>()
+            .AddScoped<IMomentDiagramRepository, MomentDiagramDbContextRepository>();
 
         _ = services.AddScoped<IUnitOfWork, UnitOfWork>();
+        _ = services.AddScoped<PublishIntegrationEventsInterceptor>();
 
         return services;
     }

@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
@@ -16,6 +15,7 @@
     <PackageReference Include="Fluxor.Blazor.Web" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" />
     <PackageReference Include="Microsoft.Extensions.Http" />
     <PackageReference Include="MudBlazor" />
@@ -23,17 +23,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\codeGen\Apis\BeamOs.CodeGen.Apis.EditorApi\BeamOs.CodeGen.Apis.EditorApi.csproj" />
     <ProjectReference Include="..\..\..\tests\BeamOs.Tests.TestRunner\BeamOs.Tests.TestRunner.csproj" />
-    <ProjectReference Include="..\..\BeamOs.StructuralAnalysis\BeamOs.ApiClient\BeamOs.ApiClient.csproj" />
-    <ProjectReference Include="..\BeamOS.WebApp.EditorApi\BeamOS.WebApp.EditorApi.csproj" />
+    <ProjectReference Include="..\..\BeamOs.Common\BeamOs.Common.Api\BeamOs.Common.Api.csproj" />
+    <ProjectReference Include="..\..\BeamOs.Common\BeamOs.Common.Application\BeamOs.Common.Application.csproj" />
+    <ProjectReference Include="..\BeamOs.WebApp.EditorEvents\BeamOs.WebApp.Client.EditorCommands.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="$(Configuration)=='Debug'">
     <PackageReference Include="Fluxor.Blazor.Web.ReduxDevTools" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="State\" />
   </ItemGroup>
 
 </Project>

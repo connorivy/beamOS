@@ -1,6 +1,6 @@
-using BeamOs.Application.Common.Interfaces;
 using BeamOs.Application.Common.Queries;
 using BeamOs.Application.PhysicalModel.Models.Interfaces;
+using BeamOs.Common.Application.Interfaces;
 using BeamOs.Infrastructure.Data.Models;
 using Microsoft.EntityFrameworkCore;
 

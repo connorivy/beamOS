@@ -1,25 +1,20 @@
 using BeamOs.Domain.AnalyticalResults.Element1dResultAggregate;
 using BeamOs.Domain.AnalyticalResults.NodeResultAggregate;
 using BeamOs.Domain.Common.Models;
+using BeamOs.Domain.Diagrams.MomentDiagramAggregate;
+using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate;
 
 namespace BeamOs.Domain.AnalyticalResults.Common.ValueObjects;
 
-public class ModelResults(List<NodeResult> nodeResults, List<Element1dResult> element1dResults)
-    : BeamOSValueObject
+public class ModelResults : BeamOSValueObject
 {
-    public List<NodeResult> NodeResults { get; } = nodeResults;
-    public List<Element1dResult> Element1dResults { get; } = element1dResults;
+    public List<NodeResult>? NodeResults { get; init; }
+    public List<Element1dResult>? Element1dResults { get; init; }
+    public List<ShearForceDiagram>? ShearForceDiagrams { get; init; }
+    public List<MomentDiagram>? MomentDiagrams { get; init; }
 
     protected override IEnumerable<object> GetEqualityComponents()
     {
-        foreach (var nodeResult in this.NodeResults)
-        {
-            yield return nodeResult;
-        }
-
-        foreach (var elResult in this.Element1dResults)
-        {
-            yield return elResult;
-        }
+        throw new NotImplementedException();
     }
 }

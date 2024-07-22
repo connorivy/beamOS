@@ -1,0 +1,37 @@
+@using BeamOS.WebApp.Client.Caches
+@using BeamOs.Contracts.PhysicalModel.Common
+@using BeamOs.WebApp.Client.EditorCommands
+@using Fluxor.Blazor.Web.Components
+@using static BeamOS.WebApp.Client.Components.Editor.EditorComponent
+
+<MudContainer Gutters="false" Class="rounded">
+    <MudPaper>
+        <MudText Typo="Typo.h6" Class="px-4">Selection Info</MudText>
+        <MudText Typo="Typo.body2" Class="px-4 mud-text-secondary">Secondary Text</MudText>
+        <MudDivider Class="my-2" />
+        <MudExpansionPanels MultiExpansion="true">
+            @foreach (var selectedObjectInfo in SelectedObjects)
+            {
+                <MudExpansionPanel Text="@($"{selectedObjectInfo.TypeName} {selectedObjectInfo.Id}")">
+                    <SelectionInfoSingleItemComponent ObjectToDisplay="@GetBeamOsObjectByIdAndTypeName(selectedObjectInfo.Id, selectedObjectInfo.TypeName)"></SelectionInfoSingleItemComponent>
+                </MudExpansionPanel>
+            }
+        </MudExpansionPanels>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    [Parameter]
+    public required SelectedObject[] SelectedObjects { get; init; }
+
+    [Parameter]
+    public required string ModelId { get; init; }
+
+    [Inject]
+    private AllStructuralAnalysisModelCaches AllStructuralAnalysisModelCaches { get; init; }
+
+    private object GetBeamOsObjectByIdAndTypeName(string id, string typeName)
+    {
+        return this.AllStructuralAnalysisModelCaches.GetByModelId(this.ModelId).GetById<BeamOsEntityContractBase>(id);
+    }
+}

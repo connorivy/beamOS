@@ -8,7 +8,7 @@ using BeamOs.Api.PhysicalModel.MomentLoads.Mappers;
 using BeamOs.Api.PhysicalModel.Nodes.Mappers;
 using BeamOs.Api.PhysicalModel.PointLoads.Mappers;
 using BeamOs.Api.PhysicalModel.SectionProfiles.Mappers;
-using BeamOs.Application.Common.Interfaces;
+using BeamOs.Common.Application.Interfaces;
 using BeamOs.Contracts.PhysicalModel.Element1d;
 using BeamOs.Contracts.PhysicalModel.Material;
 using BeamOs.Contracts.PhysicalModel.Model;

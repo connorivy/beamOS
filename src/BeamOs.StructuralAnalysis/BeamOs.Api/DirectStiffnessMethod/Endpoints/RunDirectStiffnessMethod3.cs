@@ -15,9 +15,9 @@ public class RunDirectStiffnessMethod(
     NodeResultToResponseMapper nodeResultToResponseMapper
 ) : BeamOsFastEndpoint<IdRequest, AnalyticalModelResponse3>(options)
 {
-    public override string Route => "/direct-stiffness-method/run/";
+    public override string Route => "/direct-stiffness-method/run/{id}";
 
-    public override Http EndpointType => Http.POST;
+    public override Http EndpointType => Http.GET;
 
     public override async Task<AnalyticalModelResponse3> ExecuteAsync(
         IdRequest req,

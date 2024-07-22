@@ -1,5 +1,5 @@
-using BeamOs.Application.Common.Interfaces;
 using BeamOs.Application.Common.Queries;
+using BeamOs.Common.Application.Interfaces;
 using BeamOs.Contracts.PhysicalModel.Element1d;
 using BeamOs.Infrastructure.QueryHandlers.PhysicalModel.Element1d.Mappers;
 using Microsoft.EntityFrameworkCore;

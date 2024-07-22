@@ -12,14 +12,33 @@ internal class ModelConfiguration : IEntityTypeConfiguration<Model>
 {
     public void Configure(EntityTypeBuilder<Model> builder)
     {
-        _ = builder.HasMany<Node>().WithOne().HasForeignKey(node => node.ModelId).IsRequired();
-        _ = builder.HasMany<Element1D>().WithOne().HasForeignKey(el => el.ModelId).IsRequired();
-        _ = builder.HasMany<Material>().WithOne().HasForeignKey(el => el.ModelId).IsRequired();
         _ = builder
-            .HasMany<SectionProfile>()
+            .HasMany(m => m.Nodes)
+            .WithOne()
+            .HasForeignKey(node => node.ModelId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+
+        _ = builder
+            .HasMany(m => m.Element1ds)
             .WithOne()
             .HasForeignKey(el => el.ModelId)
-            .IsRequired();
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+
+        _ = builder
+            .HasMany(m => m.Materials)
+            .WithOne()
+            .HasForeignKey(el => el.ModelId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+
+        _ = builder
+            .HasMany(m => m.SectionProfiles)
+            .WithOne()
+            .HasForeignKey(el => el.ModelId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
 
         // these belong to the node
         //_ = builder.HasMany<PointLoad>().WithOne().HasForeignKey(el => el.ModelId).IsRequired();

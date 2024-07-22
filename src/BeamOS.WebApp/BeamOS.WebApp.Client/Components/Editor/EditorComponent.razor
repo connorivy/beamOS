@@ -1,0 +1,27 @@
+@using BeamOS.WebApp.Client.Features.KeyBindings.UndoRedo
+@using BeamOS.WebApp.Client.State
+@using BeamOs.CodeGen.Apis.EditorApi
+@using BeamOs.ApiClient
+@using BeamOs.Contracts.Common
+@using BeamOs.Contracts.PhysicalModel.Model
+@using BeamOs.IntegrationEvents
+@using BeamOs.IntegrationEvents.PhysicalModel.Nodes
+@using Fluxor.Blazor.Web.Components
+@using Microsoft.AspNetCore.SignalR.Client
+@using System.Text.Json
+
+@rendermode InteractiveAuto
+
+@inherits FluxorComponent
+
+<MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class=@($"relative {@Class}")>
+    <MudPaper Class="h-full w-full absolute z-0"></MudPaper>
+    @* <div class="bg-gray-900 w-full h-full absolute"></div> *@
+    <canvas id="@ElementId" class="h-full w-full absolute z-1"></canvas>
+    <MudOverlay Absolute="true" Visible="@EditorComponentState.IsLoading">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.Center">
+            <div class="rounded animate-spin ease duration-300 w-10 h-10 border-4 border-white"></div>
+            <h2 class="px-3 font-bold text-white"> @EditorComponentState.LoadingText ...</h2>
+        </MudStack>
+    </MudOverlay>
+</MudContainer>

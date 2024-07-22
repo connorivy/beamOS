@@ -15,10 +15,6 @@ public readonly record struct ChangeSelectedTestInfoAction(TestInfo? SelectedTes
 
 public readonly record struct ChangeSelectedTraitAction(string SelectedTrait);
 
-public readonly record struct ChangeTestFixtureDisplayableAction(
-    ITestFixtureDisplayable? TestFixtureDisplayable
-);
-
 public static class TestExplorerStateFluxor
 {
     [ReducerMethod]

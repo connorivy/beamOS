@@ -9,7 +9,7 @@ public record NodeResponse(
     PointResponse LocationPoint,
     //List<string> PointLoadIds,
     RestraintResponse Restraint
-) : BeamOsContractBase;
+) : BeamOsEntityContractBase(Id);
 
 public record PointResponse(
     UnitValueDto XCoordinate,

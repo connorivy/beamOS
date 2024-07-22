@@ -26,6 +26,11 @@ public class Model : AggregateRoot<ModelId>
     public string Description { get; private set; }
     public ModelSettings Settings { get; private set; }
 
+    public ICollection<Node> Nodes { get; init; } = [];
+    public ICollection<Element1D> Element1ds { get; init; } = [];
+    public ICollection<Material> Materials { get; init; } = [];
+    public ICollection<SectionProfile> SectionProfiles { get; init; } = [];
+
     //private readonly List<NodeId> nodeIds = [];
     //public IReadOnlyList<NodeId> NodeIds => this.nodeIds.AsReadOnly();
 
@@ -94,5 +99,6 @@ public class Model : AggregateRoot<ModelId>
     [Obsolete("EF Core Constructor", true)]
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private Model() { }
+
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }

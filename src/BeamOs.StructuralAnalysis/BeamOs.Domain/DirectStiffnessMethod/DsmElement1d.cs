@@ -4,6 +4,8 @@ using BeamOs.Domain.Common.Extensions;
 using BeamOs.Domain.Common.Models;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.DirectStiffnessMethod.Common.ValueObjects;
+using BeamOs.Domain.PhysicalModel.Element1DAggregate;
+using BeamOs.Domain.PhysicalModel.Element1DAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
@@ -16,6 +18,7 @@ using UnitsNet.Units;
 namespace BeamOs.Domain.DirectStiffnessMethod;
 
 public class DsmElement1d(
+    Element1DId element1DId,
     Angle sectionProfileRotation,
     Pressure modulusOfElasticity,
     Pressure modulusOfRigidity,
@@ -23,12 +26,14 @@ public class DsmElement1d(
     AreaMomentOfInertia strongAxisMomentOfInertia,
     AreaMomentOfInertia weakAxisMomentOfInertia,
     AreaMomentOfInertia polarMomentOfInertia,
-    Line baseLine,
+    Point startPoint,
+    Point endPoint,
     NodeId startNodeId,
     NodeId endNodeId
 ) : BeamOSValueObject
 {
     public DsmElement1d(
+        Element1DId element1DId,
         Angle sectionProfileRotation,
         Node startNode,
         Node endNode,
@@ -36,6 +41,7 @@ public class DsmElement1d(
         SectionProfile sectionProfile
     )
         : this(
+            element1DId,
             sectionProfileRotation,
             material.ModulusOfElasticity,
             material.ModulusOfRigidity,
@@ -43,11 +49,29 @@ public class DsmElement1d(
             sectionProfile.StrongAxisMomentOfInertia,
             sectionProfile.WeakAxisMomentOfInertia,
             sectionProfile.PolarMomentOfInertia,
-            new Line(startNode.LocationPoint, endNode.LocationPoint),
+            startNode.LocationPoint,
+            endNode.LocationPoint,
             startNode.Id,
             endNode.Id
         ) { }
 
+    public DsmElement1d(Element1D element1d)
+        : this(
+            element1d.Id,
+            element1d.SectionProfileRotation,
+            element1d.Material.ModulusOfElasticity,
+            element1d.Material.ModulusOfRigidity,
+            element1d.SectionProfile.Area,
+            element1d.SectionProfile.StrongAxisMomentOfInertia,
+            element1d.SectionProfile.WeakAxisMomentOfInertia,
+            element1d.SectionProfile.PolarMomentOfInertia,
+            element1d.StartNode.LocationPoint,
+            element1d.EndNode.LocationPoint,
+            element1d.StartNode.Id,
+            element1d.EndNode.Id
+        ) { }
+
+    public Element1DId Element1DId { get; } = element1DId;
     public Angle SectionProfileRotation { get; } = sectionProfileRotation;
     public Pressure ModulusOfElasticity { get; } = modulusOfElasticity;
     public Pressure ModulusOfRigidity { get; } = modulusOfRigidity;
@@ -55,8 +79,9 @@ public class DsmElement1d(
     public AreaMomentOfInertia StrongAxisMomentOfInertia { get; } = strongAxisMomentOfInertia;
     public AreaMomentOfInertia WeakAxisMomentOfInertia { get; } = weakAxisMomentOfInertia;
     public AreaMomentOfInertia PolarMomentOfInertia { get; } = polarMomentOfInertia;
-    public Line BaseLine { get; } = baseLine;
-    public Length Length => this.BaseLine.Length;
+    public Point StartPoint { get; } = startPoint;
+    public Point EndPoint { get; } = endPoint;
+    public Length Length { get; } = Line.GetLength(startPoint, endPoint);
     public NodeId StartNodeId { get; } = startNodeId;
     public NodeId EndNodeId { get; } = endNodeId;
 
@@ -78,62 +103,12 @@ public class DsmElement1d(
         }
     }
 
-    public Matrix<double> GetRotationMatrix()
-    {
-        var rxx =
-            (this.BaseLine.EndPoint.XCoordinate - this.BaseLine.StartPoint.XCoordinate)
-            / this.Length;
-        var rxy =
-            (this.BaseLine.EndPoint.YCoordinate - this.BaseLine.StartPoint.YCoordinate)
-            / this.Length;
-        var rxz =
-            (this.BaseLine.EndPoint.ZCoordinate - this.BaseLine.StartPoint.ZCoordinate)
-            / this.Length;
-
-        var cosG = Math.Cos(this.SectionProfileRotation.Radians);
-        var sinG = Math.Sin(this.SectionProfileRotation.Radians);
-
-        var sqrtRxx2Rxz2 = Math.Sqrt((rxx * rxx) + (rxz * rxz));
-
-        double r21,
-            r22,
-            r23,
-            r31,
-            r32,
-            r33;
-
-        if (sqrtRxx2Rxz2 < .0001)
-        {
-            r21 = -rxy * cosG;
-            r22 = 0;
-            r23 = sinG;
-            r31 = rxy * sinG;
-            r32 = 0;
-            r33 = cosG;
-        }
-        else
-        {
-            r21 = ((-rxx * rxy * cosG) - (rxz * sinG)) / sqrtRxx2Rxz2;
-            r22 = sqrtRxx2Rxz2 * cosG;
-            r23 = ((-rxy * rxz * cosG) + (rxx * sinG)) / sqrtRxx2Rxz2;
-            r31 = ((rxx * rxy * sinG) - (rxz * cosG)) / sqrtRxx2Rxz2;
-            r32 = -sqrtRxx2Rxz2 * sinG;
-            r33 = ((rxy * rxz * sinG) + (rxx * cosG)) / sqrtRxx2Rxz2;
-        }
-
-        return DenseMatrix.OfArray(
-            new[,]
-            {
-                { rxx, rxy, rxz },
-                { r21, r22, r23 },
-                { r31, r32, r33 },
-            }
-        );
-    }
+    public double[,] GetRotationMatrix() =>
+        Element1D.GetRotationMatrix(this.EndPoint, this.StartPoint, this.SectionProfileRotation);
 
     public Matrix<double> GetTransformationMatrix()
     {
-        var rotationMatrix = this.GetRotationMatrix();
+        var rotationMatrix = DenseMatrix.OfArray(this.GetRotationMatrix());
         var transformationMatrix = Matrix<double>.Build.Dense(12, 12);
         transformationMatrix.SetSubMatrix(0, 0, rotationMatrix);
         transformationMatrix.SetSubMatrix(3, 3, rotationMatrix);
@@ -292,7 +267,8 @@ public class DsmElement1d(
         yield return this.StrongAxisMomentOfInertia;
         yield return this.WeakAxisMomentOfInertia;
         yield return this.PolarMomentOfInertia;
-        yield return this.BaseLine;
+        yield return this.StartPoint;
+        yield return this.EndPoint;
         yield return this.StartNodeId;
         yield return this.EndNodeId;
     }

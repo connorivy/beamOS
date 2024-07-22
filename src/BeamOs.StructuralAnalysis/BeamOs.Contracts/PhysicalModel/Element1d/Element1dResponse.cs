@@ -1,7 +1,5 @@
 using BeamOs.Contracts.Common;
-using BeamOs.Contracts.PhysicalModel.Material;
-using BeamOs.Contracts.PhysicalModel.Node;
-using BeamOs.Contracts.PhysicalModel.SectionProfile;
+using BeamOs.Contracts.PhysicalModel.Common;
 
 namespace BeamOs.Contracts.PhysicalModel.Element1d;
 
@@ -17,4 +15,4 @@ public record Element1DResponse(
 //NodeResponse? EndNode = null,
 //MaterialResponse? Material = null,
 //SectionProfileResponse? SectionProfile = null
-);
+) : BeamOsEntityContractBase(Id);
