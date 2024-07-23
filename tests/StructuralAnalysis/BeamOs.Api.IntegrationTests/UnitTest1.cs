@@ -1,28 +1,116 @@
 using BeamOs.ApiClient;
+using BeamOS.Tests.Common.Fixtures;
 using BeamOS.Tests.Common.SolvedProblems;
 using BeamOS.Tests.Common.SolvedProblems.Fixtures;
+using UnitsNet;
 
 namespace BeamOs.Api.IntegrationTests;
 
-public class UnitTest1(CustomWebApplicationFactory<Program> webApplicationFactory)
-    : IClassFixture<CustomWebApplicationFactory<Program>>
+public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IAsyncLifetime
 {
-    [SkippableTheory]
-    [ClassData(typeof(AllSolvedProblems))]
-    public async Task Test1(ModelFixture2 modelFixture)
+    private readonly ApiAlphaClient apiClient;
+    private readonly Dictionary<string, ModelFixtureInDb> modelIdToModelFixtureDict = [];
+
+    public UnitTest1(CustomWebApplicationFactory<Program> webApplicationFactory)
     {
         var httpClient = webApplicationFactory.CreateClient();
-        var client = new ApiAlphaClient(httpClient);
-        var dbModelFixture = new ModelFixtureInDb(modelFixture);
+        this.apiClient = new ApiAlphaClient(httpClient);
+    }
 
-        await dbModelFixture.Create(client);
+    public async Task InitializeAsync()
+    {
+        AllSolvedProblems allSolved = new();
+        foreach (var problem in allSolved.GetItems())
+        {
+            var dbModelFixture = new ModelFixtureInDb(problem);
+            await dbModelFixture.Create(this.apiClient);
+            this.modelIdToModelFixtureDict.Add(problem.Id.ToString(), dbModelFixture);
+            await this.apiClient.RunDirectStiffnessMethodAsync(problem.Id.ToString());
+        }
+    }
 
-        var modelResponse = await client.GetModelAsync(
-            dbModelFixture.ModelFixture.Id.ToString(),
-            null
-        );
+    public Task DisposeAsync()
+    {
+        return Task.CompletedTask;
+    }
+
+    [SkippableTheory]
+    [ClassData(typeof(AllSolvedProblems))]
+    public async Task ModelResponses_WhenRetrievedFromDb_ShouldEqualExpectedValues(
+        ModelFixture2 modelFixture
+    )
+    {
+        var dbModelFixture = this.modelIdToModelFixtureDict[modelFixture.Id.ToString()];
+
+        var modelResponse = await this.apiClient.GetModelAsync(modelFixture.Id.ToString(), null);
         var expectedModelResponse = dbModelFixture.ToResponse(dbModelFixture.ModelFixture);
 
         ContractComparer.AssertContractsEqual(modelResponse, expectedModelResponse);
+    }
+
+    [Theory]
+    [ClassData(typeof(AllSolvedProblemsFilter<IHasExpectedNodeDisplacementResults>))]
+    public async Task NodeDisplacementResults_ForSampleProblems_ShouldResultInExpectedValues(
+        IHasExpectedNodeDisplacementResults modelFixture
+    )
+    {
+        var dbModelFixture = this.modelIdToModelFixtureDict[modelFixture.Id.ToString()];
+
+        foreach (var expectedNodeDisplacementResult in modelFixture.ExpectedNodeDisplacementResults)
+        {
+            var dbId = dbModelFixture.RuntimeIdToDbId(
+                expectedNodeDisplacementResult.NodeFixture.Id
+            );
+            var nodeResults = await this.apiClient.GetSingleNodeResultAsync(dbId);
+
+            // for now we don't support multiple results for a node (i.e. load combinations)
+            var result = nodeResults.First();
+
+            this.AssertQuantitesEqual(
+                expectedNodeDisplacementResult.DisplacementAlongX,
+                result.Displacements.DisplacementAlongX.Value,
+                modelFixture.Settings.UnitSettings.LengthUnit
+            );
+            this.AssertQuantitesEqual(
+                expectedNodeDisplacementResult.DisplacementAlongY,
+                result.Displacements.DisplacementAlongY.Value,
+                modelFixture.Settings.UnitSettings.LengthUnit
+            );
+            this.AssertQuantitesEqual(
+                expectedNodeDisplacementResult.DisplacementAlongZ,
+                result.Displacements.DisplacementAlongZ.Value,
+                modelFixture.Settings.UnitSettings.LengthUnit
+            );
+            this.AssertQuantitesEqual(
+                expectedNodeDisplacementResult.RotationAboutX,
+                result.Displacements.RotationAboutX.Value,
+                modelFixture.Settings.UnitSettings.AngleUnit
+            );
+            this.AssertQuantitesEqual(
+                expectedNodeDisplacementResult.RotationAboutY,
+                result.Displacements.RotationAboutY.Value,
+                modelFixture.Settings.UnitSettings.AngleUnit
+            );
+            this.AssertQuantitesEqual(
+                expectedNodeDisplacementResult.RotationAboutZ,
+                result.Displacements.RotationAboutZ.Value,
+                modelFixture.Settings.UnitSettings.AngleUnit
+            );
+        }
+    }
+
+    private void AssertQuantitesEqual<TUnit, TUnitType>(
+        TUnit? expected,
+        double calculated,
+        TUnitType unitType,
+        int numDigits = 3
+    )
+        where TUnit : struct, IQuantity<TUnitType>
+        where TUnitType : Enum
+    {
+        if (expected is not null)
+        {
+            Assert.Equal(expected.Value.As(unitType), calculated, numDigits);
+        }
     }
 }

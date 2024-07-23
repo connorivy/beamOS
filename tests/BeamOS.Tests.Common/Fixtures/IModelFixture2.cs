@@ -1,11 +1,11 @@
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
-using BeamOS.Tests.Common.Fixtures;
 using BeamOS.Tests.Common.Interfaces;
 
-namespace BeamOS.Tests.Common.SolvedProblems.Fixtures;
+namespace BeamOS.Tests.Common.Fixtures;
 
 public interface IModelFixture2
 {
+    Guid Id { get; }
     string Description { get; }
     Element1dFixture2[] Element1ds { get; }
     MaterialFixture2[] Materials { get; }

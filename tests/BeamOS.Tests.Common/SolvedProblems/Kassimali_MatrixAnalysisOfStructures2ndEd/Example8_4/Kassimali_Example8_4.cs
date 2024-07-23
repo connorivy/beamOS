@@ -2,7 +2,6 @@ using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOS.Tests.Common.Fixtures;
 using BeamOS.Tests.Common.Interfaces;
-using BeamOS.Tests.Common.SolvedProblems.Fixtures;
 using BeamOS.Tests.Common.Traits;
 
 namespace BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd.Example8_4;

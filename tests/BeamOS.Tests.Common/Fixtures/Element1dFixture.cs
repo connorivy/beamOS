@@ -1,5 +1,4 @@
 using BeamOS.Tests.Common.Interfaces;
-using BeamOS.Tests.Common.SolvedProblems.Fixtures;
 using UnitsNet;
 
 namespace BeamOS.Tests.Common.Fixtures;

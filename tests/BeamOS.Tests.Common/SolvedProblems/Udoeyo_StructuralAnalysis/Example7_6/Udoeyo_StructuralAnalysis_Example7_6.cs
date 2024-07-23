@@ -1,7 +1,7 @@
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
+using BeamOS.Tests.Common.Fixtures;
 using BeamOS.Tests.Common.Interfaces;
-using BeamOS.Tests.Common.SolvedProblems.Fixtures;
 
 namespace BeamOS.Tests.Common.SolvedProblems.Udoeyo_StructuralAnalysis.Example7_6;
 

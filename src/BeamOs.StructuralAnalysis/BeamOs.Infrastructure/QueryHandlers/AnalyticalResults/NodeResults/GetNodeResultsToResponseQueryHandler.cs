@@ -3,7 +3,7 @@ using BeamOs.Common.Application.Interfaces;
 using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Infrastructure.Data.Models;
-using BeamOs.Infrastructure.QueryHandlers.AnalyticalResults.NodeResults.Mappers;
+using BeamOs.Infrastructure.QueryHandlers.AnalyticalResultReadModels.NodeResultReadModels.Mappers;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.Infrastructure.QueryHandlers.AnalyticalResults.NodeResults;

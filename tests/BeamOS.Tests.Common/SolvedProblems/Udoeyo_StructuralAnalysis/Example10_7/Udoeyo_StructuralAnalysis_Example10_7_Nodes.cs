@@ -1,8 +1,7 @@
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOS.Tests.Common.Fixtures;
-using BeamOS.Tests.Common.SolvedProblems.Udoeyo_StructuralAnalysis.Example10_7;
 
-namespace BeamOS.Tests.Common.SolvedProblems.Udoeyo_StructuralAnalysis.Example7_6;
+namespace BeamOS.Tests.Common.SolvedProblems.Udoeyo_StructuralAnalysis.Example10_7;
 
 public static class Udoeyo_StructuralAnalysis_Example10_7_Nodes
 {
