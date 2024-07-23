@@ -91,5 +91,8 @@ public class Restraint(
     }
 
     public static Restraint Free { get; } = new(true, true, true, true, true, true);
+    public static Restraint FreeInXyPlane { get; } = new(true, true, false, false, false, true);
+    public static Restraint Pinned { get; } = new(false, false, false, true, true, true);
+    public static Restraint PinnedInXyPlane { get; } = new(false, false, false, false, false, true);
     public static Restraint Fixed { get; } = new(false, false, false, false, false, false);
 }
