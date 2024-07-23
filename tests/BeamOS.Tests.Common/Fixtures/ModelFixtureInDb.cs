@@ -1,5 +1,6 @@
 using BeamOs.ApiClient;
 using BeamOs.Application.Common.Mappers;
+using BeamOS.Tests.Common.Fixtures;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOS.Tests.Common.SolvedProblems.Fixtures;
@@ -74,5 +75,5 @@ public partial class ModelFixtureInDb(ModelFixture2 modelFixture)
         }
     }
 
-    protected string RuntimeIdToDbId(Guid id) => this.RuntimeIdToDbIdDict[id];
+    public string RuntimeIdToDbId(Guid id) => this.RuntimeIdToDbIdDict[id];
 }

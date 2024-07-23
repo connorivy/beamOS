@@ -37,7 +37,7 @@ public class NodeConfiguration : IEntityTypeConfiguration<Node>
             .WithOne()
             .HasForeignKey<NodeResult>(el => el.NodeId)
             .IsRequired()
-            .OnDelete(DeleteBehavior.ClientCascade);
+            .OnDelete(DeleteBehavior.Cascade);
 
         // needed for some reason?
         builder.ComplexProperty(n => n.Restraint);

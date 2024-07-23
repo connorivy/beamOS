@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeamOs.Infrastructure.Migrations
 {
     [DbContext(typeof(BeamOsStructuralDbContext))]
-    [Migration("20240721163940_Initial")]
+    [Migration("20240722204625_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -433,7 +433,7 @@ namespace BeamOs.Infrastructure.Migrations
                     b.HasOne("BeamOs.Domain.PhysicalModel.NodeAggregate.Node", null)
                         .WithOne("NodeResult")
                         .HasForeignKey("BeamOs.Domain.AnalyticalResults.NodeResultAggregate.NodeResult", "NodeId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 

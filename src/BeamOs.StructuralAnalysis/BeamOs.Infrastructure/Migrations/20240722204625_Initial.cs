@@ -325,7 +325,8 @@ namespace BeamOs.Infrastructure.Migrations
                         name: "FK_NodeResults_Nodes_NodeId",
                         column: x => x.NodeId,
                         principalTable: "Nodes",
-                        principalColumn: "Id"
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade
                     );
                 }
             );

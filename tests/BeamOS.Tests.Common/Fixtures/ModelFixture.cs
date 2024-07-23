@@ -1,12 +1,16 @@
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
-using BeamOS.Tests.Common.Fixtures;
 using BeamOS.Tests.Common.Interfaces;
 
-namespace BeamOS.Tests.Common.SolvedProblems.Fixtures;
+namespace BeamOS.Tests.Common.Fixtures;
 
-public interface IHasExpectedNodeResults2
+public interface IHasExpectedNodeResults2 : IModelFixture2
 {
     public NodeResultFixture2[] ExpectedNodeResults { get; }
+}
+
+public interface IHasExpectedNodeDisplacementResults : IModelFixture2
+{
+    public NodeDisplacementResultFixture[] ExpectedNodeDisplacementResults { get; }
 }
 
 public abstract class ModelFixture2 : FixtureBase2, IHasSourceInfo, IModelFixture2

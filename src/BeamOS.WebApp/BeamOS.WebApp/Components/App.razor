@@ -52,7 +52,14 @@
     }
     else
     {
-        <script src="js/index.bundle.js"></script>
+        <script type="module">
+            import { BeamOsEditor } from 'https://cdn.jsdelivr.net/npm/beamos-editor@0.0/+esm';
+
+            // WARNING : the string "createEditorFromId" must match the string in EditorApiProxy.cs
+            window.createEditorFromId = (editorId, dispatcher, isReadOnly) => {
+                return BeamOsEditor.createFromId(editorId, dispatcher, isReadOnly)
+            }
+        </script>
     }
 
     <script>
