@@ -32,9 +32,10 @@
     <PackageVersion Include="Fluxor" Version="$(FluxorVersion)" />
     <PackageVersion Include="Fluxor.Blazor.Web" Version="$(FluxorVersion)" />
     <PackageVersion Include="Fluxor.Blazor.Web.ReduxDevTools" Version="$(FluxorVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <!--Microsoft Extensions-->
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(MicrosoftExtensionsVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.Http" Version="$(MicrosoftExtensionsVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="8.0.0" />
     <!-- Fast Endpoints -->
     <PackageVersion Include="FastEndpoints" Version="$(FastEndpointVersion)" />
     <PackageVersion Include="FastEndpoints.Attributes" Version="$(FastEndpointVersion)" />

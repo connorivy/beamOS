@@ -1,12 +1,15 @@
+using System.Diagnostics;
 using System.Text;
 using BeamOs.Api;
 using BeamOs.Api.Common;
 using BeamOs.ApiClient;
+using BeamOs.Contracts.PhysicalModel.Common;
 using BeamOs.Infrastructure;
 using BeamOs.Tests.TestRunner;
 using BeamOS.WebApp;
 using BeamOS.WebApp.Client;
 using BeamOS.WebApp.Client.Components.Editor;
+using BeamOS.WebApp.Client.Features.Scratchpad;
 using BeamOS.WebApp.Components;
 using BeamOS.WebApp.Hubs;
 using Blazored.LocalStorage;
@@ -14,6 +17,8 @@ using FastEndpoints;
 using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -151,6 +156,19 @@ app.MapGet(
         )
 );
 
+app.MapPost(
+    "/scratchpad-entity",
+    async (
+        [FromServices] IHubContext<ScratchpadHub, IScratchpadHubClient> hubContext,
+        BeamOsEntityContractBase entity,
+        [FromQuery] string connectionId
+    ) =>
+    {
+        Trace.WriteLine($"message with connectionId {connectionId}");
+        await hubContext.Clients.Client(connectionId).LoadEntityInViewer(entity);
+    }
+);
+
 app.AddBeamOsEndpointsForAnalysis();
 
 //seed the DB
@@ -184,6 +202,7 @@ else
 }
 
 app.MapHub<StructuralAnalysisHub>(IStructuralAnalysisHubClient.HubEndpointPattern);
+app.MapHub<ScratchpadHub>(IScratchpadHubClient.HubEndpointPattern);
 
 app.UseStatusCodePagesWithRedirects("/404");
 

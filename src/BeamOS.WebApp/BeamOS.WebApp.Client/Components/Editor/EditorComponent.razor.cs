@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 
 namespace BeamOS.WebApp.Client.Components.Editor;
 
-public partial class EditorComponent : FluxorComponent
+public partial class EditorComponent : IAsyncDisposable
 {
     [Parameter]
     public string? Class { get; set; }
@@ -52,9 +52,9 @@ public partial class EditorComponent : FluxorComponent
     public IEditorApiAlpha? EditorApiAlpha { get; private set; }
     const string physicalModelId = "ddb1e60a-df17-48b0-810a-60e425acf640";
 
-    private HubConnection hubConnection;
-
     private List<IIntegrationEvent> integrationEvents = [];
+
+    private HubConnection hubConnection;
 
     protected override async Task OnInitializedAsync()
     {
@@ -67,20 +67,20 @@ public partial class EditorComponent : FluxorComponent
             )
             .Build();
 
-        this.hubConnection.On<IntegrationEventWithTypeName>(
-            "StructuralAnalysisIntegrationEventFired",
-            @event =>
-            {
-                Type? eventType = Type.GetType($"{@event.typeFullName},BeamOs.IntegrationEvents");
-                var strongEvent = JsonSerializer.Deserialize(
-                    @event.IntegrationEvent,
-                    eventType,
-                    new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
-                );
+        //this.hubConnection.On<IntegrationEventWithTypeName>(
+        //    "StructuralAnalysisIntegrationEventFired",
+        //    @event =>
+        //    {
+        //        Type? eventType = Type.GetType($"{@event.typeFullName},BeamOs.IntegrationEvents");
+        //        var strongEvent = JsonSerializer.Deserialize(
+        //            @event.IntegrationEvent,
+        //            eventType,
+        //            new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
+        //        );
 
-                //this.Dispatcher.Dispatch(new DbEvent((IIntegrationEvent)strongEvent));
-            }
-        );
+        //        //this.Dispatcher.Dispatch(new DbEvent((IIntegrationEvent)strongEvent));
+        //    }
+        //);
 
         await this.hubConnection.StartAsync();
         await base.OnInitializedAsync();
@@ -133,7 +133,7 @@ public partial class EditorComponent : FluxorComponent
         );
     }
 
-    protected override async ValueTask DisposeAsyncCore(bool disposing)
+    public async ValueTask DisposeAsync()
     {
         EventEmitter.VisibleStateChanged -= this.EventEmitter_VisibleStateChanged;
 
@@ -146,7 +146,6 @@ public partial class EditorComponent : FluxorComponent
         //await this.EditorApiAlpha.DisposeAsync();
         this.UndoRedoFunctionality?.Dispose();
         await this.hubConnection.DisposeAsync();
-        await base.DisposeAsyncCore(disposing);
     }
 }
 

@@ -119,6 +119,7 @@ public record RestraintRequest(
 )
 {
     public static RestraintRequest Free { get; } = new(true, true, true, true, true, true);
+    public static RestraintRequest Pinned { get; } = new(false, false, false, true, true, true);
     public static RestraintRequest Fixed { get; } = new(false, false, false, false, false, false);
 }
 
