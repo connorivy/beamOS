@@ -7,11 +7,17 @@ public abstract partial class CreateModelRequestBuilder : IModelFixtureInDb, IMo
     public string Name { get; init; } = "Test Model";
     public string Description { get; init; } = "Created from CustomModelRequestBuilder";
     public abstract PhysicalModelSettings ModelSettings { get; }
-    private List<CreateElement1dRequestBuilder> Element1ds { get; } = [];
-    private List<CreateNodeRequestBuilder> Nodes { get; } = [];
-    private List<CreatePointLoadRequestBuilder> PointLoads { get; } = [];
-    private List<CreateMaterialRequestBuilder> Materials { get; } = [];
-    private List<CreateSectionProfileRequestBuilder> SectionProfiles { get; } = [];
+
+    private List<CreateElement1dRequestBuilder> element1ds = [];
+    public IEnumerable<CreateElement1dRequestBuilder> Element1ds => this.element1ds;
+    private Dictionary<FixtureId, CreateNodeRequestBuilder> nodes = [];
+    public IEnumerable<CreateNodeRequestBuilder> Nodes => this.nodes.Values;
+    private List<CreatePointLoadRequestBuilder> pointLoads = [];
+    public IEnumerable<CreatePointLoadRequestBuilder> PointLoads => this.pointLoads;
+    private List<CreateMaterialRequestBuilder> materials = [];
+    public IEnumerable<CreateMaterialRequestBuilder> Materials => this.materials;
+    private List<CreateSectionProfileRequestBuilder> sectionProfiles = [];
+    public IEnumerable<CreateSectionProfileRequestBuilder> SectionProfiles => this.sectionProfiles;
 
     private readonly Dictionary<FixtureId, string> runtimeIdToDbIdDict = [];
     public FixtureId DefaultMaterialId { get; set; }
@@ -21,27 +27,54 @@ public abstract partial class CreateModelRequestBuilder : IModelFixtureInDb, IMo
 
     public void AddNode(CreateNodeRequestBuilder node)
     {
-        this.Nodes.Add(node with { ModelId = this.Id });
+        if (!this.nodes.ContainsKey(node.Id))
+        {
+            this.nodes.Add(node.Id, node with { ModelId = this.Id });
+        }
     }
 
     public void AddElement1d(CreateElement1dRequestBuilder element1d)
     {
-        this.Element1ds.Add(element1d with { ModelId = this.Id });
+        this.element1ds.Add(element1d with { ModelId = this.Id });
     }
 
     public void AddPointLoad(CreatePointLoadRequestBuilder pointLoad)
     {
-        this.PointLoads.Add(pointLoad with { ModelId = this.Id });
+        this.pointLoads.Add(pointLoad with { ModelId = this.Id });
     }
 
     public void AddMaterial(CreateMaterialRequestBuilder material)
     {
-        this.Materials.Add(material with { ModelId = this.Id });
+        this.materials.Add(material with { ModelId = this.Id });
     }
 
     public void AddSectionProfile(CreateSectionProfileRequestBuilder sectionProfile)
     {
-        this.SectionProfiles.Add(sectionProfile with { ModelId = this.Id });
+        this.sectionProfiles.Add(sectionProfile with { ModelId = this.Id });
+    }
+
+    public void AddElement(CreateModelEntityRequestBuilderBase builder)
+    {
+        switch (builder)
+        {
+            case CreateNodeRequestBuilder node:
+                this.AddNode(node);
+                break;
+            case CreateElement1dRequestBuilder element1d:
+                this.AddElement1d(element1d);
+                break;
+            case CreatePointLoadRequestBuilder pointLoad:
+                this.AddPointLoad(pointLoad);
+                break;
+            case CreateMaterialRequestBuilder material:
+                this.AddMaterial(material);
+                break;
+            case CreateSectionProfileRequestBuilder sectionProfile:
+                this.AddSectionProfile(sectionProfile);
+                break;
+            default:
+                throw new Exception("Unsupported entity type");
+        }
     }
 
     public async Task Create(ApiAlphaClient client)

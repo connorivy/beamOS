@@ -46,6 +46,18 @@ public record UnitSettingsDtoVerbose(
             "NewtonPerMeter",
             "NewtonPerSquareMeter"
         );
+
+    public static UnitSettingsDtoVerbose kN_M { get; } =
+        new(
+            "Meter",
+            "SquareMeter",
+            "CubicMeter",
+            "MeterToTheFourth",
+            "Kilonewton",
+            "KilonewtonMeter",
+            "KilonewtonPerMeter",
+            "KilonewtonPerSquareMeter"
+        );
 }
 
 public enum PreconfiguredUnits

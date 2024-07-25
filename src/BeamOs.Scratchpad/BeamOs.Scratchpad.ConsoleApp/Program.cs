@@ -14,7 +14,7 @@ var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>()
 var client = httpClientFactory.CreateClient();
 client.BaseAddress = new("https://localhost:7111");
 
-CustomModelBuilder customModelBuilder = new();
+CustomModelBuilder customModelBuilder = await CustomModelBuilder.Create();
 
 string connectionId = customModelBuilder.ScratchpadId;
 ModelResponse modelResponse = customModelBuilder.ToResponseWithLocalIds();

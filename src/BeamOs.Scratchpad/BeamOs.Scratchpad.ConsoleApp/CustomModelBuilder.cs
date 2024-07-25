@@ -9,23 +9,53 @@ namespace BeamOs.Scratchpad.ConsoleApp;
 
 public class CustomModelBuilder : CreateModelRequestBuilder
 {
-    public string ScratchpadId => "1_Oj4xIj6PokH3c_4s_51w";
+    public string ScratchpadId => "u6ndVnbxFMmYjstMVFFDSA";
 
     public override Guid ModelGuid { get; } = Guid.Parse("00000000-0000-0000-0000-000000000000");
-    public override PhysicalModelSettings ModelSettings { get; } = new(UnitSettingsDtoVerbose.K_FT);
+    public override PhysicalModelSettings ModelSettings { get; } = new(UnitSettingsDtoVerbose.kN_M);
 
     private int[] xValues = [0, 24];
     private int[] yValues = [0, 12];
     private int[] zValues = [0];
 
-    public CustomModelBuilder()
+    private CustomModelBuilder()
     {
-        this.CreateMaterialAndSectionProfile();
-        this.CreateNodes();
-        this.CreateVerticalElement1ds();
-        this.CreateHorizontalElement1ds();
-        this.CreatePointLoadsOnRoof();
-        this.CreatePointLoadsOnSide();
+        //this.CreateMaterialAndSectionProfile();
+        //this.CreateNodes();
+        //this.CreateVerticalElement1ds();
+        //this.CreateHorizontalElement1ds();
+        //this.CreatePointLoadsOnRoof();
+        //this.CreatePointLoadsOnSide();
+    }
+
+    public static async Task<CustomModelBuilder> Create()
+    {
+        CustomModelBuilder modelBuilder = new();
+
+        await foreach (
+            var builder in SpeckleConnector
+                .SpeckleConnector
+                .ReceiveData("e6b1988124", "f404f297534f6bd4502a42cb1dd08f21")
+        )
+        {
+            if (
+                builder is CreateNodeRequestBuilder nodeRequestBuilder
+                && nodeRequestBuilder.LocationPoint.YCoordinate.Value > 10000
+            )
+            {
+                modelBuilder.AddPointLoad(
+                    new()
+                    {
+                        NodeId = nodeRequestBuilder.Id,
+                        Direction = UnitVector3D.Create(0, -1, 0),
+                        Force = new(100, ForceUnit.Kilonewton)
+                    }
+                );
+            }
+            modelBuilder.AddElement(builder);
+        }
+
+        return modelBuilder;
     }
 
     private void CreateMaterialAndSectionProfile()

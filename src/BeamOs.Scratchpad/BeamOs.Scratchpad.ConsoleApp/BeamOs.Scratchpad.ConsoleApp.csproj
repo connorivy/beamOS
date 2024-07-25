@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\BeamOs.SpeckleConnector\BeamOs.SpeckleConnector\BeamOs.SpeckleConnector.csproj" />
     <ProjectReference Include="..\..\BeamOs.StructuralAnalysis\BeamOs.ApiClient\BeamOs.ApiClient.csproj" />
     <ProjectReference Include="..\..\BeamOs.StructuralAnalysis\BeamOs.Application\BeamOs.Application.csproj" />
     <ProjectReference Include="..\..\BeamOs.StructuralAnalysis\BeamOs.Contracts\BeamOs.Contracts.csproj" />
