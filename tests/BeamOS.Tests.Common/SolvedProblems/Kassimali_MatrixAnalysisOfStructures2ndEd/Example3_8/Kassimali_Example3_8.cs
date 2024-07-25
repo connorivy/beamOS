@@ -9,7 +9,7 @@ namespace BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructure
 public class Kassimali_Example3_8 : ModelFixture2
 {
     public static Guid IdStatic { get; } = TypedGuids.G0;
-    public override Guid Id => IdStatic;
+    public override Guid ModelGuid => IdStatic;
     public override ModelSettings Settings { get; } = new(UnitSettings.K_IN);
     public override SourceInfo SourceInfo { get; } =
         new(

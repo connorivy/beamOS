@@ -1,4 +1,5 @@
 using BeamOs.ApiClient;
+using BeamOs.ApiClient.Builders;
 using BeamOs.Application.Common.Mappers;
 using BeamOS.Tests.Common.Fixtures;
 using Riok.Mapperly.Abstractions;
@@ -6,14 +7,14 @@ using Riok.Mapperly.Abstractions;
 namespace BeamOS.Tests.Common.SolvedProblems.Fixtures;
 
 [Mapper]
-public partial class ModelFixtureInDb(ModelFixture2 modelFixture)
+public partial class ModelFixtureInDb(ModelFixture2 modelFixture) : IModelFixtureInDb
 {
-    public ModelFixture2 ModelFixture { get; } = modelFixture;
+    private ModelFixture2 ModelFixture { get; } = modelFixture;
 
     [UseMapper]
-    public UnitMapperWithOptionalUnits UnitMapperWithOptionalUnits { get; } =
+    private UnitMapperWithOptionalUnits UnitMapperWithOptionalUnits { get; } =
         new(modelFixture.Settings.UnitSettings);
-    public Dictionary<Guid, string> RuntimeIdToDbIdDict { get; } = [];
+    private Dictionary<FixtureId, string> RuntimeIdToDbIdDict { get; } = [];
 
     public async Task Create(ApiAlphaClient client)
     {
@@ -21,14 +22,14 @@ public partial class ModelFixtureInDb(ModelFixture2 modelFixture)
         try
         {
             this.RuntimeIdToDbIdDict[this.ModelFixture.Id] = (
-                await client.CreateModelAsync(this.ToRequest(this))
+                await client.CreateModelAsync(this.ToRequest())
             ).Id;
         }
         catch (ApiException)
         {
             await client.DeleteModelAsync(this.ModelFixture.Id.ToString());
             this.RuntimeIdToDbIdDict[this.ModelFixture.Id] = (
-                await client.CreateModelAsync(this.ToRequest(this))
+                await client.CreateModelAsync(this.ToRequest())
             ).Id;
         }
 
@@ -75,5 +76,5 @@ public partial class ModelFixtureInDb(ModelFixture2 modelFixture)
         }
     }
 
-    public string RuntimeIdToDbId(Guid id) => this.RuntimeIdToDbIdDict[id];
+    public string RuntimeIdToDbId(FixtureId id) => this.RuntimeIdToDbIdDict[id];
 }

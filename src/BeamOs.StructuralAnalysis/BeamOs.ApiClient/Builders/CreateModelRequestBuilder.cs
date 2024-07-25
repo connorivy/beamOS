@@ -1,14 +1,12 @@
-using BeamOs.ApiClient;
-using BeamOs.ApiClient.Builders;
-
 namespace BeamOs.ApiClient.Builders;
 
-public partial class CreateModelRequestBuilder
+public abstract partial class CreateModelRequestBuilder : IModelFixtureInDb, IModelFixture
 {
-    public FixtureId Id { get; } = Guid.NewGuid().ToString();
-    public string Name { get; init; }
-    public string Description { get; init; }
-    public required PhysicalModelSettingsDto Settings { get; init; }
+    public abstract Guid ModelGuid { get; }
+    public FixtureId Id => this.ModelGuid;
+    public string Name { get; init; } = "Test Model";
+    public string Description { get; init; } = "Created from CustomModelRequestBuilder";
+    public abstract PhysicalModelSettingsDto ModelSettings { get; }
     public List<CreateElement1dRequestBuilder> Element1ds { get; } = [];
     public List<CreateNodeRequestBuilder> Nodes { get; } = [];
     public List<CreatePointLoadRequestBuilder> PointLoads { get; } = [];
@@ -16,10 +14,10 @@ public partial class CreateModelRequestBuilder
     public List<CreateSectionProfileRequestBuilder> SectionProfiles { get; } = [];
 
     private readonly Dictionary<FixtureId, string> runtimeIdToDbIdDict = [];
-    public FixtureId DefaultMaterialId { get; set; }
-    public FixtureId DefaultSectionProfileId { get; set; }
+    public FixtureId? DefaultMaterialId { get; set; }
+    public FixtureId? DefaultSectionProfileId { get; set; }
 
-    private string GetDbId(FixtureId fixtureId) => this.runtimeIdToDbIdDict[fixtureId];
+    public string RuntimeIdToDbId(FixtureId fixtureId) => this.runtimeIdToDbIdDict[fixtureId];
 
     public void AddNode(CreateNodeRequestBuilder node)
     {
@@ -53,8 +51,10 @@ public partial class CreateModelRequestBuilder
         this.SectionProfiles.Add(sectionProfile with { ModelId = this.Id });
     }
 
-    public async Task AddToDatabase(ApiAlphaClient client)
+    public async Task Create(ApiAlphaClient client)
     {
+        this.runtimeIdToDbIdDict[this.Id] = this.Id.Id;
+
         // todo : update, don't just delete and re-create
         try
         {
@@ -77,7 +77,7 @@ public partial class CreateModelRequestBuilder
             ).Id;
         }
 
-        var defaultMaterial = this.Materials.FirstOrDefault() ?? new();
+        var defaultMaterial = this.Materials.FirstOrDefault() ?? new() { ModelId = this.Id };
         this.DefaultMaterialId = defaultMaterial.Id;
         this.runtimeIdToDbIdDict[defaultMaterial.Id] = (
             await client.CreateMaterialAsync(this.ToRequest(defaultMaterial))
@@ -90,7 +90,8 @@ public partial class CreateModelRequestBuilder
             ).Id;
         }
 
-        var defaultSectionProfile = this.SectionProfiles.FirstOrDefault() ?? new();
+        var defaultSectionProfile =
+            this.SectionProfiles.FirstOrDefault() ?? new() { ModelId = this.Id };
         this.DefaultSectionProfileId = defaultSectionProfile.Id;
         this.runtimeIdToDbIdDict[defaultSectionProfile.Id] = (
             await client.CreateSectionProfileAsync(this.ToRequest(defaultSectionProfile))
@@ -104,6 +105,8 @@ public partial class CreateModelRequestBuilder
 
         foreach (var element1dFixture in this.Element1ds)
         {
+            element1dFixture.MaterialId ??= this.DefaultMaterialId;
+            element1dFixture.SectionProfileId ??= this.DefaultSectionProfileId;
             this.runtimeIdToDbIdDict[element1dFixture.Id] = (
                 await client.CreateElement1dAsync(this.ToRequest(element1dFixture))
             ).Id;

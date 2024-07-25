@@ -1,3 +1,4 @@
+using BeamOs.ApiClient.Builders;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOS.Tests.Common.Fixtures;
@@ -20,7 +21,7 @@ public class Udoeyo_StructuralAnalysis_Example7_11
         );
 
     public static Guid IdStatic { get; } = Guid.Parse("e3e93bca-ab6e-424f-98b9-3ef4ac337275");
-    public override Guid Id => IdStatic;
+    public override Guid ModelGuid => IdStatic;
     public override PointLoadFixture2[] PointLoads =>
         Udoeyo_StructuralAnalysis_Example7_11_PointLoads.All;
     public override MaterialFixture2[] Materials =>
@@ -36,7 +37,7 @@ public class Udoeyo_StructuralAnalysis_Example7_11
 
         [
             new() {
-                NodeFixture = Udoeyo_StructuralAnalysis_Example7_11_Nodes.NodeA,
+                NodeId = Udoeyo_StructuralAnalysis_Example7_11_Nodes.NodeA.Id,
                 RotationAboutZ = new UnitsNet.Angle(.0038, UnitsNet.Units.AngleUnit.Radian),
                 DisplacementAlongY = new UnitsNet.Length(-.37, UnitsNet.Units.LengthUnit.Inch)
             }

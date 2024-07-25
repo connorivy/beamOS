@@ -1,3 +1,4 @@
+using BeamOs.ApiClient.Builders;
 using BeamOS.Tests.Common.Interfaces;
 using UnitsNet;
 
@@ -5,7 +6,7 @@ namespace BeamOS.Tests.Common.Fixtures;
 
 public class Element1dFixture2 : FixtureBase2, IHasSourceInfo
 {
-    public Guid ModelId => this.Model.Value.Id;
+    public FixtureId ModelId => this.Model.Value.Id;
     public required Lazy<ModelFixture2> Model { get; init; }
     public required NodeFixture2 StartNode { get; init; }
 

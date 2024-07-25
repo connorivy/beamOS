@@ -1,3 +1,4 @@
+using BeamOs.ApiClient.Builders;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOS.Tests.Common.Interfaces;
 
@@ -8,14 +9,25 @@ public interface IHasExpectedNodeResults2 : IModelFixture2
     public NodeResultFixture2[] ExpectedNodeResults { get; }
 }
 
-public interface IHasExpectedNodeDisplacementResults : IModelFixture2
+public interface IHasExpectedNodeDisplacementResults : IHasModelSettings, IHasFixtureId
 {
     public NodeDisplacementResultFixture[] ExpectedNodeDisplacementResults { get; }
 }
 
+public interface IHasModelSettings
+{
+    ModelSettings Settings { get; }
+}
+
+public interface IHasFixtureId
+{
+    FixtureId Id { get; }
+}
+
 public abstract class ModelFixture2 : FixtureBase2, IHasSourceInfo, IModelFixture2
 {
-    public abstract override Guid Id { get; }
+    public sealed override FixtureId Id => this.ModelGuid;
+    public abstract Guid ModelGuid { get; }
     public abstract ModelSettings Settings { get; }
     public abstract SourceInfo SourceInfo { get; }
     public virtual string Name { get; } = "Test Model";

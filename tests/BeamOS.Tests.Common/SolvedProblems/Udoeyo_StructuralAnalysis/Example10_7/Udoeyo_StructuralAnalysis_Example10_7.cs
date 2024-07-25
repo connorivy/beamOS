@@ -1,3 +1,4 @@
+using BeamOs.ApiClient.Builders;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOS.Tests.Common.Fixtures;
@@ -18,7 +19,7 @@ public class Udoeyo_StructuralAnalysis_Example10_7 : ModelFixture2
         );
 
     public static Guid IdStatic { get; } = Guid.Parse("e21ec1cd-cb98-4036-804a-2d51bf740524");
-    public override Guid Id => IdStatic;
+    public override Guid ModelGuid => IdStatic;
 
     public override MaterialFixture2[] Materials =>
         Udoeyo_StructuralAnalysis_Example10_7_Element1ds.Materials;

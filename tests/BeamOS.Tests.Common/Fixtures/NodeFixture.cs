@@ -1,3 +1,4 @@
+using BeamOs.ApiClient.Builders;
 using BeamOs.Domain.Common.ValueObjects;
 using UnitsNet;
 
@@ -16,7 +17,7 @@ public record NodeResultFixture2(NodeFixture2 Node, Forces Forces, Displacements
 
 public record NodeDisplacementResultFixture
 {
-    public required NodeFixture2 NodeFixture { get; init; }
+    public required FixtureId NodeId { get; init; }
     public Length? DisplacementAlongX { get; init; }
     public Length? DisplacementAlongY { get; init; }
     public Length? DisplacementAlongZ { get; init; }

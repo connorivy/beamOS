@@ -1,4 +1,5 @@
 // See https://aka.ms/new-console-template for more information
+using BeamOs.ApiClient.Builders;
 using BeamOs.Contracts.PhysicalModel.Common;
 using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Scratchpad.ConsoleApp;

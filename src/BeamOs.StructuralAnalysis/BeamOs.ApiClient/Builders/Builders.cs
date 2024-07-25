@@ -7,8 +7,8 @@ public record CreateElement1dRequestBuilder : CreateModelEntityRequestBuilderBas
 {
     public required FixtureId StartNodeId { get; init; }
     public required FixtureId EndNodeId { get; init; }
-    public FixtureId? MaterialId { get; init; }
-    public FixtureId? SectionProfileId { get; init; }
+    public FixtureId? MaterialId { get; set; }
+    public FixtureId? SectionProfileId { get; set; }
     public Angle SectionProfileRotation { get; init; }
 }
 
@@ -39,17 +39,17 @@ public record CreatePointLoadRequestBuilder : CreateModelEntityRequestBuilderBas
     public required UnitVector3D Direction { get; init; }
 }
 
-public abstract record CreateEntityRequestBuilderBase
-{
-    public FixtureId Id { get; init; } = Guid.NewGuid().ToString();
-}
-
-public abstract record CreateModelEntityRequestBuilderBase : CreateEntityRequestBuilderBase
+public abstract record CreateModelEntityRequestBuilderBase
 {
     internal FixtureId ModelId { get; init; }
+    public FixtureId Id { get; init; } = Guid.NewGuid().ToString();
 }
 
 public record struct FixtureId(string Id)
 {
     public static implicit operator FixtureId(string id) => new(id);
+
+    public static implicit operator FixtureId(Guid id) => new(id.ToString());
+
+    public override string ToString() => this.Id;
 }

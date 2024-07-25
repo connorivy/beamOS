@@ -1,3 +1,4 @@
+using BeamOs.ApiClient.Builders;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOS.Tests.Common.Fixtures;
@@ -18,7 +19,7 @@ public partial class Kassimali_Example8_4 : ModelFixture2, IHasExpectedNodeResul
             "https://dokumen.pub/matrix-analysis-of-structures-3nbsped-9780357448304.html#English"
         );
     public static Guid IdStatic { get; } = new("ddb1e60a-df17-48b0-810a-60e425acf640");
-    public override Guid Id => IdStatic;
+    public override Guid ModelGuid => IdStatic;
     public override ModelSettings Settings { get; } = new(UnitSettings.K_IN);
 
     public override PointLoadFixture2[] PointLoads => Kassimali_Example8_4_PointLoads.All;

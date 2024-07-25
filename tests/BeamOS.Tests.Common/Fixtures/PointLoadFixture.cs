@@ -1,3 +1,4 @@
+using BeamOs.ApiClient.Builders;
 using MathNet.Spatial.Euclidean;
 using UnitsNet;
 
@@ -9,5 +10,5 @@ public class PointLoadFixture2 : FixtureBase2
     public required Force Force { get; init; }
     public required Vector3D Direction { get; init; }
     public required Lazy<NodeFixture2> Node { get; init; }
-    public Guid NodeId => this.Node.Value.Id;
+    public FixtureId NodeId => this.Node.Value.Id;
 }

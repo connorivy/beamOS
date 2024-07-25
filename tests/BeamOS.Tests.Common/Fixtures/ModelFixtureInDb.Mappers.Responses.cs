@@ -32,4 +32,6 @@ public partial class ModelFixtureInDb
     public partial RestraintResponse ToResponse(Restraint source);
 
     public partial ModelResponse ToResponse(ModelFixture2 fixture);
+
+    public ModelResponse ToResponse() => this.ToResponse(this.ModelFixture);
 }
