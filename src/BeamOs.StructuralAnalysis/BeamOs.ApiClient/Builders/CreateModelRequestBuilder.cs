@@ -7,15 +7,15 @@ public abstract partial class CreateModelRequestBuilder : IModelFixtureInDb, IMo
     public string Name { get; init; } = "Test Model";
     public string Description { get; init; } = "Created from CustomModelRequestBuilder";
     public abstract PhysicalModelSettings ModelSettings { get; }
-    public List<CreateElement1dRequestBuilder> Element1ds { get; } = [];
-    public List<CreateNodeRequestBuilder> Nodes { get; } = [];
-    public List<CreatePointLoadRequestBuilder> PointLoads { get; } = [];
-    public List<CreateMaterialRequestBuilder> Materials { get; } = [];
-    public List<CreateSectionProfileRequestBuilder> SectionProfiles { get; } = [];
+    private List<CreateElement1dRequestBuilder> Element1ds { get; } = [];
+    private List<CreateNodeRequestBuilder> Nodes { get; } = [];
+    private List<CreatePointLoadRequestBuilder> PointLoads { get; } = [];
+    private List<CreateMaterialRequestBuilder> Materials { get; } = [];
+    private List<CreateSectionProfileRequestBuilder> SectionProfiles { get; } = [];
 
     private readonly Dictionary<FixtureId, string> runtimeIdToDbIdDict = [];
-    public FixtureId? DefaultMaterialId { get; set; }
-    public FixtureId? DefaultSectionProfileId { get; set; }
+    public FixtureId DefaultMaterialId { get; set; }
+    public FixtureId DefaultSectionProfileId { get; set; }
 
     public string RuntimeIdToDbId(FixtureId fixtureId) => this.runtimeIdToDbIdDict[fixtureId];
 
@@ -26,14 +26,7 @@ public abstract partial class CreateModelRequestBuilder : IModelFixtureInDb, IMo
 
     public void AddElement1d(CreateElement1dRequestBuilder element1d)
     {
-        this.Element1ds.Add(
-            element1d with
-            {
-                ModelId = this.Id,
-                MaterialId = element1d.MaterialId ?? this.DefaultMaterialId,
-                SectionProfileId = element1d.SectionProfileId ?? this.DefaultSectionProfileId,
-            }
-        );
+        this.Element1ds.Add(element1d with { ModelId = this.Id });
     }
 
     public void AddPointLoad(CreatePointLoadRequestBuilder pointLoad)
@@ -110,8 +103,16 @@ public abstract partial class CreateModelRequestBuilder : IModelFixtureInDb, IMo
 
         foreach (var element1dFixture in this.Element1ds)
         {
-            element1dFixture.MaterialId ??= this.DefaultMaterialId;
-            element1dFixture.SectionProfileId ??= this.DefaultSectionProfileId;
+            if (element1dFixture.MaterialId == default)
+            {
+                element1dFixture.MaterialId = this.DefaultMaterialId;
+            }
+
+            if (element1dFixture.SectionProfileId == default)
+            {
+                element1dFixture.SectionProfileId = this.DefaultSectionProfileId;
+            }
+
             this.runtimeIdToDbIdDict[element1dFixture.Id] = (
                 await client.CreateElement1dAsync(this.ToRequest(element1dFixture))
             ).Id;

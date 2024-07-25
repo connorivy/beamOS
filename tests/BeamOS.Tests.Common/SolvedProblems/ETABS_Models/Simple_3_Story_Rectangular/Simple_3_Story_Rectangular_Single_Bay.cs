@@ -10,20 +10,22 @@ using UnitsNet.Units;
 
 namespace BeamOS.Tests.Common.SolvedProblems.ETABS_Models.Simple_3_Story_Rectangular;
 
-public partial class Simple_3_Story_Rectangular
+public class Simple_3_Story_Rectangular_Single_Bay
     : CreateModelRequestBuilder,
         IHasExpectedNodeDisplacementResults
 {
-    public override Guid ModelGuid { get; } = Guid.Parse("d19873bf-6909-4da7-91a7-042b9d1a80dd");
+    public override Guid ModelGuid { get; } = Guid.Parse("ee99dc49-6214-41d3-a351-607a60dd4378");
     public override PhysicalModelSettings ModelSettings { get; } = new(UnitSettingsDtoVerbose.K_FT);
+
+    public NodeDisplacementResultFixture[] ExpectedNodeDisplacementResults { get; }
 
     public ModelSettings Settings { get; } = new(UnitSettings.K_FT);
 
-    private int[] xValues = [0, 24, 48, 72];
-    private int[] yValues = [0, 12, 24, 36];
-    private int[] zValues = [0, 24, 48, 72];
+    private int[] xValues = [0, 24];
+    private int[] yValues = [0, 12];
+    private int[] zValues = [0, 24];
 
-    private Simple_3_Story_Rectangular()
+    private Simple_3_Story_Rectangular_Single_Bay()
     {
         this.CreateMaterialAndSectionProfile();
         this.CreateNodes();
@@ -168,7 +170,7 @@ public partial class Simple_3_Story_Rectangular
                         );
                     }
 
-                    if (zIndex != this.zValues.Length - 1)
+                    if (yIndex != this.yValues.Length - 1)
                     {
                         this.AddElement1d(
                             new()
@@ -239,5 +241,5 @@ public partial class Simple_3_Story_Rectangular
 
     private static string NodeLocationString(int x, int y, int z) => $"n{x} {y} {z}";
 
-    public static Simple_3_Story_Rectangular Instance { get; } = new();
+    public static Simple_3_Story_Rectangular_Single_Bay Instance { get; } = new();
 }

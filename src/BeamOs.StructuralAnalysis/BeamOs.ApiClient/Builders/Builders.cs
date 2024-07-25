@@ -7,8 +7,8 @@ public record CreateElement1dRequestBuilder : CreateModelEntityRequestBuilderBas
 {
     public required FixtureId StartNodeId { get; init; }
     public required FixtureId EndNodeId { get; init; }
-    public FixtureId? MaterialId { get; set; }
-    public FixtureId? SectionProfileId { get; set; }
+    public FixtureId MaterialId { get; set; }
+    public FixtureId SectionProfileId { get; set; }
     public Angle SectionProfileRotation { get; init; }
 }
 

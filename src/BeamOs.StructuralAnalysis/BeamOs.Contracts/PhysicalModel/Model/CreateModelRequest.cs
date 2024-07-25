@@ -9,4 +9,4 @@ public record CreateModelRequest(
     string? Id = null
 );
 
-public record PhysicalModelSettings(UnitSettingsDtoVerbose UnitSettings, bool YAxisUp = false);
+public record PhysicalModelSettings(UnitSettingsDtoVerbose UnitSettings, bool YAxisUp = true);

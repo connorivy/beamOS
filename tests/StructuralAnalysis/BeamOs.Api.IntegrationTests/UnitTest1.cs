@@ -20,22 +20,22 @@ public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IA
 
     public async Task InitializeAsync()
     {
-        AllModelFixtures allSolved = new();
-        foreach (var fixture in allSolved.GetItems())
-        {
-            var dbModelFixture = new ModelFixtureInDb(fixture);
-            await dbModelFixture.Create(this.apiClient);
-            this.modelIdToModelFixtureDict.Add(fixture.Id.ToString(), dbModelFixture);
-            await this.apiClient.RunDirectStiffnessMethodAsync(fixture.Id.ToString());
-        }
-
-        //AllCreateModelRequestBuilders allModelBuilders = new();
-        //foreach (var modelBuilder in allModelBuilders.GetItems())
+        //AllModelFixtures allSolved = new();
+        //foreach (var fixture in allSolved.GetItems())
         //{
-        //    await modelBuilder.Create(this.apiClient);
-        //    this.modelIdToModelFixtureDict.Add(modelBuilder.Id.ToString(), modelBuilder);
-        //    await this.apiClient.RunDirectStiffnessMethodAsync(modelBuilder.Id.ToString());
+        //    var dbModelFixture = new ModelFixtureInDb(fixture);
+        //    await dbModelFixture.Create(this.apiClient);
+        //    this.modelIdToModelFixtureDict.Add(fixture.Id.ToString(), dbModelFixture);
+        //    await this.apiClient.RunDirectStiffnessMethodAsync(fixture.Id.ToString());
         //}
+
+        AllCreateModelRequestBuilders allModelBuilders = new();
+        foreach (var modelBuilder in allModelBuilders.GetItems())
+        {
+            await modelBuilder.Create(this.apiClient);
+            this.modelIdToModelFixtureDict.Add(modelBuilder.Id.ToString(), modelBuilder);
+            await this.apiClient.RunDirectStiffnessMethodAsync(modelBuilder.Id.ToString());
+        }
     }
 
     public Task DisposeAsync()

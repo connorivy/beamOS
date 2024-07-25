@@ -9,11 +9,12 @@ public class ModelSettings : BeamOSValueObject
 
     public bool YAxisUp { get; private set; }
 
-    public ModelSettings(UnitSettings unitSettings, bool yAxisUp = false)
+    public ModelSettings(UnitSettings unitSettings)
     {
-        // required params
         this.UnitSettings = unitSettings;
-        this.YAxisUp = yAxisUp;
+
+        // todo: support z-up
+        this.YAxisUp = true;
     }
 
     protected override IEnumerable<object> GetEqualityComponents()
