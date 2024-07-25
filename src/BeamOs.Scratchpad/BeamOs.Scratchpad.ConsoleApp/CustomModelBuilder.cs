@@ -1,35 +1,30 @@
 using BeamOs.ApiClient.Builders;
 using BeamOs.Contracts.Common;
+using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Contracts.PhysicalModel.Node;
 using MathNet.Spatial.Euclidean;
 using UnitsNet.Units;
 
 namespace BeamOs.Scratchpad.ConsoleApp;
 
-public class ModelResponseFactory
+public class CustomModelBuilder : CreateModelRequestBuilder
 {
     public string ScratchpadId => "g-1IwqUhSEGPGjxPqB5bDg";
+
+    public override Guid ModelGuid { get; } = Guid.Parse("00000000-0000-0000-0000-000000000000");
+    public override PhysicalModelSettings ModelSettings { get; } = new(UnitSettingsDtoVerbose.K_FT);
 
     private int[] xValues = [0, 24, 48, 72];
     private int[] yValues = [0, 24, 48, 72];
     private int[] zValues = [0, 12, 24, 36];
 
-    private readonly CreateModelRequestBuilder modelRequestBuilder =
-        new()
-        {
-            ModelSettings = new(UnitSettingsDtoVerbose.K_FT),
-            ModelGuid = Guid.Parse("00000000-0000-0000-0000-000000000000")
-        };
-
-    public CreateModelRequestBuilder CreateModelResponse()
+    public CustomModelBuilder()
     {
         this.CreateNodes();
         this.CreateVerticalElement1ds();
         this.CreateHorizontalElement1ds();
         this.CreatePointLoadsOnRoof();
         this.CreatePointLoadsOnSide();
-
-        return this.modelRequestBuilder;
     }
 
     private void CreateNodes()
@@ -54,7 +49,7 @@ public class ModelResponseFactory
                         restraint = RestraintRequest.Pinned;
                     }
 
-                    this.modelRequestBuilder.AddNode(
+                    this.AddNode(
                         new()
                         {
                             LocationPoint = new(
@@ -84,7 +79,7 @@ public class ModelResponseFactory
             {
                 for (int zIndex = 0; zIndex < this.zValues.Length - 1; zIndex++)
                 {
-                    this.modelRequestBuilder.AddElement1d(
+                    this.AddElement1d(
                         new()
                         {
                             StartNodeId = NodeLocationString(
@@ -114,7 +109,7 @@ public class ModelResponseFactory
                 {
                     if (xIndex != this.xValues.Length - 1)
                     {
-                        this.modelRequestBuilder.AddElement1d(
+                        this.AddElement1d(
                             new()
                             {
                                 StartNodeId = NodeLocationString(
@@ -133,7 +128,7 @@ public class ModelResponseFactory
 
                     if (yIndex != this.yValues.Length - 1)
                     {
-                        this.modelRequestBuilder.AddElement1d(
+                        this.AddElement1d(
                             new()
                             {
                                 StartNodeId = NodeLocationString(
@@ -161,7 +156,7 @@ public class ModelResponseFactory
         {
             for (int yIndex = 0; yIndex < this.yValues.Length; yIndex++)
             {
-                this.modelRequestBuilder.AddPointLoad(
+                this.AddPointLoad(
                     new()
                     {
                         NodeId = NodeLocationString(
@@ -184,7 +179,7 @@ public class ModelResponseFactory
         {
             for (int yIndex = 0; yIndex < this.yValues.Length; yIndex++)
             {
-                this.modelRequestBuilder.AddPointLoad(
+                this.AddPointLoad(
                     new()
                     {
                         NodeId = NodeLocationString(

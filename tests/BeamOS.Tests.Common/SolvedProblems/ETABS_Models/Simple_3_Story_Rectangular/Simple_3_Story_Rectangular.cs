@@ -15,8 +15,7 @@ public class Simple_3_Story_Rectangular
         IHasExpectedNodeDisplacementResults
 {
     public override Guid ModelGuid { get; } = Guid.Parse("d19873bf-6909-4da7-91a7-042b9d1a80dd");
-    public override PhysicalModelSettingsDto ModelSettings { get; } =
-        new(UnitSettingsDtoVerbose.K_FT);
+    public override PhysicalModelSettings ModelSettings { get; } = new(UnitSettingsDtoVerbose.K_FT);
 
     public NodeDisplacementResultFixture[] ExpectedNodeDisplacementResults { get; }
 
@@ -28,11 +27,48 @@ public class Simple_3_Story_Rectangular
 
     private Simple_3_Story_Rectangular()
     {
+        this.CreateMaterialAndSectionProfile();
         this.CreateNodes();
         this.CreateVerticalElement1ds();
         this.CreateHorizontalElement1ds();
         this.CreatePointLoadsOnRoof();
         this.CreatePointLoadsOnSide();
+    }
+
+    private void CreateMaterialAndSectionProfile()
+    {
+        this.AddMaterial(
+            new()
+            {
+                ModulusOfElasticity = new UnitsNet.Pressure(
+                    29000,
+                    PressureUnit.KilopoundForcePerSquareInch
+                ),
+                ModulusOfRigidity = new UnitsNet.Pressure(
+                    11_460,
+                    PressureUnit.KilopoundForcePerSquareInch
+                )
+            }
+        );
+
+        this.AddSectionProfile(
+            new()
+            {
+                Area = new UnitsNet.Area(10.6, AreaUnit.SquareInch),
+                StrongAxisMomentOfInertia = new UnitsNet.AreaMomentOfInertia(
+                    448,
+                    AreaMomentOfInertiaUnit.InchToTheFourth
+                ),
+                WeakAxisMomentOfInertia = new UnitsNet.AreaMomentOfInertia(
+                    24.5,
+                    AreaMomentOfInertiaUnit.InchToTheFourth
+                ),
+                PolarMomentOfInertia = new UnitsNet.AreaMomentOfInertia(
+                    .55,
+                    AreaMomentOfInertiaUnit.InchToTheFourth
+                )
+            }
+        );
     }
 
     private void CreateNodes()

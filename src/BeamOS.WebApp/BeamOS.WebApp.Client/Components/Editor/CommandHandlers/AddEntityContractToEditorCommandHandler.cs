@@ -101,6 +101,7 @@ public class AddEntityContractToEditorCommandHandler(
             new(canvasId, state => state with { LoadedModelId = modelResponse.Id, }),
             CancellationToken.None
         );
+        await editorApi.SetSettingsAsync(modelResponse.Settings);
 
         foreach (var node in modelResponse.Nodes ?? Enumerable.Empty<NodeResponse>())
         {

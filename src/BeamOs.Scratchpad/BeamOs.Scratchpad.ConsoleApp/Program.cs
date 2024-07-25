@@ -14,11 +14,10 @@ var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>()
 var client = httpClientFactory.CreateClient();
 client.BaseAddress = new("https://localhost:7111");
 
-ModelResponseFactory modelResponseFactory = new();
-string cachedJson = string.Empty;
+CustomModelBuilder customModelBuilder = new();
 
-string connectionId = modelResponseFactory.ScratchpadId;
-ModelResponse modelResponse = modelResponseFactory.CreateModelResponse().ToResponseWithLocalIds();
+string connectionId = customModelBuilder.ScratchpadId;
+ModelResponse modelResponse = customModelBuilder.ToResponseWithLocalIds();
 
 var json_ = System.Text.Json.JsonSerializer.Serialize<BeamOsEntityContractBase>(modelResponse);
 

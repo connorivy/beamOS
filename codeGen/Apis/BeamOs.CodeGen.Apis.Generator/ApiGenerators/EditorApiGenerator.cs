@@ -32,6 +32,8 @@ public class EditorApiGenerator : AbstractGenerator
 
         _ = addMethod("CreateMomentDiagram").Accepts<MomentDiagramResponse>();
 
+        _ = addMethod("SetSettings").Accepts<PhysicalModelSettings>();
+
         _ = addMethod("Clear");
 
         foreach (

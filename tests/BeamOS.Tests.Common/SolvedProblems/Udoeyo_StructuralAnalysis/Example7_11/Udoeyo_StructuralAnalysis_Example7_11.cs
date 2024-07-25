@@ -1,4 +1,5 @@
-using BeamOs.ApiClient.Builders;
+using BeamOs.Contracts.Common;
+using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOS.Tests.Common.Fixtures;
@@ -10,7 +11,8 @@ public class Udoeyo_StructuralAnalysis_Example7_11
     : ModelFixture2,
         IHasExpectedNodeDisplacementResults
 {
-    public override ModelSettings Settings { get; } = new(UnitSettings.K_FT);
+    public override ModelSettings Settings { get; } = new(UnitSettings.K_FT, true);
+    public PhysicalModelSettings ModelSettings { get; } = new(UnitSettingsDtoVerbose.K_FT, true);
     public override SourceInfo SourceInfo { get; } =
         new(
             "Structural Analysis by Felix Udoeyo",

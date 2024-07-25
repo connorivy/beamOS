@@ -5,8 +5,8 @@ namespace BeamOs.Contracts.PhysicalModel.Model;
 public record CreateModelRequest(
     string Name,
     string Description,
-    PhysicalModelSettingsDto Settings,
+    PhysicalModelSettings Settings,
     string? Id = null
 );
 
-public record PhysicalModelSettingsDto(UnitSettingsDtoVerbose UnitSettings);
+public record PhysicalModelSettings(UnitSettingsDtoVerbose UnitSettings, bool YAxisUp = false);

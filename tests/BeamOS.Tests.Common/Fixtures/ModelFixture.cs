@@ -1,4 +1,5 @@
 using BeamOs.ApiClient.Builders;
+using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOS.Tests.Common.Interfaces;
 
@@ -9,7 +10,10 @@ public interface IHasExpectedNodeResults2 : IModelFixture2
     public NodeResultFixture2[] ExpectedNodeResults { get; }
 }
 
-public interface IHasExpectedNodeDisplacementResults : IHasModelSettings, IHasFixtureId
+public interface IHasExpectedNodeDisplacementResults
+    : IHasModelSettings,
+        IHasFixtureId,
+        IHasPhysicalModelSettings
 {
     public NodeDisplacementResultFixture[] ExpectedNodeDisplacementResults { get; }
 }
@@ -17,6 +21,11 @@ public interface IHasExpectedNodeDisplacementResults : IHasModelSettings, IHasFi
 public interface IHasModelSettings
 {
     ModelSettings Settings { get; }
+}
+
+public interface IHasPhysicalModelSettings
+{
+    PhysicalModelSettings ModelSettings { get; }
 }
 
 public interface IHasFixtureId

@@ -18,6 +18,8 @@ public partial class ModelFixtureInDb(ModelFixture2 modelFixture) : IModelFixtur
 
     public async Task Create(ApiAlphaClient client)
     {
+        this.RuntimeIdToDbIdDict[this.ModelFixture.Id] = this.ModelFixture.Id.ToString();
+
         // todo : update, don't just delete and re-create
         try
         {

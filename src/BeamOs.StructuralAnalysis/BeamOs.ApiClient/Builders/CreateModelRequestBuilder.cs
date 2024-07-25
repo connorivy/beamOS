@@ -6,7 +6,7 @@ public abstract partial class CreateModelRequestBuilder : IModelFixtureInDb, IMo
     public FixtureId Id => this.ModelGuid;
     public string Name { get; init; } = "Test Model";
     public string Description { get; init; } = "Created from CustomModelRequestBuilder";
-    public abstract PhysicalModelSettingsDto ModelSettings { get; }
+    public abstract PhysicalModelSettings ModelSettings { get; }
     public List<CreateElement1dRequestBuilder> Element1ds { get; } = [];
     public List<CreateNodeRequestBuilder> Nodes { get; } = [];
     public List<CreatePointLoadRequestBuilder> PointLoads { get; } = [];
@@ -77,26 +77,31 @@ public abstract partial class CreateModelRequestBuilder : IModelFixtureInDb, IMo
             ).Id;
         }
 
-        var defaultMaterial = this.Materials.FirstOrDefault() ?? new() { ModelId = this.Id };
+        if (this.Materials.FirstOrDefault() is not CreateMaterialRequestBuilder defaultMaterial)
+        {
+            defaultMaterial = new();
+            this.AddMaterial(defaultMaterial);
+        }
         this.DefaultMaterialId = defaultMaterial.Id;
-        this.runtimeIdToDbIdDict[defaultMaterial.Id] = (
-            await client.CreateMaterialAsync(this.ToRequest(defaultMaterial))
-        ).Id;
 
-        foreach (var materialFixture in this.Materials.Skip(1))
+        foreach (var materialFixture in this.Materials)
         {
             this.runtimeIdToDbIdDict[materialFixture.Id] = (
                 await client.CreateMaterialAsync(this.ToRequest(materialFixture))
             ).Id;
         }
 
-        var defaultSectionProfile =
-            this.SectionProfiles.FirstOrDefault() ?? new() { ModelId = this.Id };
+        if (
+            this.SectionProfiles.FirstOrDefault()
+            is not CreateSectionProfileRequestBuilder defaultSectionProfile
+        )
+        {
+            defaultSectionProfile = new();
+            this.AddSectionProfile(defaultSectionProfile);
+        }
         this.DefaultSectionProfileId = defaultSectionProfile.Id;
-        this.runtimeIdToDbIdDict[defaultSectionProfile.Id] = (
-            await client.CreateSectionProfileAsync(this.ToRequest(defaultSectionProfile))
-        ).Id;
-        foreach (var sectionProfileFixture in this.SectionProfiles.Skip(1))
+
+        foreach (var sectionProfileFixture in this.SectionProfiles)
         {
             this.runtimeIdToDbIdDict[sectionProfileFixture.Id] = (
                 await client.CreateSectionProfileAsync(this.ToRequest(sectionProfileFixture))

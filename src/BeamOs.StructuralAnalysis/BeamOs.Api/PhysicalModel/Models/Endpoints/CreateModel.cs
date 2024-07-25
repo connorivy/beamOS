@@ -11,7 +11,6 @@ namespace BeamOs.Api.PhysicalModel.Models.Endpoints;
 
 public class CreateModel(
     BeamOsFastEndpointOptions options,
-    CreateModelRequestMapper commandMapper,
     CreateModelCommandHandler createModelCommandHandler,
     ModelResponseMapper modelResponseMapper
 ) : BeamOsFastEndpoint<CreateModelRequest, ModelResponse?>(options)
@@ -22,7 +21,7 @@ public class CreateModel(
         new(
             "Big Ol' Building",
             "Description",
-            new PhysicalModelSettingsDto(
+            new PhysicalModelSettings(
                 new UnitSettingsDtoVerbose(
                     "Inch",
                     "SquareInch",
@@ -41,9 +40,7 @@ public class CreateModel(
         CancellationToken ct
     )
     {
-        var command = commandMapper.Map(req);
-
-        Model? model = await createModelCommandHandler.ExecuteAsync(command, ct);
+        Model? model = await createModelCommandHandler.ExecuteAsync(req, ct);
 
         if (model is null)
         {

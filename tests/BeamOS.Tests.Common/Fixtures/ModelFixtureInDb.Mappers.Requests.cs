@@ -14,13 +14,10 @@ public partial class ModelFixtureInDb
 {
     public CreateModelRequest ToRequest()
     {
-        return new(
-            this.ModelFixture.Name,
-            this.ModelFixture.Description,
-            new PhysicalModelSettingsDto(this.ModelFixture.Settings.UnitSettings.ToContract()),
-            this.ModelFixture.Id.ToString()
-        );
+        return this.ToRequest(this.ModelFixture);
     }
+
+    public partial CreateModelRequest ToRequest(ModelFixture2 fixture);
 
     public partial CreateElement1dRequest ToRequest(Element1dFixture2 fixture);
 
