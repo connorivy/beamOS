@@ -77,6 +77,11 @@ public abstract partial class CreateModelRequestBuilder : IModelFixtureInDb, IMo
         }
     }
 
+    public virtual Task InitializeAsync()
+    {
+        return Task.CompletedTask;
+    }
+
     public async Task Create(ApiAlphaClient client)
     {
         this.runtimeIdToDbIdDict[this.Id] = this.Id.Id;

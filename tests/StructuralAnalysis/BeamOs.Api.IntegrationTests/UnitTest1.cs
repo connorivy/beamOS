@@ -32,6 +32,7 @@ public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IA
         AllCreateModelRequestBuilders allModelBuilders = new();
         foreach (var modelBuilder in allModelBuilders.GetItems())
         {
+            await modelBuilder.InitializeAsync();
             await modelBuilder.Create(this.apiClient);
             this.modelIdToModelFixtureDict.Add(modelBuilder.Id.ToString(), modelBuilder);
             await this.apiClient.RunDirectStiffnessMethodAsync(modelBuilder.Id.ToString());

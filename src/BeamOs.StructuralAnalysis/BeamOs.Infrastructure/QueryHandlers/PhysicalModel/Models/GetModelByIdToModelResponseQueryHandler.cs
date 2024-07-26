@@ -19,6 +19,7 @@ internal sealed class GetModelByIdToModelResponseQueryHandler(
     {
         IQueryable<ModelReadModel> queryable = dbContext
             .Models
+            .AsSplitQuery()
             .Where(m => m.Id == query.Id)
             .Take(1);
 
