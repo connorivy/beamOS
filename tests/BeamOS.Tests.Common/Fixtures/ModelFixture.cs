@@ -15,7 +15,7 @@ public interface IHasExpectedNodeDisplacementResults
         IHasFixtureId,
         IHasPhysicalModelSettings
 {
-    public NodeDisplacementResultFixture[] ExpectedNodeDisplacementResults { get; }
+    public NodeResultFixture[] ExpectedNodeDisplacementResults { get; }
 }
 
 public interface IHasModelSettings

@@ -17,7 +17,26 @@ public class Simple_3_Story_Rectangular_Single_Frame
     public override Guid ModelGuid { get; } = Guid.Parse("6f06a260-c88e-43f5-8930-05944a0887ed");
     public override PhysicalModelSettings ModelSettings { get; } = new(UnitSettingsDtoVerbose.K_FT);
 
-    public NodeDisplacementResultFixture[] ExpectedNodeDisplacementResults { get; }
+    public NodeResultFixture[] ExpectedNodeDisplacementResults { get; } =
+
+        [
+            new()
+            {
+                NodeId = NodeLocationString(0, 0, 0)
+            },
+            new()
+            {
+                NodeId = NodeLocationString(0, 12, 0)
+            },
+            new()
+            {
+                NodeId = NodeLocationString(24, 12, 0)
+            },
+            new()
+            {
+                NodeId = NodeLocationString(24, 0, 0)
+            }
+        ];
 
     public ModelSettings Settings { get; } = new(UnitSettings.K_FT);
 
@@ -41,11 +60,11 @@ public class Simple_3_Story_Rectangular_Single_Frame
             new()
             {
                 ModulusOfElasticity = new UnitsNet.Pressure(
-                    29000 * .8,
+                    29000,
                     PressureUnit.KilopoundForcePerSquareInch
                 ),
                 ModulusOfRigidity = new UnitsNet.Pressure(
-                    11_460,
+                    11_153.84615,
                     PressureUnit.KilopoundForcePerSquareInch
                 )
             }

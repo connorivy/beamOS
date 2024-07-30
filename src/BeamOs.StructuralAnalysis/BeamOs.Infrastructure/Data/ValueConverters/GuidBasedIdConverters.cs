@@ -1,3 +1,4 @@
+using BeamOs.Domain.AnalyticalResults.AnalyticalModelAggregate.ValueObjects;
 using BeamOs.Domain.AnalyticalResults.AnalyticalNodeAggregate.ValueObjects;
 using BeamOs.Domain.Diagrams.Common.ValueObjects;
 using BeamOs.Domain.Diagrams.MomentDiagramAggregate.ValueObjects;
@@ -59,6 +60,12 @@ public class PointLoadIdConverter : ValueConverter<PointLoadId, Guid>
 public class MomentLoadIdConverter : ValueConverter<MomentLoadId, Guid>
 {
     public MomentLoadIdConverter()
+        : base(x => x.Id, x => new(x), null) { }
+}
+
+public class ModelResultIdConverter : ValueConverter<ModelResultId, Guid>
+{
+    public ModelResultIdConverter()
         : base(x => x.Id, x => new(x), null) { }
 }
 

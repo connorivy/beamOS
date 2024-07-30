@@ -241,6 +241,11 @@ public class DiagramBuilder
         List<DiagramPointValue> boundaryConditions
     )
     {
+        if (this.numTimesToIntegrate == 0)
+        {
+            return [0];
+        }
+
         var matrixArray = new double[this.numTimesToIntegrate, this.numTimesToIntegrate];
         var results = new double[this.numTimesToIntegrate];
         for (var bcIndex = 0; bcIndex < this.numTimesToIntegrate; bcIndex++)

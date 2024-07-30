@@ -17,7 +17,7 @@ public class Kassimali_Example3_8 : ModelFixture2
             FixtureSourceType.Textbook,
             "Example 3.8",
             null,
-            "https://dokumen.pub/matrix-analysis-of-structures-3nbsped-9780357448304.html#English"
+            "https://repository.bakrie.ac.id/10/1/%5BTSI-LIB-131%5D%5BAslam_Kassimali%5D_Matrix_Analysis_of_Structure.pdf;https://dokumen.pub/matrix-analysis-of-structures-3nbsped-9780357448304.html#English"
         );
 
     public override PointLoadFixture2[] PointLoads => Kassimali_Example3_8_PointLoads.All;

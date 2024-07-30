@@ -39,11 +39,11 @@ public partial class Simple_3_Story_Rectangular
             new()
             {
                 ModulusOfElasticity = new UnitsNet.Pressure(
-                    29000 * .8,
+                    29_000,
                     PressureUnit.KilopoundForcePerSquareInch
                 ),
                 ModulusOfRigidity = new UnitsNet.Pressure(
-                    11_460,
+                    11_153.846,
                     PressureUnit.KilopoundForcePerSquareInch
                 )
             }

@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeamOs.Infrastructure.Migrations
 {
     [DbContext(typeof(BeamOsStructuralDbContext))]
-    [Migration("20240722204625_Initial")]
+    [Migration("20240726183026_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -25,6 +25,33 @@ namespace BeamOs.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("BeamOs.Domain.AnalyticalResults.ModelResultAggregate.ModelResult", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("MaxMoment")
+                        .HasColumnType("float");
+
+                    b.Property<double>("MaxShear")
+                        .HasColumnType("float");
+
+                    b.Property<double>("MinMoment")
+                        .HasColumnType("float");
+
+                    b.Property<double>("MinShear")
+                        .HasColumnType("float");
+
+                    b.Property<Guid>("ModelId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ModelId");
+
+                    b.ToTable("ModelResults");
+                });
 
             modelBuilder.Entity("BeamOs.Domain.AnalyticalResults.NodeResultAggregate.NodeResult", b =>
                 {
@@ -261,6 +288,9 @@ namespace BeamOs.Infrastructure.Migrations
                         {
                             b1.IsRequired();
 
+                            b1.Property<bool>("YAxisUp")
+                                .HasColumnType("bit");
+
                             b1.ComplexProperty<Dictionary<string, object>>("UnitSettings", "BeamOs.Domain.PhysicalModel.ModelAggregate.Model.Settings#ModelSettings.UnitSettings#UnitSettings", b2 =>
                                 {
                                     b2.IsRequired();
@@ -426,6 +456,15 @@ namespace BeamOs.Infrastructure.Migrations
                     b.HasIndex("ModelId");
 
                     b.ToTable("SectionProfiles");
+                });
+
+            modelBuilder.Entity("BeamOs.Domain.AnalyticalResults.ModelResultAggregate.ModelResult", b =>
+                {
+                    b.HasOne("BeamOs.Domain.PhysicalModel.ModelAggregate.Model", null)
+                        .WithMany()
+                        .HasForeignKey("ModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("BeamOs.Domain.AnalyticalResults.NodeResultAggregate.NodeResult", b =>

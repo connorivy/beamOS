@@ -1,4 +1,5 @@
 using BeamOs.Common.Events;
+using BeamOs.Domain.AnalyticalResults.ModelResultAggregate;
 using BeamOs.Domain.AnalyticalResults.NodeResultAggregate;
 using BeamOs.Domain.Common.Interfaces;
 using BeamOs.Domain.Common.Utils;
@@ -16,6 +17,7 @@ using BeamOs.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate;
 using BeamOs.Infrastructure.Data.Configurations.Write;
 using BeamOs.Infrastructure.Interceptors;
+using BeamOS.Tests.Common.SolvedProblems.ETABS_Models.Simple_3_Story_Rectangular;
 using BeamOS.Tests.Common.SolvedProblems.Fixtures.Mappers.ToDomain;
 using BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd.Example3_8;
 using BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd.Example8_4;
@@ -63,6 +65,7 @@ public class BeamOsStructuralDbContext : DbContext
     public DbSet<SectionProfile> SectionProfiles { get; set; }
     public DbSet<PointLoad> PointLoads { get; set; }
     public DbSet<MomentLoad> MomentLoads { get; set; }
+    public DbSet<ModelResult> ModelResults { get; set; }
     public DbSet<NodeResult> NodeResults { get; set; }
     public DbSet<ShearForceDiagram> ShearForceDiagrams { get; set; }
     public DbSet<MomentDiagram> MomentDiagrams { get; set; }
@@ -112,6 +115,7 @@ public class BeamOsStructuralDbContext : DbContext
         await this.InsertIntoEfCore(Kassimali_Example3_8.Instance.ToDomain());
         await this.InsertIntoEfCore(Kassimali_Example8_4.Instance.ToDomain());
         await this.InsertIntoEfCore(Udoeyo_StructuralAnalysis_Example10_7.Instance.ToDomain());
+        //await this.InsertIntoEfCore(Simple_3_Story_Rectangular.Instance.to)
 
         _ = await this.SaveChangesAsync();
     }

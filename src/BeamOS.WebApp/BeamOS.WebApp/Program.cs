@@ -30,6 +30,9 @@ if (builder.Configuration["APPLICATION_URL_PROTOCOL"] is null)
     builder.Configuration["APPLICATION_URL_PROTOCOL"] = "dummy";
 }
 
+MathNet.Numerics.Control.UseNativeMKL();
+MathNet.Numerics.Control.UseMultiThreading();
+
 builder
     .Configuration
     .AddInMemoryCollection(

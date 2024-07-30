@@ -8,12 +8,12 @@ using BeamOs.Contracts.PhysicalModel.PointLoad;
 namespace BeamOs.Contracts.PhysicalModel.Common;
 
 [JsonPolymorphic]
-[JsonDerivedType(typeof(ModelResponse), 0)]
-[JsonDerivedType(typeof(Element1DResponse), 1)]
-[JsonDerivedType(typeof(NodeResponse), 2)]
-[JsonDerivedType(typeof(PointLoadResponse), 3)]
-[JsonDerivedType(typeof(ShearDiagramResponse), 4)]
-[JsonDerivedType(typeof(MomentDiagramResponse), 5)]
+[JsonDerivedType(typeof(ModelResponse), "0")]
+[JsonDerivedType(typeof(Element1DResponse), "1")]
+[JsonDerivedType(typeof(NodeResponse), "2")]
+[JsonDerivedType(typeof(PointLoadResponse), "3")]
+[JsonDerivedType(typeof(ShearDiagramResponse), "4")]
+[JsonDerivedType(typeof(MomentDiagramResponse), "5")]
 public abstract record BeamOsEntityContractBase(string Id) : BeamOsContractBase;
 //public abstract record BeamOsEntityContractBase : BeamOsContractBase
 //{

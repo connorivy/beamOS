@@ -1,3 +1,4 @@
+using BeamOs.Domain.AnalyticalResults.ModelResultAggregate;
 using BeamOs.Domain.Common.Models;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate;
@@ -30,6 +31,7 @@ public class Model : AggregateRoot<ModelId>
     public ICollection<Element1D> Element1ds { get; init; } = [];
     public ICollection<Material> Materials { get; init; } = [];
     public ICollection<SectionProfile> SectionProfiles { get; init; } = [];
+    public ICollection<ModelResult> ModelResults { get; init; }
 
     //private readonly List<NodeId> nodeIds = [];
     //public IReadOnlyList<NodeId> NodeIds => this.nodeIds.AsReadOnly();

@@ -4,6 +4,7 @@ using BeamOs.Api.Common.Extensions;
 using BeamOs.Infrastructure;
 using FastEndpoints;
 using FastEndpoints.Swagger;
+using MathNet.Numerics;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,6 +29,8 @@ builder
         o.ShortSchemaNames = true;
         o.ExcludeNonFastEndpoints = true;
     });
+
+Control.UseNativeMKL();
 
 builder
     .Services

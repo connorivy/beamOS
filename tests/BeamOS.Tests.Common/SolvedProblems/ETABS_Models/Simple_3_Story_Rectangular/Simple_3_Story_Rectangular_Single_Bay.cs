@@ -17,7 +17,7 @@ public class Simple_3_Story_Rectangular_Single_Bay
     public override Guid ModelGuid { get; } = Guid.Parse("ee99dc49-6214-41d3-a351-607a60dd4378");
     public override PhysicalModelSettings ModelSettings { get; } = new(UnitSettingsDtoVerbose.K_FT);
 
-    public NodeDisplacementResultFixture[] ExpectedNodeDisplacementResults { get; }
+    public NodeResultFixture[] ExpectedNodeDisplacementResults { get; }
 
     public ModelSettings Settings { get; } = new(UnitSettings.K_FT);
 

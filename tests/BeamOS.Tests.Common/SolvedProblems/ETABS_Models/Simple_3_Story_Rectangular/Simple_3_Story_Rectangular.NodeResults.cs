@@ -7,8 +7,8 @@ public partial class Simple_3_Story_Rectangular
     : CreateModelRequestBuilder,
         IHasExpectedNodeDisplacementResults
 {
-    private NodeDisplacementResultFixture[] expectedNodeDisplacementResults;
-    public NodeDisplacementResultFixture[] ExpectedNodeDisplacementResults =>
+    private NodeResultFixture[] expectedNodeDisplacementResults;
+    public NodeResultFixture[] ExpectedNodeDisplacementResults =>
         this.expectedNodeDisplacementResults ??=
         [
             new()

@@ -1,8 +1,5 @@
-using BeamOs.Domain.PhysicalModel.Element1DAggregate;
-using BeamOs.Domain.PhysicalModel.MaterialAggregate;
+using BeamOs.Domain.AnalyticalResults.ModelResultAggregate;
 using BeamOs.Domain.PhysicalModel.ModelAggregate;
-using BeamOs.Domain.PhysicalModel.NodeAggregate;
-using BeamOs.Domain.PhysicalModel.SectionProfileAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -35,6 +32,13 @@ internal class ModelConfiguration : IEntityTypeConfiguration<Model>
 
         _ = builder
             .HasMany(m => m.SectionProfiles)
+            .WithOne()
+            .HasForeignKey(el => el.ModelId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder
+            .HasMany(m => m.ModelResults)
             .WithOne()
             .HasForeignKey(el => el.ModelId)
             .IsRequired()

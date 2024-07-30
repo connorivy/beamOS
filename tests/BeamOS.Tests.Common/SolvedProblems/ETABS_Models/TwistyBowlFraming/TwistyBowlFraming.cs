@@ -46,11 +46,11 @@ public class TwistyBowlFraming : CreateModelRequestBuilder
             new()
             {
                 ModulusOfElasticity = new UnitsNet.Pressure(
-                    29000 * .8,
+                    29000,
                     PressureUnit.KilopoundForcePerSquareInch
                 ),
                 ModulusOfRigidity = new UnitsNet.Pressure(
-                    11_460,
+                    11_150,
                     PressureUnit.KilopoundForcePerSquareInch
                 )
             }

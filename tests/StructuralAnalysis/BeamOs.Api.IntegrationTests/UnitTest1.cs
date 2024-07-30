@@ -28,6 +28,8 @@ public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IA
         //    this.modelIdToModelFixtureDict.Add(fixture.Id.ToString(), dbModelFixture);
         //    await this.apiClient.RunDirectStiffnessMethodAsync(fixture.Id.ToString());
         //}
+        MathNet.Numerics.Control.UseNativeMKL();
+        MathNet.Numerics.Control.UseMultiThreading();
 
         AllCreateModelRequestBuilders allModelBuilders = new();
         foreach (var modelBuilder in allModelBuilders.GetItems())
@@ -77,32 +79,38 @@ public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IA
             this.AssertQuantitesEqual(
                 expectedNodeDisplacementResult.DisplacementAlongX,
                 result.Displacements.DisplacementAlongX.Value,
-                modelFixture.Settings.UnitSettings.LengthUnit
+                modelFixture.Settings.UnitSettings.LengthUnit,
+                expectedNodeDisplacementResult.LengthTolerance
             );
             this.AssertQuantitesEqual(
                 expectedNodeDisplacementResult.DisplacementAlongY,
                 result.Displacements.DisplacementAlongY.Value,
-                modelFixture.Settings.UnitSettings.LengthUnit
+                modelFixture.Settings.UnitSettings.LengthUnit,
+                expectedNodeDisplacementResult.LengthTolerance
             );
             this.AssertQuantitesEqual(
                 expectedNodeDisplacementResult.DisplacementAlongZ,
                 result.Displacements.DisplacementAlongZ.Value,
-                modelFixture.Settings.UnitSettings.LengthUnit
+                modelFixture.Settings.UnitSettings.LengthUnit,
+                expectedNodeDisplacementResult.LengthTolerance
             );
             this.AssertQuantitesEqual(
                 expectedNodeDisplacementResult.RotationAboutX,
                 result.Displacements.RotationAboutX.Value,
-                modelFixture.Settings.UnitSettings.AngleUnit
+                modelFixture.Settings.UnitSettings.AngleUnit,
+                expectedNodeDisplacementResult.AngleTolerance
             );
             this.AssertQuantitesEqual(
                 expectedNodeDisplacementResult.RotationAboutY,
                 result.Displacements.RotationAboutY.Value,
-                modelFixture.Settings.UnitSettings.AngleUnit
+                modelFixture.Settings.UnitSettings.AngleUnit,
+                expectedNodeDisplacementResult.AngleTolerance
             );
             this.AssertQuantitesEqual(
                 expectedNodeDisplacementResult.RotationAboutZ,
                 result.Displacements.RotationAboutZ.Value,
-                modelFixture.Settings.UnitSettings.AngleUnit
+                modelFixture.Settings.UnitSettings.AngleUnit,
+                expectedNodeDisplacementResult.AngleTolerance
             );
         }
     }
@@ -111,14 +119,16 @@ public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IA
         TUnit? expected,
         double calculated,
         TUnitType unitType,
-        int numDigits = 3
+        TUnit tolerance
     )
         where TUnit : struct, IQuantity<TUnitType>
         where TUnitType : Enum
     {
-        if (expected is not null)
+        if (expected is null)
         {
-            Assert.Equal(expected.Value.As(unitType), calculated, numDigits);
+            return;
         }
+
+        Assert.Equal(expected.Value.As(unitType), calculated, tolerance.As(unitType));
     }
 }

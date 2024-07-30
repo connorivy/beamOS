@@ -233,6 +233,11 @@ export interface IStructuralAnalysisContracts {
     /**
      * @return OK
      */
+    beamOs_Contracts_AnalyticalResults_Model_ModelResultResponse(): Promise<ModelResultResponse>;
+
+    /**
+     * @return OK
+     */
     beamOs_Contracts_AnalyticalResults_Model_RunAnalysisRequest(): Promise<RunAnalysisRequest>;
 
     /**
@@ -1913,6 +1918,43 @@ export class StructuralAnalysisContracts implements IStructuralAnalysisContracts
             });
         }
         return Promise.resolve<UnsupportedStructureDisplacementIdResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_AnalyticalResults_Model_ModelResultResponse(): Promise<ModelResultResponse> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.AnalyticalResults.Model.ModelResultResponse";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_AnalyticalResults_Model_ModelResultResponse(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_AnalyticalResults_Model_ModelResultResponse(response: Response): Promise<ModelResultResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ModelResultResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ModelResultResponse>(null as any);
     }
 
     /**
@@ -3858,6 +3900,64 @@ export interface IModelResponseHydrated {
     sectionProfiles: SectionProfileResponse[];
     pointLoads: PointLoadResponse[];
     momentLoads: MomentLoadResponse[];
+}
+
+export class ModelResultResponse implements IModelResultResponse {
+    modelId!: string;
+    maxShear!: UnitValueDto;
+    minShear!: UnitValueDto;
+    maxMoment!: UnitValueDto;
+    minMoment!: UnitValueDto;
+
+    constructor(data?: IModelResultResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.maxShear = new UnitValueDto();
+            this.minShear = new UnitValueDto();
+            this.maxMoment = new UnitValueDto();
+            this.minMoment = new UnitValueDto();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.modelId = _data["modelId"];
+            this.maxShear = _data["maxShear"] ? UnitValueDto.fromJS(_data["maxShear"]) : new UnitValueDto();
+            this.minShear = _data["minShear"] ? UnitValueDto.fromJS(_data["minShear"]) : new UnitValueDto();
+            this.maxMoment = _data["maxMoment"] ? UnitValueDto.fromJS(_data["maxMoment"]) : new UnitValueDto();
+            this.minMoment = _data["minMoment"] ? UnitValueDto.fromJS(_data["minMoment"]) : new UnitValueDto();
+        }
+    }
+
+    static fromJS(data: any): ModelResultResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ModelResultResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["modelId"] = this.modelId;
+        data["maxShear"] = this.maxShear ? this.maxShear.toJSON() : <any>undefined;
+        data["minShear"] = this.minShear ? this.minShear.toJSON() : <any>undefined;
+        data["maxMoment"] = this.maxMoment ? this.maxMoment.toJSON() : <any>undefined;
+        data["minMoment"] = this.minMoment ? this.minMoment.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IModelResultResponse {
+    modelId: string;
+    maxShear: UnitValueDto;
+    minShear: UnitValueDto;
+    maxMoment: UnitValueDto;
+    minMoment: UnitValueDto;
 }
 
 export class ModelSettingsRequest implements IModelSettingsRequest {

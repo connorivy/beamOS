@@ -35,7 +35,7 @@ public class Udoeyo_StructuralAnalysis_Example7_11
         Udoeyo_StructuralAnalysis_Example7_11_Element1ds.AllElement1ds;
 
     public static Udoeyo_StructuralAnalysis_Example7_11 Instance { get; } = new();
-    public NodeDisplacementResultFixture[] ExpectedNodeDisplacementResults { get; } =
+    public NodeResultFixture[] ExpectedNodeDisplacementResults { get; } =
 
         [
             new() {
