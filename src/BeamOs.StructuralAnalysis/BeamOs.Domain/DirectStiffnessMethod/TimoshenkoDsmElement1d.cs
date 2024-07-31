@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BeamOs.Domain.Common.Extensions;
-using BeamOs.Domain.Common.Models;
 using BeamOs.Domain.Common.ValueObjects;
+using BeamOs.Domain.PhysicalModel.Element1DAggregate;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
 using MathNet.Numerics.LinearAlgebra;
@@ -46,6 +41,26 @@ public class TimoshenkoDsmElement1d(
         endNodeId
     )
 {
+    public TimoshenkoDsmElement1d(Element1D element1d)
+        : this(
+            element1d.Id,
+            element1d.SectionProfileRotation,
+            element1d.Material.ModulusOfElasticity,
+            element1d.Material.ModulusOfRigidity,
+            element1d.SectionProfile.Area,
+            element1d.SectionProfile.StrongAxisMomentOfInertia,
+            element1d.SectionProfile.WeakAxisMomentOfInertia,
+            element1d.SectionProfile.PolarMomentOfInertia,
+            //element1d.SectionProfile.StrongAxisShearArea,
+            //element1d.SectionProfile.WeakAxisShearArea,
+            new Area(5.0095, AreaUnit.SquareInch),
+            new Area(4.6905, AreaUnit.SquareInch),
+            element1d.StartNode.LocationPoint,
+            element1d.EndNode.LocationPoint,
+            element1d.StartNode.Id,
+            element1d.EndNode.Id
+        ) { }
+
     // https://people.duke.edu/~hpgavin/cee421/frame-finite-def.pdf
     public override Matrix<double> GetLocalStiffnessMatrix(
         ForceUnit forceUnit,
@@ -90,8 +105,8 @@ public class TimoshenkoDsmElement1d(
         var coeff6_s = 6 / (1 + PhiW);
         var coeff6_w = 6 / (1 + PhiS);
 
-        var coeff4_s = (4 - PhiW) / (1 + PhiW);
-        var coeff4_w = (4 - PhiS) / (1 + PhiS);
+        var coeff4_s = (4 + PhiW) / (1 + PhiW);
+        var coeff4_w = (4 + PhiS) / (1 + PhiS);
 
         var coeff12_s = 12 / (1 + PhiW);
         var coeff12_w = 12 / (1 + PhiS);

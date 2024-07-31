@@ -1,13 +1,15 @@
 using BeamOs.ApiClient.Builders;
 using BeamOs.Contracts.Common;
 using BeamOs.Contracts.PhysicalModel.Model;
+using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOs.SpeckleConnector;
+using BeamOS.Tests.Common.Fixtures;
 using MathNet.Spatial.Euclidean;
 using UnitsNet.Units;
 
 namespace BeamOS.Tests.Common.SolvedProblems.ETABS_Models.TwistyBowlFraming;
 
-public class TwistyBowlFraming : CreateModelRequestBuilder
+public class TwistyBowlFraming : CreateModelRequestBuilder, IHasExpectedNodeDisplacementResults
 {
     public override Guid ModelGuid { get; } = Guid.Parse("f30e580d-9cb0-46d2-ade1-a4140c454632");
     public override PhysicalModelSettings ModelSettings { get; } = new(UnitSettingsDtoVerbose.kN_M);
@@ -77,4 +79,6 @@ public class TwistyBowlFraming : CreateModelRequestBuilder
     }
 
     public static TwistyBowlFraming Instance { get; } = new();
+    public NodeResultFixture[] ExpectedNodeDisplacementResults { get; }
+    public ModelSettings Settings { get; }
 }

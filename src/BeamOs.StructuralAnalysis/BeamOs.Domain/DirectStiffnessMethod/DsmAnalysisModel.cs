@@ -15,7 +15,7 @@ public class DsmAnalysisModel(Model model)
 {
     private readonly DsmElement1d[] dsmElement1Ds = model
         .Element1ds
-        .Select(el => new DsmElement1d(el))
+        .Select(el => new TimoshenkoDsmElement1d(el))
         .ToArray();
 
     private readonly DsmNodeVo[] dsmNodes = model.Nodes.Select(el => new DsmNodeVo(el)).ToArray();

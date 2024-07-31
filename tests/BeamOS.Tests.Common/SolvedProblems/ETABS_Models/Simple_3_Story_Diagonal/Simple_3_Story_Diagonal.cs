@@ -94,7 +94,7 @@ public partial class Simple_3_Story_Diagonal : CreateModelRequestBuilder
                     {
                         restraint = RestraintRequest.Free;
                     }
-                    else if (xIndex == 0 || zIndex == 0)
+                    else if (xIndex == 0 || zIndex == this.zValues.Length - 1)
                     {
                         restraint = RestraintRequest.Fixed;
                     }

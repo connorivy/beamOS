@@ -8,4 +8,6 @@ public record CreateSectionProfileRequest(
     UnitValueDto StrongAxisMomentOfInertia,
     UnitValueDto WeakAxisMomentOfInertia,
     UnitValueDto PolarMomentOfInertia
+//UnitValueDto StrongAxisShearArea,
+//UnitValueDto WeakAxisShearArea
 );
