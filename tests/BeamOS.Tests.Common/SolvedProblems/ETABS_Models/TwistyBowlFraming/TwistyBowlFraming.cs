@@ -14,6 +14,8 @@ public class TwistyBowlFraming : CreateModelRequestBuilder, IHasExpectedNodeDisp
     public override Guid ModelGuid { get; } = Guid.Parse("f30e580d-9cb0-46d2-ade1-a4140c454632");
     public override PhysicalModelSettings ModelSettings { get; } = new(UnitSettingsDtoVerbose.kN_M);
 
+    private readonly HashSet<string> addedNodeIds = [];
+
     public override async Task InitializeAsync()
     {
         this.CreateMaterialAndSectionProfile();
@@ -29,14 +31,17 @@ public class TwistyBowlFraming : CreateModelRequestBuilder, IHasExpectedNodeDisp
                 && nodeRequestBuilder.LocationPoint.YCoordinate.Value > 10000
             )
             {
-                this.AddPointLoad(
-                    new()
-                    {
-                        NodeId = nodeRequestBuilder.Id,
-                        Direction = UnitVector3D.Create(0, -1, 0),
-                        Force = new(100, ForceUnit.Kilonewton)
-                    }
-                );
+                if (this.addedNodeIds.Add(nodeRequestBuilder.Id.ToString()))
+                {
+                    this.AddPointLoad(
+                        new()
+                        {
+                            NodeId = nodeRequestBuilder.Id,
+                            Direction = UnitVector3D.Create(0, -1, 0),
+                            Force = new(100, ForceUnit.Kilonewton)
+                        }
+                    );
+                }
             }
             this.AddElement(builder);
         }
@@ -52,7 +57,7 @@ public class TwistyBowlFraming : CreateModelRequestBuilder, IHasExpectedNodeDisp
                     PressureUnit.KilopoundForcePerSquareInch
                 ),
                 ModulusOfRigidity = new UnitsNet.Pressure(
-                    11_150,
+                    11_153.85,
                     PressureUnit.KilopoundForcePerSquareInch
                 )
             }

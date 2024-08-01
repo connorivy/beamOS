@@ -22,6 +22,8 @@ public class AllCreateModelRequestBuilders : TheoryDataBase<CreateModelRequestBu
     public AllCreateModelRequestBuilders()
     {
         this.Add(TwistyBowlFraming.Instance);
+        //this.Add(TwistyBowlFramingSelection.Instance);
+
         //this.Add(Simple_3_Story_Diagonal.Instance);
         //this.Add(Simple_3_Story_Rectangular.Instance);
         //this.Add(Simple_3_Story_Rectangular_Single_Bay.Instance);

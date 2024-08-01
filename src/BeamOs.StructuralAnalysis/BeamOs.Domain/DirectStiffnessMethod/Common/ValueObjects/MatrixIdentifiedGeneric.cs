@@ -55,21 +55,21 @@ public class MatrixIdentifiedGeneric<TIdentifier>
         {
             var incomingRowIdentifier = matrixToBeAdded.rowIdentifiers[incomingRowIndex];
 
-            //if (
-            //    !this.rowIdentifierToIndexDict.TryGetValue(
-            //        incomingRowIdentifier,
-            //        out var thisRowIndex
-            //    )
-            //)
-            //{
-            //    continue;
-            //}
-
-            var thisRowIndex = this.rowIdentifiers.FindIndex(i => i.Equals(incomingRowIdentifier));
-            if (thisRowIndex == -1)
+            if (
+                !this.rowIdentifierToIndexDict.TryGetValue(
+                    incomingRowIdentifier,
+                    out var thisRowIndex
+                )
+            )
             {
                 continue;
             }
+
+            //var thisRowIndex = this.rowIdentifiers.FindIndex(i => i.Equals(incomingRowIdentifier));
+            //if (thisRowIndex == -1)
+            //{
+            //    continue;
+            //}
 
             for (
                 var incomingColumnIndex = 0;
@@ -79,23 +79,23 @@ public class MatrixIdentifiedGeneric<TIdentifier>
             {
                 var incomingColumnIdentifier = matrixToBeAdded.rowIdentifiers[incomingColumnIndex];
 
-                //if (
-                //    !this.rowIdentifierToIndexDict.TryGetValue(
-                //        incomingColumnIdentifier,
-                //        out var thisColumnIndex
-                //    )
-                //)
-                //{
-                //    continue;
-                //}
-
-                var thisColumnIndex = this.rowIdentifiers.FindIndex(
-                    i => i.Equals(incomingColumnIdentifier)
-                );
-                if (thisColumnIndex == -1)
+                if (
+                    !this.rowIdentifierToIndexDict.TryGetValue(
+                        incomingColumnIdentifier,
+                        out var thisColumnIndex
+                    )
+                )
                 {
                     continue;
                 }
+
+                //var thisColumnIndex = this.rowIdentifiers.FindIndex(
+                //    i => i.Equals(incomingColumnIdentifier)
+                //);
+                //if (thisColumnIndex == -1)
+                //{
+                //    continue;
+                //}
 
                 this.Values[thisRowIndex, thisColumnIndex] += matrixToBeAdded.Values[
                     incomingRowIndex,
