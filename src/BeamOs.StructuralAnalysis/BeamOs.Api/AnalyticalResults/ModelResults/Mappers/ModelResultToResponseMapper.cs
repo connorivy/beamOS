@@ -14,7 +14,7 @@ namespace BeamOs.Api.AnalyticalResults.ModelResults.Mappers;
 //}
 
 [Mapper]
-[UseStaticMapper(typeof(UnitsNetEnumMapper))]
+[UseStaticMapper(typeof(UnitsNetMappers))]
 public static partial class ModelResultToResponseMapper
 {
     public static partial ModelResultResponse ToResponse(this ModelResult source);

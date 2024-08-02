@@ -1,8 +1,6 @@
-using BeamOs.ApiClient.Builders;
-
 namespace BeamOs.ApiClient.Builders;
 
-//[UseStaticMapper(typeof(UnitsNetEnumMapper))]
+//[UseStaticMapper(typeof(UnitsNetMappers))]
 public partial class CreateModelRequestBuilder
 {
     public partial NodeResponse ToResponse(CreateNodeRequestBuilder fixture);

@@ -1,4 +1,4 @@
-using BeamOs.Api.Common.Mappers;
+using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Common.Application.Interfaces;
 using BeamOs.Domain.Common.ValueObjects;
 using UnitsNet;

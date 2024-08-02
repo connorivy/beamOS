@@ -10,7 +10,6 @@ namespace BeamOs.Api.PhysicalModel.SectionProfiles.Endpoints;
 
 public class CreateSectionProfile(
     BeamOsFastEndpointOptions options,
-    CreateSectionProfileRequestMapper commandMapper,
     CreateSectionProfileCommandHandler createSectionProfileCommandHandler,
     SectionProfileResponseMapper sectionProfileResponseMapper
 ) : BeamOsFastEndpoint<CreateSectionProfileRequest, SectionProfileResponse>(options)
@@ -24,10 +23,8 @@ public class CreateSectionProfile(
         CancellationToken ct
     )
     {
-        var command = commandMapper.Map(request);
-
         SectionProfile sectionProfile = await createSectionProfileCommandHandler.ExecuteAsync(
-            command,
+            request,
             ct
         );
 

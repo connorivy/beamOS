@@ -12,7 +12,7 @@ using Riok.Mapperly.Abstractions;
 
 namespace BeamOS.Tests.Common.SolvedProblems.Fixtures;
 
-[UseStaticMapper(typeof(UnitsNetEnumMapper))]
+[UseStaticMapper(typeof(UnitsNetMappers))]
 public partial class ModelFixtureInDb
 {
     public partial NodeResponse ToResponse(NodeFixture2 fixture);

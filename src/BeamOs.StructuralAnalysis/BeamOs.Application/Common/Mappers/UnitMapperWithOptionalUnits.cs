@@ -1,5 +1,4 @@
-using BeamOs.Api.Common.Mappers;
-using BeamOs.Api.Common.Mappers.UnitValueDtoMappers;
+using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Contracts.Common;
 using BeamOs.Domain.Common.ValueObjects;
 using UnitsNet;
@@ -40,15 +39,10 @@ public class UnitMapperWithOptionalUnits()
         {
             return new UnitValueDto(
                 unit.As(unitType.Value),
-                AngleUnitToStringMapper.MapToString(unitType.Value)
+                UnitsNetMappers.MapToString(unitType.Value)
             );
         }
-        return new UnitValueDto(unit.Value, AngleUnitToStringMapper.MapToString(unit.Unit));
-    }
-
-    public static string UnitToStringMapper(AngleUnit unit)
-    {
-        return AngleUnitToStringMapper.MapToString(unit);
+        return UnitsNetMappers.MapToContract(unit);
     }
 
     public UnitValueDto UnitToUnitValueDtoMapper(Area unit)
@@ -58,15 +52,10 @@ public class UnitMapperWithOptionalUnits()
         {
             return new UnitValueDto(
                 unit.As(unitType.Value),
-                AreaUnitToStringMapper.MapToString(unitType.Value)
+                UnitsNetMappers.MapToString(unitType.Value)
             );
         }
-        return new UnitValueDto(unit.Value, AreaUnitToStringMapper.MapToString(unit.Unit));
-    }
-
-    public static string UnitToStringMapper(AreaUnit unit)
-    {
-        return AreaUnitToStringMapper.MapToString(unit);
+        return UnitsNetMappers.MapToContract(unit);
     }
 
     public UnitValueDto UnitToUnitValueDtoMapper(AreaMomentOfInertia unit)
@@ -76,18 +65,10 @@ public class UnitMapperWithOptionalUnits()
         {
             return new UnitValueDto(
                 unit.As(unitType.Value),
-                AreaMomentOfInertiaUnitToStringMapper.MapToString(unitType.Value)
+                UnitsNetMappers.MapToString(unitType.Value)
             );
         }
-        return new UnitValueDto(
-            unit.Value,
-            AreaMomentOfInertiaUnitToStringMapper.MapToString(unit.Unit)
-        );
-    }
-
-    public static string UnitToStringMapper(AreaMomentOfInertiaUnit unit)
-    {
-        return AreaMomentOfInertiaUnitToStringMapper.MapToString(unit);
+        return UnitsNetMappers.MapToContract(unit);
     }
 
     public UnitValueDto UnitToUnitValueDtoMapper(Force unit)
@@ -97,15 +78,10 @@ public class UnitMapperWithOptionalUnits()
         {
             return new UnitValueDto(
                 unit.As(unitType.Value),
-                ForceUnitToStringMapper.MapToString(unitType.Value)
+                UnitsNetMappers.MapToString(unitType.Value)
             );
         }
-        return new UnitValueDto(unit.Value, ForceUnitToStringMapper.MapToString(unit.Unit));
-    }
-
-    public static string UnitToStringMapper(ForceUnit unit)
-    {
-        return ForceUnitToStringMapper.MapToString(unit);
+        return UnitsNetMappers.MapToContract(unit);
     }
 
     public UnitValueDto UnitToUnitValueDtoMapper(ForcePerLength unit)
@@ -115,18 +91,10 @@ public class UnitMapperWithOptionalUnits()
         {
             return new UnitValueDto(
                 unit.As(unitType.Value),
-                ForcePerLengthUnitToStringMapper.MapToString(unitType.Value)
+                UnitsNetMappers.MapToString(unitType.Value)
             );
         }
-        return new UnitValueDto(
-            unit.Value,
-            ForcePerLengthUnitToStringMapper.MapToString(unit.Unit)
-        );
-    }
-
-    public static string UnitToStringMapper(ForcePerLengthUnit unit)
-    {
-        return ForcePerLengthUnitToStringMapper.MapToString(unit);
+        return UnitsNetMappers.MapToContract(unit);
     }
 
     public UnitValueDto UnitToUnitValueDtoMapper(Length unit)
@@ -136,15 +104,10 @@ public class UnitMapperWithOptionalUnits()
         {
             return new UnitValueDto(
                 unit.As(unitType.Value),
-                LengthUnitToStringMapper.MapToString(unitType.Value)
+                UnitsNetMappers.MapToString(unitType.Value)
             );
         }
-        return new UnitValueDto(unit.Value, LengthUnitToStringMapper.MapToString(unit.Unit));
-    }
-
-    public static string UnitToStringMapper(LengthUnit unit)
-    {
-        return LengthUnitToStringMapper.MapToString(unit);
+        return UnitsNetMappers.MapToContract(unit);
     }
 
     public UnitValueDto UnitToUnitValueDtoMapper(Pressure unit)
@@ -154,15 +117,10 @@ public class UnitMapperWithOptionalUnits()
         {
             return new UnitValueDto(
                 unit.As(unitType.Value),
-                PressureUnitToStringMapper.MapToString(unitType.Value)
+                UnitsNetMappers.MapToString(unitType.Value)
             );
         }
-        return new UnitValueDto(unit.Value, PressureUnitToStringMapper.MapToString(unit.Unit));
-    }
-
-    public static string UnitToStringMapper(PressureUnit unit)
-    {
-        return PressureUnitToStringMapper.MapToString(unit);
+        return UnitsNetMappers.MapToContract(unit);
     }
 
     public UnitValueDto UnitToUnitValueDtoMapper(Torque unit)
@@ -172,15 +130,10 @@ public class UnitMapperWithOptionalUnits()
         {
             return new UnitValueDto(
                 unit.As(unitType.Value),
-                TorqueUnitToStringMapper.MapToString(unitType.Value)
+                UnitsNetMappers.MapToString(unitType.Value)
             );
         }
-        return new UnitValueDto(unit.Value, TorqueUnitToStringMapper.MapToString(unit.Unit));
-    }
-
-    public static string UnitToStringMapper(TorqueUnit unit)
-    {
-        return TorqueUnitToStringMapper.MapToString(unit);
+        return UnitsNetMappers.MapToContract(unit);
     }
 
     public UnitValueDto UnitToUnitValueDtoMapper(Volume unit)
@@ -190,17 +143,9 @@ public class UnitMapperWithOptionalUnits()
         {
             return new UnitValueDto(
                 unit.As(unitType.Value),
-                VolumeUnitToStringMapper.MapToString(unitType.Value)
+                UnitsNetMappers.MapToString(unitType.Value)
             );
         }
-        return new UnitValueDto(unit.Value, VolumeUnitToStringMapper.MapToString(unit.Unit));
+        return UnitsNetMappers.MapToContract(unit);
     }
-
-    public static string UnitToStringMapper(VolumeUnit unit)
-    {
-        return VolumeUnitToStringMapper.MapToString(unit);
-    }
-
-    public UnitMapperWithOptionalUnits ShallowCopy() =>
-        (UnitMapperWithOptionalUnits)this.MemberwiseClone();
 }

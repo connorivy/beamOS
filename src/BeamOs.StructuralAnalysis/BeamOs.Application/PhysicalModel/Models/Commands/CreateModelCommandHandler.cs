@@ -38,7 +38,7 @@ public class CreateModelCommandHandler(
 }
 
 [Mapper]
-[UseStaticMapper(typeof(UnitsNetEnumMapper))]
+[UseStaticMapper(typeof(UnitsNetMappers))]
 public static partial class CreateModelCommandMapper
 {
     public static partial Model ToDomainObject(this CreateModelRequest command);

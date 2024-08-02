@@ -13,8 +13,8 @@ public class SectionProfile : AggregateRoot<SectionProfileId>
         AreaMomentOfInertia strongAxisMomentOfInertia,
         AreaMomentOfInertia weakAxisMomentOfInertia,
         AreaMomentOfInertia polarMomentOfInertia,
-        //Area strongAxisShearArea,
-        //Area weakAxisShearArea,
+        Area strongAxisShearArea,
+        Area weakAxisShearArea,
         SectionProfileId? id = null
     )
         : base(id ?? new())
@@ -24,8 +24,8 @@ public class SectionProfile : AggregateRoot<SectionProfileId>
         this.StrongAxisMomentOfInertia = strongAxisMomentOfInertia;
         this.WeakAxisMomentOfInertia = weakAxisMomentOfInertia;
         this.PolarMomentOfInertia = polarMomentOfInertia;
-        //this.StrongAxisShearArea = strongAxisShearArea;
-        //this.WeakAxisShearArea = weakAxisShearArea;
+        this.StrongAxisShearArea = strongAxisShearArea;
+        this.WeakAxisShearArea = weakAxisShearArea;
     }
 
     public ModelId ModelId { get; set; }
@@ -33,6 +33,6 @@ public class SectionProfile : AggregateRoot<SectionProfileId>
     public AreaMomentOfInertia StrongAxisMomentOfInertia { get; set; }
     public AreaMomentOfInertia WeakAxisMomentOfInertia { get; set; }
     public AreaMomentOfInertia PolarMomentOfInertia { get; set; }
-    //public Area StrongAxisShearArea { get; set; }
-    //public Area WeakAxisShearArea { get; set; }
+    public Area StrongAxisShearArea { get; set; }
+    public Area WeakAxisShearArea { get; set; }
 }

@@ -30,6 +30,8 @@ public record CreateSectionProfileRequestBuilder : CreateModelEntityRequestBuild
     public AreaMomentOfInertia StrongAxisMomentOfInertia { get; init; }
     public AreaMomentOfInertia WeakAxisMomentOfInertia { get; init; }
     public AreaMomentOfInertia PolarMomentOfInertia { get; init; }
+    public Area StrongAxisShearArea { get; init; }
+    public Area WeakAxisShearArea { get; init; }
 }
 
 public record CreatePointLoadRequestBuilder : CreateModelEntityRequestBuilderBase

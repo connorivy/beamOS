@@ -139,6 +139,8 @@ public class BeamOsStructuralDbContext : DbContext
                             el.StrongAxisMomentOfInertia,
                             el.WeakAxisMomentOfInertia,
                             el.PolarMomentOfInertia,
+                            el.StrongAxisShearArea,
+                            el.WeakAxisShearArea,
                             el.Id
                         )
                 )

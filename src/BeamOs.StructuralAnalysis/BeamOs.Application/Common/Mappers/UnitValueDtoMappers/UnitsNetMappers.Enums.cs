@@ -1,10 +1,8 @@
-using Riok.Mapperly.Abstractions;
 using UnitsNet.Units;
 
 namespace BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 
-[Mapper]
-public static partial class UnitsNetEnumMapper
+public static partial class UnitsNetMappers
 {
     public static partial AngleUnit MapToAngleUnit(this string unit);
 

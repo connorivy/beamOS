@@ -1,5 +1,5 @@
 using BeamOs.Api.Common.Mappers;
-using BeamOs.Api.Common.Mappers.UnitValueDtoMappers;
+using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Contracts.Common;
 using BeamOs.Domain.Common.ValueObjects;
 using UnitsNet;
@@ -46,116 +46,113 @@ public abstract class AbstractMapperProvidedUnits<TFrom, TTo>(
     {
         return new UnitValueDto(
             unit.As(this.AngleUnit),
-            AngleUnitToStringMapper.MapToString(this.AngleUnit)
+            UnitsNetMappers.MapToString(this.AngleUnit)
         );
     }
 
     protected string UnitToStringMapper(AngleUnit unit)
     {
-        return AngleUnitToStringMapper.MapToString(unit);
+        return UnitsNetMappers.MapToString(unit);
     }
 
     protected UnitValueDto UnitToUnitValueDtoMapper(Area unit)
     {
-        return new UnitValueDto(
-            unit.As(this.AreaUnit),
-            AreaUnitToStringMapper.MapToString(this.AreaUnit)
-        );
+        return new UnitValueDto(unit.As(this.AreaUnit), UnitsNetMappers.MapToString(this.AreaUnit));
     }
 
     public string UnitToStringMapper(AreaUnit unit)
     {
-        return AreaUnitToStringMapper.MapToString(unit);
+        return UnitsNetMappers.MapToString(unit);
     }
 
     protected UnitValueDto UnitToUnitValueDtoMapper(AreaMomentOfInertia unit)
     {
         return new UnitValueDto(
             unit.As(this.AreaMomentOfInertiaUnit),
-            AreaMomentOfInertiaUnitToStringMapper.MapToString(this.AreaMomentOfInertiaUnit)
+            UnitsNetMappers.MapToString(this.AreaMomentOfInertiaUnit)
         );
     }
 
     protected string UnitToStringMapper(AreaMomentOfInertiaUnit unit)
     {
-        return AreaMomentOfInertiaUnitToStringMapper.MapToString(unit);
+        return UnitsNetMappers.MapToString(unit);
     }
 
     protected UnitValueDto UnitToUnitValueDtoMapper(Force unit)
     {
         return new UnitValueDto(
             unit.As(this.ForceUnit),
-            ForceUnitToStringMapper.MapToString(this.ForceUnit)
+            UnitsNetMappers.MapToString(this.ForceUnit)
         );
     }
 
     protected string UnitToStringMapper(ForceUnit unit)
     {
-        return ForceUnitToStringMapper.MapToString(unit);
+        return UnitsNetMappers.MapToString(unit);
     }
 
     protected UnitValueDto UnitToUnitValueDtoMapper(ForcePerLength unit)
     {
         return new UnitValueDto(
             unit.As(this.ForcePerLengthUnit),
-            ForcePerLengthUnitToStringMapper.MapToString(this.ForcePerLengthUnit)
+            UnitsNetMappers.MapToString(this.ForcePerLengthUnit)
         );
     }
 
     protected string UnitToStringMapper(ForcePerLengthUnit unit)
     {
-        return ForcePerLengthUnitToStringMapper.MapToString(unit);
+        return UnitsNetMappers.MapToString(unit);
     }
 
     protected UnitValueDto UnitToUnitValueDtoMapper(Length unit)
     {
         return new UnitValueDto(
             unit.As(this.LengthUnit),
-            LengthUnitToStringMapper.MapToString(this.LengthUnit)
+            UnitsNetMappers.MapToString(this.LengthUnit)
         );
     }
 
     protected string UnitToStringMapper(LengthUnit unit)
     {
-        return LengthUnitToStringMapper.MapToString(unit);
+        return UnitsNetMappers.MapToString(unit);
     }
 
     protected UnitValueDto UnitToUnitValueDtoMapper(Pressure unit)
     {
         return new UnitValueDto(
             unit.As(this.PressureUnit),
-            PressureUnitToStringMapper.MapToString(this.PressureUnit)
+            UnitsNetMappers.MapToString(this.PressureUnit)
         );
     }
 
     protected string UnitToStringMapper(PressureUnit unit)
     {
-        return PressureUnitToStringMapper.MapToString(unit);
+        return UnitsNetMappers.MapToString(unit);
     }
 
     protected UnitValueDto UnitToUnitValueDtoMapper(Torque unit)
     {
         return new UnitValueDto(
             unit.As(this.TorqueUnit),
-            TorqueUnitToStringMapper.MapToString(this.TorqueUnit)
+            UnitsNetMappers.MapToString(this.TorqueUnit)
         );
     }
 
     protected string UnitToStringMapper(TorqueUnit unit)
     {
-        return TorqueUnitToStringMapper.MapToString(unit);
+        return UnitsNetMappers.MapToString(unit);
     }
 
     protected UnitValueDto UnitToUnitValueDtoMapper(Volume unit)
     {
         return new UnitValueDto(
             unit.As(this.VolumeUnit),
-            VolumeUnitToStringMapper.MapToString(this.VolumeUnit)
+            UnitsNetMappers.MapToString(this.VolumeUnit)
         );
     }
 
     protected string UnitToStringMapper(VolumeUnit unit)
     {
-        return VolumeUnitToStringMapper.MapToString(unit);
+        return UnitsNetMappers.MapToString(unit);
     }
 }
