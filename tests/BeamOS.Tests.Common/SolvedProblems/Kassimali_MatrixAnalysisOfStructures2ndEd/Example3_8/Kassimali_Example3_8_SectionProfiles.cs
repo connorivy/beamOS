@@ -1,4 +1,5 @@
 using BeamOS.Tests.Common.Fixtures;
+using UnitsNet.Units;
 
 namespace BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd.Example3_8;
 
@@ -17,6 +18,8 @@ internal class Kassimali_Example3_8_SectionProfiles
                 UnitsNet.Units.AreaMomentOfInertiaUnit.InchToTheFourth
             ),
             PolarMomentOfInertia = new(1, UnitsNet.Units.AreaMomentOfInertiaUnit.InchToTheFourth),
+            StrongAxisShearArea = new(1, AreaUnit.SquareInch),
+            WeakAxisShearArea = new(1, AreaUnit.SquareInch),
             ModelId = Kassimali_Example3_8.IdStatic
         };
 
@@ -33,6 +36,8 @@ internal class Kassimali_Example3_8_SectionProfiles
                 UnitsNet.Units.AreaMomentOfInertiaUnit.InchToTheFourth
             ),
             PolarMomentOfInertia = new(1, UnitsNet.Units.AreaMomentOfInertiaUnit.InchToTheFourth),
+            StrongAxisShearArea = new(1, AreaUnit.SquareInch),
+            WeakAxisShearArea = new(1, AreaUnit.SquareInch),
             ModelId = Kassimali_Example3_8.IdStatic
         };
 

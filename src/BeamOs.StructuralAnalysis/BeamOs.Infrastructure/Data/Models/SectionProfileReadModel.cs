@@ -11,4 +11,6 @@ internal sealed class SectionProfileReadModel : BeamOSEntity<Guid>, ISectionProf
     public AreaMomentOfInertia StrongAxisMomentOfInertia { get; set; }
     public AreaMomentOfInertia WeakAxisMomentOfInertia { get; set; }
     public AreaMomentOfInertia PolarMomentOfInertia { get; set; }
+    public Area StrongAxisShearArea { get; set; }
+    public Area WeakAxisShearArea { get; set; }
 }

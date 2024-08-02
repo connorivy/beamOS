@@ -1,4 +1,5 @@
 using BeamOs.Api.Common.Mappers;
+using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Contracts.Common;
 using BeamOs.Contracts.PhysicalModel.Node;
 
@@ -21,5 +22,5 @@ public static class StructuralAnalysisContractExtensions
         };
 
     public static UnitValueDto InMeters(this UnitValueDto element) =>
-        element.MapToLength().ToDto(UnitsNet.Units.LengthUnit.Meter);
+        element.MapToLength().MapToContract(UnitsNet.Units.LengthUnit.Meter);
 }

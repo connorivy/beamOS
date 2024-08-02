@@ -1,6 +1,7 @@
 using BeamOs.Contracts.Common;
 using Riok.Mapperly.Abstractions;
 using UnitsNet;
+using UnitsNet.Units;
 
 namespace BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 
@@ -30,6 +31,11 @@ public static partial class UnitsNetMappers
     public static partial Length MapToLength(this UnitValueDto unit);
 
     public static partial UnitValueDto MapToContract(this Length unit);
+
+    public static UnitValueDto MapToContract(this Length value, LengthUnit unit)
+    {
+        return new(value.As(unit), unit.MapToString());
+    }
 
     public static partial Pressure MapToPressure(this UnitValueDto unit);
 

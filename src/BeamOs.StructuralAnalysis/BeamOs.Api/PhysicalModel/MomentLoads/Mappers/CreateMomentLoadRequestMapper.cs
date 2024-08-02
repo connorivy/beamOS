@@ -1,5 +1,5 @@
-using BeamOs.Api.Common.Mappers;
 using BeamOs.Application.Common.Mappers;
+using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Application.PhysicalModel.MomentLoads;
 using BeamOs.Common.Application.Interfaces;
 using BeamOs.Contracts.PhysicalModel.MomentLoad;
@@ -9,7 +9,7 @@ namespace BeamOs.Api.PhysicalModel.MomentLoads.Mappers;
 
 [Mapper]
 [UseStaticMapper(typeof(Vector3ToFromMathnetVector))]
-[UseStaticMapper(typeof(UnitValueDtoToTorqueMapper))]
+[UseStaticMapper(typeof(UnitsNetMappers))]
 public partial class CreateMomentLoadRequestMapper
     : IMapper<CreateMomentLoadRequest, CreateMomentLoadCommand>
 {

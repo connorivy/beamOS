@@ -22,6 +22,9 @@ public static class Udoeyo_StructuralAnalysis_Example7_11_Element1ds
             StrongAxisMomentOfInertia = new(280, AreaMomentOfInertiaUnit.InchToTheFourth),
             WeakAxisMomentOfInertia = new(1, AreaMomentOfInertiaUnit.InchToTheFourth),
             PolarMomentOfInertia = new(1, AreaMomentOfInertiaUnit.InchToTheFourth),
+            // shear area doesn't matter because we are making Euler Bernoulli assumptions
+            StrongAxisShearArea = new(1, AreaUnit.SquareInch),
+            WeakAxisShearArea = new(1, AreaUnit.SquareInch),
         };
     public static SectionProfileFixture2[] Sections { get; } = [Section];
     public static Element1dFixture2 ElementAB { get; } =

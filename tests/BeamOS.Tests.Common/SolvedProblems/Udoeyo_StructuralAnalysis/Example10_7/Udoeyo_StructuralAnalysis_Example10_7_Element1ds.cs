@@ -1,4 +1,5 @@
 using BeamOS.Tests.Common.Fixtures;
+using UnitsNet.Units;
 
 namespace BeamOS.Tests.Common.SolvedProblems.Udoeyo_StructuralAnalysis.Example10_7;
 
@@ -8,8 +9,8 @@ public static class Udoeyo_StructuralAnalysis_Example10_7_Element1ds
         new()
         {
             ModelId = Udoeyo_StructuralAnalysis_Example10_7.IdStatic,
-            ModulusOfElasticity = new(1, UnitsNet.Units.PressureUnit.KilopoundForcePerSquareFoot),
-            ModulusOfRigidity = new(1, UnitsNet.Units.PressureUnit.KilopoundForcePerSquareFoot)
+            ModulusOfElasticity = new(1, PressureUnit.KilopoundForcePerSquareFoot),
+            ModulusOfRigidity = new(1, PressureUnit.KilopoundForcePerSquareFoot)
         };
     public static MaterialFixture2[] Materials { get; } = [Constant];
 
@@ -17,16 +18,13 @@ public static class Udoeyo_StructuralAnalysis_Example10_7_Element1ds
         new()
         {
             ModelId = Udoeyo_StructuralAnalysis_Example10_7.IdStatic,
-            Area = new(1, UnitsNet.Units.AreaUnit.SquareFoot),
-            StrongAxisMomentOfInertia = new(
-                1,
-                UnitsNet.Units.AreaMomentOfInertiaUnit.FootToTheFourth
-            ),
-            WeakAxisMomentOfInertia = new(
-                1,
-                UnitsNet.Units.AreaMomentOfInertiaUnit.FootToTheFourth
-            ),
-            PolarMomentOfInertia = new(1, UnitsNet.Units.AreaMomentOfInertiaUnit.FootToTheFourth),
+            Area = new(1, AreaUnit.SquareFoot),
+            StrongAxisMomentOfInertia = new(1, AreaMomentOfInertiaUnit.FootToTheFourth),
+            WeakAxisMomentOfInertia = new(1, AreaMomentOfInertiaUnit.FootToTheFourth),
+            // shear area doesn't matter because we are making Euler Bernoulli assumptions
+            StrongAxisShearArea = new(1, AreaUnit.SquareInch),
+            WeakAxisShearArea = new(1, AreaUnit.SquareInch),
+            PolarMomentOfInertia = new(1, AreaMomentOfInertiaUnit.FootToTheFourth),
         };
     public static SectionProfileFixture2[] Sections { get; } = [ConstantSection];
     public static Element1dFixture2 ElementAB { get; } =
