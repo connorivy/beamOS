@@ -288,6 +288,14 @@ namespace BeamOs.Infrastructure.Migrations
                             b1.Property<bool>("YAxisUp")
                                 .HasColumnType("bit");
 
+                            b1.ComplexProperty<Dictionary<string, object>>("AnalysisSettings", "BeamOs.Domain.PhysicalModel.ModelAggregate.Model.Settings#ModelSettings.AnalysisSettings#AnalysisSettings", b2 =>
+                                {
+                                    b2.IsRequired();
+
+                                    b2.Property<int>("Element1DAnalysisType")
+                                        .HasColumnType("int");
+                                });
+
                             b1.ComplexProperty<Dictionary<string, object>>("UnitSettings", "BeamOs.Domain.PhysicalModel.ModelAggregate.Model.Settings#ModelSettings.UnitSettings#UnitSettings", b2 =>
                                 {
                                     b2.IsRequired();
@@ -458,7 +466,7 @@ namespace BeamOs.Infrastructure.Migrations
             modelBuilder.Entity("BeamOs.Domain.AnalyticalResults.ModelResultAggregate.ModelResult", b =>
                 {
                     b.HasOne("BeamOs.Domain.PhysicalModel.ModelAggregate.Model", null)
-                        .WithMany()
+                        .WithMany("ModelResults")
                         .HasForeignKey("ModelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -585,6 +593,8 @@ namespace BeamOs.Infrastructure.Migrations
                     b.Navigation("Element1ds");
 
                     b.Navigation("Materials");
+
+                    b.Navigation("ModelResults");
 
                     b.Navigation("Nodes");
 

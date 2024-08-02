@@ -22,7 +22,7 @@ public record NodeResultFixture
     public Length? DisplacementAlongX { get; init; }
     public Length? DisplacementAlongY { get; init; }
     public Length? DisplacementAlongZ { get; init; }
-    public Length LengthTolerance { get; init; } = new(.3, UnitsNet.Units.LengthUnit.Inch);
+    public Length LengthTolerance { get; init; } = new(.1, UnitsNet.Units.LengthUnit.Inch);
 
     public Angle? RotationAboutX { get; init; }
     public Angle? RotationAboutY { get; init; }

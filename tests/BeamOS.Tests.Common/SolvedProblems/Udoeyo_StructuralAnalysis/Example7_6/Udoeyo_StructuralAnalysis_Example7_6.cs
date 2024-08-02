@@ -1,5 +1,6 @@
 using BeamOs.ApiClient.Builders;
 using BeamOs.Domain.Common.ValueObjects;
+using BeamOs.Domain.DirectStiffnessMethod;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOS.Tests.Common.Fixtures;
 using BeamOS.Tests.Common.Interfaces;
@@ -8,7 +9,8 @@ namespace BeamOS.Tests.Common.SolvedProblems.Udoeyo_StructuralAnalysis.Example7_
 
 public class Udoeyo_StructuralAnalysis_Example7_6 : ModelFixture2
 {
-    public override ModelSettings Settings { get; } = new(UnitSettings.kN_M);
+    public override ModelSettings Settings { get; } =
+        new(UnitSettings.kN_M, new(Element1dAnalysisType.Euler));
     public override SourceInfo SourceInfo { get; } =
         new(
             "Structural Analysis by Felix Udoeyo",

@@ -19,6 +19,7 @@ namespace BeamOs.Infrastructure.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Settings_YAxisUp = table.Column<bool>(type: "bit", nullable: false),
+                    Settings_AnalysisSettings_Element1DAnalysisType = table.Column<int>(type: "int", nullable: false),
                     Settings_UnitSettings_AngleUnit = table.Column<int>(type: "int", nullable: false),
                     Settings_UnitSettings_AreaMomentOfInertiaUnit = table.Column<int>(type: "int", nullable: false),
                     Settings_UnitSettings_AreaUnit = table.Column<int>(type: "int", nullable: false),

@@ -28,8 +28,6 @@ public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IA
         //    this.modelIdToModelFixtureDict.Add(fixture.Id.ToString(), dbModelFixture);
         //    await this.apiClient.RunDirectStiffnessMethodAsync(fixture.Id.ToString());
         //}
-        MathNet.Numerics.Control.UseNativeMKL();
-        MathNet.Numerics.Control.UseMultiThreading();
 
         AllCreateModelRequestBuilders allModelBuilders = new();
         foreach (var modelBuilder in allModelBuilders.GetItems())

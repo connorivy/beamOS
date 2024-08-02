@@ -11,15 +11,13 @@ using BeamOS.WebApp.Client;
 using BeamOS.WebApp.Client.Components.Editor;
 using BeamOS.WebApp.Client.Features.Scratchpad;
 using BeamOS.WebApp.Components;
+using BeamOS.WebApp.Components.Providers;
 using BeamOS.WebApp.Hubs;
 using Blazored.LocalStorage;
-using FastEndpoints;
-using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,9 +27,6 @@ if (builder.Configuration["APPLICATION_URL_PROTOCOL"] is null)
     // ef core design run. define dummy variables
     builder.Configuration["APPLICATION_URL_PROTOCOL"] = "dummy";
 }
-
-MathNet.Numerics.Control.UseNativeMKL();
-MathNet.Numerics.Control.UseMultiThreading();
 
 builder
     .Configuration
@@ -51,25 +46,12 @@ builder
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
-//builder.Services.AddFluentUIComponents();
-
-const string alphaRelease = "Alpha Release";
 builder
     .Services
-    .AddFastEndpoints()
-    .SwaggerDocument(o =>
-    {
-        o.DocumentSettings = s =>
-        {
-            s.DocumentName = alphaRelease;
-            s.Title = "beamOS api";
-            s.Version = "v0";
-            s.SchemaSettings.SchemaProcessors.Add(new MarkAsRequiredIfNonNullableSchemaProcessor());
-        };
-        o.ShortSchemaNames = true;
-        o.ExcludeNonFastEndpoints = true;
-        o.EndpointFilter = ed => ed.EndpointType.Assembly == typeof(IAssemblyMarkerApi).Assembly;
-    });
+    .AddAnalysisEndpoints()
+    .AddAnalysisEndpointServices()
+    .AddAnalysisEndpointOptions()
+    .AddAnalysisInfrastructure(builder.Configuration);
 
 string protocol =
     builder.Configuration["APPLICATION_URL_PROTOCOL"]
@@ -81,15 +63,6 @@ builder
         client => client.BaseAddress = new($"{protocol}://localhost:7111")
     );
 
-builder.Services.AddAnalysisApiServices();
-var connectionString =
-    builder.Configuration.GetConnectionString("AnalysisDbConnection")
-    ?? throw new InvalidOperationException("Connection string 'AnalysisDbConnection' not found.");
-builder
-    .Services
-    .AddDbContext<BeamOsStructuralDbContext>(options => options.UseSqlServer(connectionString))
-    .AddPhysicalModelInfrastructureReadModel(connectionString);
-
 UriProvider uriProvider = new(protocol);
 builder.Services.AddSingleton<IUriProvider>(uriProvider);
 builder.Services.AddSingleton<ICodeTestScoreTracker, CodeTestScoresTracker>();
@@ -97,6 +70,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddSingleton<BeamOs.IntegrationEvents.IEventBus, StructuralAnalysisHubEventBus>();
+builder.Services.AddScoped<IRenderModeProvider, RenderModeProvider>();
 
 builder
     .Services
@@ -133,16 +107,6 @@ builder
 
 builder.Services.RegisterSharedServices<Program>();
 
-builder
-    .Services
-    .AddCors(options =>
-    {
-        options.AddDefaultPolicy(policy =>
-        {
-            policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-        });
-    });
-
 var app = builder.Build();
 
 app.MapGet(
@@ -172,7 +136,7 @@ app.MapPost(
     }
 );
 
-app.AddBeamOsEndpointsForAnalysis();
+app.AddAnalysisEndpoints();
 
 //seed the DB
 using (var scope = app.Services.CreateScope())

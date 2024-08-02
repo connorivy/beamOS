@@ -14,9 +14,20 @@ namespace BeamOs.Domain.DirectStiffnessMethod;
 public class DsmAnalysisModel(Model model)
 {
     private readonly DsmElement1d[] dsmElement1Ds = model
-        .Element1ds
-        .Select(el => new TimoshenkoDsmElement1d(el))
-        .ToArray();
+        .Settings
+        .AnalysisSettings
+        .Element1DAnalysisType switch
+    {
+        Element1dAnalysisType.Euler
+            => model.Element1ds.Select(el => new DsmElement1d(el)).ToArray(),
+        Element1dAnalysisType.Timoshenko
+            => model.Element1ds.Select(el => new TimoshenkoDsmElement1d(el)).ToArray(),
+        Element1dAnalysisType.Undefined
+        or _
+            => throw new Exception(
+                $"Unsupported Element1DAnalysisType {model.Settings.AnalysisSettings.Element1DAnalysisType}"
+            )
+    };
 
     private readonly DsmNodeVo[] dsmNodes = model.Nodes.Select(el => new DsmNodeVo(el)).ToArray();
 

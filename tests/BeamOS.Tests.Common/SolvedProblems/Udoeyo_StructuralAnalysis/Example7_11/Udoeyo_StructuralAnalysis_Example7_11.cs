@@ -11,8 +11,13 @@ public class Udoeyo_StructuralAnalysis_Example7_11
     : ModelFixture2,
         IHasExpectedNodeDisplacementResults
 {
-    public override ModelSettings Settings { get; } = new(UnitSettings.K_FT);
-    public PhysicalModelSettings ModelSettings { get; } = new(UnitSettingsDtoVerbose.K_FT);
+    public override ModelSettings Settings { get; } =
+        new(
+            UnitSettings.K_FT,
+            new(BeamOs.Domain.DirectStiffnessMethod.Element1dAnalysisType.Euler)
+        );
+    public PhysicalModelSettings ModelSettings { get; } =
+        new(UnitSettingsDtoVerbose.K_FT, new(Element1dAnalysisType.Euler));
     public override SourceInfo SourceInfo { get; } =
         new(
             "Structural Analysis by Felix Udoeyo",
