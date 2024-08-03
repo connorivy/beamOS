@@ -6,6 +6,7 @@ using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOS.Tests.Common.Fixtures;
 using MathNet.Spatial.Euclidean;
+using UnitsNet;
 using UnitsNet.Units;
 
 namespace BeamOS.Tests.Common.SolvedProblems.ETABS_Models.Simple_3_Story_Rectangular;
@@ -59,11 +60,8 @@ public class Simple_3_Story_Rectangular_Single_Frame
         this.AddMaterial(
             new()
             {
-                ModulusOfElasticity = new UnitsNet.Pressure(
-                    29000,
-                    PressureUnit.KilopoundForcePerSquareInch
-                ),
-                ModulusOfRigidity = new UnitsNet.Pressure(
+                ModulusOfElasticity = new Pressure(29000, PressureUnit.KilopoundForcePerSquareInch),
+                ModulusOfRigidity = new Pressure(
                     11_153.84615,
                     PressureUnit.KilopoundForcePerSquareInch
                 )
@@ -73,19 +71,21 @@ public class Simple_3_Story_Rectangular_Single_Frame
         this.AddSectionProfile(
             new()
             {
-                Area = new UnitsNet.Area(10.6, AreaUnit.SquareInch),
-                StrongAxisMomentOfInertia = new UnitsNet.AreaMomentOfInertia(
+                Area = new Area(10.6, AreaUnit.SquareInch),
+                StrongAxisMomentOfInertia = new AreaMomentOfInertia(
                     448,
                     AreaMomentOfInertiaUnit.InchToTheFourth
                 ),
-                WeakAxisMomentOfInertia = new UnitsNet.AreaMomentOfInertia(
+                WeakAxisMomentOfInertia = new AreaMomentOfInertia(
                     24.5,
                     AreaMomentOfInertiaUnit.InchToTheFourth
                 ),
-                PolarMomentOfInertia = new UnitsNet.AreaMomentOfInertia(
+                PolarMomentOfInertia = new AreaMomentOfInertia(
                     .55,
                     AreaMomentOfInertiaUnit.InchToTheFourth
-                )
+                ),
+                StrongAxisShearArea = new Area(5.0095, AreaUnit.SquareInch),
+                WeakAxisShearArea = new Area(4.6905, AreaUnit.SquareInch),
             }
         );
     }

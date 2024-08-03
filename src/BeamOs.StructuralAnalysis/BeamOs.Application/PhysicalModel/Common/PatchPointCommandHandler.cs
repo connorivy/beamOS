@@ -10,7 +10,7 @@ public class PatchPointCommandHandler : ICommandHandlerSync<PatchPointCommand, P
 {
     public Point Execute(PatchPointCommand command)
     {
-        LengthUnit lengthUnit = command.PatchRequest.LengthUnit.MapToLengthUnit();
+        LengthUnit lengthUnit = UnitsNetMappers.MapToLengthUnit(command.PatchRequest.LengthUnit);
 
         return new Point(
             command.PatchRequest.XCoordinate.HasValue

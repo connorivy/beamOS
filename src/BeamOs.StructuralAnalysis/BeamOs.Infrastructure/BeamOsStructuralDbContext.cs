@@ -1,32 +1,23 @@
 using BeamOs.Common.Events;
 using BeamOs.Domain.AnalyticalResults.ModelResultAggregate;
 using BeamOs.Domain.AnalyticalResults.NodeResultAggregate;
-using BeamOs.Domain.Common.Interfaces;
-using BeamOs.Domain.Common.Utils;
-using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.Diagrams.Common;
 using BeamOs.Domain.Diagrams.MomentDiagramAggregate;
 using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate;
 using BeamOs.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.Domain.PhysicalModel.ModelAggregate;
-using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate;
-using BeamOs.Infrastructure.Data.Configurations.Write;
+using BeamOs.Infrastructure.Data.Configurations;
 using BeamOs.Infrastructure.Interceptors;
-using BeamOS.Tests.Common.SolvedProblems.ETABS_Models.Simple_3_Story_Rectangular;
 using BeamOS.Tests.Common.SolvedProblems.Fixtures.Mappers.ToDomain;
 using BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd.Example3_8;
 using BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd.Example8_4;
 using BeamOS.Tests.Common.SolvedProblems.Udoeyo_StructuralAnalysis.Example10_7;
-using MathNet.Numerics.LinearAlgebra;
-using MathNet.Spatial.Euclidean;
 using Microsoft.EntityFrameworkCore;
-using UnitsNet;
-using UnitsNet.Units;
 
 namespace BeamOs.Infrastructure;
 
@@ -87,10 +78,7 @@ public class BeamOsStructuralDbContext : DbContext
     {
         _ = builder
             .Ignore<List<IIntegrationEvent>>()
-            .ApplyConfigurationsFromAssembly(
-                typeof(NodeConfiguration).Assembly,
-                WriteConfigurationsFilter
-            );
+            .ApplyConfigurationsFromAssembly(typeof(NodeConfiguration).Assembly);
 
         builder
             .Model
@@ -102,11 +90,6 @@ public class BeamOsStructuralDbContext : DbContext
                 p => p.ValueGenerated = Microsoft.EntityFrameworkCore.Metadata.ValueGenerated.Never
             );
     }
-
-    private static bool WriteConfigurationsFilter(Type type) =>
-        type.FullName?.Contains(
-            $"{nameof(Data.Configurations)}.{nameof(Data.Configurations.Write)}"
-        ) ?? false;
 
     public async Task SeedAsync()
     {

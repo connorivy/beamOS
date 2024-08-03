@@ -124,14 +124,4 @@ public static class DependencyInjection
         }
         return null;
     }
-
-    public static IServiceCollection AddPhysicalModelInfrastructureReadModel(
-        this IServiceCollection services,
-        string connectionString
-    )
-    {
-        return services.AddDbContext<BeamOsStructuralReadModelDbContext>(
-            options => options.UseSqlServer(connectionString)
-        );
-    }
 }

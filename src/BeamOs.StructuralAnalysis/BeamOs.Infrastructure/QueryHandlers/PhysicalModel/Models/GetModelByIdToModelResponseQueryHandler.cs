@@ -2,25 +2,25 @@ using BeamOs.Api.PhysicalModel.Models.Mappers;
 using BeamOs.Application.Common.Queries;
 using BeamOs.Common.Application.Interfaces;
 using BeamOs.Contracts.PhysicalModel.Model;
-using BeamOs.Infrastructure.Data.Models;
+using BeamOs.Domain.PhysicalModel.ModelAggregate;
+using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.Infrastructure.QueryHandlers.PhysicalModel.Models;
 
-internal sealed class GetModelByIdToModelResponseQueryHandler(
-    BeamOsStructuralReadModelDbContext dbContext,
-    ModelReadModelToModelResponseMapper modelReadModelToModelResponseMapper
-) : IQueryHandler<GetResourceByIdWithPropertiesQuery, ModelResponse>
+internal sealed class GetModelByIdToModelResponseQueryHandler(BeamOsStructuralDbContext dbContext)
+    : IQueryHandler<GetResourceByIdWithPropertiesQuery, ModelResponse>
 {
     public async Task<ModelResponse?> ExecuteAsync(
         GetResourceByIdWithPropertiesQuery query,
         CancellationToken ct = default
     )
     {
-        IQueryable<ModelReadModel> queryable = dbContext
+        ModelId modelId = new(query.Id);
+        IQueryable<Model> queryable = dbContext
             .Models
             .AsSplitQuery()
-            .Where(m => m.Id == query.Id)
+            .Where(m => m.Id == modelId)
             .Take(1);
 
         if (query.Properties is not null)
@@ -37,13 +37,16 @@ internal sealed class GetModelByIdToModelResponseQueryHandler(
                 .Include(m => m.Nodes)
                 .Include(m => m.Element1ds)
                 .Include(m => m.Materials)
-                .Include(m => m.SectionProfiles)
-                .Include(m => m.PointLoads)
-                .Include(m => m.MomentLoads);
+                .Include(m => m.SectionProfiles);
+            //.Include(m => m.PointLoads)
+            //.Include(m => m.MomentLoads);
         }
 
-        ModelReadModel? model = await queryable.FirstOrDefaultAsync(cancellationToken: ct);
+        Model? model = await queryable.FirstOrDefaultAsync(cancellationToken: ct);
+        var modelToModelResponseMapper = ModelToModelResponseMapper.Create(
+            model.Settings.UnitSettings
+        );
 
-        return model is not null ? modelReadModelToModelResponseMapper.Map(model) : null;
+        return model is not null ? modelToModelResponseMapper.Map(model) : null;
     }
 }

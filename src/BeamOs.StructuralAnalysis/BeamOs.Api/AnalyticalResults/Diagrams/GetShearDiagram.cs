@@ -1,10 +1,7 @@
 using BeamOs.Api.AnalyticalResults.Diagrams.Mappers;
 using BeamOs.Api.Common;
 using BeamOS.Api.Common;
-using BeamOs.Application.AnalyticalResults.Diagrams.ShearDiagrams.Commands;
-using BeamOs.Application.AnalyticalResults.Diagrams.ShearDiagrams.Interfaces;
 using BeamOs.Application.Common.Queries;
-using BeamOs.Application.PhysicalModel.Models.Interfaces;
 using BeamOs.Common.Application.Interfaces;
 using BeamOs.Contracts.AnalyticalResults.Diagrams;
 using BeamOs.Contracts.Common;
@@ -18,8 +15,6 @@ namespace BeamOs.Api.PhysicalModel.Element1ds.Endpoints;
 public class GetShearDiagram(
     BeamOsFastEndpointOptions options,
     IQueryHandler<GetResourceByIdQuery, ShearForceDiagram> getShearDiagramQueryHandler,
-    IQueryHandler<GetResourceByIdWithPropertiesQuery, IModelData> getModelQueryHandler,
-    CreateShearDiagramCommandHandler createShearDiagramCommandHandler,
     ShearDiagramDataToResponse responseMapper
 ) : BeamOsFastEndpoint<IdRequest, ShearDiagramResponse?>(options)
 {

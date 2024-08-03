@@ -26,4 +26,12 @@
     </AssemblyAttribute>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="QueryHandlers\PhysicalModel\Materials\Mappers\" />
+    <Folder Include="QueryHandlers\PhysicalModel\MomentLoads\Mapper\" />
+    <Folder Include="QueryHandlers\PhysicalModel\Nodes\Mappers\" />
+    <Folder Include="QueryHandlers\PhysicalModel\PointLoads\Mappers\" />
+    <Folder Include="QueryHandlers\PhysicalModel\SectionProfiles\Mappers\" />
+  </ItemGroup>
+
 </Project>

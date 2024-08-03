@@ -3,7 +3,7 @@ using BeamOs.Domain.PhysicalModel.MaterialAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace BeamOs.Infrastructure.Data.Configurations.Write;
+namespace BeamOs.Infrastructure.Data.Configurations;
 
 public class MaterialConfiguration : IEntityTypeConfiguration<Material>
 {

@@ -78,11 +78,9 @@ public static class DependencyInjection
             ?? throw new InvalidOperationException(
                 "Connection string 'DefaultConnection' not found."
             );
-        services
-            .AddDbContext<BeamOsStructuralDbContext>(
-                options => options.UseSqlServer(connectionString)
-            )
-            .AddPhysicalModelInfrastructureReadModel(connectionString);
+        services.AddDbContext<BeamOsStructuralDbContext>(
+            options => options.UseSqlServer(connectionString)
+        );
 
         services.AddPhysicalModelInfrastructure();
 

@@ -6,7 +6,7 @@ using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
 using BeamOs.Contracts.Common;
 using FastEndpoints;
 
-namespace BeamOs.Api.PhysicalModel.Nodes.Endpoints;
+namespace BeamOs.Api.AnalyticalResults.NodeResults.Endpoints;
 
 public class GetNodeResults(
     BeamOsFastEndpointOptions options,
@@ -22,7 +22,7 @@ public class GetNodeResults(
     )
     {
         GetModelResourcesByIdsQuery query =
-            new(Guid.Parse(req.ModelId), req.NodeIds?.Select(Guid.Parse).ToArray());
+            new(Guid.Parse(req.ModelId), new(req.NodeIds?.Select(Guid.Parse) ?? []));
 
         return await getResourcesByIdsQueryHandler.ExecuteAsync(query, ct);
     }

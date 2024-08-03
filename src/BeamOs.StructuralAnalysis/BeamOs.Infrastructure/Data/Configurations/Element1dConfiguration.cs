@@ -1,9 +1,8 @@
 using BeamOs.Domain.PhysicalModel.Element1DAggregate;
-using BeamOs.Domain.PhysicalModel.ModelAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace BeamOs.Infrastructure.Data.Configurations.Write;
+namespace BeamOs.Infrastructure.Data.Configurations;
 
 public class Element1dConfiguration : IEntityTypeConfiguration<Element1D>
 {

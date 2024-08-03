@@ -3,6 +3,7 @@ using BeamOs.Contracts.Common;
 using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Contracts.PhysicalModel.Node;
 using MathNet.Spatial.Euclidean;
+using UnitsNet;
 using UnitsNet.Units;
 
 namespace BeamOs.Scratchpad.ConsoleApp;
@@ -33,33 +34,32 @@ public class CustomModelBuilder : CreateModelRequestBuilder
         this.AddMaterial(
             new()
             {
-                ModulusOfElasticity = new UnitsNet.Pressure(
+                ModulusOfElasticity = new Pressure(
                     29000 * .8,
                     PressureUnit.KilopoundForcePerSquareInch
                 ),
-                ModulusOfRigidity = new UnitsNet.Pressure(
-                    11_460,
-                    PressureUnit.KilopoundForcePerSquareInch
-                )
+                ModulusOfRigidity = new Pressure(11_460, PressureUnit.KilopoundForcePerSquareInch)
             }
         );
 
         this.AddSectionProfile(
             new()
             {
-                Area = new UnitsNet.Area(10.6, AreaUnit.SquareInch),
-                StrongAxisMomentOfInertia = new UnitsNet.AreaMomentOfInertia(
+                Area = new Area(10.6, AreaUnit.SquareInch),
+                StrongAxisMomentOfInertia = new AreaMomentOfInertia(
                     448,
                     AreaMomentOfInertiaUnit.InchToTheFourth
                 ),
-                WeakAxisMomentOfInertia = new UnitsNet.AreaMomentOfInertia(
+                WeakAxisMomentOfInertia = new AreaMomentOfInertia(
                     24.5,
                     AreaMomentOfInertiaUnit.InchToTheFourth
                 ),
-                PolarMomentOfInertia = new UnitsNet.AreaMomentOfInertia(
+                PolarMomentOfInertia = new AreaMomentOfInertia(
                     .55,
                     AreaMomentOfInertiaUnit.InchToTheFourth
-                )
+                ),
+                StrongAxisShearArea = new Area(5.0095, AreaUnit.SquareInch),
+                WeakAxisShearArea = new Area(4.6905, AreaUnit.SquareInch),
             }
         );
     }

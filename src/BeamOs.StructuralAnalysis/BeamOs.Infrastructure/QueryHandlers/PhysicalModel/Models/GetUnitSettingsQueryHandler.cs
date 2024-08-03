@@ -1,12 +1,13 @@
 using BeamOs.Application.Common.Queries;
 using BeamOs.Common.Application.Interfaces;
 using BeamOs.Domain.Common.ValueObjects;
-using BeamOs.Infrastructure.Data.Models;
+using BeamOs.Domain.PhysicalModel.ModelAggregate;
+using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.Infrastructure.QueryHandlers.PhysicalModel.Models;
 
-internal class GetUnitSettingsQueryHandler(BeamOsStructuralReadModelDbContext dbContext)
+internal class GetUnitSettingsQueryHandler(BeamOsStructuralDbContext dbContext)
     : IQueryHandler<GetResourceByIdQuery, UnitSettings>
 {
     public async Task<UnitSettings?> ExecuteAsync(
@@ -14,10 +15,8 @@ internal class GetUnitSettingsQueryHandler(BeamOsStructuralReadModelDbContext db
         CancellationToken ct = default
     )
     {
-        IQueryable<ModelReadModel> queryable = dbContext
-            .Models
-            .Where(m => m.Id == query.Id)
-            .Take(1);
+        ModelId modelId = new(query.Id);
+        IQueryable<Model> queryable = dbContext.Models.Where(m => m.Id == modelId).Take(1);
 
         return (await queryable.FirstOrDefaultAsync(ct))?.Settings.UnitSettings;
     }

@@ -1,33 +1,31 @@
 using BeamOs.Application.Common.Queries;
 using BeamOs.Common.Application.Interfaces;
 using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
+using BeamOs.Domain.AnalyticalResults.NodeResultAggregate;
 using BeamOs.Domain.Common.ValueObjects;
-using BeamOs.Infrastructure.Data.Models;
+using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOs.Infrastructure.QueryHandlers.AnalyticalResultReadModels.NodeResultReadModels.Mappers;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.Infrastructure.QueryHandlers.AnalyticalResults.NodeResults;
 
-internal class GetNodeResultsToResponseQueryHandler(BeamOsStructuralReadModelDbContext dbContext)
-    : IQueryHandler<GetModelResourcesByIdsQuery, NodeResultResponse?[]>
+internal class GetNodeResultsToResponseQueryHandler(BeamOsStructuralDbContext dbContext)
+    : IQueryHandler<GetModelResourcesByIdsQuery, NodeResultResponse[]>
 {
-    public async Task<NodeResultResponse?[]?> ExecuteAsync(
+    public async Task<NodeResultResponse[]?> ExecuteAsync(
         GetModelResourcesByIdsQuery query,
         CancellationToken ct = default
     )
     {
-        IQueryable<NodeResultReadModel> queryable = dbContext
-            .NodeResults
-            .Where(el => el.ModelId == query.ModelId);
+        ModelId modelId = new(query.ModelId);
+        IQueryable<NodeResult> queryable = dbContext.NodeResults.Where(el => el.ModelId == modelId);
 
         if (query.ResourceIds is not null)
         {
-            queryable = queryable.Where(el => query.ResourceIds.Contains(el.Id));
+            queryable = queryable.Where(el => query.ResourceIds.Contains(el.Id.Id));
         }
 
-        NodeResultReadModel[] nodeResultReadModels = await queryable.ToArrayAsync(
-            cancellationToken: ct
-        );
+        NodeResult[] nodeResultReadModels = await queryable.ToArrayAsync(cancellationToken: ct);
 
         if (nodeResultReadModels.Length == 0)
         {
@@ -36,11 +34,11 @@ internal class GetNodeResultsToResponseQueryHandler(BeamOsStructuralReadModelDbC
 
         UnitSettings unitSettings = await dbContext
             .Models
-            .Where(m => m.Id == query.ModelId)
+            .Where(m => m.Id == modelId)
             .Select(m => m.Settings.UnitSettings)
             .FirstAsync(cancellationToken: ct);
 
-        var responseMapper = NodeResultReadModelToResponse.Create(unitSettings);
+        var responseMapper = NodeResultToResponse.Create(unitSettings);
 
         return responseMapper.Map(nodeResultReadModels).ToArray();
     }

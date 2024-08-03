@@ -68,12 +68,7 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
                 d => d.ServiceType == typeof(DbContextOptions<BeamOsStructuralDbContext>)
             );
 
-            var dbContextReadModelDescriptor = services.SingleOrDefault(
-                d => d.ServiceType == typeof(DbContextOptions<BeamOsStructuralReadModelDbContext>)
-            );
-
             services.Remove(dbContextDescriptor);
-            services.Remove(dbContextReadModelDescriptor);
 
             var dbConnectionDescriptor = services.SingleOrDefault(
                 d => d.ServiceType == typeof(DbConnection)
@@ -85,9 +80,6 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
                 "Server=localhost,1433;Database=yourDatabaseName;Integrated Security=False;Encrypt=False;TrustServerCertificate=true;MultipleActiveResultSets=true;User=SA;Password=yourStrong(!)Password;";
 
             services.AddDbContext<BeamOsStructuralDbContext>(
-                options => options.UseSqlServer(connectionString)
-            );
-            services.AddDbContext<BeamOsStructuralReadModelDbContext>(
                 options => options.UseSqlServer(connectionString)
             );
         });

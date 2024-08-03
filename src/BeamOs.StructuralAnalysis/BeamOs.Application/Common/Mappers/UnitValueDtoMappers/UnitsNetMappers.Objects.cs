@@ -34,7 +34,7 @@ public static partial class UnitsNetMappers
 
     public static UnitValueDto MapToContract(this Length value, LengthUnit unit)
     {
-        return new(value.As(unit), unit.MapToString());
+        return new(value.As(unit), MapToString(unit));
     }
 
     public static partial Pressure MapToPressure(this UnitValueDto unit);

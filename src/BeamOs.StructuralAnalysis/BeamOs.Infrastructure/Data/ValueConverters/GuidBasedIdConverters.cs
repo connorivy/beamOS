@@ -15,11 +15,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeamOs.Infrastructure.Data.ValueConverters;
 
 /// <summary>
-/// These Id value converters are required for EF Core configuration. Without these converters, EF Core will not
-/// be able to make proper db migrations, and will complain that the entities need to define their primary keys.
-/// I'll be honest, I don't fully understand how these value converters solve that issue, but they do. And because
-/// we have these, we don't have to implement a <see cref="IEntityTypeConfiguration"/> for each entity that defines
-/// a primary key
+/// Each strongly typed Id needs a value converter so EF Core knows how to load and store these objects
 /// </summary>
 public class ModelIdConverter : ValueConverter<ModelId, Guid>
 {
