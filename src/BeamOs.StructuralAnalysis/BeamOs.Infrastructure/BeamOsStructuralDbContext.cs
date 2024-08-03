@@ -13,6 +13,7 @@ using BeamOs.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate;
 using BeamOs.Infrastructure.Data.Configurations;
 using BeamOs.Infrastructure.Interceptors;
+using BeamOS.Tests.Common.SolvedProblems.ETABS_Models.TwistyBowlFraming;
 using BeamOS.Tests.Common.SolvedProblems.Fixtures.Mappers.ToDomain;
 using BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd.Example3_8;
 using BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd.Example8_4;
@@ -95,6 +96,7 @@ public class BeamOsStructuralDbContext : DbContext
     {
         _ = this.Database.EnsureCreated();
 
+        //await this.InsertIntoEfCore(TwistyBowlFraming.Instance);
         await this.InsertIntoEfCore(Kassimali_Example3_8.Instance.ToDomain());
         await this.InsertIntoEfCore(Kassimali_Example8_4.Instance.ToDomain());
         await this.InsertIntoEfCore(Udoeyo_StructuralAnalysis_Example10_7.Instance.ToDomain());
