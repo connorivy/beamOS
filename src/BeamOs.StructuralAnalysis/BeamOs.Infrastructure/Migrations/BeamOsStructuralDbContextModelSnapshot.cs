@@ -453,7 +453,13 @@ namespace BeamOs.Infrastructure.Migrations
                     b.Property<double>("StrongAxisMomentOfInertia")
                         .HasColumnType("float");
 
+                    b.Property<double>("StrongAxisShearArea")
+                        .HasColumnType("float");
+
                     b.Property<double>("WeakAxisMomentOfInertia")
+                        .HasColumnType("float");
+
+                    b.Property<double>("WeakAxisShearArea")
                         .HasColumnType("float");
 
                     b.HasKey("Id");

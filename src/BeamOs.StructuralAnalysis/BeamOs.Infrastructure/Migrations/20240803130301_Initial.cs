@@ -148,7 +148,9 @@ namespace BeamOs.Infrastructure.Migrations
                     Area = table.Column<double>(type: "float", nullable: false),
                     StrongAxisMomentOfInertia = table.Column<double>(type: "float", nullable: false),
                     WeakAxisMomentOfInertia = table.Column<double>(type: "float", nullable: false),
-                    PolarMomentOfInertia = table.Column<double>(type: "float", nullable: false)
+                    PolarMomentOfInertia = table.Column<double>(type: "float", nullable: false),
+                    StrongAxisShearArea = table.Column<double>(type: "float", nullable: false),
+                    WeakAxisShearArea = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {

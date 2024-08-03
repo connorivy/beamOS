@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeamOs.Infrastructure.Migrations
 {
     [DbContext(typeof(BeamOsStructuralDbContext))]
-    [Migration("20240802203513_Initial")]
+    [Migration("20240803130301_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -456,7 +456,13 @@ namespace BeamOs.Infrastructure.Migrations
                     b.Property<double>("StrongAxisMomentOfInertia")
                         .HasColumnType("float");
 
+                    b.Property<double>("StrongAxisShearArea")
+                        .HasColumnType("float");
+
                     b.Property<double>("WeakAxisMomentOfInertia")
+                        .HasColumnType("float");
+
+                    b.Property<double>("WeakAxisShearArea")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
