@@ -138,13 +138,6 @@ app.MapPost(
 
 app.AddAnalysisEndpoints();
 
-//seed the DB
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<BeamOsStructuralDbContext>();
-    await dbContext.SeedAsync();
-}
-
 //app.Use(
 //    async (context, next) =>
 //    {
@@ -160,6 +153,9 @@ using (var scope = app.Services.CreateScope())
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
+    using var scope = app.Services.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<BeamOsStructuralDbContext>();
+    await dbContext.SeedAsync();
 }
 else
 {
