@@ -22,13 +22,15 @@ app.AddAnalysisEndpoints();
 // app.Configuration["generateclients"] = "true";
 await app.GenerateAnalysisClient();
 
-//Configure the HTTP-request pipeline
-if (app.Environment.IsDevelopment())
+using (var scope = app.Services.CreateScope())
 {
-    //seed the DB
-    using var scope = app.Services.CreateScope();
     var dbContext = scope.ServiceProvider.GetRequiredService<BeamOsStructuralDbContext>();
-    await dbContext.SeedAsync();
+    _ = dbContext.Database.EnsureCreated();
+
+    if (app.Environment.IsDevelopment())
+    {
+        await dbContext.SeedAsync();
+    }
 }
 
 app.UseCors();

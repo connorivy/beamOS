@@ -83,5 +83,6 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
                 options => options.UseSqlServer(connectionString)
             );
         });
+        builder.UseEnvironment("Release");
     }
 }
