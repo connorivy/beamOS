@@ -1,3 +1,4 @@
+using BeamOs.ApiClient.Builders;
 using BeamOs.Common.Events;
 using BeamOs.Domain.AnalyticalResults.ModelResultAggregate;
 using BeamOs.Domain.AnalyticalResults.NodeResultAggregate;
@@ -7,12 +8,14 @@ using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate;
 using BeamOs.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.Domain.PhysicalModel.ModelAggregate;
+using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate;
 using BeamOs.Infrastructure.Data.Configurations;
 using BeamOs.Infrastructure.Interceptors;
+using BeamOS.Tests.Common.Fixtures.Mappers.ToDomain;
 using BeamOS.Tests.Common.SolvedProblems.ETABS_Models.TwistyBowlFraming;
 using BeamOS.Tests.Common.SolvedProblems.Fixtures.Mappers.ToDomain;
 using BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd.Example3_8;
@@ -96,13 +99,28 @@ public class BeamOsStructuralDbContext : DbContext
     {
         _ = this.Database.EnsureCreated();
 
-        //await this.InsertIntoEfCore(TwistyBowlFraming.Instance);
+        await this.InsertIntoEfCore(TwistyBowlFraming.Instance);
         await this.InsertIntoEfCore(Kassimali_Example3_8.Instance.ToDomain());
         await this.InsertIntoEfCore(Kassimali_Example8_4.Instance.ToDomain());
         await this.InsertIntoEfCore(Udoeyo_StructuralAnalysis_Example10_7.Instance.ToDomain());
         //await this.InsertIntoEfCore(Simple_3_Story_Rectangular.Instance.to)
 
         _ = await this.SaveChangesAsync();
+    }
+
+    private async Task InsertIntoEfCore(CreateModelRequestBuilder modelBuilder)
+    {
+        ModelId modelId = new(modelBuilder.ModelGuid);
+        if (await this.Models.AnyAsync(m => m.Id == modelId))
+        {
+            return;
+        }
+
+        await modelBuilder.InitializeAsync();
+        CreateModelRequestBuilderToDomainMapper builderMapper = new();
+        Model model = builderMapper.ToDomain(modelBuilder);
+
+        await this.InsertIntoEfCore(model);
     }
 
     private async Task InsertIntoEfCore(Model model)

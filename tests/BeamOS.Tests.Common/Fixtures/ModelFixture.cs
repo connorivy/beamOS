@@ -10,10 +10,7 @@ public interface IHasExpectedNodeResults2 : IModelFixture2
     public NodeResultFixture2[] ExpectedNodeResults { get; }
 }
 
-public interface IHasExpectedNodeDisplacementResults
-    : IHasModelSettings,
-        IHasFixtureId,
-        IHasPhysicalModelSettings
+public interface IHasExpectedNodeDisplacementResults : IHasFixtureId, IHasPhysicalModelSettings
 {
     public NodeResultFixture[] ExpectedNodeDisplacementResults { get; }
 }
@@ -25,7 +22,7 @@ public interface IHasModelSettings
 
 public interface IHasPhysicalModelSettings
 {
-    PhysicalModelSettings ModelSettings { get; }
+    PhysicalModelSettings Settings { get; }
 }
 
 public interface IHasFixtureId
@@ -37,7 +34,7 @@ public abstract class ModelFixture2 : FixtureBase2, IHasSourceInfo, IModelFixtur
 {
     public sealed override FixtureId Id => this.ModelGuid;
     public abstract Guid ModelGuid { get; }
-    public abstract ModelSettings Settings { get; }
+    public abstract PhysicalModelSettings Settings { get; }
     public abstract SourceInfo SourceInfo { get; }
     public virtual string Name { get; } = "Test Model";
     public virtual string Description { get; } = "Test Model Description";

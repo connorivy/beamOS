@@ -13,7 +13,8 @@ public partial class ModelFixtureInDb(ModelFixture2 modelFixture) : IModelFixtur
 
     [UseMapper]
     private UnitMapperWithOptionalUnits UnitMapperWithOptionalUnits { get; } =
-        new(modelFixture.Settings.UnitSettings);
+        new(modelFixture.Settings.UnitSettings.ToDomain());
+
     private Dictionary<FixtureId, string> RuntimeIdToDbIdDict { get; } = [];
 
     public async Task Create(ApiAlphaClient client)

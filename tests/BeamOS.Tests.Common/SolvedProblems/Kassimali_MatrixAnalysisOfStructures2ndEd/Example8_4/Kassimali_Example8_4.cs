@@ -1,7 +1,5 @@
-using BeamOs.ApiClient.Builders;
-using BeamOs.Domain.Common.ValueObjects;
-using BeamOs.Domain.DirectStiffnessMethod;
-using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
+using BeamOs.Contracts.Common;
+using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOS.Tests.Common.Fixtures;
 using BeamOS.Tests.Common.Interfaces;
 using BeamOS.Tests.Common.Traits;
@@ -21,8 +19,9 @@ public partial class Kassimali_Example8_4 : ModelFixture2, IHasExpectedNodeResul
         );
     public static Guid IdStatic { get; } = new("ddb1e60a-df17-48b0-810a-60e425acf640");
     public override Guid ModelGuid => IdStatic;
-    public override ModelSettings Settings { get; } =
-        new(UnitSettings.K_IN, new(Element1dAnalysisType.Euler));
+
+    public override PhysicalModelSettings Settings { get; } =
+        new(UnitSettingsDtoVerbose.K_IN, new(Element1dAnalysisType.Euler));
 
     public override PointLoadFixture2[] PointLoads => Kassimali_Example8_4_PointLoads.All;
     public override MomentLoadFixture2[] MomentLoads => Kassimali_Example8_4_MomentLoads.All;

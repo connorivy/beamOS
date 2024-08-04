@@ -13,9 +13,9 @@ namespace BeamOS.Tests.Common.SolvedProblems.ETABS_Models.Simple_3_Story_Diagona
 public partial class Simple_3_Story_Diagonal : CreateModelRequestBuilder
 {
     public override Guid ModelGuid { get; } = Guid.Parse("28dc76b9-fa05-4a30-83c9-7c6e938116dd");
-    public override PhysicalModelSettings ModelSettings { get; } = new(UnitSettingsDtoVerbose.K_FT);
+    public override PhysicalModelSettings Settings { get; } = new(UnitSettingsDtoVerbose.K_FT);
 
-    public ModelSettings Settings { get; } = new(UnitSettings.K_FT);
+    //public ModelSettings Settings { get; } = new(UnitSettings.K_FT);
 
     private int[] xValues = [0, 24, 48, 72];
     private int[] yValues = [0, 12, 24, 36];

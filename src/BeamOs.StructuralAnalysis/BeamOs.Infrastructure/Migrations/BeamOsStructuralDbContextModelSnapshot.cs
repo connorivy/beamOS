@@ -431,6 +431,8 @@ namespace BeamOs.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ModelId");
+
                     b.HasIndex("NodeId");
 
                     b.ToTable("PointLoads");
@@ -568,10 +570,16 @@ namespace BeamOs.Infrastructure.Migrations
 
             modelBuilder.Entity("BeamOs.Domain.PhysicalModel.PointLoadAggregate.PointLoad", b =>
                 {
+                    b.HasOne("BeamOs.Domain.PhysicalModel.ModelAggregate.Model", null)
+                        .WithMany("PointLoads")
+                        .HasForeignKey("ModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("BeamOs.Domain.PhysicalModel.NodeAggregate.Node", null)
                         .WithMany("PointLoads")
                         .HasForeignKey("NodeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
                 });
 
@@ -603,6 +611,8 @@ namespace BeamOs.Infrastructure.Migrations
                     b.Navigation("ModelResults");
 
                     b.Navigation("Nodes");
+
+                    b.Navigation("PointLoads");
 
                     b.Navigation("SectionProfiles");
                 });

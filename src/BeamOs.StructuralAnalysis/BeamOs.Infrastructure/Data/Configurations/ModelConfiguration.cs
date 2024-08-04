@@ -1,4 +1,3 @@
-using BeamOs.Domain.AnalyticalResults.ModelResultAggregate;
 using BeamOs.Domain.PhysicalModel.ModelAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -39,6 +38,13 @@ internal class ModelConfiguration : IEntityTypeConfiguration<Model>
 
         builder
             .HasMany(m => m.ModelResults)
+            .WithOne()
+            .HasForeignKey(el => el.ModelId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder
+            .HasMany(m => m.PointLoads)
             .WithOne()
             .HasForeignKey(el => el.ModelId)
             .IsRequired()

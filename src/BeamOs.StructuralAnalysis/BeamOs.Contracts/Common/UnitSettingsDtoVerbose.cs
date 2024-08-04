@@ -8,7 +8,8 @@ public record UnitSettingsDtoVerbose(
     string ForceUnit,
     string TorqueUnit,
     string ForcePerLengthUnit,
-    string PressureUnit
+    string PressureUnit,
+    string AngleUnit = "Radian"
 )
 {
     public static UnitSettingsDtoVerbose K_IN { get; } =

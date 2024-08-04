@@ -3,7 +3,7 @@ using BeamOS.Tests.Common.Interfaces;
 
 namespace BeamOS.Tests.Common.Fixtures;
 
-public interface IModelFixture2 : IHasModelSettings, IModelFixture
+public interface IModelFixture2 : IHasPhysicalModelSettings, IModelFixture
 {
     string Description { get; }
     Element1dFixture2[] Element1ds { get; }

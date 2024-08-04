@@ -16,9 +16,7 @@ public partial class Simple_3_Story_Rectangular
         IHasExpectedNodeDisplacementResults
 {
     public override Guid ModelGuid { get; } = Guid.Parse("d19873bf-6909-4da7-91a7-042b9d1a80dd");
-    public override PhysicalModelSettings ModelSettings { get; } = new(UnitSettingsDtoVerbose.K_FT);
-
-    public ModelSettings Settings { get; } = new(UnitSettings.K_FT);
+    public override PhysicalModelSettings Settings { get; } = new(UnitSettingsDtoVerbose.K_FT);
 
     private int[] xValues = [0, 24, 48, 72];
     private int[] yValues = [0, 12, 24, 36];

@@ -6,10 +6,7 @@ namespace BeamOs.ApiClient.Builders;
 public partial class CreateModelRequestBuilder
 {
     [MapperIgnoreTarget(nameof(CreateModelRequest.Id))]
-    [MapProperty(
-        nameof(CreateModelRequestBuilder.ModelSettings),
-        nameof(CreateModelRequest.Settings)
-    )]
+    [MapProperty(nameof(CreateModelRequestBuilder.Settings), nameof(CreateModelRequest.Settings))]
     public partial CreateModelRequest ToRequest(CreateModelRequestBuilder fixture);
 
     public partial CreateElement1dRequest ToRequest(CreateElement1dRequestBuilder fixture);

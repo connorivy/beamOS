@@ -43,7 +43,7 @@ public record CreatePointLoadRequestBuilder : CreateModelEntityRequestBuilderBas
 
 public abstract record CreateModelEntityRequestBuilderBase
 {
-    internal FixtureId ModelId { get; init; }
+    public FixtureId ModelId { get; internal init; }
     public FixtureId Id { get; init; } = Guid.NewGuid().ToString();
 }
 

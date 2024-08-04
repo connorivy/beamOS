@@ -1,7 +1,6 @@
+using BeamOs.Contracts.Common;
+using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Domain.Common.Utils;
-using BeamOs.Domain.Common.ValueObjects;
-using BeamOs.Domain.DirectStiffnessMethod;
-using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOS.Tests.Common.Fixtures;
 using BeamOS.Tests.Common.Interfaces;
 
@@ -11,8 +10,8 @@ public class Kassimali_Example3_8 : ModelFixture2
 {
     public static Guid IdStatic { get; } = TypedGuids.G0;
     public override Guid ModelGuid => IdStatic;
-    public override ModelSettings Settings { get; } =
-        new(UnitSettings.K_IN, new(Element1dAnalysisType.Euler));
+    public override PhysicalModelSettings Settings { get; } =
+        new(UnitSettingsDtoVerbose.K_IN, new(Element1dAnalysisType.Euler));
     public override SourceInfo SourceInfo { get; } =
         new(
             "Matrix Analysis Of Structures 2nd Edition by Kassimali",

@@ -13,7 +13,7 @@ public class CustomModelBuilder : CreateModelRequestBuilder
     public string ScratchpadId => "Hpq0wU_9_wy-NjoGl1h3gA";
 
     public override Guid ModelGuid { get; } = Guid.Parse("00000000-0000-0000-0000-000000000000");
-    public override PhysicalModelSettings ModelSettings { get; } = new(UnitSettingsDtoVerbose.kN_M);
+    public override PhysicalModelSettings Settings { get; } = new(UnitSettingsDtoVerbose.kN_M);
 
     private int[] xValues = [0, 24, 48, 72];
     private int[] yValues = [0, 12, 24, 36];

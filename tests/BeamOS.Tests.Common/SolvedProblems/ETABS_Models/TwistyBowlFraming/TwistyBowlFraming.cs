@@ -1,7 +1,6 @@
 using BeamOs.ApiClient.Builders;
 using BeamOs.Contracts.Common;
 using BeamOs.Contracts.PhysicalModel.Model;
-using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOs.SpeckleConnector;
 using BeamOS.Tests.Common.Fixtures;
 using MathNet.Spatial.Euclidean;
@@ -13,7 +12,7 @@ namespace BeamOS.Tests.Common.SolvedProblems.ETABS_Models.TwistyBowlFraming;
 public class TwistyBowlFraming : CreateModelRequestBuilder, IHasExpectedNodeDisplacementResults
 {
     public override Guid ModelGuid { get; } = Guid.Parse("f30e580d-9cb0-46d2-ade1-a4140c454632");
-    public override PhysicalModelSettings ModelSettings { get; } = new(UnitSettingsDtoVerbose.kN_M);
+    public override PhysicalModelSettings Settings { get; } = new(UnitSettingsDtoVerbose.kN_M);
 
     private readonly HashSet<string> addedNodeIds = [];
 
@@ -27,12 +26,12 @@ public class TwistyBowlFraming : CreateModelRequestBuilder, IHasExpectedNodeDisp
             )
         )
         {
-            if (
-                builder is CreateNodeRequestBuilder nodeRequestBuilder
-                && nodeRequestBuilder.LocationPoint.YCoordinate.Value > 10000
-            )
+            if (builder is CreateNodeRequestBuilder nodeRequestBuilder)
             {
-                if (this.addedNodeIds.Add(nodeRequestBuilder.Id.ToString()))
+                if (
+                    nodeRequestBuilder.LocationPoint.YCoordinate.Value > 10000
+                    && this.addedNodeIds.Add(nodeRequestBuilder.Id.ToString())
+                )
                 {
                     this.AddPointLoad(
                         new()
@@ -43,8 +42,20 @@ public class TwistyBowlFraming : CreateModelRequestBuilder, IHasExpectedNodeDisp
                         }
                     );
                 }
+                this.AddNode(nodeRequestBuilder);
             }
-            this.AddElement(builder);
+            else if (builder is CreateElement1dRequestBuilder element1DRequestBuilder)
+            {
+                this.AddElement1d(
+                    element1DRequestBuilder with
+                    {
+                        MaterialId = "A992Steel",
+                        SectionProfileId = "W16x36"
+                    }
+                );
+            }
+
+            //this.AddElement(builder);
         }
     }
 
@@ -57,7 +68,8 @@ public class TwistyBowlFraming : CreateModelRequestBuilder, IHasExpectedNodeDisp
                 ModulusOfRigidity = new Pressure(
                     11_153.85,
                     PressureUnit.KilopoundForcePerSquareInch
-                )
+                ),
+                Id = "A992Steel"
             }
         );
 
@@ -79,11 +91,11 @@ public class TwistyBowlFraming : CreateModelRequestBuilder, IHasExpectedNodeDisp
                 ),
                 StrongAxisShearArea = new Area(5.0095, AreaUnit.SquareInch),
                 WeakAxisShearArea = new Area(4.6905, AreaUnit.SquareInch),
+                Id = "W16x36"
             }
         );
     }
 
     public static TwistyBowlFraming Instance { get; } = new();
     public NodeResultFixture[] ExpectedNodeDisplacementResults { get; }
-    public ModelSettings Settings { get; }
 }

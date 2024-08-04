@@ -1,7 +1,5 @@
 using BeamOs.Contracts.Common;
 using BeamOs.Contracts.PhysicalModel.Model;
-using BeamOs.Domain.Common.ValueObjects;
-using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOS.Tests.Common.Fixtures;
 using BeamOS.Tests.Common.Interfaces;
 
@@ -11,13 +9,9 @@ public class Udoeyo_StructuralAnalysis_Example7_11
     : ModelFixture2,
         IHasExpectedNodeDisplacementResults
 {
-    public override ModelSettings Settings { get; } =
-        new(
-            UnitSettings.K_FT,
-            new(BeamOs.Domain.DirectStiffnessMethod.Element1dAnalysisType.Euler)
-        );
-    public PhysicalModelSettings ModelSettings { get; } =
+    public override PhysicalModelSettings Settings { get; } =
         new(UnitSettingsDtoVerbose.K_FT, new(Element1dAnalysisType.Euler));
+
     public override SourceInfo SourceInfo { get; } =
         new(
             "Structural Analysis by Felix Udoeyo",

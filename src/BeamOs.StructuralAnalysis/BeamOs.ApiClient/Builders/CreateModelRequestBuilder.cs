@@ -6,7 +6,7 @@ public abstract partial class CreateModelRequestBuilder : IModelFixtureInDb, IMo
     public FixtureId Id => this.ModelGuid;
     public string Name { get; init; } = "Test Model";
     public string Description { get; init; } = "Created from CustomModelRequestBuilder";
-    public abstract PhysicalModelSettings ModelSettings { get; }
+    public abstract PhysicalModelSettings Settings { get; }
 
     private List<CreateElement1dRequestBuilder> element1ds = [];
     public IEnumerable<CreateElement1dRequestBuilder> Element1ds => this.element1ds;
@@ -20,8 +20,8 @@ public abstract partial class CreateModelRequestBuilder : IModelFixtureInDb, IMo
     public IEnumerable<CreateSectionProfileRequestBuilder> SectionProfiles => this.sectionProfiles;
 
     private readonly Dictionary<FixtureId, string> runtimeIdToDbIdDict = [];
-    public FixtureId DefaultMaterialId { get; set; }
-    public FixtureId DefaultSectionProfileId { get; set; }
+    private FixtureId DefaultMaterialId { get; set; }
+    private FixtureId DefaultSectionProfileId { get; set; }
 
     public string RuntimeIdToDbId(FixtureId fixtureId) => this.runtimeIdToDbIdDict[fixtureId];
 

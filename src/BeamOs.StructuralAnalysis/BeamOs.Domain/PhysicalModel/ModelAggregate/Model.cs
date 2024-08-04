@@ -7,6 +7,7 @@ using BeamOs.Domain.PhysicalModel.MaterialAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
+using BeamOs.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate.ValueObjects;
 using UnitsNet.Units;
@@ -32,18 +33,7 @@ public class Model : AggregateRoot<ModelId>
     public ICollection<Material> Materials { get; init; } = [];
     public ICollection<SectionProfile> SectionProfiles { get; init; } = [];
     public ICollection<ModelResult> ModelResults { get; init; }
-
-    //private readonly List<NodeId> nodeIds = [];
-    //public IReadOnlyList<NodeId> NodeIds => this.nodeIds.AsReadOnly();
-
-    //private readonly List<Element1DId> element1DIds = [];
-    //public IReadOnlyList<Element1DId> Element1DIds => this.element1DIds.AsReadOnly();
-
-    //private readonly List<MaterialId> materialIds = [];
-    //public IReadOnlyList<MaterialId> MaterialIds => this.materialIds.AsReadOnly();
-
-    //private readonly List<SectionProfileId> sectionProfileIds = [];
-    //public IReadOnlyList<SectionProfileId> SectionProfileIds => this.sectionProfileIds.AsReadOnly();
+    public ICollection<PointLoad>? PointLoads { get; init; }
 
     public Node AddNode(
         double xCoordinate,

@@ -1,5 +1,6 @@
 using BeamOs.ApiClient;
 using BeamOs.ApiClient.Builders;
+using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOS.Tests.Common.Fixtures;
 using BeamOS.Tests.Common.SolvedProblems;
 using BeamOS.Tests.Common.SolvedProblems.Fixtures;
@@ -77,37 +78,37 @@ public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IA
             this.AssertQuantitesEqual(
                 expectedNodeDisplacementResult.DisplacementAlongX,
                 result.Displacements.DisplacementAlongX.Value,
-                modelFixture.Settings.UnitSettings.LengthUnit,
+                modelFixture.Settings.UnitSettings.LengthUnit.MapToLengthUnit(),
                 expectedNodeDisplacementResult.LengthTolerance
             );
             this.AssertQuantitesEqual(
                 expectedNodeDisplacementResult.DisplacementAlongY,
                 result.Displacements.DisplacementAlongY.Value,
-                modelFixture.Settings.UnitSettings.LengthUnit,
+                modelFixture.Settings.UnitSettings.LengthUnit.MapToLengthUnit(),
                 expectedNodeDisplacementResult.LengthTolerance
             );
             this.AssertQuantitesEqual(
                 expectedNodeDisplacementResult.DisplacementAlongZ,
                 result.Displacements.DisplacementAlongZ.Value,
-                modelFixture.Settings.UnitSettings.LengthUnit,
+                modelFixture.Settings.UnitSettings.LengthUnit.MapToLengthUnit(),
                 expectedNodeDisplacementResult.LengthTolerance
             );
             this.AssertQuantitesEqual(
                 expectedNodeDisplacementResult.RotationAboutX,
                 result.Displacements.RotationAboutX.Value,
-                modelFixture.Settings.UnitSettings.AngleUnit,
+                modelFixture.Settings.UnitSettings.AngleUnit.MapToAngleUnit(),
                 expectedNodeDisplacementResult.AngleTolerance
             );
             this.AssertQuantitesEqual(
                 expectedNodeDisplacementResult.RotationAboutY,
                 result.Displacements.RotationAboutY.Value,
-                modelFixture.Settings.UnitSettings.AngleUnit,
+                modelFixture.Settings.UnitSettings.AngleUnit.MapToAngleUnit(),
                 expectedNodeDisplacementResult.AngleTolerance
             );
             this.AssertQuantitesEqual(
                 expectedNodeDisplacementResult.RotationAboutZ,
                 result.Displacements.RotationAboutZ.Value,
-                modelFixture.Settings.UnitSettings.AngleUnit,
+                modelFixture.Settings.UnitSettings.AngleUnit.MapToAngleUnit(),
                 expectedNodeDisplacementResult.AngleTolerance
             );
         }
