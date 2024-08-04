@@ -101,18 +101,19 @@ public class AddEntityContractToEditorCommandHandler(
             new(canvasId, state => state with { LoadedModelId = modelResponse.Id, }),
             CancellationToken.None
         );
+        await editorApi.SetSettingsAsync(modelResponse.Settings);
 
-        foreach (var node in modelResponse.Nodes)
+        foreach (var node in modelResponse.Nodes ?? Enumerable.Empty<NodeResponse>())
         {
             await this.LoadSingleComponent(node, editorApi, canvasId, modelResponse.Id);
         }
 
-        foreach (var el in modelResponse.Element1ds)
+        foreach (var el in modelResponse.Element1ds ?? Enumerable.Empty<Element1DResponse>())
         {
             await this.LoadSingleComponent(el, editorApi, canvasId, modelResponse.Id);
         }
 
-        foreach (var el in modelResponse.PointLoads)
+        foreach (var el in modelResponse.PointLoads ?? Enumerable.Empty<PointLoadResponse>())
         {
             await this.LoadSingleComponent(el, editorApi, canvasId, modelResponse.Id);
         }

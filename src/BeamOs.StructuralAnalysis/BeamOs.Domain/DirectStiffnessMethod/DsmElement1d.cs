@@ -117,7 +117,7 @@ public class DsmElement1d(
         return transformationMatrix;
     }
 
-    public Matrix<double> GetLocalStiffnessMatrix(
+    public virtual Matrix<double> GetLocalStiffnessMatrix(
         ForceUnit forceUnit,
         ForcePerLengthUnit forcePerLengthUnit,
         TorqueUnit torqueUnit

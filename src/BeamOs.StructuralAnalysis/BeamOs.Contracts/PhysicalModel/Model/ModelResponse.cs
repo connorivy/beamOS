@@ -12,7 +12,7 @@ public record ModelResponse(
     string Id,
     string Name,
     string Description,
-    ModelSettingsResponse Settings,
+    PhysicalModelSettings Settings,
     List<NodeResponse>? Nodes = null,
     List<Element1DResponse>? Element1ds = null,
     List<MaterialResponse>? Materials = null,

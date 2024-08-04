@@ -1,8 +1,7 @@
+using BeamOs.ApiClient.Builders;
 using BeamOs.Common.Events;
+using BeamOs.Domain.AnalyticalResults.ModelResultAggregate;
 using BeamOs.Domain.AnalyticalResults.NodeResultAggregate;
-using BeamOs.Domain.Common.Interfaces;
-using BeamOs.Domain.Common.Utils;
-using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.Diagrams.Common;
 using BeamOs.Domain.Diagrams.MomentDiagramAggregate;
 using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate;
@@ -14,17 +13,15 @@ using BeamOs.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate;
-using BeamOs.Infrastructure.Data.Configurations.Write;
+using BeamOs.Infrastructure.Data.Configurations;
 using BeamOs.Infrastructure.Interceptors;
+using BeamOS.Tests.Common.Fixtures.Mappers.ToDomain;
+using BeamOS.Tests.Common.SolvedProblems.ETABS_Models.TwistyBowlFraming;
 using BeamOS.Tests.Common.SolvedProblems.Fixtures.Mappers.ToDomain;
 using BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd.Example3_8;
 using BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd.Example8_4;
 using BeamOS.Tests.Common.SolvedProblems.Udoeyo_StructuralAnalysis.Example10_7;
-using MathNet.Numerics.LinearAlgebra;
-using MathNet.Spatial.Euclidean;
 using Microsoft.EntityFrameworkCore;
-using UnitsNet;
-using UnitsNet.Units;
 
 namespace BeamOs.Infrastructure;
 
@@ -63,6 +60,7 @@ public class BeamOsStructuralDbContext : DbContext
     public DbSet<SectionProfile> SectionProfiles { get; set; }
     public DbSet<PointLoad> PointLoads { get; set; }
     public DbSet<MomentLoad> MomentLoads { get; set; }
+    public DbSet<ModelResult> ModelResults { get; set; }
     public DbSet<NodeResult> NodeResults { get; set; }
     public DbSet<ShearForceDiagram> ShearForceDiagrams { get; set; }
     public DbSet<MomentDiagram> MomentDiagrams { get; set; }
@@ -84,10 +82,7 @@ public class BeamOsStructuralDbContext : DbContext
     {
         _ = builder
             .Ignore<List<IIntegrationEvent>>()
-            .ApplyConfigurationsFromAssembly(
-                typeof(NodeConfiguration).Assembly,
-                WriteConfigurationsFilter
-            );
+            .ApplyConfigurationsFromAssembly(typeof(NodeConfiguration).Assembly);
 
         builder
             .Model
@@ -100,20 +95,32 @@ public class BeamOsStructuralDbContext : DbContext
             );
     }
 
-    private static bool WriteConfigurationsFilter(Type type) =>
-        type.FullName?.Contains(
-            $"{nameof(Data.Configurations)}.{nameof(Data.Configurations.Write)}"
-        ) ?? false;
-
     public async Task SeedAsync()
     {
         _ = this.Database.EnsureCreated();
 
+        await this.InsertIntoEfCore(TwistyBowlFraming.Instance);
         await this.InsertIntoEfCore(Kassimali_Example3_8.Instance.ToDomain());
         await this.InsertIntoEfCore(Kassimali_Example8_4.Instance.ToDomain());
         await this.InsertIntoEfCore(Udoeyo_StructuralAnalysis_Example10_7.Instance.ToDomain());
+        //await this.InsertIntoEfCore(Simple_3_Story_Rectangular.Instance.to)
 
         _ = await this.SaveChangesAsync();
+    }
+
+    private async Task InsertIntoEfCore(CreateModelRequestBuilder modelBuilder)
+    {
+        ModelId modelId = new(modelBuilder.ModelGuid);
+        if (await this.Models.AnyAsync(m => m.Id == modelId))
+        {
+            return;
+        }
+
+        await modelBuilder.InitializeAsync();
+        CreateModelRequestBuilderToDomainMapper builderMapper = new();
+        Model model = builderMapper.ToDomain(modelBuilder);
+
+        await this.InsertIntoEfCore(model);
     }
 
     private async Task InsertIntoEfCore(Model model)
@@ -135,6 +142,8 @@ public class BeamOsStructuralDbContext : DbContext
                             el.StrongAxisMomentOfInertia,
                             el.WeakAxisMomentOfInertia,
                             el.PolarMomentOfInertia,
+                            el.StrongAxisShearArea,
+                            el.WeakAxisShearArea,
                             el.Id
                         )
                 )

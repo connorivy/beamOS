@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\codeGen\Apis\BeamOs.CodeGen.Apis.EditorApi\BeamOs.CodeGen.Apis.EditorApi.csproj" />
+    <ProjectReference Include="..\..\src\BeamOs.SpeckleConnector\BeamOs.SpeckleConnector\BeamOs.SpeckleConnector.csproj" />
     <ProjectReference Include="..\..\src\BeamOs.StructuralAnalysis\BeamOs.ApiClient\BeamOs.ApiClient.csproj" />
     <ProjectReference Include="..\..\src\BeamOs.StructuralAnalysis\BeamOs.Application\BeamOs.Application.csproj" />
     <ProjectReference Include="..\..\src\BeamOs.StructuralAnalysis\BeamOs.Contracts\BeamOs.Contracts.csproj" />

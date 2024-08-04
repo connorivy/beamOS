@@ -119,6 +119,11 @@ public record RestraintRequest(
 )
 {
     public static RestraintRequest Free { get; } = new(true, true, true, true, true, true);
+    public static RestraintRequest FreeXzPlane { get; } =
+        new(true, false, true, false, true, false);
+    public static RestraintRequest FreeXyPlane { get; } =
+        new(true, true, false, false, false, true);
+    public static RestraintRequest Pinned { get; } = new(false, false, false, true, true, true);
     public static RestraintRequest Fixed { get; } = new(false, false, false, false, false, false);
 }
 

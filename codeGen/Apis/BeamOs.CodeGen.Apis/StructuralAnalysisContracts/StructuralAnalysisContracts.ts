@@ -98,7 +98,7 @@ export interface IStructuralAnalysisContracts {
     /**
      * @return OK
      */
-    beamOs_Contracts_PhysicalModel_Model_PhysicalModelSettingsDto(): Promise<PhysicalModelSettingsDto>;
+    beamOs_Contracts_PhysicalModel_Model_PhysicalModelSettings(): Promise<PhysicalModelSettings>;
 
     /**
      * @return OK
@@ -229,6 +229,11 @@ export interface IStructuralAnalysisContracts {
      * @return OK
      */
     beamOs_Contracts_AnalyticalResults_Model_UnsupportedStructureDisplacementIdResponse(): Promise<UnsupportedStructureDisplacementIdResponse>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_AnalyticalResults_Model_ModelResultResponse(): Promise<ModelResultResponse>;
 
     /**
      * @return OK
@@ -918,8 +923,8 @@ export class StructuralAnalysisContracts implements IStructuralAnalysisContracts
     /**
      * @return OK
      */
-    beamOs_Contracts_PhysicalModel_Model_PhysicalModelSettingsDto(): Promise<PhysicalModelSettingsDto> {
-        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.Model.PhysicalModelSettingsDto";
+    beamOs_Contracts_PhysicalModel_Model_PhysicalModelSettings(): Promise<PhysicalModelSettings> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.Model.PhysicalModelSettings";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -930,18 +935,18 @@ export class StructuralAnalysisContracts implements IStructuralAnalysisContracts
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processBeamOs_Contracts_PhysicalModel_Model_PhysicalModelSettingsDto(_response);
+            return this.processBeamOs_Contracts_PhysicalModel_Model_PhysicalModelSettings(_response);
         });
     }
 
-    protected processBeamOs_Contracts_PhysicalModel_Model_PhysicalModelSettingsDto(response: Response): Promise<PhysicalModelSettingsDto> {
+    protected processBeamOs_Contracts_PhysicalModel_Model_PhysicalModelSettings(response: Response): Promise<PhysicalModelSettings> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = PhysicalModelSettingsDto.fromJS(resultData200);
+            result200 = PhysicalModelSettings.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -949,7 +954,7 @@ export class StructuralAnalysisContracts implements IStructuralAnalysisContracts
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<PhysicalModelSettingsDto>(null as any);
+        return Promise.resolve<PhysicalModelSettings>(null as any);
     }
 
     /**
@@ -1918,6 +1923,43 @@ export class StructuralAnalysisContracts implements IStructuralAnalysisContracts
     /**
      * @return OK
      */
+    beamOs_Contracts_AnalyticalResults_Model_ModelResultResponse(): Promise<ModelResultResponse> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.AnalyticalResults.Model.ModelResultResponse";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_AnalyticalResults_Model_ModelResultResponse(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_AnalyticalResults_Model_ModelResultResponse(response: Response): Promise<ModelResultResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ModelResultResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ModelResultResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
     beamOs_Contracts_AnalyticalResults_Model_RunAnalysisRequest(): Promise<RunAnalysisRequest> {
         let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.AnalyticalResults.Model.RunAnalysisRequest";
         url_ = url_.replace(/[?&]$/, "");
@@ -2565,7 +2607,7 @@ export interface ICreateMaterialRequest {
 export class CreateModelRequest implements ICreateModelRequest {
     name!: string;
     description!: string;
-    settings!: PhysicalModelSettingsDto;
+    settings!: PhysicalModelSettings;
     id?: string | undefined;
 
     constructor(data?: ICreateModelRequest) {
@@ -2576,7 +2618,7 @@ export class CreateModelRequest implements ICreateModelRequest {
             }
         }
         if (!data) {
-            this.settings = new PhysicalModelSettingsDto();
+            this.settings = new PhysicalModelSettings();
         }
     }
 
@@ -2584,7 +2626,7 @@ export class CreateModelRequest implements ICreateModelRequest {
         if (_data) {
             this.name = _data["name"];
             this.description = _data["description"];
-            this.settings = _data["settings"] ? PhysicalModelSettingsDto.fromJS(_data["settings"]) : new PhysicalModelSettingsDto();
+            this.settings = _data["settings"] ? PhysicalModelSettings.fromJS(_data["settings"]) : new PhysicalModelSettings();
             this.id = _data["id"];
         }
     }
@@ -2609,7 +2651,7 @@ export class CreateModelRequest implements ICreateModelRequest {
 export interface ICreateModelRequest {
     name: string;
     description: string;
-    settings: PhysicalModelSettingsDto;
+    settings: PhysicalModelSettings;
     id?: string | undefined;
 }
 
@@ -3612,7 +3654,7 @@ export class ModelResponse implements IModelResponse {
     id!: string;
     name!: string;
     description!: string;
-    settings!: ModelSettingsResponse;
+    settings!: PhysicalModelSettings;
     nodes?: NodeResponse[] | undefined;
     element1ds?: Element1DResponse[] | undefined;
     materials?: MaterialResponse[] | undefined;
@@ -3628,7 +3670,7 @@ export class ModelResponse implements IModelResponse {
             }
         }
         if (!data) {
-            this.settings = new ModelSettingsResponse();
+            this.settings = new PhysicalModelSettings();
         }
     }
 
@@ -3637,7 +3679,7 @@ export class ModelResponse implements IModelResponse {
             this.id = _data["id"];
             this.name = _data["name"];
             this.description = _data["description"];
-            this.settings = _data["settings"] ? ModelSettingsResponse.fromJS(_data["settings"]) : new ModelSettingsResponse();
+            this.settings = _data["settings"] ? PhysicalModelSettings.fromJS(_data["settings"]) : new PhysicalModelSettings();
             if (Array.isArray(_data["nodes"])) {
                 this.nodes = [] as any;
                 for (let item of _data["nodes"])
@@ -3722,7 +3764,7 @@ export interface IModelResponse {
     id: string;
     name: string;
     description: string;
-    settings: ModelSettingsResponse;
+    settings: PhysicalModelSettings;
     nodes?: NodeResponse[] | undefined;
     element1ds?: Element1DResponse[] | undefined;
     materials?: MaterialResponse[] | undefined;
@@ -3858,6 +3900,64 @@ export interface IModelResponseHydrated {
     sectionProfiles: SectionProfileResponse[];
     pointLoads: PointLoadResponse[];
     momentLoads: MomentLoadResponse[];
+}
+
+export class ModelResultResponse implements IModelResultResponse {
+    modelId!: string;
+    maxShear!: UnitValueDto;
+    minShear!: UnitValueDto;
+    maxMoment!: UnitValueDto;
+    minMoment!: UnitValueDto;
+
+    constructor(data?: IModelResultResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.maxShear = new UnitValueDto();
+            this.minShear = new UnitValueDto();
+            this.maxMoment = new UnitValueDto();
+            this.minMoment = new UnitValueDto();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.modelId = _data["modelId"];
+            this.maxShear = _data["maxShear"] ? UnitValueDto.fromJS(_data["maxShear"]) : new UnitValueDto();
+            this.minShear = _data["minShear"] ? UnitValueDto.fromJS(_data["minShear"]) : new UnitValueDto();
+            this.maxMoment = _data["maxMoment"] ? UnitValueDto.fromJS(_data["maxMoment"]) : new UnitValueDto();
+            this.minMoment = _data["minMoment"] ? UnitValueDto.fromJS(_data["minMoment"]) : new UnitValueDto();
+        }
+    }
+
+    static fromJS(data: any): ModelResultResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ModelResultResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["modelId"] = this.modelId;
+        data["maxShear"] = this.maxShear ? this.maxShear.toJSON() : <any>undefined;
+        data["minShear"] = this.minShear ? this.minShear.toJSON() : <any>undefined;
+        data["maxMoment"] = this.maxMoment ? this.maxMoment.toJSON() : <any>undefined;
+        data["minMoment"] = this.minMoment ? this.minMoment.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IModelResultResponse {
+    modelId: string;
+    maxShear: UnitValueDto;
+    minShear: UnitValueDto;
+    maxMoment: UnitValueDto;
+    minMoment: UnitValueDto;
 }
 
 export class ModelSettingsRequest implements IModelSettingsRequest {
@@ -4310,10 +4410,11 @@ export interface IPatchRestraintRequest {
     canRotateAboutZ?: boolean | undefined;
 }
 
-export class PhysicalModelSettingsDto implements IPhysicalModelSettingsDto {
+export class PhysicalModelSettings implements IPhysicalModelSettings {
     unitSettings!: UnitSettingsDtoVerbose;
+    yAxisUp!: boolean;
 
-    constructor(data?: IPhysicalModelSettingsDto) {
+    constructor(data?: IPhysicalModelSettings) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -4328,12 +4429,13 @@ export class PhysicalModelSettingsDto implements IPhysicalModelSettingsDto {
     init(_data?: any) {
         if (_data) {
             this.unitSettings = _data["unitSettings"] ? UnitSettingsDtoVerbose.fromJS(_data["unitSettings"]) : new UnitSettingsDtoVerbose();
+            this.yAxisUp = _data["yAxisUp"];
         }
     }
 
-    static fromJS(data: any): PhysicalModelSettingsDto {
+    static fromJS(data: any): PhysicalModelSettings {
         data = typeof data === 'object' ? data : {};
-        let result = new PhysicalModelSettingsDto();
+        let result = new PhysicalModelSettings();
         result.init(data);
         return result;
     }
@@ -4341,12 +4443,14 @@ export class PhysicalModelSettingsDto implements IPhysicalModelSettingsDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["unitSettings"] = this.unitSettings ? this.unitSettings.toJSON() : <any>undefined;
+        data["yAxisUp"] = this.yAxisUp;
         return data;
     }
 }
 
-export interface IPhysicalModelSettingsDto {
+export interface IPhysicalModelSettings {
     unitSettings: UnitSettingsDtoVerbose;
+    yAxisUp: boolean;
 }
 
 export class Point implements IPoint {

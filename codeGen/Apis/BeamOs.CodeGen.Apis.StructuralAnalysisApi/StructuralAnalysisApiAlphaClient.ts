@@ -18,6 +18,16 @@ export interface IStructuralAnalysisApiAlphaClient {
     /**
      * @return OK
      */
+    getSingleNodeResult(body: IdRequest): Promise<NodeResultResponse[]>;
+
+    /**
+     * @return OK
+     */
+    getModelResults(body: IdRequest): Promise<ModelResultResponse>;
+
+    /**
+     * @return OK
+     */
     createSectionProfile(body: CreateSectionProfileRequest): Promise<SectionProfileResponse>;
 
     /**
@@ -79,6 +89,11 @@ export interface IStructuralAnalysisApiAlphaClient {
      * @return OK
      */
     getShearDiagram(body: IdRequest): Promise<ShearDiagramResponse>;
+
+    /**
+     * @return OK
+     */
+    getMomentDiagram(body: IdRequest): Promise<MomentDiagramResponse>;
 
     /**
      * @return OK
@@ -145,6 +160,95 @@ export class StructuralAnalysisApiAlphaClient implements IStructuralAnalysisApiA
             });
         }
         return Promise.resolve<AnalyticalModelResponse3>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    getSingleNodeResult(body: IdRequest): Promise<NodeResultResponse[]> {
+        let url_ = this.baseUrl + "/StructuralAnalysisApiAlphaClient/GetSingleNodeResult";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetSingleNodeResult(_response);
+        });
+    }
+
+    protected processGetSingleNodeResult(response: Response): Promise<NodeResultResponse[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(NodeResultResponse.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<NodeResultResponse[]>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    getModelResults(body: IdRequest): Promise<ModelResultResponse> {
+        let url_ = this.baseUrl + "/StructuralAnalysisApiAlphaClient/GetModelResults";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetModelResults(_response);
+        });
+    }
+
+    protected processGetModelResults(response: Response): Promise<ModelResultResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ModelResultResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ModelResultResponse>(null as any);
     }
 
     /**
@@ -698,6 +802,47 @@ export class StructuralAnalysisApiAlphaClient implements IStructuralAnalysisApiA
     /**
      * @return OK
      */
+    getMomentDiagram(body: IdRequest): Promise<MomentDiagramResponse> {
+        let url_ = this.baseUrl + "/StructuralAnalysisApiAlphaClient/GetMomentDiagram";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetMomentDiagram(_response);
+        });
+    }
+
+    protected processGetMomentDiagram(response: Response): Promise<MomentDiagramResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MomentDiagramResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<MomentDiagramResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
     createElement1d(body: CreateElement1dRequest): Promise<Element1DResponse> {
         let url_ = this.baseUrl + "/StructuralAnalysisApiAlphaClient/CreateElement1d";
         url_ = url_.replace(/[?&]$/, "");
@@ -983,7 +1128,7 @@ export interface ICreateMaterialRequest {
 export class CreateModelRequest implements ICreateModelRequest {
     name!: string;
     description!: string;
-    settings!: PhysicalModelSettingsDto;
+    settings!: PhysicalModelSettings;
     id?: string | undefined;
 
     constructor(data?: ICreateModelRequest) {
@@ -994,7 +1139,7 @@ export class CreateModelRequest implements ICreateModelRequest {
             }
         }
         if (!data) {
-            this.settings = new PhysicalModelSettingsDto();
+            this.settings = new PhysicalModelSettings();
         }
     }
 
@@ -1002,7 +1147,7 @@ export class CreateModelRequest implements ICreateModelRequest {
         if (_data) {
             this.name = _data["name"];
             this.description = _data["description"];
-            this.settings = _data["settings"] ? PhysicalModelSettingsDto.fromJS(_data["settings"]) : new PhysicalModelSettingsDto();
+            this.settings = _data["settings"] ? PhysicalModelSettings.fromJS(_data["settings"]) : new PhysicalModelSettings();
             this.id = _data["id"];
         }
     }
@@ -1027,7 +1172,7 @@ export class CreateModelRequest implements ICreateModelRequest {
 export interface ICreateModelRequest {
     name: string;
     description: string;
-    settings: PhysicalModelSettingsDto;
+    settings: PhysicalModelSettings;
     id?: string | undefined;
 }
 
@@ -1801,7 +1946,7 @@ export class ModelResponse implements IModelResponse {
     id!: string;
     name!: string;
     description!: string;
-    settings!: ModelSettingsResponse;
+    settings!: PhysicalModelSettings;
     nodes?: NodeResponse[] | undefined;
     element1ds?: Element1DResponse[] | undefined;
     materials?: MaterialResponse[] | undefined;
@@ -1817,7 +1962,7 @@ export class ModelResponse implements IModelResponse {
             }
         }
         if (!data) {
-            this.settings = new ModelSettingsResponse();
+            this.settings = new PhysicalModelSettings();
         }
     }
 
@@ -1826,7 +1971,7 @@ export class ModelResponse implements IModelResponse {
             this.id = _data["id"];
             this.name = _data["name"];
             this.description = _data["description"];
-            this.settings = _data["settings"] ? ModelSettingsResponse.fromJS(_data["settings"]) : new ModelSettingsResponse();
+            this.settings = _data["settings"] ? PhysicalModelSettings.fromJS(_data["settings"]) : new PhysicalModelSettings();
             if (Array.isArray(_data["nodes"])) {
                 this.nodes = [] as any;
                 for (let item of _data["nodes"])
@@ -1911,7 +2056,7 @@ export interface IModelResponse {
     id: string;
     name: string;
     description: string;
-    settings: ModelSettingsResponse;
+    settings: PhysicalModelSettings;
     nodes?: NodeResponse[] | undefined;
     element1ds?: Element1DResponse[] | undefined;
     materials?: MaterialResponse[] | undefined;
@@ -2049,6 +2194,64 @@ export interface IModelResponseHydrated {
     momentLoads: MomentLoadResponse[];
 }
 
+export class ModelResultResponse implements IModelResultResponse {
+    modelId!: string;
+    maxShear!: UnitValueDto;
+    minShear!: UnitValueDto;
+    maxMoment!: UnitValueDto;
+    minMoment!: UnitValueDto;
+
+    constructor(data?: IModelResultResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.maxShear = new UnitValueDto();
+            this.minShear = new UnitValueDto();
+            this.maxMoment = new UnitValueDto();
+            this.minMoment = new UnitValueDto();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.modelId = _data["modelId"];
+            this.maxShear = _data["maxShear"] ? UnitValueDto.fromJS(_data["maxShear"]) : new UnitValueDto();
+            this.minShear = _data["minShear"] ? UnitValueDto.fromJS(_data["minShear"]) : new UnitValueDto();
+            this.maxMoment = _data["maxMoment"] ? UnitValueDto.fromJS(_data["maxMoment"]) : new UnitValueDto();
+            this.minMoment = _data["minMoment"] ? UnitValueDto.fromJS(_data["minMoment"]) : new UnitValueDto();
+        }
+    }
+
+    static fromJS(data: any): ModelResultResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ModelResultResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["modelId"] = this.modelId;
+        data["maxShear"] = this.maxShear ? this.maxShear.toJSON() : <any>undefined;
+        data["minShear"] = this.minShear ? this.minShear.toJSON() : <any>undefined;
+        data["maxMoment"] = this.maxMoment ? this.maxMoment.toJSON() : <any>undefined;
+        data["minMoment"] = this.minMoment ? this.minMoment.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IModelResultResponse {
+    modelId: string;
+    maxShear: UnitValueDto;
+    minShear: UnitValueDto;
+    maxMoment: UnitValueDto;
+    minMoment: UnitValueDto;
+}
+
 export class ModelSettingsResponse implements IModelSettingsResponse {
     unitSettings!: UnitSettingsResponse;
 
@@ -2086,6 +2289,74 @@ export class ModelSettingsResponse implements IModelSettingsResponse {
 
 export interface IModelSettingsResponse {
     unitSettings: UnitSettingsResponse;
+}
+
+export class MomentDiagramResponse implements IMomentDiagramResponse {
+    id!: string;
+    element1DId!: string;
+    lengthUnit!: string;
+    forceUnit!: string;
+    elementLength!: UnitValueDto;
+    intervals!: DiagramConsistantIntervalResponse[];
+
+    constructor(data?: IMomentDiagramResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.elementLength = new UnitValueDto();
+            this.intervals = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.element1DId = _data["element1DId"];
+            this.lengthUnit = _data["lengthUnit"];
+            this.forceUnit = _data["forceUnit"];
+            this.elementLength = _data["elementLength"] ? UnitValueDto.fromJS(_data["elementLength"]) : new UnitValueDto();
+            if (Array.isArray(_data["intervals"])) {
+                this.intervals = [] as any;
+                for (let item of _data["intervals"])
+                    this.intervals!.push(DiagramConsistantIntervalResponse.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): MomentDiagramResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new MomentDiagramResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["element1DId"] = this.element1DId;
+        data["lengthUnit"] = this.lengthUnit;
+        data["forceUnit"] = this.forceUnit;
+        data["elementLength"] = this.elementLength ? this.elementLength.toJSON() : <any>undefined;
+        if (Array.isArray(this.intervals)) {
+            data["intervals"] = [];
+            for (let item of this.intervals)
+                data["intervals"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IMomentDiagramResponse {
+    id: string;
+    element1DId: string;
+    lengthUnit: string;
+    forceUnit: string;
+    elementLength: UnitValueDto;
+    intervals: DiagramConsistantIntervalResponse[];
 }
 
 export class MomentLoadResponse implements IMomentLoadResponse {
@@ -2392,10 +2663,11 @@ export interface IPatchRestraintRequest {
     canRotateAboutZ?: boolean | undefined;
 }
 
-export class PhysicalModelSettingsDto implements IPhysicalModelSettingsDto {
+export class PhysicalModelSettings implements IPhysicalModelSettings {
     unitSettings!: UnitSettingsDtoVerbose;
+    yAxisUp!: boolean;
 
-    constructor(data?: IPhysicalModelSettingsDto) {
+    constructor(data?: IPhysicalModelSettings) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -2410,12 +2682,13 @@ export class PhysicalModelSettingsDto implements IPhysicalModelSettingsDto {
     init(_data?: any) {
         if (_data) {
             this.unitSettings = _data["unitSettings"] ? UnitSettingsDtoVerbose.fromJS(_data["unitSettings"]) : new UnitSettingsDtoVerbose();
+            this.yAxisUp = _data["yAxisUp"];
         }
     }
 
-    static fromJS(data: any): PhysicalModelSettingsDto {
+    static fromJS(data: any): PhysicalModelSettings {
         data = typeof data === 'object' ? data : {};
-        let result = new PhysicalModelSettingsDto();
+        let result = new PhysicalModelSettings();
         result.init(data);
         return result;
     }
@@ -2423,12 +2696,14 @@ export class PhysicalModelSettingsDto implements IPhysicalModelSettingsDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["unitSettings"] = this.unitSettings ? this.unitSettings.toJSON() : <any>undefined;
+        data["yAxisUp"] = this.yAxisUp;
         return data;
     }
 }
 
-export interface IPhysicalModelSettingsDto {
+export interface IPhysicalModelSettings {
     unitSettings: UnitSettingsDtoVerbose;
+    yAxisUp: boolean;
 }
 
 export class Point implements IPoint {

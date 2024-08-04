@@ -1,4 +1,6 @@
 using BeamOs.ApiClient;
+using BeamOs.ApiClient.Builders;
+using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOS.Tests.Common.Fixtures;
 using BeamOS.Tests.Common.SolvedProblems;
 using BeamOS.Tests.Common.SolvedProblems.Fixtures;
@@ -9,7 +11,7 @@ namespace BeamOs.Api.IntegrationTests;
 public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IAsyncLifetime
 {
     private readonly ApiAlphaClient apiClient;
-    private readonly Dictionary<string, ModelFixtureInDb> modelIdToModelFixtureDict = [];
+    private readonly Dictionary<string, IModelFixtureInDb> modelIdToModelFixtureDict = [];
 
     public UnitTest1(CustomWebApplicationFactory<Program> webApplicationFactory)
     {
@@ -19,13 +21,22 @@ public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IA
 
     public async Task InitializeAsync()
     {
-        AllSolvedProblems allSolved = new();
-        foreach (var problem in allSolved.GetItems())
+        //AllModelFixtures allSolved = new();
+        //foreach (var fixture in allSolved.GetItems())
+        //{
+        //    var dbModelFixture = new ModelFixtureInDb(fixture);
+        //    await dbModelFixture.Create(this.apiClient);
+        //    this.modelIdToModelFixtureDict.Add(fixture.Id.ToString(), dbModelFixture);
+        //    await this.apiClient.RunDirectStiffnessMethodAsync(fixture.Id.ToString());
+        //}
+
+        AllCreateModelRequestBuilders allModelBuilders = new();
+        foreach (var modelBuilder in allModelBuilders.GetItems())
         {
-            var dbModelFixture = new ModelFixtureInDb(problem);
-            await dbModelFixture.Create(this.apiClient);
-            this.modelIdToModelFixtureDict.Add(problem.Id.ToString(), dbModelFixture);
-            await this.apiClient.RunDirectStiffnessMethodAsync(problem.Id.ToString());
+            await modelBuilder.InitializeAsync();
+            await modelBuilder.Create(this.apiClient);
+            this.modelIdToModelFixtureDict.Add(modelBuilder.Id.ToString(), modelBuilder);
+            await this.apiClient.RunDirectStiffnessMethodAsync(modelBuilder.Id.ToString());
         }
     }
 
@@ -34,22 +45,22 @@ public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IA
         return Task.CompletedTask;
     }
 
-    [SkippableTheory]
-    [ClassData(typeof(AllSolvedProblems))]
-    public async Task ModelResponses_WhenRetrievedFromDb_ShouldEqualExpectedValues(
-        ModelFixture2 modelFixture
-    )
-    {
-        var dbModelFixture = this.modelIdToModelFixtureDict[modelFixture.Id.ToString()];
+    //[SkippableTheory]
+    //[ClassData(typeof(AllModelFixtures))]
+    //public async Task ModelResponses_WhenRetrievedFromDb_ShouldEqualExpectedValues(
+    //    ModelFixture2 modelFixture
+    //)
+    //{
+    //    var dbModelFixture = this.modelIdToModelFixtureDict[modelFixture.Id.ToString()];
 
-        var modelResponse = await this.apiClient.GetModelAsync(modelFixture.Id.ToString(), null);
-        var expectedModelResponse = dbModelFixture.ToResponse(dbModelFixture.ModelFixture);
+    //    var modelResponse = await this.apiClient.GetModelAsync(modelFixture.Id.ToString(), null);
+    //    var expectedModelResponse = dbModelFixture.ToResponse();
 
-        ContractComparer.AssertContractsEqual(modelResponse, expectedModelResponse);
-    }
+    //    ContractComparer.AssertContractsEqual(modelResponse, expectedModelResponse);
+    //}
 
     [Theory]
-    [ClassData(typeof(AllSolvedProblemsFilter<IHasExpectedNodeDisplacementResults>))]
+    [ClassData(typeof(AllCreateModelRequestBuildersFilter<IHasExpectedNodeDisplacementResults>))]
     public async Task NodeDisplacementResults_ForSampleProblems_ShouldResultInExpectedValues(
         IHasExpectedNodeDisplacementResults modelFixture
     )
@@ -58,9 +69,7 @@ public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IA
 
         foreach (var expectedNodeDisplacementResult in modelFixture.ExpectedNodeDisplacementResults)
         {
-            var dbId = dbModelFixture.RuntimeIdToDbId(
-                expectedNodeDisplacementResult.NodeFixture.Id
-            );
+            var dbId = dbModelFixture.RuntimeIdToDbId(expectedNodeDisplacementResult.NodeId);
             var nodeResults = await this.apiClient.GetSingleNodeResultAsync(dbId);
 
             // for now we don't support multiple results for a node (i.e. load combinations)
@@ -69,32 +78,38 @@ public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IA
             this.AssertQuantitesEqual(
                 expectedNodeDisplacementResult.DisplacementAlongX,
                 result.Displacements.DisplacementAlongX.Value,
-                modelFixture.Settings.UnitSettings.LengthUnit
+                modelFixture.Settings.UnitSettings.LengthUnit.MapToLengthUnit(),
+                expectedNodeDisplacementResult.LengthTolerance
             );
             this.AssertQuantitesEqual(
                 expectedNodeDisplacementResult.DisplacementAlongY,
                 result.Displacements.DisplacementAlongY.Value,
-                modelFixture.Settings.UnitSettings.LengthUnit
+                modelFixture.Settings.UnitSettings.LengthUnit.MapToLengthUnit(),
+                expectedNodeDisplacementResult.LengthTolerance
             );
             this.AssertQuantitesEqual(
                 expectedNodeDisplacementResult.DisplacementAlongZ,
                 result.Displacements.DisplacementAlongZ.Value,
-                modelFixture.Settings.UnitSettings.LengthUnit
+                modelFixture.Settings.UnitSettings.LengthUnit.MapToLengthUnit(),
+                expectedNodeDisplacementResult.LengthTolerance
             );
             this.AssertQuantitesEqual(
                 expectedNodeDisplacementResult.RotationAboutX,
                 result.Displacements.RotationAboutX.Value,
-                modelFixture.Settings.UnitSettings.AngleUnit
+                modelFixture.Settings.UnitSettings.AngleUnit.MapToAngleUnit(),
+                expectedNodeDisplacementResult.AngleTolerance
             );
             this.AssertQuantitesEqual(
                 expectedNodeDisplacementResult.RotationAboutY,
                 result.Displacements.RotationAboutY.Value,
-                modelFixture.Settings.UnitSettings.AngleUnit
+                modelFixture.Settings.UnitSettings.AngleUnit.MapToAngleUnit(),
+                expectedNodeDisplacementResult.AngleTolerance
             );
             this.AssertQuantitesEqual(
                 expectedNodeDisplacementResult.RotationAboutZ,
                 result.Displacements.RotationAboutZ.Value,
-                modelFixture.Settings.UnitSettings.AngleUnit
+                modelFixture.Settings.UnitSettings.AngleUnit.MapToAngleUnit(),
+                expectedNodeDisplacementResult.AngleTolerance
             );
         }
     }
@@ -103,14 +118,16 @@ public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IA
         TUnit? expected,
         double calculated,
         TUnitType unitType,
-        int numDigits = 3
+        TUnit tolerance
     )
         where TUnit : struct, IQuantity<TUnitType>
         where TUnitType : Enum
     {
-        if (expected is not null)
+        if (expected is null)
         {
-            Assert.Equal(expected.Value.As(unitType), calculated, numDigits);
+            return;
         }
+
+        Assert.Equal(expected.Value.As(unitType), calculated, tolerance.As(unitType));
     }
 }

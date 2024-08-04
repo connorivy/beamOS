@@ -1,4 +1,4 @@
-using BeamOs.Api.Common.Mappers;
+using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Common.Application.Interfaces;
 using BeamOs.Domain.Common.ValueObjects;
 using UnitsNet;
@@ -10,7 +10,7 @@ public class PatchPointCommandHandler : ICommandHandlerSync<PatchPointCommand, P
 {
     public Point Execute(PatchPointCommand command)
     {
-        LengthUnit lengthUnit = command.PatchRequest.LengthUnit.MapToLengthUnit();
+        LengthUnit lengthUnit = UnitsNetMappers.MapToLengthUnit(command.PatchRequest.LengthUnit);
 
         return new Point(
             command.PatchRequest.XCoordinate.HasValue

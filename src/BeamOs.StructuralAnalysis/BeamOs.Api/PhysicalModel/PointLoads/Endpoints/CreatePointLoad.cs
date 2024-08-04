@@ -11,7 +11,6 @@ namespace BeamOs.Api.PhysicalModel.PointLoads.Endpoints;
 
 public class CreatePointLoad(
     BeamOsFastEndpointOptions options,
-    CreatePointLoadRequestMapper requestMapper,
     CreatePointLoadCommandHandler createPointLoadCommandHandler,
     PointLoadResponseMapper responseMapper
 ) : BeamOsFastEndpoint<CreatePointLoadRequest, PointLoadResponse>(options)
@@ -32,9 +31,7 @@ public class CreatePointLoad(
         CancellationToken ct
     )
     {
-        var command = requestMapper.Map(req);
-
-        PointLoad node = await createPointLoadCommandHandler.ExecuteAsync(command, ct);
+        PointLoad node = await createPointLoadCommandHandler.ExecuteAsync(req, ct);
 
         var response = responseMapper.Map(node);
         return response;

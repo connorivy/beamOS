@@ -11,6 +11,7 @@
 @using BeamOs.Contracts.PhysicalModel.Element1d
 @using BeamOs.Contracts.PhysicalModel.Model
 @using BeamOs.Contracts.PhysicalModel.Node
+@using BeamOs.Contracts.PhysicalModel.PointLoad
 @using Fluxor.Blazor.Web.Components
 @using static BeamOS.WebApp.Client.Components.Editor.EditorComponent
 @using BeamOS.WebApp.Client.Components.Editor.CommandHandlers;
@@ -27,6 +28,7 @@
     <MudButton OnClick="RunAnalysis">Run DSM</MudButton>
     <MudButton OnClick="LoadShearDiagrams">Show Shear Diagrams</MudButton>
     <MudButton OnClick="LoadMomentDiagrams">Show Moment Diagrams</MudButton>
+    <MudButton OnClick="ShowReactions">Show Reactions</MudButton>
     @if (editorComponent is not null)
     {
         <MudPopover Open="@(editorComponent.EditorComponentState.SelectedObjects.Length > 0)" Fixed="true" Class="w-80 m-2">
@@ -60,6 +62,9 @@
 
     private async Task LoadShearDiagrams()
     {
+        var modelResults = await this.ApiAlphaClient.GetModelResultsAsync(editorComponent.EditorComponentState.LoadedModelId);
+        await this.editorComponent.EditorApiAlpha.SetModelResultsAsync(modelResults);
+
         var loadedElement1dIds = this.allStructuralAnalysisModelCaches.GetByModelId(editorComponent.EditorComponentState.LoadedModelId)
         .GetEntityIdsOfType<Element1DResponse>();
 
@@ -72,6 +77,9 @@
 
     private async Task LoadMomentDiagrams()
     {
+        var modelResults = await this.ApiAlphaClient.GetModelResultsAsync(editorComponent.EditorComponentState.LoadedModelId);
+        await this.editorComponent.EditorApiAlpha.SetModelResultsAsync(modelResults);
+
         var loadedElement1dIds = this.allStructuralAnalysisModelCaches.GetByModelId(editorComponent.EditorComponentState.LoadedModelId)
         .GetEntityIdsOfType<Element1DResponse>();
 
@@ -90,5 +98,32 @@
     private async Task RunAnalysis()
     {
         await ApiAlphaClient.RunDirectStiffnessMethodAsync(editorComponent.EditorComponentState.LoadedModelId);
+    }
+
+    private async Task ShowReactions()
+    {
+        var loadedNodeIds = this.allStructuralAnalysisModelCaches.GetByModelId(editorComponent.EditorComponentState.LoadedModelId)
+        .GetEntityIdsOfType<NodeResponse>();
+
+        double forcesTotal = 0;
+        foreach (var nodeId in loadedNodeIds)
+        {
+            var forces = await this.ApiAlphaClient.GetSingleNodeResultAsync(nodeId);
+            foreach (var force in forces)
+            {
+                forcesTotal += force.Forces.ForceAlongY.Value;
+                if (Math.Abs(force.Forces.ForceAlongY.Value) < .0001)
+                {
+                    continue;
+                }
+
+                await this.AddEntityContractToEditorCommandHandler.ExecuteAsync(new AddEntityToEditorCommand(this.editorComponent.ElementId,
+                    new PointLoadResponse(Guid.NewGuid().ToString(),
+                    this.editorComponent.EditorComponentState.LoadedModelId,
+                    nodeId,
+                    force.Forces.ForceAlongY,
+                    new(0, 1, 0))));
+            }
+        }
     }
 }

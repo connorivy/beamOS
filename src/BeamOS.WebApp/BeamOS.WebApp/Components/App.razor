@@ -1,7 +1,9 @@
 @using BeamOS.WebApp.Client.Features.KeyBindings
+@using BeamOS.WebApp.Components.Providers
 @using Microsoft.Extensions.Configuration
 @using BeamOS.WebApp.Client
 @inject IConfiguration Configuration
+@inject IRenderModeProvider RenderModeProvider
 
 <Fluxor.Blazor.Web.StoreInitializer />
 
@@ -18,19 +20,12 @@
     <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
     <link href="_content/CodeBeam.MudBlazor.Extensions/MudExtensions.min.css" rel="stylesheet" />
 
-    @* Highlight.js *@
-    @* todo: npm install instead *@
-    @* <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/csharp.min.js" defer></script>
-    <script>hljs.highlightAll();</script> *@
-
     @* https://github.com/MudBlazor/MudBlazor/issues/7805 *@
-    <HeadOutlet @rendermode="new InteractiveServerRenderMode(prerender: false)" />
+    <HeadOutlet @rendermode="RenderModeProvider.GlobalRenderMode" />
 </head>
 
 <body class="h-screen">
-    <Routes @rendermode="new InteractiveServerRenderMode(prerender: false)" />
+    <Routes @rendermode="RenderModeProvider.GlobalRenderMode" />
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
     <script src="_content/CodeBeam.MudBlazor.Extensions/MudExtensions.min.js"></script>
     <script src="_framework/blazor.web.js"></script>
@@ -53,7 +48,7 @@
     else
     {
         <script type="module">
-            import { BeamOsEditor } from 'https://cdn.jsdelivr.net/npm/beamos-editor@0.0/+esm';
+            import { BeamOsEditor } from 'https://cdn.jsdelivr.net/npm/beamos-editor@0.0.10/+esm';
 
             // WARNING : the string "createEditorFromId" must match the string in EditorApiProxy.cs
             window.createEditorFromId = (editorId, dispatcher, isReadOnly) => {

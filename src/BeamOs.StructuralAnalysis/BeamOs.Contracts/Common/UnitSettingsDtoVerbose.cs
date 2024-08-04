@@ -8,7 +8,8 @@ public record UnitSettingsDtoVerbose(
     string ForceUnit,
     string TorqueUnit,
     string ForcePerLengthUnit,
-    string PressureUnit
+    string PressureUnit,
+    string AngleUnit = "Radian"
 )
 {
     public static UnitSettingsDtoVerbose K_IN { get; } =
@@ -45,6 +46,18 @@ public record UnitSettingsDtoVerbose(
             "NewtonMeter",
             "NewtonPerMeter",
             "NewtonPerSquareMeter"
+        );
+
+    public static UnitSettingsDtoVerbose kN_M { get; } =
+        new(
+            "Meter",
+            "SquareMeter",
+            "CubicMeter",
+            "MeterToTheFourth",
+            "Kilonewton",
+            "KilonewtonMeter",
+            "KilonewtonPerMeter",
+            "KilonewtonPerSquareMeter"
         );
 }
 

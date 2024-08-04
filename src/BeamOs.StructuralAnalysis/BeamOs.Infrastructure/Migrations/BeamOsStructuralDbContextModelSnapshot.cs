@@ -23,6 +23,33 @@ namespace BeamOs.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("BeamOs.Domain.AnalyticalResults.ModelResultAggregate.ModelResult", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("MaxMoment")
+                        .HasColumnType("float");
+
+                    b.Property<double>("MaxShear")
+                        .HasColumnType("float");
+
+                    b.Property<double>("MinMoment")
+                        .HasColumnType("float");
+
+                    b.Property<double>("MinShear")
+                        .HasColumnType("float");
+
+                    b.Property<Guid>("ModelId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ModelId");
+
+                    b.ToTable("ModelResults");
+                });
+
             modelBuilder.Entity("BeamOs.Domain.AnalyticalResults.NodeResultAggregate.NodeResult", b =>
                 {
                     b.Property<Guid>("Id")
@@ -258,6 +285,17 @@ namespace BeamOs.Infrastructure.Migrations
                         {
                             b1.IsRequired();
 
+                            b1.Property<bool>("YAxisUp")
+                                .HasColumnType("bit");
+
+                            b1.ComplexProperty<Dictionary<string, object>>("AnalysisSettings", "BeamOs.Domain.PhysicalModel.ModelAggregate.Model.Settings#ModelSettings.AnalysisSettings#AnalysisSettings", b2 =>
+                                {
+                                    b2.IsRequired();
+
+                                    b2.Property<int>("Element1DAnalysisType")
+                                        .HasColumnType("int");
+                                });
+
                             b1.ComplexProperty<Dictionary<string, object>>("UnitSettings", "BeamOs.Domain.PhysicalModel.ModelAggregate.Model.Settings#ModelSettings.UnitSettings#UnitSettings", b2 =>
                                 {
                                     b2.IsRequired();
@@ -393,6 +431,8 @@ namespace BeamOs.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ModelId");
+
                     b.HasIndex("NodeId");
 
                     b.ToTable("PointLoads");
@@ -415,7 +455,13 @@ namespace BeamOs.Infrastructure.Migrations
                     b.Property<double>("StrongAxisMomentOfInertia")
                         .HasColumnType("float");
 
+                    b.Property<double>("StrongAxisShearArea")
+                        .HasColumnType("float");
+
                     b.Property<double>("WeakAxisMomentOfInertia")
+                        .HasColumnType("float");
+
+                    b.Property<double>("WeakAxisShearArea")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
@@ -423,6 +469,15 @@ namespace BeamOs.Infrastructure.Migrations
                     b.HasIndex("ModelId");
 
                     b.ToTable("SectionProfiles");
+                });
+
+            modelBuilder.Entity("BeamOs.Domain.AnalyticalResults.ModelResultAggregate.ModelResult", b =>
+                {
+                    b.HasOne("BeamOs.Domain.PhysicalModel.ModelAggregate.Model", null)
+                        .WithMany("ModelResults")
+                        .HasForeignKey("ModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("BeamOs.Domain.AnalyticalResults.NodeResultAggregate.NodeResult", b =>
@@ -515,10 +570,16 @@ namespace BeamOs.Infrastructure.Migrations
 
             modelBuilder.Entity("BeamOs.Domain.PhysicalModel.PointLoadAggregate.PointLoad", b =>
                 {
+                    b.HasOne("BeamOs.Domain.PhysicalModel.ModelAggregate.Model", null)
+                        .WithMany("PointLoads")
+                        .HasForeignKey("ModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("BeamOs.Domain.PhysicalModel.NodeAggregate.Node", null)
                         .WithMany("PointLoads")
                         .HasForeignKey("NodeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
                 });
 
@@ -547,7 +608,11 @@ namespace BeamOs.Infrastructure.Migrations
 
                     b.Navigation("Materials");
 
+                    b.Navigation("ModelResults");
+
                     b.Navigation("Nodes");
+
+                    b.Navigation("PointLoads");
 
                     b.Navigation("SectionProfiles");
                 });

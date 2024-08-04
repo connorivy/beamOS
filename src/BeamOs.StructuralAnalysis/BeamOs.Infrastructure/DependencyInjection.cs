@@ -1,4 +1,5 @@
 using BeamOs.Application.AnalyticalResults.Diagrams.ShearDiagrams.Interfaces;
+using BeamOs.Application.AnalyticalResults.ModelResults;
 using BeamOs.Application.AnalyticalResults.NodeResults;
 using BeamOs.Application.Common.Interfaces;
 using BeamOs.Application.Common.Interfaces.Repositories;
@@ -12,6 +13,7 @@ using BeamOs.Application.PhysicalModel.SectionProfiles;
 using BeamOs.Common.Application.Interfaces;
 using BeamOs.Infrastructure.Interceptors;
 using BeamOs.Infrastructure.Repositories.AnalyticalResults.Diagrams.ShearDiagrams;
+using BeamOs.Infrastructure.Repositories.AnalyticalResults.ModelResults;
 using BeamOs.Infrastructure.Repositories.AnalyticalResults.NodeResults;
 using BeamOs.Infrastructure.Repositories.PhysicalModel.Element1Ds;
 using BeamOs.Infrastructure.Repositories.PhysicalModel.Materials;
@@ -91,6 +93,7 @@ public static class DependencyInjection
             .AddScoped<INodeRepository, NodeDbContextRepository>()
             .AddScoped<IPointLoadRepository, PointLoadDbContextRepository>()
             .AddScoped<ISectionProfileRepository, SectionProfileDbContextRepository>()
+            .AddScoped<IModelResultRepository, ModelResultDbContextRepository>()
             .AddScoped<INodeResultRepository, NodeResultDbContextRepository>()
             .AddScoped<IShearDiagramRepository, ShearForceDiagramDbContextRepository>()
             .AddScoped<IMomentDiagramRepository, MomentDiagramDbContextRepository>();
@@ -120,15 +123,5 @@ public static class DependencyInjection
             }
         }
         return null;
-    }
-
-    public static IServiceCollection AddPhysicalModelInfrastructureReadModel(
-        this IServiceCollection services,
-        string connectionString
-    )
-    {
-        return services.AddDbContext<BeamOsStructuralReadModelDbContext>(
-            options => options.UseSqlServer(connectionString)
-        );
     }
 }

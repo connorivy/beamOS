@@ -1,20 +1,23 @@
+using System.Diagnostics;
 using System.Text;
 using BeamOs.Api;
 using BeamOs.Api.Common;
 using BeamOs.ApiClient;
+using BeamOs.Contracts.PhysicalModel.Common;
 using BeamOs.Infrastructure;
 using BeamOs.Tests.TestRunner;
 using BeamOS.WebApp;
 using BeamOS.WebApp.Client;
 using BeamOS.WebApp.Client.Components.Editor;
+using BeamOS.WebApp.Client.Features.Scratchpad;
 using BeamOS.WebApp.Components;
+using BeamOS.WebApp.Components.Providers;
 using BeamOS.WebApp.Hubs;
 using Blazored.LocalStorage;
-using FastEndpoints;
-using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,25 +46,12 @@ builder
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
-//builder.Services.AddFluentUIComponents();
-
-const string alphaRelease = "Alpha Release";
 builder
     .Services
-    .AddFastEndpoints()
-    .SwaggerDocument(o =>
-    {
-        o.DocumentSettings = s =>
-        {
-            s.DocumentName = alphaRelease;
-            s.Title = "beamOS api";
-            s.Version = "v0";
-            s.SchemaSettings.SchemaProcessors.Add(new MarkAsRequiredIfNonNullableSchemaProcessor());
-        };
-        o.ShortSchemaNames = true;
-        o.ExcludeNonFastEndpoints = true;
-        o.EndpointFilter = ed => ed.EndpointType.Assembly == typeof(IAssemblyMarkerApi).Assembly;
-    });
+    .AddAnalysisEndpoints()
+    .AddAnalysisEndpointServices()
+    .AddAnalysisEndpointOptions()
+    .AddAnalysisInfrastructure(builder.Configuration);
 
 string protocol =
     builder.Configuration["APPLICATION_URL_PROTOCOL"]
@@ -73,15 +63,6 @@ builder
         client => client.BaseAddress = new($"{protocol}://localhost:7111")
     );
 
-builder.Services.AddAnalysisApiServices();
-var connectionString =
-    builder.Configuration.GetConnectionString("AnalysisDbConnection")
-    ?? throw new InvalidOperationException("Connection string 'AnalysisDbConnection' not found.");
-builder
-    .Services
-    .AddDbContext<BeamOsStructuralDbContext>(options => options.UseSqlServer(connectionString))
-    .AddPhysicalModelInfrastructureReadModel(connectionString);
-
 UriProvider uriProvider = new(protocol);
 builder.Services.AddSingleton<IUriProvider>(uriProvider);
 builder.Services.AddSingleton<ICodeTestScoreTracker, CodeTestScoresTracker>();
@@ -89,6 +70,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddSingleton<BeamOs.IntegrationEvents.IEventBus, StructuralAnalysisHubEventBus>();
+builder.Services.AddScoped<IRenderModeProvider, RenderModeProvider>();
 
 builder
     .Services
@@ -125,16 +107,6 @@ builder
 
 builder.Services.RegisterSharedServices<Program>();
 
-builder
-    .Services
-    .AddCors(options =>
-    {
-        options.AddDefaultPolicy(policy =>
-        {
-            policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-        });
-    });
-
 var app = builder.Build();
 
 app.MapGet(
@@ -151,14 +123,20 @@ app.MapGet(
         )
 );
 
-app.AddBeamOsEndpointsForAnalysis();
+app.MapPost(
+    "/scratchpad-entity",
+    async (
+        [FromServices] IHubContext<ScratchpadHub, IScratchpadHubClient> hubContext,
+        BeamOsEntityContractBase entity,
+        [FromQuery] string connectionId
+    ) =>
+    {
+        Trace.WriteLine($"message with connectionId {connectionId}");
+        await hubContext.Clients.Client(connectionId).LoadEntityInViewer(entity);
+    }
+);
 
-//seed the DB
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<BeamOsStructuralDbContext>();
-    await dbContext.SeedAsync();
-}
+app.AddAnalysisEndpoints();
 
 //app.Use(
 //    async (context, next) =>
@@ -171,19 +149,26 @@ using (var scope = app.Services.CreateScope())
 //    }
 //);
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+using (var scope = app.Services.CreateScope())
 {
-    app.UseWebAssemblyDebugging();
-}
-else
-{
-    app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    var dbContext = scope.ServiceProvider.GetRequiredService<BeamOsStructuralDbContext>();
+    _ = dbContext.Database.EnsureCreated();
+
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseWebAssemblyDebugging();
+        await dbContext.SeedAsync();
+    }
+    else
+    {
+        app.UseExceptionHandler("/Error", createScopeForErrors: true);
+        // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+        app.UseHsts();
+    }
 }
 
 app.MapHub<StructuralAnalysisHub>(IStructuralAnalysisHubClient.HubEndpointPattern);
+app.MapHub<ScratchpadHub>(IScratchpadHubClient.HubEndpointPattern);
 
 app.UseStatusCodePagesWithRedirects("/404");
 

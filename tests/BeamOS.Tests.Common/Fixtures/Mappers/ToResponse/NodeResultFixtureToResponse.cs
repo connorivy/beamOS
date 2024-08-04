@@ -9,7 +9,7 @@ using Riok.Mapperly.Abstractions;
 namespace BeamOS.Tests.Common.SolvedProblems.Fixtures.Mappers.ToResponse;
 
 [Mapper]
-[UseStaticMapper(typeof(UnitsNetEnumMapper))]
+[UseStaticMapper(typeof(UnitsNetMappers))]
 public static partial class Element1dFixtureToResponseMapperStatic
 {
     public static partial Element1DResponse ToContract(this Element1dFixture2 fixture);
@@ -26,7 +26,7 @@ public class Element1dFixtureToResponseMapper : IFixtureMapper<Element1dFixture2
 }
 
 [Mapper]
-[UseStaticMapper(typeof(UnitsNetEnumMapper))]
+[UseStaticMapper(typeof(UnitsNetMappers))]
 public static partial class ModelFixtureToResponseMapperStatic
 {
     public static partial ModelResponse ToContract(this ModelFixture2 fixture);

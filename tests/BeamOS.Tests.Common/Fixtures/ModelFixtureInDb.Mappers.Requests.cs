@@ -12,15 +12,12 @@ namespace BeamOS.Tests.Common.SolvedProblems.Fixtures;
 
 public partial class ModelFixtureInDb
 {
-    public CreateModelRequest ToRequest(ModelFixtureInDb fixture)
+    public CreateModelRequest ToRequest()
     {
-        return new(
-            fixture.ModelFixture.Name,
-            fixture.ModelFixture.Description,
-            new PhysicalModelSettingsDto(fixture.ModelFixture.Settings.UnitSettings.ToContract()),
-            fixture.ModelFixture.Id.ToString()
-        );
+        return this.ToRequest(this.ModelFixture);
     }
+
+    public partial CreateModelRequest ToRequest(ModelFixture2 fixture);
 
     public partial CreateElement1dRequest ToRequest(Element1dFixture2 fixture);
 

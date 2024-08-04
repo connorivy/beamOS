@@ -14,9 +14,20 @@ namespace BeamOs.Domain.DirectStiffnessMethod;
 public class DsmAnalysisModel(Model model)
 {
     private readonly DsmElement1d[] dsmElement1Ds = model
-        .Element1ds
-        .Select(el => new DsmElement1d(el))
-        .ToArray();
+        .Settings
+        .AnalysisSettings
+        .Element1DAnalysisType switch
+    {
+        Element1dAnalysisType.Euler
+            => model.Element1ds.Select(el => new DsmElement1d(el)).ToArray(),
+        Element1dAnalysisType.Timoshenko
+            => model.Element1ds.Select(el => new TimoshenkoDsmElement1d(el)).ToArray(),
+        Element1dAnalysisType.Undefined
+        or _
+            => throw new Exception(
+                $"Unsupported Element1DAnalysisType {model.Settings.AnalysisSettings.Element1DAnalysisType}"
+            )
+    };
 
     private readonly DsmNodeVo[] dsmNodes = model.Nodes.Select(el => new DsmNodeVo(el)).ToArray();
 
@@ -54,49 +65,54 @@ public class DsmAnalysisModel(Model model)
             knownReactionVector
         );
 
-        List<ShearForceDiagram> shearForceDiagrams = [];
-        List<MomentDiagram> momentDiagrams = [];
+        ShearForceDiagram[] shearForceDiagrams = new ShearForceDiagram[this.dsmElement1Ds.Length];
+        MomentDiagram[] momentDiagrams = new MomentDiagram[this.dsmElement1Ds.Length];
 
-        foreach (var dsmElement1d in this.dsmElement1Ds)
+        double shearMin = double.MaxValue;
+        double shearMax = double.MinValue;
+        double momentMin = double.MaxValue;
+        double momentMax = double.MinValue;
+
+        for (int i = 0; i < this.dsmElement1Ds.Length; i++)
         {
-            var localMemberEndForcesVector = dsmElement1d.GetLocalMemberEndForcesVector(
+            var localMemberEndForcesVector = this.dsmElement1Ds[i].GetLocalMemberEndForcesVector(
                 unknownJointDisplacementVector,
                 model.Settings.UnitSettings.ForceUnit,
                 model.Settings.UnitSettings.ForcePerLengthUnit,
                 model.Settings.UnitSettings.TorqueUnit
             );
-            var rotationMatrix = dsmElement1d.GetRotationMatrix();
+            var rotationMatrix = this.dsmElement1Ds[i].GetRotationMatrix();
 
             var sfd = ShearForceDiagram.Create(
-                dsmElement1d.Element1DId,
-                dsmElement1d.StartPoint,
-                dsmElement1d.EndPoint,
-                dsmElement1d.SectionProfileRotation,
-                dsmElement1d.Length,
+                this.dsmElement1Ds[i].Element1DId,
+                this.dsmElement1Ds[i].StartPoint,
+                this.dsmElement1Ds[i].EndPoint,
+                this.dsmElement1Ds[i].SectionProfileRotation,
+                this.dsmElement1Ds[i].Length,
                 localMemberEndForcesVector,
                 model.Settings.UnitSettings.LengthUnit,
                 model.Settings.UnitSettings.ForceUnit,
                 model.Settings.UnitSettings.TorqueUnit,
                 LinearCoordinateDirection3D.AlongY
             );
-            shearForceDiagrams.Add(sfd);
+            shearForceDiagrams[i] = sfd;
+            sfd.MinMax(ref shearMin, ref shearMax);
 
-            momentDiagrams.Add(
-                MomentDiagram.Create(
-                    model.Id,
-                    dsmElement1d.Element1DId,
-                    dsmElement1d.StartPoint,
-                    dsmElement1d.EndPoint,
-                    dsmElement1d.SectionProfileRotation,
-                    dsmElement1d.Length,
-                    localMemberEndForcesVector,
-                    model.Settings.UnitSettings.LengthUnit,
-                    model.Settings.UnitSettings.ForceUnit,
-                    model.Settings.UnitSettings.TorqueUnit,
-                    LinearCoordinateDirection3D.AlongY,
-                    sfd
-                )
+            momentDiagrams[i] = MomentDiagram.Create(
+                model.Id,
+                this.dsmElement1Ds[i].Element1DId,
+                this.dsmElement1Ds[i].StartPoint,
+                this.dsmElement1Ds[i].EndPoint,
+                this.dsmElement1Ds[i].SectionProfileRotation,
+                this.dsmElement1Ds[i].Length,
+                localMemberEndForcesVector,
+                model.Settings.UnitSettings.LengthUnit,
+                model.Settings.UnitSettings.ForceUnit,
+                model.Settings.UnitSettings.TorqueUnit,
+                LinearCoordinateDirection3D.AlongY,
+                sfd
             );
+            momentDiagrams[i].MinMax(ref momentMin, ref momentMax);
         }
 
         return new ModelResults
@@ -104,6 +120,10 @@ public class DsmAnalysisModel(Model model)
             NodeResults = nodeResults,
             ShearForceDiagrams = shearForceDiagrams,
             MomentDiagrams = momentDiagrams,
+            MaxShearValue = new(shearMax, model.Settings.UnitSettings.ForceUnit),
+            MinShearValue = new(shearMin, model.Settings.UnitSettings.ForceUnit),
+            MaxMomentValue = new(momentMax, model.Settings.UnitSettings.TorqueUnit),
+            MinMomentValue = new(momentMin, model.Settings.UnitSettings.TorqueUnit),
         };
     }
 
@@ -195,7 +215,7 @@ public class DsmAnalysisModel(Model model)
         var dofDisplacementMathnetVector =
             structureStiffnessMatrix.Build().Inverse() * knownReactionVector.Build();
         VectorIdentified dofDisplacementVector =
-            new(degreeOfFreedomIds, dofDisplacementMathnetVector.ToArray());
+            new(degreeOfFreedomIds, dofDisplacementMathnetVector.Cast<double>().ToArray());
 
         return dofDisplacementVector;
     }

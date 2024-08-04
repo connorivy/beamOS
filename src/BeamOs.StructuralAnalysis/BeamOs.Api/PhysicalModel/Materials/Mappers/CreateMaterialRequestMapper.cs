@@ -1,4 +1,4 @@
-using BeamOs.Api.Common.Mappers;
+using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Application.PhysicalModel.Materials;
 using BeamOs.Common.Application.Interfaces;
 using BeamOs.Contracts.PhysicalModel.Material;
@@ -7,7 +7,7 @@ using Riok.Mapperly.Abstractions;
 namespace BeamOs.Api.PhysicalModel.Materials.Mappers;
 
 [Mapper]
-[UseStaticMapper(typeof(UnitValueDtoToPressureMapper))]
+[UseStaticMapper(typeof(UnitsNetMappers))]
 public partial class CreateMaterialRequestMapper
     : IMapper<CreateMaterialRequest, CreateMaterialCommand>
 {

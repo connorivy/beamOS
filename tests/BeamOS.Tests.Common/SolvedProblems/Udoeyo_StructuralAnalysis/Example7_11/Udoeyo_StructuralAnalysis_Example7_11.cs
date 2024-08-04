@@ -1,5 +1,5 @@
-using BeamOs.Domain.Common.ValueObjects;
-using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
+using BeamOs.Contracts.Common;
+using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOS.Tests.Common.Fixtures;
 using BeamOS.Tests.Common.Interfaces;
 
@@ -9,7 +9,9 @@ public class Udoeyo_StructuralAnalysis_Example7_11
     : ModelFixture2,
         IHasExpectedNodeDisplacementResults
 {
-    public override ModelSettings Settings { get; } = new(UnitSettings.K_FT);
+    public override PhysicalModelSettings Settings { get; } =
+        new(UnitSettingsDtoVerbose.K_FT, new(Element1dAnalysisType.Euler));
+
     public override SourceInfo SourceInfo { get; } =
         new(
             "Structural Analysis by Felix Udoeyo",
@@ -20,7 +22,7 @@ public class Udoeyo_StructuralAnalysis_Example7_11
         );
 
     public static Guid IdStatic { get; } = Guid.Parse("e3e93bca-ab6e-424f-98b9-3ef4ac337275");
-    public override Guid Id => IdStatic;
+    public override Guid ModelGuid => IdStatic;
     public override PointLoadFixture2[] PointLoads =>
         Udoeyo_StructuralAnalysis_Example7_11_PointLoads.All;
     public override MaterialFixture2[] Materials =>
@@ -32,11 +34,11 @@ public class Udoeyo_StructuralAnalysis_Example7_11
         Udoeyo_StructuralAnalysis_Example7_11_Element1ds.AllElement1ds;
 
     public static Udoeyo_StructuralAnalysis_Example7_11 Instance { get; } = new();
-    public NodeDisplacementResultFixture[] ExpectedNodeDisplacementResults { get; } =
+    public NodeResultFixture[] ExpectedNodeDisplacementResults { get; } =
 
         [
             new() {
-                NodeFixture = Udoeyo_StructuralAnalysis_Example7_11_Nodes.NodeA,
+                NodeId = Udoeyo_StructuralAnalysis_Example7_11_Nodes.NodeA.Id,
                 RotationAboutZ = new UnitsNet.Angle(.0038, UnitsNet.Units.AngleUnit.Radian),
                 DisplacementAlongY = new UnitsNet.Length(-.37, UnitsNet.Units.LengthUnit.Inch)
             }

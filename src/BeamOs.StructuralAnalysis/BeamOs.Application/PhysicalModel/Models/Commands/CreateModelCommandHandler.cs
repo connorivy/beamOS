@@ -1,6 +1,8 @@
 using BeamOs.Application.Common.Interfaces;
 using BeamOs.Application.Common.Interfaces.Repositories;
+using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Common.Application.Interfaces;
+using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using Riok.Mapperly.Abstractions;
@@ -10,10 +12,10 @@ namespace BeamOs.Application.PhysicalModel.Models.Commands;
 public class CreateModelCommandHandler(
     IRepository<ModelId, Model> modelRepository,
     IUnitOfWork unitOfWork
-) : ICommandHandler<CreateModelCommand, Model?>
+) : ICommandHandler<CreateModelRequest, Model?>
 {
     public async Task<Model?> ExecuteAsync(
-        CreateModelCommand command,
+        CreateModelRequest command,
         CancellationToken ct = default
     )
     {
@@ -36,9 +38,10 @@ public class CreateModelCommandHandler(
 }
 
 [Mapper]
+[UseStaticMapper(typeof(UnitsNetMappers))]
 public static partial class CreateModelCommandMapper
 {
-    public static partial Model ToDomainObject(this CreateModelCommand command);
+    public static partial Model ToDomainObject(this CreateModelRequest command);
 
     public static ModelId ToId(string id)
     {
