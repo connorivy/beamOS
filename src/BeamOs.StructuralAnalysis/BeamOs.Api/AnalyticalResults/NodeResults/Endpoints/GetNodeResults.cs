@@ -16,7 +16,7 @@ public class GetNodeResults(
     public override Http EndpointType => Http.GET;
     public override string Route => "node-results/{modelId}";
 
-    public override async Task<NodeResultResponse?[]> ExecuteAsync(
+    public override async Task<NodeResultResponse?[]> ExecuteRequestAsync(
         GetNodeResultsRequest req,
         CancellationToken ct
     )

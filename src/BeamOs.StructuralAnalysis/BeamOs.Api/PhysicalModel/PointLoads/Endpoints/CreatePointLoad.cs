@@ -26,7 +26,7 @@ public class CreatePointLoad(
             new Vector3(10, 15, 20)
         );
 
-    public override async Task<PointLoadResponse> ExecuteAsync(
+    public override async Task<PointLoadResponse> ExecuteRequestAsync(
         CreatePointLoadRequest req,
         CancellationToken ct
     )

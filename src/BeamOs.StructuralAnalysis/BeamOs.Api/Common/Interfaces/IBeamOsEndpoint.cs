@@ -11,5 +11,5 @@ public interface IBeamOsEndpointBase
 
 public interface IBeamOsEndpoint<TRequest, TResponse> : IBeamOsEndpointBase
 {
-    public Task<TResponse> ExecuteAsync(TRequest request, CancellationToken ct);
+    public Task<TResponse> ExecuteRequestAsync(TRequest request, CancellationToken ct);
 }

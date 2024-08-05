@@ -20,7 +20,7 @@ public class GetElement1ds(
 
     public override Http EndpointType => Http.GET;
 
-    public override async Task<List<Element1DResponse>> ExecuteAsync(
+    public override async Task<List<Element1DResponse>> ExecuteRequestAsync(
         GetElement1dsRequest req,
         CancellationToken ct = default
     )

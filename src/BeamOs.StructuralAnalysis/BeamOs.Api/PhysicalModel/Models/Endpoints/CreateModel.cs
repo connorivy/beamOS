@@ -35,7 +35,7 @@ public class CreateModel(
             )
         );
 
-    public override async Task<ModelResponse?> ExecuteAsync(
+    public override async Task<ModelResponse?> ExecuteRequestAsync(
         CreateModelRequest req,
         CancellationToken ct
     )

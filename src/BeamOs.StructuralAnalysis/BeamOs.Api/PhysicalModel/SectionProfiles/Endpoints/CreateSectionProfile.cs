@@ -18,7 +18,7 @@ public class CreateSectionProfile(
 
     public override string Route => "SectionProfiles";
 
-    public override async Task<SectionProfileResponse> ExecuteAsync(
+    public override async Task<SectionProfileResponse> ExecuteRequestAsync(
         CreateSectionProfileRequest request,
         CancellationToken ct
     )

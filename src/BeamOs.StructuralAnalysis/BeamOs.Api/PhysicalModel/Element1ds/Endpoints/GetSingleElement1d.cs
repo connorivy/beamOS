@@ -19,7 +19,10 @@ public class GetSingleElement1d(
     public override Http EndpointType => Http.GET;
     public override string Route => "element1Ds/{id}";
 
-    public override async Task<Element1DResponse?> ExecuteAsync(IdRequest req, CancellationToken ct)
+    public override async Task<Element1DResponse?> ExecuteRequestAsync(
+        IdRequest req,
+        CancellationToken ct
+    )
     {
         GetResourceByIdQuery query = new(Guid.Parse(req.Id));
 

@@ -3,7 +3,6 @@ using BeamOs.ApiClient.Builders;
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOS.Tests.Common.Fixtures;
 using BeamOS.Tests.Common.SolvedProblems;
-using BeamOS.Tests.Common.SolvedProblems.Fixtures;
 using UnitsNet;
 
 namespace BeamOs.Api.IntegrationTests;

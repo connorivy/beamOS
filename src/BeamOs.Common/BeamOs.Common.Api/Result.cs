@@ -27,3 +27,62 @@ public class Result
 
     public static Result Failure(BeamOsError error) => new(false, error);
 }
+
+public readonly struct Result<TValue>
+{
+    private readonly TValue? value;
+    private readonly Exception? error;
+
+    private Result(TValue value)
+    {
+        this.IsError = false;
+        this.value = value;
+    }
+
+    private Result(Exception error)
+    {
+        this.IsError = true;
+        this.error = error;
+    }
+
+    public bool IsError { get; }
+    public bool IsSuccess => !this.IsError;
+
+    public static implicit operator Result<TValue>(TValue value) => new(value);
+
+    public static implicit operator Result<TValue>(Exception error) => new(error);
+
+    public bool TryIsError(out Exception? error)
+    {
+        if (!this.IsError)
+        {
+            error = default;
+            return false;
+        }
+
+        error = this.error!;
+        return true;
+    }
+
+    public bool TryIsSuccess(out TValue? value)
+    {
+        if (!this.IsSuccess)
+        {
+            value = default;
+            return false;
+        }
+
+        value = this.value!;
+        return true;
+    }
+
+    public TResult Match<TResult>(
+        Func<TValue, TResult> success,
+        Func<Exception, TResult> failure
+    ) => !this.IsError ? success(this.value!) : failure(this.error!);
+
+    public async Task<TResult> MatchAsync<TResult>(
+        Func<TValue, TResult> success,
+        Func<Exception, TResult> failure
+    ) => !this.IsError ? success(this.value!) : failure(this.error!);
+}

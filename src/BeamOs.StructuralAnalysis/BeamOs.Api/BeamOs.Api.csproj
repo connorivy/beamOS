@@ -13,6 +13,7 @@
   <ItemGroup>
     <PackageReference Include="FastEndpoints" />
     <PackageReference Include="FastEndpoints.ClientGen" />
+    <PackageReference Include="FastEndpoints.Security" />
     <PackageReference Include="FastEndpoints.Swagger" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
@@ -27,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\BeamOs.Common\BeamOs.Common.Api\BeamOs.Common.Api.csproj" />
     <ProjectReference Include="..\BeamOs.Application\BeamOs.Application.csproj" />
     <ProjectReference Include="..\BeamOs.Contracts\BeamOs.Contracts.csproj" />
     <ProjectReference Include="..\BeamOs.Infrastructure\BeamOs.Infrastructure.csproj" />

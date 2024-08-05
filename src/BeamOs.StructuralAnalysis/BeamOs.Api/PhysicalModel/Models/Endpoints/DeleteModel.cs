@@ -13,7 +13,7 @@ public class DeleteModel(BeamOsFastEndpointOptions options, IModelRepository mod
     public override Http EndpointType => Http.DELETE;
     public override string Route => "/models/{id}";
 
-    public override async Task<bool> ExecuteAsync(IdRequest req, CancellationToken ct)
+    public override async Task<bool> ExecuteRequestAsync(IdRequest req, CancellationToken ct)
     {
         ModelId modelId = new(Guid.Parse(req.Id));
         await modelRepository.RemoveById(modelId, ct);

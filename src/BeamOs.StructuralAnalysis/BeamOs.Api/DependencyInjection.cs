@@ -52,7 +52,9 @@ public static class DependencyInjection
         return services;
     }
 
-    public static IServiceCollection AddAnalysisEndpointServices(this IServiceCollection services)
+    public static IServiceCollection AddRequiredAnalysisEndpointServices(
+        this IServiceCollection services
+    )
     {
         _ = services.AddMappers<IAssemblyMarkerApi>();
         //_ = services.AddBeamOsEndpoints<IAssemblyMarkerApi>();
@@ -68,7 +70,7 @@ public static class DependencyInjection
         return services.AddScoped<IntegrationEvents.IEventBus, DummyEventBus>();
     }
 
-    public static IServiceCollection AddAnalysisInfrastructure(
+    public static IServiceCollection AddAnalysisDb(
         this IServiceCollection services,
         IConfiguration configuration
     )
@@ -82,6 +84,13 @@ public static class DependencyInjection
             options => options.UseSqlServer(connectionString)
         );
 
+        return services;
+    }
+
+    public static IServiceCollection AddRequiredInfrastructureServices(
+        this IServiceCollection services
+    )
+    {
         services.AddPhysicalModelInfrastructure();
 
         return services;

@@ -27,7 +27,7 @@ public class CreateElement1d(
             "00000000-0000-0000-0000-000000000004"
         );
 
-    public override async Task<Element1DResponse> ExecuteAsync(
+    public override async Task<Element1DResponse> ExecuteRequestAsync(
         CreateElement1dRequest req,
         CancellationToken ct
     )
