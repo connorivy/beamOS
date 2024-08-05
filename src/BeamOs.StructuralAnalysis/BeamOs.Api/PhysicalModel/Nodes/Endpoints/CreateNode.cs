@@ -28,7 +28,7 @@ public class CreateNode(
             new RestraintRequest(false, false, false, false, false, false)
         );
 
-    public override async Task<NodeResponse> ExecuteAsync(
+    public override async Task<NodeResponse> ExecuteRequestAsync(
         CreateNodeRequest req,
         CancellationToken ct
     )

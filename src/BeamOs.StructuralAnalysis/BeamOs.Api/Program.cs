@@ -1,39 +1,27 @@
 using BeamOs.Api;
-using BeamOs.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder
     .Services
-    .AddAnalysisEndpoints()
-    .AddAnalysisEndpointServices()
+    .AddRequiredAnalysisServices()
     .AddAnalysisEndpointConfigurableServices()
     .AddAnalysisEndpointOptions()
-    .AddAnalysisInfrastructure(builder.Configuration);
+    .AddAnalysisDb(builder.Configuration);
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 var app = builder.Build();
 
-app.UseHttpsRedirection();
-
 app.AddAnalysisEndpoints();
+
+app.UseHttpsRedirection();
+app.UseCors();
 
 // app.Configuration["generateclients"] = "true";
 await app.GenerateAnalysisClient();
 
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<BeamOsStructuralDbContext>();
-    _ = dbContext.Database.EnsureCreated();
-
-    if (app.Environment.IsDevelopment())
-    {
-        await dbContext.SeedAsync();
-    }
-}
-
-app.UseCors();
+await app.InitializeAnalysisDb();
 
 app.Run();
 

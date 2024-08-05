@@ -46,7 +46,7 @@ public class GetModelHydrated(
 
     public override Http EndpointType => Http.GET;
 
-    public override async Task<ModelResponseHydrated> ExecuteAsync(
+    public override async Task<ModelResponseHydrated> ExecuteRequestAsync(
         GetModelHydratedRequest req,
         CancellationToken ct
     )

@@ -19,7 +19,7 @@ public class CreateMomentLoad(
 
     public override Http EndpointType => Http.POST;
 
-    public override async Task<MomentLoadResponse> ExecuteAsync(
+    public override async Task<MomentLoadResponse> ExecuteRequestAsync(
         CreateMomentLoadRequest request,
         CancellationToken ct
     )

@@ -15,7 +15,7 @@ public class GetSingleNodeResult(
     public override Http EndpointType => Http.GET;
     public override string Route => "nodes/{id}/results";
 
-    public override async Task<NodeResultResponse?[]> ExecuteAsync(
+    public override async Task<NodeResultResponse?[]> ExecuteRequestAsync(
         IdRequest req,
         CancellationToken ct
     )

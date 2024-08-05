@@ -17,7 +17,7 @@ public class GetModel(
 
     public override Http EndpointType => Http.GET;
 
-    public override async Task<ModelResponse?> ExecuteAsync(
+    public override async Task<ModelResponse?> ExecuteRequestAsync(
         IdRequestWithProperties req,
         CancellationToken ct
     )

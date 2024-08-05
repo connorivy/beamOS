@@ -22,7 +22,7 @@ public class GetShearDiagram(
 
     public override string Route => "element1Ds/{id}/diagrams/shear/";
 
-    public override async Task<ShearDiagramResponse?> ExecuteAsync(
+    public override async Task<ShearDiagramResponse?> ExecuteRequestAsync(
         IdRequest req,
         CancellationToken ct
     )
@@ -53,7 +53,7 @@ public class GetMomentDiagram(
 
     public override string Route => "element1Ds/{id}/diagrams/moment/";
 
-    public override async Task<MomentDiagramResponse?> ExecuteAsync(
+    public override async Task<MomentDiagramResponse?> ExecuteRequestAsync(
         IdRequest req,
         CancellationToken ct
     )

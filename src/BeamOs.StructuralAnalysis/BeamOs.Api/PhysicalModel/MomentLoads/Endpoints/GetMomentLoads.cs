@@ -20,7 +20,7 @@ public class GetMomentLoads(
 
     public override Http EndpointType => Http.GET;
 
-    public override async Task<List<MomentLoadResponse>> ExecuteAsync(
+    public override async Task<List<MomentLoadResponse>> ExecuteRequestAsync(
         GetMomentLoadRequest req,
         CancellationToken ct = default
     )

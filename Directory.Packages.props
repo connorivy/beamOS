@@ -11,9 +11,9 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- ASP.NET -->
-    <PackageVersion Include="MathNet.Numerics.MKL.Win-x64" Version="3.0.0" />
+    <PackageVersion Include="FastEndpoints.Security" Version="5.25.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.Google" Version="$(AspnetVersion)" />
-    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(AspnetVersion)" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.3" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="$(AspnetVersion)" />

@@ -25,7 +25,7 @@ public class PatchNode(
             Restraint = new PatchRestraintRequest(CanTranslateAlongX: false, CanRotateAboutY: true)
         };
 
-    public override async Task<NodeResponse> ExecuteAsync(
+    public override async Task<NodeResponse> ExecuteRequestAsync(
         PatchNodeRequest req,
         CancellationToken ct
     )

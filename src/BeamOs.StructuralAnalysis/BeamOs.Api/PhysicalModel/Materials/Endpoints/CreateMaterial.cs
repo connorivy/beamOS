@@ -19,7 +19,7 @@ public class CreateMaterial(
 
     public override Http EndpointType => Http.POST;
 
-    public override async Task<MaterialResponse> ExecuteAsync(
+    public override async Task<MaterialResponse> ExecuteRequestAsync(
         CreateMaterialRequest request,
         CancellationToken ct
     )

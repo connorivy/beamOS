@@ -15,7 +15,7 @@ public class GetModelResults(
     public override Http EndpointType => Http.GET;
     public override string Route => "models/{id}/results";
 
-    public override async Task<ModelResultResponse?> ExecuteAsync(
+    public override async Task<ModelResultResponse?> ExecuteRequestAsync(
         IdRequest req,
         CancellationToken ct
     )

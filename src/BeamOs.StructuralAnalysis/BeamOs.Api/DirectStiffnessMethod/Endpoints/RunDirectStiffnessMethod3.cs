@@ -19,7 +19,7 @@ public class RunDirectStiffnessMethod(
 
     public override Http EndpointType => Http.GET;
 
-    public override async Task<AnalyticalModelResponse3> ExecuteAsync(
+    public override async Task<AnalyticalModelResponse3> ExecuteRequestAsync(
         IdRequest req,
         CancellationToken ct
     )
