@@ -26,12 +26,6 @@ public static class DependencyInjection
         ConfigurationManager configuration
     )
     {
-        configuration.AddInMemoryCollection(
-            new Dictionary<string, string?>
-            {
-                [Constants.ASSEMBLY_NAME] = typeof(Program).Assembly.GetName().Name
-            }
-        );
         services.AddSignalR();
         services
             .AddRazorComponents()
@@ -85,9 +79,16 @@ public static class DependencyInjection
 
     public static IServiceCollection AddConfigurableWebAppServices(
         this IServiceCollection services,
-        IConfiguration configuration
+        ConfigurationManager configuration
     )
     {
+        configuration.AddInMemoryCollection(
+            new Dictionary<string, string?>
+            {
+                [Constants.ASSEMBLY_NAME] = typeof(Program).Assembly.GetName().Name
+            }
+        );
+
         services.AddAnalysisEndpointOptions().AddAnalysisDb(configuration);
 
         string protocol = configuration["APPLICATION_URL_PROTOCOL"] ?? "dummy value for EF Core";
@@ -103,26 +104,8 @@ public static class DependencyInjection
         return services;
     }
 
-    public static async Task RequiredWebApplicationConfig(
-        this WebApplication app,
-        IConfiguration configuration
-    )
+    public static async Task RequiredWebApplicationConfig(this WebApplication app)
     {
-        string protocol = configuration["APPLICATION_URL_PROTOCOL"] ?? "dummy value for EF Core";
-        app.MapGet(
-            "/app-settings",
-            () =>
-                Results.Ok(
-                    new Dictionary<string, string>
-                    {
-                        [Constants.ASSEMBLY_NAME] = typeof(Program).Assembly.GetName().Name,
-                        [Constants.PHYSICAL_MODEL_API_BASE_URI] = "https://localhost:7193",
-                        [Constants.DSM_API_BASE_URI] = "https://localhost:7110",
-                        [Constants.ANALYSIS_API_BASE_URI] = $"{protocol}://localhost:7111"
-                    }
-                )
-        );
-
         app.MapPost(
             "/scratchpad-entity",
             async (
@@ -168,10 +151,31 @@ public static class DependencyInjection
         app.UseAntiforgery();
 
         app.UseCors();
+
+        app.MapRazorComponents<App>()
+            .AddInteractiveServerRenderMode()
+            .AddInteractiveWebAssemblyRenderMode()
+            .AddAdditionalAssemblies(typeof(BeamOS.WebApp.Client._Imports).Assembly);
     }
 
     public static void ConfigurableWebApplicationConfig(this WebApplication app)
     {
+        string protocol =
+            app.Configuration["APPLICATION_URL_PROTOCOL"] ?? "dummy value for EF Core";
+        app.MapGet(
+            "/app-settings",
+            () =>
+                Results.Ok(
+                    new Dictionary<string, string>
+                    {
+                        [Constants.ASSEMBLY_NAME] = typeof(Program).Assembly.GetName().Name,
+                        [Constants.PHYSICAL_MODEL_API_BASE_URI] = "https://localhost:7193",
+                        [Constants.DSM_API_BASE_URI] = "https://localhost:7110",
+                        [Constants.ANALYSIS_API_BASE_URI] = $"{protocol}://localhost:7111"
+                    }
+                )
+        );
+
         app.Use(
             async (context, next) =>
             {
@@ -188,10 +192,5 @@ public static class DependencyInjection
                 await next(context);
             }
         );
-
-        app.MapRazorComponents<App>()
-            .AddInteractiveServerRenderMode()
-            .AddInteractiveWebAssemblyRenderMode()
-            .AddAdditionalAssemblies(typeof(BeamOS.WebApp.Client._Imports).Assembly);
     }
 }

@@ -22,6 +22,7 @@ using BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2nd
 using BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd.Example8_4;
 using BeamOS.Tests.Common.SolvedProblems.Udoeyo_StructuralAnalysis.Example10_7;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace BeamOs.Infrastructure;
 
@@ -36,21 +37,25 @@ public class BeamOsStructuralDbContext : DbContext
     private readonly PublishIntegrationEventsInterceptor publishIntegrationEventsInterceptor;
 
     public BeamOsStructuralDbContext(
-        DbContextOptions<BeamOsStructuralDbContext> options,
-        PublishIntegrationEventsInterceptor publishIntegrationEventsInterceptor
+        DbContextOptions<BeamOsStructuralDbContext> options
+    //PublishIntegrationEventsInterceptor publishIntegrationEventsInterceptor
     )
         : base(options)
     {
-        this.publishIntegrationEventsInterceptor = publishIntegrationEventsInterceptor;
+        this.publishIntegrationEventsInterceptor =
+            this.GetService<PublishIntegrationEventsInterceptor>();
+        //this.publishIntegrationEventsInterceptor = publishIntegrationEventsInterceptor;
     }
 
     protected BeamOsStructuralDbContext(
-        DbContextOptions options,
-        PublishIntegrationEventsInterceptor publishIntegrationEventsInterceptor
+        DbContextOptions options
+    //PublishIntegrationEventsInterceptor publishIntegrationEventsInterceptor
     )
         : base(options)
     {
-        this.publishIntegrationEventsInterceptor = publishIntegrationEventsInterceptor;
+        //this.publishIntegrationEventsInterceptor =
+        //    this.GetService<PublishIntegrationEventsInterceptor>();
+        //this.publishIntegrationEventsInterceptor = publishIntegrationEventsInterceptor;
     }
 
     public DbSet<Model> Models { get; set; }
@@ -72,11 +77,11 @@ public class BeamOsStructuralDbContext : DbContext
         configurationBuilder.AddPhysicalModelInfrastructure();
     }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.AddInterceptors(this.publishIntegrationEventsInterceptor);
-        base.OnConfiguring(optionsBuilder);
-    }
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //{
+    //    optionsBuilder.AddInterceptors(this.publishIntegrationEventsInterceptor);
+    //    base.OnConfiguring(optionsBuilder);
+    //}
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

@@ -9,7 +9,7 @@ builder
 
 var app = builder.Build();
 
-await app.RequiredWebApplicationConfig(app.Configuration);
+await app.RequiredWebApplicationConfig();
 app.ConfigurableWebApplicationConfig();
 
 app.Run();
