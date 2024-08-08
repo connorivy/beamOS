@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 
 namespace BeamOs.WebApp.Client.Components.Features.Scratchpad;
 
-public partial class Scratchpad : IAsyncDisposable
+public partial class Scratchpad : ComponentBase, IAsyncDisposable
 {
     [Parameter]
     public required string Id { get; init; }

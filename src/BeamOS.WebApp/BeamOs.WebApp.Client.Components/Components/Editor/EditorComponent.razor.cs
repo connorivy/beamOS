@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 
 namespace BeamOs.WebApp.Client.Components.Components.Editor;
 
-public partial class EditorComponent : IAsyncDisposable
+public partial class EditorComponent : ComponentBase, IAsyncDisposable
 {
     [Parameter]
     public string? Class { get; set; }

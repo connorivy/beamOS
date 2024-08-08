@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 
 namespace BeamOs.WebApp.Client.Components.Features.Editors.ReadOnlyEditor;
 
-public partial class ReadOnlyEditor : IAsyncDisposable
+public partial class ReadOnlyEditor : ComponentBase, IAsyncDisposable
 {
     [Parameter]
     public string? Class { get; set; }
