@@ -11,7 +11,7 @@ public class Program
 {
     public static async Task Main(string[] args)
     {
-        CodeTestScoresTracker codeTestScoresTracker = new();
+        CodeTestScoresTrackerLocal codeTestScoresTracker = new();
         TestResultCreator testResultCreator = new();
         Version currentVersion = GetVersion();
 

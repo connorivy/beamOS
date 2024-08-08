@@ -75,7 +75,7 @@
         }
 
         document.addEventListener('keydown', function (e) {
-            DotNet.invokeMethodAsync('BeamOS.WebApp.Client', "@(nameof(DocumentEvents.FireOnKeyDownEvent))", serializeEvent(e))
+            DotNet.invokeMethodAsync('BeamOs.WebApp.Client.Components', "@(nameof(DocumentEvents.FireOnKeyDownEvent))", serializeEvent(e))
         });
     </script>
 

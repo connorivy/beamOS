@@ -35,7 +35,6 @@ public static class DependencyInjection
 
         services.AddRequiredAnalysisServices();
 
-        services.AddSingleton<ICodeTestScoreTracker, CodeTestScoresTracker>();
         services.AddHttpContextAccessor();
         services.AddCascadingAuthenticationState();
         services.AddBlazoredLocalStorage();
@@ -90,6 +89,8 @@ public static class DependencyInjection
             }
         );
 
+        services.AddSingleton(typeof(IAssemblyMarkerWebAppClient).Assembly);
+        services.AddSingleton<ICodeTestScoreTracker, CodeTestScoresTrackerLocal>();
         services.AddAnalysisEndpointOptions().AddAnalysisDb(configuration);
 
         string protocol = configuration["APPLICATION_URL_PROTOCOL"] ?? "dummy value for EF Core";
@@ -152,7 +153,10 @@ public static class DependencyInjection
         app.UseAntiforgery();
 
         app.UseCors();
+    }
 
+    public static void ConfigurableWebApplicationConfig(this WebApplication app)
+    {
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode()
             .AddInteractiveWebAssemblyRenderMode()
@@ -160,10 +164,7 @@ public static class DependencyInjection
                 typeof(BeamOS.WebApp.Client._Imports).Assembly,
                 typeof(BeamOs.WebApp.Client.Components._Imports).Assembly
             );
-    }
 
-    public static void ConfigurableWebApplicationConfig(this WebApplication app)
-    {
         string protocol =
             app.Configuration["APPLICATION_URL_PROTOCOL"] ?? "dummy value for EF Core";
         app.MapGet(
