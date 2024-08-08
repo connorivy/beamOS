@@ -5,10 +5,7 @@ namespace BeamOs.Tests.TestRunner;
 
 public sealed class CodeTestScoresTrackerLocal : CodeTestScoresTracker
 {
-    private static readonly string FolderLocation = Path.Combine(
-        DirectoryHelper.GetServerWwwrootDir(),
-        "wwwroot"
-    );
+    private static readonly string FolderLocation = DirectoryHelper.GetServerWwwrootDir();
     public const string JsonFileName = "codeTestScoresData.json";
 
     private static readonly string FullPath = Path.Combine(FolderLocation, JsonFileName);
