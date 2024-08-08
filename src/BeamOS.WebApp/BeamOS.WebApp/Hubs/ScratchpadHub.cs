@@ -1,4 +1,4 @@
-using BeamOS.WebApp.Client.Features.Scratchpad;
+using BeamOs.WebApp.Client.Components.Features.Scratchpad;
 using Microsoft.AspNetCore.SignalR;
 
 namespace BeamOS.WebApp.Hubs;

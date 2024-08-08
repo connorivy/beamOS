@@ -5,6 +5,7 @@ using System.Net.Http.Json;
 using BeamOs.ApiClient;
 using BeamOs.Tests.TestRunner;
 using BeamOS.WebApp.Client;
+using BeamOs.WebApp.Client.Components;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;

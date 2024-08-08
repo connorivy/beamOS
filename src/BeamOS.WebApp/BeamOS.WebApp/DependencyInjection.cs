@@ -6,8 +6,9 @@ using BeamOs.Contracts.PhysicalModel.Common;
 using BeamOs.Infrastructure;
 using BeamOs.Tests.TestRunner;
 using BeamOS.WebApp.Client;
-using BeamOS.WebApp.Client.Components.Editor;
-using BeamOS.WebApp.Client.Features.Scratchpad;
+using BeamOs.WebApp.Client.Components;
+using BeamOs.WebApp.Client.Components.Components.Editor;
+using BeamOs.WebApp.Client.Components.Features.Scratchpad;
 using BeamOS.WebApp.Components;
 using BeamOS.WebApp.Components.Providers;
 using BeamOS.WebApp.Hubs;
@@ -155,7 +156,10 @@ public static class DependencyInjection
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode()
             .AddInteractiveWebAssemblyRenderMode()
-            .AddAdditionalAssemblies(typeof(BeamOS.WebApp.Client._Imports).Assembly);
+            .AddAdditionalAssemblies(
+                typeof(BeamOS.WebApp.Client._Imports).Assembly,
+                typeof(BeamOs.WebApp.Client.Components._Imports).Assembly
+            );
     }
 
     public static void ConfigurableWebApplicationConfig(this WebApplication app)
