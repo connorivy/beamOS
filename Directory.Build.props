@@ -2,7 +2,7 @@
 <Project>
   <PropertyGroup Label="Packaging">
     <Version>0.0.26</Version>
-    <IsPackable>false</IsPackable>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
   <PropertyGroup Label="General Config">
     <TargetFramework>net8.0</TargetFramework>
