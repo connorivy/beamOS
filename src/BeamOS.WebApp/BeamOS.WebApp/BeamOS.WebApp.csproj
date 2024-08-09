@@ -6,6 +6,7 @@
     <NpmFolder>./NpmJs</NpmFolder>
     <UserSecretsId>1b8b30f7-695f-4024-ae1b-ee72f0a52305</UserSecretsId>
     <IsPackable>true</IsPackable>
+    <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
   </PropertyGroup>
 
   <ItemGroup>
@@ -34,33 +35,32 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\images\" />
     <Folder Include="wwwroot\test-results\stryker\" />
   </ItemGroup>
 
-  <Target Name="NpmInstall" Condition="'$(Configuration)' == 'Release' AND '$(ContinuousIntegrationBuild)' == false" Inputs="$(NpmFolder)/package.json" Outputs="$(NpmFolder)/node_modules/.install-stamp">
-    <!--
+  <!--<Target Name="NpmInstall" Condition="'$(Configuration)' == 'Release' AND '$(ContinuousIntegrationBuild)' == false" Inputs="$(NpmFolder)/package.json" Outputs="$(NpmFolder)/node_modules/.install-stamp">
+    --><!--
         Use npm install or npm ci depending on RestorePackagesWithLockFile value.
         Uncomment the following lines if you want to use this feature:
 
         <PropertyGroup>
           <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         </PropertyGroup>
-     -->
+     --><!--
     <Exec WorkingDirectory="$(NpmFolder)" Command="npm ci" Condition="'$(RestorePackagesWithLockFile)' == 'true'" />
     <Exec WorkingDirectory="$(NpmFolder)" Command="npm install" Condition="'$(RestorePackagesWithLockFile)' != 'true'" />
 
-    <!-- Write the stamp file, so incremental builds work -->
+    --><!-- Write the stamp file, so incremental builds work --><!--
     <Touch Files="$(NpmFolder)/node_modules/.install-stamp" AlwaysCreate="true" />
   </Target>
 
-  <!--
+  --><!--
       2. Run npm run build before building the .NET project.
       MSBuild runs NpmInstall before this task because of the DependsOnTargets attribute.
-   -->
+   --><!--
   <Target Name="NpmRunBuild" DependsOnTargets="NpmInstall" BeforeTargets="BeforeBuild" Condition="'$(Configuration)' == 'Release' AND '$(ContinuousIntegrationBuild)' == false">
     <Exec WorkingDirectory="$(NpmFolder)" Command="npm run build" />
     <Exec WorkingDirectory="$(NpmFolder)" Command="npx tailwindcss -i ./src/app.css -o ../wwwroot/css/tailwind.css" />
-  </Target>
+  </Target>-->
 
 </Project>

@@ -6,8 +6,9 @@ using BeamOs.Contracts.PhysicalModel.Common;
 using BeamOs.Infrastructure;
 using BeamOs.Tests.TestRunner;
 using BeamOS.WebApp.Client;
-using BeamOS.WebApp.Client.Components.Editor;
-using BeamOS.WebApp.Client.Features.Scratchpad;
+using BeamOs.WebApp.Client.Components;
+using BeamOs.WebApp.Client.Components.Components.Editor;
+using BeamOs.WebApp.Client.Components.Features.Scratchpad;
 using BeamOS.WebApp.Components;
 using BeamOS.WebApp.Components.Providers;
 using BeamOS.WebApp.Hubs;
@@ -26,12 +27,6 @@ public static class DependencyInjection
         ConfigurationManager configuration
     )
     {
-        configuration.AddInMemoryCollection(
-            new Dictionary<string, string?>
-            {
-                [Constants.ASSEMBLY_NAME] = typeof(Program).Assembly.GetName().Name
-            }
-        );
         services.AddSignalR();
         services
             .AddRazorComponents()
@@ -40,7 +35,6 @@ public static class DependencyInjection
 
         services.AddRequiredAnalysisServices();
 
-        services.AddSingleton<ICodeTestScoreTracker, CodeTestScoresTracker>();
         services.AddHttpContextAccessor();
         services.AddCascadingAuthenticationState();
         services.AddBlazoredLocalStorage();
@@ -85,9 +79,18 @@ public static class DependencyInjection
 
     public static IServiceCollection AddConfigurableWebAppServices(
         this IServiceCollection services,
-        IConfiguration configuration
+        ConfigurationManager configuration
     )
     {
+        configuration.AddInMemoryCollection(
+            new Dictionary<string, string?>
+            {
+                [Constants.ASSEMBLY_NAME] = typeof(Program).Assembly.GetName().Name
+            }
+        );
+
+        services.AddSingleton(typeof(IAssemblyMarkerWebAppClient).Assembly);
+        services.AddSingleton<ICodeTestScoreTracker, CodeTestScoresTrackerLocal>();
         services.AddAnalysisEndpointOptions().AddAnalysisDb(configuration);
 
         string protocol = configuration["APPLICATION_URL_PROTOCOL"] ?? "dummy value for EF Core";
@@ -103,26 +106,8 @@ public static class DependencyInjection
         return services;
     }
 
-    public static async Task RequiredWebApplicationConfig(
-        this WebApplication app,
-        IConfiguration configuration
-    )
+    public static async Task RequiredWebApplicationConfig(this WebApplication app)
     {
-        string protocol = configuration["APPLICATION_URL_PROTOCOL"] ?? "dummy value for EF Core";
-        app.MapGet(
-            "/app-settings",
-            () =>
-                Results.Ok(
-                    new Dictionary<string, string>
-                    {
-                        [Constants.ASSEMBLY_NAME] = typeof(Program).Assembly.GetName().Name,
-                        [Constants.PHYSICAL_MODEL_API_BASE_URI] = "https://localhost:7193",
-                        [Constants.DSM_API_BASE_URI] = "https://localhost:7110",
-                        [Constants.ANALYSIS_API_BASE_URI] = $"{protocol}://localhost:7111"
-                    }
-                )
-        );
-
         app.MapPost(
             "/scratchpad-entity",
             async (
@@ -172,6 +157,30 @@ public static class DependencyInjection
 
     public static void ConfigurableWebApplicationConfig(this WebApplication app)
     {
+        app.MapRazorComponents<App>()
+            .AddInteractiveServerRenderMode()
+            .AddInteractiveWebAssemblyRenderMode()
+            .AddAdditionalAssemblies(
+                typeof(BeamOS.WebApp.Client._Imports).Assembly,
+                typeof(BeamOs.WebApp.Client.Components._Imports).Assembly
+            );
+
+        string protocol =
+            app.Configuration["APPLICATION_URL_PROTOCOL"] ?? "dummy value for EF Core";
+        app.MapGet(
+            "/app-settings",
+            () =>
+                Results.Ok(
+                    new Dictionary<string, string>
+                    {
+                        [Constants.ASSEMBLY_NAME] = typeof(Program).Assembly.GetName().Name,
+                        [Constants.PHYSICAL_MODEL_API_BASE_URI] = "https://localhost:7193",
+                        [Constants.DSM_API_BASE_URI] = "https://localhost:7110",
+                        [Constants.ANALYSIS_API_BASE_URI] = $"{protocol}://localhost:7111"
+                    }
+                )
+        );
+
         app.Use(
             async (context, next) =>
             {
@@ -188,10 +197,5 @@ public static class DependencyInjection
                 await next(context);
             }
         );
-
-        app.MapRazorComponents<App>()
-            .AddInteractiveServerRenderMode()
-            .AddInteractiveWebAssemblyRenderMode()
-            .AddAdditionalAssemblies(typeof(BeamOS.WebApp.Client._Imports).Assembly);
     }
 }

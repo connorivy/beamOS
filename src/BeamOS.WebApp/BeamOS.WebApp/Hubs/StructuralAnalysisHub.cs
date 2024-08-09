@@ -1,8 +1,8 @@
 using System.Text.Json;
 using BeamOs.Common.Events;
 using BeamOs.IntegrationEvents;
-using BeamOS.WebApp.Client.Components.Editor;
-using BeamOS.WebApp.Client.State;
+using BeamOs.WebApp.Client.Components.Components.Editor;
+using BeamOs.WebApp.Client.Components.State;
 using Microsoft.AspNetCore.SignalR;
 
 namespace BeamOS.WebApp.Hubs;

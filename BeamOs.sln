@@ -19,6 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		.netconfig = .netconfig
 		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
 		Directory.Packages.props = Directory.Packages.props
 		DirectStiffnessMethodCheatSheet.md = DirectStiffnessMethodCheatSheet.md
 		.config\dotnet-tools.json = .config\dotnet-tools.json
@@ -87,7 +88,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOs.Scratchpad.ConsoleAp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SpeckleConnector", "SpeckleConnector", "{A483B0F2-E206-423C-985D-C52481D9DFBE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.SpeckleConnector", "src\BeamOs.SpeckleConnector\BeamOs.SpeckleConnector\BeamOs.SpeckleConnector.csproj", "{B9FE098A-991E-4C3D-867D-DE93F5518AF2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOs.SpeckleConnector", "src\BeamOs.SpeckleConnector\BeamOs.SpeckleConnector\BeamOs.SpeckleConnector.csproj", "{B9FE098A-991E-4C3D-867D-DE93F5518AF2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeamOs.WebApp.Client.Components", "src\BeamOS.WebApp\BeamOs.WebApp.Client.Components\BeamOs.WebApp.Client.Components.csproj", "{1E5A8712-0002-494B-8A46-4F56A2AE23B4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -197,6 +200,10 @@ Global
 		{B9FE098A-991E-4C3D-867D-DE93F5518AF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9FE098A-991E-4C3D-867D-DE93F5518AF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B9FE098A-991E-4C3D-867D-DE93F5518AF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E5A8712-0002-494B-8A46-4F56A2AE23B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E5A8712-0002-494B-8A46-4F56A2AE23B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E5A8712-0002-494B-8A46-4F56A2AE23B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E5A8712-0002-494B-8A46-4F56A2AE23B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -235,6 +242,7 @@ Global
 		{39F51250-6D51-4E5F-9442-B093BE3C3558} = {C4499EB2-F876-425C-B2DF-B99B72710A67}
 		{A483B0F2-E206-423C-985D-C52481D9DFBE} = {2F3F3AAD-1659-49EF-942B-F0CF5B9E9F4B}
 		{B9FE098A-991E-4C3D-867D-DE93F5518AF2} = {A483B0F2-E206-423C-985D-C52481D9DFBE}
+		{1E5A8712-0002-494B-8A46-4F56A2AE23B4} = {B58C021C-7297-48C9-9857-4B4C0E856CF4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0E917AFB-AF19-41C1-9F0B-17BD02FD96BE}

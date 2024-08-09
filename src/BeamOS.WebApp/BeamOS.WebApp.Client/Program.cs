@@ -5,6 +5,7 @@ using System.Net.Http.Json;
 using BeamOs.ApiClient;
 using BeamOs.Tests.TestRunner;
 using BeamOS.WebApp.Client;
+using BeamOs.WebApp.Client.Components;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -63,9 +64,11 @@ builder
 
 var releaseVersionToTestScoreSnapshot = await client.GetFromJsonAsync<
     SortedList<Version, CodeTestScoreSnapshot>
->(CodeTestScoresTracker.JsonFileName);
-CodeTestScoresTrackerWasm codeTestScoresTracker = new(releaseVersionToTestScoreSnapshot);
+>(CodeTestScoresTrackerLocal.JsonFileName);
+CodeTestScoresTracker codeTestScoresTracker = new(releaseVersionToTestScoreSnapshot);
 
 builder.Services.AddSingleton<ICodeTestScoreTracker>(codeTestScoresTracker);
+
+builder.Services.AddSingleton(typeof(IAssemblyMarkerWebAppClient).Assembly);
 
 await builder.Build().RunAsync();

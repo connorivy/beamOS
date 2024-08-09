@@ -1,0 +1,34 @@
+@page "/scratchpad"
+@using BeamOs.WebApp.Client.Components.Caches
+@using BeamOs.WebApp.Client.Components.Components.Editor
+@using BeamOs.WebApp.Client.Components.Components.Editor.Commands
+@using BeamOs.WebApp.Client.Components.Features.Common.Flux
+@using BeamOs.WebApp.Client.Components.Repositories
+@using BeamOs.CodeGen.Apis.EditorApi
+@using BeamOs.ApiClient
+@using BeamOs.Contracts.AnalyticalResults.Model
+@using BeamOs.Contracts.Common
+@using BeamOs.Contracts.PhysicalModel.Element1d
+@using BeamOs.Contracts.PhysicalModel.Model
+@using BeamOs.Contracts.PhysicalModel.Node
+@using BeamOs.WebApp.Client.Components.Components.Editor
+@using Fluxor.Blazor.Web.Components
+@using static BeamOs.WebApp.Client.Components.Components.Editor.EditorComponent
+@using BeamOs.WebApp.Client.Components.Components.Editor.CommandHandlers;
+
+@rendermode InteractiveAuto
+
+<PageTitle>Scratchpad</PageTitle>
+
+<MudDrawerContainer Class="h-full w-full">
+    <MudTextField Value="@hubConnection?.ConnectionId"></MudTextField>
+    @if (editorComponent is not null)
+    {
+        <MudPopover Open="@(editorComponent.EditorComponentState.SelectedObjects.Length > 0)" Fixed="true" Class="w-80 m-2">
+            <SelectionInfoComponent SelectedObjects="@editorComponent.EditorComponentState.SelectedObjects" ModelId="@editorComponent.EditorComponentState.LoadedModelId"></SelectionInfoComponent>
+        </MudPopover>
+    }
+    <EditorComponent Class="h-full" @ref="editorComponent"></EditorComponent>
+</MudDrawerContainer>
+
+

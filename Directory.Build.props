@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
   <PropertyGroup Label="Packaging">
-    <Version>0.0.26</Version>
-    <IsPackable>false</IsPackable>
+    <Version>0.0.27</Version>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
   <PropertyGroup Label="General Config">
     <TargetFramework>net8.0</TargetFramework>

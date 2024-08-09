@@ -1,0 +1,113 @@
+@page "/test-explorer"
+@inherits FluxorComponent
+
+@using BeamOS.Tests.Common
+@using BeamOS.Tests.Common.Interfaces
+@using BeamOS.Tests.Common.SolvedProblems.Fixtures
+@using BeamOS.Tests.Common.Traits
+@using BeamOs.WebApp.Client.Components.Components
+@using BeamOs.WebApp.Client.Components.Components.Editor
+@using BeamOs.WebApp.Client.Components.Features.Editors.ReadOnlyEditor
+@using BeamOs.WebApp.Client.Components.Pages
+@using BeamOs.ApiClient
+@using BeamOs.Contracts.AnalyticalResults.Model
+@using BeamOs.Contracts.Common
+@using BeamOs.Contracts.PhysicalModel.Model
+@using BeamOs.Contracts.PhysicalModel.Node
+@using BeamOs.Domain.Common.ValueObjects
+@using BeamOs.Tests.TestRunner
+@using Fluxor
+@using Fluxor.Blazor.Web.Components
+@using MudExtensions
+
+<PageTitle>Test Explorer</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="h-full relative">
+    <ReadOnlyEditor @ref="readOnlyEditor" Class="h-full w-full z-0" />
+    <MudTabs MinimumTabWidth="20px" Elevation="1" Rounded="true" PanelClass="pa-6" Position="Position.Left" Class="h-full z-10 absolute top-0">
+        <MudTabPanel Icon="@Icons.Material.Filled.MenuBook" ToolTip="Select Test To Explore">
+            <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="h-full pointer-events-auto">
+                    <MudPaper Class="w-full h-full">
+
+                    <MudList T="TestInfo" SelectedValueChanged="OnSelectedTestInfoChanged" Class="h-full overflow-scroll">
+                        <MudListSubheader>
+                            <MudTextField @bind-Value="@searchTerm" AdornmentIcon="@Icons.Material.Filled.Brush"
+                                          Adornment="Adornment.End" Immediate="true" Variant="Variant.Outlined" />
+                        </MudListSubheader>
+
+                    @foreach (var kvp in TestInfoProvider.SourceNameToModelNameDict)
+                    {
+                        <MudListItem Icon="@Icons.Material.Filled.Book" Text="@kvp.Key" Expanded="true">
+                            <NestedList>
+                                @foreach (var modelName in kvp.Value)
+                                {
+                                    <MudListItem Icon="@Icons.Material.Outlined.Build"  Text="@modelName">
+                                        <NestedList>
+                                            @foreach (var testInfo in TestInfoProvider.TestInfos.Values.Where(t => t.SourceInfo?.SourceName == kvp.Key && t.SourceInfo.ModelName == modelName))
+                                            {
+                                                <MudListItem T="TestInfo" Value="@testInfo">
+                                                    <ChildContent>
+                                                    <MudStack Row="true">
+                                                        <RunTestButton TestId="@testInfo.Id" />
+                                                        <MudText>
+                                                            @testInfo.MethodInfo.Name
+                                                        </MudText>
+                                                    </MudStack>
+                                                </ChildContent>
+                                                </MudListItem>
+                                            }
+                                        </NestedList>
+                                    </MudListItem>
+                                }
+                            </NestedList>
+                        </MudListItem>
+                    }
+                    </MudList>
+                    </MudPaper>
+                </MudContainer>
+        </MudTabPanel>
+        @if (@TestExplorerState.Value.SelectedTestInfo?.SourceInfo is SourceInfo sourceInfo)
+        {
+            <MudTabPanel Icon="@Icons.Material.Filled.Info" ToolTip="Test Source Information">
+                <div class="h-fit">
+                    <SourceInfoView SourceInfo="@sourceInfo"/>
+                </div>
+            </MudTabPanel>
+        }
+        @if (SelectedTestHasResults())
+        {
+            var iconAndCssColor = TestInfoState.Value.GetIconAndCssColorRepresentingTestResult(TestExplorerState.Value.SelectedTestInfo);
+            <MudTabPanel Style="" Icon="@iconAndCssColor.Item1" Class="@($"mud-{iconAndCssColor.Item2.ToString().ToLower()}-text")" ToolTip="Test Results">
+
+                <div class="h-fit">
+                @if (@AssertionResultArray is not null)
+                {
+                    <AssertionResultVectorView AssertionResultArray="@AssertionResultArray" ComparedValueName="@ComparedValueName"/>
+                }
+                else if (@AssertionResultMatrix is not null)
+                {
+                    <AssertionResultMatrixView AssertionResultMatrix="@AssertionResultMatrix" ComparedValueName="@ComparedValueName"/>
+                }
+                </div>
+            </MudTabPanel>
+        }
+    </MudTabs>
+</MudContainer>
+
+<style>
+    .@(splitterContentClass) {
+        height: 100%
+    }
+
+    .mud-success-text svg {
+        color: inherit;
+    }
+
+    .mud-tabs {
+        pointer-events: none;
+    }
+
+    .mud-tabs-tabbar {
+        pointer-events: auto;
+    }
+</style>

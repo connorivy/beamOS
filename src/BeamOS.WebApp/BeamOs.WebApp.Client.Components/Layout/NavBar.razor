@@ -1,0 +1,84 @@
+@using BeamOs.WebApp.Client.Components.Components
+@rendermode InteractiveAuto
+
+@implements IDisposable
+
+@inject NavigationManager NavigationManager
+
+<MudAppBar>
+@*     <MudHidden Breakpoint="Breakpoint.SmAndDown">
+        <MudIcon Icon="@Icons.Custom.Brands.MudBlazor" Size="Size.Large" />
+    </MudHidden>
+    <MudHidden Breakpoint="Breakpoint.MdAndUp">
+        <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit" Edge="Edge.Start" />
+    </MudHidden>
+    <MudHidden Breakpoint="Breakpoint.Xs">
+        <MudText Typo="Typo.h6" Class="ml-4">beamOS</MudText>
+    </MudHidden>
+    <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
+        <MudText Typo="Typo.subtitle2">beamOS</MudText>
+    </MudHidden> *@
+    <Logo Class="pr-8"/>
+    <MudStack Row="true">
+        <MudButton Href="/test-explorer-dashboard">Reliability</MudButton>
+        <MudButton Href="/editor">Editor</MudButton>
+        @* <MudButton Href="/auth">Auth</MudButton> *@
+    </MudStack>
+    <MudSpacer />
+    <MudStack Row="true">
+        <MudToggleIconButton
+            @bind-Toggled:get="IsDarkMode"
+            @bind-Toggled:set="ToggleDarkMode"
+            Size="Size.Medium"
+            Color="Color.Default"
+            Icon="@Icons.Material.Rounded.LightMode"
+            ToggledIcon="@Icons.Material.Rounded.DarkMode"
+            Class="my-auto" />
+        <MudIconButton Target="_blank" Href="https://github.com/connorivy/beamOS" Icon="@Icons.Custom.Brands.GitHub" Edge="Edge.Start" />
+        <AuthorizeView>
+            <Authorized>
+                <MudLink Href="@logoutRef">Log Out @context.User.Identity?.Name</MudLink>
+            </Authorized>
+            <NotAuthorized>
+                <MudButton Href="@loginRef">
+                    Log In
+                </MudButton>
+            </NotAuthorized>
+        </AuthorizeView>
+    </MudStack>
+</MudAppBar>
+
+@code {
+    [Parameter]
+    public bool IsDarkMode { get; set; }
+    [Parameter]
+    public EventCallback<bool> IsDarkModeChanged { get; set; }
+
+    async Task ToggleDarkMode(bool value)
+    {
+        this.IsDarkMode = value;
+        await IsDarkModeChanged.InvokeAsync(value);
+    }
+
+    private string? currentUrl;
+
+    private string logoutRef => $"logout?ReturnUrl={currentUrl}";
+    private string loginRef => $"login?ReturnUrl={currentUrl}";
+
+    protected override void OnInitialized()
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(e.Location);
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+}

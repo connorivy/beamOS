@@ -1,0 +1,33 @@
+@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="@_baseTheme"
+                  IsDarkMode="@isDarkMode" />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <NavBar @bind-IsDarkMode="@isDarkMode" />
+    @* <MudDrawer @bind-Open="@open" Elevation="1" ClipMode="DrawerClipMode.Always">
+        <NavMenu />
+    </MudDrawer> *@
+    <MudMainContent Class="h-full">
+        <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="h-full">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+
+@code {
+    private string inputValue = "initial";
+    private bool open = false;
+
+    private bool isDarkMode = true;
+    private MudTheme _baseTheme = new();
+}
