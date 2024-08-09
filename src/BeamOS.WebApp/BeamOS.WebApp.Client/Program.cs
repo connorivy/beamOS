@@ -7,7 +7,6 @@ using BeamOs.Tests.TestRunner;
 using BeamOS.WebApp.Client;
 using BeamOs.WebApp.Client.Components;
 using Blazored.LocalStorage;
-using FluentAssertions.Common;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
