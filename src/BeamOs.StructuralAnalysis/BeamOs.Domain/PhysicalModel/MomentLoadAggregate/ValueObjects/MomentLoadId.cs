@@ -1,4 +1,4 @@
-using BeamOs.Domain.Common.Interfaces;
+using BeamOs.Common.Domain.Interfaces;
 using BeamOs.Domain.Common.ValueObjects;
 
 namespace BeamOs.Domain.PhysicalModel.MomentLoadAggregate.ValueObjects;

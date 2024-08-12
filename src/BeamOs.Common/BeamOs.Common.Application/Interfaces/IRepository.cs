@@ -1,6 +1,6 @@
-using BeamOs.Domain.Common.Models;
+using BeamOs.Common.Domain.Models;
 
-namespace BeamOs.Application.Common.Interfaces.Repositories;
+namespace BeamOs.Common.Application.Interfaces;
 
 public interface IRepository<TId, T>
     where TId : notnull

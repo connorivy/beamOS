@@ -1,5 +1,5 @@
-using BeamOs.Application.Common.Interfaces.Repositories;
-using BeamOs.Domain.Common.Models;
+using BeamOs.Common.Application.Interfaces;
+using BeamOs.Common.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.Infrastructure.Repositories;

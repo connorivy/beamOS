@@ -6,7 +6,6 @@ using BeamOs.Contracts.PhysicalModel.Element1d;
 using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Contracts.PhysicalModel.Node;
 using BeamOs.Contracts.PhysicalModel.PointLoad;
-using BeamOs.WebApp.Client.Components.Components.Editor;
 using BeamOs.WebApp.Client.Components.Components.Editor.Commands;
 using BeamOs.WebApp.Client.Components.Extensions;
 using BeamOs.WebApp.Client.Components.Repositories;

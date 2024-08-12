@@ -1,4 +1,3 @@
-using BeamOs.Api.Common.Mappers;
 using BeamOs.Contracts.PhysicalModel.Element1d;
 using BeamOs.Contracts.PhysicalModel.Material;
 using BeamOs.Contracts.PhysicalModel.Model;

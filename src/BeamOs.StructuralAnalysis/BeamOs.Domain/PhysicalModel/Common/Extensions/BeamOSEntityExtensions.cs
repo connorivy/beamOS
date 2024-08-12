@@ -1,5 +1,5 @@
 using System.Reflection;
-using BeamOs.Domain.Common.Interfaces;
+using BeamOs.Common.Domain.Interfaces;
 using BeamOs.Domain.Common.ValueObjects;
 using UnitsNet;
 

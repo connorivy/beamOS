@@ -1,7 +1,5 @@
 using BeamOs.Application.Common.Interfaces;
-using BeamOs.Application.Common.Interfaces.Repositories;
 using BeamOs.Application.PhysicalModel.Common;
-using BeamOs.Common.Application.Interfaces;
 using BeamOs.Contracts.PhysicalModel.Node;
 using BeamOs.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;

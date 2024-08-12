@@ -1,4 +1,3 @@
-using BeamOs.Domain.DirectStiffnessMethod;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Fixtures;
 using BeamOS.Tests.Common.Fixtures;
 

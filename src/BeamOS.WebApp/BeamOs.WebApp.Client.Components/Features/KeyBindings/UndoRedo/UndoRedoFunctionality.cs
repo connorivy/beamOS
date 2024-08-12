@@ -1,4 +1,3 @@
-using BeamOs.WebApp.Client.Components.Features.KeyBindings;
 using BeamOs.WebApp.Client.Components.State;
 using Microsoft.AspNetCore.Components.Web;
 

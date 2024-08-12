@@ -1,5 +1,5 @@
+using BeamOs.Common.Domain.Models;
 using BeamOs.Domain.AnalyticalResults.AnalyticalModelAggregate.ValueObjects;
-using BeamOs.Domain.Common.Models;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using UnitsNet;
 

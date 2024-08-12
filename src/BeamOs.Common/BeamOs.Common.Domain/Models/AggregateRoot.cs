@@ -1,4 +1,4 @@
-namespace BeamOs.Domain.Common.Models;
+namespace BeamOs.Common.Domain.Models;
 
 public abstract class AggregateRoot<TId> : BeamOSEntity<TId>
     where TId : notnull

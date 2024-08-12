@@ -2,7 +2,6 @@ using BeamOs.ApiClient;
 using BeamOs.Common.Api;
 using BeamOs.Contracts.PhysicalModel.Node;
 using BeamOs.WebApp.Client.Components.Caches;
-using BeamOs.WebApp.Client.Components.Components.Editor;
 using BeamOs.WebApp.Client.Components.Repositories;
 using BeamOs.WebApp.Client.Components.State;
 using BeamOs.WebApp.Client.EditorCommands;

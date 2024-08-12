@@ -1,7 +1,7 @@
+using BeamOs.Common.Domain.Interfaces;
 using BeamOs.Common.Events;
-using BeamOs.Domain.Common.Interfaces;
 
-namespace BeamOs.Domain.Common.Models;
+namespace BeamOs.Common.Domain.Models;
 
 public abstract class BeamOSEntity<TId>
     : IEquatable<BeamOSEntity<TId>>,

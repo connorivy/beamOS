@@ -1,6 +1,4 @@
-using BeamOs.Domain.Common.Models;
-using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Double;
+using BeamOs.Common.Domain.Models;
 using MathNet.Spatial.Euclidean;
 using UnitsNet;
 using UnitsNet.Units;

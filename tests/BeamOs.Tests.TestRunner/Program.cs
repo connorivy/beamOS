@@ -2,7 +2,6 @@ using System.Reflection;
 using BeamOs.Api.IntegrationTests;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Xunit;
 using Xunit.Runners;
 
 namespace BeamOs.Tests.TestRunner;

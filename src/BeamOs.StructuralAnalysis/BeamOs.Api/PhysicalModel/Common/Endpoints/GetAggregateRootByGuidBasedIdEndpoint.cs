@@ -1,8 +1,7 @@
-using BeamOs.Application.Common.Interfaces.Repositories;
 using BeamOs.Common.Application.Interfaces;
+using BeamOs.Common.Domain.Interfaces;
+using BeamOs.Common.Domain.Models;
 using BeamOs.Contracts.Common;
-using BeamOs.Domain.Common.Interfaces;
-using BeamOs.Domain.Common.Models;
 
 namespace BeamOs.Api.PhysicalModel.Common.Endpoints;
 

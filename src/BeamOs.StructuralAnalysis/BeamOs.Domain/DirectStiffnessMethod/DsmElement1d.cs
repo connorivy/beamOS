@@ -1,7 +1,7 @@
+using BeamOs.Common.Domain.Models;
 using BeamOs.Domain.AnalyticalResults.Common.ValueObjects;
 using BeamOs.Domain.Common.Enums;
 using BeamOs.Domain.Common.Extensions;
-using BeamOs.Domain.Common.Models;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.DirectStiffnessMethod.Common.ValueObjects;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate;

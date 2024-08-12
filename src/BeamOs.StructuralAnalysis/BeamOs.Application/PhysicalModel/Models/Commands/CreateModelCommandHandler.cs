@@ -1,7 +1,5 @@
 using BeamOs.Application.Common.Interfaces;
-using BeamOs.Application.Common.Interfaces.Repositories;
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
-using BeamOs.Common.Application.Interfaces;
 using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;

@@ -1,4 +1,3 @@
-using BeamOs.Common.Application.Interfaces;
 using BeamOs.Domain.Common.ValueObjects;
 
 namespace BeamOs.Application.PhysicalModel.Common;

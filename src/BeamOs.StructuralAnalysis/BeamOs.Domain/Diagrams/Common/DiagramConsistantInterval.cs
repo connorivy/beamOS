@@ -1,4 +1,4 @@
-using BeamOs.Domain.Common.Models;
+using BeamOs.Common.Domain.Models;
 using BeamOs.Domain.Diagrams.Common.ValueObjects;
 using MathNet.Numerics;
 using UnitsNet;

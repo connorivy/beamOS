@@ -1,9 +1,7 @@
 using BeamOs.Application.Common.Interfaces;
-using BeamOs.Application.Common.Interfaces.Repositories;
 using BeamOs.Application.Common.Mappers;
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Application.PhysicalModel.Nodes.Interfaces;
-using BeamOs.Common.Application.Interfaces;
 using BeamOs.Contracts.PhysicalModel.PointLoad;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;

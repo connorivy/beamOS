@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using BeamOs.Domain.Common.Interfaces;
+using BeamOs.Common.Domain.Interfaces;
 
-namespace BeamOs.Domain.Common.Models;
+namespace BeamOs.Common.Domain.Models;
 
 [ComplexType]
 public abstract class BeamOSValueObject : IEquatable<BeamOSValueObject>, IBeamOsDomainObject

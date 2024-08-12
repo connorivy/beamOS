@@ -2,7 +2,6 @@ using System.Security.Claims;
 using BeamOs.Api.Common;
 using BeamOs.Api.Common.Interfaces;
 using BeamOs.Common.Api;
-using BeamOs.Contracts.Common;
 using FastEndpoints;
 using Microsoft.AspNetCore.Authentication;
 

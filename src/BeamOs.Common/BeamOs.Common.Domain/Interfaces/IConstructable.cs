@@ -1,4 +1,4 @@
-namespace BeamOs.Domain.Common.Interfaces;
+namespace BeamOs.Common.Domain.Interfaces;
 
 public interface IConstructable<TSelf, T1>
 {

@@ -3,7 +3,6 @@ using BeamOs.Application.AnalyticalResults.ModelResults;
 using BeamOs.Application.AnalyticalResults.NodeResults;
 using BeamOs.Application.Common.Interfaces;
 using BeamOs.Application.PhysicalModel.Models;
-using BeamOs.Common.Application.Interfaces;
 using BeamOs.Domain.AnalyticalResults.Common.ValueObjects;
 using BeamOs.Domain.AnalyticalResults.ModelResultAggregate;
 using BeamOs.Domain.AnalyticalResults.NodeResultAggregate;

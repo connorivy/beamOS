@@ -1,6 +1,6 @@
+using BeamOs.Common.Domain.Models;
 using BeamOs.Domain.AnalyticalResults.Element1dResultAggregate;
 using BeamOs.Domain.AnalyticalResults.NodeResultAggregate;
-using BeamOs.Domain.Common.Models;
 using BeamOs.Domain.Diagrams.MomentDiagramAggregate;
 using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate;
 using UnitsNet;

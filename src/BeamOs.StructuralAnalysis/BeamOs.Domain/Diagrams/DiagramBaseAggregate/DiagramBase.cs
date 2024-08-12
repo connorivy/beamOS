@@ -1,5 +1,4 @@
-using System.Numerics;
-using BeamOs.Domain.Common.Models;
+using BeamOs.Common.Domain.Models;
 using BeamOs.Domain.Diagrams.Common;
 using BeamOs.Domain.Diagrams.Common.ValueObjects.DiagramBuilder;
 using MathNet.Numerics;

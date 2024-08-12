@@ -6,4 +6,8 @@
     <IsPackable>true</IsPackable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BeamOs.Common.Domain\BeamOs.Common.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

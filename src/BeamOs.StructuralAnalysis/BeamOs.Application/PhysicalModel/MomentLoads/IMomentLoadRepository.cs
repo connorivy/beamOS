@@ -1,4 +1,3 @@
-using BeamOs.Application.Common.Interfaces.Repositories;
 using BeamOs.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.Domain.PhysicalModel.MomentLoadAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.NodeAggregate;

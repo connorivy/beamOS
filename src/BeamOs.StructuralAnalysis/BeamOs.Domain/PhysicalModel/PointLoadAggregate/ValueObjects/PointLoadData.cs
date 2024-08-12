@@ -1,5 +1,5 @@
+using BeamOs.Common.Domain.Models;
 using BeamOs.Domain.Common.Enums;
-using BeamOs.Domain.Common.Models;
 using MathNet.Spatial.Euclidean;
 using UnitsNet;
 

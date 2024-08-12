@@ -1,4 +1,3 @@
-using System.Threading;
 using BeamOs.Application.PhysicalModel.Element1dAggregate;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate.ValueObjects;

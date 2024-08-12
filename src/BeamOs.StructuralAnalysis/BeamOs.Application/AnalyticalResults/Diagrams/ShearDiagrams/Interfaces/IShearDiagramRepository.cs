@@ -1,4 +1,3 @@
-using BeamOs.Application.Common.Interfaces.Repositories;
 using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate;
 using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate.ValueObjects;
 

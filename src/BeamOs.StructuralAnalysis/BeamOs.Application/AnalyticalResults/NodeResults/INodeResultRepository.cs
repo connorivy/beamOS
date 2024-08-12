@@ -1,4 +1,3 @@
-using BeamOs.Application.Common.Interfaces.Repositories;
 using BeamOs.Domain.AnalyticalResults.AnalyticalNodeAggregate.ValueObjects;
 using BeamOs.Domain.AnalyticalResults.NodeResultAggregate;
 
