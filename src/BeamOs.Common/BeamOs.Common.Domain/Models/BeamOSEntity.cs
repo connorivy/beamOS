@@ -6,7 +6,7 @@ namespace BeamOs.Common.Domain.Models;
 public abstract class BeamOSEntity<TId>
     : IEquatable<BeamOSEntity<TId>>,
         IBeamOsDomainObject,
-        IHasIntegrationEvents
+        IHasDomainEvents
     where TId : notnull
 {
     public TId Id { get; private set; }
@@ -16,13 +16,12 @@ public abstract class BeamOSEntity<TId>
         this.Id = id;
     }
 
-    private readonly List<IIntegrationEvent> integrationEvents = [];
-    public IReadOnlyList<IIntegrationEvent> IntegrationEvents =>
-        this.integrationEvents.AsReadOnly();
+    private readonly List<IDomainEvent> domainEvents = [];
+    public IReadOnlyList<IDomainEvent> DomainEvents => this.domainEvents.AsReadOnly();
 
-    public void AddEvent(IIntegrationEvent @event) => this.integrationEvents.Add(@event);
+    public void AddEvent(IDomainEvent @event) => this.domainEvents.Add(@event);
 
-    public void ClearIntegrationEvents() => this.integrationEvents.Clear();
+    public void ClearDomainEvents() => this.domainEvents.Clear();
 
     public override bool Equals(object? obj)
     {

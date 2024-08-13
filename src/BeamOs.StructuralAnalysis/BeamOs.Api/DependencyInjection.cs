@@ -11,7 +11,7 @@ namespace BeamOs.Api;
 
 public static class DependencyInjection
 {
-    const string alphaRelease = "Alpha Release";
+    public const string AlphaRelease = "Alpha Release";
 
     public static IServiceCollection AddAnalysisEndpoints(this IServiceCollection services)
     {
@@ -25,7 +25,7 @@ public static class DependencyInjection
             {
                 o.DocumentSettings = s =>
                 {
-                    s.DocumentName = alphaRelease;
+                    s.DocumentName = AlphaRelease;
                     s.Title = "beamOS api";
                     s.Version = "v0";
                     s.SchemaSettings
@@ -56,17 +56,19 @@ public static class DependencyInjection
         this IServiceCollection services
     )
     {
-        _ = services.AddMappers<IAssemblyMarkerApi>();
-        //_ = services.AddBeamOsEndpoints<IAssemblyMarkerApi>();
-        _ = services.AddCommandHandlers<IAssemblyMarkerApplication>();
-
-        return services;
+        return services
+            .AddMappers<IAssemblyMarkerApi>()
+            .AddCommandHandlers<IAssemblyMarkerApplication>()
+            .AddPhysicalModelInfrastructure();
     }
 
-    public static IServiceCollection AddAnalysisEndpointConfigurableServices(
+    public static IServiceCollection AddStructuralAnalysisApiEventServices(
         this IServiceCollection services
     )
     {
+        services.AddMediatR(
+            config => config.RegisterServicesFromAssembly(typeof(IAssemblyMarkerApi).Assembly)
+        );
         return services.AddScoped<IntegrationEvents.IEventBus, DummyEventBus>();
     }
 
@@ -87,15 +89,6 @@ public static class DependencyInjection
         return services;
     }
 
-    public static IServiceCollection AddRequiredInfrastructureServices(
-        this IServiceCollection services
-    )
-    {
-        services.AddPhysicalModelInfrastructure();
-
-        return services;
-    }
-
     public static void AddAnalysisEndpoints(this IApplicationBuilder app)
     {
         _ = app.UseFastEndpoints(c =>
@@ -110,6 +103,14 @@ public static class DependencyInjection
             .UseSwaggerGen();
     }
 
+    public static async Task InitializeAnalysisDb(this WebApplication app)
+    {
+        using var scope = app.Services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<BeamOsStructuralDbContext>();
+        await dbContext.Database.EnsureCreatedAsync();
+        await dbContext.SeedAsync();
+    }
+
     public static async Task GenerateAnalysisClient(this WebApplication app)
     {
         const string clientNs = "BeamOs.ApiClient";
@@ -121,6 +122,6 @@ public static class DependencyInjection
         const string analyticalResultsBaseNs =
             $"{contractsBaseNs}.{ApiClientGenerator.AnalyticalResultsNs}";
 
-        await app.GenerateClient(alphaRelease, clientNs, clientName);
+        await app.GenerateClient(AlphaRelease, clientNs, clientName);
     }
 }

@@ -57,7 +57,7 @@ public static class DependencyInjection
             .AddScoped<IMomentDiagramRepository, MomentDiagramDbContextRepository>();
 
         _ = services.AddScoped<IUnitOfWork, UnitOfWork>();
-        _ = services.AddScoped<PublishIntegrationEventsInterceptor>();
+        _ = services.AddScoped<PublishDomainEventsInterceptor>();
 
         return services;
     }

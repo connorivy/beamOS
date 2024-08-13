@@ -128,4 +128,8 @@ public class Element1D : AggregateRoot<Element1DId>
             { r31, r32, r33 },
         };
     }
+
+    [Obsolete("EF Core Constructor", true)]
+    protected Element1D()
+        : base() { }
 }

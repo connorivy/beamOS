@@ -22,24 +22,37 @@ namespace BeamOS.WebApp;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddRequiredWebAppServices(
-        this IServiceCollection services,
-        ConfigurationManager configuration
-    )
+    public static IServiceCollection AddEventServices(this IServiceCollection services)
+    {
+        services.AddSingleton<BeamOs.IntegrationEvents.IEventBus, StructuralAnalysisHubEventBus>();
+        services.AddMediatR(
+            config =>
+                config.RegisterServicesFromAssemblies(
+                    typeof(IAssemblyMarkerApi).Assembly,
+                    typeof(IAssemblyMarkerWebApp).Assembly
+                )
+        );
+        return services;
+    }
+
+    public static IServiceCollection AddRequiredWebServerServices(this IServiceCollection services)
     {
         services.AddSignalR();
         services
             .AddRazorComponents()
             .AddInteractiveServerComponents()
             .AddInteractiveWebAssemblyComponents();
-
-        services.AddRequiredAnalysisServices();
-
         services.AddHttpContextAccessor();
         services.AddCascadingAuthenticationState();
         services.AddBlazoredLocalStorage();
-        services.AddSingleton<BeamOs.IntegrationEvents.IEventBus, StructuralAnalysisHubEventBus>();
+        return services;
+    }
 
+    public static IServiceCollection AddIdentityServices(
+        this IServiceCollection services,
+        ConfigurationManager configuration
+    )
+    {
         services
             .AddAuthentication(x =>
             {
@@ -72,12 +85,10 @@ public static class DependencyInjection
         //        BlazorAuthorizationMiddlewareResultHandler
         //    >();
 
-        services.RegisterSharedServices<Program>();
-
         return services;
     }
 
-    public static IServiceCollection AddConfigurableWebAppServices(
+    public static IServiceCollection AddConfigurableWebServerServices(
         this IServiceCollection services,
         ConfigurationManager configuration
     )
@@ -91,7 +102,6 @@ public static class DependencyInjection
 
         services.AddSingleton(typeof(IAssemblyMarkerWebAppClient).Assembly);
         services.AddSingleton<ICodeTestScoreTracker, CodeTestScoresTrackerLocal>();
-        services.AddAnalysisEndpointOptions().AddAnalysisDb(configuration);
 
         string protocol = configuration["APPLICATION_URL_PROTOCOL"] ?? "dummy value for EF Core";
 
@@ -106,7 +116,7 @@ public static class DependencyInjection
         return services;
     }
 
-    public static async Task RequiredWebApplicationConfig(this WebApplication app)
+    public static void RequiredWebApplicationConfig(this WebApplication app)
     {
         app.MapPost(
             "/scratchpad-entity",
@@ -120,24 +130,15 @@ public static class DependencyInjection
             }
         );
 
-        app.AddAnalysisEndpoints();
-
-        using (var scope = app.Services.CreateScope())
+        if (app.Environment.IsDevelopment())
         {
-            var dbContext = scope.ServiceProvider.GetRequiredService<BeamOsStructuralDbContext>();
-            _ = dbContext.Database.EnsureCreated();
-
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseWebAssemblyDebugging();
-                await dbContext.SeedAsync();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Error", createScopeForErrors: true);
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
+            app.UseWebAssemblyDebugging();
+        }
+        else
+        {
+            app.UseExceptionHandler("/Error", createScopeForErrors: true);
+            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            app.UseHsts();
         }
 
         app.MapHub<StructuralAnalysisHub>(IStructuralAnalysisHubClient.HubEndpointPattern);

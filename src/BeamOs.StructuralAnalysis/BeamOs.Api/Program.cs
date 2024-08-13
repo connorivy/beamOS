@@ -4,8 +4,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder
     .Services
-    .AddRequiredAnalysisServices()
-    .AddAnalysisEndpointConfigurableServices()
+    // event services
+    .AddStructuralAnalysisApiEventServices()
+    // structural analysis services
+    .AddAnalysisEndpoints()
+    .AddRequiredAnalysisEndpointServices()
     .AddAnalysisEndpointOptions()
     .AddAnalysisDb(builder.Configuration);
 

@@ -6,4 +6,7 @@
     <IsPackable>true</IsPackable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MediatR" />
+  </ItemGroup>
 </Project>

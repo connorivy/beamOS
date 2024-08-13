@@ -4,6 +4,7 @@ using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate;
 using BeamOs.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.Domain.PhysicalModel.MaterialAggregate.ValueObjects;
+using BeamOs.Domain.PhysicalModel.ModelAggregate.Events;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
@@ -22,6 +23,8 @@ public class Model : AggregateRoot<ModelId>
         this.Name = name;
         this.Description = description;
         this.Settings = settings;
+
+        this.AddEvent(new ModelCreatedEvent(this.Id.Id));
     }
 
     public string Name { get; private set; }

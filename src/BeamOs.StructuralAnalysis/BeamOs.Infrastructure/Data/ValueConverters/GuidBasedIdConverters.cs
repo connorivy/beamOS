@@ -1,5 +1,5 @@
-using BeamOs.Domain.AnalyticalResults.AnalyticalModelAggregate.ValueObjects;
-using BeamOs.Domain.AnalyticalResults.AnalyticalNodeAggregate.ValueObjects;
+using BeamOs.Domain.AnalyticalResults.ModelResultAggregate.ValueObjects;
+using BeamOs.Domain.AnalyticalResults.NodeResultAggregate.ValueObjects;
 using BeamOs.Domain.Diagrams.Common.ValueObjects;
 using BeamOs.Domain.Diagrams.MomentDiagramAggregate.ValueObjects;
 using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate.ValueObjects;

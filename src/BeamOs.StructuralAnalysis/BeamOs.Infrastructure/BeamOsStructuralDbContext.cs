@@ -14,14 +14,13 @@ using BeamOs.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate;
 using BeamOs.Infrastructure.Data.Configurations;
-using BeamOs.Infrastructure.Interceptors;
+using BeamOS.Tests.Common.Fixtures;
 using BeamOS.Tests.Common.Fixtures.Mappers.ToDomain;
 using BeamOS.Tests.Common.SolvedProblems.Fixtures.Mappers.ToDomain;
 using BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd.Example3_8;
 using BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd.Example8_4;
 using BeamOS.Tests.Common.SolvedProblems.Udoeyo_StructuralAnalysis.Example10_7;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace BeamOs.Infrastructure;
 
@@ -33,28 +32,27 @@ namespace BeamOs.Infrastructure;
 /// </summary>
 public class BeamOsStructuralDbContext : DbContext
 {
-    private readonly PublishIntegrationEventsInterceptor publishIntegrationEventsInterceptor;
+    //private readonly PublishDomainEventsInterceptor publishDomainEventsInterceptor;
 
     public BeamOsStructuralDbContext(
         DbContextOptions<BeamOsStructuralDbContext> options
-    //PublishIntegrationEventsInterceptor publishIntegrationEventsInterceptor
+    //PublishDomainEventsInterceptor publishDomainEventsInterceptor
     )
         : base(options)
     {
-        this.publishIntegrationEventsInterceptor =
-            this.GetService<PublishIntegrationEventsInterceptor>();
-        //this.publishIntegrationEventsInterceptor = publishIntegrationEventsInterceptor;
+        //this.publishDomainEventsInterceptor = this.GetService<PublishDomainEventsInterceptor>();
+        //this.publishDomainEventsInterceptor = publishDomainEventsInterceptor;
     }
 
     protected BeamOsStructuralDbContext(
         DbContextOptions options
-    //PublishIntegrationEventsInterceptor publishIntegrationEventsInterceptor
+    //PublishDomainEventsInterceptor publishDomainEventsInterceptor
     )
         : base(options)
     {
-        //this.publishIntegrationEventsInterceptor =
-        //    this.GetService<PublishIntegrationEventsInterceptor>();
-        //this.publishIntegrationEventsInterceptor = publishIntegrationEventsInterceptor;
+        //this.publishDomainEventsInterceptor =
+        //    this.GetService<PublishDomainEventsInterceptor>();
+        //this.publishDomainEventsInterceptor = publishDomainEventsInterceptor;
     }
 
     public DbSet<Model> Models { get; set; }
@@ -78,14 +76,14 @@ public class BeamOsStructuralDbContext : DbContext
 
     //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     //{
-    //    optionsBuilder.AddInterceptors(this.publishIntegrationEventsInterceptor);
+    //    optionsBuilder.AddInterceptors(this.publishDomainEventsInterceptor);
     //    base.OnConfiguring(optionsBuilder);
     //}
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         _ = builder
-            .Ignore<List<IIntegrationEvent>>()
+            .Ignore<List<IDomainEvent>>()
             .ApplyConfigurationsFromAssembly(typeof(NodeConfiguration).Assembly);
 
         builder
@@ -101,15 +99,26 @@ public class BeamOsStructuralDbContext : DbContext
 
     public async Task SeedAsync()
     {
-        _ = this.Database.EnsureCreated();
+        //var isCreated = this.Database.EnsureCreated();
 
         //await this.InsertIntoEfCore(TwistyBowlFraming.Instance);
-        await this.InsertIntoEfCore(Kassimali_Example3_8.Instance.ToDomain());
-        await this.InsertIntoEfCore(Kassimali_Example8_4.Instance.ToDomain());
-        await this.InsertIntoEfCore(Udoeyo_StructuralAnalysis_Example10_7.Instance.ToDomain());
+        await this.InsertIntoEfCore(Kassimali_Example3_8.Instance);
+        await this.InsertIntoEfCore(Kassimali_Example8_4.Instance);
+        await this.InsertIntoEfCore(Udoeyo_StructuralAnalysis_Example10_7.Instance);
         //await this.InsertIntoEfCore(Simple_3_Story_Rectangular.Instance.to)
 
         _ = await this.SaveChangesAsync();
+    }
+
+    private async Task InsertIntoEfCore(ModelFixture2 modelFixture)
+    {
+        ModelId modelId = new(modelFixture.ModelGuid);
+        if (await this.Models.AnyAsync(m => m.Id == modelId))
+        {
+            return;
+        }
+
+        this.InsertIntoEfCore(modelFixture.ToDomain());
     }
 
     private async Task InsertIntoEfCore(CreateModelRequestBuilder modelBuilder)
@@ -124,16 +133,11 @@ public class BeamOsStructuralDbContext : DbContext
         CreateModelRequestBuilderToDomainMapper builderMapper = new();
         Model model = builderMapper.ToDomain(modelBuilder);
 
-        await this.InsertIntoEfCore(model);
+        this.InsertIntoEfCore(model);
     }
 
-    private async Task InsertIntoEfCore(Model model)
+    private void InsertIntoEfCore(Model model)
     {
-        if (await this.Models.AnyAsync(m => m.Id == model.Id))
-        {
-            return;
-        }
-
         this.Models.Add(new Model(model.Name, model.Description, model.Settings, model.Id));
         this.AddEntities(
             model

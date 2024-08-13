@@ -6,5 +6,6 @@ public interface IHasIntegrationEvents
 {
     public IReadOnlyList<IIntegrationEvent> IntegrationEvents { get; }
 
+    public void AddEvent(IIntegrationEvent @event);
     public void ClearIntegrationEvents();
 }

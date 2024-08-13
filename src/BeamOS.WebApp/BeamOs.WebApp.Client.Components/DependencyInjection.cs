@@ -20,7 +20,9 @@ namespace BeamOs.WebApp.Client.Components;
 
 public static class DependencyInjection
 {
-    public static void RegisterSharedServices<TAssembly>(this IServiceCollection services)
+    public static IServiceCollection RegisterSharedServices<TAssembly>(
+        this IServiceCollection services
+    )
     {
         //_ = services.AddScoped(x => EditorApiProxy.Create(x.GetRequiredService<IJSRuntime>()));
         _ = services.AddTransient<EditorApiProxyFactory>();
@@ -61,6 +63,8 @@ public static class DependencyInjection
         _ = services.AddScoped<TestFixtureDisplayer>();
 
         _ = services.AddTestServices();
+
+        return services;
     }
 
     public static IServiceCollection AddCommandHandlers(this IServiceCollection services)
