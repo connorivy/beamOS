@@ -63,7 +63,10 @@ public abstract class BeamOsFastEndpoint<TRequest, TResponse>(
 
     private async Task DispatchSucessResponse(TResponse response)
     {
-        await this.SendOkAsync(response);
+        if (this.HttpContext.Response.StatusCode == 200)
+        {
+            await this.SendOkAsync(response);
+        }
     }
 
     private async Task DispatchErrorResponse(Exception exception)

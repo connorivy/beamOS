@@ -22,6 +22,7 @@
     <PackageReference Include="Microsoft.Extensions.Http" />
     <PackageReference Include="MudBlazor" />
     <PackageReference Include="MudBlazor.ThemeManager" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
   </ItemGroup>
   
   <ItemGroup Condition="$(Configuration)=='Debug'">
@@ -33,6 +34,7 @@
     <ProjectReference Include="..\..\..\tests\BeamOs.Tests.TestRunner\BeamOs.Tests.TestRunner.csproj" />
     <ProjectReference Include="..\..\BeamOs.Common\BeamOs.Common.Api\BeamOs.Common.Api.csproj" />
     <ProjectReference Include="..\..\BeamOs.Common\BeamOs.Common.Application\BeamOs.Common.Application.csproj" />
+    <ProjectReference Include="..\..\BeamOs.Common\BeamOs.Common.Identity\BeamOs.Common.Identity.csproj" />
     <ProjectReference Include="..\..\BeamOs.StructuralAnalysis\BeamOs.ApiClient\BeamOs.ApiClient.csproj" />
     <ProjectReference Include="..\BeamOs.WebApp.EditorEvents\BeamOs.WebApp.Client.EditorCommands.csproj" />
   </ItemGroup>

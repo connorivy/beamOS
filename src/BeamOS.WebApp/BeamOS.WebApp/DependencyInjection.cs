@@ -2,6 +2,7 @@ using System.Text;
 using BeamOs.Api;
 using BeamOs.Api.Common;
 using BeamOs.ApiClient;
+using BeamOs.Common.Identity;
 using BeamOs.Contracts.PhysicalModel.Common;
 using BeamOs.Infrastructure;
 using BeamOs.Tests.TestRunner;
@@ -14,6 +15,8 @@ using BeamOS.WebApp.Components.Providers;
 using BeamOS.WebApp.Hubs;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.IdentityModel.Tokens;
@@ -53,6 +56,8 @@ public static class DependencyInjection
         ConfigurationManager configuration
     )
     {
+        services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvdier>();
+
         services
             .AddAuthentication(x =>
             {
@@ -78,12 +83,10 @@ public static class DependencyInjection
 
         // workaround to make link redirection work in .net 8 with JWT auth
         // see this issue and comment https://github.com/dotnet/aspnetcore/issues/52063#issuecomment-1817420640
-        //builder
-        //    .Services
-        //    .AddSingleton<
-        //        IAuthorizationMiddlewareResultHandler,
-        //        BlazorAuthorizationMiddlewareResultHandler
-        //    >();
+        services.AddSingleton<
+            IAuthorizationMiddlewareResultHandler,
+            BlazorAuthorizationMiddlewareResultHandler
+        >();
 
         return services;
     }
@@ -180,23 +183,6 @@ public static class DependencyInjection
                         [Constants.ANALYSIS_API_BASE_URI] = $"{protocol}://localhost:7111"
                     }
                 )
-        );
-
-        app.Use(
-            async (context, next) =>
-            {
-                // hard code user bearer token for auth
-                if (
-                    !context.Request.Headers.ContainsKey("Authorization")
-                    || !context.Request.Headers["Authorization"][0].StartsWith("Bearer ")
-                )
-                {
-                    context.Request.Headers.Authorization =
-                        "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTUxMiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJ1c2VyQGVtYWlsLmNvbSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJVc2VyIiwiYXVkIjpbImh0dHBzOi8vbG9jYWxob3N0OjcxOTMiLCJodHRwczovL2xvY2FsaG9zdDo3MTk0Il0sImV4cCI6NDg3MDA5MDM2MCwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NzE5NCJ9.CTW9SNJl4kSvAlJGZ7dDpFsCc-6hVeOu6OhJFllzGwkE2FZwBd34i7q8nIaKQDQf3T8-O-GqyF7Jbey2ULDPOA";
-                }
-
-                await next(context);
-            }
         );
     }
 }

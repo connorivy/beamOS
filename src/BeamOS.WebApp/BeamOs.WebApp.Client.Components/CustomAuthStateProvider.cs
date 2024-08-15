@@ -16,6 +16,16 @@ public class CustomAuthStateProvider(Func<ILocalStorageService> localStorageServ
         return this.authenticatedState ?? await this.GetAuthStateFromLocalStorage();
     }
 
+    public async Task Login(string jwt)
+    {
+        ILocalStorageService localStorageService = localStorageServiceFactory();
+        await localStorageService.SetItemAsStringAsync(Constants.ACCESS_TOKEN_GUID, jwt);
+
+        var principal = CreateClaimsPrincipalFromJwt(jwt);
+        this.authenticatedState = new AuthenticationState(principal);
+        this.NotifyAuthenticationStateChanged(Task.FromResult(this.authenticatedState));
+    }
+
     public void LogOut()
     {
         this.authenticatedState = null;
@@ -34,11 +44,14 @@ public class CustomAuthStateProvider(Func<ILocalStorageService> localStorageServ
             return UnauthenticatedState;
         }
 
-        this.authenticatedState = new(
-            new ClaimsPrincipal(new ClaimsIdentity(ParseClaimsFromJwt(authToken), "jwt"))
-        );
+        this.authenticatedState = new(CreateClaimsPrincipalFromJwt(authToken));
 
         return this.authenticatedState;
+    }
+
+    private static ClaimsPrincipal CreateClaimsPrincipalFromJwt(string jwt)
+    {
+        return new(new ClaimsIdentity(ParseClaimsFromJwt(jwt), "beamOsJwt"));
     }
 
     private static IEnumerable<Claim> ParseClaimsFromJwt(string jwt)

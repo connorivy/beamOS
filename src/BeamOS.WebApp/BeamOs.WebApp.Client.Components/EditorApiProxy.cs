@@ -98,7 +98,7 @@ public class EditorApiProxyFactory(
     IJSRuntime js,
     EditorEventsApi editorEventsApi,
     ChangeComponentStateCommandHandler<EditorComponentState> changeComponentStateCommandHandler
-)
+) : IEditorApiProxyFactory
 {
     public async Task<IEditorApiAlpha> Create(string canvasId, bool isReadOnly)
     {

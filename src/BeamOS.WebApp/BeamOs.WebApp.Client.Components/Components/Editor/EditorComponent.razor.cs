@@ -23,7 +23,7 @@ public partial class EditorComponent : ComponentBase, IAsyncDisposable
     private IApiAlphaClient ApiAlphaClient { get; init; }
 
     [Inject]
-    private EditorApiProxyFactory EditorApiProxyFactory { get; init; }
+    private IEditorApiProxyFactory EditorApiProxyFactory { get; init; }
 
     [Inject]
     private UndoRedoFunctionality UndoRedoFunctionality { get; init; }

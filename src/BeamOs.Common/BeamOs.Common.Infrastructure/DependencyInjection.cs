@@ -92,7 +92,7 @@ public static class DependencyInjection
         return services;
     }
 
-    private static Type? GetInterfaceType(Type concreteType, Type interfaceType)
+    public static Type? GetInterfaceType(Type concreteType, Type interfaceType)
     {
         bool isGeneric = interfaceType.IsGenericType;
         foreach (var inter in concreteType.GetInterfaces())

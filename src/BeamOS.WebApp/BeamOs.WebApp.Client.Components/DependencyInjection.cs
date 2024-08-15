@@ -1,10 +1,12 @@
 using BeamOs.Application.Common;
+using BeamOs.Common.Identity;
 using BeamOS.Tests.Common.Fixtures.Mappers;
 using BeamOS.Tests.Common.Interfaces;
 using BeamOs.WebApp.Client.Components.Caches;
 using BeamOs.WebApp.Client.Components.Components.Editor;
 using BeamOs.WebApp.Client.Components.Components.Editor.CommandHandlers;
 using BeamOs.WebApp.Client.Components.Features.KeyBindings.UndoRedo;
+using BeamOs.WebApp.Client.Components.Features.Styles;
 using BeamOs.WebApp.Client.Components.Features.TestExplorer;
 using BeamOs.WebApp.Client.Components.Repositories;
 using BeamOs.WebApp.Client.Components.State;
@@ -24,8 +26,7 @@ public static class DependencyInjection
         this IServiceCollection services
     )
     {
-        //_ = services.AddScoped(x => EditorApiProxy.Create(x.GetRequiredService<IJSRuntime>()));
-        _ = services.AddTransient<EditorApiProxyFactory>();
+        _ = services.AddTransient<IEditorApiProxyFactory, EditorApiProxyFactory>();
         _ = services.AddTransient<EditorEventsApi>();
         _ = services.AddMudServices().AddMudExtensions();
 
@@ -61,8 +62,11 @@ public static class DependencyInjection
         _ = services.AddScoped<GenericCommandHandler>();
 
         _ = services.AddScoped<TestFixtureDisplayer>();
+        _ = services.AddScoped<IsDarkModeProvider>();
 
         _ = services.AddTestServices();
+
+        _ = services.AddTransient<IAccountService, AccountService>();
 
         return services;
     }

@@ -3,6 +3,7 @@
 
 @using System.ComponentModel.DataAnnotations
 @using System.Security.Claims
+@using BeamOs.Common.Identity
 @using BeamOs.WebApp.Client.Components.Components
 @using BeamOs.WebApp.Client.Components.Layout
 @using System.Text
@@ -11,81 +12,47 @@
 @using Microsoft.Extensions.Primitives
 
 @inject NavigationManager NavigationManager
+@inject IAccountService AccountService
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>Log in</PageTitle>
 
-<section class="bg-gray-50 dark:bg-gray-900">
-    <div class="mx-auto flex flex-col items-center justify-center px-6 py-8 md:h-screen lg:py-0">
-        <div class="mb-6 flex items-center text-2xl font-semibold text-gray-900 dark:text-white">
+<MudMainContent Class="h-full">
+    <MudContainer MaxWidth="MaxWidth.Small" Class="align-middle">
+        <MudContainer>
             <Logo />
-        </div>
-        <div class="w-full rounded-lg bg-white shadow dark:border dark:bg-gray-800 dark:border-gray-700 md:mt-0 sm:max-w-md xl:p-0">
-            <div class="space-y-4 p-6 md:space-y-6 sm:p-8">
-                <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white md:text-2xl">
-                    Sign in to your account
-                </h1>
-                <section>
-                    <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
-                        <DataAnnotationsValidator />
-                        <h2>Use a local account to log in.</h2>
-                        <hr />
-                        <ValidationSummary class="text-danger" role="alert" />
-                        <div class="form-floating mb-3">
-                            <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                            <label for="email" class="form-label">Email</label>
-                            <ValidationMessage For="() => Input.Email" class="text-danger" />
-                        </div>
-                        <div class="form-floating mb-3">
-                            <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
-                            <label for="password" class="form-label">Password</label>
-                            <ValidationMessage For="() => Input.Password" class="text-danger" />
-                        </div>
-                        <div class="checkbox mb-3">
-                            <label class="form-label">
-                                <InputCheckbox @bind-Value="Input.RememberMe" class="darker-border-checkbox form-check-input" />
-                                Remember me
-                            </label>
-                        </div>
-                        <div>
-                            <button type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
-                        </div>
-                        <div>
-                            <p>
-                                <a href="Account/ForgotPassword">Forgot your password?</a>
-                            </p>
-                            <p>
-                                <a href="@(NavigationManager.GetUriWithQueryParameters("Account/Register", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">Register as a new user</a>
-                            </p>
-                            <p>
-                                <a href="Account/ResendEmailConfirmation">Resend email confirmation</a>
-                            </p>
-                        </div>
-                    </EditForm>
-                </section>
-                <div id="alert-border-2" class="border-t-4 mb-4 flex items-center border-red-300 bg-red-50 p-4 text-red-800 dark:text-red-400 dark:bg-gray-800 dark:border-red-800" role="alert">
-                    <svg class="flex-shrink-0 h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-                    </svg>
-                    <div class="ms-3 text-sm font-medium">
-                        <b>WARNING: </b>This above log in form doesn't work yet. Only logging in with Google using the button below is currently supported.
-                    </div>
-                </div>
-                <hr class="border-0 my-8 h-px bg-gray-200 dark:bg-gray-700">
+        </MudContainer>
 
-                <div class="flex items-center justify-center dark:bg-gray-800">
-                    <button @onclick="LoginWithGoogle" class="flex gap-2 rounded-lg border border-slate-200 px-4 py-2 text-slate-700 transition duration-150 hover:border-slate-400 hover:text-slate-900 hover:shadow dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-500 dark:hover:text-slate-300">
-                        <img class="h-6 w-6" src="https://www.svgrepo.com/show/475656/google-color.svg" loading="lazy" alt="google logo">
-                        <span>Login with Google</span>
-                    </button>
-                </div>
-
-                <p class="text-sm font-light text-gray-500 dark:text-gray-400">
-                    Don’t have an account yet? <a href="#" class="font-medium text-indigo-600 hover:underline dark:text-indigo-500">Sign up</a>
-                </p>
+        <MudPaper Class="pa-4">
+            <MudText Typo="Typo.h5">Sign in to your account</MudText>
+            <EditForm Model="@Input" OnValidSubmit="LoginUser">
+                <MudTextField Label="Email" Class="mt-3" @bind-Value="Input.Email" For="@(() => Input.Email)" />
+                <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3" @bind-Value="Input.Password" For="@(() => Input.Password)" InputType="InputType.Password" />
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Login</MudButton>
+            </EditForm>
+        </MudPaper>
+@*         <div id="alert-border-2" class="border-t-4 mb-4 flex items-center border-red-300 bg-red-50 p-4 text-red-800 dark:text-red-400 dark:bg-gray-800 dark:border-red-800" role="alert">
+            <svg class="flex-shrink-0 h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+            </svg>
+            <div class="ms-3 text-sm font-medium">
+                <b>WARNING: </b>This above log in form doesn't work yet. Only logging in with Google using the button below is currently supported.
             </div>
+        </div> *@
+        <hr class="border-0 my-8 h-px bg-gray-200 dark:bg-gray-700">
+
+        <div class="flex items-center justify-center dark:bg-gray-800">
+            <button @onclick="LoginWithGoogle" class="flex gap-2 rounded-lg border border-slate-200 px-4 py-2 text-slate-700 transition duration-150 hover:border-slate-400 hover:text-slate-900 hover:shadow dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-500 dark:hover:text-slate-300">
+                <img class="h-6 w-6" src="https://www.svgrepo.com/show/475656/google-color.svg" loading="lazy" alt="google logo">
+                <span>Login with Google</span>
+            </button>
         </div>
-    </div>
-</section>
+
+        <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+            Don’t have an account yet? <a href="#" class="font-medium text-indigo-600 hover:underline dark:text-indigo-500">Sign up</a>
+        </p>
+    </MudContainer>
+</MudMainContent>
 
 @code {
     [SupplyParameterFromQuery]
@@ -95,17 +62,17 @@
     private HttpContext HttpContext { get; set; } = default!;
 
     [SupplyParameterFromForm]
-    private InputModel Input { get; set; } = new();
+    private LoginForm Input { get; set; } = new();
 
     private string? FullExternalLoginReturnUrl { get; set; }
 
     protected override void OnParametersSet()
     {
         // UriHelper.FromAbsolute(NavigationManager.BaseUri, out string scheme, out HostString host, out _, out _, out _);
-        IEnumerable<KeyValuePair<string, StringValues>> query =
-        [
-            new("ReturnUrl", ReturnUrl ?? NavigationManager.BaseUri)
-        ];
+        // IEnumerable<KeyValuePair<string, StringValues>> query =
+        // [
+        //     new("ReturnUrl", ReturnUrl ?? NavigationManager.BaseUri)
+        // ];
         // FullExternalLoginReturnUrl = UriHelper.BuildAbsolute(
         //     scheme,
         //     host,
@@ -113,7 +80,7 @@
         //     query: QueryString.Create(query));
 
         // FullExternalLoginReturnUrl = uriProvider.WebApp.Build("/auth-state-changed", query);
-        FullExternalLoginReturnUrl = NavigationManager.BaseUri + "auth-state-changed";
+        // FullExternalLoginReturnUrl = NavigationManager.BaseUri + "auth-state-changed";
     }
 
     private void LoginWithGoogle()
@@ -134,54 +101,32 @@
         //     path: new PathString("/login-with-google"),
         //     query: QueryString.Create(query));
         // var loginWithGoogleUri = uriProvider.Identity.Build("/login-with-google", query);
-        var loginWithGoogleUri = NavigationManager.BaseUri + "login-with-google";
+        var loginWithGoogleUri = "identity/login-with-google?returnUrl=%23";
 
         // var client = httpClientFactory.CreateClient("IdentityClient");
         // var response = await client.GetAsync(loginWithGoogleUri);
         // var contents = await response.Content.ReadAsStringAsync();
 
-        NavigationManager.NavigateTo(loginWithGoogleUri);
+        NavigationManager.NavigateTo(loginWithGoogleUri, true);
     }
 
     private async Task LoginUser()
     {
-        // hack until i can figure out something better
-        // ping the server to find out its uri
-        // var url = await identityClient.PingAsync(string.Empty);
+        var authResponse = await AccountService.LoginWithCredentials(Input.Email, Input.Password);
 
-        // UriHelper.FromAbsolute(url, out string scheme, out HostString host, out _, out _, out _);
-        IEnumerable<KeyValuePair<string, StringValues>> query =
-        [
-            new("ReturnUrl", FullExternalLoginReturnUrl)
-        ];
+        await ((IAuthStateProvider)AuthenticationStateProvider).Login(authResponse.AccessToken);
 
-        // var loginWithGoogleUri = UriHelper.BuildAbsolute(
-        //     scheme,
-        //     host,
-        //     path: new PathString("/login-with-google"),
-        //     query: QueryString.Create(query));
-        // var loginWithGoogleUri = uriProvider.Identity.Build("/login-with-google", query);
-        var loginWithGoogleUri = NavigationManager.BaseUri + "login-with-google";
-
-        // var client = httpClientFactory.CreateClient("IdentityClient");
-        // var response = await client.GetAsync(loginWithGoogleUri);
-        // var contents = await response.Content.ReadAsStringAsync();
-
-        NavigationManager.NavigateTo(loginWithGoogleUri);
+        NavigationManager.NavigateTo(ReturnUrl ?? "/");
     }
 
-    private sealed class InputModel
+    public class LoginForm
     {
         [Required]
         [EmailAddress]
-        public string Email { get; set; } = "";
+        public string Email { get; set; }
 
         [Required]
-        [DataType(DataType.Password)]
-        public string Password { get; set; } = "";
-
-        [Display(Name = "Remember me?")]
-        public bool RememberMe { get; set; }
+        public string Password { get; set; }
     }
 }
 

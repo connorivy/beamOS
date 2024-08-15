@@ -1,22 +1,20 @@
-@inherits LayoutComponentBase
+@using BeamOs.WebApp.Client.Components.Features.Styles
+@using Microsoft.AspNetCore.Components.Rendering
+@inherits FullScreenLayout
 
-<MudThemeProvider Theme="@_baseTheme"
-                  IsDarkMode="@isDarkMode" />
-<MudPopoverProvider />
-<MudDialogProvider />
-<MudSnackbarProvider />
+@inject IsDarkModeProvider IsDarkModeProvider
 
-<MudLayout>
-    <NavBar @bind-IsDarkMode="@isDarkMode" />
-    @* <MudDrawer @bind-Open="@open" Elevation="1" ClipMode="DrawerClipMode.Always">
-        <NavMenu />
-    </MudDrawer> *@
-    <MudMainContent Class="h-full">
-        <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="h-full">
-            @Body
-        </MudContainer>
-    </MudMainContent>
-</MudLayout>
+<MudThemeProvider @bind-IsDarkMode="IsDarkModeProvider.IsDarkMode" />
+
+<NavBar @bind-IsDarkMode="IsDarkModeProvider.IsDarkMode" />
+@* <MudDrawer @bind-Open="@open" Elevation="1" ClipMode="DrawerClipMode.Always">
+    <NavMenu />
+</MudDrawer> *@
+<MudMainContent Class="h-full">
+    <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="h-full">
+        @Body
+    </MudContainer>
+</MudMainContent>
 
 <div id="blazor-error-ui">
     An unhandled error has occurred.
@@ -27,7 +25,4 @@
 @code {
     private string inputValue = "initial";
     private bool open = false;
-
-    private bool isDarkMode = true;
-    private MudTheme _baseTheme = new();
 }
