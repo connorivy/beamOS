@@ -20,7 +20,7 @@ internal class GetNodeResultsToResponseQueryHandler(BeamOsStructuralDbContext db
         ModelId modelId = new(query.ModelId);
         IQueryable<NodeResult> queryable = dbContext.NodeResults.Where(el => el.ModelId == modelId);
 
-        if (query.ResourceIds is not null)
+        if (query.ResourceIds is not null && query.ResourceIds.Count > 0)
         {
             queryable = queryable.Where(el => query.ResourceIds.Contains(el.Id.Id));
         }

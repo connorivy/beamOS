@@ -1,5 +1,6 @@
 using BeamOs.CodeGen.Apis.EditorApi;
 using BeamOs.Common.Api;
+using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
 using BeamOs.Contracts.AnalyticalResults.Diagrams;
 using BeamOs.Contracts.PhysicalModel.Common;
 using BeamOs.Contracts.PhysicalModel.Element1d;
@@ -199,5 +200,25 @@ public class AddMomentDiagramsToEditorCommandHandler(
     )
     {
         await editorApiAlpha.CreateMomentDiagramsAsync(entities);
+    }
+}
+
+public class AddPointLoadsToEditorCommandHandler(
+    IStateRepository<EditorComponentState> editorComponentStateRepository,
+    AddEntityContractToCacheCommandHandler addEntityContractToCacheCommandHandler,
+    HistoryManager historyManager
+)
+    : AddEntityContractsToEditorCommandHandlerBase<PointLoadResponse>(
+        editorComponentStateRepository,
+        addEntityContractToCacheCommandHandler,
+        historyManager
+    )
+{
+    protected override async Task LoadEntities(
+        IEnumerable<PointLoadResponse> entities,
+        IEditorApiAlpha editorApiAlpha
+    )
+    {
+        await editorApiAlpha.CreatePointLoadsAsync(entities);
     }
 }

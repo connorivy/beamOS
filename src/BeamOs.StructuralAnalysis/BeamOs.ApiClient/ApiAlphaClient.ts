@@ -184,7 +184,7 @@ export class ApiAlphaClient implements IApiAlphaClient {
      * @return Success
      */
     getNodeResults(modelId: string, nodeIds: string[] | null | undefined): Promise<NodeResultResponse[]> {
-        let url_ = this.baseUrl + "/api/node-results/{modelId}?";
+        let url_ = this.baseUrl + "/api/models/{modelId}/node-results?";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -220,6 +220,14 @@ export class ApiAlphaClient implements IApiAlphaClient {
                 result200 = <any>null;
             }
             return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {

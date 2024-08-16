@@ -28,13 +28,12 @@ public class EditorApiGenerator : AbstractGenerator
         _ = addMethod("CreateNode").Accepts<NodeResponse>();
 
         _ = addMethod("CreatePointLoad").Accepts<PointLoadResponse>();
+        _ = addMethod("CreatePointLoads").Accepts<ICollection<PointLoadResponse>>();
 
         _ = addMethod("CreateShearDiagram").Accepts<ShearDiagramResponse>();
-
         _ = addMethod("CreateShearDiagrams").Accepts<ShearDiagramResponse[]>();
 
         _ = addMethod("CreateMomentDiagram").Accepts<MomentDiagramResponse>();
-
         _ = addMethod("CreateMomentDiagrams").Accepts<MomentDiagramResponse[]>();
 
         _ = addMethod("SetSettings").Accepts<PhysicalModelSettings>();

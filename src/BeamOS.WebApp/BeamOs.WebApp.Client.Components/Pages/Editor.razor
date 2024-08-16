@@ -1,4 +1,4 @@
-@page "/editor"
+@page "/editor/{ModelId}"
 @using BeamOs.WebApp.Client.Components.Caches
 @using BeamOs.WebApp.Client.Components.Components.Editor
 @using BeamOs.WebApp.Client.Components.Components.Editor.Commands
@@ -33,10 +33,13 @@
             <SelectionInfoComponent SelectedObjects="@editorComponent.EditorComponentState.SelectedObjects" ModelId="@editorComponent.EditorComponentState.LoadedModelId"></SelectionInfoComponent>
         </MudPopover>
     }
-    <EditorComponent Class="h-full" @ref="editorComponent"></EditorComponent>
+    <EditorComponent Class="h-full" @ref="editorComponent" PhysicalModelId="@ModelId"></EditorComponent>
 </MudDrawerContainer>
 
 @code {
+    [Parameter]
+    public string ModelId { get; set; }
+
     [Inject]
     private IApiAlphaClient ApiAlphaClient { get; init; }
 
@@ -50,7 +53,13 @@
     private AddMomentDiagramsToEditorCommandHandler AddMomentDiagramsToEditorCommandHandler { get; init; }
 
     [Inject]
+    private AddPointLoadsToEditorCommandHandler AddPointLoadsToEditorCommandHandler { get; init; }
+
+    [Inject]
     private AllStructuralAnalysisModelCaches allStructuralAnalysisModelCaches { get; init; }
+
+    [Inject]
+    private NavigationManager NavigationManager { get; init; }
 
     public string modelIdInput { get; set; }
     private EditorComponent editorComponent;
@@ -84,7 +93,9 @@
 
     private async Task LoadModel()
     {
-        await this.editorComponent.LoadModel(modelIdInput);
+        this.ModelId = modelIdInput;
+        this.NavigationManager.NavigateTo($"editor/{this.ModelId}");
+        await this.editorComponent.LoadModel(this.ModelId);
     }
 
     private async Task RunAnalysis()
@@ -94,29 +105,20 @@
 
     private async Task ShowReactions()
     {
-        var loadedNodeIds = this.allStructuralAnalysisModelCaches.GetByModelId(editorComponent.EditorComponentState.LoadedModelId)
-        .GetEntityIdsOfType<NodeResponse>();
+        var allForces = await this.ApiAlphaClient.GetNodeResultsAsync(this.ModelId, null);
 
-        double forcesTotal = 0;
-        foreach (var nodeId in loadedNodeIds)
-        {
-            var forces = await this.ApiAlphaClient.GetSingleNodeResultAsync(nodeId);
-            foreach (var force in forces)
-            {
-                forcesTotal += force.Forces.ForceAlongY.Value;
-                if (Math.Abs(force.Forces.ForceAlongY.Value) < .0001)
-                {
-                    continue;
-                }
-
-                await this.AddEntityContractToEditorCommandHandler.ExecuteAsync(new AddEntityToEditorCommand(this.editorComponent.ElementId,
-                    new PointLoadResponse(Guid.NewGuid().ToString(),
-                    this.editorComponent.EditorComponentState.LoadedModelId,
-                    nodeId,
-                    force.Forces.ForceAlongY,
-                    new(0, 1, 0))));
-            }
-        }
+        await AddPointLoadsToEditorCommandHandler.ExecuteAsync(new(this.editorComponent.ElementId,
+            allForces
+                .Where(f => Math.Abs(f.Forces.ForceAlongY.Value) > .001)
+                .Select(f => new PointLoadResponse(
+                    Guid.NewGuid().ToString(),
+                    this.ModelId,
+                    f.NodeId,
+                    f.Forces.ForceAlongY,
+                    new(0, 1, 0)
+                ))
+                .ToArray() // must prevent multiple enumerations or different ids will be generated
+        ));
     }
 
     public void Dispose()

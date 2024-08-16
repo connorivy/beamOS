@@ -22,8 +22,11 @@ public class GetMomentDiagrams(
 
     public override string Route => "model/{modelId}/diagrams/moment";
 
-    public override void ConfigureAuthentication() =>
+    public override void ConfigureAuthentication()
+    {
+        this.AllowAnonymous();
         this.Policy(p => p.Requirements.Add(new RequireModelReadAccess()));
+    }
 
     public override async Task<MomentDiagramResponse[]> ExecuteRequestAsync(
         ModelIdRequest req,
