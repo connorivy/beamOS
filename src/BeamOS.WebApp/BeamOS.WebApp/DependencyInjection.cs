@@ -1,10 +1,7 @@
-using System.Text;
 using BeamOs.Api;
 using BeamOs.Api.Common;
 using BeamOs.ApiClient;
-using BeamOs.Common.Identity;
 using BeamOs.Contracts.PhysicalModel.Common;
-using BeamOs.Infrastructure;
 using BeamOs.Tests.TestRunner;
 using BeamOS.WebApp.Client;
 using BeamOs.WebApp.Client.Components;
@@ -14,12 +11,9 @@ using BeamOS.WebApp.Components;
 using BeamOS.WebApp.Components.Providers;
 using BeamOS.WebApp.Hubs;
 using Blazored.LocalStorage;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.IdentityModel.Tokens;
 
 namespace BeamOS.WebApp;
 
@@ -56,36 +50,9 @@ public static class DependencyInjection
         ConfigurationManager configuration
     )
     {
-        services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvdier>();
-
-        services
-            .AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(x =>
-            {
-                x.TokenValidationParameters = new()
-                {
-                    ValidateIssuer = true,
-                    ValidIssuer = configuration["JwtSettings:Issuer"],
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(configuration["JwtSettings:Key"])
-                    ),
-                    ValidateAudience = true,
-                    ValidAudiences = configuration["JwtSettings:Audiences"].Split(','),
-                    ValidateLifetime = true,
-                };
-            });
-
-        // workaround to make link redirection work in .net 8 with JWT auth
-        // see this issue and comment https://github.com/dotnet/aspnetcore/issues/52063#issuecomment-1817420640
-        services.AddSingleton<
-            IAuthorizationMiddlewareResultHandler,
-            BlazorAuthorizationMiddlewareResultHandler
+        services.AddScoped<
+            AuthenticationStateProvider,
+            Components.Providers.CustomAuthStateProvider
         >();
 
         return services;
@@ -149,8 +116,8 @@ public static class DependencyInjection
 
         app.UseHttpsRedirection();
 
-        app.UseAuthentication();
-        app.UseAuthorization();
+        //app.UseAuthentication();
+        //app.UseAuthorization();
 
         app.UseDefaultFiles();
         app.UseStaticFiles();

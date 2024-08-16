@@ -2,11 +2,10 @@ using System.Security.Claims;
 using System.Text.Json;
 using BeamOs.Common.Identity;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Server;
 
 namespace BeamOS.WebApp.Components.Providers;
 
-public class CustomAuthStateProvdier
+public class CustomAuthStateProvider
     : AuthenticationStateProvider,
         IHostEnvironmentAuthenticationStateProvider,
         IAuthStateProvider
@@ -17,7 +16,7 @@ public class CustomAuthStateProvdier
 
     /// <inheritdoc />
     public override Task<AuthenticationState> GetAuthenticationStateAsync() =>
-        authenticationStateTask
+        this.authenticationStateTask
         ?? throw new InvalidOperationException(
             $"Do not call {nameof(GetAuthenticationStateAsync)} outside of the DI scope for a Razor component. Typically, this means you can call it only within a Razor component or inside another DI service that is resolved for a Razor component."
         );

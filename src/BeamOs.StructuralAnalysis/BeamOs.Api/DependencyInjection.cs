@@ -3,9 +3,11 @@ using BeamOs.Api.Common.Extensions;
 using BeamOs.Application;
 using BeamOs.Application.Common;
 using BeamOs.Infrastructure;
+using BeamOS.WebApp;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using MathNet.Numerics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.Api;
@@ -53,6 +55,17 @@ public static class DependencyInjection
 
         Control.UseNativeMKL();
         Control.UseMultiThreading();
+
+        services.AddAuthentication();
+        services.AddAuthorization();
+
+        // workaround to make link redirection work in .net 8 with JWT auth
+        // see this issue and comment https://github.com/dotnet/aspnetcore/issues/52063#issuecomment-1817420640
+        services.AddSingleton<
+            IAuthorizationMiddlewareResultHandler,
+            BlazorAuthorizationMiddlewareResultHandler
+        >();
+
         return services;
     }
 
@@ -95,6 +108,9 @@ public static class DependencyInjection
 
     public static void AddAnalysisEndpoints(this IApplicationBuilder app)
     {
+        app.UseAuthentication();
+        app.UseAuthorization();
+
         _ = app.UseFastEndpoints(c =>
             {
                 c.Endpoints.RoutePrefix = "api";
