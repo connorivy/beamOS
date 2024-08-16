@@ -16,6 +16,12 @@ export interface IApiAlphaClient {
     runDirectStiffnessMethod(id: string): Promise<AnalyticalModelResponse3>;
 
     /**
+     * @param nodeIds (optional) 
+     * @return Success
+     */
+    getNodeResults(modelId: string, nodeIds: string[] | null | undefined): Promise<NodeResultResponse[]>;
+
+    /**
      * @return Success
      */
     getSingleNodeResult(id: string): Promise<NodeResultResponse[]>;
@@ -38,49 +44,6 @@ export interface IApiAlphaClient {
     /**
      * @return Success
      */
-    createMomentLoad(createMomentLoadRequest: CreateMomentLoadRequest): Promise<MomentLoadResponse>;
-
-    /**
-     * @return Success
-     */
-    getMomentLoads(): Promise<MomentLoadResponse[]>;
-
-    /**
-     * @return Success
-     */
-    createModel(createModelRequest: CreateModelRequest): Promise<ModelResponse>;
-
-    /**
-     * @return Success
-     */
-    deleteModel(id: string): Promise<boolean>;
-
-    /**
-     * @param properties (optional) 
-     * @return Success
-     */
-    getModel(id: string, properties: string[] | null | undefined): Promise<ModelResponse>;
-
-    /**
-     * @param units (optional) 
-     * @return Success
-     */
-    getModelHydrated(modelId: string, units: PreconfiguredUnits | null | undefined): Promise<ModelResponseHydrated>;
-
-    /**
-     * @return Success
-     */
-    createMaterial(createMaterialRequest: CreateMaterialRequest): Promise<MaterialResponse>;
-
-    /**
-     * @param nodeIds (optional) 
-     * @return Success
-     */
-    getNodeResults(modelId: string, nodeIds: string[] | null | undefined): Promise<NodeResultResponse[]>;
-
-    /**
-     * @return Success
-     */
     createNode(createNodeRequest: CreateNodeRequest): Promise<NodeResponse>;
 
     /**
@@ -96,12 +59,59 @@ export interface IApiAlphaClient {
     /**
      * @return Success
      */
-    getShearDiagram(id: string): Promise<ShearDiagramResponse>;
+    createMomentLoad(createMomentLoadRequest: CreateMomentLoadRequest): Promise<MomentLoadResponse>;
+
+    /**
+     * @return Success
+     */
+    getMomentLoads(): Promise<MomentLoadResponse[]>;
+
+    /**
+     * @return Success
+     */
+    createModel(createModelRequest: CreateModelRequest): Promise<ModelResponse>;
+
+    /**
+     * @return Success
+     */
+    deleteModel(modelId: string): Promise<boolean>;
+
+    /**
+     * @param properties (optional) 
+     * @return Success
+     */
+    getModel(modelId: string, properties: string[] | null | undefined): Promise<ModelResponse>;
+
+    /**
+     * @param units (optional) 
+     * @return Success
+     */
+    getModelHydrated(modelId: string, units: PreconfiguredUnits | null | undefined): Promise<ModelResponseHydrated>;
+
+    /**
+     * @return Success
+     */
+    createMaterial(createMaterialRequest: CreateMaterialRequest): Promise<MaterialResponse>;
 
     /**
      * @return Success
      */
     getMomentDiagram(id: string): Promise<MomentDiagramResponse>;
+
+    /**
+     * @return Success
+     */
+    getMomentDiagrams(modelId: string): Promise<MomentDiagramResponse[]>;
+
+    /**
+     * @return Success
+     */
+    getShearDiagram(id: string): Promise<ShearDiagramResponse>;
+
+    /**
+     * @return Success
+     */
+    getShearDiagrams(modelId: string): Promise<ShearDiagramResponse[]>;
 
     /**
      * @return Success
@@ -167,6 +177,56 @@ export class ApiAlphaClient implements IApiAlphaClient {
             });
         }
         return Promise.resolve<AnalyticalModelResponse3>(null as any);
+    }
+
+    /**
+     * @param nodeIds (optional) 
+     * @return Success
+     */
+    getNodeResults(modelId: string, nodeIds: string[] | null | undefined): Promise<NodeResultResponse[]> {
+        let url_ = this.baseUrl + "/api/node-results/{modelId}?";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (nodeIds !== undefined && nodeIds !== null)
+            nodeIds && nodeIds.forEach(item => { url_ += "nodeIds=" + encodeURIComponent("" + item) + "&"; });
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetNodeResults(_response);
+        });
+    }
+
+    protected processGetNodeResults(response: Response): Promise<NodeResultResponse[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(NodeResultResponse.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<NodeResultResponse[]>(null as any);
     }
 
     /**
@@ -341,6 +401,139 @@ export class ApiAlphaClient implements IApiAlphaClient {
     /**
      * @return Success
      */
+    createNode(createNodeRequest: CreateNodeRequest): Promise<NodeResponse> {
+        let url_ = this.baseUrl + "/api/nodes";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(createNodeRequest);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateNode(_response);
+        });
+    }
+
+    protected processCreateNode(response: Response): Promise<NodeResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = NodeResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<NodeResponse>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    getSingleNode(id: string): Promise<NodeResponse> {
+        let url_ = this.baseUrl + "/api/nodes/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetSingleNode(_response);
+        });
+    }
+
+    protected processGetSingleNode(response: Response): Promise<NodeResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = NodeResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<NodeResponse>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    patchNode(patchNodeRequest: PatchNodeRequest, nodeId: string): Promise<NodeResponse> {
+        let url_ = this.baseUrl + "/api/nodes/{nodeId}";
+        if (nodeId === undefined || nodeId === null)
+            throw new Error("The parameter 'nodeId' must be defined.");
+        url_ = url_.replace("{nodeId}", encodeURIComponent("" + nodeId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(patchNodeRequest);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPatchNode(_response);
+        });
+    }
+
+    protected processPatchNode(response: Response): Promise<NodeResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = NodeResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<NodeResponse>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
     createMomentLoad(createMomentLoadRequest: CreateMomentLoadRequest): Promise<MomentLoadResponse> {
         let url_ = this.baseUrl + "/api/moment-loads";
         url_ = url_.replace(/[?&]$/, "");
@@ -456,6 +649,10 @@ export class ApiAlphaClient implements IApiAlphaClient {
             result200 = ModelResponse.fromJS(resultData200);
             return result200;
             });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -467,11 +664,11 @@ export class ApiAlphaClient implements IApiAlphaClient {
     /**
      * @return Success
      */
-    deleteModel(id: string): Promise<boolean> {
-        let url_ = this.baseUrl + "/api/models/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+    deleteModel(modelId: string): Promise<boolean> {
+        let url_ = this.baseUrl + "/api/models/{modelId}";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -497,6 +694,14 @@ export class ApiAlphaClient implements IApiAlphaClient {
     
             return result200;
             });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -509,11 +714,11 @@ export class ApiAlphaClient implements IApiAlphaClient {
      * @param properties (optional) 
      * @return Success
      */
-    getModel(id: string, properties: string[] | null | undefined): Promise<ModelResponse> {
-        let url_ = this.baseUrl + "/api/models/{id}?";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+    getModel(modelId: string, properties: string[] | null | undefined): Promise<ModelResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}?";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         if (properties !== undefined && properties !== null)
             properties && properties.forEach(item => { url_ += "properties=" + encodeURIComponent("" + item) + "&"; });
         url_ = url_.replace(/[?&]$/, "");
@@ -539,6 +744,10 @@ export class ApiAlphaClient implements IApiAlphaClient {
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result200 = ModelResponse.fromJS(resultData200);
             return result200;
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -633,101 +842,10 @@ export class ApiAlphaClient implements IApiAlphaClient {
     }
 
     /**
-     * @param nodeIds (optional) 
      * @return Success
      */
-    getNodeResults(modelId: string, nodeIds: string[] | null | undefined): Promise<NodeResultResponse[]> {
-        let url_ = this.baseUrl + "/api/node-results/{modelId}?";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        if (nodeIds !== undefined && nodeIds !== null)
-            nodeIds && nodeIds.forEach(item => { url_ += "nodeIds=" + encodeURIComponent("" + item) + "&"; });
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetNodeResults(_response);
-        });
-    }
-
-    protected processGetNodeResults(response: Response): Promise<NodeResultResponse[]> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(NodeResultResponse.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<NodeResultResponse[]>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
-    createNode(createNodeRequest: CreateNodeRequest): Promise<NodeResponse> {
-        let url_ = this.baseUrl + "/api/nodes";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(createNodeRequest);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateNode(_response);
-        });
-    }
-
-    protected processCreateNode(response: Response): Promise<NodeResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = NodeResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<NodeResponse>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
-    getSingleNode(id: string): Promise<NodeResponse> {
-        let url_ = this.baseUrl + "/api/nodes/{id}";
+    getMomentDiagram(id: string): Promise<MomentDiagramResponse> {
+        let url_ = this.baseUrl + "/api/element1Ds/{id}/diagrams/moment/";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -741,18 +859,18 @@ export class ApiAlphaClient implements IApiAlphaClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetSingleNode(_response);
+            return this.processGetMomentDiagram(_response);
         });
     }
 
-    protected processGetSingleNode(response: Response): Promise<NodeResponse> {
+    protected processGetMomentDiagram(response: Response): Promise<MomentDiagramResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = NodeResponse.fromJS(resultData200);
+            result200 = MomentDiagramResponse.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -760,51 +878,62 @@ export class ApiAlphaClient implements IApiAlphaClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<NodeResponse>(null as any);
+        return Promise.resolve<MomentDiagramResponse>(null as any);
     }
 
     /**
      * @return Success
      */
-    patchNode(patchNodeRequest: PatchNodeRequest, nodeId: string): Promise<NodeResponse> {
-        let url_ = this.baseUrl + "/api/nodes/{nodeId}";
-        if (nodeId === undefined || nodeId === null)
-            throw new Error("The parameter 'nodeId' must be defined.");
-        url_ = url_.replace("{nodeId}", encodeURIComponent("" + nodeId));
+    getMomentDiagrams(modelId: string): Promise<MomentDiagramResponse[]> {
+        let url_ = this.baseUrl + "/api/model/{modelId}/diagrams/moment";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(patchNodeRequest);
-
         let options_: RequestInit = {
-            body: content_,
-            method: "PATCH",
+            method: "GET",
             headers: {
-                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processPatchNode(_response);
+            return this.processGetMomentDiagrams(_response);
         });
     }
 
-    protected processPatchNode(response: Response): Promise<NodeResponse> {
+    protected processGetMomentDiagrams(response: Response): Promise<MomentDiagramResponse[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = NodeResponse.fromJS(resultData200);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(MomentDiagramResponse.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
             return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<NodeResponse>(null as any);
+        return Promise.resolve<MomentDiagramResponse[]>(null as any);
     }
 
     /**
@@ -850,11 +979,11 @@ export class ApiAlphaClient implements IApiAlphaClient {
     /**
      * @return Success
      */
-    getMomentDiagram(id: string): Promise<MomentDiagramResponse> {
-        let url_ = this.baseUrl + "/api/element1Ds/{id}/diagrams/moment/";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+    getShearDiagrams(modelId: string): Promise<ShearDiagramResponse[]> {
+        let url_ = this.baseUrl + "/api/model/{modelId}/diagrams/shear";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -865,18 +994,25 @@ export class ApiAlphaClient implements IApiAlphaClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetMomentDiagram(_response);
+            return this.processGetShearDiagrams(_response);
         });
     }
 
-    protected processGetMomentDiagram(response: Response): Promise<MomentDiagramResponse> {
+    protected processGetShearDiagrams(response: Response): Promise<ShearDiagramResponse[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = MomentDiagramResponse.fromJS(resultData200);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ShearDiagramResponse.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -884,7 +1020,7 @@ export class ApiAlphaClient implements IApiAlphaClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<MomentDiagramResponse>(null as any);
+        return Promise.resolve<ShearDiagramResponse[]>(null as any);
     }
 
     /**
@@ -1331,6 +1467,36 @@ export class IdRequest implements IIdRequest {
 export interface IIdRequest {
 }
 
+export class GetNodeResultsRequest implements IGetNodeResultsRequest {
+
+    constructor(data?: IGetNodeResultsRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+    }
+
+    static fromJS(data: any): GetNodeResultsRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetNodeResultsRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data;
+    }
+}
+
+export interface IGetNodeResultsRequest {
+}
+
 export class ModelResultResponse extends BeamOsContractBase implements IModelResultResponse {
     modelId!: string;
     maxShear!: UnitValueDto;
@@ -1388,10 +1554,13 @@ export interface IModelResultResponse extends IBeamOsContractBase {
 
 export class SectionProfileResponse implements ISectionProfileResponse {
     id!: string;
+    modelId!: string;
     area!: UnitValueDto;
     strongAxisMomentOfInertia!: UnitValueDto;
     weakAxisMomentOfInertia!: UnitValueDto;
     polarMomentOfInertia!: UnitValueDto;
+    strongAxisShearArea!: UnitValueDto;
+    weakAxisShearArea!: UnitValueDto;
 
     constructor(data?: ISectionProfileResponse) {
         if (data) {
@@ -1405,16 +1574,21 @@ export class SectionProfileResponse implements ISectionProfileResponse {
             this.strongAxisMomentOfInertia = new UnitValueDto();
             this.weakAxisMomentOfInertia = new UnitValueDto();
             this.polarMomentOfInertia = new UnitValueDto();
+            this.strongAxisShearArea = new UnitValueDto();
+            this.weakAxisShearArea = new UnitValueDto();
         }
     }
 
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
+            this.modelId = _data["modelId"];
             this.area = _data["area"] ? UnitValueDto.fromJS(_data["area"]) : new UnitValueDto();
             this.strongAxisMomentOfInertia = _data["strongAxisMomentOfInertia"] ? UnitValueDto.fromJS(_data["strongAxisMomentOfInertia"]) : new UnitValueDto();
             this.weakAxisMomentOfInertia = _data["weakAxisMomentOfInertia"] ? UnitValueDto.fromJS(_data["weakAxisMomentOfInertia"]) : new UnitValueDto();
             this.polarMomentOfInertia = _data["polarMomentOfInertia"] ? UnitValueDto.fromJS(_data["polarMomentOfInertia"]) : new UnitValueDto();
+            this.strongAxisShearArea = _data["strongAxisShearArea"] ? UnitValueDto.fromJS(_data["strongAxisShearArea"]) : new UnitValueDto();
+            this.weakAxisShearArea = _data["weakAxisShearArea"] ? UnitValueDto.fromJS(_data["weakAxisShearArea"]) : new UnitValueDto();
         }
     }
 
@@ -1428,20 +1602,26 @@ export class SectionProfileResponse implements ISectionProfileResponse {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
+        data["modelId"] = this.modelId;
         data["area"] = this.area ? this.area.toJSON() : <any>undefined;
         data["strongAxisMomentOfInertia"] = this.strongAxisMomentOfInertia ? this.strongAxisMomentOfInertia.toJSON() : <any>undefined;
         data["weakAxisMomentOfInertia"] = this.weakAxisMomentOfInertia ? this.weakAxisMomentOfInertia.toJSON() : <any>undefined;
         data["polarMomentOfInertia"] = this.polarMomentOfInertia ? this.polarMomentOfInertia.toJSON() : <any>undefined;
+        data["strongAxisShearArea"] = this.strongAxisShearArea ? this.strongAxisShearArea.toJSON() : <any>undefined;
+        data["weakAxisShearArea"] = this.weakAxisShearArea ? this.weakAxisShearArea.toJSON() : <any>undefined;
         return data;
     }
 }
 
 export interface ISectionProfileResponse {
     id: string;
+    modelId: string;
     area: UnitValueDto;
     strongAxisMomentOfInertia: UnitValueDto;
     weakAxisMomentOfInertia: UnitValueDto;
     polarMomentOfInertia: UnitValueDto;
+    strongAxisShearArea: UnitValueDto;
+    weakAxisShearArea: UnitValueDto;
 }
 
 export class CreateSectionProfileRequest implements ICreateSectionProfileRequest {
@@ -1450,6 +1630,8 @@ export class CreateSectionProfileRequest implements ICreateSectionProfileRequest
     strongAxisMomentOfInertia!: UnitValueDto;
     weakAxisMomentOfInertia!: UnitValueDto;
     polarMomentOfInertia!: UnitValueDto;
+    strongAxisShearArea!: UnitValueDto;
+    weakAxisShearArea!: UnitValueDto;
 
     constructor(data?: ICreateSectionProfileRequest) {
         if (data) {
@@ -1463,6 +1645,8 @@ export class CreateSectionProfileRequest implements ICreateSectionProfileRequest
             this.strongAxisMomentOfInertia = new UnitValueDto();
             this.weakAxisMomentOfInertia = new UnitValueDto();
             this.polarMomentOfInertia = new UnitValueDto();
+            this.strongAxisShearArea = new UnitValueDto();
+            this.weakAxisShearArea = new UnitValueDto();
         }
     }
 
@@ -1473,6 +1657,8 @@ export class CreateSectionProfileRequest implements ICreateSectionProfileRequest
             this.strongAxisMomentOfInertia = _data["strongAxisMomentOfInertia"] ? UnitValueDto.fromJS(_data["strongAxisMomentOfInertia"]) : new UnitValueDto();
             this.weakAxisMomentOfInertia = _data["weakAxisMomentOfInertia"] ? UnitValueDto.fromJS(_data["weakAxisMomentOfInertia"]) : new UnitValueDto();
             this.polarMomentOfInertia = _data["polarMomentOfInertia"] ? UnitValueDto.fromJS(_data["polarMomentOfInertia"]) : new UnitValueDto();
+            this.strongAxisShearArea = _data["strongAxisShearArea"] ? UnitValueDto.fromJS(_data["strongAxisShearArea"]) : new UnitValueDto();
+            this.weakAxisShearArea = _data["weakAxisShearArea"] ? UnitValueDto.fromJS(_data["weakAxisShearArea"]) : new UnitValueDto();
         }
     }
 
@@ -1490,6 +1676,8 @@ export class CreateSectionProfileRequest implements ICreateSectionProfileRequest
         data["strongAxisMomentOfInertia"] = this.strongAxisMomentOfInertia ? this.strongAxisMomentOfInertia.toJSON() : <any>undefined;
         data["weakAxisMomentOfInertia"] = this.weakAxisMomentOfInertia ? this.weakAxisMomentOfInertia.toJSON() : <any>undefined;
         data["polarMomentOfInertia"] = this.polarMomentOfInertia ? this.polarMomentOfInertia.toJSON() : <any>undefined;
+        data["strongAxisShearArea"] = this.strongAxisShearArea ? this.strongAxisShearArea.toJSON() : <any>undefined;
+        data["weakAxisShearArea"] = this.weakAxisShearArea ? this.weakAxisShearArea.toJSON() : <any>undefined;
         return data;
     }
 }
@@ -1500,6 +1688,8 @@ export interface ICreateSectionProfileRequest {
     strongAxisMomentOfInertia: UnitValueDto;
     weakAxisMomentOfInertia: UnitValueDto;
     polarMomentOfInertia: UnitValueDto;
+    strongAxisShearArea: UnitValueDto;
+    weakAxisShearArea: UnitValueDto;
 }
 
 export abstract class BeamOsEntityContractBase extends BeamOsContractBase implements IBeamOsEntityContractBase {
@@ -1780,6 +1970,7 @@ export interface IModelResponse extends IBeamOsEntityContractBase {
 
 export class PhysicalModelSettings implements IPhysicalModelSettings {
     unitSettings!: UnitSettingsDtoVerbose;
+    analysisSettings!: AnalysisSettingsContract;
     yAxisUp!: boolean;
 
     constructor(data?: IPhysicalModelSettings) {
@@ -1791,12 +1982,14 @@ export class PhysicalModelSettings implements IPhysicalModelSettings {
         }
         if (!data) {
             this.unitSettings = new UnitSettingsDtoVerbose();
+            this.analysisSettings = new AnalysisSettingsContract();
         }
     }
 
     init(_data?: any) {
         if (_data) {
             this.unitSettings = _data["unitSettings"] ? UnitSettingsDtoVerbose.fromJS(_data["unitSettings"]) : new UnitSettingsDtoVerbose();
+            this.analysisSettings = _data["analysisSettings"] ? AnalysisSettingsContract.fromJS(_data["analysisSettings"]) : new AnalysisSettingsContract();
             this.yAxisUp = _data["yAxisUp"];
         }
     }
@@ -1811,6 +2004,7 @@ export class PhysicalModelSettings implements IPhysicalModelSettings {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["unitSettings"] = this.unitSettings ? this.unitSettings.toJSON() : <any>undefined;
+        data["analysisSettings"] = this.analysisSettings ? this.analysisSettings.toJSON() : <any>undefined;
         data["yAxisUp"] = this.yAxisUp;
         return data;
     }
@@ -1818,6 +2012,7 @@ export class PhysicalModelSettings implements IPhysicalModelSettings {
 
 export interface IPhysicalModelSettings {
     unitSettings: UnitSettingsDtoVerbose;
+    analysisSettings: AnalysisSettingsContract;
     yAxisUp: boolean;
 }
 
@@ -1830,6 +2025,7 @@ export class UnitSettingsDtoVerbose implements IUnitSettingsDtoVerbose {
     torqueUnit!: string;
     forcePerLengthUnit!: string;
     pressureUnit!: string;
+    angleUnit!: string;
 
     constructor(data?: IUnitSettingsDtoVerbose) {
         if (data) {
@@ -1850,6 +2046,7 @@ export class UnitSettingsDtoVerbose implements IUnitSettingsDtoVerbose {
             this.torqueUnit = _data["torqueUnit"];
             this.forcePerLengthUnit = _data["forcePerLengthUnit"];
             this.pressureUnit = _data["pressureUnit"];
+            this.angleUnit = _data["angleUnit"];
         }
     }
 
@@ -1870,6 +2067,7 @@ export class UnitSettingsDtoVerbose implements IUnitSettingsDtoVerbose {
         data["torqueUnit"] = this.torqueUnit;
         data["forcePerLengthUnit"] = this.forcePerLengthUnit;
         data["pressureUnit"] = this.pressureUnit;
+        data["angleUnit"] = this.angleUnit;
         return data;
     }
 }
@@ -1883,6 +2081,49 @@ export interface IUnitSettingsDtoVerbose {
     torqueUnit: string;
     forcePerLengthUnit: string;
     pressureUnit: string;
+    angleUnit: string;
+}
+
+export class AnalysisSettingsContract implements IAnalysisSettingsContract {
+    element1DAnalysisType!: Element1dAnalysisType;
+
+    constructor(data?: IAnalysisSettingsContract) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.element1DAnalysisType = _data["element1DAnalysisType"];
+        }
+    }
+
+    static fromJS(data: any): AnalysisSettingsContract {
+        data = typeof data === 'object' ? data : {};
+        let result = new AnalysisSettingsContract();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["element1DAnalysisType"] = this.element1DAnalysisType;
+        return data;
+    }
+}
+
+export interface IAnalysisSettingsContract {
+    element1DAnalysisType: Element1dAnalysisType;
+}
+
+export enum Element1dAnalysisType {
+    Undefined = 0,
+    Euler = 1,
+    Timoshenko = 2,
 }
 
 export class NodeResponse extends BeamOsEntityContractBase implements INodeResponse {
@@ -2421,6 +2662,302 @@ export interface ICreatePointLoadRequest {
     direction: Vector3;
 }
 
+export class CreateNodeRequest implements ICreateNodeRequest {
+    modelId!: string;
+    locationPoint!: Point;
+    restraint?: RestraintRequest | undefined;
+
+    constructor(data?: ICreateNodeRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.locationPoint = new Point();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.modelId = _data["modelId"];
+            this.locationPoint = _data["locationPoint"] ? Point.fromJS(_data["locationPoint"]) : new Point();
+            this.restraint = _data["restraint"] ? RestraintRequest.fromJS(_data["restraint"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): CreateNodeRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateNodeRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["modelId"] = this.modelId;
+        data["locationPoint"] = this.locationPoint ? this.locationPoint.toJSON() : <any>undefined;
+        data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ICreateNodeRequest {
+    modelId: string;
+    locationPoint: Point;
+    restraint?: RestraintRequest | undefined;
+}
+
+export class Point implements IPoint {
+    xCoordinate!: UnitValueDto;
+    yCoordinate!: UnitValueDto;
+    zCoordinate!: UnitValueDto;
+
+    constructor(data?: IPoint) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.xCoordinate = new UnitValueDto();
+            this.yCoordinate = new UnitValueDto();
+            this.zCoordinate = new UnitValueDto();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.xCoordinate = _data["xCoordinate"] ? UnitValueDto.fromJS(_data["xCoordinate"]) : new UnitValueDto();
+            this.yCoordinate = _data["yCoordinate"] ? UnitValueDto.fromJS(_data["yCoordinate"]) : new UnitValueDto();
+            this.zCoordinate = _data["zCoordinate"] ? UnitValueDto.fromJS(_data["zCoordinate"]) : new UnitValueDto();
+        }
+    }
+
+    static fromJS(data: any): Point {
+        data = typeof data === 'object' ? data : {};
+        let result = new Point();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["xCoordinate"] = this.xCoordinate ? this.xCoordinate.toJSON() : <any>undefined;
+        data["yCoordinate"] = this.yCoordinate ? this.yCoordinate.toJSON() : <any>undefined;
+        data["zCoordinate"] = this.zCoordinate ? this.zCoordinate.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IPoint {
+    xCoordinate: UnitValueDto;
+    yCoordinate: UnitValueDto;
+    zCoordinate: UnitValueDto;
+}
+
+export class RestraintRequest implements IRestraintRequest {
+    canTranslateAlongX!: boolean;
+    canTranslateAlongY!: boolean;
+    canTranslateAlongZ!: boolean;
+    canRotateAboutX!: boolean;
+    canRotateAboutY!: boolean;
+    canRotateAboutZ!: boolean;
+
+    constructor(data?: IRestraintRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.canTranslateAlongX = _data["canTranslateAlongX"];
+            this.canTranslateAlongY = _data["canTranslateAlongY"];
+            this.canTranslateAlongZ = _data["canTranslateAlongZ"];
+            this.canRotateAboutX = _data["canRotateAboutX"];
+            this.canRotateAboutY = _data["canRotateAboutY"];
+            this.canRotateAboutZ = _data["canRotateAboutZ"];
+        }
+    }
+
+    static fromJS(data: any): RestraintRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new RestraintRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["canTranslateAlongX"] = this.canTranslateAlongX;
+        data["canTranslateAlongY"] = this.canTranslateAlongY;
+        data["canTranslateAlongZ"] = this.canTranslateAlongZ;
+        data["canRotateAboutX"] = this.canRotateAboutX;
+        data["canRotateAboutY"] = this.canRotateAboutY;
+        data["canRotateAboutZ"] = this.canRotateAboutZ;
+        return data;
+    }
+}
+
+export interface IRestraintRequest {
+    canTranslateAlongX: boolean;
+    canTranslateAlongY: boolean;
+    canTranslateAlongZ: boolean;
+    canRotateAboutX: boolean;
+    canRotateAboutY: boolean;
+    canRotateAboutZ: boolean;
+}
+
+export class PatchNodeRequest implements IPatchNodeRequest {
+    locationPoint?: PatchPointRequest | undefined;
+    restraint?: PatchRestraintRequest | undefined;
+
+    constructor(data?: IPatchNodeRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.locationPoint = _data["locationPoint"] ? PatchPointRequest.fromJS(_data["locationPoint"]) : <any>undefined;
+            this.restraint = _data["restraint"] ? PatchRestraintRequest.fromJS(_data["restraint"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): PatchNodeRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new PatchNodeRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["locationPoint"] = this.locationPoint ? this.locationPoint.toJSON() : <any>undefined;
+        data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IPatchNodeRequest {
+    locationPoint?: PatchPointRequest | undefined;
+    restraint?: PatchRestraintRequest | undefined;
+}
+
+export class PatchPointRequest implements IPatchPointRequest {
+    lengthUnit!: string;
+    xCoordinate?: number | undefined;
+    yCoordinate?: number | undefined;
+    zCoordinate?: number | undefined;
+
+    constructor(data?: IPatchPointRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.lengthUnit = _data["lengthUnit"];
+            this.xCoordinate = _data["xCoordinate"];
+            this.yCoordinate = _data["yCoordinate"];
+            this.zCoordinate = _data["zCoordinate"];
+        }
+    }
+
+    static fromJS(data: any): PatchPointRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new PatchPointRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["lengthUnit"] = this.lengthUnit;
+        data["xCoordinate"] = this.xCoordinate;
+        data["yCoordinate"] = this.yCoordinate;
+        data["zCoordinate"] = this.zCoordinate;
+        return data;
+    }
+}
+
+export interface IPatchPointRequest {
+    lengthUnit: string;
+    xCoordinate?: number | undefined;
+    yCoordinate?: number | undefined;
+    zCoordinate?: number | undefined;
+}
+
+export class PatchRestraintRequest implements IPatchRestraintRequest {
+    canTranslateAlongX?: boolean | undefined;
+    canTranslateAlongY?: boolean | undefined;
+    canTranslateAlongZ?: boolean | undefined;
+    canRotateAboutX?: boolean | undefined;
+    canRotateAboutY?: boolean | undefined;
+    canRotateAboutZ?: boolean | undefined;
+
+    constructor(data?: IPatchRestraintRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.canTranslateAlongX = _data["canTranslateAlongX"];
+            this.canTranslateAlongY = _data["canTranslateAlongY"];
+            this.canTranslateAlongZ = _data["canTranslateAlongZ"];
+            this.canRotateAboutX = _data["canRotateAboutX"];
+            this.canRotateAboutY = _data["canRotateAboutY"];
+            this.canRotateAboutZ = _data["canRotateAboutZ"];
+        }
+    }
+
+    static fromJS(data: any): PatchRestraintRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new PatchRestraintRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["canTranslateAlongX"] = this.canTranslateAlongX;
+        data["canTranslateAlongY"] = this.canTranslateAlongY;
+        data["canTranslateAlongZ"] = this.canTranslateAlongZ;
+        data["canRotateAboutX"] = this.canRotateAboutX;
+        data["canRotateAboutY"] = this.canRotateAboutY;
+        data["canRotateAboutZ"] = this.canRotateAboutZ;
+        return data;
+    }
+}
+
+export interface IPatchRestraintRequest {
+    canTranslateAlongX?: boolean | undefined;
+    canTranslateAlongY?: boolean | undefined;
+    canTranslateAlongZ?: boolean | undefined;
+    canRotateAboutX?: boolean | undefined;
+    canRotateAboutY?: boolean | undefined;
+    canRotateAboutZ?: boolean | undefined;
+}
+
 export class CreateMomentLoadRequest implements ICreateMomentLoadRequest {
     nodeId!: string;
     torque!: UnitValueDto;
@@ -2550,9 +3087,9 @@ export interface ICreateModelRequest {
     id?: string | undefined;
 }
 
-export class IdRequestWithProperties implements IIdRequestWithProperties {
+export class ModelIdRequest implements IModelIdRequest {
 
-    constructor(data?: IIdRequestWithProperties) {
+    constructor(data?: IModelIdRequest) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -2564,9 +3101,9 @@ export class IdRequestWithProperties implements IIdRequestWithProperties {
     init(_data?: any) {
     }
 
-    static fromJS(data: any): IdRequestWithProperties {
+    static fromJS(data: any): ModelIdRequest {
         data = typeof data === 'object' ? data : {};
-        let result = new IdRequestWithProperties();
+        let result = new ModelIdRequest();
         result.init(data);
         return result;
     }
@@ -2577,7 +3114,37 @@ export class IdRequestWithProperties implements IIdRequestWithProperties {
     }
 }
 
-export interface IIdRequestWithProperties {
+export interface IModelIdRequest {
+}
+
+export class ModelIdRequestWithProperties implements IModelIdRequestWithProperties {
+
+    constructor(data?: IModelIdRequestWithProperties) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+    }
+
+    static fromJS(data: any): ModelIdRequestWithProperties {
+        data = typeof data === 'object' ? data : {};
+        let result = new ModelIdRequestWithProperties();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data;
+    }
+}
+
+export interface IModelIdRequestWithProperties {
 }
 
 export class ModelResponseHydrated extends BeamOsContractBase implements IModelResponseHydrated {
@@ -2891,332 +3458,6 @@ export interface ICreateMaterialRequest {
     modelId: string;
     modulusOfElasticity: UnitValueDto;
     modulusOfRigidity: UnitValueDto;
-}
-
-export class GetNodeResultsRequest implements IGetNodeResultsRequest {
-
-    constructor(data?: IGetNodeResultsRequest) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-    }
-
-    static fromJS(data: any): GetNodeResultsRequest {
-        data = typeof data === 'object' ? data : {};
-        let result = new GetNodeResultsRequest();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        return data;
-    }
-}
-
-export interface IGetNodeResultsRequest {
-}
-
-export class CreateNodeRequest implements ICreateNodeRequest {
-    modelId!: string;
-    locationPoint!: Point;
-    restraint?: RestraintRequest | undefined;
-
-    constructor(data?: ICreateNodeRequest) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.locationPoint = new Point();
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.modelId = _data["modelId"];
-            this.locationPoint = _data["locationPoint"] ? Point.fromJS(_data["locationPoint"]) : new Point();
-            this.restraint = _data["restraint"] ? RestraintRequest.fromJS(_data["restraint"]) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): CreateNodeRequest {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateNodeRequest();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["modelId"] = this.modelId;
-        data["locationPoint"] = this.locationPoint ? this.locationPoint.toJSON() : <any>undefined;
-        data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
-        return data;
-    }
-}
-
-export interface ICreateNodeRequest {
-    modelId: string;
-    locationPoint: Point;
-    restraint?: RestraintRequest | undefined;
-}
-
-export class Point implements IPoint {
-    xCoordinate!: UnitValueDto;
-    yCoordinate!: UnitValueDto;
-    zCoordinate!: UnitValueDto;
-
-    constructor(data?: IPoint) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.xCoordinate = new UnitValueDto();
-            this.yCoordinate = new UnitValueDto();
-            this.zCoordinate = new UnitValueDto();
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.xCoordinate = _data["xCoordinate"] ? UnitValueDto.fromJS(_data["xCoordinate"]) : new UnitValueDto();
-            this.yCoordinate = _data["yCoordinate"] ? UnitValueDto.fromJS(_data["yCoordinate"]) : new UnitValueDto();
-            this.zCoordinate = _data["zCoordinate"] ? UnitValueDto.fromJS(_data["zCoordinate"]) : new UnitValueDto();
-        }
-    }
-
-    static fromJS(data: any): Point {
-        data = typeof data === 'object' ? data : {};
-        let result = new Point();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["xCoordinate"] = this.xCoordinate ? this.xCoordinate.toJSON() : <any>undefined;
-        data["yCoordinate"] = this.yCoordinate ? this.yCoordinate.toJSON() : <any>undefined;
-        data["zCoordinate"] = this.zCoordinate ? this.zCoordinate.toJSON() : <any>undefined;
-        return data;
-    }
-}
-
-export interface IPoint {
-    xCoordinate: UnitValueDto;
-    yCoordinate: UnitValueDto;
-    zCoordinate: UnitValueDto;
-}
-
-export class RestraintRequest implements IRestraintRequest {
-    canTranslateAlongX!: boolean;
-    canTranslateAlongY!: boolean;
-    canTranslateAlongZ!: boolean;
-    canRotateAboutX!: boolean;
-    canRotateAboutY!: boolean;
-    canRotateAboutZ!: boolean;
-
-    constructor(data?: IRestraintRequest) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.canTranslateAlongX = _data["canTranslateAlongX"];
-            this.canTranslateAlongY = _data["canTranslateAlongY"];
-            this.canTranslateAlongZ = _data["canTranslateAlongZ"];
-            this.canRotateAboutX = _data["canRotateAboutX"];
-            this.canRotateAboutY = _data["canRotateAboutY"];
-            this.canRotateAboutZ = _data["canRotateAboutZ"];
-        }
-    }
-
-    static fromJS(data: any): RestraintRequest {
-        data = typeof data === 'object' ? data : {};
-        let result = new RestraintRequest();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["canTranslateAlongX"] = this.canTranslateAlongX;
-        data["canTranslateAlongY"] = this.canTranslateAlongY;
-        data["canTranslateAlongZ"] = this.canTranslateAlongZ;
-        data["canRotateAboutX"] = this.canRotateAboutX;
-        data["canRotateAboutY"] = this.canRotateAboutY;
-        data["canRotateAboutZ"] = this.canRotateAboutZ;
-        return data;
-    }
-}
-
-export interface IRestraintRequest {
-    canTranslateAlongX: boolean;
-    canTranslateAlongY: boolean;
-    canTranslateAlongZ: boolean;
-    canRotateAboutX: boolean;
-    canRotateAboutY: boolean;
-    canRotateAboutZ: boolean;
-}
-
-export class PatchNodeRequest implements IPatchNodeRequest {
-    locationPoint?: PatchPointRequest | undefined;
-    restraint?: PatchRestraintRequest | undefined;
-
-    constructor(data?: IPatchNodeRequest) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.locationPoint = _data["locationPoint"] ? PatchPointRequest.fromJS(_data["locationPoint"]) : <any>undefined;
-            this.restraint = _data["restraint"] ? PatchRestraintRequest.fromJS(_data["restraint"]) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): PatchNodeRequest {
-        data = typeof data === 'object' ? data : {};
-        let result = new PatchNodeRequest();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["locationPoint"] = this.locationPoint ? this.locationPoint.toJSON() : <any>undefined;
-        data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
-        return data;
-    }
-}
-
-export interface IPatchNodeRequest {
-    locationPoint?: PatchPointRequest | undefined;
-    restraint?: PatchRestraintRequest | undefined;
-}
-
-export class PatchPointRequest implements IPatchPointRequest {
-    lengthUnit!: string;
-    xCoordinate?: number | undefined;
-    yCoordinate?: number | undefined;
-    zCoordinate?: number | undefined;
-
-    constructor(data?: IPatchPointRequest) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.lengthUnit = _data["lengthUnit"];
-            this.xCoordinate = _data["xCoordinate"];
-            this.yCoordinate = _data["yCoordinate"];
-            this.zCoordinate = _data["zCoordinate"];
-        }
-    }
-
-    static fromJS(data: any): PatchPointRequest {
-        data = typeof data === 'object' ? data : {};
-        let result = new PatchPointRequest();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["lengthUnit"] = this.lengthUnit;
-        data["xCoordinate"] = this.xCoordinate;
-        data["yCoordinate"] = this.yCoordinate;
-        data["zCoordinate"] = this.zCoordinate;
-        return data;
-    }
-}
-
-export interface IPatchPointRequest {
-    lengthUnit: string;
-    xCoordinate?: number | undefined;
-    yCoordinate?: number | undefined;
-    zCoordinate?: number | undefined;
-}
-
-export class PatchRestraintRequest implements IPatchRestraintRequest {
-    canTranslateAlongX?: boolean | undefined;
-    canTranslateAlongY?: boolean | undefined;
-    canTranslateAlongZ?: boolean | undefined;
-    canRotateAboutX?: boolean | undefined;
-    canRotateAboutY?: boolean | undefined;
-    canRotateAboutZ?: boolean | undefined;
-
-    constructor(data?: IPatchRestraintRequest) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.canTranslateAlongX = _data["canTranslateAlongX"];
-            this.canTranslateAlongY = _data["canTranslateAlongY"];
-            this.canTranslateAlongZ = _data["canTranslateAlongZ"];
-            this.canRotateAboutX = _data["canRotateAboutX"];
-            this.canRotateAboutY = _data["canRotateAboutY"];
-            this.canRotateAboutZ = _data["canRotateAboutZ"];
-        }
-    }
-
-    static fromJS(data: any): PatchRestraintRequest {
-        data = typeof data === 'object' ? data : {};
-        let result = new PatchRestraintRequest();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["canTranslateAlongX"] = this.canTranslateAlongX;
-        data["canTranslateAlongY"] = this.canTranslateAlongY;
-        data["canTranslateAlongZ"] = this.canTranslateAlongZ;
-        data["canRotateAboutX"] = this.canRotateAboutX;
-        data["canRotateAboutY"] = this.canRotateAboutY;
-        data["canRotateAboutZ"] = this.canRotateAboutZ;
-        return data;
-    }
-}
-
-export interface IPatchRestraintRequest {
-    canTranslateAlongX?: boolean | undefined;
-    canTranslateAlongY?: boolean | undefined;
-    canTranslateAlongZ?: boolean | undefined;
-    canRotateAboutX?: boolean | undefined;
-    canRotateAboutY?: boolean | undefined;
-    canRotateAboutZ?: boolean | undefined;
 }
 
 export class CreateElement1dRequest implements ICreateElement1dRequest {

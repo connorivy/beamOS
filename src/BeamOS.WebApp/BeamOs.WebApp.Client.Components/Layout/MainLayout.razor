@@ -5,6 +5,9 @@
 @inject IsDarkModeProvider IsDarkModeProvider
 
 <MudThemeProvider @bind-IsDarkMode="IsDarkModeProvider.IsDarkMode" />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
 
 <NavBar @bind-IsDarkMode="IsDarkModeProvider.IsDarkMode" />
 @* <MudDrawer @bind-Open="@open" Elevation="1" ClipMode="DrawerClipMode.Always">

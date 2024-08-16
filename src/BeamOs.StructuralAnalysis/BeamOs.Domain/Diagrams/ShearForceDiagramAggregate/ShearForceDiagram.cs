@@ -15,6 +15,7 @@ namespace BeamOs.Domain.Diagrams.ShearForceDiagramAggregate;
 
 public class ShearForceDiagram : DiagramBase<ShearForceDiagramId>
 {
+    public Element1D? Element1D { get; private set; }
     public Element1DId Element1DId { get; private set; }
     public LinearCoordinateDirection3D ShearDirection { get; private set; }
     public Vector3D GlobalShearDirection { get; private init; }

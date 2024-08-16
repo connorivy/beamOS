@@ -5,6 +5,7 @@ using BeamOs.Application.Common;
 using BeamOs.Infrastructure;
 using FastEndpoints;
 using FastEndpoints.Swagger;
+using MathNet.Numerics;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.Api;
@@ -49,6 +50,9 @@ public static class DependencyInjection
         });
 
         _ = services.AddTransient<BeamOsFastEndpointOptions>();
+
+        Control.UseNativeMKL();
+        Control.UseMultiThreading();
         return services;
     }
 

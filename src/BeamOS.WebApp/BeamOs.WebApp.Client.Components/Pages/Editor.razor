@@ -16,6 +16,8 @@
 @using static BeamOs.WebApp.Client.Components.Components.Editor.EditorComponent
 @using BeamOs.WebApp.Client.Components.Components.Editor.CommandHandlers;
 
+@implements IDisposable
+
 <PageTitle>Editor</PageTitle>
 
 <MudDrawerContainer Class="h-full w-full">
@@ -42,6 +44,12 @@
     private AddEntityContractToEditorCommandHandler AddEntityContractToEditorCommandHandler { get; init; }
 
     [Inject]
+    private AddShearDiagramsToEditorCommandHandler AddShearDiagramsToEditorCommandHandler { get; init; }
+
+    [Inject]
+    private AddMomentDiagramsToEditorCommandHandler AddMomentDiagramsToEditorCommandHandler { get; init; }
+
+    [Inject]
     private AllStructuralAnalysisModelCaches allStructuralAnalysisModelCaches { get; init; }
 
     public string modelIdInput { get; set; }
@@ -61,14 +69,8 @@
         var modelResults = await this.ApiAlphaClient.GetModelResultsAsync(editorComponent.EditorComponentState.LoadedModelId);
         await this.editorComponent.EditorApiAlpha.SetModelResultsAsync(modelResults);
 
-        var loadedElement1dIds = this.allStructuralAnalysisModelCaches.GetByModelId(editorComponent.EditorComponentState.LoadedModelId)
-        .GetEntityIdsOfType<Element1DResponse>();
-
-        foreach (var element1dId in loadedElement1dIds)
-        {
-            var shearDiagram = await ApiAlphaClient.GetShearDiagramAsync(element1dId);
-            await AddEntityContractToEditorCommandHandler.ExecuteAsync(new AddEntityToEditorCommand(this.editorComponent.ElementId, shearDiagram));
-        }
+        var shearDiagrams = await this.ApiAlphaClient.GetShearDiagramsAsync(editorComponent.EditorComponentState.LoadedModelId);
+        await AddShearDiagramsToEditorCommandHandler.ExecuteAsync(new(editorComponent.ElementId, shearDiagrams));
     }
 
     private async Task LoadMomentDiagrams()
@@ -76,14 +78,8 @@
         var modelResults = await this.ApiAlphaClient.GetModelResultsAsync(editorComponent.EditorComponentState.LoadedModelId);
         await this.editorComponent.EditorApiAlpha.SetModelResultsAsync(modelResults);
 
-        var loadedElement1dIds = this.allStructuralAnalysisModelCaches.GetByModelId(editorComponent.EditorComponentState.LoadedModelId)
-        .GetEntityIdsOfType<Element1DResponse>();
-
-        foreach (var element1dId in loadedElement1dIds)
-        {
-            var shearDiagram = await ApiAlphaClient.GetMomentDiagramAsync(element1dId);
-            await AddEntityContractToEditorCommandHandler.ExecuteAsync(new AddEntityToEditorCommand(this.editorComponent.ElementId, shearDiagram));
-        }
+        var diagrams = await this.ApiAlphaClient.GetMomentDiagramsAsync(editorComponent.EditorComponentState.LoadedModelId);
+        await AddMomentDiagramsToEditorCommandHandler.ExecuteAsync(new(editorComponent.ElementId, diagrams));
     }
 
     private async Task LoadModel()
@@ -121,5 +117,10 @@
                     new(0, 1, 0))));
             }
         }
+    }
+
+    public void Dispose()
+    {
+        EventEmitter.VisibleStateChanged -= this.EventEmitter_VisibleStateChanged;
     }
 }

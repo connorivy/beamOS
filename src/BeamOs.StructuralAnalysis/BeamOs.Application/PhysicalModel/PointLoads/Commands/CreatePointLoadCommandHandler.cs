@@ -29,7 +29,7 @@ public class CreatePointLoadCommandHandler(
                 modelId,
                 nodeId,
                 command.Force.MapToForce(),
-                Vector3ToFromMathnetVector3d.MapVector3(command.Direction)
+                Vector3ToFromMathnetVector.MapVector3d(command.Direction)
             );
 
         pointLoadRepository.Add(pointLoad);

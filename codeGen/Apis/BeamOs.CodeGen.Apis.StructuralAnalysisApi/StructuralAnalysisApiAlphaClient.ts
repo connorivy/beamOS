@@ -18,6 +18,11 @@ export interface IStructuralAnalysisApiAlphaClient {
     /**
      * @return OK
      */
+    getNodeResults(body: GetNodeResultsRequest): Promise<NodeResultResponse[]>;
+
+    /**
+     * @return OK
+     */
     getSingleNodeResult(body: IdRequest): Promise<NodeResultResponse[]>;
 
     /**
@@ -38,6 +43,16 @@ export interface IStructuralAnalysisApiAlphaClient {
     /**
      * @return OK
      */
+    createNode(body: CreateNodeRequest): Promise<NodeResponse>;
+
+    /**
+     * @return OK
+     */
+    patchNode(body: PatchNodeRequest): Promise<NodeResponse>;
+
+    /**
+     * @return OK
+     */
     createMomentLoad(body: CreateMomentLoadRequest): Promise<MomentLoadResponse>;
 
     /**
@@ -53,12 +68,12 @@ export interface IStructuralAnalysisApiAlphaClient {
     /**
      * @return OK
      */
-    deleteModel(body: IdRequest): Promise<boolean>;
+    deleteModel(body: ModelIdRequest): Promise<boolean>;
 
     /**
      * @return OK
      */
-    getModel(body: IdRequestWithProperties): Promise<ModelResponse>;
+    getModel(body: ModelIdRequestWithProperties): Promise<ModelResponse>;
 
     /**
      * @return OK
@@ -73,17 +88,12 @@ export interface IStructuralAnalysisApiAlphaClient {
     /**
      * @return OK
      */
-    getNodeResults(body: GetNodeResultsRequest): Promise<NodeResultResponse[]>;
+    getMomentDiagram(body: IdRequest): Promise<MomentDiagramResponse>;
 
     /**
      * @return OK
      */
-    createNode(body: CreateNodeRequest): Promise<NodeResponse>;
-
-    /**
-     * @return OK
-     */
-    patchNode(body: PatchNodeRequest): Promise<NodeResponse>;
+    getMomentDiagrams(body: ModelIdRequest): Promise<MomentDiagramResponse[]>;
 
     /**
      * @return OK
@@ -93,7 +103,7 @@ export interface IStructuralAnalysisApiAlphaClient {
     /**
      * @return OK
      */
-    getMomentDiagram(body: IdRequest): Promise<MomentDiagramResponse>;
+    getShearDiagrams(body: ModelIdRequest): Promise<ShearDiagramResponse[]>;
 
     /**
      * @return OK
@@ -160,6 +170,54 @@ export class StructuralAnalysisApiAlphaClient implements IStructuralAnalysisApiA
             });
         }
         return Promise.resolve<AnalyticalModelResponse3>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    getNodeResults(body: GetNodeResultsRequest): Promise<NodeResultResponse[]> {
+        let url_ = this.baseUrl + "/StructuralAnalysisApiAlphaClient/GetNodeResults";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetNodeResults(_response);
+        });
+    }
+
+    protected processGetNodeResults(response: Response): Promise<NodeResultResponse[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(NodeResultResponse.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<NodeResultResponse[]>(null as any);
     }
 
     /**
@@ -336,6 +394,88 @@ export class StructuralAnalysisApiAlphaClient implements IStructuralAnalysisApiA
     /**
      * @return OK
      */
+    createNode(body: CreateNodeRequest): Promise<NodeResponse> {
+        let url_ = this.baseUrl + "/StructuralAnalysisApiAlphaClient/CreateNode";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateNode(_response);
+        });
+    }
+
+    protected processCreateNode(response: Response): Promise<NodeResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = NodeResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<NodeResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    patchNode(body: PatchNodeRequest): Promise<NodeResponse> {
+        let url_ = this.baseUrl + "/StructuralAnalysisApiAlphaClient/PatchNode";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPatchNode(_response);
+        });
+    }
+
+    protected processPatchNode(response: Response): Promise<NodeResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = NodeResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<NodeResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
     createMomentLoad(body: CreateMomentLoadRequest): Promise<MomentLoadResponse> {
         let url_ = this.baseUrl + "/StructuralAnalysisApiAlphaClient/CreateMomentLoad";
         url_ = url_.replace(/[?&]$/, "");
@@ -466,7 +606,7 @@ export class StructuralAnalysisApiAlphaClient implements IStructuralAnalysisApiA
     /**
      * @return OK
      */
-    deleteModel(body: IdRequest): Promise<boolean> {
+    deleteModel(body: ModelIdRequest): Promise<boolean> {
         let url_ = this.baseUrl + "/StructuralAnalysisApiAlphaClient/DeleteModel";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -508,7 +648,7 @@ export class StructuralAnalysisApiAlphaClient implements IStructuralAnalysisApiA
     /**
      * @return OK
      */
-    getModel(body: IdRequestWithProperties): Promise<ModelResponse> {
+    getModel(body: ModelIdRequestWithProperties): Promise<ModelResponse> {
         let url_ = this.baseUrl + "/StructuralAnalysisApiAlphaClient/GetModel";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -631,8 +771,8 @@ export class StructuralAnalysisApiAlphaClient implements IStructuralAnalysisApiA
     /**
      * @return OK
      */
-    getNodeResults(body: GetNodeResultsRequest): Promise<NodeResultResponse[]> {
-        let url_ = this.baseUrl + "/StructuralAnalysisApiAlphaClient/GetNodeResults";
+    getMomentDiagram(body: IdRequest): Promise<MomentDiagramResponse> {
+        let url_ = this.baseUrl + "/StructuralAnalysisApiAlphaClient/GetMomentDiagram";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -647,11 +787,52 @@ export class StructuralAnalysisApiAlphaClient implements IStructuralAnalysisApiA
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetNodeResults(_response);
+            return this.processGetMomentDiagram(_response);
         });
     }
 
-    protected processGetNodeResults(response: Response): Promise<NodeResultResponse[]> {
+    protected processGetMomentDiagram(response: Response): Promise<MomentDiagramResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MomentDiagramResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<MomentDiagramResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    getMomentDiagrams(body: ModelIdRequest): Promise<MomentDiagramResponse[]> {
+        let url_ = this.baseUrl + "/StructuralAnalysisApiAlphaClient/GetMomentDiagrams";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetMomentDiagrams(_response);
+        });
+    }
+
+    protected processGetMomentDiagrams(response: Response): Promise<MomentDiagramResponse[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -661,7 +842,7 @@ export class StructuralAnalysisApiAlphaClient implements IStructuralAnalysisApiA
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(NodeResultResponse.fromJS(item));
+                    result200!.push(MomentDiagramResponse.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -673,89 +854,7 @@ export class StructuralAnalysisApiAlphaClient implements IStructuralAnalysisApiA
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<NodeResultResponse[]>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    createNode(body: CreateNodeRequest): Promise<NodeResponse> {
-        let url_ = this.baseUrl + "/StructuralAnalysisApiAlphaClient/CreateNode";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateNode(_response);
-        });
-    }
-
-    protected processCreateNode(response: Response): Promise<NodeResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = NodeResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<NodeResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    patchNode(body: PatchNodeRequest): Promise<NodeResponse> {
-        let url_ = this.baseUrl + "/StructuralAnalysisApiAlphaClient/PatchNode";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processPatchNode(_response);
-        });
-    }
-
-    protected processPatchNode(response: Response): Promise<NodeResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = NodeResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<NodeResponse>(null as any);
+        return Promise.resolve<MomentDiagramResponse[]>(null as any);
     }
 
     /**
@@ -802,8 +901,8 @@ export class StructuralAnalysisApiAlphaClient implements IStructuralAnalysisApiA
     /**
      * @return OK
      */
-    getMomentDiagram(body: IdRequest): Promise<MomentDiagramResponse> {
-        let url_ = this.baseUrl + "/StructuralAnalysisApiAlphaClient/GetMomentDiagram";
+    getShearDiagrams(body: ModelIdRequest): Promise<ShearDiagramResponse[]> {
+        let url_ = this.baseUrl + "/StructuralAnalysisApiAlphaClient/GetShearDiagrams";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -818,18 +917,25 @@ export class StructuralAnalysisApiAlphaClient implements IStructuralAnalysisApiA
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetMomentDiagram(_response);
+            return this.processGetShearDiagrams(_response);
         });
     }
 
-    protected processGetMomentDiagram(response: Response): Promise<MomentDiagramResponse> {
+    protected processGetShearDiagrams(response: Response): Promise<ShearDiagramResponse[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = MomentDiagramResponse.fromJS(resultData200);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ShearDiagramResponse.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -837,7 +943,7 @@ export class StructuralAnalysisApiAlphaClient implements IStructuralAnalysisApiA
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<MomentDiagramResponse>(null as any);
+        return Promise.resolve<ShearDiagramResponse[]>(null as any);
     }
 
     /**
@@ -969,6 +1075,42 @@ export class StructuralAnalysisApiAlphaClient implements IStructuralAnalysisApiA
         }
         return Promise.resolve<Element1DResponse>(null as any);
     }
+}
+
+export class AnalysisSettingsContract implements IAnalysisSettingsContract {
+    element1DAnalysisType!: Element1dAnalysisType;
+
+    constructor(data?: IAnalysisSettingsContract) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.element1DAnalysisType = _data["element1DAnalysisType"];
+        }
+    }
+
+    static fromJS(data: any): AnalysisSettingsContract {
+        data = typeof data === 'object' ? data : {};
+        let result = new AnalysisSettingsContract();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["element1DAnalysisType"] = this.element1DAnalysisType;
+        return data;
+    }
+}
+
+export interface IAnalysisSettingsContract {
+    element1DAnalysisType: Element1dAnalysisType;
 }
 
 export class AnalyticalModelResponse3 implements IAnalyticalModelResponse3 {
@@ -1326,6 +1468,8 @@ export class CreateSectionProfileRequest implements ICreateSectionProfileRequest
     strongAxisMomentOfInertia!: UnitValueDto;
     weakAxisMomentOfInertia!: UnitValueDto;
     polarMomentOfInertia!: UnitValueDto;
+    strongAxisShearArea!: UnitValueDto;
+    weakAxisShearArea!: UnitValueDto;
 
     constructor(data?: ICreateSectionProfileRequest) {
         if (data) {
@@ -1339,6 +1483,8 @@ export class CreateSectionProfileRequest implements ICreateSectionProfileRequest
             this.strongAxisMomentOfInertia = new UnitValueDto();
             this.weakAxisMomentOfInertia = new UnitValueDto();
             this.polarMomentOfInertia = new UnitValueDto();
+            this.strongAxisShearArea = new UnitValueDto();
+            this.weakAxisShearArea = new UnitValueDto();
         }
     }
 
@@ -1349,6 +1495,8 @@ export class CreateSectionProfileRequest implements ICreateSectionProfileRequest
             this.strongAxisMomentOfInertia = _data["strongAxisMomentOfInertia"] ? UnitValueDto.fromJS(_data["strongAxisMomentOfInertia"]) : new UnitValueDto();
             this.weakAxisMomentOfInertia = _data["weakAxisMomentOfInertia"] ? UnitValueDto.fromJS(_data["weakAxisMomentOfInertia"]) : new UnitValueDto();
             this.polarMomentOfInertia = _data["polarMomentOfInertia"] ? UnitValueDto.fromJS(_data["polarMomentOfInertia"]) : new UnitValueDto();
+            this.strongAxisShearArea = _data["strongAxisShearArea"] ? UnitValueDto.fromJS(_data["strongAxisShearArea"]) : new UnitValueDto();
+            this.weakAxisShearArea = _data["weakAxisShearArea"] ? UnitValueDto.fromJS(_data["weakAxisShearArea"]) : new UnitValueDto();
         }
     }
 
@@ -1366,6 +1514,8 @@ export class CreateSectionProfileRequest implements ICreateSectionProfileRequest
         data["strongAxisMomentOfInertia"] = this.strongAxisMomentOfInertia ? this.strongAxisMomentOfInertia.toJSON() : <any>undefined;
         data["weakAxisMomentOfInertia"] = this.weakAxisMomentOfInertia ? this.weakAxisMomentOfInertia.toJSON() : <any>undefined;
         data["polarMomentOfInertia"] = this.polarMomentOfInertia ? this.polarMomentOfInertia.toJSON() : <any>undefined;
+        data["strongAxisShearArea"] = this.strongAxisShearArea ? this.strongAxisShearArea.toJSON() : <any>undefined;
+        data["weakAxisShearArea"] = this.weakAxisShearArea ? this.weakAxisShearArea.toJSON() : <any>undefined;
         return data;
     }
 }
@@ -1376,6 +1526,8 @@ export interface ICreateSectionProfileRequest {
     strongAxisMomentOfInertia: UnitValueDto;
     weakAxisMomentOfInertia: UnitValueDto;
     polarMomentOfInertia: UnitValueDto;
+    strongAxisShearArea: UnitValueDto;
+    weakAxisShearArea: UnitValueDto;
 }
 
 export class DiagramConsistantIntervalResponse implements IDiagramConsistantIntervalResponse {
@@ -1560,6 +1712,12 @@ export interface IElement1DResponse {
     materialId: string;
     sectionProfileId: string;
     sectionProfileRotation: UnitValueDto;
+}
+
+export enum Element1dAnalysisType {
+    _0 = 0,
+    _1 = 1,
+    _2 = 2,
 }
 
 export class ForcesResponse implements IForcesResponse {
@@ -1846,54 +2004,6 @@ export interface IIdRequest {
     id: string;
 }
 
-export class IdRequestWithProperties implements IIdRequestWithProperties {
-    id!: string;
-    properties?: string[] | undefined;
-
-    constructor(data?: IIdRequestWithProperties) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            if (Array.isArray(_data["properties"])) {
-                this.properties = [] as any;
-                for (let item of _data["properties"])
-                    this.properties!.push(item);
-            }
-        }
-    }
-
-    static fromJS(data: any): IdRequestWithProperties {
-        data = typeof data === 'object' ? data : {};
-        let result = new IdRequestWithProperties();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        if (Array.isArray(this.properties)) {
-            data["properties"] = [];
-            for (let item of this.properties)
-                data["properties"].push(item);
-        }
-        return data;
-    }
-}
-
-export interface IIdRequestWithProperties {
-    id: string;
-    properties?: string[] | undefined;
-}
-
 export class MaterialResponse implements IMaterialResponse {
     id!: string;
     modulusOfElasticity!: UnitValueDto;
@@ -1940,6 +2050,90 @@ export interface IMaterialResponse {
     id: string;
     modulusOfElasticity: UnitValueDto;
     modulusOfRigidity: UnitValueDto;
+}
+
+export class ModelIdRequest implements IModelIdRequest {
+    modelId!: string;
+
+    constructor(data?: IModelIdRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.modelId = _data["modelId"];
+        }
+    }
+
+    static fromJS(data: any): ModelIdRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new ModelIdRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["modelId"] = this.modelId;
+        return data;
+    }
+}
+
+export interface IModelIdRequest {
+    modelId: string;
+}
+
+export class ModelIdRequestWithProperties implements IModelIdRequestWithProperties {
+    modelId!: string;
+    properties?: string[] | undefined;
+
+    constructor(data?: IModelIdRequestWithProperties) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.modelId = _data["modelId"];
+            if (Array.isArray(_data["properties"])) {
+                this.properties = [] as any;
+                for (let item of _data["properties"])
+                    this.properties!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): ModelIdRequestWithProperties {
+        data = typeof data === 'object' ? data : {};
+        let result = new ModelIdRequestWithProperties();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["modelId"] = this.modelId;
+        if (Array.isArray(this.properties)) {
+            data["properties"] = [];
+            for (let item of this.properties)
+                data["properties"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IModelIdRequestWithProperties {
+    modelId: string;
+    properties?: string[] | undefined;
 }
 
 export class ModelResponse implements IModelResponse {
@@ -2665,6 +2859,7 @@ export interface IPatchRestraintRequest {
 
 export class PhysicalModelSettings implements IPhysicalModelSettings {
     unitSettings!: UnitSettingsDtoVerbose;
+    analysisSettings!: AnalysisSettingsContract;
     yAxisUp!: boolean;
 
     constructor(data?: IPhysicalModelSettings) {
@@ -2676,12 +2871,14 @@ export class PhysicalModelSettings implements IPhysicalModelSettings {
         }
         if (!data) {
             this.unitSettings = new UnitSettingsDtoVerbose();
+            this.analysisSettings = new AnalysisSettingsContract();
         }
     }
 
     init(_data?: any) {
         if (_data) {
             this.unitSettings = _data["unitSettings"] ? UnitSettingsDtoVerbose.fromJS(_data["unitSettings"]) : new UnitSettingsDtoVerbose();
+            this.analysisSettings = _data["analysisSettings"] ? AnalysisSettingsContract.fromJS(_data["analysisSettings"]) : new AnalysisSettingsContract();
             this.yAxisUp = _data["yAxisUp"];
         }
     }
@@ -2696,6 +2893,7 @@ export class PhysicalModelSettings implements IPhysicalModelSettings {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["unitSettings"] = this.unitSettings ? this.unitSettings.toJSON() : <any>undefined;
+        data["analysisSettings"] = this.analysisSettings ? this.analysisSettings.toJSON() : <any>undefined;
         data["yAxisUp"] = this.yAxisUp;
         return data;
     }
@@ -2703,6 +2901,7 @@ export class PhysicalModelSettings implements IPhysicalModelSettings {
 
 export interface IPhysicalModelSettings {
     unitSettings: UnitSettingsDtoVerbose;
+    analysisSettings: AnalysisSettingsContract;
     yAxisUp: boolean;
 }
 
@@ -2980,10 +3179,13 @@ export interface IRestraintResponse {
 
 export class SectionProfileResponse implements ISectionProfileResponse {
     id!: string;
+    modelId!: string;
     area!: UnitValueDto;
     strongAxisMomentOfInertia!: UnitValueDto;
     weakAxisMomentOfInertia!: UnitValueDto;
     polarMomentOfInertia!: UnitValueDto;
+    strongAxisShearArea!: UnitValueDto;
+    weakAxisShearArea!: UnitValueDto;
 
     constructor(data?: ISectionProfileResponse) {
         if (data) {
@@ -2997,16 +3199,21 @@ export class SectionProfileResponse implements ISectionProfileResponse {
             this.strongAxisMomentOfInertia = new UnitValueDto();
             this.weakAxisMomentOfInertia = new UnitValueDto();
             this.polarMomentOfInertia = new UnitValueDto();
+            this.strongAxisShearArea = new UnitValueDto();
+            this.weakAxisShearArea = new UnitValueDto();
         }
     }
 
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
+            this.modelId = _data["modelId"];
             this.area = _data["area"] ? UnitValueDto.fromJS(_data["area"]) : new UnitValueDto();
             this.strongAxisMomentOfInertia = _data["strongAxisMomentOfInertia"] ? UnitValueDto.fromJS(_data["strongAxisMomentOfInertia"]) : new UnitValueDto();
             this.weakAxisMomentOfInertia = _data["weakAxisMomentOfInertia"] ? UnitValueDto.fromJS(_data["weakAxisMomentOfInertia"]) : new UnitValueDto();
             this.polarMomentOfInertia = _data["polarMomentOfInertia"] ? UnitValueDto.fromJS(_data["polarMomentOfInertia"]) : new UnitValueDto();
+            this.strongAxisShearArea = _data["strongAxisShearArea"] ? UnitValueDto.fromJS(_data["strongAxisShearArea"]) : new UnitValueDto();
+            this.weakAxisShearArea = _data["weakAxisShearArea"] ? UnitValueDto.fromJS(_data["weakAxisShearArea"]) : new UnitValueDto();
         }
     }
 
@@ -3020,20 +3227,26 @@ export class SectionProfileResponse implements ISectionProfileResponse {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
+        data["modelId"] = this.modelId;
         data["area"] = this.area ? this.area.toJSON() : <any>undefined;
         data["strongAxisMomentOfInertia"] = this.strongAxisMomentOfInertia ? this.strongAxisMomentOfInertia.toJSON() : <any>undefined;
         data["weakAxisMomentOfInertia"] = this.weakAxisMomentOfInertia ? this.weakAxisMomentOfInertia.toJSON() : <any>undefined;
         data["polarMomentOfInertia"] = this.polarMomentOfInertia ? this.polarMomentOfInertia.toJSON() : <any>undefined;
+        data["strongAxisShearArea"] = this.strongAxisShearArea ? this.strongAxisShearArea.toJSON() : <any>undefined;
+        data["weakAxisShearArea"] = this.weakAxisShearArea ? this.weakAxisShearArea.toJSON() : <any>undefined;
         return data;
     }
 }
 
 export interface ISectionProfileResponse {
     id: string;
+    modelId: string;
     area: UnitValueDto;
     strongAxisMomentOfInertia: UnitValueDto;
     weakAxisMomentOfInertia: UnitValueDto;
     polarMomentOfInertia: UnitValueDto;
+    strongAxisShearArea: UnitValueDto;
+    weakAxisShearArea: UnitValueDto;
 }
 
 export class ShearDiagramResponse implements IShearDiagramResponse {
@@ -3118,6 +3331,7 @@ export class UnitSettingsDtoVerbose implements IUnitSettingsDtoVerbose {
     torqueUnit!: string;
     forcePerLengthUnit!: string;
     pressureUnit!: string;
+    angleUnit!: string;
 
     constructor(data?: IUnitSettingsDtoVerbose) {
         if (data) {
@@ -3138,6 +3352,7 @@ export class UnitSettingsDtoVerbose implements IUnitSettingsDtoVerbose {
             this.torqueUnit = _data["torqueUnit"];
             this.forcePerLengthUnit = _data["forcePerLengthUnit"];
             this.pressureUnit = _data["pressureUnit"];
+            this.angleUnit = _data["angleUnit"];
         }
     }
 
@@ -3158,6 +3373,7 @@ export class UnitSettingsDtoVerbose implements IUnitSettingsDtoVerbose {
         data["torqueUnit"] = this.torqueUnit;
         data["forcePerLengthUnit"] = this.forcePerLengthUnit;
         data["pressureUnit"] = this.pressureUnit;
+        data["angleUnit"] = this.angleUnit;
         return data;
     }
 }
@@ -3171,6 +3387,7 @@ export interface IUnitSettingsDtoVerbose {
     torqueUnit: string;
     forcePerLengthUnit: string;
     pressureUnit: string;
+    angleUnit: string;
 }
 
 export class UnitSettingsResponse implements IUnitSettingsResponse {

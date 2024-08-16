@@ -40,6 +40,13 @@ public class NodeConfiguration : IEntityTypeConfiguration<Node>
             .OnDelete(DeleteBehavior.ClientCascade);
 
         builder
+            .HasMany(n => n.MomentLoads)
+            .WithOne()
+            .HasForeignKey(el => el.NodeId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.ClientCascade);
+
+        builder
             .HasOne(el => el.NodeResult)
             .WithOne()
             .HasForeignKey<NodeResult>(el => el.NodeId)

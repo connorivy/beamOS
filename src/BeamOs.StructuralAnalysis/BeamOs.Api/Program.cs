@@ -21,7 +21,7 @@ app.AddAnalysisEndpoints();
 app.UseHttpsRedirection();
 app.UseCors();
 
-// app.Configuration["generateclients"] = "true";
+//app.Configuration["generateclients"] = "true";
 await app.GenerateAnalysisClient();
 
 await app.InitializeAnalysisDb();

@@ -1,3 +1,4 @@
+using BeamOs.Application.Common.Mappers;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate;
 using BeamOs.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.Domain.PhysicalModel.ModelAggregate;
@@ -58,6 +59,7 @@ public static partial class Element1dFixtureToDomainMapper
 [Mapper]
 [UseStaticMapper(typeof(NodeFixtureToDomainMapper))]
 [UseStaticMapper(typeof(Element1dFixtureToDomainMapper))]
+[UseStaticMapper(typeof(Vector3ToFromMathnetVector))]
 public static partial class ModelFixtureToDomainMapper
 {
     public static partial Model ToDomain(this ModelFixture2 fixture);

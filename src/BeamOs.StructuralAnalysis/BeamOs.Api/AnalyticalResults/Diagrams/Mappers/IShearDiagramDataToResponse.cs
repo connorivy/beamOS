@@ -1,4 +1,5 @@
 using BeamOs.Application.Common.Mappers;
+using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Contracts.AnalyticalResults.Diagrams;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.Diagrams.MomentDiagramAggregate;
@@ -8,6 +9,7 @@ using Riok.Mapperly.Abstractions;
 namespace BeamOs.Api.AnalyticalResults.Diagrams.Mappers;
 
 [Mapper]
+[UseStaticMapper(typeof(UnitsNetMappers))]
 public partial class ShearDiagramDataToResponse
     : AbstractMapper<ShearForceDiagram, ShearDiagramResponse>
 {

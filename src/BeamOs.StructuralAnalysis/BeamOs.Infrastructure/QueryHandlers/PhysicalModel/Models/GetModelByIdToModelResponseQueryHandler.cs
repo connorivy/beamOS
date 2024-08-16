@@ -37,9 +37,9 @@ internal sealed class GetModelByIdToModelResponseQueryHandler(BeamOsStructuralDb
                 .Include(m => m.Nodes)
                 .Include(m => m.Element1ds)
                 .Include(m => m.Materials)
-                .Include(m => m.SectionProfiles);
-            //.Include(m => m.PointLoads)
-            //.Include(m => m.MomentLoads);
+                .Include(m => m.SectionProfiles)
+                .Include(m => m.PointLoads)
+                .Include(m => m.MomentLoads);
         }
 
         Model? model = await queryable.FirstOrDefaultAsync(cancellationToken: ct);

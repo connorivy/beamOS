@@ -6,6 +6,7 @@ using BeamOs.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.Domain.PhysicalModel.MaterialAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.Events;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
+using BeamOs.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.PointLoadAggregate;
@@ -37,6 +38,7 @@ public class Model : AggregateRoot<ModelId>
     public ICollection<SectionProfile> SectionProfiles { get; init; } = [];
     public ICollection<ModelResult> ModelResults { get; init; }
     public ICollection<PointLoad>? PointLoads { get; init; }
+    public ICollection<MomentLoad>? MomentLoads { get; init; }
 
     public Node AddNode(
         double xCoordinate,

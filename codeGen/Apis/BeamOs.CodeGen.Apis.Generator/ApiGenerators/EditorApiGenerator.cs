@@ -31,7 +31,11 @@ public class EditorApiGenerator : AbstractGenerator
 
         _ = addMethod("CreateShearDiagram").Accepts<ShearDiagramResponse>();
 
+        _ = addMethod("CreateShearDiagrams").Accepts<ShearDiagramResponse[]>();
+
         _ = addMethod("CreateMomentDiagram").Accepts<MomentDiagramResponse>();
+
+        _ = addMethod("CreateMomentDiagrams").Accepts<MomentDiagramResponse[]>();
 
         _ = addMethod("SetSettings").Accepts<PhysicalModelSettings>();
 

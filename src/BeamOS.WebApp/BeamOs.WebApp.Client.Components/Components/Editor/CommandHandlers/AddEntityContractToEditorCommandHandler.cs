@@ -119,3 +119,85 @@ public class AddEntityContractToEditorCommandHandler(
         }
     }
 }
+
+public abstract class AddEntityContractsToEditorCommandHandlerBase<TEntity>(
+    IStateRepository<EditorComponentState> editorComponentStateRepository,
+    AddEntityContractToCacheCommandHandler addEntityContractToCacheCommandHandler,
+    HistoryManager historyManager
+) : CommandHandlerBase<AddEntitiesToEditorCommand<TEntity>>(historyManager)
+    where TEntity : BeamOsEntityContractBase
+{
+    protected override async Task<Result> ExecuteCommandAsync(
+        AddEntitiesToEditorCommand<TEntity> command,
+        CancellationToken ct = default
+    )
+    {
+        var editorComponentState =
+            editorComponentStateRepository.GetComponentStateByCanvasId(command.CanvasId)
+            ?? throw new Exception(
+                $"Could not find editor component corrosponding to canvasId, {command.CanvasId}"
+            );
+
+        IEditorApiAlpha? editorApi =
+            editorComponentState.EditorApi
+            ?? throw new Exception(
+                $"Editor api does not exist for canvas with id {command.CanvasId}"
+            );
+
+        await this.LoadEntities(command.Entities, editorApi);
+
+        foreach (var entity in command.Entities)
+        {
+            await addEntityContractToCacheCommandHandler.ExecuteAsync(
+                new(editorComponentState.LoadedModelId, entity)
+            );
+        }
+
+        return Result.Success();
+    }
+
+    protected abstract Task LoadEntities(
+        IEnumerable<TEntity> entities,
+        IEditorApiAlpha editorApiAlpha
+    );
+}
+
+public class AddShearDiagramsToEditorCommandHandler(
+    IStateRepository<EditorComponentState> editorComponentStateRepository,
+    AddEntityContractToCacheCommandHandler addEntityContractToCacheCommandHandler,
+    HistoryManager historyManager
+)
+    : AddEntityContractsToEditorCommandHandlerBase<ShearDiagramResponse>(
+        editorComponentStateRepository,
+        addEntityContractToCacheCommandHandler,
+        historyManager
+    )
+{
+    protected override async Task LoadEntities(
+        IEnumerable<ShearDiagramResponse> entities,
+        IEditorApiAlpha editorApiAlpha
+    )
+    {
+        await editorApiAlpha.CreateShearDiagramsAsync(entities);
+    }
+}
+
+public class AddMomentDiagramsToEditorCommandHandler(
+    IStateRepository<EditorComponentState> editorComponentStateRepository,
+    AddEntityContractToCacheCommandHandler addEntityContractToCacheCommandHandler,
+    HistoryManager historyManager
+)
+    : AddEntityContractsToEditorCommandHandlerBase<MomentDiagramResponse>(
+        editorComponentStateRepository,
+        addEntityContractToCacheCommandHandler,
+        historyManager
+    )
+{
+    protected override async Task LoadEntities(
+        IEnumerable<MomentDiagramResponse> entities,
+        IEditorApiAlpha editorApiAlpha
+    )
+    {
+        await editorApiAlpha.CreateMomentDiagramsAsync(entities);
+    }
+}
