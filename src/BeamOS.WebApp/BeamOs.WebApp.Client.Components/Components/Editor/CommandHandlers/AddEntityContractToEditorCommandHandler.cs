@@ -1,6 +1,5 @@
 using BeamOs.CodeGen.Apis.EditorApi;
 using BeamOs.Common.Api;
-using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
 using BeamOs.Contracts.AnalyticalResults.Diagrams;
 using BeamOs.Contracts.PhysicalModel.Common;
 using BeamOs.Contracts.PhysicalModel.Element1d;
@@ -18,6 +17,7 @@ public class AddEntityContractToEditorCommandHandler(
     IStateRepository<EditorComponentState> editorComponentStateRepository,
     ChangeComponentStateCommandHandler<EditorComponentState> changeComponentStateCommandHandler,
     AddEntityContractToCacheCommandHandler addEntityContractToCacheCommandHandler,
+    LoadModelCommandHandler loadModelCommandHandler,
     HistoryManager historyManager
 ) : CommandHandlerBase<AddEntityToEditorCommand>(historyManager)
 {
@@ -58,7 +58,7 @@ public class AddEntityContractToEditorCommandHandler(
         switch (entity)
         {
             case ModelResponse modelResponse:
-                await this.LoadModel(modelResponse, editorApi, canvasId);
+                await loadModelCommandHandler.ExecuteAsync(new(canvasId, modelResponse));
                 break;
             case Element1DResponse element1D:
                 await editorApi.CreateElement1dAsync(element1D, CancellationToken.None);
@@ -91,34 +91,34 @@ public class AddEntityContractToEditorCommandHandler(
         }
     }
 
-    private async Task LoadModel(
-        ModelResponse modelResponse,
-        IEditorApiAlpha editorApi,
-        string canvasId
-    )
-    {
-        await editorApi.ClearAsync();
-        await changeComponentStateCommandHandler.ExecuteAsync(
-            new(canvasId, state => state with { LoadedModelId = modelResponse.Id, }),
-            CancellationToken.None
-        );
-        await editorApi.SetSettingsAsync(modelResponse.Settings);
+    //private async Task LoadModel(
+    //    ModelResponse modelResponse,
+    //    IEditorApiAlpha editorApi,
+    //    string canvasId
+    //)
+    //{
+    //    await editorApi.ClearAsync();
+    //    await changeComponentStateCommandHandler.ExecuteAsync(
+    //        new(canvasId, state => state with { LoadedModelId = modelResponse.Id, }),
+    //        CancellationToken.None
+    //    );
+    //    await editorApi.SetSettingsAsync(modelResponse.Settings);
 
-        foreach (var node in modelResponse.Nodes ?? Enumerable.Empty<NodeResponse>())
-        {
-            await this.LoadSingleComponent(node, editorApi, canvasId, modelResponse.Id);
-        }
+    //    foreach (var node in modelResponse.Nodes ?? Enumerable.Empty<NodeResponse>())
+    //    {
+    //        await this.LoadSingleComponent(node, editorApi, canvasId, modelResponse.Id);
+    //    }
 
-        foreach (var el in modelResponse.Element1ds ?? Enumerable.Empty<Element1DResponse>())
-        {
-            await this.LoadSingleComponent(el, editorApi, canvasId, modelResponse.Id);
-        }
+    //    foreach (var el in modelResponse.Element1ds ?? Enumerable.Empty<Element1DResponse>())
+    //    {
+    //        await this.LoadSingleComponent(el, editorApi, canvasId, modelResponse.Id);
+    //    }
 
-        foreach (var el in modelResponse.PointLoads ?? Enumerable.Empty<PointLoadResponse>())
-        {
-            await this.LoadSingleComponent(el, editorApi, canvasId, modelResponse.Id);
-        }
-    }
+    //    foreach (var el in modelResponse.PointLoads ?? Enumerable.Empty<PointLoadResponse>())
+    //    {
+    //        await this.LoadSingleComponent(el, editorApi, canvasId, modelResponse.Id);
+    //    }
+    //}
 }
 
 public abstract class AddEntityContractsToEditorCommandHandlerBase<TEntity>(
@@ -161,6 +161,46 @@ public abstract class AddEntityContractsToEditorCommandHandlerBase<TEntity>(
         IEnumerable<TEntity> entities,
         IEditorApiAlpha editorApiAlpha
     );
+}
+
+public class AddNodesToEditorCommandHandler(
+    IStateRepository<EditorComponentState> editorComponentStateRepository,
+    AddEntityContractToCacheCommandHandler addEntityContractToCacheCommandHandler,
+    HistoryManager historyManager
+)
+    : AddEntityContractsToEditorCommandHandlerBase<NodeResponse>(
+        editorComponentStateRepository,
+        addEntityContractToCacheCommandHandler,
+        historyManager
+    )
+{
+    protected override async Task LoadEntities(
+        IEnumerable<NodeResponse> entities,
+        IEditorApiAlpha editorApiAlpha
+    )
+    {
+        await editorApiAlpha.CreateNodesAsync(entities.Select(e => e.InMeters()));
+    }
+}
+
+public class AddElement1dsToEditorCommandHandler(
+    IStateRepository<EditorComponentState> editorComponentStateRepository,
+    AddEntityContractToCacheCommandHandler addEntityContractToCacheCommandHandler,
+    HistoryManager historyManager
+)
+    : AddEntityContractsToEditorCommandHandlerBase<Element1DResponse>(
+        editorComponentStateRepository,
+        addEntityContractToCacheCommandHandler,
+        historyManager
+    )
+{
+    protected override async Task LoadEntities(
+        IEnumerable<Element1DResponse> entities,
+        IEditorApiAlpha editorApiAlpha
+    )
+    {
+        await editorApiAlpha.CreateElement1dsAsync(entities);
+    }
 }
 
 public class AddShearDiagramsToEditorCommandHandler(

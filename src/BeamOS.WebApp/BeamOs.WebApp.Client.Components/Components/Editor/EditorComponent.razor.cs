@@ -35,7 +35,7 @@ public partial class EditorComponent : ComponentBase, IAsyncDisposable
     private NavigationManager NavigationManager { get; init; }
 
     [Inject]
-    private LoadModelCommandHandler LoadModelCommandHandler { get; init; }
+    private LoadModelByIdCommandHandler LoadModelCommandHandler { get; init; }
 
     [Inject]
     private IStateRepository<EditorComponentState> EditorComponentStateRepository { get; init; }

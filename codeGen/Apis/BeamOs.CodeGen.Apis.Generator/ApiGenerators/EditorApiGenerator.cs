@@ -20,12 +20,14 @@ public class EditorApiGenerator : AbstractGenerator
     protected override void AddApiMethods(Func<string, RouteHandlerBuilder> addMethod)
     {
         _ = addMethod("CreateElement1d").Accepts<Element1DResponse>();
+        _ = addMethod("CreateElement1ds").Accepts<ICollection<Element1DResponse>>();
 
         _ = addMethod("CreateModel").Accepts<ModelResponse>();
 
         _ = addMethod("CreateModelHydrated").Accepts<ModelResponseHydrated>();
 
         _ = addMethod("CreateNode").Accepts<NodeResponse>();
+        _ = addMethod("CreateNodes").Accepts<ICollection<NodeResponse>>();
 
         _ = addMethod("CreatePointLoad").Accepts<PointLoadResponse>();
         _ = addMethod("CreatePointLoads").Accepts<ICollection<PointLoadResponse>>();
