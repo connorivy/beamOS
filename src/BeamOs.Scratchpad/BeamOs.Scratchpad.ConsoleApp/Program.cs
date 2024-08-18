@@ -17,10 +17,18 @@ client.BaseAddress = new("https://localhost:7111");
 CustomModelBuilder customModelBuilder = new();
 await customModelBuilder.InitializeAsync();
 
+//CreateModelRequestBuilderToDomainMapper builderMapper = new();
+//Model model = builderMapper.ToDomain(customModelBuilder);
+
 string connectionId = customModelBuilder.ScratchpadId;
 ModelResponse modelResponse = customModelBuilder.ToResponseWithLocalIds();
 
-var json_ = System.Text.Json.JsonSerializer.Serialize<BeamOsEntityContractBase>(modelResponse);
+string fileName =
+    "C:\\Users\\conno\\Documents\\GitHub\\beamOS\\tests\\BeamOS.Tests.Common\\SolvedProblems\\ETABS_Models\\TwistyBowlFraming\\TwistyBowlFraming.json";
+
+var json_ = System.Text.Json.JsonSerializer.Serialize(modelResponse);
+
+File.WriteAllText(fileName, json_);
 
 using var request_ = new System.Net.Http.HttpRequestMessage();
 var content_ = new System.Net.Http.StringContent(json_);

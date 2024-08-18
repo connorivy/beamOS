@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace BeamOs.ApiClient.Builders;
 
 public abstract partial class CreateModelRequestBuilder : IModelFixtureInDb, IModelFixture
@@ -9,15 +11,35 @@ public abstract partial class CreateModelRequestBuilder : IModelFixtureInDb, IMo
     public abstract PhysicalModelSettings Settings { get; }
 
     private List<CreateElement1dRequestBuilder> element1ds = [];
-    public IEnumerable<CreateElement1dRequestBuilder> Element1ds => this.element1ds;
+    public IEnumerable<CreateElement1dRequestBuilder> Element1ds
+    {
+        get => this.element1ds;
+        init => this.element1ds = value.ToList();
+    }
     private Dictionary<FixtureId, CreateNodeRequestBuilder> nodes = [];
-    public IEnumerable<CreateNodeRequestBuilder> Nodes => this.nodes.Values;
+    public IEnumerable<CreateNodeRequestBuilder> Nodes
+    {
+        get => this.nodes.Values;
+        init => this.nodes = value.ToDictionary(n => n.Id, n => n);
+    }
     private List<CreatePointLoadRequestBuilder> pointLoads = [];
-    public IEnumerable<CreatePointLoadRequestBuilder> PointLoads => this.pointLoads;
+    public IEnumerable<CreatePointLoadRequestBuilder> PointLoads
+    {
+        get => this.pointLoads;
+        init => this.pointLoads = value.ToList();
+    }
     private List<CreateMaterialRequestBuilder> materials = [];
-    public IEnumerable<CreateMaterialRequestBuilder> Materials => this.materials;
+    public IEnumerable<CreateMaterialRequestBuilder> Materials
+    {
+        get => this.materials;
+        init => this.materials = value.ToList();
+    }
     private List<CreateSectionProfileRequestBuilder> sectionProfiles = [];
-    public IEnumerable<CreateSectionProfileRequestBuilder> SectionProfiles => this.sectionProfiles;
+    public IEnumerable<CreateSectionProfileRequestBuilder> SectionProfiles
+    {
+        get => this.sectionProfiles;
+        init => this.sectionProfiles = value.ToList();
+    }
 
     private readonly Dictionary<FixtureId, string> runtimeIdToDbIdDict = [];
     private FixtureId DefaultMaterialId { get; set; }
@@ -170,4 +192,13 @@ public abstract partial class CreateModelRequestBuilder : IModelFixtureInDb, IMo
         //    ).Id;
         //}
     }
+}
+
+public class ModelRequestBuilderDeserializationModel
+{
+    public IEnumerable<CreateElement1dRequestBuilder> Element1ds { get; init; }
+    public IEnumerable<CreateNodeRequestBuilder> Nodes { get; init; }
+    public IEnumerable<CreatePointLoadRequestBuilder> PointLoads { get; init; }
+    public IEnumerable<CreateMaterialRequestBuilder> Materials { get; init; }
+    public IEnumerable<CreateSectionProfileRequestBuilder> SectionProfiles { get; init; }
 }

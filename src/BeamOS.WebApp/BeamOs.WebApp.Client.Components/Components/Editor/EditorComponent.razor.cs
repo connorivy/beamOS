@@ -2,6 +2,10 @@ using BeamOs.ApiClient;
 using BeamOs.CodeGen.Apis.EditorApi;
 using BeamOs.Common.Api;
 using BeamOs.Common.Events;
+using BeamOs.Contracts.AnalyticalResults;
+using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
+using BeamOs.Contracts.AnalyticalResults.Forces;
+using BeamOs.Contracts.PhysicalModel.Common;
 using BeamOs.WebApp.Client.Components.Components.Editor.CommandHandlers;
 using BeamOs.WebApp.Client.Components.Components.Editor.Commands;
 using BeamOs.WebApp.Client.Components.Features.Common.Flux;
@@ -35,6 +39,9 @@ public partial class EditorComponent : ComponentBase, IAsyncDisposable
     private NavigationManager NavigationManager { get; init; }
 
     [Inject]
+    private AddEntityContractToCacheCommandHandler AddEntityContractToCacheCommandHandler { get; init; }
+
+    [Inject]
     private LoadModelByIdCommandHandler LoadModelCommandHandler { get; init; }
 
     [Inject]
@@ -50,7 +57,7 @@ public partial class EditorComponent : ComponentBase, IAsyncDisposable
     public IEditorApiAlpha? EditorApiAlpha { get; private set; }
 
     [Parameter]
-    public string PhysicalModelId { get; set; } = "ddb1e60a-df17-48b0-810a-60e425acf640";
+    public string ModelId { get; set; } = "ddb1e60a-df17-48b0-810a-60e425acf640";
 
     private List<IIntegrationEvent> integrationEvents = [];
 
@@ -96,8 +103,8 @@ public partial class EditorComponent : ComponentBase, IAsyncDisposable
             this.EditorApiAlpha ??= await this.EditorApiProxyFactory.Create(this.ElementId, false);
 
             await this.ChangeComponentState(state => state with { LoadingText = "Fetching Data" });
-            await this.LoadModel(PhysicalModelId);
-
+            await this.LoadModel(ModelId);
+            await this.CacheAllNodeResults();
             await this.ChangeComponentState(state => state with { IsLoading = false });
         }
         await base.OnAfterRenderAsync(firstRender);
@@ -105,10 +112,37 @@ public partial class EditorComponent : ComponentBase, IAsyncDisposable
 
     public async Task LoadModel(string modelId)
     {
-        this.PhysicalModelId = modelId;
+        this.ModelId = modelId;
         await this.LoadModelCommandHandler.ExecuteAsync(
             new LoadModelCommand(this.ElementId, modelId)
         );
+    }
+
+    private async Task CacheAllNodeResults()
+    {
+        var allForces = await this.ApiAlphaClient.GetNodeResultsAsync(this.ModelId, null);
+
+        foreach (NodeResultResponse force in allForces)
+        {
+            await this.AddEntityContractToCacheCommandHandler.ExecuteAsync(
+                new(this.ModelId, new NodeResultResponseEntity(force))
+            );
+        }
+    }
+
+    public record NodeResultResponseEntity : BeamOsEntityContractBase
+    {
+        public static string ResultId(string nodeId) => $"r{nodeId}";
+
+        public ForcesResponse Forces { get; init; }
+        public DisplacementsResponse Displacements { get; init; }
+
+        public NodeResultResponseEntity(NodeResultResponse response)
+            : base(ResultId(response.NodeId))
+        {
+            this.Forces = response.Forces;
+            this.Displacements = response.Displacements;
+        }
     }
 
     private bool EventIsServerResponseToUserInteraction(DbEvent integrationEvent)

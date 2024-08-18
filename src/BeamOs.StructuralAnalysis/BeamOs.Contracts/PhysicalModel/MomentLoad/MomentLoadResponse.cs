@@ -4,6 +4,7 @@ namespace BeamOs.Contracts.PhysicalModel.MomentLoad;
 
 public record MomentLoadResponse(
     string Id,
+    string ModelId,
     string NodeId,
     UnitValueDto Torque,
     Vector3 AxisDirection

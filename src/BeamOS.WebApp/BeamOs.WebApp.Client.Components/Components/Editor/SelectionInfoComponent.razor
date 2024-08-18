@@ -2,6 +2,7 @@
 @using BeamOs.WebApp.Client.Components.Caches
 @using BeamOs.WebApp.Client.EditorCommands
 @using Fluxor.Blazor.Web.Components
+@using static BeamOs.WebApp.Client.Components.Pages.Editor
 @using static BeamOs.WebApp.Client.Components.Components.Editor.EditorComponent
 
 <MudContainer Gutters="false" Class="rounded">
@@ -14,6 +15,10 @@
             {
                 <MudExpansionPanel Text="@($"{selectedObjectInfo.TypeName} {selectedObjectInfo.Id}")">
                     <SelectionInfoSingleItemComponent ObjectToDisplay="@GetBeamOsObjectByIdAndTypeName(selectedObjectInfo.Id, selectedObjectInfo.TypeName)"></SelectionInfoSingleItemComponent>
+                    @if (this.AllStructuralAnalysisModelCaches.GetByModelId(this.ModelId).TryGetById(NodeResultResponseEntity.ResultId(selectedObjectInfo.Id), out NodeResultResponseEntity? nodeResult))
+                    {
+                        <SelectionInfoSingleItemComponent ObjectToDisplay="@nodeResult"></SelectionInfoSingleItemComponent>
+                    }
                 </MudExpansionPanel>
             }
         </MudExpansionPanels>
@@ -33,5 +38,10 @@
     private object GetBeamOsObjectByIdAndTypeName(string id, string typeName)
     {
         return this.AllStructuralAnalysisModelCaches.GetByModelId(this.ModelId).GetById<BeamOsEntityContractBase>(id);
+    }
+
+    private object GetAdditionalObjectInfo(string id, string typeName)
+    {
+        return this.AllStructuralAnalysisModelCaches.GetByModelId(this.ModelId).GetById<BeamOsEntityContractBase>(NodeResultResponseEntity.ResultId(id));
     }
 }

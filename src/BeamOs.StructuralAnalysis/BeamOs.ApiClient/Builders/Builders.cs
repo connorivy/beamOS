@@ -1,3 +1,5 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using MathNet.Spatial.Euclidean;
 using UnitsNet;
 
@@ -47,6 +49,7 @@ public abstract record CreateModelEntityRequestBuilderBase
     public FixtureId Id { get; init; } = Guid.NewGuid().ToString();
 }
 
+[JsonConverter(typeof(FixtureIdConverter))]
 public record struct FixtureId(string Id)
 {
     public static implicit operator FixtureId(string id) => new(id);
@@ -54,4 +57,25 @@ public record struct FixtureId(string Id)
     public static implicit operator FixtureId(Guid id) => new(id.ToString());
 
     public override string ToString() => this.Id;
+}
+
+public class FixtureIdConverter : JsonConverter<FixtureId>
+{
+    public override FixtureId Read(
+        ref Utf8JsonReader reader,
+        Type typeToConvert,
+        JsonSerializerOptions options
+    )
+    {
+        return new(reader.GetString());
+    }
+
+    public override void Write(
+        Utf8JsonWriter writer,
+        FixtureId value,
+        JsonSerializerOptions options
+    )
+    {
+        writer.WriteStringValue(value.Id);
+    }
 }

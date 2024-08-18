@@ -1,4 +1,8 @@
 @page "/editor/{ModelId}"
+@using BeamOs.Contracts.AnalyticalResults
+@using BeamOs.Contracts.AnalyticalResults.AnalyticalNode
+@using BeamOs.Contracts.AnalyticalResults.Forces
+@using BeamOs.Contracts.PhysicalModel.Common
 @using BeamOs.WebApp.Client.Components.Caches
 @using BeamOs.WebApp.Client.Components.Components.Editor
 @using BeamOs.WebApp.Client.Components.Components.Editor.Commands
@@ -21,19 +25,19 @@
 <PageTitle>Editor</PageTitle>
 
 <MudDrawerContainer Class="h-full w-full">
-    <MudTextField @bind-Value="modelIdInput" Label="ModelId" Variant="Variant.Filled"></MudTextField>
+    @* <MudTextField @bind-Value="modelIdInput" Label="ModelId" Variant="Variant.Filled"></MudTextField>
     <MudButton OnClick="LoadModel">Load Model</MudButton>
-    @* <MudButton OnClick="RunAnalysis">Run DSM</MudButton> *@
+    <MudButton OnClick="RunAnalysis">Run DSM</MudButton>
     <MudButton OnClick="LoadShearDiagrams">Show Shear Diagrams</MudButton>
     <MudButton OnClick="LoadMomentDiagrams">Show Moment Diagrams</MudButton>
-    <MudButton OnClick="ShowReactions">Show Reactions</MudButton>
+    <MudButton OnClick="ShowReactions">Show Reactions</MudButton> *@
     @if (editorComponent is not null)
     {
         <MudPopover Open="@(editorComponent.EditorComponentState.SelectedObjects.Length > 0)" Fixed="true" Class="w-80 m-2">
             <SelectionInfoComponent SelectedObjects="@editorComponent.EditorComponentState.SelectedObjects" ModelId="@editorComponent.EditorComponentState.LoadedModelId"></SelectionInfoComponent>
         </MudPopover>
     }
-    <EditorComponent Class="h-full" @ref="editorComponent" PhysicalModelId="@ModelId"></EditorComponent>
+    <EditorComponent Class="h-full" @ref="editorComponent" ModelId="@ModelId"></EditorComponent>
 </MudDrawerContainer>
 
 @code {
@@ -45,6 +49,9 @@
 
     [Inject]
     private AddEntityContractToEditorCommandHandler AddEntityContractToEditorCommandHandler { get; init; }
+
+    [Inject]
+    private AddEntityContractToCacheCommandHandler AddEntityContractToCacheCommandHandler { get; init; }
 
     [Inject]
     private AddShearDiagramsToEditorCommandHandler AddShearDiagramsToEditorCommandHandler { get; init; }

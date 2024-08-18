@@ -11,11 +11,13 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="Microsoft.Extensions.Http" />
     <PackageReference Include="UnitsNet" />
+    <PackageReference Include="UnitsNet.Serialization.JsonNet" />
     <PackageReference Include="MathNet.Spatial" />
     <PackageReference Include="Riok.Mapperly" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\tests\BeamOS.Tests.Common\BeamOS.Tests.Common.csproj" />
     <ProjectReference Include="..\..\BeamOs.SpeckleConnector\BeamOs.SpeckleConnector\BeamOs.SpeckleConnector.csproj" />
     <ProjectReference Include="..\..\BeamOs.StructuralAnalysis\BeamOs.ApiClient\BeamOs.ApiClient.csproj" />
     <ProjectReference Include="..\..\BeamOs.StructuralAnalysis\BeamOs.Application\BeamOs.Application.csproj" />

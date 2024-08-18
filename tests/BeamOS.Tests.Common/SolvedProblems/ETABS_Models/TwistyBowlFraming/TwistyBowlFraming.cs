@@ -1,9 +1,9 @@
+using System.Reflection;
 using BeamOs.ApiClient.Builders;
 using BeamOs.Contracts.Common;
 using BeamOs.Contracts.PhysicalModel.Model;
-using BeamOs.SpeckleConnector;
 using BeamOS.Tests.Common.Fixtures;
-using MathNet.Spatial.Euclidean;
+using BeamOS.Tests.Common.Fixtures.Mappers.ToDomain;
 using UnitsNet;
 using UnitsNet.Units;
 
@@ -18,45 +18,53 @@ public class TwistyBowlFraming : CreateModelRequestBuilder, IHasExpectedNodeDisp
 
     public override async Task InitializeAsync()
     {
-        this.CreateMaterialAndSectionProfile();
-        await foreach (
-            var builder in SpeckleConnector.ReceiveData(
-                "e6b1988124",
-                "f404f297534f6bd4502a42cb1dd08f21"
+        this.PopulateFromJson(
+            Path.Combine(
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                "TwistyBowlFraming.json"
             )
-        )
-        {
-            if (builder is CreateNodeRequestBuilder nodeRequestBuilder)
-            {
-                if (
-                    nodeRequestBuilder.LocationPoint.YCoordinate.Value > 10000
-                    && this.addedNodeIds.Add(nodeRequestBuilder.Id.ToString())
-                )
-                {
-                    this.AddPointLoad(
-                        new()
-                        {
-                            NodeId = nodeRequestBuilder.Id,
-                            Direction = UnitVector3D.Create(0, -1, 0),
-                            Force = new(100, ForceUnit.Kilonewton)
-                        }
-                    );
-                }
-                this.AddNode(nodeRequestBuilder);
-            }
-            else if (builder is CreateElement1dRequestBuilder element1DRequestBuilder)
-            {
-                this.AddElement1d(
-                    element1DRequestBuilder with
-                    {
-                        MaterialId = "A992Steel",
-                        SectionProfileId = "W16x36"
-                    }
-                );
-            }
+        );
 
-            //this.AddElement(builder);
-        }
+        //this.CreateMaterialAndSectionProfile();
+        //await foreach (
+        //    var builder in SpeckleConnector.ReceiveData(
+        //        AccountManager.GetAccounts().First(),
+        //        "e6b1988124",
+        //        "f404f297534f6bd4502a42cb1dd08f21"
+        //    )
+        //)
+        //{
+        //    if (builder is CreateNodeRequestBuilder nodeRequestBuilder)
+        //    {
+        //        if (
+        //            nodeRequestBuilder.LocationPoint.YCoordinate.Value > 10000
+        //            && this.addedNodeIds.Add(nodeRequestBuilder.Id.ToString())
+        //        )
+        //        {
+        //            this.AddPointLoad(
+        //                new()
+        //                {
+        //                    NodeId = nodeRequestBuilder.Id,
+        //                    Direction = UnitVector3D.Create(0, -1, 0),
+        //                    Force = new(100, ForceUnit.Kilonewton)
+        //                }
+        //            );
+        //        }
+        //        this.AddNode(nodeRequestBuilder);
+        //    }
+        //    else if (builder is CreateElement1dRequestBuilder element1DRequestBuilder)
+        //    {
+        //        this.AddElement1d(
+        //            element1DRequestBuilder with
+        //            {
+        //                MaterialId = "A992Steel",
+        //                SectionProfileId = "W16x36"
+        //            }
+        //        );
+        //    }
+
+        //    //this.AddElement(builder);
+        //}
     }
 
     private void CreateMaterialAndSectionProfile()

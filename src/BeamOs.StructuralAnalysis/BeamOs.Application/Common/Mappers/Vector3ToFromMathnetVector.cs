@@ -27,6 +27,11 @@ public static class Vector3ToFromMathnetVector
         return new(vector3.X, vector3.Y, vector3.Z);
     }
 
+    public static UnitVector3D MapVector3dToUnit(this Vector3 vector3)
+    {
+        return UnitVector3D.Create(vector3.X, vector3.Y, vector3.Z);
+    }
+
     public static Vector3 MapMathnetVector(this Vector3D vector)
     {
         return new(vector.X, vector.Y, vector.Z);
