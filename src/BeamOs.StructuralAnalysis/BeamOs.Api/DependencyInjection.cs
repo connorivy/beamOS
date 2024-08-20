@@ -53,8 +53,16 @@ public static class DependencyInjection
 
         _ = services.AddTransient<BeamOsFastEndpointOptions>();
 
-        Control.UseNativeMKL();
-        Control.UseMultiThreading();
+        if (
+            !bool.TryParse(
+                Environment.GetEnvironmentVariable("ContinuousIntegrationBuild"),
+                out bool isCiBuild
+            ) || !isCiBuild
+        )
+        {
+            Control.UseNativeMKL();
+            Control.UseMultiThreading();
+        }
 
         services.AddAuthentication();
         services.AddAuthorization();

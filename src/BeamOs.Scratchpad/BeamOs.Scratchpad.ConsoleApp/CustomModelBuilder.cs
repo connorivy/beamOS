@@ -19,6 +19,13 @@ public class CustomModelBuilder : CreateModelRequestBuilder
 
     public override async Task InitializeAsync()
     {
+        //this.PopulateFromJson(
+        //    Path.Combine(
+        //        Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+        //        "TwistyBowlFraming.json"
+        //    )
+        //);
+
         this.CreateMaterialAndSectionProfile();
         await foreach (
             var builder in SpeckleConnector
@@ -50,16 +57,37 @@ public class CustomModelBuilder : CreateModelRequestBuilder
             }
             else if (builder is CreateElement1dRequestBuilder element1DRequestBuilder)
             {
+                var comparisonResult = string.Compare(
+                    element1DRequestBuilder.StartNodeId.ToString(),
+                    element1DRequestBuilder.EndNodeId.ToString(),
+                    StringComparison.Ordinal
+                );
+
+                string elementId;
+                if (comparisonResult == 0)
+                {
+                    continue;
+                }
+                else if (comparisonResult > 0)
+                {
+                    elementId =
+                        $"n{element1DRequestBuilder.StartNodeId}n{element1DRequestBuilder.EndNodeId}";
+                }
+                else
+                {
+                    elementId =
+                        $"n{element1DRequestBuilder.EndNodeId}n{element1DRequestBuilder.StartNodeId}";
+                }
+
                 this.AddElement1d(
                     element1DRequestBuilder with
                     {
+                        Id = elementId,
                         MaterialId = "A992Steel",
                         SectionProfileId = "W16x36"
                     }
                 );
             }
-
-            //this.AddElement(builder);
         }
     }
 

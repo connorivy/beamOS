@@ -10,11 +10,11 @@ public abstract partial class CreateModelRequestBuilder : IModelFixtureInDb, IMo
     public string Description { get; init; } = "Created from CustomModelRequestBuilder";
     public abstract PhysicalModelSettings Settings { get; }
 
-    private List<CreateElement1dRequestBuilder> element1ds = [];
+    private Dictionary<FixtureId, CreateElement1dRequestBuilder> element1ds = [];
     public IEnumerable<CreateElement1dRequestBuilder> Element1ds
     {
-        get => this.element1ds;
-        init => this.element1ds = value.ToList();
+        get => this.element1ds.Values;
+        init => this.element1ds = value.ToDictionary(el => el.Id, el => el);
     }
     private Dictionary<FixtureId, CreateNodeRequestBuilder> nodes = [];
     public IEnumerable<CreateNodeRequestBuilder> Nodes
@@ -57,7 +57,10 @@ public abstract partial class CreateModelRequestBuilder : IModelFixtureInDb, IMo
 
     public void AddElement1d(CreateElement1dRequestBuilder element1d)
     {
-        this.element1ds.Add(element1d with { ModelId = this.Id });
+        if (!this.element1ds.ContainsKey(element1d.Id))
+        {
+            this.element1ds.Add(element1d.Id, element1d with { ModelId = this.Id });
+        }
     }
 
     public void AddPointLoad(CreatePointLoadRequestBuilder pointLoad)

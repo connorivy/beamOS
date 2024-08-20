@@ -25,12 +25,12 @@
 <PageTitle>Editor</PageTitle>
 
 <MudDrawerContainer Class="h-full w-full">
-    @* <MudTextField @bind-Value="modelIdInput" Label="ModelId" Variant="Variant.Filled"></MudTextField>
-    <MudButton OnClick="LoadModel">Load Model</MudButton>
-    <MudButton OnClick="RunAnalysis">Run DSM</MudButton>
-    <MudButton OnClick="LoadShearDiagrams">Show Shear Diagrams</MudButton>
-    <MudButton OnClick="LoadMomentDiagrams">Show Moment Diagrams</MudButton>
-    <MudButton OnClick="ShowReactions">Show Reactions</MudButton> *@
+    @* <MudTextField @bind-Value="modelIdInput" Label="ModelId" Variant="Variant.Filled"></MudTextField> *@
+    @* <MudButton OnClick="LoadModel">Load Model</MudButton> *@
+    @* <MudButton OnClick="RunAnalysis">Run DSM</MudButton> *@
+    @* <MudButton OnClick="LoadShearDiagrams">Show Shear Diagrams</MudButton> *@
+    @* <MudButton OnClick="LoadMomentDiagrams">Show Moment Diagrams</MudButton> *@
+    @* <MudButton OnClick="ShowReactions">Show Reactions</MudButton> *@
     @if (editorComponent is not null)
     {
         <MudPopover Open="@(editorComponent.EditorComponentState.SelectedObjects.Length > 0)" Fixed="true" Class="w-80 m-2">
