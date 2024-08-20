@@ -2,6 +2,7 @@ using BeamOs.Api.Common;
 using BeamOS.Api.Common;
 using BeamOs.Application.Common.Queries;
 using BeamOs.Common.Application.Interfaces;
+using BeamOs.Common.Identity.Policies;
 using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
 using BeamOs.Contracts.Common;
 using FastEndpoints;
@@ -14,7 +15,13 @@ public class GetNodeResults(
 ) : BeamOsFastEndpoint<GetNodeResultsRequest, NodeResultResponse?[]>(options)
 {
     public override Http EndpointType => Http.GET;
-    public override string Route => "node-results/{modelId}";
+    public override string Route => "models/{modelId}/node-results";
+
+    public override void ConfigureAuthentication()
+    {
+        this.AllowAnonymous();
+        this.Policy(p => p.Requirements.Add(new RequireModelReadAccess()));
+    }
 
     public override async Task<NodeResultResponse?[]> ExecuteRequestAsync(
         GetNodeResultsRequest req,

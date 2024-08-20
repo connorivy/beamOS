@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeamOs.Infrastructure.Migrations
 {
     [DbContext(typeof(BeamOsStructuralDbContext))]
-    [Migration("20240803203336_Initial")]
+    [Migration("20240815220347_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -209,6 +209,8 @@ namespace BeamOs.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Element1DId");
+
                     b.ToTable("ShearForceDiagrams");
                 });
 
@@ -357,6 +359,8 @@ namespace BeamOs.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ModelId");
+
                     b.HasIndex("NodeId");
 
                     b.ToTable("MomentLoads");
@@ -503,6 +507,17 @@ namespace BeamOs.Infrastructure.Migrations
                         .HasForeignKey("ShearForceDiagramId");
                 });
 
+            modelBuilder.Entity("BeamOs.Domain.Diagrams.ShearForceDiagramAggregate.ShearForceDiagram", b =>
+                {
+                    b.HasOne("BeamOs.Domain.PhysicalModel.Element1DAggregate.Element1D", "Element1D")
+                        .WithMany()
+                        .HasForeignKey("Element1DId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Element1D");
+                });
+
             modelBuilder.Entity("BeamOs.Domain.PhysicalModel.Element1DAggregate.Element1D", b =>
                 {
                     b.HasOne("BeamOs.Domain.PhysicalModel.NodeAggregate.Node", "EndNode")
@@ -555,10 +570,16 @@ namespace BeamOs.Infrastructure.Migrations
 
             modelBuilder.Entity("BeamOs.Domain.PhysicalModel.MomentLoadAggregate.MomentLoad", b =>
                 {
+                    b.HasOne("BeamOs.Domain.PhysicalModel.ModelAggregate.Model", null)
+                        .WithMany("MomentLoads")
+                        .HasForeignKey("ModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("BeamOs.Domain.PhysicalModel.NodeAggregate.Node", null)
                         .WithMany("MomentLoads")
                         .HasForeignKey("NodeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
                 });
 
@@ -612,6 +633,8 @@ namespace BeamOs.Infrastructure.Migrations
                     b.Navigation("Materials");
 
                     b.Navigation("ModelResults");
+
+                    b.Navigation("MomentLoads");
 
                     b.Navigation("Nodes");
 

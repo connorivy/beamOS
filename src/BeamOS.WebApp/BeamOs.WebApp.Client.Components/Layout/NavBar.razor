@@ -1,9 +1,11 @@
+@using BeamOs.Common.Identity
 @using BeamOs.WebApp.Client.Components.Components
-@rendermode InteractiveAuto
+@using BeamOs.WebApp.Client.Components.Features.Styles
 
 @implements IDisposable
 
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <MudAppBar>
 @*     <MudHidden Breakpoint="Breakpoint.SmAndDown">
@@ -22,7 +24,7 @@
     <MudStack Row="true">
         <MudButton Href="/test-explorer-dashboard">Reliability</MudButton>
         <MudButton Href="/editor">Editor</MudButton>
-        @* <MudButton Href="/auth">Auth</MudButton> *@
+        <MudButton Href="/auth">Auth</MudButton>
     </MudStack>
     <MudSpacer />
     <MudStack Row="true">
@@ -37,7 +39,8 @@
         <MudIconButton Target="_blank" Href="https://github.com/connorivy/beamOS" Icon="@Icons.Custom.Brands.GitHub" Edge="Edge.Start" />
         <AuthorizeView>
             <Authorized>
-                <MudLink Href="@logoutRef">Log Out @context.User.Identity?.Name</MudLink>
+                <MudLink OnClick="LogoutUser" >Log Out @context.User.Identity?.Name</MudLink>
+                @* <MudLink Href="@logoutRef">Log Out @context.User.Identity?.Name</MudLink> *@
             </Authorized>
             <NotAuthorized>
                 <MudButton Href="@loginRef">
@@ -51,11 +54,16 @@
 @code {
     [Parameter]
     public bool IsDarkMode { get; set; }
+
+    [Inject]
+    public IsDarkModeProvider IsDarkModeProvider { get; init; }
+
     [Parameter]
     public EventCallback<bool> IsDarkModeChanged { get; set; }
 
     async Task ToggleDarkMode(bool value)
     {
+        this.IsDarkModeProvider.IsDarkMode = value;
         this.IsDarkMode = value;
         await IsDarkModeChanged.InvokeAsync(value);
     }
@@ -69,6 +77,11 @@
     {
         currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
         NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    private async Task LogoutUser()
+    {
+        await ((IAuthStateProvider)AuthenticationStateProvider).Logout();
     }
 
     private void OnLocationChanged(object? sender, LocationChangedEventArgs e)

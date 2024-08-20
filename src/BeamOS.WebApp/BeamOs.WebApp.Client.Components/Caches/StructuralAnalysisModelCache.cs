@@ -57,6 +57,17 @@ public sealed class SingleStructuralAnalysisModelCache
         }
     }
 
+    public bool TryGetById<T>(string id, out T? entity)
+        where T : BeamOsEntityContractBase
+    {
+        var returnVal = this.cachedEntities.TryGetValue(
+            id,
+            out BeamOsEntityContractBase? cachedEntity
+        );
+        entity = (T)cachedEntity;
+        return returnVal;
+    }
+
     public T GetById<T>(string id)
         where T : BeamOsEntityContractBase
     {

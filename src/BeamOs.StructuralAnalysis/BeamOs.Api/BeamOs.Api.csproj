@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <Nullable>enable</Nullable>
@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\BeamOs.Common\BeamOs.Common.Api\BeamOs.Common.Api.csproj" />
+    <ProjectReference Include="..\..\BeamOs.Common\BeamOs.Common.Identity\BeamOs.Common.Identity.csproj" />
     <ProjectReference Include="..\BeamOs.Application\BeamOs.Application.csproj" />
     <ProjectReference Include="..\BeamOs.Contracts\BeamOs.Contracts.csproj" />
     <ProjectReference Include="..\BeamOs.Infrastructure\BeamOs.Infrastructure.csproj" />

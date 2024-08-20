@@ -1,6 +1,6 @@
 using BeamOs.ApiClient.Builders;
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
-using BeamOs.Domain.Common.Interfaces;
+using BeamOs.Common.Domain.Interfaces;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.MaterialAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.ModelAggregate;

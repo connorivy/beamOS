@@ -1,6 +1,6 @@
 using System.Collections;
+using BeamOs.Common.Domain.Models;
 using BeamOs.Domain.Common.Enums;
-using BeamOs.Domain.Common.Models;
 
 namespace BeamOs.Domain.Common.ValueObjects;
 

@@ -28,4 +28,11 @@
     <ProjectReference Include="..\..\src\BeamOs.StructuralAnalysis\BeamOs.Domain\BeamOs.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="SolvedProblems\ETABS_Models\TwistyBowlFraming\TwistyBowlFraming.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>TwistyBowlFraming.json</TargetPath>
+    </None>
+  </ItemGroup>
+
 </Project>

@@ -1,3 +1,19 @@
+@using BeamOs.WebApp.Client.Components.Features.Styles
 @inherits LayoutComponentBase
 
+@inject IsDarkModeProvider IsDarkModeProvider
+
+<MudThemeProvider Theme="@_baseTheme"
+                  IsDarkMode="@IsDarkModeProvider.IsDarkMode" />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
 @Body
+</MudLayout>
+
+
+@code {
+    protected MudTheme _baseTheme = new();
+}

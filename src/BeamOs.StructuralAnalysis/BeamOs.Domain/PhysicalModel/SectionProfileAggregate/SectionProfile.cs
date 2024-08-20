@@ -1,4 +1,4 @@
-using BeamOs.Domain.Common.Models;
+using BeamOs.Common.Domain.Models;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate.ValueObjects;
 using UnitsNet;

@@ -18,10 +18,10 @@ public partial class ReadOnlyEditor : ComponentBase, IAsyncDisposable
     protected bool IsReadOnly { get; } = true;
 
     [Inject]
-    private EditorApiProxyFactory EditorApiProxyFactory { get; init; }
+    private IEditorApiProxyFactory EditorApiProxyFactory { get; init; }
 
     [Inject]
-    protected LoadModelCommandHandler LoadModelCommandHandler { get; init; }
+    protected LoadModelByIdCommandHandler LoadModelCommandHandler { get; init; }
 
     [Inject]
     protected IStateRepository<EditorComponentState> EditorComponentStateRepository { get; init; }

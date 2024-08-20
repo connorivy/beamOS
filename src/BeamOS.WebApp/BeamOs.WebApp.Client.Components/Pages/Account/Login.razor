@@ -1,0 +1,132 @@
+@page "/login"
+@layout FullScreenLayout
+
+@using System.ComponentModel.DataAnnotations
+@using System.Security.Claims
+@using BeamOs.Common.Identity
+@using BeamOs.WebApp.Client.Components.Components
+@using BeamOs.WebApp.Client.Components.Layout
+@using System.Text
+@using System.Text.Json
+@using Microsoft.AspNetCore.Http
+@using Microsoft.Extensions.Primitives
+
+@inject NavigationManager NavigationManager
+@inject IAccountService AccountService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<PageTitle>Log in</PageTitle>
+
+<MudMainContent Class="h-full">
+    <MudContainer MaxWidth="MaxWidth.Small" Class="align-middle">
+        <MudContainer>
+            <Logo />
+        </MudContainer>
+
+        <MudPaper Class="pa-4">
+            <MudText Typo="Typo.h5">Sign in to your account</MudText>
+            <EditForm Model="@Input" OnValidSubmit="LoginUser">
+                <MudTextField Label="Email" Class="mt-3" @bind-Value="Input.Email" For="@(() => Input.Email)" />
+                <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3" @bind-Value="Input.Password" For="@(() => Input.Password)" InputType="InputType.Password" />
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Login</MudButton>
+            </EditForm>
+        </MudPaper>
+@*         <div id="alert-border-2" class="border-t-4 mb-4 flex items-center border-red-300 bg-red-50 p-4 text-red-800 dark:text-red-400 dark:bg-gray-800 dark:border-red-800" role="alert">
+            <svg class="flex-shrink-0 h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+            </svg>
+            <div class="ms-3 text-sm font-medium">
+                <b>WARNING: </b>This above log in form doesn't work yet. Only logging in with Google using the button below is currently supported.
+            </div>
+        </div> *@
+        <hr class="border-0 my-8 h-px bg-gray-200 dark:bg-gray-700">
+
+        <div class="flex items-center justify-center dark:bg-gray-800">
+            <button @onclick="LoginWithGoogle" class="flex gap-2 rounded-lg border border-slate-200 px-4 py-2 text-slate-700 transition duration-150 hover:border-slate-400 hover:text-slate-900 hover:shadow dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-500 dark:hover:text-slate-300">
+                <img class="h-6 w-6" src="https://www.svgrepo.com/show/475656/google-color.svg" loading="lazy" alt="google logo">
+                <span>Login with Google</span>
+            </button>
+        </div>
+
+        <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+            Don’t have an account yet? <a href="#" class="font-medium text-indigo-600 hover:underline dark:text-indigo-500">Sign up</a>
+        </p>
+    </MudContainer>
+</MudMainContent>
+
+@code {
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm]
+    private LoginForm Input { get; set; } = new();
+
+    private string? FullExternalLoginReturnUrl { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        // UriHelper.FromAbsolute(NavigationManager.BaseUri, out string scheme, out HostString host, out _, out _, out _);
+        // IEnumerable<KeyValuePair<string, StringValues>> query =
+        // [
+        //     new("ReturnUrl", ReturnUrl ?? NavigationManager.BaseUri)
+        // ];
+        // FullExternalLoginReturnUrl = UriHelper.BuildAbsolute(
+        //     scheme,
+        //     host,
+        //     path: new PathString("/auth-state-changed"),
+        //     query: QueryString.Create(query));
+
+        // FullExternalLoginReturnUrl = uriProvider.WebApp.Build("/auth-state-changed", query);
+        // FullExternalLoginReturnUrl = NavigationManager.BaseUri + "auth-state-changed";
+    }
+
+    private void LoginWithGoogle()
+    {
+        // hack until i can figure out something better
+        // ping the server to find out its uri
+        // var url = await identityClient.PingAsync(string.Empty);
+
+        // UriHelper.FromAbsolute(url, out string scheme, out HostString host, out _, out _, out _);
+        IEnumerable<KeyValuePair<string, StringValues>> query =
+        [
+            new("ReturnUrl", FullExternalLoginReturnUrl)
+        ];
+
+        // var loginWithGoogleUri = UriHelper.BuildAbsolute(
+        //     scheme,
+        //     host,
+        //     path: new PathString("/login-with-google"),
+        //     query: QueryString.Create(query));
+        // var loginWithGoogleUri = uriProvider.Identity.Build("/login-with-google", query);
+        var loginWithGoogleUri = "identity/login-with-google?returnUrl=%23";
+
+        // var client = httpClientFactory.CreateClient("IdentityClient");
+        // var response = await client.GetAsync(loginWithGoogleUri);
+        // var contents = await response.Content.ReadAsStringAsync();
+
+        NavigationManager.NavigateTo(loginWithGoogleUri, true);
+    }
+
+    private async Task LoginUser()
+    {
+        var authResponse = await AccountService.LoginWithCredentials(Input.Email, Input.Password);
+
+        await ((IAuthStateProvider)AuthenticationStateProvider).Login(authResponse.AccessToken);
+
+        NavigationManager.NavigateTo(ReturnUrl ?? "/");
+    }
+
+    public class LoginForm
+    {
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
+
+        [Required]
+        public string Password { get; set; }
+    }
+}
+

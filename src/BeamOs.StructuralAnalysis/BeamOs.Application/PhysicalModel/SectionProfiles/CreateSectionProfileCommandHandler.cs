@@ -1,8 +1,6 @@
 using BeamOs.Application.Common.Interfaces;
-using BeamOs.Application.Common.Interfaces.Repositories;
 using BeamOs.Application.Common.Mappers;
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
-using BeamOs.Common.Application.Interfaces;
 using BeamOs.Contracts.PhysicalModel.SectionProfile;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate.ValueObjects;

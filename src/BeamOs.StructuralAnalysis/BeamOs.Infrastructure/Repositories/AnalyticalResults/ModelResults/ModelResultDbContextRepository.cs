@@ -1,6 +1,6 @@
 using BeamOs.Application.AnalyticalResults.ModelResults;
-using BeamOs.Domain.AnalyticalResults.AnalyticalModelAggregate.ValueObjects;
 using BeamOs.Domain.AnalyticalResults.ModelResultAggregate;
+using BeamOs.Domain.AnalyticalResults.ModelResultAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,7 +11,7 @@ internal class ModelResultDbContextRepository(BeamOsStructuralDbContext dbContex
         IModelResultRepository
 {
     public async Task<ModelResult?> GetByModelId(ModelId modelId, CancellationToken ct = default) =>
-        await dbContext
+        await this.DbContext
             .ModelResults
             .FirstOrDefaultAsync(el => el.ModelId == modelId, cancellationToken: ct);
 }

@@ -1,4 +1,4 @@
-using BeamOs.Domain.Common.Models;
+using BeamOs.Common.Domain.Models;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.MaterialAggregate;
@@ -8,7 +8,6 @@ using BeamOs.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate.ValueObjects;
-using MathNet.Numerics.LinearAlgebra;
 using UnitsNet;
 
 namespace BeamOs.Domain.PhysicalModel.Element1DAggregate;
@@ -129,4 +128,8 @@ public class Element1D : AggregateRoot<Element1DId>
             { r31, r32, r33 },
         };
     }
+
+    [Obsolete("EF Core Constructor", true)]
+    protected Element1D()
+        : base() { }
 }

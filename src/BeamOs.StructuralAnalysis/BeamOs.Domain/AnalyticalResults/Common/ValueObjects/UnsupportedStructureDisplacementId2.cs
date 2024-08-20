@@ -1,5 +1,5 @@
+using BeamOs.Common.Domain.Models;
 using BeamOs.Domain.Common.Enums;
-using BeamOs.Domain.Common.Models;
 using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
 
 namespace BeamOs.Domain.AnalyticalResults.Common.ValueObjects;

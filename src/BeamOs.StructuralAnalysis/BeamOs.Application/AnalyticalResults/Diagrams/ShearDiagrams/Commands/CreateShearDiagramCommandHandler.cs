@@ -3,9 +3,7 @@ using BeamOs.Application.PhysicalModel.Element1dAggregate;
 using BeamOs.Application.PhysicalModel.Models;
 using BeamOs.Application.PhysicalModel.Nodes.Commands;
 using BeamOs.Application.PhysicalModel.PointLoads;
-using BeamOs.Common.Application.Interfaces;
 using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate;
-using BeamOs.Domain.PhysicalModel.Element1DAggregate;
 using BeamOs.Domain.PhysicalModel.NodeAggregate;
 using Riok.Mapperly.Abstractions;
 

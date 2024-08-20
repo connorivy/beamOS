@@ -3,15 +3,18 @@ using BeamOs.Api.Common.Extensions;
 using BeamOs.Application;
 using BeamOs.Application.Common;
 using BeamOs.Infrastructure;
+using BeamOS.WebApp;
 using FastEndpoints;
 using FastEndpoints.Swagger;
+using MathNet.Numerics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.Api;
 
 public static class DependencyInjection
 {
-    const string alphaRelease = "Alpha Release";
+    public const string AlphaRelease = "Alpha Release";
 
     public static IServiceCollection AddAnalysisEndpoints(this IServiceCollection services)
     {
@@ -25,7 +28,7 @@ public static class DependencyInjection
             {
                 o.DocumentSettings = s =>
                 {
-                    s.DocumentName = alphaRelease;
+                    s.DocumentName = AlphaRelease;
                     s.Title = "beamOS api";
                     s.Version = "v0";
                     s.SchemaSettings
@@ -49,6 +52,28 @@ public static class DependencyInjection
         });
 
         _ = services.AddTransient<BeamOsFastEndpointOptions>();
+
+        if (
+            !bool.TryParse(
+                Environment.GetEnvironmentVariable("ContinuousIntegrationBuild"),
+                out bool isCiBuild
+            ) || !isCiBuild
+        )
+        {
+            Control.UseNativeMKL();
+            Control.UseMultiThreading();
+        }
+
+        services.AddAuthentication();
+        services.AddAuthorization();
+
+        // workaround to make link redirection work in .net 8 with JWT auth
+        // see this issue and comment https://github.com/dotnet/aspnetcore/issues/52063#issuecomment-1817420640
+        services.AddSingleton<
+            IAuthorizationMiddlewareResultHandler,
+            BlazorAuthorizationMiddlewareResultHandler
+        >();
+
         return services;
     }
 
@@ -56,17 +81,19 @@ public static class DependencyInjection
         this IServiceCollection services
     )
     {
-        _ = services.AddMappers<IAssemblyMarkerApi>();
-        //_ = services.AddBeamOsEndpoints<IAssemblyMarkerApi>();
-        _ = services.AddCommandHandlers<IAssemblyMarkerApplication>();
-
-        return services;
+        return services
+            .AddMappers<IAssemblyMarkerApi>()
+            .AddCommandHandlers<IAssemblyMarkerApplication>()
+            .AddPhysicalModelInfrastructure();
     }
 
-    public static IServiceCollection AddAnalysisEndpointConfigurableServices(
+    public static IServiceCollection AddStructuralAnalysisApiEventServices(
         this IServiceCollection services
     )
     {
+        services.AddMediatR(
+            config => config.RegisterServicesFromAssembly(typeof(IAssemblyMarkerApi).Assembly)
+        );
         return services.AddScoped<IntegrationEvents.IEventBus, DummyEventBus>();
     }
 
@@ -87,17 +114,11 @@ public static class DependencyInjection
         return services;
     }
 
-    public static IServiceCollection AddRequiredInfrastructureServices(
-        this IServiceCollection services
-    )
-    {
-        services.AddPhysicalModelInfrastructure();
-
-        return services;
-    }
-
     public static void AddAnalysisEndpoints(this IApplicationBuilder app)
     {
+        app.UseAuthentication();
+        app.UseAuthorization();
+
         _ = app.UseFastEndpoints(c =>
             {
                 c.Endpoints.RoutePrefix = "api";
@@ -108,6 +129,14 @@ public static class DependencyInjection
                 c.Serializer.Options.IgnoreRequiredKeyword();
             })
             .UseSwaggerGen();
+    }
+
+    public static async Task InitializeAnalysisDb(this WebApplication app)
+    {
+        using var scope = app.Services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<BeamOsStructuralDbContext>();
+        await dbContext.Database.EnsureCreatedAsync();
+        await dbContext.SeedAsync();
     }
 
     public static async Task GenerateAnalysisClient(this WebApplication app)
@@ -121,6 +150,6 @@ public static class DependencyInjection
         const string analyticalResultsBaseNs =
             $"{contractsBaseNs}.{ApiClientGenerator.AnalyticalResultsNs}";
 
-        await app.GenerateClient(alphaRelease, clientNs, clientName);
+        await app.GenerateClient(AlphaRelease, clientNs, clientName);
     }
 }

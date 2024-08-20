@@ -1,4 +1,3 @@
-using BeamOs.WebApp.Client.Components.Components.Editor;
 using BeamOs.WebApp.Client.Events.Interfaces;
 
 namespace BeamOs.WebApp.Client.Components.Components.Editor.Commands;

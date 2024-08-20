@@ -1,4 +1,4 @@
-using BeamOs.Domain.Common.Models;
+using BeamOs.Common.Domain.Models;
 using BeamOs.Domain.Common.ValueObjects;
 
 namespace BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;

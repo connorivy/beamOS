@@ -1,4 +1,8 @@
-@page "/editor"
+@page "/editor/{ModelId}"
+@using BeamOs.Contracts.AnalyticalResults
+@using BeamOs.Contracts.AnalyticalResults.AnalyticalNode
+@using BeamOs.Contracts.AnalyticalResults.Forces
+@using BeamOs.Contracts.PhysicalModel.Common
 @using BeamOs.WebApp.Client.Components.Caches
 @using BeamOs.WebApp.Client.Components.Components.Editor
 @using BeamOs.WebApp.Client.Components.Components.Editor.Commands
@@ -16,29 +20,30 @@
 @using static BeamOs.WebApp.Client.Components.Components.Editor.EditorComponent
 @using BeamOs.WebApp.Client.Components.Components.Editor.CommandHandlers;
 
-@rendermode InteractiveAuto
-
-@inherits FluxorComponent
+@implements IDisposable
 
 <PageTitle>Editor</PageTitle>
 
 <MudDrawerContainer Class="h-full w-full">
-    <MudTextField @bind-Value="modelIdInput" Label="ModelId" Variant="Variant.Filled"></MudTextField>
-    <MudButton OnClick="LoadModel">Load Model</MudButton>
-    <MudButton OnClick="RunAnalysis">Run DSM</MudButton>
-    <MudButton OnClick="LoadShearDiagrams">Show Shear Diagrams</MudButton>
-    <MudButton OnClick="LoadMomentDiagrams">Show Moment Diagrams</MudButton>
-    <MudButton OnClick="ShowReactions">Show Reactions</MudButton>
+    @* <MudTextField @bind-Value="modelIdInput" Label="ModelId" Variant="Variant.Filled"></MudTextField> *@
+    @* <MudButton OnClick="LoadModel">Load Model</MudButton> *@
+    @* <MudButton OnClick="RunAnalysis">Run DSM</MudButton> *@
+    @* <MudButton OnClick="LoadShearDiagrams">Show Shear Diagrams</MudButton> *@
+    @* <MudButton OnClick="LoadMomentDiagrams">Show Moment Diagrams</MudButton> *@
+    @* <MudButton OnClick="ShowReactions">Show Reactions</MudButton> *@
     @if (editorComponent is not null)
     {
         <MudPopover Open="@(editorComponent.EditorComponentState.SelectedObjects.Length > 0)" Fixed="true" Class="w-80 m-2">
             <SelectionInfoComponent SelectedObjects="@editorComponent.EditorComponentState.SelectedObjects" ModelId="@editorComponent.EditorComponentState.LoadedModelId"></SelectionInfoComponent>
         </MudPopover>
     }
-    <EditorComponent Class="h-full" @ref="editorComponent"></EditorComponent>
+    <EditorComponent Class="h-full" @ref="editorComponent" ModelId="@ModelId"></EditorComponent>
 </MudDrawerContainer>
 
 @code {
+    [Parameter]
+    public string ModelId { get; set; }
+
     [Inject]
     private IApiAlphaClient ApiAlphaClient { get; init; }
 
@@ -46,7 +51,22 @@
     private AddEntityContractToEditorCommandHandler AddEntityContractToEditorCommandHandler { get; init; }
 
     [Inject]
+    private AddEntityContractToCacheCommandHandler AddEntityContractToCacheCommandHandler { get; init; }
+
+    [Inject]
+    private AddShearDiagramsToEditorCommandHandler AddShearDiagramsToEditorCommandHandler { get; init; }
+
+    [Inject]
+    private AddMomentDiagramsToEditorCommandHandler AddMomentDiagramsToEditorCommandHandler { get; init; }
+
+    [Inject]
+    private AddPointLoadsToEditorCommandHandler AddPointLoadsToEditorCommandHandler { get; init; }
+
+    [Inject]
     private AllStructuralAnalysisModelCaches allStructuralAnalysisModelCaches { get; init; }
+
+    [Inject]
+    private NavigationManager NavigationManager { get; init; }
 
     public string modelIdInput { get; set; }
     private EditorComponent editorComponent;
@@ -65,14 +85,8 @@
         var modelResults = await this.ApiAlphaClient.GetModelResultsAsync(editorComponent.EditorComponentState.LoadedModelId);
         await this.editorComponent.EditorApiAlpha.SetModelResultsAsync(modelResults);
 
-        var loadedElement1dIds = this.allStructuralAnalysisModelCaches.GetByModelId(editorComponent.EditorComponentState.LoadedModelId)
-        .GetEntityIdsOfType<Element1DResponse>();
-
-        foreach (var element1dId in loadedElement1dIds)
-        {
-            var shearDiagram = await ApiAlphaClient.GetShearDiagramAsync(element1dId);
-            await AddEntityContractToEditorCommandHandler.ExecuteAsync(new AddEntityToEditorCommand(this.editorComponent.ElementId, shearDiagram));
-        }
+        var shearDiagrams = await this.ApiAlphaClient.GetShearDiagramsAsync(editorComponent.EditorComponentState.LoadedModelId);
+        await AddShearDiagramsToEditorCommandHandler.ExecuteAsync(new(editorComponent.ElementId, shearDiagrams));
     }
 
     private async Task LoadMomentDiagrams()
@@ -80,19 +94,15 @@
         var modelResults = await this.ApiAlphaClient.GetModelResultsAsync(editorComponent.EditorComponentState.LoadedModelId);
         await this.editorComponent.EditorApiAlpha.SetModelResultsAsync(modelResults);
 
-        var loadedElement1dIds = this.allStructuralAnalysisModelCaches.GetByModelId(editorComponent.EditorComponentState.LoadedModelId)
-        .GetEntityIdsOfType<Element1DResponse>();
-
-        foreach (var element1dId in loadedElement1dIds)
-        {
-            var shearDiagram = await ApiAlphaClient.GetMomentDiagramAsync(element1dId);
-            await AddEntityContractToEditorCommandHandler.ExecuteAsync(new AddEntityToEditorCommand(this.editorComponent.ElementId, shearDiagram));
-        }
+        var diagrams = await this.ApiAlphaClient.GetMomentDiagramsAsync(editorComponent.EditorComponentState.LoadedModelId);
+        await AddMomentDiagramsToEditorCommandHandler.ExecuteAsync(new(editorComponent.ElementId, diagrams));
     }
 
     private async Task LoadModel()
     {
-        await this.editorComponent.LoadModel(modelIdInput);
+        this.ModelId = modelIdInput;
+        this.NavigationManager.NavigateTo($"editor/{this.ModelId}");
+        await this.editorComponent.LoadModel(this.ModelId);
     }
 
     private async Task RunAnalysis()
@@ -102,28 +112,24 @@
 
     private async Task ShowReactions()
     {
-        var loadedNodeIds = this.allStructuralAnalysisModelCaches.GetByModelId(editorComponent.EditorComponentState.LoadedModelId)
-        .GetEntityIdsOfType<NodeResponse>();
+        var allForces = await this.ApiAlphaClient.GetNodeResultsAsync(this.ModelId, null);
 
-        double forcesTotal = 0;
-        foreach (var nodeId in loadedNodeIds)
-        {
-            var forces = await this.ApiAlphaClient.GetSingleNodeResultAsync(nodeId);
-            foreach (var force in forces)
-            {
-                forcesTotal += force.Forces.ForceAlongY.Value;
-                if (Math.Abs(force.Forces.ForceAlongY.Value) < .0001)
-                {
-                    continue;
-                }
+        await AddPointLoadsToEditorCommandHandler.ExecuteAsync(new(this.editorComponent.ElementId,
+            allForces
+                .Where(f => Math.Abs(f.Forces.ForceAlongY.Value) > .001)
+                .Select(f => new PointLoadResponse(
+                    Guid.NewGuid().ToString(),
+                    this.ModelId,
+                    f.NodeId,
+                    f.Forces.ForceAlongY,
+                    new(0, 1, 0)
+                ))
+                .ToArray() // must prevent multiple enumerations or different ids will be generated
+        ));
+    }
 
-                await this.AddEntityContractToEditorCommandHandler.ExecuteAsync(new AddEntityToEditorCommand(this.editorComponent.ElementId,
-                    new PointLoadResponse(Guid.NewGuid().ToString(),
-                    this.editorComponent.EditorComponentState.LoadedModelId,
-                    nodeId,
-                    force.Forces.ForceAlongY,
-                    new(0, 1, 0))));
-            }
-        }
+    public void Dispose()
+    {
+        EventEmitter.VisibleStateChanged -= this.EventEmitter_VisibleStateChanged;
     }
 }

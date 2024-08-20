@@ -1,6 +1,6 @@
 namespace BeamOs.Common.Events;
 
-public interface IUndoable : IIntegrationEvent
+public interface IUndoable : IDomainEvent
 {
     public IUndoable GetUndoAction();
 }

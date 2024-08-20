@@ -1,5 +1,4 @@
 using BeamOs.Common.Api;
-using BeamOs.WebApp.Client.Components.Components.Editor;
 using BeamOs.WebApp.Client.Components.Repositories;
 using BeamOs.WebApp.Client.Components.State;
 using BeamOs.WebApp.Client.EditorCommands;

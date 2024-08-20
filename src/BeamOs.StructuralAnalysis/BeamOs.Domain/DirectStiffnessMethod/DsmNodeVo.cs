@@ -1,4 +1,4 @@
-using BeamOs.Domain.Common.Models;
+using BeamOs.Common.Domain.Models;
 using BeamOs.Domain.DirectStiffnessMethod.Common.Extensions;
 using BeamOs.Domain.DirectStiffnessMethod.Common.ValueObjects;
 using BeamOs.Domain.PhysicalModel.NodeAggregate;

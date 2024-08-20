@@ -1,10 +1,8 @@
-using BeamOs.Domain.Common.Models;
+using BeamOs.Common.Domain.Models;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.PhysicalModel.MaterialAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate.ValueObjects;
-using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Double;
 using UnitsNet;
 
 namespace BeamOs.Domain.PhysicalModel.Element1DAggregate.ValueObjects;

@@ -1,8 +1,8 @@
 using BeamOs.ApiClient.Builders;
 using BeamOs.Contracts.Common;
 using BeamOs.Contracts.PhysicalModel.Model;
-using BeamOs.Contracts.PhysicalModel.Node;
 using MathNet.Spatial.Euclidean;
+using Speckle.Core.Credentials;
 using UnitsNet;
 using UnitsNet.Units;
 
@@ -15,18 +15,80 @@ public class CustomModelBuilder : CreateModelRequestBuilder
     public override Guid ModelGuid { get; } = Guid.Parse("00000000-0000-0000-0000-000000000000");
     public override PhysicalModelSettings Settings { get; } = new(UnitSettingsDtoVerbose.kN_M);
 
-    private int[] xValues = [0, 24, 48, 72];
-    private int[] yValues = [0, 12, 24, 36];
-    private int[] zValues = [0, 24, 48, 72];
+    private readonly HashSet<string> addedNodeIds = [];
 
-    public CustomModelBuilder()
+    public override async Task InitializeAsync()
     {
+        //this.PopulateFromJson(
+        //    Path.Combine(
+        //        Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+        //        "TwistyBowlFraming.json"
+        //    )
+        //);
+
         this.CreateMaterialAndSectionProfile();
-        this.CreateNodes();
-        this.CreateVerticalElement1ds();
-        this.CreateHorizontalElement1ds();
-        this.CreatePointLoadsOnRoof();
-        this.CreatePointLoadsOnSide();
+        await foreach (
+            var builder in SpeckleConnector
+                .SpeckleConnector
+                .ReceiveData(
+                    AccountManager.GetAccounts().First(),
+                    "e6b1988124",
+                    "f404f297534f6bd4502a42cb1dd08f21"
+                )
+        )
+        {
+            if (builder is CreateNodeRequestBuilder nodeRequestBuilder)
+            {
+                if (
+                    nodeRequestBuilder.LocationPoint.YCoordinate.Value > 10000
+                    && this.addedNodeIds.Add(nodeRequestBuilder.Id.ToString())
+                )
+                {
+                    this.AddPointLoad(
+                        new()
+                        {
+                            NodeId = nodeRequestBuilder.Id,
+                            Direction = UnitVector3D.Create(0, -1, 0),
+                            Force = new(100, ForceUnit.Kilonewton)
+                        }
+                    );
+                }
+                this.AddNode(nodeRequestBuilder);
+            }
+            else if (builder is CreateElement1dRequestBuilder element1DRequestBuilder)
+            {
+                var comparisonResult = string.Compare(
+                    element1DRequestBuilder.StartNodeId.ToString(),
+                    element1DRequestBuilder.EndNodeId.ToString(),
+                    StringComparison.Ordinal
+                );
+
+                string elementId;
+                if (comparisonResult == 0)
+                {
+                    continue;
+                }
+                else if (comparisonResult > 0)
+                {
+                    elementId =
+                        $"n{element1DRequestBuilder.StartNodeId}n{element1DRequestBuilder.EndNodeId}";
+                }
+                else
+                {
+                    elementId =
+                        $"n{element1DRequestBuilder.EndNodeId}n{element1DRequestBuilder.StartNodeId}";
+                }
+
+                this.AddElement1d(
+                    element1DRequestBuilder with
+                    {
+                        Id = elementId,
+                        MaterialId = "A992Steel",
+                        SectionProfileId = "W16x36"
+                    }
+                );
+            }
+        }
     }
 
     private void CreateMaterialAndSectionProfile()
@@ -34,11 +96,12 @@ public class CustomModelBuilder : CreateModelRequestBuilder
         this.AddMaterial(
             new()
             {
-                ModulusOfElasticity = new Pressure(
-                    29000 * .8,
+                ModulusOfElasticity = new Pressure(29000, PressureUnit.KilopoundForcePerSquareInch),
+                ModulusOfRigidity = new Pressure(
+                    11_153.85,
                     PressureUnit.KilopoundForcePerSquareInch
                 ),
-                ModulusOfRigidity = new Pressure(11_460, PressureUnit.KilopoundForcePerSquareInch)
+                Id = "A992Steel"
             }
         );
 
@@ -60,190 +123,8 @@ public class CustomModelBuilder : CreateModelRequestBuilder
                 ),
                 StrongAxisShearArea = new Area(5.0095, AreaUnit.SquareInch),
                 WeakAxisShearArea = new Area(4.6905, AreaUnit.SquareInch),
+                Id = "W16x36"
             }
         );
     }
-
-    private void CreateNodes()
-    {
-        for (int xIndex = 0; xIndex < this.xValues.Length; xIndex++)
-        {
-            for (int yIndex = 0; yIndex < this.yValues.Length; yIndex++)
-            {
-                for (int zIndex = 0; zIndex < this.zValues.Length; zIndex++)
-                {
-                    double xVal = this.xValues[xIndex];
-                    double yVal = this.yValues[yIndex];
-                    double zVal = this.zValues[zIndex];
-                    double zOffset = 0;
-                    if (xIndex == 0)
-                    {
-                        zOffset = -24;
-                    }
-                    else if (xIndex == this.xValues.Length - 1)
-                    {
-                        zOffset = 24;
-                    }
-
-                    RestraintRequest restraint;
-                    if (yIndex > 0)
-                    {
-                        restraint = RestraintRequest.FreeXzPlane;
-                    }
-                    else if (xIndex == 0 || zIndex == 0)
-                    {
-                        restraint = RestraintRequest.Fixed;
-                    }
-                    else
-                    {
-                        restraint = RestraintRequest.Pinned;
-                    }
-
-                    this.AddNode(
-                        new()
-                        {
-                            LocationPoint = new(
-                                this.xValues[xIndex],
-                                this.yValues[yIndex],
-                                this.zValues[zIndex] + zOffset,
-                                "Foot"
-                            ),
-                            Restraint = restraint,
-                            Id = NodeLocationString(
-                                this.xValues[xIndex],
-                                this.yValues[yIndex],
-                                this.zValues[zIndex]
-                            )
-                        }
-                    );
-                }
-            }
-        }
-    }
-
-    private void CreateVerticalElement1ds()
-    {
-        for (int xIndex = 0; xIndex < this.xValues.Length; xIndex++)
-        {
-            for (int yIndex = 0; yIndex < this.yValues.Length - 1; yIndex++)
-            {
-                for (int zIndex = 0; zIndex < this.zValues.Length; zIndex++)
-                {
-                    this.AddElement1d(
-                        new()
-                        {
-                            StartNodeId = NodeLocationString(
-                                this.xValues[xIndex],
-                                this.yValues[yIndex],
-                                this.zValues[zIndex]
-                            ),
-                            EndNodeId = NodeLocationString(
-                                this.xValues[xIndex],
-                                this.yValues[yIndex + 1],
-                                this.zValues[zIndex]
-                            )
-                        }
-                    );
-                }
-            }
-        }
-    }
-
-    private void CreateHorizontalElement1ds()
-    {
-        for (int zIndex = 0; zIndex < this.zValues.Length; zIndex++)
-        {
-            for (int yIndex = 1; yIndex < this.yValues.Length; yIndex++)
-            {
-                for (int xIndex = 0; xIndex < this.xValues.Length; xIndex++)
-                {
-                    if (xIndex != this.xValues.Length - 1)
-                    {
-                        this.AddElement1d(
-                            new()
-                            {
-                                StartNodeId = NodeLocationString(
-                                    this.xValues[xIndex],
-                                    this.yValues[yIndex],
-                                    this.zValues[zIndex]
-                                ),
-                                EndNodeId = NodeLocationString(
-                                    this.xValues[xIndex + 1],
-                                    this.yValues[yIndex],
-                                    this.zValues[zIndex]
-                                ),
-                            }
-                        );
-                    }
-
-                    if (zIndex != this.zValues.Length - 1)
-                    {
-                        this.AddElement1d(
-                            new()
-                            {
-                                StartNodeId = NodeLocationString(
-                                    this.xValues[xIndex],
-                                    this.yValues[yIndex],
-                                    this.zValues[zIndex]
-                                ),
-                                EndNodeId = NodeLocationString(
-                                    this.xValues[xIndex],
-                                    this.yValues[yIndex],
-                                    this.zValues[zIndex + 1]
-                                ),
-                            }
-                        );
-                    }
-                }
-            }
-        }
-    }
-
-    private void CreatePointLoadsOnRoof()
-    {
-        int yIndex = this.yValues.Length - 1;
-        for (int xIndex = 0; xIndex < this.xValues.Length; xIndex++)
-        {
-            for (int zIndex = 0; zIndex < this.zValues.Length; zIndex++)
-            {
-                this.AddPointLoad(
-                    new()
-                    {
-                        NodeId = NodeLocationString(
-                            this.xValues[xIndex],
-                            this.yValues[yIndex],
-                            this.zValues[zIndex]
-                        ),
-                        Force = new(7.5, ForceUnit.KilopoundForce),
-                        Direction = UnitVector3D.Create(0, -1, 0)
-                    }
-                );
-            }
-        }
-    }
-
-    private void CreatePointLoadsOnSide()
-    {
-        int xIndex = this.xValues.Length - 1;
-        for (int zIndex = 0; zIndex < this.zValues.Length; zIndex++)
-        {
-            for (int yIndex = 1; yIndex < this.yValues.Length; yIndex++)
-            {
-                this.AddPointLoad(
-                    new()
-                    {
-                        NodeId = NodeLocationString(
-                            this.xValues[xIndex],
-                            this.yValues[yIndex],
-                            this.zValues[zIndex]
-                        ),
-                        Force = new(3, ForceUnit.KilopoundForce),
-                        Direction = UnitVector3D.Create(-1, 0, 0)
-                    }
-                );
-            }
-        }
-    }
-
-    private static string NodeLocationString(int x, int y, int z) => $"n{x} {y} {z}";
 }

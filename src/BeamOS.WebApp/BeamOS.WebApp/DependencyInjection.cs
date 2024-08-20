@@ -1,9 +1,7 @@
-using System.Text;
 using BeamOs.Api;
 using BeamOs.Api.Common;
 using BeamOs.ApiClient;
 using BeamOs.Contracts.PhysicalModel.Common;
-using BeamOs.Infrastructure;
 using BeamOs.Tests.TestRunner;
 using BeamOS.WebApp.Client;
 using BeamOs.WebApp.Client.Components;
@@ -13,71 +11,54 @@ using BeamOS.WebApp.Components;
 using BeamOS.WebApp.Components.Providers;
 using BeamOS.WebApp.Hubs;
 using Blazored.LocalStorage;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.IdentityModel.Tokens;
 
 namespace BeamOS.WebApp;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddRequiredWebAppServices(
-        this IServiceCollection services,
-        ConfigurationManager configuration
-    )
+    public static IServiceCollection AddEventServices(this IServiceCollection services)
+    {
+        services.AddSingleton<BeamOs.IntegrationEvents.IEventBus, StructuralAnalysisHubEventBus>();
+        services.AddMediatR(
+            config =>
+                config.RegisterServicesFromAssemblies(
+                    typeof(IAssemblyMarkerApi).Assembly,
+                    typeof(IAssemblyMarkerWebApp).Assembly
+                )
+        );
+        return services;
+    }
+
+    public static IServiceCollection AddRequiredWebServerServices(this IServiceCollection services)
     {
         services.AddSignalR();
         services
             .AddRazorComponents()
             .AddInteractiveServerComponents()
             .AddInteractiveWebAssemblyComponents();
-
-        services.AddRequiredAnalysisServices();
-
         services.AddHttpContextAccessor();
         services.AddCascadingAuthenticationState();
         services.AddBlazoredLocalStorage();
-        services.AddSingleton<BeamOs.IntegrationEvents.IEventBus, StructuralAnalysisHubEventBus>();
+        return services;
+    }
 
-        services
-            .AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(x =>
-            {
-                x.TokenValidationParameters = new()
-                {
-                    ValidateIssuer = true,
-                    ValidIssuer = configuration["JwtSettings:Issuer"],
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(configuration["JwtSettings:Key"])
-                    ),
-                    ValidateAudience = true,
-                    ValidAudiences = configuration["JwtSettings:Audiences"].Split(','),
-                    ValidateLifetime = true,
-                };
-            });
-
-        // workaround to make link redirection work in .net 8 with JWT auth
-        // see this issue and comment https://github.com/dotnet/aspnetcore/issues/52063#issuecomment-1817420640
-        //builder
-        //    .Services
-        //    .AddSingleton<
-        //        IAuthorizationMiddlewareResultHandler,
-        //        BlazorAuthorizationMiddlewareResultHandler
-        //    >();
-
-        services.RegisterSharedServices<Program>();
+    public static IServiceCollection AddIdentityServices(
+        this IServiceCollection services,
+        ConfigurationManager configuration
+    )
+    {
+        services.AddScoped<
+            AuthenticationStateProvider,
+            Components.Providers.CustomAuthStateProvider
+        >();
 
         return services;
     }
 
-    public static IServiceCollection AddConfigurableWebAppServices(
+    public static IServiceCollection AddConfigurableWebServerServices(
         this IServiceCollection services,
         ConfigurationManager configuration
     )
@@ -91,7 +72,6 @@ public static class DependencyInjection
 
         services.AddSingleton(typeof(IAssemblyMarkerWebAppClient).Assembly);
         services.AddSingleton<ICodeTestScoreTracker, CodeTestScoresTrackerLocal>();
-        services.AddAnalysisEndpointOptions().AddAnalysisDb(configuration);
 
         string protocol = configuration["APPLICATION_URL_PROTOCOL"] ?? "dummy value for EF Core";
 
@@ -106,7 +86,7 @@ public static class DependencyInjection
         return services;
     }
 
-    public static async Task RequiredWebApplicationConfig(this WebApplication app)
+    public static void RequiredWebApplicationConfig(this WebApplication app)
     {
         app.MapPost(
             "/scratchpad-entity",
@@ -120,24 +100,15 @@ public static class DependencyInjection
             }
         );
 
-        app.AddAnalysisEndpoints();
-
-        using (var scope = app.Services.CreateScope())
+        if (app.Environment.IsDevelopment())
         {
-            var dbContext = scope.ServiceProvider.GetRequiredService<BeamOsStructuralDbContext>();
-            _ = dbContext.Database.EnsureCreated();
-
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseWebAssemblyDebugging();
-                await dbContext.SeedAsync();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Error", createScopeForErrors: true);
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
+            app.UseWebAssemblyDebugging();
+        }
+        else
+        {
+            app.UseExceptionHandler("/Error", createScopeForErrors: true);
+            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            app.UseHsts();
         }
 
         app.MapHub<StructuralAnalysisHub>(IStructuralAnalysisHubClient.HubEndpointPattern);
@@ -145,8 +116,8 @@ public static class DependencyInjection
 
         app.UseHttpsRedirection();
 
-        app.UseAuthentication();
-        app.UseAuthorization();
+        //app.UseAuthentication();
+        //app.UseAuthorization();
 
         app.UseDefaultFiles();
         app.UseStaticFiles();
@@ -179,23 +150,6 @@ public static class DependencyInjection
                         [Constants.ANALYSIS_API_BASE_URI] = $"{protocol}://localhost:7111"
                     }
                 )
-        );
-
-        app.Use(
-            async (context, next) =>
-            {
-                // hard code user bearer token for auth
-                if (
-                    !context.Request.Headers.ContainsKey("Authorization")
-                    || !context.Request.Headers["Authorization"][0].StartsWith("Bearer ")
-                )
-                {
-                    context.Request.Headers.Authorization =
-                        "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTUxMiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJ1c2VyQGVtYWlsLmNvbSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJVc2VyIiwiYXVkIjpbImh0dHBzOi8vbG9jYWxob3N0OjcxOTMiLCJodHRwczovL2xvY2FsaG9zdDo3MTk0Il0sImV4cCI6NDg3MDA5MDM2MCwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NzE5NCJ9.CTW9SNJl4kSvAlJGZ7dDpFsCc-6hVeOu6OhJFllzGwkE2FZwBd34i7q8nIaKQDQf3T8-O-GqyF7Jbey2ULDPOA";
-                }
-
-                await next(context);
-            }
         );
     }
 }

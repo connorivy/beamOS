@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
       <PrivateAssets>all</PrivateAssets>
@@ -17,6 +18,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\tests\BeamOS.Tests.Common\BeamOS.Tests.Common.csproj" />
+    <ProjectReference Include="..\..\BeamOs.Common\BeamOs.Common.Identity\BeamOs.Common.Identity.csproj" />
+    <ProjectReference Include="..\..\BeamOs.Common\BeamOs.Common.Infrastructure\BeamOs.Common.Infrastructure.csproj" />
     <ProjectReference Include="..\BeamOs.Application\BeamOs.Application.csproj" />
   </ItemGroup>
 

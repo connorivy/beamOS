@@ -1,6 +1,6 @@
 using BeamOs.Application.AnalyticalResults.NodeResults;
-using BeamOs.Domain.AnalyticalResults.AnalyticalNodeAggregate.ValueObjects;
 using BeamOs.Domain.AnalyticalResults.NodeResultAggregate;
+using BeamOs.Domain.AnalyticalResults.NodeResultAggregate.ValueObjects;
 
 namespace BeamOs.Infrastructure.Repositories.AnalyticalResults.NodeResults;
 

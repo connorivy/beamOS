@@ -1,6 +1,4 @@
 using BeamOs.Application.Common.Interfaces;
-using BeamOs.Application.Common.Interfaces.Repositories;
-using BeamOs.Common.Application.Interfaces;
 using BeamOs.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.Domain.PhysicalModel.MaterialAggregate.ValueObjects;
 using Riok.Mapperly.Abstractions;

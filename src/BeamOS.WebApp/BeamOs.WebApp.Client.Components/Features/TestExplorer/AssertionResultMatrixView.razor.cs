@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Components;
-using Xunit;
 
 namespace BeamOs.WebApp.Client.Components.Features.TestExplorer;
 

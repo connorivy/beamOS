@@ -2,15 +2,14 @@ using System.Security.Claims;
 using BeamOs.Api.Common;
 using BeamOs.Api.Common.Interfaces;
 using BeamOs.Common.Api;
-using BeamOs.Contracts.Common;
 using FastEndpoints;
 using Microsoft.AspNetCore.Authentication;
 
 namespace BeamOS.Api.Common;
 
-public abstract class BeamOsFastEndpoint<TRequest, TResponse>(BeamOsFastEndpointOptions options)
-    : Endpoint<TRequest, TResponse>,
-        IBeamOsEndpoint<TRequest, TResponse>
+public abstract class BeamOsFastEndpoint<TRequest, TResponse>(
+    BeamOsFastEndpointOptions? options = null
+) : Endpoint<TRequest, TResponse>, IBeamOsEndpoint<TRequest, TResponse>
     where TRequest : notnull
 {
     public abstract Task<TResponse> ExecuteRequestAsync(TRequest req, CancellationToken ct);
@@ -21,7 +20,7 @@ public abstract class BeamOsFastEndpoint<TRequest, TResponse>(BeamOsFastEndpoint
 
     public virtual void ConfigureAuthentication()
     {
-        if (options.DefaultAuthenticationConfiguration is not null)
+        if (options?.DefaultAuthenticationConfiguration is not null)
         {
             options.DefaultAuthenticationConfiguration(this);
         }
@@ -64,7 +63,10 @@ public abstract class BeamOsFastEndpoint<TRequest, TResponse>(BeamOsFastEndpoint
 
     private async Task DispatchSucessResponse(TResponse response)
     {
-        await this.SendOkAsync(response);
+        if (this.HttpContext.Response.StatusCode == 200)
+        {
+            await this.SendOkAsync(response);
+        }
     }
 
     private async Task DispatchErrorResponse(Exception exception)

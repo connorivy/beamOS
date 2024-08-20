@@ -6,7 +6,6 @@ using BeamOs.Contracts.PhysicalModel.Element1d;
 using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Contracts.PhysicalModel.Node;
 using BeamOs.Contracts.PhysicalModel.PointLoad;
-using BeamOs.WebApp.Client.Components.Components.Editor;
 using BeamOs.WebApp.Client.Components.Components.Editor.Commands;
 using BeamOs.WebApp.Client.Components.Extensions;
 using BeamOs.WebApp.Client.Components.Repositories;
@@ -18,6 +17,7 @@ public class AddEntityContractToEditorCommandHandler(
     IStateRepository<EditorComponentState> editorComponentStateRepository,
     ChangeComponentStateCommandHandler<EditorComponentState> changeComponentStateCommandHandler,
     AddEntityContractToCacheCommandHandler addEntityContractToCacheCommandHandler,
+    LoadModelCommandHandler loadModelCommandHandler,
     HistoryManager historyManager
 ) : CommandHandlerBase<AddEntityToEditorCommand>(historyManager)
 {
@@ -58,7 +58,7 @@ public class AddEntityContractToEditorCommandHandler(
         switch (entity)
         {
             case ModelResponse modelResponse:
-                await this.LoadModel(modelResponse, editorApi, canvasId);
+                await loadModelCommandHandler.ExecuteAsync(new(canvasId, modelResponse));
                 break;
             case Element1DResponse element1D:
                 await editorApi.CreateElement1dAsync(element1D, CancellationToken.None);
@@ -91,32 +91,174 @@ public class AddEntityContractToEditorCommandHandler(
         }
     }
 
-    private async Task LoadModel(
-        ModelResponse modelResponse,
-        IEditorApiAlpha editorApi,
-        string canvasId
+    //private async Task LoadModel(
+    //    ModelResponse modelResponse,
+    //    IEditorApiAlpha editorApi,
+    //    string canvasId
+    //)
+    //{
+    //    await editorApi.ClearAsync();
+    //    await changeComponentStateCommandHandler.ExecuteAsync(
+    //        new(canvasId, state => state with { LoadedModelId = modelResponse.Id, }),
+    //        CancellationToken.None
+    //    );
+    //    await editorApi.SetSettingsAsync(modelResponse.Settings);
+
+    //    foreach (var node in modelResponse.Nodes ?? Enumerable.Empty<NodeResponse>())
+    //    {
+    //        await this.LoadSingleComponent(node, editorApi, canvasId, modelResponse.Id);
+    //    }
+
+    //    foreach (var el in modelResponse.Element1ds ?? Enumerable.Empty<Element1DResponse>())
+    //    {
+    //        await this.LoadSingleComponent(el, editorApi, canvasId, modelResponse.Id);
+    //    }
+
+    //    foreach (var el in modelResponse.PointLoads ?? Enumerable.Empty<PointLoadResponse>())
+    //    {
+    //        await this.LoadSingleComponent(el, editorApi, canvasId, modelResponse.Id);
+    //    }
+    //}
+}
+
+public abstract class AddEntityContractsToEditorCommandHandlerBase<TEntity>(
+    IStateRepository<EditorComponentState> editorComponentStateRepository,
+    AddEntityContractToCacheCommandHandler addEntityContractToCacheCommandHandler,
+    HistoryManager historyManager
+) : CommandHandlerBase<AddEntitiesToEditorCommand<TEntity>>(historyManager)
+    where TEntity : BeamOsEntityContractBase
+{
+    protected override async Task<Result> ExecuteCommandAsync(
+        AddEntitiesToEditorCommand<TEntity> command,
+        CancellationToken ct = default
     )
     {
-        await editorApi.ClearAsync();
-        await changeComponentStateCommandHandler.ExecuteAsync(
-            new(canvasId, state => state with { LoadedModelId = modelResponse.Id, }),
-            CancellationToken.None
-        );
-        await editorApi.SetSettingsAsync(modelResponse.Settings);
+        var editorComponentState =
+            editorComponentStateRepository.GetComponentStateByCanvasId(command.CanvasId)
+            ?? throw new Exception(
+                $"Could not find editor component corrosponding to canvasId, {command.CanvasId}"
+            );
 
-        foreach (var node in modelResponse.Nodes ?? Enumerable.Empty<NodeResponse>())
+        IEditorApiAlpha? editorApi =
+            editorComponentState.EditorApi
+            ?? throw new Exception(
+                $"Editor api does not exist for canvas with id {command.CanvasId}"
+            );
+
+        await this.LoadEntities(command.Entities, editorApi);
+
+        foreach (var entity in command.Entities)
         {
-            await this.LoadSingleComponent(node, editorApi, canvasId, modelResponse.Id);
+            await addEntityContractToCacheCommandHandler.ExecuteAsync(
+                new(editorComponentState.LoadedModelId, entity)
+            );
         }
 
-        foreach (var el in modelResponse.Element1ds ?? Enumerable.Empty<Element1DResponse>())
-        {
-            await this.LoadSingleComponent(el, editorApi, canvasId, modelResponse.Id);
-        }
+        return Result.Success();
+    }
 
-        foreach (var el in modelResponse.PointLoads ?? Enumerable.Empty<PointLoadResponse>())
-        {
-            await this.LoadSingleComponent(el, editorApi, canvasId, modelResponse.Id);
-        }
+    protected abstract Task LoadEntities(
+        IEnumerable<TEntity> entities,
+        IEditorApiAlpha editorApiAlpha
+    );
+}
+
+public class AddNodesToEditorCommandHandler(
+    IStateRepository<EditorComponentState> editorComponentStateRepository,
+    AddEntityContractToCacheCommandHandler addEntityContractToCacheCommandHandler,
+    HistoryManager historyManager
+)
+    : AddEntityContractsToEditorCommandHandlerBase<NodeResponse>(
+        editorComponentStateRepository,
+        addEntityContractToCacheCommandHandler,
+        historyManager
+    )
+{
+    protected override async Task LoadEntities(
+        IEnumerable<NodeResponse> entities,
+        IEditorApiAlpha editorApiAlpha
+    )
+    {
+        await editorApiAlpha.CreateNodesAsync(entities.Select(e => e.InMeters()));
+    }
+}
+
+public class AddElement1dsToEditorCommandHandler(
+    IStateRepository<EditorComponentState> editorComponentStateRepository,
+    AddEntityContractToCacheCommandHandler addEntityContractToCacheCommandHandler,
+    HistoryManager historyManager
+)
+    : AddEntityContractsToEditorCommandHandlerBase<Element1DResponse>(
+        editorComponentStateRepository,
+        addEntityContractToCacheCommandHandler,
+        historyManager
+    )
+{
+    protected override async Task LoadEntities(
+        IEnumerable<Element1DResponse> entities,
+        IEditorApiAlpha editorApiAlpha
+    )
+    {
+        await editorApiAlpha.CreateElement1dsAsync(entities);
+    }
+}
+
+public class AddShearDiagramsToEditorCommandHandler(
+    IStateRepository<EditorComponentState> editorComponentStateRepository,
+    AddEntityContractToCacheCommandHandler addEntityContractToCacheCommandHandler,
+    HistoryManager historyManager
+)
+    : AddEntityContractsToEditorCommandHandlerBase<ShearDiagramResponse>(
+        editorComponentStateRepository,
+        addEntityContractToCacheCommandHandler,
+        historyManager
+    )
+{
+    protected override async Task LoadEntities(
+        IEnumerable<ShearDiagramResponse> entities,
+        IEditorApiAlpha editorApiAlpha
+    )
+    {
+        await editorApiAlpha.CreateShearDiagramsAsync(entities);
+    }
+}
+
+public class AddMomentDiagramsToEditorCommandHandler(
+    IStateRepository<EditorComponentState> editorComponentStateRepository,
+    AddEntityContractToCacheCommandHandler addEntityContractToCacheCommandHandler,
+    HistoryManager historyManager
+)
+    : AddEntityContractsToEditorCommandHandlerBase<MomentDiagramResponse>(
+        editorComponentStateRepository,
+        addEntityContractToCacheCommandHandler,
+        historyManager
+    )
+{
+    protected override async Task LoadEntities(
+        IEnumerable<MomentDiagramResponse> entities,
+        IEditorApiAlpha editorApiAlpha
+    )
+    {
+        await editorApiAlpha.CreateMomentDiagramsAsync(entities);
+    }
+}
+
+public class AddPointLoadsToEditorCommandHandler(
+    IStateRepository<EditorComponentState> editorComponentStateRepository,
+    AddEntityContractToCacheCommandHandler addEntityContractToCacheCommandHandler,
+    HistoryManager historyManager
+)
+    : AddEntityContractsToEditorCommandHandlerBase<PointLoadResponse>(
+        editorComponentStateRepository,
+        addEntityContractToCacheCommandHandler,
+        historyManager
+    )
+{
+    protected override async Task LoadEntities(
+        IEnumerable<PointLoadResponse> entities,
+        IEditorApiAlpha editorApiAlpha
+    )
+    {
+        await editorApiAlpha.CreatePointLoadsAsync(entities);
     }
 }

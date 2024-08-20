@@ -1,4 +1,4 @@
-using BeamOs.Domain.Common.Models;
+using BeamOs.Common.Domain.Models;
 using UnitsNet;
 
 namespace BeamOs.Domain.PhysicalModel.MaterialAggregate.ValueObjects;

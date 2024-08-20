@@ -1,7 +1,7 @@
-using BeamOs.Domain.Common.Interfaces;
+using BeamOs.Common.Domain.Interfaces;
 using BeamOs.Domain.Common.ValueObjects;
 
-namespace BeamOs.Domain.AnalyticalResults.AnalyticalModelAggregate.ValueObjects;
+namespace BeamOs.Domain.AnalyticalResults.ModelResultAggregate.ValueObjects;
 
 public sealed class ModelResultId(Guid? id = null)
     : GuidBasedId(id),

@@ -1,7 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using BeamOs.Contracts.Common;
-using FastEndpoints;
 
 namespace BeamOs.Contracts.PhysicalModel.Node;
 

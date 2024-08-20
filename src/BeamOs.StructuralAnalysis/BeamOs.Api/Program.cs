@@ -4,8 +4,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder
     .Services
-    .AddRequiredAnalysisServices()
-    .AddAnalysisEndpointConfigurableServices()
+    // event services
+    .AddStructuralAnalysisApiEventServices()
+    // structural analysis services
+    .AddAnalysisEndpoints()
+    .AddRequiredAnalysisEndpointServices()
     .AddAnalysisEndpointOptions()
     .AddAnalysisDb(builder.Configuration);
 
@@ -18,7 +21,7 @@ app.AddAnalysisEndpoints();
 app.UseHttpsRedirection();
 app.UseCors();
 
-// app.Configuration["generateclients"] = "true";
+//app.Configuration["generateclients"] = "true";
 await app.GenerateAnalysisClient();
 
 await app.InitializeAnalysisDb();

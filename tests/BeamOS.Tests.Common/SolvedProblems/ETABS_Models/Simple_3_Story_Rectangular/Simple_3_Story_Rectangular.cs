@@ -2,8 +2,6 @@ using BeamOs.ApiClient.Builders;
 using BeamOs.Contracts.Common;
 using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Contracts.PhysicalModel.Node;
-using BeamOs.Domain.Common.ValueObjects;
-using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOS.Tests.Common.Fixtures;
 using MathNet.Spatial.Euclidean;
 using UnitsNet;

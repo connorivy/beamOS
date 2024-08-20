@@ -2,7 +2,6 @@ using FastEndpoints.ClientGen;
 using NSwag;
 using NSwag.CodeGeneration.CSharp;
 using NSwag.CodeGeneration.TypeScript;
-using NSwag.Generation;
 
 namespace BeamOs.Api.Common;
 

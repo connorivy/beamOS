@@ -35,6 +35,8 @@ public class CreateModel(
             )
         );
 
+    public override void ConfigureAuthentication() { }
+
     public override async Task<ModelResponse?> ExecuteRequestAsync(
         CreateModelRequest req,
         CancellationToken ct

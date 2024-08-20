@@ -11,18 +11,11 @@ namespace BeamOs.SpeckleConnector;
 public static class SpeckleConnector
 {
     public static async IAsyncEnumerable<CreateModelEntityRequestBuilderBase> ReceiveData(
+        Account account,
         string streamId,
         string objectId
     )
     {
-        Account account = AccountManager.GetAccounts().First();
-
-        //var urlChunks = url.Split('/');
-        //using Client apiClient = new(account);
-        //var version = await apiClient
-        //  .CommitGet(urlChunks[^3], urlChunks[^1])
-        //  .ConfigureAwait(false);
-
         using ServerTransport transport = new(account, streamId);
         Base commitObject = await Speckle
             .Core

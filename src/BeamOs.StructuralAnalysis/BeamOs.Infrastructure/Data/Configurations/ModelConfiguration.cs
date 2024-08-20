@@ -50,6 +50,13 @@ internal class ModelConfiguration : IEntityTypeConfiguration<Model>
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
+        builder
+            .HasMany(m => m.MomentLoads)
+            .WithOne()
+            .HasForeignKey(el => el.ModelId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+
         // these belong to the node
         //_ = builder.HasMany<PointLoad>().WithOne().HasForeignKey(el => el.ModelId).IsRequired();
         //_ = builder.HasMany<MomentLoad>().WithOne().HasForeignKey(el => el.ModelId).IsRequired();

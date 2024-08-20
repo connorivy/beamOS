@@ -1,5 +1,4 @@
 using BeamOs.Contracts.PhysicalModel.Common;
-using BeamOs.Contracts.PhysicalModel.Model;
 
 namespace BeamOs.WebApp.Client.Components.Features.Scratchpad;
 

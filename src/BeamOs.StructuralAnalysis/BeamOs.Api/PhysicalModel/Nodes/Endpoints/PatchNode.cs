@@ -2,6 +2,7 @@ using BeamOs.Api.Common;
 using BeamOS.Api.Common;
 using BeamOs.Api.PhysicalModel.Nodes.Mappers;
 using BeamOs.Application.PhysicalModel.Nodes.Commands;
+using BeamOs.Common.Identity.Policies;
 using BeamOs.Contracts.PhysicalModel.Node;
 using BeamOs.Domain.PhysicalModel.NodeAggregate;
 using FastEndpoints;
@@ -24,6 +25,11 @@ public class PatchNode(
             LocationPoint = new PatchPointRequest { LengthUnit = "Foot", YCoordinate = 15 },
             Restraint = new PatchRestraintRequest(CanTranslateAlongX: false, CanRotateAboutY: true)
         };
+
+    public override void ConfigureAuthentication()
+    {
+        this.Policy(p => p.Requirements.Add(new RequireNodeWriteAccess()));
+    }
 
     public override async Task<NodeResponse> ExecuteRequestAsync(
         PatchNodeRequest req,

@@ -1,8 +1,6 @@
 using BeamOs.ApiClient.Builders;
 using BeamOS.Tests.Common.Fixtures;
 using BeamOS.Tests.Common.SolvedProblems.ETABS_Models.Simple_3_Story_Diagonal;
-using BeamOS.Tests.Common.SolvedProblems.ETABS_Models.Simple_3_Story_Rectangular;
-using BeamOS.Tests.Common.SolvedProblems.ETABS_Models.TwistyBowlFraming;
 using BeamOS.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd.Example8_4;
 using BeamOS.Tests.Common.SolvedProblems.Udoeyo_StructuralAnalysis.Example7_11;
 
