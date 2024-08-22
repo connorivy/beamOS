@@ -15,6 +15,11 @@ public sealed class UndoRedoFunctionality : IDisposable
         this.history = history;
     }
 
+    public static IDisposable SubscribeToUndoRedo(HistoryManager historyManager)
+    {
+        return new UndoRedoFunctionality(historyManager);
+    }
+
     private async Task DocumentEvents_OnKeyDown(KeyboardEventArgs e)
     {
         if (!e.CtrlKey)

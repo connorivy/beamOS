@@ -20,6 +20,8 @@ public sealed class HistoryManager(GenericCommandHandler genericCommandHandler)
         await genericCommandHandler.ExecuteAsync(
             undoable.GetUndoCommand(ClientActionSource.CSharp)
         );
+        this.undoActions.RemoveFirst();
+        this.redoActions.AddFirst(undoable);
     }
 
     public async Task Redo()
@@ -31,6 +33,8 @@ public sealed class HistoryManager(GenericCommandHandler genericCommandHandler)
         }
 
         await genericCommandHandler.ExecuteAsync(undoable.WithSource(ClientActionSource.CSharp));
+        this.redoActions.RemoveFirst();
+        this.undoActions.AddFirst(undoable);
     }
 
     public void AddItem(IClientCommandUndoable clientEvent)
@@ -38,14 +42,10 @@ public sealed class HistoryManager(GenericCommandHandler genericCommandHandler)
         if (clientEvent.Id == this.undoActions.FirstOrDefault()?.Id)
         {
             // this is undo event
-            this.undoActions.RemoveFirst();
-            this.redoActions.AddFirst(clientEvent);
         }
         else if (clientEvent.Id == this.redoActions.FirstOrDefault()?.Id)
         {
             // this is redo event
-            this.redoActions.RemoveFirst();
-            this.undoActions.AddFirst(clientEvent);
         }
         else
         {

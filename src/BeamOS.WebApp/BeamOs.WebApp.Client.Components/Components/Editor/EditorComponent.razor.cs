@@ -20,6 +20,8 @@ namespace BeamOs.WebApp.Client.Components.Components.Editor;
 
 public partial class EditorComponent : ComponentBase, IAsyncDisposable
 {
+    private IDisposable? undoRedoFunctionality;
+
     [Parameter]
     public string? Class { get; set; }
 
@@ -28,9 +30,6 @@ public partial class EditorComponent : ComponentBase, IAsyncDisposable
 
     [Inject]
     private IEditorApiProxyFactory EditorApiProxyFactory { get; init; }
-
-    [Inject]
-    private UndoRedoFunctionality UndoRedoFunctionality { get; init; }
 
     [Inject]
     private HistoryManager HistoryManager { get; init; }
@@ -110,6 +109,12 @@ public partial class EditorComponent : ComponentBase, IAsyncDisposable
         await base.OnAfterRenderAsync(firstRender);
     }
 
+    protected override void OnParametersSet()
+    {
+        this.undoRedoFunctionality = UndoRedoFunctionality.SubscribeToUndoRedo(this.HistoryManager);
+        base.OnParametersSet();
+    }
+
     public async Task LoadModel(string modelId)
     {
         this.ModelId = modelId;
@@ -179,7 +184,7 @@ public partial class EditorComponent : ComponentBase, IAsyncDisposable
 
         this.EditorComponentStateRepository.RemoveEditorComponentStateForCanvasId(this.ElementId);
         //await this.EditorApiAlpha.DisposeAsync();
-        this.UndoRedoFunctionality?.Dispose();
+        this.undoRedoFunctionality?.Dispose();
         if (this.hubConnection is not null)
         {
             await this.hubConnection.DisposeAsync();

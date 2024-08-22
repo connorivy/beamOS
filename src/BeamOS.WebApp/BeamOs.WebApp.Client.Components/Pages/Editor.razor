@@ -132,4 +132,7 @@
     {
         EventEmitter.VisibleStateChanged -= this.EventEmitter_VisibleStateChanged;
     }
+
+    public static string GetRelativeUrl(string modelId) =>
+        $"editor/{modelId}";
 }

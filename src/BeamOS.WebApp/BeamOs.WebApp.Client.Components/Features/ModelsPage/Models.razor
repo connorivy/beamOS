@@ -38,10 +38,7 @@
                         <MudText Typo="Typo.caption">@model.UpdatedDate.ToShortDateString()</MudText> *@
                         </MudCardContent>
                         <MudCardActions>
-                            <MudIconButton Icon="Icons.Material.Filled.Comment" />
-                            @* <MudText>@model.CommentsCount</MudText> *@
-                            <MudIconButton Icon="Icons.Material.Filled.Visibility" />
-                            @* <MudText>@model.ViewsCount</MudText> *@
+                            <MudButton Href="@BeamOs.WebApp.Client.Components.Pages.Editor.GetRelativeUrl(model.Id)" Variant="Variant.Text" Color="Color.Primary">Open</MudButton>
                         </MudCardActions>
                     </MudCard>
                 </MudItem>
