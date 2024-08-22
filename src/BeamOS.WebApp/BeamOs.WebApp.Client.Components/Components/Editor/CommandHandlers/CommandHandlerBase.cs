@@ -29,6 +29,26 @@ public abstract class CommandHandlerBase<TCommand>
         this.ExecuteAsync((TCommand)command, ct);
 }
 
+public abstract class CommandHandlerSyncBase<TCommand> : CommandHandlerBase<TCommand>
+    where TCommand : IClientCommand
+{
+    protected sealed override Task<Result> ExecuteCommandAsync(
+        TCommand command,
+        CancellationToken ct = default
+    ) => Task.FromResult(this.ExecuteCommandSync(command));
+
+    public Result ExecuteSync(TCommand command)
+    {
+        Result response = this.ExecuteCommandSync(command);
+
+        this.PostProcess(command);
+
+        return response;
+    }
+
+    protected abstract Result ExecuteCommandSync(TCommand command);
+}
+
 public interface IClientCommandHandler<TCommand> : IClientCommandHandler { }
 
 public interface IClientCommandHandler

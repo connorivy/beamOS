@@ -74,6 +74,11 @@ export interface IApiAlphaClient {
     /**
      * @return Success
      */
+    getModels(): Promise<ModelResponse[]>;
+
+    /**
+     * @return Success
+     */
     deleteModel(modelId: string): Promise<boolean>;
 
     /**
@@ -220,10 +225,6 @@ export class ApiAlphaClient implements IApiAlphaClient {
                 result200 = <any>null;
             }
             return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
@@ -672,6 +673,50 @@ export class ApiAlphaClient implements IApiAlphaClient {
     /**
      * @return Success
      */
+    getModels(): Promise<ModelResponse[]> {
+        let url_ = this.baseUrl + "/api/models";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetModels(_response);
+        });
+    }
+
+    protected processGetModels(response: Response): Promise<ModelResponse[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ModelResponse.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ModelResponse[]>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
     deleteModel(modelId: string): Promise<boolean> {
         let url_ = this.baseUrl + "/api/models/{modelId}";
         if (modelId === undefined || modelId === null)
@@ -927,10 +972,6 @@ export class ApiAlphaClient implements IApiAlphaClient {
                 result200 = <any>null;
             }
             return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
@@ -2338,6 +2379,7 @@ export interface IElement1DResponse extends IBeamOsEntityContractBase {
 
 export class MaterialResponse implements IMaterialResponse {
     id!: string;
+    modelId!: string;
     modulusOfElasticity!: UnitValueDto;
     modulusOfRigidity!: UnitValueDto;
 
@@ -2357,6 +2399,7 @@ export class MaterialResponse implements IMaterialResponse {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
+            this.modelId = _data["modelId"];
             this.modulusOfElasticity = _data["modulusOfElasticity"] ? UnitValueDto.fromJS(_data["modulusOfElasticity"]) : new UnitValueDto();
             this.modulusOfRigidity = _data["modulusOfRigidity"] ? UnitValueDto.fromJS(_data["modulusOfRigidity"]) : new UnitValueDto();
         }
@@ -2372,6 +2415,7 @@ export class MaterialResponse implements IMaterialResponse {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
+        data["modelId"] = this.modelId;
         data["modulusOfElasticity"] = this.modulusOfElasticity ? this.modulusOfElasticity.toJSON() : <any>undefined;
         data["modulusOfRigidity"] = this.modulusOfRigidity ? this.modulusOfRigidity.toJSON() : <any>undefined;
         return data;
@@ -2380,12 +2424,14 @@ export class MaterialResponse implements IMaterialResponse {
 
 export interface IMaterialResponse {
     id: string;
+    modelId: string;
     modulusOfElasticity: UnitValueDto;
     modulusOfRigidity: UnitValueDto;
 }
 
 export class MomentLoadResponse implements IMomentLoadResponse {
     id!: string;
+    modelId!: string;
     nodeId!: string;
     torque!: UnitValueDto;
     axisDirection!: Vector3;
@@ -2406,6 +2452,7 @@ export class MomentLoadResponse implements IMomentLoadResponse {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
+            this.modelId = _data["modelId"];
             this.nodeId = _data["nodeId"];
             this.torque = _data["torque"] ? UnitValueDto.fromJS(_data["torque"]) : new UnitValueDto();
             this.axisDirection = _data["axisDirection"] ? Vector3.fromJS(_data["axisDirection"]) : new Vector3();
@@ -2422,6 +2469,7 @@ export class MomentLoadResponse implements IMomentLoadResponse {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
+        data["modelId"] = this.modelId;
         data["nodeId"] = this.nodeId;
         data["torque"] = this.torque ? this.torque.toJSON() : <any>undefined;
         data["axisDirection"] = this.axisDirection ? this.axisDirection.toJSON() : <any>undefined;
@@ -2431,6 +2479,7 @@ export class MomentLoadResponse implements IMomentLoadResponse {
 
 export interface IMomentLoadResponse {
     id: string;
+    modelId: string;
     nodeId: string;
     torque: UnitValueDto;
     axisDirection: Vector3;

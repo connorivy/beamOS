@@ -9,7 +9,6 @@ using BeamOs.Contracts.PhysicalModel.PointLoad;
 using BeamOs.WebApp.Client.Components.Components.Editor.Commands;
 using BeamOs.WebApp.Client.Components.Extensions;
 using BeamOs.WebApp.Client.Components.Repositories;
-using BeamOs.WebApp.Client.Components.State;
 
 namespace BeamOs.WebApp.Client.Components.Components.Editor.CommandHandlers;
 
@@ -133,13 +132,11 @@ public abstract class AddEntityContractsToEditorCommandHandlerBase<TEntity>(
 
 public class AddNodesToEditorCommandHandler(
     IStateRepository<EditorComponentState> editorComponentStateRepository,
-    AddEntityContractToCacheCommandHandler addEntityContractToCacheCommandHandler,
-    HistoryManager historyManager
+    AddEntityContractToCacheCommandHandler addEntityContractToCacheCommandHandler
 )
     : AddEntityContractsToEditorCommandHandlerBase<NodeResponse>(
         editorComponentStateRepository,
-        addEntityContractToCacheCommandHandler,
-        historyManager
+        addEntityContractToCacheCommandHandler
     )
 {
     protected override async Task LoadEntities(
@@ -153,13 +150,11 @@ public class AddNodesToEditorCommandHandler(
 
 public class AddElement1dsToEditorCommandHandler(
     IStateRepository<EditorComponentState> editorComponentStateRepository,
-    AddEntityContractToCacheCommandHandler addEntityContractToCacheCommandHandler,
-    HistoryManager historyManager
+    AddEntityContractToCacheCommandHandler addEntityContractToCacheCommandHandler
 )
     : AddEntityContractsToEditorCommandHandlerBase<Element1DResponse>(
         editorComponentStateRepository,
-        addEntityContractToCacheCommandHandler,
-        historyManager
+        addEntityContractToCacheCommandHandler
     )
 {
     protected override async Task LoadEntities(
@@ -173,13 +168,11 @@ public class AddElement1dsToEditorCommandHandler(
 
 public class AddShearDiagramsToEditorCommandHandler(
     IStateRepository<EditorComponentState> editorComponentStateRepository,
-    AddEntityContractToCacheCommandHandler addEntityContractToCacheCommandHandler,
-    HistoryManager historyManager
+    AddEntityContractToCacheCommandHandler addEntityContractToCacheCommandHandler
 )
     : AddEntityContractsToEditorCommandHandlerBase<ShearDiagramResponse>(
         editorComponentStateRepository,
-        addEntityContractToCacheCommandHandler,
-        historyManager
+        addEntityContractToCacheCommandHandler
     )
 {
     protected override async Task LoadEntities(
@@ -193,13 +186,11 @@ public class AddShearDiagramsToEditorCommandHandler(
 
 public class AddMomentDiagramsToEditorCommandHandler(
     IStateRepository<EditorComponentState> editorComponentStateRepository,
-    AddEntityContractToCacheCommandHandler addEntityContractToCacheCommandHandler,
-    HistoryManager historyManager
+    AddEntityContractToCacheCommandHandler addEntityContractToCacheCommandHandler
 )
     : AddEntityContractsToEditorCommandHandlerBase<MomentDiagramResponse>(
         editorComponentStateRepository,
-        addEntityContractToCacheCommandHandler,
-        historyManager
+        addEntityContractToCacheCommandHandler
     )
 {
     protected override async Task LoadEntities(
@@ -213,13 +204,11 @@ public class AddMomentDiagramsToEditorCommandHandler(
 
 public class AddPointLoadsToEditorCommandHandler(
     IStateRepository<EditorComponentState> editorComponentStateRepository,
-    AddEntityContractToCacheCommandHandler addEntityContractToCacheCommandHandler,
-    HistoryManager historyManager
+    AddEntityContractToCacheCommandHandler addEntityContractToCacheCommandHandler
 )
     : AddEntityContractsToEditorCommandHandlerBase<PointLoadResponse>(
         editorComponentStateRepository,
-        addEntityContractToCacheCommandHandler,
-        historyManager
+        addEntityContractToCacheCommandHandler
     )
 {
     protected override async Task LoadEntities(

@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using BeamOs.Api.Common;
 using BeamOS.Api.Common;
 using BeamOs.Application.Common.Queries;
@@ -33,5 +34,28 @@ public class GetModel(
             new(Guid.Parse(req.ModelId), req.Properties?.Length > 0 ? req.Properties : null);
 
         return await getResourceByIdQueryHandler.ExecuteAsync(query, ct);
+    }
+}
+
+public class GetModels(
+    BeamOsFastEndpointOptions options,
+    IQueryHandler<ClaimsPrincipal, List<ModelResponse>> getModelResponsesQueryHandler
+) : BeamOsFastEndpoint<EmptyRequest, List<ModelResponse>>(options)
+{
+    public override string Route => "models";
+
+    public override Http EndpointType => Http.GET;
+
+    //public override void ConfigureAuthentication()
+    //{
+    //    this.AllowAnonymous();
+    //}
+
+    public override async Task<List<ModelResponse>> ExecuteRequestAsync(
+        EmptyRequest req,
+        CancellationToken ct
+    )
+    {
+        return await getModelResponsesQueryHandler.ExecuteAsync(HttpContext.User, ct);
     }
 }
