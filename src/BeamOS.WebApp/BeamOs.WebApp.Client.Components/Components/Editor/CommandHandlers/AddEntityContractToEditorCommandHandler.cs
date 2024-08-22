@@ -15,11 +15,9 @@ namespace BeamOs.WebApp.Client.Components.Components.Editor.CommandHandlers;
 
 public class AddEntityContractToEditorCommandHandler(
     IStateRepository<EditorComponentState> editorComponentStateRepository,
-    ChangeComponentStateCommandHandler<EditorComponentState> changeComponentStateCommandHandler,
     AddEntityContractToCacheCommandHandler addEntityContractToCacheCommandHandler,
-    LoadModelCommandHandler loadModelCommandHandler,
-    HistoryManager historyManager
-) : CommandHandlerBase<AddEntityToEditorCommand>(historyManager)
+    LoadModelCommandHandler loadModelCommandHandler
+) : CommandHandlerBase<AddEntityToEditorCommand>
 {
     protected override async Task<Result> ExecuteCommandAsync(
         AddEntityToEditorCommand command,
@@ -90,42 +88,12 @@ public class AddEntityContractToEditorCommandHandler(
             await addEntityContractToCacheCommandHandler.ExecuteAsync(new(modelId, entity));
         }
     }
-
-    //private async Task LoadModel(
-    //    ModelResponse modelResponse,
-    //    IEditorApiAlpha editorApi,
-    //    string canvasId
-    //)
-    //{
-    //    await editorApi.ClearAsync();
-    //    await changeComponentStateCommandHandler.ExecuteAsync(
-    //        new(canvasId, state => state with { LoadedModelId = modelResponse.Id, }),
-    //        CancellationToken.None
-    //    );
-    //    await editorApi.SetSettingsAsync(modelResponse.Settings);
-
-    //    foreach (var node in modelResponse.Nodes ?? Enumerable.Empty<NodeResponse>())
-    //    {
-    //        await this.LoadSingleComponent(node, editorApi, canvasId, modelResponse.Id);
-    //    }
-
-    //    foreach (var el in modelResponse.Element1ds ?? Enumerable.Empty<Element1DResponse>())
-    //    {
-    //        await this.LoadSingleComponent(el, editorApi, canvasId, modelResponse.Id);
-    //    }
-
-    //    foreach (var el in modelResponse.PointLoads ?? Enumerable.Empty<PointLoadResponse>())
-    //    {
-    //        await this.LoadSingleComponent(el, editorApi, canvasId, modelResponse.Id);
-    //    }
-    //}
 }
 
 public abstract class AddEntityContractsToEditorCommandHandlerBase<TEntity>(
     IStateRepository<EditorComponentState> editorComponentStateRepository,
-    AddEntityContractToCacheCommandHandler addEntityContractToCacheCommandHandler,
-    HistoryManager historyManager
-) : CommandHandlerBase<AddEntitiesToEditorCommand<TEntity>>(historyManager)
+    AddEntityContractToCacheCommandHandler addEntityContractToCacheCommandHandler
+) : CommandHandlerBase<AddEntitiesToEditorCommand<TEntity>>
     where TEntity : BeamOsEntityContractBase
 {
     protected override async Task<Result> ExecuteCommandAsync(

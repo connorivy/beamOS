@@ -14,7 +14,7 @@ public class MoveNodeCommandHandler(
     AllStructuralAnalysisModelCaches allStructuralAnalysisModelCaches,
     IStateRepository<EditorComponentState> editorComponentStateRepository,
     IApiAlphaClient apiAlphaClient
-) : VisibleStateCommandHandlerBase<MoveNodeCommand>(historyManager)
+) : VisibleStateCommandHandlerBase<MoveNodeCommand>
 {
     protected override async Task<Result> ExecuteCommandAsync(
         MoveNodeCommand command,
@@ -52,5 +52,11 @@ public class MoveNodeCommandHandler(
         structuralAnalysisModelCache.AddOrReplace(nodeResponse);
 
         return Result.Success();
+    }
+
+    protected override void PostProcess(MoveNodeCommand command)
+    {
+        historyManager.AddItem(command);
+        base.PostProcess(command);
     }
 }

@@ -7,15 +7,13 @@ using BeamOs.Contracts.PhysicalModel.Node;
 using BeamOs.Contracts.PhysicalModel.PointLoad;
 using BeamOs.WebApp.Client.Components.Components.Editor.Commands;
 using BeamOs.WebApp.Client.Components.Repositories;
-using BeamOs.WebApp.Client.Components.State;
 
 namespace BeamOs.WebApp.Client.Components.Components.Editor.CommandHandlers;
 
 public class LoadModelByIdCommandHandler(
     IApiAlphaClient apiAlphaClient,
-    HistoryManager historyManager,
     AddEntityContractToEditorCommandHandler addEntityContractToEditorCommandHandler
-) : CommandHandlerBase<LoadModelCommand>(historyManager)
+) : CommandHandlerBase<LoadModelCommand>
 {
     protected override async Task<Result> ExecuteCommandAsync(
         LoadModelCommand command,
@@ -38,9 +36,8 @@ public class LoadModelCommandHandler(
     ChangeComponentStateCommandHandler<EditorComponentState> changeComponentStateCommandHandler,
     AddNodesToEditorCommandHandler addNodesToEditorCommandHandler,
     AddElement1dsToEditorCommandHandler addElement1dsToEditorCommandHandler,
-    AddPointLoadsToEditorCommandHandler addPointLoadsToEditorCommandHandler,
-    HistoryManager historyManager
-) : CommandHandlerBase<AddModelToEditorCommand>(historyManager)
+    AddPointLoadsToEditorCommandHandler addPointLoadsToEditorCommandHandler
+) : CommandHandlerBase<AddModelToEditorCommand>
 {
     protected override async Task<Result> ExecuteCommandAsync(
         AddModelToEditorCommand command,

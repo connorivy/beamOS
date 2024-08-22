@@ -1,31 +1,24 @@
 using BeamOs.Common.Api;
 using BeamOs.Common.Application.Interfaces;
-using BeamOs.WebApp.Client.Components.State;
 using BeamOs.WebApp.Client.Events.Interfaces;
 
 namespace BeamOs.WebApp.Client.Components.Components.Editor.CommandHandlers;
 
-public abstract class CommandHandlerBase<TCommand>(HistoryManager historyManager)
+public abstract class CommandHandlerBase<TCommand>
     : ICommandHandler<TCommand, Result>,
         IClientCommandHandler<TCommand>
     where TCommand : IClientCommand
 {
     public async Task<Result> ExecuteAsync(TCommand command, CancellationToken ct = default)
     {
-        Result reponse = await this.ExecuteCommandAsync(command, ct);
+        Result response = await this.ExecuteCommandAsync(command, ct);
 
         this.PostProcess(command);
 
-        return reponse;
+        return response;
     }
 
-    protected virtual void PostProcess(TCommand command)
-    {
-        if (command is IClientCommandUndoable clientEvent)
-        {
-            historyManager.AddItem(clientEvent);
-        }
-    }
+    protected virtual void PostProcess(TCommand command) { }
 
     protected abstract Task<Result> ExecuteCommandAsync(
         TCommand command,
