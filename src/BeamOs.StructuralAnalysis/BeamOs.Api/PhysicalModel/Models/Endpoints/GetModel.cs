@@ -40,7 +40,7 @@ public class GetModel(
 public class GetModels(
     BeamOsFastEndpointOptions options,
     IQueryHandler<ClaimsPrincipal, List<ModelResponse>> getModelResponsesQueryHandler
-) : BeamOsFastEndpoint<EmptyRequest, List<ModelResponse>>(options)
+) : BeamOsFastEndpoint<FastEndpoints.EmptyRequest, List<ModelResponse>>(options)
 {
     public override string Route => "models";
 
@@ -52,7 +52,7 @@ public class GetModels(
     //}
 
     public override async Task<List<ModelResponse>> ExecuteRequestAsync(
-        EmptyRequest req,
+        FastEndpoints.EmptyRequest req,
         CancellationToken ct
     )
     {

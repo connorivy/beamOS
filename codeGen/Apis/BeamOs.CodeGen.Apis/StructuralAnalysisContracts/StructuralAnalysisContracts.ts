@@ -48,11 +48,6 @@ export interface IStructuralAnalysisContracts {
     /**
      * @return OK
      */
-    beamOs_Contracts_PhysicalModel_Node_RestraintRequest(): Promise<RestraintRequest>;
-
-    /**
-     * @return OK
-     */
     beamOs_Contracts_PhysicalModel_Node_PatchRestraintRequest(): Promise<PatchRestraintRequest>;
 
     /**
@@ -68,12 +63,7 @@ export interface IStructuralAnalysisContracts {
     /**
      * @return OK
      */
-    beamOs_Contracts_PhysicalModel_Node_PointResponse(): Promise<PointResponse>;
-
-    /**
-     * @return OK
-     */
-    beamOs_Contracts_PhysicalModel_Node_RestraintResponse(): Promise<RestraintResponse>;
+    beamOs_Contracts_PhysicalModel_Node_RestraintContract(): Promise<RestraintContract>;
 
     /**
      * @return OK
@@ -568,43 +558,6 @@ export class StructuralAnalysisContracts implements IStructuralAnalysisContracts
     /**
      * @return OK
      */
-    beamOs_Contracts_PhysicalModel_Node_RestraintRequest(): Promise<RestraintRequest> {
-        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.Node.RestraintRequest";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "POST",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processBeamOs_Contracts_PhysicalModel_Node_RestraintRequest(_response);
-        });
-    }
-
-    protected processBeamOs_Contracts_PhysicalModel_Node_RestraintRequest(response: Response): Promise<RestraintRequest> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = RestraintRequest.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<RestraintRequest>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
     beamOs_Contracts_PhysicalModel_Node_PatchRestraintRequest(): Promise<PatchRestraintRequest> {
         let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.Node.PatchRestraintRequest";
         url_ = url_.replace(/[?&]$/, "");
@@ -716,8 +669,8 @@ export class StructuralAnalysisContracts implements IStructuralAnalysisContracts
     /**
      * @return OK
      */
-    beamOs_Contracts_PhysicalModel_Node_PointResponse(): Promise<PointResponse> {
-        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.Node.PointResponse";
+    beamOs_Contracts_PhysicalModel_Node_RestraintContract(): Promise<RestraintContract> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.Node.RestraintContract";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -728,18 +681,18 @@ export class StructuralAnalysisContracts implements IStructuralAnalysisContracts
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processBeamOs_Contracts_PhysicalModel_Node_PointResponse(_response);
+            return this.processBeamOs_Contracts_PhysicalModel_Node_RestraintContract(_response);
         });
     }
 
-    protected processBeamOs_Contracts_PhysicalModel_Node_PointResponse(response: Response): Promise<PointResponse> {
+    protected processBeamOs_Contracts_PhysicalModel_Node_RestraintContract(response: Response): Promise<RestraintContract> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = PointResponse.fromJS(resultData200);
+            result200 = RestraintContract.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -747,44 +700,7 @@ export class StructuralAnalysisContracts implements IStructuralAnalysisContracts
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<PointResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    beamOs_Contracts_PhysicalModel_Node_RestraintResponse(): Promise<RestraintResponse> {
-        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.PhysicalModel.Node.RestraintResponse";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "POST",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processBeamOs_Contracts_PhysicalModel_Node_RestraintResponse(_response);
-        });
-    }
-
-    protected processBeamOs_Contracts_PhysicalModel_Node_RestraintResponse(response: Response): Promise<RestraintResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = RestraintResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<RestraintResponse>(null as any);
+        return Promise.resolve<RestraintContract>(null as any);
     }
 
     /**
@@ -2869,7 +2785,7 @@ export interface ICreateMomentLoadRequest {
 export class CreateNodeRequest implements ICreateNodeRequest {
     modelId!: string;
     locationPoint!: Point;
-    restraint!: RestraintRequest;
+    restraint!: RestraintContract;
 
     constructor(data?: ICreateNodeRequest) {
         if (data) {
@@ -2880,7 +2796,7 @@ export class CreateNodeRequest implements ICreateNodeRequest {
         }
         if (!data) {
             this.locationPoint = new Point();
-            this.restraint = new RestraintRequest();
+            this.restraint = new RestraintContract();
         }
     }
 
@@ -2888,7 +2804,7 @@ export class CreateNodeRequest implements ICreateNodeRequest {
         if (_data) {
             this.modelId = _data["modelId"];
             this.locationPoint = _data["locationPoint"] ? Point.fromJS(_data["locationPoint"]) : new Point();
-            this.restraint = _data["restraint"] ? RestraintRequest.fromJS(_data["restraint"]) : new RestraintRequest();
+            this.restraint = _data["restraint"] ? RestraintContract.fromJS(_data["restraint"]) : new RestraintContract();
         }
     }
 
@@ -2911,7 +2827,7 @@ export class CreateNodeRequest implements ICreateNodeRequest {
 export interface ICreateNodeRequest {
     modelId: string;
     locationPoint: Point;
-    restraint: RestraintRequest;
+    restraint: RestraintContract;
 }
 
 export class CreatePointLoadRequest implements ICreatePointLoadRequest {
@@ -3700,6 +3616,7 @@ export interface IIdRequestWithProperties {
 
 export class MaterialResponse implements IMaterialResponse {
     id!: string;
+    modelId!: string;
     modulusOfElasticity!: UnitValueDto;
     modulusOfRigidity!: UnitValueDto;
 
@@ -3719,6 +3636,7 @@ export class MaterialResponse implements IMaterialResponse {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
+            this.modelId = _data["modelId"];
             this.modulusOfElasticity = _data["modulusOfElasticity"] ? UnitValueDto.fromJS(_data["modulusOfElasticity"]) : new UnitValueDto();
             this.modulusOfRigidity = _data["modulusOfRigidity"] ? UnitValueDto.fromJS(_data["modulusOfRigidity"]) : new UnitValueDto();
         }
@@ -3734,6 +3652,7 @@ export class MaterialResponse implements IMaterialResponse {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
+        data["modelId"] = this.modelId;
         data["modulusOfElasticity"] = this.modulusOfElasticity ? this.modulusOfElasticity.toJSON() : <any>undefined;
         data["modulusOfRigidity"] = this.modulusOfRigidity ? this.modulusOfRigidity.toJSON() : <any>undefined;
         return data;
@@ -3742,6 +3661,7 @@ export class MaterialResponse implements IMaterialResponse {
 
 export interface IMaterialResponse {
     id: string;
+    modelId: string;
     modulusOfElasticity: UnitValueDto;
     modulusOfRigidity: UnitValueDto;
 }
@@ -4288,6 +4208,7 @@ export interface IMomentDiagramResponse {
 
 export class MomentLoadResponse implements IMomentLoadResponse {
     id!: string;
+    modelId!: string;
     nodeId!: string;
     torque!: UnitValueDto;
     axisDirection!: Vector3;
@@ -4308,6 +4229,7 @@ export class MomentLoadResponse implements IMomentLoadResponse {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
+            this.modelId = _data["modelId"];
             this.nodeId = _data["nodeId"];
             this.torque = _data["torque"] ? UnitValueDto.fromJS(_data["torque"]) : new UnitValueDto();
             this.axisDirection = _data["axisDirection"] ? Vector3.fromJS(_data["axisDirection"]) : new Vector3();
@@ -4324,6 +4246,7 @@ export class MomentLoadResponse implements IMomentLoadResponse {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
+        data["modelId"] = this.modelId;
         data["nodeId"] = this.nodeId;
         data["torque"] = this.torque ? this.torque.toJSON() : <any>undefined;
         data["axisDirection"] = this.axisDirection ? this.axisDirection.toJSON() : <any>undefined;
@@ -4333,6 +4256,7 @@ export class MomentLoadResponse implements IMomentLoadResponse {
 
 export interface IMomentLoadResponse {
     id: string;
+    modelId: string;
     nodeId: string;
     torque: UnitValueDto;
     axisDirection: Vector3;
@@ -4341,8 +4265,8 @@ export interface IMomentLoadResponse {
 export class NodeResponse implements INodeResponse {
     id!: string;
     modelId!: string;
-    locationPoint!: PointResponse;
-    restraint!: RestraintResponse;
+    locationPoint!: Point;
+    restraint!: RestraintContract;
 
     constructor(data?: INodeResponse) {
         if (data) {
@@ -4352,8 +4276,8 @@ export class NodeResponse implements INodeResponse {
             }
         }
         if (!data) {
-            this.locationPoint = new PointResponse();
-            this.restraint = new RestraintResponse();
+            this.locationPoint = new Point();
+            this.restraint = new RestraintContract();
         }
     }
 
@@ -4361,8 +4285,8 @@ export class NodeResponse implements INodeResponse {
         if (_data) {
             this.id = _data["id"];
             this.modelId = _data["modelId"];
-            this.locationPoint = _data["locationPoint"] ? PointResponse.fromJS(_data["locationPoint"]) : new PointResponse();
-            this.restraint = _data["restraint"] ? RestraintResponse.fromJS(_data["restraint"]) : new RestraintResponse();
+            this.locationPoint = _data["locationPoint"] ? Point.fromJS(_data["locationPoint"]) : new Point();
+            this.restraint = _data["restraint"] ? RestraintContract.fromJS(_data["restraint"]) : new RestraintContract();
         }
     }
 
@@ -4386,8 +4310,8 @@ export class NodeResponse implements INodeResponse {
 export interface INodeResponse {
     id: string;
     modelId: string;
-    locationPoint: PointResponse;
-    restraint: RestraintResponse;
+    locationPoint: Point;
+    restraint: RestraintContract;
 }
 
 export class NodeResultResponse implements INodeResultResponse {
@@ -4639,9 +4563,10 @@ export interface IPhysicalModelSettings {
 }
 
 export class Point implements IPoint {
-    xCoordinate!: UnitValueDto;
-    yCoordinate!: UnitValueDto;
-    zCoordinate!: UnitValueDto;
+    xCoordinate!: number;
+    yCoordinate!: number;
+    zCoordinate!: number;
+    lengthUnit!: string;
 
     constructor(data?: IPoint) {
         if (data) {
@@ -4650,18 +4575,14 @@ export class Point implements IPoint {
                     (<any>this)[property] = (<any>data)[property];
             }
         }
-        if (!data) {
-            this.xCoordinate = new UnitValueDto();
-            this.yCoordinate = new UnitValueDto();
-            this.zCoordinate = new UnitValueDto();
-        }
     }
 
     init(_data?: any) {
         if (_data) {
-            this.xCoordinate = _data["xCoordinate"] ? UnitValueDto.fromJS(_data["xCoordinate"]) : new UnitValueDto();
-            this.yCoordinate = _data["yCoordinate"] ? UnitValueDto.fromJS(_data["yCoordinate"]) : new UnitValueDto();
-            this.zCoordinate = _data["zCoordinate"] ? UnitValueDto.fromJS(_data["zCoordinate"]) : new UnitValueDto();
+            this.xCoordinate = _data["xCoordinate"];
+            this.yCoordinate = _data["yCoordinate"];
+            this.zCoordinate = _data["zCoordinate"];
+            this.lengthUnit = _data["lengthUnit"];
         }
     }
 
@@ -4674,17 +4595,19 @@ export class Point implements IPoint {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["xCoordinate"] = this.xCoordinate ? this.xCoordinate.toJSON() : <any>undefined;
-        data["yCoordinate"] = this.yCoordinate ? this.yCoordinate.toJSON() : <any>undefined;
-        data["zCoordinate"] = this.zCoordinate ? this.zCoordinate.toJSON() : <any>undefined;
+        data["xCoordinate"] = this.xCoordinate;
+        data["yCoordinate"] = this.yCoordinate;
+        data["zCoordinate"] = this.zCoordinate;
+        data["lengthUnit"] = this.lengthUnit;
         return data;
     }
 }
 
 export interface IPoint {
-    xCoordinate: UnitValueDto;
-    yCoordinate: UnitValueDto;
-    zCoordinate: UnitValueDto;
+    xCoordinate: number;
+    yCoordinate: number;
+    zCoordinate: number;
+    lengthUnit: string;
 }
 
 export class PointLoadResponse implements IPointLoadResponse {
@@ -4743,62 +4666,13 @@ export interface IPointLoadResponse {
     direction: Vector3;
 }
 
-export class PointResponse implements IPointResponse {
-    xCoordinate!: UnitValueDto;
-    yCoordinate!: UnitValueDto;
-    zCoordinate!: UnitValueDto;
-
-    constructor(data?: IPointResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.xCoordinate = new UnitValueDto();
-            this.yCoordinate = new UnitValueDto();
-            this.zCoordinate = new UnitValueDto();
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.xCoordinate = _data["xCoordinate"] ? UnitValueDto.fromJS(_data["xCoordinate"]) : new UnitValueDto();
-            this.yCoordinate = _data["yCoordinate"] ? UnitValueDto.fromJS(_data["yCoordinate"]) : new UnitValueDto();
-            this.zCoordinate = _data["zCoordinate"] ? UnitValueDto.fromJS(_data["zCoordinate"]) : new UnitValueDto();
-        }
-    }
-
-    static fromJS(data: any): PointResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new PointResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["xCoordinate"] = this.xCoordinate ? this.xCoordinate.toJSON() : <any>undefined;
-        data["yCoordinate"] = this.yCoordinate ? this.yCoordinate.toJSON() : <any>undefined;
-        data["zCoordinate"] = this.zCoordinate ? this.zCoordinate.toJSON() : <any>undefined;
-        return data;
-    }
-}
-
-export interface IPointResponse {
-    xCoordinate: UnitValueDto;
-    yCoordinate: UnitValueDto;
-    zCoordinate: UnitValueDto;
-}
-
 export enum PreconfiguredUnits {
     _0 = 0,
     _1 = 1,
     _2 = 2,
 }
 
-export class RestraintRequest implements IRestraintRequest {
+export class RestraintContract implements IRestraintContract {
     canTranslateAlongX!: boolean;
     canTranslateAlongY!: boolean;
     canTranslateAlongZ!: boolean;
@@ -4806,7 +4680,7 @@ export class RestraintRequest implements IRestraintRequest {
     canRotateAboutY!: boolean;
     canRotateAboutZ!: boolean;
 
-    constructor(data?: IRestraintRequest) {
+    constructor(data?: IRestraintContract) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -4826,9 +4700,9 @@ export class RestraintRequest implements IRestraintRequest {
         }
     }
 
-    static fromJS(data: any): RestraintRequest {
+    static fromJS(data: any): RestraintContract {
         data = typeof data === 'object' ? data : {};
-        let result = new RestraintRequest();
+        let result = new RestraintContract();
         result.init(data);
         return result;
     }
@@ -4845,63 +4719,7 @@ export class RestraintRequest implements IRestraintRequest {
     }
 }
 
-export interface IRestraintRequest {
-    canTranslateAlongX: boolean;
-    canTranslateAlongY: boolean;
-    canTranslateAlongZ: boolean;
-    canRotateAboutX: boolean;
-    canRotateAboutY: boolean;
-    canRotateAboutZ: boolean;
-}
-
-export class RestraintResponse implements IRestraintResponse {
-    canTranslateAlongX!: boolean;
-    canTranslateAlongY!: boolean;
-    canTranslateAlongZ!: boolean;
-    canRotateAboutX!: boolean;
-    canRotateAboutY!: boolean;
-    canRotateAboutZ!: boolean;
-
-    constructor(data?: IRestraintResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.canTranslateAlongX = _data["canTranslateAlongX"];
-            this.canTranslateAlongY = _data["canTranslateAlongY"];
-            this.canTranslateAlongZ = _data["canTranslateAlongZ"];
-            this.canRotateAboutX = _data["canRotateAboutX"];
-            this.canRotateAboutY = _data["canRotateAboutY"];
-            this.canRotateAboutZ = _data["canRotateAboutZ"];
-        }
-    }
-
-    static fromJS(data: any): RestraintResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new RestraintResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["canTranslateAlongX"] = this.canTranslateAlongX;
-        data["canTranslateAlongY"] = this.canTranslateAlongY;
-        data["canTranslateAlongZ"] = this.canTranslateAlongZ;
-        data["canRotateAboutX"] = this.canRotateAboutX;
-        data["canRotateAboutY"] = this.canRotateAboutY;
-        data["canRotateAboutZ"] = this.canRotateAboutZ;
-        return data;
-    }
-}
-
-export interface IRestraintResponse {
+export interface IRestraintContract {
     canTranslateAlongX: boolean;
     canTranslateAlongY: boolean;
     canTranslateAlongZ: boolean;

@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeamOs.Infrastructure.Migrations
 {
     [DbContext(typeof(BeamOsStructuralDbContext))]
-    [Migration("20240815220347_Initial")]
+    [Migration("20240823151331_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -500,11 +500,13 @@ namespace BeamOs.Infrastructure.Migrations
                 {
                     b.HasOne("BeamOs.Domain.Diagrams.MomentDiagramAggregate.MomentDiagram", null)
                         .WithMany("Intervals")
-                        .HasForeignKey("MomentDiagramId");
+                        .HasForeignKey("MomentDiagramId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("BeamOs.Domain.Diagrams.ShearForceDiagramAggregate.ShearForceDiagram", null)
                         .WithMany("Intervals")
-                        .HasForeignKey("ShearForceDiagramId");
+                        .HasForeignKey("ShearForceDiagramId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("BeamOs.Domain.Diagrams.ShearForceDiagramAggregate.ShearForceDiagram", b =>
