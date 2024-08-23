@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using BeamOs.Contracts.Common;
+using BeamOs.Contracts.PhysicalModel.Common;
 
 namespace BeamOs.Contracts.PhysicalModel.Node;
 
@@ -56,7 +57,7 @@ public record CreateNodeRequest
     }
 }
 
-public record Point
+public record Point : BeamOsContractBase
 {
     public required double XCoordinate { get; init; }
     public required double YCoordinate { get; init; }

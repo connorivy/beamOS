@@ -6,20 +6,21 @@
 @using static BeamOs.WebApp.Client.Components.Components.Editor.EditorComponent
 
 <MudContainer Gutters="false" Class="rounded">
-    <MudPaper>
-        <MudText Typo="Typo.h6" Class="px-4">Selection Info</MudText>
-        <MudText Typo="Typo.body2" Class="px-4 mud-text-secondary">Secondary Text</MudText>
+    <MudPaper Class="p-4">
+        <MudText Typo="Typo.h6">Selection Info</MudText>
+        <MudText Typo="Typo.body2" Class="mud-text-secondary">Secondary Text</MudText>
         <MudDivider Class="my-2" />
-        <MudExpansionPanels MultiExpansion="true">
+        <MudExpansionPanels MultiExpansion="true" Outlined="false" Elevation="0" Dense="true">
             @foreach (var selectedObjectInfo in SelectedObjects)
             {
-                <MudExpansionPanel Text="@($"{selectedObjectInfo.TypeName} {selectedObjectInfo.Id}")">
+                @* <MudExpansionPanel Text="@($"{selectedObjectInfo.TypeName} {selectedObjectInfo.Id}")">
                     <SelectionInfoSingleItemComponent ObjectToDisplay="@GetBeamOsObjectByIdAndTypeName(selectedObjectInfo.Id, selectedObjectInfo.TypeName)"></SelectionInfoSingleItemComponent>
                     @if (this.AllStructuralAnalysisModelCaches.GetByModelId(this.ModelId).TryGetById(NodeResultResponseEntity.ResultId(selectedObjectInfo.Id), out NodeResultResponseEntity? nodeResult))
                     {
                         <SelectionInfoSingleItemComponent ObjectToDisplay="@nodeResult"></SelectionInfoSingleItemComponent>
                     }
-                </MudExpansionPanel>
+                </MudExpansionPanel> *@
+            <SelectionInfoSingleItemComponent2 ObjectName="@($"{selectedObjectInfo.TypeName} {selectedObjectInfo.Id}")" ObjectToDisplay="@GetBeamOsObjectByIdAndTypeName(selectedObjectInfo.Id, selectedObjectInfo.TypeName)"></SelectionInfoSingleItemComponent2>
             }
         </MudExpansionPanels>
     </MudPaper>

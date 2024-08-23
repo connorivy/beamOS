@@ -1,0 +1,80 @@
+@using System.Reflection
+@using System.Collections
+@using BeamOs.WebApp.Client.Components.Components.Editor.PropertyEnumerators
+
+@if (IsSimpleType(this.ObjectType))
+{
+    <MudItem xs="4">
+        <MudTooltip Text="@ObjectName" RootClass="w-full">
+            <MudText Typo="Typo.subtitle2" Class="truncate text-3xs">@ObjectName</MudText>
+        </MudTooltip>
+    </MudItem>
+    <MudItem xs="8">
+        <MudTooltip Text="@ObjectToDisplay?.ToString()" RootClass="w-full">
+            <MudText Typo="Typo.subtitle2" Class="truncate text-3xs">@ObjectToDisplay</MudText>
+        </MudTooltip>
+    </MudItem>
+}
+else if (this.ObjectType is IEnumerable enumerable)
+{
+    int counter = 0;
+    foreach (var item in enumerable)
+    {
+        <SelectionInfoSingleItemComponent2 ObjectName="@($"{this.ObjectName}-{counter++}")" ObjectToDisplay="@item"></SelectionInfoSingleItemComponent2>
+    }   
+}
+@* else if (this.propertyEnumerators.TryGetValue(this.ObjectType, out IPropertyEnumerator? propertyEnumerator))
+{
+    foreach (var propertyPair in propertyEnumerator.GetProps(this.ObjectToDisplay))
+    {
+        <SelectionInfoSingleItemComponent2 ObjectName="@propertyPair.Item1" ObjectToDisplay="@propertyPair.Item2"></SelectionInfoSingleItemComponent2>
+    }
+} *@
+else
+{
+    <MudExpansionPanel Expanded="true" Text="@ObjectName" Class="text-nowrap text-clip mud-typography mud-typography-subtitle2">
+        <MudGrid Spacing="1">
+            @foreach (var propInfo in GetPublicInstanceProps(this.ObjectToDisplay))
+            {
+                var value = propInfo.GetValue(this.ObjectToDisplay);
+                <SelectionInfoSingleItemComponent2 ObjectName="@propInfo.Name" ObjectToDisplay="@value"></SelectionInfoSingleItemComponent2>
+            }
+        </MudGrid>
+    </MudExpansionPanel>
+}
+
+<style>
+    .mud-grid-item {
+        padding: 0px !important;
+    }
+
+    .mud-expand-panel-header {
+        padding-left: 0px !important;
+        padding-right: 0px !important;
+        padding-top: 0px !important;
+        padding-bottom: 8px !important;
+        min-height: 24px !important;
+    }
+
+    .mud-expand-panel-content {
+        padding-left: 12px !important;
+        padding-right: 0px !important;
+        border-style: none;
+        height: fit-content;
+    }
+
+    .mud-panel-expanded > .mud-expand-panel-header .mud-expand-panel-text {
+        color: var(--mud-palette-primary-lighten);
+    }
+
+    .mud-expand-panel .mud-panel-expanded {
+        margin-top: 0px;
+        margin-block: 0px;
+    }
+
+    .mud-expand-panel-text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+</style>
