@@ -17,7 +17,7 @@ public record CreateElement1dRequestBuilder : CreateModelEntityRequestBuilderBas
 public record CreateNodeRequestBuilder : CreateModelEntityRequestBuilderBase
 {
     public required Point LocationPoint { get; init; }
-    public required RestraintRequest Restraint { get; init; }
+    public required RestraintContract Restraint { get; init; }
 }
 
 public record CreateMaterialRequestBuilder : CreateModelEntityRequestBuilderBase

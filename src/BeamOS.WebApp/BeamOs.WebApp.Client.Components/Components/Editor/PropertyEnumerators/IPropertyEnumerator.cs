@@ -50,7 +50,7 @@ public class NodePropertyEnumerator : IPropertyEnumerator<NodeResponse>
 
 public class PointPropertyEnumerator
 {
-    public IEnumerable<ContractProp> GetProps(PointResponse contract, string? prefix = null)
+    public IEnumerable<ContractProp> GetProps(Point contract, string? prefix = null)
     {
         yield return new()
         {
@@ -78,7 +78,7 @@ public class PointPropertyEnumerator
         };
     }
 
-    public IEnumerable<(string, string)> GetProps2(PointResponse contract)
+    public IEnumerable<(string, string)> GetProps2(Point contract)
     {
         yield return ("Id", "");
     }

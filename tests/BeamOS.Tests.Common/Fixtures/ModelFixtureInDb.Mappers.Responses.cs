@@ -7,7 +7,6 @@ using BeamOs.Contracts.PhysicalModel.MomentLoad;
 using BeamOs.Contracts.PhysicalModel.Node;
 using BeamOs.Contracts.PhysicalModel.PointLoad;
 using BeamOs.Contracts.PhysicalModel.SectionProfile;
-using BeamOs.Domain.Common.ValueObjects;
 using BeamOS.Tests.Common.Fixtures;
 using Riok.Mapperly.Abstractions;
 
@@ -28,10 +27,6 @@ public partial class ModelFixtureInDb
     public partial PointLoadResponse ToResponse(PointLoadFixture2 fixture);
 
     public partial MomentLoadResponse ToResponse(MomentLoadFixture2 fixture);
-
-    public partial PointResponse ToResponse(BeamOs.Domain.Common.ValueObjects.Point source);
-
-    public partial RestraintResponse ToResponse(Restraint source);
 
     public partial ModelResponse ToResponse(ModelFixture2 fixture);
 

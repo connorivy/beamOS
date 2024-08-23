@@ -77,7 +77,7 @@ public static class SpeckleConnector
         };
     }
 
-    private static RestraintRequest ParseRestraintCode(string restraintCode)
+    private static RestraintContract ParseRestraintCode(string restraintCode)
     {
         Span<bool> translatedCodes = stackalloc bool[6];
         for (int i = 0; i < 6; i++)

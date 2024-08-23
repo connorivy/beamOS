@@ -35,7 +35,7 @@ public record CreateNodeRequest
 {
     public string ModelId { get; init; }
     public Point LocationPoint { get; init; }
-    public RestraintRequest? Restraint { get; init; }
+    public RestraintContract? Restraint { get; init; }
 
     public CreateNodeRequest(
         string modelId,
@@ -43,12 +43,12 @@ public record CreateNodeRequest
         double yCoordinate,
         double zCoordinate,
         string lengthUnit,
-        RestraintRequest? restraint = null
+        RestraintContract? restraint = null
     )
         : this(modelId, new(xCoordinate, yCoordinate, zCoordinate, lengthUnit), restraint) { }
 
     [JsonConstructor]
-    public CreateNodeRequest(string modelId, Point locationPoint, RestraintRequest? restraint)
+    public CreateNodeRequest(string modelId, Point locationPoint, RestraintContract? restraint)
     {
         this.ModelId = modelId;
         this.LocationPoint = locationPoint;
@@ -85,50 +85,12 @@ public record Point
     }
 }
 
-//public record PatchPointRequest(
-//    UnitValueDto? XCoordinate = null,
-//    UnitValueDto? YCoordinate = null,
-//    UnitValueDto? ZCoordinate = null
-//)
-//{
-//    [JsonConstructor]
-//    public PatchPointRequest(
-//        string lengthUnit,
-//        double? xCoordinate = null,
-//        double? yCoordinate = null,
-//        double? zCoordinate = null
-//    )
-//        : this(
-//            xCoordinate.HasValue ? new(xCoordinate.Value, lengthUnit) : null,
-//            yCoordinate.HasValue ? new(yCoordinate.Value, lengthUnit) : null,
-//            zCoordinate.HasValue ? new(zCoordinate.Value, lengthUnit) : null
-//        ) { }
-//}
-
 public record PatchPointRequest
 {
     public required string LengthUnit { get; init; }
     public double? XCoordinate { get; init; }
     public double? YCoordinate { get; init; }
     public double? ZCoordinate { get; init; }
-}
-
-public record RestraintRequest(
-    bool CanTranslateAlongX,
-    bool CanTranslateAlongY,
-    bool CanTranslateAlongZ,
-    bool CanRotateAboutX,
-    bool CanRotateAboutY,
-    bool CanRotateAboutZ
-)
-{
-    public static RestraintRequest Free { get; } = new(true, true, true, true, true, true);
-    public static RestraintRequest FreeXzPlane { get; } =
-        new(true, false, true, false, true, false);
-    public static RestraintRequest FreeXyPlane { get; } =
-        new(true, true, false, false, false, true);
-    public static RestraintRequest Pinned { get; } = new(false, false, false, true, true, true);
-    public static RestraintRequest Fixed { get; } = new(false, false, false, false, false, false);
 }
 
 public record PatchRestraintRequest(
@@ -145,26 +107,4 @@ public record PatchNodeRequest
     public required string NodeId { get; init; }
     public PatchPointRequest? LocationPoint { get; init; }
     public PatchRestraintRequest? Restraint { get; init; }
-
-    //public PatchNodeRequest(
-    //    string modelId,
-    //    double xCoordinate,
-    //    double yCoordinate,
-    //    double zCoordinate,
-    //    string lengthUnit,
-    //    PatchRestraintRequest? restraint = null
-    //)
-    //    : this(modelId, new(lengthUnit, xCoordinate, yCoordinate, zCoordinate), restraint) { }
-
-    //[JsonConstructor]
-    //public PatchNodeRequest(
-    //    string nodeId,
-    //    PatchPointRequest? locationPoint,
-    //    PatchRestraintRequest? restraint
-    //)
-    //{
-    //    this.NodeId = nodeId;
-    //    this.LocationPoint = locationPoint;
-    //    this.Restraint = restraint;
-    //}
 }
