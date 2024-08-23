@@ -6,9 +6,8 @@ namespace BeamOs.Contracts.PhysicalModel.Node;
 public record NodeResponse(
     string Id,
     string ModelId,
-    PointResponse LocationPoint,
-    //List<string> PointLoadIds,
-    RestraintResponse Restraint
+    Point LocationPoint,
+    RestraintContract Restraint
 ) : BeamOsEntityContractBase(Id);
 
 public record PointResponse(
@@ -28,4 +27,17 @@ public record RestraintResponse(
 {
     public static RestraintResponse Fixed { get; } = new(false, false, false, false, false, false);
     public static RestraintResponse Free { get; } = new(true, true, true, true, true, true);
+}
+
+public record RestraintContract(
+    bool CanTranslateAlongX,
+    bool CanTranslateAlongY,
+    bool CanTranslateAlongZ,
+    bool CanRotateAboutX,
+    bool CanRotateAboutY,
+    bool CanRotateAboutZ
+) : BeamOsContractBase
+{
+    public static RestraintContract Fixed { get; } = new(false, false, false, false, false, false);
+    public static RestraintContract Free { get; } = new(true, true, true, true, true, true);
 }

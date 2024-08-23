@@ -1,3 +1,4 @@
+using BeamOs.Application.Common.Mappers;
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Contracts.PhysicalModel.Element1d;
 using BeamOs.Contracts.PhysicalModel.Material;
@@ -13,6 +14,7 @@ using Riok.Mapperly.Abstractions;
 namespace BeamOS.Tests.Common.SolvedProblems.Fixtures;
 
 [UseStaticMapper(typeof(UnitsNetMappers))]
+[UseStaticMapper(typeof(BeamOsDomainContractMappers))]
 public partial class ModelFixtureInDb
 {
     public partial NodeResponse ToResponse(NodeFixture2 fixture);

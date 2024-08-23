@@ -1,11 +1,8 @@
 using BeamOs.Application.Common.Interfaces;
 using BeamOs.Application.PhysicalModel.Element1dAggregate;
 using BeamOs.Application.PhysicalModel.Models;
-using BeamOs.Application.PhysicalModel.Nodes.Commands;
 using BeamOs.Application.PhysicalModel.PointLoads;
 using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate;
-using BeamOs.Domain.PhysicalModel.NodeAggregate;
-using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.Application.AnalyticalResults.Diagrams.ShearDiagrams.Commands;
 
@@ -41,10 +38,4 @@ public class CreateShearDiagramCommandHandler(
         //    command.LinearCoordinateDirection3D
         //);
     }
-}
-
-[Mapper]
-public static partial class CreateNodeCommandMapper
-{
-    public static partial Node ToDomainObject(this CreateNodeCommand command);
 }

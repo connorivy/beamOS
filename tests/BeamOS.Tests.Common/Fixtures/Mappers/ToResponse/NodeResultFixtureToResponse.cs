@@ -1,3 +1,4 @@
+using BeamOs.Application.Common.Mappers;
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Contracts.PhysicalModel.Common;
 using BeamOs.Contracts.PhysicalModel.Element1d;
@@ -27,6 +28,7 @@ public class Element1dFixtureToResponseMapper : IFixtureMapper<Element1dFixture2
 
 [Mapper]
 [UseStaticMapper(typeof(UnitsNetMappers))]
+[UseStaticMapper(typeof(BeamOsDomainContractMappers))]
 public static partial class ModelFixtureToResponseMapperStatic
 {
     public static partial ModelResponse ToContract(this ModelFixture2 fixture);

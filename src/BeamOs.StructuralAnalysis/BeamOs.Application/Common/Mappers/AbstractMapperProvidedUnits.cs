@@ -154,4 +154,13 @@ public abstract class AbstractMapperProvidedUnits<TFrom, TTo>(
     {
         return UnitsNetMappers.MapToString(unit);
     }
+
+    protected BeamOs.Contracts.PhysicalModel.Node.Point ToContract(Point source)
+    {
+        return new(
+            this.UnitToUnitValueDtoMapper(source.XCoordinate),
+            this.UnitToUnitValueDtoMapper(source.YCoordinate),
+            this.UnitToUnitValueDtoMapper(source.ZCoordinate)
+        );
+    }
 }

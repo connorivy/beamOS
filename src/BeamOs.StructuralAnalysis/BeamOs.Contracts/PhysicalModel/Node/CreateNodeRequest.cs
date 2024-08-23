@@ -58,25 +58,30 @@ public record CreateNodeRequest
 
 public record Point
 {
-    public required UnitValueDto XCoordinate { get; init; }
-    public required UnitValueDto YCoordinate { get; init; }
-    public required UnitValueDto ZCoordinate { get; init; }
+    public required double XCoordinate { get; init; }
+    public required double YCoordinate { get; init; }
+    public required double ZCoordinate { get; init; }
+    public required string LengthUnit { get; init; }
+
+    public Point() { }
 
     [SetsRequiredMembers]
     public Point(double xCoordinate, double yCoordinate, double zCoordinate, string lengthUnit)
-        : this(
-            new(xCoordinate, lengthUnit),
-            new(yCoordinate, lengthUnit),
-            new(zCoordinate, lengthUnit)
-        ) { }
-
-    [SetsRequiredMembers]
-    [JsonConstructor]
-    public Point(UnitValueDto xCoordinate, UnitValueDto yCoordinate, UnitValueDto zCoordinate)
     {
         this.XCoordinate = xCoordinate;
         this.YCoordinate = yCoordinate;
         this.ZCoordinate = zCoordinate;
+        this.LengthUnit = lengthUnit;
+    }
+
+    [SetsRequiredMembers]
+    public Point(UnitValueDto xCoordinate, UnitValueDto yCoordinate, UnitValueDto zCoordinate)
+        : this(xCoordinate.Value, yCoordinate.Value, zCoordinate.Value, xCoordinate.Unit)
+    {
+        if (xCoordinate.Unit != yCoordinate.Unit || xCoordinate.Unit != zCoordinate.Unit)
+        {
+            throw new InvalidOperationException("Cannot mix units");
+        }
     }
 }
 

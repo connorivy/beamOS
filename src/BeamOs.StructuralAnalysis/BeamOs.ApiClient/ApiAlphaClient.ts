@@ -2177,14 +2177,14 @@ export enum Element1dAnalysisType {
 
 export class NodeResponse extends BeamOsEntityContractBase implements INodeResponse {
     modelId!: string;
-    locationPoint!: PointResponse;
-    restraint!: RestraintResponse;
+    locationPoint!: Point;
+    restraint!: RestraintContract;
 
     constructor(data?: INodeResponse) {
         super(data);
         if (!data) {
-            this.locationPoint = new PointResponse();
-            this.restraint = new RestraintResponse();
+            this.locationPoint = new Point();
+            this.restraint = new RestraintContract();
         }
         this._discriminator = "2";
     }
@@ -2193,8 +2193,8 @@ export class NodeResponse extends BeamOsEntityContractBase implements INodeRespo
         super.init(_data);
         if (_data) {
             this.modelId = _data["modelId"];
-            this.locationPoint = _data["locationPoint"] ? PointResponse.fromJS(_data["locationPoint"]) : new PointResponse();
-            this.restraint = _data["restraint"] ? RestraintResponse.fromJS(_data["restraint"]) : new RestraintResponse();
+            this.locationPoint = _data["locationPoint"] ? Point.fromJS(_data["locationPoint"]) : new Point();
+            this.restraint = _data["restraint"] ? RestraintContract.fromJS(_data["restraint"]) : new RestraintContract();
         }
     }
 
@@ -2217,57 +2217,59 @@ export class NodeResponse extends BeamOsEntityContractBase implements INodeRespo
 
 export interface INodeResponse extends IBeamOsEntityContractBase {
     modelId: string;
-    locationPoint: PointResponse;
-    restraint: RestraintResponse;
+    locationPoint: Point;
+    restraint: RestraintContract;
 }
 
-export class PointResponse extends BeamOsContractBase implements IPointResponse {
-    xCoordinate!: UnitValueDto;
-    yCoordinate!: UnitValueDto;
-    zCoordinate!: UnitValueDto;
+export class Point implements IPoint {
+    xCoordinate!: number;
+    yCoordinate!: number;
+    zCoordinate!: number;
+    lengthUnit!: string;
 
-    constructor(data?: IPointResponse) {
-        super(data);
-        if (!data) {
-            this.xCoordinate = new UnitValueDto();
-            this.yCoordinate = new UnitValueDto();
-            this.zCoordinate = new UnitValueDto();
+    constructor(data?: IPoint) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
         }
     }
 
     init(_data?: any) {
-        super.init(_data);
         if (_data) {
-            this.xCoordinate = _data["xCoordinate"] ? UnitValueDto.fromJS(_data["xCoordinate"]) : new UnitValueDto();
-            this.yCoordinate = _data["yCoordinate"] ? UnitValueDto.fromJS(_data["yCoordinate"]) : new UnitValueDto();
-            this.zCoordinate = _data["zCoordinate"] ? UnitValueDto.fromJS(_data["zCoordinate"]) : new UnitValueDto();
+            this.xCoordinate = _data["xCoordinate"];
+            this.yCoordinate = _data["yCoordinate"];
+            this.zCoordinate = _data["zCoordinate"];
+            this.lengthUnit = _data["lengthUnit"];
         }
     }
 
-    static fromJS(data: any): PointResponse {
+    static fromJS(data: any): Point {
         data = typeof data === 'object' ? data : {};
-        let result = new PointResponse();
+        let result = new Point();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["xCoordinate"] = this.xCoordinate ? this.xCoordinate.toJSON() : <any>undefined;
-        data["yCoordinate"] = this.yCoordinate ? this.yCoordinate.toJSON() : <any>undefined;
-        data["zCoordinate"] = this.zCoordinate ? this.zCoordinate.toJSON() : <any>undefined;
-        super.toJSON(data);
+        data["xCoordinate"] = this.xCoordinate;
+        data["yCoordinate"] = this.yCoordinate;
+        data["zCoordinate"] = this.zCoordinate;
+        data["lengthUnit"] = this.lengthUnit;
         return data;
     }
 }
 
-export interface IPointResponse extends IBeamOsContractBase {
-    xCoordinate: UnitValueDto;
-    yCoordinate: UnitValueDto;
-    zCoordinate: UnitValueDto;
+export interface IPoint {
+    xCoordinate: number;
+    yCoordinate: number;
+    zCoordinate: number;
+    lengthUnit: string;
 }
 
-export class RestraintResponse extends BeamOsContractBase implements IRestraintResponse {
+export class RestraintContract extends BeamOsContractBase implements IRestraintContract {
     canTranslateAlongX!: boolean;
     canTranslateAlongY!: boolean;
     canTranslateAlongZ!: boolean;
@@ -2275,7 +2277,7 @@ export class RestraintResponse extends BeamOsContractBase implements IRestraintR
     canRotateAboutY!: boolean;
     canRotateAboutZ!: boolean;
 
-    constructor(data?: IRestraintResponse) {
+    constructor(data?: IRestraintContract) {
         super(data);
     }
 
@@ -2291,9 +2293,9 @@ export class RestraintResponse extends BeamOsContractBase implements IRestraintR
         }
     }
 
-    static fromJS(data: any): RestraintResponse {
+    static fromJS(data: any): RestraintContract {
         data = typeof data === 'object' ? data : {};
-        let result = new RestraintResponse();
+        let result = new RestraintContract();
         result.init(data);
         return result;
     }
@@ -2311,7 +2313,7 @@ export class RestraintResponse extends BeamOsContractBase implements IRestraintR
     }
 }
 
-export interface IRestraintResponse extends IBeamOsContractBase {
+export interface IRestraintContract extends IBeamOsContractBase {
     canTranslateAlongX: boolean;
     canTranslateAlongY: boolean;
     canTranslateAlongZ: boolean;
@@ -2764,55 +2766,6 @@ export interface ICreateNodeRequest {
     modelId: string;
     locationPoint: Point;
     restraint?: RestraintRequest | undefined;
-}
-
-export class Point implements IPoint {
-    xCoordinate!: UnitValueDto;
-    yCoordinate!: UnitValueDto;
-    zCoordinate!: UnitValueDto;
-
-    constructor(data?: IPoint) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.xCoordinate = new UnitValueDto();
-            this.yCoordinate = new UnitValueDto();
-            this.zCoordinate = new UnitValueDto();
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.xCoordinate = _data["xCoordinate"] ? UnitValueDto.fromJS(_data["xCoordinate"]) : new UnitValueDto();
-            this.yCoordinate = _data["yCoordinate"] ? UnitValueDto.fromJS(_data["yCoordinate"]) : new UnitValueDto();
-            this.zCoordinate = _data["zCoordinate"] ? UnitValueDto.fromJS(_data["zCoordinate"]) : new UnitValueDto();
-        }
-    }
-
-    static fromJS(data: any): Point {
-        data = typeof data === 'object' ? data : {};
-        let result = new Point();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["xCoordinate"] = this.xCoordinate ? this.xCoordinate.toJSON() : <any>undefined;
-        data["yCoordinate"] = this.yCoordinate ? this.yCoordinate.toJSON() : <any>undefined;
-        data["zCoordinate"] = this.zCoordinate ? this.zCoordinate.toJSON() : <any>undefined;
-        return data;
-    }
-}
-
-export interface IPoint {
-    xCoordinate: UnitValueDto;
-    yCoordinate: UnitValueDto;
-    zCoordinate: UnitValueDto;
 }
 
 export class RestraintRequest implements IRestraintRequest {

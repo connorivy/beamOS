@@ -40,7 +40,7 @@ public class CustomModelBuilder : CreateModelRequestBuilder
             if (builder is CreateNodeRequestBuilder nodeRequestBuilder)
             {
                 if (
-                    nodeRequestBuilder.LocationPoint.YCoordinate.Value > 10000
+                    nodeRequestBuilder.LocationPoint.YCoordinate > 10000
                     && this.addedNodeIds.Add(nodeRequestBuilder.Id.ToString())
                 )
                 {

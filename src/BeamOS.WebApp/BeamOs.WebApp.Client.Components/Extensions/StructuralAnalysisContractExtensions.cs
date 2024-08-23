@@ -1,6 +1,6 @@
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
-using BeamOs.Contracts.Common;
 using BeamOs.Contracts.PhysicalModel.Node;
+using UnitsNet;
 
 namespace BeamOs.WebApp.Client.Components.Extensions;
 
@@ -12,14 +12,21 @@ public static class StructuralAnalysisContractExtensions
             LocationPoint = element.LocationPoint.InMeters()
         };
 
-    public static PointResponse InMeters(this PointResponse element) =>
+    public static Point InMeters(this Point element) =>
         element with
         {
-            XCoordinate = element.XCoordinate.InMeters(),
-            YCoordinate = element.YCoordinate.InMeters(),
-            ZCoordinate = element.ZCoordinate.InMeters(),
+            XCoordinate = new Length(
+                element.XCoordinate,
+                UnitsNetMappers.MapToLengthUnit(element.LengthUnit)
+            ).Meters,
+            YCoordinate = new Length(
+                element.YCoordinate,
+                UnitsNetMappers.MapToLengthUnit(element.LengthUnit)
+            ).Meters,
+            ZCoordinate = new Length(
+                element.ZCoordinate,
+                UnitsNetMappers.MapToLengthUnit(element.LengthUnit)
+            ).Meters,
+            LengthUnit = "Meters"
         };
-
-    public static UnitValueDto InMeters(this UnitValueDto element) =>
-        element.MapToLength().MapToContract(UnitsNet.Units.LengthUnit.Meter);
 }

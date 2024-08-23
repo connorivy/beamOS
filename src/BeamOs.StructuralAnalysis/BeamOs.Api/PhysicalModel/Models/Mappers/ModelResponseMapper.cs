@@ -10,6 +10,7 @@ namespace BeamOs.Api.PhysicalModel.Models.Mappers;
 [Mapper]
 [UseStaticMapper(typeof(UnitsNetMappers))]
 [UseStaticMapper(typeof(Vector3ToFromMathnetVector))]
+[UseStaticMapper(typeof(BeamOsDomainContractMappers))]
 public partial class ModelResponseMapper : IMapper<Model, ModelResponse>
 {
     public ModelResponse Map(Model from) => this.ToResponse(from);
