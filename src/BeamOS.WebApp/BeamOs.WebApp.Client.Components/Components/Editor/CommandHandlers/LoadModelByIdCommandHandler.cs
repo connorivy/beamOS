@@ -1,5 +1,5 @@
-using BeamOs.ApiClient;
 using BeamOs.CodeGen.Apis.EditorApi;
+using BeamOs.CodeGen.Apis.StructuralAnalysisApi;
 using BeamOs.Common.Api;
 using BeamOs.Contracts.PhysicalModel.Element1d;
 using BeamOs.Contracts.PhysicalModel.Model;
@@ -11,7 +11,7 @@ using BeamOs.WebApp.Client.Components.Repositories;
 namespace BeamOs.WebApp.Client.Components.Components.Editor.CommandHandlers;
 
 public class LoadModelByIdCommandHandler(
-    IApiAlphaClient apiAlphaClient,
+    IStructuralAnalysisApiAlphaClient apiAlphaClient,
     AddEntityContractToEditorCommandHandler addEntityContractToEditorCommandHandler
 ) : CommandHandlerBase<LoadModelCommand>
 {
@@ -20,7 +20,7 @@ public class LoadModelByIdCommandHandler(
         CancellationToken ct = default
     )
     {
-        ModelResponse response = await apiAlphaClient.GetModelAsync(command.ModelId, null, ct);
+        ModelResponse response = await apiAlphaClient.GetModelAsync(new(command.ModelId), ct);
 
         await addEntityContractToEditorCommandHandler.ExecuteAsync(
             new(command.CanvasId, response),

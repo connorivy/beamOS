@@ -1,12 +1,10 @@
-using FastEndpoints;
-
-namespace BeamOs.Api.Common.Interfaces;
+namespace BeamOs.Common.Api;
 
 public interface IBeamOsEndpointBase
 {
-    public abstract string Route { get; }
+    public string Route { get; }
 
-    public abstract Http EndpointType { get; }
+    public object ExecuteRequestAsync(object request, CancellationToken ct);
 }
 
 public interface IBeamOsEndpoint<TRequest, TResponse> : IBeamOsEndpointBase

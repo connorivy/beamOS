@@ -12,7 +12,7 @@ namespace BeamOs.Api.AnalyticalResults.NodeResults.Endpoints;
 public class GetNodeResults(
     BeamOsFastEndpointOptions options,
     IQueryHandler<GetModelResourcesByIdsQuery, NodeResultResponse?[]> getResourcesByIdsQueryHandler
-) : BeamOsFastEndpoint<GetNodeResultsRequest, NodeResultResponse?[]>(options)
+) : BeamOsFastEndpoint<GetNodeResultsRequest, ICollection<NodeResultResponse>>(options)
 {
     public override Http EndpointType => Http.GET;
     public override string Route => "models/{modelId}/node-results";
@@ -23,7 +23,7 @@ public class GetNodeResults(
         this.Policy(p => p.Requirements.Add(new RequireModelReadAccess()));
     }
 
-    public override async Task<NodeResultResponse?[]> ExecuteRequestAsync(
+    public override async Task<ICollection<NodeResultResponse>> ExecuteRequestAsync(
         GetNodeResultsRequest req,
         CancellationToken ct
     )

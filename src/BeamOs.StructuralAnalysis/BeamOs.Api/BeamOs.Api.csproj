@@ -28,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\codeGen\Apis\BeamOs.CodeGen.Apis.StructuralAnalysisApi\BeamOs.CodeGen.Apis.StructuralAnalysisApi.csproj" />
     <ProjectReference Include="..\..\BeamOs.Common\BeamOs.Common.Api\BeamOs.Common.Api.csproj" />
     <ProjectReference Include="..\..\BeamOs.Common\BeamOs.Common.Identity\BeamOs.Common.Identity.csproj" />
     <ProjectReference Include="..\BeamOs.Application\BeamOs.Application.csproj" />

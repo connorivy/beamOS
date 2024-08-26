@@ -1,4 +1,7 @@
+using System;
+using BeamOs.ApiClient;
 using BeamOs.Application.Common;
+using BeamOs.CodeGen.Apis.StructuralAnalysisApi;
 using BeamOs.Common.Identity;
 using BeamOS.Tests.Common.Fixtures.Mappers;
 using BeamOS.Tests.Common.Interfaces;
@@ -27,6 +30,8 @@ public static class DependencyInjection
     )
     {
         _ = services.AddTransient<IEditorApiProxyFactory, EditorApiProxyFactory>();
+        _ = services.AddSingleton<StructuralAnalysisApiAlphaClientFactory>();
+        _ = services.AddScoped<IStructuralAnalysisApiAlphaClient>(InProcessApiClient.Create);
         _ = services.AddTransient<EditorEventsApi>();
         _ = services.AddMudServices().AddMudExtensions();
 

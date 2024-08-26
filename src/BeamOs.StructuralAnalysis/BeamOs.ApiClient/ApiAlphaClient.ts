@@ -2221,22 +2221,18 @@ export interface INodeResponse extends IBeamOsEntityContractBase {
     restraint: RestraintContract;
 }
 
-export class Point implements IPoint {
+export class Point extends BeamOsContractBase implements IPoint {
     xCoordinate!: number;
     yCoordinate!: number;
     zCoordinate!: number;
     lengthUnit!: string;
 
     constructor(data?: IPoint) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+        super(data);
     }
 
     init(_data?: any) {
+        super.init(_data);
         if (_data) {
             this.xCoordinate = _data["xCoordinate"];
             this.yCoordinate = _data["yCoordinate"];
@@ -2258,11 +2254,12 @@ export class Point implements IPoint {
         data["yCoordinate"] = this.yCoordinate;
         data["zCoordinate"] = this.zCoordinate;
         data["lengthUnit"] = this.lengthUnit;
+        super.toJSON(data);
         return data;
     }
 }
 
-export interface IPoint {
+export interface IPoint extends IBeamOsContractBase {
     xCoordinate: number;
     yCoordinate: number;
     zCoordinate: number;
@@ -2724,7 +2721,7 @@ export interface ICreatePointLoadRequest {
 export class CreateNodeRequest implements ICreateNodeRequest {
     modelId!: string;
     locationPoint!: Point;
-    restraint?: RestraintRequest | undefined;
+    restraint?: RestraintContract | undefined;
 
     constructor(data?: ICreateNodeRequest) {
         if (data) {
@@ -2742,7 +2739,7 @@ export class CreateNodeRequest implements ICreateNodeRequest {
         if (_data) {
             this.modelId = _data["modelId"];
             this.locationPoint = _data["locationPoint"] ? Point.fromJS(_data["locationPoint"]) : new Point();
-            this.restraint = _data["restraint"] ? RestraintRequest.fromJS(_data["restraint"]) : <any>undefined;
+            this.restraint = _data["restraint"] ? RestraintContract.fromJS(_data["restraint"]) : <any>undefined;
         }
     }
 
@@ -2765,63 +2762,7 @@ export class CreateNodeRequest implements ICreateNodeRequest {
 export interface ICreateNodeRequest {
     modelId: string;
     locationPoint: Point;
-    restraint?: RestraintRequest | undefined;
-}
-
-export class RestraintRequest implements IRestraintRequest {
-    canTranslateAlongX!: boolean;
-    canTranslateAlongY!: boolean;
-    canTranslateAlongZ!: boolean;
-    canRotateAboutX!: boolean;
-    canRotateAboutY!: boolean;
-    canRotateAboutZ!: boolean;
-
-    constructor(data?: IRestraintRequest) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.canTranslateAlongX = _data["canTranslateAlongX"];
-            this.canTranslateAlongY = _data["canTranslateAlongY"];
-            this.canTranslateAlongZ = _data["canTranslateAlongZ"];
-            this.canRotateAboutX = _data["canRotateAboutX"];
-            this.canRotateAboutY = _data["canRotateAboutY"];
-            this.canRotateAboutZ = _data["canRotateAboutZ"];
-        }
-    }
-
-    static fromJS(data: any): RestraintRequest {
-        data = typeof data === 'object' ? data : {};
-        let result = new RestraintRequest();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["canTranslateAlongX"] = this.canTranslateAlongX;
-        data["canTranslateAlongY"] = this.canTranslateAlongY;
-        data["canTranslateAlongZ"] = this.canTranslateAlongZ;
-        data["canRotateAboutX"] = this.canRotateAboutX;
-        data["canRotateAboutY"] = this.canRotateAboutY;
-        data["canRotateAboutZ"] = this.canRotateAboutZ;
-        return data;
-    }
-}
-
-export interface IRestraintRequest {
-    canTranslateAlongX: boolean;
-    canTranslateAlongY: boolean;
-    canTranslateAlongZ: boolean;
-    canRotateAboutX: boolean;
-    canRotateAboutY: boolean;
-    canRotateAboutZ: boolean;
+    restraint?: RestraintContract | undefined;
 }
 
 export class PatchNodeRequest implements IPatchNodeRequest {

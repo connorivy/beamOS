@@ -80,6 +80,9 @@ public abstract class BeamOsFastEndpoint<TRequest, TResponse>(
             // todo
         }
     }
+
+    public object ExecuteRequestAsync(object request, CancellationToken ct) =>
+        this.ExecuteRequestAsync((TRequest)request, ct);
 }
 
 public interface IRequestValidator<TRequest>

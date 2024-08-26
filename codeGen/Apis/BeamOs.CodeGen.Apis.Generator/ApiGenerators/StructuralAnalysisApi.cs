@@ -1,6 +1,6 @@
 using BeamOs.Api;
-using BeamOs.Api.Common.Interfaces;
 using BeamOs.CodeGen.Apis.Generator.Extensions;
+using BeamOs.Common.Api;
 
 namespace BeamOs.CodeGen.Apis.Generator.ApiGenerators;
 

@@ -13,7 +13,7 @@ namespace BeamOs.Api.PhysicalModel.Models.Endpoints;
 public class GetModel(
     BeamOsFastEndpointOptions options,
     IQueryHandler<GetResourceByIdWithPropertiesQuery, ModelResponse> getResourceByIdQueryHandler
-) : BeamOsFastEndpoint<ModelIdRequestWithProperties, ModelResponse?>(options)
+) : BeamOsFastEndpoint<ModelIdRequestWithProperties, ModelResponse>(options)
 {
     public override string Route => "models/{modelId}";
 

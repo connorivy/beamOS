@@ -1,5 +1,6 @@
 using BeamOs.ApiClient;
 using BeamOs.CodeGen.Apis.EditorApi;
+using BeamOs.CodeGen.Apis.StructuralAnalysisApi;
 using BeamOs.Common.Api;
 using BeamOs.Common.Events;
 using BeamOs.Contracts.AnalyticalResults;
@@ -26,7 +27,7 @@ public partial class EditorComponent : ComponentBase, IAsyncDisposable
     public string? Class { get; set; }
 
     [Inject]
-    private IApiAlphaClient ApiAlphaClient { get; init; }
+    private IStructuralAnalysisApiAlphaClient StructuralAnalysisApiClient { get; set; }
 
     [Inject]
     private IEditorApiProxyFactory EditorApiProxyFactory { get; init; }
@@ -102,7 +103,7 @@ public partial class EditorComponent : ComponentBase, IAsyncDisposable
             this.EditorApiAlpha ??= await this.EditorApiProxyFactory.Create(this.ElementId, false);
 
             await this.ChangeComponentState(state => state with { LoadingText = "Fetching Data" });
-            await this.LoadModel(ModelId);
+            await this.LoadModel(this.ModelId);
             await this.CacheAllNodeResults();
             await this.ChangeComponentState(state => state with { IsLoading = false });
         }
@@ -125,7 +126,9 @@ public partial class EditorComponent : ComponentBase, IAsyncDisposable
 
     private async Task CacheAllNodeResults()
     {
-        var allForces = await this.ApiAlphaClient.GetNodeResultsAsync(this.ModelId, null);
+        var allForces = await this.StructuralAnalysisApiClient.GetNodeResultsAsync(
+            new(this.ModelId)
+        );
 
         foreach (NodeResultResponse force in allForces)
         {
