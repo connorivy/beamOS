@@ -46,6 +46,7 @@
     <PackageVersion Include="FastEndpoints.Security" Version="5.25.0" />
     <PackageVersion Include="FastEndpoints.Swagger" Version="$(FastEndpointVersion)" />
     <PackageVersion Include="FastEndpoints.Testing" Version="$(FastEndpointVersion)" />
+    <PackageVersion Include="Microsoft.OpenApi.Readers" Version="1.6.18" />
     <PackageVersion Include="MudBlazor" Version="7.0.0-preview.3" />
     <PackageVersion Include="MudBlazor.ThemeManager" Version="1.0.9" />
     <PackageVersion Include="PuppeteerSharp" Version="18.0.1" />

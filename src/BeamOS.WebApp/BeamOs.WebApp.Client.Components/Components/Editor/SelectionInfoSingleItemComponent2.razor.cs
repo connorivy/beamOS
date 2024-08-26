@@ -2,6 +2,7 @@ using System.Reflection;
 using BeamOs.Contracts.PhysicalModel.Node;
 using BeamOs.WebApp.Client.Components.Components.Editor.PropertyEnumerators;
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 
 namespace BeamOs.WebApp.Client.Components.Components.Editor;
 
@@ -11,7 +12,13 @@ public partial class SelectionInfoSingleItemComponent2 : ComponentBase
     public required string ObjectName { get; init; }
 
     [Parameter]
-    public required object ObjectToDisplay { get; init; }
+    public required object ObjectToDisplay { get; set; }
+
+    [Parameter]
+    public EventCallback<object> ObjectToDisplayChanged { get; set; }
+
+    [Parameter]
+    public bool IsReadOnly { get; init; } = true;
 
     private Type ObjectType { get; set; }
 
@@ -23,6 +30,14 @@ public partial class SelectionInfoSingleItemComponent2 : ComponentBase
     protected override void OnParametersSet()
     {
         this.ObjectType = this.ObjectToDisplay.GetType();
+        if (
+            this.ObjectType.IsGenericType
+            && this.ObjectType.GetGenericTypeDefinition() == typeof(Nullable<>)
+        )
+        {
+            this.ObjectType = Nullable.GetUnderlyingType(this.ObjectType);
+        }
+
         this.propertyInfos = this.ObjectToDisplay
             .GetType()
             .GetProperties(
@@ -32,7 +47,7 @@ public partial class SelectionInfoSingleItemComponent2 : ComponentBase
         base.OnParametersSet();
     }
 
-    public PropertyInfo[] GetPublicInstanceProps(object obj) =>
+    public static PropertyInfo[] GetPublicInstanceProps(object obj) =>
         obj.GetType()
             .GetProperties(
                 System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance
@@ -46,11 +61,15 @@ public partial class SelectionInfoSingleItemComponent2 : ComponentBase
         typeof(double),
         typeof(decimal),
         typeof(string),
+        typeof(Enum),
         typeof(DateTime),
         typeof(DateTimeOffset),
         typeof(TimeSpan),
         typeof(Guid)
     ];
 
-    public bool IsSimpleType(Type t) => simpleTypes.Contains(t);
+    public static bool IsSimpleType(Type t) => simpleTypes.Contains(t);
+
+    private static readonly Converter<object> StringObjectConverter =
+        new() { SetFunc = value => value?.ToString(), GetFunc = text => text?.ToString(), };
 }

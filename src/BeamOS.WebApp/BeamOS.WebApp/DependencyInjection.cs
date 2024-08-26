@@ -14,6 +14,7 @@ using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.OpenApi.Readers;
 
 namespace BeamOS.WebApp;
 

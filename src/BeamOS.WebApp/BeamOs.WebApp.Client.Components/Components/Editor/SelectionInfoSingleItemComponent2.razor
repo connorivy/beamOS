@@ -4,24 +4,34 @@
 
 @if (IsSimpleType(this.ObjectType))
 {
-    <MudItem xs="4">
-        <MudTooltip Text="@ObjectName" RootClass="w-full">
-            <MudText Typo="Typo.subtitle2" Class="truncate text-3xs">@ObjectName</MudText>
-        </MudTooltip>
-    </MudItem>
-    <MudItem xs="8">
-        <MudTooltip Text="@ObjectToDisplay?.ToString()" RootClass="w-full">
-            <MudText Typo="Typo.subtitle2" Class="truncate text-3xs">@ObjectToDisplay</MudText>
-        </MudTooltip>
-    </MudItem>
-}
-else if (this.ObjectType is IEnumerable enumerable)
-{
-    int counter = 0;
-    foreach (var item in enumerable)
+    @if (IsReadOnly)
     {
-        <SelectionInfoSingleItemComponent2 ObjectName="@($"{this.ObjectName}-{counter++}")" ObjectToDisplay="@item"></SelectionInfoSingleItemComponent2>
-    }   
+        <MudItem xs="4">
+            <MudTooltip Text="@ObjectName" RootClass="w-full">
+                <MudText Typo="Typo.subtitle2" Class="truncate text-3xs">@ObjectName</MudText>
+            </MudTooltip>
+        </MudItem>
+        <MudItem xs="8">
+            <MudTooltip Text="@ObjectToDisplay?.ToString()" RootClass="w-full">
+                <MudText Typo="Typo.subtitle2" Class="truncate text-3xs">@ObjectToDisplay</MudText>
+            </MudTooltip>
+        </MudItem>
+    }
+    else
+    {
+        if (this.ObjectToDisplay is int i)
+        {
+            <MudTextField Value="@i" ValueChanged="ObjectToDisplayChanged" Label="@ObjectName" />
+        }
+        else if (this.ObjectToDisplay is double d)
+        {
+            <MudTextField Value="@d" ValueChanged="ObjectToDisplayChanged" Label="@ObjectName" />
+        }
+        else
+        {
+            <MudTextField Converter="StringObjectConverter" Value="ObjectToDisplay" ValueChanged="ObjectToDisplayChanged" Label="@ObjectName" />
+        }
+    }
 }
 @* else if (this.propertyEnumerators.TryGetValue(this.ObjectType, out IPropertyEnumerator? propertyEnumerator))
 {
@@ -30,6 +40,35 @@ else if (this.ObjectType is IEnumerable enumerable)
         <SelectionInfoSingleItemComponent2 ObjectName="@propertyPair.Item1" ObjectToDisplay="@propertyPair.Item2"></SelectionInfoSingleItemComponent2>
     }
 } *@
+else if (this.ObjectToDisplay is IDictionary dict)
+{
+    @if (!string.IsNullOrEmpty(ObjectName))
+    {
+        <MudExpansionPanel Expanded="true" Text="@ObjectName" Class="text-nowrap text-clip mud-typography mud-typography-subtitle2">
+            <MudGrid Spacing="1">
+                @foreach (var key in dict.Keys)
+                {
+                    <SelectionInfoSingleItemComponent2 ObjectName="@key.ToString()" ObjectToDisplayChanged="@((val) => dict[key] = val)" ObjectToDisplay="dict[key]" IsReadOnly="@IsReadOnly"></SelectionInfoSingleItemComponent2>
+                }
+            </MudGrid>
+        </MudExpansionPanel>
+    }
+    else
+    {
+        @foreach (var key in dict.Keys)
+        {
+            <SelectionInfoSingleItemComponent2 ObjectName="@key.ToString()" ObjectToDisplayChanged="@((val) => dict[key] = val)" ObjectToDisplay="dict[key]" IsReadOnly="@IsReadOnly"></SelectionInfoSingleItemComponent2>
+        }
+    }
+}
+else if (this.ObjectToDisplay is IEnumerable enumerable)
+{
+    int counter = 0;
+    foreach (var item in enumerable)
+    {
+        <SelectionInfoSingleItemComponent2 ObjectName="@($"{this.ObjectName}-{counter++}")" ObjectToDisplay="@item" IsReadOnly="@IsReadOnly"></SelectionInfoSingleItemComponent2>
+    }   
+}
 else
 {
     <MudExpansionPanel Expanded="true" Text="@ObjectName" Class="text-nowrap text-clip mud-typography mud-typography-subtitle2">
@@ -37,13 +76,13 @@ else
             @foreach (var propInfo in GetPublicInstanceProps(this.ObjectToDisplay))
             {
                 var value = propInfo.GetValue(this.ObjectToDisplay);
-                <SelectionInfoSingleItemComponent2 ObjectName="@propInfo.Name" ObjectToDisplay="@value"></SelectionInfoSingleItemComponent2>
+                <SelectionInfoSingleItemComponent2 ObjectName="@propInfo.Name" ObjectToDisplay="@value" IsReadOnly="@IsReadOnly"></SelectionInfoSingleItemComponent2>
             }
         </MudGrid>
     </MudExpansionPanel>
 }
 
-<style>
+@* <style>
     .mud-grid-item {
         padding: 0px !important;
     }
@@ -51,8 +90,8 @@ else
     .mud-expand-panel-header {
         padding-left: 0px !important;
         padding-right: 0px !important;
-        padding-top: 0px !important;
-        padding-bottom: 8px !important;
+        padding-top: 8px !important;
+        padding-bottom: 0px !important;
         min-height: 24px !important;
     }
 
@@ -78,3 +117,4 @@ else
         white-space: nowrap;
     }
 </style>
+ *@

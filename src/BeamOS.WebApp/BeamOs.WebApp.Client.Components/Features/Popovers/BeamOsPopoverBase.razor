@@ -1,0 +1,24 @@
+<MudPopover Open="@IsOpen" Fixed="true" AnchorOrigin="@AnchorOrigin" TransformOrigin="@TransformOrigin" Elevation="0" Class="@($"w-80 p-2 bg-transparent {Class}")">
+    <MudContainer Gutters="false" Class="rounded">
+        <MudPaper Class="p-4">
+            @ChildContent
+        </MudPaper>
+    </MudContainer>
+</MudPopover>
+
+@code {
+    [Parameter]
+    public bool IsOpen { get; set; }
+
+    [Parameter]
+    public Origin AnchorOrigin { get; init; } = Origin.TopLeft;
+
+    [Parameter]
+    public Origin TransformOrigin { get; init; } = Origin.TopLeft;
+
+    [Parameter]
+    public string? Class { get; init; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+}
