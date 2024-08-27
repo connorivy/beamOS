@@ -1,9 +1,6 @@
-using System.Dynamic;
-using System.Globalization;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using BeamOs.CodeGen.Apis.StructuralAnalysisApi;
 using BeamOs.Contracts.PhysicalModel.Common;
 using BeamOs.WebApp.Client.Components.Components.Editor.CommandHandlers;
@@ -46,17 +43,18 @@ public partial class StructuralApiClientComponent : ComponentBase
     {
         // Replace 'YourClass' with the actual class you want to inspect
         var type = typeof(IStructuralAnalysisApiAlphaClient);
-        methods = type.GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.GetParameters().Length == 1)
+        this.methods = type.GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.GetParameters().Length == 1 && !m.Name.StartsWith("Get"))
+            .OrderBy(m => m.Name)
             .ToArray();
     }
 
     private void SelectMethod(MethodInfo method)
     {
-        selectedMethod = method;
+        this.selectedMethod = method;
         var parameterType = method.GetParameters().First().ParameterType;
         //PopulateParameterProperties(parameterType);
-        this.parameterValues = GetParameterProperties(parameterType);
+        this.parameterValues = this.GetParameterProperties(parameterType);
     }
 
     public readonly struct SimpleFieldTypeMarker
@@ -169,7 +167,7 @@ public partial class StructuralApiClientComponent : ComponentBase
 
     private async Task HandleSubmit()
     {
-        var parameterType = selectedMethod.GetParameters().First().ParameterType;
+        var parameterType = this.selectedMethod.GetParameters().First().ParameterType;
         object parameterInstance;
 
         var serialized = JsonSerializer.Serialize(this.parameterValues);
@@ -192,8 +190,8 @@ public partial class StructuralApiClientComponent : ComponentBase
         //    property.SetValue(parameterInstance, value);
         //}
 
-        var result = selectedMethod.Invoke(
-            StructuralAnalysisApiAlphaClient,
+        var result = this.selectedMethod.Invoke(
+            this.StructuralAnalysisApiAlphaClient,
             new[] { parameterInstance }
         );
 
@@ -204,20 +202,20 @@ public partial class StructuralApiClientComponent : ComponentBase
         }
         if (result is BeamOsEntityContractBase contract)
         {
-            await AddEntityContractToEditorCommandHandler.ExecuteAsync(
+            await this.AddEntityContractToEditorCommandHandler.ExecuteAsync(
                 new(this.CanvasId, contract)
             );
         }
 
         // Optionally, navigate back to the method list or show a success message
-        selectedMethod = null;
+        this.selectedMethod = null;
     }
 
     //private string TurnInputIntoJson() { }
 
     private void GoBack()
     {
-        selectedMethod = null;
+        this.selectedMethod = null;
     }
 
     //public class ComplexFieldTypeMarkerJsonConverter : JsonConverter<ComplexFieldTypeMarker>

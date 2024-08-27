@@ -36,10 +36,8 @@
         <MudPopover Open="@(editorComponent.EditorComponentState.SelectedObjects.Length > 0)" Fixed="true" AnchorOrigin="Origin.TopRight" TransformOrigin="Origin.TopRight" Elevation="0" Class="w-80 p-2 bg-transparent">
             <SelectionInfoComponent SelectedObjects="@editorComponent.EditorComponentState.SelectedObjects" ModelId="@editorComponent.EditorComponentState.LoadedModelId"></SelectionInfoComponent>
         </MudPopover>
-    }
-    <MudPopover Open="true" Fixed="true" AnchorOrigin="Origin.TopLeft" TransformOrigin="Origin.TopLeft" Elevation="0" Class="w-80 p-2 bg-transparent">
         <StructuralApiClientComponent CanvasId="@this.editorComponent.ElementId"></StructuralApiClientComponent>
-    </MudPopover>
+    }
     <EditorComponent Class="h-full" @ref="editorComponent" ModelId="@ModelId"></EditorComponent>
 </MudContainer>
 

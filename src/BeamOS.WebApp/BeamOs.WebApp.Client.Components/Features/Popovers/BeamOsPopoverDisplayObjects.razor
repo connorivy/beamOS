@@ -1,12 +1,14 @@
 <BeamOsPopoverBase IsOpen="@IsOpen" AnchorOrigin="@AnchorOrigin" TransformOrigin="@TransformOrigin" Class="@Class">
-    @TopContent
-    <MudText Typo="Typo.h6">@Title</MudText>
-    <MudText Typo="Typo.body2" Class="mud-text-secondary">@Subtitle</MudText>
-    <MudDivider Class="my-2" />
-    <MudExpansionPanels MultiExpansion="true" Outlined="false" Elevation="0" Dense="true">
-        @MiddleContent
-    </MudExpansionPanels>
-    @BottomContent
+    <div class="flex flex-col max-h-full">
+        @TopContent
+        <MudText Typo="Typo.h6">@Title</MudText>
+        <MudText Typo="Typo.body2" Class="mud-text-secondary">@Subtitle</MudText>
+        <MudDivider Class="my-2" />
+        <MudExpansionPanels MultiExpansion="true" Outlined="false" Elevation="0" Dense="true" Class="grow overflow-y-auto">
+            @MiddleContent
+        </MudExpansionPanels>
+        @BottomContent
+    </div>
 </BeamOsPopoverBase>
 
 <style>

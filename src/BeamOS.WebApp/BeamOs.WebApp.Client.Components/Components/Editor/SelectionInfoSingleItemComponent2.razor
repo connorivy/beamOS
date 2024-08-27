@@ -5,34 +5,16 @@
 
 @if (this.ObjectToDisplay is not null && IsSimpleType(this.ObjectToDisplay.GetType()))
 {
-    @if (IsReadOnly)
-    {
-        <MudItem xs="4">
-            <MudTooltip Text="@ObjectName" RootClass="w-full">
-                <MudText Typo="Typo.subtitle2" Class="truncate text-3xs">@ObjectName</MudText>
-            </MudTooltip>
-        </MudItem>
-        <MudItem xs="8">
-            <MudTooltip Text="@ObjectToDisplay?.ToString()" RootClass="w-full">
-                <MudText Typo="Typo.subtitle2" Class="truncate text-3xs">@ObjectToDisplay</MudText>
-            </MudTooltip>
-        </MudItem>
-    }
-    else
-    {
-        if (this.ObjectToDisplay is int i)
-        {
-            <MudTextField Value="@i" ValueChanged="ObjectToDisplayChanged" Label="@ObjectName" />
-        }
-        else if (this.ObjectToDisplay is double d)
-        {
-            <MudTextField Value="@d" ValueChanged="ObjectToDisplayChanged" Label="@ObjectName" />
-        }
-        else
-        {
-            <MudTextField Converter="StringObjectConverter" Value="ObjectToDisplay" ValueChanged="ObjectToDisplayChanged" Label="@ObjectName" />
-        }
-    }
+    <MudItem xs="4">
+        <MudTooltip Text="@ObjectName" RootClass="w-full">
+            <MudText Typo="Typo.subtitle2" Class="truncate text-3xs">@ObjectName</MudText>
+        </MudTooltip>
+    </MudItem>
+    <MudItem xs="8">
+        <MudTooltip Text="@ObjectToDisplay?.ToString()" RootClass="w-full">
+            <MudText Typo="Typo.subtitle2" Class="truncate text-3xs">@ObjectToDisplay</MudText>
+        </MudTooltip>
+    </MudItem>
 }
 else if (this.ObjectToDisplay is SimpleFieldTypeMarker fieldTypeMarker)
 {
@@ -44,9 +26,13 @@ else if (this.ObjectToDisplay is SimpleFieldTypeMarker fieldTypeMarker)
     {
         <MudTextField T="double?" Value="@((double?)fieldTypeMarker.Value)" ValueChanged="(i) => ObjectToDisplayChanged.InvokeAsync(i)" Required="@fieldTypeMarker.IsRequired" Label="@ObjectName" />
     }
+    else if (fieldTypeMarker.FieldType == typeof(bool))
+    {
+        <MudTextField T="bool?" Value="@((bool?)fieldTypeMarker.Value)" ValueChanged="(i) => ObjectToDisplayChanged.InvokeAsync(i)" Required="@fieldTypeMarker.IsRequired" Label="@ObjectName" />
+    }
     else
     {
-        <MudTextField Converter="StringObjectConverter" Value="@fieldTypeMarker.Value" ValueChanged="ObjectToDisplayChanged" Required="@fieldTypeMarker.IsRequired" Label="@ObjectName" />
+        <MudTextField Converter="@StringObjectConverter" Value="@fieldTypeMarker.Value" ValueChanged="ObjectToDisplayChanged" Required="@fieldTypeMarker.IsRequired" Label="@ObjectName" />
     }
 }
 else if (this.ObjectToDisplay is ComplexFieldTypeMarker complex)
@@ -58,7 +44,7 @@ else if (this.ObjectToDisplay is ComplexFieldTypeMarker complex)
                 @foreach (var key in complex.ValuesWithDisplayInformation.Keys)
                 {
                     var obj = complex.Get(key);
-                    <SelectionInfoSingleItemComponent2 ObjectName="@key.ToString()" ObjectToDisplayChanged="@((val) => complex.Set(key, val))" ObjectToDisplay="obj" IsReadOnly="@IsReadOnly"></SelectionInfoSingleItemComponent2>
+                    <SelectionInfoSingleItemComponent2 ObjectName="@key.ToString()" ObjectToDisplayChanged="@((val) => complex.Set(key, val))" ObjectToDisplay="obj"></SelectionInfoSingleItemComponent2>
                 }
             </MudGrid>
         </MudExpansionPanel>
@@ -68,7 +54,7 @@ else if (this.ObjectToDisplay is ComplexFieldTypeMarker complex)
         @foreach (var key in complex.ValuesWithDisplayInformation.Keys)
         {
             var obj = complex.Get(key);
-            <SelectionInfoSingleItemComponent2 ObjectName="@key.ToString()" ObjectToDisplayChanged="@((val) => complex.Set(key, val))" ObjectToDisplay="obj" IsReadOnly="@IsReadOnly"></SelectionInfoSingleItemComponent2>
+            <SelectionInfoSingleItemComponent2 ObjectName="@key.ToString()" ObjectToDisplayChanged="@((val) => complex.Set(key, val))" ObjectToDisplay="obj"></SelectionInfoSingleItemComponent2>
         }
     }
 }
@@ -84,7 +70,7 @@ else if (this.ObjectToDisplay is IEnumerable enumerable)
     int counter = 0;
     foreach (var item in enumerable)
     {
-        <SelectionInfoSingleItemComponent2 ObjectName="@($"{this.ObjectName}-{counter++}")" ObjectToDisplay="@item" ObjType="@item.GetType()" IsReadOnly="@IsReadOnly"></SelectionInfoSingleItemComponent2>
+        <SelectionInfoSingleItemComponent2 ObjectName="@($"{this.ObjectName}-{counter++}")" ObjectToDisplay="@item" ObjType="@item.GetType()"></SelectionInfoSingleItemComponent2>
     }   
 }
 else
@@ -94,7 +80,7 @@ else
             @foreach (var propInfo in GetPublicInstanceProps(this.ObjectToDisplay))
             {
                 var value = propInfo.GetValue(this.ObjectToDisplay);
-                <SelectionInfoSingleItemComponent2 ObjectName="@propInfo.Name" ObjectToDisplay="@value" IsReadOnly="@IsReadOnly"></SelectionInfoSingleItemComponent2>
+                <SelectionInfoSingleItemComponent2 ObjectName="@propInfo.Name" ObjectToDisplay="@value"></SelectionInfoSingleItemComponent2>
             }
         </MudGrid>
     </MudExpansionPanel>

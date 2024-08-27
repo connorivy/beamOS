@@ -17,28 +17,8 @@ public partial class SelectionInfoSingleItemComponent2 : ComponentBase
     [Parameter]
     public EventCallback<object> ObjectToDisplayChanged { get; set; }
 
-    [Parameter]
-    public bool IsReadOnly { get; init; } = true;
-
-    private Type ObjectType { get; set; }
-
     private Dictionary<Type, IPropertyEnumerator> propertyEnumerators =
         new() { { typeof(Point), new PointPropertyEnumerator() } };
-
-    protected override void OnParametersSet()
-    {
-        //var objType = this.ObjectToDisplay.GetType();
-        //this.ObjectType = this.ObjectToDisplay.GetType();
-        //if (
-        //    this.ObjectType.IsGenericType
-        //    && this.ObjectType.GetGenericTypeDefinition() == typeof(Nullable<>)
-        //)
-        //{
-        //    this.ObjectType = Nullable.GetUnderlyingType(this.ObjectType);
-        //}
-
-        base.OnParametersSet();
-    }
 
     public static PropertyInfo[] GetPublicInstanceProps(object obj) =>
         obj.GetType()
