@@ -1,7 +1,12 @@
 using System.Dynamic;
+using System.Globalization;
 using System.Reflection;
 using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 using BeamOs.CodeGen.Apis.StructuralAnalysisApi;
+using BeamOs.Contracts.PhysicalModel.Common;
+using BeamOs.WebApp.Client.Components.Components.Editor.CommandHandlers;
 using Microsoft.AspNetCore.Components;
 using Microsoft.OpenApi.Readers;
 using MudBlazor;
@@ -10,11 +15,17 @@ namespace BeamOs.WebApp.Client.Components.Components.Editor;
 
 public partial class StructuralApiClientComponent : ComponentBase
 {
+    [Parameter]
+    public required string CanvasId { get; init; }
+
     [Inject]
     private IStructuralAnalysisApiAlphaClient StructuralAnalysisApiAlphaClient { get; init; }
 
     [Inject]
     private IHttpClientFactory HttpClientFactory { get; init; }
+
+    [Inject]
+    private AddEntityContractToEditorCommandHandler AddEntityContractToEditorCommandHandler { get; init; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -48,6 +59,45 @@ public partial class StructuralApiClientComponent : ComponentBase
         this.parameterValues = GetParameterProperties(parameterType);
     }
 
+    public readonly struct SimpleFieldTypeMarker
+    {
+        public SimpleFieldTypeMarker(Type fieldType, bool isRequired = false)
+        {
+            this.FieldType = fieldType;
+            this.IsRequired = isRequired;
+        }
+
+        public Type FieldType { get; init; }
+        public bool IsRequired { get; init; }
+        public object? Value { get; init; } = null;
+    }
+
+    public class ComplexFieldTypeMarker(bool isRequired) : Dictionary<string, object?>
+    {
+        [JsonIgnore]
+        public bool IsRequired { get; } = isRequired;
+
+        [JsonIgnore]
+        public Dictionary<string, object> ValuesWithDisplayInformation { get; } = [];
+
+        public void Add2(string key, object value)
+        {
+            this.ValuesWithDisplayInformation.Add(key, value);
+            this.Add(key, value is ComplexFieldTypeMarker ? value : null);
+        }
+
+        public object Get(string key)
+        {
+            if (this.ValuesWithDisplayInformation[key] is SimpleFieldTypeMarker simple)
+            {
+                return simple with { Value = this[key] };
+            }
+            return this.ValuesWithDisplayInformation[key];
+        }
+
+        public void Set(string key, object value) => this[key] = value;
+    }
+
     //private void PopulateParameterProperties(Type parameterType, string? propPrefix = null)
     //{
     //    parameterProperties = parameterType.GetProperties(
@@ -67,28 +117,46 @@ public partial class StructuralApiClientComponent : ComponentBase
     //    }
     //}
 
-    private Dictionary<string, object> GetParameterProperties(
+    private ComplexFieldTypeMarker GetParameterProperties(
         Type parameterType,
-        string? propPrefix = null
+        bool? isRequired = null
     )
     {
-        Dictionary<string, object> parameterProps = [];
+        ComplexFieldTypeMarker parameterProps = new(isRequired ?? true);
         foreach (
             PropertyInfo property in parameterType.GetProperties(
                 BindingFlags.Public | BindingFlags.Instance
             )
         )
         {
-            string propName = GetPropertyName(propPrefix, property.Name);
-            Type underlyingType =
-                Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
-            if (SelectionInfoSingleItemComponent2.IsSimpleType(underlyingType))
+            Type? nullableType = Nullable.GetUnderlyingType(property.PropertyType);
+            if (SelectionInfoSingleItemComponent2.IsSimpleType(property.PropertyType))
             {
-                parameterProps.Add(propName, "");
+                parameterProps.Add2(
+                    property.Name,
+                    new SimpleFieldTypeMarker(property.PropertyType, true)
+                );
+            }
+            else if (
+                nullableType is not null
+                && SelectionInfoSingleItemComponent2.IsSimpleType(nullableType)
+            )
+            {
+                parameterProps.Add2(property.Name, new SimpleFieldTypeMarker(nullableType));
+            }
+            else if (nullableType is not null)
+            {
+                parameterProps.Add2(
+                    property.Name,
+                    this.GetParameterProperties(nullableType, false)
+                );
             }
             else
             {
-                parameterProps.Add(propName, this.GetParameterProperties(underlyingType));
+                parameterProps.Add2(
+                    property.Name,
+                    this.GetParameterProperties(property.PropertyType, true)
+                );
             }
         }
         return parameterProps;
@@ -124,7 +192,22 @@ public partial class StructuralApiClientComponent : ComponentBase
         //    property.SetValue(parameterInstance, value);
         //}
 
-        selectedMethod.Invoke(StructuralAnalysisApiAlphaClient, new[] { parameterInstance });
+        var result = selectedMethod.Invoke(
+            StructuralAnalysisApiAlphaClient,
+            new[] { parameterInstance }
+        );
+
+        if (result is Task t)
+        {
+            await t.ConfigureAwait(false);
+            result = ((dynamic)t).Result;
+        }
+        if (result is BeamOsEntityContractBase contract)
+        {
+            await AddEntityContractToEditorCommandHandler.ExecuteAsync(
+                new(this.CanvasId, contract)
+            );
+        }
 
         // Optionally, navigate back to the method list or show a success message
         selectedMethod = null;
@@ -136,4 +219,33 @@ public partial class StructuralApiClientComponent : ComponentBase
     {
         selectedMethod = null;
     }
+
+    //public class ComplexFieldTypeMarkerJsonConverter : JsonConverter<ComplexFieldTypeMarker>
+    //{
+    //    //public override ComplexFieldTypeMarker Read(
+    //    //    ref Utf8JsonReader reader,
+    //    //    Type typeToConvert,
+    //    //    JsonSerializerOptions options
+    //    //) =>
+    //    //    DateTimeOffset.ParseExact(
+    //    //        reader.GetString()!,
+    //    //        "MM/dd/yyyy",
+    //    //        CultureInfo.InvariantCulture
+    //    //    );
+
+    //    public override void Write(
+    //        Utf8JsonWriter writer,
+    //        DateTimeOffset dateTimeValue,
+    //        JsonSerializerOptions options
+    //    ) =>
+    //        writer.WriteStringValue(
+    //            dateTimeValue.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture)
+    //        );
+
+    //    public override void Write(
+    //        Utf8JsonWriter writer,
+    //        ComplexFieldTypeMarker value,
+    //        JsonSerializerOptions options
+    //    ) => throw new NotImplementedException();
+    //}
 }

@@ -12,7 +12,7 @@ public partial class SelectionInfoSingleItemComponent2 : ComponentBase
     public required string ObjectName { get; init; }
 
     [Parameter]
-    public required object ObjectToDisplay { get; set; }
+    public required object? ObjectToDisplay { get; set; }
 
     [Parameter]
     public EventCallback<object> ObjectToDisplayChanged { get; set; }
@@ -22,27 +22,20 @@ public partial class SelectionInfoSingleItemComponent2 : ComponentBase
 
     private Type ObjectType { get; set; }
 
-    public PropertyInfo[] propertyInfos { get; set; }
-
     private Dictionary<Type, IPropertyEnumerator> propertyEnumerators =
         new() { { typeof(Point), new PointPropertyEnumerator() } };
 
     protected override void OnParametersSet()
     {
-        this.ObjectType = this.ObjectToDisplay.GetType();
-        if (
-            this.ObjectType.IsGenericType
-            && this.ObjectType.GetGenericTypeDefinition() == typeof(Nullable<>)
-        )
-        {
-            this.ObjectType = Nullable.GetUnderlyingType(this.ObjectType);
-        }
-
-        this.propertyInfos = this.ObjectToDisplay
-            .GetType()
-            .GetProperties(
-                System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance
-            );
+        //var objType = this.ObjectToDisplay.GetType();
+        //this.ObjectType = this.ObjectToDisplay.GetType();
+        //if (
+        //    this.ObjectType.IsGenericType
+        //    && this.ObjectType.GetGenericTypeDefinition() == typeof(Nullable<>)
+        //)
+        //{
+        //    this.ObjectType = Nullable.GetUnderlyingType(this.ObjectType);
+        //}
 
         base.OnParametersSet();
     }

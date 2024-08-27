@@ -35,4 +35,15 @@ public static class BeamOsDomainContractMappers
             UnitsNetMappers.MapToContract(source.ZCoordinate)
         );
     }
+
+    //public static BeamOs.Domain.Common.ValueObjects.Point ToDomain(
+    //    BeamOs.Domain.Common.ValueObjects.Point source
+    //)
+    //{
+    //    return new(
+    //        UnitsNetMappers.MapToContract(source.XCoordinate),
+    //        UnitsNetMappers.MapToContract(source.YCoordinate),
+    //        UnitsNetMappers.MapToContract(source.ZCoordinate)
+    //    );
+    //}
 }

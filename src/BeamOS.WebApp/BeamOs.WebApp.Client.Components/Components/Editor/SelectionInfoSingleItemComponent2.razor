@@ -1,8 +1,9 @@
 @using System.Reflection
 @using System.Collections
 @using BeamOs.WebApp.Client.Components.Components.Editor.PropertyEnumerators
+@using static BeamOs.WebApp.Client.Components.Components.Editor.StructuralApiClientComponent
 
-@if (IsSimpleType(this.ObjectType))
+@if (this.ObjectToDisplay is not null && IsSimpleType(this.ObjectToDisplay.GetType()))
 {
     @if (IsReadOnly)
     {
@@ -33,6 +34,44 @@
         }
     }
 }
+else if (this.ObjectToDisplay is SimpleFieldTypeMarker fieldTypeMarker)
+{
+    if (fieldTypeMarker.FieldType == typeof(int))
+    {
+        <MudTextField T="int?" Value="@((int?)fieldTypeMarker.Value)" ValueChanged="(i) => ObjectToDisplayChanged.InvokeAsync(i)" Required="@fieldTypeMarker.IsRequired" Label="@ObjectName" />
+    }
+    else if (fieldTypeMarker.FieldType == typeof(double))
+    {
+        <MudTextField T="double?" Value="@((double?)fieldTypeMarker.Value)" ValueChanged="(i) => ObjectToDisplayChanged.InvokeAsync(i)" Required="@fieldTypeMarker.IsRequired" Label="@ObjectName" />
+    }
+    else
+    {
+        <MudTextField Converter="StringObjectConverter" Value="@fieldTypeMarker.Value" ValueChanged="ObjectToDisplayChanged" Required="@fieldTypeMarker.IsRequired" Label="@ObjectName" />
+    }
+}
+else if (this.ObjectToDisplay is ComplexFieldTypeMarker complex)
+{
+    @if (!string.IsNullOrEmpty(ObjectName))
+    {
+        <MudExpansionPanel Expanded="true" Text="@ObjectName" Class="text-nowrap text-clip mud-typography mud-typography-subtitle2">
+            <MudGrid Spacing="1">
+                @foreach (var key in complex.ValuesWithDisplayInformation.Keys)
+                {
+                    var obj = complex.Get(key);
+                    <SelectionInfoSingleItemComponent2 ObjectName="@key.ToString()" ObjectToDisplayChanged="@((val) => complex.Set(key, val))" ObjectToDisplay="obj" IsReadOnly="@IsReadOnly"></SelectionInfoSingleItemComponent2>
+                }
+            </MudGrid>
+        </MudExpansionPanel>
+    }
+    else
+    {
+        @foreach (var key in complex.ValuesWithDisplayInformation.Keys)
+        {
+            var obj = complex.Get(key);
+            <SelectionInfoSingleItemComponent2 ObjectName="@key.ToString()" ObjectToDisplayChanged="@((val) => complex.Set(key, val))" ObjectToDisplay="obj" IsReadOnly="@IsReadOnly"></SelectionInfoSingleItemComponent2>
+        }
+    }
+}
 @* else if (this.propertyEnumerators.TryGetValue(this.ObjectType, out IPropertyEnumerator? propertyEnumerator))
 {
     foreach (var propertyPair in propertyEnumerator.GetProps(this.ObjectToDisplay))
@@ -40,33 +79,12 @@
         <SelectionInfoSingleItemComponent2 ObjectName="@propertyPair.Item1" ObjectToDisplay="@propertyPair.Item2"></SelectionInfoSingleItemComponent2>
     }
 } *@
-else if (this.ObjectToDisplay is IDictionary dict)
-{
-    @if (!string.IsNullOrEmpty(ObjectName))
-    {
-        <MudExpansionPanel Expanded="true" Text="@ObjectName" Class="text-nowrap text-clip mud-typography mud-typography-subtitle2">
-            <MudGrid Spacing="1">
-                @foreach (var key in dict.Keys)
-                {
-                    <SelectionInfoSingleItemComponent2 ObjectName="@key.ToString()" ObjectToDisplayChanged="@((val) => dict[key] = val)" ObjectToDisplay="dict[key]" IsReadOnly="@IsReadOnly"></SelectionInfoSingleItemComponent2>
-                }
-            </MudGrid>
-        </MudExpansionPanel>
-    }
-    else
-    {
-        @foreach (var key in dict.Keys)
-        {
-            <SelectionInfoSingleItemComponent2 ObjectName="@key.ToString()" ObjectToDisplayChanged="@((val) => dict[key] = val)" ObjectToDisplay="dict[key]" IsReadOnly="@IsReadOnly"></SelectionInfoSingleItemComponent2>
-        }
-    }
-}
 else if (this.ObjectToDisplay is IEnumerable enumerable)
 {
     int counter = 0;
     foreach (var item in enumerable)
     {
-        <SelectionInfoSingleItemComponent2 ObjectName="@($"{this.ObjectName}-{counter++}")" ObjectToDisplay="@item" IsReadOnly="@IsReadOnly"></SelectionInfoSingleItemComponent2>
+        <SelectionInfoSingleItemComponent2 ObjectName="@($"{this.ObjectName}-{counter++}")" ObjectToDisplay="@item" ObjType="@item.GetType()" IsReadOnly="@IsReadOnly"></SelectionInfoSingleItemComponent2>
     }   
 }
 else
