@@ -1,0 +1,65 @@
+@using BeamOs.WebApp.Client.Components.Features.Common
+@using BeamOs.WebApp.Client.Components.Features.Popovers
+
+@inherits FluxorComponent
+
+@if (this.State.Value.SelectedMethod == null)
+{
+    <BeamOsPopoverDisplayObjects IsOpen="true" Title="API Client Methods">
+        <MiddleContent>
+            <MudList T="string" sel>
+                @foreach (var method in methods)
+                {
+                    var cleanMethodName = CleanMethodName(method.Name);
+                    var chipInfo = GetChipInfoForMethod(method);
+                    <MudListItem @onclick="() => SelectMethod(method)">
+                        <MudStack StretchItems="StretchItems.Start" Row="true">
+                            <MudTooltip Text="@cleanMethodName" RootClass="truncate">
+                                <MudText Class="truncate">@cleanMethodName</MudText>
+                            </MudTooltip>
+                            <MudChip Size="Size.Small" Variant="Variant.Text" Color="@chipInfo.Item1" Class="m-0">@chipInfo.Item2</MudChip>
+                        </MudStack>
+                    </MudListItem>
+                }
+            </MudList>
+@*                 <SelectionInfoSingleItemComponent2 ObjectToDisplay="parameterValues" ObjectName=""></SelectionInfoSingleItemComponent2> *@
+        </MiddleContent>
+    </BeamOsPopoverDisplayObjects>
+}
+else
+{
+    <BeamOsPopoverDisplayObjects IsOpen="true" Title="@CleanMethodName(this.State.Value.SelectedMethod.Name)">
+        <TopContent>
+            <div class="flex flex-row h-fit w-fit">
+                <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="GoBack" Class="p-0">Back</MudIconButton>
+            </div>
+        </TopContent>
+        <MiddleContent>
+            <SelectionInfoSingleItemComponent2 ObjectToDisplay="@(this.State.Value.ParameterValues)" ObjectName=""></SelectionInfoSingleItemComponent2>
+        </MiddleContent>
+        <BottomContent>
+            <MudButton OnClick="HandleSubmit" Variant="Variant.Filled" Class="mt-4" Color="Color.Primary">Submit</MudButton>
+        </BottomContent>
+    </BeamOsPopoverDisplayObjects>
+    @* <SelectionInfoSingleItemComponent2 ObjectName="asdf" ObjectToDisplay="this.parameterValues" IsReadOnly="false"></SelectionInfoSingleItemComponent2> *@
+    @* <MudForm @ref="form" @onsubmit="HandleSubmit">
+        @foreach (var property in parameterProperties)
+        {
+            <MudTextField @bind-Value="parameterValues[property.Name]" Label="@property.Name" />
+        }
+    </MudForm> *@
+}
+
+@* <script>
+    function preventBlur(event) {
+        if (event.target && !event.relatedTarget) {
+            event.target.focus();
+        }
+    }
+
+    function addPreventBlur() {
+        document.querySelectorAll('.prevent-blur input').forEach(section => {
+            section.addEventListener("blur", preventBlur);
+        });
+    }
+</script> *@

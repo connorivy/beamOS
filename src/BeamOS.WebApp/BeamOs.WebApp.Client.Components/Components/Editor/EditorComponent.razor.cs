@@ -14,7 +14,9 @@ using BeamOs.WebApp.Client.Components.Features.KeyBindings.UndoRedo;
 using BeamOs.WebApp.Client.Components.Repositories;
 using BeamOs.WebApp.Client.Components.State;
 using BeamOs.WebApp.Client.EditorCommands;
+using Fluxor;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.SignalR.Client;
 
 namespace BeamOs.WebApp.Client.Components.Components.Editor;
@@ -49,6 +51,9 @@ public partial class EditorComponent : ComponentBase, IAsyncDisposable
 
     [Inject]
     private ChangeComponentStateCommandHandler<EditorComponentState> ChangeComponentStateCommandHandler { get; init; }
+
+    [Inject]
+    private IDispatcher Dispatcher { get; init; }
 
     public EditorComponentState EditorComponentState =>
         this.EditorComponentStateRepository.GetOrSetComponentStateByCanvasId(this.ElementId);
@@ -122,6 +127,7 @@ public partial class EditorComponent : ComponentBase, IAsyncDisposable
         await this.LoadModelCommandHandler.ExecuteAsync(
             new LoadModelCommand(this.ElementId, modelId)
         );
+        this.Dispatcher.Dispatch(new ModelLoaded(modelId));
     }
 
     private async Task CacheAllNodeResults()
@@ -175,6 +181,8 @@ public partial class EditorComponent : ComponentBase, IAsyncDisposable
             new(this.ElementId, stateMutation)
         );
     }
+
+    private void OnMouseDown(MouseEventArgs args) => this.Dispatcher.Dispatch(new CanvasClicked());
 
     public async ValueTask DisposeAsync()
     {

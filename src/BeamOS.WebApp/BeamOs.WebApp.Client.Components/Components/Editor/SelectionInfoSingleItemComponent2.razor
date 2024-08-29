@@ -1,7 +1,7 @@
+@using BeamOs.WebApp.Client.Components.Features.StructuralApiClient
 @using System.Reflection
 @using System.Collections
 @using BeamOs.WebApp.Client.Components.Components.Editor.PropertyEnumerators
-@using static BeamOs.WebApp.Client.Components.Components.Editor.StructuralApiClientComponent
 
 @if (this.ObjectToDisplay is not null && IsSimpleType(this.ObjectToDisplay.GetType()))
 {
@@ -20,19 +20,19 @@ else if (this.ObjectToDisplay is SimpleFieldTypeMarker fieldTypeMarker)
 {
     if (fieldTypeMarker.FieldType == typeof(int))
     {
-        <MudTextField T="int?" Value="@((int?)fieldTypeMarker.Value)" ValueChanged="(i) => ObjectToDisplayChanged.InvokeAsync(i)" Required="@fieldTypeMarker.IsRequired" Label="@ObjectName" />
+        <MudTextField @ref="MudTextFieldIntRef" T="int?" Typo="Typo.input" Value="@((int?)fieldTypeMarker.Value)" ValueChanged="(i) => ObjectToDisplayChanged.InvokeAsync(i)" Required="@fieldTypeMarker.IsRequired" Label="@ObjectName" OnlyValidateIfDirty="true" @onfocus="(_) => OnFocus(fieldTypeMarker.FieldNum)" />
     }
     else if (fieldTypeMarker.FieldType == typeof(double))
     {
-        <MudTextField T="double?" Value="@((double?)fieldTypeMarker.Value)" ValueChanged="(i) => ObjectToDisplayChanged.InvokeAsync(i)" Required="@fieldTypeMarker.IsRequired" Label="@ObjectName" />
+        <MudTextField @ref="MudTextFieldDoubleRef" T="double?" Typo="Typo.input" Value="@((double?)fieldTypeMarker.Value)" ValueChanged="(i) => ObjectToDisplayChanged.InvokeAsync(i)" Required="@fieldTypeMarker.IsRequired" Label="@ObjectName" OnlyValidateIfDirty="true" @onfocus="(_) => OnFocus(fieldTypeMarker.FieldNum)" />
     }
     else if (fieldTypeMarker.FieldType == typeof(bool))
     {
-        <MudTextField T="bool?" Value="@((bool?)fieldTypeMarker.Value)" ValueChanged="(i) => ObjectToDisplayChanged.InvokeAsync(i)" Required="@fieldTypeMarker.IsRequired" Label="@ObjectName" />
+        <MudTextField @ref="MudTextFieldBoolRef" T="bool?" Typo="Typo.input" Value="@((bool?)fieldTypeMarker.Value)" ValueChanged="(i) => ObjectToDisplayChanged.InvokeAsync(i)" Required="@fieldTypeMarker.IsRequired" Label="@ObjectName" OnlyValidateIfDirty="true" @onfocus="(_) => OnFocus(fieldTypeMarker.FieldNum)" />
     }
     else
     {
-        <MudTextField Converter="@StringObjectConverter" Value="@fieldTypeMarker.Value" ValueChanged="ObjectToDisplayChanged" Required="@fieldTypeMarker.IsRequired" Label="@ObjectName" />
+        <MudTextField @ref="MudTextFieldStringRef" Typo="Typo.input" Converter="@StringObjectConverter" Value="@fieldTypeMarker.Value" ValueChanged="ObjectToDisplayChanged" Required="@fieldTypeMarker.IsRequired" Label="@ObjectName" OnlyValidateIfDirty="true" @onfocus="(_) => OnFocus(fieldTypeMarker.FieldNum)" />
     }
 }
 else if (this.ObjectToDisplay is ComplexFieldTypeMarker complex)
@@ -44,7 +44,7 @@ else if (this.ObjectToDisplay is ComplexFieldTypeMarker complex)
                 @foreach (var key in complex.ValuesWithDisplayInformation.Keys)
                 {
                     var obj = complex.Get(key);
-                    <SelectionInfoSingleItemComponent2 ObjectName="@key.ToString()" ObjectToDisplayChanged="@((val) => complex.Set(key, val))" ObjectToDisplay="obj"></SelectionInfoSingleItemComponent2>
+                    <SelectionInfoSingleItemComponent2 ObjectName="@key.ToString()" ObjectToDisplayChanged="@((val) => complex.Set(key, val))" ObjectToDisplay="obj" ></SelectionInfoSingleItemComponent2>
                 }
             </MudGrid>
         </MudExpansionPanel>
@@ -54,7 +54,7 @@ else if (this.ObjectToDisplay is ComplexFieldTypeMarker complex)
         @foreach (var key in complex.ValuesWithDisplayInformation.Keys)
         {
             var obj = complex.Get(key);
-            <SelectionInfoSingleItemComponent2 ObjectName="@key.ToString()" ObjectToDisplayChanged="@((val) => complex.Set(key, val))" ObjectToDisplay="obj"></SelectionInfoSingleItemComponent2>
+            <SelectionInfoSingleItemComponent2 ObjectName="@key.ToString()" ObjectToDisplayChanged="@((val) => complex.Set(key, val))" ObjectToDisplay="obj" ></SelectionInfoSingleItemComponent2>
         }
     }
 }
@@ -70,7 +70,7 @@ else if (this.ObjectToDisplay is IEnumerable enumerable)
     int counter = 0;
     foreach (var item in enumerable)
     {
-        <SelectionInfoSingleItemComponent2 ObjectName="@($"{this.ObjectName}-{counter++}")" ObjectToDisplay="@item" ObjType="@item.GetType()"></SelectionInfoSingleItemComponent2>
+        <SelectionInfoSingleItemComponent2 ObjectName="@($"{this.ObjectName}-{counter++}")" ObjectToDisplay="@item" ObjType="@item.GetType()" ></SelectionInfoSingleItemComponent2>
     }   
 }
 else
@@ -80,45 +80,8 @@ else
             @foreach (var propInfo in GetPublicInstanceProps(this.ObjectToDisplay))
             {
                 var value = propInfo.GetValue(this.ObjectToDisplay);
-                <SelectionInfoSingleItemComponent2 ObjectName="@propInfo.Name" ObjectToDisplay="@value"></SelectionInfoSingleItemComponent2>
+                <SelectionInfoSingleItemComponent2 ObjectName="@propInfo.Name" ObjectToDisplay="@value" ></SelectionInfoSingleItemComponent2>
             }
         </MudGrid>
     </MudExpansionPanel>
 }
-
-@* <style>
-    .mud-grid-item {
-        padding: 0px !important;
-    }
-
-    .mud-expand-panel-header {
-        padding-left: 0px !important;
-        padding-right: 0px !important;
-        padding-top: 8px !important;
-        padding-bottom: 0px !important;
-        min-height: 24px !important;
-    }
-
-    .mud-expand-panel-content {
-        padding-left: 12px !important;
-        padding-right: 0px !important;
-        border-style: none;
-        height: fit-content;
-    }
-
-    .mud-panel-expanded > .mud-expand-panel-header .mud-expand-panel-text {
-        color: var(--mud-palette-primary-lighten);
-    }
-
-    .mud-expand-panel .mud-panel-expanded {
-        margin-top: 0px;
-        margin-block: 0px;
-    }
-
-    .mud-expand-panel-text {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-</style>
- *@

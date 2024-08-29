@@ -1,9 +1,9 @@
 <BeamOsPopoverBase IsOpen="@IsOpen" AnchorOrigin="@AnchorOrigin" TransformOrigin="@TransformOrigin" Class="@Class">
     <div class="flex flex-col max-h-full">
         @TopContent
-        <MudText Typo="Typo.h6">@Title</MudText>
+        <MudText Align="Align.Center" Typo="Typo.h6">@Title</MudText>
         <MudText Typo="Typo.body2" Class="mud-text-secondary">@Subtitle</MudText>
-        <MudDivider Class="my-2" />
+        <MudDivider Class="mt-1" />
         <MudExpansionPanels MultiExpansion="true" Outlined="false" Elevation="0" Dense="true" Class="grow overflow-y-auto">
             @MiddleContent
         </MudExpansionPanels>
@@ -19,14 +19,15 @@
     .mud-expand-panel-header {
         padding-left: 0px !important;
         padding-right: 0px !important;
-        padding-top: 8px !important;
-        padding-bottom: 0px !important;
+        padding-top: 0px !important;
+        padding-bottom: 8px !important;
         min-height: 24px !important;
     }
 
     .mud-expand-panel-content {
         padding-left: 12px !important;
         padding-right: 0px !important;
+        padding-top: 0px !important;
         border-style: none;
         height: fit-content;
     }
@@ -45,6 +46,11 @@
         text-overflow: ellipsis;
         white-space: nowrap;
     }
+
+    .mud-input-control {
+        margin-top: 0px;
+    }
+
 </style>
 
 @code {
@@ -65,12 +71,6 @@
 
     [Parameter]
     public string? Subtitle { get; init; }
-
-    [Parameter]
-    public required IEnumerable<(string, object)> Items { get; init; }
-
-    [Parameter]
-    public bool IsReadOnly { get; init; }
 
     [Parameter]
     public RenderFragment TopContent { get; set; }

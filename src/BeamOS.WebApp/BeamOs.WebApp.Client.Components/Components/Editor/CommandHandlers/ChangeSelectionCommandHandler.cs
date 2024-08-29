@@ -1,11 +1,13 @@
 using BeamOs.Common.Api;
 using BeamOs.WebApp.Client.Components.Repositories;
 using BeamOs.WebApp.Client.EditorCommands;
+using Fluxor;
 
 namespace BeamOs.WebApp.Client.Components.Components.Editor.CommandHandlers;
 
 public class ChangeSelectionCommandHandler(
-    IStateRepository<EditorComponentState> editorComponentStateRepository
+    IStateRepository<EditorComponentState> editorComponentStateRepository,
+    IDispatcher dispatcher
 ) : VisibleStateCommandHandlerBase<ChangeSelectionCommand>
 {
     protected override Task<Result> ExecuteCommandAsync(
@@ -29,6 +31,8 @@ public class ChangeSelectionCommandHandler(
                 SelectedObjects = command.SelectedObjects
             }
         );
+
+        dispatcher.Dispatch(command);
 
         return Task.FromResult(Result.Success());
     }
