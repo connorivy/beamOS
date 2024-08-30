@@ -31,7 +31,6 @@ public static class DependencyInjection
     {
         _ = services.AddTransient<IEditorApiProxyFactory, EditorApiProxyFactory>();
         _ = services.AddSingleton<StructuralAnalysisApiAlphaClientFactory>();
-        _ = services.AddScoped<IStructuralAnalysisApiAlphaClient>(InProcessApiClient.Create);
         _ = services.AddTransient<EditorEventsApi>();
         _ = services.AddMudServices().AddMudExtensions();
 

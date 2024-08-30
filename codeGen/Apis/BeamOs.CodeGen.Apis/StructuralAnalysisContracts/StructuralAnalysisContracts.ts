@@ -158,7 +158,7 @@ export interface IStructuralAnalysisContracts {
     /**
      * @return OK
      */
-    beamOs_Contracts_Common_EmptyResquest(): Promise<EmptyResquest>;
+    beamOs_Contracts_Common_EmptyRequest(): Promise<EmptyRequest>;
 
     /**
      * @return OK
@@ -1373,8 +1373,8 @@ export class StructuralAnalysisContracts implements IStructuralAnalysisContracts
     /**
      * @return OK
      */
-    beamOs_Contracts_Common_EmptyResquest(): Promise<EmptyResquest> {
-        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.Common.EmptyResquest";
+    beamOs_Contracts_Common_EmptyRequest(): Promise<EmptyRequest> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.Common.EmptyRequest";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -1385,18 +1385,18 @@ export class StructuralAnalysisContracts implements IStructuralAnalysisContracts
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processBeamOs_Contracts_Common_EmptyResquest(_response);
+            return this.processBeamOs_Contracts_Common_EmptyRequest(_response);
         });
     }
 
-    protected processBeamOs_Contracts_Common_EmptyResquest(response: Response): Promise<EmptyResquest> {
+    protected processBeamOs_Contracts_Common_EmptyRequest(response: Response): Promise<EmptyRequest> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = EmptyResquest.fromJS(resultData200);
+            result200 = EmptyRequest.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1404,7 +1404,7 @@ export class StructuralAnalysisContracts implements IStructuralAnalysisContracts
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<EmptyResquest>(null as any);
+        return Promise.resolve<EmptyRequest>(null as any);
     }
 
     /**
@@ -3204,9 +3204,9 @@ export enum Element1dAnalysisType {
     _2 = 2,
 }
 
-export class EmptyResquest implements IEmptyResquest {
+export class EmptyRequest implements IEmptyRequest {
 
-    constructor(data?: IEmptyResquest) {
+    constructor(data?: IEmptyRequest) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -3218,9 +3218,9 @@ export class EmptyResquest implements IEmptyResquest {
     init(_data?: any) {
     }
 
-    static fromJS(data: any): EmptyResquest {
+    static fromJS(data: any): EmptyRequest {
         data = typeof data === 'object' ? data : {};
-        let result = new EmptyResquest();
+        let result = new EmptyRequest();
         result.init(data);
         return result;
     }
@@ -3231,7 +3231,7 @@ export class EmptyResquest implements IEmptyResquest {
     }
 }
 
-export interface IEmptyResquest {
+export interface IEmptyRequest {
 }
 
 export class ForcesResponse implements IForcesResponse {

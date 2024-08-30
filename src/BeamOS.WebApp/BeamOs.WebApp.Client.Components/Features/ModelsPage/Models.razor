@@ -1,16 +1,16 @@
 @page "/models"
 @using BeamOs.Common.Application.Interfaces
 @using System.Security.Claims
+@using Microsoft.AspNetCore.Authorization
+
+@* @attribute [Authorize] *@
 
 @inherits FluxorComponent
 
 <PageTitle>Models</PageTitle>
 
 <MudGrid Justify="Justify.Center">
-    <!-- Main Content -->
     <MudItem xs="9">
-
-        <!-- Search and New Project Button -->
         <MudGrid>
             <MudItem xs="9">
                 <MudTextField T="string" Placeholder="Search..." Icon="Icons.Material.Filled.Search" />
@@ -20,7 +20,6 @@
             </MudItem>
         </MudGrid>
 
-        <!-- Projects Grid -->
         <MudGrid>
             @foreach (var model in ModelState.Value.ModelResponses)
             {

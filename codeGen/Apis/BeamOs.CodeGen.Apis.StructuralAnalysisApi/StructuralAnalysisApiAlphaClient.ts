@@ -13,7 +13,7 @@ export interface IStructuralAnalysisApiAlphaClient {
     /**
      * @return OK
      */
-    runDirectStiffnessMethod(body: IdRequest): Promise<AnalyticalModelResponse3>;
+    runDirectStiffnessMethod(body: ModelIdRequest): Promise<AnalyticalModelResponse3>;
 
     /**
      * @return OK
@@ -83,11 +83,6 @@ export interface IStructuralAnalysisApiAlphaClient {
     /**
      * @return OK
      */
-    getModelHydrated(body: GetModelHydratedRequest): Promise<ModelResponseHydrated>;
-
-    /**
-     * @return OK
-     */
     createMaterial(body: CreateMaterialRequest): Promise<MaterialResponse>;
 
     /**
@@ -139,7 +134,7 @@ export class StructuralAnalysisApiAlphaClient implements IStructuralAnalysisApiA
     /**
      * @return OK
      */
-    runDirectStiffnessMethod(body: IdRequest): Promise<AnalyticalModelResponse3> {
+    runDirectStiffnessMethod(body: ModelIdRequest): Promise<AnalyticalModelResponse3> {
         let url_ = this.baseUrl + "/StructuralAnalysisApiAlphaClient/RunDirectStiffnessMethod";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -737,47 +732,6 @@ export class StructuralAnalysisApiAlphaClient implements IStructuralAnalysisApiA
             });
         }
         return Promise.resolve<ModelResponse[]>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    getModelHydrated(body: GetModelHydratedRequest): Promise<ModelResponseHydrated> {
-        let url_ = this.baseUrl + "/StructuralAnalysisApiAlphaClient/GetModelHydrated";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetModelHydrated(_response);
-        });
-    }
-
-    protected processGetModelHydrated(response: Response): Promise<ModelResponseHydrated> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ModelResponseHydrated.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<ModelResponseHydrated>(null as any);
     }
 
     /**
@@ -1915,46 +1869,6 @@ export interface IGetElement1dsRequest {
     element1dIds?: string[] | undefined;
 }
 
-export class GetModelHydratedRequest implements IGetModelHydratedRequest {
-    modelId!: string;
-    units!: PreconfiguredUnits;
-
-    constructor(data?: IGetModelHydratedRequest) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.modelId = _data["modelId"];
-            this.units = _data["units"];
-        }
-    }
-
-    static fromJS(data: any): GetModelHydratedRequest {
-        data = typeof data === 'object' ? data : {};
-        let result = new GetModelHydratedRequest();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["modelId"] = this.modelId;
-        data["units"] = this.units;
-        return data;
-    }
-}
-
-export interface IGetModelHydratedRequest {
-    modelId: string;
-    units: PreconfiguredUnits;
-}
-
 export class GetMomentLoadRequest implements IGetMomentLoadRequest {
     modelId!: string;
     momentLoadIds?: string[] | undefined;
@@ -2346,135 +2260,6 @@ export interface IModelResponse {
     momentLoads?: MomentLoadResponse[] | undefined;
 }
 
-export class ModelResponseHydrated implements IModelResponseHydrated {
-    id!: string;
-    name!: string;
-    description!: string;
-    settings!: ModelSettingsResponse;
-    nodes!: NodeResponse[];
-    element1Ds!: Element1DResponse[];
-    materials!: MaterialResponse[];
-    sectionProfiles!: SectionProfileResponse[];
-    pointLoads!: PointLoadResponse[];
-    momentLoads!: MomentLoadResponse[];
-
-    constructor(data?: IModelResponseHydrated) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.settings = new ModelSettingsResponse();
-            this.nodes = [];
-            this.element1Ds = [];
-            this.materials = [];
-            this.sectionProfiles = [];
-            this.pointLoads = [];
-            this.momentLoads = [];
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.name = _data["name"];
-            this.description = _data["description"];
-            this.settings = _data["settings"] ? ModelSettingsResponse.fromJS(_data["settings"]) : new ModelSettingsResponse();
-            if (Array.isArray(_data["nodes"])) {
-                this.nodes = [] as any;
-                for (let item of _data["nodes"])
-                    this.nodes!.push(NodeResponse.fromJS(item));
-            }
-            if (Array.isArray(_data["element1Ds"])) {
-                this.element1Ds = [] as any;
-                for (let item of _data["element1Ds"])
-                    this.element1Ds!.push(Element1DResponse.fromJS(item));
-            }
-            if (Array.isArray(_data["materials"])) {
-                this.materials = [] as any;
-                for (let item of _data["materials"])
-                    this.materials!.push(MaterialResponse.fromJS(item));
-            }
-            if (Array.isArray(_data["sectionProfiles"])) {
-                this.sectionProfiles = [] as any;
-                for (let item of _data["sectionProfiles"])
-                    this.sectionProfiles!.push(SectionProfileResponse.fromJS(item));
-            }
-            if (Array.isArray(_data["pointLoads"])) {
-                this.pointLoads = [] as any;
-                for (let item of _data["pointLoads"])
-                    this.pointLoads!.push(PointLoadResponse.fromJS(item));
-            }
-            if (Array.isArray(_data["momentLoads"])) {
-                this.momentLoads = [] as any;
-                for (let item of _data["momentLoads"])
-                    this.momentLoads!.push(MomentLoadResponse.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): ModelResponseHydrated {
-        data = typeof data === 'object' ? data : {};
-        let result = new ModelResponseHydrated();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["name"] = this.name;
-        data["description"] = this.description;
-        data["settings"] = this.settings ? this.settings.toJSON() : <any>undefined;
-        if (Array.isArray(this.nodes)) {
-            data["nodes"] = [];
-            for (let item of this.nodes)
-                data["nodes"].push(item.toJSON());
-        }
-        if (Array.isArray(this.element1Ds)) {
-            data["element1Ds"] = [];
-            for (let item of this.element1Ds)
-                data["element1Ds"].push(item.toJSON());
-        }
-        if (Array.isArray(this.materials)) {
-            data["materials"] = [];
-            for (let item of this.materials)
-                data["materials"].push(item.toJSON());
-        }
-        if (Array.isArray(this.sectionProfiles)) {
-            data["sectionProfiles"] = [];
-            for (let item of this.sectionProfiles)
-                data["sectionProfiles"].push(item.toJSON());
-        }
-        if (Array.isArray(this.pointLoads)) {
-            data["pointLoads"] = [];
-            for (let item of this.pointLoads)
-                data["pointLoads"].push(item.toJSON());
-        }
-        if (Array.isArray(this.momentLoads)) {
-            data["momentLoads"] = [];
-            for (let item of this.momentLoads)
-                data["momentLoads"].push(item.toJSON());
-        }
-        return data;
-    }
-}
-
-export interface IModelResponseHydrated {
-    id: string;
-    name: string;
-    description: string;
-    settings: ModelSettingsResponse;
-    nodes: NodeResponse[];
-    element1Ds: Element1DResponse[];
-    materials: MaterialResponse[];
-    sectionProfiles: SectionProfileResponse[];
-    pointLoads: PointLoadResponse[];
-    momentLoads: MomentLoadResponse[];
-}
-
 export class ModelResultResponse implements IModelResultResponse {
     modelId!: string;
     maxShear!: UnitValueDto;
@@ -2531,45 +2316,6 @@ export interface IModelResultResponse {
     minShear: UnitValueDto;
     maxMoment: UnitValueDto;
     minMoment: UnitValueDto;
-}
-
-export class ModelSettingsResponse implements IModelSettingsResponse {
-    unitSettings!: UnitSettingsResponse;
-
-    constructor(data?: IModelSettingsResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.unitSettings = new UnitSettingsResponse();
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.unitSettings = _data["unitSettings"] ? UnitSettingsResponse.fromJS(_data["unitSettings"]) : new UnitSettingsResponse();
-        }
-    }
-
-    static fromJS(data: any): ModelSettingsResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new ModelSettingsResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["unitSettings"] = this.unitSettings ? this.unitSettings.toJSON() : <any>undefined;
-        return data;
-    }
-}
-
-export interface IModelSettingsResponse {
-    unitSettings: UnitSettingsResponse;
 }
 
 export class MomentDiagramResponse implements IMomentDiagramResponse {
@@ -3100,12 +2846,6 @@ export interface IPointLoadResponse {
     direction: Vector3;
 }
 
-export enum PreconfiguredUnits {
-    _0 = 0,
-    _1 = 1,
-    _2 = 2,
-}
-
 export class RestraintContract implements IRestraintContract {
     canTranslateAlongX!: boolean;
     canTranslateAlongY!: boolean;
@@ -3373,70 +3113,6 @@ export interface IUnitSettingsDtoVerbose {
     forcePerLengthUnit: string;
     pressureUnit: string;
     angleUnit: string;
-}
-
-export class UnitSettingsResponse implements IUnitSettingsResponse {
-    lengthUnit!: string;
-    areaUnit!: string;
-    volumeUnit!: string;
-    forceUnit!: string;
-    forcePerLengthUnit!: string;
-    torqueUnit!: string;
-    pressureUnit!: string;
-    areaMomentOfInertiaUnit!: string;
-
-    constructor(data?: IUnitSettingsResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.lengthUnit = _data["lengthUnit"];
-            this.areaUnit = _data["areaUnit"];
-            this.volumeUnit = _data["volumeUnit"];
-            this.forceUnit = _data["forceUnit"];
-            this.forcePerLengthUnit = _data["forcePerLengthUnit"];
-            this.torqueUnit = _data["torqueUnit"];
-            this.pressureUnit = _data["pressureUnit"];
-            this.areaMomentOfInertiaUnit = _data["areaMomentOfInertiaUnit"];
-        }
-    }
-
-    static fromJS(data: any): UnitSettingsResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new UnitSettingsResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["lengthUnit"] = this.lengthUnit;
-        data["areaUnit"] = this.areaUnit;
-        data["volumeUnit"] = this.volumeUnit;
-        data["forceUnit"] = this.forceUnit;
-        data["forcePerLengthUnit"] = this.forcePerLengthUnit;
-        data["torqueUnit"] = this.torqueUnit;
-        data["pressureUnit"] = this.pressureUnit;
-        data["areaMomentOfInertiaUnit"] = this.areaMomentOfInertiaUnit;
-        return data;
-    }
-}
-
-export interface IUnitSettingsResponse {
-    lengthUnit: string;
-    areaUnit: string;
-    volumeUnit: string;
-    forceUnit: string;
-    forcePerLengthUnit: string;
-    torqueUnit: string;
-    pressureUnit: string;
-    areaMomentOfInertiaUnit: string;
 }
 
 export class UnitValueDto implements IUnitValueDto {

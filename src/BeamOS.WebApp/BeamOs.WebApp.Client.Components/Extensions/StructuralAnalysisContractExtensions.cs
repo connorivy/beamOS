@@ -27,6 +27,6 @@ public static class StructuralAnalysisContractExtensions
                 element.ZCoordinate,
                 UnitsNetMappers.MapToLengthUnit(element.LengthUnit)
             ).Meters,
-            LengthUnit = "Meters"
+            LengthUnit = "Meter"
         };
 }

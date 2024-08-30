@@ -25,12 +25,12 @@ namespace BeamOs.ApiClient
     {
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<AnalyticalModelResponse3> RunDirectStiffnessMethodAsync(string id);
+        System.Threading.Tasks.Task<AnalyticalModelResponse3> RunDirectStiffnessMethodAsync(string modelId);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<AnalyticalModelResponse3> RunDirectStiffnessMethodAsync(string id, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<AnalyticalModelResponse3> RunDirectStiffnessMethodAsync(string modelId, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -115,12 +115,12 @@ namespace BeamOs.ApiClient
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<MomentLoadResponse>> GetMomentLoadsAsync();
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<MomentLoadResponse>> GetMomentLoadsAsync(string modelId, System.Collections.Generic.IEnumerable<string> momentLoadIds);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<MomentLoadResponse>> GetMomentLoadsAsync(System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<MomentLoadResponse>> GetMomentLoadsAsync(string modelId, System.Collections.Generic.IEnumerable<string> momentLoadIds, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -157,15 +157,6 @@ namespace BeamOs.ApiClient
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<ModelResponse> GetModelAsync(string modelId, System.Collections.Generic.IEnumerable<string> properties, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ModelResponseHydrated> GetModelHydratedAsync(string modelId, PreconfiguredUnits? units);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ModelResponseHydrated> GetModelHydratedAsync(string modelId, PreconfiguredUnits? units, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -223,12 +214,12 @@ namespace BeamOs.ApiClient
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Element1DResponse>> GetElement1dsAsync();
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Element1DResponse>> GetElement1dsAsync(string modelId, System.Collections.Generic.IEnumerable<string> element1dIds);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Element1DResponse>> GetElement1dsAsync(System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Element1DResponse>> GetElement1dsAsync(string modelId, System.Collections.Generic.IEnumerable<string> element1dIds, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -273,18 +264,18 @@ namespace BeamOs.ApiClient
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<AnalyticalModelResponse3> RunDirectStiffnessMethodAsync(string id)
+        public virtual System.Threading.Tasks.Task<AnalyticalModelResponse3> RunDirectStiffnessMethodAsync(string modelId)
         {
-            return RunDirectStiffnessMethodAsync(id, System.Threading.CancellationToken.None);
+            return RunDirectStiffnessMethodAsync(modelId, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<AnalyticalModelResponse3> RunDirectStiffnessMethodAsync(string id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<AnalyticalModelResponse3> RunDirectStiffnessMethodAsync(string modelId, System.Threading.CancellationToken cancellationToken)
         {
-            if (id == null)
-                throw new System.ArgumentNullException("id");
+            if (modelId == null)
+                throw new System.ArgumentNullException("modelId");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -297,9 +288,10 @@ namespace BeamOs.ApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/direct-stiffness-method/run/{id}"
-                    urlBuilder_.Append("api/direct-stiffness-method/run/");
-                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
+                    // Operation Path: "api/models/{modelId}/analyze/direct-stiffness-method"
+                    urlBuilder_.Append("api/models/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/analyze/direct-stiffness-method");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -1139,16 +1131,19 @@ namespace BeamOs.ApiClient
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<MomentLoadResponse>> GetMomentLoadsAsync()
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<MomentLoadResponse>> GetMomentLoadsAsync(string modelId, System.Collections.Generic.IEnumerable<string> momentLoadIds)
         {
-            return GetMomentLoadsAsync(System.Threading.CancellationToken.None);
+            return GetMomentLoadsAsync(modelId, momentLoadIds, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<MomentLoadResponse>> GetMomentLoadsAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<MomentLoadResponse>> GetMomentLoadsAsync(string modelId, System.Collections.Generic.IEnumerable<string> momentLoadIds, System.Threading.CancellationToken cancellationToken)
         {
+            if (modelId == null)
+                throw new System.ArgumentNullException("modelId");
+
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
@@ -1160,8 +1155,16 @@ namespace BeamOs.ApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/moment-loads"
-                    urlBuilder_.Append("api/moment-loads");
+                    // Operation Path: "api/models/{modelId}/moment-loads"
+                    urlBuilder_.Append("api/models/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/moment-loads");
+                    urlBuilder_.Append('?');
+                    if (momentLoadIds != null)
+                    {
+                        foreach (var item_ in momentLoadIds) { urlBuilder_.Append(System.Uri.EscapeDataString("momentLoadIds")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(item_, System.Globalization.CultureInfo.InvariantCulture))).Append('&'); }
+                    }
+                    urlBuilder_.Length--;
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -1551,95 +1554,6 @@ namespace BeamOs.ApiClient
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
                             throw new ApiException("Forbidden", status_, responseText_, headers_, null);
-                        }
-                        else
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (disposeClient_)
-                    client_.Dispose();
-            }
-        }
-
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ModelResponseHydrated> GetModelHydratedAsync(string modelId, PreconfiguredUnits? units)
-        {
-            return GetModelHydratedAsync(modelId, units, System.Threading.CancellationToken.None);
-        }
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ModelResponseHydrated> GetModelHydratedAsync(string modelId, PreconfiguredUnits? units, System.Threading.CancellationToken cancellationToken)
-        {
-            if (modelId == null)
-                throw new System.ArgumentNullException("modelId");
-
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    request_.Method = new System.Net.Http.HttpMethod("GET");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
-
-                    var urlBuilder_ = new System.Text.StringBuilder();
-                
-                    // Operation Path: "api/models/{modelId}/hydrated"
-                    urlBuilder_.Append("api/models/");
-                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
-                    urlBuilder_.Append("/hydrated");
-                    urlBuilder_.Append('?');
-                    if (units != null)
-                    {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("units")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(units, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
-                    }
-                    urlBuilder_.Length--;
-
-                    PrepareRequest(client_, request_, urlBuilder_);
-
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-
-                    PrepareRequest(client_, request_, url_);
-
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
-                    {
-                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
-                        foreach (var item_ in response_.Headers)
-                            headers_[item_.Key] = item_.Value;
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-
-                        ProcessResponse(client_, response_);
-
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ModelResponseHydrated>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
                         }
                         else
                         {
@@ -2171,16 +2085,19 @@ namespace BeamOs.ApiClient
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Element1DResponse>> GetElement1dsAsync()
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Element1DResponse>> GetElement1dsAsync(string modelId, System.Collections.Generic.IEnumerable<string> element1dIds)
         {
-            return GetElement1dsAsync(System.Threading.CancellationToken.None);
+            return GetElement1dsAsync(modelId, element1dIds, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Element1DResponse>> GetElement1dsAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Element1DResponse>> GetElement1dsAsync(string modelId, System.Collections.Generic.IEnumerable<string> element1dIds, System.Threading.CancellationToken cancellationToken)
         {
+            if (modelId == null)
+                throw new System.ArgumentNullException("modelId");
+
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
@@ -2192,8 +2109,16 @@ namespace BeamOs.ApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/element1Ds"
-                    urlBuilder_.Append("api/element1Ds");
+                    // Operation Path: "api/models/{modelId}/element1Ds"
+                    urlBuilder_.Append("api/models/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/element1Ds");
+                    urlBuilder_.Append('?');
+                    if (element1dIds != null)
+                    {
+                        foreach (var item_ in element1dIds) { urlBuilder_.Append(System.Uri.EscapeDataString("element1dIds")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(item_, System.Globalization.CultureInfo.InvariantCulture))).Append('&'); }
+                    }
+                    urlBuilder_.Length--;
 
                     PrepareRequest(client_, request_, urlBuilder_);
 

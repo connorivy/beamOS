@@ -3,6 +3,7 @@
 //using BeamOS.PhysicalModel.Client;
 using System.Net.Http.Json;
 using BeamOs.ApiClient;
+using BeamOs.CodeGen.Apis.StructuralAnalysisApi;
 using BeamOs.Tests.TestRunner;
 using BeamOS.WebApp.Client;
 using BeamOs.WebApp.Client.Components;
@@ -42,6 +43,11 @@ var analysisUriString =
 builder
     .Services
     .AddHttpClient<IApiAlphaClient, ApiAlphaClient>(
+        client => client.BaseAddress = new(analysisUriString)
+    );
+builder
+    .Services
+    .AddHttpClient<IStructuralAnalysisApiAlphaClient, HttpApiClient>(
         client => client.BaseAddress = new(analysisUriString)
     );
 

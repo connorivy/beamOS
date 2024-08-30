@@ -40,4 +40,8 @@
     <ProjectReference Include="..\BeamOs.WebApp.EditorEvents\BeamOs.WebApp.Client.EditorCommands.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>

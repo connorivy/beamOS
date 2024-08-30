@@ -16,7 +16,7 @@ public class GetElement1ds(
     Element1DResponseMapper responseMapper
 ) : BeamOsFastEndpoint<GetElement1dsRequest, List<Element1DResponse>>(options)
 {
-    public override string Route => "element1Ds";
+    public override string Route => "models/{modelId}/element1Ds";
 
     public override Http EndpointType => Http.GET;
 

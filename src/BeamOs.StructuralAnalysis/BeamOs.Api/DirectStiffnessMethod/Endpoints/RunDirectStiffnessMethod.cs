@@ -13,18 +13,18 @@ public class RunDirectStiffnessMethod(
     BeamOsFastEndpointOptions options,
     RunDirectStiffnessMethodCommandHandler runDsmCommandHandler,
     NodeResultToResponseMapper nodeResultToResponseMapper
-) : BeamOsFastEndpoint<IdRequest, AnalyticalModelResponse3>(options)
+) : BeamOsFastEndpoint<ModelIdRequest, AnalyticalModelResponse3>(options)
 {
-    public override string Route => "/direct-stiffness-method/run/{id}";
+    public override string Route => "models/{modelId}/analyze/direct-stiffness-method";
 
     public override Http EndpointType => Http.GET;
 
     public override async Task<AnalyticalModelResponse3> ExecuteRequestAsync(
-        IdRequest req,
+        ModelIdRequest req,
         CancellationToken ct
     )
     {
-        var command = new RunDirectStiffnessMethodCommand(new ModelId(Guid.Parse(req.Id)));
+        var command = new RunDirectStiffnessMethodCommand(new ModelId(Guid.Parse(req.ModelId)));
 
         var model = await runDsmCommandHandler.ExecuteAsync(command, ct);
 
