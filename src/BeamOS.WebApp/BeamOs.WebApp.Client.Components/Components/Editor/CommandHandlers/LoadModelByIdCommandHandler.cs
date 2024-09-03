@@ -90,6 +90,11 @@ public class LoadModelCommandHandler(
             ct
         );
 
+        await changeComponentStateCommandHandler.ExecuteAsync(
+            new(command.CanvasId, state => state with { IsLoading = false, }),
+            CancellationToken.None
+        );
+
         return Result.Success();
     }
 }

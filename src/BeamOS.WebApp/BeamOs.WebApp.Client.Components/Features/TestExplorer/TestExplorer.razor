@@ -23,8 +23,11 @@
 <PageTitle>Test Explorer</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="h-full relative">
-    <ReadOnlyEditor @ref="readOnlyEditor" Class="h-full w-full z-0" />
-    <MudTabs MinimumTabWidth="20px" Elevation="1" Rounded="true" PanelClass="pa-6" Position="Position.Left" Class="h-full z-10 absolute top-0">
+    @{
+        var canvasId = this.readOnlyEditor?.CanvasId ?? ReadOnlyEditor.GetCanvasId();
+    }
+    <ReadOnlyEditor @ref="readOnlyEditor" Class="h-full w-full z-0" CanvasId="@canvasId" />
+    @* <MudTabs MinimumTabWidth="20px" Elevation="0" Rounded="true" PanelClass="p-4" Position="Position.Left" Class="z-10 absolute top-0">
         <MudTabPanel Icon="@Icons.Material.Filled.MenuBook" ToolTip="Select Test To Explore">
             <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="h-full pointer-events-auto">
                     <MudPaper Class="w-full h-full">
@@ -91,7 +94,65 @@
                 </div>
             </MudTabPanel>
         }
-    </MudTabs>
+    </MudTabs> *@
+    <TestExplorerNavigator CanvasId="@canvasId" />
+    @* <div class="flex absolute top-0 bottom-0 left-0 right-0 pointer-events-none">
+
+        <div class="flex flex-col h-fit pointer-events-auto">
+            <MudToggleIconButton Icon="@Icons.Material.Filled.MenuBook" ToggledIcon="@Icons.Material.Filled.MenuBook" ToggledColor="@Color.Primary"/>
+            @if (@TestExplorerState.Value.SelectedTestInfo?.SourceInfo is SourceInfo sourceInfo)
+            {
+                <MudToggleIconButton Icon="@Icons.Material.Filled.Info" ToggledIcon="@Icons.Material.Filled.Info" Title="Test Source Information" ToggledColor="@Color.Primary">
+                </MudToggleIconButton>
+            }
+        </div>
+        <div class="flex flex-col pointer-events-auto gap-y-2 p-4">
+            <MudPaper Class="w-full min-h-0 ">
+
+                    <MudList T="TestInfo" SelectedValueChanged="OnSelectedTestInfoChanged" Class="max-h-full overflow-auto">
+                        <MudListSubheader>
+                            <MudTextField @bind-Value="@searchTerm" AdornmentIcon="@Icons.Material.Filled.Brush"
+                                          Adornment="Adornment.End" Immediate="true" Variant="Variant.Outlined" />
+                        </MudListSubheader>
+
+                    @foreach (var kvp in TestInfoProvider.TestInfos.Values.GroupBy(t => t.TraitNameToValueDict.GetValueOrDefault(ProblemSourceAttribute.TRAIT_NAME) ?? "No Problem Source"))
+                    {
+                        <MudListItem Icon="@Icons.Material.Filled.Book" Text="@kvp.Key" Expanded="true">
+
+                            <NestedList>
+                                @foreach (var modelName in kvp.GroupBy(t => t.TraitNameToValueDict.GetValueOrDefault(ProblemNameAttribute.TRAIT_NAME) ?? "No Problem Name"))
+                                {
+                                    <MudListItem Icon="@Icons.Material.Outlined.Build"  Text="@modelName.Key">
+                                        <NestedList>
+                                            @foreach (var testInfo in modelName)
+                                            {
+                                                <MudListItem T="TestInfo" Value="@testInfo">
+                                                    <ChildContent>
+                                                    <MudStack Row="true">
+                                                        <RunTestButton TestId="@testInfo.Id" />
+                                                        <MudText>
+                                                            @testInfo.MethodInfo.Name
+                                                        </MudText>
+                                                    </MudStack>
+                                                </ChildContent>
+                                                </MudListItem>
+                                            }
+                                        </NestedList>
+                                    </MudListItem>
+                                }
+                            </NestedList>
+                        </MudListItem>
+                    }
+                    </MudList>
+                </MudPaper>
+                @if (@TestExplorerState.Value.SelectedTestInfo?.SourceInfo is SourceInfo sourceInfo2)
+                {
+                    <div class="h-fit">
+                        <SourceInfoView SourceInfo="@sourceInfo2"/>
+                    </div>
+                }
+            </div>
+        </div> *@
 </MudContainer>
 
 <style>
@@ -109,5 +170,6 @@
 
     .mud-tabs-tabbar {
         pointer-events: auto;
+        background: none;
     }
 </style>

@@ -2,18 +2,29 @@ using BeamOs.ApiClient.Builders;
 using BeamOs.Contracts.Common;
 using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Contracts.PhysicalModel.Node;
+using BeamOS.Tests.Common.Interfaces;
+using BeamOS.Tests.Common.Traits;
 using MathNet.Spatial.Euclidean;
 using UnitsNet;
 using UnitsNet.Units;
 
 namespace BeamOS.Tests.Common.SolvedProblems.ETABS_Models.Simple_3_Story_Diagonal;
 
-public partial class Simple_3_Story_Diagonal : CreateModelRequestBuilder
+[Sap2000Model]
+[ProblemName($"{nameof(Simple_3_Story_Diagonal)}")]
+public partial class Simple_3_Story_Diagonal : CreateModelRequestBuilder, IHasSourceInfo
 {
     public override Guid ModelGuid { get; } = Guid.Parse("28dc76b9-fa05-4a30-83c9-7c6e938116dd");
     public override PhysicalModelSettings Settings { get; } = new(UnitSettingsDtoVerbose.K_FT);
 
-    //public ModelSettings Settings { get; } = new(UnitSettings.K_FT);
+    public SourceInfo SourceInfo { get; } =
+        new(
+            Sap2000ModelAttribute.TRAIT_VALUE,
+            FixtureSourceType.SAP2000,
+            nameof(Simple_3_Story_Diagonal),
+            null,
+            null
+        );
 
     private int[] xValues = [0, 24, 48, 72];
     private int[] yValues = [0, 12, 24, 36];

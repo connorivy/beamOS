@@ -15,6 +15,9 @@ public partial class ReadOnlyEditor : ComponentBase, IAsyncDisposable
     [Parameter]
     public string? Class { get; set; }
 
+    [Parameter]
+    public string CanvasId { get; init; } = GetCanvasId();
+
     protected bool IsReadOnly { get; } = true;
 
     [Inject]
@@ -30,9 +33,10 @@ public partial class ReadOnlyEditor : ComponentBase, IAsyncDisposable
     protected ChangeComponentStateCommandHandler<EditorComponentState> ChangeComponentStateCommandHandler { get; init; }
 
     public EditorComponentState EditorComponentState =>
-        this.EditorComponentStateRepository.GetOrSetComponentStateByCanvasId(this.ElementId);
+        this.EditorComponentStateRepository.GetOrSetComponentStateByCanvasId(this.CanvasId);
 
-    public string ElementId { get; } = "id" + Guid.NewGuid().ToString("N");
+    public static string GetCanvasId() => "id" + Guid.NewGuid().ToString("N");
+
     public IEditorApiAlpha? EditorApiAlpha { get; private set; }
     const string physicalModelId = "00000000-0000-0000-0000-000000000000";
 
@@ -54,7 +58,7 @@ public partial class ReadOnlyEditor : ComponentBase, IAsyncDisposable
         if (firstRender)
         {
             this.EditorApiAlpha ??= await this.EditorApiProxyFactory.Create(
-                this.ElementId,
+                this.CanvasId,
                 this.IsReadOnly
             );
 
@@ -69,7 +73,7 @@ public partial class ReadOnlyEditor : ComponentBase, IAsyncDisposable
     public async Task LoadModel(string modelId)
     {
         await this.LoadModelCommandHandler.ExecuteAsync(
-            new LoadModelCommand(this.ElementId, modelId)
+            new LoadModelCommand(this.CanvasId, modelId)
         );
     }
 
@@ -78,7 +82,7 @@ public partial class ReadOnlyEditor : ComponentBase, IAsyncDisposable
     )
     {
         return await this.ChangeComponentStateCommandHandler.ExecuteAsync(
-            new(this.ElementId, stateMutation)
+            new(this.CanvasId, stateMutation)
         );
     }
 
@@ -91,7 +95,7 @@ public partial class ReadOnlyEditor : ComponentBase, IAsyncDisposable
             await asyncDisposable.DisposeAsync();
         }
 
-        this.EditorComponentStateRepository.RemoveEditorComponentStateForCanvasId(this.ElementId);
+        this.EditorComponentStateRepository.RemoveEditorComponentStateForCanvasId(this.CanvasId);
     }
 
     public async ValueTask DisposeAsync()

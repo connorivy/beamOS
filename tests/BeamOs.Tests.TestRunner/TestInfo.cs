@@ -12,7 +12,7 @@ public class TestInfo
         Type testClassType,
         object[]? testData,
         MethodInfo methodInfo,
-        Dictionary<string, string[]> traitNameToValueDict
+        Dictionary<string, string> traitNameToValueDict
     )
     {
         this.TestData = testData;
@@ -43,7 +43,7 @@ public class TestInfo
     public object[]? TestData { get; }
     public MethodInfo MethodInfo { get; }
     public Type TestClassType { get; }
-    public Dictionary<string, string[]> TraitNameToValueDict { get; }
+    public Dictionary<string, string> TraitNameToValueDict { get; }
 
     public FixtureBase2? GetTestFixture() => this.TestData?.FirstOrDefault() as FixtureBase2;
 

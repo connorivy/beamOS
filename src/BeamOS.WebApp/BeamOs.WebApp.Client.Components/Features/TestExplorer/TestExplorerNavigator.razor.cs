@@ -8,9 +8,10 @@ using Microsoft.AspNetCore.Components;
 
 namespace BeamOs.WebApp.Client.Components.Features.TestExplorer;
 
-public partial class TestExplorer : FluxorComponent
+public partial class TestExplorerNavigator : FluxorComponent
 {
-    public const string Href = "/test-explorer";
+    [Parameter]
+    public required string CanvasId { get; init; }
 
     [Inject]
     private IState<TestExplorerState> TestExplorerState { get; init; }
@@ -100,24 +101,58 @@ public partial class TestExplorer : FluxorComponent
             this.StateHasChanged();
         });
 
-        //foreach (var testInfo in this.TestInfoProvider.TestInfos.Values)
+        //foreach (KeyValuePair<string, TestInfo> item in this.TestInfoProvider.TestInfos.Values.GroupBy(t => t.SourceInfo.SourceType))
         //{
-        //    this.Dispatcher.Dispatch(new CreateSingleTestStateAction(testInfo.Id));
+
         //}
+    }
+
+    private async Task OnSelectedExampleProblemChanged(List<TestInfo>? testInfos)
+    {
+        this.Dispatcher.Dispatch(new ChangeSelectedProblemTests(testInfos));
+        if (testInfos is null || testInfos.Count == 0)
+        {
+            //await this.readOnlyEditor.EditorApiAlpha.ClearAsync();
+            return;
+        }
+
+        if (testInfos.First().GetTestFixture() is FixtureBase2 fixtureBase)
+        {
+            //await this.readOnlyEditor.EditorApiAlpha.ClearAsync();
+            await this.TestFixtureDisplayer.Display(fixtureBase, this.CanvasId);
+        }
+
+        //ITestFixtureDisplayable? displayable = testInfo.GetDisplayable();
+        //if (displayable != this.TestExplorerState.Value.SelectedTestInfo?.GetDisplayable())
+        //{
+        //    await this.readOnlyEditor.EditorApiAlpha.ClearAsync();
+        //    if (displayable is not null)
+        //    {
+        //        await displayable.Display(this.readOnlyEditor.EditorApiAlpha);
+        //    }
+        //}
+
+        //this.Dispatcher.Dispatch(new ChangeSelectedTestInfoAction(testInfos));
+        //this.Dispatcher.Dispatch(new ExecutionTestAction(testInfos));
+        //this.Dispatcher.Dispatch(new TestExecutionBegun());
+
+        //TestResult result = await this.TestInfoStateProvider.GetOrComputeTestResult(testInfo);
+
+        //this.Dispatcher.Dispatch(new TestExecutionCompleted(result));
     }
 
     private async Task OnSelectedTestInfoChanged(TestInfo? testInfo)
     {
         if (testInfo is null)
         {
-            await this.readOnlyEditor.EditorApiAlpha.ClearAsync();
+            //await this.readOnlyEditor.EditorApiAlpha.ClearAsync();
             return;
         }
 
         if (testInfo.GetTestFixture() is FixtureBase2 fixtureBase)
         {
-            await this.readOnlyEditor.EditorApiAlpha.ClearAsync();
-            await this.TestFixtureDisplayer.Display(fixtureBase, this.readOnlyEditor.CanvasId);
+            //await this.readOnlyEditor.EditorApiAlpha.ClearAsync();
+            //await this.TestFixtureDisplayer.Display(fixtureBase, this.readOnlyEditor.CanvasId);
         }
 
         //ITestFixtureDisplayable? displayable = testInfo.GetDisplayable();
@@ -137,6 +172,29 @@ public partial class TestExplorer : FluxorComponent
         //TestResult result = await this.TestInfoStateProvider.GetOrComputeTestResult(testInfo);
 
         //this.Dispatcher.Dispatch(new TestExecutionCompleted(result));
+    }
+
+    private void GoBack()
+    {
+        this.Dispatcher.Dispatch(new ChangeSelectedProblemTests(null));
+    }
+
+    private bool ShowProblemSource
+    {
+        get => this.TestExplorerState.Value.ShowProblemSource;
+        set => this.Dispatcher.Dispatch(new ChangeShowProblemSource(value));
+    }
+
+    private bool ShowTestSelector
+    {
+        get => this.TestExplorerState.Value.ShowTestSelector;
+        set => this.Dispatcher.Dispatch(new ChangeShowTestSelector(value));
+    }
+
+    private bool ShowTestResults
+    {
+        get => this.TestExplorerState.Value.ShowTestResults;
+        set => this.Dispatcher.Dispatch(new ChangeShowTestResults(value));
     }
 
     private void OnSelectedTraitChanged(IEnumerable<string> selectedTraits)

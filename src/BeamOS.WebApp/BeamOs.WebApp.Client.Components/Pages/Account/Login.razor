@@ -66,6 +66,8 @@
 
     private string? FullExternalLoginReturnUrl { get; set; }
 
+    public const string Href = "/login";
+
     protected override void OnParametersSet()
     {
         // UriHelper.FromAbsolute(NavigationManager.BaseUri, out string scheme, out HostString host, out _, out _, out _);

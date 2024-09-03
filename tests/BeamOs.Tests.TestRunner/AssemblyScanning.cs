@@ -12,7 +12,7 @@ public static class AssemblyScanning
 {
     public static IEnumerable<Assembly> TestAssemblies()
     {
-        //yield return typeof(IAssemblyMarkerApiIntegrationTests).Assembly;
+        yield return typeof(IAssemblyMarkerApiIntegrationTests).Assembly;
         yield return typeof(IAssemblyMarkerDomainIntegrationTests).Assembly;
         yield return typeof(IAssemblyMarkerDomainUnitTests).Assembly;
     }
@@ -94,7 +94,7 @@ public static class AssemblyScanning
                             .GroupBy(attr => attr.TraitName)
                             .ToDictionary(
                                 g => g.Key,
-                                g => g.Select(attr => attr.TraitValue).ToArray()
+                                g => g.Select(attr => attr.TraitValue).First()
                             )
                     );
                 }
@@ -110,7 +110,7 @@ public static class AssemblyScanning
                     .GetCustomAttributes<TestBaseAttribute>()
                     .Concat(classType.GetCustomAttributes<TestBaseAttribute>())
                     .GroupBy(attr => attr.TraitName)
-                    .ToDictionary(g => g.Key, g => g.Select(attr => attr.TraitValue).ToArray())
+                    .ToDictionary(g => g.Key, g => g.Select(attr => attr.TraitValue).First())
             );
         }
     }

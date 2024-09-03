@@ -206,11 +206,12 @@ public partial class EditorComponent : ComponentBase, IAsyncDisposable
 public record EditorComponentState(
     bool IsLoading,
     string LoadingText,
+    string? CanvasId,
     string? LoadedModelId,
     IEditorApiAlpha? EditorApi,
     SelectedObject[] SelectedObjects
 )
 {
     public EditorComponentState()
-        : this(true, "Loading beamOS editor", null, null, []) { }
+        : this(true, "Loading beamOS editor", null, null, null, []) { }
 }
