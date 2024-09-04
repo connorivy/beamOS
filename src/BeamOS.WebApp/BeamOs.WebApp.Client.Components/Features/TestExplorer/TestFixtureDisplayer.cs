@@ -1,3 +1,4 @@
+using BeamOs.ApiClient.Builders;
 using BeamOS.Tests.Common.Fixtures;
 using BeamOS.Tests.Common.Fixtures.Mappers;
 using BeamOs.WebApp.Client.Components.Components.Editor.CommandHandlers;
@@ -32,7 +33,7 @@ public class TestFixtureDisplayer
         }
     }
 
-    public async Task Display(FixtureBase2 fixture, string canvasId)
+    public async Task Display(IHasFixtureId fixture, string canvasId)
     {
         if (fixture is Element1dFixture2 element1DFixture)
         {

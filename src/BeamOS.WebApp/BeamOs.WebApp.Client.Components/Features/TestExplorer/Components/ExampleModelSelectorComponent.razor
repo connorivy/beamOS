@@ -1,0 +1,58 @@
+@using BeamOS.Tests.Common.Fixtures
+@using BeamOS.Tests.Common.Interfaces
+@using BeamOs.ApiClient.Builders
+@using BeamOs.Tests.TestRunner
+
+<MudText Align="Align.Center" Typo="Typo.h5" Color="Color.Primary" Class="pt-4">Select an Example Problem</MudText>
+
+<MudList T="List<TestInfo>" SelectedValueChanged="OnSelectedExampleProblemChanged">
+    @foreach (var testInfoGroup in TestInfoProvider.TestInfos.Values.GroupBy(t => t.SourceInfo?.SourceType ?? FixtureSourceType.Standalone))
+    {
+        <MudListItem Icon="@Icons.Material.Filled.Book" Text="@testInfoGroup.Key.ToString()">
+            <NestedList>
+                @foreach (var testInfoGroupBySourceName in testInfoGroup.GroupBy(t => t.SourceInfo?.SourceName))
+                {
+                    <MudListItem Icon="@Icons.Material.Outlined.Build" Text="@testInfoGroupBySourceName.Key">
+                        <NestedList>
+                            @foreach (var testInfoByModelName in testInfoGroup.GroupBy(t => t.SourceInfo?.ModelName))
+                        {
+                            <MudListItem Icon="@Icons.Material.Outlined.Abc" Text="@testInfoByModelName.Key" Value="@testInfoByModelName.ToList()"></MudListItem>
+                        }
+                    </NestedList>
+                </MudListItem>
+                }
+            </NestedList>
+        </MudListItem>
+    }
+</MudList>
+
+@code {
+    [Parameter]
+    public required string CanvasId { get; init; }
+
+    [Inject]
+    private IDispatcher Dispatcher { get; init; }
+
+    [Inject]
+    private TestInfoProvider TestInfoProvider { get; init; }
+
+    [Inject]
+    private TestFixtureDisplayer TestFixtureDisplayer { get; init; }
+
+    private async Task OnSelectedExampleProblemChanged(List<TestInfo>? testInfos)
+    {
+        this.Dispatcher.Dispatch(new ChangeSelectedProblemTests(testInfos));
+
+        if (testInfos is null || testInfos.Count == 0)
+        {
+            //await this.readOnlyEditor.EditorApiAlpha.ClearAsync();
+            return;
+        }
+
+        if (testInfos.First().GetTestFixture() is IHasFixtureId fixtureBase)
+        {
+            //await this.readOnlyEditor.EditorApiAlpha.ClearAsync();
+            await this.TestFixtureDisplayer.Display(fixtureBase, this.CanvasId);
+        }
+    }
+}

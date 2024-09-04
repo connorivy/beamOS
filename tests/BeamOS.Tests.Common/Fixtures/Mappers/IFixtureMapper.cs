@@ -1,3 +1,4 @@
+using BeamOs.ApiClient.Builders;
 using BeamOs.Common.Application.Interfaces;
 using BeamOs.Contracts.PhysicalModel.Common;
 
@@ -14,5 +15,5 @@ public interface IFixtureMapper<TFrom> : IFixtureMapper
 
 public interface IFixtureMapper
 {
-    BeamOsEntityContractBase Map(FixtureBase2 source);
+    BeamOsEntityContractBase Map(IHasFixtureId source);
 }

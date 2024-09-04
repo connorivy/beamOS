@@ -4,12 +4,13 @@ using BeamOs.Contracts.Common;
 
 namespace BeamOs.Contracts.PhysicalModel.Model;
 
-public record CreateModelRequest(
-    string Name,
-    string Description,
-    PhysicalModelSettings Settings,
-    string? Id = null
-);
+public record CreateModelRequest
+{
+    public required string Name { get; init; }
+    public required string Description { get; init; }
+    public required PhysicalModelSettings Settings { get; init; }
+    public string? Id { get; init; }
+}
 
 public record PhysicalModelSettings
 {
@@ -33,11 +34,12 @@ public record PhysicalModelSettings
 
 public record AnalysisSettingsContract
 {
-    public Element1dAnalysisType Element1DAnalysisType { get; set; }
+    public Element1dAnalysisType Element1DAnalysisType { get; set; } =
+        Element1dAnalysisType.Timoshenko;
 
-    public AnalysisSettingsContract(Element1dAnalysisType element1DAnalysisType)
+    public AnalysisSettingsContract(Element1dAnalysisType? element1DAnalysisType)
     {
-        this.Element1DAnalysisType = element1DAnalysisType;
+        this.Element1DAnalysisType = element1DAnalysisType ?? Element1dAnalysisType.Timoshenko;
     }
 
     public AnalysisSettingsContract()

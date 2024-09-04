@@ -1,34 +1,32 @@
-<MudGrid Class="w-full max-h-full m-0" Spacing="1">
-        <MudItem sm="12" xl="4">
-            <MudSimpleTable Dense="true" Class="w-fit max-h-full pointer-events-auto">
-                @* <thead class="font-bold">
-                    <tr>
-                        <th colspan="@matrix.GetLength(1)" class="justify-center center-content !font-bold">
-                            @header
-                        </th>
-                    </tr>
-                </thead> *@
-                <tbody>
-    @foreach (var (header, matrix) in ExpectedCalculatedDifferenceEnumerable)
-    {
-                    <tr>
-                        <th colspan="@matrix.GetLength(1)" class="justify-center center-content !font-bold border-0 bg-transparent">
-                            <MudText Color="Color.Primary">@header</MudText>
-                        </th>
-                    </tr>
-                    @for (int rowIndex = 0; rowIndex < matrix.GetLength(0); rowIndex++)
+<MudCard>
+    <MudSimpleTable Dense="true" Class="min-w-fit max-h-full pointer-events-auto">
+        @* <thead class="font-bold">
+            <tr>
+                <th colspan="@matrix.GetLength(1)" class="justify-center center-content !font-bold">
+                    @header
+                </th>
+            </tr>
+        </thead> *@
+        <tbody>
+        @foreach (var (header, matrix) in ExpectedCalculatedDifferenceEnumerable)
+        {
+            <tr>
+                <td colspan="@matrix.GetLength(1)" class="justify-center center-content !font-bold border-0 bg-transparent">
+                    <MudText Color="Color.Primary">@header</MudText>
+                </td>
+            </tr>
+            @for (int rowIndex = 0; rowIndex < matrix.GetLength(0); rowIndex++)
+            {
+                <tr>
+                    @for (int colIndex = 0; colIndex < matrix.GetLength(1); colIndex++)
                     {
-                        <tr>
-                            @for (int colIndex = 0; colIndex < matrix.GetLength(1); colIndex++)
-                            {
-                                <td class="!px-2 !py-0 border-none">
-                                    @Math.Round(matrix[rowIndex, colIndex], 4)
-                                </td>
-                            }
-                        </tr>
+                        <td class="!px-2 !py-0 border-none">
+                            @Math.Round(matrix[rowIndex, colIndex], 4)
+                        </td>
                     }
-    }
-                </tbody>
-            </MudSimpleTable>
-        </MudItem>
-</MudGrid>
+                </tr>
+            }
+        }
+        </tbody>
+    </MudSimpleTable>
+</MudCard>

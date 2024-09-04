@@ -43,4 +43,11 @@ public partial class Models : FluxorComponent
 
         await base.OnInitializedAsync();
     }
+
+    private Task CreateModelDialog()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        return DialogService.ShowAsync<CreateModelDialog>("Create Model", options);
+    }
 }

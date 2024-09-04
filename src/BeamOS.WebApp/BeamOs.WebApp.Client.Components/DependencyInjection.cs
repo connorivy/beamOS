@@ -5,6 +5,7 @@ using BeamOs.CodeGen.Apis.StructuralAnalysisApi;
 using BeamOs.Common.Identity;
 using BeamOS.Tests.Common.Fixtures.Mappers;
 using BeamOS.Tests.Common.Interfaces;
+using BeamOs.Tests.TestRunner;
 using BeamOs.WebApp.Client.Components.Caches;
 using BeamOs.WebApp.Client.Components.Components.Editor;
 using BeamOs.WebApp.Client.Components.Components.Editor.CommandHandlers;
@@ -29,6 +30,7 @@ public static class DependencyInjection
         this IServiceCollection services
     )
     {
+        services.RegisterTestClasses();
         _ = services.AddTransient<IEditorApiProxyFactory, EditorApiProxyFactory>();
         _ = services.AddSingleton<StructuralAnalysisApiAlphaClientFactory>();
         _ = services.AddTransient<EditorEventsApi>();

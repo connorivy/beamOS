@@ -43,7 +43,7 @@ public record CreatePointLoadRequestBuilder : CreateModelEntityRequestBuilderBas
     public required UnitVector3D Direction { get; init; }
 }
 
-public abstract record CreateModelEntityRequestBuilderBase
+public abstract record CreateModelEntityRequestBuilderBase : IHasFixtureId
 {
     public FixtureId ModelId { get; internal init; }
     public FixtureId Id { get; init; } = Guid.NewGuid().ToString();

@@ -1,3 +1,4 @@
+using BeamOs.ApiClient.Builders;
 using BeamOs.Application.Common.Mappers;
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Contracts.PhysicalModel.Common;
@@ -20,7 +21,8 @@ public class Element1dFixtureToResponseMapper : IFixtureMapper<Element1dFixture2
 {
     public Element1DResponse Map(Element1dFixture2 source) => source.ToContract();
 
-    public BeamOsEntityContractBase Map(FixtureBase2 source) => this.Map((Element1dFixture2)source);
+    public BeamOsEntityContractBase Map(IHasFixtureId source) =>
+        this.Map((Element1dFixture2)source);
 
     BeamOsEntityContractBase IFixtureMapper<Element1dFixture2>.Map(Element1dFixture2 source) =>
         this.Map(source);
@@ -38,7 +40,7 @@ public class ModelFixtureToResponseMapper : IFixtureMapper<ModelFixture2, ModelR
 {
     public ModelResponse Map(ModelFixture2 source) => source.ToContract();
 
-    public BeamOsEntityContractBase Map(FixtureBase2 source) => this.Map((ModelFixture2)source);
+    public BeamOsEntityContractBase Map(IHasFixtureId source) => this.Map((ModelFixture2)source);
 
     BeamOsEntityContractBase IFixtureMapper<ModelFixture2>.Map(ModelFixture2 source) =>
         this.Map(source);

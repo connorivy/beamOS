@@ -7,8 +7,6 @@
 
 @inherits FluxorComponent
 
-<MudDialogProvider />
-
 <PageTitle>Models</PageTitle>
 
 <AuthorizeView>
@@ -20,7 +18,7 @@
                         <MudTextField T="string" Placeholder="Search..." Icon="Icons.Material.Filled.Search" />
                     </MudItem>
                     <MudItem xs="3" Class="d-flex justify-end">
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="Icons.Material.Filled.Add">New Project</MudButton>
+                        <MudButton @onclick="CreateModelDialog" Variant="Variant.Filled" Color="Color.Primary" StartIcon="Icons.Material.Filled.Add">New Project</MudButton>
                     </MudItem>
                 </MudGrid>
 

@@ -70,7 +70,7 @@ else if (this.ObjectToDisplay is IEnumerable enumerable)
     int counter = 0;
     foreach (var item in enumerable)
     {
-        <SelectionInfoSingleItemComponent2 ObjectName="@($"{this.ObjectName}-{counter++}")" ObjectToDisplay="@item" ObjType="@item.GetType()" ></SelectionInfoSingleItemComponent2>
+        <SelectionInfoSingleItemComponent2 ObjectName="@($"{this.ObjectName}-{counter++}")" ObjectToDisplay="@item" ></SelectionInfoSingleItemComponent2>
     }   
 }
 else

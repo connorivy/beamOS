@@ -1,7 +1,9 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace BeamOs.WebApp.Client.Components.Features.StructuralApiClient;
 
+[JsonConverter(typeof(ComplexFieldTypeMarkerConverter))]
 public class ComplexFieldTypeMarker(bool isRequired) : Dictionary<string, object?>
 {
     [JsonIgnore]
@@ -29,4 +31,40 @@ public class ComplexFieldTypeMarker(bool isRequired) : Dictionary<string, object
     }
 
     public void Set(string key, object value) => this[key] = value;
+}
+
+public class ComplexFieldTypeMarkerConverter : JsonConverter<ComplexFieldTypeMarker>
+{
+    public override ComplexFieldTypeMarker? Read(
+        ref Utf8JsonReader reader,
+        Type typeToConvert,
+        JsonSerializerOptions options
+    ) => throw new NotImplementedException();
+
+    public override void Write(
+        Utf8JsonWriter writer,
+        ComplexFieldTypeMarker value,
+        JsonSerializerOptions options
+    )
+    {
+        writer.WriteStartObject();
+        foreach (var kvp in value.ValuesWithDisplayInformation)
+        {
+            if (
+                kvp.Value is SimpleFieldTypeMarker simpleFieldTypeMarker
+                && !simpleFieldTypeMarker.IsRequired
+                && value[kvp.Key] is null
+            )
+            {
+                // Removes optional values that the user hasn't given a value to.
+                // If we don't remove these values, then they could potentially later get
+                // deserialize to a value type from null.
+                continue;
+            }
+
+            writer.WritePropertyName(kvp.Key);
+            JsonSerializer.Serialize(writer, value[kvp.Key], options);
+        }
+        writer.WriteEndObject();
+    }
 }

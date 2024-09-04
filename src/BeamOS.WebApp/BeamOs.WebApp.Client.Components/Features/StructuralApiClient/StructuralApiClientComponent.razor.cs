@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using BeamOs.CodeGen.Apis.StructuralAnalysisApi;
 using BeamOs.Contracts.PhysicalModel.Common;
@@ -199,5 +200,57 @@ public partial class StructuralApiClientComponent : FluxorComponent
     private void GoBack()
     {
         this.Dispatcher.Dispatch(new ApiClientMethodSelected(null));
+    }
+
+    public static ComplexFieldTypeMarker GetParameterProperties(
+        Type parameterType,
+        string modelId,
+        bool isObjectRequired,
+        int numSelectableFieldsCreated = 0
+    )
+    {
+        int numItemsFilledIn = 0;
+        ComplexFieldTypeMarker parameterProps = new(isObjectRequired);
+        foreach (
+            PropertyInfo property in parameterType.GetProperties(
+                BindingFlags.Public | BindingFlags.Instance
+            )
+        )
+        {
+            var isPropRequired = property.GetCustomAttribute<RequiredMemberAttribute>() is not null;
+            Type propertyType =
+                Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
+            if (SelectionInfoSingleItemComponent2.IsSimpleType(propertyType))
+            {
+                parameterProps.Add2(
+                    property.Name,
+                    new SimpleFieldTypeMarker()
+                    {
+                        FieldType = propertyType,
+                        FieldNum = numSelectableFieldsCreated++,
+                        IsRequired = isObjectRequired && isPropRequired
+                    }
+                );
+                if (property.Name == "ModelId")
+                {
+                    parameterProps.Set(property.Name, modelId);
+                    numItemsFilledIn++;
+                }
+            }
+            else
+            {
+                parameterProps.Add2(
+                    property.Name,
+                    GetParameterProperties(
+                        propertyType,
+                        modelId,
+                        isObjectRequired && isPropRequired,
+                        numSelectableFieldsCreated
+                    )
+                );
+            }
+        }
+        parameterProps.NumRecordsAutoFilled = numItemsFilledIn;
+        return parameterProps;
     }
 }

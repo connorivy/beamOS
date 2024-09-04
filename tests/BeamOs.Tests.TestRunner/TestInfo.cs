@@ -3,6 +3,8 @@ using System.Text;
 using BeamOS.Tests.Common;
 using BeamOS.Tests.Common.Fixtures;
 using BeamOS.Tests.Common.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
+using Xunit;
 
 namespace BeamOs.Tests.TestRunner;
 
@@ -50,7 +52,7 @@ public class TestInfo
     public SourceInfo? SourceInfo =>
         (this.TestData?.FirstOrDefault() as IHasSourceInfo)?.SourceInfo;
 
-    public async Task<TestResult> RunTest()
+    public async Task<TestResult> RunTest(IServiceProvider serviceProvider)
     {
         TaskCompletionSource<TestResult> tcs = new();
         TestResult? result = null;
@@ -70,7 +72,7 @@ public class TestInfo
 
         try
         {
-            await this.RunAndThrow();
+            await this.RunAndThrow(serviceProvider);
             tcs.SetResult(result ?? throw new Exception("Result was unset"));
         }
         catch (TargetInvocationException ex) when (ex.InnerException is Xunit.SkipException skipEx)
@@ -92,13 +94,15 @@ public class TestInfo
         return await tcs.Task;
     }
 
-    private async Task RunAndThrow()
+    private async Task RunAndThrow(IServiceProvider serviceProvider)
     {
-        // todo : will fail for tests with constructor
-        object? test = this.MethodInfo.Invoke(
-            Activator.CreateInstance(this.TestClassType),
-            this.TestData
-        );
+        object? testClass = serviceProvider.GetRequiredService(this.TestClassType);
+        if (testClass is IAsyncLifetime asyncLifetime)
+        {
+            await asyncLifetime.InitializeAsync();
+        }
+        object? test = this.MethodInfo.Invoke(testClass, this.TestData);
+
         if (test is Task t)
         {
             await t.ConfigureAwait(false);

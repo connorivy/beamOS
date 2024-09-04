@@ -1,7 +1,13 @@
 using BeamOs.ApiClient;
 using BeamOs.ApiClient.Builders;
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
+using BeamOs.Contracts.PhysicalModel.Model;
+using BeamOs.Domain.PhysicalModel.Element1DAggregate;
+using BeamOs.Domain.PhysicalModel.ModelAggregate;
+using BeamOs.Domain.PhysicalModel.NodeAggregate;
+using BeamOS.Tests.Common;
 using BeamOS.Tests.Common.Fixtures;
+using BeamOS.Tests.Common.Fixtures.Mappers.ToDomain;
 using BeamOS.Tests.Common.SolvedProblems;
 using UnitsNet;
 
@@ -9,13 +15,18 @@ namespace BeamOs.Api.IntegrationTests;
 
 public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IAsyncLifetime
 {
-    private readonly ApiAlphaClient apiClient;
+    private readonly IApiAlphaClient apiClient;
     private readonly Dictionary<string, IModelFixtureInDb> modelIdToModelFixtureDict = [];
 
     public UnitTest1(CustomWebApplicationFactory<Program> webApplicationFactory)
     {
         var httpClient = webApplicationFactory.CreateClient();
         this.apiClient = new ApiAlphaClient(httpClient);
+    }
+
+    public UnitTest1(IApiAlphaClient apiAlphaClient)
+    {
+        this.apiClient = apiAlphaClient;
     }
 
     public async Task InitializeAsync()
@@ -32,10 +43,37 @@ public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IA
         AllCreateModelRequestBuilders allModelBuilders = new();
         foreach (var modelBuilder in allModelBuilders.GetItems())
         {
-            await modelBuilder.InitializeAsync();
-            await modelBuilder.Create(this.apiClient);
+            ModelResponse? modelResponse;
+            try
+            {
+                modelResponse = await this.apiClient.GetModelAsync(
+                    modelBuilder.Id.ToString(),
+
+                    [
+                        nameof(Model.Nodes),
+                        nameof(Model.Element1ds),
+                        $"{nameof(Model.Element1ds)}.{nameof(Element1D.SectionProfile)}",
+                        $"{nameof(Model.Element1ds)}.{nameof(Element1D.Material)}",
+                        $"{nameof(Model.Nodes)}.{nameof(Node.PointLoads)}",
+                        $"{nameof(Model.Nodes)}.{nameof(Node.MomentLoads)}"
+                    ]
+                );
+            }
+            catch (Exception ex)
+            {
+                modelResponse = null;
+            }
+            if (modelResponse is not null)
+            {
+                modelBuilder.InitializeFromModelResponse(modelResponse);
+            }
+            else
+            {
+                await modelBuilder.InitializeAsync();
+                await modelBuilder.Create(this.apiClient);
+                await this.apiClient.RunDirectStiffnessMethodAsync(modelBuilder.Id.ToString());
+            }
             this.modelIdToModelFixtureDict.Add(modelBuilder.Id.ToString(), modelBuilder);
-            await this.apiClient.RunDirectStiffnessMethodAsync(modelBuilder.Id.ToString());
         }
     }
 
@@ -68,6 +106,8 @@ public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IA
 
         foreach (var expectedNodeDisplacementResult in modelFixture.ExpectedNodeDisplacementResults)
         {
+            //Asserter
+
             var dbId = dbModelFixture.RuntimeIdToDbId(expectedNodeDisplacementResult.NodeId);
             var nodeResults = await this.apiClient.GetSingleNodeResultAsync(dbId);
 

@@ -1,0 +1,48 @@
+@using BeamOs.Tests.TestRunner
+<MudPaper Class="w-full basis-1/3 grow min-h-0 point-events-auto">
+    <MudList T="TestInfo" SelectedValueChanged="OnSelectedTestInfoChanged" Class="max-h-full overflow-auto">
+        <MudListSubheader Class="px-4 py-2">
+            <MudText Color="Color.Primary">Test Selector</MudText>
+        </MudListSubheader>
+        @* <MudListSubheader>
+        <MudTextField @bind-Value="@searchTerm" AdornmentIcon="@Icons.Material.Filled.Brush"
+        Adornment="Adornment.End" Immediate="true" Variant="Variant.Outlined" />
+        </MudListSubheader> *@
+
+        @foreach (var testInfo in this.TestExplorerState.Value.SelectedProblemTests)
+        {
+            <MudTooltip Text="@testInfo.MethodInfo.Name">
+                <MudListItem Icon="@Icons.Material.Filled.Book" Text="@testInfo.MethodInfo.Name" Expanded="true" Value="@testInfo" />
+            </MudTooltip>
+        }
+    </MudList>
+</MudPaper>
+
+@code {
+    [Inject]
+    private IState<TestExplorerState> TestExplorerState { get; init; }
+
+    [Inject]
+    private IDispatcher Dispatcher { get; init; }
+
+    [Inject]
+    private TestInfoProvider TestInfoProvider { get; init; }
+
+    [Inject]
+    private IServiceProvider ServiceProvider { get; init; }
+
+    private async Task OnSelectedTestInfoChanged(TestInfo? testInfo)
+    {
+        this.Dispatcher.Dispatch(new ChangeSelectedTestInfoAction(testInfo));
+        await this.HandleExecuteTestAction(testInfo.Id);
+    }
+
+    private async Task HandleExecuteTestAction(string testId)
+    {
+        TestInfo testInfo = this.TestInfoProvider.TestInfos[testId];
+
+        // todo : get and add to cache
+        TestResult result = await testInfo.RunTest(this.ServiceProvider);
+        this.Dispatcher.Dispatch(new ExecutionTestActionResult(testId, result));
+    }
+}

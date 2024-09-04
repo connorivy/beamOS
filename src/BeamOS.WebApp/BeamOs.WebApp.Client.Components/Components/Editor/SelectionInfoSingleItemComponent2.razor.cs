@@ -93,7 +93,15 @@ public partial class SelectionInfoSingleItemComponent2 : ComponentBase
         typeof(Guid)
     ];
 
-    public static bool IsSimpleType(Type t) => simpleTypes.Contains(t);
+    public static bool IsSimpleType(Type t)
+    {
+        if (t.BaseType == typeof(Enum))
+        {
+            return true;
+        }
+
+        return simpleTypes.Contains(t);
+    }
 
     private static readonly Converter<object> StringObjectConverter =
         new() { SetFunc = value => value?.ToString(), GetFunc = text => text?.ToString(), };

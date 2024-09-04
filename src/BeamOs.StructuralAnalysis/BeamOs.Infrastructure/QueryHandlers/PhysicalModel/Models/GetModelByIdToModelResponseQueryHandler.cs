@@ -43,10 +43,15 @@ internal sealed class GetModelByIdToModelResponseQueryHandler(BeamOsStructuralDb
         }
 
         Model? model = await queryable.FirstOrDefaultAsync(cancellationToken: ct);
+        if (model is null)
+        {
+            return null;
+        }
+
         var modelToModelResponseMapper = ModelToModelResponseMapper.Create(
             model.Settings.UnitSettings
         );
 
-        return model is not null ? modelToModelResponseMapper.Map(model) : null;
+        return modelToModelResponseMapper.Map(model);
     }
 }

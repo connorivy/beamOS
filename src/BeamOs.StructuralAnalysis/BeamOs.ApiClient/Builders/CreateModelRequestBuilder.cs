@@ -1,8 +1,12 @@
 using System.Text.Json;
+using BeamOs.Contracts.PhysicalModel.Model;
 
 namespace BeamOs.ApiClient.Builders;
 
-public abstract partial class CreateModelRequestBuilder : IModelFixtureInDb, IModelFixture
+public abstract partial class CreateModelRequestBuilder
+    : IModelFixtureInDb,
+        IModelFixture,
+        IHasFixtureId
 {
     public abstract Guid ModelGuid { get; }
     public FixtureId Id => this.ModelGuid;
@@ -107,7 +111,7 @@ public abstract partial class CreateModelRequestBuilder : IModelFixtureInDb, IMo
         return Task.CompletedTask;
     }
 
-    public async Task Create(ApiAlphaClient client)
+    public async Task Create(IApiAlphaClient client)
     {
         this.runtimeIdToDbIdDict[this.Id] = this.Id.Id;
 
@@ -197,11 +201,11 @@ public abstract partial class CreateModelRequestBuilder : IModelFixtureInDb, IMo
     }
 }
 
-public class ModelRequestBuilderDeserializationModel
-{
-    public IEnumerable<CreateElement1dRequestBuilder> Element1ds { get; init; }
-    public IEnumerable<CreateNodeRequestBuilder> Nodes { get; init; }
-    public IEnumerable<CreatePointLoadRequestBuilder> PointLoads { get; init; }
-    public IEnumerable<CreateMaterialRequestBuilder> Materials { get; init; }
-    public IEnumerable<CreateSectionProfileRequestBuilder> SectionProfiles { get; init; }
-}
+//public class ModelRequestBuilderDeserializationModel
+//{
+//    public IEnumerable<CreateElement1dRequestBuilder> Element1ds { get; init; }
+//    public IEnumerable<CreateNodeRequestBuilder> Nodes { get; init; }
+//    public IEnumerable<CreatePointLoadRequestBuilder> PointLoads { get; init; }
+//    public IEnumerable<CreateMaterialRequestBuilder> Materials { get; init; }
+//    public IEnumerable<CreateSectionProfileRequestBuilder> SectionProfiles { get; init; }
+//}
