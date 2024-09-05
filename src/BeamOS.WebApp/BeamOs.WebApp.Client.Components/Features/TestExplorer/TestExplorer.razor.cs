@@ -122,4 +122,15 @@ public partial class TestExplorer : FluxorComponent
         EventEmitter.VisibleStateChanged -= this.EventEmitter_VisibleStateChanged;
         return base.DisposeAsyncCore(disposing);
     }
+
+    private string GetCanvasId()
+    {
+        if (this.readOnlyEditor?.CanvasId is string canvasId)
+        {
+            return canvasId;
+        }
+        var newCanvasId = ReadOnlyEditor.GetCanvasId();
+        this.Dispatcher.Dispatch(new CanvasIdSet(newCanvasId));
+        return newCanvasId;
+    }
 }

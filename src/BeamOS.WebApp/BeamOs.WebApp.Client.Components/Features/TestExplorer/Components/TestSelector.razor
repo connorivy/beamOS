@@ -1,13 +1,14 @@
 @using BeamOs.Tests.TestRunner
+@using BeamOs.WebApp.Client.EditorCommands
+
+@inherits FluxorComponent
+
 <MudPaper Class="w-full basis-1/3 grow min-h-0 point-events-auto">
-    <MudList T="TestInfo" SelectedValueChanged="OnSelectedTestInfoChanged" Class="max-h-full overflow-auto">
+    @* <MudList T="TestInfo" SelectedValueChanged="OnSelectedTestInfoChanged" Class="max-h-full overflow-auto">
         <MudListSubheader Class="px-4 py-2">
             <MudText Color="Color.Primary">Test Selector</MudText>
         </MudListSubheader>
-        @* <MudListSubheader>
-        <MudTextField @bind-Value="@searchTerm" AdornmentIcon="@Icons.Material.Filled.Brush"
-        Adornment="Adornment.End" Immediate="true" Variant="Variant.Outlined" />
-        </MudListSubheader> *@
+        
 
         @foreach (var testInfo in this.TestExplorerState.Value.SelectedProblemTests)
         {
@@ -15,12 +16,53 @@
                 <MudListItem Icon="@Icons.Material.Filled.Book" Text="@testInfo.MethodInfo.Name" Expanded="true" Value="@testInfo" />
             </MudTooltip>
         }
+    </MudList> *@
+    <MudList T="TestResult2" SelectedValueChanged="OnSelectedTestInfoChanged">
+        <MudText>Tests for @this.TestSelectorState.Value.SelectedObjectType with Id: @this.TestSelectorState.Value.SelectedObjectId</MudText>
+        @* @foreach (var testResultsGroup in this.TestExplorerState.Value.TestResults ?? [])
+        {
+            <MudListItem Value="testResultsGroup.Value" Text="@testResultsGroup.Key">
+                <NestedList>
+                    @foreach (var testResult in testResultsGroup.Value)
+                    {
+                    <MudListItem Value="@testResult" Text="@testResult.TestName">
+
+                    </MudListItem>
+                    }
+                </NestedList>
+            </MudListItem>
+        }  *@
+        @{
+            int numSelectedTests = 0;
+        }
+        @if (this.TestSelectorState.Value.SelectedTestResults is List<TestResult2> results)
+        {
+            @foreach (var testResult in results)
+            {
+                numSelectedTests++;
+                <MudListItem Value="@testResult" Text="@testResult.TestName">
+
+                </MudListItem>
+            }
+        }
+        else
+        {
+            <MudText>This item does not have any individual tests</MudText>
+        }
+        <MudText>@(this.TestSelectorState.Value.TotalNumTests - numSelectedTests) other tests</MudText>
+        <MudText>Select element to view tests for that element</MudText>
     </MudList>
 </MudPaper>
 
 @code {
+    [Parameter]
+    public string ModelId { get; init; }
+
+    [Parameter]
+    public string CanvasId { get; init; }
+
     [Inject]
-    private IState<TestExplorerState> TestExplorerState { get; init; }
+    private IState<TestSelectorState> TestSelectorState { get; init; }
 
     [Inject]
     private IDispatcher Dispatcher { get; init; }
@@ -30,6 +72,13 @@
 
     [Inject]
     private IServiceProvider ServiceProvider { get; init; }
+
+    private void OnSelectedTestInfoChanged(TestResult2 testResult)
+    {
+        // this.Dispatcher.Dispatch(new ChangeSelectedTestInfoAction(testInfo));
+        // await this.HandleExecuteTestAction(testInfo.Id);
+        this.Dispatcher.Dispatch(new ExecutionTestActionResult("", testResult));
+    }
 
     private async Task OnSelectedTestInfoChanged(TestInfo? testInfo)
     {

@@ -4,7 +4,9 @@ using BeamOs.Common.Events;
 using BeamOs.WebApp.Client.Components.Components.Editor;
 using BeamOs.WebApp.Client.Components.Components.Editor.CommandHandlers;
 using BeamOs.WebApp.Client.Components.Components.Editor.Commands;
+using BeamOs.WebApp.Client.Components.Features.TestExplorer;
 using BeamOs.WebApp.Client.Components.Repositories;
+using Fluxor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 

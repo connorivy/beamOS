@@ -22,5 +22,12 @@ public partial class DsmElement1dTests
         double[,] matrix = fixture.ToDomain().GetTransformationMatrix().ToArray();
 
         Asserter.AssertEqual("Transformation Matrix", fixture.ExpectedTransformationMatrix, matrix);
+
+        Asserter.AssertEqual(
+            fixture.Id.ToString(),
+            "Transformation Matrix",
+            fixture.ExpectedTransformationMatrix,
+            matrix
+        );
     }
 }

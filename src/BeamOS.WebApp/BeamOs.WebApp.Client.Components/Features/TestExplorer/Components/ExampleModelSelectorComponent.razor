@@ -1,3 +1,4 @@
+@using BeamOS.Tests.Common
 @using BeamOS.Tests.Common.Fixtures
 @using BeamOS.Tests.Common.Interfaces
 @using BeamOs.ApiClient.Builders
@@ -39,20 +40,41 @@
     [Inject]
     private TestFixtureDisplayer TestFixtureDisplayer { get; init; }
 
+    [Inject]
+    private IServiceProvider ServiceProvider { get; init; }
+
     private async Task OnSelectedExampleProblemChanged(List<TestInfo>? testInfos)
     {
-        this.Dispatcher.Dispatch(new ChangeSelectedProblemTests(testInfos));
-
-        if (testInfos is null || testInfos.Count == 0)
-        {
-            //await this.readOnlyEditor.EditorApiAlpha.ClearAsync();
-            return;
-        }
-
-        if (testInfos.First().GetTestFixture() is IHasFixtureId fixtureBase)
+        if (testInfos?.First().GetTestFixture() is IHasFixtureId fixtureBase)
         {
             //await this.readOnlyEditor.EditorApiAlpha.ClearAsync();
             await this.TestFixtureDisplayer.Display(fixtureBase, this.CanvasId);
         }
+
+        this.Dispatcher.Dispatch(new ChangeSelectedProblemTests(testInfos));
+
+        Dictionary<string, List<TestResult2>> results = [];
+        void OnAssertedEqual2(object? _, TestResult2 args)
+        {
+            if (!results.TryGetValue(args.BeamOsObjectId, out var resultsList))
+            {
+                resultsList = [];
+                results.Add(args.BeamOsObjectId, resultsList);
+            }
+            resultsList.Add(args);
+        }
+        foreach (var test in testInfos ?? [])
+        {
+            test.OnTestResult += OnAssertedEqual2;
+            try
+            {
+                await test.RunTest2(this.ServiceProvider);    
+            }
+            finally
+            {
+                test.OnTestResult -= OnAssertedEqual2;
+            }
+        }
+        this.Dispatcher.Dispatch(new ChangeTestResultsDict(results));
     }
 }

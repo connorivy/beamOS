@@ -7,6 +7,7 @@ using BeamOs.Contracts.PhysicalModel.Node;
 using BeamOs.Contracts.PhysicalModel.PointLoad;
 using BeamOs.WebApp.Client.Components.Components.Editor.Commands;
 using BeamOs.WebApp.Client.Components.Repositories;
+using Fluxor;
 
 namespace BeamOs.WebApp.Client.Components.Components.Editor.CommandHandlers;
 
@@ -36,7 +37,8 @@ public class LoadModelCommandHandler(
     ChangeComponentStateCommandHandler<EditorComponentState> changeComponentStateCommandHandler,
     AddNodesToEditorCommandHandler addNodesToEditorCommandHandler,
     AddElement1dsToEditorCommandHandler addElement1dsToEditorCommandHandler,
-    AddPointLoadsToEditorCommandHandler addPointLoadsToEditorCommandHandler
+    AddPointLoadsToEditorCommandHandler addPointLoadsToEditorCommandHandler,
+    IDispatcher dispatcher
 ) : CommandHandlerBase<AddModelToEditorCommand>
 {
     protected override async Task<Result> ExecuteCommandAsync(
@@ -64,6 +66,8 @@ public class LoadModelCommandHandler(
             ),
             CancellationToken.None
         );
+        dispatcher.Dispatch(new ModelLoaded(command.ModelResponse.Id));
+
         await editorApi.SetSettingsAsync(command.ModelResponse.Settings);
 
         await addNodesToEditorCommandHandler.ExecuteAsync(

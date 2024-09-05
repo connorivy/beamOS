@@ -34,13 +34,35 @@
         this.SubscribeToAction<ExecutionTestAction>(_ => this.isLoadingAssertionResults = true);
         this.SubscribeToAction<ExecutionTestActionResult>(arg =>
         {
-            if (arg.TestId != this.TestExplorerState.Value.SelectedTestInfo?.Id)
-            {
-                return;
-            }
+            // if (arg.TestId != this.TestExplorerState.Value.SelectedTestInfo?.Id)
+            // {
+            //     return;
+            // }
 
             switch (arg.Result)
             {
+                case TestResult2 testResult2:
+                    this.ResetAssertionResults();
+                    this.ComparedValueName = testResult2.ComparedValueName;
+                    if (
+                        testResult2.CalculatedValue is double[] calDoubArrVal
+                        && testResult2.ExpectedValue is double[] expDoubArrVal)
+                    {
+                        this.AssertionResultArray = new(
+                            expDoubArrVal,
+                            calDoubArrVal
+                        );
+                    }
+                    else if (
+                        testResult2.CalculatedValue is double[,] calDoubMatVal
+                        && testResult2.ExpectedValue is double[,] expDoubMatVal)
+                    {
+                        this.AssertionResultMatrix = new(
+                            expDoubMatVal,
+                            calDoubMatVal
+                        );
+                    }
+                    break;
                 case TestResult<double[]> testResultDoubleArray:
                     this.ResetAssertionResults();
                     this.AssertionResultArray = new(

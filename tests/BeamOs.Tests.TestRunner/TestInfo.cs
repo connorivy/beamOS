@@ -94,6 +94,46 @@ public class TestInfo
         return await tcs.Task;
     }
 
+    public event EventHandler<TestResult2>? OnTestResult;
+
+    public async Task RunTest2(IServiceProvider serviceProvider)
+    {
+        void OnAssertedEqual2(object? _, ComparedObjectEventArgs2 args) =>
+            OnTestResult?.Invoke(
+                this,
+                new TestResult2(
+                    //args.BeamOsObjectType,
+                    args.BeamOsObjectId,
+                    this.MethodInfo.Name,
+                    args.ComparedObjectPropertyName,
+                    args.ExpectedValue,
+                    args.CalculatedValue,
+                    TestResultStatus.Success,
+                    null
+                )
+            );
+
+        Asserter.AssertedEqual2 += OnAssertedEqual2;
+
+        try
+        {
+            await this.RunAndThrow(serviceProvider);
+        }
+        catch (TargetInvocationException ex) when (ex.InnerException is Xunit.SkipException skipEx)
+        {
+            //tcs.SetResult(new TestResult(TestResultStatus.Skipped, skipEx.Message));
+        }
+        catch (TargetInvocationException ex)
+            when (ex.InnerException is Xunit.Sdk.XunitException xEx)
+        {
+            //tcs.SetResult(new TestResult(TestResultStatus.Failure, xEx.Message));
+        }
+        finally
+        {
+            Asserter.AssertedEqual2 -= OnAssertedEqual2;
+        }
+    }
+
     private async Task RunAndThrow(IServiceProvider serviceProvider)
     {
         object? testClass = serviceProvider.GetRequiredService(this.TestClassType);

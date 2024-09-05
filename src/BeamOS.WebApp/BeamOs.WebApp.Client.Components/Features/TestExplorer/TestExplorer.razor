@@ -26,7 +26,7 @@
 
 <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="h-full relative">
     @{
-        var canvasId = this.readOnlyEditor?.CanvasId ?? ReadOnlyEditor.GetCanvasId();
+        var canvasId = this.GetCanvasId();
     }
 
     <MudGrid Spacing="0" class="w-full m-0">
@@ -47,7 +47,7 @@
                     }
                     @if (TestExplorerState.Value.ShowTestSelector)
                     {
-                        <TestSelector />
+                        <TestSelector ModelId="@this.TestExplorerState.Value.ModelId"/>
                     }
                 </div>
             }

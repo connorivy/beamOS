@@ -37,6 +37,14 @@ public class DsmModelTests
             structureStiffnessMatrix,
             0
         );
+
+        Asserter.AssertEqual(
+            modelFixture.ModelGuid.ToString(),
+            "Structural Stiffness Matrix",
+            modelFixtureWithSsm.ExpectedStructuralStiffnessMatrix,
+            structureStiffnessMatrix,
+            0
+        );
     }
 
     [SkippableTheory]

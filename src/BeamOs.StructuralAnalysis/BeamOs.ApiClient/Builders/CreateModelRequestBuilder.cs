@@ -1,6 +1,3 @@
-using System.Text.Json;
-using BeamOs.Contracts.PhysicalModel.Model;
-
 namespace BeamOs.ApiClient.Builders;
 
 public abstract partial class CreateModelRequestBuilder
@@ -10,8 +7,8 @@ public abstract partial class CreateModelRequestBuilder
 {
     public abstract Guid ModelGuid { get; }
     public FixtureId Id => this.ModelGuid;
-    public string Name { get; init; } = "Test Model";
-    public string Description { get; init; } = "Created from CustomModelRequestBuilder";
+    public virtual string Name { get; init; } = "Test Model";
+    public virtual string Description { get; init; } = "Created from CustomModelRequestBuilder";
     public abstract PhysicalModelSettings Settings { get; }
 
     private Dictionary<FixtureId, CreateElement1dRequestBuilder> element1ds = [];
