@@ -7,6 +7,7 @@ using Riok.Mapperly.Abstractions;
 namespace BeamOs.Api.PhysicalModel.Models.Mappers;
 
 [Mapper]
+[UseStaticMapper(typeof(BeamOsDomainContractMappers))]
 [UseStaticMapper(typeof(Vector3ToFromMathnetVector))]
 internal partial class ModelToModelResponseMapper
     : AbstractMapperProvidedUnits<Model, ModelResponse>

@@ -3,6 +3,7 @@ using BeamOS.Tests.Common.Traits;
 using BeamOs.Tests.TestRunner;
 using BeamOs.WebApp.Client.Components.Components.Editor.CommandHandlers;
 using BeamOs.WebApp.Client.Components.Features.Editors.ReadOnlyEditor;
+using BeamOs.WebApp.Client.Components.Layout;
 using Fluxor;
 using Fluxor.Blazor.Web.Components;
 using Microsoft.AspNetCore.Components;
@@ -66,6 +67,7 @@ public partial class TestExplorer : FluxorComponent
 
     protected override void OnInitialized()
     {
+        this.Dispatcher.Dispatch(new OpenDrawer());
         EventEmitter.VisibleStateChanged += this.EventEmitter_VisibleStateChanged;
         base.OnInitialized();
     }
@@ -119,6 +121,7 @@ public partial class TestExplorer : FluxorComponent
 
     protected override ValueTask DisposeAsyncCore(bool disposing)
     {
+        this.Dispatcher.Dispatch(new CloseDrawer());
         EventEmitter.VisibleStateChanged -= this.EventEmitter_VisibleStateChanged;
         return base.DisposeAsyncCore(disposing);
     }

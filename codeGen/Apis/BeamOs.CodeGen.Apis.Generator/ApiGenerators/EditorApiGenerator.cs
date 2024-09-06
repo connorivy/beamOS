@@ -1,6 +1,7 @@
 using BeamOs.Common.Api;
 using BeamOs.Contracts.AnalyticalResults.Diagrams;
 using BeamOs.Contracts.AnalyticalResults.Model;
+using BeamOs.Contracts.Editor;
 using BeamOs.Contracts.PhysicalModel.Element1d;
 using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Contracts.PhysicalModel.Node;
@@ -43,6 +44,9 @@ public class EditorApiGenerator : AbstractGenerator
         _ = addMethod("SetModelResults").Accepts<ModelResultResponse>();
 
         _ = addMethod("Clear");
+
+        _ = addMethod("SetColorFilter").Accepts<SetColorFilter>();
+        _ = addMethod("ClearFilters").Accepts<ClearFilters>();
 
         foreach (
             Type contractType in typeof(IAssemblyMarkerClientActions)

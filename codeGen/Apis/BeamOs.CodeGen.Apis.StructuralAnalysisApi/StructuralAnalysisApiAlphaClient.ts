@@ -1174,6 +1174,7 @@ export class CreateElement1dRequest implements ICreateElement1dRequest {
     materialId!: string;
     sectionProfileId!: string;
     sectionProfileRotation!: UnitValueDto;
+    customData?: { [key: string]: any; } | undefined;
 
     constructor(data?: ICreateElement1dRequest) {
         if (data) {
@@ -1195,6 +1196,13 @@ export class CreateElement1dRequest implements ICreateElement1dRequest {
             this.materialId = _data["materialId"];
             this.sectionProfileId = _data["sectionProfileId"];
             this.sectionProfileRotation = _data["sectionProfileRotation"] ? UnitValueDto.fromJS(_data["sectionProfileRotation"]) : new UnitValueDto();
+            if (_data["customData"]) {
+                this.customData = {} as any;
+                for (let key in _data["customData"]) {
+                    if (_data["customData"].hasOwnProperty(key))
+                        (<any>this.customData)![key] = _data["customData"][key];
+                }
+            }
         }
     }
 
@@ -1213,6 +1221,13 @@ export class CreateElement1dRequest implements ICreateElement1dRequest {
         data["materialId"] = this.materialId;
         data["sectionProfileId"] = this.sectionProfileId;
         data["sectionProfileRotation"] = this.sectionProfileRotation ? this.sectionProfileRotation.toJSON() : <any>undefined;
+        if (this.customData) {
+            data["customData"] = {};
+            for (let key in this.customData) {
+                if (this.customData.hasOwnProperty(key))
+                    (<any>data["customData"])[key] = (<any>this.customData)[key];
+            }
+        }
         return data;
     }
 }
@@ -1224,6 +1239,7 @@ export interface ICreateElement1dRequest {
     materialId: string;
     sectionProfileId: string;
     sectionProfileRotation: UnitValueDto;
+    customData?: { [key: string]: any; } | undefined;
 }
 
 export class CreateMaterialRequest implements ICreateMaterialRequest {
@@ -1377,6 +1393,7 @@ export class CreateNodeRequest implements ICreateNodeRequest {
     modelId!: string;
     locationPoint!: Point;
     restraint!: RestraintContract;
+    customData?: { [key: string]: any; } | undefined;
 
     constructor(data?: ICreateNodeRequest) {
         if (data) {
@@ -1396,6 +1413,13 @@ export class CreateNodeRequest implements ICreateNodeRequest {
             this.modelId = _data["modelId"];
             this.locationPoint = _data["locationPoint"] ? Point.fromJS(_data["locationPoint"]) : new Point();
             this.restraint = _data["restraint"] ? RestraintContract.fromJS(_data["restraint"]) : new RestraintContract();
+            if (_data["customData"]) {
+                this.customData = {} as any;
+                for (let key in _data["customData"]) {
+                    if (_data["customData"].hasOwnProperty(key))
+                        (<any>this.customData)![key] = _data["customData"][key];
+                }
+            }
         }
     }
 
@@ -1411,6 +1435,13 @@ export class CreateNodeRequest implements ICreateNodeRequest {
         data["modelId"] = this.modelId;
         data["locationPoint"] = this.locationPoint ? this.locationPoint.toJSON() : <any>undefined;
         data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
+        if (this.customData) {
+            data["customData"] = {};
+            for (let key in this.customData) {
+                if (this.customData.hasOwnProperty(key))
+                    (<any>data["customData"])[key] = (<any>this.customData)[key];
+            }
+        }
         return data;
     }
 }
@@ -1419,6 +1450,7 @@ export interface ICreateNodeRequest {
     modelId: string;
     locationPoint: Point;
     restraint: RestraintContract;
+    customData?: { [key: string]: any; } | undefined;
 }
 
 export class CreatePointLoadRequest implements ICreatePointLoadRequest {
@@ -1666,6 +1698,7 @@ export class Element1DResponse implements IElement1DResponse {
     materialId!: string;
     sectionProfileId!: string;
     sectionProfileRotation!: UnitValueDto;
+    customData?: { [key: string]: any; } | undefined;
 
     constructor(data?: IElement1DResponse) {
         if (data) {
@@ -1688,6 +1721,13 @@ export class Element1DResponse implements IElement1DResponse {
             this.materialId = _data["materialId"];
             this.sectionProfileId = _data["sectionProfileId"];
             this.sectionProfileRotation = _data["sectionProfileRotation"] ? UnitValueDto.fromJS(_data["sectionProfileRotation"]) : new UnitValueDto();
+            if (_data["customData"]) {
+                this.customData = {} as any;
+                for (let key in _data["customData"]) {
+                    if (_data["customData"].hasOwnProperty(key))
+                        (<any>this.customData)![key] = _data["customData"][key];
+                }
+            }
         }
     }
 
@@ -1707,6 +1747,13 @@ export class Element1DResponse implements IElement1DResponse {
         data["materialId"] = this.materialId;
         data["sectionProfileId"] = this.sectionProfileId;
         data["sectionProfileRotation"] = this.sectionProfileRotation ? this.sectionProfileRotation.toJSON() : <any>undefined;
+        if (this.customData) {
+            data["customData"] = {};
+            for (let key in this.customData) {
+                if (this.customData.hasOwnProperty(key))
+                    (<any>data["customData"])[key] = (<any>this.customData)[key];
+            }
+        }
         return data;
     }
 }
@@ -1719,6 +1766,7 @@ export interface IElement1DResponse {
     materialId: string;
     sectionProfileId: string;
     sectionProfileRotation: UnitValueDto;
+    customData?: { [key: string]: any; } | undefined;
 }
 
 export enum Element1dAnalysisType {
@@ -2447,6 +2495,7 @@ export class NodeResponse implements INodeResponse {
     modelId!: string;
     locationPoint!: Point;
     restraint!: RestraintContract;
+    customData?: { [key: string]: any; } | undefined;
 
     constructor(data?: INodeResponse) {
         if (data) {
@@ -2467,6 +2516,13 @@ export class NodeResponse implements INodeResponse {
             this.modelId = _data["modelId"];
             this.locationPoint = _data["locationPoint"] ? Point.fromJS(_data["locationPoint"]) : new Point();
             this.restraint = _data["restraint"] ? RestraintContract.fromJS(_data["restraint"]) : new RestraintContract();
+            if (_data["customData"]) {
+                this.customData = {} as any;
+                for (let key in _data["customData"]) {
+                    if (_data["customData"].hasOwnProperty(key))
+                        (<any>this.customData)![key] = _data["customData"][key];
+                }
+            }
         }
     }
 
@@ -2483,6 +2539,13 @@ export class NodeResponse implements INodeResponse {
         data["modelId"] = this.modelId;
         data["locationPoint"] = this.locationPoint ? this.locationPoint.toJSON() : <any>undefined;
         data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
+        if (this.customData) {
+            data["customData"] = {};
+            for (let key in this.customData) {
+                if (this.customData.hasOwnProperty(key))
+                    (<any>data["customData"])[key] = (<any>this.customData)[key];
+            }
+        }
         return data;
     }
 }
@@ -2492,6 +2555,7 @@ export interface INodeResponse {
     modelId: string;
     locationPoint: Point;
     restraint: RestraintContract;
+    customData?: { [key: string]: any; } | undefined;
 }
 
 export class NodeResultResponse implements INodeResultResponse {

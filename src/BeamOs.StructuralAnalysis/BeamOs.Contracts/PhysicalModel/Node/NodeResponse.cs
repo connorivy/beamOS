@@ -6,7 +6,8 @@ public record NodeResponse(
     string Id,
     string ModelId,
     Point LocationPoint,
-    RestraintContract Restraint
+    RestraintContract Restraint,
+    Dictionary<string, object>? CustomData = null
 ) : BeamOsEntityContractBase(Id);
 
 public record RestraintContract(

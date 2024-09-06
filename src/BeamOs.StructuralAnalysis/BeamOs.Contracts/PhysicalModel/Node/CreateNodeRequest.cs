@@ -37,6 +37,7 @@ public record CreateNodeRequest
     public string ModelId { get; init; }
     public Point LocationPoint { get; init; }
     public RestraintContract? Restraint { get; init; }
+    public Dictionary<string, object>? CustomData { get; init; }
 
     public CreateNodeRequest(
         string modelId,

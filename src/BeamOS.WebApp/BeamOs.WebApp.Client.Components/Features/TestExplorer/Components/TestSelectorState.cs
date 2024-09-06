@@ -1,3 +1,4 @@
+using BeamOs.Contracts.Editor;
 using BeamOs.Tests.TestRunner;
 using BeamOs.WebApp.Client.Components.Components.Editor;
 using BeamOs.WebApp.Client.EditorCommands;
@@ -13,16 +14,23 @@ public record TestSelectorState(
     string? SelectedObjectType,
     Dictionary<string, List<TestResult2>>? AllTestResults,
     List<TestResult2>? SelectedTestResults,
-    int TotalNumTests
+    int TotalNumTests,
+    bool EditorFilterApplied
 )
 {
     public TestSelectorState()
-        : this(null, null, null, null, null, null, 0) { }
+        : this(null, null, null, null, null, null, 0, false) { }
 }
 
 public readonly record struct ChangeShowTestResults(bool Value);
 
 public readonly record struct ChangeTestResultsDict(Dictionary<string, List<TestResult2>>? Value);
+
+public record struct SetColorFilterCommand(string CanvasId, SetColorFilter Command);
+
+public record struct RemoveColorFilterCommand(string CanvasId, ClearFilters Command);
+
+public record struct ChangeEditorFilterApplied(bool Value);
 
 public static class TestSelectorStateFluxor
 {
@@ -81,7 +89,17 @@ public static class TestSelectorStateFluxor
                 .Value
                 ?.GetValueOrDefault(state.ModelId ?? ""),
             SelectedObjectId = state.ModelId,
-            SelectedObjectType = "Model"
+            SelectedObjectType = "Model",
+            EditorFilterApplied = false
         };
+    }
+
+    [ReducerMethod]
+    public static TestSelectorState ChangeEditorFilterApplied(
+        TestSelectorState state,
+        ChangeEditorFilterApplied changeEditorFilterApplied
+    )
+    {
+        return state with { EditorFilterApplied = changeEditorFilterApplied.Value, };
     }
 }

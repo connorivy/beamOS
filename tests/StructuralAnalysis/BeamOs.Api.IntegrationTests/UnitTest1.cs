@@ -10,6 +10,7 @@ using BeamOS.Tests.Common.Fixtures;
 using BeamOS.Tests.Common.Fixtures.Mappers.ToDomain;
 using BeamOS.Tests.Common.SolvedProblems;
 using UnitsNet;
+using UnitsNet.Units;
 
 namespace BeamOs.Api.IntegrationTests;
 
@@ -43,35 +44,39 @@ public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IA
         AllCreateModelRequestBuilders allModelBuilders = new();
         foreach (var modelBuilder in allModelBuilders.GetItems())
         {
-            ModelResponse? modelResponse;
-            try
+            if (!modelBuilder.IsInitialized)
             {
-                modelResponse = await this.apiClient.GetModelAsync(
-                    modelBuilder.Id.ToString(),
+                ModelResponse? modelResponse;
+                try
+                {
+                    modelResponse = await this.apiClient.GetModelAsync(
+                        modelBuilder.Id.ToString(),
 
-                    [
-                        nameof(Model.Nodes),
-                        nameof(Model.Element1ds),
-                        $"{nameof(Model.Element1ds)}.{nameof(Element1D.SectionProfile)}",
-                        $"{nameof(Model.Element1ds)}.{nameof(Element1D.Material)}",
-                        $"{nameof(Model.Nodes)}.{nameof(Node.PointLoads)}",
-                        $"{nameof(Model.Nodes)}.{nameof(Node.MomentLoads)}"
-                    ]
-                );
-            }
-            catch (Exception ex)
-            {
-                modelResponse = null;
-            }
-            if (modelResponse is not null)
-            {
-                modelBuilder.InitializeFromModelResponse(modelResponse);
-            }
-            else
-            {
-                await modelBuilder.InitializeAsync();
-                await modelBuilder.Create(this.apiClient);
-                await this.apiClient.RunDirectStiffnessMethodAsync(modelBuilder.Id.ToString());
+                        [
+                            nameof(Model.Nodes),
+                            nameof(Model.Element1ds),
+                            $"{nameof(Model.Element1ds)}.{nameof(Element1D.SectionProfile)}",
+                            $"{nameof(Model.Element1ds)}.{nameof(Element1D.Material)}",
+                            $"{nameof(Model.Nodes)}.{nameof(Node.PointLoads)}",
+                            $"{nameof(Model.Nodes)}.{nameof(Node.MomentLoads)}"
+                        ]
+                    );
+                }
+                catch (Exception ex)
+                {
+                    modelResponse = null;
+                }
+                if (modelResponse is not null)
+                {
+                    modelBuilder.InitializeFromModelResponse(modelResponse);
+                }
+                else
+                {
+                    await modelBuilder.InitializeAsync();
+                    await modelBuilder.Create(this.apiClient);
+                    await this.apiClient.RunDirectStiffnessMethodAsync(modelBuilder.Id.ToString());
+                }
+                modelBuilder.IsInitialized = true;
             }
             this.modelIdToModelFixtureDict.Add(modelBuilder.Id.ToString(), modelBuilder);
         }
@@ -104,6 +109,7 @@ public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IA
     {
         var dbModelFixture = this.modelIdToModelFixtureDict[modelFixture.Id.ToString()];
 
+        LengthUnit lengthUnit = modelFixture.Settings.UnitSettings.LengthUnit.MapToLengthUnit();
         foreach (var expectedNodeDisplacementResult in modelFixture.ExpectedNodeDisplacementResults)
         {
             //Asserter
@@ -113,6 +119,16 @@ public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IA
 
             // for now we don't support multiple results for a node (i.e. load combinations)
             var result = nodeResults.First();
+
+            if (expectedNodeDisplacementResult.DisplacementAlongX.HasValue)
+            {
+                Asserter.AssertEqual(
+                    dbId,
+                    "Node Displacement",
+                    expectedNodeDisplacementResult.DisplacementAlongX.Value.As(lengthUnit),
+                    result.Displacements.DisplacementAlongX.Value
+                );
+            }
 
             this.AssertQuantitesEqual(
                 expectedNodeDisplacementResult.DisplacementAlongX,

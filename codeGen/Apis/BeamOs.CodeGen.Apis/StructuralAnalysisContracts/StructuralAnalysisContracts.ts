@@ -158,6 +158,16 @@ export interface IStructuralAnalysisContracts {
     /**
      * @return OK
      */
+    beamOs_Contracts_Editor_SetColorFilter(): Promise<SetColorFilter>;
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_Editor_ClearFilters(): Promise<ClearFilters>;
+
+    /**
+     * @return OK
+     */
     beamOs_Contracts_Common_EmptyRequest(): Promise<EmptyRequest>;
 
     /**
@@ -1373,6 +1383,80 @@ export class StructuralAnalysisContracts implements IStructuralAnalysisContracts
     /**
      * @return OK
      */
+    beamOs_Contracts_Editor_SetColorFilter(): Promise<SetColorFilter> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.Editor.SetColorFilter";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_Editor_SetColorFilter(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_Editor_SetColorFilter(response: Response): Promise<SetColorFilter> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SetColorFilter.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SetColorFilter>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    beamOs_Contracts_Editor_ClearFilters(): Promise<ClearFilters> {
+        let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.Editor.ClearFilters";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBeamOs_Contracts_Editor_ClearFilters(_response);
+        });
+    }
+
+    protected processBeamOs_Contracts_Editor_ClearFilters(response: Response): Promise<ClearFilters> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ClearFilters.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ClearFilters>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
     beamOs_Contracts_Common_EmptyRequest(): Promise<EmptyRequest> {
         let url_ = this.baseUrl + "/StructuralAnalysisContracts/BeamOs.Contracts.Common.EmptyRequest";
         url_ = url_.replace(/[?&]$/, "");
@@ -2576,6 +2660,57 @@ export interface IAnalyticalModelResponse3 {
     nodeResponses: NodeResultResponse[];
 }
 
+export class ClearFilters implements IClearFilters {
+    beamOsIds!: string[];
+    colorAllOthers!: boolean;
+
+    constructor(data?: IClearFilters) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.beamOsIds = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["beamOsIds"])) {
+                this.beamOsIds = [] as any;
+                for (let item of _data["beamOsIds"])
+                    this.beamOsIds!.push(item);
+            }
+            this.colorAllOthers = _data["colorAllOthers"];
+        }
+    }
+
+    static fromJS(data: any): ClearFilters {
+        data = typeof data === 'object' ? data : {};
+        let result = new ClearFilters();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.beamOsIds)) {
+            data["beamOsIds"] = [];
+            for (let item of this.beamOsIds)
+                data["beamOsIds"].push(item);
+        }
+        data["colorAllOthers"] = this.colorAllOthers;
+        return data;
+    }
+}
+
+export interface IClearFilters {
+    beamOsIds: string[];
+    colorAllOthers: boolean;
+}
+
 export class CreateElement1dRequest implements ICreateElement1dRequest {
     modelId!: string;
     startNodeId!: string;
@@ -2583,6 +2718,7 @@ export class CreateElement1dRequest implements ICreateElement1dRequest {
     materialId!: string;
     sectionProfileId!: string;
     sectionProfileRotation!: UnitValueDto;
+    customData?: { [key: string]: any; } | undefined;
 
     constructor(data?: ICreateElement1dRequest) {
         if (data) {
@@ -2604,6 +2740,13 @@ export class CreateElement1dRequest implements ICreateElement1dRequest {
             this.materialId = _data["materialId"];
             this.sectionProfileId = _data["sectionProfileId"];
             this.sectionProfileRotation = _data["sectionProfileRotation"] ? UnitValueDto.fromJS(_data["sectionProfileRotation"]) : new UnitValueDto();
+            if (_data["customData"]) {
+                this.customData = {} as any;
+                for (let key in _data["customData"]) {
+                    if (_data["customData"].hasOwnProperty(key))
+                        (<any>this.customData)![key] = _data["customData"][key];
+                }
+            }
         }
     }
 
@@ -2622,6 +2765,13 @@ export class CreateElement1dRequest implements ICreateElement1dRequest {
         data["materialId"] = this.materialId;
         data["sectionProfileId"] = this.sectionProfileId;
         data["sectionProfileRotation"] = this.sectionProfileRotation ? this.sectionProfileRotation.toJSON() : <any>undefined;
+        if (this.customData) {
+            data["customData"] = {};
+            for (let key in this.customData) {
+                if (this.customData.hasOwnProperty(key))
+                    (<any>data["customData"])[key] = (<any>this.customData)[key];
+            }
+        }
         return data;
     }
 }
@@ -2633,6 +2783,7 @@ export interface ICreateElement1dRequest {
     materialId: string;
     sectionProfileId: string;
     sectionProfileRotation: UnitValueDto;
+    customData?: { [key: string]: any; } | undefined;
 }
 
 export class CreateMaterialRequest implements ICreateMaterialRequest {
@@ -2786,6 +2937,7 @@ export class CreateNodeRequest implements ICreateNodeRequest {
     modelId!: string;
     locationPoint!: Point;
     restraint!: RestraintContract;
+    customData?: { [key: string]: any; } | undefined;
 
     constructor(data?: ICreateNodeRequest) {
         if (data) {
@@ -2805,6 +2957,13 @@ export class CreateNodeRequest implements ICreateNodeRequest {
             this.modelId = _data["modelId"];
             this.locationPoint = _data["locationPoint"] ? Point.fromJS(_data["locationPoint"]) : new Point();
             this.restraint = _data["restraint"] ? RestraintContract.fromJS(_data["restraint"]) : new RestraintContract();
+            if (_data["customData"]) {
+                this.customData = {} as any;
+                for (let key in _data["customData"]) {
+                    if (_data["customData"].hasOwnProperty(key))
+                        (<any>this.customData)![key] = _data["customData"][key];
+                }
+            }
         }
     }
 
@@ -2820,6 +2979,13 @@ export class CreateNodeRequest implements ICreateNodeRequest {
         data["modelId"] = this.modelId;
         data["locationPoint"] = this.locationPoint ? this.locationPoint.toJSON() : <any>undefined;
         data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
+        if (this.customData) {
+            data["customData"] = {};
+            for (let key in this.customData) {
+                if (this.customData.hasOwnProperty(key))
+                    (<any>data["customData"])[key] = (<any>this.customData)[key];
+            }
+        }
         return data;
     }
 }
@@ -2828,6 +2994,7 @@ export interface ICreateNodeRequest {
     modelId: string;
     locationPoint: Point;
     restraint: RestraintContract;
+    customData?: { [key: string]: any; } | undefined;
 }
 
 export class CreatePointLoadRequest implements ICreatePointLoadRequest {
@@ -3143,6 +3310,7 @@ export class Element1DResponse implements IElement1DResponse {
     materialId!: string;
     sectionProfileId!: string;
     sectionProfileRotation!: UnitValueDto;
+    customData?: { [key: string]: any; } | undefined;
 
     constructor(data?: IElement1DResponse) {
         if (data) {
@@ -3165,6 +3333,13 @@ export class Element1DResponse implements IElement1DResponse {
             this.materialId = _data["materialId"];
             this.sectionProfileId = _data["sectionProfileId"];
             this.sectionProfileRotation = _data["sectionProfileRotation"] ? UnitValueDto.fromJS(_data["sectionProfileRotation"]) : new UnitValueDto();
+            if (_data["customData"]) {
+                this.customData = {} as any;
+                for (let key in _data["customData"]) {
+                    if (_data["customData"].hasOwnProperty(key))
+                        (<any>this.customData)![key] = _data["customData"][key];
+                }
+            }
         }
     }
 
@@ -3184,6 +3359,13 @@ export class Element1DResponse implements IElement1DResponse {
         data["materialId"] = this.materialId;
         data["sectionProfileId"] = this.sectionProfileId;
         data["sectionProfileRotation"] = this.sectionProfileRotation ? this.sectionProfileRotation.toJSON() : <any>undefined;
+        if (this.customData) {
+            data["customData"] = {};
+            for (let key in this.customData) {
+                if (this.customData.hasOwnProperty(key))
+                    (<any>data["customData"])[key] = (<any>this.customData)[key];
+            }
+        }
         return data;
     }
 }
@@ -3196,6 +3378,7 @@ export interface IElement1DResponse {
     materialId: string;
     sectionProfileId: string;
     sectionProfileRotation: UnitValueDto;
+    customData?: { [key: string]: any; } | undefined;
 }
 
 export enum Element1dAnalysisType {
@@ -4267,6 +4450,7 @@ export class NodeResponse implements INodeResponse {
     modelId!: string;
     locationPoint!: Point;
     restraint!: RestraintContract;
+    customData?: { [key: string]: any; } | undefined;
 
     constructor(data?: INodeResponse) {
         if (data) {
@@ -4287,6 +4471,13 @@ export class NodeResponse implements INodeResponse {
             this.modelId = _data["modelId"];
             this.locationPoint = _data["locationPoint"] ? Point.fromJS(_data["locationPoint"]) : new Point();
             this.restraint = _data["restraint"] ? RestraintContract.fromJS(_data["restraint"]) : new RestraintContract();
+            if (_data["customData"]) {
+                this.customData = {} as any;
+                for (let key in _data["customData"]) {
+                    if (_data["customData"].hasOwnProperty(key))
+                        (<any>this.customData)![key] = _data["customData"][key];
+                }
+            }
         }
     }
 
@@ -4303,6 +4494,13 @@ export class NodeResponse implements INodeResponse {
         data["modelId"] = this.modelId;
         data["locationPoint"] = this.locationPoint ? this.locationPoint.toJSON() : <any>undefined;
         data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
+        if (this.customData) {
+            data["customData"] = {};
+            for (let key in this.customData) {
+                if (this.customData.hasOwnProperty(key))
+                    (<any>data["customData"])[key] = (<any>this.customData)[key];
+            }
+        }
         return data;
     }
 }
@@ -4312,6 +4510,7 @@ export interface INodeResponse {
     modelId: string;
     locationPoint: Point;
     restraint: RestraintContract;
+    customData?: { [key: string]: any; } | undefined;
 }
 
 export class NodeResultResponse implements INodeResultResponse {
@@ -4834,6 +5033,65 @@ export interface ISectionProfileResponse {
     polarMomentOfInertia: UnitValueDto;
     strongAxisShearArea: UnitValueDto;
     weakAxisShearArea: UnitValueDto;
+}
+
+export class SetColorFilter implements ISetColorFilter {
+    beamOsIds!: string[];
+    colorAllOthers!: boolean;
+    colorHex!: string;
+    ghost!: boolean;
+
+    constructor(data?: ISetColorFilter) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.beamOsIds = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["beamOsIds"])) {
+                this.beamOsIds = [] as any;
+                for (let item of _data["beamOsIds"])
+                    this.beamOsIds!.push(item);
+            }
+            this.colorAllOthers = _data["colorAllOthers"];
+            this.colorHex = _data["colorHex"];
+            this.ghost = _data["ghost"];
+        }
+    }
+
+    static fromJS(data: any): SetColorFilter {
+        data = typeof data === 'object' ? data : {};
+        let result = new SetColorFilter();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.beamOsIds)) {
+            data["beamOsIds"] = [];
+            for (let item of this.beamOsIds)
+                data["beamOsIds"].push(item);
+        }
+        data["colorAllOthers"] = this.colorAllOthers;
+        data["colorHex"] = this.colorHex;
+        data["ghost"] = this.ghost;
+        return data;
+    }
+}
+
+export interface ISetColorFilter {
+    beamOsIds: string[];
+    colorAllOthers: boolean;
+    colorHex: string;
+    ghost: boolean;
 }
 
 export class ShearDiagramResponse implements IShearDiagramResponse {

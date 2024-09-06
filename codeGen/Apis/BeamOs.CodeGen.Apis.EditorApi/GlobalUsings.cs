@@ -1,6 +1,8 @@
 global using BeamOs.Common.Api;
 global using BeamOs.Contracts.AnalyticalResults.Diagrams;
 global using BeamOs.Contracts.AnalyticalResults.Model;
+// editor contracts
+global using BeamOs.Contracts.Editor;
 global using BeamOs.Contracts.PhysicalModel.Element1d;
 global using BeamOs.Contracts.PhysicalModel.Model;
 global using BeamOs.Contracts.PhysicalModel.Node;

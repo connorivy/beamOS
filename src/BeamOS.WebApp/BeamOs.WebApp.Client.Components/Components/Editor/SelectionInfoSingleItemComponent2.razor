@@ -77,7 +77,7 @@ else
 {
     <MudExpansionPanel Expanded="true" Text="@ObjectName" Class="text-nowrap text-clip mud-typography mud-typography-subtitle2">
         <MudGrid Spacing="1">
-            @foreach (var propInfo in GetPublicInstanceProps(this.ObjectToDisplay))
+            @foreach (var propInfo in GetPublicInstanceProps(this.ObjectToDisplay) ?? [])
             {
                 var value = propInfo.GetValue(this.ObjectToDisplay);
                 <SelectionInfoSingleItemComponent2 ObjectName="@propInfo.Name" ObjectToDisplay="@value" ></SelectionInfoSingleItemComponent2>

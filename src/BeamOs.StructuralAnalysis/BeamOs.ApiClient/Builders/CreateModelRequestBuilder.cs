@@ -23,12 +23,6 @@ public abstract partial class CreateModelRequestBuilder
         get => this.nodes.Values;
         init => this.nodes = value.ToDictionary(n => n.Id, n => n);
     }
-    private List<CreatePointLoadRequestBuilder> pointLoads = [];
-    public IEnumerable<CreatePointLoadRequestBuilder> PointLoads
-    {
-        get => this.pointLoads;
-        init => this.pointLoads = value.ToList();
-    }
     private List<CreateMaterialRequestBuilder> materials = [];
     public IEnumerable<CreateMaterialRequestBuilder> Materials
     {
@@ -41,12 +35,31 @@ public abstract partial class CreateModelRequestBuilder
         get => this.sectionProfiles;
         init => this.sectionProfiles = value.ToList();
     }
+    private List<CreatePointLoadRequestBuilder> pointLoads = [];
+    public IEnumerable<CreatePointLoadRequestBuilder> PointLoads
+    {
+        get => this.pointLoads;
+        init => this.pointLoads = value.ToList();
+    }
+
+    //private List<CreateMomentLoadRequestBuilder> momentLoads = [];
+    //public IEnumerable<CreateMomentLoadRequestBuilder> MomentLoads
+    //{
+    //    get => this.momentLoads;
+    //    init => this.momentLoads = value.ToList();
+    //}
 
     private readonly Dictionary<FixtureId, string> runtimeIdToDbIdDict = [];
     private FixtureId DefaultMaterialId { get; set; }
     private FixtureId DefaultSectionProfileId { get; set; }
 
-    public string RuntimeIdToDbId(FixtureId fixtureId) => this.runtimeIdToDbIdDict[fixtureId];
+    public string RuntimeIdToDbId(FixtureId fixtureId) =>
+        this.runtimeIdToDbIdDict.GetValueOrDefault(fixtureId) ?? fixtureId.ToString();
+
+    public void AddRuntimeIdToDbId(FixtureId runtimeId, string dbId) =>
+        this.runtimeIdToDbIdDict.Add(runtimeId, dbId);
+
+    public bool IsInitialized { get; set; }
 
     public void AddNode(CreateNodeRequestBuilder node)
     {

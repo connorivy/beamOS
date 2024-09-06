@@ -4,7 +4,9 @@
 @using BeamOs.ApiClient.Builders
 @using BeamOs.Tests.TestRunner
 
-<MudText Align="Align.Center" Typo="Typo.h5" Color="Color.Primary" Class="pt-4">Select an Example Problem</MudText>
+<MudDrawerHeader>
+    <MudText Typo="Typo.h6">Select an Example Problem</MudText>
+</MudDrawerHeader>
 
 <MudList T="List<TestInfo>" SelectedValueChanged="OnSelectedExampleProblemChanged">
     @foreach (var testInfoGroup in TestInfoProvider.TestInfos.Values.GroupBy(t => t.SourceInfo?.SourceType ?? FixtureSourceType.Standalone))
@@ -45,11 +47,14 @@
 
     private async Task OnSelectedExampleProblemChanged(List<TestInfo>? testInfos)
     {
-        if (testInfos?.First().GetTestFixture() is IHasFixtureId fixtureBase)
+        IHasFixtureId? fixtureBase = testInfos?.First().GetTestFixture();
+        if (fixtureBase is not null)
         {
             //await this.readOnlyEditor.EditorApiAlpha.ClearAsync();
             await this.TestFixtureDisplayer.Display(fixtureBase, this.CanvasId);
         }
+
+        this.Dispatcher.Dispatch(new ChangeSelectedSourceInfo(testInfos?.FirstOrDefault()?.SourceInfo));
 
         this.Dispatcher.Dispatch(new ChangeSelectedProblemTests(testInfos));
 
@@ -76,5 +81,12 @@
             }
         }
         this.Dispatcher.Dispatch(new ChangeTestResultsDict(results));
+
+        // redraw model with data from db. first display is with local data
+        if (fixtureBase is not null)
+        {
+            //await this.readOnlyEditor.EditorApiAlpha.ClearAsync();
+            await this.TestFixtureDisplayer.Display(fixtureBase, this.CanvasId);
+        }
     }
 }

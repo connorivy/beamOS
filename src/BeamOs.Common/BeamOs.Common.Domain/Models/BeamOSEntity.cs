@@ -19,6 +19,10 @@ public abstract class BeamOSEntity<TId>
     private readonly List<IDomainEvent> domainEvents = [];
     public IReadOnlyList<IDomainEvent> DomainEvents => this.domainEvents.AsReadOnly();
 
+    // todo : make nullable
+    // https://github.com/dotnet/efcore/issues/31376
+    public CustomData CustomData { get; set; } = new();
+
     public void AddEvent(IDomainEvent @event) => this.domainEvents.Add(@event);
 
     public void ClearDomainEvents() => this.domainEvents.Clear();

@@ -56,11 +56,13 @@ public static partial class ModelResponseToDomainMapper
         foreach (var el in modelResponse.Nodes ?? [])
         {
             builder.AddNode(el.ToRequestBuilder());
+            TryAddRuntimeId(builder, el);
         }
 
         foreach (var el in modelResponse.Element1ds ?? [])
         {
             builder.AddElement1d(el.ToRequestBuilder());
+            TryAddRuntimeId(builder, el);
         }
 
         foreach (var el in modelResponse.Materials ?? [])
@@ -76,6 +78,34 @@ public static partial class ModelResponseToDomainMapper
         foreach (var el in modelResponse.PointLoads ?? [])
         {
             builder.AddPointLoad(el.ToRequestBuilder());
+        }
+    }
+
+    private static void TryAddRuntimeId(CreateModelRequestBuilder builder, NodeResponse el)
+    {
+        if (
+            el.CustomData is not null
+            && el.CustomData.TryGetValue(
+                CreateModelEntityRequestBuilderBase.RuntimeId,
+                out var runtimeId
+            )
+        )
+        {
+            builder.AddRuntimeIdToDbId(new(runtimeId.ToString()), el.Id);
+        }
+    }
+
+    private static void TryAddRuntimeId(CreateModelRequestBuilder builder, Element1DResponse el)
+    {
+        if (
+            el.CustomData is not null
+            && el.CustomData.TryGetValue(
+                CreateModelEntityRequestBuilderBase.RuntimeId,
+                out var runtimeId
+            )
+        )
+        {
+            builder.AddRuntimeIdToDbId(new(runtimeId.ToString()), el.Id);
         }
     }
 }

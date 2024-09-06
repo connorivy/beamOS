@@ -5,7 +5,7 @@ using BeamOs.Contracts.PhysicalModel.Common;
 namespace BeamOS.Tests.Common.Fixtures.Mappers;
 
 public interface IFixtureMapper<TFrom, TTo> : IMapper<TFrom, TTo>, IFixtureMapper<TFrom>
-    where TFrom : FixtureBase2
+    where TFrom : IHasFixtureId
     where TTo : BeamOsEntityContractBase { }
 
 public interface IFixtureMapper<TFrom> : IFixtureMapper

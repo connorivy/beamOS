@@ -1,3 +1,4 @@
+using BeamOS.Tests.Common.Interfaces;
 using BeamOs.Tests.TestRunner;
 using BeamOs.WebApp.Client.Components.Components.Editor;
 using BeamOs.WebApp.Client.EditorCommands;
@@ -16,11 +17,12 @@ public record TestExplorerState(
     bool ShowTestSelector,
     bool ShowTestResults,
     Dictionary<string, List<TestResult2>>? TestResults,
-    List<TestResult2>? SelectedTestResults
+    List<TestResult2>? SelectedTestResults,
+    SourceInfo? SelectedSourceInfo
 )
 {
     private TestExplorerState()
-        : this(null, null, null, null, null, true, true, true, null, null) { }
+        : this(null, null, null, null, null, true, true, true, null, null, null) { }
 }
 
 public readonly record struct CanvasIdSet(string CanvasId);
@@ -36,6 +38,8 @@ public readonly record struct ChangeShowProblemSource(bool Value);
 public readonly record struct ChangeShowTestSelector(bool Value);
 
 public readonly record struct ChangeShowTestResults(bool Value);
+
+public readonly record struct ChangeSelectedSourceInfo(SourceInfo? SourceInfo);
 
 //public readonly record struct ChangeTestResultsDict(Dictionary<string, List<TestResult2>>? Value);
 
@@ -164,5 +168,14 @@ public static class TestExplorerStateFluxor
                 .TestResults
                 ?.GetValueOrDefault(changeSelectionCommand.SelectedObjects[0].Id)
         };
+    }
+
+    [ReducerMethod]
+    public static TestExplorerState ChangeSelectedSourceInfo(
+        TestExplorerState state,
+        ChangeSelectedSourceInfo changeSelectedSourceInfo
+    )
+    {
+        return state with { SelectedSourceInfo = changeSelectedSourceInfo.SourceInfo };
     }
 }

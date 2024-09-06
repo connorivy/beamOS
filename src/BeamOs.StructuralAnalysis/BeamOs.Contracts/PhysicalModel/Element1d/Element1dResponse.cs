@@ -10,7 +10,8 @@ public record Element1DResponse(
     string EndNodeId,
     string MaterialId,
     string SectionProfileId,
-    UnitValueDto SectionProfileRotation
+    UnitValueDto SectionProfileRotation,
+    Dictionary<string, object>? CustomData = null
 //NodeResponse? StartNode = null,
 //NodeResponse? EndNode = null,
 //MaterialResponse? Material = null,

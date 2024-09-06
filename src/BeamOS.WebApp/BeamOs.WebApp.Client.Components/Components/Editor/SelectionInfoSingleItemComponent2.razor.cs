@@ -26,8 +26,8 @@ public partial class SelectionInfoSingleItemComponent2 : ComponentBase
     private Dictionary<Type, IPropertyEnumerator> propertyEnumerators =
         new() { { typeof(Point), new PointPropertyEnumerator() } };
 
-    public static PropertyInfo[] GetPublicInstanceProps(object obj) =>
-        obj.GetType()
+    public static PropertyInfo[]? GetPublicInstanceProps(object? obj) =>
+        obj?.GetType()
             .GetProperties(
                 System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance
             );

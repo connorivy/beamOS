@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Text;
+using BeamOs.ApiClient.Builders;
 using BeamOS.Tests.Common;
 using BeamOS.Tests.Common.Fixtures;
 using BeamOS.Tests.Common.Interfaces;
@@ -47,7 +48,7 @@ public class TestInfo
     public Type TestClassType { get; }
     public Dictionary<string, string> TraitNameToValueDict { get; }
 
-    public FixtureBase2? GetTestFixture() => this.TestData?.FirstOrDefault() as FixtureBase2;
+    public IHasFixtureId? GetTestFixture() => this.TestData?.FirstOrDefault() as IHasFixtureId;
 
     public SourceInfo? SourceInfo =>
         (this.TestData?.FirstOrDefault() as IHasSourceInfo)?.SourceInfo;
@@ -136,7 +137,8 @@ public class TestInfo
 
     private async Task RunAndThrow(IServiceProvider serviceProvider)
     {
-        object? testClass = serviceProvider.GetRequiredService(this.TestClassType);
+        using var testScope = serviceProvider.CreateScope();
+        object? testClass = testScope.ServiceProvider.GetRequiredService(this.TestClassType);
         if (testClass is IAsyncLifetime asyncLifetime)
         {
             await asyncLifetime.InitializeAsync();

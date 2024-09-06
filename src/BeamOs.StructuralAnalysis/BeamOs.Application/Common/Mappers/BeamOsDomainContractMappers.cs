@@ -1,4 +1,5 @@
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
+using BeamOs.Common.Domain.Models;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.MaterialAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
@@ -35,6 +36,8 @@ public static class BeamOsDomainContractMappers
             UnitsNetMappers.MapToContract(source.ZCoordinate)
         );
     }
+
+    public static Dictionary<string, object> ToDict(CustomData customData) => customData.AsDict();
 
     //public static BeamOs.Domain.Common.ValueObjects.Point ToDomain(
     //    BeamOs.Domain.Common.ValueObjects.Point source
