@@ -32,13 +32,6 @@ public class DsmModelTests
             .Values;
 
         Asserter.AssertEqual(
-            "Structural Stiffness Matrix",
-            modelFixtureWithSsm.ExpectedStructuralStiffnessMatrix,
-            structureStiffnessMatrix,
-            0
-        );
-
-        Asserter.AssertEqual(
             modelFixture.ModelGuid.ToString(),
             "Structural Stiffness Matrix",
             modelFixtureWithSsm.ExpectedStructuralStiffnessMatrix,
@@ -77,6 +70,7 @@ public class DsmModelTests
             .Values;
 
         Asserter.AssertEqual(
+            modelFixture.ModelGuid.ToString(),
             "Joint Displacement Vector",
             modelFixtureWithJdv.ExpectedDisplacementVector,
             jointDisplacementVector,
@@ -116,6 +110,7 @@ public class DsmModelTests
             .Values;
 
         Asserter.AssertEqual(
+            modelFixture.ModelGuid.ToString(),
             "Joint Reaction Vector",
             modelFixtureWithJrv.ExpectedReactionVector,
             jointReactionVector,

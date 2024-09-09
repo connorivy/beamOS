@@ -79,7 +79,25 @@ public abstract partial class CreateModelRequestBuilder
     {
         if (!this.element1ds.ContainsKey(element1d.Id))
         {
-            this.element1ds.Add(element1d.Id, element1d with { ModelId = this.Id });
+            this.element1ds.Add(
+                element1d.Id,
+                element1d with
+                {
+                    ModelId = this.Id,
+                    MaterialId = element1d.MaterialId.Id is not null
+                        ? element1d.MaterialId
+                        : this.materials.SingleOrDefault()?.Id
+                            ?? throw new Exception(
+                                "This element1d does not have a material defined, and the model does not contain only one material"
+                            ),
+                    SectionProfileId = element1d.SectionProfileId.Id is not null
+                        ? element1d.SectionProfileId
+                        : this.sectionProfiles.SingleOrDefault()?.Id
+                            ?? throw new Exception(
+                                "This element1d does not have a section profile defined, and the model does not contain only one section profile"
+                            ),
+                }
+            );
         }
     }
 

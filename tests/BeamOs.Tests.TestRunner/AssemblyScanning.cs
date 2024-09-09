@@ -14,7 +14,8 @@ public static class AssemblyScanning
 {
     public static IEnumerable<Assembly> TestAssemblies()
     {
-        yield return typeof(IAssemblyMarkerApiIntegrationTests).Assembly;
+        // cannot reference Microsoft.Aspnetcore.MVC.testing from webassembly (from what I can tell)
+        //yield return typeof(IAssemblyMarkerApiIntegrationTests).Assembly;
         yield return typeof(IAssemblyMarkerDomainIntegrationTests).Assembly;
         yield return typeof(IAssemblyMarkerDomainUnitTests).Assembly;
     }
@@ -45,6 +46,20 @@ public static class AssemblyScanning
 
     public static IEnumerable<TestInfo> GetAllTestInfo()
     {
+        foreach (
+            var test in GetTestInfoFromMethod(
+                typeof(UnitTest1).GetMethod(
+                    nameof(
+                        UnitTest1.NodeDisplacementResults_ForSampleProblems_ShouldResultInExpectedValues
+                    )
+                ),
+                typeof(UnitTest1)
+            )
+        )
+        {
+            yield return test;
+        }
+
         foreach (var testAssembly in TestAssemblies())
         {
             foreach (

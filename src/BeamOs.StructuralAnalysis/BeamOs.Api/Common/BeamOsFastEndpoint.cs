@@ -1,6 +1,6 @@
 using System.Security.Claims;
+using BeamOs.Api;
 using BeamOs.Api.Common;
-using BeamOs.Api.Common.Interfaces;
 using BeamOs.Common.Api;
 using FastEndpoints;
 using Microsoft.AspNetCore.Authentication;
@@ -16,7 +16,7 @@ public abstract class BeamOsFastEndpoint<TRequest, TResponse>(
     public abstract Http EndpointType { get; }
     public abstract string Route { get; }
 
-    public IRequestValidator<TRequest>? RequestValidator { get; }
+    public StructuralAnalysisMetrics StructuralAnalysisMetrics { get; set; }
 
     public virtual void ConfigureAuthentication()
     {
@@ -46,19 +46,16 @@ public abstract class BeamOsFastEndpoint<TRequest, TResponse>(
 
     public override async Task HandleAsync(TRequest req, CancellationToken ct)
     {
-        Exception? validationException = this.RequestValidator?.ValidateRequest(req);
-
         Result<TResponse> requestResult;
-        if (validationException is not null)
-        {
-            requestResult = validationException;
-        }
-        else
+        try
         {
             requestResult = await this.ExecuteRequestAsync(req, ct);
+            await requestResult.Match(this.DispatchSucessResponse, this.DispatchErrorResponse);
         }
-
-        await requestResult.Match(this.DispatchSucessResponse, this.DispatchErrorResponse);
+        finally
+        {
+            this.StructuralAnalysisMetrics.RecordMetrics(this.GetType().Name);
+        }
     }
 
     private async Task DispatchSucessResponse(TResponse response)

@@ -2,7 +2,7 @@ using BeamOs.Domain.DirectStiffnessMethod;
 using BeamOs.Domain.DirectStiffnessMethod.Common.ValueObjects;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.Interfaces;
 using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod.Common.SolvedProblems;
-using BeamOS.Tests.Common.Extensions;
+using BeamOS.Tests.Common;
 using BeamOS.Tests.Common.SolvedProblems.Fixtures.Mappers.ToDomain;
 using BeamOS.Tests.Common.Traits;
 
@@ -45,10 +45,16 @@ public partial class DsmElement1dTests
                 continue;
             }
 
-            el.ToDomain()
+            var jointDispVector = el.ToDomain()
                 .GetGlobalEndDisplacementVector(jointDisplacementVector)
-                .AsArray()
-                .AssertAlmostEqual(el.ExpectedGlobalEndDisplacements);
+                .AsArray();
+
+            Asserter.AssertEqual(
+                string.Empty,
+                "Global Joint Displacements",
+                el.ExpectedGlobalEndDisplacements,
+                jointDispVector
+            );
         }
     }
 }
