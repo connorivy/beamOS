@@ -1,6 +1,7 @@
 using BeamOs.ApiClient;
 using BeamOs.ApiClient.Builders;
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
+using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
 using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate;
 using BeamOs.Domain.PhysicalModel.ModelAggregate;
@@ -25,7 +26,9 @@ public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IA
         this.apiClient = new ApiAlphaClient(httpClient);
     }
 
-    public UnitTest1(IApiAlphaClient apiAlphaClient)
+    public static UnitTest1 Create(IApiAlphaClient apiAlphaClient) => new(apiAlphaClient);
+
+    private UnitTest1(IApiAlphaClient apiAlphaClient)
     {
         this.apiClient = apiAlphaClient;
     }
@@ -61,6 +64,7 @@ public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IA
                             $"{nameof(Model.Nodes)}.{nameof(Node.MomentLoads)}"
                         ]
                     );
+                    await this.apiClient.RunDirectStiffnessMethodAsync(modelBuilder.Id.ToString());
                 }
                 catch (Exception ex)
                 {
@@ -109,80 +113,141 @@ public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IA
     {
         var dbModelFixture = this.modelIdToModelFixtureDict[modelFixture.Id.ToString()];
 
+        AngleUnit angleUnit = modelFixture.Settings.UnitSettings.AngleUnit.MapToAngleUnit();
         LengthUnit lengthUnit = modelFixture.Settings.UnitSettings.LengthUnit.MapToLengthUnit();
+        ForceUnit forceUnit = modelFixture.Settings.UnitSettings.ForceUnit.MapToForceUnit();
+        TorqueUnit torqueUnit = modelFixture.Settings.UnitSettings.TorqueUnit.MapToTorqueUnit();
         foreach (var expectedNodeDisplacementResult in modelFixture.ExpectedNodeDisplacementResults)
         {
-            //Asserter
-
             var dbId = dbModelFixture.RuntimeIdToDbId(expectedNodeDisplacementResult.NodeId);
-            var nodeResults = await this.apiClient.GetSingleNodeResultAsync(dbId);
+            NodeResultResponse? result = null;
 
-            // for now we don't support multiple results for a node (i.e. load combinations)
-            var result = nodeResults.First();
-
-            if (expectedNodeDisplacementResult.DisplacementAlongX.HasValue)
+            if (
+                expectedNodeDisplacementResult.DisplacementAlongX.HasValue
+                || expectedNodeDisplacementResult.DisplacementAlongY.HasValue
+                || expectedNodeDisplacementResult.DisplacementAlongZ.HasValue
+                || expectedNodeDisplacementResult.RotationAboutX.HasValue
+                || expectedNodeDisplacementResult.RotationAboutY.HasValue
+                || expectedNodeDisplacementResult.RotationAboutZ.HasValue
+            )
             {
-                Asserter.AssertEqual(
+                // for now we don't support multiple results for a node (i.e. load combinations)
+                // so just take the first result
+                result ??= (await this.apiClient.GetSingleNodeResultAsync(dbId)).First();
+                AssertQuantitiesEqual(
                     dbId,
-                    "Node Displacement",
-                    expectedNodeDisplacementResult.DisplacementAlongX.Value.As(lengthUnit),
-                    result.Displacements.DisplacementAlongX.Value
+                    expectedNodeDisplacementResult,
+                    result,
+                    lengthUnit,
+                    angleUnit,
+                    2
                 );
             }
 
-            this.AssertQuantitesEqual(
-                expectedNodeDisplacementResult.DisplacementAlongX,
-                result.Displacements.DisplacementAlongX.Value,
-                modelFixture.Settings.UnitSettings.LengthUnit.MapToLengthUnit(),
-                expectedNodeDisplacementResult.LengthTolerance
-            );
-            this.AssertQuantitesEqual(
-                expectedNodeDisplacementResult.DisplacementAlongY,
-                result.Displacements.DisplacementAlongY.Value,
-                modelFixture.Settings.UnitSettings.LengthUnit.MapToLengthUnit(),
-                expectedNodeDisplacementResult.LengthTolerance
-            );
-            this.AssertQuantitesEqual(
-                expectedNodeDisplacementResult.DisplacementAlongZ,
-                result.Displacements.DisplacementAlongZ.Value,
-                modelFixture.Settings.UnitSettings.LengthUnit.MapToLengthUnit(),
-                expectedNodeDisplacementResult.LengthTolerance
-            );
-            this.AssertQuantitesEqual(
-                expectedNodeDisplacementResult.RotationAboutX,
-                result.Displacements.RotationAboutX.Value,
-                modelFixture.Settings.UnitSettings.AngleUnit.MapToAngleUnit(),
-                expectedNodeDisplacementResult.AngleTolerance
-            );
-            this.AssertQuantitesEqual(
-                expectedNodeDisplacementResult.RotationAboutY,
-                result.Displacements.RotationAboutY.Value,
-                modelFixture.Settings.UnitSettings.AngleUnit.MapToAngleUnit(),
-                expectedNodeDisplacementResult.AngleTolerance
-            );
-            this.AssertQuantitesEqual(
-                expectedNodeDisplacementResult.RotationAboutZ,
-                result.Displacements.RotationAboutZ.Value,
-                modelFixture.Settings.UnitSettings.AngleUnit.MapToAngleUnit(),
-                expectedNodeDisplacementResult.AngleTolerance
-            );
+            //if (
+            //    expectedNodeDisplacementResult.ForceAlongX.HasValue
+            //    || expectedNodeDisplacementResult.ForceAlongY.HasValue
+            //    || expectedNodeDisplacementResult.ForceAlongZ.HasValue
+            //    || expectedNodeDisplacementResult.TorqueAboutX.HasValue
+            //    || expectedNodeDisplacementResult.TorqueAboutY.HasValue
+            //    || expectedNodeDisplacementResult.TorqueAboutZ.HasValue
+            //)
+            //{
+            //    result ??= (await this.apiClient.GetSingleNodeResultAsync(dbId)).First();
+            //    AssertQuantitiesEqual(
+            //        dbId,
+            //        expectedNodeDisplacementResult,
+            //        result,
+            //        forceUnit,
+            //        torqueUnit
+            //    );
+            //}
         }
     }
 
-    private void AssertQuantitesEqual<TUnit, TUnitType>(
-        TUnit? expected,
-        double calculated,
-        TUnitType unitType,
-        TUnit tolerance
+    private static void AssertQuantitiesEqual(
+        string dbId,
+        NodeResultFixture expected,
+        NodeResultResponse calculated,
+        LengthUnit lengthUnit,
+        AngleUnit angleUnit,
+        int numDigits = 3
     )
-        where TUnit : struct, IQuantity<TUnitType>
-        where TUnitType : Enum
     {
-        if (expected is null)
-        {
-            return;
-        }
+        Asserter.AssertEqual(
+            dbId,
+            "Node Displacement",
 
-        Assert.Equal(expected.Value.As(unitType), calculated, tolerance.As(unitType));
+            [
+                expected.DisplacementAlongX?.As(lengthUnit),
+                expected.DisplacementAlongY?.As(lengthUnit),
+                expected.DisplacementAlongZ?.As(lengthUnit),
+                expected.RotationAboutX?.As(angleUnit),
+                expected.RotationAboutY?.As(angleUnit),
+                expected.RotationAboutZ?.As(angleUnit)
+            ],
+
+            [
+                calculated.Displacements.DisplacementAlongX.Value,
+                calculated.Displacements.DisplacementAlongY.Value,
+                calculated.Displacements.DisplacementAlongZ.Value,
+                calculated.Displacements.RotationAboutX.Value,
+                calculated.Displacements.RotationAboutY.Value,
+                calculated.Displacements.RotationAboutZ.Value
+            ],
+            numDigits,
+
+            [
+                nameof(expected.DisplacementAlongX),
+                nameof(expected.DisplacementAlongY),
+                nameof(expected.DisplacementAlongZ),
+                nameof(expected.RotationAboutX),
+                nameof(expected.RotationAboutY),
+                nameof(expected.RotationAboutZ),
+            ]
+        );
+    }
+
+    private static void AssertQuantitiesEqual(
+        string dbId,
+        NodeResultFixture expected,
+        NodeResultResponse calculated,
+        ForceUnit forceUnit,
+        TorqueUnit torqueUnit,
+        int numDigits = 3
+    )
+    {
+        Asserter.AssertEqual(
+            dbId,
+            "Node Forces",
+
+            [
+                expected.ForceAlongX?.As(forceUnit),
+                expected.ForceAlongY?.As(forceUnit),
+                expected.ForceAlongZ?.As(forceUnit),
+                expected.TorqueAboutX?.As(torqueUnit),
+                expected.TorqueAboutY?.As(torqueUnit),
+                expected.TorqueAboutZ?.As(torqueUnit)
+            ],
+
+            [
+                calculated.Forces.ForceAlongX.Value,
+                calculated.Forces.ForceAlongY.Value,
+                calculated.Forces.ForceAlongZ.Value,
+                calculated.Forces.MomentAboutX.Value,
+                calculated.Forces.MomentAboutY.Value,
+                calculated.Forces.MomentAboutZ.Value
+            ],
+            numDigits,
+
+            [
+                nameof(expected.ForceAlongX),
+                nameof(expected.ForceAlongY),
+                nameof(expected.ForceAlongZ),
+                nameof(calculated.Forces.MomentAboutX),
+                nameof(calculated.Forces.MomentAboutY),
+                nameof(calculated.Forces.MomentAboutZ),
+            ]
+        );
     }
 }

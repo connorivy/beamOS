@@ -104,7 +104,7 @@ public class BeamOsStructuralDbContext : DbContext
         //var isCreated = this.Database.EnsureCreated();
 
         await this.InsertIntoEfCore(TwistyBowlFraming.Instance);
-        //await this.InsertIntoEfCore(Simple_3_Story_Diagonal.Instance);
+        await this.InsertIntoEfCore(Simple_3_Story_Diagonal.Instance);
         await this.InsertIntoEfCore(Kassimali_Example3_8.Instance);
         await this.InsertIntoEfCore(Kassimali_Example8_4.Instance);
         await this.InsertIntoEfCore(Udoeyo_StructuralAnalysis_Example10_7.Instance);
@@ -170,7 +170,15 @@ public class BeamOsStructuralDbContext : DbContext
         );
 
         this.AddEntities(
-            model.Nodes.Select(el => new Node(model.Id, el.LocationPoint, el.Restraint, el.Id))
+            model
+                .Nodes
+                .Select(
+                    el =>
+                        new Node(model.Id, el.LocationPoint, el.Restraint, el.Id)
+                        {
+                            CustomData = el.CustomData
+                        }
+                )
         );
 
         this.AddEntities(
@@ -186,6 +194,9 @@ public class BeamOsStructuralDbContext : DbContext
                             el.SectionProfileId,
                             el.Id
                         )
+                        {
+                            CustomData = el.CustomData
+                        }
                 )
         );
 

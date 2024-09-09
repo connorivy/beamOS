@@ -5,6 +5,7 @@ using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.SpeckleConnector;
 using BeamOS.Tests.Common.Fixtures;
 using BeamOS.Tests.Common.Fixtures.Mappers.ToDomain;
+using BeamOS.Tests.Common.Interfaces;
 using MathNet.Spatial.Euclidean;
 using Speckle.Core.Credentials;
 using UnitsNet;
@@ -12,10 +13,16 @@ using UnitsNet.Units;
 
 namespace BeamOS.Tests.Common.SolvedProblems.ETABS_Models.TwistyBowlFraming;
 
-public class TwistyBowlFraming : CreateModelRequestBuilder, IHasExpectedNodeDisplacementResults
+public class TwistyBowlFraming
+    : CreateModelRequestBuilder,
+        IHasSourceInfo,
+        IHasExpectedNodeDisplacementResults
 {
     public override Guid ModelGuid { get; } = Guid.Parse("f30e580d-9cb0-46d2-ade1-a4140c454632");
     public override PhysicalModelSettings Settings { get; } = new(UnitSettingsDtoVerbose.kN_M);
+
+    public SourceInfo SourceInfo { get; } =
+        new("SAP2000", FixtureSourceType.SAP2000, nameof(TwistyBowlFraming));
 
     //private readonly HashSet<string> addedNodeIds = [];
 
@@ -129,5 +136,18 @@ public class TwistyBowlFraming : CreateModelRequestBuilder, IHasExpectedNodeDisp
     //}
 
     public static TwistyBowlFraming Instance { get; } = new();
-    public NodeResultFixture[] ExpectedNodeDisplacementResults { get; }
+    public NodeResultFixture[] ExpectedNodeDisplacementResults { get; } =
+
+        [
+            new()
+            {
+                NodeId = "330",
+                DisplacementAlongX = new(1.90641, LengthUnit.Centimeter),
+                DisplacementAlongY = new(-.04499, LengthUnit.Centimeter),
+                DisplacementAlongZ = new(.57138, LengthUnit.Centimeter),
+                RotationAboutX = new(-3.620e-4, AngleUnit.Radian),
+                RotationAboutY = new(.00158, AngleUnit.Radian),
+                RotationAboutZ = new(1.173e-4, AngleUnit.Radian)
+            }
+        ];
 }

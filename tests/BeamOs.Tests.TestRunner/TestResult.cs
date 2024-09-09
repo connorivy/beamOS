@@ -20,7 +20,8 @@ public record TestResult2(
     object ExpectedValue,
     object CalculatedValue,
     TestResultStatus ResultStatus,
-    string? ResultMessage
+    string? ResultMessage,
+    ICollection<string>? ComparedValueNameCollection = null
 ) : TestResult(ResultStatus, ResultMessage);
 
 public enum TestResultStatus

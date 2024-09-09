@@ -110,7 +110,8 @@ public class TestInfo
                     args.ExpectedValue,
                     args.CalculatedValue,
                     TestResultStatus.Success,
-                    null
+                    null,
+                    args.ComparedValueNameCollection
                 )
             );
 

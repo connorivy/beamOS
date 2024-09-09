@@ -4,11 +4,11 @@
 <div class="min-h-0 max-h-fit grow overflow-scroll point-events-auto">
     @if (@AssertionResultArray is not null)
     {
-        <AssertionResultVectorView AssertionResultArray="@AssertionResultArray" ComparedValueName="@ComparedValueName" />
+        <AssertionResultVectorView AssertionResultArray="@AssertionResultArray" ComparedValueName="@ComparedValueName" ComparedValueNameCollection="@ComparedValueNameCollection" />
     }
     else if (@AssertionResultMatrix is not null)
     {
-        <AssertionResultMatrixView AssertionResultMatrix="@AssertionResultMatrix" ComparedValueName="@ComparedValueName" />
+        <AssertionResultMatrixView AssertionResultMatrix="@AssertionResultMatrix" ComparedValueName="@ComparedValueName" ComparedValueNameCollection="@ComparedValueNameCollection" />
     }
 </div>
 
@@ -18,8 +18,9 @@
 
     private bool isLoadingAssertionResults;
     private string? ComparedValueName { get; set; }
-    private AssertionResult<double[]>? AssertionResultArray { get; set; }
-    private AssertionResult<double[,]>? AssertionResultMatrix { get; set; }
+    private AssertionResult<double?[]>? AssertionResultArray { get; set; }
+    private AssertionResult<double?[,]>? AssertionResultMatrix { get; set; }
+    private ICollection<string>? ComparedValueNameCollection { get; set; }
 
     private void ResetAssertionResults()
     {
@@ -44,13 +45,23 @@
                 case TestResult2 testResult2:
                     this.ResetAssertionResults();
                     this.ComparedValueName = testResult2.ComparedValueName;
+                    this.ComparedValueNameCollection = testResult2.ComparedValueNameCollection;
                     if (
                         testResult2.CalculatedValue is double[] calDoubArrVal
                         && testResult2.ExpectedValue is double[] expDoubArrVal)
                     {
                         this.AssertionResultArray = new(
-                            expDoubArrVal,
-                            calDoubArrVal
+                            expDoubArrVal.Cast<double?>().ToArray(),
+                            calDoubArrVal.Cast<double?>().ToArray()
+                        );
+                    }
+                    else if (
+                        testResult2.CalculatedValue is double?[] calDoubArrValNul
+                        && testResult2.ExpectedValue is double?[] expDoubArrValNul)
+                    {
+                        this.AssertionResultArray = new(
+                            expDoubArrValNul,
+                            calDoubArrValNul
                         );
                     }
                     else if (
@@ -58,27 +69,36 @@
                         && testResult2.ExpectedValue is double[,] expDoubMatVal)
                     {
                         this.AssertionResultMatrix = new(
-                            expDoubMatVal,
-                            calDoubMatVal
+                            AssertionResultMatrixView.ToNullable(expDoubMatVal),
+                            AssertionResultMatrixView.ToNullable(calDoubMatVal)
+                        );
+                    }
+                    else if (
+                        testResult2.CalculatedValue is double?[,] calDoubMatValNul
+                        && testResult2.ExpectedValue is double?[,] expDoubMatValNul)
+                    {
+                        this.AssertionResultMatrix = new(
+                            expDoubMatValNul,
+                            calDoubMatValNul
                         );
                     }
                     break;
-                case TestResult<double[]> testResultDoubleArray:
-                    this.ResetAssertionResults();
-                    this.AssertionResultArray = new(
-                        testResultDoubleArray.ExpectedValue,
-                        testResultDoubleArray.CalculatedValue
-                    );
-                    this.ComparedValueName = testResultDoubleArray.ComparedValueName;
-                    break;
-                case TestResult<double[,]> testResultDoubleMatrix:
-                    this.ResetAssertionResults();
-                    this.AssertionResultMatrix = new(
-                        testResultDoubleMatrix.ExpectedValue,
-                        testResultDoubleMatrix.CalculatedValue
-                    );
-                    this.ComparedValueName = testResultDoubleMatrix.ComparedValueName;
-                    break;
+                // case TestResult<double[]> testResultDoubleArray:
+                //     this.ResetAssertionResults();
+                //     this.AssertionResultArray = new(
+                //         testResultDoubleArray.ExpectedValue,
+                //         testResultDoubleArray.CalculatedValue
+                //     );
+                //     this.ComparedValueName = testResultDoubleArray.ComparedValueName;
+                //     break;
+                // case TestResult<double[,]> testResultDoubleMatrix:
+                //     this.ResetAssertionResults();
+                //     this.AssertionResultMatrix = new(
+                //         testResultDoubleMatrix.ExpectedValue,
+                //         testResultDoubleMatrix.CalculatedValue
+                //     );
+                //     this.ComparedValueName = testResultDoubleMatrix.ComparedValueName;
+                //     break;
                 default:
                     this.ResetAssertionResults();
                     break;

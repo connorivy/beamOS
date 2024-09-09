@@ -3,7 +3,7 @@ namespace BeamOs.ApiClient.Builders;
 public interface IModelFixtureInDb
 {
     Task Create(IApiAlphaClient client);
-    string RuntimeIdToDbId(FixtureId id);
+    string? RuntimeIdToDbId(FixtureId id);
 }
 
 public interface IModelFixture

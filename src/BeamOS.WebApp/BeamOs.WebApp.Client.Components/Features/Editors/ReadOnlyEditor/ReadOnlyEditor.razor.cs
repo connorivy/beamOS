@@ -7,6 +7,7 @@ using BeamOs.WebApp.Client.Components.Components.Editor.Commands;
 using BeamOs.WebApp.Client.Components.Features.TestExplorer;
 using BeamOs.WebApp.Client.Components.Features.TestExplorer.Components;
 using BeamOs.WebApp.Client.Components.Repositories;
+using BeamOs.WebApp.Client.EditorCommands;
 using Fluxor;
 using Fluxor.Blazor.Web.Components;
 using Microsoft.AspNetCore.Components;
@@ -38,6 +39,9 @@ public partial class ReadOnlyEditor : FluxorComponent
 
     public EditorComponentState EditorComponentState =>
         this.EditorComponentStateRepository.GetOrSetComponentStateByCanvasId(this.CanvasId);
+
+    [Inject]
+    private IDispatcher Dispatcher { get; init; }
 
     public static string GetCanvasId() => "id" + Guid.NewGuid().ToString("N");
 
@@ -96,6 +100,7 @@ public partial class ReadOnlyEditor : FluxorComponent
 
     public async Task LoadModel(string modelId)
     {
+        this.Dispatcher.Dispatch(new ChangeSelectionCommand(this.CanvasId, []));
         await this.LoadModelCommandHandler.ExecuteAsync(
             new LoadModelCommand(this.CanvasId, modelId)
         );

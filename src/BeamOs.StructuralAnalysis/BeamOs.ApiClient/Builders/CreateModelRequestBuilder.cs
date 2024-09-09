@@ -1,3 +1,5 @@
+using Riok.Mapperly.Abstractions;
+
 namespace BeamOs.ApiClient.Builders;
 
 public abstract partial class CreateModelRequestBuilder
@@ -53,8 +55,12 @@ public abstract partial class CreateModelRequestBuilder
     private FixtureId DefaultMaterialId { get; set; }
     private FixtureId DefaultSectionProfileId { get; set; }
 
-    public string RuntimeIdToDbId(FixtureId fixtureId) =>
-        this.runtimeIdToDbIdDict.GetValueOrDefault(fixtureId) ?? fixtureId.ToString();
+    [UserMapping(Ignore = true)]
+    public string? RuntimeIdToDbId(FixtureId fixtureId) =>
+        this.runtimeIdToDbIdDict.GetValueOrDefault(fixtureId);
+
+    private string GetDbIdWithRuntimeFallback(FixtureId fixtureId) =>
+        this.RuntimeIdToDbId(fixtureId) ?? fixtureId.ToString();
 
     public void AddRuntimeIdToDbId(FixtureId runtimeId, string dbId) =>
         this.runtimeIdToDbIdDict.Add(runtimeId, dbId);

@@ -8,14 +8,17 @@ public partial class AssertionResultVectorView : ComponentBase
     public required string ComparedValueName { get; init; }
 
     [Parameter]
-    public required AssertionResult<double[]> AssertionResultArray { get; init; }
+    public required AssertionResult<double?[]> AssertionResultArray { get; init; }
 
-    private static double? GetDifferenceOrNull(double expected, double? calculated)
+    [Parameter]
+    public ICollection<string>? ComparedValueNameCollection { get; init; }
+
+    private static double? GetDifferenceOrNull(double? expected, double? calculated)
     {
-        if (calculated is not double typedCalculated)
+        if (expected is not double typedExpected || calculated is not double typedCalculated)
         {
             return null;
         }
-        return Math.Round(expected - typedCalculated, 5);
+        return Math.Round(typedExpected - typedCalculated, 5);
     }
 }

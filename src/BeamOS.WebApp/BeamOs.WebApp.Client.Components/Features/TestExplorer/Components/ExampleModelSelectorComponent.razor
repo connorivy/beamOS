@@ -3,6 +3,7 @@
 @using BeamOS.Tests.Common.Interfaces
 @using BeamOs.ApiClient.Builders
 @using BeamOs.Tests.TestRunner
+@using BeamOs.WebApp.Client.EditorCommands
 
 <MudDrawerHeader>
     <MudText Typo="Typo.h6">Select an Example Problem</MudText>
@@ -47,6 +48,7 @@
 
     private async Task OnSelectedExampleProblemChanged(List<TestInfo>? testInfos)
     {
+        this.Dispatcher.Dispatch(new ChangeSelectionCommand(this.CanvasId, []));
         IHasFixtureId? fixtureBase = testInfos?.First().GetTestFixture();
         if (fixtureBase is not null)
         {

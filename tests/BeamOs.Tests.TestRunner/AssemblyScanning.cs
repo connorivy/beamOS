@@ -1,8 +1,10 @@
 using System.Reflection;
 using BeamOs.Api.IntegrationTests;
 using BeamOs.Api.UnitTests;
+using BeamOs.ApiClient;
 using BeamOS.Tests.Common.Traits;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Xunit;
 using Xunit.Sdk;
 
@@ -117,6 +119,9 @@ public static class AssemblyScanning
 
     public static IServiceCollection RegisterTestClasses(this IServiceCollection services)
     {
+        _ = services.AddScoped<UnitTest1>(
+            sp => UnitTest1.Create(sp.GetRequiredService<IApiAlphaClient>())
+        );
         foreach (var assembly in TestAssemblies().Where(AssemblyContainsTests))
         {
             foreach (
@@ -129,7 +134,7 @@ public static class AssemblyScanning
                 {
                     if (GetTestInfoFromMethod(methodInfo, exportedType).Any())
                     {
-                        services.AddScoped(exportedType);
+                        services.TryAddScoped(exportedType);
                         break;
                     }
                 }
