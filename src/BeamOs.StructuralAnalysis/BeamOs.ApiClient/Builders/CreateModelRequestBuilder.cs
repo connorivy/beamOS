@@ -63,7 +63,7 @@ public abstract partial class CreateModelRequestBuilder
         this.RuntimeIdToDbId(fixtureId) ?? fixtureId.ToString();
 
     public void AddRuntimeIdToDbId(FixtureId runtimeId, string dbId) =>
-        this.runtimeIdToDbIdDict.Add(runtimeId, dbId);
+        this.runtimeIdToDbIdDict[runtimeId] = dbId;
 
     public bool IsInitialized { get; set; }
 

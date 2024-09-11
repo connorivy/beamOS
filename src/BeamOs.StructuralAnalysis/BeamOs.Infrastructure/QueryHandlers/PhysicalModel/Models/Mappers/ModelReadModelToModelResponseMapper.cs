@@ -1,10 +1,11 @@
 using BeamOs.Application.Common.Mappers;
+using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.PhysicalModel.ModelAggregate;
 using Riok.Mapperly.Abstractions;
 
-namespace BeamOs.Api.PhysicalModel.Models.Mappers;
+namespace BeamOs.Infrastructure.QueryHandlers.PhysicalModel.Models.Mappers;
 
 [Mapper]
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
@@ -31,6 +32,16 @@ internal partial class ModelToModelResponseMapper
 
     private partial ModelResponse ToResponse(Model source);
 }
+
+[Mapper]
+[UseStaticMapper(typeof(UnitsNetMappers))]
+[UseStaticMapper(typeof(Vector3ToFromMathnetVector))]
+[UseStaticMapper(typeof(BeamOsDomainContractMappers))]
+public static partial class ModelResponseMapperStatic
+{
+    public static partial ModelResponse ToResponse(this Model model);
+}
+
 
 // todo : consider this interface if we need mappers with more specific units
 //public interface IMapperWithUnits<TUnitValue, TUnitType>

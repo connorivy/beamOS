@@ -1,19 +1,11 @@
-using BeamOs.Application.Common.Mappers;
-using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Common.Application.Interfaces;
 using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Domain.PhysicalModel.ModelAggregate;
-using Riok.Mapperly.Abstractions;
+using BeamOs.Infrastructure.QueryHandlers.PhysicalModel.Models.Mappers;
 
 namespace BeamOs.Api.PhysicalModel.Models.Mappers;
 
-[Mapper]
-[UseStaticMapper(typeof(UnitsNetMappers))]
-[UseStaticMapper(typeof(Vector3ToFromMathnetVector))]
-[UseStaticMapper(typeof(BeamOsDomainContractMappers))]
-public partial class ModelResponseMapper : IMapper<Model, ModelResponse>
+public class ModelResponseMapper : IMapper<Model, ModelResponse>
 {
-    public ModelResponse Map(Model from) => this.ToResponse(from);
-
-    public partial ModelResponse ToResponse(Model model);
+    public ModelResponse Map(Model from) => from.ToResponse();
 }

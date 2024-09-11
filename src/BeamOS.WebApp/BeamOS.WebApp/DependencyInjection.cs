@@ -2,6 +2,7 @@ using BeamOs.Api;
 using BeamOs.Api.Common;
 using BeamOs.ApiClient;
 using BeamOs.CodeGen.Apis.StructuralAnalysisApi;
+using BeamOs.Common.Identity;
 using BeamOs.Contracts.PhysicalModel.Common;
 using BeamOs.Tests.TestRunner;
 using BeamOS.WebApp.Client;

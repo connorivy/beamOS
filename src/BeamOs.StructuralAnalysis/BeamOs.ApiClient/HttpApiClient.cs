@@ -4,11 +4,11 @@ namespace BeamOs.ApiClient;
 
 public class HttpApiClient : IStructuralAnalysisApiAlphaClient
 {
-    private readonly ApiAlphaClient apiAlphaClient;
+    private readonly IApiAlphaClient apiAlphaClient;
 
-    public HttpApiClient(HttpClient httpClient)
+    public HttpApiClient(IApiAlphaClient apiAlphaClient)
     {
-        this.apiAlphaClient = new(httpClient);
+        this.apiAlphaClient = apiAlphaClient;
     }
 
     public Task<Element1DResponse> CreateElement1dAsync(CreateElement1dRequest body) =>

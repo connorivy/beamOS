@@ -5,6 +5,5 @@ namespace BeamOS.WebApp.Components.Providers;
 
 public class RenderModeProvider : IRenderModeProvider
 {
-    public IComponentRenderMode GlobalRenderMode { get; } =
-        new InteractiveWebAssemblyRenderMode(false);
+    public IComponentRenderMode GlobalRenderMode { get; } = new InteractiveServerRenderMode(false);
 }

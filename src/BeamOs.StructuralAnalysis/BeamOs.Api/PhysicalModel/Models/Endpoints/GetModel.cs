@@ -46,10 +46,10 @@ public class GetModels(
 
     public override Http EndpointType => Http.GET;
 
-    //public override void ConfigureAuthentication()
-    //{
-    //    this.AllowAnonymous();
-    //}
+    public override void ConfigureAuthentication()
+    {
+        //this.AllowAnonymous();
+    }
 
     public override async Task<List<ModelResponse>> ExecuteRequestAsync(
         FastEndpoints.EmptyRequest req,

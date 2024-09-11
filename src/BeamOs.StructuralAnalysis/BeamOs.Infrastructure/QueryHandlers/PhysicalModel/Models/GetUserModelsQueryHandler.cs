@@ -1,7 +1,7 @@
 using System.Security.Claims;
-using BeamOs.Api.PhysicalModel.Models.Mappers;
 using BeamOs.Common.Application.Interfaces;
 using BeamOs.Contracts.PhysicalModel.Model;
+using BeamOs.Infrastructure.QueryHandlers.PhysicalModel.Models.Mappers;
 
 namespace BeamOs.Infrastructure.QueryHandlers.PhysicalModel.Models;
 
