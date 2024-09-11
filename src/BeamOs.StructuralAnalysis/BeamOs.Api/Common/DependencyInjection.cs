@@ -1,4 +1,4 @@
-using BeamOs.Api.Common.Interfaces;
+using BeamOs.Common.Api;
 using BeamOs.Common.Application.Interfaces;
 
 namespace BeamOs.Api.Common;
@@ -14,9 +14,8 @@ public static class DependencyInjection
                     //.AddClasses(classes => classes.AssignableTo(typeof(BeamOsEndpoint<,,>)))
                     //.AddClasses(classes => classes.AssignableTo(typeof(BeamOsEndpoint<,,,>)))
                     //.AddClasses(classes => classes.AssignableTo(typeof(BeamOsEndpoint<,,,>)))
-                    .AddClasses(classes => classes.AssignableTo(typeof(IBeamOsEndpointBase)))
-                    .AsSelfWithInterfaces()
-                    //.AsImplementedInterfaces()
+                    .AddClasses(classes => classes.AssignableTo(typeof(IBeamOsEndpoint<,>)))
+                    .AsImplementedInterfaces()
                     .WithScopedLifetime()
         );
 

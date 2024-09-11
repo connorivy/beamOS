@@ -82,6 +82,7 @@ public static class DependencyInjection
     )
     {
         return services
+            .AddBeamOsEndpoints<IAssemblyMarkerApi>()
             .AddMappers<IAssemblyMarkerApi>()
             .AddCommandHandlers<IAssemblyMarkerApplication>()
             .AddPhysicalModelInfrastructure();

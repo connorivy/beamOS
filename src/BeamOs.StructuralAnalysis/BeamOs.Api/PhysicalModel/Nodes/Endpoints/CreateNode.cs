@@ -10,7 +10,6 @@ namespace BeamOs.Api.PhysicalModel.Nodes.Endpoints;
 
 public class CreateNode(
     BeamOsFastEndpointOptions options,
-    CreateNodeRequestMapper requestMapper,
     CreateNodeCommandHandler createNodeCommandHandler,
     NodeResponseMapper responseMapper
 ) : BeamOsFastEndpoint<CreateNodeRequest, NodeResponse>(options)
@@ -25,7 +24,7 @@ public class CreateNode(
             0.0,
             10.0,
             "Foot",
-            new RestraintRequest(false, false, false, false, false, false)
+            new RestraintContract(false, false, false, false, false, false)
         );
 
     public override async Task<NodeResponse> ExecuteRequestAsync(
@@ -33,9 +32,7 @@ public class CreateNode(
         CancellationToken ct
     )
     {
-        var command = requestMapper.Map(req);
-
-        Node node = await createNodeCommandHandler.ExecuteAsync(command, ct);
+        Node node = await createNodeCommandHandler.ExecuteAsync(req, ct);
 
         return responseMapper.Map(node);
     }

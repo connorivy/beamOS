@@ -1,0 +1,66 @@
+@page "/models"
+@using BeamOs.Common.Application.Interfaces
+@using System.Security.Claims
+@using BeamOs.WebApp.Client.Components.Pages.Account
+@using BeamOs.WebApp.Client.Components.Features.TestExplorer
+@using Microsoft.AspNetCore.Authorization
+
+@inherits FluxorComponent
+
+<PageTitle>Models</PageTitle>
+
+<AuthorizeView>
+    <Authorized>
+        <MudGrid Justify="Justify.Center">
+            <MudItem xs="9">
+                <MudGrid>
+                    <MudItem xs="9">
+                        <MudTextField T="string" Placeholder="Search..." Icon="Icons.Material.Filled.Search" />
+                    </MudItem>
+                    <MudItem xs="3" Class="d-flex justify-end">
+                        <MudButton @onclick="CreateModelDialog" Variant="Variant.Filled" Color="Color.Primary" StartIcon="Icons.Material.Filled.Add">New Project</MudButton>
+                    </MudItem>
+                </MudGrid>
+
+                <MudGrid>
+                    @foreach (var model in ModelState.Value.ModelResponses)
+                    {
+                        <MudItem xs="12">
+                            <MudCard>
+                                <MudCardHeader>
+                                    <MudText Typo="Typo.h6">@model.Name</MudText>
+                                    <MudMenu Icon="Icons.Material.Filled.MoreVert">
+                                        <MudMenuItem>Option 1</MudMenuItem>
+                                        <MudMenuItem>Option 2</MudMenuItem>
+                                    </MudMenu>
+                                </MudCardHeader>
+                                <MudCardContent>
+                                    @* <img src="@model.Image" alt="Project Image" class="img-fluid"/>
+                                <MudText Typo="Typo.caption">@model.UpdatedDate.ToShortDateString()</MudText> *@
+                                </MudCardContent>
+                                <MudCardActions>
+                                    <MudButton Href="@BeamOs.WebApp.Client.Components.Pages.Editor.GetRelativeUrl(model.Id)" Variant="Variant.Text" Color="Color.Primary">Open</MudButton>
+                                </MudCardActions>
+                            </MudCard>
+                        </MudItem>
+                    }
+                </MudGrid>
+            </MudItem>
+        </MudGrid>
+    </Authorized>
+    <NotAuthorized>
+        <div class="flex justify-center items-center h-3/6">
+            <MudCard Class="p-4"> 
+                <MudText>
+                    You must 
+                    <MudLink Href="@Login.Href" Underline="Underline.Always">login</MudLink>
+                     to create and view models
+                </MudText>
+                <MudText>
+                    Or you can 
+                    <MudLink Href="@TestExplorer.Href" Underline="Underline.Always">view the test models</MudLink>
+                </MudText>
+            </MudCard>
+        </div>
+    </NotAuthorized>
+</AuthorizeView>

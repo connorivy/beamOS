@@ -38,6 +38,14 @@
     <Folder Include="wwwroot\test-results\stryker\" />
   </ItemGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>$(DefineConstants);BEAM_OS</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>$(DefineConstants);BEAM_OS</DefineConstants>
+  </PropertyGroup>
+
   <!--<Target Name="NpmInstall" Condition="'$(Configuration)' == 'Release' AND '$(ContinuousIntegrationBuild)' == false" Inputs="$(NpmFolder)/package.json" Outputs="$(NpmFolder)/node_modules/.install-stamp">
     --><!--
         Use npm install or npm ci depending on RestorePackagesWithLockFile value.

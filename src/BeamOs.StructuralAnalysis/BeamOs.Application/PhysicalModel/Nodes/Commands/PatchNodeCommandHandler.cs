@@ -1,5 +1,7 @@
 using BeamOs.Application.Common.Interfaces;
 using BeamOs.Application.PhysicalModel.Common;
+using BeamOs.Application.PhysicalModel.Models;
+using BeamOs.Application.PhysicalModel.Nodes.Interfaces;
 using BeamOs.Contracts.PhysicalModel.Node;
 using BeamOs.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
@@ -7,13 +9,14 @@ using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
 namespace BeamOs.Application.PhysicalModel.Nodes.Commands;
 
 public class PatchNodeCommandHandler(
-    IRepository<NodeId, Node> nodeRepository,
+    INodeRepository nodeRepository,
+    IModelRepository modelRepository,
     PatchRestraintCommandHandler patchRestraintCommandHandler,
     PatchPointCommandHandler patchPointCommandHandler,
     IUnitOfWork unitOfWork
-) : ICommandHandler<PatchNodeRequest, Node>
+) : ICommandHandler<PatchNodeRequest, NodeResponse>
 {
-    public async Task<Node> ExecuteAsync(PatchNodeRequest command, CancellationToken ct)
+    public async Task<NodeResponse> ExecuteAsync(PatchNodeRequest command, CancellationToken ct)
     {
         Node node = await nodeRepository.GetById(new NodeId(Guid.Parse(command.NodeId)), ct);
 
@@ -40,6 +43,9 @@ public class PatchNodeCommandHandler(
 
         await unitOfWork.SaveChangesAsync(ct);
 
-        return node;
+        var unitSettings = await modelRepository.GetUnits(node.ModelId, CancellationToken.None);
+        var mapper = NodeToNodeResponseMapper.Create(unitSettings);
+
+        return mapper.Map(node);
     }
 }

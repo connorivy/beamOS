@@ -1,0 +1,79 @@
+<BeamOsPopoverBase IsOpen="@IsOpen" AnchorOrigin="@AnchorOrigin" TransformOrigin="@TransformOrigin" Class="@Class">
+    <div class="flex flex-col max-h-full">
+        @TopContent
+        <MudText Align="Align.Center" Typo="Typo.h6">@Title</MudText>
+        <MudText Typo="Typo.body2" Class="mud-text-secondary">@Subtitle</MudText>
+        <MudDivider Class="mt-1" />
+        <MudExpansionPanels MultiExpansion="true" Outlined="false" Elevation="0" Dense="true" Class="grow overflow-y-auto">
+            @MiddleContent
+        </MudExpansionPanels>
+        @BottomContent
+    </div>
+</BeamOsPopoverBase>
+
+<style>
+    .mud-expand-panel-header {
+        padding-left: 0px !important;
+        padding-right: 0px !important;
+        padding-top: 0px !important;
+        padding-bottom: 8px !important;
+        min-height: 24px !important;
+    }
+
+    .mud-expand-panel-content {
+        padding-left: 12px !important;
+        padding-right: 0px !important;
+        padding-top: 0px !important;
+        border-style: none;
+        height: fit-content;
+    }
+
+    .mud-panel-expanded > .mud-expand-panel-header .mud-expand-panel-text {
+        color: var(--mud-palette-primary-lighten);
+    }
+
+    .mud-expand-panel.mud-panel-expanded {
+        margin-top: 0px;
+        margin-block: 0px;
+    }
+
+    .mud-expand-panel-text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .mud-input-control {
+        margin-top: 0px;
+    }
+
+</style>
+
+@code {
+    [Parameter]
+    public bool IsOpen { get; set; }
+
+    [Parameter]
+    public Origin AnchorOrigin { get; init; } = Origin.TopLeft;
+
+    [Parameter]
+    public Origin TransformOrigin { get; init; } = Origin.TopLeft;
+
+    [Parameter]
+    public string? Class { get; init; }
+
+    [Parameter]
+    public required string Title { get; init; }
+
+    [Parameter]
+    public string? Subtitle { get; init; }
+
+    [Parameter]
+    public RenderFragment TopContent { get; set; }
+
+    [Parameter]
+    public RenderFragment MiddleContent { get; set; }
+
+    [Parameter]
+    public RenderFragment BottomContent { get; set; }
+}

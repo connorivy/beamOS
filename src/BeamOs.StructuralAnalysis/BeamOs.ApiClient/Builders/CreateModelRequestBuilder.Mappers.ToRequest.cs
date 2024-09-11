@@ -2,11 +2,11 @@ using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.ApiClient.Builders;
 
-[Mapper]
+[Mapper(IncludedMembers = MemberVisibility.Public)]
 public partial class CreateModelRequestBuilder
 {
-    [MapperIgnoreTarget(nameof(CreateModelRequest.Id))]
-    [MapProperty(nameof(CreateModelRequestBuilder.Settings), nameof(CreateModelRequest.Settings))]
+    //[MapperIgnoreTarget(nameof(CreateModelRequest.Id))]
+    //[MapProperty(nameof(CreateModelRequestBuilder.Settings), nameof(CreateModelRequest.Settings))]
     public partial CreateModelRequest ToRequest(CreateModelRequestBuilder fixture);
 
     public partial CreateElement1dRequest ToRequest(CreateElement1dRequestBuilder fixture);

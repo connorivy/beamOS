@@ -1,0 +1,94 @@
+@using BeamOS.Tests.Common
+@using BeamOS.Tests.Common.Fixtures
+@using BeamOS.Tests.Common.Interfaces
+@using BeamOs.ApiClient.Builders
+@using BeamOs.Tests.TestRunner
+@using BeamOs.WebApp.Client.EditorCommands
+
+<MudDrawerHeader>
+    <MudText Typo="Typo.h6">Select an Example Problem</MudText>
+</MudDrawerHeader>
+
+<MudList T="List<TestInfo>" SelectedValueChanged="OnSelectedExampleProblemChanged">
+    @foreach (var testInfoGroup in TestInfoProvider.TestInfos.Values.GroupBy(t => t.SourceInfo?.SourceType ?? FixtureSourceType.Standalone))
+    {
+        <MudListItem Icon="@Icons.Material.Filled.Book" Text="@testInfoGroup.Key.ToString()">
+            <NestedList>
+                @foreach (var testInfoGroupBySourceName in testInfoGroup.GroupBy(t => t.SourceInfo?.SourceName))
+                {
+                    <MudListItem Icon="@Icons.Material.Outlined.Build" Text="@testInfoGroupBySourceName.Key">
+                        <NestedList>
+                            @foreach (var testInfoByModelName in testInfoGroup.GroupBy(t => t.SourceInfo?.ModelName))
+                        {
+                            <MudListItem Icon="@Icons.Material.Outlined.Abc" Text="@testInfoByModelName.Key" Value="@testInfoByModelName.ToList()"></MudListItem>
+                        }
+                    </NestedList>
+                </MudListItem>
+                }
+            </NestedList>
+        </MudListItem>
+    }
+</MudList>
+
+@code {
+    [Parameter]
+    public required string CanvasId { get; init; }
+
+    [Inject]
+    private IDispatcher Dispatcher { get; init; }
+
+    [Inject]
+    private TestInfoProvider TestInfoProvider { get; init; }
+
+    [Inject]
+    private TestFixtureDisplayer TestFixtureDisplayer { get; init; }
+
+    [Inject]
+    private IServiceProvider ServiceProvider { get; init; }
+
+    private async Task OnSelectedExampleProblemChanged(List<TestInfo>? testInfos)
+    {
+        this.Dispatcher.Dispatch(new ChangeSelectionCommand(this.CanvasId, []));
+        IHasFixtureId? fixtureBase = testInfos?.First().GetTestFixture();
+        if (fixtureBase is not null)
+        {
+            //await this.readOnlyEditor.EditorApiAlpha.ClearAsync();
+            await this.TestFixtureDisplayer.Display(fixtureBase, this.CanvasId);
+        }
+
+        this.Dispatcher.Dispatch(new ChangeSelectedSourceInfo(testInfos?.FirstOrDefault()?.SourceInfo));
+
+        this.Dispatcher.Dispatch(new ChangeSelectedProblemTests(testInfos));
+
+        Dictionary<string, List<TestResult2>> results = [];
+        void OnAssertedEqual2(object? _, TestResult2 args)
+        {
+            if (!results.TryGetValue(args.BeamOsObjectId, out var resultsList))
+            {
+                resultsList = [];
+                results.Add(args.BeamOsObjectId, resultsList);
+            }
+            resultsList.Add(args);
+        }
+        foreach (var test in testInfos ?? [])
+        {
+            test.OnTestResult += OnAssertedEqual2;
+            try
+            {
+                await test.RunTest2(this.ServiceProvider);    
+            }
+            finally
+            {
+                test.OnTestResult -= OnAssertedEqual2;
+            }
+        }
+        this.Dispatcher.Dispatch(new ChangeTestResultsDict(results));
+
+        // redraw model with data from db. first display is with local data
+        if (fixtureBase is not null)
+        {
+            //await this.readOnlyEditor.EditorApiAlpha.ClearAsync();
+            await this.TestFixtureDisplayer.Display(fixtureBase, this.CanvasId);
+        }
+    }
+}

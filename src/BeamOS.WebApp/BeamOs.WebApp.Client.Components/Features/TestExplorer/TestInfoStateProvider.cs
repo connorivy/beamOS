@@ -13,17 +13,17 @@ public class TestInfoStateProvider
     public TestResult? GetResultFromCache(TestInfo testInfo) =>
         this.testIdToResultDict.GetValueOrDefault(testInfo.Id);
 
-    public async Task<TestResult> GetOrComputeTestResult(TestInfo testInfo)
-    {
-        if (this.testIdToResultDict.TryGetValue(testInfo.Id, out var cachedResult))
-        {
-            return cachedResult;
-        }
+    //public async Task<TestResult> GetOrComputeTestResult(TestInfo testInfo)
+    //{
+    //    if (this.testIdToResultDict.TryGetValue(testInfo.Id, out var cachedResult))
+    //    {
+    //        return cachedResult;
+    //    }
 
-        TestResult result = await testInfo.RunTest();
-        this.testIdToResultDict.Add(testInfo.Id, result);
-        return result;
-    }
+    //    TestResult result = await testInfo.RunTest();
+    //    this.testIdToResultDict.Add(testInfo.Id, result);
+    //    return result;
+    //}
 
     public (string, Color) GetIconAndCssColorRepresentingTestResult(TestInfo testInfo)
     {

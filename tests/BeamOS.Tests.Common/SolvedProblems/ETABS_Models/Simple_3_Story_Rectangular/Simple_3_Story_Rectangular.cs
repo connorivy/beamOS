@@ -76,18 +76,18 @@ public partial class Simple_3_Story_Rectangular
             {
                 for (int zIndex = 0; zIndex < this.zValues.Length; zIndex++)
                 {
-                    RestraintRequest restraint;
+                    RestraintContract restraint;
                     if (yIndex > 0)
                     {
-                        restraint = RestraintRequest.Free;
+                        restraint = RestraintContract.Free;
                     }
                     else if (zIndex == 0 || xIndex == 0)
                     {
-                        restraint = RestraintRequest.Fixed;
+                        restraint = RestraintContract.Fixed;
                     }
                     else
                     {
-                        restraint = RestraintRequest.Pinned;
+                        restraint = RestraintContract.Pinned;
                     }
 
                     this.AddNode(

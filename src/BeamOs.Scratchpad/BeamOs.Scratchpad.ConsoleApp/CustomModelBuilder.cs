@@ -32,15 +32,15 @@ public class CustomModelBuilder : CreateModelRequestBuilder
                 .SpeckleConnector
                 .ReceiveData(
                     AccountManager.GetAccounts().First(),
-                    "e6b1988124",
-                    "f404f297534f6bd4502a42cb1dd08f21"
+                    "d14016537b",
+                    "04efd5dd3d8ea53eb7c86062e47c8e10"
                 )
         )
         {
             if (builder is CreateNodeRequestBuilder nodeRequestBuilder)
             {
                 if (
-                    nodeRequestBuilder.LocationPoint.YCoordinate.Value > 10000
+                    nodeRequestBuilder.LocationPoint.YCoordinate > 10000
                     && this.addedNodeIds.Add(nodeRequestBuilder.Id.ToString())
                 )
                 {

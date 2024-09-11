@@ -4,6 +4,14 @@ using BeamOs.WebApp.Client.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// metrics
+builder
+    .Services
+    .AddMetrics()
+    .AddSingleton<StructuralAnalysisMetrics>()
+    .AddOpenTelemetry()
+    .WithMetrics(metrics => metrics.AddMeter(StructuralAnalysisMetrics.MeterName));
+
 builder
     .Services
     // event services

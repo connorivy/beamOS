@@ -19,6 +19,11 @@ namespace BeamOs.Infrastructure.Migrations
                         Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                         Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                         Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                        CustomData_Data = table.Column<string>(
+                            type: "nvarchar(128)",
+                            maxLength: 128,
+                            nullable: false
+                        ),
                         Settings_YAxisUp = table.Column<bool>(type: "bit", nullable: false),
                         Settings_AnalysisSettings_Element1DAnalysisType = table.Column<int>(
                             type: "int",
@@ -80,6 +85,11 @@ namespace BeamOs.Infrastructure.Migrations
                             type: "nvarchar(max)",
                             nullable: false
                         ),
+                        CustomData_Data = table.Column<string>(
+                            type: "nvarchar(128)",
+                            maxLength: 128,
+                            nullable: false
+                        ),
                         ElementLength = table.Column<double>(type: "float", nullable: false),
                         EqualityTolerance = table.Column<double>(type: "float", nullable: false),
                         LengthUnit = table.Column<int>(type: "int", nullable: false)
@@ -98,7 +108,12 @@ namespace BeamOs.Infrastructure.Migrations
                         Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                         ModelId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                         ModulusOfElasticity = table.Column<double>(type: "float", nullable: false),
-                        ModulusOfRigidity = table.Column<double>(type: "float", nullable: false)
+                        ModulusOfRigidity = table.Column<double>(type: "float", nullable: false),
+                        CustomData_Data = table.Column<string>(
+                            type: "nvarchar(128)",
+                            maxLength: 128,
+                            nullable: false
+                        )
                     },
                 constraints: table =>
                 {
@@ -123,7 +138,12 @@ namespace BeamOs.Infrastructure.Migrations
                         MaxShear = table.Column<double>(type: "float", nullable: false),
                         MinShear = table.Column<double>(type: "float", nullable: false),
                         MaxMoment = table.Column<double>(type: "float", nullable: false),
-                        MinMoment = table.Column<double>(type: "float", nullable: false)
+                        MinMoment = table.Column<double>(type: "float", nullable: false),
+                        CustomData_Data = table.Column<string>(
+                            type: "nvarchar(128)",
+                            maxLength: 128,
+                            nullable: false
+                        )
                     },
                 constraints: table =>
                 {
@@ -145,6 +165,11 @@ namespace BeamOs.Infrastructure.Migrations
                     {
                         Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                         ModelId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                        CustomData_Data = table.Column<string>(
+                            type: "nvarchar(128)",
+                            maxLength: 128,
+                            nullable: false
+                        ),
                         LocationPoint_XCoordinate = table.Column<double>(
                             type: "float",
                             nullable: false
@@ -213,7 +238,12 @@ namespace BeamOs.Infrastructure.Migrations
                         ),
                         PolarMomentOfInertia = table.Column<double>(type: "float", nullable: false),
                         StrongAxisShearArea = table.Column<double>(type: "float", nullable: false),
-                        WeakAxisShearArea = table.Column<double>(type: "float", nullable: false)
+                        WeakAxisShearArea = table.Column<double>(type: "float", nullable: false),
+                        CustomData_Data = table.Column<string>(
+                            type: "nvarchar(128)",
+                            maxLength: 128,
+                            nullable: false
+                        )
                     },
                 constraints: table =>
                 {
@@ -237,7 +267,15 @@ namespace BeamOs.Infrastructure.Migrations
                         ModelId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                         NodeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                         Torque = table.Column<double>(type: "float", nullable: false),
-                        AxisDirection = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                        AxisDirection = table.Column<string>(
+                            type: "nvarchar(max)",
+                            nullable: false
+                        ),
+                        CustomData_Data = table.Column<string>(
+                            type: "nvarchar(128)",
+                            maxLength: 128,
+                            nullable: false
+                        )
                     },
                 constraints: table =>
                 {
@@ -266,6 +304,11 @@ namespace BeamOs.Infrastructure.Migrations
                         Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                         ModelId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                         NodeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                        CustomData_Data = table.Column<string>(
+                            type: "nvarchar(128)",
+                            maxLength: 128,
+                            nullable: false
+                        ),
                         Displacements_DisplacementAlongX = table.Column<double>(
                             type: "float",
                             nullable: false
@@ -319,7 +362,12 @@ namespace BeamOs.Infrastructure.Migrations
                         ModelId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                         NodeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                         Force = table.Column<double>(type: "float", nullable: false),
-                        Direction = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                        Direction = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                        CustomData_Data = table.Column<string>(
+                            type: "nvarchar(128)",
+                            maxLength: 128,
+                            nullable: false
+                        )
                     },
                 constraints: table =>
                 {
@@ -356,6 +404,11 @@ namespace BeamOs.Infrastructure.Migrations
                         ),
                         SectionProfileRotation = table.Column<double>(
                             type: "float",
+                            nullable: false
+                        ),
+                        CustomData_Data = table.Column<string>(
+                            type: "nvarchar(128)",
+                            maxLength: 128,
                             nullable: false
                         )
                     },
@@ -408,6 +461,11 @@ namespace BeamOs.Infrastructure.Migrations
                             type: "nvarchar(max)",
                             nullable: false
                         ),
+                        CustomData_Data = table.Column<string>(
+                            type: "nvarchar(128)",
+                            maxLength: 128,
+                            nullable: false
+                        ),
                         ElementLength = table.Column<double>(type: "float", nullable: false),
                         EqualityTolerance = table.Column<double>(type: "float", nullable: false),
                         LengthUnit = table.Column<int>(type: "int", nullable: false)
@@ -442,6 +500,11 @@ namespace BeamOs.Infrastructure.Migrations
                         ShearForceDiagramId = table.Column<Guid>(
                             type: "uniqueidentifier",
                             nullable: true
+                        ),
+                        CustomData_Data = table.Column<string>(
+                            type: "nvarchar(128)",
+                            maxLength: 128,
+                            nullable: false
                         )
                     },
                 constraints: table =>
@@ -451,13 +514,15 @@ namespace BeamOs.Infrastructure.Migrations
                         name: "FK_DiagramConsistantIntervals_MomentDiagrams_MomentDiagramId",
                         column: x => x.MomentDiagramId,
                         principalTable: "MomentDiagrams",
-                        principalColumn: "Id"
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade
                     );
                     table.ForeignKey(
                         name: "FK_DiagramConsistantIntervals_ShearForceDiagrams_ShearForceDiagramId",
                         column: x => x.ShearForceDiagramId,
                         principalTable: "ShearForceDiagrams",
-                        principalColumn: "Id"
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade
                     );
                 }
             );

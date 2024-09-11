@@ -38,6 +38,7 @@ public partial class DsmElement1dTests
             .ToArray();
 
         Asserter.AssertEqual(
+            fixture.Id.ToString(),
             "Local Stiffness Matrix",
             fixture.ExpectedLocalStiffnessMatrix,
             stiffnessMatrix,
@@ -69,6 +70,7 @@ public partial class DsmElement1dTests
             .ToArray();
 
         Asserter.AssertEqual(
+            fixture.Id.ToString(),
             "Global Stiffness Matrix",
             fixture.ExpectedGlobalStiffnessMatrix,
             stiffnessMatrix,
@@ -106,7 +108,12 @@ public partial class DsmElement1dTests
             { 0, 6, 0, 0, 0, 2, 0, -6, 0, 0, 0, 4 },
         };
 
-        Asserter.AssertEqual("Stiffness Matrix", expectedLocalStiffnessMatrix, stiffnessMatrix);
+        Asserter.AssertEqual(
+            string.Empty,
+            "Stiffness Matrix",
+            expectedLocalStiffnessMatrix,
+            stiffnessMatrix
+        );
     }
 
     [Fact]
@@ -140,7 +147,12 @@ public partial class DsmElement1dTests
             { 0, 5 * 6, 0, 0, 0, 5 * 2, 0, -5 * 6, 0, 0, 0, 5 * 4 },
         };
 
-        Asserter.AssertEqual("Stiffness Matrix", expectedLocalStiffnessMatrix, stiffnessMatrix);
+        Asserter.AssertEqual(
+            string.Empty,
+            "Stiffness Matrix",
+            expectedLocalStiffnessMatrix,
+            stiffnessMatrix
+        );
     }
 
     [Fact]
@@ -174,7 +186,12 @@ public partial class DsmElement1dTests
             { 0, 6, 0, 0, 0, 2, 0, -6, 0, 0, 0, 4 },
         };
 
-        Asserter.AssertEqual("Stiffness Matrix", expectedLocalStiffnessMatrix, stiffnessMatrix);
+        Asserter.AssertEqual(
+            string.Empty,
+            "Stiffness Matrix",
+            expectedLocalStiffnessMatrix,
+            stiffnessMatrix
+        );
     }
 
     [Fact]
@@ -208,7 +225,12 @@ public partial class DsmElement1dTests
             { 0, 6, 0, 0, 0, 2, 0, -6, 0, 0, 0, 4 },
         };
 
-        Asserter.AssertEqual("Stiffness Matrix", expectedLocalStiffnessMatrix, stiffnessMatrix);
+        Asserter.AssertEqual(
+            string.Empty,
+            "Stiffness Matrix",
+            expectedLocalStiffnessMatrix,
+            stiffnessMatrix
+        );
     }
 
     [Fact]
@@ -242,7 +264,12 @@ public partial class DsmElement1dTests
             { 0, 5 * 6, 0, 0, 0, 5 * 2, 0, -5 * 6, 0, 0, 0, 5 * 4 },
         };
 
-        Asserter.AssertEqual("Stiffness Matrix", expectedLocalStiffnessMatrix, stiffnessMatrix);
+        Asserter.AssertEqual(
+            string.Empty,
+            "Stiffness Matrix",
+            expectedLocalStiffnessMatrix,
+            stiffnessMatrix
+        );
     }
 
     [Fact]
@@ -276,7 +303,12 @@ public partial class DsmElement1dTests
             { 0, 6, 0, 0, 0, 2, 0, -6, 0, 0, 0, 4 },
         };
 
-        Asserter.AssertEqual("Stiffness Matrix", expectedLocalStiffnessMatrix, stiffnessMatrix);
+        Asserter.AssertEqual(
+            string.Empty,
+            "Stiffness Matrix",
+            expectedLocalStiffnessMatrix,
+            stiffnessMatrix
+        );
     }
 
     [Fact]
@@ -310,7 +342,12 @@ public partial class DsmElement1dTests
             { 0, 6, 0, 0, 0, 2, 0, -6, 0, 0, 0, 4 },
         };
 
-        Asserter.AssertEqual("Stiffness Matrix", expectedLocalStiffnessMatrix, stiffnessMatrix);
+        Asserter.AssertEqual(
+            string.Empty,
+            "Stiffness Matrix",
+            expectedLocalStiffnessMatrix,
+            stiffnessMatrix
+        );
     }
 
     [Fact]
@@ -344,6 +381,11 @@ public partial class DsmElement1dTests
             { 0, 6 / 25.0, 0, 0, 0, 2 / 5.0, 0, -6 / 25.0, 0, 0, 0, 4 / 5.0 },
         };
 
-        Asserter.AssertEqual("Stiffness Matrix", expectedLocalStiffnessMatrix, stiffnessMatrix);
+        Asserter.AssertEqual(
+            string.Empty,
+            "Stiffness Matrix",
+            expectedLocalStiffnessMatrix,
+            stiffnessMatrix
+        );
     }
 }

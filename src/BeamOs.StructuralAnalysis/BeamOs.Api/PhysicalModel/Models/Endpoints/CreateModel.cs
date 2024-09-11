@@ -18,10 +18,11 @@ public class CreateModel(
     public override Http EndpointType => Http.POST;
     public override string Route => "/models";
     public override CreateModelRequest? ExampleRequest =>
-        new(
-            "Big Ol' Building",
-            "Description",
-            new PhysicalModelSettings(
+        new()
+        {
+            Name = "Big Ol' Building",
+            Description = "Description",
+            Settings = new PhysicalModelSettings(
                 new UnitSettingsDtoVerbose(
                     "Inch",
                     "SquareInch",
@@ -33,7 +34,7 @@ public class CreateModel(
                     "KilopoundForcePerSquareInch"
                 )
             )
-        );
+        };
 
     public override void ConfigureAuthentication() { }
 

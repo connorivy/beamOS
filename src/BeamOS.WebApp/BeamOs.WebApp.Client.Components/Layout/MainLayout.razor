@@ -6,18 +6,23 @@
 
 <MudThemeProvider @bind-IsDarkMode="IsDarkModeProvider.IsDarkMode" />
 <MudPopoverProvider />
-<MudDialogProvider />
+<MudDialogProvider Position="DialogPosition.Center" CloseOnEscapeKey="true" />
 <MudSnackbarProvider />
 
-<NavBar @bind-IsDarkMode="IsDarkModeProvider.IsDarkMode" />
-@* <MudDrawer @bind-Open="@open" Elevation="1" ClipMode="DrawerClipMode.Always">
-    <NavMenu />
-</MudDrawer> *@
-<MudMainContent Class="h-full">
-    <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="h-full">
-        @Body
-    </MudContainer>
-</MudMainContent>
+<MudLayout>
+    <NavBar @bind-IsDarkMode="IsDarkModeProvider.IsDarkMode" />
+
+    @* todo: how do I make responsive mode only work when section outlet has content? *@
+    <MudDrawer Width="401px" ClipMode="DrawerClipMode.Docked" Variant="DrawerVariant.Persistent" Open="@this.State.Value.IsDrawerOpen">
+        <SectionOutlet SectionId="Drawer" />
+    </MudDrawer>
+
+    <MudMainContent Class="h-full">
+        <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="h-full relative">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
 
 <div id="blazor-error-ui">
     An unhandled error has occurred.
@@ -26,6 +31,9 @@
 </div>
 
 @code {
+    [Inject]
+    IState<MainLayoutState> State { get; init; }
+
     private string inputValue = "initial";
-    private bool open = false;
+    internal static object Drawer = new();
 }

@@ -1,11 +1,13 @@
-@using BeamOS.WebApp.Components.Providers
 @using BeamOs.WebApp.Client.Components
+@using BeamOS.WebApp.Components.Providers
+@using BeamOs.Common.Identity
 @using Microsoft.Extensions.Configuration
 @using BeamOS.WebApp.Client;
 @using BeamOs.WebApp.Client.Components.Features.KeyBindings
 
 @inject IConfiguration Configuration
 @inject IRenderModeProvider RenderModeProvider
+@inject IHttpContextAccessor HttpContextAccessor
 
 <Fluxor.Blazor.Web.StoreInitializer />
 
@@ -27,7 +29,9 @@
 </head>
 
 <body class="h-screen">
-    <Routes @rendermode="RenderModeProvider.GlobalRenderMode" />
+    <Routes
+        AccessToken="@HttpContextAccessor.HttpContext?.Request.Cookies[Constants.ACCESS_TOKEN_GUID]"
+        @rendermode="RenderModeProvider.GlobalRenderMode" />
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
     <script src="_content/CodeBeam.MudBlazor.Extensions/MudExtensions.min.js"></script>
     <script src="_framework/blazor.web.js"></script>
@@ -50,7 +54,7 @@
     else
     {
         <script type="module">
-            import { BeamOsEditor } from 'https://cdn.jsdelivr.net/npm/beamos-editor@0.0.11/+esm';
+            import { BeamOsEditor } from 'https://cdn.jsdelivr.net/npm/beamos-editor@0.0.12/+esm';
 
             // WARNING : the string "createEditorFromId" must match the string in EditorApiProxy.cs
             window.createEditorFromId = (editorId, dispatcher, isReadOnly) => {

@@ -25,12 +25,12 @@ namespace BeamOs.CodeGen.Apis.StructuralAnalysisApi
     {
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiAlphaClientException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<AnalyticalModelResponse3> RunDirectStiffnessMethodAsync(IdRequest body);
+        System.Threading.Tasks.Task<AnalyticalModelResponse3> RunDirectStiffnessMethodAsync(ModelIdRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiAlphaClientException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<AnalyticalModelResponse3> RunDirectStiffnessMethodAsync(IdRequest body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<AnalyticalModelResponse3> RunDirectStiffnessMethodAsync(ModelIdRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiAlphaClientException">A server side error occurred.</exception>
@@ -142,12 +142,12 @@ namespace BeamOs.CodeGen.Apis.StructuralAnalysisApi
 
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiAlphaClientException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ModelResponseHydrated> GetModelHydratedAsync(GetModelHydratedRequest body);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ModelResponse>> GetModelsAsync(EmptyRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiAlphaClientException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ModelResponseHydrated> GetModelHydratedAsync(GetModelHydratedRequest body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ModelResponse>> GetModelsAsync(EmptyRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiAlphaClientException">A server side error occurred.</exception>
@@ -255,7 +255,7 @@ namespace BeamOs.CodeGen.Apis.StructuralAnalysisApi
 
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiAlphaClientException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<AnalyticalModelResponse3> RunDirectStiffnessMethodAsync(IdRequest body)
+        public virtual System.Threading.Tasks.Task<AnalyticalModelResponse3> RunDirectStiffnessMethodAsync(ModelIdRequest body)
         {
             return RunDirectStiffnessMethodAsync(body, System.Threading.CancellationToken.None);
         }
@@ -263,7 +263,7 @@ namespace BeamOs.CodeGen.Apis.StructuralAnalysisApi
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiAlphaClientException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<AnalyticalModelResponse3> RunDirectStiffnessMethodAsync(IdRequest body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<AnalyticalModelResponse3> RunDirectStiffnessMethodAsync(ModelIdRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -1360,15 +1360,15 @@ namespace BeamOs.CodeGen.Apis.StructuralAnalysisApi
 
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiAlphaClientException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ModelResponseHydrated> GetModelHydratedAsync(GetModelHydratedRequest body)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ModelResponse>> GetModelsAsync(EmptyRequest body)
         {
-            return GetModelHydratedAsync(body, System.Threading.CancellationToken.None);
+            return GetModelsAsync(body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiAlphaClientException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ModelResponseHydrated> GetModelHydratedAsync(GetModelHydratedRequest body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ModelResponse>> GetModelsAsync(EmptyRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -1388,8 +1388,8 @@ namespace BeamOs.CodeGen.Apis.StructuralAnalysisApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "StructuralAnalysisApiAlphaClient/GetModelHydrated"
-                    urlBuilder_.Append("StructuralAnalysisApiAlphaClient/GetModelHydrated");
+                    // Operation Path: "StructuralAnalysisApiAlphaClient/GetModels"
+                    urlBuilder_.Append("StructuralAnalysisApiAlphaClient/GetModels");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -1416,7 +1416,7 @@ namespace BeamOs.CodeGen.Apis.StructuralAnalysisApi
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ModelResponseHydrated>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<ModelResponse>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StructuralAnalysisApiAlphaClientException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);

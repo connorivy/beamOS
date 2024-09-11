@@ -1,5 +1,6 @@
 using BeamOs.ApiClient;
 using BeamOs.CodeGen.Apis.EditorApi;
+using BeamOs.CodeGen.Apis.StructuralAnalysisApi;
 using BeamOs.Common.Api;
 using BeamOs.Common.Events;
 using BeamOs.Contracts.AnalyticalResults;
@@ -13,24 +14,25 @@ using BeamOs.WebApp.Client.Components.Features.KeyBindings.UndoRedo;
 using BeamOs.WebApp.Client.Components.Repositories;
 using BeamOs.WebApp.Client.Components.State;
 using BeamOs.WebApp.Client.EditorCommands;
+using Fluxor;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.SignalR.Client;
 
 namespace BeamOs.WebApp.Client.Components.Components.Editor;
 
 public partial class EditorComponent : ComponentBase, IAsyncDisposable
 {
+    private IDisposable? undoRedoFunctionality;
+
     [Parameter]
     public string? Class { get; set; }
 
     [Inject]
-    private IApiAlphaClient ApiAlphaClient { get; init; }
+    private IStructuralAnalysisApiAlphaClient StructuralAnalysisApiClient { get; set; }
 
     [Inject]
     private IEditorApiProxyFactory EditorApiProxyFactory { get; init; }
-
-    [Inject]
-    private UndoRedoFunctionality UndoRedoFunctionality { get; init; }
 
     [Inject]
     private HistoryManager HistoryManager { get; init; }
@@ -49,6 +51,9 @@ public partial class EditorComponent : ComponentBase, IAsyncDisposable
 
     [Inject]
     private ChangeComponentStateCommandHandler<EditorComponentState> ChangeComponentStateCommandHandler { get; init; }
+
+    [Inject]
+    private IDispatcher Dispatcher { get; init; }
 
     public EditorComponentState EditorComponentState =>
         this.EditorComponentStateRepository.GetOrSetComponentStateByCanvasId(this.ElementId);
@@ -103,11 +108,17 @@ public partial class EditorComponent : ComponentBase, IAsyncDisposable
             this.EditorApiAlpha ??= await this.EditorApiProxyFactory.Create(this.ElementId, false);
 
             await this.ChangeComponentState(state => state with { LoadingText = "Fetching Data" });
-            await this.LoadModel(ModelId);
+            await this.LoadModel(this.ModelId);
             await this.CacheAllNodeResults();
             await this.ChangeComponentState(state => state with { IsLoading = false });
         }
         await base.OnAfterRenderAsync(firstRender);
+    }
+
+    protected override void OnParametersSet()
+    {
+        this.undoRedoFunctionality = UndoRedoFunctionality.SubscribeToUndoRedo(this.HistoryManager);
+        base.OnParametersSet();
     }
 
     public async Task LoadModel(string modelId)
@@ -116,11 +127,14 @@ public partial class EditorComponent : ComponentBase, IAsyncDisposable
         await this.LoadModelCommandHandler.ExecuteAsync(
             new LoadModelCommand(this.ElementId, modelId)
         );
+        this.Dispatcher.Dispatch(new ModelLoaded(modelId));
     }
 
     private async Task CacheAllNodeResults()
     {
-        var allForces = await this.ApiAlphaClient.GetNodeResultsAsync(this.ModelId, null);
+        var allForces = await this.StructuralAnalysisApiClient.GetNodeResultsAsync(
+            new(this.ModelId)
+        );
 
         foreach (NodeResultResponse force in allForces)
         {
@@ -168,6 +182,8 @@ public partial class EditorComponent : ComponentBase, IAsyncDisposable
         );
     }
 
+    private void OnMouseDown(MouseEventArgs args) => this.Dispatcher.Dispatch(new CanvasClicked());
+
     public async ValueTask DisposeAsync()
     {
         EventEmitter.VisibleStateChanged -= this.EventEmitter_VisibleStateChanged;
@@ -179,7 +195,7 @@ public partial class EditorComponent : ComponentBase, IAsyncDisposable
 
         this.EditorComponentStateRepository.RemoveEditorComponentStateForCanvasId(this.ElementId);
         //await this.EditorApiAlpha.DisposeAsync();
-        this.UndoRedoFunctionality?.Dispose();
+        this.undoRedoFunctionality?.Dispose();
         if (this.hubConnection is not null)
         {
             await this.hubConnection.DisposeAsync();
@@ -190,11 +206,12 @@ public partial class EditorComponent : ComponentBase, IAsyncDisposable
 public record EditorComponentState(
     bool IsLoading,
     string LoadingText,
+    string? CanvasId,
     string? LoadedModelId,
     IEditorApiAlpha? EditorApi,
     SelectedObject[] SelectedObjects
 )
 {
     public EditorComponentState()
-        : this(true, "Loading beamOS editor", null, null, []) { }
+        : this(true, "Loading beamOS editor", null, null, null, []) { }
 }

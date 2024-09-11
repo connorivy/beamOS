@@ -23,22 +23,15 @@
             <Logo />
         </MudContainer>
 
-        <MudPaper Class="pa-4">
+        @* <MudPaper Class="pa-4">
             <MudText Typo="Typo.h5">Sign in to your account</MudText>
             <EditForm Model="@Input" OnValidSubmit="LoginUser">
                 <MudTextField Label="Email" Class="mt-3" @bind-Value="Input.Email" For="@(() => Input.Email)" />
                 <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3" @bind-Value="Input.Password" For="@(() => Input.Password)" InputType="InputType.Password" />
                 <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Login</MudButton>
             </EditForm>
-        </MudPaper>
-@*         <div id="alert-border-2" class="border-t-4 mb-4 flex items-center border-red-300 bg-red-50 p-4 text-red-800 dark:text-red-400 dark:bg-gray-800 dark:border-red-800" role="alert">
-            <svg class="flex-shrink-0 h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-            </svg>
-            <div class="ms-3 text-sm font-medium">
-                <b>WARNING: </b>This above log in form doesn't work yet. Only logging in with Google using the button below is currently supported.
-            </div>
-        </div> *@
+        </MudPaper> *@
+
         <hr class="border-0 my-8 h-px bg-gray-200 dark:bg-gray-700">
 
         <div class="flex items-center justify-center dark:bg-gray-800">
@@ -48,9 +41,9 @@
             </button>
         </div>
 
-        <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+        @* <p class="text-sm font-light text-gray-500 dark:text-gray-400">
             Don’t have an account yet? <a href="#" class="font-medium text-indigo-600 hover:underline dark:text-indigo-500">Sign up</a>
-        </p>
+        </p> *@
     </MudContainer>
 </MudMainContent>
 
@@ -65,6 +58,8 @@
     private LoginForm Input { get; set; } = new();
 
     private string? FullExternalLoginReturnUrl { get; set; }
+
+    public const string Href = "/login";
 
     protected override void OnParametersSet()
     {

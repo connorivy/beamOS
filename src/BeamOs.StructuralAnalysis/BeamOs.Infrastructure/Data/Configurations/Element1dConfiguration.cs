@@ -1,4 +1,5 @@
 using BeamOs.Domain.PhysicalModel.Element1DAggregate;
+using BeamOs.Infrastructure.Data.ValueConverters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -31,6 +32,10 @@ public class Element1dConfiguration : IEntityTypeConfiguration<Element1D>
             .HasForeignKey(el => el.SectionProfileId)
             .IsRequired()
             .OnDelete(DeleteBehavior.ClientCascade);
+
+        //builder.OwnsOne(el => el.CustomData);
+        //.HasConversion<string>(new DictStringObjConverter())
+        //.HasColumnType("nvarchar(128)")
 
         //_ = builder
         //    .HasOne(el => el.SectionProfile)

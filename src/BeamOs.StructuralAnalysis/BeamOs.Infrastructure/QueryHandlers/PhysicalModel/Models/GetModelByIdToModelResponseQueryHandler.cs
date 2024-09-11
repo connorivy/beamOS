@@ -1,9 +1,9 @@
-using BeamOs.Api.PhysicalModel.Models.Mappers;
 using BeamOs.Application.Common.Queries;
 using BeamOs.Common.Application.Interfaces;
 using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
+using BeamOs.Infrastructure.QueryHandlers.PhysicalModel.Models.Mappers;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.Infrastructure.QueryHandlers.PhysicalModel.Models;
@@ -43,10 +43,15 @@ internal sealed class GetModelByIdToModelResponseQueryHandler(BeamOsStructuralDb
         }
 
         Model? model = await queryable.FirstOrDefaultAsync(cancellationToken: ct);
+        if (model is null)
+        {
+            return null;
+        }
+
         var modelToModelResponseMapper = ModelToModelResponseMapper.Create(
             model.Settings.UnitSettings
         );
 
-        return model is not null ? modelToModelResponseMapper.Map(model) : null;
+        return modelToModelResponseMapper.Map(model);
     }
 }

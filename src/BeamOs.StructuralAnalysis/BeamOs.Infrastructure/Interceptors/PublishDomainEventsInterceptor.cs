@@ -7,18 +7,15 @@ namespace BeamOs.Infrastructure.Interceptors;
 
 public class PublishDomainEventsInterceptor(IPublisher publisher) : SaveChangesInterceptor
 {
-    public override async ValueTask<int> SavedChangesAsync(
-        SaveChangesCompletedEventData eventData,
-        int result,
+    public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(
+        DbContextEventData eventData,
+        InterceptionResult<int> result,
         CancellationToken cancellationToken = default
     )
     {
         await this.PublishDomainEvents(eventData.Context);
         return result;
     }
-
-    public override int SavedChanges(SaveChangesCompletedEventData eventData, int result) =>
-        base.SavedChanges(eventData, result);
 
     private async Task PublishDomainEvents(DbContext? dbContext)
     {

@@ -1,14 +1,12 @@
 using BeamOs.Common.Api;
 using BeamOs.WebApp.Client.Components.Components.Editor.Commands;
 using BeamOs.WebApp.Client.Components.Repositories;
-using BeamOs.WebApp.Client.Components.State;
 
 namespace BeamOs.WebApp.Client.Components.Components.Editor.CommandHandlers;
 
 public class ChangeComponentStateCommandHandler(
-    IStateRepository<EditorComponentState> editorComponentStateRepository,
-    HistoryManager historyManager
-) : VisibleStateCommandHandlerBase<ChangeComponentStateCommand>(historyManager)
+    IStateRepository<EditorComponentState> editorComponentStateRepository
+) : VisibleStateCommandHandlerBase<ChangeComponentStateCommand>
 {
     protected override Task<Result> ExecuteCommandAsync(
         ChangeComponentStateCommand command,
@@ -33,10 +31,8 @@ public class ChangeComponentStateCommandHandler(
     }
 }
 
-public class ChangeComponentStateCommandHandler<TState>(
-    IStateRepository<TState> stateRepository,
-    HistoryManager historyManager
-) : VisibleStateCommandHandlerBase<ChangeComponentStateCommand<TState>>(historyManager)
+public class ChangeComponentStateCommandHandler<TState>(IStateRepository<TState> stateRepository)
+    : VisibleStateCommandHandlerBase<ChangeComponentStateCommand<TState>>
 {
     protected override Task<Result> ExecuteCommandAsync(
         ChangeComponentStateCommand<TState> command,

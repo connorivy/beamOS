@@ -1,8 +1,11 @@
 using System.Reflection;
 using System.Text;
+using BeamOs.ApiClient.Builders;
 using BeamOS.Tests.Common;
 using BeamOS.Tests.Common.Fixtures;
 using BeamOS.Tests.Common.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
+using Xunit;
 
 namespace BeamOs.Tests.TestRunner;
 
@@ -12,7 +15,7 @@ public class TestInfo
         Type testClassType,
         object[]? testData,
         MethodInfo methodInfo,
-        Dictionary<string, string[]> traitNameToValueDict
+        Dictionary<string, string> traitNameToValueDict
     )
     {
         this.TestData = testData;
@@ -43,14 +46,14 @@ public class TestInfo
     public object[]? TestData { get; }
     public MethodInfo MethodInfo { get; }
     public Type TestClassType { get; }
-    public Dictionary<string, string[]> TraitNameToValueDict { get; }
+    public Dictionary<string, string> TraitNameToValueDict { get; }
 
-    public FixtureBase2? GetTestFixture() => this.TestData?.FirstOrDefault() as FixtureBase2;
+    public IHasFixtureId? GetTestFixture() => this.TestData?.FirstOrDefault() as IHasFixtureId;
 
     public SourceInfo? SourceInfo =>
         (this.TestData?.FirstOrDefault() as IHasSourceInfo)?.SourceInfo;
 
-    public async Task<TestResult> RunTest()
+    public async Task<TestResult> RunTest(IServiceProvider serviceProvider)
     {
         TaskCompletionSource<TestResult> tcs = new();
         TestResult? result = null;
@@ -70,7 +73,7 @@ public class TestInfo
 
         try
         {
-            await this.RunAndThrow();
+            await this.RunAndThrow(serviceProvider);
             tcs.SetResult(result ?? throw new Exception("Result was unset"));
         }
         catch (TargetInvocationException ex) when (ex.InnerException is Xunit.SkipException skipEx)
@@ -92,13 +95,57 @@ public class TestInfo
         return await tcs.Task;
     }
 
-    private async Task RunAndThrow()
+    public event EventHandler<TestResult2>? OnTestResult;
+
+    public async Task RunTest2(IServiceProvider serviceProvider)
     {
-        // todo : will fail for tests with constructor
-        object? test = this.MethodInfo.Invoke(
-            Activator.CreateInstance(this.TestClassType),
-            this.TestData
-        );
+        void OnAssertedEqual2(object? _, ComparedObjectEventArgs2 args) =>
+            OnTestResult?.Invoke(
+                this,
+                new TestResult2(
+                    //args.BeamOsObjectType,
+                    args.BeamOsObjectId,
+                    this.MethodInfo.Name,
+                    args.ComparedObjectPropertyName,
+                    args.ExpectedValue,
+                    args.CalculatedValue,
+                    TestResultStatus.Success,
+                    null,
+                    args.ComparedValueNameCollection
+                )
+            );
+
+        Asserter.AssertedEqual2 += OnAssertedEqual2;
+
+        try
+        {
+            await this.RunAndThrow(serviceProvider);
+        }
+        catch (TargetInvocationException ex) when (ex.InnerException is Xunit.SkipException skipEx)
+        {
+            //tcs.SetResult(new TestResult(TestResultStatus.Skipped, skipEx.Message));
+        }
+        catch (TargetInvocationException ex)
+            when (ex.InnerException is Xunit.Sdk.XunitException xEx)
+        {
+            //tcs.SetResult(new TestResult(TestResultStatus.Failure, xEx.Message));
+        }
+        finally
+        {
+            Asserter.AssertedEqual2 -= OnAssertedEqual2;
+        }
+    }
+
+    private async Task RunAndThrow(IServiceProvider serviceProvider)
+    {
+        using var testScope = serviceProvider.CreateScope();
+        object? testClass = testScope.ServiceProvider.GetRequiredService(this.TestClassType);
+        if (testClass is IAsyncLifetime asyncLifetime)
+        {
+            await asyncLifetime.InitializeAsync();
+        }
+        object? test = this.MethodInfo.Invoke(testClass, this.TestData);
+
         if (test is Task t)
         {
             await t.ConfigureAwait(false);

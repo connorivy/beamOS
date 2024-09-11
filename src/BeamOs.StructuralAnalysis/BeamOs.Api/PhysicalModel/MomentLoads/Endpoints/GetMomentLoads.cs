@@ -16,7 +16,7 @@ public class GetMomentLoads(
     MomentLoadResponseMapper responseMapper
 ) : BeamOsFastEndpoint<GetMomentLoadRequest, List<MomentLoadResponse>>(options)
 {
-    public override string Route => "moment-loads";
+    public override string Route => "models/{modelId}/moment-loads";
 
     public override Http EndpointType => Http.GET;
 

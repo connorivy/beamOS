@@ -1,4 +1,3 @@
-using BeamOs.Contracts.Common;
 using BeamOs.Contracts.PhysicalModel.Common;
 
 namespace BeamOs.Contracts.PhysicalModel.Node;
@@ -6,18 +5,12 @@ namespace BeamOs.Contracts.PhysicalModel.Node;
 public record NodeResponse(
     string Id,
     string ModelId,
-    PointResponse LocationPoint,
-    //List<string> PointLoadIds,
-    RestraintResponse Restraint
+    Point LocationPoint,
+    RestraintContract Restraint,
+    Dictionary<string, object>? CustomData = null
 ) : BeamOsEntityContractBase(Id);
 
-public record PointResponse(
-    UnitValueDto XCoordinate,
-    UnitValueDto YCoordinate,
-    UnitValueDto ZCoordinate
-) : BeamOsContractBase;
-
-public record RestraintResponse(
+public record RestraintContract(
     bool CanTranslateAlongX,
     bool CanTranslateAlongY,
     bool CanTranslateAlongZ,
@@ -26,6 +19,11 @@ public record RestraintResponse(
     bool CanRotateAboutZ
 ) : BeamOsContractBase
 {
-    public static RestraintResponse Fixed { get; } = new(false, false, false, false, false, false);
-    public static RestraintResponse Free { get; } = new(true, true, true, true, true, true);
+    public static RestraintContract Free { get; } = new(true, true, true, true, true, true);
+    public static RestraintContract FreeXzPlane { get; } =
+        new(true, false, true, false, true, false);
+    public static RestraintContract FreeXyPlane { get; } =
+        new(true, true, false, false, false, true);
+    public static RestraintContract Pinned { get; } = new(false, false, false, true, true, true);
+    public static RestraintContract Fixed { get; } = new(false, false, false, false, false, false);
 }

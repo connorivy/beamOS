@@ -3,6 +3,10 @@ namespace BeamOs.ApiClient.Builders;
 //[UseStaticMapper(typeof(UnitsNetMappers))]
 public partial class CreateModelRequestBuilder
 {
+    public ModelResponse ToResponse() => this.ToResponse(this);
+
+    private partial ModelResponse ToResponse(CreateModelRequestBuilder fixture);
+
     public partial NodeResponse ToResponse(CreateNodeRequestBuilder fixture);
 
     public partial Element1DResponse ToResponse(CreateElement1dRequestBuilder fixture);

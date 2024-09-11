@@ -17,7 +17,7 @@ public record CreateElement1dRequestBuilder : CreateModelEntityRequestBuilderBas
 public record CreateNodeRequestBuilder : CreateModelEntityRequestBuilderBase
 {
     public required Point LocationPoint { get; init; }
-    public required RestraintRequest Restraint { get; init; }
+    public required RestraintContract Restraint { get; init; }
 }
 
 public record CreateMaterialRequestBuilder : CreateModelEntityRequestBuilderBase
@@ -43,10 +43,30 @@ public record CreatePointLoadRequestBuilder : CreateModelEntityRequestBuilderBas
     public required UnitVector3D Direction { get; init; }
 }
 
-public abstract record CreateModelEntityRequestBuilderBase
+public record CreateMomentLoadRequestBuilder : CreateModelEntityRequestBuilderBase
 {
+    public required FixtureId NodeId { get; init; }
+    public required Torque Torque { get; init; }
+    public required UnitVector3D AxisDirection { get; init; }
+}
+
+public abstract record CreateModelEntityRequestBuilderBase : IHasFixtureId
+{
+    public const string RuntimeId = "RuntimeId";
     public FixtureId ModelId { get; internal init; }
-    public FixtureId Id { get; init; } = Guid.NewGuid().ToString();
+
+    private FixtureId id = Guid.NewGuid().ToString();
+    public FixtureId Id
+    {
+        get => this.id;
+        init
+        {
+            this.CustomData ??=  [];
+            this.CustomData.Add(RuntimeId, value.ToString());
+            this.id = value;
+        }
+    }
+    public Dictionary<string, object>? CustomData { get; init; }
 }
 
 [JsonConverter(typeof(FixtureIdConverter))]

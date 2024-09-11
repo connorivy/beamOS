@@ -1,7 +1,9 @@
 using BeamOS.Tests.Common.Fixtures;
 using BeamOS.Tests.Common.Traits;
 using BeamOs.Tests.TestRunner;
+using BeamOs.WebApp.Client.Components.Components.Editor.CommandHandlers;
 using BeamOs.WebApp.Client.Components.Features.Editors.ReadOnlyEditor;
+using BeamOs.WebApp.Client.Components.Layout;
 using Fluxor;
 using Fluxor.Blazor.Web.Components;
 using Microsoft.AspNetCore.Components;
@@ -10,6 +12,8 @@ namespace BeamOs.WebApp.Client.Components.Features.TestExplorer;
 
 public partial class TestExplorer : FluxorComponent
 {
+    public const string Href = "/test-explorer";
+
     [Inject]
     private IState<TestExplorerState> TestExplorerState { get; init; }
 
@@ -63,46 +67,13 @@ public partial class TestExplorer : FluxorComponent
 
     protected override void OnInitialized()
     {
+        this.Dispatcher.Dispatch(new OpenDrawer());
+        EventEmitter.VisibleStateChanged += this.EventEmitter_VisibleStateChanged;
         base.OnInitialized();
-        this.SubscribeToAction<ExecutionTestAction>(_ => this.isLoadingAssertionResults = true);
-        this.SubscribeToAction<ExecutionTestActionResult>(arg =>
-        {
-            if (arg.TestId != this.TestExplorerState.Value.SelectedTestInfo?.Id)
-            {
-                return;
-            }
-
-            switch (arg.Result)
-            {
-                case TestResult<double[]> testResultDoubleArray:
-                    this.ResetAssertionResults();
-                    this.AssertionResultArray = new(
-                        testResultDoubleArray.ExpectedValue,
-                        testResultDoubleArray.CalculatedValue
-                    );
-                    this.ComparedValueName = testResultDoubleArray.ComparedValueName;
-                    break;
-                case TestResult<double[,]> testResultDoubleMatrix:
-                    this.ResetAssertionResults();
-                    this.AssertionResultMatrix = new(
-                        testResultDoubleMatrix.ExpectedValue,
-                        testResultDoubleMatrix.CalculatedValue
-                    );
-                    this.ComparedValueName = testResultDoubleMatrix.ComparedValueName;
-                    break;
-                default:
-                    this.ResetAssertionResults();
-                    break;
-            }
-            this.isLoadingAssertionResults = false;
-            this.StateHasChanged();
-        });
-
-        //foreach (var testInfo in this.TestInfoProvider.TestInfos.Values)
-        //{
-        //    this.Dispatcher.Dispatch(new CreateSingleTestStateAction(testInfo.Id));
-        //}
     }
+
+    private void EventEmitter_VisibleStateChanged(object? sender, EventArgs _) =>
+        this.InvokeAsync(this.StateHasChanged);
 
     private async Task OnSelectedTestInfoChanged(TestInfo? testInfo)
     {
@@ -115,7 +86,7 @@ public partial class TestExplorer : FluxorComponent
         if (testInfo.GetTestFixture() is FixtureBase2 fixtureBase)
         {
             await this.readOnlyEditor.EditorApiAlpha.ClearAsync();
-            await this.TestFixtureDisplayer.Display(fixtureBase, this.readOnlyEditor.ElementId);
+            await this.TestFixtureDisplayer.Display(fixtureBase, this.readOnlyEditor.CanvasId);
         }
 
         //ITestFixtureDisplayable? displayable = testInfo.GetDisplayable();
@@ -146,5 +117,23 @@ public partial class TestExplorer : FluxorComponent
     private bool SelectedTestHasResults()
     {
         return this.AssertionResultArray is not null || this.AssertionResultMatrix is not null;
+    }
+
+    protected override ValueTask DisposeAsyncCore(bool disposing)
+    {
+        this.Dispatcher.Dispatch(new CloseDrawer());
+        EventEmitter.VisibleStateChanged -= this.EventEmitter_VisibleStateChanged;
+        return base.DisposeAsyncCore(disposing);
+    }
+
+    private string GetCanvasId()
+    {
+        if (this.readOnlyEditor?.CanvasId is string canvasId)
+        {
+            return canvasId;
+        }
+        var newCanvasId = ReadOnlyEditor.GetCanvasId();
+        this.Dispatcher.Dispatch(new CanvasIdSet(newCanvasId));
+        return newCanvasId;
     }
 }

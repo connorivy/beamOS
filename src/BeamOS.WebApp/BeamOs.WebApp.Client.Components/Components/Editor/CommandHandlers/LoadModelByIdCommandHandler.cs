@@ -1,5 +1,5 @@
-using BeamOs.ApiClient;
 using BeamOs.CodeGen.Apis.EditorApi;
+using BeamOs.CodeGen.Apis.StructuralAnalysisApi;
 using BeamOs.Common.Api;
 using BeamOs.Contracts.PhysicalModel.Element1d;
 using BeamOs.Contracts.PhysicalModel.Model;
@@ -7,22 +7,21 @@ using BeamOs.Contracts.PhysicalModel.Node;
 using BeamOs.Contracts.PhysicalModel.PointLoad;
 using BeamOs.WebApp.Client.Components.Components.Editor.Commands;
 using BeamOs.WebApp.Client.Components.Repositories;
-using BeamOs.WebApp.Client.Components.State;
+using Fluxor;
 
 namespace BeamOs.WebApp.Client.Components.Components.Editor.CommandHandlers;
 
 public class LoadModelByIdCommandHandler(
-    IApiAlphaClient apiAlphaClient,
-    HistoryManager historyManager,
+    IStructuralAnalysisApiAlphaClient apiAlphaClient,
     AddEntityContractToEditorCommandHandler addEntityContractToEditorCommandHandler
-) : CommandHandlerBase<LoadModelCommand>(historyManager)
+) : CommandHandlerBase<LoadModelCommand>
 {
     protected override async Task<Result> ExecuteCommandAsync(
         LoadModelCommand command,
         CancellationToken ct = default
     )
     {
-        ModelResponse response = await apiAlphaClient.GetModelAsync(command.ModelId, null, ct);
+        ModelResponse response = await apiAlphaClient.GetModelAsync(new(command.ModelId), ct);
 
         await addEntityContractToEditorCommandHandler.ExecuteAsync(
             new(command.CanvasId, response),
@@ -39,8 +38,8 @@ public class LoadModelCommandHandler(
     AddNodesToEditorCommandHandler addNodesToEditorCommandHandler,
     AddElement1dsToEditorCommandHandler addElement1dsToEditorCommandHandler,
     AddPointLoadsToEditorCommandHandler addPointLoadsToEditorCommandHandler,
-    HistoryManager historyManager
-) : CommandHandlerBase<AddModelToEditorCommand>(historyManager)
+    IDispatcher dispatcher
+) : CommandHandlerBase<AddModelToEditorCommand>
 {
     protected override async Task<Result> ExecuteCommandAsync(
         AddModelToEditorCommand command,
@@ -67,6 +66,8 @@ public class LoadModelCommandHandler(
             ),
             CancellationToken.None
         );
+        dispatcher.Dispatch(new ModelLoaded(command.ModelResponse.Id));
+
         await editorApi.SetSettingsAsync(command.ModelResponse.Settings);
 
         await addNodesToEditorCommandHandler.ExecuteAsync(
@@ -91,6 +92,11 @@ public class LoadModelCommandHandler(
                 command.ModelResponse.PointLoads
             ),
             ct
+        );
+
+        await changeComponentStateCommandHandler.ExecuteAsync(
+            new(command.CanvasId, state => state with { IsLoading = false, }),
+            CancellationToken.None
         );
 
         return Result.Success();

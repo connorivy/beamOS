@@ -1,18 +1,15 @@
 using BeamOs.Api.Common;
 using BeamOS.Api.Common;
-using BeamOs.Api.PhysicalModel.Nodes.Mappers;
 using BeamOs.Application.PhysicalModel.Nodes.Commands;
 using BeamOs.Common.Identity.Policies;
 using BeamOs.Contracts.PhysicalModel.Node;
-using BeamOs.Domain.PhysicalModel.NodeAggregate;
 using FastEndpoints;
 
 namespace BeamOs.Api.PhysicalModel.Nodes.Endpoints;
 
 public class PatchNode(
     BeamOsFastEndpointOptions options,
-    PatchNodeCommandHandler patchNodeCommandHandler,
-    NodeResponseMapper responseMapper
+    PatchNodeCommandHandler patchNodeCommandHandler
 ) : BeamOsFastEndpoint<PatchNodeRequest, NodeResponse>(options)
 {
     public override Http EndpointType => Http.PATCH;
@@ -36,8 +33,6 @@ public class PatchNode(
         CancellationToken ct
     )
     {
-        Node node = await patchNodeCommandHandler.ExecuteAsync(req, ct);
-
-        return responseMapper.Map(node);
+        return await patchNodeCommandHandler.ExecuteAsync(req, ct);
     }
 }

@@ -13,7 +13,7 @@ export interface IApiAlphaClient {
     /**
      * @return Success
      */
-    runDirectStiffnessMethod(id: string): Promise<AnalyticalModelResponse3>;
+    runDirectStiffnessMethod(modelId: string): Promise<AnalyticalModelResponse3>;
 
     /**
      * @param nodeIds (optional) 
@@ -62,14 +62,20 @@ export interface IApiAlphaClient {
     createMomentLoad(createMomentLoadRequest: CreateMomentLoadRequest): Promise<MomentLoadResponse>;
 
     /**
+     * @param momentLoadIds (optional) 
      * @return Success
      */
-    getMomentLoads(): Promise<MomentLoadResponse[]>;
+    getMomentLoads(modelId: string, momentLoadIds: string[] | null | undefined): Promise<MomentLoadResponse[]>;
 
     /**
      * @return Success
      */
     createModel(createModelRequest: CreateModelRequest): Promise<ModelResponse>;
+
+    /**
+     * @return Success
+     */
+    getModels(): Promise<ModelResponse[]>;
 
     /**
      * @return Success
@@ -81,12 +87,6 @@ export interface IApiAlphaClient {
      * @return Success
      */
     getModel(modelId: string, properties: string[] | null | undefined): Promise<ModelResponse>;
-
-    /**
-     * @param units (optional) 
-     * @return Success
-     */
-    getModelHydrated(modelId: string, units: PreconfiguredUnits | null | undefined): Promise<ModelResponseHydrated>;
 
     /**
      * @return Success
@@ -119,9 +119,10 @@ export interface IApiAlphaClient {
     createElement1d(createElement1dRequest: CreateElement1dRequest): Promise<Element1DResponse>;
 
     /**
+     * @param element1dIds (optional) 
      * @return Success
      */
-    getElement1ds(): Promise<Element1DResponse[]>;
+    getElement1ds(modelId: string, element1dIds: string[] | null | undefined): Promise<Element1DResponse[]>;
 
     /**
      * @return Success
@@ -142,11 +143,11 @@ export class ApiAlphaClient implements IApiAlphaClient {
     /**
      * @return Success
      */
-    runDirectStiffnessMethod(id: string): Promise<AnalyticalModelResponse3> {
-        let url_ = this.baseUrl + "/api/direct-stiffness-method/run/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+    runDirectStiffnessMethod(modelId: string): Promise<AnalyticalModelResponse3> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/analyze/direct-stiffness-method";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -220,10 +221,6 @@ export class ApiAlphaClient implements IApiAlphaClient {
                 result200 = <any>null;
             }
             return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
@@ -581,10 +578,16 @@ export class ApiAlphaClient implements IApiAlphaClient {
     }
 
     /**
+     * @param momentLoadIds (optional) 
      * @return Success
      */
-    getMomentLoads(): Promise<MomentLoadResponse[]> {
-        let url_ = this.baseUrl + "/api/moment-loads";
+    getMomentLoads(modelId: string, momentLoadIds: string[] | null | undefined): Promise<MomentLoadResponse[]> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/moment-loads?";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (momentLoadIds !== undefined && momentLoadIds !== null)
+            momentLoadIds && momentLoadIds.forEach(item => { url_ += "momentLoadIds=" + encodeURIComponent("" + item) + "&"; });
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -667,6 +670,50 @@ export class ApiAlphaClient implements IApiAlphaClient {
             });
         }
         return Promise.resolve<ModelResponse>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    getModels(): Promise<ModelResponse[]> {
+        let url_ = this.baseUrl + "/api/models";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetModels(_response);
+        });
+    }
+
+    protected processGetModels(response: Response): Promise<ModelResponse[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ModelResponse.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ModelResponse[]>(null as any);
     }
 
     /**
@@ -763,49 +810,6 @@ export class ApiAlphaClient implements IApiAlphaClient {
             });
         }
         return Promise.resolve<ModelResponse>(null as any);
-    }
-
-    /**
-     * @param units (optional) 
-     * @return Success
-     */
-    getModelHydrated(modelId: string, units: PreconfiguredUnits | null | undefined): Promise<ModelResponseHydrated> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/hydrated?";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        if (units !== undefined && units !== null)
-            url_ += "units=" + encodeURIComponent("" + units) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetModelHydrated(_response);
-        });
-    }
-
-    protected processGetModelHydrated(response: Response): Promise<ModelResponseHydrated> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ModelResponseHydrated.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<ModelResponseHydrated>(null as any);
     }
 
     /**
@@ -927,10 +931,6 @@ export class ApiAlphaClient implements IApiAlphaClient {
                 result200 = <any>null;
             }
             return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
@@ -1073,10 +1073,16 @@ export class ApiAlphaClient implements IApiAlphaClient {
     }
 
     /**
+     * @param element1dIds (optional) 
      * @return Success
      */
-    getElement1ds(): Promise<Element1DResponse[]> {
-        let url_ = this.baseUrl + "/api/element1Ds";
+    getElement1ds(modelId: string, element1dIds: string[] | null | undefined): Promise<Element1DResponse[]> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/element1Ds?";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (element1dIds !== undefined && element1dIds !== null)
+            element1dIds && element1dIds.forEach(item => { url_ += "element1dIds=" + encodeURIComponent("" + item) + "&"; });
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -1445,9 +1451,9 @@ export interface IDisplacementsResponse {
     rotationAboutZ: UnitValueDto;
 }
 
-export class IdRequest implements IIdRequest {
+export class ModelIdRequest implements IModelIdRequest {
 
-    constructor(data?: IIdRequest) {
+    constructor(data?: IModelIdRequest) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1459,9 +1465,9 @@ export class IdRequest implements IIdRequest {
     init(_data?: any) {
     }
 
-    static fromJS(data: any): IdRequest {
+    static fromJS(data: any): ModelIdRequest {
         data = typeof data === 'object' ? data : {};
-        let result = new IdRequest();
+        let result = new ModelIdRequest();
         result.init(data);
         return result;
     }
@@ -1472,7 +1478,7 @@ export class IdRequest implements IIdRequest {
     }
 }
 
-export interface IIdRequest {
+export interface IModelIdRequest {
 }
 
 export class GetNodeResultsRequest implements IGetNodeResultsRequest {
@@ -1503,6 +1509,36 @@ export class GetNodeResultsRequest implements IGetNodeResultsRequest {
 }
 
 export interface IGetNodeResultsRequest {
+}
+
+export class IdRequest implements IIdRequest {
+
+    constructor(data?: IIdRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+    }
+
+    static fromJS(data: any): IdRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new IdRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data;
+    }
+}
+
+export interface IIdRequest {
 }
 
 export class ModelResultResponse extends BeamOsContractBase implements IModelResultResponse {
@@ -2136,14 +2172,14 @@ export enum Element1dAnalysisType {
 
 export class NodeResponse extends BeamOsEntityContractBase implements INodeResponse {
     modelId!: string;
-    locationPoint!: PointResponse;
-    restraint!: RestraintResponse;
+    locationPoint!: Point;
+    restraint!: RestraintContract;
 
     constructor(data?: INodeResponse) {
         super(data);
         if (!data) {
-            this.locationPoint = new PointResponse();
-            this.restraint = new RestraintResponse();
+            this.locationPoint = new Point();
+            this.restraint = new RestraintContract();
         }
         this._discriminator = "2";
     }
@@ -2152,8 +2188,8 @@ export class NodeResponse extends BeamOsEntityContractBase implements INodeRespo
         super.init(_data);
         if (_data) {
             this.modelId = _data["modelId"];
-            this.locationPoint = _data["locationPoint"] ? PointResponse.fromJS(_data["locationPoint"]) : new PointResponse();
-            this.restraint = _data["restraint"] ? RestraintResponse.fromJS(_data["restraint"]) : new RestraintResponse();
+            this.locationPoint = _data["locationPoint"] ? Point.fromJS(_data["locationPoint"]) : new Point();
+            this.restraint = _data["restraint"] ? RestraintContract.fromJS(_data["restraint"]) : new RestraintContract();
         }
     }
 
@@ -2176,57 +2212,56 @@ export class NodeResponse extends BeamOsEntityContractBase implements INodeRespo
 
 export interface INodeResponse extends IBeamOsEntityContractBase {
     modelId: string;
-    locationPoint: PointResponse;
-    restraint: RestraintResponse;
+    locationPoint: Point;
+    restraint: RestraintContract;
 }
 
-export class PointResponse extends BeamOsContractBase implements IPointResponse {
-    xCoordinate!: UnitValueDto;
-    yCoordinate!: UnitValueDto;
-    zCoordinate!: UnitValueDto;
+export class Point extends BeamOsContractBase implements IPoint {
+    xCoordinate!: number;
+    yCoordinate!: number;
+    zCoordinate!: number;
+    lengthUnit!: string;
 
-    constructor(data?: IPointResponse) {
+    constructor(data?: IPoint) {
         super(data);
-        if (!data) {
-            this.xCoordinate = new UnitValueDto();
-            this.yCoordinate = new UnitValueDto();
-            this.zCoordinate = new UnitValueDto();
-        }
     }
 
     init(_data?: any) {
         super.init(_data);
         if (_data) {
-            this.xCoordinate = _data["xCoordinate"] ? UnitValueDto.fromJS(_data["xCoordinate"]) : new UnitValueDto();
-            this.yCoordinate = _data["yCoordinate"] ? UnitValueDto.fromJS(_data["yCoordinate"]) : new UnitValueDto();
-            this.zCoordinate = _data["zCoordinate"] ? UnitValueDto.fromJS(_data["zCoordinate"]) : new UnitValueDto();
+            this.xCoordinate = _data["xCoordinate"];
+            this.yCoordinate = _data["yCoordinate"];
+            this.zCoordinate = _data["zCoordinate"];
+            this.lengthUnit = _data["lengthUnit"];
         }
     }
 
-    static fromJS(data: any): PointResponse {
+    static fromJS(data: any): Point {
         data = typeof data === 'object' ? data : {};
-        let result = new PointResponse();
+        let result = new Point();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["xCoordinate"] = this.xCoordinate ? this.xCoordinate.toJSON() : <any>undefined;
-        data["yCoordinate"] = this.yCoordinate ? this.yCoordinate.toJSON() : <any>undefined;
-        data["zCoordinate"] = this.zCoordinate ? this.zCoordinate.toJSON() : <any>undefined;
+        data["xCoordinate"] = this.xCoordinate;
+        data["yCoordinate"] = this.yCoordinate;
+        data["zCoordinate"] = this.zCoordinate;
+        data["lengthUnit"] = this.lengthUnit;
         super.toJSON(data);
         return data;
     }
 }
 
-export interface IPointResponse extends IBeamOsContractBase {
-    xCoordinate: UnitValueDto;
-    yCoordinate: UnitValueDto;
-    zCoordinate: UnitValueDto;
+export interface IPoint extends IBeamOsContractBase {
+    xCoordinate: number;
+    yCoordinate: number;
+    zCoordinate: number;
+    lengthUnit: string;
 }
 
-export class RestraintResponse extends BeamOsContractBase implements IRestraintResponse {
+export class RestraintContract extends BeamOsContractBase implements IRestraintContract {
     canTranslateAlongX!: boolean;
     canTranslateAlongY!: boolean;
     canTranslateAlongZ!: boolean;
@@ -2234,7 +2269,7 @@ export class RestraintResponse extends BeamOsContractBase implements IRestraintR
     canRotateAboutY!: boolean;
     canRotateAboutZ!: boolean;
 
-    constructor(data?: IRestraintResponse) {
+    constructor(data?: IRestraintContract) {
         super(data);
     }
 
@@ -2250,9 +2285,9 @@ export class RestraintResponse extends BeamOsContractBase implements IRestraintR
         }
     }
 
-    static fromJS(data: any): RestraintResponse {
+    static fromJS(data: any): RestraintContract {
         data = typeof data === 'object' ? data : {};
-        let result = new RestraintResponse();
+        let result = new RestraintContract();
         result.init(data);
         return result;
     }
@@ -2270,7 +2305,7 @@ export class RestraintResponse extends BeamOsContractBase implements IRestraintR
     }
 }
 
-export interface IRestraintResponse extends IBeamOsContractBase {
+export interface IRestraintContract extends IBeamOsContractBase {
     canTranslateAlongX: boolean;
     canTranslateAlongY: boolean;
     canTranslateAlongZ: boolean;
@@ -2338,6 +2373,7 @@ export interface IElement1DResponse extends IBeamOsEntityContractBase {
 
 export class MaterialResponse implements IMaterialResponse {
     id!: string;
+    modelId!: string;
     modulusOfElasticity!: UnitValueDto;
     modulusOfRigidity!: UnitValueDto;
 
@@ -2357,6 +2393,7 @@ export class MaterialResponse implements IMaterialResponse {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
+            this.modelId = _data["modelId"];
             this.modulusOfElasticity = _data["modulusOfElasticity"] ? UnitValueDto.fromJS(_data["modulusOfElasticity"]) : new UnitValueDto();
             this.modulusOfRigidity = _data["modulusOfRigidity"] ? UnitValueDto.fromJS(_data["modulusOfRigidity"]) : new UnitValueDto();
         }
@@ -2372,6 +2409,7 @@ export class MaterialResponse implements IMaterialResponse {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
+        data["modelId"] = this.modelId;
         data["modulusOfElasticity"] = this.modulusOfElasticity ? this.modulusOfElasticity.toJSON() : <any>undefined;
         data["modulusOfRigidity"] = this.modulusOfRigidity ? this.modulusOfRigidity.toJSON() : <any>undefined;
         return data;
@@ -2380,12 +2418,14 @@ export class MaterialResponse implements IMaterialResponse {
 
 export interface IMaterialResponse {
     id: string;
+    modelId: string;
     modulusOfElasticity: UnitValueDto;
     modulusOfRigidity: UnitValueDto;
 }
 
 export class MomentLoadResponse implements IMomentLoadResponse {
     id!: string;
+    modelId!: string;
     nodeId!: string;
     torque!: UnitValueDto;
     axisDirection!: Vector3;
@@ -2406,6 +2446,7 @@ export class MomentLoadResponse implements IMomentLoadResponse {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
+            this.modelId = _data["modelId"];
             this.nodeId = _data["nodeId"];
             this.torque = _data["torque"] ? UnitValueDto.fromJS(_data["torque"]) : new UnitValueDto();
             this.axisDirection = _data["axisDirection"] ? Vector3.fromJS(_data["axisDirection"]) : new Vector3();
@@ -2422,6 +2463,7 @@ export class MomentLoadResponse implements IMomentLoadResponse {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
+        data["modelId"] = this.modelId;
         data["nodeId"] = this.nodeId;
         data["torque"] = this.torque ? this.torque.toJSON() : <any>undefined;
         data["axisDirection"] = this.axisDirection ? this.axisDirection.toJSON() : <any>undefined;
@@ -2431,6 +2473,7 @@ export class MomentLoadResponse implements IMomentLoadResponse {
 
 export interface IMomentLoadResponse {
     id: string;
+    modelId: string;
     nodeId: string;
     torque: UnitValueDto;
     axisDirection: Vector3;
@@ -2673,7 +2716,7 @@ export interface ICreatePointLoadRequest {
 export class CreateNodeRequest implements ICreateNodeRequest {
     modelId!: string;
     locationPoint!: Point;
-    restraint?: RestraintRequest | undefined;
+    restraint?: RestraintContract | undefined;
 
     constructor(data?: ICreateNodeRequest) {
         if (data) {
@@ -2691,7 +2734,7 @@ export class CreateNodeRequest implements ICreateNodeRequest {
         if (_data) {
             this.modelId = _data["modelId"];
             this.locationPoint = _data["locationPoint"] ? Point.fromJS(_data["locationPoint"]) : new Point();
-            this.restraint = _data["restraint"] ? RestraintRequest.fromJS(_data["restraint"]) : <any>undefined;
+            this.restraint = _data["restraint"] ? RestraintContract.fromJS(_data["restraint"]) : <any>undefined;
         }
     }
 
@@ -2714,112 +2757,7 @@ export class CreateNodeRequest implements ICreateNodeRequest {
 export interface ICreateNodeRequest {
     modelId: string;
     locationPoint: Point;
-    restraint?: RestraintRequest | undefined;
-}
-
-export class Point implements IPoint {
-    xCoordinate!: UnitValueDto;
-    yCoordinate!: UnitValueDto;
-    zCoordinate!: UnitValueDto;
-
-    constructor(data?: IPoint) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.xCoordinate = new UnitValueDto();
-            this.yCoordinate = new UnitValueDto();
-            this.zCoordinate = new UnitValueDto();
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.xCoordinate = _data["xCoordinate"] ? UnitValueDto.fromJS(_data["xCoordinate"]) : new UnitValueDto();
-            this.yCoordinate = _data["yCoordinate"] ? UnitValueDto.fromJS(_data["yCoordinate"]) : new UnitValueDto();
-            this.zCoordinate = _data["zCoordinate"] ? UnitValueDto.fromJS(_data["zCoordinate"]) : new UnitValueDto();
-        }
-    }
-
-    static fromJS(data: any): Point {
-        data = typeof data === 'object' ? data : {};
-        let result = new Point();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["xCoordinate"] = this.xCoordinate ? this.xCoordinate.toJSON() : <any>undefined;
-        data["yCoordinate"] = this.yCoordinate ? this.yCoordinate.toJSON() : <any>undefined;
-        data["zCoordinate"] = this.zCoordinate ? this.zCoordinate.toJSON() : <any>undefined;
-        return data;
-    }
-}
-
-export interface IPoint {
-    xCoordinate: UnitValueDto;
-    yCoordinate: UnitValueDto;
-    zCoordinate: UnitValueDto;
-}
-
-export class RestraintRequest implements IRestraintRequest {
-    canTranslateAlongX!: boolean;
-    canTranslateAlongY!: boolean;
-    canTranslateAlongZ!: boolean;
-    canRotateAboutX!: boolean;
-    canRotateAboutY!: boolean;
-    canRotateAboutZ!: boolean;
-
-    constructor(data?: IRestraintRequest) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.canTranslateAlongX = _data["canTranslateAlongX"];
-            this.canTranslateAlongY = _data["canTranslateAlongY"];
-            this.canTranslateAlongZ = _data["canTranslateAlongZ"];
-            this.canRotateAboutX = _data["canRotateAboutX"];
-            this.canRotateAboutY = _data["canRotateAboutY"];
-            this.canRotateAboutZ = _data["canRotateAboutZ"];
-        }
-    }
-
-    static fromJS(data: any): RestraintRequest {
-        data = typeof data === 'object' ? data : {};
-        let result = new RestraintRequest();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["canTranslateAlongX"] = this.canTranslateAlongX;
-        data["canTranslateAlongY"] = this.canTranslateAlongY;
-        data["canTranslateAlongZ"] = this.canTranslateAlongZ;
-        data["canRotateAboutX"] = this.canRotateAboutX;
-        data["canRotateAboutY"] = this.canRotateAboutY;
-        data["canRotateAboutZ"] = this.canRotateAboutZ;
-        return data;
-    }
-}
-
-export interface IRestraintRequest {
-    canTranslateAlongX: boolean;
-    canTranslateAlongY: boolean;
-    canTranslateAlongZ: boolean;
-    canRotateAboutX: boolean;
-    canRotateAboutY: boolean;
-    canRotateAboutZ: boolean;
+    restraint?: RestraintContract | undefined;
 }
 
 export class PatchNodeRequest implements IPatchNodeRequest {
@@ -3095,36 +3033,6 @@ export interface ICreateModelRequest {
     id?: string | undefined;
 }
 
-export class ModelIdRequest implements IModelIdRequest {
-
-    constructor(data?: IModelIdRequest) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-    }
-
-    static fromJS(data: any): ModelIdRequest {
-        data = typeof data === 'object' ? data : {};
-        let result = new ModelIdRequest();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        return data;
-    }
-}
-
-export interface IModelIdRequest {
-}
-
 export class ModelIdRequestWithProperties implements IModelIdRequestWithProperties {
 
     constructor(data?: IModelIdRequestWithProperties) {
@@ -3153,271 +3061,6 @@ export class ModelIdRequestWithProperties implements IModelIdRequestWithProperti
 }
 
 export interface IModelIdRequestWithProperties {
-}
-
-export class ModelResponseHydrated extends BeamOsContractBase implements IModelResponseHydrated {
-    id!: string;
-    name!: string;
-    description!: string;
-    settings!: ModelSettingsResponse;
-    nodes!: NodeResponse[];
-    element1Ds!: Element1DResponse[];
-    materials!: MaterialResponse[];
-    sectionProfiles!: SectionProfileResponse[];
-    pointLoads!: PointLoadResponse[];
-    momentLoads!: MomentLoadResponse[];
-
-    constructor(data?: IModelResponseHydrated) {
-        super(data);
-        if (!data) {
-            this.settings = new ModelSettingsResponse();
-            this.nodes = [];
-            this.element1Ds = [];
-            this.materials = [];
-            this.sectionProfiles = [];
-            this.pointLoads = [];
-            this.momentLoads = [];
-        }
-    }
-
-    init(_data?: any) {
-        super.init(_data);
-        if (_data) {
-            this.id = _data["id"];
-            this.name = _data["name"];
-            this.description = _data["description"];
-            this.settings = _data["settings"] ? ModelSettingsResponse.fromJS(_data["settings"]) : new ModelSettingsResponse();
-            if (Array.isArray(_data["nodes"])) {
-                this.nodes = [] as any;
-                for (let item of _data["nodes"])
-                    this.nodes!.push(NodeResponse.fromJS(item));
-            }
-            if (Array.isArray(_data["element1Ds"])) {
-                this.element1Ds = [] as any;
-                for (let item of _data["element1Ds"])
-                    this.element1Ds!.push(Element1DResponse.fromJS(item));
-            }
-            if (Array.isArray(_data["materials"])) {
-                this.materials = [] as any;
-                for (let item of _data["materials"])
-                    this.materials!.push(MaterialResponse.fromJS(item));
-            }
-            if (Array.isArray(_data["sectionProfiles"])) {
-                this.sectionProfiles = [] as any;
-                for (let item of _data["sectionProfiles"])
-                    this.sectionProfiles!.push(SectionProfileResponse.fromJS(item));
-            }
-            if (Array.isArray(_data["pointLoads"])) {
-                this.pointLoads = [] as any;
-                for (let item of _data["pointLoads"])
-                    this.pointLoads!.push(PointLoadResponse.fromJS(item));
-            }
-            if (Array.isArray(_data["momentLoads"])) {
-                this.momentLoads = [] as any;
-                for (let item of _data["momentLoads"])
-                    this.momentLoads!.push(MomentLoadResponse.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): ModelResponseHydrated {
-        data = typeof data === 'object' ? data : {};
-        let result = new ModelResponseHydrated();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["name"] = this.name;
-        data["description"] = this.description;
-        data["settings"] = this.settings ? this.settings.toJSON() : <any>undefined;
-        if (Array.isArray(this.nodes)) {
-            data["nodes"] = [];
-            for (let item of this.nodes)
-                data["nodes"].push(item.toJSON());
-        }
-        if (Array.isArray(this.element1Ds)) {
-            data["element1Ds"] = [];
-            for (let item of this.element1Ds)
-                data["element1Ds"].push(item.toJSON());
-        }
-        if (Array.isArray(this.materials)) {
-            data["materials"] = [];
-            for (let item of this.materials)
-                data["materials"].push(item.toJSON());
-        }
-        if (Array.isArray(this.sectionProfiles)) {
-            data["sectionProfiles"] = [];
-            for (let item of this.sectionProfiles)
-                data["sectionProfiles"].push(item.toJSON());
-        }
-        if (Array.isArray(this.pointLoads)) {
-            data["pointLoads"] = [];
-            for (let item of this.pointLoads)
-                data["pointLoads"].push(item.toJSON());
-        }
-        if (Array.isArray(this.momentLoads)) {
-            data["momentLoads"] = [];
-            for (let item of this.momentLoads)
-                data["momentLoads"].push(item.toJSON());
-        }
-        super.toJSON(data);
-        return data;
-    }
-}
-
-export interface IModelResponseHydrated extends IBeamOsContractBase {
-    id: string;
-    name: string;
-    description: string;
-    settings: ModelSettingsResponse;
-    nodes: NodeResponse[];
-    element1Ds: Element1DResponse[];
-    materials: MaterialResponse[];
-    sectionProfiles: SectionProfileResponse[];
-    pointLoads: PointLoadResponse[];
-    momentLoads: MomentLoadResponse[];
-}
-
-export class ModelSettingsResponse implements IModelSettingsResponse {
-    unitSettings!: UnitSettingsResponse;
-
-    constructor(data?: IModelSettingsResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.unitSettings = new UnitSettingsResponse();
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.unitSettings = _data["unitSettings"] ? UnitSettingsResponse.fromJS(_data["unitSettings"]) : new UnitSettingsResponse();
-        }
-    }
-
-    static fromJS(data: any): ModelSettingsResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new ModelSettingsResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["unitSettings"] = this.unitSettings ? this.unitSettings.toJSON() : <any>undefined;
-        return data;
-    }
-}
-
-export interface IModelSettingsResponse {
-    unitSettings: UnitSettingsResponse;
-}
-
-export class UnitSettingsResponse implements IUnitSettingsResponse {
-    lengthUnit!: string;
-    areaUnit!: string;
-    volumeUnit!: string;
-    forceUnit!: string;
-    forcePerLengthUnit!: string;
-    torqueUnit!: string;
-    pressureUnit!: string;
-    areaMomentOfInertiaUnit!: string;
-
-    constructor(data?: IUnitSettingsResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.lengthUnit = _data["lengthUnit"];
-            this.areaUnit = _data["areaUnit"];
-            this.volumeUnit = _data["volumeUnit"];
-            this.forceUnit = _data["forceUnit"];
-            this.forcePerLengthUnit = _data["forcePerLengthUnit"];
-            this.torqueUnit = _data["torqueUnit"];
-            this.pressureUnit = _data["pressureUnit"];
-            this.areaMomentOfInertiaUnit = _data["areaMomentOfInertiaUnit"];
-        }
-    }
-
-    static fromJS(data: any): UnitSettingsResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new UnitSettingsResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["lengthUnit"] = this.lengthUnit;
-        data["areaUnit"] = this.areaUnit;
-        data["volumeUnit"] = this.volumeUnit;
-        data["forceUnit"] = this.forceUnit;
-        data["forcePerLengthUnit"] = this.forcePerLengthUnit;
-        data["torqueUnit"] = this.torqueUnit;
-        data["pressureUnit"] = this.pressureUnit;
-        data["areaMomentOfInertiaUnit"] = this.areaMomentOfInertiaUnit;
-        return data;
-    }
-}
-
-export interface IUnitSettingsResponse {
-    lengthUnit: string;
-    areaUnit: string;
-    volumeUnit: string;
-    forceUnit: string;
-    forcePerLengthUnit: string;
-    torqueUnit: string;
-    pressureUnit: string;
-    areaMomentOfInertiaUnit: string;
-}
-
-export class GetModelHydratedRequest implements IGetModelHydratedRequest {
-
-    constructor(data?: IGetModelHydratedRequest) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-    }
-
-    static fromJS(data: any): GetModelHydratedRequest {
-        data = typeof data === 'object' ? data : {};
-        let result = new GetModelHydratedRequest();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        return data;
-    }
-}
-
-export interface IGetModelHydratedRequest {
-}
-
-export enum PreconfiguredUnits {
-    N_M = 0,
-    K_IN = 1,
-    K_FT = 2,
 }
 
 export class CreateMaterialRequest implements ICreateMaterialRequest {

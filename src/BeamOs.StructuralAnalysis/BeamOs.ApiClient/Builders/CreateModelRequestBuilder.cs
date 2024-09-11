@@ -1,13 +1,16 @@
-using System.Text.Json;
+using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.ApiClient.Builders;
 
-public abstract partial class CreateModelRequestBuilder : IModelFixtureInDb, IModelFixture
+public abstract partial class CreateModelRequestBuilder
+    : IModelFixtureInDb,
+        IModelFixture,
+        IHasFixtureId
 {
     public abstract Guid ModelGuid { get; }
     public FixtureId Id => this.ModelGuid;
-    public string Name { get; init; } = "Test Model";
-    public string Description { get; init; } = "Created from CustomModelRequestBuilder";
+    public virtual string Name { get; init; } = "Test Model";
+    public virtual string Description { get; init; } = "Created from CustomModelRequestBuilder";
     public abstract PhysicalModelSettings Settings { get; }
 
     private Dictionary<FixtureId, CreateElement1dRequestBuilder> element1ds = [];
@@ -22,12 +25,6 @@ public abstract partial class CreateModelRequestBuilder : IModelFixtureInDb, IMo
         get => this.nodes.Values;
         init => this.nodes = value.ToDictionary(n => n.Id, n => n);
     }
-    private List<CreatePointLoadRequestBuilder> pointLoads = [];
-    public IEnumerable<CreatePointLoadRequestBuilder> PointLoads
-    {
-        get => this.pointLoads;
-        init => this.pointLoads = value.ToList();
-    }
     private List<CreateMaterialRequestBuilder> materials = [];
     public IEnumerable<CreateMaterialRequestBuilder> Materials
     {
@@ -40,12 +37,35 @@ public abstract partial class CreateModelRequestBuilder : IModelFixtureInDb, IMo
         get => this.sectionProfiles;
         init => this.sectionProfiles = value.ToList();
     }
+    private List<CreatePointLoadRequestBuilder> pointLoads = [];
+    public IEnumerable<CreatePointLoadRequestBuilder> PointLoads
+    {
+        get => this.pointLoads;
+        init => this.pointLoads = value.ToList();
+    }
+
+    //private List<CreateMomentLoadRequestBuilder> momentLoads = [];
+    //public IEnumerable<CreateMomentLoadRequestBuilder> MomentLoads
+    //{
+    //    get => this.momentLoads;
+    //    init => this.momentLoads = value.ToList();
+    //}
 
     private readonly Dictionary<FixtureId, string> runtimeIdToDbIdDict = [];
     private FixtureId DefaultMaterialId { get; set; }
     private FixtureId DefaultSectionProfileId { get; set; }
 
-    public string RuntimeIdToDbId(FixtureId fixtureId) => this.runtimeIdToDbIdDict[fixtureId];
+    [UserMapping(Ignore = true)]
+    public string? RuntimeIdToDbId(FixtureId fixtureId) =>
+        this.runtimeIdToDbIdDict.GetValueOrDefault(fixtureId);
+
+    private string GetDbIdWithRuntimeFallback(FixtureId fixtureId) =>
+        this.RuntimeIdToDbId(fixtureId) ?? fixtureId.ToString();
+
+    public void AddRuntimeIdToDbId(FixtureId runtimeId, string dbId) =>
+        this.runtimeIdToDbIdDict[runtimeId] = dbId;
+
+    public bool IsInitialized { get; set; }
 
     public void AddNode(CreateNodeRequestBuilder node)
     {
@@ -59,7 +79,25 @@ public abstract partial class CreateModelRequestBuilder : IModelFixtureInDb, IMo
     {
         if (!this.element1ds.ContainsKey(element1d.Id))
         {
-            this.element1ds.Add(element1d.Id, element1d with { ModelId = this.Id });
+            this.element1ds.Add(
+                element1d.Id,
+                element1d with
+                {
+                    ModelId = this.Id,
+                    MaterialId = element1d.MaterialId.Id is not null
+                        ? element1d.MaterialId
+                        : this.materials.SingleOrDefault()?.Id
+                            ?? throw new Exception(
+                                "This element1d does not have a material defined, and the model does not contain only one material"
+                            ),
+                    SectionProfileId = element1d.SectionProfileId.Id is not null
+                        ? element1d.SectionProfileId
+                        : this.sectionProfiles.SingleOrDefault()?.Id
+                            ?? throw new Exception(
+                                "This element1d does not have a section profile defined, and the model does not contain only one section profile"
+                            ),
+                }
+            );
         }
     }
 
@@ -107,7 +145,7 @@ public abstract partial class CreateModelRequestBuilder : IModelFixtureInDb, IMo
         return Task.CompletedTask;
     }
 
-    public async Task Create(ApiAlphaClient client)
+    public async Task Create(IApiAlphaClient client)
     {
         this.runtimeIdToDbIdDict[this.Id] = this.Id.Id;
 
@@ -197,11 +235,11 @@ public abstract partial class CreateModelRequestBuilder : IModelFixtureInDb, IMo
     }
 }
 
-public class ModelRequestBuilderDeserializationModel
-{
-    public IEnumerable<CreateElement1dRequestBuilder> Element1ds { get; init; }
-    public IEnumerable<CreateNodeRequestBuilder> Nodes { get; init; }
-    public IEnumerable<CreatePointLoadRequestBuilder> PointLoads { get; init; }
-    public IEnumerable<CreateMaterialRequestBuilder> Materials { get; init; }
-    public IEnumerable<CreateSectionProfileRequestBuilder> SectionProfiles { get; init; }
-}
+//public class ModelRequestBuilderDeserializationModel
+//{
+//    public IEnumerable<CreateElement1dRequestBuilder> Element1ds { get; init; }
+//    public IEnumerable<CreateNodeRequestBuilder> Nodes { get; init; }
+//    public IEnumerable<CreatePointLoadRequestBuilder> PointLoads { get; init; }
+//    public IEnumerable<CreateMaterialRequestBuilder> Materials { get; init; }
+//    public IEnumerable<CreateSectionProfileRequestBuilder> SectionProfiles { get; init; }
+//}

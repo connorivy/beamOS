@@ -3,12 +3,12 @@
 //using BeamOS.PhysicalModel.Client;
 using System.Net.Http.Json;
 using BeamOs.ApiClient;
-using BeamOs.Common.Identity;
+using BeamOs.CodeGen.Apis.StructuralAnalysisApi;
 using BeamOs.Tests.TestRunner;
 using BeamOS.WebApp.Client;
 using BeamOs.WebApp.Client.Components;
+using BeamOS.WebApp.Components.Providers;
 using Blazored.LocalStorage;
-using FluentAssertions.Common;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -46,6 +46,8 @@ builder
     .AddHttpClient<IApiAlphaClient, ApiAlphaClient>(
         client => client.BaseAddress = new(analysisUriString)
     );
+
+builder.Services.AddScoped<IStructuralAnalysisApiAlphaClient, HttpApiClient>();
 
 builder.Services.RegisterSharedServices<Program>();
 

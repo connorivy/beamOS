@@ -17,7 +17,7 @@ public partial class ModelFixtureInDb(ModelFixture2 modelFixture) : IModelFixtur
 
     private Dictionary<FixtureId, string> RuntimeIdToDbIdDict { get; } = [];
 
-    public async Task Create(ApiAlphaClient client)
+    public async Task Create(IApiAlphaClient client)
     {
         this.RuntimeIdToDbIdDict[this.ModelFixture.Id] = this.ModelFixture.Id.ToString();
 

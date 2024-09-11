@@ -4,16 +4,24 @@ using BeamOs.Common.Events;
 using BeamOs.WebApp.Client.Components.Components.Editor;
 using BeamOs.WebApp.Client.Components.Components.Editor.CommandHandlers;
 using BeamOs.WebApp.Client.Components.Components.Editor.Commands;
+using BeamOs.WebApp.Client.Components.Features.TestExplorer;
+using BeamOs.WebApp.Client.Components.Features.TestExplorer.Components;
 using BeamOs.WebApp.Client.Components.Repositories;
+using BeamOs.WebApp.Client.EditorCommands;
+using Fluxor;
+using Fluxor.Blazor.Web.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 
 namespace BeamOs.WebApp.Client.Components.Features.Editors.ReadOnlyEditor;
 
-public partial class ReadOnlyEditor : ComponentBase, IAsyncDisposable
+public partial class ReadOnlyEditor : FluxorComponent
 {
     [Parameter]
     public string? Class { get; set; }
+
+    [Parameter]
+    public string CanvasId { get; init; } = GetCanvasId();
 
     protected bool IsReadOnly { get; } = true;
 
@@ -30,9 +38,13 @@ public partial class ReadOnlyEditor : ComponentBase, IAsyncDisposable
     protected ChangeComponentStateCommandHandler<EditorComponentState> ChangeComponentStateCommandHandler { get; init; }
 
     public EditorComponentState EditorComponentState =>
-        this.EditorComponentStateRepository.GetOrSetComponentStateByCanvasId(this.ElementId);
+        this.EditorComponentStateRepository.GetOrSetComponentStateByCanvasId(this.CanvasId);
 
-    public string ElementId { get; } = "id" + Guid.NewGuid().ToString("N");
+    [Inject]
+    private IDispatcher Dispatcher { get; init; }
+
+    public static string GetCanvasId() => "id" + Guid.NewGuid().ToString("N");
+
     public IEditorApiAlpha? EditorApiAlpha { get; private set; }
     const string physicalModelId = "00000000-0000-0000-0000-000000000000";
 
@@ -43,6 +55,26 @@ public partial class ReadOnlyEditor : ComponentBase, IAsyncDisposable
     protected override void OnInitialized()
     {
         EventEmitter.VisibleStateChanged += this.EventEmitter_VisibleStateChanged;
+        this.SubscribeToAction<SetColorFilterCommand>(async command =>
+        {
+            if (command.CanvasId != this.CanvasId)
+            {
+                return;
+            }
+
+            await this.EditorApiAlpha.SetColorFilterAsync(command.Command);
+        });
+
+        this.SubscribeToAction<RemoveColorFilterCommand>(async command =>
+        {
+            if (command.CanvasId != this.CanvasId)
+            {
+                return;
+            }
+
+            await this.EditorApiAlpha.ClearFiltersAsync(command.Command);
+        });
+
         base.OnInitialized();
     }
 
@@ -54,7 +86,7 @@ public partial class ReadOnlyEditor : ComponentBase, IAsyncDisposable
         if (firstRender)
         {
             this.EditorApiAlpha ??= await this.EditorApiProxyFactory.Create(
-                this.ElementId,
+                this.CanvasId,
                 this.IsReadOnly
             );
 
@@ -68,8 +100,9 @@ public partial class ReadOnlyEditor : ComponentBase, IAsyncDisposable
 
     public async Task LoadModel(string modelId)
     {
+        this.Dispatcher.Dispatch(new ChangeSelectionCommand(this.CanvasId, []));
         await this.LoadModelCommandHandler.ExecuteAsync(
-            new LoadModelCommand(this.ElementId, modelId)
+            new LoadModelCommand(this.CanvasId, modelId)
         );
     }
 
@@ -78,24 +111,18 @@ public partial class ReadOnlyEditor : ComponentBase, IAsyncDisposable
     )
     {
         return await this.ChangeComponentStateCommandHandler.ExecuteAsync(
-            new(this.ElementId, stateMutation)
+            new(this.CanvasId, stateMutation)
         );
     }
 
-    protected async ValueTask DisposeAsyncCore(bool disposing)
+    protected override async ValueTask DisposeAsyncCore(bool disposing)
     {
         EventEmitter.VisibleStateChanged -= this.EventEmitter_VisibleStateChanged;
-
         if (this.EditorComponentState.EditorApi is IAsyncDisposable asyncDisposable)
         {
             await asyncDisposable.DisposeAsync();
         }
 
-        this.EditorComponentStateRepository.RemoveEditorComponentStateForCanvasId(this.ElementId);
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        await this.DisposeAsyncCore(true);
+        base.DisposeAsyncCore(disposing);
     }
 }

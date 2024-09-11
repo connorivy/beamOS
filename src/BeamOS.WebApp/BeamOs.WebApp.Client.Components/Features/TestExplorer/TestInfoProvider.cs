@@ -26,7 +26,8 @@ public class TestInfoProvider
                 key,
                 this.TestInfos
                     .Values
-                    .SelectMany(i => i.TraitNameToValueDict.GetValueOrDefault(key) ?? [])
+                    .Select(i => i.TraitNameToValueDict.GetValueOrDefault(key))
+                    .Where(i => i is not null)
                     .Distinct()
                     .ToArray()
             );

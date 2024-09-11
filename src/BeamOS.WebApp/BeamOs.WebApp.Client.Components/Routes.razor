@@ -1,3 +1,4 @@
+@using BeamOs.Common.Identity
 @using BeamOs.WebApp.Client.Components.Layout
 @using BeamOs.WebApp.Client.Components.Pages.Account
 @using System.Reflection
@@ -22,3 +23,23 @@
         this was not found!!!!
     </NotFound>
 </Router>
+
+@code {
+    [Parameter]
+    public string? AccessToken { get; init; }
+
+    [Inject]
+    private AuthenticationStateProvider AuthenticationStateProvider { get; init; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (AccessToken is not null)
+            {
+                await ((IAuthStateProvider)AuthenticationStateProvider).Login(AccessToken);
+            }
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

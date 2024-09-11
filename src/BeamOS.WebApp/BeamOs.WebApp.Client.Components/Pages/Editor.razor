@@ -7,6 +7,7 @@
 @using BeamOs.WebApp.Client.Components.Components.Editor
 @using BeamOs.WebApp.Client.Components.Components.Editor.Commands
 @using BeamOs.WebApp.Client.Components.Features.Common.Flux
+@using BeamOs.WebApp.Client.Components.Features.StructuralApiClient
 @using BeamOs.WebApp.Client.Components.Repositories
 @using BeamOs.CodeGen.Apis.EditorApi
 @using BeamOs.ApiClient
@@ -24,7 +25,7 @@
 
 <PageTitle>Editor</PageTitle>
 
-<MudDrawerContainer Class="h-full w-full">
+<MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="h-full w-full">
     @* <MudTextField @bind-Value="modelIdInput" Label="ModelId" Variant="Variant.Filled"></MudTextField> *@
     @* <MudButton OnClick="LoadModel">Load Model</MudButton> *@
     @* <MudButton OnClick="RunAnalysis">Run DSM</MudButton> *@
@@ -33,12 +34,13 @@
     @* <MudButton OnClick="ShowReactions">Show Reactions</MudButton> *@
     @if (editorComponent is not null)
     {
-        <MudPopover Open="@(editorComponent.EditorComponentState.SelectedObjects.Length > 0)" Fixed="true" Class="w-80 m-2">
+        <MudPopover Open="@(editorComponent.EditorComponentState.SelectedObjects.Length > 0)" Fixed="true" AnchorOrigin="Origin.TopRight" TransformOrigin="Origin.TopRight" Elevation="0" Class="w-80 p-2 bg-transparent">
             <SelectionInfoComponent SelectedObjects="@editorComponent.EditorComponentState.SelectedObjects" ModelId="@editorComponent.EditorComponentState.LoadedModelId"></SelectionInfoComponent>
         </MudPopover>
+        <StructuralApiClientComponent ModelId="@this.ModelId" CanvasId="@this.editorComponent.ElementId"></StructuralApiClientComponent>
     }
     <EditorComponent Class="h-full" @ref="editorComponent" ModelId="@ModelId"></EditorComponent>
-</MudDrawerContainer>
+</MudContainer>
 
 @code {
     [Parameter]
@@ -132,4 +134,7 @@
     {
         EventEmitter.VisibleStateChanged -= this.EventEmitter_VisibleStateChanged;
     }
+
+    public static string GetRelativeUrl(string modelId) =>
+        $"editor/{modelId}";
 }

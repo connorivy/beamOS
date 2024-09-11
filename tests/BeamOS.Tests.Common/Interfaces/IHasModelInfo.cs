@@ -11,6 +11,8 @@ public enum FixtureSourceType
     ExampleProblem = 1,
     ExampleProblemElement = 2,
     Textbook = 3,
+    SAP2000 = 4,
+    Standalone = 5
 }
 
 public record SourceInfo(

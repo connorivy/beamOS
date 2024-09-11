@@ -25,11 +25,6 @@ public interface IHasPhysicalModelSettings
     PhysicalModelSettings Settings { get; }
 }
 
-public interface IHasFixtureId
-{
-    FixtureId Id { get; }
-}
-
 public abstract class ModelFixture2 : FixtureBase2, IHasSourceInfo, IModelFixture2
 {
     public sealed override FixtureId Id => this.ModelGuid;
