@@ -13,6 +13,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BeamOS.Tests.Common\BeamOS.Tests.Common.csproj" />
+    <PackageReference Include="Teronis.MSBuild.Packaging.ProjectBuildInPackage">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <ProjectReference Include="..\StructuralAnalysis\BeamOs.Api.IntegrationTests\BeamOs.Api.IntegrationTests.csproj">
       <PrivateAssets>all</PrivateAssets>
     </ProjectReference>
