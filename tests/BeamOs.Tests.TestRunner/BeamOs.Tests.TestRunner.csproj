@@ -3,7 +3,6 @@
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <OutputType>Exe</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,13 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BeamOS.Tests.Common\BeamOS.Tests.Common.csproj" />
-    <PackageReference Include="Teronis.MSBuild.Packaging.ProjectBuildInPackage">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <ProjectReference Include="..\StructuralAnalysis\BeamOs.Api.IntegrationTests\BeamOs.Api.IntegrationTests.csproj">
-      <PrivateAssets>all</PrivateAssets>
-    </ProjectReference>
+    <ProjectReference Include="..\StructuralAnalysis\BeamOs.Api.IntegrationTests.Runtime\BeamOs.Api.IntegrationTests.Runtime.csproj" />
     <ProjectReference Include="..\StructuralAnalysis\BeamOs.Domain.IntegrationTests\BeamOs.Domain.IntegrationTests.csproj">
     </ProjectReference>
     <ProjectReference Include="..\StructuralAnalysis\BeamOs.Domain.UnitTests\BeamOs.Domain.UnitTests.csproj">

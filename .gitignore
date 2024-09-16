@@ -355,7 +355,7 @@ MigrationBackup/
 
 # ignore generated js files from webpack output
 **/wwwroot/js/
-**/wwwroot/css/
+# **/wwwroot/css/
 **/wwwroot/test-results
 
 # Rider

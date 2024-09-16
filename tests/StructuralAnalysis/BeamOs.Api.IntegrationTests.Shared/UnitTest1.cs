@@ -10,28 +10,35 @@ using BeamOS.Tests.Common;
 using BeamOS.Tests.Common.Fixtures;
 using BeamOS.Tests.Common.Fixtures.Mappers.ToDomain;
 using BeamOS.Tests.Common.SolvedProblems;
-using UnitsNet;
 using UnitsNet.Units;
+using Xunit;
+#if RUNTIME_TESTS
+using BeamOs.Api.IntegrationTests.Runtime;
+#else
+
+#endif
 
 namespace BeamOs.Api.IntegrationTests;
 
+#if RUNTIME_TESTS
+public class UnitTest1 : IAsyncLifetime
+{
+    public UnitTest1(IApiAlphaClient apiClient)
+    {
+        this.apiClient = apiClient;
+    }
+#else
 public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IAsyncLifetime
 {
-    private readonly IApiAlphaClient apiClient;
-    private readonly Dictionary<string, IModelFixtureInDb> modelIdToModelFixtureDict = [];
-
     public UnitTest1(CustomWebApplicationFactory<Program> webApplicationFactory)
     {
         var httpClient = webApplicationFactory.CreateClient();
         this.apiClient = new ApiAlphaClient(httpClient);
     }
+#endif
 
-    public static UnitTest1 Create(IApiAlphaClient apiAlphaClient) => new(apiAlphaClient);
-
-    private UnitTest1(IApiAlphaClient apiAlphaClient)
-    {
-        this.apiClient = apiAlphaClient;
-    }
+    private readonly IApiAlphaClient apiClient;
+    private readonly Dictionary<string, IModelFixtureInDb> modelIdToModelFixtureDict = [];
 
     public async Task InitializeAsync()
     {
@@ -105,7 +112,7 @@ public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IA
     //    ContractComparer.AssertContractsEqual(modelResponse, expectedModelResponse);
     //}
 
-    [Theory]
+    [BeamOsTheory]
     [ClassData(typeof(AllCreateModelRequestBuildersFilter<IHasExpectedNodeDisplacementResults>))]
     public async Task NodeDisplacementResults_ForSampleProblems_ShouldResultInExpectedValues(
         IHasExpectedNodeDisplacementResults modelFixture
