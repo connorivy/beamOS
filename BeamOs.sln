@@ -96,6 +96,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.Common.Identity", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.Common.Infrastructure", "src\BeamOs.Common\BeamOs.Common.Infrastructure\BeamOs.Common.Infrastructure.csproj", "{79ED8D24-7343-4E80-B995-9392AB9041E1}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OpenSees", "OpenSees", "{AF5D2523-7C20-4F74-93EF-92F20165813F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.OpenSees.Contracts", "src\BeamOs.OpenSees\BeamOs.OpenSees.Contracts\BeamOs.OpenSees.Contracts.csproj", "{4D7B80B1-CBA1-4ABD-A0F7-1ABB7929AD2F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -216,6 +220,10 @@ Global
 		{79ED8D24-7343-4E80-B995-9392AB9041E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{79ED8D24-7343-4E80-B995-9392AB9041E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{79ED8D24-7343-4E80-B995-9392AB9041E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D7B80B1-CBA1-4ABD-A0F7-1ABB7929AD2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D7B80B1-CBA1-4ABD-A0F7-1ABB7929AD2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D7B80B1-CBA1-4ABD-A0F7-1ABB7929AD2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D7B80B1-CBA1-4ABD-A0F7-1ABB7929AD2F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -257,6 +265,8 @@ Global
 		{1E5A8712-0002-494B-8A46-4F56A2AE23B4} = {B58C021C-7297-48C9-9857-4B4C0E856CF4}
 		{5E4D6899-A85E-4141-9D2A-DDD211481174} = {FE5D3FD8-4840-4839-B980-1E8D457814D2}
 		{79ED8D24-7343-4E80-B995-9392AB9041E1} = {FE5D3FD8-4840-4839-B980-1E8D457814D2}
+		{AF5D2523-7C20-4F74-93EF-92F20165813F} = {2F3F3AAD-1659-49EF-942B-F0CF5B9E9F4B}
+		{4D7B80B1-CBA1-4ABD-A0F7-1ABB7929AD2F} = {AF5D2523-7C20-4F74-93EF-92F20165813F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0E917AFB-AF19-41C1-9F0B-17BD02FD96BE}

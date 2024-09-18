@@ -15,4 +15,6 @@ public class GuidBasedId(Guid? id) : BeamOSValueObject
     {
         return this.Id.ToString();
     }
+
+    public static implicit operator Guid(GuidBasedId id) => id.Id;
 }
