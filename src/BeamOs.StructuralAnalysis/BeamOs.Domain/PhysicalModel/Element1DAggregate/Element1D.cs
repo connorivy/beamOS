@@ -8,6 +8,7 @@ using BeamOs.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate.ValueObjects;
+using MathNet.Numerics.LinearAlgebra;
 using UnitsNet;
 
 namespace BeamOs.Domain.PhysicalModel.Element1DAggregate;
@@ -127,6 +128,36 @@ public class Element1D : AggregateRoot<Element1DId>
             { r21, r22, r23 },
             { r31, r32, r33 },
         };
+    }
+
+    public double[,] GetTransformationMatrix() =>
+        GetTransformationMatrix(
+            this.EndNode.LocationPoint,
+            this.StartNode.LocationPoint,
+            this.SectionProfileRotation
+        );
+
+    public static double[,] GetTransformationMatrix(
+        Point endLocation,
+        Point startLocation,
+        Angle sectionProfileRotation
+    )
+    {
+        var rotationMatrix = GetRotationMatrix(endLocation, startLocation, sectionProfileRotation);
+        var transformationMatrix = new double[12, 12];
+        for (int i = 0; i < 4; i++)
+        {
+            int offset = i * 3;
+            for (int row = 0; row < 3; row++)
+            {
+                for (int col = 0; col < 3; col++)
+                {
+                    transformationMatrix[offset + row, offset + col] = rotationMatrix[row, col];
+                }
+            }
+        }
+
+        return transformationMatrix;
     }
 
     [Obsolete("EF Core Constructor", true)]

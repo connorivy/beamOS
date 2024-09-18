@@ -27,11 +27,11 @@ public class RunDirectStiffnessMethod(
     )
     {
         ModelId modelId = new(Guid.Parse(req.ModelId));
-        if (await modelResultRepository.GetByModelId(modelId) is not null)
-        {
-            // todo: better response
-            return new([]);
-        }
+        //if (await modelResultRepository.GetByModelId(modelId) is not null)
+        //{
+        //    // todo: better response
+        //    return new([]);
+        //}
         var command = new RunDirectStiffnessMethodCommand(new ModelId(Guid.Parse(req.ModelId)));
 
         var model = await runDsmCommandHandler.ExecuteAsync(command, ct);

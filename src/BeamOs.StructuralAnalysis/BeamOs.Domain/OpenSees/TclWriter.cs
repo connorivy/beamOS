@@ -1,33 +1,41 @@
 using System.Text;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate;
+using BeamOs.Domain.PhysicalModel.Element1DAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.MaterialAggregate;
-using BeamOs.Domain.PhysicalModel.MaterialAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.NodeAggregate;
+using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate;
-using BeamOs.Domain.PhysicalModel.SectionProfileAggregate.ValueObjects;
 
 namespace BeamOs.Domain.OpenSees;
 
 public class TclWriter
 {
-    public static string Write()
-    {
-        return null;
-    }
-
-    private readonly Dictionary<int, Guid> runtimeIdToDbDict = [];
     private readonly Dictionary<Guid, int> dbIdToRuntimeIdDict = [];
+    private readonly List<NodeId> nodeIdsInOrder = [];
+    private readonly List<Element1DId> element1dIdsInOrder = [];
 
     private readonly UnitSettings unitSettings;
 
-    public TclWriter(UnitSettings unitSettings)
+    private readonly int displacementPort;
+    private readonly int reactionPort;
+    private readonly int elementForcesPort;
+
+    public TclWriter(
+        UnitSettings unitSettings,
+        int displacementPort,
+        int reactionPort,
+        int elementForcesPort
+    )
     {
         this.unitSettings = unitSettings;
         this.document.AppendLine("wipe");
         this.document.AppendLine("model basic -ndm 3 -ndf 6");
         this.document.AppendLine("file mkdir Data");
+        this.displacementPort = displacementPort;
+        this.reactionPort = reactionPort;
+        this.elementForcesPort = elementForcesPort;
     }
 
     private readonly StringBuilder document = new();
@@ -40,7 +48,7 @@ public class TclWriter
         {
             return;
         }
-        int runtimeId = this.GetRuntimeId(node.Id);
+        int runtimeId = this.GetRuntimeNodeId(node.Id);
         this.document.AppendLine(this.NodeLocationString(runtimeId, node.LocationPoint));
         this.document.AppendLine(NodeRestraintString(runtimeId, node.Restraint));
     }
@@ -61,17 +69,6 @@ public class TclWriter
         return $"fix {id} {ToSeesVal(restraint.CanTranslateAlongX)} {ToSeesVal(restraint.CanTranslateAlongY)} {ToSeesVal(restraint.CanTranslateAlongZ)} {ToSeesVal(restraint.CanRotateAboutX)} {ToSeesVal(restraint.CanRotateAboutY)} {ToSeesVal(restraint.CanRotateAboutZ)}";
     }
 
-    public void AddMaterial(Material material)
-    {
-        double v = .3; // currently hardcoding poissons ratio
-        int runtimeId = this.GetRuntimeId(material.Id);
-        double e = material.ModulusOfElasticity.As(this.unitSettings.PressureUnit);
-        double g = material.ModulusOfRigidity.As(this.unitSettings.PressureUnit);
-        this.document.AppendLine(
-            $"nDMaterial ElasticOrthotropic {runtimeId} {e} {e} {e} {v} {v} {v} {g} {g} {g}"
-        );
-    }
-
     private readonly HashSet<Guid> sections = [];
 
     public void AddSection(SectionProfile sectionProfile, Material material)
@@ -88,26 +85,46 @@ public class TclWriter
         );
     }
 
-    private static Guid transformationOffset = Guid.Parse("9f1ae054-1583-43f1-a362-6e653a8cd33f");
+    private readonly Dictionary<int, int> transformIds = [];
 
     public void AddElement(Element1D element1d)
     {
-        int runtimeId = this.GetRuntimeId(element1d.Id);
-        int startNodeId = this.GetRuntimeId(element1d.StartNodeId);
-        int endNodeId = this.GetRuntimeId(element1d.EndNodeId);
+        int runtimeId = this.GetRuntimeElementId(element1d.Id);
+        int startNodeId = this.GetRuntimeNodeId(element1d.StartNodeId);
+        int endNodeId = this.GetRuntimeNodeId(element1d.EndNodeId);
         Guid combinedId = CombineGuids(element1d.SectionProfileId, element1d.MaterialId);
         int sectionId = this.GetRuntimeId(combinedId);
 
         var rotationMatrix = element1d.GetRotationMatrix();
-        Guid transformationOffsetId = CombineGuids(element1d.Id, transformationOffset);
+        int hash = GetTransformHash(
+            rotationMatrix[1, 0],
+            rotationMatrix[1, 1],
+            rotationMatrix[1, 2]
+        );
+        if (!this.transformIds.TryGetValue(hash, out var transformId))
+        {
+            transformId = this.transformIds.Count;
+            this.transformIds.Add(hash, runtimeId);
+            this.document.AppendLine(
+                $"geomTransf Linear {transformId} {rotationMatrix[1, 0]} {rotationMatrix[1, 1]} {rotationMatrix[1, 2]}"
+            );
+        }
+        this.document.AppendLine(
+            $"element {nameof(ElementTypes.elasticBeamColumn)} {runtimeId} {startNodeId} {endNodeId} {sectionId} {transformId}"
+        );
+    }
 
-        int tranformId = this.GetRuntimeId(transformationOffsetId);
-        this.document.AppendLine(
-            $"geomTransf Linear {tranformId} {rotationMatrix[1, 0]} {rotationMatrix[1, 1]} {rotationMatrix[1, 2]}"
-        );
-        this.document.AppendLine(
-            $"element {nameof(ElementTypes.elasticBeamColumn)} {runtimeId} {startNodeId} {endNodeId} {sectionId} {tranformId}"
-        );
+    private static int GetTransformHash(double x, double y, double z)
+    {
+        int hash = 17;
+        unchecked
+        {
+            hash = hash * 23 + x.GetHashCode();
+            hash = hash * 23 + y.GetHashCode();
+            hash = hash * 23 + z.GetHashCode();
+        }
+
+        return hash;
     }
 
     public void AddHydratedElement(Element1D element1d)
@@ -131,8 +148,7 @@ public class TclWriter
 
     public void AddPointLoad(PointLoad pointLoad)
     {
-        int runtimeId = this.GetRuntimeId(pointLoad.Id);
-        int nodeId = this.GetRuntimeId(pointLoad.NodeId);
+        int nodeId = this.GetRuntimeNodeId(pointLoad.NodeId);
 
         this.document.AppendLine(
             $"load {nodeId} {pointLoad.Force.As(this.unitSettings.ForceUnit) * pointLoad.Direction.X} {pointLoad.Force.As(this.unitSettings.ForceUnit) * pointLoad.Direction.Y} {pointLoad.Force.As(this.unitSettings.ForceUnit) * pointLoad.Direction.Z} 0 0 0"
@@ -142,8 +158,15 @@ public class TclWriter
     public void DefineAnalysis()
     {
         this.document.AppendLine(
-            "recorder Node -file Data/DFree.out -time -tcp 127.0.0.1 13000 -dof 1 2 3 disp"
+            $"recorder Node -time -tcp 127.0.0.1 {this.displacementPort} -dof 1 2 3 4 5 6 disp"
         );
+        this.document.AppendLine(
+            $"recorder Node -time -tcp 127.0.0.1 {this.reactionPort} -dof 1 2 3 4 5 6 reaction"
+        );
+        this.document.AppendLine(
+            $"recorder Element -time -tcp 127.0.0.1 {this.elementForcesPort} forces"
+        );
+
         this.document.AppendLine($"system {nameof(SystemType.BandGeneral)}");
         this.document.AppendLine($"numberer RCM");
         this.document.AppendLine($"constraints Transformation");
@@ -164,6 +187,36 @@ public class TclWriter
         this.dbIdToRuntimeIdDict[id] = runtimeId;
         return runtimeId;
     }
+
+    private int GetRuntimeNodeId(NodeId id)
+    {
+        if (this.dbIdToRuntimeIdDict.TryGetValue(id, out var runtimeId))
+        {
+            return runtimeId;
+        }
+
+        runtimeId = this.nodeIdsInOrder.Count;
+        this.dbIdToRuntimeIdDict[id] = runtimeId;
+        this.nodeIdsInOrder.Add(id);
+        return runtimeId;
+    }
+
+    private int GetRuntimeElementId(Element1DId id)
+    {
+        if (this.dbIdToRuntimeIdDict.TryGetValue(id, out var runtimeId))
+        {
+            return runtimeId;
+        }
+
+        runtimeId = this.element1dIdsInOrder.Count;
+        this.dbIdToRuntimeIdDict[id] = runtimeId;
+        this.element1dIdsInOrder.Add(id);
+        return runtimeId;
+    }
+
+    public NodeId GetNodeIdFromOutputIndex(int index) => this.nodeIdsInOrder[index];
+
+    public Element1DId GetElementIdFromOutputIndex(int index) => this.element1dIdsInOrder[index];
 
     private static Guid CombineGuids(params Guid[] guids)
     {
@@ -218,4 +271,9 @@ public enum SystemType
     BandGeneral
 }
 
-//public enum OpenseesObjectTypes
+public enum OpenseesObjectTypes
+{
+    Undefined = 0,
+    Element1d,
+    Node
+}

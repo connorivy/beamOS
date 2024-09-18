@@ -81,6 +81,11 @@ public class DsmAnalysisModel(Model model)
                 model.Settings.UnitSettings.ForcePerLengthUnit,
                 model.Settings.UnitSettings.TorqueUnit
             );
+            var global =
+                localMemberEndForcesVector
+                * this.dsmElement1Ds[i].GetTransformationMatrix().Transpose();
+            var localMaybe = this.dsmElement1Ds[i].GetTransformationMatrix().Transpose() * global;
+
             var rotationMatrix = this.dsmElement1Ds[i].GetRotationMatrix();
 
             var sfd = ShearForceDiagram.Create(

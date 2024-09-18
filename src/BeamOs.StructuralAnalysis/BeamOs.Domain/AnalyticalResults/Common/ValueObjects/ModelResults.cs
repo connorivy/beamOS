@@ -9,7 +9,7 @@ namespace BeamOs.Domain.AnalyticalResults.Common.ValueObjects;
 
 public class ModelResults : BeamOSValueObject
 {
-    public List<NodeResult>? NodeResults { get; init; }
+    public ICollection<NodeResult>? NodeResults { get; init; }
     public List<Element1dResult>? Element1dResults { get; init; }
     public ShearForceDiagram[]? ShearForceDiagrams { get; init; }
     public MomentDiagram[]? MomentDiagrams { get; init; }
