@@ -1,5 +1,8 @@
+using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 
 namespace BeamOs.Domain.OpenSees.TcpServer;
 
@@ -14,6 +17,14 @@ public sealed class TcpServer : IDisposable
         this.server.Start();
     }
 
+    public void ListenCallback(Action<double[]> processData)
+    {
+        this.server.BeginAcceptTcpClient(
+            new AsyncCallback(TcpServerCallback.ServerCallback),
+            this.server
+        );
+    }
+
     public async Task Listen(Action<double[]> processData)
     {
         double[]? data = null;
@@ -21,7 +32,7 @@ public sealed class TcpServer : IDisposable
         {
             Console.Write("Waiting for a connection... ");
 
-            // Perform a blocking call to accept requests.
+            // Perform a blocking call to accept requests.Hi
             // You could also use server.AcceptSocket() here.
             using TcpClient client = await this.server.AcceptTcpClientAsync();
             Console.WriteLine("Connected!");
@@ -33,7 +44,16 @@ public sealed class TcpServer : IDisposable
 
             // Get data size
             byte[] rawSize = new byte[sizeof(double)];
-            stream.Read(rawSize, 0, rawSize.Length);
+            //stream.Read(rawSize, 0, rawSize.Length);
+            System.Net.ServicePointManager.Expect100Continue = false;
+            //var content = stream.BeginRead(
+            //    rawSize,
+            //    0,
+            //    rawSize.Length,
+            //    new AsyncCallback(TcpServerCallback.ServerCallback2),
+            //    stream
+            //);
+            await stream.ReadExactlyAsync(rawSize, 0, rawSize.Length);
             double dataSize = BitConverter.ToDouble(rawSize, 0);
             Console.WriteLine($"Data Size == {dataSize}");
 
@@ -56,9 +76,9 @@ public sealed class TcpServer : IDisposable
                 data[i - 2] = value;
             }
 
-            Console.WriteLine("Received data:");
-            foreach (double val in data)
-                Console.WriteLine(val);
+            Console.WriteLine(
+                $"Received array of length {data.Length} from endpoint {this.server.LocalEndpoint}"
+            );
         }
         catch (SocketException e)
         {

@@ -104,13 +104,13 @@ public class TclWriter
         if (!this.transformIds.TryGetValue(hash, out var transformId))
         {
             transformId = this.transformIds.Count;
-            this.transformIds.Add(hash, runtimeId);
+            this.transformIds.Add(hash, transformId);
             this.document.AppendLine(
                 $"geomTransf Linear {transformId} {rotationMatrix[1, 0]} {rotationMatrix[1, 1]} {rotationMatrix[1, 2]}"
             );
         }
         this.document.AppendLine(
-            $"element {nameof(ElementTypes.elasticBeamColumn)} {runtimeId} {startNodeId} {endNodeId} {sectionId} {transformId}"
+            $"element {nameof(ElementTypes.ElasticTimoshenkoBeam)} {runtimeId} {startNodeId} {endNodeId} {element1d.Material.ModulusOfElasticity.As(this.unitSettings.PressureUnit)} {element1d.Material.ModulusOfRigidity.As(this.unitSettings.PressureUnit)} {element1d.SectionProfile.Area.As(this.unitSettings.AreaUnit)} {element1d.SectionProfile.PolarMomentOfInertia.As(this.unitSettings.AreaMomentOfInertiaUnit)} {element1d.SectionProfile.StrongAxisMomentOfInertia.As(this.unitSettings.AreaMomentOfInertiaUnit)} {element1d.SectionProfile.WeakAxisMomentOfInertia.As(this.unitSettings.AreaMomentOfInertiaUnit)} {element1d.SectionProfile.StrongAxisShearArea.As(this.unitSettings.AreaUnit)} {element1d.SectionProfile.WeakAxisShearArea.As(this.unitSettings.AreaUnit)} {transformId}"
         );
     }
 
@@ -163,17 +163,25 @@ public class TclWriter
         this.document.AppendLine(
             $"recorder Node -time -tcp 127.0.0.1 {this.reactionPort} -dof 1 2 3 4 5 6 reaction"
         );
+        //this.document.AppendLine($"recorder Node -time -file disp.out -dof 1 2 3 4 5 6 disp");
         this.document.AppendLine(
-            $"recorder Element -time -tcp 127.0.0.1 {this.elementForcesPort} forces"
+            $"recorder Element -time -tcp 127.0.0.1 {this.elementForcesPort} -eleRange 0 {this.element1dIdsInOrder.Count} localForce"
         );
+
+        // found a weird quirk where this call wouldn't output anything unless the eleRange was specified
+        //this.document.AppendLine(
+        //    $"recorder Element -time -file Data/forces.out -eleRange 0 {this.element1dIdsInOrder.Count} localForce"
+        //);
 
         this.document.AppendLine($"system {nameof(SystemType.BandGeneral)}");
         this.document.AppendLine($"numberer RCM");
         this.document.AppendLine($"constraints Transformation");
         this.document.AppendLine($"integrator LoadControl 1");
-        this.document.AppendLine($"algorithm Linear");
+        this.document.AppendLine($"algorithm {nameof(AlgorithmType.Newton)}");
         this.document.AppendLine($"analysis Static");
         this.document.AppendLine($"analyze 1");
+        //this.document.AppendLine($"database File Data/aaaaaaDB");
+        //this.document.AppendLine($"save 32");
     }
 
     private int GetRuntimeId(Guid id)
@@ -245,6 +253,7 @@ public enum ElementTypes
     Undefined = 0,
     Truss,
     elasticBeamColumn,
+    ElasticTimoshenkoBeam,
     ModElasticBeam2d,
     GradientInelasticBeamColumn
 }
@@ -269,6 +278,13 @@ public enum SystemType
 {
     Undefined = 0,
     BandGeneral
+}
+
+public enum AlgorithmType
+{
+    Undefined = 0,
+    Linear,
+    Newton
 }
 
 public enum OpenseesObjectTypes

@@ -13,6 +13,11 @@ export interface IApiAlphaClient {
     /**
      * @return Success
      */
+    getTclFromModel(modelId: string): Promise<string>;
+
+    /**
+     * @return Success
+     */
     runDirectStiffnessMethod(modelId: string): Promise<AnalyticalModelResponse3>;
 
     /**
@@ -138,6 +143,47 @@ export class ApiAlphaClient implements IApiAlphaClient {
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         this.http = http ? http : window as any;
         this.baseUrl = baseUrl ?? "";
+    }
+
+    /**
+     * @return Success
+     */
+    getTclFromModel(modelId: string): Promise<string> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/opensees/tcl";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetTclFromModel(_response);
+        });
+    }
+
+    protected processGetTclFromModel(response: Response): Promise<string> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<string>(null as any);
     }
 
     /**
@@ -708,6 +754,10 @@ export class ApiAlphaClient implements IApiAlphaClient {
             }
             return result200;
             });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -1163,6 +1213,36 @@ export class ApiAlphaClient implements IApiAlphaClient {
     }
 }
 
+export class ModelIdRequest implements IModelIdRequest {
+
+    constructor(data?: IModelIdRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+    }
+
+    static fromJS(data: any): ModelIdRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new ModelIdRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data;
+    }
+}
+
+export interface IModelIdRequest {
+}
+
 export class AnalyticalModelResponse3 implements IAnalyticalModelResponse3 {
     nodeResponses!: NodeResultResponse[];
 
@@ -1449,36 +1529,6 @@ export interface IDisplacementsResponse {
     rotationAboutX: UnitValueDto;
     rotationAboutY: UnitValueDto;
     rotationAboutZ: UnitValueDto;
-}
-
-export class ModelIdRequest implements IModelIdRequest {
-
-    constructor(data?: IModelIdRequest) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-    }
-
-    static fromJS(data: any): ModelIdRequest {
-        data = typeof data === 'object' ? data : {};
-        let result = new ModelIdRequest();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        return data;
-    }
-}
-
-export interface IModelIdRequest {
 }
 
 export class GetNodeResultsRequest implements IGetNodeResultsRequest {
@@ -2174,6 +2224,7 @@ export class NodeResponse extends BeamOsEntityContractBase implements INodeRespo
     modelId!: string;
     locationPoint!: Point;
     restraint!: RestraintContract;
+    customData?: { [key: string]: any; } | undefined;
 
     constructor(data?: INodeResponse) {
         super(data);
@@ -2190,6 +2241,13 @@ export class NodeResponse extends BeamOsEntityContractBase implements INodeRespo
             this.modelId = _data["modelId"];
             this.locationPoint = _data["locationPoint"] ? Point.fromJS(_data["locationPoint"]) : new Point();
             this.restraint = _data["restraint"] ? RestraintContract.fromJS(_data["restraint"]) : new RestraintContract();
+            if (_data["customData"]) {
+                this.customData = {} as any;
+                for (let key in _data["customData"]) {
+                    if (_data["customData"].hasOwnProperty(key))
+                        (<any>this.customData)![key] = _data["customData"][key];
+                }
+            }
         }
     }
 
@@ -2205,6 +2263,13 @@ export class NodeResponse extends BeamOsEntityContractBase implements INodeRespo
         data["modelId"] = this.modelId;
         data["locationPoint"] = this.locationPoint ? this.locationPoint.toJSON() : <any>undefined;
         data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
+        if (this.customData) {
+            data["customData"] = {};
+            for (let key in this.customData) {
+                if (this.customData.hasOwnProperty(key))
+                    (<any>data["customData"])[key] = (<any>this.customData)[key];
+            }
+        }
         super.toJSON(data);
         return data;
     }
@@ -2214,6 +2279,7 @@ export interface INodeResponse extends IBeamOsEntityContractBase {
     modelId: string;
     locationPoint: Point;
     restraint: RestraintContract;
+    customData?: { [key: string]: any; } | undefined;
 }
 
 export class Point extends BeamOsContractBase implements IPoint {
@@ -2321,6 +2387,7 @@ export class Element1DResponse extends BeamOsEntityContractBase implements IElem
     materialId!: string;
     sectionProfileId!: string;
     sectionProfileRotation!: UnitValueDto;
+    customData?: { [key: string]: any; } | undefined;
 
     constructor(data?: IElement1DResponse) {
         super(data);
@@ -2339,6 +2406,13 @@ export class Element1DResponse extends BeamOsEntityContractBase implements IElem
             this.materialId = _data["materialId"];
             this.sectionProfileId = _data["sectionProfileId"];
             this.sectionProfileRotation = _data["sectionProfileRotation"] ? UnitValueDto.fromJS(_data["sectionProfileRotation"]) : new UnitValueDto();
+            if (_data["customData"]) {
+                this.customData = {} as any;
+                for (let key in _data["customData"]) {
+                    if (_data["customData"].hasOwnProperty(key))
+                        (<any>this.customData)![key] = _data["customData"][key];
+                }
+            }
         }
     }
 
@@ -2357,6 +2431,13 @@ export class Element1DResponse extends BeamOsEntityContractBase implements IElem
         data["materialId"] = this.materialId;
         data["sectionProfileId"] = this.sectionProfileId;
         data["sectionProfileRotation"] = this.sectionProfileRotation ? this.sectionProfileRotation.toJSON() : <any>undefined;
+        if (this.customData) {
+            data["customData"] = {};
+            for (let key in this.customData) {
+                if (this.customData.hasOwnProperty(key))
+                    (<any>data["customData"])[key] = (<any>this.customData)[key];
+            }
+        }
         super.toJSON(data);
         return data;
     }
@@ -2369,6 +2450,7 @@ export interface IElement1DResponse extends IBeamOsEntityContractBase {
     materialId: string;
     sectionProfileId: string;
     sectionProfileRotation: UnitValueDto;
+    customData?: { [key: string]: any; } | undefined;
 }
 
 export class MaterialResponse implements IMaterialResponse {
@@ -2717,6 +2799,7 @@ export class CreateNodeRequest implements ICreateNodeRequest {
     modelId!: string;
     locationPoint!: Point;
     restraint?: RestraintContract | undefined;
+    customData?: { [key: string]: any; } | undefined;
 
     constructor(data?: ICreateNodeRequest) {
         if (data) {
@@ -2735,6 +2818,13 @@ export class CreateNodeRequest implements ICreateNodeRequest {
             this.modelId = _data["modelId"];
             this.locationPoint = _data["locationPoint"] ? Point.fromJS(_data["locationPoint"]) : new Point();
             this.restraint = _data["restraint"] ? RestraintContract.fromJS(_data["restraint"]) : <any>undefined;
+            if (_data["customData"]) {
+                this.customData = {} as any;
+                for (let key in _data["customData"]) {
+                    if (_data["customData"].hasOwnProperty(key))
+                        (<any>this.customData)![key] = _data["customData"][key];
+                }
+            }
         }
     }
 
@@ -2750,6 +2840,13 @@ export class CreateNodeRequest implements ICreateNodeRequest {
         data["modelId"] = this.modelId;
         data["locationPoint"] = this.locationPoint ? this.locationPoint.toJSON() : <any>undefined;
         data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
+        if (this.customData) {
+            data["customData"] = {};
+            for (let key in this.customData) {
+                if (this.customData.hasOwnProperty(key))
+                    (<any>data["customData"])[key] = (<any>this.customData)[key];
+            }
+        }
         return data;
     }
 }
@@ -2758,6 +2855,7 @@ export interface ICreateNodeRequest {
     modelId: string;
     locationPoint: Point;
     restraint?: RestraintContract | undefined;
+    customData?: { [key: string]: any; } | undefined;
 }
 
 export class PatchNodeRequest implements IPatchNodeRequest {
@@ -3118,6 +3216,7 @@ export class CreateElement1dRequest implements ICreateElement1dRequest {
     materialId!: string;
     sectionProfileId!: string;
     sectionProfileRotation?: UnitValueDto | undefined;
+    customData?: { [key: string]: any; } | undefined;
 
     constructor(data?: ICreateElement1dRequest) {
         if (data) {
@@ -3136,6 +3235,13 @@ export class CreateElement1dRequest implements ICreateElement1dRequest {
             this.materialId = _data["materialId"];
             this.sectionProfileId = _data["sectionProfileId"];
             this.sectionProfileRotation = _data["sectionProfileRotation"] ? UnitValueDto.fromJS(_data["sectionProfileRotation"]) : <any>undefined;
+            if (_data["customData"]) {
+                this.customData = {} as any;
+                for (let key in _data["customData"]) {
+                    if (_data["customData"].hasOwnProperty(key))
+                        (<any>this.customData)![key] = _data["customData"][key];
+                }
+            }
         }
     }
 
@@ -3154,6 +3260,13 @@ export class CreateElement1dRequest implements ICreateElement1dRequest {
         data["materialId"] = this.materialId;
         data["sectionProfileId"] = this.sectionProfileId;
         data["sectionProfileRotation"] = this.sectionProfileRotation ? this.sectionProfileRotation.toJSON() : <any>undefined;
+        if (this.customData) {
+            data["customData"] = {};
+            for (let key in this.customData) {
+                if (this.customData.hasOwnProperty(key))
+                    (<any>data["customData"])[key] = (<any>this.customData)[key];
+            }
+        }
         return data;
     }
 }
@@ -3165,6 +3278,7 @@ export interface ICreateElement1dRequest {
     materialId: string;
     sectionProfileId: string;
     sectionProfileRotation?: UnitValueDto | undefined;
+    customData?: { [key: string]: any; } | undefined;
 }
 
 export class GetElement1dsRequest implements IGetElement1dsRequest {

@@ -1,10 +1,13 @@
 using System.Diagnostics;
 using System.Reflection;
+using BeamOs.Application.AnalyticalResults.Diagrams.ShearDiagrams.Interfaces;
+using BeamOs.Application.AnalyticalResults.ModelResults;
 using BeamOs.Application.AnalyticalResults.NodeResults;
 using BeamOs.Application.Common.Interfaces;
 using BeamOs.Application.PhysicalModel.Models;
 using BeamOs.Contracts.Common;
 using BeamOs.Domain.AnalyticalResults.Common.ValueObjects;
+using BeamOs.Domain.AnalyticalResults.ModelResultAggregate;
 using BeamOs.Domain.AnalyticalResults.NodeResultAggregate;
 using BeamOs.Domain.Common.Enums;
 using BeamOs.Domain.Common.ValueObjects;
@@ -22,7 +25,10 @@ namespace BeamOs.Application.OpenSees;
 
 public class GetTclFromModelCommandHandler(
     IModelRepository modelRepository,
+    IModelResultRepository modelResultRepository,
     INodeResultRepository nodeResultRepository,
+    IShearDiagramRepository shearDiagramRepository,
+    IMomentDiagramRepository momentDiagramRepository,
     IUnitOfWork unitOfWork
 ) : ICommandHandler<ModelIdRequest, string>
 {
@@ -55,7 +61,36 @@ public class GetTclFromModelCommandHandler(
 
         await this.RunTclWithOpenSees(outputDir, displacementPort, reactionPort, elementForcesPort);
 
-        this.GetResults(modelId, model, tclWriter);
+        var results = this.GetResults(modelId, model, tclWriter);
+
+        foreach (var nodeResult in results.NodeResults ?? Enumerable.Empty<NodeResult>())
+        {
+            nodeResultRepository.Add(nodeResult);
+        }
+        foreach (
+            var shearForceDiagram in results.ShearForceDiagrams
+                ?? Enumerable.Empty<ShearForceDiagram>()
+        )
+        {
+            shearDiagramRepository.Add(shearForceDiagram);
+        }
+
+        foreach (var momentDiagram in results.MomentDiagrams ?? Enumerable.Empty<MomentDiagram>())
+        {
+            momentDiagramRepository.Add(momentDiagram);
+        }
+
+        modelResultRepository.Add(
+            new ModelResult(
+                model.Id,
+                results.MaxShearValue,
+                results.MinShearValue,
+                results.MaxMomentValue,
+                results.MinMomentValue
+            )
+        );
+
+        await unitOfWork.SaveChangesAsync(ct);
 
         //await unitOfWork.SaveChangesAsync();
 
@@ -100,13 +135,18 @@ public class GetTclFromModelCommandHandler(
         int elementForcesPort
     )
     {
-        TcpServer displacementServer = new(displacementPort);
-        TcpServer reactionServer = new(reactionPort);
-        TcpServer elementForces = new(elementForcesPort);
+        using TcpServer displacementServer = new(displacementPort);
+        using TcpServer reactionServer = new(reactionPort);
+        using TcpServer elementForces = new(elementForcesPort);
+
+        //using SocketListener displacementServer = new(displacementPort);
+        //using SocketListener reactionServer = new(reactionPort);
+        //using SocketListener elementForces = new(elementForcesPort);
 
         Task listenDisp = displacementServer.Listen(data => this.displacements = data);
         Task listenReact = reactionServer.Listen(data => this.reactions = data);
         Task listenElemForces = elementForces.Listen(data => this.elemForces = data);
+        //elementForces.ListenCallback(data => this.elemForces = data);
 
         Process process =
             new()
@@ -127,12 +167,13 @@ public class GetTclFromModelCommandHandler(
         process.BeginErrorReadLine();
         process.BeginOutputReadLine();
 
-        await process.WaitForExitAsync();
-
         // todo : failure policy
         await listenDisp;
         await listenReact;
         await listenElemForces;
+
+        await process.WaitForExitAsync();
+        //await TcpServerCallback.Result;
     }
 
     private ModelResults GetResults(ModelId modelId, Model? model, TclWriter tclWriter)
@@ -177,7 +218,31 @@ public class GetTclFromModelCommandHandler(
         {
             int indexOffset = i * 12;
             var element1d = this.element1dCache[tclWriter.GetElementIdFromOutputIndex(i)];
-            var globalMemberEndForcesVector = Vector
+            //var globalMemberEndForcesVector = Vector
+            //    .Build
+            //    .Dense(
+
+            //        [
+            //            this.elemForces[indexOffset],
+            //            this.elemForces[indexOffset + 1],
+            //            this.elemForces[indexOffset + 2],
+            //            this.elemForces[indexOffset + 3],
+            //            this.elemForces[indexOffset + 4],
+            //            this.elemForces[indexOffset + 5],
+            //            this.elemForces[indexOffset + 6],
+            //            this.elemForces[indexOffset + 7],
+            //            this.elemForces[indexOffset + 8],
+            //            this.elemForces[indexOffset + 9],
+            //            this.elemForces[indexOffset + 10],
+            //            this.elemForces[indexOffset + 11],
+            //        ]
+            //    );
+            //var localMemberEndForcesVector =
+            //    DenseMatrix.OfArray(element1d.GetTransformationMatrix()).Transpose()
+            //    * globalMemberEndForcesVector;
+
+
+            var localMemberEndForcesVector = Vector
                 .Build
                 .Dense(
 
@@ -196,9 +261,6 @@ public class GetTclFromModelCommandHandler(
                         this.elemForces[indexOffset + 11],
                     ]
                 );
-            var localMemberEndForcesVector =
-                DenseMatrix.OfArray(element1d.GetTransformationMatrix()).Transpose()
-                * globalMemberEndForcesVector;
 
             var sfd = ShearForceDiagram.Create(
                 element1d.Id,
