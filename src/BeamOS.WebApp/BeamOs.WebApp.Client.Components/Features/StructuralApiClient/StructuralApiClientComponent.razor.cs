@@ -117,10 +117,17 @@ public partial class StructuralApiClientComponent : FluxorComponent
                     this.State.Value.LazyElementRefs.Select(x => x.Value).ToList()
                 )
             );
-            await this.State
-                .Value
-                .ElementRefs[this.State.Value.ParameterValues.NumRecordsAutoFilled]
-                .FocusAsync();
+
+            if (
+                this.State.Value.ParameterValues?.NumRecordsAutoFilled is int numRecordsFilled
+                && this.State.Value.ElementRefs.Count > numRecordsFilled
+            )
+            {
+                await this.State
+                    .Value
+                    .ElementRefs[this.State.Value.ParameterValues.NumRecordsAutoFilled]
+                    .FocusAsync();
+            }
         }
         await base.OnAfterRenderAsync(firstRender);
     }

@@ -66,35 +66,27 @@ public partial class EditorComponent : ComponentBase, IAsyncDisposable
 
     private List<IIntegrationEvent> integrationEvents = [];
 
+#if DEBUG
+    // current not using the signalR connection in production because it is expensive to host
     private HubConnection hubConnection;
+#endif
 
     protected override async Task OnInitializedAsync()
     {
         EventEmitter.VisibleStateChanged += this.EventEmitter_VisibleStateChanged;
-        this.hubConnection = new HubConnectionBuilder()
-            .WithUrl(
-                this.NavigationManager.ToAbsoluteUri(
-                    IStructuralAnalysisHubClient.HubEndpointPattern
-                )
-            )
-            .Build();
 
-        //this.hubConnection.On<IntegrationEventWithTypeName>(
-        //    "StructuralAnalysisIntegrationEventFired",
-        //    @event =>
-        //    {
-        //        Type? eventType = Type.GetType($"{@event.typeFullName},BeamOs.IntegrationEvents");
-        //        var strongEvent = JsonSerializer.Deserialize(
-        //            @event.IntegrationEvent,
-        //            eventType,
-        //            new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
-        //        );
+        //#if DEBUG
+        //        this.hubConnection = new HubConnectionBuilder()
+        //            .WithUrl(
+        //                this.NavigationManager.ToAbsoluteUri(
+        //                    IStructuralAnalysisHubClient.HubEndpointPattern
+        //                )
+        //            )
+        //            .Build();
 
-        //        //this.Dispatcher.Dispatch(new DbEvent((IIntegrationEvent)strongEvent));
-        //    }
-        //);
+        //        await this.hubConnection.StartAsync();
+        //#endif
 
-        await this.hubConnection.StartAsync();
         await base.OnInitializedAsync();
     }
 
@@ -196,10 +188,13 @@ public partial class EditorComponent : ComponentBase, IAsyncDisposable
         this.EditorComponentStateRepository.RemoveEditorComponentStateForCanvasId(this.ElementId);
         //await this.EditorApiAlpha.DisposeAsync();
         this.undoRedoFunctionality?.Dispose();
+
+#if DEBUG
         if (this.hubConnection is not null)
         {
             await this.hubConnection.DisposeAsync();
         }
+#endif
     }
 }
 

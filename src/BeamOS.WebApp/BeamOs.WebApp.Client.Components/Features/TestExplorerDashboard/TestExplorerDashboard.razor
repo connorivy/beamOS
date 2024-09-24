@@ -59,6 +59,34 @@
 
     <MudDivider Class="mt-6 mb-6" />
 
+    <div class="scroll-section" id="section2" style="margin-top: 50px;">
+        <MudCard Class="shadow hover:shadow-lg animate-scroll">
+            <MudCardContent>
+                <MudGrid>
+                    <MudItem xs="12" md="7">
+                        <MudText Typo="Typo.h3" GutterBottom="true" Class="my-5 mb-5">Analysis Kernel</MudText>
+                        <MudText Typo="Typo.body1" Class="mb-5">
+                            Much of the underlying structural analysis uses existing code from an open source projects known as
+                            <MudButton Target="_blank" Href="https://opensees.berkeley.edu/" EndIcon="@Icons.Material.Filled.ArrowOutward" Variant="Variant.Text" Color="Color.Primary" Class="p-0">
+                                OpenSees.
+                            </MudButton>
+                        </MudText>
+                        <MudText Typo="Typo.body1" Class="mb-5">
+                            This application was created by professors at the University of California, Berkeley as an open source tool for earthquake analysis. It has since been used by professors and PhD students around the world for analyzing structures.
+                        </MudText>
+                        <MudText Typo="Typo.body1" Class="mb-5">
+                            beamOS can be thought of as a wrapper around this open source project that provides a nice UI and makes this tool accessible not only to developers, but to anyone with a knowledge of structural engineering.
+                        </MudText>
+                    </MudItem>
+                    <MudItem xs="12" md="5">
+                        @* <MudImage Src="images/get_rot_matrix_code_cov.png" Alt="Code Coverage Image" /> *@
+                        <MudImage Src="images/FEM-bridge.png" Alt="FEM Bridge" />
+                    </MudItem>
+                </MudGrid>
+            </MudCardContent>
+        </MudCard>
+    </div>
+
     <div class="scroll-section" id="section1">
         <MudCard Class="shadow hover:shadow-lg animate-scroll">
             <MudCardContent>
