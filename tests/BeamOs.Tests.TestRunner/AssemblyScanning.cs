@@ -1,5 +1,6 @@
 using System.Reflection;
 using BeamOs.Api.IntegrationTests;
+using BeamOs.Api.IntegrationTests.Runtime;
 using BeamOs.Api.UnitTests;
 using BeamOs.ApiClient;
 using BeamOS.Tests.Common.Traits;
@@ -16,6 +17,8 @@ public static class AssemblyScanning
     {
         // cannot reference Microsoft.Aspnetcore.MVC.testing from webassembly (from what I can tell)
         //yield return typeof(IAssemblyMarkerApiIntegrationTests).Assembly;
+
+        yield return typeof(IAssemblyMarkerApiIntegrationTests).Assembly;
         yield return typeof(IAssemblyMarkerDomainIntegrationTests).Assembly;
         yield return typeof(IAssemblyMarkerDomainUnitTests).Assembly;
     }
@@ -46,19 +49,19 @@ public static class AssemblyScanning
 
     public static IEnumerable<TestInfo> GetAllTestInfo()
     {
-        foreach (
-            var test in GetTestInfoFromMethod(
-                typeof(UnitTest1).GetMethod(
-                    nameof(
-                        UnitTest1.NodeDisplacementResults_ForSampleProblems_ShouldResultInExpectedValues
-                    )
-                ),
-                typeof(UnitTest1)
-            )
-        )
-        {
-            yield return test;
-        }
+        //foreach (
+        //    var test in GetTestInfoFromMethod(
+        //        typeof(UnitTest1).GetMethod(
+        //            nameof(
+        //                UnitTest1.NodeDisplacementResults_ForSampleProblems_ShouldResultInExpectedValues
+        //            )
+        //        ),
+        //        typeof(UnitTest1)
+        //    )
+        //)
+        //{
+        //    yield return test;
+        //}
 
         foreach (var testAssembly in TestAssemblies())
         {
@@ -81,7 +84,10 @@ public static class AssemblyScanning
 
     public static IEnumerable<TestInfo> GetTestInfoFromMethod(MethodInfo methodInfo, Type classType)
     {
-        if (methodInfo.GetCustomAttribute<FactAttribute>() is null)
+        if (
+            methodInfo.GetCustomAttribute<FactAttribute>() is null
+            && methodInfo.GetCustomAttribute<BeamOsFactAttribute>() is null
+        )
         {
             yield break;
         }
@@ -134,9 +140,9 @@ public static class AssemblyScanning
 
     public static IServiceCollection RegisterTestClasses(this IServiceCollection services)
     {
-        _ = services.AddScoped<UnitTest1>(
-            sp => UnitTest1.Create(sp.GetRequiredService<IApiAlphaClient>())
-        );
+        //_ = services.AddScoped<UnitTest1>(
+        //    sp => UnitTest1.Create(sp.GetRequiredService<IApiAlphaClient>())
+        //);
         foreach (var assembly in TestAssemblies().Where(AssemblyContainsTests))
         {
             foreach (
