@@ -1,5 +1,6 @@
 using BeamOs.ApiClient;
 using BeamOs.ApiClient.Builders;
+using BeamOs.Application.Common.Mappers;
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
 using BeamOs.Contracts.PhysicalModel.Model;
@@ -120,10 +121,7 @@ public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IA
     {
         var dbModelFixture = this.modelIdToModelFixtureDict[modelFixture.Id.ToString()];
 
-        AngleUnit angleUnit = modelFixture.Settings.UnitSettings.AngleUnit.MapToAngleUnit();
-        LengthUnit lengthUnit = modelFixture.Settings.UnitSettings.LengthUnit.MapToLengthUnit();
-        ForceUnit forceUnit = modelFixture.Settings.UnitSettings.ForceUnit.MapToForceUnit();
-        TorqueUnit torqueUnit = modelFixture.Settings.UnitSettings.TorqueUnit.MapToTorqueUnit();
+        var strongUnits = modelFixture.Settings.UnitSettings.ToDomain();
         foreach (var expectedNodeDisplacementResult in modelFixture.ExpectedNodeDisplacementResults)
         {
             var dbId = dbModelFixture.RuntimeIdToDbId(expectedNodeDisplacementResult.NodeId);
@@ -145,8 +143,8 @@ public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IA
                     dbId,
                     expectedNodeDisplacementResult,
                     result,
-                    lengthUnit,
-                    angleUnit,
+                    strongUnits.LengthUnit,
+                    strongUnits.AngleUnit,
                     2
                 );
             }

@@ -1,4 +1,5 @@
 using BeamOs.ApiClient.Builders;
+using BeamOs.Application.Common.Mappers;
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Common.Domain.Interfaces;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate.ValueObjects;
@@ -16,6 +17,7 @@ namespace BeamOS.Tests.Common.Fixtures.Mappers.ToDomain;
 
 [Mapper]
 [UseStaticMapper(typeof(UnitsNetMappers))]
+[UseStaticMapper(typeof(BeamOsDomainContractMappers))]
 public partial class CreateModelRequestBuilderToDomainMapper
 {
     private readonly Dictionary<string, Guid> runtimeIdToGuidDict = [];

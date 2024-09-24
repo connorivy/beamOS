@@ -19,10 +19,10 @@ public class TwistyBowlFraming
         IHasExpectedNodeDisplacementResults
 {
     public override Guid ModelGuid { get; } = Guid.Parse("f30e580d-9cb0-46d2-ade1-a4140c454632");
-    public override PhysicalModelSettings Settings { get; } = new(UnitSettingsDtoVerbose.kN_M);
+    public override PhysicalModelSettings Settings { get; } = new(UnitSettingsContract.kN_M);
 
     public SourceInfo SourceInfo { get; } =
-        new("SAP2000", FixtureSourceType.SAP2000, nameof(TwistyBowlFraming));
+        new("SAP2000", FixtureSourceType.ThirdPartyAnalysisSoftware, nameof(TwistyBowlFraming));
 
     //private readonly HashSet<string> addedNodeIds = [];
 

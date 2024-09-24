@@ -60,6 +60,7 @@ public static partial class Element1dFixtureToDomainMapper
 [UseStaticMapper(typeof(NodeFixtureToDomainMapper))]
 [UseStaticMapper(typeof(Element1dFixtureToDomainMapper))]
 [UseStaticMapper(typeof(Vector3ToFromMathnetVector))]
+[UseStaticMapper(typeof(BeamOsDomainContractMappers))]
 public static partial class ModelFixtureToDomainMapper
 {
     public static partial Model ToDomain(this ModelFixture2 fixture);

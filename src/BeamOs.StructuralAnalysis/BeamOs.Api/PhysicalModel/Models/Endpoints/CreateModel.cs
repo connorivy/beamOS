@@ -22,18 +22,7 @@ public class CreateModel(
         {
             Name = "Big Ol' Building",
             Description = "Description",
-            Settings = new PhysicalModelSettings(
-                new UnitSettingsDtoVerbose(
-                    "Inch",
-                    "SquareInch",
-                    "CubicInch",
-                    "InchToTheFourth",
-                    "KilopoundForce",
-                    "KilopoundForceInch",
-                    "KilopoundForcePerInch",
-                    "KilopoundForcePerSquareInch"
-                )
-            )
+            Settings = new PhysicalModelSettings(UnitSettingsContract.K_IN)
         };
 
     public override void ConfigureAuthentication() { }

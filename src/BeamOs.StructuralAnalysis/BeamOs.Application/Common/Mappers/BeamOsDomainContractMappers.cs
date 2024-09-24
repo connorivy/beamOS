@@ -1,5 +1,8 @@
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
+using BeamOs.Application.Common.UnitOperators;
 using BeamOs.Common.Domain.Models;
+using BeamOs.Contracts.Common;
+using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.MaterialAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
@@ -7,6 +10,7 @@ using BeamOs.Domain.PhysicalModel.MomentLoadAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.NodeAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.PointLoadAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.SectionProfileAggregate.ValueObjects;
+using UnitsNet.Units;
 
 namespace BeamOs.Application.Common.Mappers;
 
@@ -38,6 +42,32 @@ public static class BeamOsDomainContractMappers
     }
 
     public static Dictionary<string, object> ToDict(CustomData customData) => customData.AsDict();
+
+    public static UnitSettings ToDomain(this UnitSettingsContract source)
+    {
+        LengthUnit lengthUnit = source.LengthUnit.MapToLengthUnit();
+        ForceUnit forceUnit = source.ForceUnit.MapToForceUnit();
+        //AngleUnit angleUnit = source.AngleUnit.MapToAngleUnit();
+
+        return new UnitSettings(
+            lengthUnit,
+            lengthUnit.ToArea(),
+            lengthUnit.ToVolume(),
+            forceUnit,
+            forceUnit.DivideBy(lengthUnit),
+            forceUnit.MultiplyBy(lengthUnit),
+            forceUnit.GetPressure(lengthUnit),
+            lengthUnit.ToAreaMomentOfInertiaUnit()
+        );
+        //LengthUnit lengthUnit,
+        //AreaUnit areaUnit,
+        //VolumeUnit volumeUnit,
+        //ForceUnit forceUnit,
+        //ForcePerLengthUnit forcePerLengthUnit,
+        //TorqueUnit torqueUnit,
+        //PressureUnit pressureUnit,
+        //AreaMomentOfInertiaUnit areaMomentOfInertiaUnit
+    }
 
     //public static BeamOs.Domain.Common.ValueObjects.Point ToDomain(
     //    BeamOs.Domain.Common.ValueObjects.Point source

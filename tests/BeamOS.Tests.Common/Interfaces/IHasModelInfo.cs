@@ -12,7 +12,8 @@ public enum FixtureSourceType
     ExampleProblemElement = 2,
     Textbook = 3,
     SAP2000 = 4,
-    Standalone = 5
+    Standalone = 5,
+    ThirdPartyAnalysisSoftware = 6,
 }
 
 public record SourceInfo(

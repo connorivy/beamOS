@@ -11,7 +11,7 @@ public class Kassimali_Example3_8 : ModelFixture2
     public static Guid IdStatic { get; } = TypedGuids.G0;
     public override Guid ModelGuid => IdStatic;
     public override PhysicalModelSettings Settings { get; } =
-        new(UnitSettingsDtoVerbose.K_IN, new(Element1dAnalysisType.Euler));
+        new(UnitSettingsContract.K_IN, new(Element1dAnalysisType.Euler));
     public override SourceInfo SourceInfo { get; } =
         new(
             "Matrix Analysis Of Structures 2nd Edition by Kassimali",

@@ -1,4 +1,5 @@
 using BeamOs.Application.Common.Interfaces;
+using BeamOs.Application.Common.Mappers;
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Domain.PhysicalModel.ModelAggregate;
@@ -37,6 +38,7 @@ public class CreateModelCommandHandler(
 
 [Mapper]
 [UseStaticMapper(typeof(UnitsNetMappers))]
+[UseStaticMapper(typeof(BeamOsDomainContractMappers))]
 public static partial class CreateModelCommandMapper
 {
     public static partial Model ToDomainObject(this CreateModelRequest command);
