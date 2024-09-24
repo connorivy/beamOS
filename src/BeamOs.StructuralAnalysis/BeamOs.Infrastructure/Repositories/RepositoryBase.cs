@@ -1,12 +1,14 @@
 using BeamOs.Common.Application.Interfaces;
 using BeamOs.Common.Domain.Models;
+using BeamOs.Domain.Common.ValueObjects;
+using BeamOs.Domain.PhysicalModel.ModelAggregate.Events;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.Infrastructure.Repositories;
 
 internal abstract class RepositoryBase<TId, TEntity>(BeamOsStructuralDbContext dbContext)
     : IRepository<TId, TEntity>
-    where TId : class
+    where TId : GuidBasedId
     where TEntity : AggregateRoot<TId>
 {
     protected BeamOsStructuralDbContext DbContext => dbContext;
@@ -18,6 +20,7 @@ internal abstract class RepositoryBase<TId, TEntity>(BeamOsStructuralDbContext d
 
     public void Remove(TEntity aggregate)
     {
+        aggregate.AddEvent(new ModelDeletedEvent(aggregate.Id));
         _ = dbContext.Set<TEntity>().Remove(aggregate);
     }
 
@@ -35,9 +38,15 @@ internal abstract class RepositoryBase<TId, TEntity>(BeamOsStructuralDbContext d
 
     public virtual async Task RemoveById(TId id, CancellationToken ct = default)
     {
-        await dbContext
+        var entityToDelete = await dbContext
             .Set<TEntity>()
-            .Where(e => e.Id == id)
-            .ExecuteDeleteAsync(cancellationToken: ct);
+            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken: ct);
+
+        if (entityToDelete is null)
+        {
+            return;
+        }
+
+        this.Remove(entityToDelete);
     }
 }
