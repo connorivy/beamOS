@@ -15,13 +15,14 @@ using BeamOs.WebApp.Client.Components.Repositories;
 using BeamOs.WebApp.Client.Components.State;
 using BeamOs.WebApp.Client.EditorCommands;
 using Fluxor;
+using Fluxor.Blazor.Web.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.SignalR.Client;
 
 namespace BeamOs.WebApp.Client.Components.Components.Editor;
 
-public partial class EditorComponent : ComponentBase, IAsyncDisposable
+public partial class EditorComponent : FluxorComponent, IAsyncDisposable
 {
     private IDisposable? undoRedoFunctionality;
 
@@ -66,26 +67,9 @@ public partial class EditorComponent : ComponentBase, IAsyncDisposable
 
     private List<IIntegrationEvent> integrationEvents = [];
 
-#if DEBUG
-    // current not using the signalR connection in production because it is expensive to host
-    private HubConnection hubConnection;
-#endif
-
     protected override async Task OnInitializedAsync()
     {
         EventEmitter.VisibleStateChanged += this.EventEmitter_VisibleStateChanged;
-
-        //#if DEBUG
-        //        this.hubConnection = new HubConnectionBuilder()
-        //            .WithUrl(
-        //                this.NavigationManager.ToAbsoluteUri(
-        //                    IStructuralAnalysisHubClient.HubEndpointPattern
-        //                )
-        //            )
-        //            .Build();
-
-        //        await this.hubConnection.StartAsync();
-        //#endif
 
         await base.OnInitializedAsync();
     }
@@ -188,13 +172,6 @@ public partial class EditorComponent : ComponentBase, IAsyncDisposable
         this.EditorComponentStateRepository.RemoveEditorComponentStateForCanvasId(this.ElementId);
         //await this.EditorApiAlpha.DisposeAsync();
         this.undoRedoFunctionality?.Dispose();
-
-#if DEBUG
-        if (this.hubConnection is not null)
-        {
-            await this.hubConnection.DisposeAsync();
-        }
-#endif
     }
 }
 

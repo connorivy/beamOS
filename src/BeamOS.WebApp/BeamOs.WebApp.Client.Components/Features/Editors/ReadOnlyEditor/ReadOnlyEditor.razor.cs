@@ -21,7 +21,7 @@ public partial class ReadOnlyEditor : FluxorComponent
     public string? Class { get; set; }
 
     [Parameter]
-    public string CanvasId { get; init; } = GetCanvasId();
+    public string CanvasId { get; init; } = CreateCanvasId();
 
     protected bool IsReadOnly { get; } = true;
 
@@ -43,7 +43,7 @@ public partial class ReadOnlyEditor : FluxorComponent
     [Inject]
     private IDispatcher Dispatcher { get; init; }
 
-    public static string GetCanvasId() => "id" + Guid.NewGuid().ToString("N");
+    public static string CreateCanvasId() => "id" + Guid.NewGuid().ToString("N");
 
     public IEditorApiAlpha? EditorApiAlpha { get; private set; }
     const string physicalModelId = "00000000-0000-0000-0000-000000000000";
@@ -55,6 +55,18 @@ public partial class ReadOnlyEditor : FluxorComponent
     protected override void OnInitialized()
     {
         EventEmitter.VisibleStateChanged += this.EventEmitter_VisibleStateChanged;
+
+        this.SubscribeToAction<ChangeSelectionCommand>(async c =>
+        {
+            if (c.CanvasId != this.CanvasId)
+            {
+                return;
+            }
+            await this.ChangeComponentState(
+                state => state with { SelectedObjects = c.SelectedObjects }
+            );
+        });
+
         this.SubscribeToAction<SetColorFilterCommand>(async command =>
         {
             if (command.CanvasId != this.CanvasId)

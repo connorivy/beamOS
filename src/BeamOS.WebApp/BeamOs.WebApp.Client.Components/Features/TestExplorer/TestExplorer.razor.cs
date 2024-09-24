@@ -132,7 +132,7 @@ public partial class TestExplorer : FluxorComponent
         {
             return canvasId;
         }
-        var newCanvasId = ReadOnlyEditor.GetCanvasId();
+        var newCanvasId = ReadOnlyEditor.CreateCanvasId();
         this.Dispatcher.Dispatch(new CanvasIdSet(newCanvasId));
         return newCanvasId;
     }

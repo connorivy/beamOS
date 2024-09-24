@@ -130,10 +130,6 @@ public class TestInfo
         {
             //tcs.SetResult(new TestResult(TestResultStatus.Failure, xEx.Message));
         }
-        catch (Xunit.Sdk.XunitException)
-        {
-            ;
-        }
         finally
         {
             Asserter.AssertedEqual2 -= OnAssertedEqual2;
