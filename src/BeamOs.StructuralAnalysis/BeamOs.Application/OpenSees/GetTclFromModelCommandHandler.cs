@@ -1,14 +1,14 @@
 using System.Diagnostics;
 using System.Reflection;
-using BeamOs.Application.AnalyticalResults.Diagrams.ShearDiagrams.Interfaces;
-using BeamOs.Application.AnalyticalResults.ModelResults;
-using BeamOs.Application.AnalyticalResults.NodeResults;
+using BeamOs.Application.AnalyticalModel.Diagrams.ShearDiagrams.Interfaces;
+using BeamOs.Application.AnalyticalModel.ModelResults;
+using BeamOs.Application.AnalyticalModel.NodeResults;
 using BeamOs.Application.Common.Interfaces;
 using BeamOs.Application.PhysicalModel.Models;
 using BeamOs.Contracts.Common;
-using BeamOs.Domain.AnalyticalResults.Common.ValueObjects;
-using BeamOs.Domain.AnalyticalResults.ModelResultAggregate;
-using BeamOs.Domain.AnalyticalResults.NodeResultAggregate;
+using BeamOs.Domain.AnalyticalModel.AnalyticalResultsAggregate;
+using BeamOs.Domain.AnalyticalModel.AnalyticalResultsAggregate.ValueObjects;
+using BeamOs.Domain.AnalyticalModel.NodeResultAggregate;
 using BeamOs.Domain.Common.Enums;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.Diagrams.MomentDiagramAggregate;
@@ -61,34 +61,26 @@ public class GetTclFromModelCommandHandler(
 
         await this.RunTclWithOpenSees(outputDir, displacementPort, reactionPort, elementForcesPort);
 
-        var results = this.GetResults(modelId, model, tclWriter);
+        var analyticalResults = this.GetResults(model, tclWriter);
 
-        foreach (var nodeResult in results.NodeResults ?? Enumerable.Empty<NodeResult>())
-        {
-            nodeResultRepository.Add(nodeResult);
-        }
-        foreach (
-            var shearForceDiagram in results.ShearForceDiagrams
-                ?? Enumerable.Empty<ShearForceDiagram>()
-        )
-        {
-            shearDiagramRepository.Add(shearForceDiagram);
-        }
+        //foreach (var nodeResult in results.NodeResults ?? Enumerable.Empty<NodeResult>())
+        //{
+        //    nodeResultRepository.Add(nodeResult);
+        //}
+        //foreach (
+        //    var shearForceDiagram in results.ShearForceDiagrams
+        //        ?? Enumerable.Empty<ShearForceDiagram>()
+        //)
+        //{
+        //    shearDiagramRepository.Add(shearForceDiagram);
+        //}
 
-        foreach (var momentDiagram in results.MomentDiagrams ?? Enumerable.Empty<MomentDiagram>())
-        {
-            momentDiagramRepository.Add(momentDiagram);
-        }
+        //foreach (var momentDiagram in results.MomentDiagrams ?? Enumerable.Empty<MomentDiagram>())
+        //{
+        //    momentDiagramRepository.Add(momentDiagram);
+        //}
 
-        modelResultRepository.Add(
-            new ModelResult(
-                model.Id,
-                results.MaxShearValue,
-                results.MinShearValue,
-                results.MaxMomentValue,
-                results.MinMomentValue
-            )
-        );
+        modelResultRepository.Add(analyticalResults);
 
         await unitOfWork.SaveChangesAsync(ct);
 
@@ -176,14 +168,16 @@ public class GetTclFromModelCommandHandler(
         //await TcpServerCallback.Result;
     }
 
-    private ModelResults GetResults(ModelId modelId, Model? model, TclWriter tclWriter)
+    private AnalyticalResults GetResults(Model model, TclWriter tclWriter)
     {
+        AnalyticalResultsId analyticalResultsId = new();
+
         NodeResult[] nodeResults = new NodeResult[this.displacements.Length / 6];
         for (int i = 0; i < this.displacements.Length / 6; i++)
         {
             int indexOffset = i * 6;
             nodeResults[i] = new NodeResult(
-                modelId,
+                analyticalResultsId,
                 tclWriter.GetNodeIdFromOutputIndex(i),
                 new Forces(
                     this.reactions[indexOffset],
@@ -218,29 +212,6 @@ public class GetTclFromModelCommandHandler(
         {
             int indexOffset = i * 12;
             var element1d = this.element1dCache[tclWriter.GetElementIdFromOutputIndex(i)];
-            //var globalMemberEndForcesVector = Vector
-            //    .Build
-            //    .Dense(
-
-            //        [
-            //            this.elemForces[indexOffset],
-            //            this.elemForces[indexOffset + 1],
-            //            this.elemForces[indexOffset + 2],
-            //            this.elemForces[indexOffset + 3],
-            //            this.elemForces[indexOffset + 4],
-            //            this.elemForces[indexOffset + 5],
-            //            this.elemForces[indexOffset + 6],
-            //            this.elemForces[indexOffset + 7],
-            //            this.elemForces[indexOffset + 8],
-            //            this.elemForces[indexOffset + 9],
-            //            this.elemForces[indexOffset + 10],
-            //            this.elemForces[indexOffset + 11],
-            //        ]
-            //    );
-            //var localMemberEndForcesVector =
-            //    DenseMatrix.OfArray(element1d.GetTransformationMatrix()).Transpose()
-            //    * globalMemberEndForcesVector;
-
 
             var localMemberEndForcesVector = Vector
                 .Build
@@ -263,6 +234,7 @@ public class GetTclFromModelCommandHandler(
                 );
 
             var sfd = ShearForceDiagram.Create(
+                analyticalResultsId,
                 element1d.Id,
                 element1d.StartNode.LocationPoint,
                 element1d.EndNode.LocationPoint,
@@ -279,7 +251,7 @@ public class GetTclFromModelCommandHandler(
             sfd.MinMax(ref shearMin, ref shearMax);
 
             momentDiagrams[i] = MomentDiagram.Create(
-                model.Id,
+                analyticalResultsId,
                 element1d.Id,
                 element1d.StartNode.LocationPoint,
                 element1d.EndNode.LocationPoint,
@@ -295,15 +267,15 @@ public class GetTclFromModelCommandHandler(
             momentDiagrams[i].MinMax(ref momentMin, ref momentMax);
         }
 
-        return new ModelResults
+        return new AnalyticalResults(model.Id)
         {
+            MaxShear = new(shearMax, model.Settings.UnitSettings.ForceUnit),
+            MinShear = new(shearMin, model.Settings.UnitSettings.ForceUnit),
+            MaxMoment = new(momentMax, model.Settings.UnitSettings.TorqueUnit),
+            MinMoment = new(momentMin, model.Settings.UnitSettings.TorqueUnit),
             NodeResults = nodeResults,
             ShearForceDiagrams = shearForceDiagrams,
-            MomentDiagrams = momentDiagrams,
-            MaxShearValue = new(shearMax, model.Settings.UnitSettings.ForceUnit),
-            MinShearValue = new(shearMin, model.Settings.UnitSettings.ForceUnit),
-            MaxMomentValue = new(momentMax, model.Settings.UnitSettings.TorqueUnit),
-            MinMomentValue = new(momentMin, model.Settings.UnitSettings.TorqueUnit),
+            MomentDiagrams = momentDiagrams
         };
     }
 

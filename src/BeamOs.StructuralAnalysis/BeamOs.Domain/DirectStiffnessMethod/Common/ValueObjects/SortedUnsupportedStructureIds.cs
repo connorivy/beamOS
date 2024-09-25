@@ -1,5 +1,5 @@
 using BeamOs.Common.Domain.Models;
-using BeamOs.Domain.AnalyticalResults.Common.ValueObjects;
+using BeamOs.Domain.AnalyticalModel.Common.ValueObjects;
 
 namespace BeamOs.Domain.DirectStiffnessMethod.Common.ValueObjects;
 

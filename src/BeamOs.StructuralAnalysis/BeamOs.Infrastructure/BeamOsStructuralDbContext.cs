@@ -1,7 +1,7 @@
 using BeamOs.ApiClient.Builders;
 using BeamOs.Common.Events;
-using BeamOs.Domain.AnalyticalResults.ModelResultAggregate;
-using BeamOs.Domain.AnalyticalResults.NodeResultAggregate;
+using BeamOs.Domain.AnalyticalModel.AnalyticalResultsAggregate;
+using BeamOs.Domain.AnalyticalModel.NodeResultAggregate;
 using BeamOs.Domain.Diagrams.Common;
 using BeamOs.Domain.Diagrams.MomentDiagramAggregate;
 using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate;
@@ -64,7 +64,7 @@ public class BeamOsStructuralDbContext : DbContext
     public DbSet<SectionProfile> SectionProfiles { get; set; }
     public DbSet<PointLoad> PointLoads { get; set; }
     public DbSet<MomentLoad> MomentLoads { get; set; }
-    public DbSet<ModelResult> ModelResults { get; set; }
+    public DbSet<AnalyticalResults> ModelResults { get; set; }
     public DbSet<NodeResult> NodeResults { get; set; }
     public DbSet<ShearForceDiagram> ShearForceDiagrams { get; set; }
     public DbSet<MomentDiagram> MomentDiagrams { get; set; }

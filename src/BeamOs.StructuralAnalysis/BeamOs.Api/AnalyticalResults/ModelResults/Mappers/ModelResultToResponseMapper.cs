@@ -1,6 +1,5 @@
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Contracts.AnalyticalResults.Model;
-using BeamOs.Domain.AnalyticalResults.ModelResultAggregate;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.Api.AnalyticalResults.ModelResults.Mappers;
@@ -17,5 +16,7 @@ namespace BeamOs.Api.AnalyticalResults.ModelResults.Mappers;
 [UseStaticMapper(typeof(UnitsNetMappers))]
 public static partial class ModelResultToResponseMapper
 {
-    public static partial ModelResultResponse ToResponse(this ModelResult source);
+    public static partial ModelResultResponse ToResponse(
+        this Domain.AnalyticalModel.AnalyticalResultsAggregate.AnalyticalResults source
+    );
 }

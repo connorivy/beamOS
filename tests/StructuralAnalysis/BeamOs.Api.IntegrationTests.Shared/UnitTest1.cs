@@ -72,7 +72,9 @@ public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IA
                             $"{nameof(Model.Nodes)}.{nameof(Node.MomentLoads)}"
                         ]
                     );
+#if !RUNTIME_TESTS
                     await this.apiClient.RunDirectStiffnessMethodAsync(modelBuilder.Id.ToString());
+#endif
                 }
                 catch (Exception ex)
                 {

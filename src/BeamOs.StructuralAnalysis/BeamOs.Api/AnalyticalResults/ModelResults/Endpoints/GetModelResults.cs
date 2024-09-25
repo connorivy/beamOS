@@ -9,14 +9,14 @@ namespace BeamOs.Api.AnalyticalResults.ModelResults.Endpoints;
 
 public class GetModelResults(
     BeamOsFastEndpointOptions options,
-    IQueryHandler<IdRequest, ModelResultResponse> modelResultResponseQueryHandler
-) : BeamOsFastEndpoint<IdRequest, ModelResultResponse>(options)
+    IQueryHandler<ModelIdRequest, ModelResultResponse> modelResultResponseQueryHandler
+) : BeamOsFastEndpoint<ModelIdRequest, ModelResultResponse>(options)
 {
     public override Http EndpointType => Http.GET;
-    public override string Route => "models/{id}/results";
+    public override string Route => "models/{modelId}/results";
 
     public override async Task<ModelResultResponse?> ExecuteRequestAsync(
-        IdRequest req,
+        ModelIdRequest req,
         CancellationToken ct
     )
     {

@@ -1,3 +1,4 @@
+using BeamOs.Domain.AnalyticalModel.AnalyticalResultsAggregate.ValueObjects;
 using BeamOs.Domain.Common.Enums;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.Diagrams.Common;
@@ -15,6 +16,7 @@ namespace BeamOs.Domain.Diagrams.ShearForceDiagramAggregate;
 
 public class ShearForceDiagram : DiagramBase<ShearForceDiagramId>
 {
+    public AnalyticalResultsId ModelResultId { get; private set; }
     public Element1D? Element1D { get; private set; }
     public Element1DId Element1DId { get; private set; }
     public LinearCoordinateDirection3D ShearDirection { get; private set; }
@@ -22,6 +24,7 @@ public class ShearForceDiagram : DiagramBase<ShearForceDiagramId>
     public ForceUnit ForceUnit { get; }
 
     protected ShearForceDiagram(
+        AnalyticalResultsId modelResultId,
         Element1DId element1DId,
         LinearCoordinateDirection3D shearDirection,
         Length elementLength,
@@ -32,12 +35,14 @@ public class ShearForceDiagram : DiagramBase<ShearForceDiagramId>
     )
         : base(elementLength, lengthUnit, intervals, id ?? new())
     {
+        this.ModelResultId = modelResultId;
         this.Element1DId = element1DId;
         this.ShearDirection = shearDirection;
         this.ForceUnit = forceUnit;
     }
 
     public static ShearForceDiagram Create(
+        AnalyticalResultsId modelResultId,
         Element1DId element1d,
         Point startPoint,
         Point endPoint,
@@ -112,6 +117,7 @@ public class ShearForceDiagram : DiagramBase<ShearForceDiagramId>
         var globalShearDirection = localAxisDirection.TransformBy(coordinateSys);
 
         return new(
+            modelResultId,
             element1d,
             localShearDirection,
             elementLength,

@@ -42,7 +42,10 @@ public class GetMomentDiagrams(
             return [];
         }
 
-        var unitSettings = await unitSettingsQueryHandler.ExecuteAsync(new(data[0].ModelId.Id), ct);
+        var unitSettings = await unitSettingsQueryHandler.ExecuteAsync(
+            new(data[0].ModelResultId.Id),
+            ct
+        );
         var responseMapper = MomentDiagramDataToResponse.Create(unitSettings);
 
         return data.Select(responseMapper.Map).ToArray();

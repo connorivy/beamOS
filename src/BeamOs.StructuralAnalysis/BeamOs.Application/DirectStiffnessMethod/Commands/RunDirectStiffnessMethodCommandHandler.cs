@@ -1,13 +1,8 @@
-using BeamOs.Application.AnalyticalResults.Diagrams.ShearDiagrams.Interfaces;
-using BeamOs.Application.AnalyticalResults.ModelResults;
-using BeamOs.Application.AnalyticalResults.NodeResults;
+using BeamOs.Application.AnalyticalModel.Diagrams.ShearDiagrams.Interfaces;
+using BeamOs.Application.AnalyticalModel.ModelResults;
+using BeamOs.Application.AnalyticalModel.NodeResults;
 using BeamOs.Application.Common.Interfaces;
 using BeamOs.Application.PhysicalModel.Models;
-using BeamOs.Domain.AnalyticalResults.Common.ValueObjects;
-using BeamOs.Domain.AnalyticalResults.ModelResultAggregate;
-using BeamOs.Domain.AnalyticalResults.NodeResultAggregate;
-using BeamOs.Domain.Diagrams.MomentDiagramAggregate;
-using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate;
 using BeamOs.Domain.DirectStiffnessMethod;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate;
 using BeamOs.Domain.PhysicalModel.ModelAggregate;
@@ -22,9 +17,9 @@ public class RunDirectStiffnessMethodCommandHandler(
     IShearDiagramRepository shearDiagramRepository,
     IMomentDiagramRepository momentDiagramRepository,
     IUnitOfWork unitOfWork
-) : ICommandHandler<RunDirectStiffnessMethodCommand, ModelResults>
+) : ICommandHandler<RunDirectStiffnessMethodCommand, bool>
 {
-    public async Task<ModelResults> ExecuteAsync(
+    public async Task<bool> ExecuteAsync(
         RunDirectStiffnessMethodCommand command,
         CancellationToken ct = default
     )
@@ -41,38 +36,31 @@ public class RunDirectStiffnessMethodCommandHandler(
         );
         var dsmModel = new DsmAnalysisModel(model);
 
-        ModelResults results = dsmModel.RunAnalysis();
+        Domain.AnalyticalModel.AnalyticalResultsAggregate.AnalyticalResults analyticalModelResults =
+            dsmModel.RunAnalysis();
 
-        foreach (var nodeResult in results.NodeResults ?? Enumerable.Empty<NodeResult>())
-        {
-            nodeResultRepository.Add(nodeResult);
-        }
+        modelResultRepository.Add(analyticalModelResults);
 
-        foreach (
-            var shearForceDiagram in results.ShearForceDiagrams
-                ?? Enumerable.Empty<ShearForceDiagram>()
-        )
-        {
-            shearDiagramRepository.Add(shearForceDiagram);
-        }
+        //foreach (var nodeResult in results.NodeResults ?? Enumerable.Empty<NodeResult>())
+        //{
+        //    nodeResultRepository.Add(nodeResult);
+        //}
 
-        foreach (var momentDiagram in results.MomentDiagrams ?? Enumerable.Empty<MomentDiagram>())
-        {
-            momentDiagramRepository.Add(momentDiagram);
-        }
+        //foreach (
+        //    var shearForceDiagram in results.ShearForceDiagrams
+        //        ?? Enumerable.Empty<ShearForceDiagram>()
+        //)
+        //{
+        //    shearDiagramRepository.Add(shearForceDiagram);
+        //}
 
-        modelResultRepository.Add(
-            new ModelResult(
-                model.Id,
-                results.MaxShearValue,
-                results.MinShearValue,
-                results.MaxMomentValue,
-                results.MinMomentValue
-            )
-        );
+        //foreach (var momentDiagram in results.MomentDiagrams ?? Enumerable.Empty<MomentDiagram>())
+        //{
+        //    momentDiagramRepository.Add(momentDiagram);
+        //}
 
         await unitOfWork.SaveChangesAsync(ct);
 
-        return results;
+        return true;
     }
 }

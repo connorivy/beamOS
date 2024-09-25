@@ -1,5 +1,5 @@
-using BeamOs.Domain.AnalyticalResults.ModelResultAggregate.ValueObjects;
-using BeamOs.Domain.AnalyticalResults.NodeResultAggregate.ValueObjects;
+using BeamOs.Domain.AnalyticalModel.AnalyticalResultsAggregate.ValueObjects;
+using BeamOs.Domain.AnalyticalModel.NodeResultAggregate.ValueObjects;
 using BeamOs.Domain.Diagrams.Common.ValueObjects;
 using BeamOs.Domain.Diagrams.MomentDiagramAggregate.ValueObjects;
 using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate.ValueObjects;
@@ -59,7 +59,7 @@ public class MomentLoadIdConverter : ValueConverter<MomentLoadId, Guid>
         : base(x => x.Id, x => new(x), null) { }
 }
 
-public class ModelResultIdConverter : ValueConverter<ModelResultId, Guid>
+public class ModelResultIdConverter : ValueConverter<AnalyticalResultsId, Guid>
 {
     public ModelResultIdConverter()
         : base(x => x.Id, x => new(x), null) { }

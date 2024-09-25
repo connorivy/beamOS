@@ -36,8 +36,8 @@ public static class BeamOsDomainContractMappers
     {
         return new(
             source.XCoordinate.MapToContract2(),
-            source.XCoordinate.MapToContract2(),
-            source.XCoordinate.MapToContract2()
+            source.YCoordinate.MapToContract2(),
+            source.ZCoordinate.MapToContract2()
         );
     }
 
