@@ -34,22 +34,25 @@ namespace BeamOs.Contracts.PhysicalModel.Node;
 
 public record CreateNodeRequest
 {
-    public string ModelId { get; init; }
-    public Point LocationPoint { get; init; }
+    public required string ModelId { get; init; }
+    public required Point LocationPoint { get; init; }
     public RestraintContract? Restraint { get; init; }
     public Dictionary<string, object>? CustomData { get; init; }
 
+    public CreateNodeRequest() { }
+
+    [SetsRequiredMembers]
     public CreateNodeRequest(
         string modelId,
         double xCoordinate,
         double yCoordinate,
         double zCoordinate,
-        string lengthUnit,
+        LengthUnitContract lengthUnit,
         RestraintContract? restraint = null
     )
         : this(modelId, new(xCoordinate, yCoordinate, zCoordinate, lengthUnit), restraint) { }
 
-    [JsonConstructor]
+    [SetsRequiredMembers]
     public CreateNodeRequest(string modelId, Point locationPoint, RestraintContract? restraint)
     {
         this.ModelId = modelId;
@@ -63,12 +66,17 @@ public record Point : BeamOsContractBase
     public required double XCoordinate { get; init; }
     public required double YCoordinate { get; init; }
     public required double ZCoordinate { get; init; }
-    public required string LengthUnit { get; init; }
+    public required LengthUnitContract LengthUnit { get; init; }
 
     public Point() { }
 
     [SetsRequiredMembers]
-    public Point(double xCoordinate, double yCoordinate, double zCoordinate, string lengthUnit)
+    public Point(
+        double xCoordinate,
+        double yCoordinate,
+        double zCoordinate,
+        LengthUnitContract lengthUnit
+    )
     {
         this.XCoordinate = xCoordinate;
         this.YCoordinate = yCoordinate;
@@ -77,7 +85,7 @@ public record Point : BeamOsContractBase
     }
 
     [SetsRequiredMembers]
-    public Point(UnitValueDto xCoordinate, UnitValueDto yCoordinate, UnitValueDto zCoordinate)
+    public Point(LengthContract xCoordinate, LengthContract yCoordinate, LengthContract zCoordinate)
         : this(xCoordinate.Value, yCoordinate.Value, zCoordinate.Value, xCoordinate.Unit)
     {
         if (xCoordinate.Unit != yCoordinate.Unit || xCoordinate.Unit != zCoordinate.Unit)

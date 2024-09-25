@@ -9,8 +9,8 @@ public record ShearDiagramResponse(
     Vector3 GlobalShearDirection,
     string LengthUnit,
     string ForceUnit,
-    UnitValueDto ElementLength,
-    DiagramConsistantIntervalResponse[] Intervals
+    LengthContract ElementLength,
+    DiagramConsistentIntervalResponse[] Intervals
 ) : BeamOsEntityContractBase(Id);
 
 public record MomentDiagramResponse(
@@ -18,6 +18,6 @@ public record MomentDiagramResponse(
     string Element1DId,
     string LengthUnit,
     string ForceUnit,
-    UnitValueDto ElementLength,
-    DiagramConsistantIntervalResponse[] Intervals
+    LengthContract ElementLength,
+    DiagramConsistentIntervalResponse[] Intervals
 ) : BeamOsEntityContractBase(Id);

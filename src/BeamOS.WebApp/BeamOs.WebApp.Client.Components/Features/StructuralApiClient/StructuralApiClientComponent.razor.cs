@@ -84,21 +84,13 @@ public partial class StructuralApiClientComponent : FluxorComponent
                     .SetValue
                     .InvokeAsync(c.SelectedObjects[0].Id);
 
-                await this.State
-                    .Value
-                    .ElementRefs[state.CurrentlySelectedFieldInfo.FieldIndex + 1]
-                    .FocusAsync();
-            }
-        });
-        this.SubscribeToAction<CanvasClicked>(async _ =>
-        {
-            var state = this.State.Value;
-            if (state.CurrentlySelectedFieldInfo is not null)
-            {
-                await this.State
-                    .Value
-                    .ElementRefs[state.CurrentlySelectedFieldInfo.FieldIndex]
-                    .FocusAsync();
+                if (state.ElementRefs.Count <= state.CurrentlySelectedFieldInfo.FieldIndex + 2)
+                {
+                    await this.State
+                        .Value
+                        .ElementRefs[state.CurrentlySelectedFieldInfo.FieldIndex + 1]
+                        .FocusAsync();
+                }
             }
         });
 
@@ -212,8 +204,23 @@ public partial class StructuralApiClientComponent : FluxorComponent
     public static ComplexFieldTypeMarker GetParameterProperties(
         Type parameterType,
         string modelId,
+        bool isObjectRequired
+    )
+    {
+        int numSelectableFieldsCreated = 0;
+        return GetParameterProperties(
+            parameterType,
+            modelId,
+            isObjectRequired,
+            ref numSelectableFieldsCreated
+        );
+    }
+
+    private static ComplexFieldTypeMarker GetParameterProperties(
+        Type parameterType,
+        string modelId,
         bool isObjectRequired,
-        int numSelectableFieldsCreated = 0
+        ref int numSelectableFieldsCreated
     )
     {
         int numItemsFilledIn = 0;
@@ -252,7 +259,7 @@ public partial class StructuralApiClientComponent : FluxorComponent
                         propertyType,
                         modelId,
                         isObjectRequired && isPropRequired,
-                        numSelectableFieldsCreated
+                        ref numSelectableFieldsCreated
                     )
                 );
             }

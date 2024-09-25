@@ -3,10 +3,10 @@ using BeamOs.Contracts.Common;
 namespace BeamOs.Contracts.AnalyticalResults.Forces;
 
 public record ForcesResponse(
-    UnitValueDto ForceAlongX,
-    UnitValueDto ForceAlongY,
-    UnitValueDto ForceAlongZ,
-    UnitValueDto MomentAboutX,
-    UnitValueDto MomentAboutY,
-    UnitValueDto MomentAboutZ
+    ForceContract ForceAlongX,
+    ForceContract ForceAlongY,
+    ForceContract ForceAlongZ,
+    TorqueContract MomentAboutX,
+    TorqueContract MomentAboutY,
+    TorqueContract MomentAboutZ
 );

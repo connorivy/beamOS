@@ -5,10 +5,10 @@ namespace BeamOs.Contracts.PhysicalModel.SectionProfile;
 public record SectionProfileResponse(
     string Id,
     string ModelId,
-    UnitValueDto Area,
-    UnitValueDto StrongAxisMomentOfInertia,
-    UnitValueDto WeakAxisMomentOfInertia,
-    UnitValueDto PolarMomentOfInertia,
-    UnitValueDto StrongAxisShearArea,
-    UnitValueDto WeakAxisShearArea
+    AreaContract Area,
+    AreaMomentOfInertiaContract StrongAxisMomentOfInertia,
+    AreaMomentOfInertiaContract WeakAxisMomentOfInertia,
+    AreaMomentOfInertiaContract PolarMomentOfInertia,
+    AreaContract StrongAxisShearArea,
+    AreaContract WeakAxisShearArea
 );

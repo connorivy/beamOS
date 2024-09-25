@@ -97,7 +97,7 @@ public partial class Simple_3_Story_Rectangular
                                 this.xValues[xIndex],
                                 this.yValues[yIndex],
                                 this.zValues[zIndex],
-                                "Foot"
+                                LengthUnitContract.Foot
                             ),
                             Restraint = restraint,
                             Id = NodeLocationString(

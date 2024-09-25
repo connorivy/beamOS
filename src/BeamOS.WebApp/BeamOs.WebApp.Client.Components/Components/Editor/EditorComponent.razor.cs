@@ -19,6 +19,7 @@ using Fluxor.Blazor.Web.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.JSInterop;
 
 namespace BeamOs.WebApp.Client.Components.Components.Editor;
 
@@ -56,6 +57,9 @@ public partial class EditorComponent : FluxorComponent, IAsyncDisposable
     [Inject]
     private IDispatcher Dispatcher { get; init; }
 
+    [Inject]
+    private IJSRuntime JS { get; init; }
+
     public EditorComponentState EditorComponentState =>
         this.EditorComponentStateRepository.GetOrSetComponentStateByCanvasId(this.ElementId);
 
@@ -87,6 +91,8 @@ public partial class EditorComponent : FluxorComponent, IAsyncDisposable
             await this.LoadModel(this.ModelId);
             await this.CacheAllNodeResults();
             await this.ChangeComponentState(state => state with { IsLoading = false });
+
+            await JS.InvokeVoidAsync("initializeCanvasById", this.ElementId);
         }
         await base.OnAfterRenderAsync(firstRender);
     }
@@ -158,7 +164,7 @@ public partial class EditorComponent : FluxorComponent, IAsyncDisposable
         );
     }
 
-    private void OnMouseDown(MouseEventArgs args) => this.Dispatcher.Dispatch(new CanvasClicked());
+    private void OnMouseDown(MouseEventArgs args) { }
 
     public async ValueTask DisposeAsync()
     {

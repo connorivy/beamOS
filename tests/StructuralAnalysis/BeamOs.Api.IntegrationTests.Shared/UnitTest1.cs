@@ -72,7 +72,7 @@ public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IA
                             $"{nameof(Model.Nodes)}.{nameof(Node.MomentLoads)}"
                         ]
                     );
-                    //await this.apiClient.GetTclFromModelAsync(modelBuilder.Id.ToString());
+                    await this.apiClient.RunDirectStiffnessMethodAsync(modelBuilder.Id.ToString());
                 }
                 catch (Exception ex)
                 {

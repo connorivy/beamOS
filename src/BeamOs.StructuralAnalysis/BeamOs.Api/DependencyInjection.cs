@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using BeamOs.Api.Common;
 using BeamOs.Api.Common.Extensions;
 using BeamOs.Application;
@@ -37,6 +38,7 @@ public static class DependencyInjection
                 };
                 o.ShortSchemaNames = true;
                 o.ExcludeNonFastEndpoints = true;
+                o.SerializerSettings = s => s.Converters.Add(new JsonStringEnumConverter());
             });
         return services;
     }

@@ -1,12 +1,12 @@
+using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.ApiClient.Builders;
 
 [Mapper]
-//[UseStaticMapper(typeof(FixtureIdToStringMapper))]
+[UseStaticMapper(typeof(UnitsNetMappers))]
 public static partial class CreateModelRequestBuilderMapper
 {
-    [MapProperty(nameof(CreateModelRequestBuilder.Settings), nameof(CreateModelRequest.Settings))]
     public static partial ModelResponse ToResponseWithLocalIds(
         this CreateModelRequestBuilder fixture
     );

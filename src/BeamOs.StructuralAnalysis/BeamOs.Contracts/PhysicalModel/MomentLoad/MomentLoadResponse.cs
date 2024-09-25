@@ -6,6 +6,6 @@ public record MomentLoadResponse(
     string Id,
     string ModelId,
     string NodeId,
-    UnitValueDto Torque,
+    TorqueContract Torque,
     Vector3 AxisDirection
 );

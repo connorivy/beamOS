@@ -119,7 +119,7 @@ public partial class Simple_3_Story_Diagonal : CreateModelRequestBuilder, IHasSo
                                 this.xValues[xIndex],
                                 this.yValues[yIndex],
                                 this.GetZ(xIndex, zIndex),
-                                "Foot"
+                                LengthUnitContract.Foot
                             ),
                             Restraint = restraint,
                             Id = NodeLocationString(

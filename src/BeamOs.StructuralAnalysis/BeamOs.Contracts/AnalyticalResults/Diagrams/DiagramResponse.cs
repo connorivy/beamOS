@@ -7,12 +7,12 @@ public record DiagramResponse(
     string Element1DId,
     string LengthUnit,
     string DiagramValueUnit,
-    UnitValueDto ElementLength,
-    DiagramConsistantIntervalResponse[] Intervals
+    LengthContract ElementLength,
+    DiagramConsistentIntervalResponse[] Intervals
 );
 
-public record DiagramConsistantIntervalResponse(
-    UnitValueDto StartLocation,
-    UnitValueDto EndLocation,
+public record DiagramConsistentIntervalResponse(
+    LengthContract StartLocation,
+    LengthContract EndLocation,
     double[] PolynomialCoefficients
 );

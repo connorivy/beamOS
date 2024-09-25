@@ -31,9 +31,23 @@ else if (this.ObjectToDisplay is SimpleFieldTypeMarker fieldTypeMarker)
     {
         <MudTextField @ref="MudTextFieldBoolRef" T="bool?" Typo="Typo.input" Value="@((bool?)fieldTypeMarker.Value)" ValueChanged="(i) => ObjectToDisplayChanged.InvokeAsync(i)" Required="@fieldTypeMarker.IsRequired" Label="@ObjectName" OnlyValidateIfDirty="true" @onfocus="(_) => OnFocus(fieldTypeMarker.FieldNum)" />
     }
+    else if (fieldTypeMarker.FieldType.IsEnum)
+    {
+        <MudSelect T="string" Typo="Typo.input" Value="@(fieldTypeMarker.Value?.ToString())" ValueChanged="(i) => ObjectToDisplayChanged.InvokeAsync(i)" Required="@fieldTypeMarker.IsRequired" Label="@ObjectName" OnlyValidateIfDirty="true" @onfocus="(_) => OnFocus(fieldTypeMarker.FieldNum)">
+            @foreach (var val in Enum.GetValues(fieldTypeMarker.FieldType))
+            {
+                var stringVal = val.ToString();
+                if (string.Equals(stringVal, "Undefined"))
+                {
+                    continue;
+                }
+                <MudSelectItem Value="stringVal">@stringVal</MudSelectItem>
+            }
+        </MudSelect>
+    }
     else
     {
-        <MudTextField @ref="MudTextFieldStringRef" Typo="Typo.input" Converter="@StringObjectConverter" Value="@fieldTypeMarker.Value" ValueChanged="ObjectToDisplayChanged" Required="@fieldTypeMarker.IsRequired" Label="@ObjectName" OnlyValidateIfDirty="true" @onfocus="(_) => OnFocus(fieldTypeMarker.FieldNum)" />
+        <MudTextField @ref="MudTextFieldObjectRef" Typo="Typo.input" Converter="@StringObjectConverter" Value="@fieldTypeMarker.Value" ValueChanged="ObjectToDisplayChanged" Required="@fieldTypeMarker.IsRequired" Label="@ObjectName" OnlyValidateIfDirty="true" @onfocus="(_) => OnFocus(fieldTypeMarker.FieldNum)" />
     }
 }
 else if (this.ObjectToDisplay is ComplexFieldTypeMarker complex)
