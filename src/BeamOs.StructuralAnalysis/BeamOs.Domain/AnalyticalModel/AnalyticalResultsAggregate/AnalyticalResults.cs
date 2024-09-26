@@ -41,7 +41,8 @@ public class AnalyticalResults : AggregateRoot<AnalyticalResultsId>
     public required Torque MaxMoment { get; init; }
     public required Torque MinMoment { get; init; }
     public ICollection<NodeResult>? NodeResults { get; init; }
-    public ICollection<Element1dResult>? Element1dResults { get; init; }
+
+    //public ICollection<Element1dResult>? Element1dResults { get; init; }
     public ICollection<ShearForceDiagram>? ShearForceDiagrams { get; init; }
     public ICollection<MomentDiagram>? MomentDiagrams { get; init; }
 

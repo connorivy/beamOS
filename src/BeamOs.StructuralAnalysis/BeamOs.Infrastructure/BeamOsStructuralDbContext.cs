@@ -30,7 +30,7 @@ namespace BeamOs.Infrastructure;
 /// Build migrations from folder location
 /// \beamOS\src\BeamOs.StructuralAnalysis\BeamOs.Api\
 /// with the command
-/// dotnet ef migrations add Initial --project ..\..\BeamOs.StructuralAnalysis\BeamOs.Infrastructure\ --context BeamOsStructuralDbContext
+/// dotnet ef migrations add Initial --project ..\BeamOs.Infrastructure\
 /// </summary>
 public class BeamOsStructuralDbContext : DbContext
 {
@@ -64,11 +64,11 @@ public class BeamOsStructuralDbContext : DbContext
     public DbSet<SectionProfile> SectionProfiles { get; set; }
     public DbSet<PointLoad> PointLoads { get; set; }
     public DbSet<MomentLoad> MomentLoads { get; set; }
-    public DbSet<AnalyticalResults> ModelResults { get; set; }
+    public DbSet<AnalyticalResults> AnalyticalResults { get; set; }
     public DbSet<NodeResult> NodeResults { get; set; }
     public DbSet<ShearForceDiagram> ShearForceDiagrams { get; set; }
     public DbSet<MomentDiagram> MomentDiagrams { get; set; }
-    public DbSet<DiagramConsistantInterval> DiagramConsistantIntervals { get; set; }
+    public DbSet<DiagramConsistentInterval> DiagramConsistentIntervals { get; set; }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {

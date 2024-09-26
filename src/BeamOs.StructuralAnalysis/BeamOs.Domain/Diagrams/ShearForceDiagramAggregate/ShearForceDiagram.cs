@@ -17,7 +17,7 @@ namespace BeamOs.Domain.Diagrams.ShearForceDiagramAggregate;
 public class ShearForceDiagram : DiagramBase<ShearForceDiagramId>
 {
     public AnalyticalResultsId ModelResultId { get; private set; }
-    public Element1D? Element1D { get; private set; }
+    public Element1D? Element1d { get; private set; }
     public Element1DId Element1DId { get; private set; }
     public LinearCoordinateDirection3D ShearDirection { get; private set; }
     public Vector3D GlobalShearDirection { get; private init; }
@@ -30,7 +30,7 @@ public class ShearForceDiagram : DiagramBase<ShearForceDiagramId>
         Length elementLength,
         LengthUnit lengthUnit,
         ForceUnit forceUnit,
-        List<DiagramConsistantInterval> intervals,
+        List<DiagramConsistentInterval> intervals,
         ShearForceDiagramId? id = null
     )
         : base(elementLength, lengthUnit, intervals, id ?? new())

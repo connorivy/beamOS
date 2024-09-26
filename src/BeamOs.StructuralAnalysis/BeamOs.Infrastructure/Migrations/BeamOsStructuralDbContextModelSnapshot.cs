@@ -23,7 +23,7 @@ namespace BeamOs.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("BeamOs.Domain.AnalyticalResults.ModelResultAggregate.ModelResult", b =>
+            modelBuilder.Entity("BeamOs.Domain.AnalyticalModel.AnalyticalResultsAggregate.AnalyticalResults", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
@@ -43,7 +43,7 @@ namespace BeamOs.Infrastructure.Migrations
                     b.Property<Guid>("ModelId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.ComplexProperty<Dictionary<string, object>>("CustomData", "BeamOs.Domain.AnalyticalResults.ModelResultAggregate.ModelResult.CustomData#CustomData", b1 =>
+                    b.ComplexProperty<Dictionary<string, object>>("CustomData", "BeamOs.Domain.AnalyticalModel.AnalyticalResultsAggregate.AnalyticalResults.CustomData#CustomData", b1 =>
                         {
                             b1.IsRequired();
 
@@ -55,23 +55,24 @@ namespace BeamOs.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ModelId");
+                    b.HasIndex("ModelId")
+                        .IsUnique();
 
                     b.ToTable("ModelResults");
                 });
 
-            modelBuilder.Entity("BeamOs.Domain.AnalyticalResults.NodeResultAggregate.NodeResult", b =>
+            modelBuilder.Entity("BeamOs.Domain.AnalyticalModel.NodeResultAggregate.NodeResult", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ModelId")
+                    b.Property<Guid>("ModelResultId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("NodeId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.ComplexProperty<Dictionary<string, object>>("CustomData", "BeamOs.Domain.AnalyticalResults.NodeResultAggregate.NodeResult.CustomData#CustomData", b1 =>
+                    b.ComplexProperty<Dictionary<string, object>>("CustomData", "BeamOs.Domain.AnalyticalModel.NodeResultAggregate.NodeResult.CustomData#CustomData", b1 =>
                         {
                             b1.IsRequired();
 
@@ -81,7 +82,7 @@ namespace BeamOs.Infrastructure.Migrations
                                 .HasColumnType("nvarchar(128)");
                         });
 
-                    b.ComplexProperty<Dictionary<string, object>>("Displacements", "BeamOs.Domain.AnalyticalResults.NodeResultAggregate.NodeResult.Displacements#Displacements", b1 =>
+                    b.ComplexProperty<Dictionary<string, object>>("Displacements", "BeamOs.Domain.AnalyticalModel.NodeResultAggregate.NodeResult.Displacements#Displacements", b1 =>
                         {
                             b1.IsRequired();
 
@@ -104,7 +105,7 @@ namespace BeamOs.Infrastructure.Migrations
                                 .HasColumnType("float");
                         });
 
-                    b.ComplexProperty<Dictionary<string, object>>("Forces", "BeamOs.Domain.AnalyticalResults.NodeResultAggregate.NodeResult.Forces#Forces", b1 =>
+                    b.ComplexProperty<Dictionary<string, object>>("Forces", "BeamOs.Domain.AnalyticalModel.NodeResultAggregate.NodeResult.Forces#Forces", b1 =>
                         {
                             b1.IsRequired();
 
@@ -129,13 +130,15 @@ namespace BeamOs.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ModelResultId");
+
                     b.HasIndex("NodeId")
                         .IsUnique();
 
                     b.ToTable("NodeResults");
                 });
 
-            modelBuilder.Entity("BeamOs.Domain.Diagrams.Common.DiagramConsistantInterval", b =>
+            modelBuilder.Entity("BeamOs.Domain.Diagrams.Common.DiagramConsistentInterval", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
@@ -159,7 +162,7 @@ namespace BeamOs.Infrastructure.Migrations
                     b.Property<double>("StartLocation")
                         .HasColumnType("float");
 
-                    b.ComplexProperty<Dictionary<string, object>>("CustomData", "BeamOs.Domain.Diagrams.Common.DiagramConsistantInterval.CustomData#CustomData", b1 =>
+                    b.ComplexProperty<Dictionary<string, object>>("CustomData", "BeamOs.Domain.Diagrams.Common.DiagramConsistentInterval.CustomData#CustomData", b1 =>
                         {
                             b1.IsRequired();
 
@@ -175,7 +178,7 @@ namespace BeamOs.Infrastructure.Migrations
 
                     b.HasIndex("ShearForceDiagramId");
 
-                    b.ToTable("DiagramConsistantIntervals");
+                    b.ToTable("DiagramConsistentIntervals");
                 });
 
             modelBuilder.Entity("BeamOs.Domain.Diagrams.MomentDiagramAggregate.MomentDiagram", b =>
@@ -199,7 +202,7 @@ namespace BeamOs.Infrastructure.Migrations
                     b.Property<int>("LengthUnit")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("ModelId")
+                    b.Property<Guid>("ModelResultId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("ShearDirection")
@@ -216,6 +219,10 @@ namespace BeamOs.Infrastructure.Migrations
                         });
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Element1DId");
+
+                    b.HasIndex("ModelResultId");
 
                     b.ToTable("MomentDiagrams");
                 });
@@ -241,6 +248,9 @@ namespace BeamOs.Infrastructure.Migrations
                     b.Property<int>("LengthUnit")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("ModelResultId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("ShearDirection")
                         .HasColumnType("int");
 
@@ -257,6 +267,8 @@ namespace BeamOs.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Element1DId");
+
+                    b.HasIndex("ModelResultId");
 
                     b.ToTable("ShearForceDiagrams");
                 });
@@ -595,25 +607,31 @@ namespace BeamOs.Infrastructure.Migrations
                     b.ToTable("SectionProfiles");
                 });
 
-            modelBuilder.Entity("BeamOs.Domain.AnalyticalResults.ModelResultAggregate.ModelResult", b =>
+            modelBuilder.Entity("BeamOs.Domain.AnalyticalModel.AnalyticalResultsAggregate.AnalyticalResults", b =>
                 {
                     b.HasOne("BeamOs.Domain.PhysicalModel.ModelAggregate.Model", null)
-                        .WithMany("ModelResults")
-                        .HasForeignKey("ModelId")
+                        .WithOne("AnalyticalResults")
+                        .HasForeignKey("BeamOs.Domain.AnalyticalModel.AnalyticalResultsAggregate.AnalyticalResults", "ModelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BeamOs.Domain.AnalyticalResults.NodeResultAggregate.NodeResult", b =>
+            modelBuilder.Entity("BeamOs.Domain.AnalyticalModel.NodeResultAggregate.NodeResult", b =>
                 {
+                    b.HasOne("BeamOs.Domain.AnalyticalModel.AnalyticalResultsAggregate.AnalyticalResults", null)
+                        .WithMany("NodeResults")
+                        .HasForeignKey("ModelResultId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("BeamOs.Domain.PhysicalModel.NodeAggregate.Node", null)
                         .WithOne("NodeResult")
-                        .HasForeignKey("BeamOs.Domain.AnalyticalResults.NodeResultAggregate.NodeResult", "NodeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("BeamOs.Domain.AnalyticalModel.NodeResultAggregate.NodeResult", "NodeId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BeamOs.Domain.Diagrams.Common.DiagramConsistantInterval", b =>
+            modelBuilder.Entity("BeamOs.Domain.Diagrams.Common.DiagramConsistentInterval", b =>
                 {
                     b.HasOne("BeamOs.Domain.Diagrams.MomentDiagramAggregate.MomentDiagram", null)
                         .WithMany("Intervals")
@@ -623,18 +641,41 @@ namespace BeamOs.Infrastructure.Migrations
                     b.HasOne("BeamOs.Domain.Diagrams.ShearForceDiagramAggregate.ShearForceDiagram", null)
                         .WithMany("Intervals")
                         .HasForeignKey("ShearForceDiagramId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.ClientCascade);
+                });
+
+            modelBuilder.Entity("BeamOs.Domain.Diagrams.MomentDiagramAggregate.MomentDiagram", b =>
+                {
+                    b.HasOne("BeamOs.Domain.PhysicalModel.Element1DAggregate.Element1D", "Element1d")
+                        .WithMany("MomentDiagrams")
+                        .HasForeignKey("Element1DId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+
+                    b.HasOne("BeamOs.Domain.AnalyticalModel.AnalyticalResultsAggregate.AnalyticalResults", null)
+                        .WithMany("MomentDiagrams")
+                        .HasForeignKey("ModelResultId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Element1d");
                 });
 
             modelBuilder.Entity("BeamOs.Domain.Diagrams.ShearForceDiagramAggregate.ShearForceDiagram", b =>
                 {
-                    b.HasOne("BeamOs.Domain.PhysicalModel.Element1DAggregate.Element1D", "Element1D")
-                        .WithMany()
+                    b.HasOne("BeamOs.Domain.PhysicalModel.Element1DAggregate.Element1D", "Element1d")
+                        .WithMany("ShearForceDiagrams")
                         .HasForeignKey("Element1DId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+
+                    b.HasOne("BeamOs.Domain.AnalyticalModel.AnalyticalResultsAggregate.AnalyticalResults", null)
+                        .WithMany("ShearForceDiagrams")
+                        .HasForeignKey("ModelResultId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Element1D");
+                    b.Navigation("Element1d");
                 });
 
             modelBuilder.Entity("BeamOs.Domain.PhysicalModel.Element1DAggregate.Element1D", b =>
@@ -735,6 +776,15 @@ namespace BeamOs.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("BeamOs.Domain.AnalyticalModel.AnalyticalResultsAggregate.AnalyticalResults", b =>
+                {
+                    b.Navigation("MomentDiagrams");
+
+                    b.Navigation("NodeResults");
+
+                    b.Navigation("ShearForceDiagrams");
+                });
+
             modelBuilder.Entity("BeamOs.Domain.Diagrams.MomentDiagramAggregate.MomentDiagram", b =>
                 {
                     b.Navigation("Intervals");
@@ -745,13 +795,20 @@ namespace BeamOs.Infrastructure.Migrations
                     b.Navigation("Intervals");
                 });
 
+            modelBuilder.Entity("BeamOs.Domain.PhysicalModel.Element1DAggregate.Element1D", b =>
+                {
+                    b.Navigation("MomentDiagrams");
+
+                    b.Navigation("ShearForceDiagrams");
+                });
+
             modelBuilder.Entity("BeamOs.Domain.PhysicalModel.ModelAggregate.Model", b =>
                 {
+                    b.Navigation("AnalyticalResults");
+
                     b.Navigation("Element1ds");
 
                     b.Navigation("Materials");
-
-                    b.Navigation("ModelResults");
 
                     b.Navigation("MomentLoads");
 

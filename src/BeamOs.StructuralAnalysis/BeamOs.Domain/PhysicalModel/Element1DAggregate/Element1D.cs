@@ -1,5 +1,7 @@
 using BeamOs.Common.Domain.Models;
 using BeamOs.Domain.Common.ValueObjects;
+using BeamOs.Domain.Diagrams.MomentDiagramAggregate;
+using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.Domain.PhysicalModel.MaterialAggregate.ValueObjects;
@@ -41,6 +43,8 @@ public class Element1D : AggregateRoot<Element1DId>
     public Material? Material { get; init; }
     public SectionProfileId SectionProfileId { get; private set; }
     public SectionProfile? SectionProfile { get; init; }
+    public ICollection<ShearForceDiagram>? ShearForceDiagrams { get; init; }
+    public ICollection<MomentDiagram>? MomentDiagrams { get; init; }
 
     public Length Length => this.BaseLine.Length;
 

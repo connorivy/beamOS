@@ -138,7 +138,7 @@ public static class DependencyInjection
     {
         using var scope = app.Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<BeamOsStructuralDbContext>();
-        await dbContext.Database.EnsureCreatedAsync();
+        await dbContext.Database.MigrateAsync();
         await dbContext.SeedAsync();
     }
 

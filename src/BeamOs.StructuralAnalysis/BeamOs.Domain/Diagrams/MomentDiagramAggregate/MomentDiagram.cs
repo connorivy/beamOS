@@ -18,19 +18,20 @@ namespace BeamOs.Domain.Diagrams.MomentDiagramAggregate;
 public sealed class MomentDiagram : DiagramBase<MomentDiagramId>
 {
     public AnalyticalResultsId ModelResultId { get; private set; }
+    public Element1D? Element1d { get; private set; }
     public Element1DId Element1DId { get; private set; }
     public LinearCoordinateDirection3D ShearDirection { get; private set; }
     public Vector3D GlobalShearDirection { get; private init; }
     public ForceUnit ForceUnit { get; }
 
-    protected MomentDiagram(
+    private MomentDiagram(
         AnalyticalResultsId modelResultId,
         Element1DId element1DId,
         LinearCoordinateDirection3D shearDirection,
         Length elementLength,
         LengthUnit lengthUnit,
         ForceUnit forceUnit,
-        List<DiagramConsistantInterval> intervals,
+        List<DiagramConsistentInterval> intervals,
         MomentDiagramId? id = null
     )
         : base(elementLength, lengthUnit, intervals, id ?? new())

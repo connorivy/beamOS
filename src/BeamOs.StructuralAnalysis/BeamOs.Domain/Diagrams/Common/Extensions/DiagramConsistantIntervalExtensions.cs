@@ -5,7 +5,7 @@ namespace BeamOs.Domain.Diagrams.Common.Extensions;
 public static class DiagramConsistantIntervalExtensions
 {
     internal static (double leftValue, double rightValue) GetValueAtLocation(
-        this IList<DiagramConsistantInterval> intervals,
+        this IList<DiagramConsistentInterval> intervals,
         Length location,
         Length equalityTolerance,
         out bool isBetweenConsistantIntervals
@@ -13,7 +13,7 @@ public static class DiagramConsistantIntervalExtensions
     {
         for (int i = 0; i < intervals.Count; i++)
         {
-            DiagramConsistantInterval interval = intervals[i];
+            DiagramConsistentInterval interval = intervals[i];
             if (location < interval.StartLocation)
             {
                 continue;
@@ -25,14 +25,14 @@ public static class DiagramConsistantIntervalExtensions
                 continue;
             }
 
-            double left = interval.EvalutateAtLocation(location);
+            double left = interval.EvaluateAtLocation(location);
             double? right = null;
             if (i < intervals.Count - 1 && location.Equals(interval.EndLocation, equalityTolerance))
             {
-                DiagramConsistantInterval rightInterval = intervals[i + 1];
+                DiagramConsistentInterval rightInterval = intervals[i + 1];
                 if (!rightInterval.Length.Equals(new Length(), equalityTolerance))
                 {
-                    right = intervals[i + 1].EvalutateAtLocation(location);
+                    right = intervals[i + 1].EvaluateAtLocation(location);
                 }
             }
             isBetweenConsistantIntervals = right is not null;

@@ -82,8 +82,8 @@ internal class GetShearDiagramsQueryHandler(BeamOsStructuralDbContext dbContext)
             .ShearForceDiagrams
             .AsNoTracking()
             .Include(el => el.Intervals.OrderBy(i => i.StartLocation))
-            .Include(el => el.Element1D)
-            .Where(m => m.Element1D.ModelId == new ModelId(query.Id))
+            .Include(el => el.Element1d)
+            .Where(m => m.Element1d.ModelId == new ModelId(query.Id))
             .ToArrayAsync(cancellationToken: ct);
     }
 }

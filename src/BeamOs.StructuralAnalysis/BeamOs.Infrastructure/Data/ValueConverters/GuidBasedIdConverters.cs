@@ -1,5 +1,6 @@
 using BeamOs.Domain.AnalyticalModel.AnalyticalResultsAggregate.ValueObjects;
 using BeamOs.Domain.AnalyticalModel.NodeResultAggregate.ValueObjects;
+using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.Diagrams.Common.ValueObjects;
 using BeamOs.Domain.Diagrams.MomentDiagramAggregate.ValueObjects;
 using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate.ValueObjects;
@@ -17,6 +18,12 @@ namespace BeamOs.Infrastructure.Data.ValueConverters;
 /// <summary>
 /// Each strongly typed Id needs a value converter so EF Core knows how to load and store these objects
 /// </summary>
+public class GuidBasedIdConverter : ValueConverter<GuidBasedId, Guid>
+{
+    public GuidBasedIdConverter()
+        : base(x => x.Id, x => new(x), null) { }
+}
+
 public class ModelIdConverter : ValueConverter<ModelId, Guid>
 {
     public ModelIdConverter()

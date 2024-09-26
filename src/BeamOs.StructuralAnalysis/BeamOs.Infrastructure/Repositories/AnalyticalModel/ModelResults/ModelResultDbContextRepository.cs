@@ -15,6 +15,6 @@ internal class ModelResultDbContextRepository(BeamOsStructuralDbContext dbContex
         CancellationToken ct = default
     ) =>
         await this.DbContext
-            .ModelResults
+            .AnalyticalResults
             .FirstOrDefaultAsync(el => el.ModelId == modelId, cancellationToken: ct);
 }

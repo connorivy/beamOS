@@ -6,9 +6,9 @@ using UnitsNet.Units;
 
 namespace BeamOs.Domain.Diagrams.Common;
 
-public sealed class DiagramConsistantInterval : BeamOSEntity<DiagramConsistantIntervalId>
+public sealed class DiagramConsistentInterval : BeamOSEntity<DiagramConsistantIntervalId>
 {
-    public DiagramConsistantInterval(
+    public DiagramConsistentInterval(
         Length startLocation,
         Length endLocation,
         Polynomial polynomial,
@@ -27,7 +27,7 @@ public sealed class DiagramConsistantInterval : BeamOSEntity<DiagramConsistantIn
     public Polynomial Polynomial { get; set; }
     public LengthUnit LengthUnit { get; set; }
 
-    public double EvalutateAtLocation(Length location)
+    public double EvaluateAtLocation(Length location)
     {
         if (location < this.StartLocation || location > this.EndLocation)
         {
@@ -46,6 +46,6 @@ public sealed class DiagramConsistantInterval : BeamOSEntity<DiagramConsistantIn
 
     [Obsolete("EF Core Constructor", true)]
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-    private DiagramConsistantInterval() { }
+    private DiagramConsistentInterval() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }

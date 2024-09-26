@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="PhysicalModel\" />
     <Folder Include="QueryHandlers\PhysicalModel\Materials\Mappers\" />
     <Folder Include="QueryHandlers\PhysicalModel\MomentLoads\Mapper\" />
     <Folder Include="QueryHandlers\PhysicalModel\Nodes\Mappers\" />
