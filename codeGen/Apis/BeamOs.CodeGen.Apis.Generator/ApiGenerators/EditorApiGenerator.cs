@@ -1,6 +1,6 @@
 using BeamOs.Common.Api;
-using BeamOs.Contracts.AnalyticalResults.Diagrams;
-using BeamOs.Contracts.AnalyticalResults.Model;
+using BeamOs.Contracts.AnalyticalModel.Diagrams;
+using BeamOs.Contracts.AnalyticalModel.Results;
 using BeamOs.Contracts.Editor;
 using BeamOs.Contracts.PhysicalModel.Element1d;
 using BeamOs.Contracts.PhysicalModel.Model;
@@ -41,9 +41,11 @@ public class EditorApiGenerator : AbstractGenerator
 
         _ = addMethod("SetSettings").Accepts<PhysicalModelSettings>();
 
-        _ = addMethod("SetModelResults").Accepts<ModelResultResponse>();
+        _ = addMethod("SetModelResults").Accepts<AnalyticalResultsResponse>();
 
         _ = addMethod("Clear");
+
+        _ = addMethod("ClearCurrentOverlay");
 
         _ = addMethod("SetColorFilter").Accepts<SetColorFilter>();
         _ = addMethod("ClearFilters").Accepts<ClearFilters>();

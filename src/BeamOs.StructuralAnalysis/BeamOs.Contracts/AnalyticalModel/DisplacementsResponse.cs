@@ -1,6 +1,6 @@
 using BeamOs.Contracts.Common;
 
-namespace BeamOs.Contracts.AnalyticalResults;
+namespace BeamOs.Contracts.AnalyticalModel;
 
 public record DisplacementsResponse(
     LengthContract DisplacementAlongX,

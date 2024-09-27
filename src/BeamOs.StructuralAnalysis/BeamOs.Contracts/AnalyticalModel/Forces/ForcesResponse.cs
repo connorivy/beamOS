@@ -1,6 +1,6 @@
 using BeamOs.Contracts.Common;
 
-namespace BeamOs.Contracts.AnalyticalResults.Forces;
+namespace BeamOs.Contracts.AnalyticalModel.Forces;
 
 public record ForcesResponse(
     ForceContract ForceAlongX,

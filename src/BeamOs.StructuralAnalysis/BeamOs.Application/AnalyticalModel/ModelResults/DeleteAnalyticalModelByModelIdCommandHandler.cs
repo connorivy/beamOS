@@ -14,6 +14,12 @@ public class DeleteAnalyticalModelByModelIdCommandHandler(
         var analyticalModel = await modelResultRepository.GetByModelId(
             new(Guid.Parse(command.ModelId))
         );
+
+        if (analyticalModel is null)
+        {
+            return true;
+        }
+
         modelResultRepository.Remove(analyticalModel);
         await unitOfWork.SaveChangesAsync(ct);
 

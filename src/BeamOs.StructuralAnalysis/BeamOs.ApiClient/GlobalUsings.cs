@@ -1,6 +1,6 @@
-global using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
-global using BeamOs.Contracts.AnalyticalResults.Diagrams;
-global using BeamOs.Contracts.AnalyticalResults.Model;
+global using BeamOs.Contracts.AnalyticalModel.AnalyticalNode;
+global using BeamOs.Contracts.AnalyticalModel.Diagrams;
+global using BeamOs.Contracts.AnalyticalModel.Results;
 global using BeamOs.Contracts.Common;
 global using BeamOs.Contracts.PhysicalModel.Element1d;
 global using BeamOs.Contracts.PhysicalModel.Material;

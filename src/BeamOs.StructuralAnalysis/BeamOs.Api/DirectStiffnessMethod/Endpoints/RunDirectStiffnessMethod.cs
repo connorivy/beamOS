@@ -3,7 +3,6 @@ using BeamOs.Api.Common;
 using BeamOS.Api.Common;
 using BeamOs.Application.AnalyticalModel.ModelResults;
 using BeamOs.Application.DirectStiffnessMethod.Commands;
-using BeamOs.Contracts.AnalyticalResults.Model;
 using BeamOs.Contracts.Common;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using FastEndpoints;

@@ -1,12 +1,14 @@
 using BeamOs.Common.Domain.Models;
 using BeamOs.Domain.Diagrams.Common.ValueObjects;
+using BeamOs.Domain.Diagrams.MomentDiagramAggregate.ValueObjects;
+using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate.ValueObjects;
 using MathNet.Numerics;
 using UnitsNet;
 using UnitsNet.Units;
 
 namespace BeamOs.Domain.Diagrams.Common;
 
-public sealed class DiagramConsistentInterval : BeamOSEntity<DiagramConsistantIntervalId>
+public class DiagramConsistentInterval : BeamOSEntity<DiagramConsistantIntervalId>
 {
     public DiagramConsistentInterval(
         Length startLocation,
@@ -48,4 +50,62 @@ public sealed class DiagramConsistentInterval : BeamOSEntity<DiagramConsistantIn
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private DiagramConsistentInterval() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+}
+
+public class ShearDiagramConsistentInterval : DiagramConsistentInterval
+{
+    public ShearForceDiagramId ShearForceDiagramId { get; set; }
+
+    public ShearDiagramConsistentInterval(
+        ShearForceDiagramId shearForceDiagramId,
+        Length startLocation,
+        Length endLocation,
+        Polynomial polynomial,
+        DiagramConsistantIntervalId? id = null
+    )
+        : base(startLocation, endLocation, polynomial, id)
+    {
+        this.ShearForceDiagramId = shearForceDiagramId;
+    }
+
+    public ShearDiagramConsistentInterval(
+        ShearForceDiagramId shearForceDiagramId,
+        DiagramConsistentInterval diagramConsistentInterval
+    )
+        : this(
+            shearForceDiagramId,
+            diagramConsistentInterval.StartLocation,
+            diagramConsistentInterval.EndLocation,
+            diagramConsistentInterval.Polynomial,
+            diagramConsistentInterval.Id
+        ) { }
+}
+
+public class MomentDiagramConsistentInterval : DiagramConsistentInterval
+{
+    public MomentDiagramId MomentForceDiagramId { get; set; }
+
+    public MomentDiagramConsistentInterval(
+        MomentDiagramId momentDiagramId,
+        Length startLocation,
+        Length endLocation,
+        Polynomial polynomial,
+        DiagramConsistantIntervalId? id = null
+    )
+        : base(startLocation, endLocation, polynomial, id)
+    {
+        this.MomentForceDiagramId = momentDiagramId;
+    }
+
+    public MomentDiagramConsistentInterval(
+        MomentDiagramId diagramId,
+        DiagramConsistentInterval diagramConsistentInterval
+    )
+        : this(
+            diagramId,
+            diagramConsistentInterval.StartLocation,
+            diagramConsistentInterval.EndLocation,
+            diagramConsistentInterval.Polynomial,
+            diagramConsistentInterval.Id
+        ) { }
 }

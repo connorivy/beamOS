@@ -1,3 +1,4 @@
+using BeamOs.Contracts.AnalyticalModel.Results;
 using BeamOs.Contracts.PhysicalModel.Common;
 using BeamOs.Contracts.PhysicalModel.Element1d;
 using BeamOs.Contracts.PhysicalModel.Material;
@@ -18,7 +19,8 @@ public record ModelResponse(
     List<MaterialResponse>? Materials = null,
     List<SectionProfileResponse>? SectionProfiles = null,
     List<PointLoadResponse>? PointLoads = null,
-    List<MomentLoadResponse>? MomentLoads = null
+    List<MomentLoadResponse>? MomentLoads = null,
+    AnalyticalResultsResponse? AnalyticalResults = null
 ) : BeamOsEntityContractBase(Id);
 
 public record ModelSettingsResponse(UnitSettingsResponse UnitSettings);

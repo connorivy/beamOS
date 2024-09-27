@@ -1,7 +1,7 @@
 using BeamOs.Api.Common;
 using BeamOS.Api.Common;
 using BeamOs.Common.Application.Interfaces;
-using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
+using BeamOs.Contracts.AnalyticalModel.AnalyticalNode;
 using BeamOs.Contracts.Common;
 using FastEndpoints;
 

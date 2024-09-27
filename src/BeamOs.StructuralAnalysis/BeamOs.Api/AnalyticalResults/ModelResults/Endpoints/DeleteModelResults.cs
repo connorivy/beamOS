@@ -1,5 +1,6 @@
-﻿using BeamOS.Api.Common;
+using BeamOS.Api.Common;
 using BeamOs.Application.AnalyticalModel.ModelResults;
+using BeamOs.Common.Identity.Policies;
 using BeamOs.Contracts.Common;
 using FastEndpoints;
 
@@ -11,6 +12,9 @@ public class DeleteModelResults(
 {
     public override Http EndpointType => Http.DELETE;
     public override string Route => "models/{modelId}/results";
+
+    public override void ConfigureAuthentication() =>
+        this.Policy(p => p.AddRequirements(new RequireModelWriteAccess()));
 
     public override async Task<bool> ExecuteRequestAsync(ModelIdRequest req, CancellationToken ct)
     {

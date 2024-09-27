@@ -1,7 +1,7 @@
 using BeamOs.Contracts.Common;
 using BeamOs.Contracts.PhysicalModel.Common;
 
-namespace BeamOs.Contracts.AnalyticalResults.Diagrams;
+namespace BeamOs.Contracts.AnalyticalModel.Diagrams;
 
 public record ShearDiagramResponse(
     string Id,

@@ -1,16 +1,16 @@
 using BeamOs.Common.Application.Interfaces;
-using BeamOs.Contracts.AnalyticalResults.Model;
+using BeamOs.Contracts.AnalyticalModel.Results;
 using BeamOs.Contracts.Common;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOs.Infrastructure.QueryHandlers.AnalyticalModel.ModelResults.Mappers;
 using Microsoft.EntityFrameworkCore;
 
-namespace BeamOs.Infrastructure.QueryHandlers.AnalyticalModel.ModelResults;
+namespace BeamOs.Infrastructure.AnalyticalModel.AnalyticalResultsAggregate.QueryHandlers;
 
 public sealed class GetModelResultsQueryHandler(BeamOsStructuralDbContext dbContext)
-    : IQueryHandler<ModelIdRequest, ModelResultResponse>
+    : IQueryHandler<ModelIdRequest, AnalyticalResultsResponse>
 {
-    public async Task<ModelResultResponse?> ExecuteAsync(
+    public async Task<AnalyticalResultsResponse?> ExecuteAsync(
         ModelIdRequest query,
         CancellationToken ct = default
     )

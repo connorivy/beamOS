@@ -2,7 +2,7 @@ using BeamOs.ApiClient;
 using BeamOs.ApiClient.Builders;
 using BeamOs.Application.Common.Mappers;
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
-using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
+using BeamOs.Contracts.AnalyticalModel.AnalyticalNode;
 using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate;
 using BeamOs.Domain.PhysicalModel.ModelAggregate;
@@ -73,6 +73,7 @@ public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IA
                         ]
                     );
 #if !RUNTIME_TESTS
+                    await this.apiClient.DeleteModelResultsAsync(modelBuilder.Id.ToString());
                     await this.apiClient.RunDirectStiffnessMethodAsync(modelBuilder.Id.ToString());
 #endif
                 }

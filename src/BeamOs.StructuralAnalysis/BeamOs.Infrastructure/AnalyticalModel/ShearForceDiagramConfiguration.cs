@@ -9,7 +9,7 @@ internal class ShearForceDiagramConfiguration : IEntityTypeConfiguration<ShearFo
 {
     public void Configure(EntityTypeBuilder<ShearForceDiagram> builder)
     {
-        _ = builder.HasMany(el => el.Intervals).WithOne().OnDelete(DeleteBehavior.ClientCascade);
+        _ = builder.HasMany(el => el.Intervals).WithOne().OnDelete(DeleteBehavior.Cascade);
     }
 }
 

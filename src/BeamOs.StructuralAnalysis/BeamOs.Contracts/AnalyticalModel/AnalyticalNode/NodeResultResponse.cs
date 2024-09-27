@@ -1,7 +1,7 @@
-using BeamOs.Contracts.AnalyticalResults.Forces;
+using BeamOs.Contracts.AnalyticalModel.Forces;
 using BeamOs.Contracts.PhysicalModel.Common;
 
-namespace BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
+namespace BeamOs.Contracts.AnalyticalModel.AnalyticalNode;
 
 public record NodeResultResponse(
     string NodeId,

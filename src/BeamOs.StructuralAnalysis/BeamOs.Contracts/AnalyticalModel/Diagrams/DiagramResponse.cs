@@ -1,6 +1,6 @@
 using BeamOs.Contracts.Common;
 
-namespace BeamOs.Contracts.AnalyticalResults.Diagrams;
+namespace BeamOs.Contracts.AnalyticalModel.Diagrams;
 
 public record DiagramResponse(
     string Id,

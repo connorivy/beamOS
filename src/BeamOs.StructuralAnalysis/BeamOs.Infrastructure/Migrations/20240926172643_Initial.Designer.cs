@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeamOs.Infrastructure.Migrations
 {
     [DbContext(typeof(BeamOsStructuralDbContext))]
-    [Migration("20240926160159_Initial")]
+    [Migration("20240926172643_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -61,7 +61,7 @@ namespace BeamOs.Infrastructure.Migrations
                     b.HasIndex("ModelId")
                         .IsUnique();
 
-                    b.ToTable("ModelResults");
+                    b.ToTable("AnalyticalResults");
                 });
 
             modelBuilder.Entity("BeamOs.Domain.AnalyticalModel.NodeResultAggregate.NodeResult", b =>
@@ -141,7 +141,7 @@ namespace BeamOs.Infrastructure.Migrations
                     b.ToTable("NodeResults");
                 });
 
-            modelBuilder.Entity("BeamOs.Domain.Diagrams.Common.DiagramConsistentInterval", b =>
+            modelBuilder.Entity("BeamOs.Domain.Diagrams.Common.MomentDiagramConsistentInterval", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
@@ -155,17 +155,17 @@ namespace BeamOs.Infrastructure.Migrations
                     b.Property<Guid?>("MomentDiagramId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("MomentForceDiagramId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<IEnumerable<double>>("Polynomial")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("ShearForceDiagramId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<double>("StartLocation")
                         .HasColumnType("float");
 
-                    b.ComplexProperty<Dictionary<string, object>>("CustomData", "BeamOs.Domain.Diagrams.Common.DiagramConsistentInterval.CustomData#CustomData", b1 =>
+                    b.ComplexProperty<Dictionary<string, object>>("CustomData", "BeamOs.Domain.Diagrams.Common.MomentDiagramConsistentInterval.CustomData#CustomData", b1 =>
                         {
                             b1.IsRequired();
 
@@ -179,9 +179,45 @@ namespace BeamOs.Infrastructure.Migrations
 
                     b.HasIndex("MomentDiagramId");
 
+                    b.ToTable("MomentDiagramConsistentInterval");
+                });
+
+            modelBuilder.Entity("BeamOs.Domain.Diagrams.Common.ShearDiagramConsistentInterval", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("EndLocation")
+                        .HasColumnType("float");
+
+                    b.Property<int>("LengthUnit")
+                        .HasColumnType("int");
+
+                    b.Property<IEnumerable<double>>("Polynomial")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ShearForceDiagramId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("StartLocation")
+                        .HasColumnType("float");
+
+                    b.ComplexProperty<Dictionary<string, object>>("CustomData", "BeamOs.Domain.Diagrams.Common.ShearDiagramConsistentInterval.CustomData#CustomData", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Data")
+                                .IsRequired()
+                                .HasMaxLength(128)
+                                .HasColumnType("nvarchar(128)");
+                        });
+
+                    b.HasKey("Id");
+
                     b.HasIndex("ShearForceDiagramId");
 
-                    b.ToTable("DiagramConsistentIntervals");
+                    b.ToTable("ShearDiagramConsistentInterval");
                 });
 
             modelBuilder.Entity("BeamOs.Domain.Diagrams.MomentDiagramAggregate.MomentDiagram", b =>
@@ -634,17 +670,21 @@ namespace BeamOs.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BeamOs.Domain.Diagrams.Common.DiagramConsistentInterval", b =>
+            modelBuilder.Entity("BeamOs.Domain.Diagrams.Common.MomentDiagramConsistentInterval", b =>
                 {
                     b.HasOne("BeamOs.Domain.Diagrams.MomentDiagramAggregate.MomentDiagram", null)
                         .WithMany("Intervals")
                         .HasForeignKey("MomentDiagramId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
 
+            modelBuilder.Entity("BeamOs.Domain.Diagrams.Common.ShearDiagramConsistentInterval", b =>
+                {
                     b.HasOne("BeamOs.Domain.Diagrams.ShearForceDiagramAggregate.ShearForceDiagram", null)
                         .WithMany("Intervals")
                         .HasForeignKey("ShearForceDiagramId")
-                        .OnDelete(DeleteBehavior.ClientCascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("BeamOs.Domain.Diagrams.MomentDiagramAggregate.MomentDiagram", b =>

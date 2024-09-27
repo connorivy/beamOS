@@ -1,5 +1,5 @@
 using BeamOs.Application.Common.Mappers;
-using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
+using BeamOs.Contracts.AnalyticalModel.AnalyticalNode;
 using BeamOs.Domain.AnalyticalModel.NodeResultAggregate;
 using Riok.Mapperly.Abstractions;
 

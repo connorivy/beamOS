@@ -29,7 +29,7 @@ public static class ApiClientMethodSelectedActionReducer
         return state with
         {
             SelectedMethod = action.MethodInfo,
-            ParameterValues = StructuralApiClientComponent.GetParameterProperties(
+            ParameterValues = StructuralApiClientComponent.GetSettableParameterProperties(
                 parameterType,
                 state.ModelId,
                 true

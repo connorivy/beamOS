@@ -3,7 +3,7 @@ using BeamOs.Api.Common;
 using BeamOS.Api.Common;
 using BeamOs.Application.Common.Queries;
 using BeamOs.Common.Application.Interfaces;
-using BeamOs.Contracts.AnalyticalResults.Diagrams;
+using BeamOs.Contracts.AnalyticalModel.Diagrams;
 using BeamOs.Contracts.Common;
 using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate;
 using FastEndpoints;

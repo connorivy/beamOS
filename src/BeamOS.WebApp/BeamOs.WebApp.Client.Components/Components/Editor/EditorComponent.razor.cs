@@ -3,9 +3,9 @@ using BeamOs.CodeGen.Apis.EditorApi;
 using BeamOs.CodeGen.Apis.StructuralAnalysisApi;
 using BeamOs.Common.Api;
 using BeamOs.Common.Events;
-using BeamOs.Contracts.AnalyticalResults;
-using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
-using BeamOs.Contracts.AnalyticalResults.Forces;
+using BeamOs.Contracts.AnalyticalModel;
+using BeamOs.Contracts.AnalyticalModel.AnalyticalNode;
+using BeamOs.Contracts.AnalyticalModel.Forces;
 using BeamOs.Contracts.PhysicalModel.Common;
 using BeamOs.WebApp.Client.Components.Components.Editor.CommandHandlers;
 using BeamOs.WebApp.Client.Components.Components.Editor.Commands;
@@ -23,7 +23,7 @@ using Microsoft.JSInterop;
 
 namespace BeamOs.WebApp.Client.Components.Components.Editor;
 
-public partial class EditorComponent : FluxorComponent, IAsyncDisposable
+public partial class EditorComponent : FluxorComponent
 {
     private IDisposable? undoRedoFunctionality;
 
@@ -166,7 +166,7 @@ public partial class EditorComponent : FluxorComponent, IAsyncDisposable
 
     private void OnMouseDown(MouseEventArgs args) { }
 
-    public async ValueTask DisposeAsync()
+    protected override async ValueTask DisposeAsyncCore(bool disposing)
     {
         EventEmitter.VisibleStateChanged -= this.EventEmitter_VisibleStateChanged;
 
@@ -178,6 +178,7 @@ public partial class EditorComponent : FluxorComponent, IAsyncDisposable
         this.EditorComponentStateRepository.RemoveEditorComponentStateForCanvasId(this.ElementId);
         //await this.EditorApiAlpha.DisposeAsync();
         this.undoRedoFunctionality?.Dispose();
+        await base.DisposeAsyncCore(disposing);
     }
 }
 
@@ -187,9 +188,10 @@ public record EditorComponentState(
     string? CanvasId,
     string? LoadedModelId,
     IEditorApiAlpha? EditorApi,
-    SelectedObject[] SelectedObjects
+    SelectedObject[] SelectedObjects,
+    bool IsShowingOverlay
 )
 {
     public EditorComponentState()
-        : this(true, "Loading beamOS editor", null, null, null, []) { }
+        : this(true, "Loading beamOS editor", null, null, null, [], false) { }
 }

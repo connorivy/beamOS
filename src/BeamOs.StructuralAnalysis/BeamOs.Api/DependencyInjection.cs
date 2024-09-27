@@ -136,22 +136,32 @@ public static class DependencyInjection
 
     public static async Task InitializeAnalysisDb(this WebApplication app)
     {
-        using var scope = app.Services.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<BeamOsStructuralDbContext>();
-        await dbContext.Database.MigrateAsync();
-        await dbContext.SeedAsync();
+        if (
+            app.Environment.IsDevelopment()
+            || !bool.TryParse(
+                Environment.GetEnvironmentVariable("ContinuousIntegrationBuild"),
+                out bool isCiBuild
+            )
+            || !isCiBuild
+        )
+        {
+            using var scope = app.Services.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<BeamOsStructuralDbContext>();
+            await dbContext.Database.MigrateAsync();
+            await dbContext.SeedAsync();
+        }
     }
 
     public static async Task GenerateAnalysisClient(this WebApplication app)
     {
         const string clientNs = "BeamOs.ApiClient";
         const string clientName = "ApiAlphaClient";
-        const string contractsBaseNs =
-            $"{ApiClientGenerator.BeamOsNs}.{ApiClientGenerator.ContractsNs}";
-        const string physicalModelBaseNs =
-            $"{contractsBaseNs}.{ApiClientGenerator.PhysicalModelNs}";
-        const string analyticalResultsBaseNs =
-            $"{contractsBaseNs}.{ApiClientGenerator.AnalyticalResultsNs}";
+        //const string contractsBaseNs =
+        //    $"{ApiClientGenerator.BeamOsNs}.{ApiClientGenerator.ContractsNs}";
+        //const string physicalModelBaseNs =
+        //    $"{contractsBaseNs}.{ApiClientGenerator.PhysicalModelNs}";
+        //const string analyticalResultsBaseNs =
+        //    $"{contractsBaseNs}.{ApiClientGenerator.AnalyticalResultsNs}";
 
         await app.GenerateClient(AlphaRelease, clientNs, clientName);
     }

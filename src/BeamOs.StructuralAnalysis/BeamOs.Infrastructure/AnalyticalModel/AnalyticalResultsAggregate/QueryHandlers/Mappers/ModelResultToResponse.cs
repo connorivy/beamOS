@@ -1,5 +1,5 @@
 using BeamOs.Application.Common.Mappers;
-using BeamOs.Contracts.AnalyticalResults.Model;
+using BeamOs.Contracts.AnalyticalModel.Results;
 using BeamOs.Domain.AnalyticalModel.AnalyticalResultsAggregate;
 using BeamOs.Domain.Common.ValueObjects;
 using Riok.Mapperly.Abstractions;
@@ -8,7 +8,7 @@ namespace BeamOs.Infrastructure.QueryHandlers.AnalyticalModel.ModelResults.Mappe
 
 [Mapper]
 internal partial class ModelResultToResponse
-    : AbstractMapperProvidedUnits<AnalyticalResults, ModelResultResponse>
+    : AbstractMapperProvidedUnits<AnalyticalResults, AnalyticalResultsResponse>
 {
     [Obsolete()]
     public ModelResultToResponse()
@@ -22,7 +22,8 @@ internal partial class ModelResultToResponse
         return new(unitSettings);
     }
 
-    public override ModelResultResponse Map(AnalyticalResults source) => this.ToResponse(source);
+    public override AnalyticalResultsResponse Map(AnalyticalResults source) =>
+        this.ToResponse(source);
 
-    public partial ModelResultResponse ToResponse(AnalyticalResults modelResult);
+    public partial AnalyticalResultsResponse ToResponse(AnalyticalResults modelResult);
 }

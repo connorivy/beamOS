@@ -1,6 +1,6 @@
 using BeamOs.Application.Common.Queries;
 using BeamOs.Common.Application.Interfaces;
-using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
+using BeamOs.Contracts.AnalyticalModel.AnalyticalNode;
 using BeamOs.Domain.AnalyticalModel.NodeResultAggregate;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;

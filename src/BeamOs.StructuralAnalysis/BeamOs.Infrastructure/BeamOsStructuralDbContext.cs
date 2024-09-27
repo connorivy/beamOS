@@ -68,7 +68,8 @@ public class BeamOsStructuralDbContext : DbContext
     public DbSet<NodeResult> NodeResults { get; set; }
     public DbSet<ShearForceDiagram> ShearForceDiagrams { get; set; }
     public DbSet<MomentDiagram> MomentDiagrams { get; set; }
-    public DbSet<DiagramConsistentInterval> DiagramConsistentIntervals { get; set; }
+
+    //public DbSet<DiagramConsistentInterval> DiagramConsistentIntervals { get; set; }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {

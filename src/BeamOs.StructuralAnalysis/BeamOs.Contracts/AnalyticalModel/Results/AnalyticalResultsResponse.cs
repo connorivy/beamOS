@@ -1,9 +1,9 @@
 using BeamOs.Contracts.Common;
 using BeamOs.Contracts.PhysicalModel.Common;
 
-namespace BeamOs.Contracts.AnalyticalResults.Model;
+namespace BeamOs.Contracts.AnalyticalModel.Results;
 
-public record ModelResultResponse(
+public record AnalyticalResultsResponse(
     string ModelId,
     ForceContract MaxShear,
     ForceContract MinShear,

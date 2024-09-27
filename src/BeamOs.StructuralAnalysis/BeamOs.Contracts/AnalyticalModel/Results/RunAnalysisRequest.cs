@@ -1,4 +1,4 @@
-namespace BeamOs.Contracts.AnalyticalResults.Model;
+namespace BeamOs.Contracts.AnalyticalModel.Results;
 
 public record RunAnalysisRequest(string ModelId);
 

@@ -15,7 +15,7 @@ using UnitsNet.Units;
 
 namespace BeamOs.Domain.Diagrams.MomentDiagramAggregate;
 
-public sealed class MomentDiagram : DiagramBase<MomentDiagramId>
+public sealed class MomentDiagram : DiagramBase<MomentDiagramId, MomentDiagramConsistentInterval>
 {
     public AnalyticalResultsId ModelResultId { get; private set; }
     public Element1D? Element1d { get; private set; }
@@ -31,7 +31,7 @@ public sealed class MomentDiagram : DiagramBase<MomentDiagramId>
         Length elementLength,
         LengthUnit lengthUnit,
         ForceUnit forceUnit,
-        List<DiagramConsistentInterval> intervals,
+        List<MomentDiagramConsistentInterval> intervals,
         MomentDiagramId? id = null
     )
         : base(elementLength, lengthUnit, intervals, id ?? new())
@@ -122,6 +122,7 @@ public sealed class MomentDiagram : DiagramBase<MomentDiagramId>
 
         //List<DiagramPointValue> boundaryConditions = [
 
+        MomentDiagramId diagramId = new();
         return new(
             modelResultId,
             element1d,
@@ -129,7 +130,8 @@ public sealed class MomentDiagram : DiagramBase<MomentDiagramId>
             elementLength,
             lengthUnit,
             forceUnit,
-            db.Intervals
+            db.Intervals.Select(i => new MomentDiagramConsistentInterval(diagramId, i)).ToList(),
+            diagramId
         )
         {
             GlobalShearDirection = globalShearDirection

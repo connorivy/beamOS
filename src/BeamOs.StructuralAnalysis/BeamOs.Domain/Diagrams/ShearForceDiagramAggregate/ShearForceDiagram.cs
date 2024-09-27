@@ -14,7 +14,7 @@ using UnitsNet.Units;
 
 namespace BeamOs.Domain.Diagrams.ShearForceDiagramAggregate;
 
-public class ShearForceDiagram : DiagramBase<ShearForceDiagramId>
+public class ShearForceDiagram : DiagramBase<ShearForceDiagramId, ShearDiagramConsistentInterval>
 {
     public AnalyticalResultsId ModelResultId { get; private set; }
     public Element1D? Element1d { get; private set; }
@@ -30,7 +30,7 @@ public class ShearForceDiagram : DiagramBase<ShearForceDiagramId>
         Length elementLength,
         LengthUnit lengthUnit,
         ForceUnit forceUnit,
-        List<DiagramConsistentInterval> intervals,
+        List<ShearDiagramConsistentInterval> intervals,
         ShearForceDiagramId? id = null
     )
         : base(elementLength, lengthUnit, intervals, id ?? new())
@@ -116,6 +116,7 @@ public class ShearForceDiagram : DiagramBase<ShearForceDiagramId>
         );
         var globalShearDirection = localAxisDirection.TransformBy(coordinateSys);
 
+        ShearForceDiagramId diagramId = new();
         return new(
             modelResultId,
             element1d,
@@ -123,7 +124,8 @@ public class ShearForceDiagram : DiagramBase<ShearForceDiagramId>
             elementLength,
             lengthUnit,
             forceUnit,
-            db.Intervals
+            db.Intervals.Select(i => new ShearDiagramConsistentInterval(diagramId, i)).ToList(),
+            diagramId
         )
         {
             GlobalShearDirection = globalShearDirection

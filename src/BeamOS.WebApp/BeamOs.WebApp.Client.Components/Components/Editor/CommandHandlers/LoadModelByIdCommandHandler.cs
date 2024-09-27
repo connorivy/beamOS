@@ -5,6 +5,7 @@ using BeamOs.Contracts.PhysicalModel.Element1d;
 using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Contracts.PhysicalModel.Node;
 using BeamOs.Contracts.PhysicalModel.PointLoad;
+using BeamOs.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.WebApp.Client.Components.Components.Editor.Commands;
 using BeamOs.WebApp.Client.Components.Repositories;
 using Fluxor;
@@ -21,7 +22,20 @@ public class LoadModelByIdCommandHandler(
         CancellationToken ct = default
     )
     {
-        ModelResponse response = await apiAlphaClient.GetModelAsync(new(command.ModelId), ct);
+        ModelResponse response = await apiAlphaClient.GetModelAsync(
+            new(
+                command.ModelId,
+
+                [
+                    nameof(Model.Nodes),
+                    nameof(Model.Element1ds),
+                    nameof(Model.PointLoads),
+                    nameof(Model.MomentLoads),
+                    nameof(Model.AnalyticalResults)
+                ]
+            ),
+            ct
+        );
 
         await addEntityContractToEditorCommandHandler.ExecuteAsync(
             new(command.CanvasId, response),
@@ -68,7 +82,9 @@ public class LoadModelCommandHandler(
         );
         dispatcher.Dispatch(new ModelLoaded(command.ModelResponse.Id));
 
-        await editorApi.SetSettingsAsync(command.ModelResponse.Settings);
+        await editorApi.SetSettingsAsync(command.ModelResponse.Settings, ct);
+
+        await editorApi.SetModelResultsAsync(command.ModelResponse.AnalyticalResults, ct);
 
         await addNodesToEditorCommandHandler.ExecuteAsync(
             new AddEntitiesToEditorCommand<NodeResponse>(

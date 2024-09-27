@@ -23,16 +23,16 @@ using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace BeamOs.Application.OpenSees;
 
-public class GetTclFromModelCommandHandler(
+public class RunOpenSeesAnalysisCommandHandler(
     IModelRepository modelRepository,
     IModelResultRepository modelResultRepository,
     INodeResultRepository nodeResultRepository,
     IShearDiagramRepository shearDiagramRepository,
     IMomentDiagramRepository momentDiagramRepository,
     IUnitOfWork unitOfWork
-) : ICommandHandler<ModelIdRequest, string>
+) : ICommandHandler<ModelIdRequest, bool>
 {
-    public async Task<string> ExecuteAsync(ModelIdRequest command, CancellationToken ct = default)
+    public async Task<bool> ExecuteAsync(ModelIdRequest command, CancellationToken ct = default)
     {
         ModelId modelId = new(Guid.Parse(command.ModelId));
         string outputDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -86,7 +86,7 @@ public class GetTclFromModelCommandHandler(
 
         //await unitOfWork.SaveChangesAsync();
 
-        return tclWriter.ToString();
+        return true;
     }
 
     private Dictionary<Element1DId, Element1D> element1dCache;

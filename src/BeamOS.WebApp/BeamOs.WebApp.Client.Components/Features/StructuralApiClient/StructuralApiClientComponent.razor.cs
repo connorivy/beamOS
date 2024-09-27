@@ -2,10 +2,13 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using BeamOs.CodeGen.Apis.StructuralAnalysisApi;
+using BeamOs.Contracts.AnalyticalModel.Diagrams;
 using BeamOs.Contracts.PhysicalModel.Common;
 using BeamOs.WebApp.Client.Components.Components.Editor;
 using BeamOs.WebApp.Client.Components.Components.Editor.CommandHandlers;
+using BeamOs.WebApp.Client.Components.Components.Editor.Commands;
 using BeamOs.WebApp.Client.EditorCommands;
+using BeamOs.WebApp.Client.Events.Interfaces;
 using Fluxor;
 using Fluxor.Blazor.Web.Components;
 using Microsoft.AspNetCore.Components;
@@ -32,6 +35,9 @@ public partial class StructuralApiClientComponent : FluxorComponent
     private AddEntityContractToEditorCommandHandler AddEntityContractToEditorCommandHandler { get; init; }
 
     [Inject]
+    private GenericCommandHandler GenericCommandHandler { get; init; }
+
+    [Inject]
     private IJSRuntime Js { get; init; }
 
     [Inject]
@@ -49,11 +55,26 @@ public partial class StructuralApiClientComponent : FluxorComponent
         base.OnInitializedAsync();
     }
 
+    private static HashSet<string> methodsToExclude =
+    [
+        nameof(IStructuralAnalysisApiAlphaClient.CreateModelAsync),
+        nameof(IStructuralAnalysisApiAlphaClient.GetElement1dsAsync),
+        nameof(IStructuralAnalysisApiAlphaClient.GetModelAsync),
+        nameof(IStructuralAnalysisApiAlphaClient.GetModelResultsAsync),
+        nameof(IStructuralAnalysisApiAlphaClient.GetModelsAsync),
+        nameof(IStructuralAnalysisApiAlphaClient.GetMomentDiagramAsync),
+        nameof(IStructuralAnalysisApiAlphaClient.GetMomentLoadsAsync),
+        nameof(IStructuralAnalysisApiAlphaClient.GetNodeResultsAsync),
+        nameof(IStructuralAnalysisApiAlphaClient.GetShearDiagramAsync),
+        nameof(IStructuralAnalysisApiAlphaClient.GetSingleElement1dAsync),
+        nameof(IStructuralAnalysisApiAlphaClient.GetSingleNodeResultAsync),
+    ];
+
     static StructuralApiClientComponent()
     {
         methods = typeof(IStructuralAnalysisApiAlphaClient)
             .GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.GetParameters().Length == 1 && !m.Name.StartsWith("Get"))
+            .Where(m => m.GetParameters().Length == 1 && !methodsToExclude.Contains(m.Name))
             .OrderBy(m => m.Name)
             .ToArray();
     }
@@ -162,8 +183,25 @@ public partial class StructuralApiClientComponent : FluxorComponent
                 new(this.CanvasId, contract)
             );
         }
+        else if (result is IEnumerable<BeamOsEntityContractBase> entities && entities.Any())
+        {
+            IClientCommand command = entities.First() switch
+            {
+                ShearDiagramResponse
+                    => new AddEntitiesToEditorCommand<ShearDiagramResponse>(
+                        this.CanvasId,
+                        entities.Cast<ShearDiagramResponse>()
+                    ),
+                MomentDiagramResponse
+                    => new AddEntitiesToEditorCommand<MomentDiagramResponse>(
+                        this.CanvasId,
+                        entities.Cast<MomentDiagramResponse>()
+                    ),
+                _ => throw new NotImplementedException(),
+            };
+            await this.GenericCommandHandler.ExecuteAsync(command);
+        }
 
-        // Optionally, navigate back to the method list or show a success message
         this.GoBack();
     }
 
@@ -193,6 +231,10 @@ public partial class StructuralApiClientComponent : FluxorComponent
         {
             return (Color.Warning, "PATCH");
         }
+        else if (methodInfo.Name.StartsWith("Get", StringComparison.Ordinal))
+        {
+            return (Color.Info, "GET");
+        }
         throw new Exception("todo");
     }
 
@@ -201,14 +243,14 @@ public partial class StructuralApiClientComponent : FluxorComponent
         this.Dispatcher.Dispatch(new ApiClientMethodSelected(null));
     }
 
-    public static ComplexFieldTypeMarker GetParameterProperties(
+    public static ComplexFieldTypeMarker GetSettableParameterProperties(
         Type parameterType,
         string modelId,
         bool isObjectRequired
     )
     {
         int numSelectableFieldsCreated = 0;
-        return GetParameterProperties(
+        return GetSettableParameterProperties(
             parameterType,
             modelId,
             isObjectRequired,
@@ -216,7 +258,7 @@ public partial class StructuralApiClientComponent : FluxorComponent
         );
     }
 
-    private static ComplexFieldTypeMarker GetParameterProperties(
+    private static ComplexFieldTypeMarker GetSettableParameterProperties(
         Type parameterType,
         string modelId,
         bool isObjectRequired,
@@ -226,9 +268,9 @@ public partial class StructuralApiClientComponent : FluxorComponent
         int numItemsFilledIn = 0;
         ComplexFieldTypeMarker parameterProps = new(isObjectRequired);
         foreach (
-            PropertyInfo property in parameterType.GetProperties(
-                BindingFlags.Public | BindingFlags.Instance
-            )
+            PropertyInfo property in parameterType
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(p => p.GetSetMethod() is not null)
         )
         {
             var isPropRequired = property.GetCustomAttribute<RequiredMemberAttribute>() is not null;
@@ -255,7 +297,7 @@ public partial class StructuralApiClientComponent : FluxorComponent
             {
                 parameterProps.Add2(
                     property.Name,
-                    GetParameterProperties(
+                    GetSettableParameterProperties(
                         propertyType,
                         modelId,
                         isObjectRequired && isPropRequired,

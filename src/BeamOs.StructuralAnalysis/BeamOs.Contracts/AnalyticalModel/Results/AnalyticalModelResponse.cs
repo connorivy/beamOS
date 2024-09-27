@@ -1,6 +1,6 @@
-using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
+using BeamOs.Contracts.AnalyticalModel.AnalyticalNode;
 
-namespace BeamOs.Contracts.AnalyticalResults.Model;
+namespace BeamOs.Contracts.AnalyticalModel.Results;
 
 public record AnalyticalModelResponse(
     List<UnsupportedStructureDisplacementIdResponse> DegreeOfFreedomIds,

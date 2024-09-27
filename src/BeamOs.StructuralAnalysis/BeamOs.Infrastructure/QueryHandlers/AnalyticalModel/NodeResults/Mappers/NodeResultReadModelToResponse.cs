@@ -1,6 +1,6 @@
 using BeamOs.Application.Common.Mappers;
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
-using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
+using BeamOs.Contracts.AnalyticalModel.AnalyticalNode;
 using BeamOs.Domain.AnalyticalModel.NodeResultAggregate;
 using BeamOs.Domain.Common.ValueObjects;
 using Riok.Mapperly.Abstractions;

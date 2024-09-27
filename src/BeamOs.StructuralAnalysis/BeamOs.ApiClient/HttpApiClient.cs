@@ -1,4 +1,7 @@
 using BeamOs.CodeGen.Apis.StructuralAnalysisApi;
+using BeamOs.Contracts.AnalyticalModel.AnalyticalNode;
+using BeamOs.Contracts.AnalyticalModel.Diagrams;
+using BeamOs.Contracts.AnalyticalModel.Results;
 
 namespace BeamOs.ApiClient;
 
@@ -74,6 +77,14 @@ public class HttpApiClient : IStructuralAnalysisApiAlphaClient
     public Task<bool> DeleteModelAsync(ModelIdRequest body, CancellationToken cancellationToken) =>
         this.apiAlphaClient.DeleteModelAsync(body.ModelId, cancellationToken);
 
+    public Task<bool> DeleteModelResultsAsync(ModelIdRequest body) =>
+        this.apiAlphaClient.DeleteModelResultsAsync(body.ModelId);
+
+    public Task<bool> DeleteModelResultsAsync(
+        ModelIdRequest body,
+        CancellationToken cancellationToken
+    ) => this.apiAlphaClient.DeleteModelResultsAsync(body.ModelId, cancellationToken);
+
     public Task<ICollection<Element1DResponse>> GetElement1dsAsync(GetElement1dsRequest body) =>
         this.apiAlphaClient.GetElement1dsAsync(body.ModelId, body.Element1dIds);
 
@@ -90,13 +101,21 @@ public class HttpApiClient : IStructuralAnalysisApiAlphaClient
         CancellationToken cancellationToken
     ) => this.apiAlphaClient.GetModelAsync(body.ModelId, body.Properties, cancellationToken);
 
-    public Task<ModelResultResponse> GetModelResultsAsync(IdRequest body) =>
+    public Task<AnalyticalResultsResponse> GetModelResultsAsync(IdRequest body) =>
         this.apiAlphaClient.GetModelResultsAsync(body.Id);
 
-    public Task<ModelResultResponse> GetModelResultsAsync(
+    public Task<AnalyticalResultsResponse> GetModelResultsAsync(
         IdRequest body,
         CancellationToken cancellationToken
     ) => this.apiAlphaClient.GetModelResultsAsync(body.Id, cancellationToken);
+
+    public Task<AnalyticalResultsResponse> GetModelResultsAsync(ModelIdRequest body) =>
+        this.apiAlphaClient.GetModelResultsAsync(body.ModelId);
+
+    public Task<AnalyticalResultsResponse> GetModelResultsAsync(
+        ModelIdRequest body,
+        CancellationToken cancellationToken
+    ) => this.apiAlphaClient.GetModelResultsAsync(body.ModelId, cancellationToken);
 
     public Task<ICollection<ModelResponse>> GetModelsAsync(EmptyRequest body) =>
         this.apiAlphaClient.GetModelsAsync();
@@ -183,11 +202,19 @@ public class HttpApiClient : IStructuralAnalysisApiAlphaClient
         CancellationToken cancellationToken
     ) => this.apiAlphaClient.PatchNodeAsync(body, body.NodeId, cancellationToken);
 
-    public Task<AnalyticalModelResponse3> RunDirectStiffnessMethodAsync(ModelIdRequest body) =>
+    public Task<bool> RunDirectStiffnessMethodAsync(ModelIdRequest body) =>
         this.apiAlphaClient.RunDirectStiffnessMethodAsync(body.ModelId);
 
-    public Task<AnalyticalModelResponse3> RunDirectStiffnessMethodAsync(
+    public Task<bool> RunDirectStiffnessMethodAsync(
         ModelIdRequest body,
         CancellationToken cancellationToken
     ) => this.apiAlphaClient.RunDirectStiffnessMethodAsync(body.ModelId, cancellationToken);
+
+    public Task<bool> RunOpenSeesAnalysisAsync(ModelIdRequest body) =>
+        this.apiAlphaClient.RunOpenSeesAnalysisAsync(body.ModelId);
+
+    public Task<bool> RunOpenSeesAnalysisAsync(
+        ModelIdRequest body,
+        CancellationToken cancellationToken
+    ) => this.apiAlphaClient.RunOpenSeesAnalysisAsync(body.ModelId, cancellationToken);
 }
