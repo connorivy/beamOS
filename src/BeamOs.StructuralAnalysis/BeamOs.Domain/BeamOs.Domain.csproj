@@ -26,11 +26,4 @@
     <ProjectReference Include="..\BeamOs.IntegrationEvents\BeamOs.IntegrationEvents.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="OpenSees\OpenSees.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>OpenSees.exe</TargetPath>
-    </None>
-  </ItemGroup>
-
 </Project>
