@@ -97,7 +97,7 @@ public record Point : BeamOsContractBase
 
 public record PatchPointRequest
 {
-    public required string LengthUnit { get; init; }
+    public required LengthUnitContract LengthUnit { get; init; }
     public double? XCoordinate { get; init; }
     public double? YCoordinate { get; init; }
     public double? ZCoordinate { get; init; }

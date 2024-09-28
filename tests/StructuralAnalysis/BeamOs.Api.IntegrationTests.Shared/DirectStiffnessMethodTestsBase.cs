@@ -19,39 +19,38 @@ using BeamOs.Api.IntegrationTests.Runtime;
 
 #endif
 
+[assembly: CollectionBehavior(DisableTestParallelization = true)]
+
 namespace BeamOs.Api.IntegrationTests;
 
 #if RUNTIME_TESTS
-public class UnitTest1 : IAsyncLifetime
+public abstract class DirectStiffnessMethodTestsBase : IAsyncLifetime
 {
-    public UnitTest1(IApiAlphaClient apiClient)
+    public DirectStiffnessMethodTestsBase(IApiAlphaClient apiClient)
     {
-        this.apiClient = apiClient;
+        this.ApiClient = apiClient;
     }
 #else
-public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IAsyncLifetime
+public abstract class DirectStiffnessMethodTestsBase
+    : IClassFixture<CustomWebApplicationFactory<Program>>,
+        IAsyncLifetime
 {
-    public UnitTest1(CustomWebApplicationFactory<Program> webApplicationFactory)
+    public DirectStiffnessMethodTestsBase(
+        CustomWebApplicationFactory<Program> webApplicationFactory
+    )
     {
         var httpClient = webApplicationFactory.CreateClient();
-        this.apiClient = new ApiAlphaClient(httpClient);
+        this.ApiClient = new ApiAlphaClient(httpClient);
     }
 #endif
 
-    private readonly IApiAlphaClient apiClient;
+    protected IApiAlphaClient ApiClient { get; }
     private readonly Dictionary<string, IModelFixtureInDb> modelIdToModelFixtureDict = [];
+
+    protected abstract Task RunAnalysis(FixtureId modelId);
 
     public async Task InitializeAsync()
     {
-        //AllModelFixtures allSolved = new();
-        //foreach (var fixture in allSolved.GetItems())
-        //{
-        //    var dbModelFixture = new ModelFixtureInDb(fixture);
-        //    await dbModelFixture.Create(this.apiClient);
-        //    this.modelIdToModelFixtureDict.Add(fixture.Id.ToString(), dbModelFixture);
-        //    await this.apiClient.RunDirectStiffnessMethodAsync(fixture.Id.ToString());
-        //}
-
         AllCreateModelRequestBuilders allModelBuilders = new();
         foreach (var modelBuilder in allModelBuilders.GetItems())
         {
@@ -60,7 +59,7 @@ public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IA
                 ModelResponse? modelResponse;
                 try
                 {
-                    modelResponse = await this.apiClient.GetModelAsync(
+                    modelResponse = await this.ApiClient.GetModelAsync(
                         modelBuilder.Id.ToString(),
 
                         [
@@ -73,8 +72,8 @@ public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IA
                         ]
                     );
 #if !RUNTIME_TESTS
-                    await this.apiClient.DeleteModelResultsAsync(modelBuilder.Id.ToString());
-                    await this.apiClient.RunDirectStiffnessMethodAsync(modelBuilder.Id.ToString());
+                    await this.ApiClient.DeleteModelResultsAsync(modelBuilder.Id.ToString());
+                    await this.RunAnalysis(modelBuilder.Id);
 #endif
                 }
                 catch (Exception ex)
@@ -88,8 +87,8 @@ public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IA
                 else
                 {
                     await modelBuilder.InitializeAsync();
-                    await modelBuilder.Create(this.apiClient);
-                    await this.apiClient.RunDirectStiffnessMethodAsync(modelBuilder.Id.ToString());
+                    await modelBuilder.Create(this.ApiClient);
+                    await this.ApiClient.RunDirectStiffnessMethodAsync(modelBuilder.Id.ToString());
                 }
                 modelBuilder.IsInitialized = true;
             }
@@ -141,7 +140,7 @@ public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IA
             {
                 // for now we don't support multiple results for a node (i.e. load combinations)
                 // so just take the first result
-                result ??= (await this.apiClient.GetSingleNodeResultAsync(dbId)).First();
+                result ??= (await this.ApiClient.GetSingleNodeResultAsync(dbId)).First();
                 AssertQuantitiesEqual(
                     dbId,
                     expectedNodeDisplacementResult,
@@ -151,25 +150,6 @@ public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<Program>>, IA
                     2
                 );
             }
-
-            //if (
-            //    expectedNodeDisplacementResult.ForceAlongX.HasValue
-            //    || expectedNodeDisplacementResult.ForceAlongY.HasValue
-            //    || expectedNodeDisplacementResult.ForceAlongZ.HasValue
-            //    || expectedNodeDisplacementResult.TorqueAboutX.HasValue
-            //    || expectedNodeDisplacementResult.TorqueAboutY.HasValue
-            //    || expectedNodeDisplacementResult.TorqueAboutZ.HasValue
-            //)
-            //{
-            //    result ??= (await this.apiClient.GetSingleNodeResultAsync(dbId)).First();
-            //    AssertQuantitiesEqual(
-            //        dbId,
-            //        expectedNodeDisplacementResult,
-            //        result,
-            //        forceUnit,
-            //        torqueUnit
-            //    );
-            //}
         }
     }
 

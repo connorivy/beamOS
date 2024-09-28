@@ -2,6 +2,7 @@ using BeamOs.Api.Common;
 using BeamOS.Api.Common;
 using BeamOs.Application.PhysicalModel.Nodes.Commands;
 using BeamOs.Common.Identity.Policies;
+using BeamOs.Contracts.Common;
 using BeamOs.Contracts.PhysicalModel.Node;
 using FastEndpoints;
 
@@ -19,7 +20,11 @@ public class PatchNode(
         new PatchNodeRequest()
         {
             NodeId = "00000000-0000-0000-0000-000000000000",
-            LocationPoint = new PatchPointRequest { LengthUnit = "Foot", YCoordinate = 15 },
+            LocationPoint = new PatchPointRequest
+            {
+                LengthUnit = LengthUnitContract.Foot,
+                YCoordinate = 15
+            },
             Restraint = new PatchRestraintRequest(CanTranslateAlongX: false, CanRotateAboutY: true)
         };
 

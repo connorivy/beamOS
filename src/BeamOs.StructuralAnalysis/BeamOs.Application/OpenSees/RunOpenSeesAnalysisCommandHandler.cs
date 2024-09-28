@@ -155,7 +155,18 @@ public class RunOpenSeesAnalysisCommandHandler(
             };
         process.OutputDataReceived += new DataReceivedEventHandler(process_OutputDataReceived);
         process.ErrorDataReceived += new DataReceivedEventHandler(process_ErrorDataReceived);
-        process.Start();
+
+        try
+        {
+            process.Start();
+        }
+        catch (System.ComponentModel.Win32Exception ex)
+        {
+            throw new Exception(
+                "Unable to run opensees.exe. Did you follow the instructions in beamOS/opensees/readme?",
+                ex
+            );
+        }
         process.BeginErrorReadLine();
         process.BeginOutputReadLine();
 

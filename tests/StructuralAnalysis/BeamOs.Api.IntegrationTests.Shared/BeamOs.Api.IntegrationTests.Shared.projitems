@@ -9,7 +9,9 @@
     <Import_RootNamespace>BeamOs.Api.IntegrationTests.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)DirectStiffnessMethodTestsBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OpenSeesTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IAssemblyMarkerApiIntegrationTests.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UnitTest1.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectStiffnessMethodTests.cs" />
   </ItemGroup>
 </Project>

@@ -210,10 +210,10 @@ public class HttpApiClient : IStructuralAnalysisApiAlphaClient
         CancellationToken cancellationToken
     ) => this.apiAlphaClient.RunDirectStiffnessMethodAsync(body.ModelId, cancellationToken);
 
-    public Task<bool> RunOpenSeesAnalysisAsync(ModelIdRequest body) =>
+    public virtual Task<bool> RunOpenSeesAnalysisAsync(ModelIdRequest body) =>
         this.apiAlphaClient.RunOpenSeesAnalysisAsync(body.ModelId);
 
-    public Task<bool> RunOpenSeesAnalysisAsync(
+    public virtual Task<bool> RunOpenSeesAnalysisAsync(
         ModelIdRequest body,
         CancellationToken cancellationToken
     ) => this.apiAlphaClient.RunOpenSeesAnalysisAsync(body.ModelId, cancellationToken);
