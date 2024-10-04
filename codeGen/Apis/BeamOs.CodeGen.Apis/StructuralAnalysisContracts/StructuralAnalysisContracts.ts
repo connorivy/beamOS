@@ -5635,7 +5635,7 @@ export interface IPatchNodeRequest {
 }
 
 export class PatchPointRequest implements IPatchPointRequest {
-    lengthUnit!: string;
+    lengthUnit!: LengthUnitContract;
     xCoordinate?: number | undefined;
     yCoordinate?: number | undefined;
     zCoordinate?: number | undefined;
@@ -5676,7 +5676,7 @@ export class PatchPointRequest implements IPatchPointRequest {
 }
 
 export interface IPatchPointRequest {
-    lengthUnit: string;
+    lengthUnit: LengthUnitContract;
     xCoordinate?: number | undefined;
     yCoordinate?: number | undefined;
     zCoordinate?: number | undefined;

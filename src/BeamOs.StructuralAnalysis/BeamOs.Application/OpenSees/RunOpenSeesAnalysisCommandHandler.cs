@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using BeamOs.Application.AnalyticalModel.Diagrams.ShearDiagrams.Interfaces;
 using BeamOs.Application.AnalyticalModel.ModelResults;
 using BeamOs.Application.AnalyticalModel.NodeResults;
@@ -20,6 +21,7 @@ using BeamOs.Domain.PhysicalModel.Element1DAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using MathNet.Numerics.LinearAlgebra.Double;
+using Microsoft.Extensions.Logging;
 
 namespace BeamOs.Application.OpenSees;
 
@@ -29,7 +31,8 @@ public class RunOpenSeesAnalysisCommandHandler(
     INodeResultRepository nodeResultRepository,
     IShearDiagramRepository shearDiagramRepository,
     IMomentDiagramRepository momentDiagramRepository,
-    IUnitOfWork unitOfWork
+    IUnitOfWork unitOfWork,
+    ILogger<RunOpenSeesAnalysisCommandHandler> logger
 ) : ICommandHandler<ModelIdRequest, bool>
 {
     public async Task<bool> ExecuteAsync(ModelIdRequest command, CancellationToken ct = default)
@@ -52,14 +55,26 @@ public class RunOpenSeesAnalysisCommandHandler(
         int reactionPort = displacementPort + 1;
         int elementForcesPort = displacementPort + 2;
         TclWriter tclWriter = this.CreateWriterFromModel(
-            outputDir,
             model,
             displacementPort,
             reactionPort,
             elementForcesPort
         );
 
-        await this.RunTclWithOpenSees(outputDir, displacementPort, reactionPort, elementForcesPort);
+        if (tclWriter.OutputFileWithPath is null)
+        {
+            throw new Exception(
+                "OutputFileWithPath should not be null after calling TclWriter.Write()"
+            );
+        }
+
+        await this.RunTclWithOpenSees(
+            tclWriter.OutputFileWithPath,
+            outputDir,
+            displacementPort,
+            reactionPort,
+            elementForcesPort
+        );
 
         var analyticalResults = this.GetResults(model, tclWriter);
 
@@ -92,7 +107,6 @@ public class RunOpenSeesAnalysisCommandHandler(
     private Dictionary<Element1DId, Element1D> element1dCache;
 
     private TclWriter CreateWriterFromModel(
-        string outputDir,
         Model? model,
         int displacementPort,
         int reactionPort,
@@ -111,7 +125,7 @@ public class RunOpenSeesAnalysisCommandHandler(
         tclWriter.AddPointLoads(model.PointLoads);
 
         tclWriter.DefineAnalysis();
-        tclWriter.Write(Path.Combine(outputDir, "model.tcl"));
+        tclWriter.Write();
 
         return tclWriter;
     }
@@ -121,15 +135,16 @@ public class RunOpenSeesAnalysisCommandHandler(
     private double[] elemForces;
 
     private async Task RunTclWithOpenSees(
+        string tclFileWithPath,
         string outputDir,
         int displacementPort,
         int reactionPort,
         int elementForcesPort
     )
     {
-        using TcpServer displacementServer = new(displacementPort);
-        using TcpServer reactionServer = new(reactionPort);
-        using TcpServer elementForces = new(elementForcesPort);
+        using TcpServer displacementServer = new(displacementPort, logger);
+        using TcpServer reactionServer = new(reactionPort, logger);
+        using TcpServer elementForces = new(elementForcesPort, logger);
 
         //using SocketListener displacementServer = new(displacementPort);
         //using SocketListener reactionServer = new(reactionPort);
@@ -140,13 +155,27 @@ public class RunOpenSeesAnalysisCommandHandler(
         Task listenElemForces = elementForces.Listen(data => this.elemForces = data);
         //elementForces.ListenCallback(data => this.elemForces = data);
 
+        string exeName;
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        {
+            exeName = "OpenSees";
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            exeName = "OpenSees.exe";
+        }
+        else
+        {
+            throw new Exception("Program running on unsupported platform");
+        }
+
         Process process =
             new()
             {
-                StartInfo = new ProcessStartInfo(Path.Combine(outputDir, "OpenSees.exe"))
+                StartInfo = new ProcessStartInfo(Path.Combine(outputDir, "bin", exeName))
                 {
                     WorkingDirectory = outputDir,
-                    Arguments = Path.Combine(outputDir, "model.tcl"),
+                    Arguments = tclFileWithPath,
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true
@@ -158,7 +187,9 @@ public class RunOpenSeesAnalysisCommandHandler(
 
         try
         {
+            logger.LogInformation("Starting process");
             process.Start();
+            logger.LogInformation("Process started");
         }
         catch (System.ComponentModel.Win32Exception ex)
         {
@@ -171,9 +202,33 @@ public class RunOpenSeesAnalysisCommandHandler(
         process.BeginOutputReadLine();
 
         // todo : failure policy
-        await listenDisp;
-        await listenReact;
-        await listenElemForces;
+        await Task.WhenAny(
+            Task.WhenAll(listenDisp, listenReact, listenElemForces),
+            Task.Delay(15000)
+        );
+
+        if (listenDisp.Status != TaskStatus.RanToCompletion)
+        {
+            logger.LogError(
+                "Unable to receive the node displacements from OpenSees within the timeframe"
+            );
+        }
+        if (listenReact.Status != TaskStatus.RanToCompletion)
+        {
+            logger.LogError(
+                "Unable to receive the node reactions from OpenSees within the timeframe"
+            );
+        }
+        if (listenElemForces.Status != TaskStatus.RanToCompletion)
+        {
+            logger.LogError(
+                "Unable to receive the local element forces from OpenSees within the timeframe"
+            );
+        }
+
+        //await listenDisp;
+        //await listenReact;
+        //await listenElemForces;
 
         await process.WaitForExitAsync();
         //await TcpServerCallback.Result;
@@ -295,13 +350,13 @@ public class RunOpenSeesAnalysisCommandHandler(
     //    Console.WriteLine(string.Format("process exited with code {0}\n", process.ExitCode.ToString()));
     //}
 
-    static void process_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+    void process_ErrorDataReceived(object sender, DataReceivedEventArgs e)
     {
-        Console.WriteLine(e.Data + "\n");
+        logger.LogError("OpenSees process error {data}", e.Data);
     }
 
-    static void process_OutputDataReceived(object sender, DataReceivedEventArgs e)
+    void process_OutputDataReceived(object sender, DataReceivedEventArgs e)
     {
-        Console.WriteLine(e.Data + "\n");
+        logger.LogInformation("OpenSees process info {data}", e.Data);
     }
 }

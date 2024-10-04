@@ -42,6 +42,8 @@ public class TclWriter
 
     private readonly HashSet<Guid> addedNodes = [];
 
+    public string? OutputFileWithPath { get; private set; }
+
     public void AddNode(Node node)
     {
         if (!this.addedNodes.Add(node.Id))
@@ -240,9 +242,12 @@ public class TclWriter
         return new Guid(totalBytes);
     }
 
-    public void Write(string filename)
+    public void Write()
     {
-        File.WriteAllText(filename, this.document.ToString());
+        var tempPath = Path.GetTempPath();
+        var fileName = Path.ChangeExtension(Guid.NewGuid().ToString(), ".tcl");
+        this.OutputFileWithPath = Path.Combine(tempPath, fileName);
+        File.WriteAllText(this.OutputFileWithPath, this.document.ToString());
     }
 
     public override string ToString() => this.document.ToString();
