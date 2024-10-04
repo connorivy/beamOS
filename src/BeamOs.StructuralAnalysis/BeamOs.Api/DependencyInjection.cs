@@ -136,20 +136,10 @@ public static class DependencyInjection
 
     public static async Task InitializeAnalysisDb(this WebApplication app)
     {
-        if (
-            app.Environment.IsDevelopment()
-            || !bool.TryParse(
-                Environment.GetEnvironmentVariable("ContinuousIntegrationBuild"),
-                out bool isCiBuild
-            )
-            || !isCiBuild
-        )
-        {
-            using var scope = app.Services.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<BeamOsStructuralDbContext>();
-            await dbContext.Database.MigrateAsync();
-            await dbContext.SeedAsync();
-        }
+        using var scope = app.Services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<BeamOsStructuralDbContext>();
+        await dbContext.Database.MigrateAsync();
+        await dbContext.SeedAsync();
     }
 
     public static async Task GenerateAnalysisClient(this WebApplication app)

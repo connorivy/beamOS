@@ -101,20 +101,7 @@ public abstract class DirectStiffnessMethodTestsBase
         return Task.CompletedTask;
     }
 
-    //[SkippableTheory]
-    //[ClassData(typeof(AllModelFixtures))]
-    //public async Task ModelResponses_WhenRetrievedFromDb_ShouldEqualExpectedValues(
-    //    ModelFixture2 modelFixture
-    //)
-    //{
-    //    var dbModelFixture = this.modelIdToModelFixtureDict[modelFixture.Id.ToString()];
-
-    //    var modelResponse = await this.apiClient.GetModelAsync(modelFixture.Id.ToString(), null);
-    //    var expectedModelResponse = dbModelFixture.ToResponse();
-
-    //    ContractComparer.AssertContractsEqual(modelResponse, expectedModelResponse);
-    //}
-
+    // todo: distinguish between openSees and DSM classes by test name
     [BeamOsTheory]
     [ClassData(typeof(AllCreateModelRequestBuildersFilter<IHasExpectedNodeDisplacementResults>))]
     public async Task NodeDisplacementResults_ForSampleProblems_ShouldResultInExpectedValues(
