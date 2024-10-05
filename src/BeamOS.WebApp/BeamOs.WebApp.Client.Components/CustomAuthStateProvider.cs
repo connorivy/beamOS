@@ -29,6 +29,14 @@ public class CustomAuthStateProvider
     /// <inheritdoc />
     public void SetAuthenticationState(Task<AuthenticationState> authenticationStateTask)
     {
+        // don't override the logged in user unless access token is null
+        if (
+            this.accessToken != null
+            && !authenticationStateTask.Result.User.Identity.IsAuthenticated
+        )
+        {
+            return;
+        }
         this.SetAuthenticationStatePrivate(authenticationStateTask);
     }
 

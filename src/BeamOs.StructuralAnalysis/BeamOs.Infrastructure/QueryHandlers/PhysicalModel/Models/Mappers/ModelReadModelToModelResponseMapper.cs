@@ -10,6 +10,7 @@ namespace BeamOs.Infrastructure.QueryHandlers.PhysicalModel.Models.Mappers;
 [Mapper]
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
 [UseStaticMapper(typeof(Vector3ToFromMathnetVector))]
+[UseStaticMapper(typeof(UnitsNetMappersJustEnums))]
 internal partial class ModelToModelResponseMapper
     : AbstractMapperProvidedUnits<Model, ModelResponse>
 {

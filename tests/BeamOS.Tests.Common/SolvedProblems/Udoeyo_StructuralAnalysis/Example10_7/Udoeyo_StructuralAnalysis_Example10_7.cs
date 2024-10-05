@@ -8,7 +8,7 @@ namespace BeamOS.Tests.Common.SolvedProblems.Udoeyo_StructuralAnalysis.Example10
 public class Udoeyo_StructuralAnalysis_Example10_7 : ModelFixture2
 {
     public override PhysicalModelSettings Settings { get; } =
-        new(UnitSettingsDtoVerbose.K_FT, new(Element1dAnalysisType.Euler));
+        new(UnitSettingsContract.K_FT, new(Element1dAnalysisType.Euler));
     public override SourceInfo SourceInfo { get; } =
         new(
             "Structural Analysis by Felix Udoeyo",

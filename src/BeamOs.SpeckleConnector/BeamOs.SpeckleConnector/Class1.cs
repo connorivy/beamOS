@@ -1,4 +1,5 @@
 using BeamOs.ApiClient.Builders;
+using BeamOs.Contracts.Common;
 using BeamOs.Contracts.PhysicalModel.Node;
 using Speckle.Core.Credentials;
 using Speckle.Core.Models;
@@ -95,12 +96,13 @@ public static class SpeckleConnector
         );
     }
 
-    private static string SpeckleUnitsToUnitsNet(string speckleUnit)
+    private static LengthUnitContract SpeckleUnitsToUnitsNet(string speckleUnit)
     {
         return speckleUnit switch
         {
-            "mm" => "Millimeter",
-            "meter" => "Meter"
+            "mm" => LengthUnitContract.Millimeter,
+            "meter" => LengthUnitContract.Meter,
+            _ => throw new NotSupportedException()
         };
     }
 }

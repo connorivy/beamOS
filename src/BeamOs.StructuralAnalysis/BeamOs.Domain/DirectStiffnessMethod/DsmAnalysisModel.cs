@@ -1,5 +1,7 @@
-using BeamOs.Domain.AnalyticalResults.Common.ValueObjects;
-using BeamOs.Domain.AnalyticalResults.NodeResultAggregate;
+using BeamOs.Domain.AnalyticalModel.AnalyticalResultsAggregate;
+using BeamOs.Domain.AnalyticalModel.AnalyticalResultsAggregate.ValueObjects;
+using BeamOs.Domain.AnalyticalModel.Common.ValueObjects;
+using BeamOs.Domain.AnalyticalModel.NodeResultAggregate;
 using BeamOs.Domain.Common.Enums;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.Diagrams.MomentDiagramAggregate;
@@ -31,7 +33,7 @@ public class DsmAnalysisModel(Model model)
 
     private readonly DsmNodeVo[] dsmNodes = model.Nodes.Select(el => new DsmNodeVo(el)).ToArray();
 
-    public ModelResults RunAnalysis()
+    public AnalyticalResults RunAnalysis()
     {
         var (degreeOfFreedomIds, boundaryConditionIds) = this.GetSortedUnsupportedStructureIds();
 
@@ -58,7 +60,9 @@ public class DsmAnalysisModel(Model model)
             unknownJointDisplacementVector
         );
 
+        AnalyticalResultsId modelResultId = new();
         List<NodeResult> nodeResults = this.GetAnalyticalNodes(
+            modelResultId,
             unknownJointDisplacementVector,
             knownJointDisplacementVector,
             unknownReactionVector,
@@ -81,9 +85,15 @@ public class DsmAnalysisModel(Model model)
                 model.Settings.UnitSettings.ForcePerLengthUnit,
                 model.Settings.UnitSettings.TorqueUnit
             );
+            var global =
+                localMemberEndForcesVector
+                * this.dsmElement1Ds[i].GetTransformationMatrix().Transpose();
+            var localMaybe = this.dsmElement1Ds[i].GetTransformationMatrix().Transpose() * global;
+
             var rotationMatrix = this.dsmElement1Ds[i].GetRotationMatrix();
 
             var sfd = ShearForceDiagram.Create(
+                modelResultId,
                 this.dsmElement1Ds[i].Element1DId,
                 this.dsmElement1Ds[i].StartPoint,
                 this.dsmElement1Ds[i].EndPoint,
@@ -99,7 +109,7 @@ public class DsmAnalysisModel(Model model)
             sfd.MinMax(ref shearMin, ref shearMax);
 
             momentDiagrams[i] = MomentDiagram.Create(
-                model.Id,
+                modelResultId,
                 this.dsmElement1Ds[i].Element1DId,
                 this.dsmElement1Ds[i].StartPoint,
                 this.dsmElement1Ds[i].EndPoint,
@@ -115,16 +125,22 @@ public class DsmAnalysisModel(Model model)
             momentDiagrams[i].MinMax(ref momentMin, ref momentMax);
         }
 
-        return new ModelResults
-        {
-            NodeResults = nodeResults,
-            ShearForceDiagrams = shearForceDiagrams,
-            MomentDiagrams = momentDiagrams,
-            MaxShearValue = new(shearMax, model.Settings.UnitSettings.ForceUnit),
-            MinShearValue = new(shearMin, model.Settings.UnitSettings.ForceUnit),
-            MaxMomentValue = new(momentMax, model.Settings.UnitSettings.TorqueUnit),
-            MinMomentValue = new(momentMin, model.Settings.UnitSettings.TorqueUnit),
-        };
+        AnalyticalResults analyticalModelResults =
+            new(
+                model.Id,
+                new(shearMax, model.Settings.UnitSettings.ForceUnit),
+                new(shearMin, model.Settings.UnitSettings.ForceUnit),
+                new(momentMax, model.Settings.UnitSettings.TorqueUnit),
+                new(momentMin, model.Settings.UnitSettings.TorqueUnit),
+                modelResultId
+            )
+            {
+                NodeResults = nodeResults,
+                ShearForceDiagrams = shearForceDiagrams,
+                MomentDiagrams = momentDiagrams,
+            };
+
+        return analyticalModelResults;
     }
 
     internal SortedUnsupportedStructureIds GetSortedUnsupportedStructureIds()
@@ -241,6 +257,7 @@ public class DsmAnalysisModel(Model model)
     }
 
     private List<NodeResult> GetAnalyticalNodes(
+        AnalyticalResultsId modelResultId,
         VectorIdentified unknownJointDisplacementVector,
         VectorIdentified knownJointDisplacementVector,
         VectorIdentified unknownJointReactionVector,
@@ -300,7 +317,7 @@ public class DsmAnalysisModel(Model model)
                 displacementAngles[CoordinateSystemDirection3D.AboutZ]
             );
             analyticalNodes.Add(
-                new NodeResult(model.Id, nodeId, forcesResponse, displacementResponse)
+                new NodeResult(modelResultId, nodeId, forcesResponse, displacementResponse)
             );
         }
 

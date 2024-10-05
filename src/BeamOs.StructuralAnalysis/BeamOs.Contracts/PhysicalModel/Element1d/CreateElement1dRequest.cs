@@ -8,6 +8,6 @@ public record CreateElement1dRequest(
     string EndNodeId,
     string MaterialId,
     string SectionProfileId,
-    UnitValueDto? SectionProfileRotation = null,
+    AngleContract? SectionProfileRotation = null,
     Dictionary<string, object>? CustomData = null
 );

@@ -58,7 +58,7 @@
     [Inject]
     private IStructuralAnalysisApiAlphaClient StructuralAnalysisApiAlphaClient { get; init; }
 
-    private ComplexFieldTypeMarker parameterValues = StructuralApiClientComponent.GetParameterProperties(typeof(CreateModelRequest), null, true);
+    private ComplexFieldTypeMarker parameterValues = StructuralApiClientComponent.GetSettableParameterProperties(typeof(CreateModelRequest), null, true);
 
     private static MethodInfo CreateModel { get; } = typeof(IStructuralAnalysisApiAlphaClient)
             .GetMethods(BindingFlags.Public | BindingFlags.Instance)

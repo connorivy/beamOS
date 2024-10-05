@@ -1,4 +1,4 @@
-using BeamOs.Domain.AnalyticalResults.NodeResultAggregate;
+using BeamOs.Domain.AnalyticalModel.NodeResultAggregate;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate;
 using BeamOs.Domain.PhysicalModel.NodeAggregate;
 using Microsoft.EntityFrameworkCore;
@@ -51,7 +51,7 @@ public class NodeConfiguration : IEntityTypeConfiguration<Node>
             .WithOne()
             .HasForeignKey<NodeResult>(el => el.NodeId)
             .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.ClientCascade);
 
         // needed for some reason?
         builder.ComplexProperty(n => n.Restraint);

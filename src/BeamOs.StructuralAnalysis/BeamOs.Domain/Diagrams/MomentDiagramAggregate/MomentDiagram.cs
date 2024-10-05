@@ -1,3 +1,4 @@
+using BeamOs.Domain.AnalyticalModel.AnalyticalResultsAggregate.ValueObjects;
 using BeamOs.Domain.Common.Enums;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.Diagrams.Common;
@@ -7,7 +8,6 @@ using BeamOs.Domain.Diagrams.MomentDiagramAggregate.ValueObjects;
 using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate.ValueObjects;
-using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Spatial.Euclidean;
 using UnitsNet;
@@ -15,22 +15,23 @@ using UnitsNet.Units;
 
 namespace BeamOs.Domain.Diagrams.MomentDiagramAggregate;
 
-public sealed class MomentDiagram : DiagramBase<MomentDiagramId>
+public sealed class MomentDiagram : DiagramBase<MomentDiagramId, MomentDiagramConsistentInterval>
 {
-    public ModelId ModelId { get; private set; }
+    public AnalyticalResultsId ModelResultId { get; private set; }
+    public Element1D? Element1d { get; private set; }
     public Element1DId Element1DId { get; private set; }
     public LinearCoordinateDirection3D ShearDirection { get; private set; }
     public Vector3D GlobalShearDirection { get; private init; }
     public ForceUnit ForceUnit { get; }
 
-    protected MomentDiagram(
-        ModelId modelId,
+    private MomentDiagram(
+        AnalyticalResultsId modelResultId,
         Element1DId element1DId,
         LinearCoordinateDirection3D shearDirection,
         Length elementLength,
         LengthUnit lengthUnit,
         ForceUnit forceUnit,
-        List<DiagramConsistantInterval> intervals,
+        List<MomentDiagramConsistentInterval> intervals,
         MomentDiagramId? id = null
     )
         : base(elementLength, lengthUnit, intervals, id ?? new())
@@ -38,11 +39,11 @@ public sealed class MomentDiagram : DiagramBase<MomentDiagramId>
         this.Element1DId = element1DId;
         this.ShearDirection = shearDirection;
         this.ForceUnit = forceUnit;
-        this.ModelId = modelId;
+        this.ModelResultId = modelResultId;
     }
 
     public static MomentDiagram Create(
-        ModelId modelId,
+        AnalyticalResultsId modelResultId,
         Element1DId element1d,
         Point startPoint,
         Point endPoint,
@@ -121,14 +122,16 @@ public sealed class MomentDiagram : DiagramBase<MomentDiagramId>
 
         //List<DiagramPointValue> boundaryConditions = [
 
+        MomentDiagramId diagramId = new();
         return new(
-            modelId,
+            modelResultId,
             element1d,
             localShearDirection,
             elementLength,
             lengthUnit,
             forceUnit,
-            db.Intervals
+            db.Intervals.Select(i => new MomentDiagramConsistentInterval(diagramId, i)).ToList(),
+            diagramId
         )
         {
             GlobalShearDirection = globalShearDirection

@@ -1,4 +1,5 @@
 using BeamOs.ApiClient.Builders;
+using BeamOS.Tests.Common.Extensions;
 using BeamOS.Tests.Common.Fixtures;
 using BeamOS.Tests.Common.SolvedProblems.ETABS_Models.Simple_3_Story_Diagonal;
 using BeamOS.Tests.Common.SolvedProblems.ETABS_Models.TwistyBowlFraming;
@@ -20,7 +21,12 @@ public class AllCreateModelRequestBuilders : TheoryDataBase<CreateModelRequestBu
 {
     public AllCreateModelRequestBuilders()
     {
-        this.Add(TwistyBowlFraming.Instance);
+        if (!BeamOsEnvironment.IsCi())
+        {
+            // because we can't use intel mkl in ci (or at least I haven't figured out how to do so)
+            // running this analysis will take a long time and will result in time-out exceptions
+            this.Add(TwistyBowlFraming.Instance);
+        }
         this.Add(Simple_3_Story_Diagonal.Instance);
     }
 }

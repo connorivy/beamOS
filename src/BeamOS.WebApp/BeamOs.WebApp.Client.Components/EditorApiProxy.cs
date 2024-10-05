@@ -82,6 +82,7 @@ public class EditorApiProxy : DispatchProxy, IAsyncDisposable
         this.dotNetObjectReference?.Dispose();
         if (this.editorReference is not null)
         {
+            await this.editorReference.InvokeVoidAsync("dispose");
             try
             {
                 await this.editorReference.DisposeAsync();

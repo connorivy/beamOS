@@ -38,13 +38,12 @@
     <Folder Include="wwwroot\test-results\stryker\" />
   </ItemGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>$(DefineConstants);BEAM_OS</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants>$(DefineConstants);BEAM_OS</DefineConstants>
-  </PropertyGroup>
+  <Target Name="CopyOpenSees" AfterTargets="AfterBuild" Condition="'$(ContinuousIntegrationBuild)' == false">
+    <!-- /y will surpress prompt to override existing files -->
+    <!-- /s will copy subdirectories unless they are empty-->
+    <Exec Condition="Exists('$(SolutionDir)openSees\bin\')" Command="xcopy /y /s $(SolutionDir)openSees\bin\** $(OutDir)bin\" />
+    <Exec Condition="Exists('$(SolutionDir)openSees\lib\')" Command="xcopy /y /s $(SolutionDir)openSees\lib\** $(OutDir)lib\" />
+  </Target>
 
   <!--<Target Name="NpmInstall" Condition="'$(Configuration)' == 'Release' AND '$(ContinuousIntegrationBuild)' == false" Inputs="$(NpmFolder)/package.json" Outputs="$(NpmFolder)/node_modules/.install-stamp">
     --><!--

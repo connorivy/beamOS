@@ -3,6 +3,7 @@
 
 @using System.ComponentModel.DataAnnotations
 @using System.Security.Claims
+@using BeamOs.Common.Api
 @using BeamOs.Common.Identity
 @using BeamOs.WebApp.Client.Components.Components
 @using BeamOs.WebApp.Client.Components.Layout
@@ -57,6 +58,9 @@
     [SupplyParameterFromForm]
     private LoginForm Input { get; set; } = new();
 
+    [Inject]
+    private UriProvider UriProvider { get; init; }
+
     private string? FullExternalLoginReturnUrl { get; set; }
 
     public const string Href = "/login";
@@ -87,7 +91,7 @@
         // UriHelper.FromAbsolute(url, out string scheme, out HostString host, out _, out _, out _);
         IEnumerable<KeyValuePair<string, StringValues>> query =
         [
-            new("ReturnUrl", FullExternalLoginReturnUrl)
+            new("ReturnUrl", ReturnUrl)
         ];
 
         // var loginWithGoogleUri = UriHelper.BuildAbsolute(
@@ -101,8 +105,16 @@
         // var client = httpClientFactory.CreateClient("IdentityClient");
         // var response = await client.GetAsync(loginWithGoogleUri);
         // var contents = await response.Content.ReadAsStringAsync();
+        var loginWithGoogUri = new UriBuilder()
+            {
+                Scheme = this.UriProvider.Identity.Scheme,
+                Host = this.UriProvider.Identity.Host,
+                Port = this.UriProvider.Identity.Port,
+                Path = "identity/login-with-google",
+                Query = QueryString.Create(query).Value
+            };
 
-        NavigationManager.NavigateTo(loginWithGoogleUri, true);
+        NavigationManager.NavigateTo(loginWithGoogUri.Uri.AbsoluteUri, true);
     }
 
     private async Task LoginUser()

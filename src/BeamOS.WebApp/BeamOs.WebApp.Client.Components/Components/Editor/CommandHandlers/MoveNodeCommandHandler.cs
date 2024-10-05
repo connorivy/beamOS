@@ -1,5 +1,6 @@
 using BeamOs.ApiClient;
 using BeamOs.Common.Api;
+using BeamOs.Contracts.Common;
 using BeamOs.Contracts.PhysicalModel.Node;
 using BeamOs.WebApp.Client.Components.Caches;
 using BeamOs.WebApp.Client.Components.Repositories;
@@ -41,7 +42,7 @@ public class MoveNodeCommandHandler(
                 NodeId = command.NodeId.ToString(),
                 LocationPoint = new()
                 {
-                    LengthUnit = "Meter",
+                    LengthUnit = LengthUnitContract.Meter,
                     XCoordinate = command.NewLocation.X,
                     YCoordinate = command.NewLocation.Y,
                     ZCoordinate = command.NewLocation.Z

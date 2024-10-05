@@ -15,12 +15,12 @@ namespace BeamOS.Tests.Common.SolvedProblems.ETABS_Models.Simple_3_Story_Diagona
 public partial class Simple_3_Story_Diagonal : CreateModelRequestBuilder, IHasSourceInfo
 {
     public override Guid ModelGuid { get; } = Guid.Parse("28dc76b9-fa05-4a30-83c9-7c6e938116dd");
-    public override PhysicalModelSettings Settings { get; } = new(UnitSettingsDtoVerbose.K_FT);
+    public override PhysicalModelSettings Settings { get; } = new(UnitSettingsContract.K_FT);
 
     public SourceInfo SourceInfo { get; } =
         new(
             Sap2000ModelAttribute.TRAIT_VALUE,
-            FixtureSourceType.SAP2000,
+            FixtureSourceType.ThirdPartyAnalysisSoftware,
             nameof(Simple_3_Story_Diagonal),
             null,
             null
@@ -119,7 +119,7 @@ public partial class Simple_3_Story_Diagonal : CreateModelRequestBuilder, IHasSo
                                 this.xValues[xIndex],
                                 this.yValues[yIndex],
                                 this.GetZ(xIndex, zIndex),
-                                "Foot"
+                                LengthUnitContract.Foot
                             ),
                             Restraint = restraint,
                             Id = NodeLocationString(

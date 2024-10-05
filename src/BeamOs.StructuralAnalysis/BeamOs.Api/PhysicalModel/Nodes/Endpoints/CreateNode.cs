@@ -2,6 +2,7 @@ using BeamOs.Api.Common;
 using BeamOS.Api.Common;
 using BeamOs.Api.PhysicalModel.Nodes.Mappers;
 using BeamOs.Application.PhysicalModel.Nodes.Commands;
+using BeamOs.Contracts.Common;
 using BeamOs.Contracts.PhysicalModel.Node;
 using BeamOs.Domain.PhysicalModel.NodeAggregate;
 using FastEndpoints;
@@ -23,7 +24,7 @@ public class CreateNode(
             0.0,
             0.0,
             10.0,
-            "Foot",
+            LengthUnitContract.Foot,
             new RestraintContract(false, false, false, false, false, false)
         );
 

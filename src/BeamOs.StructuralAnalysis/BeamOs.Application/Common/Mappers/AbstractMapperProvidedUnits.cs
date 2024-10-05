@@ -49,6 +49,9 @@ public abstract class AbstractMapperProvidedUnits<TFrom, TTo>(
         );
     }
 
+    protected AngleContract UnitsNetToContractMapper(Angle unit) =>
+        new(unit.As(this.AngleUnit), this.AngleUnit.MapToContract());
+
     protected string UnitToStringMapper(AngleUnit unit)
     {
         return UnitsNetMappers.MapToString(unit);
@@ -58,6 +61,9 @@ public abstract class AbstractMapperProvidedUnits<TFrom, TTo>(
     {
         return new UnitValueDto(unit.As(this.AreaUnit), UnitsNetMappers.MapToString(this.AreaUnit));
     }
+
+    protected AreaContract UnitsNetToContractMapper(Area unit) =>
+        new(unit.As(this.AreaUnit), this.AreaUnit.MapToContract());
 
     public string UnitToStringMapper(AreaUnit unit)
     {
@@ -72,6 +78,9 @@ public abstract class AbstractMapperProvidedUnits<TFrom, TTo>(
         );
     }
 
+    protected AreaMomentOfInertiaContract UnitsNetToContractMapper(AreaMomentOfInertia unit) =>
+        new(unit.As(this.AreaMomentOfInertiaUnit), this.AreaMomentOfInertiaUnit.MapToContract());
+
     protected string UnitToStringMapper(AreaMomentOfInertiaUnit unit)
     {
         return UnitsNetMappers.MapToString(unit);
@@ -84,6 +93,9 @@ public abstract class AbstractMapperProvidedUnits<TFrom, TTo>(
             UnitsNetMappers.MapToString(this.ForceUnit)
         );
     }
+
+    protected ForceContract UnitsNetToContractMapper(Force unit) =>
+        new(unit.As(this.ForceUnit), this.ForceUnit.MapToContract());
 
     protected string UnitToStringMapper(ForceUnit unit)
     {
@@ -98,6 +110,9 @@ public abstract class AbstractMapperProvidedUnits<TFrom, TTo>(
         );
     }
 
+    protected ForcePerLengthContract UnitsNetToContractMapper(ForcePerLength unit) =>
+        new(unit.As(this.ForcePerLengthUnit), this.ForcePerLengthUnit.MapToContract());
+
     protected string UnitToStringMapper(ForcePerLengthUnit unit)
     {
         return UnitsNetMappers.MapToString(unit);
@@ -110,6 +125,9 @@ public abstract class AbstractMapperProvidedUnits<TFrom, TTo>(
             UnitsNetMappers.MapToString(this.LengthUnit)
         );
     }
+
+    protected LengthContract UnitsNetToContractMapper(Length unit) =>
+        new(unit.As(this.LengthUnit), this.LengthUnit.MapToContract());
 
     protected string UnitToStringMapper(LengthUnit unit)
     {
@@ -124,6 +142,9 @@ public abstract class AbstractMapperProvidedUnits<TFrom, TTo>(
         );
     }
 
+    protected PressureContract UnitsNetToContractMapper(Pressure unit) =>
+        new(unit.As(this.PressureUnit), this.PressureUnit.MapToContract());
+
     protected string UnitToStringMapper(PressureUnit unit)
     {
         return UnitsNetMappers.MapToString(unit);
@@ -136,6 +157,9 @@ public abstract class AbstractMapperProvidedUnits<TFrom, TTo>(
             UnitsNetMappers.MapToString(this.TorqueUnit)
         );
     }
+
+    protected TorqueContract UnitsNetToContractMapper(Torque unit) =>
+        new(unit.As(this.TorqueUnit), this.TorqueUnit.MapToContract());
 
     protected string UnitToStringMapper(TorqueUnit unit)
     {
@@ -150,6 +174,9 @@ public abstract class AbstractMapperProvidedUnits<TFrom, TTo>(
         );
     }
 
+    protected VolumeContract UnitsNetToContractMapper(Volume unit) =>
+        new(unit.As(this.VolumeUnit), this.VolumeUnit.MapToContract());
+
     protected string UnitToStringMapper(VolumeUnit unit)
     {
         return UnitsNetMappers.MapToString(unit);
@@ -158,9 +185,9 @@ public abstract class AbstractMapperProvidedUnits<TFrom, TTo>(
     protected BeamOs.Contracts.PhysicalModel.Node.Point ToContract(Point source)
     {
         return new(
-            this.UnitToUnitValueDtoMapper(source.XCoordinate),
-            this.UnitToUnitValueDtoMapper(source.YCoordinate),
-            this.UnitToUnitValueDtoMapper(source.ZCoordinate)
+            source.XCoordinate.MapToContract2(),
+            source.YCoordinate.MapToContract2(),
+            source.ZCoordinate.MapToContract2()
         );
     }
 }

@@ -10,7 +10,7 @@ public class Udoeyo_StructuralAnalysis_Example7_11
         IHasExpectedNodeDisplacementResults
 {
     public override PhysicalModelSettings Settings { get; } =
-        new(UnitSettingsDtoVerbose.K_FT, new(Element1dAnalysisType.Euler));
+        new(UnitSettingsContract.K_FT, new(Element1dAnalysisType.Euler));
 
     public override SourceInfo SourceInfo { get; } =
         new(

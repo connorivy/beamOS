@@ -3,9 +3,9 @@ using BeamOs.CodeGen.Apis.EditorApi;
 using BeamOs.CodeGen.Apis.StructuralAnalysisApi;
 using BeamOs.Common.Api;
 using BeamOs.Common.Events;
-using BeamOs.Contracts.AnalyticalResults;
-using BeamOs.Contracts.AnalyticalResults.AnalyticalNode;
-using BeamOs.Contracts.AnalyticalResults.Forces;
+using BeamOs.Contracts.AnalyticalModel;
+using BeamOs.Contracts.AnalyticalModel.AnalyticalNode;
+using BeamOs.Contracts.AnalyticalModel.Forces;
 using BeamOs.Contracts.PhysicalModel.Common;
 using BeamOs.WebApp.Client.Components.Components.Editor.CommandHandlers;
 using BeamOs.WebApp.Client.Components.Components.Editor.Commands;
@@ -15,13 +15,15 @@ using BeamOs.WebApp.Client.Components.Repositories;
 using BeamOs.WebApp.Client.Components.State;
 using BeamOs.WebApp.Client.EditorCommands;
 using Fluxor;
+using Fluxor.Blazor.Web.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.JSInterop;
 
 namespace BeamOs.WebApp.Client.Components.Components.Editor;
 
-public partial class EditorComponent : ComponentBase, IAsyncDisposable
+public partial class EditorComponent : FluxorComponent
 {
     private IDisposable? undoRedoFunctionality;
 
@@ -55,6 +57,9 @@ public partial class EditorComponent : ComponentBase, IAsyncDisposable
     [Inject]
     private IDispatcher Dispatcher { get; init; }
 
+    [Inject]
+    private IJSRuntime JS { get; init; }
+
     public EditorComponentState EditorComponentState =>
         this.EditorComponentStateRepository.GetOrSetComponentStateByCanvasId(this.ElementId);
 
@@ -66,35 +71,10 @@ public partial class EditorComponent : ComponentBase, IAsyncDisposable
 
     private List<IIntegrationEvent> integrationEvents = [];
 
-    private HubConnection hubConnection;
-
     protected override async Task OnInitializedAsync()
     {
         EventEmitter.VisibleStateChanged += this.EventEmitter_VisibleStateChanged;
-        this.hubConnection = new HubConnectionBuilder()
-            .WithUrl(
-                this.NavigationManager.ToAbsoluteUri(
-                    IStructuralAnalysisHubClient.HubEndpointPattern
-                )
-            )
-            .Build();
 
-        //this.hubConnection.On<IntegrationEventWithTypeName>(
-        //    "StructuralAnalysisIntegrationEventFired",
-        //    @event =>
-        //    {
-        //        Type? eventType = Type.GetType($"{@event.typeFullName},BeamOs.IntegrationEvents");
-        //        var strongEvent = JsonSerializer.Deserialize(
-        //            @event.IntegrationEvent,
-        //            eventType,
-        //            new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
-        //        );
-
-        //        //this.Dispatcher.Dispatch(new DbEvent((IIntegrationEvent)strongEvent));
-        //    }
-        //);
-
-        await this.hubConnection.StartAsync();
         await base.OnInitializedAsync();
     }
 
@@ -111,6 +91,8 @@ public partial class EditorComponent : ComponentBase, IAsyncDisposable
             await this.LoadModel(this.ModelId);
             await this.CacheAllNodeResults();
             await this.ChangeComponentState(state => state with { IsLoading = false });
+
+            await JS.InvokeVoidAsync("initializeCanvasById", this.ElementId);
         }
         await base.OnAfterRenderAsync(firstRender);
     }
@@ -182,9 +164,9 @@ public partial class EditorComponent : ComponentBase, IAsyncDisposable
         );
     }
 
-    private void OnMouseDown(MouseEventArgs args) => this.Dispatcher.Dispatch(new CanvasClicked());
+    private void OnMouseDown(MouseEventArgs args) { }
 
-    public async ValueTask DisposeAsync()
+    protected override async ValueTask DisposeAsyncCore(bool disposing)
     {
         EventEmitter.VisibleStateChanged -= this.EventEmitter_VisibleStateChanged;
 
@@ -196,10 +178,7 @@ public partial class EditorComponent : ComponentBase, IAsyncDisposable
         this.EditorComponentStateRepository.RemoveEditorComponentStateForCanvasId(this.ElementId);
         //await this.EditorApiAlpha.DisposeAsync();
         this.undoRedoFunctionality?.Dispose();
-        if (this.hubConnection is not null)
-        {
-            await this.hubConnection.DisposeAsync();
-        }
+        await base.DisposeAsyncCore(disposing);
     }
 }
 
@@ -209,9 +188,10 @@ public record EditorComponentState(
     string? CanvasId,
     string? LoadedModelId,
     IEditorApiAlpha? EditorApi,
-    SelectedObject[] SelectedObjects
+    SelectedObject[] SelectedObjects,
+    bool IsShowingOverlay
 )
 {
     public EditorComponentState()
-        : this(true, "Loading beamOS editor", null, null, null, []) { }
+        : this(true, "Loading beamOS editor", null, null, null, [], false) { }
 }

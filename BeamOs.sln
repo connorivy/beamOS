@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34330.188
@@ -95,6 +95,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.Common.Identity", "src\BeamOs.Common\BeamOs.Common.Identity\BeamOs.Common.Identity.csproj", "{5E4D6899-A85E-4141-9D2A-DDD211481174}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.Common.Infrastructure", "src\BeamOs.Common\BeamOs.Common.Infrastructure\BeamOs.Common.Infrastructure.csproj", "{79ED8D24-7343-4E80-B995-9392AB9041E1}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "BeamOs.Api.IntegrationTests.Shared", "tests\StructuralAnalysis\BeamOs.Api.IntegrationTests.Shared\BeamOs.Api.IntegrationTests.Shared.shproj", "{AEF090F5-FEFD-4BC9-B45A-F887BC2AB927}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.Api.IntegrationTests.Runtime", "tests\StructuralAnalysis\BeamOs.Api.IntegrationTests.Runtime\BeamOs.Api.IntegrationTests.Runtime.csproj", "{45EBD18B-B4EE-4804-A448-08B302A1C32D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Runtime", "Runtime", "{34E6C3C8-CA18-4EB1-97C7-9DDF3B250F72}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -216,6 +222,10 @@ Global
 		{79ED8D24-7343-4E80-B995-9392AB9041E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{79ED8D24-7343-4E80-B995-9392AB9041E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{79ED8D24-7343-4E80-B995-9392AB9041E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45EBD18B-B4EE-4804-A448-08B302A1C32D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45EBD18B-B4EE-4804-A448-08B302A1C32D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45EBD18B-B4EE-4804-A448-08B302A1C32D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45EBD18B-B4EE-4804-A448-08B302A1C32D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -257,8 +267,16 @@ Global
 		{1E5A8712-0002-494B-8A46-4F56A2AE23B4} = {B58C021C-7297-48C9-9857-4B4C0E856CF4}
 		{5E4D6899-A85E-4141-9D2A-DDD211481174} = {FE5D3FD8-4840-4839-B980-1E8D457814D2}
 		{79ED8D24-7343-4E80-B995-9392AB9041E1} = {FE5D3FD8-4840-4839-B980-1E8D457814D2}
+		{AEF090F5-FEFD-4BC9-B45A-F887BC2AB927} = {8833CB72-49BA-43E7-8827-FE58EADD0D92}
+		{45EBD18B-B4EE-4804-A448-08B302A1C32D} = {34E6C3C8-CA18-4EB1-97C7-9DDF3B250F72}
+		{34E6C3C8-CA18-4EB1-97C7-9DDF3B250F72} = {8833CB72-49BA-43E7-8827-FE58EADD0D92}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0E917AFB-AF19-41C1-9F0B-17BD02FD96BE}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		tests\StructuralAnalysis\BeamOs.Api.IntegrationTests.Shared\BeamOs.Api.IntegrationTests.Shared.projitems*{45ebd18b-b4ee-4804-a448-08b302a1c32d}*SharedItemsImports = 5
+		tests\StructuralAnalysis\BeamOs.Api.IntegrationTests.Shared\BeamOs.Api.IntegrationTests.Shared.projitems*{7f677b7f-7f65-40d0-8420-a446c225f832}*SharedItemsImports = 5
+		tests\StructuralAnalysis\BeamOs.Api.IntegrationTests.Shared\BeamOs.Api.IntegrationTests.Shared.projitems*{aef090f5-fefd-4bc9-b45a-f887bc2ab927}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal

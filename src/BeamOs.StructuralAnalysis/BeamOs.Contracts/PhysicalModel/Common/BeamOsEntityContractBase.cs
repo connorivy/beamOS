@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using BeamOs.Contracts.AnalyticalResults.Diagrams;
+using BeamOs.Contracts.AnalyticalModel.Diagrams;
 using BeamOs.Contracts.PhysicalModel.Element1d;
 using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Contracts.PhysicalModel.Node;

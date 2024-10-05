@@ -1,5 +1,6 @@
 @using BeamOs.WebApp.Client.Components.Features.Styles
 @using Microsoft.AspNetCore.Components.Rendering
+@using Microsoft.AspNetCore.Http
 @inherits FullScreenLayout
 
 @inject IsDarkModeProvider IsDarkModeProvider
@@ -18,7 +19,7 @@
     </MudDrawer>
 
     <MudMainContent Class="h-full">
-        <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="h-full relative">
+        <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="relative h-full">
             @Body
         </MudContainer>
     </MudMainContent>
@@ -34,6 +35,15 @@
     [Inject]
     IState<MainLayoutState> State { get; init; }
 
+    [Inject]
+    IHttpContextAccessor httpContextAccessor { get; init; }
+
     private string inputValue = "initial";
     internal static object Drawer = new();
+
+    protected override void OnInitialized()
+    {
+        var x = httpContextAccessor.HttpContext;
+        base.OnInitialized();
+    }
 }

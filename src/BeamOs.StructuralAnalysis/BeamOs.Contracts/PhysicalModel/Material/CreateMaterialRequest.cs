@@ -4,6 +4,6 @@ namespace BeamOs.Contracts.PhysicalModel.Material;
 
 public record CreateMaterialRequest(
     string ModelId,
-    UnitValueDto ModulusOfElasticity,
-    UnitValueDto ModulusOfRigidity
+    PressureContract ModulusOfElasticity,
+    PressureContract ModulusOfRigidity
 );

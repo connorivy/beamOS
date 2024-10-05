@@ -1,8 +1,10 @@
+using System.Text.Json.Serialization;
 using BeamOs.Api.Common;
 using BeamOs.Api.Common.Extensions;
 using BeamOs.Application;
 using BeamOs.Application.Common;
 using BeamOs.Infrastructure;
+using BeamOS.Tests.Common.Extensions;
 using BeamOS.WebApp;
 using FastEndpoints;
 using FastEndpoints.Swagger;
@@ -37,6 +39,7 @@ public static class DependencyInjection
                 };
                 o.ShortSchemaNames = true;
                 o.ExcludeNonFastEndpoints = true;
+                o.SerializerSettings = s => s.Converters.Add(new JsonStringEnumConverter());
             });
         return services;
     }
@@ -134,22 +137,25 @@ public static class DependencyInjection
 
     public static async Task InitializeAnalysisDb(this WebApplication app)
     {
-        using var scope = app.Services.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<BeamOsStructuralDbContext>();
-        await dbContext.Database.EnsureCreatedAsync();
-        await dbContext.SeedAsync();
+        if (app.Environment.IsDevelopment() || BeamOsEnvironment.IsCi())
+        {
+            using var scope = app.Services.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<BeamOsStructuralDbContext>();
+            await dbContext.Database.MigrateAsync();
+            await dbContext.SeedAsync();
+        }
     }
 
     public static async Task GenerateAnalysisClient(this WebApplication app)
     {
         const string clientNs = "BeamOs.ApiClient";
         const string clientName = "ApiAlphaClient";
-        const string contractsBaseNs =
-            $"{ApiClientGenerator.BeamOsNs}.{ApiClientGenerator.ContractsNs}";
-        const string physicalModelBaseNs =
-            $"{contractsBaseNs}.{ApiClientGenerator.PhysicalModelNs}";
-        const string analyticalResultsBaseNs =
-            $"{contractsBaseNs}.{ApiClientGenerator.AnalyticalResultsNs}";
+        //const string contractsBaseNs =
+        //    $"{ApiClientGenerator.BeamOsNs}.{ApiClientGenerator.ContractsNs}";
+        //const string physicalModelBaseNs =
+        //    $"{contractsBaseNs}.{ApiClientGenerator.PhysicalModelNs}";
+        //const string analyticalResultsBaseNs =
+        //    $"{contractsBaseNs}.{ApiClientGenerator.AnalyticalResultsNs}";
 
         await app.GenerateClient(AlphaRelease, clientNs, clientName);
     }

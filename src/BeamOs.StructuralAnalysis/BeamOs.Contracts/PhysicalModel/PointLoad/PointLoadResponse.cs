@@ -7,6 +7,6 @@ public record PointLoadResponse(
     string Id,
     string ModelId,
     string NodeId,
-    UnitValueDto Force,
+    ForceContract Force,
     Vector3 Direction
 ) : BeamOsEntityContractBase(Id);

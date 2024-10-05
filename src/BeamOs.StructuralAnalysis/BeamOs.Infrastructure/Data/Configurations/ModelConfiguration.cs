@@ -1,3 +1,4 @@
+using BeamOs.Domain.AnalyticalModel.AnalyticalResultsAggregate;
 using BeamOs.Domain.PhysicalModel.ModelAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -37,9 +38,9 @@ internal class ModelConfiguration : IEntityTypeConfiguration<Model>
             .OnDelete(DeleteBehavior.Cascade);
 
         builder
-            .HasMany(m => m.ModelResults)
+            .HasOne(m => m.AnalyticalResults)
             .WithOne()
-            .HasForeignKey(el => el.ModelId)
+            .HasForeignKey<AnalyticalResults>(el => el.ModelId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 

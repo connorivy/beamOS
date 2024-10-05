@@ -8,7 +8,7 @@ namespace BeamOS.Tests.Common.SolvedProblems.Udoeyo_StructuralAnalysis.Example7_
 public class Udoeyo_StructuralAnalysis_Example7_6 : ModelFixture2
 {
     public override PhysicalModelSettings Settings { get; } =
-        new(UnitSettingsDtoVerbose.kN_M, new(Element1dAnalysisType.Euler));
+        new(UnitSettingsContract.kN_M, new(Element1dAnalysisType.Euler));
 
     public override SourceInfo SourceInfo { get; } =
         new(

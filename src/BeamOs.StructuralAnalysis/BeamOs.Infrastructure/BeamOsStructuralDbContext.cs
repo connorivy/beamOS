@@ -1,7 +1,7 @@
 using BeamOs.ApiClient.Builders;
 using BeamOs.Common.Events;
-using BeamOs.Domain.AnalyticalResults.ModelResultAggregate;
-using BeamOs.Domain.AnalyticalResults.NodeResultAggregate;
+using BeamOs.Domain.AnalyticalModel.AnalyticalResultsAggregate;
+using BeamOs.Domain.AnalyticalModel.NodeResultAggregate;
 using BeamOs.Domain.Diagrams.Common;
 using BeamOs.Domain.Diagrams.MomentDiagramAggregate;
 using BeamOs.Domain.Diagrams.ShearForceDiagramAggregate;
@@ -30,7 +30,7 @@ namespace BeamOs.Infrastructure;
 /// Build migrations from folder location
 /// \beamOS\src\BeamOs.StructuralAnalysis\BeamOs.Api\
 /// with the command
-/// dotnet ef migrations add Initial --project ..\..\BeamOs.StructuralAnalysis\BeamOs.Infrastructure\ --context BeamOsStructuralDbContext
+/// dotnet ef migrations add Initial --project ..\BeamOs.Infrastructure\
 /// </summary>
 public class BeamOsStructuralDbContext : DbContext
 {
@@ -64,11 +64,12 @@ public class BeamOsStructuralDbContext : DbContext
     public DbSet<SectionProfile> SectionProfiles { get; set; }
     public DbSet<PointLoad> PointLoads { get; set; }
     public DbSet<MomentLoad> MomentLoads { get; set; }
-    public DbSet<ModelResult> ModelResults { get; set; }
+    public DbSet<AnalyticalResults> AnalyticalResults { get; set; }
     public DbSet<NodeResult> NodeResults { get; set; }
     public DbSet<ShearForceDiagram> ShearForceDiagrams { get; set; }
     public DbSet<MomentDiagram> MomentDiagrams { get; set; }
-    public DbSet<DiagramConsistantInterval> DiagramConsistantIntervals { get; set; }
+
+    //public DbSet<DiagramConsistentInterval> DiagramConsistentIntervals { get; set; }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {

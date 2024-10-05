@@ -1,3 +1,4 @@
+@using BeamOs.Common.Domain.Models
 @using BeamOs.WebApp.Client.Components.Features.StructuralApiClient
 @using System.Reflection
 @using System.Collections
@@ -30,9 +31,23 @@ else if (this.ObjectToDisplay is SimpleFieldTypeMarker fieldTypeMarker)
     {
         <MudTextField @ref="MudTextFieldBoolRef" T="bool?" Typo="Typo.input" Value="@((bool?)fieldTypeMarker.Value)" ValueChanged="(i) => ObjectToDisplayChanged.InvokeAsync(i)" Required="@fieldTypeMarker.IsRequired" Label="@ObjectName" OnlyValidateIfDirty="true" @onfocus="(_) => OnFocus(fieldTypeMarker.FieldNum)" />
     }
+    else if (fieldTypeMarker.FieldType.IsEnum)
+    {
+        <MudSelect T="string" Typo="Typo.input" Value="@(fieldTypeMarker.Value?.ToString())" ValueChanged="(i) => ObjectToDisplayChanged.InvokeAsync(i)" Required="@fieldTypeMarker.IsRequired" Label="@ObjectName" OnlyValidateIfDirty="true" @onfocus="(_) => OnFocus(fieldTypeMarker.FieldNum)">
+            @foreach (var val in Enum.GetValues(fieldTypeMarker.FieldType))
+            {
+                var stringVal = val.ToString();
+                if (string.Equals(stringVal, "Undefined"))
+                {
+                    continue;
+                }
+                <MudSelectItem Value="stringVal">@stringVal</MudSelectItem>
+            }
+        </MudSelect>
+    }
     else
     {
-        <MudTextField @ref="MudTextFieldStringRef" Typo="Typo.input" Converter="@StringObjectConverter" Value="@fieldTypeMarker.Value" ValueChanged="ObjectToDisplayChanged" Required="@fieldTypeMarker.IsRequired" Label="@ObjectName" OnlyValidateIfDirty="true" @onfocus="(_) => OnFocus(fieldTypeMarker.FieldNum)" />
+        <MudTextField @ref="MudTextFieldObjectRef" Typo="Typo.input" Converter="@StringObjectConverter" Value="@fieldTypeMarker.Value" ValueChanged="ObjectToDisplayChanged" Required="@fieldTypeMarker.IsRequired" Label="@ObjectName" OnlyValidateIfDirty="true" @onfocus="(_) => OnFocus(fieldTypeMarker.FieldNum)" />
     }
 }
 else if (this.ObjectToDisplay is ComplexFieldTypeMarker complex)
@@ -65,6 +80,17 @@ else if (this.ObjectToDisplay is ComplexFieldTypeMarker complex)
         <SelectionInfoSingleItemComponent2 ObjectName="@propertyPair.Item1" ObjectToDisplay="@propertyPair.Item2"></SelectionInfoSingleItemComponent2>
     }
 } *@
+else if (this.ObjectToDisplay is IDictionary dict)
+{
+    <MudExpansionPanel Expanded="true" Text="@ObjectName" Class="text-nowrap text-clip mud-typography mud-typography-subtitle2">
+        <MudGrid Spacing="1">
+            @foreach (DictionaryEntry item in dict)
+            {
+                <SelectionInfoSingleItemComponent2 ObjectName="@item.Key.ToString()" ObjectToDisplay="@item.Value"></SelectionInfoSingleItemComponent2>
+            }
+        </MudGrid>
+    </MudExpansionPanel>
+}
 else if (this.ObjectToDisplay is IEnumerable enumerable)
 {
     int counter = 0;

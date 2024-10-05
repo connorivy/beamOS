@@ -1,5 +1,5 @@
 using BeamOs.Common.Domain.Models;
-using BeamOs.Domain.AnalyticalResults.NodeResultAggregate;
+using BeamOs.Domain.AnalyticalModel.NodeResultAggregate;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.PhysicalModel.ModelAggregate.ValueObjects;
 using BeamOs.Domain.PhysicalModel.MomentLoadAggregate;

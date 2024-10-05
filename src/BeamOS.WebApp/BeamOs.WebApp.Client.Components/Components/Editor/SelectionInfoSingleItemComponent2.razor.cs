@@ -56,7 +56,7 @@ public partial class SelectionInfoSingleItemComponent2 : ComponentBase
             );
     }
 
-    private MudTextField<object?> MudTextFieldStringRef
+    private MudTextField<object?> MudTextFieldObjectRef
     {
         set =>
             this.Dispatcher.Dispatch(

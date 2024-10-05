@@ -1,8 +1,10 @@
+using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.ApiClient.Builders;
 
 [Mapper(IncludedMembers = MemberVisibility.Public)]
+[UseStaticMapper(typeof(UnitsNetMappers))]
 public partial class CreateModelRequestBuilder
 {
     //[MapperIgnoreTarget(nameof(CreateModelRequest.Id))]

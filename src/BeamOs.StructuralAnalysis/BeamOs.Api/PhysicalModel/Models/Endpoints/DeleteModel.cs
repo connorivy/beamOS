@@ -1,5 +1,6 @@
 using BeamOs.Api.Common;
 using BeamOS.Api.Common;
+using BeamOs.Application.Common.Interfaces;
 using BeamOs.Application.PhysicalModel.Models;
 using BeamOs.Common.Identity.Policies;
 using BeamOs.Contracts.Common;
@@ -8,8 +9,11 @@ using FastEndpoints;
 
 namespace BeamOs.Api.PhysicalModel.Models.Endpoints;
 
-public class DeleteModel(BeamOsFastEndpointOptions options, IModelRepository modelRepository)
-    : BeamOsFastEndpoint<ModelIdRequest, bool>(options)
+public class DeleteModel(
+    BeamOsFastEndpointOptions options,
+    IModelRepository modelRepository,
+    IUnitOfWork unitOfWork
+) : BeamOsFastEndpoint<ModelIdRequest, bool>(options)
 {
     public override Http EndpointType => Http.DELETE;
     public override string Route => "/models/{modelId}";
@@ -21,7 +25,7 @@ public class DeleteModel(BeamOsFastEndpointOptions options, IModelRepository mod
     {
         ModelId modelId = new(Guid.Parse(req.ModelId));
         await modelRepository.RemoveById(modelId, ct);
-        //await unitOfWork.SaveChangesAsync(); // I don't think this is necessary right here
+        await unitOfWork.SaveChangesAsync(ct);
 
         return true;
     }

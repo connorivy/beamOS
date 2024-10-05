@@ -13,7 +13,12 @@ export interface IStructuralAnalysisApiAlphaClient {
     /**
      * @return OK
      */
-    runDirectStiffnessMethod(body: ModelIdRequest): Promise<AnalyticalModelResponse3>;
+    runOpenSeesAnalysis(body: ModelIdRequest): Promise<boolean>;
+
+    /**
+     * @return OK
+     */
+    runDirectStiffnessMethod(body: ModelIdRequest): Promise<boolean>;
 
     /**
      * @return OK
@@ -28,7 +33,17 @@ export interface IStructuralAnalysisApiAlphaClient {
     /**
      * @return OK
      */
-    getModelResults(body: IdRequest): Promise<ModelResultResponse>;
+    deleteModelResults(body: ModelIdRequest): Promise<boolean>;
+
+    /**
+     * @return OK
+     */
+    getModelResults(body: ModelIdRequest): Promise<AnalyticalResultsResponse>;
+
+    /**
+     * @return OK
+     */
+    getMomentDiagrams(body: ModelIdRequest): Promise<MomentDiagramResponse[]>;
 
     /**
      * @return OK
@@ -93,11 +108,6 @@ export interface IStructuralAnalysisApiAlphaClient {
     /**
      * @return OK
      */
-    getMomentDiagrams(body: ModelIdRequest): Promise<MomentDiagramResponse[]>;
-
-    /**
-     * @return OK
-     */
     getShearDiagram(body: IdRequest): Promise<ShearDiagramResponse>;
 
     /**
@@ -134,7 +144,49 @@ export class StructuralAnalysisApiAlphaClient implements IStructuralAnalysisApiA
     /**
      * @return OK
      */
-    runDirectStiffnessMethod(body: ModelIdRequest): Promise<AnalyticalModelResponse3> {
+    runOpenSeesAnalysis(body: ModelIdRequest): Promise<boolean> {
+        let url_ = this.baseUrl + "/StructuralAnalysisApiAlphaClient/RunOpenSeesAnalysis";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processRunOpenSeesAnalysis(_response);
+        });
+    }
+
+    protected processRunOpenSeesAnalysis(response: Response): Promise<boolean> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<boolean>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    runDirectStiffnessMethod(body: ModelIdRequest): Promise<boolean> {
         let url_ = this.baseUrl + "/StructuralAnalysisApiAlphaClient/RunDirectStiffnessMethod";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -154,14 +206,15 @@ export class StructuralAnalysisApiAlphaClient implements IStructuralAnalysisApiA
         });
     }
 
-    protected processRunDirectStiffnessMethod(response: Response): Promise<AnalyticalModelResponse3> {
+    protected processRunDirectStiffnessMethod(response: Response): Promise<boolean> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = AnalyticalModelResponse3.fromJS(resultData200);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -169,7 +222,7 @@ export class StructuralAnalysisApiAlphaClient implements IStructuralAnalysisApiA
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<AnalyticalModelResponse3>(null as any);
+        return Promise.resolve<boolean>(null as any);
     }
 
     /**
@@ -271,7 +324,49 @@ export class StructuralAnalysisApiAlphaClient implements IStructuralAnalysisApiA
     /**
      * @return OK
      */
-    getModelResults(body: IdRequest): Promise<ModelResultResponse> {
+    deleteModelResults(body: ModelIdRequest): Promise<boolean> {
+        let url_ = this.baseUrl + "/StructuralAnalysisApiAlphaClient/DeleteModelResults";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeleteModelResults(_response);
+        });
+    }
+
+    protected processDeleteModelResults(response: Response): Promise<boolean> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<boolean>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    getModelResults(body: ModelIdRequest): Promise<AnalyticalResultsResponse> {
         let url_ = this.baseUrl + "/StructuralAnalysisApiAlphaClient/GetModelResults";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -291,14 +386,14 @@ export class StructuralAnalysisApiAlphaClient implements IStructuralAnalysisApiA
         });
     }
 
-    protected processGetModelResults(response: Response): Promise<ModelResultResponse> {
+    protected processGetModelResults(response: Response): Promise<AnalyticalResultsResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ModelResultResponse.fromJS(resultData200);
+            result200 = AnalyticalResultsResponse.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -306,7 +401,55 @@ export class StructuralAnalysisApiAlphaClient implements IStructuralAnalysisApiA
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ModelResultResponse>(null as any);
+        return Promise.resolve<AnalyticalResultsResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    getMomentDiagrams(body: ModelIdRequest): Promise<MomentDiagramResponse[]> {
+        let url_ = this.baseUrl + "/StructuralAnalysisApiAlphaClient/GetMomentDiagrams";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetMomentDiagrams(_response);
+        });
+    }
+
+    protected processGetMomentDiagrams(response: Response): Promise<MomentDiagramResponse[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(MomentDiagramResponse.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<MomentDiagramResponse[]>(null as any);
     }
 
     /**
@@ -819,54 +962,6 @@ export class StructuralAnalysisApiAlphaClient implements IStructuralAnalysisApiA
     /**
      * @return OK
      */
-    getMomentDiagrams(body: ModelIdRequest): Promise<MomentDiagramResponse[]> {
-        let url_ = this.baseUrl + "/StructuralAnalysisApiAlphaClient/GetMomentDiagrams";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetMomentDiagrams(_response);
-        });
-    }
-
-    protected processGetMomentDiagrams(response: Response): Promise<MomentDiagramResponse[]> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(MomentDiagramResponse.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<MomentDiagramResponse[]>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
     getShearDiagram(body: IdRequest): Promise<ShearDiagramResponse> {
         let url_ = this.baseUrl + "/StructuralAnalysisApiAlphaClient/GetShearDiagram";
         url_ = url_.replace(/[?&]$/, "");
@@ -1120,10 +1215,14 @@ export interface IAnalysisSettingsContract {
     element1DAnalysisType: Element1dAnalysisType;
 }
 
-export class AnalyticalModelResponse3 implements IAnalyticalModelResponse3 {
-    nodeResponses!: NodeResultResponse[];
+export class AnalyticalResultsResponse implements IAnalyticalResultsResponse {
+    modelId!: string;
+    maxShear!: ForceContract;
+    minShear!: ForceContract;
+    maxMoment!: TorqueContract;
+    minMoment!: TorqueContract;
 
-    constructor(data?: IAnalyticalModelResponse3) {
+    constructor(data?: IAnalyticalResultsResponse) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1131,40 +1230,191 @@ export class AnalyticalModelResponse3 implements IAnalyticalModelResponse3 {
             }
         }
         if (!data) {
-            this.nodeResponses = [];
+            this.maxShear = new ForceContract();
+            this.minShear = new ForceContract();
+            this.maxMoment = new TorqueContract();
+            this.minMoment = new TorqueContract();
         }
     }
 
     init(_data?: any) {
         if (_data) {
-            if (Array.isArray(_data["nodeResponses"])) {
-                this.nodeResponses = [] as any;
-                for (let item of _data["nodeResponses"])
-                    this.nodeResponses!.push(NodeResultResponse.fromJS(item));
-            }
+            this.modelId = _data["modelId"];
+            this.maxShear = _data["maxShear"] ? ForceContract.fromJS(_data["maxShear"]) : new ForceContract();
+            this.minShear = _data["minShear"] ? ForceContract.fromJS(_data["minShear"]) : new ForceContract();
+            this.maxMoment = _data["maxMoment"] ? TorqueContract.fromJS(_data["maxMoment"]) : new TorqueContract();
+            this.minMoment = _data["minMoment"] ? TorqueContract.fromJS(_data["minMoment"]) : new TorqueContract();
         }
     }
 
-    static fromJS(data: any): AnalyticalModelResponse3 {
+    static fromJS(data: any): AnalyticalResultsResponse {
         data = typeof data === 'object' ? data : {};
-        let result = new AnalyticalModelResponse3();
+        let result = new AnalyticalResultsResponse();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.nodeResponses)) {
-            data["nodeResponses"] = [];
-            for (let item of this.nodeResponses)
-                data["nodeResponses"].push(item.toJSON());
-        }
+        data["modelId"] = this.modelId;
+        data["maxShear"] = this.maxShear ? this.maxShear.toJSON() : <any>undefined;
+        data["minShear"] = this.minShear ? this.minShear.toJSON() : <any>undefined;
+        data["maxMoment"] = this.maxMoment ? this.maxMoment.toJSON() : <any>undefined;
+        data["minMoment"] = this.minMoment ? this.minMoment.toJSON() : <any>undefined;
         return data;
     }
 }
 
-export interface IAnalyticalModelResponse3 {
-    nodeResponses: NodeResultResponse[];
+export interface IAnalyticalResultsResponse {
+    modelId: string;
+    maxShear: ForceContract;
+    minShear: ForceContract;
+    maxMoment: TorqueContract;
+    minMoment: TorqueContract;
+}
+
+export class AngleContract implements IAngleContract {
+    value!: number;
+    unit!: AngleUnitContract;
+
+    constructor(data?: IAngleContract) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.value = _data["value"];
+            this.unit = _data["unit"];
+        }
+    }
+
+    static fromJS(data: any): AngleContract {
+        data = typeof data === 'object' ? data : {};
+        let result = new AngleContract();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["value"] = this.value;
+        data["unit"] = this.unit;
+        return data;
+    }
+}
+
+export interface IAngleContract {
+    value: number;
+    unit: AngleUnitContract;
+}
+
+export enum AngleUnitContract {
+    _0 = 0,
+    _1 = 1,
+    _2 = 2,
+}
+
+export class AreaContract implements IAreaContract {
+    value!: number;
+    unit!: AreaUnitContract;
+
+    constructor(data?: IAreaContract) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.value = _data["value"];
+            this.unit = _data["unit"];
+        }
+    }
+
+    static fromJS(data: any): AreaContract {
+        data = typeof data === 'object' ? data : {};
+        let result = new AreaContract();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["value"] = this.value;
+        data["unit"] = this.unit;
+        return data;
+    }
+}
+
+export interface IAreaContract {
+    value: number;
+    unit: AreaUnitContract;
+}
+
+export class AreaMomentOfInertiaContract implements IAreaMomentOfInertiaContract {
+    value!: number;
+    unit!: AreaMomentOfInertiaUnitContract;
+
+    constructor(data?: IAreaMomentOfInertiaContract) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.value = _data["value"];
+            this.unit = _data["unit"];
+        }
+    }
+
+    static fromJS(data: any): AreaMomentOfInertiaContract {
+        data = typeof data === 'object' ? data : {};
+        let result = new AreaMomentOfInertiaContract();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["value"] = this.value;
+        data["unit"] = this.unit;
+        return data;
+    }
+}
+
+export interface IAreaMomentOfInertiaContract {
+    value: number;
+    unit: AreaMomentOfInertiaUnitContract;
+}
+
+export enum AreaMomentOfInertiaUnitContract {
+    _0 = 0,
+    _1 = 1,
+    _2 = 2,
+    _3 = 3,
+    _4 = 4,
+    _5 = 5,
+}
+
+export enum AreaUnitContract {
+    _0 = 0,
+    _1 = 1,
+    _2 = 2,
+    _3 = 3,
+    _4 = 4,
+    _5 = 5,
 }
 
 export class CreateElement1dRequest implements ICreateElement1dRequest {
@@ -1173,7 +1423,7 @@ export class CreateElement1dRequest implements ICreateElement1dRequest {
     endNodeId!: string;
     materialId!: string;
     sectionProfileId!: string;
-    sectionProfileRotation!: UnitValueDto;
+    sectionProfileRotation!: AngleContract;
     customData?: { [key: string]: any; } | undefined;
 
     constructor(data?: ICreateElement1dRequest) {
@@ -1184,7 +1434,7 @@ export class CreateElement1dRequest implements ICreateElement1dRequest {
             }
         }
         if (!data) {
-            this.sectionProfileRotation = new UnitValueDto();
+            this.sectionProfileRotation = new AngleContract();
         }
     }
 
@@ -1195,7 +1445,7 @@ export class CreateElement1dRequest implements ICreateElement1dRequest {
             this.endNodeId = _data["endNodeId"];
             this.materialId = _data["materialId"];
             this.sectionProfileId = _data["sectionProfileId"];
-            this.sectionProfileRotation = _data["sectionProfileRotation"] ? UnitValueDto.fromJS(_data["sectionProfileRotation"]) : new UnitValueDto();
+            this.sectionProfileRotation = _data["sectionProfileRotation"] ? AngleContract.fromJS(_data["sectionProfileRotation"]) : new AngleContract();
             if (_data["customData"]) {
                 this.customData = {} as any;
                 for (let key in _data["customData"]) {
@@ -1238,14 +1488,14 @@ export interface ICreateElement1dRequest {
     endNodeId: string;
     materialId: string;
     sectionProfileId: string;
-    sectionProfileRotation: UnitValueDto;
+    sectionProfileRotation: AngleContract;
     customData?: { [key: string]: any; } | undefined;
 }
 
 export class CreateMaterialRequest implements ICreateMaterialRequest {
     modelId!: string;
-    modulusOfElasticity!: UnitValueDto;
-    modulusOfRigidity!: UnitValueDto;
+    modulusOfElasticity!: PressureContract;
+    modulusOfRigidity!: PressureContract;
 
     constructor(data?: ICreateMaterialRequest) {
         if (data) {
@@ -1255,16 +1505,16 @@ export class CreateMaterialRequest implements ICreateMaterialRequest {
             }
         }
         if (!data) {
-            this.modulusOfElasticity = new UnitValueDto();
-            this.modulusOfRigidity = new UnitValueDto();
+            this.modulusOfElasticity = new PressureContract();
+            this.modulusOfRigidity = new PressureContract();
         }
     }
 
     init(_data?: any) {
         if (_data) {
             this.modelId = _data["modelId"];
-            this.modulusOfElasticity = _data["modulusOfElasticity"] ? UnitValueDto.fromJS(_data["modulusOfElasticity"]) : new UnitValueDto();
-            this.modulusOfRigidity = _data["modulusOfRigidity"] ? UnitValueDto.fromJS(_data["modulusOfRigidity"]) : new UnitValueDto();
+            this.modulusOfElasticity = _data["modulusOfElasticity"] ? PressureContract.fromJS(_data["modulusOfElasticity"]) : new PressureContract();
+            this.modulusOfRigidity = _data["modulusOfRigidity"] ? PressureContract.fromJS(_data["modulusOfRigidity"]) : new PressureContract();
         }
     }
 
@@ -1286,8 +1536,8 @@ export class CreateMaterialRequest implements ICreateMaterialRequest {
 
 export interface ICreateMaterialRequest {
     modelId: string;
-    modulusOfElasticity: UnitValueDto;
-    modulusOfRigidity: UnitValueDto;
+    modulusOfElasticity: PressureContract;
+    modulusOfRigidity: PressureContract;
 }
 
 export class CreateModelRequest implements ICreateModelRequest {
@@ -1343,7 +1593,7 @@ export interface ICreateModelRequest {
 
 export class CreateMomentLoadRequest implements ICreateMomentLoadRequest {
     nodeId!: string;
-    torque!: UnitValueDto;
+    torque!: TorqueContract;
     axisDirection!: Vector3;
 
     constructor(data?: ICreateMomentLoadRequest) {
@@ -1354,7 +1604,7 @@ export class CreateMomentLoadRequest implements ICreateMomentLoadRequest {
             }
         }
         if (!data) {
-            this.torque = new UnitValueDto();
+            this.torque = new TorqueContract();
             this.axisDirection = new Vector3();
         }
     }
@@ -1362,7 +1612,7 @@ export class CreateMomentLoadRequest implements ICreateMomentLoadRequest {
     init(_data?: any) {
         if (_data) {
             this.nodeId = _data["nodeId"];
-            this.torque = _data["torque"] ? UnitValueDto.fromJS(_data["torque"]) : new UnitValueDto();
+            this.torque = _data["torque"] ? TorqueContract.fromJS(_data["torque"]) : new TorqueContract();
             this.axisDirection = _data["axisDirection"] ? Vector3.fromJS(_data["axisDirection"]) : new Vector3();
         }
     }
@@ -1385,7 +1635,7 @@ export class CreateMomentLoadRequest implements ICreateMomentLoadRequest {
 
 export interface ICreateMomentLoadRequest {
     nodeId: string;
-    torque: UnitValueDto;
+    torque: TorqueContract;
     axisDirection: Vector3;
 }
 
@@ -1455,7 +1705,7 @@ export interface ICreateNodeRequest {
 
 export class CreatePointLoadRequest implements ICreatePointLoadRequest {
     nodeId!: string;
-    force!: UnitValueDto;
+    force!: ForceContract;
     direction!: Vector3;
 
     constructor(data?: ICreatePointLoadRequest) {
@@ -1466,7 +1716,7 @@ export class CreatePointLoadRequest implements ICreatePointLoadRequest {
             }
         }
         if (!data) {
-            this.force = new UnitValueDto();
+            this.force = new ForceContract();
             this.direction = new Vector3();
         }
     }
@@ -1474,7 +1724,7 @@ export class CreatePointLoadRequest implements ICreatePointLoadRequest {
     init(_data?: any) {
         if (_data) {
             this.nodeId = _data["nodeId"];
-            this.force = _data["force"] ? UnitValueDto.fromJS(_data["force"]) : new UnitValueDto();
+            this.force = _data["force"] ? ForceContract.fromJS(_data["force"]) : new ForceContract();
             this.direction = _data["direction"] ? Vector3.fromJS(_data["direction"]) : new Vector3();
         }
     }
@@ -1497,18 +1747,18 @@ export class CreatePointLoadRequest implements ICreatePointLoadRequest {
 
 export interface ICreatePointLoadRequest {
     nodeId: string;
-    force: UnitValueDto;
+    force: ForceContract;
     direction: Vector3;
 }
 
 export class CreateSectionProfileRequest implements ICreateSectionProfileRequest {
     modelId!: string;
-    area!: UnitValueDto;
-    strongAxisMomentOfInertia!: UnitValueDto;
-    weakAxisMomentOfInertia!: UnitValueDto;
-    polarMomentOfInertia!: UnitValueDto;
-    strongAxisShearArea!: UnitValueDto;
-    weakAxisShearArea!: UnitValueDto;
+    area!: AreaContract;
+    strongAxisMomentOfInertia!: AreaMomentOfInertiaContract;
+    weakAxisMomentOfInertia!: AreaMomentOfInertiaContract;
+    polarMomentOfInertia!: AreaMomentOfInertiaContract;
+    strongAxisShearArea!: AreaContract;
+    weakAxisShearArea!: AreaContract;
 
     constructor(data?: ICreateSectionProfileRequest) {
         if (data) {
@@ -1518,24 +1768,24 @@ export class CreateSectionProfileRequest implements ICreateSectionProfileRequest
             }
         }
         if (!data) {
-            this.area = new UnitValueDto();
-            this.strongAxisMomentOfInertia = new UnitValueDto();
-            this.weakAxisMomentOfInertia = new UnitValueDto();
-            this.polarMomentOfInertia = new UnitValueDto();
-            this.strongAxisShearArea = new UnitValueDto();
-            this.weakAxisShearArea = new UnitValueDto();
+            this.area = new AreaContract();
+            this.strongAxisMomentOfInertia = new AreaMomentOfInertiaContract();
+            this.weakAxisMomentOfInertia = new AreaMomentOfInertiaContract();
+            this.polarMomentOfInertia = new AreaMomentOfInertiaContract();
+            this.strongAxisShearArea = new AreaContract();
+            this.weakAxisShearArea = new AreaContract();
         }
     }
 
     init(_data?: any) {
         if (_data) {
             this.modelId = _data["modelId"];
-            this.area = _data["area"] ? UnitValueDto.fromJS(_data["area"]) : new UnitValueDto();
-            this.strongAxisMomentOfInertia = _data["strongAxisMomentOfInertia"] ? UnitValueDto.fromJS(_data["strongAxisMomentOfInertia"]) : new UnitValueDto();
-            this.weakAxisMomentOfInertia = _data["weakAxisMomentOfInertia"] ? UnitValueDto.fromJS(_data["weakAxisMomentOfInertia"]) : new UnitValueDto();
-            this.polarMomentOfInertia = _data["polarMomentOfInertia"] ? UnitValueDto.fromJS(_data["polarMomentOfInertia"]) : new UnitValueDto();
-            this.strongAxisShearArea = _data["strongAxisShearArea"] ? UnitValueDto.fromJS(_data["strongAxisShearArea"]) : new UnitValueDto();
-            this.weakAxisShearArea = _data["weakAxisShearArea"] ? UnitValueDto.fromJS(_data["weakAxisShearArea"]) : new UnitValueDto();
+            this.area = _data["area"] ? AreaContract.fromJS(_data["area"]) : new AreaContract();
+            this.strongAxisMomentOfInertia = _data["strongAxisMomentOfInertia"] ? AreaMomentOfInertiaContract.fromJS(_data["strongAxisMomentOfInertia"]) : new AreaMomentOfInertiaContract();
+            this.weakAxisMomentOfInertia = _data["weakAxisMomentOfInertia"] ? AreaMomentOfInertiaContract.fromJS(_data["weakAxisMomentOfInertia"]) : new AreaMomentOfInertiaContract();
+            this.polarMomentOfInertia = _data["polarMomentOfInertia"] ? AreaMomentOfInertiaContract.fromJS(_data["polarMomentOfInertia"]) : new AreaMomentOfInertiaContract();
+            this.strongAxisShearArea = _data["strongAxisShearArea"] ? AreaContract.fromJS(_data["strongAxisShearArea"]) : new AreaContract();
+            this.weakAxisShearArea = _data["weakAxisShearArea"] ? AreaContract.fromJS(_data["weakAxisShearArea"]) : new AreaContract();
         }
     }
 
@@ -1561,20 +1811,20 @@ export class CreateSectionProfileRequest implements ICreateSectionProfileRequest
 
 export interface ICreateSectionProfileRequest {
     modelId: string;
-    area: UnitValueDto;
-    strongAxisMomentOfInertia: UnitValueDto;
-    weakAxisMomentOfInertia: UnitValueDto;
-    polarMomentOfInertia: UnitValueDto;
-    strongAxisShearArea: UnitValueDto;
-    weakAxisShearArea: UnitValueDto;
+    area: AreaContract;
+    strongAxisMomentOfInertia: AreaMomentOfInertiaContract;
+    weakAxisMomentOfInertia: AreaMomentOfInertiaContract;
+    polarMomentOfInertia: AreaMomentOfInertiaContract;
+    strongAxisShearArea: AreaContract;
+    weakAxisShearArea: AreaContract;
 }
 
-export class DiagramConsistantIntervalResponse implements IDiagramConsistantIntervalResponse {
-    startLocation!: UnitValueDto;
-    endLocation!: UnitValueDto;
+export class DiagramConsistentIntervalResponse implements IDiagramConsistentIntervalResponse {
+    startLocation!: LengthContract;
+    endLocation!: LengthContract;
     polynomialCoefficients!: number[];
 
-    constructor(data?: IDiagramConsistantIntervalResponse) {
+    constructor(data?: IDiagramConsistentIntervalResponse) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1582,16 +1832,16 @@ export class DiagramConsistantIntervalResponse implements IDiagramConsistantInte
             }
         }
         if (!data) {
-            this.startLocation = new UnitValueDto();
-            this.endLocation = new UnitValueDto();
+            this.startLocation = new LengthContract();
+            this.endLocation = new LengthContract();
             this.polynomialCoefficients = [];
         }
     }
 
     init(_data?: any) {
         if (_data) {
-            this.startLocation = _data["startLocation"] ? UnitValueDto.fromJS(_data["startLocation"]) : new UnitValueDto();
-            this.endLocation = _data["endLocation"] ? UnitValueDto.fromJS(_data["endLocation"]) : new UnitValueDto();
+            this.startLocation = _data["startLocation"] ? LengthContract.fromJS(_data["startLocation"]) : new LengthContract();
+            this.endLocation = _data["endLocation"] ? LengthContract.fromJS(_data["endLocation"]) : new LengthContract();
             if (Array.isArray(_data["polynomialCoefficients"])) {
                 this.polynomialCoefficients = [] as any;
                 for (let item of _data["polynomialCoefficients"])
@@ -1600,9 +1850,9 @@ export class DiagramConsistantIntervalResponse implements IDiagramConsistantInte
         }
     }
 
-    static fromJS(data: any): DiagramConsistantIntervalResponse {
+    static fromJS(data: any): DiagramConsistentIntervalResponse {
         data = typeof data === 'object' ? data : {};
-        let result = new DiagramConsistantIntervalResponse();
+        let result = new DiagramConsistentIntervalResponse();
         result.init(data);
         return result;
     }
@@ -1620,19 +1870,19 @@ export class DiagramConsistantIntervalResponse implements IDiagramConsistantInte
     }
 }
 
-export interface IDiagramConsistantIntervalResponse {
-    startLocation: UnitValueDto;
-    endLocation: UnitValueDto;
+export interface IDiagramConsistentIntervalResponse {
+    startLocation: LengthContract;
+    endLocation: LengthContract;
     polynomialCoefficients: number[];
 }
 
 export class DisplacementsResponse implements IDisplacementsResponse {
-    displacementAlongX!: UnitValueDto;
-    displacementAlongY!: UnitValueDto;
-    displacementAlongZ!: UnitValueDto;
-    rotationAboutX!: UnitValueDto;
-    rotationAboutY!: UnitValueDto;
-    rotationAboutZ!: UnitValueDto;
+    displacementAlongX!: LengthContract;
+    displacementAlongY!: LengthContract;
+    displacementAlongZ!: LengthContract;
+    rotationAboutX!: AngleContract;
+    rotationAboutY!: AngleContract;
+    rotationAboutZ!: AngleContract;
 
     constructor(data?: IDisplacementsResponse) {
         if (data) {
@@ -1642,23 +1892,23 @@ export class DisplacementsResponse implements IDisplacementsResponse {
             }
         }
         if (!data) {
-            this.displacementAlongX = new UnitValueDto();
-            this.displacementAlongY = new UnitValueDto();
-            this.displacementAlongZ = new UnitValueDto();
-            this.rotationAboutX = new UnitValueDto();
-            this.rotationAboutY = new UnitValueDto();
-            this.rotationAboutZ = new UnitValueDto();
+            this.displacementAlongX = new LengthContract();
+            this.displacementAlongY = new LengthContract();
+            this.displacementAlongZ = new LengthContract();
+            this.rotationAboutX = new AngleContract();
+            this.rotationAboutY = new AngleContract();
+            this.rotationAboutZ = new AngleContract();
         }
     }
 
     init(_data?: any) {
         if (_data) {
-            this.displacementAlongX = _data["displacementAlongX"] ? UnitValueDto.fromJS(_data["displacementAlongX"]) : new UnitValueDto();
-            this.displacementAlongY = _data["displacementAlongY"] ? UnitValueDto.fromJS(_data["displacementAlongY"]) : new UnitValueDto();
-            this.displacementAlongZ = _data["displacementAlongZ"] ? UnitValueDto.fromJS(_data["displacementAlongZ"]) : new UnitValueDto();
-            this.rotationAboutX = _data["rotationAboutX"] ? UnitValueDto.fromJS(_data["rotationAboutX"]) : new UnitValueDto();
-            this.rotationAboutY = _data["rotationAboutY"] ? UnitValueDto.fromJS(_data["rotationAboutY"]) : new UnitValueDto();
-            this.rotationAboutZ = _data["rotationAboutZ"] ? UnitValueDto.fromJS(_data["rotationAboutZ"]) : new UnitValueDto();
+            this.displacementAlongX = _data["displacementAlongX"] ? LengthContract.fromJS(_data["displacementAlongX"]) : new LengthContract();
+            this.displacementAlongY = _data["displacementAlongY"] ? LengthContract.fromJS(_data["displacementAlongY"]) : new LengthContract();
+            this.displacementAlongZ = _data["displacementAlongZ"] ? LengthContract.fromJS(_data["displacementAlongZ"]) : new LengthContract();
+            this.rotationAboutX = _data["rotationAboutX"] ? AngleContract.fromJS(_data["rotationAboutX"]) : new AngleContract();
+            this.rotationAboutY = _data["rotationAboutY"] ? AngleContract.fromJS(_data["rotationAboutY"]) : new AngleContract();
+            this.rotationAboutZ = _data["rotationAboutZ"] ? AngleContract.fromJS(_data["rotationAboutZ"]) : new AngleContract();
         }
     }
 
@@ -1682,12 +1932,12 @@ export class DisplacementsResponse implements IDisplacementsResponse {
 }
 
 export interface IDisplacementsResponse {
-    displacementAlongX: UnitValueDto;
-    displacementAlongY: UnitValueDto;
-    displacementAlongZ: UnitValueDto;
-    rotationAboutX: UnitValueDto;
-    rotationAboutY: UnitValueDto;
-    rotationAboutZ: UnitValueDto;
+    displacementAlongX: LengthContract;
+    displacementAlongY: LengthContract;
+    displacementAlongZ: LengthContract;
+    rotationAboutX: AngleContract;
+    rotationAboutY: AngleContract;
+    rotationAboutZ: AngleContract;
 }
 
 export class Element1DResponse implements IElement1DResponse {
@@ -1697,7 +1947,7 @@ export class Element1DResponse implements IElement1DResponse {
     endNodeId!: string;
     materialId!: string;
     sectionProfileId!: string;
-    sectionProfileRotation!: UnitValueDto;
+    sectionProfileRotation!: AngleContract;
     customData?: { [key: string]: any; } | undefined;
 
     constructor(data?: IElement1DResponse) {
@@ -1708,7 +1958,7 @@ export class Element1DResponse implements IElement1DResponse {
             }
         }
         if (!data) {
-            this.sectionProfileRotation = new UnitValueDto();
+            this.sectionProfileRotation = new AngleContract();
         }
     }
 
@@ -1720,7 +1970,7 @@ export class Element1DResponse implements IElement1DResponse {
             this.endNodeId = _data["endNodeId"];
             this.materialId = _data["materialId"];
             this.sectionProfileId = _data["sectionProfileId"];
-            this.sectionProfileRotation = _data["sectionProfileRotation"] ? UnitValueDto.fromJS(_data["sectionProfileRotation"]) : new UnitValueDto();
+            this.sectionProfileRotation = _data["sectionProfileRotation"] ? AngleContract.fromJS(_data["sectionProfileRotation"]) : new AngleContract();
             if (_data["customData"]) {
                 this.customData = {} as any;
                 for (let key in _data["customData"]) {
@@ -1765,7 +2015,7 @@ export interface IElement1DResponse {
     endNodeId: string;
     materialId: string;
     sectionProfileId: string;
-    sectionProfileRotation: UnitValueDto;
+    sectionProfileRotation: AngleContract;
     customData?: { [key: string]: any; } | undefined;
 }
 
@@ -1805,13 +2055,61 @@ export class EmptyRequest implements IEmptyRequest {
 export interface IEmptyRequest {
 }
 
+export class ForceContract implements IForceContract {
+    value!: number;
+    unit!: ForceUnitContract;
+
+    constructor(data?: IForceContract) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.value = _data["value"];
+            this.unit = _data["unit"];
+        }
+    }
+
+    static fromJS(data: any): ForceContract {
+        data = typeof data === 'object' ? data : {};
+        let result = new ForceContract();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["value"] = this.value;
+        data["unit"] = this.unit;
+        return data;
+    }
+}
+
+export interface IForceContract {
+    value: number;
+    unit: ForceUnitContract;
+}
+
+export enum ForceUnitContract {
+    _0 = 0,
+    _1 = 1,
+    _2 = 2,
+    _3 = 3,
+    _4 = 4,
+}
+
 export class ForcesResponse implements IForcesResponse {
-    forceAlongX!: UnitValueDto;
-    forceAlongY!: UnitValueDto;
-    forceAlongZ!: UnitValueDto;
-    momentAboutX!: UnitValueDto;
-    momentAboutY!: UnitValueDto;
-    momentAboutZ!: UnitValueDto;
+    forceAlongX!: ForceContract;
+    forceAlongY!: ForceContract;
+    forceAlongZ!: ForceContract;
+    momentAboutX!: TorqueContract;
+    momentAboutY!: TorqueContract;
+    momentAboutZ!: TorqueContract;
 
     constructor(data?: IForcesResponse) {
         if (data) {
@@ -1821,23 +2119,23 @@ export class ForcesResponse implements IForcesResponse {
             }
         }
         if (!data) {
-            this.forceAlongX = new UnitValueDto();
-            this.forceAlongY = new UnitValueDto();
-            this.forceAlongZ = new UnitValueDto();
-            this.momentAboutX = new UnitValueDto();
-            this.momentAboutY = new UnitValueDto();
-            this.momentAboutZ = new UnitValueDto();
+            this.forceAlongX = new ForceContract();
+            this.forceAlongY = new ForceContract();
+            this.forceAlongZ = new ForceContract();
+            this.momentAboutX = new TorqueContract();
+            this.momentAboutY = new TorqueContract();
+            this.momentAboutZ = new TorqueContract();
         }
     }
 
     init(_data?: any) {
         if (_data) {
-            this.forceAlongX = _data["forceAlongX"] ? UnitValueDto.fromJS(_data["forceAlongX"]) : new UnitValueDto();
-            this.forceAlongY = _data["forceAlongY"] ? UnitValueDto.fromJS(_data["forceAlongY"]) : new UnitValueDto();
-            this.forceAlongZ = _data["forceAlongZ"] ? UnitValueDto.fromJS(_data["forceAlongZ"]) : new UnitValueDto();
-            this.momentAboutX = _data["momentAboutX"] ? UnitValueDto.fromJS(_data["momentAboutX"]) : new UnitValueDto();
-            this.momentAboutY = _data["momentAboutY"] ? UnitValueDto.fromJS(_data["momentAboutY"]) : new UnitValueDto();
-            this.momentAboutZ = _data["momentAboutZ"] ? UnitValueDto.fromJS(_data["momentAboutZ"]) : new UnitValueDto();
+            this.forceAlongX = _data["forceAlongX"] ? ForceContract.fromJS(_data["forceAlongX"]) : new ForceContract();
+            this.forceAlongY = _data["forceAlongY"] ? ForceContract.fromJS(_data["forceAlongY"]) : new ForceContract();
+            this.forceAlongZ = _data["forceAlongZ"] ? ForceContract.fromJS(_data["forceAlongZ"]) : new ForceContract();
+            this.momentAboutX = _data["momentAboutX"] ? TorqueContract.fromJS(_data["momentAboutX"]) : new TorqueContract();
+            this.momentAboutY = _data["momentAboutY"] ? TorqueContract.fromJS(_data["momentAboutY"]) : new TorqueContract();
+            this.momentAboutZ = _data["momentAboutZ"] ? TorqueContract.fromJS(_data["momentAboutZ"]) : new TorqueContract();
         }
     }
 
@@ -1861,12 +2159,12 @@ export class ForcesResponse implements IForcesResponse {
 }
 
 export interface IForcesResponse {
-    forceAlongX: UnitValueDto;
-    forceAlongY: UnitValueDto;
-    forceAlongZ: UnitValueDto;
-    momentAboutX: UnitValueDto;
-    momentAboutY: UnitValueDto;
-    momentAboutZ: UnitValueDto;
+    forceAlongX: ForceContract;
+    forceAlongY: ForceContract;
+    forceAlongZ: ForceContract;
+    momentAboutX: TorqueContract;
+    momentAboutY: TorqueContract;
+    momentAboutZ: TorqueContract;
 }
 
 export class GetElement1dsRequest implements IGetElement1dsRequest {
@@ -2049,11 +2347,60 @@ export interface IIdRequest {
     id: string;
 }
 
+export class LengthContract implements ILengthContract {
+    value!: number;
+    unit!: LengthUnitContract;
+
+    constructor(data?: ILengthContract) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.value = _data["value"];
+            this.unit = _data["unit"];
+        }
+    }
+
+    static fromJS(data: any): LengthContract {
+        data = typeof data === 'object' ? data : {};
+        let result = new LengthContract();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["value"] = this.value;
+        data["unit"] = this.unit;
+        return data;
+    }
+}
+
+export interface ILengthContract {
+    value: number;
+    unit: LengthUnitContract;
+}
+
+export enum LengthUnitContract {
+    _0 = 0,
+    _1 = 1,
+    _2 = 2,
+    _3 = 3,
+    _4 = 4,
+    _5 = 5,
+}
+
 export class MaterialResponse implements IMaterialResponse {
     id!: string;
     modelId!: string;
-    modulusOfElasticity!: UnitValueDto;
-    modulusOfRigidity!: UnitValueDto;
+    modulusOfElasticity!: PressureContract;
+    modulusOfRigidity!: PressureContract;
 
     constructor(data?: IMaterialResponse) {
         if (data) {
@@ -2063,8 +2410,8 @@ export class MaterialResponse implements IMaterialResponse {
             }
         }
         if (!data) {
-            this.modulusOfElasticity = new UnitValueDto();
-            this.modulusOfRigidity = new UnitValueDto();
+            this.modulusOfElasticity = new PressureContract();
+            this.modulusOfRigidity = new PressureContract();
         }
     }
 
@@ -2072,8 +2419,8 @@ export class MaterialResponse implements IMaterialResponse {
         if (_data) {
             this.id = _data["id"];
             this.modelId = _data["modelId"];
-            this.modulusOfElasticity = _data["modulusOfElasticity"] ? UnitValueDto.fromJS(_data["modulusOfElasticity"]) : new UnitValueDto();
-            this.modulusOfRigidity = _data["modulusOfRigidity"] ? UnitValueDto.fromJS(_data["modulusOfRigidity"]) : new UnitValueDto();
+            this.modulusOfElasticity = _data["modulusOfElasticity"] ? PressureContract.fromJS(_data["modulusOfElasticity"]) : new PressureContract();
+            this.modulusOfRigidity = _data["modulusOfRigidity"] ? PressureContract.fromJS(_data["modulusOfRigidity"]) : new PressureContract();
         }
     }
 
@@ -2097,8 +2444,8 @@ export class MaterialResponse implements IMaterialResponse {
 export interface IMaterialResponse {
     id: string;
     modelId: string;
-    modulusOfElasticity: UnitValueDto;
-    modulusOfRigidity: UnitValueDto;
+    modulusOfElasticity: PressureContract;
+    modulusOfRigidity: PressureContract;
 }
 
 export class ModelIdRequest implements IModelIdRequest {
@@ -2196,6 +2543,7 @@ export class ModelResponse implements IModelResponse {
     sectionProfiles?: SectionProfileResponse[] | undefined;
     pointLoads?: PointLoadResponse[] | undefined;
     momentLoads?: MomentLoadResponse[] | undefined;
+    analyticalResults!: AnalyticalResultsResponse;
 
     constructor(data?: IModelResponse) {
         if (data) {
@@ -2206,6 +2554,7 @@ export class ModelResponse implements IModelResponse {
         }
         if (!data) {
             this.settings = new PhysicalModelSettings();
+            this.analyticalResults = new AnalyticalResultsResponse();
         }
     }
 
@@ -2245,6 +2594,7 @@ export class ModelResponse implements IModelResponse {
                 for (let item of _data["momentLoads"])
                     this.momentLoads!.push(MomentLoadResponse.fromJS(item));
             }
+            this.analyticalResults = _data["analyticalResults"] ? AnalyticalResultsResponse.fromJS(_data["analyticalResults"]) : new AnalyticalResultsResponse();
         }
     }
 
@@ -2291,6 +2641,7 @@ export class ModelResponse implements IModelResponse {
             for (let item of this.momentLoads)
                 data["momentLoads"].push(item.toJSON());
         }
+        data["analyticalResults"] = this.analyticalResults ? this.analyticalResults.toJSON() : <any>undefined;
         return data;
     }
 }
@@ -2306,64 +2657,7 @@ export interface IModelResponse {
     sectionProfiles?: SectionProfileResponse[] | undefined;
     pointLoads?: PointLoadResponse[] | undefined;
     momentLoads?: MomentLoadResponse[] | undefined;
-}
-
-export class ModelResultResponse implements IModelResultResponse {
-    modelId!: string;
-    maxShear!: UnitValueDto;
-    minShear!: UnitValueDto;
-    maxMoment!: UnitValueDto;
-    minMoment!: UnitValueDto;
-
-    constructor(data?: IModelResultResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.maxShear = new UnitValueDto();
-            this.minShear = new UnitValueDto();
-            this.maxMoment = new UnitValueDto();
-            this.minMoment = new UnitValueDto();
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.modelId = _data["modelId"];
-            this.maxShear = _data["maxShear"] ? UnitValueDto.fromJS(_data["maxShear"]) : new UnitValueDto();
-            this.minShear = _data["minShear"] ? UnitValueDto.fromJS(_data["minShear"]) : new UnitValueDto();
-            this.maxMoment = _data["maxMoment"] ? UnitValueDto.fromJS(_data["maxMoment"]) : new UnitValueDto();
-            this.minMoment = _data["minMoment"] ? UnitValueDto.fromJS(_data["minMoment"]) : new UnitValueDto();
-        }
-    }
-
-    static fromJS(data: any): ModelResultResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new ModelResultResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["modelId"] = this.modelId;
-        data["maxShear"] = this.maxShear ? this.maxShear.toJSON() : <any>undefined;
-        data["minShear"] = this.minShear ? this.minShear.toJSON() : <any>undefined;
-        data["maxMoment"] = this.maxMoment ? this.maxMoment.toJSON() : <any>undefined;
-        data["minMoment"] = this.minMoment ? this.minMoment.toJSON() : <any>undefined;
-        return data;
-    }
-}
-
-export interface IModelResultResponse {
-    modelId: string;
-    maxShear: UnitValueDto;
-    minShear: UnitValueDto;
-    maxMoment: UnitValueDto;
-    minMoment: UnitValueDto;
+    analyticalResults: AnalyticalResultsResponse;
 }
 
 export class MomentDiagramResponse implements IMomentDiagramResponse {
@@ -2371,8 +2665,8 @@ export class MomentDiagramResponse implements IMomentDiagramResponse {
     element1DId!: string;
     lengthUnit!: string;
     forceUnit!: string;
-    elementLength!: UnitValueDto;
-    intervals!: DiagramConsistantIntervalResponse[];
+    elementLength!: LengthContract;
+    intervals!: DiagramConsistentIntervalResponse[];
 
     constructor(data?: IMomentDiagramResponse) {
         if (data) {
@@ -2382,7 +2676,7 @@ export class MomentDiagramResponse implements IMomentDiagramResponse {
             }
         }
         if (!data) {
-            this.elementLength = new UnitValueDto();
+            this.elementLength = new LengthContract();
             this.intervals = [];
         }
     }
@@ -2393,11 +2687,11 @@ export class MomentDiagramResponse implements IMomentDiagramResponse {
             this.element1DId = _data["element1DId"];
             this.lengthUnit = _data["lengthUnit"];
             this.forceUnit = _data["forceUnit"];
-            this.elementLength = _data["elementLength"] ? UnitValueDto.fromJS(_data["elementLength"]) : new UnitValueDto();
+            this.elementLength = _data["elementLength"] ? LengthContract.fromJS(_data["elementLength"]) : new LengthContract();
             if (Array.isArray(_data["intervals"])) {
                 this.intervals = [] as any;
                 for (let item of _data["intervals"])
-                    this.intervals!.push(DiagramConsistantIntervalResponse.fromJS(item));
+                    this.intervals!.push(DiagramConsistentIntervalResponse.fromJS(item));
             }
         }
     }
@@ -2430,15 +2724,15 @@ export interface IMomentDiagramResponse {
     element1DId: string;
     lengthUnit: string;
     forceUnit: string;
-    elementLength: UnitValueDto;
-    intervals: DiagramConsistantIntervalResponse[];
+    elementLength: LengthContract;
+    intervals: DiagramConsistentIntervalResponse[];
 }
 
 export class MomentLoadResponse implements IMomentLoadResponse {
     id!: string;
     modelId!: string;
     nodeId!: string;
-    torque!: UnitValueDto;
+    torque!: TorqueContract;
     axisDirection!: Vector3;
 
     constructor(data?: IMomentLoadResponse) {
@@ -2449,7 +2743,7 @@ export class MomentLoadResponse implements IMomentLoadResponse {
             }
         }
         if (!data) {
-            this.torque = new UnitValueDto();
+            this.torque = new TorqueContract();
             this.axisDirection = new Vector3();
         }
     }
@@ -2459,7 +2753,7 @@ export class MomentLoadResponse implements IMomentLoadResponse {
             this.id = _data["id"];
             this.modelId = _data["modelId"];
             this.nodeId = _data["nodeId"];
-            this.torque = _data["torque"] ? UnitValueDto.fromJS(_data["torque"]) : new UnitValueDto();
+            this.torque = _data["torque"] ? TorqueContract.fromJS(_data["torque"]) : new TorqueContract();
             this.axisDirection = _data["axisDirection"] ? Vector3.fromJS(_data["axisDirection"]) : new Vector3();
         }
     }
@@ -2486,7 +2780,7 @@ export interface IMomentLoadResponse {
     id: string;
     modelId: string;
     nodeId: string;
-    torque: UnitValueDto;
+    torque: TorqueContract;
     axisDirection: Vector3;
 }
 
@@ -2655,7 +2949,7 @@ export interface IPatchNodeRequest {
 }
 
 export class PatchPointRequest implements IPatchPointRequest {
-    lengthUnit!: string;
+    lengthUnit!: LengthUnitContract;
     xCoordinate?: number | undefined;
     yCoordinate?: number | undefined;
     zCoordinate?: number | undefined;
@@ -2696,7 +2990,7 @@ export class PatchPointRequest implements IPatchPointRequest {
 }
 
 export interface IPatchPointRequest {
-    lengthUnit: string;
+    lengthUnit: LengthUnitContract;
     xCoordinate?: number | undefined;
     yCoordinate?: number | undefined;
     zCoordinate?: number | undefined;
@@ -2759,7 +3053,7 @@ export interface IPatchRestraintRequest {
 }
 
 export class PhysicalModelSettings implements IPhysicalModelSettings {
-    unitSettings!: UnitSettingsDtoVerbose;
+    unitSettings!: UnitSettingsContract;
     analysisSettings!: AnalysisSettingsContract;
     yAxisUp!: boolean;
 
@@ -2771,14 +3065,14 @@ export class PhysicalModelSettings implements IPhysicalModelSettings {
             }
         }
         if (!data) {
-            this.unitSettings = new UnitSettingsDtoVerbose();
+            this.unitSettings = new UnitSettingsContract();
             this.analysisSettings = new AnalysisSettingsContract();
         }
     }
 
     init(_data?: any) {
         if (_data) {
-            this.unitSettings = _data["unitSettings"] ? UnitSettingsDtoVerbose.fromJS(_data["unitSettings"]) : new UnitSettingsDtoVerbose();
+            this.unitSettings = _data["unitSettings"] ? UnitSettingsContract.fromJS(_data["unitSettings"]) : new UnitSettingsContract();
             this.analysisSettings = _data["analysisSettings"] ? AnalysisSettingsContract.fromJS(_data["analysisSettings"]) : new AnalysisSettingsContract();
             this.yAxisUp = _data["yAxisUp"];
         }
@@ -2801,7 +3095,7 @@ export class PhysicalModelSettings implements IPhysicalModelSettings {
 }
 
 export interface IPhysicalModelSettings {
-    unitSettings: UnitSettingsDtoVerbose;
+    unitSettings: UnitSettingsContract;
     analysisSettings: AnalysisSettingsContract;
     yAxisUp: boolean;
 }
@@ -2810,7 +3104,7 @@ export class Point implements IPoint {
     xCoordinate!: number;
     yCoordinate!: number;
     zCoordinate!: number;
-    lengthUnit!: string;
+    lengthUnit!: LengthUnitContract;
 
     constructor(data?: IPoint) {
         if (data) {
@@ -2851,14 +3145,14 @@ export interface IPoint {
     xCoordinate: number;
     yCoordinate: number;
     zCoordinate: number;
-    lengthUnit: string;
+    lengthUnit: LengthUnitContract;
 }
 
 export class PointLoadResponse implements IPointLoadResponse {
     id!: string;
     modelId!: string;
     nodeId!: string;
-    force!: UnitValueDto;
+    force!: ForceContract;
     direction!: Vector3;
 
     constructor(data?: IPointLoadResponse) {
@@ -2869,7 +3163,7 @@ export class PointLoadResponse implements IPointLoadResponse {
             }
         }
         if (!data) {
-            this.force = new UnitValueDto();
+            this.force = new ForceContract();
             this.direction = new Vector3();
         }
     }
@@ -2879,7 +3173,7 @@ export class PointLoadResponse implements IPointLoadResponse {
             this.id = _data["id"];
             this.modelId = _data["modelId"];
             this.nodeId = _data["nodeId"];
-            this.force = _data["force"] ? UnitValueDto.fromJS(_data["force"]) : new UnitValueDto();
+            this.force = _data["force"] ? ForceContract.fromJS(_data["force"]) : new ForceContract();
             this.direction = _data["direction"] ? Vector3.fromJS(_data["direction"]) : new Vector3();
         }
     }
@@ -2906,8 +3200,62 @@ export interface IPointLoadResponse {
     id: string;
     modelId: string;
     nodeId: string;
-    force: UnitValueDto;
+    force: ForceContract;
     direction: Vector3;
+}
+
+export class PressureContract implements IPressureContract {
+    value!: number;
+    unit!: PressureUnitContract;
+
+    constructor(data?: IPressureContract) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.value = _data["value"];
+            this.unit = _data["unit"];
+        }
+    }
+
+    static fromJS(data: any): PressureContract {
+        data = typeof data === 'object' ? data : {};
+        let result = new PressureContract();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["value"] = this.value;
+        data["unit"] = this.unit;
+        return data;
+    }
+}
+
+export interface IPressureContract {
+    value: number;
+    unit: PressureUnitContract;
+}
+
+export enum PressureUnitContract {
+    _0 = 0,
+    _7 = 7,
+    _8 = 8,
+    _9 = 9,
+    _10 = 10,
+    _11 = 11,
+    _17 = 17,
+    _18 = 18,
+    _19 = 19,
+    _21 = 21,
+    _22 = 22,
 }
 
 export class RestraintContract implements IRestraintContract {
@@ -2969,12 +3317,12 @@ export interface IRestraintContract {
 export class SectionProfileResponse implements ISectionProfileResponse {
     id!: string;
     modelId!: string;
-    area!: UnitValueDto;
-    strongAxisMomentOfInertia!: UnitValueDto;
-    weakAxisMomentOfInertia!: UnitValueDto;
-    polarMomentOfInertia!: UnitValueDto;
-    strongAxisShearArea!: UnitValueDto;
-    weakAxisShearArea!: UnitValueDto;
+    area!: AreaContract;
+    strongAxisMomentOfInertia!: AreaMomentOfInertiaContract;
+    weakAxisMomentOfInertia!: AreaMomentOfInertiaContract;
+    polarMomentOfInertia!: AreaMomentOfInertiaContract;
+    strongAxisShearArea!: AreaContract;
+    weakAxisShearArea!: AreaContract;
 
     constructor(data?: ISectionProfileResponse) {
         if (data) {
@@ -2984,12 +3332,12 @@ export class SectionProfileResponse implements ISectionProfileResponse {
             }
         }
         if (!data) {
-            this.area = new UnitValueDto();
-            this.strongAxisMomentOfInertia = new UnitValueDto();
-            this.weakAxisMomentOfInertia = new UnitValueDto();
-            this.polarMomentOfInertia = new UnitValueDto();
-            this.strongAxisShearArea = new UnitValueDto();
-            this.weakAxisShearArea = new UnitValueDto();
+            this.area = new AreaContract();
+            this.strongAxisMomentOfInertia = new AreaMomentOfInertiaContract();
+            this.weakAxisMomentOfInertia = new AreaMomentOfInertiaContract();
+            this.polarMomentOfInertia = new AreaMomentOfInertiaContract();
+            this.strongAxisShearArea = new AreaContract();
+            this.weakAxisShearArea = new AreaContract();
         }
     }
 
@@ -2997,12 +3345,12 @@ export class SectionProfileResponse implements ISectionProfileResponse {
         if (_data) {
             this.id = _data["id"];
             this.modelId = _data["modelId"];
-            this.area = _data["area"] ? UnitValueDto.fromJS(_data["area"]) : new UnitValueDto();
-            this.strongAxisMomentOfInertia = _data["strongAxisMomentOfInertia"] ? UnitValueDto.fromJS(_data["strongAxisMomentOfInertia"]) : new UnitValueDto();
-            this.weakAxisMomentOfInertia = _data["weakAxisMomentOfInertia"] ? UnitValueDto.fromJS(_data["weakAxisMomentOfInertia"]) : new UnitValueDto();
-            this.polarMomentOfInertia = _data["polarMomentOfInertia"] ? UnitValueDto.fromJS(_data["polarMomentOfInertia"]) : new UnitValueDto();
-            this.strongAxisShearArea = _data["strongAxisShearArea"] ? UnitValueDto.fromJS(_data["strongAxisShearArea"]) : new UnitValueDto();
-            this.weakAxisShearArea = _data["weakAxisShearArea"] ? UnitValueDto.fromJS(_data["weakAxisShearArea"]) : new UnitValueDto();
+            this.area = _data["area"] ? AreaContract.fromJS(_data["area"]) : new AreaContract();
+            this.strongAxisMomentOfInertia = _data["strongAxisMomentOfInertia"] ? AreaMomentOfInertiaContract.fromJS(_data["strongAxisMomentOfInertia"]) : new AreaMomentOfInertiaContract();
+            this.weakAxisMomentOfInertia = _data["weakAxisMomentOfInertia"] ? AreaMomentOfInertiaContract.fromJS(_data["weakAxisMomentOfInertia"]) : new AreaMomentOfInertiaContract();
+            this.polarMomentOfInertia = _data["polarMomentOfInertia"] ? AreaMomentOfInertiaContract.fromJS(_data["polarMomentOfInertia"]) : new AreaMomentOfInertiaContract();
+            this.strongAxisShearArea = _data["strongAxisShearArea"] ? AreaContract.fromJS(_data["strongAxisShearArea"]) : new AreaContract();
+            this.weakAxisShearArea = _data["weakAxisShearArea"] ? AreaContract.fromJS(_data["weakAxisShearArea"]) : new AreaContract();
         }
     }
 
@@ -3030,12 +3378,12 @@ export class SectionProfileResponse implements ISectionProfileResponse {
 export interface ISectionProfileResponse {
     id: string;
     modelId: string;
-    area: UnitValueDto;
-    strongAxisMomentOfInertia: UnitValueDto;
-    weakAxisMomentOfInertia: UnitValueDto;
-    polarMomentOfInertia: UnitValueDto;
-    strongAxisShearArea: UnitValueDto;
-    weakAxisShearArea: UnitValueDto;
+    area: AreaContract;
+    strongAxisMomentOfInertia: AreaMomentOfInertiaContract;
+    weakAxisMomentOfInertia: AreaMomentOfInertiaContract;
+    polarMomentOfInertia: AreaMomentOfInertiaContract;
+    strongAxisShearArea: AreaContract;
+    weakAxisShearArea: AreaContract;
 }
 
 export class ShearDiagramResponse implements IShearDiagramResponse {
@@ -3044,8 +3392,8 @@ export class ShearDiagramResponse implements IShearDiagramResponse {
     globalShearDirection!: Vector3;
     lengthUnit!: string;
     forceUnit!: string;
-    elementLength!: UnitValueDto;
-    intervals!: DiagramConsistantIntervalResponse[];
+    elementLength!: LengthContract;
+    intervals!: DiagramConsistentIntervalResponse[];
 
     constructor(data?: IShearDiagramResponse) {
         if (data) {
@@ -3056,7 +3404,7 @@ export class ShearDiagramResponse implements IShearDiagramResponse {
         }
         if (!data) {
             this.globalShearDirection = new Vector3();
-            this.elementLength = new UnitValueDto();
+            this.elementLength = new LengthContract();
             this.intervals = [];
         }
     }
@@ -3068,11 +3416,11 @@ export class ShearDiagramResponse implements IShearDiagramResponse {
             this.globalShearDirection = _data["globalShearDirection"] ? Vector3.fromJS(_data["globalShearDirection"]) : new Vector3();
             this.lengthUnit = _data["lengthUnit"];
             this.forceUnit = _data["forceUnit"];
-            this.elementLength = _data["elementLength"] ? UnitValueDto.fromJS(_data["elementLength"]) : new UnitValueDto();
+            this.elementLength = _data["elementLength"] ? LengthContract.fromJS(_data["elementLength"]) : new LengthContract();
             if (Array.isArray(_data["intervals"])) {
                 this.intervals = [] as any;
                 for (let item of _data["intervals"])
-                    this.intervals!.push(DiagramConsistantIntervalResponse.fromJS(item));
+                    this.intervals!.push(DiagramConsistentIntervalResponse.fromJS(item));
             }
         }
     }
@@ -3107,83 +3455,15 @@ export interface IShearDiagramResponse {
     globalShearDirection: Vector3;
     lengthUnit: string;
     forceUnit: string;
-    elementLength: UnitValueDto;
-    intervals: DiagramConsistantIntervalResponse[];
+    elementLength: LengthContract;
+    intervals: DiagramConsistentIntervalResponse[];
 }
 
-export class UnitSettingsDtoVerbose implements IUnitSettingsDtoVerbose {
-    lengthUnit!: string;
-    areaUnit!: string;
-    volumeUnit!: string;
-    areaMomentOfInertiaUnit!: string;
-    forceUnit!: string;
-    torqueUnit!: string;
-    forcePerLengthUnit!: string;
-    pressureUnit!: string;
-    angleUnit!: string;
-
-    constructor(data?: IUnitSettingsDtoVerbose) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.lengthUnit = _data["lengthUnit"];
-            this.areaUnit = _data["areaUnit"];
-            this.volumeUnit = _data["volumeUnit"];
-            this.areaMomentOfInertiaUnit = _data["areaMomentOfInertiaUnit"];
-            this.forceUnit = _data["forceUnit"];
-            this.torqueUnit = _data["torqueUnit"];
-            this.forcePerLengthUnit = _data["forcePerLengthUnit"];
-            this.pressureUnit = _data["pressureUnit"];
-            this.angleUnit = _data["angleUnit"];
-        }
-    }
-
-    static fromJS(data: any): UnitSettingsDtoVerbose {
-        data = typeof data === 'object' ? data : {};
-        let result = new UnitSettingsDtoVerbose();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["lengthUnit"] = this.lengthUnit;
-        data["areaUnit"] = this.areaUnit;
-        data["volumeUnit"] = this.volumeUnit;
-        data["areaMomentOfInertiaUnit"] = this.areaMomentOfInertiaUnit;
-        data["forceUnit"] = this.forceUnit;
-        data["torqueUnit"] = this.torqueUnit;
-        data["forcePerLengthUnit"] = this.forcePerLengthUnit;
-        data["pressureUnit"] = this.pressureUnit;
-        data["angleUnit"] = this.angleUnit;
-        return data;
-    }
-}
-
-export interface IUnitSettingsDtoVerbose {
-    lengthUnit: string;
-    areaUnit: string;
-    volumeUnit: string;
-    areaMomentOfInertiaUnit: string;
-    forceUnit: string;
-    torqueUnit: string;
-    forcePerLengthUnit: string;
-    pressureUnit: string;
-    angleUnit: string;
-}
-
-export class UnitValueDto implements IUnitValueDto {
+export class TorqueContract implements ITorqueContract {
     value!: number;
-    unit!: string;
+    unit!: TorqueUnitContract;
 
-    constructor(data?: IUnitValueDto) {
+    constructor(data?: ITorqueContract) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -3199,9 +3479,9 @@ export class UnitValueDto implements IUnitValueDto {
         }
     }
 
-    static fromJS(data: any): UnitValueDto {
+    static fromJS(data: any): TorqueContract {
         data = typeof data === 'object' ? data : {};
-        let result = new UnitValueDto();
+        let result = new TorqueContract();
         result.init(data);
         return result;
     }
@@ -3214,9 +3494,67 @@ export class UnitValueDto implements IUnitValueDto {
     }
 }
 
-export interface IUnitValueDto {
+export interface ITorqueContract {
     value: number;
-    unit: string;
+    unit: TorqueUnitContract;
+}
+
+export enum TorqueUnitContract {
+    _0 = 0,
+    _7 = 7,
+    _8 = 8,
+    _9 = 9,
+    _10 = 10,
+    _11 = 11,
+    _17 = 17,
+    _18 = 18,
+    _19 = 19,
+    _21 = 21,
+    _22 = 22,
+}
+
+export class UnitSettingsContract implements IUnitSettingsContract {
+    lengthUnit!: LengthUnitContract;
+    forceUnit!: ForceUnitContract;
+    angleUnit!: AngleUnitContract;
+
+    constructor(data?: IUnitSettingsContract) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.lengthUnit = _data["lengthUnit"];
+            this.forceUnit = _data["forceUnit"];
+            this.angleUnit = _data["angleUnit"];
+        }
+    }
+
+    static fromJS(data: any): UnitSettingsContract {
+        data = typeof data === 'object' ? data : {};
+        let result = new UnitSettingsContract();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["lengthUnit"] = this.lengthUnit;
+        data["forceUnit"] = this.forceUnit;
+        data["angleUnit"] = this.angleUnit;
+        return data;
+    }
+}
+
+export interface IUnitSettingsContract {
+    lengthUnit: LengthUnitContract;
+    forceUnit: ForceUnitContract;
+    angleUnit: AngleUnitContract;
 }
 
 export class Vector3 implements IVector3 {

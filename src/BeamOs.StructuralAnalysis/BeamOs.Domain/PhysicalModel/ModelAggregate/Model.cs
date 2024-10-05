@@ -1,5 +1,6 @@
 using BeamOs.Common.Domain.Models;
-using BeamOs.Domain.AnalyticalResults.ModelResultAggregate;
+using BeamOs.Domain.AnalyticalModel.AnalyticalResultsAggregate;
+using BeamOs.Domain.AnalyticalModel.AnalyticalResultsAggregate.ValueObjects;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate;
 using BeamOs.Domain.PhysicalModel.MaterialAggregate;
@@ -36,9 +37,11 @@ public class Model : AggregateRoot<ModelId>
     public ICollection<Element1D> Element1ds { get; init; } = [];
     public ICollection<Material> Materials { get; init; } = [];
     public ICollection<SectionProfile> SectionProfiles { get; init; } = [];
-    public ICollection<ModelResult> ModelResults { get; init; }
+
+    //public ICollection<ModelResult> ModelResults { get; init; }
     public ICollection<PointLoad>? PointLoads { get; init; }
     public ICollection<MomentLoad>? MomentLoads { get; init; }
+    public AnalyticalResults? AnalyticalResults { get; init; }
 
     [Obsolete("EF Core Constructor", true)]
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

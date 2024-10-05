@@ -1,3 +1,4 @@
+using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.Diagrams.Common;
 using BeamOs.Domain.Diagrams.Common.Extensions;
 using BeamOs.Domain.Diagrams.Common.ValueObjects;
@@ -12,12 +13,12 @@ public class Diagram
     private static readonly Length EqualityTolerance = new(1, LengthUnit.Inch);
     public Length ElementLength { get; private set; }
     public LengthUnit LengthUnit { get; private set; }
-    public List<DiagramConsistantInterval> Intervals { get; private set; }
+    public List<DiagramConsistentInterval> Intervals { get; private set; }
 
     public Diagram(
         Length elementLength,
         LengthUnit lengthUnit,
-        List<DiagramConsistantInterval> intervals
+        List<DiagramConsistentInterval> intervals
     )
     {
         this.ElementLength = elementLength;

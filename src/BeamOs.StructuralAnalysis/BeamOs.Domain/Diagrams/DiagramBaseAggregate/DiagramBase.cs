@@ -1,4 +1,5 @@
 using BeamOs.Common.Domain.Models;
+using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.Diagrams.Common;
 using BeamOs.Domain.Diagrams.Common.ValueObjects.DiagramBuilder;
 using MathNet.Numerics;
@@ -7,18 +8,19 @@ using UnitsNet.Units;
 
 namespace BeamOs.Domain.Diagrams.DiagramBaseAggregate;
 
-public abstract class DiagramBase<TId> : AggregateRoot<TId>
+public abstract class DiagramBase<TId, TInterval> : AggregateRoot<TId>
     where TId : notnull
+    where TInterval : DiagramConsistentInterval
 {
     public Length ElementLength { get; private set; }
     public Length EqualityTolerance { get; private set; }
     public LengthUnit LengthUnit { get; private set; }
-    public List<DiagramConsistantInterval> Intervals { get; private set; }
+    public List<TInterval> Intervals { get; private set; }
 
     protected DiagramBase(
         Length elementLength,
         LengthUnit lengthUnit,
-        List<DiagramConsistantInterval> intervals,
+        List<TInterval> intervals,
         TId id
     )
         : base(id)
@@ -34,7 +36,7 @@ public abstract class DiagramBase<TId> : AggregateRoot<TId>
             this.ElementLength,
             this.EqualityTolerance,
             this.LengthUnit,
-            this.Intervals
+            this.Intervals.Cast<DiagramConsistentInterval>().ToList()
         );
     }
 

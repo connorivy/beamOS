@@ -21,7 +21,7 @@ public partial class Kassimali_Example8_4 : ModelFixture2, IHasExpectedNodeResul
     public override Guid ModelGuid => IdStatic;
 
     public override PhysicalModelSettings Settings { get; } =
-        new(UnitSettingsDtoVerbose.K_IN, new(Element1dAnalysisType.Euler));
+        new(UnitSettingsContract.K_IN, new(Element1dAnalysisType.Euler));
 
     public override PointLoadFixture2[] PointLoads => Kassimali_Example8_4_PointLoads.All;
     public override MomentLoadFixture2[] MomentLoads => Kassimali_Example8_4_MomentLoads.All;

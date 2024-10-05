@@ -1,6 +1,7 @@
 @using BeamOs.Common.Identity
 @using BeamOs.WebApp.Client.Components.Components
 @using BeamOs.WebApp.Client.Components.Features.Styles
+@using BeamOs.WebApp.Client.Components.Features.TestExplorer
 
 @implements IDisposable
 
@@ -23,8 +24,8 @@
     <Logo Class="pr-8"/>
     <MudStack Row="true">
         <MudButton Href="/test-explorer-dashboard">Reliability</MudButton>
+        <MudButton Href="@TestExplorer.Href">Test Explorer</MudButton>
         <MudButton Href="/models">Models</MudButton>
-        <MudButton Href="/auth">Auth</MudButton>
     </MudStack>
     <MudSpacer />
     <MudStack Row="true">

@@ -1,3 +1,4 @@
+using BeamOs.Application.Common.Mappers;
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Domain.Common.ValueObjects;
 using BeamOs.Domain.DirectStiffnessMethod;
@@ -22,18 +23,13 @@ public partial class DsmElement1dTests
     {
         Skip.If(fixture.ExpectedLocalStiffnessMatrix is null);
 
+        var strongUnits = fixture.Model.Value.Settings.UnitSettings.ToDomain();
         double[,] stiffnessMatrix = fixture
             .ToDomain()
             .GetLocalStiffnessMatrix(
                 fixture.Model.Value.Settings.UnitSettings.ForceUnit.MapToForceUnit(),
-                fixture
-                    .Model
-                    .Value
-                    .Settings
-                    .UnitSettings
-                    .ForcePerLengthUnit
-                    .MapToForcePerLengthUnit(),
-                fixture.Model.Value.Settings.UnitSettings.TorqueUnit.MapToTorqueUnit()
+                strongUnits.ForcePerLengthUnit,
+                strongUnits.TorqueUnit
             )
             .ToArray();
 
@@ -54,18 +50,13 @@ public partial class DsmElement1dTests
     {
         Skip.If(fixture.ExpectedGlobalStiffnessMatrix is null);
 
+        var strongUnits = fixture.Model.Value.Settings.UnitSettings.ToDomain();
         double[,] stiffnessMatrix = fixture
             .ToDomain()
             .GetGlobalStiffnessMatrix(
                 fixture.Model.Value.Settings.UnitSettings.ForceUnit.MapToForceUnit(),
-                fixture
-                    .Model
-                    .Value
-                    .Settings
-                    .UnitSettings
-                    .ForcePerLengthUnit
-                    .MapToForcePerLengthUnit(),
-                fixture.Model.Value.Settings.UnitSettings.TorqueUnit.MapToTorqueUnit()
+                strongUnits.ForcePerLengthUnit,
+                strongUnits.TorqueUnit
             )
             .ToArray();
 

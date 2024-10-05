@@ -14,14 +14,14 @@ public record CreateModelRequest
 
 public record PhysicalModelSettings
 {
-    public required UnitSettingsDtoVerbose UnitSettings { get; init; }
+    public required UnitSettingsContract UnitSettings { get; init; }
     public AnalysisSettingsContract AnalysisSettings { get; init; }
     public bool YAxisUp { get; init; }
 
     [JsonConstructor]
     [SetsRequiredMembers]
     public PhysicalModelSettings(
-        UnitSettingsDtoVerbose unitSettings,
+        UnitSettingsContract unitSettings,
         AnalysisSettingsContract? analysisSettings = null,
         bool yAxisUp = true
     )

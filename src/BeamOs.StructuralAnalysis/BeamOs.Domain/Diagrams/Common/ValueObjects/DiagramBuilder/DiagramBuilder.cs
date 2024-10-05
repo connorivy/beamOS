@@ -1,3 +1,4 @@
+using BeamOs.Domain.Common.ValueObjects;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using UnitsNet;
@@ -13,7 +14,7 @@ public class DiagramBuilder
     private readonly List<DiagramPointValue> pointValues = [];
     private readonly List<DiagramDistributedValue> distributedValues = [];
     private readonly List<DiagramPointValue> boundaryConditions = [];
-    private readonly List<DiagramConsistantInterval> previousDiagramIntervals = [];
+    private readonly List<DiagramConsistentInterval> previousDiagramIntervals = [];
     private int numTimesToIntegrate;
 
     private readonly double equalityToleranceAsDouble;
@@ -22,7 +23,7 @@ public class DiagramBuilder
         Length elementLength,
         Length equalityTolerance,
         LengthUnit lengthUnit,
-        List<DiagramConsistantInterval>? previousDiagramIntervals = null
+        List<DiagramConsistentInterval>? previousDiagramIntervals = null
     )
     {
         this.elementLength = elementLength;
@@ -39,7 +40,7 @@ public class DiagramBuilder
         List<DiagramPointValue> pointValues,
         List<DiagramDistributedValue> distributedValues,
         List<DiagramPointValue> boundaryConditions,
-        List<DiagramConsistantInterval> previousDiagramIntervals,
+        List<DiagramConsistentInterval> previousDiagramIntervals,
         int numTimesToIntegrate
     )
     {
@@ -55,14 +56,14 @@ public class DiagramBuilder
 
     public Diagram Build()
     {
-        var intervals = this.BuildConsistantIntervals();
+        var intervals = this.BuildConsistentIntervals();
 
         return new Diagram(this.elementLength, this.lengthUnit, intervals);
     }
 
-    private List<DiagramConsistantInterval> BuildConsistantIntervals()
+    private List<DiagramConsistentInterval> BuildConsistentIntervals()
     {
-        List<DiagramConsistantInterval> intervals =
+        List<DiagramConsistentInterval> intervals =
         [
             new(new Length(0, this.lengthUnit), this.elementLength, new())
         ];
@@ -112,7 +113,7 @@ public class DiagramBuilder
     }
 
     private static void InsertPointInIntervals(
-        List<DiagramConsistantInterval> intervals,
+        List<DiagramConsistentInterval> intervals,
         Length locationAlongBeam
     )
     {
@@ -136,7 +137,7 @@ public class DiagramBuilder
     }
 
     private void AddPointValue(
-        List<DiagramConsistantInterval> intervals,
+        List<DiagramConsistentInterval> intervals,
         Length startLocation,
         double value
     )
@@ -157,7 +158,7 @@ public class DiagramBuilder
     }
 
     private void AddDistributedValue(
-        List<DiagramConsistantInterval> intervals,
+        List<DiagramConsistentInterval> intervals,
         Length startLocation,
         Length endLocation,
         Polynomial polynomialValue
@@ -196,7 +197,7 @@ public class DiagramBuilder
         }
     }
 
-    private void ApplyBoundaryConditions(List<DiagramConsistantInterval> intervals)
+    private void ApplyBoundaryConditions(List<DiagramConsistentInterval> intervals)
     {
         // numTimesIntegrated = 1
         // C = const
@@ -237,7 +238,7 @@ public class DiagramBuilder
     }
 
     private double[] SolveForIntegrationConstants(
-        List<DiagramConsistantInterval> intervals,
+        List<DiagramConsistentInterval> intervals,
         List<DiagramPointValue> boundaryConditions
     )
     {
@@ -271,7 +272,7 @@ public class DiagramBuilder
     }
 
     private void CheckRedundantBoundaryConditions(
-        List<DiagramConsistantInterval> intervals,
+        List<DiagramConsistentInterval> intervals,
         IEnumerable<DiagramPointValue> boundaryConditions
     )
     {
@@ -290,7 +291,7 @@ public class DiagramBuilder
     }
 
     private double EvaluateIntervalsAtLocationAndThrowIfDifferent(
-        List<DiagramConsistantInterval> intervals,
+        List<DiagramConsistentInterval> intervals,
         Length location
     )
     {
@@ -322,8 +323,8 @@ public class DiagramBuilder
         return valInFirstInterval;
     }
 
-    private IEnumerable<DiagramConsistantInterval> GetContainingIntervals(
-        List<DiagramConsistantInterval> intervals,
+    private IEnumerable<DiagramConsistentInterval> GetContainingIntervals(
+        List<DiagramConsistentInterval> intervals,
         Length location
     )
     {

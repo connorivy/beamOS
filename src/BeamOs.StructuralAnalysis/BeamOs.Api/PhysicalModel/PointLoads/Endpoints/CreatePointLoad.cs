@@ -22,7 +22,7 @@ public class CreatePointLoad(
     public override CreatePointLoadRequest? ExampleRequest =>
         new(
             "00000000-0000-0000-0000-000000000000",
-            new UnitValueDto(55.0, "KilopoundForce"),
+            new ForceContract(55.0, ForceUnitContract.KilopoundForce),
             new Vector3(10, 15, 20)
         );
 
