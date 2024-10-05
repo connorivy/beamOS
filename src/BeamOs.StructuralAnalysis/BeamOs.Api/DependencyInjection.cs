@@ -4,6 +4,7 @@ using BeamOs.Api.Common.Extensions;
 using BeamOs.Application;
 using BeamOs.Application.Common;
 using BeamOs.Infrastructure;
+using BeamOS.Tests.Common.Extensions;
 using BeamOS.WebApp;
 using FastEndpoints;
 using FastEndpoints.Swagger;
@@ -136,10 +137,13 @@ public static class DependencyInjection
 
     public static async Task InitializeAnalysisDb(this WebApplication app)
     {
-        using var scope = app.Services.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<BeamOsStructuralDbContext>();
-        await dbContext.Database.MigrateAsync();
-        await dbContext.SeedAsync();
+        if (app.Environment.IsDevelopment() || BeamOsEnvironment.IsCi())
+        {
+            using var scope = app.Services.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<BeamOsStructuralDbContext>();
+            await dbContext.Database.MigrateAsync();
+            await dbContext.SeedAsync();
+        }
     }
 
     public static async Task GenerateAnalysisClient(this WebApplication app)

@@ -1,4 +1,5 @@
 using BeamOs.ApiClient.Builders;
+using BeamOS.Tests.Common.Extensions;
 #if RUNTIME_TESTS
 using BeamOs.ApiClient;
 #else
@@ -16,6 +17,14 @@ public class OpenSeesTests(CustomWebApplicationFactory<Program> webApplicationFa
 {
 #endif
 
-    protected override Task RunAnalysis(FixtureId modelId) =>
-        this.ApiClient.RunOpenSeesAnalysisAsync(modelId.ToString());
+    protected override Task RunAnalysis(FixtureId modelId)
+    {
+        if (BeamOsEnvironment.IsCi())
+        {
+            throw new Xunit.SkipException(
+                "Currently unable to run opensees tests in ci environment"
+            );
+        }
+        return this.ApiClient.RunOpenSeesAnalysisAsync(modelId.ToString());
+    }
 }

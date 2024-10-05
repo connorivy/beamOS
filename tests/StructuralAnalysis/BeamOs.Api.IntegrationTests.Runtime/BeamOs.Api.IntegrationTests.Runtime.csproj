@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <PackageReference Include="xunit.extensibility.core" />
+    <PackageReference Include="Xunit.SkippableFact" />
   </ItemGroup>
 
   <ItemGroup>

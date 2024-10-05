@@ -57,39 +57,40 @@ public abstract class DirectStiffnessMethodTestsBase
             if (!modelBuilder.IsInitialized)
             {
                 ModelResponse? modelResponse;
-                try
-                {
-                    modelResponse = await this.ApiClient.GetModelAsync(
-                        modelBuilder.Id.ToString(),
+                //try
+                //{
+                modelResponse = await this.ApiClient.GetModelAsync(
+                    modelBuilder.Id.ToString(),
 
-                        [
-                            nameof(Model.Nodes),
-                            nameof(Model.Element1ds),
-                            $"{nameof(Model.Element1ds)}.{nameof(Element1D.SectionProfile)}",
-                            $"{nameof(Model.Element1ds)}.{nameof(Element1D.Material)}",
-                            $"{nameof(Model.Nodes)}.{nameof(Node.PointLoads)}",
-                            $"{nameof(Model.Nodes)}.{nameof(Node.MomentLoads)}"
-                        ]
-                    );
+                    [
+                        nameof(Model.Nodes),
+                        nameof(Model.Element1ds),
+                        $"{nameof(Model.Element1ds)}.{nameof(Element1D.SectionProfile)}",
+                        $"{nameof(Model.Element1ds)}.{nameof(Element1D.Material)}",
+                        $"{nameof(Model.Nodes)}.{nameof(Node.PointLoads)}",
+                        $"{nameof(Model.Nodes)}.{nameof(Node.MomentLoads)}"
+                    ]
+                );
 #if !RUNTIME_TESTS
-                    await this.ApiClient.DeleteModelResultsAsync(modelBuilder.Id.ToString());
-                    await this.RunAnalysis(modelBuilder.Id);
+                await this.ApiClient.DeleteModelResultsAsync(modelBuilder.Id.ToString());
+                await this.RunAnalysis(modelBuilder.Id);
 #endif
-                }
-                catch (Exception ex)
-                {
-                    modelResponse = null;
-                }
-                if (modelResponse is not null)
-                {
-                    modelBuilder.InitializeFromModelResponse(modelResponse);
-                }
-                else
-                {
-                    await modelBuilder.InitializeAsync();
-                    await modelBuilder.Create(this.ApiClient);
-                    await this.ApiClient.RunDirectStiffnessMethodAsync(modelBuilder.Id.ToString());
-                }
+                //}
+                //catch (Exception ex)
+                //{
+                //    modelResponse = null;
+                //}
+                //if (modelResponse is not null)
+                //{
+                //    modelBuilder.InitializeFromModelResponse(modelResponse);
+                //}
+                //else
+                //{
+                //    await modelBuilder.InitializeAsync();
+                //    await modelBuilder.Create(this.ApiClient);
+                //    await this.ApiClient.RunDirectStiffnessMethodAsync(modelBuilder.Id.ToString());
+                //}
+                modelBuilder.InitializeFromModelResponse(modelResponse);
                 modelBuilder.IsInitialized = true;
             }
             this.modelIdToModelFixtureDict.Add(modelBuilder.Id.ToString(), modelBuilder);

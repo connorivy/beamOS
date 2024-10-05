@@ -1,5 +1,5 @@
 namespace BeamOs.Api.IntegrationTests;
 
-public class BeamOsTheoryAttribute : TheoryAttribute { }
+public class BeamOsTheoryAttribute : SkippableTheoryAttribute { }
 
 public class BeamOsFactAttribute : FactAttribute { }
