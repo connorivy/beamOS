@@ -1,5 +1,6 @@
 using System.Data.Common;
 using BeamOs.Infrastructure;
+using BeamOS.Tests.Common.Extensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -13,12 +14,7 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        if (
-            !bool.TryParse(
-                Environment.GetEnvironmentVariable("ContinuousIntegrationBuild"),
-                out bool isCiBuild
-            ) || !isCiBuild
-        )
+        if (!BeamOsEnvironment.IsCi())
         {
             base.ConfigureWebHost(builder);
             return;

@@ -1,7 +1,6 @@
 using BeamOs.ApiClient;
 using BeamOs.ApiClient.Builders;
 using BeamOs.Application.Common.Mappers;
-using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Contracts.AnalyticalModel.AnalyticalNode;
 using BeamOs.Contracts.PhysicalModel.Model;
 using BeamOs.Domain.PhysicalModel.Element1DAggregate;

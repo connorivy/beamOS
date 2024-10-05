@@ -21,12 +21,13 @@ public class AllCreateModelRequestBuilders : TheoryDataBase<CreateModelRequestBu
 {
     public AllCreateModelRequestBuilders()
     {
-        if (!BeamOsEnvironment.IsCi())
-        {
-            // because we can't use intel mkl in ci (or at least I haven't figured out how to do so)
-            // running this analysis will take a long time and will result in time-out exceptions
-            this.Add(TwistyBowlFraming.Instance);
-        }
+        //if (!BeamOsEnvironment.IsCi())
+        //{
+        //    // because we can't use intel mkl in ci (or at least I haven't figured out how to do so)
+        //    // running this analysis will take a long time and will result in time-out exceptions
+        //    this.Add(TwistyBowlFraming.Instance);
+        //}
+        this.Add(TwistyBowlFraming.Instance);
         this.Add(Simple_3_Story_Diagonal.Instance);
     }
 }
