@@ -1,7 +1,4 @@
 using BeamOs.CodeGen.Apis.StructuralAnalysisApi;
-using BeamOs.Contracts.AnalyticalModel.AnalyticalNode;
-using BeamOs.Contracts.AnalyticalModel.Diagrams;
-using BeamOs.Contracts.AnalyticalModel.Results;
 
 namespace BeamOs.ApiClient;
 
@@ -203,18 +200,18 @@ public class HttpApiClient : IStructuralAnalysisApiAlphaClient
     ) => this.apiAlphaClient.PatchNodeAsync(body, body.NodeId, cancellationToken);
 
     public Task<bool> RunDirectStiffnessMethodAsync(ModelIdRequest body) =>
-        this.apiAlphaClient.RunDirectStiffnessMethodAsync(body.ModelId);
+        this.apiAlphaClient.RunDirectStiffnessMethodAsync(body.ModelId, new());
 
     public Task<bool> RunDirectStiffnessMethodAsync(
         ModelIdRequest body,
         CancellationToken cancellationToken
-    ) => this.apiAlphaClient.RunDirectStiffnessMethodAsync(body.ModelId, cancellationToken);
+    ) => this.apiAlphaClient.RunDirectStiffnessMethodAsync(body.ModelId, new(), cancellationToken);
 
     public virtual Task<bool> RunOpenSeesAnalysisAsync(ModelIdRequest body) =>
-        this.apiAlphaClient.RunOpenSeesAnalysisAsync(body.ModelId);
+        this.apiAlphaClient.RunOpenSeesAnalysisAsync(body.ModelId, new());
 
     public virtual Task<bool> RunOpenSeesAnalysisAsync(
         ModelIdRequest body,
         CancellationToken cancellationToken
-    ) => this.apiAlphaClient.RunOpenSeesAnalysisAsync(body.ModelId, cancellationToken);
+    ) => this.apiAlphaClient.RunOpenSeesAnalysisAsync(body.ModelId, new(), cancellationToken);
 }

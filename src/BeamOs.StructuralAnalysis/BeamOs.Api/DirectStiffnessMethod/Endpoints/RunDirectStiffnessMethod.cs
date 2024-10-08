@@ -18,16 +18,20 @@ public class RunDirectStiffnessMethod(
 {
     public override string Route => "models/{modelId}/analyze/direct-stiffness-method";
 
-    public override Http EndpointType => Http.GET;
+    public override Http EndpointType => Http.POST;
+
+    protected override void ConfigureEndpoint()
+    {
+        this.Description(x => x.Accepts<ModelIdRequest>());
+    }
 
     public override async Task<bool> ExecuteRequestAsync(ModelIdRequest req, CancellationToken ct)
     {
         ModelId modelId = new(Guid.Parse(req.ModelId));
-        //if (await modelResultRepository.GetByModelId(modelId) is not null)
-        //{
-        //    // todo: better response
-        //    return new([]);
-        //}
+        if (await modelResultRepository.GetByModelId(modelId, ct) is not null)
+        {
+            return true;
+        }
         var command = new RunDirectStiffnessMethodCommand(new ModelId(Guid.Parse(req.ModelId)));
 
         return await runDsmCommandHandler.ExecuteAsync(command, ct);

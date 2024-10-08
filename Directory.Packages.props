@@ -6,7 +6,7 @@
     <AspnetVersion>8.0.0</AspnetVersion>
     <MicrosoftExtensionsVersion>8.0.0</MicrosoftExtensionsVersion>
     <EfVersion>8.0.0</EfVersion>
-    <FastEndpointVersion>5.25.0</FastEndpointVersion>
+    <FastEndpointVersion>5.30.0</FastEndpointVersion>
     <FluxorVersion>6.0.0</FluxorVersion>
   </PropertyGroup>
   <ItemGroup>
