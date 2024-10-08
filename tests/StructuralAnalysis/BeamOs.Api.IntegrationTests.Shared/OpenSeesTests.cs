@@ -25,6 +25,6 @@ public class OpenSeesTests(CustomWebApplicationFactory<Program> webApplicationFa
                 "Currently unable to run opensees tests in ci environment"
             );
         }
-        return this.ApiClient.RunOpenSeesAnalysisAsync(modelId.ToString());
+        return this.ApiClient.RunOpenSeesAnalysisAsync(modelId.ToString(), new());
     }
 }

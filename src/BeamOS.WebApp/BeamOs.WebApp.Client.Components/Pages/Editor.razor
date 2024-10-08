@@ -105,7 +105,7 @@
 
     private async Task RunAnalysis()
     {
-        await ApiAlphaClient.RunDirectStiffnessMethodAsync(editorComponent.EditorComponentState.LoadedModelId);
+        await ApiAlphaClient.RunDirectStiffnessMethodAsync(editorComponent.EditorComponentState.LoadedModelId, new());
     }
 
     private async Task ShowReactions()

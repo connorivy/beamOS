@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
   <PropertyGroup Label="Packaging">
-    <Version>0.0.37</Version>
+    <!--<Version>0.0.38</Version>-->
     <IsPackable>true</IsPackable>
   </PropertyGroup>
   <PropertyGroup Label="General Config">

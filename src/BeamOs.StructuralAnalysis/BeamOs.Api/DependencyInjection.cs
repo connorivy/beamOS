@@ -36,6 +36,18 @@ public static class DependencyInjection
                     s.SchemaSettings
                         .SchemaProcessors
                         .Add(new MarkAsRequiredIfNonNullableSchemaProcessor());
+                    s.PostProcess = d =>
+                    {
+                        var operations = d.Operations.Where(
+                            x =>
+                                x.Method.Equals("Post", StringComparison.OrdinalIgnoreCase)
+                                && x.Operation.RequestBody is null
+                        );
+                        foreach (var operation in operations)
+                        {
+                            operation.Operation.RequestBody = new NSwag.OpenApiRequestBody();
+                        }
+                    };
                 };
                 o.ShortSchemaNames = true;
                 o.ExcludeNonFastEndpoints = true;

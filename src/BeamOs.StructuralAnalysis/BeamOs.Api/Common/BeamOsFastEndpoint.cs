@@ -30,6 +30,8 @@ public abstract class BeamOsFastEndpoint<TRequest, TResponse>(
         }
     }
 
+    protected virtual void ConfigureEndpoint() { }
+
     public virtual TRequest? ExampleRequest { get; }
 
     public sealed override void Configure()
@@ -37,6 +39,7 @@ public abstract class BeamOsFastEndpoint<TRequest, TResponse>(
         this.Verbs(this.EndpointType);
         this.Routes(this.Route);
         this.ConfigureAuthentication();
+        this.ConfigureEndpoint();
 
         if (this.ExampleRequest is not null)
         {

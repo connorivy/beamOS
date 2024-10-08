@@ -18,5 +18,5 @@ public class DirectStiffnessMethodTests(CustomWebApplicationFactory<Program> web
 #endif
 
     protected override Task RunAnalysis(FixtureId modelId) =>
-        this.ApiClient.RunDirectStiffnessMethodAsync(modelId.ToString());
+        this.ApiClient.RunDirectStiffnessMethodAsync(modelId.ToString(), new());
 }
