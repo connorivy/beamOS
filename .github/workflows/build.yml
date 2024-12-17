@@ -30,6 +30,10 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
 
+    - name: Install Azure Functions Core Tools
+      run: |
+        npm install -g azure-functions-core-tools@4
+
     - name: Build
       run: dotnet build --no-restore -c Release /p:ContinuousIntegrationBuild=true
 
