@@ -91,7 +91,13 @@ public static class AssemblySetup
 
         if (!apiIsRunning)
         {
-            throw new InvalidOperationException($"Api is not up and running, {errorSb}");
+            throw new InvalidOperationException(
+                @$"""
+        Api is not up and running,
+        Errors : {errorSb}
+        OtherLogs : {sb}
+"""
+            );
         }
         StructuralAnalysisApiClient = new(client);
     }
@@ -102,6 +108,7 @@ public static class AssemblySetup
         (string Stdout, string Stderr) x = await dbContainer.GetLogsAsync();
 
         await dbContainer.StopAsync();
+        apiProcess.Kill();
         apiProcess.Dispose();
     }
 
