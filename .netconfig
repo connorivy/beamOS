@@ -1,7 +1,0 @@
-# .netconfig is awesome: https://dotnetconfig.org
-
-[reportgenerator]
-	reporttypes = Html
-	reports = ./tests/**/coverage.opencover.xml
-	filefilter = -*.g.cs # exclude auto generated files
-	filefilter = -Microsoft.NET.Test.Sdk.Program.cs
