@@ -33,6 +33,7 @@ jobs:
     - name: Install Azure Functions Core Tools
       run: |
         npm install -g azure-functions-core-tools@4
+        touch local.settings.json
         func settings add FUNCTIONS_WORKER_RUNTIME dotnet-isolated
 
     - name: Build
