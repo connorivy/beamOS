@@ -11,21 +11,21 @@ jobs:
     env:
       ContinuousIntegrationBuild: true
 
-    services:
-      mssql:
-        image: mcr.microsoft.com/mssql/server:2022-latest
-        env:
-          SA_PASSWORD: yourStrong(!)Password
-          ACCEPT_EULA: 'Y'
-        ports:
-          - 1433:1433
+    # services:
+    #   mssql:
+    #     image: mcr.microsoft.com/mssql/server:2022-latest
+    #     env:
+    #       SA_PASSWORD: yourStrong(!)Password
+    #       ACCEPT_EULA: 'Y'
+    #     ports:
+    #       - 1433:1433
 
     steps:
     - uses: actions/checkout@v4
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: 9.0.x
 
     - name: Restore dependencies
       run: dotnet restore
