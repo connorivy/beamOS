@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using Testcontainers.PostgreSql;
+using VerifyTests;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration;
 
@@ -24,6 +25,24 @@ public static class AssemblySetup
         var sb = new StringBuilder();
         var errorSb = new StringBuilder();
 
+        string funcDirectory = DirectoryHelper.GetStructuralAnalysisFunctionsDir();
+
+        if (IsCiBuild())
+        {
+            string settings = /*lang=json,strict*/
+            """
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated"
+  },
+  "ConnectionStrings": {}
+}
+""";
+            File.WriteAllText(Path.Combine(funcDirectory, "local.settings.json"), settings);
+        }
+
         for (int i = 0; i < 1; i++)
         {
             ProcessStartInfo startInfo =
@@ -31,7 +50,7 @@ public static class AssemblySetup
                 {
                     FileName = "func",
                     Arguments = "start",
-                    WorkingDirectory = DirectoryHelper.GetStructuralAnalysisFunctionsDir(),
+                    WorkingDirectory = funcDirectory,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false,
@@ -117,4 +136,12 @@ public static class AssemblySetup
         VerifierSettings.AddExtraSettings(
             settings => settings.DefaultValueHandling = Argon.DefaultValueHandling.Include
         );
+
+    private static bool IsCiBuild()
+    {
+        return bool.TryParse(
+                Environment.GetEnvironmentVariable("ContinuousIntegrationEnv"),
+                out bool isCiBuild
+            ) && isCiBuild;
+    }
 }

@@ -9,7 +9,7 @@ jobs:
     name: Build and Test
     runs-on: ubuntu-latest
     env:
-      ContinuousIntegrationBuild: true
+      ContinuousIntegrationEnv: true
 
     # services:
     #   mssql:
@@ -33,11 +33,9 @@ jobs:
     - name: Install Azure Functions Core Tools
       run: |
         npm install -g azure-functions-core-tools@4
-        touch local.settings.json
-        func settings add FUNCTIONS_WORKER_RUNTIME dotnet-isolated
 
     - name: Build
-      run: dotnet build --no-restore -c Release /p:ContinuousIntegrationBuild=true
+      run: dotnet build --no-restore -c Release /p:ContinuousIntegrationEnv=true
 
     - name: Test
       run: dotnet test --no-build -c Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
