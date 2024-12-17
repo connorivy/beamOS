@@ -368,3 +368,7 @@ openSees/lib
 # Verify
 *.received.*
 *.received/
+
+# Results
+output.xml
+output.cobertura.xml
