@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ContinuousIntegrationBuild: true
+      FUNCTIONS_WORKER_RUNTIME: "dotnet-isolated"
 
     # services:
     #   mssql:
