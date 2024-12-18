@@ -22,7 +22,8 @@ public sealed class Result<TValue>
     }
 
     [JsonConstructor]
-    internal Result(TValue? value, Exception? error, bool isError)
+    [Obsolete("Deserialization constructor. Don't use")]
+    public Result(TValue? value, Exception? error, bool isError)
     {
         this.Value = value;
         this.Error = error;

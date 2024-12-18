@@ -5,7 +5,7 @@ namespace BeamOs.Tests.StructuralAnalysis.Integration.Api;
 
 public class NodeTests
 {
-    private static Guid modelId = Guid.NewGuid();
+    private static readonly Guid ModelId = Guid.NewGuid();
 
     [Test]
     public async Task CreateNode_WithNoSpecifiedId_ShouldCreateNode_AndGiveAnId()
@@ -13,9 +13,9 @@ public class NodeTests
         CreateNodeRequest createNodeRequestBody =
             new(new(1, 1, 1, LengthUnitContract.Foot), Restraint.Fixed);
 
-        Result<NodeResponse> nodeResponseResult = await AssemblySetup
+        var nodeResponseResult = await AssemblySetup
             .StructuralAnalysisApiClient
-            .CreateNodeAsync(modelId, createNodeRequestBody);
+            .CreateNodeAsync(ModelId, createNodeRequestBody);
 
         await Verify(nodeResponseResult);
     }
@@ -28,7 +28,7 @@ public class NodeTests
 
         var nodeResponseResult = await AssemblySetup
             .StructuralAnalysisApiClient
-            .CreateNodeAsync(modelId, createNodeRequestBody);
+            .CreateNodeAsync(ModelId, createNodeRequestBody);
 
         await Verify(nodeResponseResult);
     }
@@ -42,7 +42,7 @@ public class NodeTests
 
         var nodeResponseResult = await AssemblySetup
             .StructuralAnalysisApiClient
-            .UpdateNodeAsync(modelId, updateNodeRequest);
+            .UpdateNodeAsync(ModelId, updateNodeRequest);
 
         await Verify(nodeResponseResult);
     }

@@ -35,7 +35,6 @@ public static class EndpointToMinimalApi
                 $"Class {typeof(TEndpoint).Name} is missing the route attribute"
             );
 
-        var endpointInstance = app.ServiceProvider.GetRequiredService<TEndpoint>();
         if (endpointType is Http.Post)
         {
             endpointBuilder = app.MapPost(
