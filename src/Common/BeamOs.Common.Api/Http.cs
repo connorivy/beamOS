@@ -1,39 +1,39 @@
-namespace BeamOs.StructuralAnalysis.Api;
+namespace BeamOs.Common.Api;
 
-public enum Http
+public static class Http
 {
     /// <summary>
     /// retrieve a record
     /// </summary>
-    GET = 1,
+    public const string Get = nameof(Get);
 
     /// <summary>
     /// create a record
     /// </summary>
-    POST = 2,
+    public const string Post = nameof(Post);
 
     /// <summary>
     /// replace a record
     /// </summary>
-    PUT = 3,
+    public const string Put = nameof(Put);
 
     /// <summary>
     /// partially update a record
     /// </summary>
-    PATCH = 4,
+    public const string Patch = nameof(Patch);
 
     /// <summary>
     /// remove a record
     /// </summary>
-    DELETE = 5,
+    public const string Delete = nameof(Delete);
 
     /// <summary>
     /// retrieve only headers
     /// </summary>
-    HEAD = 6,
+    public const string Head = nameof(Head);
 
     /// <summary>
     /// retrieve communication options
     /// </summary>
-    OPTIONS = 7,
+    public const string Options = nameof(Options);
 }

@@ -1,7 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
-namespace BeamOs.StructuralAnalysis.Contracts.Common;
+namespace BeamOs.Common.Contracts;
 
 public sealed class Result<TValue>
 {

@@ -9,14 +9,14 @@
     <Import_RootNamespace>BeamOs.StructuralAnalysis.Api.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Common\ModelAccessLevel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Common\RequestBinders.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DependencyInjection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IAssemblyMarkerStructuralAnalysisApiShared.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PhysicalModel\Nodes\PatchNode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PhysicalModel\Nodes\CreateNode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EndpointBase.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Http.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RouteConstants.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Common\" />
   </ItemGroup>
 </Project>

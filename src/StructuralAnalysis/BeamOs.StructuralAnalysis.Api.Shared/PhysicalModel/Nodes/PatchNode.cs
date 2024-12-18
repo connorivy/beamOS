@@ -1,7 +1,6 @@
-using System.Text.Json;
-using BeamOs.StructuralAnalysis.Api.Shared.Common;
+using BeamOs.Common.Api;
+using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
-using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,13 +11,13 @@ namespace BeamOs.StructuralAnalysis.Api;
 public class UpdateNode(PatchNodeCommandHandler patchNodeCommandHandler)
     : IBaseEndpoint<PatchNodeCommand, NodeResponse>
 {
-    public static Func<HttpRequest, Task<PatchNodeCommand>> RequestObjectBinder =>
-        RequestBinders.ModelResourceCommandBinder<PatchNodeCommand, UpdateNodeRequest>();
+    //public static Func<HttpRequest, Task<PatchNodeCommand>> RequestObjectBinder =>
+    //    RequestBinders.ModelResourceCommandBinder<PatchNodeCommand, UpdateNodeRequest>();
 
     public const string RouteConst = RouteConstants.ModelRoutePrefixWithTrailingSlash + "nodes";
     public static string Route => RouteConst;
     public static string EndpointName => nameof(UpdateNode);
-    public static Http EndpointType => Http.PATCH;
+    public static Http EndpointType => Http.Patch;
     public static UserAuthorizationLevel RequiredAccessLevel =>
         UserAuthorizationLevel.ModelContributor;
 
@@ -27,8 +26,8 @@ public class UpdateNode(PatchNodeCommandHandler patchNodeCommandHandler)
         CancellationToken ct = default
     ) => await patchNodeCommandHandler.ExecuteAsync(req, ct);
 
-    [Function(nameof(UpdateNode))]
-    public Task<IActionResult> Run(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "patch", Route = RouteConst)] HttpRequest req
-    ) => ((IBaseEndpoint<PatchNodeCommand, NodeResponse>)this).RunExecuteAsync<UpdateNode>(req);
+    //[Function(nameof(UpdateNode))]
+    //public Task<IActionResult> Run(
+    //    [HttpTrigger(AuthorizationLevel.Anonymous, "patch", Route = RouteConst)] HttpRequest req
+    //) => ((IBaseEndpoint<PatchNodeCommand, NodeResponse>)this).RunExecuteAsync<UpdateNode>(req);
 }

@@ -7,7 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Common\BeamOs.Common.Contracts\BeamOs.Common.Contracts.csproj" />
+    <ProjectReference Include="..\BeamOs.Common.Application\BeamOs.Common.Application.csproj" />
+    <ProjectReference Include="..\BeamOs.Common.Contracts\BeamOs.Common.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

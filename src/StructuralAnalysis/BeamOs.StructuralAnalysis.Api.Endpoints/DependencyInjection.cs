@@ -1,11 +1,12 @@
-using BeamOs.StructuralAnalysis.Api;
+using BeamOs.Common.Api;
+using BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Application;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
-using Microsoft.AspNetCore.Builder;
+using BeamOs.StructuralAnalysis.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BeamOs.StructuralAnalysis.Infrastructure;
+namespace BeamOs.StructuralAnalysis.Api.Endpoints;
 
 public static class DependencyInjection
 {
@@ -20,17 +21,11 @@ public static class DependencyInjection
 
     public static IServiceCollection AddStructuralAnalysisApi(this IServiceCollection services)
     {
-        return services.AddObjectThatImplementInterface<IAssemblyMarkerStructuralAnalysisApiShared>(
-            typeof(IBaseEndpoint<,>),
-            ServiceLifetime.Scoped,
-            false
-        );
-    }
-
-    public static void MapEndpoints(this WebApplication app)
-    {
-        var endpointGroup = app.MapGroup("api");
-        EndpointToMinimalApi.Map2<CreateNode, CreateNodeCommand, NodeResponse>(endpointGroup);
-        EndpointToMinimalApi.Map<UpdateNode, PatchNodeCommand, NodeResponse>(endpointGroup);
+        //return services.AddObjectThatImplementInterface<IAssemblyMarkerStructuralAnalysisApiShared>(
+        //    typeof(BeamOsBaseEndpoint<,>),
+        //    ServiceLifetime.Scoped,
+        //    false
+        //);
+        return services;
     }
 }

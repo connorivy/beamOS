@@ -1,4 +1,4 @@
-using BeamOs.StructuralAnalysis.Contracts.Common;
+using BeamOs.Common.Contracts;
 
 namespace BeamOs.StructuralAnalysis.Application.Common;
 

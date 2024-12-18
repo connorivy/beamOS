@@ -27,11 +27,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Common\BeamOs.Common.Api\BeamOs.Common.Api.csproj" />
+    <ProjectReference Include="..\BeamOs.StructuralAnalysis.Api.Endpoints\BeamOs.StructuralAnalysis.Api.Endpoints.csproj" />
     <ProjectReference Include="..\BeamOs.StructuralAnalysis.Application\BeamOs.StructuralAnalysis.Application.csproj" />
     <ProjectReference Include="..\BeamOs.StructuralAnalysis.Contracts\BeamOs.StructuralAnalysis.Contracts.csproj" />
     <ProjectReference Include="..\BeamOs.StructuralAnalysis.Infrastructure\BeamOs.StructuralAnalysis.Infrastructure.csproj" />
   </ItemGroup>
-
-  <Import Project="..\BeamOs.StructuralAnalysis.Api.Shared\BeamOs.StructuralAnalysis.Api.Shared.projitems" Label="Shared" />
 
 </Project>

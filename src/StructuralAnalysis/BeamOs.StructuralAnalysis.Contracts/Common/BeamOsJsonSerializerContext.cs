@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 
 namespace BeamOs.StructuralAnalysis.Contracts.Common;

@@ -1,4 +1,4 @@
-namespace BeamOs.StructuralAnalysis.Application.Common;
+namespace BeamOs.Common.Application;
 
 public interface IModelResourceRequest<TBody>
 {
