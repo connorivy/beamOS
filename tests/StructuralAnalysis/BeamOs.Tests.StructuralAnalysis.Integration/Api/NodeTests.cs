@@ -13,11 +13,9 @@ public class NodeTests
         CreateNodeRequest createNodeRequestBody =
             new(new(1, 1, 1, LengthUnitContract.Foot), Restraint.Fixed);
 
-        Result<NodeResponse> nodeResponseResult =
-            await AssemblySetup.StructuralAnalysisApiClient.CreateNodeAsync(
-                modelId,
-                createNodeRequestBody
-            );
+        Result<NodeResponse> nodeResponseResult = await AssemblySetup
+            .StructuralAnalysisApiClient
+            .CreateNodeAsync(modelId, createNodeRequestBody);
 
         await Verify(nodeResponseResult);
     }
@@ -28,10 +26,9 @@ public class NodeTests
         CreateNodeRequest createNodeRequestBody =
             new(new(1, 1, 1, LengthUnitContract.Foot), Restraint.Fixed, 5);
 
-        var nodeResponseResult = await AssemblySetup.StructuralAnalysisApiClient.CreateNodeAsync(
-            modelId,
-            createNodeRequestBody
-        );
+        var nodeResponseResult = await AssemblySetup
+            .StructuralAnalysisApiClient
+            .CreateNodeAsync(modelId, createNodeRequestBody);
 
         await Verify(nodeResponseResult);
     }
@@ -43,10 +40,9 @@ public class NodeTests
         UpdateNodeRequest updateNodeRequest =
             new(5, new() { LengthUnit = LengthUnitContract.Meter, X = 50 }, Restraint.Free);
 
-        var nodeResponseResult = await AssemblySetup.StructuralAnalysisApiClient.UpdateNodeAsync(
-            modelId,
-            updateNodeRequest
-        );
+        var nodeResponseResult = await AssemblySetup
+            .StructuralAnalysisApiClient
+            .UpdateNodeAsync(modelId, updateNodeRequest);
 
         await Verify(nodeResponseResult);
     }

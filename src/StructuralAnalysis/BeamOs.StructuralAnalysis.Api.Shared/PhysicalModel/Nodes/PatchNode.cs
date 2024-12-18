@@ -19,6 +19,8 @@ public class UpdateNode(PatchNodeCommandHandler patchNodeCommandHandler)
     public static string Route => RouteConst;
     public static string EndpointName => nameof(UpdateNode);
     public static Http EndpointType => Http.PATCH;
+    public static UserAuthorizationLevel RequiredAccessLevel =>
+        UserAuthorizationLevel.ModelContributor;
 
     public async Task<Result<NodeResponse>> ExecuteRequestAsync(
         PatchNodeCommand req,

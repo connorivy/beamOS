@@ -16,15 +16,21 @@ public class CreateNode(CreateNodeCommandHandler createNodeCommandHandler)
 
     public const string RouteConst = RouteConstants.ModelRoutePrefixWithTrailingSlash + "nodes";
     public static string Route => RouteConst;
-    public static string EndpointName => nameof(CreateNode);
-    public static Http EndpointType => Http.POST;
+
+    public const string EndpointNameConst = nameof(CreateNode);
+    public static string EndpointName => EndpointNameConst;
+
+    public const Http EndpointTypeConst = Http.POST;
+    public static Http EndpointType => EndpointTypeConst;
+    public static UserAuthorizationLevel RequiredAccessLevel =>
+        UserAuthorizationLevel.ModelContributor;
 
     public async Task<Result<NodeResponse>> ExecuteRequestAsync(
         CreateNodeCommand req,
         CancellationToken ct = default
     ) => await createNodeCommandHandler.ExecuteAsync(req, ct);
 
-    [Function(nameof(CreateNode))]
+    [Function(EndpointNameConst)]
     public Task<IActionResult> Run(
         [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = RouteConst)] HttpRequest req
     ) => ((IBaseEndpoint<CreateNodeCommand, NodeResponse>)this).RunExecuteAsync<CreateNode>(req);

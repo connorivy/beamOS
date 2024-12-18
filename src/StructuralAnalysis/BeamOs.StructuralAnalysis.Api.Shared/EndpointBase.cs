@@ -1,3 +1,5 @@
+using BeamOs.StructuralAnalysis.Api.Shared.Common;
+using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -6,6 +8,66 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BeamOs.StructuralAnalysis.Api;
+
+public abstract partial class BeamOsBaseEndpoint<TRequest, TResponse>
+{
+    public abstract string Route { get; }
+    public abstract string EndpointName { get; }
+    public abstract Http EndpointType { get; }
+    public abstract UserAuthorizationLevel RequiredAccessLevel { get; }
+    public abstract Task<Result<TResponse>> ExecuteRequestAsync(
+        TRequest req,
+        CancellationToken ct = default
+    );
+
+    public void Map(IEndpointRouteBuilder app)
+    {
+        IEndpointConventionBuilder endpointBuilder;
+
+        if (this.EndpointType is Http.POST)
+        {
+            endpointBuilder = app.MapPost(
+                this.Route,
+                async ([AsParameters] TRequest req, IServiceProvider serviceProvider) =>
+                    await this.ExecuteRequestAsync(req)
+            );
+        }
+        else if (this.EndpointType is Http.GET)
+        {
+            endpointBuilder = app.MapGet(
+                this.Route,
+                async ([AsParameters] TRequest req, IServiceProvider serviceProvider) =>
+                    await this.ExecuteRequestAsync(req)
+            );
+        }
+        else if (this.EndpointType is Http.PATCH)
+        {
+            endpointBuilder = app.MapPatch(
+                this.Route,
+                async ([AsParameters] TRequest req, IServiceProvider serviceProvider) =>
+                    await this.ExecuteRequestAsync(req)
+            );
+        }
+        else if (this.EndpointType is Http.PUT)
+        {
+            endpointBuilder = app.MapPut(
+                this.Route,
+                async ([AsParameters] TRequest req, IServiceProvider serviceProvider) =>
+                    await this.ExecuteRequestAsync(req)
+            );
+        }
+        else
+        {
+            throw new NotImplementedException();
+        }
+
+        endpointBuilder.WithName(this.EndpointName);
+    }
+}
+
+public abstract partial class BeamOsModelResourceBaseEndpoint<TCommand, TBody, TResponse>
+    : BeamOsBaseEndpoint<TCommand, TResponse>
+    where TCommand : IModelResourceRequest<TBody>, new() { }
 
 public interface IBaseEndpoint
 {
@@ -17,6 +79,8 @@ public interface IBaseEndpoint
 public interface IBaseEndpoint<TRequest, TResponse> : IBaseEndpoint
 {
     public static abstract Func<HttpRequest, Task<TRequest>> RequestObjectBinder { get; }
+
+    public static abstract UserAuthorizationLevel RequiredAccessLevel { get; }
 
     public Task<Result<TResponse>> ExecuteRequestAsync(
         TRequest req,
@@ -97,10 +161,11 @@ public interface IResultHandler
     {
         return response.Match<IActionResult>(
             r => new OkObjectResult(r),
-            ex => new ObjectResult(new { message = "Internal Server Error", details = ex.Message })
-            {
-                StatusCode = StatusCodes.Status500InternalServerError,
-            }
+            ex =>
+                new ObjectResult(new { message = "Internal Server Error", details = ex.Message })
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                }
         );
     }
 

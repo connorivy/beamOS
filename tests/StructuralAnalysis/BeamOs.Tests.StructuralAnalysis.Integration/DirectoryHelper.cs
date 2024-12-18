@@ -28,11 +28,11 @@ public static class DirectoryHelper
     public static string GetStructuralAnalysisDir() =>
         Path.Combine(GetSrcDir(), $"{nameof(BeamOs.StructuralAnalysis)}");
 
-    public static string GetStructuralAnalysisFunctionsDir() =>
-        Path.Combine(
-            GetStructuralAnalysisDir(),
-            $"{nameof(BeamOs)}.{nameof(BeamOs.StructuralAnalysis)}.{nameof(BeamOs.StructuralAnalysis.Api)}.{nameof(BeamOs.StructuralAnalysis.Api.Functions)}"
-        );
+    //public static string GetStructuralAnalysisFunctionsDir() =>
+    //    Path.Combine(
+    //        GetStructuralAnalysisDir(),
+    //        $"{nameof(BeamOs)}.{nameof(BeamOs.StructuralAnalysis)}.{nameof(BeamOs.StructuralAnalysis.Api)}.{nameof(BeamOs.StructuralAnalysis.Api.Functions)}"
+    //    );
 
     public static string GetTestsDir() => Path.Combine(GetRootDirectory(), "tests");
 }

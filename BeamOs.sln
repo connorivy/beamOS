@@ -42,8 +42,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.StructuralAnalysis.C
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "BeamOs.StructuralAnalysis.Api.Shared", "src\StructuralAnalysis\BeamOs.StructuralAnalysis.Api.Shared\BeamOs.StructuralAnalysis.Api.Shared.shproj", "{DA640083-81D2-477F-85C7-CBAC11619DA7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.StructuralAnalysis.Api.Functions", "src\StructuralAnalysis\BeamOs.StructuralAnalysis.Api.Functions\BeamOs.StructuralAnalysis.Api.Functions.csproj", "{42FAFF54-D106-47D8-AFCA-7FA631060639}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "codeGen", "codeGen", "{48C54BAE-EA56-4542-92EB-CAFBE1F6288F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.CodeGen.ApiGenerator", "codeGen\BeamOs.CodeGen.ApiGenerator\BeamOs.CodeGen.ApiGenerator.csproj", "{910283A3-0BD5-86F9-7A79-67BE292A5BB6}"
@@ -86,10 +84,6 @@ Global
 		{F7A60C0C-DF0B-47D7-9D52-C4C3B011EC6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F7A60C0C-DF0B-47D7-9D52-C4C3B011EC6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F7A60C0C-DF0B-47D7-9D52-C4C3B011EC6C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{42FAFF54-D106-47D8-AFCA-7FA631060639}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{42FAFF54-D106-47D8-AFCA-7FA631060639}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{42FAFF54-D106-47D8-AFCA-7FA631060639}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{42FAFF54-D106-47D8-AFCA-7FA631060639}.Release|Any CPU.Build.0 = Release|Any CPU
 		{910283A3-0BD5-86F9-7A79-67BE292A5BB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{910283A3-0BD5-86F9-7A79-67BE292A5BB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{910283A3-0BD5-86F9-7A79-67BE292A5BB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -116,7 +110,6 @@ Global
 		{74F8B27C-ECAF-4BCD-B3C3-53A3F776BF10} = {D0D7F508-C416-4B8C-AD30-4FC707F0D154}
 		{F7A60C0C-DF0B-47D7-9D52-C4C3B011EC6C} = {D0D7F508-C416-4B8C-AD30-4FC707F0D154}
 		{DA640083-81D2-477F-85C7-CBAC11619DA7} = {D0D7F508-C416-4B8C-AD30-4FC707F0D154}
-		{42FAFF54-D106-47D8-AFCA-7FA631060639} = {D0D7F508-C416-4B8C-AD30-4FC707F0D154}
 		{910283A3-0BD5-86F9-7A79-67BE292A5BB6} = {48C54BAE-EA56-4542-92EB-CAFBE1F6288F}
 		{0FB5C72E-9E34-12BE-569E-C832E446E04C} = {48C54BAE-EA56-4542-92EB-CAFBE1F6288F}
 		{30FE207F-79D9-4D64-A443-FE1A1A22A619} = {E2A070EF-D8E8-42B4-88A0-3084C89601A4}
@@ -125,7 +118,6 @@ Global
 		SolutionGuid = {A4E54AF5-719C-45F7-8978-E734B3D3060B}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		src\StructuralAnalysis\BeamOs.StructuralAnalysis.Api.Shared\BeamOs.StructuralAnalysis.Api.Shared.projitems*{42faff54-d106-47d8-afca-7fa631060639}*SharedItemsImports = 5
 		src\StructuralAnalysis\BeamOs.StructuralAnalysis.Api.Shared\BeamOs.StructuralAnalysis.Api.Shared.projitems*{503b0923-e931-1f19-6fcd-6b42e70f5300}*SharedItemsImports = 5
 		src\StructuralAnalysis\BeamOs.StructuralAnalysis.Api.Shared\BeamOs.StructuralAnalysis.Api.Shared.projitems*{da640083-81d2-477f-85c7-cbac11619da7}*SharedItemsImports = 13
 	EndGlobalSection

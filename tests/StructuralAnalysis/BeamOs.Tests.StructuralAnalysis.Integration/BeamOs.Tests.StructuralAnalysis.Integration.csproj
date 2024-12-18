@@ -30,7 +30,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\codeGen\BeamOs.CodeGen.StructuralAnalysisApiClient\BeamOs.CodeGen.StructuralAnalysisApiClient.csproj" />
-    <ProjectReference Include="..\..\..\src\StructuralAnalysis\BeamOs.StructuralAnalysis.Api.Functions\BeamOs.StructuralAnalysis.Api.Functions.csproj" />
+    <ProjectReference Include="..\..\..\src\StructuralAnalysis\BeamOs.StructuralAnalysis.Api\BeamOs.StructuralAnalysis.Api.csproj" />
   </ItemGroup>
 
 </Project>

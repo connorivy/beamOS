@@ -9,6 +9,7 @@
     <Import_RootNamespace>BeamOs.StructuralAnalysis.Api.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Common\ModelAccessLevel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\RequestBinders.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DependencyInjection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IAssemblyMarkerStructuralAnalysisApiShared.cs" />

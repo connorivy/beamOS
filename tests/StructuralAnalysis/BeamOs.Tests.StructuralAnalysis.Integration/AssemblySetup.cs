@@ -10,9 +10,13 @@ namespace BeamOs.Tests.StructuralAnalysis.Integration;
 public static class AssemblySetup
 {
     private static readonly PostgreSqlContainer dbContainer = new PostgreSqlBuilder()
+        //.WithAutoRemove(true)
+        //.WithCleanUp(true)
         .WithImage("postgres:15-alpine")
         .Build();
-    private static Process apiProcess;
+
+    //private static Process apiProcess;
+
     public static StructuralAnalysisApiClientV1 StructuralAnalysisApiClient { get; private set; }
 
     [Before(Assembly)]
@@ -20,115 +24,120 @@ public static class AssemblySetup
     {
         await dbContainer.StartAsync();
 
-        bool apiIsRunning = false;
-        var client = new HttpClient() { BaseAddress = new($"http://localhost:7071/") };
-        var sb = new StringBuilder();
-        var errorSb = new StringBuilder();
+        var webAppFactory = new WebAppFactory(dbContainer.GetConnectionString());
 
-        string funcDirectory = DirectoryHelper.GetStructuralAnalysisFunctionsDir();
+        StructuralAnalysisApiClient = new(webAppFactory.CreateClient());
 
-        if (IsCiBuild())
-        {
-            string settings = /*lang=json,strict*/
-            """
-{
-  "IsEncrypted": false,
-  "Values": {
-    "AzureWebJobsStorage": "",
-    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated"
-  },
-  "ConnectionStrings": {}
-}
-""";
-            File.WriteAllText(Path.Combine(funcDirectory, "local.settings.json"), settings);
-        }
+        //        bool apiIsRunning = false;
+        //        var client = new HttpClient() { BaseAddress = new($"http://localhost:7071/") };
+        //        var sb = new StringBuilder();
+        //        var errorSb = new StringBuilder();
 
-        for (int i = 0; i < 1; i++)
-        {
-            ProcessStartInfo startInfo =
-                new()
-                {
-                    FileName = "func",
-                    Arguments = "start",
-                    WorkingDirectory = funcDirectory,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    //CreateNoWindow = true,
-                };
-            startInfo.EnvironmentVariables["TEST_CONNECTION_STRING"] =
-                dbContainer.GetConnectionString();
+        //        string funcDirectory = DirectoryHelper.GetStructuralAnalysisFunctionsDir();
 
-            apiProcess = new Process { StartInfo = startInfo };
+        //        if (IsCiBuild())
+        //        {
+        //            string settings = /*lang=json,strict*/
+        //            """
+        //{
+        //  "IsEncrypted": false,
+        //  "Values": {
+        //    "AzureWebJobsStorage": "",
+        //    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated"
+        //  },
+        //  "ConnectionStrings": {}
+        //}
+        //""";
+        //            File.WriteAllText(Path.Combine(funcDirectory, "local.settings.json"), settings);
+        //        }
 
-            // hookup the eventhandlers to capture the data that is received
-            apiProcess.OutputDataReceived += (sender, args) => sb.AppendLine(args.Data);
-            apiProcess.ErrorDataReceived += (sender, args) => errorSb.AppendLine(args.Data);
+        //        for (int i = 0; i < 1; i++)
+        //        {
+        //            ProcessStartInfo startInfo =
+        //                new()
+        //                {
+        //                    FileName = "func",
+        //                    Arguments = "start",
+        //                    WorkingDirectory = funcDirectory,
+        //                    RedirectStandardOutput = true,
+        //                    RedirectStandardError = true,
+        //                    UseShellExecute = false,
+        //                    //CreateNoWindow = true,
+        //                };
+        //            startInfo.EnvironmentVariables["TEST_CONNECTION_STRING"] =
+        //                dbContainer.GetConnectionString();
 
-            //// direct start
-            //process.StartInfo.UseShellExecute = false;
-            bool success = apiProcess.Start();
-            apiProcess.BeginOutputReadLine();
-            apiProcess.BeginErrorReadLine();
+        //            apiProcess = new Process { StartInfo = startInfo };
 
-            //process.WaitForExit();
+        //            // hookup the eventhandlers to capture the data that is received
+        //            apiProcess.OutputDataReceived += (sender, args) => sb.AppendLine(args.Data);
+        //            apiProcess.ErrorDataReceived += (sender, args) => errorSb.AppendLine(args.Data);
 
-            //var x = sb.ToString();
+        //            //// direct start
+        //            //process.StartInfo.UseShellExecute = false;
+        //            bool success = apiProcess.Start();
+        //            apiProcess.BeginOutputReadLine();
+        //            apiProcess.BeginErrorReadLine();
 
-            TimeSpan timeout = TimeSpan.FromSeconds(25);
-            Stopwatch stopwatch = Stopwatch.StartNew();
-            while (stopwatch.Elapsed < timeout)
-            {
-                Thread.Sleep(500);
-                if (apiProcess.HasExited)
-                {
-                    break;
-                }
+        //            //process.WaitForExit();
 
-                HttpResponseMessage pingResponse;
-                try
-                {
-                    pingResponse = await client.GetAsync("api/ping");
-                }
-                catch (System.Net.Http.HttpRequestException)
-                {
-                    continue;
-                }
+        //            //var x = sb.ToString();
 
-                if (pingResponse.IsSuccessStatusCode)
-                {
-                    apiIsRunning = true;
-                    break;
-                }
-            }
+        //            TimeSpan timeout = TimeSpan.FromSeconds(25);
+        //            Stopwatch stopwatch = Stopwatch.StartNew();
+        //            while (stopwatch.Elapsed < timeout)
+        //            {
+        //                Thread.Sleep(500);
+        //                if (apiProcess.HasExited)
+        //                {
+        //                    break;
+        //                }
 
-            if (apiIsRunning)
-            {
-                break;
-            }
-        }
+        //                HttpResponseMessage pingResponse;
+        //                try
+        //                {
+        //                    pingResponse = await client.GetAsync("api/ping");
+        //                }
+        //                catch (System.Net.Http.HttpRequestException)
+        //                {
+        //                    continue;
+        //                }
 
-        if (!apiIsRunning)
-        {
-            throw new InvalidOperationException(
-                @$"""
-        Api is not up and running,
-        Errors : {errorSb}
-        OtherLogs : {sb}
-"""
-            );
-        }
-        StructuralAnalysisApiClient = new(client);
+        //                if (pingResponse.IsSuccessStatusCode)
+        //                {
+        //                    apiIsRunning = true;
+        //                    break;
+        //                }
+        //            }
+
+        //            if (apiIsRunning)
+        //            {
+        //                break;
+        //            }
+        //        }
+
+        //        if (!apiIsRunning)
+        //        {
+        //            throw new InvalidOperationException(
+        //                @$"""
+        //        Api is not up and running,
+        //        Errors : {errorSb}
+        //        OtherLogs : {sb}
+        //"""
+        //            );
+        //        }
+        //        StructuralAnalysisApiClient = new(client);
     }
 
-    [After(Assembly)]
+    //[After(Assembly)]
     public static async Task TearDown()
     {
         (string Stdout, string Stderr) x = await dbContainer.GetLogsAsync();
 
         await dbContainer.StopAsync();
-        apiProcess.Kill();
-        apiProcess.Dispose();
+        //await dbContainer?.StopAsync();
+        //apiProcess.Kill();
+        //apiProcess.Dispose();
     }
 
     [ModuleInitializer]
