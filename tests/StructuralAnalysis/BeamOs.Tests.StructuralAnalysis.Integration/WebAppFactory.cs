@@ -28,10 +28,8 @@ public class WebAppFactory(string connectionString)
             services.Remove(dbConnectionDescriptor);
 
             services.AddDbContext<StructuralAnalysisDbContext>(
-                options =>
-                    options
-                        .UseNpgsql(connectionString)
-                        .UseModel(StructuralAnalysisDbContextModel.Instance)
+                options => options.UseNpgsql(connectionString)
+            //.UseModel(StructuralAnalysisDbContextModel.Instance)
             );
 
             using IServiceScope scope = services.BuildServiceProvider().CreateScope();

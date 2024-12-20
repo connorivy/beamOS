@@ -1,4 +1,3 @@
-using BeamOs.StructuralAnalysis.Api;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Nodes;
@@ -16,8 +15,9 @@ public static class DependencyInjection
     )
     {
         _ = services.AddScoped<INodeRepository, NodeRepository>();
-        _ = services.AddDbContext<StructuralAnalysisDbContext>(options =>
-            options.UseNpgsql(connectionString).UseModel(StructuralAnalysisDbContextModel.Instance)
+        _ = services.AddDbContext<StructuralAnalysisDbContext>(
+            options => options.UseNpgsql(connectionString)
+        //.UseModel(StructuralAnalysisDbContextModel.Instance)
         );
 
         _ = services.AddScoped<IStructuralAnalysisUnitOfWork, UnitOfWork>();
@@ -37,12 +37,14 @@ public static class DependencyInjection
     )
     {
         var valueConverters = typeof(TAssemblyMarker)
-            .Assembly.GetTypes()
-            .Where(t =>
-                t.IsClass
-                && t.BaseType is not null
-                && t.BaseType.IsGenericType
-                && t.BaseType.GetGenericTypeDefinition() == typeof(ValueConverter<,>)
+            .Assembly
+            .GetTypes()
+            .Where(
+                t =>
+                    t.IsClass
+                    && t.BaseType is not null
+                    && t.BaseType.IsGenericType
+                    && t.BaseType.GetGenericTypeDefinition() == typeof(ValueConverter<,>)
             );
 
         foreach (var valueConverterType in valueConverters)

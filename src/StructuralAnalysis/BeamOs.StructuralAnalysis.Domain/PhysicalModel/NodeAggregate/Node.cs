@@ -1,5 +1,4 @@
 using BeamOs.StructuralAnalysis.Domain.Common;
-using BeamOs.StructuralAnalysis.Domain.Common.Models;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
 using UnitsNet;
@@ -45,7 +44,7 @@ public class Node : BeamOsModelEntity<NodeId>
         Restraint? restraint = null,
         NodeId? id = null
     )
-        : base(id, modelId)
+        : base(id ?? new(), modelId)
     {
         this.LocationPoint = locationPoint;
         this.Restraint = restraint ?? Restraint.Free;

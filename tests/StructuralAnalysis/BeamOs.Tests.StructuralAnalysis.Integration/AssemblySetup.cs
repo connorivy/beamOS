@@ -1,9 +1,6 @@
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Text;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using Testcontainers.PostgreSql;
-using VerifyTests;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration;
 
@@ -18,10 +15,16 @@ public static class AssemblySetup
     //private static Process apiProcess;
 
     public static StructuralAnalysisApiClientV1 StructuralAnalysisApiClient { get; private set; }
+    public static bool ClientIsRunning { get; set; }
 
     [Before(Assembly)]
     public static async Task Setup()
     {
+        if (ClientIsRunning)
+        {
+            return;
+        }
+
         await dbContainer.StartAsync();
 
         var webAppFactory = new WebAppFactory(dbContainer.GetConnectionString());

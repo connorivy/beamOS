@@ -1,4 +1,4 @@
-namespace BeamOs.StructuralAnalysis.Domain.Common.Models;
+namespace BeamOs.Common.Domain.Models;
 
 public abstract class BeamOSEntity<TId>
     : IEquatable<BeamOSEntity<TId>>,
@@ -6,12 +6,12 @@ public abstract class BeamOSEntity<TId>
         IHasDomainEvents
     where TId : struct
 {
-    public virtual TId? Id { get; protected set; }
+    public virtual TId Id { get; protected set; }
 
-    //protected BeamOSEntity(TId id)
-    //{
-    //    this.Id = id;
-    //}
+    protected BeamOSEntity(TId id)
+    {
+        this.Id = id;
+    }
 
     private readonly List<IDomainEvent> domainEvents = [];
     public IReadOnlyList<IDomainEvent> DomainEvents => this.domainEvents.AsReadOnly();

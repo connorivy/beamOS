@@ -1,21 +1,22 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using BeamOs.Common.Domain.Models;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using Microsoft.EntityFrameworkCore;
 
-namespace BeamOs.StructuralAnalysis.Domain.Common.Models;
+namespace BeamOs.StructuralAnalysis.Domain.Common;
 
 [PrimaryKey(nameof(Id), nameof(ModelId))]
 public class BeamOsModelEntity<TId> : BeamOSEntity<TId>
     where TId : struct
 {
-    public BeamOsModelEntity(TId? id, ModelId modelId)
+    public BeamOsModelEntity(TId id, ModelId modelId)
+        : base(id)
     {
-        this.Id = id;
         this.ModelId = modelId;
     }
 
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public override TId? Id
+    public override TId Id
     {
         get => base.Id;
         protected set => base.Id = value;

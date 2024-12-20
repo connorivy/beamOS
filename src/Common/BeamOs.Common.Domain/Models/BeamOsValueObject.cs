@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BeamOs.StructuralAnalysis.Domain.Common.Models;
+namespace BeamOs.Common.Domain.Models;
 
 [ComplexType]
 public abstract class BeamOSValueObject : IEquatable<BeamOSValueObject>, IBeamOsDomainObject

@@ -1,4 +1,4 @@
-using BeamOs.StructuralAnalysis.Domain.Common.Models;
+using BeamOs.Common.Domain.Models;
 using MathNet.Spatial.Euclidean;
 using UnitsNet;
 using UnitsNet.Units;

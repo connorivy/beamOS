@@ -1,9 +1,12 @@
-using BeamOs.StructuralAnalysis.Domain.Common.Models;
+using BeamOs.Common.Domain.Models;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure;
 
+/// <summary>
+/// dotnet ef dbcontext optimize --output-dir ..\BeamOs.StructuralAnalysis.Infrastructure\CompiledModels
+/// </summary>
 public class StructuralAnalysisDbContext : DbContext
 {
     public StructuralAnalysisDbContext(DbContextOptions<StructuralAnalysisDbContext> options)

@@ -15,4 +15,8 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\BeamOs.Common.Domain\BeamOs.Common.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

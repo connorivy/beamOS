@@ -12,23 +12,8 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Nodes;
 public class UpdateNode(PatchNodeCommandHandler patchNodeCommandHandler)
     : BeamOsModelResourceBaseEndpoint<PatchNodeCommand, UpdateNodeRequest, NodeResponse>
 {
-    //public static Func<HttpRequest, Task<PatchNodeCommand>> RequestObjectBinder =>
-    //    RequestBinders.ModelResourceCommandBinder<PatchNodeCommand, UpdateNodeRequest>();
-
-    //public const string RouteConst = RouteConstants.ModelRoutePrefixWithTrailingSlash + "nodes";
-    //public override string Route => RouteConst;
-    //public override string EndpointName => nameof(UpdateNode);
-    //public override Http EndpointType => Http.Patch;
-    //public override UserAuthorizationLevel RequiredAccessLevel =>
-    //    UserAuthorizationLevel.ModelContributor;
-
     public override async Task<Result<NodeResponse>> ExecuteRequestAsync(
         PatchNodeCommand req,
         CancellationToken ct = default
     ) => await patchNodeCommandHandler.ExecuteAsync(req, ct);
-
-    //[Function(nameof(UpdateNode))]
-    //public Task<IActionResult> Run(
-    //    [HttpTrigger(AuthorizationLevel.Anonymous, "patch", Route = RouteConst)] HttpRequest req
-    //) => ((IBaseEndpoint<PatchNodeCommand, NodeResponse>)this).RunExecuteAsync<UpdateNode>(req);
 }

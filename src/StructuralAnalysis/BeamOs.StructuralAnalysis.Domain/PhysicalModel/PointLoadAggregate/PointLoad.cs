@@ -1,5 +1,4 @@
 using BeamOs.StructuralAnalysis.Domain.Common;
-using BeamOs.StructuralAnalysis.Domain.Common.Models;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using MathNet.Spatial.Euclidean;
@@ -16,7 +15,7 @@ public class PointLoad : BeamOsModelEntity<PointLoadId>
         Vector3D direction,
         PointLoadId? id = null
     )
-        : base(id, modelId)
+        : base(id ?? new(), modelId)
     {
         this.ModelId = modelId;
         this.NodeId = nodeId;
@@ -38,12 +37,10 @@ public class PointLoad : BeamOsModelEntity<PointLoadId>
             CoordinateSystemDirection3D.AlongZ => this.Force * this.Direction.Z,
             CoordinateSystemDirection3D.AboutX
             or CoordinateSystemDirection3D.AboutY
-            or CoordinateSystemDirection3D.AboutZ => throw new ArgumentException(
-                "Point load has no force about an axis"
-            ),
-            CoordinateSystemDirection3D.Undefined => throw new ArgumentException(
-                "Unexpected value for direction, Undefined"
-            ),
+            or CoordinateSystemDirection3D.AboutZ
+                => throw new ArgumentException("Point load has no force about an axis"),
+            CoordinateSystemDirection3D.Undefined
+                => throw new ArgumentException("Unexpected value for direction, Undefined"),
             _ => throw new NotImplementedException(),
         };
     }
