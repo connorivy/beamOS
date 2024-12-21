@@ -1,5 +1,3 @@
-﻿namespace BeamOs.StructuralAnalysis.Infrastructure;
+namespace BeamOs.StructuralAnalysis.Infrastructure;
 
-internal interface IAssemblyMarkerInfrastructure
-{
-}
+public interface IAssemblyMarkerInfrastructure { }

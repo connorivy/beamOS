@@ -1,11 +1,30 @@
+using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.Common;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration.Api;
 
 public class NodeTests
 {
-    private static readonly Guid ModelId = Guid.NewGuid();
+    private static Guid modelId;
+    private static Result<ModelResponse> modelResponseResult;
+
+    [Before(Class)]
+    public static async Task SetupModel()
+    {
+        modelId = Guid.NewGuid();
+
+        modelResponseResult = await AssemblySetup
+            .StructuralAnalysisApiClient
+            .CreateModelAsync("test model", "test model", modelId, new(UnitSettingsContract.K_FT));
+    }
+
+    [Test]
+    public async Task CreateModel_ShouldReturnSuccessfulResponse()
+    {
+        await Verify(modelResponseResult);
+    }
 
     [Test]
     public async Task CreateNode_WithNoSpecifiedId_ShouldCreateNode_AndGiveAnId()
@@ -15,7 +34,7 @@ public class NodeTests
 
         var nodeResponseResult = await AssemblySetup
             .StructuralAnalysisApiClient
-            .CreateNodeAsync(ModelId, createNodeRequestBody);
+            .CreateNodeAsync(modelId, createNodeRequestBody);
 
         await Verify(nodeResponseResult);
     }
@@ -28,7 +47,7 @@ public class NodeTests
 
         var nodeResponseResult = await AssemblySetup
             .StructuralAnalysisApiClient
-            .CreateNodeAsync(ModelId, createNodeRequestBody);
+            .CreateNodeAsync(modelId, createNodeRequestBody);
 
         await Verify(nodeResponseResult);
     }
@@ -42,7 +61,7 @@ public class NodeTests
 
         var nodeResponseResult = await AssemblySetup
             .StructuralAnalysisApiClient
-            .UpdateNodeAsync(ModelId, updateNodeRequest);
+            .UpdateNodeAsync(modelId, updateNodeRequest);
 
         await Verify(nodeResponseResult);
     }

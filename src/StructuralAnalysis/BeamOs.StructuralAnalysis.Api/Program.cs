@@ -14,7 +14,8 @@ builder
 
 builder
     .Services
-    .AddStructuralAnalysis(
+    .AddStructuralAnalysisRequired()
+    .AddStructuralAnalysisConfigurable(
         "Server=localhost;Port=5432;Database=some-postgres;Username=postgres;Password=mysecretpassword"
     );
 

@@ -1,14 +1,14 @@
 namespace BeamOs.Common.Domain.Models;
 
-public abstract class BeamOSEntity<TId>
-    : IEquatable<BeamOSEntity<TId>>,
+public abstract class BeamOsEntity<TId>
+    : IEquatable<BeamOsEntity<TId>>,
         IBeamOsDomainObject,
         IHasDomainEvents
     where TId : struct
 {
     public virtual TId Id { get; protected set; }
 
-    protected BeamOSEntity(TId id)
+    protected BeamOsEntity(TId id)
     {
         this.Id = id;
     }
@@ -26,15 +26,15 @@ public abstract class BeamOSEntity<TId>
 
     public override bool Equals(object? obj)
     {
-        return obj is BeamOSEntity<TId> entity && this.Id.Equals(entity.Id);
+        return obj is BeamOsEntity<TId> entity && this.Id.Equals(entity.Id);
     }
 
-    public static bool operator ==(BeamOSEntity<TId> left, BeamOSEntity<TId> right)
+    public static bool operator ==(BeamOsEntity<TId> left, BeamOsEntity<TId> right)
     {
         return Equals(left, right);
     }
 
-    public static bool operator !=(BeamOSEntity<TId> left, BeamOSEntity<TId> right)
+    public static bool operator !=(BeamOsEntity<TId> left, BeamOsEntity<TId> right)
     {
         return !Equals(left, right);
     }
@@ -44,13 +44,13 @@ public abstract class BeamOSEntity<TId>
         return this.Id.GetHashCode();
     }
 
-    public bool Equals(BeamOSEntity<TId>? other)
+    public bool Equals(BeamOsEntity<TId>? other)
     {
         return this.Equals((object?)other);
     }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-    protected BeamOSEntity() { }
+    protected BeamOsEntity() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }
 

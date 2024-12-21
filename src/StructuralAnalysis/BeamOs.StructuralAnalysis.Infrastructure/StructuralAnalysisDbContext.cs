@@ -1,4 +1,5 @@
 using BeamOs.Common.Domain.Models;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,7 @@ public class StructuralAnalysisDbContext : DbContext
     protected StructuralAnalysisDbContext(DbContextOptions options)
         : base(options) { }
 
+    public DbSet<Model> Models { get; set; }
     public DbSet<Node> Nodes { get; set; }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

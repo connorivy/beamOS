@@ -19,6 +19,12 @@ export interface IStructuralAnalysisApiClientV1 {
      * @return OK
      */
     updateNode(modelId: string, body: UpdateNodeRequest): Promise<ResultOfNodeResponse>;
+
+    /**
+     * @param id (optional) 
+     * @return OK
+     */
+    createModel(name: string, description: string, id: string | undefined, body: PhysicalModelSettings): Promise<ResultOfModelResponse2>;
 }
 
 export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClientV1 {
@@ -118,6 +124,108 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         }
         return Promise.resolve<ResultOfNodeResponse>(null as any);
     }
+
+    /**
+     * @param id (optional) 
+     * @return OK
+     */
+    createModel(name: string, description: string, id: string | undefined, body: PhysicalModelSettings): Promise<ResultOfModelResponse2> {
+        let url_ = this.baseUrl + "/api/models?";
+        if (name === undefined || name === null)
+            throw new Error("The parameter 'name' must be defined and cannot be null.");
+        else
+            url_ += "Name=" + encodeURIComponent("" + name) + "&";
+        if (description === undefined || description === null)
+            throw new Error("The parameter 'description' must be defined and cannot be null.");
+        else
+            url_ += "Description=" + encodeURIComponent("" + description) + "&";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateModel(_response);
+        });
+    }
+
+    protected processCreateModel(response: Response): Promise<ResultOfModelResponse2> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfModelResponse2.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfModelResponse2>(null as any);
+    }
+}
+
+export class AnalysisSettingsContract implements IAnalysisSettingsContract {
+    element1DAnalysisType?: number;
+
+    [key: string]: any;
+
+    constructor(data?: IAnalysisSettingsContract) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.element1DAnalysisType = _data["element1DAnalysisType"];
+        }
+    }
+
+    static fromJS(data: any): AnalysisSettingsContract {
+        data = typeof data === 'object' ? data : {};
+        let result = new AnalysisSettingsContract();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["element1DAnalysisType"] = this.element1DAnalysisType;
+        return data;
+    }
+}
+
+export interface IAnalysisSettingsContract {
+    element1DAnalysisType?: number;
+
+    [key: string]: any;
 }
 
 export class CreateNodeRequest implements ICreateNodeRequest {
@@ -299,6 +407,81 @@ export interface IMethodBase {
     [key: string]: any;
 }
 
+export class ModelResponse implements IModelResponse {
+    id!: string;
+    name!: string;
+    description!: string;
+    settings!: PhysicalModelSettings;
+    nodes?: NodeResponse3[] | undefined;
+
+    [key: string]: any;
+
+    constructor(data?: IModelResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.settings = new PhysicalModelSettings();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.description = _data["description"];
+            this.settings = _data["settings"] ? PhysicalModelSettings.fromJS(_data["settings"]) : new PhysicalModelSettings();
+            if (Array.isArray(_data["nodes"])) {
+                this.nodes = [] as any;
+                for (let item of _data["nodes"])
+                    this.nodes!.push(NodeResponse3.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ModelResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ModelResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["description"] = this.description;
+        data["settings"] = this.settings ? this.settings.toJSON() : <any>undefined;
+        if (Array.isArray(this.nodes)) {
+            data["nodes"] = [];
+            for (let item of this.nodes)
+                data["nodes"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IModelResponse {
+    id: string;
+    name: string;
+    description: string;
+    settings: PhysicalModelSettings;
+    nodes?: NodeResponse3[] | undefined;
+
+    [key: string]: any;
+}
+
 export class NodeResponse implements INodeResponse {
     id!: number;
     modelId!: string;
@@ -355,6 +538,70 @@ export class NodeResponse implements INodeResponse {
 }
 
 export interface INodeResponse {
+    id: number;
+    modelId: string;
+    locationPoint: Point;
+    restraint: Restraint;
+
+    [key: string]: any;
+}
+
+export class NodeResponse3 implements INodeResponse3 {
+    id!: number;
+    modelId!: string;
+    locationPoint!: Point;
+    restraint!: Restraint;
+
+    [key: string]: any;
+
+    constructor(data?: INodeResponse3) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.locationPoint = new Point();
+            this.restraint = new Restraint();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.modelId = _data["modelId"];
+            this.locationPoint = _data["locationPoint"] ? Point.fromJS(_data["locationPoint"]) : new Point();
+            this.restraint = _data["restraint"] ? Restraint.fromJS(_data["restraint"]) : new Restraint();
+        }
+    }
+
+    static fromJS(data: any): NodeResponse3 {
+        data = typeof data === 'object' ? data : {};
+        let result = new NodeResponse3();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["modelId"] = this.modelId;
+        data["locationPoint"] = this.locationPoint ? this.locationPoint.toJSON() : <any>undefined;
+        data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface INodeResponse3 {
     id: number;
     modelId: string;
     locationPoint: Point;
@@ -492,12 +739,12 @@ export interface INullableOfPartialRestraint {
 }
 
 export class NullableOfRestraint implements INullableOfRestraint {
-    canTranslateAlongX?: boolean;
-    canTranslateAlongY?: boolean;
-    canTranslateAlongZ?: boolean;
-    canRotateAboutX?: boolean;
-    canRotateAboutY?: boolean;
-    canRotateAboutZ?: boolean;
+    canTranslateAlongX!: boolean;
+    canTranslateAlongY!: boolean;
+    canTranslateAlongZ!: boolean;
+    canRotateAboutX!: boolean;
+    canRotateAboutY!: boolean;
+    canRotateAboutZ!: boolean;
 
     [key: string]: any;
 
@@ -549,12 +796,72 @@ export class NullableOfRestraint implements INullableOfRestraint {
 }
 
 export interface INullableOfRestraint {
-    canTranslateAlongX?: boolean;
-    canTranslateAlongY?: boolean;
-    canTranslateAlongZ?: boolean;
-    canRotateAboutX?: boolean;
-    canRotateAboutY?: boolean;
-    canRotateAboutZ?: boolean;
+    canTranslateAlongX: boolean;
+    canTranslateAlongY: boolean;
+    canTranslateAlongZ: boolean;
+    canRotateAboutX: boolean;
+    canRotateAboutY: boolean;
+    canRotateAboutZ: boolean;
+
+    [key: string]: any;
+}
+
+export class PhysicalModelSettings implements IPhysicalModelSettings {
+    unitSettings!: UnitSettingsContract;
+    analysisSettings?: AnalysisSettingsContract | undefined;
+    yAxisUp?: boolean;
+
+    [key: string]: any;
+
+    constructor(data?: IPhysicalModelSettings) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.unitSettings = new UnitSettingsContract();
+            this.yAxisUp = true;
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.unitSettings = _data["unitSettings"] ? UnitSettingsContract.fromJS(_data["unitSettings"]) : new UnitSettingsContract();
+            this.analysisSettings = _data["analysisSettings"] ? AnalysisSettingsContract.fromJS(_data["analysisSettings"]) : <any>undefined;
+            this.yAxisUp = _data["yAxisUp"] !== undefined ? _data["yAxisUp"] : true;
+        }
+    }
+
+    static fromJS(data: any): PhysicalModelSettings {
+        data = typeof data === 'object' ? data : {};
+        let result = new PhysicalModelSettings();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["unitSettings"] = this.unitSettings ? this.unitSettings.toJSON() : <any>undefined;
+        data["analysisSettings"] = this.analysisSettings ? this.analysisSettings.toJSON() : <any>undefined;
+        data["yAxisUp"] = this.yAxisUp;
+        return data;
+    }
+}
+
+export interface IPhysicalModelSettings {
+    unitSettings: UnitSettingsContract;
+    analysisSettings?: AnalysisSettingsContract | undefined;
+    yAxisUp?: boolean;
 
     [key: string]: any;
 }
@@ -620,12 +927,12 @@ export interface IPoint {
 }
 
 export class Restraint implements IRestraint {
-    canTranslateAlongX?: boolean;
-    canTranslateAlongY?: boolean;
-    canTranslateAlongZ?: boolean;
-    canRotateAboutX?: boolean;
-    canRotateAboutY?: boolean;
-    canRotateAboutZ?: boolean;
+    canTranslateAlongX!: boolean;
+    canTranslateAlongY!: boolean;
+    canTranslateAlongZ!: boolean;
+    canRotateAboutX!: boolean;
+    canRotateAboutY!: boolean;
+    canRotateAboutZ!: boolean;
 
     [key: string]: any;
 
@@ -677,12 +984,68 @@ export class Restraint implements IRestraint {
 }
 
 export interface IRestraint {
-    canTranslateAlongX?: boolean;
-    canTranslateAlongY?: boolean;
-    canTranslateAlongZ?: boolean;
-    canRotateAboutX?: boolean;
-    canRotateAboutY?: boolean;
-    canRotateAboutZ?: boolean;
+    canTranslateAlongX: boolean;
+    canTranslateAlongY: boolean;
+    canTranslateAlongZ: boolean;
+    canRotateAboutX: boolean;
+    canRotateAboutY: boolean;
+    canRotateAboutZ: boolean;
+
+    [key: string]: any;
+}
+
+export class ResultOfModelResponse2 implements IResultOfModelResponse2 {
+    value!: ModelResponse | undefined;
+    error!: Exception | undefined;
+    isError!: boolean;
+
+    [key: string]: any;
+
+    constructor(data?: IResultOfModelResponse2) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.value = _data["value"] ? ModelResponse.fromJS(_data["value"]) : <any>undefined;
+            this.error = _data["error"] ? Exception.fromJS(_data["error"]) : <any>undefined;
+            this.isError = _data["isError"];
+        }
+    }
+
+    static fromJS(data: any): ResultOfModelResponse2 {
+        data = typeof data === 'object' ? data : {};
+        let result = new ResultOfModelResponse2();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
+        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
+        data["isError"] = this.isError;
+        return data;
+    }
+}
+
+export interface IResultOfModelResponse2 {
+    value: ModelResponse | undefined;
+    error: Exception | undefined;
+    isError: boolean;
 
     [key: string]: any;
 }
@@ -739,6 +1102,62 @@ export interface IResultOfNodeResponse {
     value: NodeResponse | undefined;
     error: Exception | undefined;
     isError: boolean;
+
+    [key: string]: any;
+}
+
+export class UnitSettingsContract implements IUnitSettingsContract {
+    lengthUnit!: number;
+    forceUnit!: number;
+    angleUnit?: number;
+
+    [key: string]: any;
+
+    constructor(data?: IUnitSettingsContract) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.lengthUnit = _data["lengthUnit"];
+            this.forceUnit = _data["forceUnit"];
+            this.angleUnit = _data["angleUnit"];
+        }
+    }
+
+    static fromJS(data: any): UnitSettingsContract {
+        data = typeof data === 'object' ? data : {};
+        let result = new UnitSettingsContract();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["lengthUnit"] = this.lengthUnit;
+        data["forceUnit"] = this.forceUnit;
+        data["angleUnit"] = this.angleUnit;
+        return data;
+    }
+}
+
+export interface IUnitSettingsContract {
+    lengthUnit: number;
+    forceUnit: number;
+    angleUnit?: number;
 
     [key: string]: any;
 }

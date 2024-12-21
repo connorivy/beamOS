@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BeamOs.StructuralAnalysis.Domain.Common;
 
 [PrimaryKey(nameof(Id), nameof(ModelId))]
-public class BeamOsModelEntity<TId> : BeamOSEntity<TId>
+public class BeamOsModelEntity<TId> : BeamOsEntity<TId>
     where TId : struct
 {
     public BeamOsModelEntity(TId id, ModelId modelId)

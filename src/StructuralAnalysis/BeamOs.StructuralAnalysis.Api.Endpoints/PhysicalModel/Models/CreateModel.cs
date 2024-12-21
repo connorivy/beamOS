@@ -1,0 +1,19 @@
+using BeamOs.Common.Api;
+using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis.Api.Endpoints.Common;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
+
+namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Models;
+
+[BeamOsRoute("models")]
+[BeamOsEndpointType(Http.Post)]
+[BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Authenticated)]
+public class CreateModel(CreateModelCommandHandler createModelCommandHandler)
+    : BeamOsBaseEndpoint<CreateModelRequest, ModelResponse>
+{
+    public override async Task<Result<ModelResponse>> ExecuteRequestAsync(
+        CreateModelRequest req,
+        CancellationToken ct = default
+    ) => await createModelCommandHandler.ExecuteAsync(req, ct);
+}

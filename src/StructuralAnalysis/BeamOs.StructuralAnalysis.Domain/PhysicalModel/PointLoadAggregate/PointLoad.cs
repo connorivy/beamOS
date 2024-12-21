@@ -17,13 +17,11 @@ public class PointLoad : BeamOsModelEntity<PointLoadId>
     )
         : base(id ?? new(), modelId)
     {
-        this.ModelId = modelId;
         this.NodeId = nodeId;
         this.Force = force;
         this.Direction = direction;
     }
 
-    public ModelId ModelId { get; private set; }
     public NodeId NodeId { get; private set; }
     public Force Force { get; private set; }
     public Vector3D Direction { get; private set; }

@@ -1,5 +1,7 @@
 using BeamOs.StructuralAnalysis.Application.Common;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
+using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Nodes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
@@ -9,18 +11,26 @@ namespace BeamOs.StructuralAnalysis.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddStructuralAnalysisInfrastructure(
+    public static IServiceCollection AddStructuralAnalysisInfrastructureRequired(
+        this IServiceCollection services
+    )
+    {
+        _ = services.AddScoped<INodeRepository, NodeRepository>();
+        _ = services.AddScoped<IModelRepository, ModelRepository>();
+        _ = services.AddScoped<IStructuralAnalysisUnitOfWork, UnitOfWork>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddStructuralAnalysisInfrastructureConfigurable(
         this IServiceCollection services,
         string connectionString
     )
     {
-        _ = services.AddScoped<INodeRepository, NodeRepository>();
         _ = services.AddDbContext<StructuralAnalysisDbContext>(
             options => options.UseNpgsql(connectionString)
         //.UseModel(StructuralAnalysisDbContextModel.Instance)
         );
-
-        _ = services.AddScoped<IStructuralAnalysisUnitOfWork, UnitOfWork>();
 
         return services;
     }

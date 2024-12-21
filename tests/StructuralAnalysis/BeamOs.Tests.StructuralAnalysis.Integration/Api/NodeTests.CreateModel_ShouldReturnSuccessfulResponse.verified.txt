@@ -1,0 +1,28 @@
+﻿{
+  Value: {
+    Id: Guid_1,
+    Name: test model,
+    Description: test model,
+    Settings: {
+      UnitSettings: {
+        LengthUnit: Foot,
+        ForceUnit: KilopoundForce,
+        AngleUnit: Radian,
+        AreaUnit: SquareFoot,
+        VolumeUnit: CubicFoot,
+        AreaMomentOfInertiaUnit: FootToTheFourth,
+        TorqueUnit: KilopoundForceFoot,
+        ForcePerLengthUnit: KilopoundForcePerFoot,
+        PressureUnit: KilopoundForcePerSquareFoot
+      },
+      AnalysisSettings: {
+        Element1DAnalysisType: Timoshenko
+      },
+      YAxisUp: true
+    },
+    Nodes: null
+  },
+  Error: null,
+  IsError: false,
+  IsSuccess: true
+}

@@ -1,6 +1,4 @@
-using BeamOs.Common.Api;
-
-namespace BeamOs.StructuralAnalysis.Api.Endpoints.Common;
+namespace BeamOs.Common.Api;
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 public class BeamOsRouteAttribute(string value) : Attribute

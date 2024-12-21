@@ -7,14 +7,22 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddStructuralAnalysis(
+    public static IServiceCollection AddStructuralAnalysisRequired(
+        this IServiceCollection services
+    ) =>
+        services
+            .AddStructuralAnalysisApplication()
+            .AddStructuralAnalysisInfrastructureRequired()
+            .AddStructuralAnalysisApi();
+
+    public static IServiceCollection AddStructuralAnalysisConfigurable(
         this IServiceCollection services,
         string connectionString
     ) =>
         services
-            .AddStructuralAnalysisApplication()
-            .AddStructuralAnalysisInfrastructure(connectionString)
-            .AddStructuralAnalysisApi();
+        //.AddStructuralAnalysisApplication()
+        //.AddStructuralAnalysisApi()
+        .AddStructuralAnalysisInfrastructureConfigurable(connectionString);
 
     public static IServiceCollection AddStructuralAnalysisApi(this IServiceCollection services)
     {

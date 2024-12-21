@@ -1,8 +1,10 @@
 using System.Reflection;
 using BeamOs.Common.Api;
 using BeamOs.StructuralAnalysis.Api.Endpoints.Common;
+using BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 
 namespace BeamOs.StructuralAnalysis.Api;
@@ -14,6 +16,7 @@ public static class DependencyInjection
         var endpointGroup = app.MapGroup("api");
         EndpointToMinimalApi.Map<CreateNode, CreateNodeCommand, NodeResponse>(endpointGroup);
         EndpointToMinimalApi.Map<UpdateNode, PatchNodeCommand, NodeResponse>(endpointGroup);
+        EndpointToMinimalApi.Map<CreateModel, CreateModelRequest, ModelResponse>(endpointGroup);
     }
 }
 
