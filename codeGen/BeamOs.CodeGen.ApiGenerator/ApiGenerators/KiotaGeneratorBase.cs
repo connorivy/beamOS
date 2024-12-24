@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 
@@ -17,16 +18,15 @@ public abstract class KiotaGeneratorBase<TAssemblyMarker> : IApiGenerator
 
     public async Task GenerateClients()
     {
-        using var appFactory = new WebApplicationFactory<TAssemblyMarker>().WithWebHostBuilder(
-            builder =>
+        using var appFactory =
+            new WebApplicationFactory<TAssemblyMarker>().WithWebHostBuilder(builder =>
             {
                 builder.UseSolutionRelativeContentRoot(Environment.CurrentDirectory);
 
                 // there are some exceptions thrown during startup of the web api.
                 // they don't seem to bother the api, but they will mess up the tests, so don't validate here.
                 builder.UseDefaultServiceProvider(options => options.ValidateScopes = false);
-            }
-        );
+            });
         HttpClient client = appFactory.CreateClient();
 
         var json = await client.GetStringAsync(this.OpenApiDefinitionPath);

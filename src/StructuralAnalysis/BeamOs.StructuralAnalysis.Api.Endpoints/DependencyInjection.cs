@@ -26,7 +26,7 @@ public static class DependencyInjection
 
     public static IServiceCollection AddStructuralAnalysisApi(this IServiceCollection services)
     {
-        return services.AddObjectThatExtendsBase<IAssemblyMarkerStructuralAnalysisApiShared>(
+        return services.AddObjectThatExtendsBase<IAssemblyMarkerStructuralAnalysisApiEndpoints>(
             typeof(BeamOsBaseEndpoint<,>),
             ServiceLifetime.Scoped
         );

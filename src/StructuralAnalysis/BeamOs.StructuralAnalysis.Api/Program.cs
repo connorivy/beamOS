@@ -25,7 +25,7 @@ builder.Services.AddOpenApi();
 
 WebApplication app = builder.Build();
 
-app.MapEndpoints();
+app.MapEndpoints<IAssemblyMarkerStructuralAnalysisApiEndpoints>();
 
 #if DEBUG
 app.MapOpenApi();

@@ -1,21 +1,50 @@
 using System.Reflection;
+using System.Security.AccessControl;
 using BeamOs.Common.Api;
 using BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BeamOs.StructuralAnalysis.Api;
 
 public static class DependencyInjection
 {
-    public static void MapEndpoints(this WebApplication app)
+    public static void MapEndpoints<TAssemblyMarker>(this IEndpointRouteBuilder app)
     {
         var endpointGroup = app.MapGroup("api");
-        EndpointToMinimalApi.Map<CreateNode, CreateNodeCommand, NodeResponse>(endpointGroup);
-        EndpointToMinimalApi.Map<UpdateNode, PatchNodeCommand, NodeResponse>(endpointGroup);
-        EndpointToMinimalApi.Map<CreateModel, CreateModelRequest, ModelResponse>(endpointGroup);
+
+        static MethodInfo mapMethodFactory() => typeof(EndpointToMinimalApi).GetMethod("Map");
+        IEnumerable<Type> assemblyTypes = typeof(TAssemblyMarker)
+            .Assembly
+            .GetTypes()
+            .Where(t => t.IsClass && !t.IsAbstract);
+
+        var baseType = typeof(BeamOsBaseEndpoint<,>);
+        foreach (var assemblyType in assemblyTypes)
+        {
+            if (Application.DependencyInjection.ConcreteTypeDerivedFromBase(assemblyType, baseType))
+            {
+                var requestType = assemblyType.BaseType?.GenericTypeArguments.FirstOrDefault();
+                var responseType = assemblyType.BaseType?.GenericTypeArguments.LastOrDefault();
+                if (requestType is null || responseType is null)
+                {
+                    throw new Exception(
+                        $"request or response type of assembly type {assemblyType} was null"
+                    );
+                }
+
+                mapMethodFactory()
+                    .MakeGenericMethod([assemblyType, requestType, responseType])
+                    .Invoke(null, [endpointGroup]);
+            }
+        }
+
+        //EndpointToMinimalApi.Map<CreateNode, CreateNodeCommand, NodeResponse>(endpointGroup);
+        //EndpointToMinimalApi.Map<UpdateNode, PatchNodeCommand, NodeResponse>(endpointGroup);
+        //EndpointToMinimalApi.Map<CreateModel, CreateModelRequest, ModelResponse>(endpointGroup);
     }
 }
 
@@ -24,8 +53,6 @@ public static class EndpointToMinimalApi
     public static void Map<TEndpoint, TRequest, TResponse>(IEndpointRouteBuilder app)
         where TEndpoint : BeamOsBaseEndpoint<TRequest, TResponse>
     {
-        IEndpointConventionBuilder endpointBuilder;
-
         string route =
             typeof(TEndpoint).GetCustomAttribute<BeamOsRouteAttribute>()?.Value
             ?? throw new InvalidOperationException(
@@ -37,42 +64,35 @@ public static class EndpointToMinimalApi
                 $"Class {typeof(TEndpoint).Name} is missing the route attribute"
             );
 
-        if (endpointType is Http.Post)
+        Func<string, Delegate, IEndpointConventionBuilder> mapFunc = endpointType switch
         {
-            endpointBuilder = app.MapPost(
-                route,
-                async ([AsParameters] TRequest req, IServiceProvider serviceProvider) =>
-                    await serviceProvider.GetRequiredService<TEndpoint>().ExecuteRequestAsync(req)
-            );
-        }
-        else if (endpointType is Http.Get)
+            Http.Post => app.MapPost,
+            Http.Get => app.MapGet,
+            Http.Patch => app.MapPatch,
+            Http.Put => app.MapPut,
+            _ => throw new NotImplementedException()
+        };
+
+        Delegate mapDelegate;
+        if (
+            Application
+                .DependencyInjection
+                .ConcreteTypeDerivedFromBase(
+                    typeof(TEndpoint),
+                    typeof(BeamOsFromBodyBaseEndpoint<,>)
+                )
+        )
         {
-            endpointBuilder = app.MapGet(
-                route,
-                async ([AsParameters] TRequest req, IServiceProvider serviceProvider) =>
-                    await serviceProvider.GetRequiredService<TEndpoint>().ExecuteRequestAsync(req)
-            );
-        }
-        else if (endpointType is Http.Patch)
-        {
-            endpointBuilder = app.MapPatch(
-                route,
-                async ([AsParameters] TRequest req, IServiceProvider serviceProvider) =>
-                    await serviceProvider.GetRequiredService<TEndpoint>().ExecuteRequestAsync(req)
-            );
-        }
-        else if (endpointType is Http.Put)
-        {
-            endpointBuilder = app.MapPut(
-                route,
-                async ([AsParameters] TRequest req, IServiceProvider serviceProvider) =>
-                    await serviceProvider.GetRequiredService<TEndpoint>().ExecuteRequestAsync(req)
-            );
+            mapDelegate = async ([FromBody] TRequest req, IServiceProvider serviceProvider) =>
+                await serviceProvider.GetRequiredService<TEndpoint>().ExecuteRequestAsync(req);
         }
         else
         {
-            throw new NotImplementedException();
+            mapDelegate = async ([AsParameters] TRequest req, IServiceProvider serviceProvider) =>
+                await serviceProvider.GetRequiredService<TEndpoint>().ExecuteRequestAsync(req);
         }
+
+        IEndpointConventionBuilder endpointBuilder = mapFunc(route, mapDelegate);
 
         endpointBuilder.WithName(typeof(TEndpoint).Name);
     }
