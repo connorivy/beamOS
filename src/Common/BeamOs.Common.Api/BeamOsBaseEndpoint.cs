@@ -11,6 +11,10 @@ public abstract partial class BeamOsBaseEndpoint<TRequest, TResponse>
     );
 }
 
+public abstract partial class BeamOsFromBodyBaseEndpoint<TRequest, TResponse>
+    : BeamOsBaseEndpoint<TRequest, TResponse>
+{ }
+
 public abstract partial class BeamOsModelResourceBaseEndpoint<TCommand, TBody, TResponse>
     : BeamOsBaseEndpoint<TCommand, TResponse>
     where TCommand : IModelResourceRequest<TBody>, new() { }

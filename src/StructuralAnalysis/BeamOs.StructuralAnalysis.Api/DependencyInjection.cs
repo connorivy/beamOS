@@ -1,6 +1,5 @@
 using System.Reflection;
 using BeamOs.Common.Api;
-using BeamOs.StructuralAnalysis.Api.Endpoints.Common;
 using BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
