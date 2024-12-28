@@ -75,10 +75,10 @@ public sealed class Result<TValue>
     public TResult Match<TResult>(
         Func<TValue, TResult> success,
         Func<BeamOsError, TResult> failure
-    ) => !this.IsError ? success(this.Value!) : failure(this.Error.Value);
+    ) => !this.IsError ? success(this.Value!) : failure(this.Error);
 
     public async Task<TResult> MatchAsync<TResult>(
         Func<TValue, TResult> success,
         Func<BeamOsError, TResult> failure
-    ) => !this.IsError ? success(this.Value!) : failure(this.Error.Value);
+    ) => !this.IsError ? success(this.Value!) : failure(this.Error);
 }

@@ -1,8 +1,13 @@
+using System.Text.Json.Serialization;
+
 namespace BeamOs.Common.Contracts;
 
-public readonly record struct BeamOsError
+//public readonly record struct BeamOsError
+public sealed class BeamOsError
 {
-    private BeamOsError(
+    [JsonConstructor]
+    [Obsolete("JSON ctor. Don't use")]
+    public BeamOsError(
         string code,
         string description,
         ErrorType type,
