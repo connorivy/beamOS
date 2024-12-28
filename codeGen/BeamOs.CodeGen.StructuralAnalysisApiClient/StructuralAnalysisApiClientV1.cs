@@ -45,12 +45,12 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfModelResponse2> CreateModelAsync(string name, string description, System.Guid? id, PhysicalModelSettings body);
+        System.Threading.Tasks.Task<ResultOfModelResponse> CreateModelAsync(CreateModelRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfModelResponse2> CreateModelAsync(string name, string description, System.Guid? id, PhysicalModelSettings body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<ResultOfModelResponse> CreateModelAsync(CreateModelRequest body, System.Threading.CancellationToken cancellationToken);
 
     }
 
@@ -268,25 +268,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ResultOfModelResponse2> CreateModelAsync(string name, string description, System.Guid? id, PhysicalModelSettings body)
+        public virtual System.Threading.Tasks.Task<ResultOfModelResponse> CreateModelAsync(CreateModelRequest body)
         {
-            return CreateModelAsync(name, description, id, body, System.Threading.CancellationToken.None);
+            return CreateModelAsync(body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfModelResponse2> CreateModelAsync(string name, string description, System.Guid? id, PhysicalModelSettings body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ResultOfModelResponse> CreateModelAsync(CreateModelRequest body, System.Threading.CancellationToken cancellationToken)
         {
-            if (name == null)
-                throw new System.ArgumentNullException("name");
-
-            if (description == null)
-                throw new System.ArgumentNullException("description");
-
-            if (body == null)
-                throw new System.ArgumentNullException("body");
-
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
@@ -304,14 +295,6 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                 
                     // Operation Path: "api/models"
                     urlBuilder_.Append("api/models");
-                    urlBuilder_.Append('?');
-                    urlBuilder_.Append(System.Uri.EscapeDataString("Name")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(name, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
-                    urlBuilder_.Append(System.Uri.EscapeDataString("Description")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(description, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
-                    if (id != null)
-                    {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("Id")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
-                    }
-                    urlBuilder_.Length--;
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -338,7 +321,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfModelResponse2>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfModelResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);

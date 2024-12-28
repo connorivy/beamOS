@@ -7,7 +7,7 @@ public sealed class Result<TValue>
 {
     public TValue? Value { get; }
 
-    public Exception? Error { get; }
+    public BeamOsError? Error { get; }
 
     private Result(TValue value)
     {
@@ -15,7 +15,7 @@ public sealed class Result<TValue>
         this.Value = value;
     }
 
-    private Result(Exception error)
+    private Result(BeamOsError error)
     {
         this.IsError = true;
         this.Error = error;
@@ -23,7 +23,7 @@ public sealed class Result<TValue>
 
     [JsonConstructor]
     [Obsolete("Deserialization constructor. Don't use")]
-    public Result(TValue? value, Exception? error, bool isError)
+    public Result(TValue? value, BeamOsError? error, bool isError)
     {
         this.Value = value;
         this.Error = error;
@@ -46,9 +46,9 @@ public sealed class Result<TValue>
 
     public static implicit operator Result<TValue>(TValue value) => new(value);
 
-    public static implicit operator Result<TValue>(Exception error) => new(error);
+    public static implicit operator Result<TValue>(BeamOsError error) => new(error);
 
-    //public bool IsError(out Exception? error)
+    //public bool IsError(out BeamOsError? error)
     //{
     //    if (!this.isError)
     //    {
@@ -74,11 +74,11 @@ public sealed class Result<TValue>
 
     public TResult Match<TResult>(
         Func<TValue, TResult> success,
-        Func<Exception, TResult> failure
-    ) => !this.IsError ? success(this.Value!) : failure(this.Error!);
+        Func<BeamOsError, TResult> failure
+    ) => !this.IsError ? success(this.Value!) : failure(this.Error.Value);
 
     public async Task<TResult> MatchAsync<TResult>(
         Func<TValue, TResult> success,
-        Func<Exception, TResult> failure
-    ) => !this.IsError ? success(this.Value!) : failure(this.Error!);
+        Func<BeamOsError, TResult> failure
+    ) => !this.IsError ? success(this.Value!) : failure(this.Error.Value);
 }

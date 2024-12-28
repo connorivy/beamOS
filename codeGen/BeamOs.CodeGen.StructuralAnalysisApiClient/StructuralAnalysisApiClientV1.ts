@@ -21,10 +21,10 @@ export interface IStructuralAnalysisApiClientV1 {
     updateNode(modelId: string, body: UpdateNodeRequest): Promise<ResultOfNodeResponse>;
 
     /**
-     * @param id (optional) 
+     * @param body (optional) 
      * @return OK
      */
-    createModel(name: string, description: string, id: string | undefined, body: PhysicalModelSettings): Promise<ResultOfModelResponse2>;
+    createModel(body: CreateModelRequest | undefined): Promise<ResultOfModelResponse>;
 }
 
 export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClientV1 {
@@ -34,7 +34,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
 
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         this.http = http ? http : window as any;
-        this.baseUrl = baseUrl ?? "https://localhost:7060";
+        this.baseUrl = baseUrl ?? "";
     }
 
     /**
@@ -126,23 +126,11 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     }
 
     /**
-     * @param id (optional) 
+     * @param body (optional) 
      * @return OK
      */
-    createModel(name: string, description: string, id: string | undefined, body: PhysicalModelSettings): Promise<ResultOfModelResponse2> {
-        let url_ = this.baseUrl + "/api/models?";
-        if (name === undefined || name === null)
-            throw new Error("The parameter 'name' must be defined and cannot be null.");
-        else
-            url_ += "Name=" + encodeURIComponent("" + name) + "&";
-        if (description === undefined || description === null)
-            throw new Error("The parameter 'description' must be defined and cannot be null.");
-        else
-            url_ += "Description=" + encodeURIComponent("" + description) + "&";
-        if (id === null)
-            throw new Error("The parameter 'id' cannot be null.");
-        else if (id !== undefined)
-            url_ += "Id=" + encodeURIComponent("" + id) + "&";
+    createModel(body: CreateModelRequest | undefined): Promise<ResultOfModelResponse> {
+        let url_ = this.baseUrl + "/api/models";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -161,14 +149,14 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processCreateModel(response: Response): Promise<ResultOfModelResponse2> {
+    protected processCreateModel(response: Response): Promise<ResultOfModelResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfModelResponse2.fromJS(resultData200);
+            result200 = ResultOfModelResponse.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -176,7 +164,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfModelResponse2>(null as any);
+        return Promise.resolve<ResultOfModelResponse>(null as any);
     }
 }
 
@@ -224,6 +212,69 @@ export class AnalysisSettingsContract implements IAnalysisSettingsContract {
 
 export interface IAnalysisSettingsContract {
     element1DAnalysisType?: number;
+
+    [key: string]: any;
+}
+
+export class CreateModelRequest implements ICreateModelRequest {
+    name!: string;
+    description!: string;
+    settings!: PhysicalModelSettings;
+    id?: string | undefined;
+
+    [key: string]: any;
+
+    constructor(data?: ICreateModelRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.settings = new PhysicalModelSettings();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.name = _data["name"];
+            this.description = _data["description"];
+            this.settings = _data["settings"] ? PhysicalModelSettings.fromJS(_data["settings"]) : new PhysicalModelSettings();
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): CreateModelRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateModelRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["name"] = this.name;
+        data["description"] = this.description;
+        data["settings"] = this.settings ? this.settings.toJSON() : <any>undefined;
+        data["id"] = this.id;
+        return data;
+    }
+}
+
+export interface ICreateModelRequest {
+    name: string;
+    description: string;
+    settings: PhysicalModelSettings;
+    id?: string | undefined;
 
     [key: string]: any;
 }
@@ -287,132 +338,12 @@ export interface ICreateNodeRequest {
     [key: string]: any;
 }
 
-export class Exception implements IException {
-    data?: any | undefined;
-    helpLink?: string | undefined;
-    hResult?: number;
-    innerException?: Exception | undefined;
-    message?: string | undefined;
-    source?: string | undefined;
-    stackTrace?: string | undefined;
-    targetSite?: MethodBase | undefined;
-
-    [key: string]: any;
-
-    constructor(data?: IException) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.data = _data["data"];
-            this.helpLink = _data["helpLink"];
-            this.hResult = _data["hResult"];
-            this.innerException = _data["innerException"] ? Exception.fromJS(_data["innerException"]) : <any>undefined;
-            this.message = _data["message"];
-            this.source = _data["source"];
-            this.stackTrace = _data["stackTrace"];
-            this.targetSite = _data["targetSite"] ? MethodBase.fromJS(_data["targetSite"]) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): Exception {
-        data = typeof data === 'object' ? data : {};
-        let result = new Exception();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["data"] = this.data;
-        data["helpLink"] = this.helpLink;
-        data["hResult"] = this.hResult;
-        data["innerException"] = this.innerException ? this.innerException.toJSON() : <any>undefined;
-        data["message"] = this.message;
-        data["source"] = this.source;
-        data["stackTrace"] = this.stackTrace;
-        data["targetSite"] = this.targetSite ? this.targetSite.toJSON() : <any>undefined;
-        return data;
-    }
-}
-
-export interface IException {
-    data?: any | undefined;
-    helpLink?: string | undefined;
-    hResult?: number;
-    innerException?: Exception | undefined;
-    message?: string | undefined;
-    source?: string | undefined;
-    stackTrace?: string | undefined;
-    targetSite?: MethodBase | undefined;
-
-    [key: string]: any;
-}
-
-export class MethodBase implements IMethodBase {
-
-    [key: string]: any;
-
-    constructor(data?: IMethodBase) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-        }
-    }
-
-    static fromJS(data: any): MethodBase {
-        data = typeof data === 'object' ? data : {};
-        let result = new MethodBase();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        return data;
-    }
-}
-
-export interface IMethodBase {
-
-    [key: string]: any;
-}
-
 export class ModelResponse implements IModelResponse {
     id!: string;
     name!: string;
     description!: string;
     settings!: PhysicalModelSettings;
-    nodes?: NodeResponse3[] | undefined;
+    nodes?: NodeResponse2[] | undefined;
 
     [key: string]: any;
 
@@ -441,7 +372,7 @@ export class ModelResponse implements IModelResponse {
             if (Array.isArray(_data["nodes"])) {
                 this.nodes = [] as any;
                 for (let item of _data["nodes"])
-                    this.nodes!.push(NodeResponse3.fromJS(item));
+                    this.nodes!.push(NodeResponse2.fromJS(item));
             }
         }
     }
@@ -477,7 +408,7 @@ export interface IModelResponse {
     name: string;
     description: string;
     settings: PhysicalModelSettings;
-    nodes?: NodeResponse3[] | undefined;
+    nodes?: NodeResponse2[] | undefined;
 
     [key: string]: any;
 }
@@ -546,7 +477,7 @@ export interface INodeResponse {
     [key: string]: any;
 }
 
-export class NodeResponse3 implements INodeResponse3 {
+export class NodeResponse2 implements INodeResponse2 {
     id!: number;
     modelId!: string;
     locationPoint!: Point;
@@ -554,7 +485,7 @@ export class NodeResponse3 implements INodeResponse3 {
 
     [key: string]: any;
 
-    constructor(data?: INodeResponse3) {
+    constructor(data?: INodeResponse2) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -580,9 +511,9 @@ export class NodeResponse3 implements INodeResponse3 {
         }
     }
 
-    static fromJS(data: any): NodeResponse3 {
+    static fromJS(data: any): NodeResponse2 {
         data = typeof data === 'object' ? data : {};
-        let result = new NodeResponse3();
+        let result = new NodeResponse2();
         result.init(data);
         return result;
     }
@@ -601,11 +532,75 @@ export class NodeResponse3 implements INodeResponse3 {
     }
 }
 
-export interface INodeResponse3 {
+export interface INodeResponse2 {
     id: number;
     modelId: string;
     locationPoint: Point;
     restraint: Restraint;
+
+    [key: string]: any;
+}
+
+export class NullableOfBeamOsError implements INullableOfBeamOsError {
+    code?: string | undefined;
+    description?: string | undefined;
+    type?: number;
+    numericType?: number;
+    metadata?: any | undefined;
+
+    [key: string]: any;
+
+    constructor(data?: INullableOfBeamOsError) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.code = _data["code"];
+            this.description = _data["description"];
+            this.type = _data["type"];
+            this.numericType = _data["numericType"];
+            this.metadata = _data["metadata"];
+        }
+    }
+
+    static fromJS(data: any): NullableOfBeamOsError {
+        data = typeof data === 'object' ? data : {};
+        let result = new NullableOfBeamOsError();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["code"] = this.code;
+        data["description"] = this.description;
+        data["type"] = this.type;
+        data["numericType"] = this.numericType;
+        data["metadata"] = this.metadata;
+        return data;
+    }
+}
+
+export interface INullableOfBeamOsError {
+    code?: string | undefined;
+    description?: string | undefined;
+    type?: number;
+    numericType?: number;
+    metadata?: any | undefined;
 
     [key: string]: any;
 }
@@ -994,14 +989,14 @@ export interface IRestraint {
     [key: string]: any;
 }
 
-export class ResultOfModelResponse2 implements IResultOfModelResponse2 {
+export class ResultOfModelResponse implements IResultOfModelResponse {
     value!: ModelResponse | undefined;
-    error!: Exception | undefined;
+    error!: NullableOfBeamOsError | undefined;
     isError!: boolean;
 
     [key: string]: any;
 
-    constructor(data?: IResultOfModelResponse2) {
+    constructor(data?: IResultOfModelResponse) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1017,14 +1012,14 @@ export class ResultOfModelResponse2 implements IResultOfModelResponse2 {
                     this[property] = _data[property];
             }
             this.value = _data["value"] ? ModelResponse.fromJS(_data["value"]) : <any>undefined;
-            this.error = _data["error"] ? Exception.fromJS(_data["error"]) : <any>undefined;
+            this.error = _data["error"] ? NullableOfBeamOsError.fromJS(_data["error"]) : <any>undefined;
             this.isError = _data["isError"];
         }
     }
 
-    static fromJS(data: any): ResultOfModelResponse2 {
+    static fromJS(data: any): ResultOfModelResponse {
         data = typeof data === 'object' ? data : {};
-        let result = new ResultOfModelResponse2();
+        let result = new ResultOfModelResponse();
         result.init(data);
         return result;
     }
@@ -1042,9 +1037,9 @@ export class ResultOfModelResponse2 implements IResultOfModelResponse2 {
     }
 }
 
-export interface IResultOfModelResponse2 {
+export interface IResultOfModelResponse {
     value: ModelResponse | undefined;
-    error: Exception | undefined;
+    error: NullableOfBeamOsError | undefined;
     isError: boolean;
 
     [key: string]: any;
@@ -1052,7 +1047,7 @@ export interface IResultOfModelResponse2 {
 
 export class ResultOfNodeResponse implements IResultOfNodeResponse {
     value!: NodeResponse | undefined;
-    error!: Exception | undefined;
+    error!: NullableOfBeamOsError | undefined;
     isError!: boolean;
 
     [key: string]: any;
@@ -1073,7 +1068,7 @@ export class ResultOfNodeResponse implements IResultOfNodeResponse {
                     this[property] = _data[property];
             }
             this.value = _data["value"] ? NodeResponse.fromJS(_data["value"]) : <any>undefined;
-            this.error = _data["error"] ? Exception.fromJS(_data["error"]) : <any>undefined;
+            this.error = _data["error"] ? NullableOfBeamOsError.fromJS(_data["error"]) : <any>undefined;
             this.isError = _data["isError"];
         }
     }
@@ -1100,7 +1095,7 @@ export class ResultOfNodeResponse implements IResultOfNodeResponse {
 
 export interface IResultOfNodeResponse {
     value: NodeResponse | undefined;
-    error: Exception | undefined;
+    error: NullableOfBeamOsError | undefined;
     isError: boolean;
 
     [key: string]: any;

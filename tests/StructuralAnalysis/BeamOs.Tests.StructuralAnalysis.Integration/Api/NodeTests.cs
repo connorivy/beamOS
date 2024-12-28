@@ -15,9 +15,18 @@ public class NodeTests
     {
         modelId = Guid.NewGuid();
 
+        CreateModelRequest request =
+            new()
+            {
+                Name = "test model",
+                Description = "test model",
+                Settings = new(UnitSettingsContract.K_FT),
+                Id = modelId
+            };
+
         modelResponseResult = await AssemblySetup
             .StructuralAnalysisApiClient
-            .CreateModelAsync("test model", "test model", modelId, new(UnitSettingsContract.K_FT));
+            .CreateModelAsync(request);
     }
 
     [Test]
