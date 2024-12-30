@@ -1,0 +1,17 @@
+﻿{
+  Value: {
+    Id: 992,
+    ModelId: Guid_1,
+    ModulusOfElasticity: {
+      Value: 29000.0,
+      Unit: KilopoundForcePerSquareInch
+    },
+    ModulusOfRigidity: {
+      Value: 11153.85,
+      Unit: KilopoundForcePerSquareInch
+    }
+  },
+  Error: null,
+  IsError: false,
+  IsSuccess: true
+}

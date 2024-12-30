@@ -5,5 +5,5 @@ using BeamOs.StructuralAnalysis.Infrastructure.Common;
 namespace BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Element1ds;
 
 internal class Element1dRepository(StructuralAnalysisDbContext dbContext)
-    : RepositoryBase<Element1dId, Element1d>(dbContext),
+    : ModelResourceRepositoryBase<Element1dId, Element1d>(dbContext),
         IElement1dRepository { }

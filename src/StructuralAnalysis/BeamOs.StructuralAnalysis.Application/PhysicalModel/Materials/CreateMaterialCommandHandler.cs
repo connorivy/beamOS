@@ -44,4 +44,5 @@ public readonly struct CreateMaterialCommand : IModelResourceRequest<CreateMater
     public CreateMaterialRequest Body { get; init; }
     public PressureContract ModulusOfElasticity => this.Body.ModulusOfElasticity;
     public PressureContract ModulusOfRigidity => this.Body.ModulusOfRigidity;
+    public int? Id => this.Body.Id;
 }

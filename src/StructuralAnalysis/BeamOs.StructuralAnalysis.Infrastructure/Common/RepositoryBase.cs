@@ -1,5 +1,8 @@
 using BeamOs.Common.Domain.Models;
 using BeamOs.StructuralAnalysis.Application.Common;
+using BeamOs.StructuralAnalysis.Domain.Common;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
+using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.Common;
 
@@ -21,29 +24,37 @@ internal abstract class RepositoryBase<TId, TEntity>(StructuralAnalysisDbContext
         _ = dbContext.Set<TEntity>().Remove(aggregate);
     }
 
-    //public virtual async Task<TEntity?> GetById(TId id, CancellationToken ct = default)
-    //{
-    //    return await dbContext
-    //        .Set<TEntity>()
-    //        .FirstOrDefaultAsync(el => el.Id == id, cancellationToken: ct);
-    //}
-
     public void Update(TEntity aggregate)
     {
         _ = dbContext.Set<TEntity>().Update(aggregate);
     }
+}
 
-    //public virtual async Task RemoveById(TId id, CancellationToken ct = default)
-    //{
-    //    var entityToDelete = await dbContext
-    //        .Set<TEntity>()
-    //        .FirstOrDefaultAsync(x => x.Id == id, cancellationToken: ct);
+internal abstract class ModelResourceRepositoryBase<TId, TEntity>(
+    StructuralAnalysisDbContext dbContext
+) : RepositoryBase<TId, TEntity>(dbContext), IModelResourceRepository<TId, TEntity>
+    where TId : struct, IEquatable<TId>
+    where TEntity : BeamOsModelEntity<TId>
+{
+    public void Add(TEntity aggregate)
+    {
+        _ = this.DbContext.Set<TEntity>().Add(aggregate);
+    }
 
-    //    if (entityToDelete is null)
-    //    {
-    //        return;
-    //    }
+    public async Task<TEntity?> GetSingle(ModelId modelId, TId id) =>
+        await this.DbContext
+            .Set<TEntity>()
+            .AsNoTracking()
+            .FirstOrDefaultAsync(m => m.ModelId == modelId && m.Id.Equals((TId)id));
 
-    //    this.Remove(entityToDelete);
-    //}
+    public void Remove(TEntity aggregate)
+    {
+        //aggregate.AddEvent(new ModelDeletedEvent(aggregate.Id));
+        _ = this.DbContext.Set<TEntity>().Remove(aggregate);
+    }
+
+    public void Update(TEntity aggregate)
+    {
+        _ = this.DbContext.Set<TEntity>().Update(aggregate);
+    }
 }

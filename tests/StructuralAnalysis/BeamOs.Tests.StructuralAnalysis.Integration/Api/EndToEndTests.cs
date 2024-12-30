@@ -1,5 +1,7 @@
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.Common;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
@@ -50,7 +52,7 @@ public class EndToEndTests
     }
 
     [Test]
-    public async Task CreateNode_WithSpecifiedId_ShouldCreateNode_WithCorrectId()
+    public async Task CreateNode_WithIdOf5_ShouldCreateNode_WithCorrectId()
     {
         CreateNodeRequest createNodeRequestBody =
             new(new(1, 1, 1, LengthUnitContract.Foot), Restraint.Fixed, 5);
@@ -94,7 +96,74 @@ public class EndToEndTests
     }
 
     [Test]
-    [DependsOn(nameof(CreateNode_WithSpecifiedId_ShouldCreateNode_WithCorrectId))]
+    public async Task CreateMaterial_WithSpecifiedId_ShouldCreateMaterial_WithCorrectId()
+    {
+        CreateMaterialRequest a992Request =
+            new()
+            {
+                ModulusOfElasticity = new(29000, PressureUnitContract.KilopoundForcePerSquareInch),
+                ModulusOfRigidity = new(
+                    11_153.85,
+                    PressureUnitContract.KilopoundForcePerSquareInch
+                ),
+                Id = 992
+            };
+
+        var materialResponseResult = await AssemblySetup
+            .StructuralAnalysisApiClient
+            .CreateMaterialAsync(modelId, a992Request);
+
+        await Verify(materialResponseResult);
+    }
+
+    [Test]
+    [DependsOn(nameof(CreateNode_WithIdOf5_ShouldCreateNode_WithCorrectId))]
+    [DependsOn(nameof(CreateMaterial_WithSpecifiedId_ShouldCreateMaterial_WithCorrectId))]
+    [DependsOn(
+        nameof(CreateSectionProfile_WithSpecifiedId_ShouldCreateSectionProfile_WithCorrectId)
+    )]
+    public async Task CreateElement1d_ShouldCreateElement1d()
+    {
+        // create another node with id = 6
+        CreateNodeRequest createNodeRequestBody =
+            new(new(1, 1, 1, LengthUnitContract.Foot), Restraint.Fixed, 6);
+
+        var nodeResponseResult = await AssemblySetup
+            .StructuralAnalysisApiClient
+            .CreateNodeAsync(modelId, createNodeRequestBody);
+
+        await Assert.That(nodeResponseResult.IsSuccess).IsTrue();
+
+        CreateElement1dRequest elRequest =
+            new()
+            {
+                StartNodeId = 5,
+                EndNodeId = 6,
+                MaterialId = 992,
+                SectionProfileId = 1636,
+                Id = 99,
+            };
+
+        var elResponseResult = await AssemblySetup
+            .StructuralAnalysisApiClient
+            .CreateElement1dAsync(modelId, elRequest);
+
+        await Verify(elResponseResult);
+    }
+
+    [Test]
+    [DependsOn(nameof(CreateElement1d_ShouldCreateElement1d))]
+    public async Task GetElement1d_ShouldResultInExpectedResponse()
+    {
+        var elResponseResult = await AssemblySetup
+            .StructuralAnalysisApiClient
+            .GetElement1dAsync(modelId, 99);
+
+        await Verify(elResponseResult);
+    }
+
+    [Test]
+    [DependsOn(nameof(CreateNode_WithIdOf5_ShouldCreateNode_WithCorrectId))]
     public async Task UpdateNode_WithPartialLocation_ShouldPartiallyUpdate()
     {
         UpdateNodeRequest updateNodeRequest =

@@ -1,4 +1,6 @@
 using BeamOs.Application.PhysicalModel.Materials;
+using BeamOs.Common.Application;
+using BeamOs.StructuralAnalysis.Application;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
@@ -27,6 +29,12 @@ public static class DependencyInjection
         _ = services.AddScoped<ISectionProfileRepository, SectionProfileRepository>();
         _ = services.AddScoped<IElement1dRepository, Element1dRepository>();
         _ = services.AddScoped<IStructuralAnalysisUnitOfWork, UnitOfWork>();
+
+        services.AddObjectThatImplementInterface<IAssemblyMarkerInfrastructure>(
+            typeof(IQueryHandler<,>),
+            ServiceLifetime.Scoped,
+            false
+        );
 
         return services;
     }

@@ -21,7 +21,9 @@ public class BeamOsModelEntity<TId> : BeamOsEntity<TId>
         get => base.Id;
         protected set => base.Id = value;
     }
+
     public ModelId ModelId { get; protected set; }
+    public Model? Model { get; private set; }
 
     [Obsolete("EF Ctor")]
     public BeamOsModelEntity() { }
