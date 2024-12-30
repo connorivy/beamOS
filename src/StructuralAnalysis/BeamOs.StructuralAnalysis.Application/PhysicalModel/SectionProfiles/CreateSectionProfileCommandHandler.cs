@@ -49,4 +49,5 @@ public readonly struct CreateSectionProfileCommand
     public AreaMomentOfInertiaContract PolarMomentOfInertia => this.Body.PolarMomentOfInertia;
     public AreaContract StrongAxisShearArea => this.Body.StrongAxisShearArea;
     public AreaContract WeakAxisShearArea => this.Body.WeakAxisShearArea;
+    public int? Id => this.Body.Id;
 }

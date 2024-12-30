@@ -13,6 +13,11 @@ export interface IStructuralAnalysisApiClientV1 {
     /**
      * @return OK
      */
+    createSectionProfile(modelId: string, body: CreateSectionProfileRequest): Promise<ResultOfSectionProfileResponse>;
+
+    /**
+     * @return OK
+     */
     createNode(modelId: string, body: CreateNodeRequest): Promise<ResultOfNodeResponse>;
 
     /**
@@ -25,6 +30,16 @@ export interface IStructuralAnalysisApiClientV1 {
      * @return OK
      */
     createModel(body: CreateModelRequest | undefined): Promise<ResultOfModelResponse>;
+
+    /**
+     * @return OK
+     */
+    createMaterial(modelId: string, body: CreateMaterialRequest): Promise<ResultOfMaterialResponse>;
+
+    /**
+     * @return OK
+     */
+    createElement1d(modelId: string, body: CreateElement1dRequest): Promise<ResultOfElement1dResponse>;
 }
 
 export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClientV1 {
@@ -35,6 +50,50 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         this.http = http ? http : window as any;
         this.baseUrl = baseUrl ?? "";
+    }
+
+    /**
+     * @return OK
+     */
+    createSectionProfile(modelId: string, body: CreateSectionProfileRequest): Promise<ResultOfSectionProfileResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateSectionProfile(_response);
+        });
+    }
+
+    protected processCreateSectionProfile(response: Response): Promise<ResultOfSectionProfileResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfSectionProfileResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfSectionProfileResponse>(null as any);
     }
 
     /**
@@ -166,6 +225,94 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         }
         return Promise.resolve<ResultOfModelResponse>(null as any);
     }
+
+    /**
+     * @return OK
+     */
+    createMaterial(modelId: string, body: CreateMaterialRequest): Promise<ResultOfMaterialResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/materials";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateMaterial(_response);
+        });
+    }
+
+    protected processCreateMaterial(response: Response): Promise<ResultOfMaterialResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfMaterialResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfMaterialResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    createElement1d(modelId: string, body: CreateElement1dRequest): Promise<ResultOfElement1dResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/element1ds";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateElement1d(_response);
+        });
+    }
+
+    protected processCreateElement1d(response: Response): Promise<ResultOfElement1dResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfElement1dResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfElement1dResponse>(null as any);
+    }
 }
 
 export class AnalysisSettingsContract implements IAnalysisSettingsContract {
@@ -212,6 +359,366 @@ export class AnalysisSettingsContract implements IAnalysisSettingsContract {
 
 export interface IAnalysisSettingsContract {
     element1DAnalysisType?: number;
+
+    [key: string]: any;
+}
+
+export class AngleContract implements IAngleContract {
+    value!: number;
+    unit!: number;
+
+    [key: string]: any;
+
+    constructor(data?: IAngleContract) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.value = _data["value"];
+            this.unit = _data["unit"];
+        }
+    }
+
+    static fromJS(data: any): AngleContract {
+        data = typeof data === 'object' ? data : {};
+        let result = new AngleContract();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["value"] = this.value;
+        data["unit"] = this.unit;
+        return data;
+    }
+}
+
+export interface IAngleContract {
+    value: number;
+    unit: number;
+
+    [key: string]: any;
+}
+
+export class AreaContract implements IAreaContract {
+    value!: number;
+    unit!: number;
+
+    [key: string]: any;
+
+    constructor(data?: IAreaContract) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.value = _data["value"];
+            this.unit = _data["unit"];
+        }
+    }
+
+    static fromJS(data: any): AreaContract {
+        data = typeof data === 'object' ? data : {};
+        let result = new AreaContract();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["value"] = this.value;
+        data["unit"] = this.unit;
+        return data;
+    }
+}
+
+export interface IAreaContract {
+    value: number;
+    unit: number;
+
+    [key: string]: any;
+}
+
+export class AreaMomentOfInertiaContract implements IAreaMomentOfInertiaContract {
+    value!: number;
+    unit!: number;
+
+    [key: string]: any;
+
+    constructor(data?: IAreaMomentOfInertiaContract) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.value = _data["value"];
+            this.unit = _data["unit"];
+        }
+    }
+
+    static fromJS(data: any): AreaMomentOfInertiaContract {
+        data = typeof data === 'object' ? data : {};
+        let result = new AreaMomentOfInertiaContract();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["value"] = this.value;
+        data["unit"] = this.unit;
+        return data;
+    }
+}
+
+export interface IAreaMomentOfInertiaContract {
+    value: number;
+    unit: number;
+
+    [key: string]: any;
+}
+
+export class BeamOsError implements IBeamOsError {
+    code!: string;
+    description!: string;
+    type!: number;
+    numericType?: number;
+    metadata!: any | undefined;
+
+    [key: string]: any;
+
+    constructor(data?: IBeamOsError) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.code = _data["code"];
+            this.description = _data["description"];
+            this.type = _data["type"];
+            this.numericType = _data["numericType"];
+            this.metadata = _data["metadata"];
+        }
+    }
+
+    static fromJS(data: any): BeamOsError {
+        data = typeof data === 'object' ? data : {};
+        let result = new BeamOsError();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["code"] = this.code;
+        data["description"] = this.description;
+        data["type"] = this.type;
+        data["numericType"] = this.numericType;
+        data["metadata"] = this.metadata;
+        return data;
+    }
+}
+
+export interface IBeamOsError {
+    code: string;
+    description: string;
+    type: number;
+    numericType?: number;
+    metadata: any | undefined;
+
+    [key: string]: any;
+}
+
+export class CreateElement1dRequest implements ICreateElement1dRequest {
+    startNodeId!: number;
+    endNodeId!: number;
+    materialId!: number;
+    sectionProfileId!: number;
+    sectionProfileRotation?: NullableOfAngleContract | undefined;
+    id?: number | undefined;
+    metadata?: { [key: string]: string; } | undefined;
+
+    [key: string]: any;
+
+    constructor(data?: ICreateElement1dRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.startNodeId = _data["startNodeId"];
+            this.endNodeId = _data["endNodeId"];
+            this.materialId = _data["materialId"];
+            this.sectionProfileId = _data["sectionProfileId"];
+            this.sectionProfileRotation = _data["sectionProfileRotation"] ? NullableOfAngleContract.fromJS(_data["sectionProfileRotation"]) : <any>undefined;
+            this.id = _data["id"];
+            if (_data["metadata"]) {
+                this.metadata = {} as any;
+                for (let key in _data["metadata"]) {
+                    if (_data["metadata"].hasOwnProperty(key))
+                        (<any>this.metadata)![key] = _data["metadata"][key];
+                }
+            }
+        }
+    }
+
+    static fromJS(data: any): CreateElement1dRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateElement1dRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["startNodeId"] = this.startNodeId;
+        data["endNodeId"] = this.endNodeId;
+        data["materialId"] = this.materialId;
+        data["sectionProfileId"] = this.sectionProfileId;
+        data["sectionProfileRotation"] = this.sectionProfileRotation ? this.sectionProfileRotation.toJSON() : <any>undefined;
+        data["id"] = this.id;
+        if (this.metadata) {
+            data["metadata"] = {};
+            for (let key in this.metadata) {
+                if (this.metadata.hasOwnProperty(key))
+                    (<any>data["metadata"])[key] = (<any>this.metadata)[key];
+            }
+        }
+        return data;
+    }
+}
+
+export interface ICreateElement1dRequest {
+    startNodeId: number;
+    endNodeId: number;
+    materialId: number;
+    sectionProfileId: number;
+    sectionProfileRotation?: NullableOfAngleContract | undefined;
+    id?: number | undefined;
+    metadata?: { [key: string]: string; } | undefined;
+
+    [key: string]: any;
+}
+
+export class CreateMaterialRequest implements ICreateMaterialRequest {
+    modulusOfElasticity!: PressureContract;
+    modulusOfRigidity!: PressureContract;
+
+    [key: string]: any;
+
+    constructor(data?: ICreateMaterialRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.modulusOfElasticity = new PressureContract();
+            this.modulusOfRigidity = new PressureContract();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.modulusOfElasticity = _data["modulusOfElasticity"] ? PressureContract.fromJS(_data["modulusOfElasticity"]) : new PressureContract();
+            this.modulusOfRigidity = _data["modulusOfRigidity"] ? PressureContract.fromJS(_data["modulusOfRigidity"]) : new PressureContract();
+        }
+    }
+
+    static fromJS(data: any): CreateMaterialRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateMaterialRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["modulusOfElasticity"] = this.modulusOfElasticity ? this.modulusOfElasticity.toJSON() : <any>undefined;
+        data["modulusOfRigidity"] = this.modulusOfRigidity ? this.modulusOfRigidity.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ICreateMaterialRequest {
+    modulusOfElasticity: PressureContract;
+    modulusOfRigidity: PressureContract;
 
     [key: string]: any;
 }
@@ -283,6 +790,7 @@ export class CreateNodeRequest implements ICreateNodeRequest {
     locationPoint!: Point;
     restraint!: NullableOfRestraint | undefined;
     id?: number | undefined;
+    metadata?: { [key: string]: string; } | undefined;
 
     [key: string]: any;
 
@@ -307,6 +815,13 @@ export class CreateNodeRequest implements ICreateNodeRequest {
             this.locationPoint = _data["locationPoint"] ? Point.fromJS(_data["locationPoint"]) : new Point();
             this.restraint = _data["restraint"] ? NullableOfRestraint.fromJS(_data["restraint"]) : <any>undefined;
             this.id = _data["id"];
+            if (_data["metadata"]) {
+                this.metadata = {} as any;
+                for (let key in _data["metadata"]) {
+                    if (_data["metadata"].hasOwnProperty(key))
+                        (<any>this.metadata)![key] = _data["metadata"][key];
+                }
+            }
         }
     }
 
@@ -326,6 +841,13 @@ export class CreateNodeRequest implements ICreateNodeRequest {
         data["locationPoint"] = this.locationPoint ? this.locationPoint.toJSON() : <any>undefined;
         data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
         data["id"] = this.id;
+        if (this.metadata) {
+            data["metadata"] = {};
+            for (let key in this.metadata) {
+                if (this.metadata.hasOwnProperty(key))
+                    (<any>data["metadata"])[key] = (<any>this.metadata)[key];
+            }
+        }
         return data;
     }
 }
@@ -334,6 +856,234 @@ export interface ICreateNodeRequest {
     locationPoint: Point;
     restraint: NullableOfRestraint | undefined;
     id?: number | undefined;
+    metadata?: { [key: string]: string; } | undefined;
+
+    [key: string]: any;
+}
+
+export class CreateSectionProfileRequest implements ICreateSectionProfileRequest {
+    area?: AreaContract;
+    strongAxisMomentOfInertia?: AreaMomentOfInertiaContract;
+    weakAxisMomentOfInertia?: AreaMomentOfInertiaContract;
+    polarMomentOfInertia?: AreaMomentOfInertiaContract;
+    strongAxisShearArea?: AreaContract;
+    weakAxisShearArea?: AreaContract;
+    id?: number | undefined;
+
+    [key: string]: any;
+
+    constructor(data?: ICreateSectionProfileRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.area = _data["area"] ? AreaContract.fromJS(_data["area"]) : <any>undefined;
+            this.strongAxisMomentOfInertia = _data["strongAxisMomentOfInertia"] ? AreaMomentOfInertiaContract.fromJS(_data["strongAxisMomentOfInertia"]) : <any>undefined;
+            this.weakAxisMomentOfInertia = _data["weakAxisMomentOfInertia"] ? AreaMomentOfInertiaContract.fromJS(_data["weakAxisMomentOfInertia"]) : <any>undefined;
+            this.polarMomentOfInertia = _data["polarMomentOfInertia"] ? AreaMomentOfInertiaContract.fromJS(_data["polarMomentOfInertia"]) : <any>undefined;
+            this.strongAxisShearArea = _data["strongAxisShearArea"] ? AreaContract.fromJS(_data["strongAxisShearArea"]) : <any>undefined;
+            this.weakAxisShearArea = _data["weakAxisShearArea"] ? AreaContract.fromJS(_data["weakAxisShearArea"]) : <any>undefined;
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): CreateSectionProfileRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateSectionProfileRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["area"] = this.area ? this.area.toJSON() : <any>undefined;
+        data["strongAxisMomentOfInertia"] = this.strongAxisMomentOfInertia ? this.strongAxisMomentOfInertia.toJSON() : <any>undefined;
+        data["weakAxisMomentOfInertia"] = this.weakAxisMomentOfInertia ? this.weakAxisMomentOfInertia.toJSON() : <any>undefined;
+        data["polarMomentOfInertia"] = this.polarMomentOfInertia ? this.polarMomentOfInertia.toJSON() : <any>undefined;
+        data["strongAxisShearArea"] = this.strongAxisShearArea ? this.strongAxisShearArea.toJSON() : <any>undefined;
+        data["weakAxisShearArea"] = this.weakAxisShearArea ? this.weakAxisShearArea.toJSON() : <any>undefined;
+        data["id"] = this.id;
+        return data;
+    }
+}
+
+export interface ICreateSectionProfileRequest {
+    area?: AreaContract;
+    strongAxisMomentOfInertia?: AreaMomentOfInertiaContract;
+    weakAxisMomentOfInertia?: AreaMomentOfInertiaContract;
+    polarMomentOfInertia?: AreaMomentOfInertiaContract;
+    strongAxisShearArea?: AreaContract;
+    weakAxisShearArea?: AreaContract;
+    id?: number | undefined;
+
+    [key: string]: any;
+}
+
+export class Element1dResponse implements IElement1dResponse {
+    id!: number;
+    modelId!: string;
+    startNodeId!: number;
+    endNodeId!: number;
+    materialId!: number;
+    sectionProfileId!: number;
+    sectionProfileRotation!: AngleContract;
+    metadata?: { [key: string]: string; } | undefined;
+
+    [key: string]: any;
+
+    constructor(data?: IElement1dResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.sectionProfileRotation = new AngleContract();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.modelId = _data["modelId"];
+            this.startNodeId = _data["startNodeId"];
+            this.endNodeId = _data["endNodeId"];
+            this.materialId = _data["materialId"];
+            this.sectionProfileId = _data["sectionProfileId"];
+            this.sectionProfileRotation = _data["sectionProfileRotation"] ? AngleContract.fromJS(_data["sectionProfileRotation"]) : new AngleContract();
+            if (_data["metadata"]) {
+                this.metadata = {} as any;
+                for (let key in _data["metadata"]) {
+                    if (_data["metadata"].hasOwnProperty(key))
+                        (<any>this.metadata)![key] = _data["metadata"][key];
+                }
+            }
+        }
+    }
+
+    static fromJS(data: any): Element1dResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new Element1dResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["modelId"] = this.modelId;
+        data["startNodeId"] = this.startNodeId;
+        data["endNodeId"] = this.endNodeId;
+        data["materialId"] = this.materialId;
+        data["sectionProfileId"] = this.sectionProfileId;
+        data["sectionProfileRotation"] = this.sectionProfileRotation ? this.sectionProfileRotation.toJSON() : <any>undefined;
+        if (this.metadata) {
+            data["metadata"] = {};
+            for (let key in this.metadata) {
+                if (this.metadata.hasOwnProperty(key))
+                    (<any>data["metadata"])[key] = (<any>this.metadata)[key];
+            }
+        }
+        return data;
+    }
+}
+
+export interface IElement1dResponse {
+    id: number;
+    modelId: string;
+    startNodeId: number;
+    endNodeId: number;
+    materialId: number;
+    sectionProfileId: number;
+    sectionProfileRotation: AngleContract;
+    metadata?: { [key: string]: string; } | undefined;
+
+    [key: string]: any;
+}
+
+export class MaterialResponse implements IMaterialResponse {
+    id!: number;
+    modelId!: string;
+    modulusOfElasticity!: PressureContract;
+    modulusOfRigidity!: PressureContract;
+
+    [key: string]: any;
+
+    constructor(data?: IMaterialResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.modulusOfElasticity = new PressureContract();
+            this.modulusOfRigidity = new PressureContract();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.modelId = _data["modelId"];
+            this.modulusOfElasticity = _data["modulusOfElasticity"] ? PressureContract.fromJS(_data["modulusOfElasticity"]) : new PressureContract();
+            this.modulusOfRigidity = _data["modulusOfRigidity"] ? PressureContract.fromJS(_data["modulusOfRigidity"]) : new PressureContract();
+        }
+    }
+
+    static fromJS(data: any): MaterialResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new MaterialResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["modelId"] = this.modelId;
+        data["modulusOfElasticity"] = this.modulusOfElasticity ? this.modulusOfElasticity.toJSON() : <any>undefined;
+        data["modulusOfRigidity"] = this.modulusOfRigidity ? this.modulusOfRigidity.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IMaterialResponse {
+    id: number;
+    modelId: string;
+    modulusOfElasticity: PressureContract;
+    modulusOfRigidity: PressureContract;
 
     [key: string]: any;
 }
@@ -541,16 +1291,13 @@ export interface INodeResponse2 {
     [key: string]: any;
 }
 
-export class NullableOfBeamOsError implements INullableOfBeamOsError {
-    code?: string | undefined;
-    description?: string | undefined;
-    type?: number;
-    numericType?: number;
-    metadata?: any | undefined;
+export class NullableOfAngleContract implements INullableOfAngleContract {
+    value!: number;
+    unit!: number;
 
     [key: string]: any;
 
-    constructor(data?: INullableOfBeamOsError) {
+    constructor(data?: INullableOfAngleContract) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -565,17 +1312,14 @@ export class NullableOfBeamOsError implements INullableOfBeamOsError {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            this.code = _data["code"];
-            this.description = _data["description"];
-            this.type = _data["type"];
-            this.numericType = _data["numericType"];
-            this.metadata = _data["metadata"];
+            this.value = _data["value"];
+            this.unit = _data["unit"];
         }
     }
 
-    static fromJS(data: any): NullableOfBeamOsError {
+    static fromJS(data: any): NullableOfAngleContract {
         data = typeof data === 'object' ? data : {};
-        let result = new NullableOfBeamOsError();
+        let result = new NullableOfAngleContract();
         result.init(data);
         return result;
     }
@@ -586,21 +1330,15 @@ export class NullableOfBeamOsError implements INullableOfBeamOsError {
             if (this.hasOwnProperty(property))
                 data[property] = this[property];
         }
-        data["code"] = this.code;
-        data["description"] = this.description;
-        data["type"] = this.type;
-        data["numericType"] = this.numericType;
-        data["metadata"] = this.metadata;
+        data["value"] = this.value;
+        data["unit"] = this.unit;
         return data;
     }
 }
 
-export interface INullableOfBeamOsError {
-    code?: string | undefined;
-    description?: string | undefined;
-    type?: number;
-    numericType?: number;
-    metadata?: any | undefined;
+export interface INullableOfAngleContract {
+    value: number;
+    unit: number;
 
     [key: string]: any;
 }
@@ -921,6 +1659,58 @@ export interface IPoint {
     [key: string]: any;
 }
 
+export class PressureContract implements IPressureContract {
+    value!: number;
+    unit!: number;
+
+    [key: string]: any;
+
+    constructor(data?: IPressureContract) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.value = _data["value"];
+            this.unit = _data["unit"];
+        }
+    }
+
+    static fromJS(data: any): PressureContract {
+        data = typeof data === 'object' ? data : {};
+        let result = new PressureContract();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["value"] = this.value;
+        data["unit"] = this.unit;
+        return data;
+    }
+}
+
+export interface IPressureContract {
+    value: number;
+    unit: number;
+
+    [key: string]: any;
+}
+
 export class Restraint implements IRestraint {
     canTranslateAlongX!: boolean;
     canTranslateAlongY!: boolean;
@@ -989,9 +1779,121 @@ export interface IRestraint {
     [key: string]: any;
 }
 
+export class ResultOfElement1dResponse implements IResultOfElement1dResponse {
+    value!: Element1dResponse | undefined;
+    error!: BeamOsError | undefined;
+    isError!: boolean;
+
+    [key: string]: any;
+
+    constructor(data?: IResultOfElement1dResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.value = _data["value"] ? Element1dResponse.fromJS(_data["value"]) : <any>undefined;
+            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
+            this.isError = _data["isError"];
+        }
+    }
+
+    static fromJS(data: any): ResultOfElement1dResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ResultOfElement1dResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
+        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
+        data["isError"] = this.isError;
+        return data;
+    }
+}
+
+export interface IResultOfElement1dResponse {
+    value: Element1dResponse | undefined;
+    error: BeamOsError | undefined;
+    isError: boolean;
+
+    [key: string]: any;
+}
+
+export class ResultOfMaterialResponse implements IResultOfMaterialResponse {
+    value!: MaterialResponse | undefined;
+    error!: BeamOsError | undefined;
+    isError!: boolean;
+
+    [key: string]: any;
+
+    constructor(data?: IResultOfMaterialResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.value = _data["value"] ? MaterialResponse.fromJS(_data["value"]) : <any>undefined;
+            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
+            this.isError = _data["isError"];
+        }
+    }
+
+    static fromJS(data: any): ResultOfMaterialResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ResultOfMaterialResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
+        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
+        data["isError"] = this.isError;
+        return data;
+    }
+}
+
+export interface IResultOfMaterialResponse {
+    value: MaterialResponse | undefined;
+    error: BeamOsError | undefined;
+    isError: boolean;
+
+    [key: string]: any;
+}
+
 export class ResultOfModelResponse implements IResultOfModelResponse {
     value!: ModelResponse | undefined;
-    error!: NullableOfBeamOsError | undefined;
+    error!: BeamOsError | undefined;
     isError!: boolean;
 
     [key: string]: any;
@@ -1012,7 +1914,7 @@ export class ResultOfModelResponse implements IResultOfModelResponse {
                     this[property] = _data[property];
             }
             this.value = _data["value"] ? ModelResponse.fromJS(_data["value"]) : <any>undefined;
-            this.error = _data["error"] ? NullableOfBeamOsError.fromJS(_data["error"]) : <any>undefined;
+            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
             this.isError = _data["isError"];
         }
     }
@@ -1039,7 +1941,7 @@ export class ResultOfModelResponse implements IResultOfModelResponse {
 
 export interface IResultOfModelResponse {
     value: ModelResponse | undefined;
-    error: NullableOfBeamOsError | undefined;
+    error: BeamOsError | undefined;
     isError: boolean;
 
     [key: string]: any;
@@ -1047,7 +1949,7 @@ export interface IResultOfModelResponse {
 
 export class ResultOfNodeResponse implements IResultOfNodeResponse {
     value!: NodeResponse | undefined;
-    error!: NullableOfBeamOsError | undefined;
+    error!: BeamOsError | undefined;
     isError!: boolean;
 
     [key: string]: any;
@@ -1068,7 +1970,7 @@ export class ResultOfNodeResponse implements IResultOfNodeResponse {
                     this[property] = _data[property];
             }
             this.value = _data["value"] ? NodeResponse.fromJS(_data["value"]) : <any>undefined;
-            this.error = _data["error"] ? NullableOfBeamOsError.fromJS(_data["error"]) : <any>undefined;
+            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
             this.isError = _data["isError"];
         }
     }
@@ -1095,8 +1997,148 @@ export class ResultOfNodeResponse implements IResultOfNodeResponse {
 
 export interface IResultOfNodeResponse {
     value: NodeResponse | undefined;
-    error: NullableOfBeamOsError | undefined;
+    error: BeamOsError | undefined;
     isError: boolean;
+
+    [key: string]: any;
+}
+
+export class ResultOfSectionProfileResponse implements IResultOfSectionProfileResponse {
+    value!: SectionProfileResponse | undefined;
+    error!: BeamOsError | undefined;
+    isError!: boolean;
+
+    [key: string]: any;
+
+    constructor(data?: IResultOfSectionProfileResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.value = _data["value"] ? SectionProfileResponse.fromJS(_data["value"]) : <any>undefined;
+            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
+            this.isError = _data["isError"];
+        }
+    }
+
+    static fromJS(data: any): ResultOfSectionProfileResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ResultOfSectionProfileResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
+        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
+        data["isError"] = this.isError;
+        return data;
+    }
+}
+
+export interface IResultOfSectionProfileResponse {
+    value: SectionProfileResponse | undefined;
+    error: BeamOsError | undefined;
+    isError: boolean;
+
+    [key: string]: any;
+}
+
+export class SectionProfileResponse implements ISectionProfileResponse {
+    id!: number;
+    modelId!: string;
+    area!: AreaContract;
+    strongAxisMomentOfInertia!: AreaMomentOfInertiaContract;
+    weakAxisMomentOfInertia!: AreaMomentOfInertiaContract;
+    polarMomentOfInertia!: AreaMomentOfInertiaContract;
+    strongAxisShearArea!: AreaContract;
+    weakAxisShearArea!: AreaContract;
+
+    [key: string]: any;
+
+    constructor(data?: ISectionProfileResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.area = new AreaContract();
+            this.strongAxisMomentOfInertia = new AreaMomentOfInertiaContract();
+            this.weakAxisMomentOfInertia = new AreaMomentOfInertiaContract();
+            this.polarMomentOfInertia = new AreaMomentOfInertiaContract();
+            this.strongAxisShearArea = new AreaContract();
+            this.weakAxisShearArea = new AreaContract();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.modelId = _data["modelId"];
+            this.area = _data["area"] ? AreaContract.fromJS(_data["area"]) : new AreaContract();
+            this.strongAxisMomentOfInertia = _data["strongAxisMomentOfInertia"] ? AreaMomentOfInertiaContract.fromJS(_data["strongAxisMomentOfInertia"]) : new AreaMomentOfInertiaContract();
+            this.weakAxisMomentOfInertia = _data["weakAxisMomentOfInertia"] ? AreaMomentOfInertiaContract.fromJS(_data["weakAxisMomentOfInertia"]) : new AreaMomentOfInertiaContract();
+            this.polarMomentOfInertia = _data["polarMomentOfInertia"] ? AreaMomentOfInertiaContract.fromJS(_data["polarMomentOfInertia"]) : new AreaMomentOfInertiaContract();
+            this.strongAxisShearArea = _data["strongAxisShearArea"] ? AreaContract.fromJS(_data["strongAxisShearArea"]) : new AreaContract();
+            this.weakAxisShearArea = _data["weakAxisShearArea"] ? AreaContract.fromJS(_data["weakAxisShearArea"]) : new AreaContract();
+        }
+    }
+
+    static fromJS(data: any): SectionProfileResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new SectionProfileResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["modelId"] = this.modelId;
+        data["area"] = this.area ? this.area.toJSON() : <any>undefined;
+        data["strongAxisMomentOfInertia"] = this.strongAxisMomentOfInertia ? this.strongAxisMomentOfInertia.toJSON() : <any>undefined;
+        data["weakAxisMomentOfInertia"] = this.weakAxisMomentOfInertia ? this.weakAxisMomentOfInertia.toJSON() : <any>undefined;
+        data["polarMomentOfInertia"] = this.polarMomentOfInertia ? this.polarMomentOfInertia.toJSON() : <any>undefined;
+        data["strongAxisShearArea"] = this.strongAxisShearArea ? this.strongAxisShearArea.toJSON() : <any>undefined;
+        data["weakAxisShearArea"] = this.weakAxisShearArea ? this.weakAxisShearArea.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ISectionProfileResponse {
+    id: number;
+    modelId: string;
+    area: AreaContract;
+    strongAxisMomentOfInertia: AreaMomentOfInertiaContract;
+    weakAxisMomentOfInertia: AreaMomentOfInertiaContract;
+    polarMomentOfInertia: AreaMomentOfInertiaContract;
+    strongAxisShearArea: AreaContract;
+    weakAxisShearArea: AreaContract;
 
     [key: string]: any;
 }

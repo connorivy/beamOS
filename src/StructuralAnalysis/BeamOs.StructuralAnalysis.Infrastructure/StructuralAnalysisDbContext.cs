@@ -1,6 +1,9 @@
 using BeamOs.Common.Domain.Models;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure;
@@ -18,6 +21,9 @@ public class StructuralAnalysisDbContext : DbContext
 
     public DbSet<Model> Models { get; set; }
     public DbSet<Node> Nodes { get; set; }
+    public DbSet<Material> Materials { get; set; }
+    public DbSet<SectionProfile> SectionProfiles { get; set; }
+    public DbSet<Element1d> Element1ds { get; set; }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {

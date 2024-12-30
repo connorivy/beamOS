@@ -2,10 +2,11 @@ using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration.Api;
 
-public class NodeTests
+public class EndToEndTests
 {
     private static Guid modelId;
     private static Result<ModelResponse> modelResponseResult;
@@ -59,6 +60,37 @@ public class NodeTests
             .CreateNodeAsync(modelId, createNodeRequestBody);
 
         await Verify(nodeResponseResult);
+    }
+
+    [Test]
+    public async Task CreateSectionProfile_WithSpecifiedId_ShouldCreateSectionProfile_WithCorrectId()
+    {
+        CreateSectionProfileRequest w16x36Request =
+            new()
+            {
+                Area = new AreaContract(10.6, AreaUnitContract.SquareInch),
+                StrongAxisMomentOfInertia = new AreaMomentOfInertiaContract(
+                    448,
+                    AreaMomentOfInertiaUnitContract.InchToTheFourth
+                ),
+                WeakAxisMomentOfInertia = new AreaMomentOfInertiaContract(
+                    24.5,
+                    AreaMomentOfInertiaUnitContract.InchToTheFourth
+                ),
+                PolarMomentOfInertia = new AreaMomentOfInertiaContract(
+                    .55,
+                    AreaMomentOfInertiaUnitContract.InchToTheFourth
+                ),
+                StrongAxisShearArea = new AreaContract(5.0095, AreaUnitContract.SquareInch),
+                WeakAxisShearArea = new AreaContract(4.6905, AreaUnitContract.SquareInch),
+                Id = 1636
+            };
+
+        var sectionProfileResponseResult = await AssemblySetup
+            .StructuralAnalysisApiClient
+            .CreateSectionProfileAsync(modelId, w16x36Request);
+
+        await Verify(sectionProfileResponseResult);
     }
 
     [Test]
