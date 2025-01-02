@@ -36,6 +36,15 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ResultOfPointLoadResponse> CreatePointLoadAsync(System.Guid modelId, CreatePointLoadRequest body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ResultOfPointLoadResponse> CreatePointLoadAsync(System.Guid modelId, CreatePointLoadRequest body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>OK</returns>
+        /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
         System.Threading.Tasks.Task<ResultOfNodeResponse> CreateNodeAsync(System.Guid modelId, CreateNodeRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -87,6 +96,24 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
         System.Threading.Tasks.Task<ResultOfElement1dResponse> GetElement1dAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>OK</returns>
+        /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ResultOfint> RunOpenSeesAnalysisAsync(System.Guid modelId);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ResultOfint> RunOpenSeesAnalysisAsync(System.Guid modelId, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>OK</returns>
+        /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ResultOfNodeResultResponse> GetNodeResultAsync(System.Guid modelId, int resultSetId, int id);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ResultOfNodeResultResponse> GetNodeResultAsync(System.Guid modelId, int resultSetId, int id, System.Threading.CancellationToken cancellationToken);
 
     }
 
@@ -186,6 +213,96 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         if (status_ == 200)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ResultOfSectionProfileResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <returns>OK</returns>
+        /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<ResultOfPointLoadResponse> CreatePointLoadAsync(System.Guid modelId, CreatePointLoadRequest body)
+        {
+            return CreatePointLoadAsync(modelId, body, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<ResultOfPointLoadResponse> CreatePointLoadAsync(System.Guid modelId, CreatePointLoadRequest body, System.Threading.CancellationToken cancellationToken)
+        {
+            if (modelId == null)
+                throw new System.ArgumentNullException("modelId");
+
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, JsonSerializerSettings);
+                    var content_ = new System.Net.Http.ByteArrayContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "api/models/{modelId}/point-loads"
+                    urlBuilder_.Append("api/models/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/point-loads");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfPointLoadResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -715,6 +832,182 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         if (status_ == 200)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ResultOfElement1dResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <returns>OK</returns>
+        /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<ResultOfint> RunOpenSeesAnalysisAsync(System.Guid modelId)
+        {
+            return RunOpenSeesAnalysisAsync(modelId, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<ResultOfint> RunOpenSeesAnalysisAsync(System.Guid modelId, System.Threading.CancellationToken cancellationToken)
+        {
+            if (modelId == null)
+                throw new System.ArgumentNullException("modelId");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    request_.Content = new System.Net.Http.StringContent(string.Empty, System.Text.Encoding.UTF8, "application/json");
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "api/models/{modelId}/analyze/opensees"
+                    urlBuilder_.Append("api/models/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/analyze/opensees");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfint>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <returns>OK</returns>
+        /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<ResultOfNodeResultResponse> GetNodeResultAsync(System.Guid modelId, int resultSetId, int id)
+        {
+            return GetNodeResultAsync(modelId, resultSetId, id, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<ResultOfNodeResultResponse> GetNodeResultAsync(System.Guid modelId, int resultSetId, int id, System.Threading.CancellationToken cancellationToken)
+        {
+            if (modelId == null)
+                throw new System.ArgumentNullException("modelId");
+
+            if (resultSetId == null)
+                throw new System.ArgumentNullException("resultSetId");
+
+            if (id == null)
+                throw new System.ArgumentNullException("id");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "api/models/{modelId}/result-sets/{resultSetId}/node-results/{id}"
+                    urlBuilder_.Append("api/models/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/result-sets/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(resultSetId, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/node-results/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfNodeResultResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);

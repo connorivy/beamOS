@@ -39,3 +39,20 @@ public readonly struct PartialPoint(double? x, double? y, double? z, LengthUnitC
     public double? Z { get; init; } = z;
     public required LengthUnitContract LengthUnit { get; init; } = lengthUnit;
 }
+
+public readonly record struct Vector3
+{
+    public required double X { get; init; }
+    public required double Y { get; init; }
+    public required double Z { get; init; }
+
+    public Vector3() { }
+
+    [SetsRequiredMembers]
+    public Vector3(double x, double y, double z)
+    {
+        this.X = x;
+        this.Y = y;
+        this.Z = z;
+    }
+}

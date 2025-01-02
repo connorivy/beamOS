@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 
 public readonly record struct Element1dId
@@ -12,4 +14,6 @@ public readonly record struct Element1dId
     public static implicit operator int(Element1dId id) => id.Id;
 
     public static implicit operator Element1dId(int id) => new(id);
+
+    public override string ToString() => this.Id.ToString(CultureInfo.InvariantCulture);
 }

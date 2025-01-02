@@ -18,6 +18,11 @@ export interface IStructuralAnalysisApiClientV1 {
     /**
      * @return OK
      */
+    createPointLoad(modelId: string, body: CreatePointLoadRequest): Promise<ResultOfPointLoadResponse>;
+
+    /**
+     * @return OK
+     */
     createNode(modelId: string, body: CreateNodeRequest): Promise<ResultOfNodeResponse>;
 
     /**
@@ -45,6 +50,16 @@ export interface IStructuralAnalysisApiClientV1 {
      * @return OK
      */
     getElement1d(modelId: string, id: number): Promise<ResultOfElement1dResponse>;
+
+    /**
+     * @return OK
+     */
+    runOpenSeesAnalysis(modelId: string): Promise<ResultOfint>;
+
+    /**
+     * @return OK
+     */
+    getNodeResult(modelId: string, resultSetId: number, id: number): Promise<ResultOfNodeResultResponse>;
 }
 
 export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClientV1 {
@@ -99,6 +114,50 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             });
         }
         return Promise.resolve<ResultOfSectionProfileResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    createPointLoad(modelId: string, body: CreatePointLoadRequest): Promise<ResultOfPointLoadResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/point-loads";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreatePointLoad(_response);
+        });
+    }
+
+    protected processCreatePointLoad(response: Response): Promise<ResultOfPointLoadResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfPointLoadResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfPointLoadResponse>(null as any);
     }
 
     /**
@@ -360,6 +419,92 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             });
         }
         return Promise.resolve<ResultOfElement1dResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    runOpenSeesAnalysis(modelId: string): Promise<ResultOfint> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/analyze/opensees";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processRunOpenSeesAnalysis(_response);
+        });
+    }
+
+    protected processRunOpenSeesAnalysis(response: Response): Promise<ResultOfint> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfint.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfint>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    getNodeResult(modelId: string, resultSetId: number, id: number): Promise<ResultOfNodeResultResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/result-sets/{resultSetId}/node-results/{id}";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (resultSetId === undefined || resultSetId === null)
+            throw new Error("The parameter 'resultSetId' must be defined.");
+        url_ = url_.replace("{resultSetId}", encodeURIComponent("" + resultSetId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetNodeResult(_response);
+        });
+    }
+
+    protected processGetNodeResult(response: Response): Promise<ResultOfNodeResultResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfNodeResultResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfNodeResultResponse>(null as any);
     }
 }
 
@@ -840,7 +985,7 @@ export interface ICreateModelRequest {
 
 export class CreateNodeRequest implements ICreateNodeRequest {
     locationPoint!: Point;
-    restraint!: NullableOfRestraint | undefined;
+    restraint!: Restraint;
     id?: number | undefined;
     metadata?: { [key: string]: string; } | undefined;
 
@@ -855,6 +1000,7 @@ export class CreateNodeRequest implements ICreateNodeRequest {
         }
         if (!data) {
             this.locationPoint = new Point();
+            this.restraint = new Restraint();
         }
     }
 
@@ -865,7 +1011,7 @@ export class CreateNodeRequest implements ICreateNodeRequest {
                     this[property] = _data[property];
             }
             this.locationPoint = _data["locationPoint"] ? Point.fromJS(_data["locationPoint"]) : new Point();
-            this.restraint = _data["restraint"] ? NullableOfRestraint.fromJS(_data["restraint"]) : <any>undefined;
+            this.restraint = _data["restraint"] ? Restraint.fromJS(_data["restraint"]) : new Restraint();
             this.id = _data["id"];
             if (_data["metadata"]) {
                 this.metadata = {} as any;
@@ -906,9 +1052,73 @@ export class CreateNodeRequest implements ICreateNodeRequest {
 
 export interface ICreateNodeRequest {
     locationPoint: Point;
-    restraint: NullableOfRestraint | undefined;
+    restraint: Restraint;
     id?: number | undefined;
     metadata?: { [key: string]: string; } | undefined;
+
+    [key: string]: any;
+}
+
+export class CreatePointLoadRequest implements ICreatePointLoadRequest {
+    nodeId!: number;
+    force!: ForceContract;
+    direction!: Vector3;
+    id?: number | undefined;
+
+    [key: string]: any;
+
+    constructor(data?: ICreatePointLoadRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.force = new ForceContract();
+            this.direction = new Vector3();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.nodeId = _data["nodeId"];
+            this.force = _data["force"] ? ForceContract.fromJS(_data["force"]) : new ForceContract();
+            this.direction = _data["direction"] ? Vector3.fromJS(_data["direction"]) : new Vector3();
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): CreatePointLoadRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreatePointLoadRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["nodeId"] = this.nodeId;
+        data["force"] = this.force ? this.force.toJSON() : <any>undefined;
+        data["direction"] = this.direction ? this.direction.toJSON() : <any>undefined;
+        data["id"] = this.id;
+        return data;
+    }
+}
+
+export interface ICreatePointLoadRequest {
+    nodeId: number;
+    force: ForceContract;
+    direction: Vector3;
+    id?: number | undefined;
 
     [key: string]: any;
 }
@@ -981,6 +1191,82 @@ export interface ICreateSectionProfileRequest {
     strongAxisShearArea?: AreaContract;
     weakAxisShearArea?: AreaContract;
     id?: number | undefined;
+
+    [key: string]: any;
+}
+
+export class DisplacementsResponse implements IDisplacementsResponse {
+    displacementAlongX!: LengthContract;
+    displacementAlongY!: LengthContract;
+    displacementAlongZ!: LengthContract;
+    rotationAboutX!: AngleContract;
+    rotationAboutY!: AngleContract;
+    rotationAboutZ!: AngleContract;
+
+    [key: string]: any;
+
+    constructor(data?: IDisplacementsResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.displacementAlongX = new LengthContract();
+            this.displacementAlongY = new LengthContract();
+            this.displacementAlongZ = new LengthContract();
+            this.rotationAboutX = new AngleContract();
+            this.rotationAboutY = new AngleContract();
+            this.rotationAboutZ = new AngleContract();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.displacementAlongX = _data["displacementAlongX"] ? LengthContract.fromJS(_data["displacementAlongX"]) : new LengthContract();
+            this.displacementAlongY = _data["displacementAlongY"] ? LengthContract.fromJS(_data["displacementAlongY"]) : new LengthContract();
+            this.displacementAlongZ = _data["displacementAlongZ"] ? LengthContract.fromJS(_data["displacementAlongZ"]) : new LengthContract();
+            this.rotationAboutX = _data["rotationAboutX"] ? AngleContract.fromJS(_data["rotationAboutX"]) : new AngleContract();
+            this.rotationAboutY = _data["rotationAboutY"] ? AngleContract.fromJS(_data["rotationAboutY"]) : new AngleContract();
+            this.rotationAboutZ = _data["rotationAboutZ"] ? AngleContract.fromJS(_data["rotationAboutZ"]) : new AngleContract();
+        }
+    }
+
+    static fromJS(data: any): DisplacementsResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new DisplacementsResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["displacementAlongX"] = this.displacementAlongX ? this.displacementAlongX.toJSON() : <any>undefined;
+        data["displacementAlongY"] = this.displacementAlongY ? this.displacementAlongY.toJSON() : <any>undefined;
+        data["displacementAlongZ"] = this.displacementAlongZ ? this.displacementAlongZ.toJSON() : <any>undefined;
+        data["rotationAboutX"] = this.rotationAboutX ? this.rotationAboutX.toJSON() : <any>undefined;
+        data["rotationAboutY"] = this.rotationAboutY ? this.rotationAboutY.toJSON() : <any>undefined;
+        data["rotationAboutZ"] = this.rotationAboutZ ? this.rotationAboutZ.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IDisplacementsResponse {
+    displacementAlongX: LengthContract;
+    displacementAlongY: LengthContract;
+    displacementAlongZ: LengthContract;
+    rotationAboutX: AngleContract;
+    rotationAboutY: AngleContract;
+    rotationAboutZ: AngleContract;
 
     [key: string]: any;
 }
@@ -1072,6 +1358,186 @@ export interface IElement1dResponse {
     sectionProfileId: number;
     sectionProfileRotation: AngleContract;
     metadata?: { [key: string]: string; } | undefined;
+
+    [key: string]: any;
+}
+
+export class ForceContract implements IForceContract {
+    value!: number;
+    unit!: number;
+
+    [key: string]: any;
+
+    constructor(data?: IForceContract) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.value = _data["value"];
+            this.unit = _data["unit"];
+        }
+    }
+
+    static fromJS(data: any): ForceContract {
+        data = typeof data === 'object' ? data : {};
+        let result = new ForceContract();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["value"] = this.value;
+        data["unit"] = this.unit;
+        return data;
+    }
+}
+
+export interface IForceContract {
+    value: number;
+    unit: number;
+
+    [key: string]: any;
+}
+
+export class ForcesResponse implements IForcesResponse {
+    forceAlongX!: ForceContract;
+    forceAlongY!: ForceContract;
+    forceAlongZ!: ForceContract;
+    momentAboutX!: TorqueContract;
+    momentAboutY!: TorqueContract;
+    momentAboutZ!: TorqueContract;
+
+    [key: string]: any;
+
+    constructor(data?: IForcesResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.forceAlongX = new ForceContract();
+            this.forceAlongY = new ForceContract();
+            this.forceAlongZ = new ForceContract();
+            this.momentAboutX = new TorqueContract();
+            this.momentAboutY = new TorqueContract();
+            this.momentAboutZ = new TorqueContract();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.forceAlongX = _data["forceAlongX"] ? ForceContract.fromJS(_data["forceAlongX"]) : new ForceContract();
+            this.forceAlongY = _data["forceAlongY"] ? ForceContract.fromJS(_data["forceAlongY"]) : new ForceContract();
+            this.forceAlongZ = _data["forceAlongZ"] ? ForceContract.fromJS(_data["forceAlongZ"]) : new ForceContract();
+            this.momentAboutX = _data["momentAboutX"] ? TorqueContract.fromJS(_data["momentAboutX"]) : new TorqueContract();
+            this.momentAboutY = _data["momentAboutY"] ? TorqueContract.fromJS(_data["momentAboutY"]) : new TorqueContract();
+            this.momentAboutZ = _data["momentAboutZ"] ? TorqueContract.fromJS(_data["momentAboutZ"]) : new TorqueContract();
+        }
+    }
+
+    static fromJS(data: any): ForcesResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ForcesResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["forceAlongX"] = this.forceAlongX ? this.forceAlongX.toJSON() : <any>undefined;
+        data["forceAlongY"] = this.forceAlongY ? this.forceAlongY.toJSON() : <any>undefined;
+        data["forceAlongZ"] = this.forceAlongZ ? this.forceAlongZ.toJSON() : <any>undefined;
+        data["momentAboutX"] = this.momentAboutX ? this.momentAboutX.toJSON() : <any>undefined;
+        data["momentAboutY"] = this.momentAboutY ? this.momentAboutY.toJSON() : <any>undefined;
+        data["momentAboutZ"] = this.momentAboutZ ? this.momentAboutZ.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IForcesResponse {
+    forceAlongX: ForceContract;
+    forceAlongY: ForceContract;
+    forceAlongZ: ForceContract;
+    momentAboutX: TorqueContract;
+    momentAboutY: TorqueContract;
+    momentAboutZ: TorqueContract;
+
+    [key: string]: any;
+}
+
+export class LengthContract implements ILengthContract {
+    value!: number;
+    unit!: number;
+
+    [key: string]: any;
+
+    constructor(data?: ILengthContract) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.value = _data["value"];
+            this.unit = _data["unit"];
+        }
+    }
+
+    static fromJS(data: any): LengthContract {
+        data = typeof data === 'object' ? data : {};
+        let result = new LengthContract();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["value"] = this.value;
+        data["unit"] = this.unit;
+        return data;
+    }
+}
+
+export interface ILengthContract {
+    value: number;
+    unit: number;
 
     [key: string]: any;
 }
@@ -1343,6 +1809,74 @@ export interface INodeResponse2 {
     [key: string]: any;
 }
 
+export class NodeResultResponse implements INodeResultResponse {
+    modelId!: string;
+    resultSetId!: number;
+    nodeId!: number;
+    forces!: ForcesResponse;
+    displacements!: DisplacementsResponse;
+
+    [key: string]: any;
+
+    constructor(data?: INodeResultResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.forces = new ForcesResponse();
+            this.displacements = new DisplacementsResponse();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.modelId = _data["modelId"];
+            this.resultSetId = _data["resultSetId"];
+            this.nodeId = _data["nodeId"];
+            this.forces = _data["forces"] ? ForcesResponse.fromJS(_data["forces"]) : new ForcesResponse();
+            this.displacements = _data["displacements"] ? DisplacementsResponse.fromJS(_data["displacements"]) : new DisplacementsResponse();
+        }
+    }
+
+    static fromJS(data: any): NodeResultResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new NodeResultResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["modelId"] = this.modelId;
+        data["resultSetId"] = this.resultSetId;
+        data["nodeId"] = this.nodeId;
+        data["forces"] = this.forces ? this.forces.toJSON() : <any>undefined;
+        data["displacements"] = this.displacements ? this.displacements.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface INodeResultResponse {
+    modelId: string;
+    resultSetId: number;
+    nodeId: number;
+    forces: ForcesResponse;
+    displacements: DisplacementsResponse;
+
+    [key: string]: any;
+}
+
 export class NullableOfAngleContract implements INullableOfAngleContract {
     value!: number;
     unit!: number;
@@ -1523,74 +2057,6 @@ export interface INullableOfPartialRestraint {
     [key: string]: any;
 }
 
-export class NullableOfRestraint implements INullableOfRestraint {
-    canTranslateAlongX!: boolean;
-    canTranslateAlongY!: boolean;
-    canTranslateAlongZ!: boolean;
-    canRotateAboutX!: boolean;
-    canRotateAboutY!: boolean;
-    canRotateAboutZ!: boolean;
-
-    [key: string]: any;
-
-    constructor(data?: INullableOfRestraint) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.canTranslateAlongX = _data["canTranslateAlongX"];
-            this.canTranslateAlongY = _data["canTranslateAlongY"];
-            this.canTranslateAlongZ = _data["canTranslateAlongZ"];
-            this.canRotateAboutX = _data["canRotateAboutX"];
-            this.canRotateAboutY = _data["canRotateAboutY"];
-            this.canRotateAboutZ = _data["canRotateAboutZ"];
-        }
-    }
-
-    static fromJS(data: any): NullableOfRestraint {
-        data = typeof data === 'object' ? data : {};
-        let result = new NullableOfRestraint();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["canTranslateAlongX"] = this.canTranslateAlongX;
-        data["canTranslateAlongY"] = this.canTranslateAlongY;
-        data["canTranslateAlongZ"] = this.canTranslateAlongZ;
-        data["canRotateAboutX"] = this.canRotateAboutX;
-        data["canRotateAboutY"] = this.canRotateAboutY;
-        data["canRotateAboutZ"] = this.canRotateAboutZ;
-        return data;
-    }
-}
-
-export interface INullableOfRestraint {
-    canTranslateAlongX: boolean;
-    canTranslateAlongY: boolean;
-    canTranslateAlongZ: boolean;
-    canRotateAboutX: boolean;
-    canRotateAboutY: boolean;
-    canRotateAboutZ: boolean;
-
-    [key: string]: any;
-}
-
 export class PhysicalModelSettings implements IPhysicalModelSettings {
     unitSettings!: UnitSettingsContract;
     analysisSettings?: AnalysisSettingsContract | undefined;
@@ -1707,6 +2173,70 @@ export interface IPoint {
     y: number;
     z: number;
     lengthUnit: number;
+
+    [key: string]: any;
+}
+
+export class PointLoadResponse implements IPointLoadResponse {
+    id!: number;
+    modelId!: string;
+    force!: ForceContract;
+    direction!: Vector3;
+
+    [key: string]: any;
+
+    constructor(data?: IPointLoadResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.force = new ForceContract();
+            this.direction = new Vector3();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.modelId = _data["modelId"];
+            this.force = _data["force"] ? ForceContract.fromJS(_data["force"]) : new ForceContract();
+            this.direction = _data["direction"] ? Vector3.fromJS(_data["direction"]) : new Vector3();
+        }
+    }
+
+    static fromJS(data: any): PointLoadResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new PointLoadResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["modelId"] = this.modelId;
+        data["force"] = this.force ? this.force.toJSON() : <any>undefined;
+        data["direction"] = this.direction ? this.direction.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IPointLoadResponse {
+    id: number;
+    modelId: string;
+    force: ForceContract;
+    direction: Vector3;
 
     [key: string]: any;
 }
@@ -1887,6 +2417,62 @@ export interface IResultOfElement1dResponse {
     [key: string]: any;
 }
 
+export class ResultOfint implements IResultOfint {
+    value!: number;
+    error!: BeamOsError | undefined;
+    isError!: boolean;
+
+    [key: string]: any;
+
+    constructor(data?: IResultOfint) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.value = _data["value"];
+            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
+            this.isError = _data["isError"];
+        }
+    }
+
+    static fromJS(data: any): ResultOfint {
+        data = typeof data === 'object' ? data : {};
+        let result = new ResultOfint();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["value"] = this.value;
+        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
+        data["isError"] = this.isError;
+        return data;
+    }
+}
+
+export interface IResultOfint {
+    value: number;
+    error: BeamOsError | undefined;
+    isError: boolean;
+
+    [key: string]: any;
+}
+
 export class ResultOfMaterialResponse implements IResultOfMaterialResponse {
     value!: MaterialResponse | undefined;
     error!: BeamOsError | undefined;
@@ -2055,6 +2641,118 @@ export interface IResultOfNodeResponse {
     [key: string]: any;
 }
 
+export class ResultOfNodeResultResponse implements IResultOfNodeResultResponse {
+    value!: NodeResultResponse | undefined;
+    error!: BeamOsError | undefined;
+    isError!: boolean;
+
+    [key: string]: any;
+
+    constructor(data?: IResultOfNodeResultResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.value = _data["value"] ? NodeResultResponse.fromJS(_data["value"]) : <any>undefined;
+            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
+            this.isError = _data["isError"];
+        }
+    }
+
+    static fromJS(data: any): ResultOfNodeResultResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ResultOfNodeResultResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
+        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
+        data["isError"] = this.isError;
+        return data;
+    }
+}
+
+export interface IResultOfNodeResultResponse {
+    value: NodeResultResponse | undefined;
+    error: BeamOsError | undefined;
+    isError: boolean;
+
+    [key: string]: any;
+}
+
+export class ResultOfPointLoadResponse implements IResultOfPointLoadResponse {
+    value!: PointLoadResponse | undefined;
+    error!: BeamOsError | undefined;
+    isError!: boolean;
+
+    [key: string]: any;
+
+    constructor(data?: IResultOfPointLoadResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.value = _data["value"] ? PointLoadResponse.fromJS(_data["value"]) : <any>undefined;
+            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
+            this.isError = _data["isError"];
+        }
+    }
+
+    static fromJS(data: any): ResultOfPointLoadResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ResultOfPointLoadResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
+        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
+        data["isError"] = this.isError;
+        return data;
+    }
+}
+
+export interface IResultOfPointLoadResponse {
+    value: PointLoadResponse | undefined;
+    error: BeamOsError | undefined;
+    isError: boolean;
+
+    [key: string]: any;
+}
+
 export class ResultOfSectionProfileResponse implements IResultOfSectionProfileResponse {
     value!: SectionProfileResponse | undefined;
     error!: BeamOsError | undefined;
@@ -2195,6 +2893,58 @@ export interface ISectionProfileResponse {
     [key: string]: any;
 }
 
+export class TorqueContract implements ITorqueContract {
+    value!: number;
+    unit!: number;
+
+    [key: string]: any;
+
+    constructor(data?: ITorqueContract) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.value = _data["value"];
+            this.unit = _data["unit"];
+        }
+    }
+
+    static fromJS(data: any): TorqueContract {
+        data = typeof data === 'object' ? data : {};
+        let result = new TorqueContract();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["value"] = this.value;
+        data["unit"] = this.unit;
+        return data;
+    }
+}
+
+export interface ITorqueContract {
+    value: number;
+    unit: number;
+
+    [key: string]: any;
+}
+
 export class UnitSettingsContract implements IUnitSettingsContract {
     lengthUnit!: number;
     forceUnit!: number;
@@ -2303,6 +3053,62 @@ export interface IUpdateNodeRequest {
     id: number;
     locationPoint: NullableOfPartialPoint | undefined;
     restraint: NullableOfPartialRestraint | undefined;
+
+    [key: string]: any;
+}
+
+export class Vector3 implements IVector3 {
+    x!: number;
+    y!: number;
+    z!: number;
+
+    [key: string]: any;
+
+    constructor(data?: IVector3) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.x = _data["x"];
+            this.y = _data["y"];
+            this.z = _data["z"];
+        }
+    }
+
+    static fromJS(data: any): Vector3 {
+        data = typeof data === 'object' ? data : {};
+        let result = new Vector3();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["x"] = this.x;
+        data["y"] = this.y;
+        data["z"] = this.z;
+        return data;
+    }
+}
+
+export interface IVector3 {
+    x: number;
+    y: number;
+    z: number;
 
     [key: string]: any;
 }

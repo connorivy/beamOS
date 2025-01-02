@@ -1,4 +1,5 @@
 using BeamOs.Common.Domain.Models;
+using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.Common;
@@ -23,4 +24,11 @@ public interface IModelResourceRepository<TId, T> : IRepository<TId, T>
     where T : BeamOsEntity<TId>
 {
     Task<T?> GetSingle(ModelId modelId, TId id);
+}
+
+public interface IAnalyticalResultRepository<TId, T> : IRepository<TId, T>
+    where TId : struct
+    where T : BeamOsEntity<TId>
+{
+    Task<T?> GetSingle(ModelId modelId, ResultSetId resultSetId, TId id);
 }

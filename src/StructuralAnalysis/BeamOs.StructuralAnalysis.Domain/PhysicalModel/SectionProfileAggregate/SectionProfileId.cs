@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 
 public readonly struct SectionProfileId(int id)
@@ -7,4 +9,6 @@ public readonly struct SectionProfileId(int id)
     public static explicit operator int(SectionProfileId id) => id.Id;
 
     public static explicit operator SectionProfileId(int id) => new(id);
+
+    public override string ToString() => this.Id.ToString(CultureInfo.InvariantCulture);
 }

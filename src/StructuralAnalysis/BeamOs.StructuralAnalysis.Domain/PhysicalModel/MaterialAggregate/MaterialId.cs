@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 
 public readonly struct MaterialId(int id)
@@ -7,4 +9,6 @@ public readonly struct MaterialId(int id)
     public static implicit operator int(MaterialId id) => id.Id;
 
     public static implicit operator MaterialId(int id) => new(id);
+
+    public override string ToString() => this.Id.ToString(CultureInfo.InvariantCulture);
 }

@@ -60,6 +60,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.Common.Contracts", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.Common.Domain", "src\Common\BeamOs.Common.Domain\BeamOs.Common.Domain.csproj", "{9799B8D8-C212-9282-5B31-FC596CC1D216}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.Tests.Common", "tests\BeamOs.Tests.Common\BeamOs.Tests.Common.csproj", "{583794EB-C0A0-4C49-814C-33692C7BBC16}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -126,6 +128,10 @@ Global
 		{9799B8D8-C212-9282-5B31-FC596CC1D216}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9799B8D8-C212-9282-5B31-FC596CC1D216}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9799B8D8-C212-9282-5B31-FC596CC1D216}.Release|Any CPU.Build.0 = Release|Any CPU
+		{583794EB-C0A0-4C49-814C-33692C7BBC16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{583794EB-C0A0-4C49-814C-33692C7BBC16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{583794EB-C0A0-4C49-814C-33692C7BBC16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{583794EB-C0A0-4C49-814C-33692C7BBC16}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -148,6 +154,7 @@ Global
 		{0378448A-6F4E-91DD-6DB2-36504FD22A03} = {24DEE34F-FE2C-42D1-B239-9235D427FA54}
 		{B3098FA2-548D-984D-426B-ADA73ADDF558} = {24DEE34F-FE2C-42D1-B239-9235D427FA54}
 		{9799B8D8-C212-9282-5B31-FC596CC1D216} = {24DEE34F-FE2C-42D1-B239-9235D427FA54}
+		{583794EB-C0A0-4C49-814C-33692C7BBC16} = {E2A070EF-D8E8-42B4-88A0-3084C89601A4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A4E54AF5-719C-45F7-8978-E734B3D3060B}

@@ -1,6 +1,10 @@
 using BeamOs.Common.Domain.Models;
+using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
@@ -21,13 +25,13 @@ public class Model : BeamOsEntity<ModelId>
     public ModelSettings Settings { get; private set; }
 
     public ICollection<Node>? Nodes { get; private init; }
-
-    //public ICollection<Element1D> Element1ds { get; init; } = [];
-    //public ICollection<Material> Materials { get; init; } = [];
-    //public ICollection<SectionProfile> SectionProfiles { get; init; } = [];
+    public ICollection<Element1d>? Element1ds { get; init; }
+    public ICollection<Material>? Materials { get; init; }
+    public ICollection<SectionProfile>? SectionProfiles { get; init; }
 
     //public ICollection<ModelResult> ModelResults { get; init; }
     public ICollection<PointLoad>? PointLoads { get; init; }
+    public ICollection<ResultSet>? ResultSets { get; private init; }
 
     //public ICollection<MomentLoad>? MomentLoads { get; init; }
     //public AnalyticalResults? AnalyticalResults { get; init; }

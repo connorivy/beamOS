@@ -1,3 +1,4 @@
+using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
@@ -8,6 +9,12 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.Common;
 
+public class ModelIdConverter : ValueConverter<ModelId, Guid>
+{
+    public ModelIdConverter()
+        : base(x => x.Id, x => new(x), null) { }
+}
+
 public class NodeIdConverter : ValueConverter<NodeId, int>
 {
     public NodeIdConverter()
@@ -17,12 +24,6 @@ public class NodeIdConverter : ValueConverter<NodeId, int>
 public class PointLoadIdConverter : ValueConverter<PointLoadId, int>
 {
     public PointLoadIdConverter()
-        : base(x => x.Id, x => new(x), null) { }
-}
-
-public class ModelIdConverter : ValueConverter<ModelId, Guid>
-{
-    public ModelIdConverter()
         : base(x => x.Id, x => new(x), null) { }
 }
 
@@ -41,5 +42,11 @@ public class MaterialIdConverter : ValueConverter<MaterialId, int>
 public class SectionProfileIdConverter : ValueConverter<SectionProfileId, int>
 {
     public SectionProfileIdConverter()
+        : base(x => x.Id, x => new(x), null) { }
+}
+
+public class ResultSetIdConverter : ValueConverter<ResultSetId, int>
+{
+    public ResultSetIdConverter()
         : base(x => x.Id, x => new(x), null) { }
 }

@@ -27,7 +27,7 @@ public class Element1d : BeamOsModelEntity<Element1dId>
     }
 
     public NodeId StartNodeId { get; private set; }
-    public Node? StartNode { get; init; }
+    public Node? StartNode { get; private set; }
     public NodeId EndNodeId { get; private set; }
     public Node? EndNode { get; init; }
     public MaterialId MaterialId { get; private set; }
