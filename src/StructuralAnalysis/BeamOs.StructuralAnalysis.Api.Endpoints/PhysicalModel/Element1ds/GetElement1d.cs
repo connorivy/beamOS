@@ -10,7 +10,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Element1ds;
 [BeamOsEndpointType(Http.Get)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Reviewer)]
 public class GetElement1d(GetElement1dQueryHandler getElement1dCommandHandler)
-    : BeamOsBaseEndpoint<GetModelResourceQuery, Element1dResponse>
+    : BeamOsModelResourceQueryBaseEndpoint<Element1dResponse>
 {
     public override async Task<Result<Element1dResponse>> ExecuteRequestAsync(
         GetModelResourceQuery req,

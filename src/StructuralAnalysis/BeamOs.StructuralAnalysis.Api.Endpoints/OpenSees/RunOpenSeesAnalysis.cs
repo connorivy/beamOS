@@ -1,4 +1,5 @@
 using BeamOs.Common.Api;
+using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.OpenSees;
 using Microsoft.AspNetCore.Mvc;
@@ -9,15 +10,15 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.OpenSees;
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 public class RunOpenSeesAnalysis(RunOpenSeesCommandHandler runOpenSeesCommandHandler)
-    : BeamOsBaseEndpoint<OpenSeesRequest, int>
+    : BeamOsModelIdRequestBaseEndpoint<int>
 {
     public override async Task<Result<int>> ExecuteRequestAsync(
-        OpenSeesRequest req,
+        ModelIdRequest req,
         CancellationToken ct = default
     ) => await runOpenSeesCommandHandler.ExecuteAsync(req.ModelId, ct);
 }
 
-public readonly struct OpenSeesRequest
+public readonly struct ModelIdRequest : IHasModelId
 {
     [FromRoute]
     public Guid ModelId { get; init; }

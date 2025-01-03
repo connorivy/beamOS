@@ -12,7 +12,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.AnalyticalResults.NodeResults;
 [BeamOsEndpointType(Http.Get)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Reviewer)]
 public class GetNodeResult(GetNodeResultQueryHandler getNodeResultCommandHandler)
-    : BeamOsBaseEndpoint<GetAnalyticalResultResourceQuery, NodeResultResponse>
+    : BeamOsAnalyticalResultResourceQueryBaseEndpoint<NodeResultResponse>
 {
     public override async Task<Result<NodeResultResponse>> ExecuteRequestAsync(
         GetAnalyticalResultResourceQuery req,

@@ -1,6 +1,7 @@
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.NodeResult;
 using BeamOs.Tests.Common;
+using FluentAssertions;
 using UnitsNet.Units;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration;
@@ -18,6 +19,11 @@ public class OpenSeesTests
             var resultSetIdResponse = await AssemblySetup
                 .StructuralAnalysisApiClient
                 .RunOpenSeesAnalysisAsync(modelBuilder.Id);
+
+            if (resultSetIdResponse.IsError)
+            {
+                throw new Exception(resultSetIdResponse.Error.Description);
+            }
             resultSetIdDict[modelBuilder.Id] = resultSetIdResponse.Value;
         }
     }
