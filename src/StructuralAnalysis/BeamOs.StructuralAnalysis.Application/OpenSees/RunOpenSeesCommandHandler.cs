@@ -60,6 +60,11 @@ public class RunOpenSeesCommandHandler(
         //nameof(Model.PointLoads)
         );
 
+        if (model is null)
+        {
+            return BeamOsError.NotFound(description: $"Could not find model with id {modelId}");
+        }
+
         int displacementPort = 1024;
         int reactionPort = displacementPort + 1;
         int elementForcesPort = displacementPort + 2;
@@ -120,7 +125,7 @@ public class RunOpenSeesCommandHandler(
     private Dictionary<Element1dId, Element1d> element1dCache;
 
     private TclWriter CreateWriterFromModel(
-        Model? model,
+        Model model,
         int displacementPort,
         int reactionPort,
         int elementForcesPort

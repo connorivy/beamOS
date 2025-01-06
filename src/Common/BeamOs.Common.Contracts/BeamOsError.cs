@@ -11,7 +11,7 @@ public sealed class BeamOsError
         string code,
         string description,
         ErrorType type,
-        Dictionary<string, object>? metadata
+        Dictionary<string, string>? metadata
     )
     {
         this.Code = code;
@@ -44,7 +44,7 @@ public sealed class BeamOsError
     /// <summary>
     /// Gets the metadata.
     /// </summary>
-    public Dictionary<string, object>? Metadata { get; }
+    public Dictionary<string, string>? Metadata { get; }
 
     /// <summary>
     /// Creates an <see cref="BeamOsError"/> of type <see cref="ErrorType.Failure"/> from a code and description.
@@ -55,7 +55,7 @@ public sealed class BeamOsError
     public static BeamOsError Failure(
         string code = "General.Failure",
         string description = "A failure has occurred.",
-        Dictionary<string, object>? metadata = null
+        Dictionary<string, string>? metadata = null
     ) => new(code, description, ErrorType.Failure, metadata);
 
     /// <summary>
@@ -67,7 +67,7 @@ public sealed class BeamOsError
     public static BeamOsError Unexpected(
         string code = "General.Unexpected",
         string description = "An unexpected error has occurred.",
-        Dictionary<string, object>? metadata = null
+        Dictionary<string, string>? metadata = null
     ) => new(code, description, ErrorType.Unexpected, metadata);
 
     /// <summary>
@@ -79,7 +79,7 @@ public sealed class BeamOsError
     public static BeamOsError Validation(
         string code = "General.Validation",
         string description = "A validation error has occurred.",
-        Dictionary<string, object>? metadata = null
+        Dictionary<string, string>? metadata = null
     ) => new(code, description, ErrorType.Validation, metadata);
 
     /// <summary>
@@ -91,7 +91,7 @@ public sealed class BeamOsError
     public static BeamOsError Conflict(
         string code = "General.Conflict",
         string description = "A conflict error has occurred.",
-        Dictionary<string, object>? metadata = null
+        Dictionary<string, string>? metadata = null
     ) => new(code, description, ErrorType.Conflict, metadata);
 
     /// <summary>
@@ -103,7 +103,7 @@ public sealed class BeamOsError
     public static BeamOsError NotFound(
         string code = "General.NotFound",
         string description = "A 'Not Found' error has occurred.",
-        Dictionary<string, object>? metadata = null
+        Dictionary<string, string>? metadata = null
     ) => new(code, description, ErrorType.NotFound, metadata);
 
     /// <summary>
@@ -115,7 +115,7 @@ public sealed class BeamOsError
     public static BeamOsError Unauthorized(
         string code = "General.Unauthorized",
         string description = "An 'Unauthorized' error has occurred.",
-        Dictionary<string, object>? metadata = null
+        Dictionary<string, string>? metadata = null
     ) => new(code, description, ErrorType.Unauthorized, metadata);
 
     /// <summary>
@@ -127,7 +127,7 @@ public sealed class BeamOsError
     public static BeamOsError Forbidden(
         string code = "General.Forbidden",
         string description = "A 'Forbidden' error has occurred.",
-        Dictionary<string, object>? metadata = null
+        Dictionary<string, string>? metadata = null
     ) => new(code, description, ErrorType.Forbidden, metadata);
 
     /// <summary>
@@ -142,7 +142,7 @@ public sealed class BeamOsError
         int type,
         string code,
         string description,
-        Dictionary<string, object>? metadata = null
+        Dictionary<string, string>? metadata = null
     ) => new(code, description, (ErrorType)type, metadata);
 
     public bool Equals(BeamOsError other)
@@ -191,8 +191,8 @@ public sealed class BeamOsError
     }
 
     private static bool CompareMetadata(
-        Dictionary<string, object> metadata,
-        Dictionary<string, object> otherMetadata
+        Dictionary<string, string> metadata,
+        Dictionary<string, string> otherMetadata
     )
     {
         if (ReferenceEquals(metadata, otherMetadata))
