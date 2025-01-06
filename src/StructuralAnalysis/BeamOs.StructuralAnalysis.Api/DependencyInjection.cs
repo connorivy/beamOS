@@ -1,11 +1,5 @@
 using System.Reflection;
-using System.Security.AccessControl;
 using BeamOs.Common.Api;
-using BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Models;
-using BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Nodes;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BeamOs.StructuralAnalysis.Api;
@@ -25,10 +19,13 @@ public static class DependencyInjection
         var baseType = typeof(BeamOsBaseEndpoint<,>);
         foreach (var assemblyType in assemblyTypes)
         {
-            if (Application.DependencyInjection.ConcreteTypeDerivedFromBase(assemblyType, baseType))
+            if (
+                Application.DependencyInjection.GetConcreteBaseType(assemblyType, baseType)
+                is Type endpointType
+            )
             {
-                var requestType = assemblyType.BaseType?.GenericTypeArguments.FirstOrDefault();
-                var responseType = assemblyType.BaseType?.GenericTypeArguments.LastOrDefault();
+                var requestType = endpointType.GenericTypeArguments.FirstOrDefault();
+                var responseType = endpointType.GenericTypeArguments.LastOrDefault();
                 if (requestType is null || responseType is null)
                 {
                     throw new Exception(

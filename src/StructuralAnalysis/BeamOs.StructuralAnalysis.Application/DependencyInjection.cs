@@ -110,6 +110,29 @@ public static class DependencyInjection
         return null;
     }
 
+    public static Type? GetConcreteBaseType(Type? concreteType, Type baseType)
+    {
+        bool isBaseTypeGeneric = baseType.IsGenericType;
+        while (concreteType != null && concreteType != typeof(object))
+        {
+            if (
+                isBaseTypeGeneric
+                && concreteType.IsGenericType
+                && concreteType.GetGenericTypeDefinition() == baseType
+            )
+            {
+                return concreteType;
+            }
+            else if (!isBaseTypeGeneric && concreteType == baseType)
+            {
+                return concreteType;
+            }
+            concreteType = concreteType.BaseType;
+        }
+
+        return null;
+    }
+
     public static bool ConcreteTypeDerivedFromBase(Type? concreteType, Type baseType)
     {
         bool isBaseTypeGeneric = baseType.IsGenericType;
