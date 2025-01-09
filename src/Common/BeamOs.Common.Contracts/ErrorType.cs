@@ -1,7 +1,8 @@
-﻿namespace BeamOs.Common.Contracts;
+namespace BeamOs.Common.Contracts;
 
 public enum ErrorType
 {
+    None,
     Failure,
     Unexpected,
     Validation,
