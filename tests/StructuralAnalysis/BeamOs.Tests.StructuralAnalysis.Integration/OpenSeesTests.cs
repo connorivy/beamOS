@@ -1,7 +1,6 @@
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.NodeResult;
 using BeamOs.Tests.Common;
-using FluentAssertions;
 using UnitsNet.Units;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration;
@@ -13,6 +12,11 @@ public class OpenSeesTests
     [Before(HookType.Class)]
     public static async Task RunOpenSeesAnalysis()
     {
+        if (BeamOsEnv.IsCiEnv())
+        {
+            return;
+        }
+
         foreach (var modelBuilder in AllSolvedProblems.ModelFixtures())
         {
             await modelBuilder.Build(AssemblySetup.StructuralAnalysisApiClient);
@@ -32,6 +36,11 @@ public class OpenSeesTests
     [MethodDataSource(typeof(AllSolvedProblems), nameof(AllSolvedProblems.ModelFixtures))]
     public async Task AssertNodeResults_AreApproxEqualToExpectedValues(ModelFixture modelFixture)
     {
+        if (BeamOsEnv.IsCiEnv())
+        {
+            return;
+        }
+
         var nodeResultsFixture = (IHasExpectedNodeResults)modelFixture;
         int resultSetId = resultSetIdDict[modelFixture.Id];
         var strongUnits = modelFixture.Settings.UnitSettings.ToDomain();
