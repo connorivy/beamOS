@@ -2,7 +2,7 @@
 <Project>
   <PropertyGroup Label="General Config">
     <TargetFramework>net9.0</TargetFramework>
-    <ContinuousIntegrationBuild Condition="'$(ContinuousIntegrationBuild)' == ''">false</ContinuousIntegrationBuild>
+    <ContinuousIntegrationEnv Condition="'$(ContinuousIntegrationEnv)' == ''">false</ContinuousIntegrationEnv>
     <NoWarn>
       CA1707; <!-- Remove the underscores from method name -->
       CA1725; <!--Parameter names should match base declaration-->
