@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MathNet.Numerics" />
-    <PackageReference Include="MathNet.Numerics.MKL.Win-x64" />
+    <!--<PackageReference Include="MathNet.Numerics" />
+    <PackageReference Include="MathNet.Numerics.MKL.Win-x64" />-->
     <PackageReference Include="MathNet.Spatial" />
     <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
