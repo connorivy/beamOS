@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
+using BeamOs.Tests.Common;
 using Testcontainers.PostgreSql;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration;
@@ -12,6 +13,7 @@ public static class AssemblySetup
     public static StructuralAnalysisApiClientV1 StructuralAnalysisApiClient { get; set; }
     public static bool ApiIsRunning { get; set; }
     public static bool SetupWebApi { get; set; } = true;
+    public static bool SkipOpenSeesTests { get; set; } = BeamOsEnv.IsCiEnv();
 
     [Before(Assembly)]
     public static async Task Setup()

@@ -12,7 +12,7 @@ public class OpenSeesTests
     [Before(HookType.Class)]
     public static async Task RunOpenSeesAnalysis()
     {
-        if (BeamOsEnv.IsCiEnv())
+        if (AssemblySetup.SkipOpenSeesTests)
         {
             return;
         }
@@ -36,7 +36,7 @@ public class OpenSeesTests
     [MethodDataSource(typeof(AllSolvedProblems), nameof(AllSolvedProblems.ModelFixtures))]
     public async Task AssertNodeResults_AreApproxEqualToExpectedValues(ModelFixture modelFixture)
     {
-        if (BeamOsEnv.IsCiEnv())
+        if (AssemblySetup.SkipOpenSeesTests)
         {
             return;
         }
