@@ -5,6 +5,7 @@
     <LangVersion>latest</LangVersion>
     <OpenSeesDir Condition="'$(OpenSeesDir)' == ''">$(MSBuildThisFileDirectory)openSees\OpenSees3.7.0\</OpenSeesDir>
     <ContinuousIntegrationEnv Condition="'$(ContinuousIntegrationEnv)' == ''">false</ContinuousIntegrationEnv>
+    <InvariantGlobalization>true</InvariantGlobalization>
     <NoWarn>
       CA1707; <!-- Remove the underscores from method name -->
       CA1725; <!--Parameter names should match base declaration-->
