@@ -363,7 +363,7 @@ MigrationBackup/
 .idea/
 
 # OpenSees
-openSees/lib
+openSees/*
 
 # Verify
 *.received.*

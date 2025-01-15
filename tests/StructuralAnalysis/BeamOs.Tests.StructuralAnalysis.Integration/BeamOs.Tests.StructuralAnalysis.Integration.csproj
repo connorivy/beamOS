@@ -37,8 +37,9 @@
   <Target Name="CopyOpenSees" AfterTargets="AfterBuild" Condition="'$(ContinuousIntegrationEnv)' == false">
     <!-- /y will surpress prompt to override existing files -->
     <!-- /s will copy subdirectories unless they are empty-->
-    <Exec Condition="Exists('$(SolutionDir)openSees\bin\')" Command="xcopy /y /s $(SolutionDir)openSees\bin\** $(OutDir)bin\" />
-    <Exec Condition="Exists('$(SolutionDir)openSees\lib\')" Command="xcopy /y /s $(SolutionDir)openSees\lib\** $(OutDir)lib\" />
+    <Exec Command="echo After Build: $(OpenSeesDir) $(OutDir)" />
+    <Exec Condition="Exists('$(OpenSeesDir)bin\')" Command="xcopy /y /s $(OpenSeesDir)bin\** $(OutDir)bin\" />
+    <Exec Condition="Exists('$(OpenSeesDir)lib\')" Command="xcopy /y /s $(OpenSeesDir)lib\** $(OutDir)lib\" />
   </Target>
 
 </Project>

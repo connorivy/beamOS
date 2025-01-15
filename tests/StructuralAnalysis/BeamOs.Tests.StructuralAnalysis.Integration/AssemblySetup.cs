@@ -27,14 +27,7 @@ public static class AssemblySetup
 
         var webAppFactory = new WebAppFactory(DbContainer.GetConnectionString());
 
-        try
-        {
-            StructuralAnalysisApiClient = new(webAppFactory.CreateClient());
-        }
-        catch (Exception ex)
-        {
-            ;
-        }
+        StructuralAnalysisApiClient = new(webAppFactory.CreateClient());
 
         ApiIsRunning = true;
     }
