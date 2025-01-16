@@ -3,6 +3,7 @@ using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoad;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
@@ -81,6 +82,26 @@ public class EndToEndTests
         var result = await AssemblySetup
             .StructuralAnalysisApiClient
             .CreatePointLoadAsync(modelId, requestBody);
+
+        await Verify(result);
+    }
+
+    [Test]
+    [DependsOn(nameof(CreateNode_WithIdOf5_ShouldCreateNode_WithCorrectId))]
+    public async Task CreateMomentLoad_ShouldCreateMomentLoad()
+    {
+        CreateMomentLoadRequest requestBody =
+            new()
+            {
+                NodeId = 5,
+                AxisDirection = new(0, 0, 1),
+                Torque = new(11.7, TorqueUnitContract.KilopoundForceFoot),
+                Id = 5
+            };
+
+        var result = await AssemblySetup
+            .StructuralAnalysisApiClient
+            .CreateMomentLoadAsync(modelId, requestBody);
 
         await Verify(result);
     }

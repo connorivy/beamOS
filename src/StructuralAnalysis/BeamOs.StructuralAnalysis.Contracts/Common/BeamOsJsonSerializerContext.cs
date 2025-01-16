@@ -5,6 +5,7 @@ using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.NodeResult;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoad;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
@@ -17,6 +18,7 @@ namespace BeamOs.StructuralAnalysis.Contracts.Common;
 [JsonSerializable(typeof(CreateElement1dRequest))]
 [JsonSerializable(typeof(CreateSectionProfileRequest))]
 [JsonSerializable(typeof(CreatePointLoadRequest))]
+[JsonSerializable(typeof(CreateMomentLoadRequest))]
 [JsonSerializable(typeof(UpdateNodeRequest))]
 [JsonSerializable(typeof(NodeResponse))]
 [JsonSerializable(typeof(Result<NodeResponse>))]
@@ -25,6 +27,7 @@ namespace BeamOs.StructuralAnalysis.Contracts.Common;
 [JsonSerializable(typeof(Result<MaterialResponse>))]
 [JsonSerializable(typeof(Result<SectionProfileResponse>))]
 [JsonSerializable(typeof(Result<PointLoadResponse>))]
+[JsonSerializable(typeof(Result<MomentLoadResponse>))]
 [JsonSerializable(typeof(Result<NodeResultResponse>))]
 [JsonSerializable(typeof(Result<int>))]
 internal partial class BeamOsJsonSerializerContext : JsonSerializerContext { }

@@ -4,7 +4,9 @@ using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,6 +30,8 @@ public class StructuralAnalysisDbContext : DbContext
     public DbSet<Element1d> Element1ds { get; set; }
     public DbSet<ResultSet> ResultSets { get; set; }
     public DbSet<NodeResult> NodeResults { get; set; }
+    public DbSet<PointLoad> PointLoads { get; set; }
+    public DbSet<MomentLoad> MomentLoads { get; set; }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {

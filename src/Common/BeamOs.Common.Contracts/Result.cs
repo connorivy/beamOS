@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
+using BeamOs.Common.Contracts.Exceptions;
 
 namespace BeamOs.Common.Contracts;
 
@@ -81,4 +82,20 @@ public sealed class Result<TValue>
         Func<TValue, TResult> success,
         Func<BeamOsError, TResult> failure
     ) => !this.IsError ? success(this.Value!) : failure(this.Error);
+
+    public void ThrowIfError()
+    {
+        if (this.IsError)
+        {
+            throw new BeamOsException(
+                $@"
+Result is in error state.
+Message: {this.Error.Description}
+ErrorCode: {this.Error.Code}
+ErrorType: {this.Error.Type}
+Metadata: {this.Error.Metadata}
+"
+            );
+        }
+    }
 }

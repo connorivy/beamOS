@@ -13,6 +13,11 @@ public abstract class BeamOsModelBuilder
     public abstract string Name { get; }
     public abstract string Description { get; }
     public abstract PhysicalModelSettings Settings { get; }
+
+    /// <summary>
+    /// You can go to this website to generate a random guid string
+    /// https://www.uuidgenerator.net/guid
+    /// </summary>
     public abstract string GuidString { get; }
     public Guid Id => Guid.Parse(this.GuidString);
     public abstract IEnumerable<CreateNodeRequest> Nodes();
@@ -20,6 +25,8 @@ public abstract class BeamOsModelBuilder
     public abstract IEnumerable<CreateSectionProfileRequest> SectionProfiles();
     public abstract IEnumerable<CreateElement1dRequest> Element1ds();
     public abstract IEnumerable<CreatePointLoadRequest> PointLoads();
+
+    //public abstract IEnumerable<CreatePointLoadRequest> PointLoads();
 
     public Task Build() => this.Build(CreateDefaultApiClient());
 
@@ -30,40 +37,42 @@ public abstract class BeamOsModelBuilder
             throw new Exception("Guid string is not formatted correctly");
         }
 
-        await apiClient.CreateModelAsync(
-            new()
-            {
-                Name = this.Name,
-                Description = this.Description,
-                Settings = this.Settings,
-                Id = modelId
-            }
-        );
+        (
+            await apiClient.CreateModelAsync(
+                new()
+                {
+                    Name = this.Name,
+                    Description = this.Description,
+                    Settings = this.Settings,
+                    Id = modelId
+                }
+            )
+        ).ThrowIfError();
 
         // todo : batching
         foreach (var el in this.Nodes())
         {
-            await apiClient.CreateNodeAsync(modelId, el);
+            (await apiClient.CreateNodeAsync(modelId, el)).ThrowIfError();
         }
 
         foreach (var el in this.PointLoads())
         {
-            await apiClient.CreatePointLoadAsync(modelId, el);
+            (await apiClient.CreatePointLoadAsync(modelId, el)).ThrowIfError();
         }
 
         foreach (var el in this.Materials())
         {
-            await apiClient.CreateMaterialAsync(modelId, el);
+            (await apiClient.CreateMaterialAsync(modelId, el)).ThrowIfError();
         }
 
         foreach (var el in this.SectionProfiles())
         {
-            await apiClient.CreateSectionProfileAsync(modelId, el);
+            (await apiClient.CreateSectionProfileAsync(modelId, el)).ThrowIfError();
         }
 
         foreach (var el in this.Element1ds())
         {
-            await apiClient.CreateElement1dAsync(modelId, el);
+            (await apiClient.CreateElement1dAsync(modelId, el)).ThrowIfError();
         }
     }
 

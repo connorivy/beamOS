@@ -1,0 +1,18 @@
+﻿{
+  Value: {
+    Id: 5,
+    ModelId: Guid_1,
+    Torque: {
+      Value: 11.7,
+      Unit: KilopoundForceFoot
+    },
+    AxisDirection: {
+      X: 0.0,
+      Y: 0.0,
+      Z: 1.0
+    }
+  },
+  Error: null,
+  IsError: false,
+  IsSuccess: true
+}

@@ -2,6 +2,7 @@ using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
@@ -24,6 +25,12 @@ public class NodeIdConverter : ValueConverter<NodeId, int>
 public class PointLoadIdConverter : ValueConverter<PointLoadId, int>
 {
     public PointLoadIdConverter()
+        : base(x => x.Id, x => new(x), null) { }
+}
+
+public class MomentLoadIdConverter : ValueConverter<MomentLoadId, int>
+{
+    public MomentLoadIdConverter()
         : base(x => x.Id, x => new(x), null) { }
 }
 

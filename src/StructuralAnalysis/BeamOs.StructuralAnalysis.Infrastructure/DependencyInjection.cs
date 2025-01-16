@@ -6,6 +6,7 @@ using BeamOs.StructuralAnalysis.Application.AnalyticalResults.ResultSets;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.MomentLoads;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
@@ -14,6 +15,7 @@ using BeamOs.StructuralAnalysis.Infrastructure.AnalyticalResults.ResultSets;
 using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Materials;
 using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Models;
+using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.MomentLoads;
 using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.SectionProfiles;
@@ -35,6 +37,7 @@ public static class DependencyInjection
         _ = services.AddScoped<ISectionProfileRepository, SectionProfileRepository>();
         _ = services.AddScoped<IElement1dRepository, Element1dRepository>();
         _ = services.AddScoped<IPointLoadRepository, PointLoadRepository>();
+        _ = services.AddScoped<IMomentLoadRepository, MomentLoadRepository>();
         _ = services.AddScoped<INodeResultRepository, NodeResultRepository>();
         _ = services.AddScoped<IResultSetRepository, ResultSetRepository>();
 
