@@ -2,7 +2,6 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis.Application.AnalyticalResults.NodeResults;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.ResultSets;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
@@ -18,7 +17,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BeamOs.StructuralAnalysis.Application.OpenSees;
 
-public class RunOpenSeesCommandHandler(
+public sealed class RunOpenSeesCommandHandler(
     //{
     //}
     //public class RunOpenSeesAnalysisCommandHandler(
@@ -30,8 +29,12 @@ public class RunOpenSeesCommandHandler(
     //IMomentDiagramRepository momentDiagramRepository,
     IStructuralAnalysisUnitOfWork unitOfWork,
     ILogger<RunOpenSeesCommandHandler> logger
-) : ICommandHandler<ModelId, int>
+) : ICommandHandler<ModelId, int>, IDisposable
 {
+    private readonly TcpServer displacementServer = TcpServer.CreateStarted(logger);
+    private readonly TcpServer reactionServer = TcpServer.CreateStarted(logger);
+    private readonly TcpServer elementForceServer = TcpServer.CreateStarted(logger);
+
     public async Task<Result<int>> ExecuteAsync(ModelId modelId, CancellationToken ct = default)
     {
         string outputDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -41,6 +44,7 @@ public class RunOpenSeesCommandHandler(
             static queryable =>
                 queryable
                     .Include(m => m.PointLoads)
+                    .Include(m => m.MomentLoads)
                     .Include(m => m.Element1ds)
                     .ThenInclude(el => el.StartNode)
                     .Include(m => m.Element1ds)
@@ -50,14 +54,6 @@ public class RunOpenSeesCommandHandler(
                     .Include(m => m.Element1ds)
                     .ThenInclude(el => el.Material),
             ct
-        //ct,
-        //nameof(Model.Element1ds),
-        //nameof(Model.Nodes),
-        //$"{nameof(Model.Element1ds)}.{nameof(Element1d.SectionProfile)}",
-        //$"{nameof(Model.Element1ds)}.{nameof(Element1d.Material)}",
-        //$"{nameof(Model.Element1ds)}.{nameof(Element1d.StartNode)}",
-        //$"{nameof(Model.Element1ds)}.{nameof(Element1d.EndNode)}",
-        //nameof(Model.PointLoads)
         );
 
         if (model is null)
@@ -65,14 +61,11 @@ public class RunOpenSeesCommandHandler(
             return BeamOsError.NotFound(description: $"Could not find model with id {modelId}");
         }
 
-        int displacementPort = 1024;
-        int reactionPort = displacementPort + 1;
-        int elementForcesPort = displacementPort + 2;
         TclWriter tclWriter = this.CreateWriterFromModel(
             model,
-            displacementPort,
-            reactionPort,
-            elementForcesPort
+            this.displacementServer.Port,
+            this.reactionServer.Port,
+            this.elementForceServer.Port
         );
 
         if (tclWriter.OutputFileWithPath is null)
@@ -82,13 +75,7 @@ public class RunOpenSeesCommandHandler(
             );
         }
 
-        await this.RunTclWithOpenSees(
-            tclWriter.OutputFileWithPath,
-            outputDir,
-            displacementPort,
-            reactionPort,
-            elementForcesPort
-        );
+        await this.RunTclWithOpenSees(tclWriter.OutputFileWithPath, outputDir);
 
         var resultSet = new ResultSet(modelId);
 
@@ -96,28 +83,7 @@ public class RunOpenSeesCommandHandler(
 
         resultSetRepository.Add(resultSet);
 
-        //foreach (var nodeResult in results.NodeResults ?? Enumerable.Empty<NodeResult>())
-        //{
-        //    nodeResultRepository.Add(nodeResult);
-        //}
-        //foreach (
-        //    var shearForceDiagram in results.ShearForceDiagrams
-        //        ?? Enumerable.Empty<ShearForceDiagram>()
-        //)
-        //{
-        //    shearDiagramRepository.Add(shearForceDiagram);
-        //}
-
-        //foreach (var momentDiagram in results.MomentDiagrams ?? Enumerable.Empty<MomentDiagram>())
-        //{
-        //    momentDiagramRepository.Add(momentDiagram);
-        //}
-
-        //modelResultRepository.Add(analyticalResults);
-
         await unitOfWork.SaveChangesAsync(ct);
-
-        //await unitOfWork.SaveChangesAsync();
 
         return resultSet.Id.Id;
     }
@@ -132,7 +98,7 @@ public class RunOpenSeesCommandHandler(
     )
     {
         TclWriter tclWriter =
-            new(model.Settings.UnitSettings, displacementPort, reactionPort, elementForcesPort);
+            new(model.Settings, displacementPort, reactionPort, elementForcesPort);
 
         this.element1dCache = new(model.Element1ds.Count);
         foreach (var element1d in model.Element1ds)
@@ -140,7 +106,10 @@ public class RunOpenSeesCommandHandler(
             this.element1dCache.Add(element1d.Id, element1d);
             tclWriter.AddHydratedElement(element1d);
         }
-        tclWriter.AddPointLoads(model.PointLoads);
+
+        Debug.Assert(model.PointLoads is not null);
+        Debug.Assert(model.MomentLoads is not null);
+        tclWriter.AddLoads(model.PointLoads, model.MomentLoads);
 
         tclWriter.DefineAnalysis();
         tclWriter.Write();
@@ -152,26 +121,11 @@ public class RunOpenSeesCommandHandler(
     private double[] reactions;
     private double[] elemForces;
 
-    private async Task RunTclWithOpenSees(
-        string tclFileWithPath,
-        string outputDir,
-        int displacementPort,
-        int reactionPort,
-        int elementForcesPort
-    )
+    private async Task RunTclWithOpenSees(string tclFileWithPath, string outputDir)
     {
-        using TcpServer displacementServer = new(displacementPort, logger);
-        using TcpServer reactionServer = new(reactionPort, logger);
-        using TcpServer elementForces = new(elementForcesPort, logger);
-
-        //using SocketListener displacementServer = new(displacementPort);
-        //using SocketListener reactionServer = new(reactionPort);
-        //using SocketListener elementForces = new(elementForcesPort);
-
-        Task listenDisp = displacementServer.Listen(data => this.displacements = data);
-        Task listenReact = reactionServer.Listen(data => this.reactions = data);
-        Task listenElemForces = elementForces.Listen(data => this.elemForces = data);
-        //elementForces.ListenCallback(data => this.elemForces = data);
+        Task listenDisp = this.displacementServer.Listen(data => this.displacements = data);
+        Task listenReact = this.reactionServer.Listen(data => this.reactions = data);
+        Task listenElemForces = this.elementForceServer.Listen(data => this.elemForces = data);
 
         string exeName;
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
@@ -380,5 +334,12 @@ public class RunOpenSeesCommandHandler(
     void process_OutputDataReceived(object sender, DataReceivedEventArgs e)
     {
         logger.LogInformation("OpenSees process info {data}", e.Data);
+    }
+
+    public void Dispose()
+    {
+        this.displacementServer.Dispose();
+        this.reactionServer.Dispose();
+        this.elementForceServer.Dispose();
     }
 }

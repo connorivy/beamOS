@@ -2,6 +2,7 @@ using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoad;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
@@ -26,7 +27,7 @@ public abstract class BeamOsModelBuilder
     public abstract IEnumerable<CreateElement1dRequest> Element1ds();
     public abstract IEnumerable<CreatePointLoadRequest> PointLoads();
 
-    //public abstract IEnumerable<CreatePointLoadRequest> PointLoads();
+    public virtual IEnumerable<CreateMomentLoadRequest> MomentLoads() => [];
 
     public Task Build() => this.Build(CreateDefaultApiClient());
 
@@ -58,6 +59,11 @@ public abstract class BeamOsModelBuilder
         foreach (var el in this.PointLoads())
         {
             (await apiClient.CreatePointLoadAsync(modelId, el)).ThrowIfError();
+        }
+
+        foreach (var el in this.MomentLoads())
+        {
+            (await apiClient.CreateMomentLoadAsync(modelId, el)).ThrowIfError();
         }
 
         foreach (var el in this.Materials())

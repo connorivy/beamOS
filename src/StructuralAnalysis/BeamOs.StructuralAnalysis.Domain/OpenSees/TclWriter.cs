@@ -1,8 +1,10 @@
+using System.Diagnostics;
 using System.Text;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
@@ -14,23 +16,28 @@ public class TclWriter
     private readonly SortedSet<int> nodeIdsInOrder = [];
     private readonly SortedSet<int> element1dIdsInOrder = [];
 
+    private readonly ModelSettings modelSettings;
     private readonly UnitSettings unitSettings;
+    private readonly BeamOsToOpenSeesConverter beamOsToOpenSeesConverter;
 
     private readonly int displacementPort;
     private readonly int reactionPort;
     private readonly int elementForcesPort;
 
     public TclWriter(
-        UnitSettings unitSettings,
+        ModelSettings modelSettings,
         int displacementPort,
         int reactionPort,
         int elementForcesPort
     )
     {
-        this.unitSettings = unitSettings;
+        this.modelSettings = modelSettings;
+        this.unitSettings = modelSettings.UnitSettings;
+        this.beamOsToOpenSeesConverter = new(modelSettings);
+
         this.document.AppendLine("wipe");
         this.document.AppendLine("model basic -ndm 3 -ndf 6");
-        this.document.AppendLine("file mkdir Data");
+        //this.document.AppendLine("file mkdir Data");
         this.displacementPort = displacementPort;
         this.reactionPort = reactionPort;
         this.elementForcesPort = elementForcesPort;
@@ -95,9 +102,14 @@ public class TclWriter
     public void AddElement(Element1d element1d)
     {
         this.element1dIdsInOrder.Add(element1d.Id);
-        int startNodeId = element1d.StartNodeId;
-        int endNodeId = element1d.EndNodeId;
-        int sectionId = GetSectionId(element1d.SectionProfileId, element1d.MaterialId);
+        //int startNodeId = element1d.StartNodeId;
+        //int endNodeId = element1d.EndNodeId;
+        //int sectionId = GetSectionId(element1d.SectionProfileId, element1d.MaterialId);
+
+        Debug.Assert(element1d.Material is not null);
+        Debug.Assert(element1d.SectionProfile is not null);
+        Debug.Assert(element1d.StartNode is not null);
+        Debug.Assert(element1d.EndNode is not null);
 
         var rotationMatrix = element1d.GetRotationMatrix();
         int hash = GetTransformHash(
@@ -113,9 +125,19 @@ public class TclWriter
                 $"geomTransf Linear {transformId} {rotationMatrix[1, 0]} {rotationMatrix[1, 1]} {rotationMatrix[1, 2]}"
             );
         }
+
         this.document.AppendLine(
-            $"element {nameof(ElementTypes.ElasticTimoshenkoBeam)} {element1d.Id} {startNodeId} {endNodeId} {element1d.Material.ModulusOfElasticity.As(this.unitSettings.PressureUnit)} {element1d.Material.ModulusOfRigidity.As(this.unitSettings.PressureUnit)} {element1d.SectionProfile.Area.As(this.unitSettings.AreaUnit)} {element1d.SectionProfile.PolarMomentOfInertia.As(this.unitSettings.AreaMomentOfInertiaUnit)} {element1d.SectionProfile.StrongAxisMomentOfInertia.As(this.unitSettings.AreaMomentOfInertiaUnit)} {element1d.SectionProfile.WeakAxisMomentOfInertia.As(this.unitSettings.AreaMomentOfInertiaUnit)} {element1d.SectionProfile.StrongAxisShearArea.As(this.unitSettings.AreaUnit)} {element1d.SectionProfile.WeakAxisShearArea.As(this.unitSettings.AreaUnit)} {transformId}"
+            this.beamOsToOpenSeesConverter.Element1d(
+                element1d,
+                element1d.Material,
+                element1d.SectionProfile,
+                transformId
+            )
         );
+
+        //this.document.AppendLine(
+        //    $"element {nameof(ElementTypes.ElasticTimoshenkoBeam)} {element1d.Id} {startNodeId} {endNodeId} {element1d.Material.ModulusOfElasticity.As(this.unitSettings.PressureUnit)} {element1d.Material.ModulusOfRigidity.As(this.unitSettings.PressureUnit)} {element1d.SectionProfile.Area.As(this.unitSettings.AreaUnit)} {element1d.SectionProfile.PolarMomentOfInertia.As(this.unitSettings.AreaMomentOfInertiaUnit)} {element1d.SectionProfile.StrongAxisMomentOfInertia.As(this.unitSettings.AreaMomentOfInertiaUnit)} {element1d.SectionProfile.WeakAxisMomentOfInertia.As(this.unitSettings.AreaMomentOfInertiaUnit)} {element1d.SectionProfile.StrongAxisShearArea.As(this.unitSettings.AreaUnit)} {element1d.SectionProfile.WeakAxisShearArea.As(this.unitSettings.AreaUnit)} {transformId}"
+        //);
     }
 
     private static int GetTransformHash(double x, double y, double z)
@@ -133,19 +155,28 @@ public class TclWriter
 
     public void AddHydratedElement(Element1d element1d)
     {
+        Debug.Assert(element1d.Material is not null);
+        Debug.Assert(element1d.SectionProfile is not null);
+        Debug.Assert(element1d.StartNode is not null);
+        Debug.Assert(element1d.EndNode is not null);
+
         this.AddNode(element1d.StartNode);
         this.AddNode(element1d.EndNode);
         this.AddSection(element1d.SectionProfile, element1d.Material);
         this.AddElement(element1d);
     }
 
-    public void AddPointLoads(IEnumerable<PointLoad> pointLoads)
+    public void AddLoads(IEnumerable<PointLoad> pointLoads, IEnumerable<MomentLoad> momentLoads)
     {
         this.document.AppendLine($"timeSeries {nameof(TimeSeriesType.Constant)} 1");
         this.document.AppendLine($"pattern {nameof(PatternType.Plain)} 1 1 {{");
         foreach (var pl in pointLoads)
         {
             this.AddPointLoad(pl);
+        }
+        foreach (var load in momentLoads)
+        {
+            this.AddMomentLoad(load);
         }
         this.document.AppendLine("}");
     }
@@ -156,6 +187,13 @@ public class TclWriter
 
         this.document.AppendLine(
             $"load {nodeId} {pointLoad.Force.As(this.unitSettings.ForceUnit) * pointLoad.Direction.X} {pointLoad.Force.As(this.unitSettings.ForceUnit) * pointLoad.Direction.Y} {pointLoad.Force.As(this.unitSettings.ForceUnit) * pointLoad.Direction.Z} 0 0 0"
+        );
+    }
+
+    public void AddMomentLoad(MomentLoad momentLoad)
+    {
+        this.document.AppendLine(
+            $"load {momentLoad.NodeId} 0 0 0 {momentLoad.Torque.As(this.unitSettings.TorqueUnit) * momentLoad.AxisDirection.X} {momentLoad.Torque.As(this.unitSettings.TorqueUnit) * momentLoad.AxisDirection.Y} {momentLoad.Torque.As(this.unitSettings.TorqueUnit) * momentLoad.AxisDirection.Z}"
         );
     }
 
@@ -172,18 +210,29 @@ public class TclWriter
             $"recorder Element -time -tcp 127.0.0.1 {this.elementForcesPort} -eleRange 0 {this.element1dIdsInOrder.Count} localForce"
         );
 
+        //foreach (var el in this.element1dIdsInOrder)
+        //{
+        //}
+        this.document.AppendLine(
+            $"recorder Element -file Data/stiffness_matrix_{99}.out -time -eleRange 1 1 stiffness"
+        );
+        this.document.AppendLine(
+            $"recorder Element -file Data/force_{99}.out -time -eleRange 1 {this.element1dIdsInOrder.Count} force"
+        );
+
         // found a weird quirk where this call wouldn't output anything unless the eleRange was specified
         //this.document.AppendLine(
         //    $"recorder Element -time -file Data/forces.out -eleRange 0 {this.element1dIdsInOrder.Count} localForce"
         //);
 
-        this.document.AppendLine($"system {nameof(SystemType.BandGeneral)}");
+        this.document.AppendLine($"system {nameof(SystemType.FullGeneral)}");
         this.document.AppendLine($"numberer RCM");
         this.document.AppendLine($"constraints Transformation");
         this.document.AppendLine($"integrator LoadControl 1");
         this.document.AppendLine($"algorithm {nameof(AlgorithmType.Newton)}");
         this.document.AppendLine($"analysis Static");
         this.document.AppendLine($"analyze 1");
+        this.document.AppendLine($"printA -file Data/tmp.out");
         //this.document.AppendLine($"database File Data/aaaaaaDB");
         //this.document.AppendLine($"save 32");
     }
@@ -233,7 +282,8 @@ public enum PatternType
 public enum SystemType
 {
     Undefined = 0,
-    BandGeneral
+    BandGeneral,
+    FullGeneral
 }
 
 public enum AlgorithmType
@@ -249,3 +299,5 @@ public enum OpenseesObjectTypes
     Element1d,
     Node
 }
+
+public record TclWriterOptions();

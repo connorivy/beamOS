@@ -57,6 +57,13 @@ internal class ModelConfiguration : IEntityTypeConfiguration<Model>
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
+        builder
+            .HasMany(m => m.MomentLoads)
+            .WithOne(el => el.Model)
+            .HasForeignKey(el => el.ModelId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+
         //builder
         //    .HasMany(m => m.MomentLoads)
         //    .WithOne()

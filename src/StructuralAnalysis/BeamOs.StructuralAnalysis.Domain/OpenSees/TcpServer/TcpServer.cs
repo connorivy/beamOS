@@ -10,10 +10,20 @@ public sealed class TcpServer : IDisposable
     private readonly TcpListener server;
     private readonly ILogger logger;
 
-    public TcpServer(int port, ILogger logger)
+    public int Port { get; }
+
+    private TcpServer(ILogger logger, TcpListener server)
     {
         this.logger = logger;
-        this.server = new(localAddress, port);
+        this.Port = ((IPEndPoint)server.LocalEndpoint).Port;
+        this.server = server;
+    }
+
+    public static TcpServer CreateStarted(ILogger logger)
+    {
+        TcpListener server = new(IPAddress.Loopback, 0);
+        server.Start();
+        return new(logger, server);
     }
 
     public void ListenCallback(Action<double[]> processData)
@@ -30,7 +40,6 @@ public sealed class TcpServer : IDisposable
             "Opening Tcp Server on endpoint {server}",
             this.server.LocalEndpoint.ToString()
         );
-        this.server.Start();
 
         double[]? data = null;
 
