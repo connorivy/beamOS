@@ -113,11 +113,11 @@ public partial class ReadOnlyEditor(
 
             if (this.ModelId is not null)
             {
-                dispatcher.Dispatch(new EditorLoadingBegin("Fetching Data"));
+                dispatcher.Dispatch(new EditorLoadingBegin(this.CanvasId, "Fetching Data"));
                 var result = await loadModelCommandHandler.ExecuteAsync(
                     new LoadModelCommand(this.CanvasId, this.ModelId.Value)
                 );
-                dispatcher.Dispatch(new EditorLoadingEnd());
+                dispatcher.Dispatch(new EditorLoadingEnd(this.CanvasId));
 
                 if (result.IsError)
                 {
@@ -169,9 +169,9 @@ public record struct EditorCreated(string CanvasId);
 
 public record struct EditorDisposed(string CanvasId);
 
-public record struct EditorLoadingBegin(string LoadingText);
+public record struct EditorLoadingBegin(string CanvasId, string LoadingText);
 
-public record struct EditorLoadingEnd();
+public record struct EditorLoadingEnd(string CanvasId);
 
 [FeatureState]
 public record EditorComponentState(string? LoadingText, bool IsLoading, IEditorApiAlpha? EditorApi)
@@ -232,6 +232,45 @@ public static class AllEditorComponentStateReducers
                 .EditorState
                 .Remove(action.CanvasId)
                 .Add(action.CanvasId, currentEditorState with { EditorApi = action.EditorApiAlpha })
+        };
+    }
+
+    [ReducerMethod]
+    public static AllEditorComponentState EditorLoadingBeginReducer(
+        AllEditorComponentState state,
+        EditorLoadingBegin action
+    )
+    {
+        var currentEditorState = state.EditorState[action.CanvasId];
+        return state with
+        {
+            EditorState = state
+                .EditorState
+                .Remove(action.CanvasId)
+                .Add(
+                    action.CanvasId,
+                    currentEditorState with
+                    {
+                        IsLoading = true,
+                        LoadingText = action.LoadingText
+                    }
+                )
+        };
+    }
+
+    [ReducerMethod]
+    public static AllEditorComponentState EditorLoadingBeginReducer(
+        AllEditorComponentState state,
+        EditorLoadingEnd action
+    )
+    {
+        var currentEditorState = state.EditorState[action.CanvasId];
+        return state with
+        {
+            EditorState = state
+                .EditorState
+                .Remove(action.CanvasId)
+                .Add(action.CanvasId, currentEditorState with { IsLoading = false })
         };
     }
 }
