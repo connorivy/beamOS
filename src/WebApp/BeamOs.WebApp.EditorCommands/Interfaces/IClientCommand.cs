@@ -26,6 +26,20 @@ public interface IEditorCommandUndoable
         IClientCommandUndoable,
         IClientCommandWithSource { }
 
+public interface IBeamOsClientCommand : IEditorCommand
+{
+    [JsonIgnore]
+    public Guid Id { get; }
+
+    public bool HandledByEditor { get; init; }
+    public bool HandledByBlazor { get; init; }
+
+    public IBeamOsClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null);
+    public IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null);
+}
+
+public readonly record struct BeamOsClientCommandArgs(bool HandledByEditor, bool HandledByBlazor);
+
 public enum ClientActionSource
 {
     Undefined = 0,

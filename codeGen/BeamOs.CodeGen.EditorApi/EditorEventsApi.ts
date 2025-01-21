@@ -157,12 +157,6 @@ export interface IChangeSelectionCommand {
     selectedObjects: SelectedObject[];
 }
 
-export enum ClientActionSource {
-    _0 = 0,
-    _1 = 1,
-    _2 = 2,
-}
-
 export class Coordinate3D implements ICoordinate3D {
     x!: number;
     y!: number;
@@ -209,10 +203,11 @@ export interface ICoordinate3D {
 
 export class MoveNodeCommand implements IMoveNodeCommand {
     canvasId!: string;
-    nodeId!: string;
+    nodeId!: number;
     previousLocation!: Coordinate3D;
     newLocation!: Coordinate3D;
-    source!: ClientActionSource;
+    handledByEditor!: boolean;
+    handledByBlazor!: boolean;
 
     constructor(data?: IMoveNodeCommand) {
         if (data) {
@@ -233,7 +228,8 @@ export class MoveNodeCommand implements IMoveNodeCommand {
             this.nodeId = _data["nodeId"];
             this.previousLocation = _data["previousLocation"] ? Coordinate3D.fromJS(_data["previousLocation"]) : new Coordinate3D();
             this.newLocation = _data["newLocation"] ? Coordinate3D.fromJS(_data["newLocation"]) : new Coordinate3D();
-            this.source = _data["source"];
+            this.handledByEditor = _data["handledByEditor"];
+            this.handledByBlazor = _data["handledByBlazor"];
         }
     }
 
@@ -250,17 +246,19 @@ export class MoveNodeCommand implements IMoveNodeCommand {
         data["nodeId"] = this.nodeId;
         data["previousLocation"] = this.previousLocation ? this.previousLocation.toJSON() : <any>undefined;
         data["newLocation"] = this.newLocation ? this.newLocation.toJSON() : <any>undefined;
-        data["source"] = this.source;
+        data["handledByEditor"] = this.handledByEditor;
+        data["handledByBlazor"] = this.handledByBlazor;
         return data;
     }
 }
 
 export interface IMoveNodeCommand {
     canvasId: string;
-    nodeId: string;
+    nodeId: number;
     previousLocation: Coordinate3D;
     newLocation: Coordinate3D;
-    source: ClientActionSource;
+    handledByEditor: boolean;
+    handledByBlazor: boolean;
 }
 
 export class SelectedObject implements ISelectedObject {

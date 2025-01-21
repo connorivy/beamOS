@@ -1,17 +1,23 @@
 using BeamOs.CodeGen.EditorApi;
+using BeamOs.Common.Contracts;
 using BeamOs.WebApp.EditorCommands;
+using Fluxor;
 using Microsoft.JSInterop;
 
 namespace BeamOs.WebApp.Components.Features.Editors.ReadOnlyEditor;
 
 public class EditorEventsApi(
-//MoveNodeCommandHandler moveNodeCommandHandler,
-//ChangeSelectionCommandHandler changeSelectionCommandHandler
+    //MoveNodeCommandHandler moveNodeCommandHandler,
+    //ChangeSelectionCommandHandler changeSelectionCommandHandler
+    IDispatcher dispatcher
 ) : IEditorEventsApi
 {
     [JSInvokable]
-    public Task DispatchChangeSelectionCommandAsync(ChangeSelectionCommand body) =>
-        Task.CompletedTask;
+    public Task DispatchChangeSelectionCommandAsync(ChangeSelectionCommand body)
+    {
+        dispatcher.Dispatch(body);
+        return Task.CompletedTask;
+    }
 
     //await changeSelectionCommandHandler.ExecuteAsync(body);
 
@@ -21,7 +27,11 @@ public class EditorEventsApi(
     ) => throw new NotImplementedException();
 
     [JSInvokable]
-    public Task DispatchMoveNodeCommandAsync(MoveNodeCommand body) => Task.CompletedTask;
+    public Task DispatchMoveNodeCommandAsync(MoveNodeCommand body)
+    {
+        dispatcher.Dispatch(body);
+        return Task.CompletedTask;
+    }
 
     //await moveNodeCommandHandler.ExecuteAsync(body);
 

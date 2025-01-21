@@ -38,7 +38,7 @@
     @{
         this.CanvasId ??= "id" + Guid.NewGuid().ToString("N");
     }
-    <ReadOnlyEditor Class="h-full" @ref="editorComponent" ModelId="@ModelId" CanvasId="@CanvasId"></ReadOnlyEditor>
+    <ReadOnlyEditor Class="h-full" @ref="editorComponent" ModelId="@ModelId" CanvasId="@CanvasId" IsReadOnly="false"></ReadOnlyEditor>
 </MudContainer>
 
 @code {

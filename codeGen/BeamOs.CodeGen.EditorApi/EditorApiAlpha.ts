@@ -59,6 +59,16 @@ export interface IEditorApiAlpha {
      * @return OK
      */
     clearCurrentOverlay(): Promise<Result>;
+
+    /**
+     * @return OK
+     */
+    reduceChangeSelectionCommand(body: ChangeSelectionCommand): Promise<Result>;
+
+    /**
+     * @return OK
+     */
+    reduceMoveNodeCommand(body: MoveNodeCommand): Promise<Result>;
 }
 
 export class EditorApiAlpha implements IEditorApiAlpha {
@@ -472,6 +482,88 @@ export class EditorApiAlpha implements IEditorApiAlpha {
         }
         return Promise.resolve<Result>(null as any);
     }
+
+    /**
+     * @return OK
+     */
+    reduceChangeSelectionCommand(body: ChangeSelectionCommand): Promise<Result> {
+        let url_ = this.baseUrl + "/EditorApiAlpha/ReduceChangeSelectionCommand";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processReduceChangeSelectionCommand(_response);
+        });
+    }
+
+    protected processReduceChangeSelectionCommand(response: Response): Promise<Result> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    reduceMoveNodeCommand(body: MoveNodeCommand): Promise<Result> {
+        let url_ = this.baseUrl + "/EditorApiAlpha/ReduceMoveNodeCommand";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processReduceMoveNodeCommand(_response);
+        });
+    }
+
+    protected processReduceMoveNodeCommand(response: Response): Promise<Result> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
 }
 
 export class AnalysisSettingsContract implements IAnalysisSettingsContract {
@@ -716,6 +808,101 @@ export interface IBeamOsError {
     type: ErrorType;
     numericType: number;
     metadata?: { [key: string]: string; } | undefined;
+}
+
+export class ChangeSelectionCommand implements IChangeSelectionCommand {
+    canvasId!: string;
+    selectedObjects!: SelectedObject[];
+
+    constructor(data?: IChangeSelectionCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.selectedObjects = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.canvasId = _data["canvasId"];
+            if (Array.isArray(_data["selectedObjects"])) {
+                this.selectedObjects = [] as any;
+                for (let item of _data["selectedObjects"])
+                    this.selectedObjects!.push(SelectedObject.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ChangeSelectionCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new ChangeSelectionCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["canvasId"] = this.canvasId;
+        if (Array.isArray(this.selectedObjects)) {
+            data["selectedObjects"] = [];
+            for (let item of this.selectedObjects)
+                data["selectedObjects"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IChangeSelectionCommand {
+    canvasId: string;
+    selectedObjects: SelectedObject[];
+}
+
+export class Coordinate3D implements ICoordinate3D {
+    x!: number;
+    y!: number;
+    z!: number;
+
+    constructor(data?: ICoordinate3D) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.x = _data["x"];
+            this.y = _data["y"];
+            this.z = _data["z"];
+        }
+    }
+
+    static fromJS(data: any): Coordinate3D {
+        data = typeof data === 'object' ? data : {};
+        let result = new Coordinate3D();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["x"] = this.x;
+        data["y"] = this.y;
+        data["z"] = this.z;
+        return data;
+    }
+}
+
+export interface ICoordinate3D {
+    x: number;
+    y: number;
+    z: number;
 }
 
 export enum Element1dAnalysisType {
@@ -1100,6 +1287,66 @@ export interface IMomentLoadResponse {
     modelId: string;
     torque: TorqueContract;
     axisDirection: Vector3;
+}
+
+export class MoveNodeCommand implements IMoveNodeCommand {
+    canvasId!: string;
+    nodeId!: number;
+    previousLocation!: Coordinate3D;
+    newLocation!: Coordinate3D;
+    handledByEditor!: boolean;
+    handledByBlazor!: boolean;
+
+    constructor(data?: IMoveNodeCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.previousLocation = new Coordinate3D();
+            this.newLocation = new Coordinate3D();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.canvasId = _data["canvasId"];
+            this.nodeId = _data["nodeId"];
+            this.previousLocation = _data["previousLocation"] ? Coordinate3D.fromJS(_data["previousLocation"]) : new Coordinate3D();
+            this.newLocation = _data["newLocation"] ? Coordinate3D.fromJS(_data["newLocation"]) : new Coordinate3D();
+            this.handledByEditor = _data["handledByEditor"];
+            this.handledByBlazor = _data["handledByBlazor"];
+        }
+    }
+
+    static fromJS(data: any): MoveNodeCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new MoveNodeCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["canvasId"] = this.canvasId;
+        data["nodeId"] = this.nodeId;
+        data["previousLocation"] = this.previousLocation ? this.previousLocation.toJSON() : <any>undefined;
+        data["newLocation"] = this.newLocation ? this.newLocation.toJSON() : <any>undefined;
+        data["handledByEditor"] = this.handledByEditor;
+        data["handledByBlazor"] = this.handledByBlazor;
+        return data;
+    }
+}
+
+export interface IMoveNodeCommand {
+    canvasId: string;
+    nodeId: number;
+    previousLocation: Coordinate3D;
+    newLocation: Coordinate3D;
+    handledByEditor: boolean;
+    handledByBlazor: boolean;
 }
 
 export class NodeResponse implements INodeResponse {
@@ -1529,6 +1776,46 @@ export interface ISectionProfileResponse {
     polarMomentOfInertia: AreaMomentOfInertiaContract;
     strongAxisShearArea: AreaContract;
     weakAxisShearArea: AreaContract;
+}
+
+export class SelectedObject implements ISelectedObject {
+    id!: number;
+    typeName!: string;
+
+    constructor(data?: ISelectedObject) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.typeName = _data["typeName"];
+        }
+    }
+
+    static fromJS(data: any): SelectedObject {
+        data = typeof data === 'object' ? data : {};
+        let result = new SelectedObject();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["typeName"] = this.typeName;
+        return data;
+    }
+}
+
+export interface ISelectedObject {
+    id: number;
+    typeName: string;
 }
 
 export class TorqueContract implements ITorqueContract {

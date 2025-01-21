@@ -1,6 +1,10 @@
 using System.Collections.Immutable;
 using BeamOs.CodeGen.EditorApi;
-using BeamOs.WebApp.Components.Layout;
+using BeamOs.CodeGen.StructuralAnalysisApiClient;
+using BeamOs.StructuralAnalysis.Contracts.Common;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
+using BeamOs.WebApp.Components.Features.UndoRedo;
+using BeamOs.WebApp.EditorCommands;
 using Fluxor;
 using Fluxor.Blazor.Web.Components;
 using Microsoft.AspNetCore.Components;
@@ -9,12 +13,14 @@ using Microsoft.Extensions.Logging;
 namespace BeamOs.WebApp.Components.Features.Editors.ReadOnlyEditor;
 
 public partial class ReadOnlyEditor(
+    IStructuralAnalysisApiClientV1 apiClient,
     IEditorApiProxyFactory editorApiProxyFactory,
     IState<AllEditorComponentState> allEditorComponentState,
     IStateSelection<AllEditorComponentState, EditorComponentState> state,
     IDispatcher dispatcher,
     LoadModelCommandHandler loadModelCommandHandler,
-    ILogger<ReadOnlyEditor> logger
+    ILogger<ReadOnlyEditor> logger,
+    UndoRedoFunctionality undoRedoFunctionality
 ) : FluxorComponent
 {
     [Parameter]
@@ -26,7 +32,8 @@ public partial class ReadOnlyEditor(
     [Parameter]
     public Guid? ModelId { get; set; }
 
-    protected bool IsReadOnly { get; } = true;
+    [Parameter]
+    public bool IsReadOnly { get; set; } = true;
 
     //[Inject]
     //protected LoadModelByIdCommandHandler LoadModelCommandHandler { get; init; }
@@ -99,6 +106,33 @@ public partial class ReadOnlyEditor(
         base.OnInitialized();
         dispatcher.Dispatch(new EditorCreated(this.CanvasId));
         state.Select(s => s.EditorState[this.CanvasId]);
+
+        this.SubscribeToAction<MoveNodeCommand>(async command =>
+        {
+            if (command.CanvasId != this.CanvasId)
+            {
+                return;
+            }
+
+            if (!command.HandledByEditor)
+            {
+                await state.Value.EditorApi.ReduceMoveNodeCommandAsync(command);
+            }
+
+            var nodeResponse = await apiClient.UpdateNodeAsync(
+                this.ModelId.Value,
+                new UpdateNodeRequest(
+                    command.NodeId,
+                    new()
+                    {
+                        LengthUnit = LengthUnitContract.Meter,
+                        X = command.NewLocation.X,
+                        Y = command.NewLocation.Y,
+                        Z = command.NewLocation.Z
+                    }
+                )
+            );
+        });
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -155,6 +189,8 @@ public partial class ReadOnlyEditor(
     protected override async ValueTask DisposeAsyncCore(bool disposing)
     {
         await base.DisposeAsyncCore(disposing);
+        undoRedoFunctionality.Dispose();
+
         if (state.Value.EditorApi is IAsyncDisposable disposable)
         {
             await disposable.DisposeAsync();

@@ -3,6 +3,8 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
+using BeamOs.WebApp.EditorCommands;
+using BeamOs.WebApp.EditorCommands.Interfaces;
 
 namespace BeamOs.CodeGen.ApiGenerator.ApiGenerators;
 
@@ -45,17 +47,17 @@ public class EditorApiGenerator : AbstractGenerator
         //_ = addMethod("SetColorFilter").Accepts<SetColorFilter>();
         //_ = addMethod("ClearFilters").Accepts<ClearFilters>();
 
-        //foreach (
-        //    Type contractType in typeof(IAssemblyMarkerClientActions)
-        //        .Assembly
-        //        .ExportedTypes
-        //        .Where(
-        //            t => !t.IsInterface && !t.IsAbstract && t.IsAssignableTo(typeof(IEditorCommand))
-        //        )
-        //)
-        //{
-        //    _ = addMethod($"Reduce{contractType.Name}").Accepts(contractType);
-        //}
+        foreach (
+            Type contractType in typeof(IAssemblyMarkerClientCommands)
+                .Assembly
+                .ExportedTypes
+                .Where(
+                    t => !t.IsInterface && !t.IsAbstract && t.IsAssignableTo(typeof(IEditorCommand))
+                )
+        )
+        {
+            _ = addMethod($"Reduce{contractType.Name}").Accepts(contractType);
+        }
     }
 
     protected override RouteHandlerBuilder ConfigEachMethod(

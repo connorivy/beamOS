@@ -1,4 +1,5 @@
 @using BeamOs.WebApp.Components
+@using BeamOs.WebApp.Components.Features.UndoRedo
 
 @inject IConfiguration Configuration
 @* <Fluxor.Blazor.Web.StoreInitializer /> *@
@@ -64,7 +65,26 @@
             return BeamOsEditor.createFromId(editorId, dispatcher, isReadOnly)
         }
     </script>
-    @* } *@
+
+    <script>
+        function serializeEvent(e) {
+            return {
+                key: e.key,
+                code: e.keyCode.toString(),
+                location: e.location,
+                repeat: e.repeat,
+                ctrlKey: e.ctrlKey,
+                shiftKey: e.shiftKey,
+                altKey: e.altKey,
+                metaKey: e.metaKey,
+                type: e.type
+            };
+        }
+
+        document.addEventListener('keydown', function (e) {
+            DotNet.invokeMethodAsync('BeamOs.WebApp.Components', "@(nameof(DocumentEvents.FireOnKeyDownEvent))", serializeEvent(e))
+        });
+    </script>
 </body>
 
 </html>

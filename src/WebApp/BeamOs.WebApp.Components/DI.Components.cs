@@ -1,5 +1,6 @@
 using BeamOs.Common.Application;
 using BeamOs.WebApp.Components.Features.Common;
+using BeamOs.WebApp.Components.Features.UndoRedo;
 using Fluxor;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor.Services;
@@ -16,12 +17,13 @@ public static class DI
             typeof(CommandHandlerBase<>),
             ServiceLifetime.Scoped
         );
-        services.AddFluxor(options =>
-        {
-            options.ScanAssemblies(typeof(DI).Assembly);
-            options.UseRouting();
-        });
+        services.AddFluxor(
+            options =>
+                options.ScanAssemblies(typeof(DI).Assembly).AddMiddleware<HistoryMiddleware>()
+        );
         services.AddMudServices();
+        services.AddScoped<UndoRedoFunctionality>();
+        services.AddScoped<HistoryManager>();
 
         return services;
     }

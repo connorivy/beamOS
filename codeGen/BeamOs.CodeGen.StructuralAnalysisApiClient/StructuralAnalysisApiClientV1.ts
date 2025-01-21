@@ -3933,8 +3933,8 @@ export interface IUnitSettingsContract {
 
 export class UpdateNodeRequest implements IUpdateNodeRequest {
     id!: number;
-    locationPoint!: NullableOfPartialPoint | undefined;
-    restraint!: NullableOfPartialRestraint | undefined;
+    locationPoint?: NullableOfPartialPoint | undefined;
+    restraint?: NullableOfPartialRestraint | undefined;
 
     [key: string]: any;
 
@@ -3981,8 +3981,8 @@ export class UpdateNodeRequest implements IUpdateNodeRequest {
 
 export interface IUpdateNodeRequest {
     id: number;
-    locationPoint: NullableOfPartialPoint | undefined;
-    restraint: NullableOfPartialRestraint | undefined;
+    locationPoint?: NullableOfPartialPoint | undefined;
+    restraint?: NullableOfPartialRestraint | undefined;
 
     [key: string]: any;
 }

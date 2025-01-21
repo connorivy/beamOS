@@ -46,7 +46,8 @@ public abstract class BeamOsModelBuilder
             throw new Exception("Guid string is not formatted correctly");
         }
 
-        (
+        try
+        {
             await apiClient.CreateModelAsync(
                 new()
                 {
@@ -55,8 +56,12 @@ public abstract class BeamOsModelBuilder
                     Settings = this.Settings,
                     Id = modelId
                 }
-            )
-        ).ThrowIfError();
+            );
+        }
+        catch
+        {
+            return;
+        }
 
         // todo : batching
         foreach (var el in this.NodeRequests())
