@@ -1,8 +1,10 @@
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
+using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.CsSdk;
 using BeamOs.Tests.Common;
 using BeamOs.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd;
 using BeamOs.WebApp.Components;
+using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.Editors.ReadOnlyEditor;
 
 namespace BeamOs.WebApp;
@@ -11,6 +13,14 @@ public static class DI
 {
     public static IServiceCollection AddWebAppRequired(this IServiceCollection services)
     {
+        services.ConfigureHttpJsonOptions(options =>
+        {
+            BeamOsSerializerOptions.DefaultConfig(options.SerializerOptions);
+            options
+                .SerializerOptions
+                .TypeInfoResolverChain
+                .Insert(0, BeamOsWebAppJsonSerializerContext.Default);
+        });
         services.AddSingleton(typeof(IAssemblyMarkerWebApp).Assembly);
         services.RegisterSharedServices<IAssemblyMarkerWebApp>();
         services.AddHttpContextAccessor();

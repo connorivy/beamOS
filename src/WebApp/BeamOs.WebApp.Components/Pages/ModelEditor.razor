@@ -13,6 +13,9 @@
 @* @using BeamOs.Contracts.PhysicalModel.Model *@
 @* @using BeamOs.Contracts.PhysicalModel.Node *@
 @* @using BeamOs.Contracts.PhysicalModel.PointLoad *@
+@using BeamOs.WebApp.Components.Features.Editor
+@using BeamOs.WebApp.Components.Features.SelectionInfo
+@using BeamOs.WebApp.EditorCommands
 @using Fluxor.Blazor.Web.Components
 @using MudBlazor
 @using BeamOs.WebApp.Components.Features.Editors.ReadOnlyEditor;
@@ -21,24 +24,26 @@
 
 <PageTitle>Editor</PageTitle>
 
-<MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="h-full w-full">
+<MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="relative h-full w-full">
     @* <MudTextField @bind-Value="modelIdInput" Label="ModelId" Variant="Variant.Filled"></MudTextField> *@
     @* <MudButton OnClick="LoadModel">Load Model</MudButton> *@
     @* <MudButton OnClick="RunAnalysis">Run DSM</MudButton> *@
     @* <MudButton OnClick="LoadShearDiagrams">Show Shear Diagrams</MudButton> *@
     @* <MudButton OnClick="LoadMomentDiagrams">Show Moment Diagrams</MudButton> *@
     @* <MudButton OnClick="ShowReactions">Show Reactions</MudButton> *@
+    @{
+        this.CanvasId ??= "id" + Guid.NewGuid().ToString("N");
+    }
+    <EditorComponent Class="h-full" @ref="editorComponent" ModelId="@ModelId" CanvasId="@CanvasId" IsReadOnly="false"></EditorComponent>
     @if (editorComponent is not null)
     {
         @* <MudPopover Open="@(editorComponent.EditorComponentState.SelectedObjects.Length > 0)" Fixed="true" AnchorOrigin="Origin.TopRight" TransformOrigin="Origin.TopRight" Elevation="0" Class="w-80 p-2 bg-transparent"> *@
         @*     <SelectionInfoComponent SelectedObjects="@editorComponent.EditorComponentState.SelectedObjects" ModelId="@editorComponent.EditorComponentState.LoadedModelId"></SelectionInfoComponent> *@
         @* </MudPopover> *@
         @* <StructuralApiClientComponent ModelId="@this.ModelId" CanvasId="@this.editorComponent.ElementId"></StructuralApiClientComponent> *@
+        <SelectionInfoComponent Class="absolute right-0 top-0 w-80 p-4" CanvasId="@editorComponent.CanvasId"></SelectionInfoComponent>
     }
-    @{
-        this.CanvasId ??= "id" + Guid.NewGuid().ToString("N");
-    }
-    <ReadOnlyEditor Class="h-full" @ref="editorComponent" ModelId="@ModelId" CanvasId="@CanvasId" IsReadOnly="false"></ReadOnlyEditor>
+
 </MudContainer>
 
 @code {
@@ -72,12 +77,24 @@
     // private NavigationManager NavigationManager { get; init; }
 
     // public string modelIdInput { get; set; }
-    private ReadOnlyEditor editorComponent;
+    private SelectedObject[] selectedObjects = [];
+
+    private EditorComponent editorComponent
+    {
+        get;
+        set
+        {
+            selectedObjects = [new(1, "Node")];
+            field = value;
+            this.StateHasChanged();
+        }
+    }
 
     // protected override void OnInitialized()
     // {
-    //     EventEmitter.VisibleStateChanged += this.EventEmitter_VisibleStateChanged;
     //     base.OnInitialized();
+    //     this.State.Select(s => s.EditorState[editorComponent.CanvasId]);
+
     // }
 
     // private void EventEmitter_VisibleStateChanged(object? sender, EventArgs _) =>

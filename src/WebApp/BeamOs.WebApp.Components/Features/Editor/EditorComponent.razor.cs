@@ -3,6 +3,8 @@ using BeamOs.CodeGen.EditorApi;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
+using BeamOs.WebApp.Components.Features.Common;
+using BeamOs.WebApp.Components.Features.Editors.ReadOnlyEditor;
 using BeamOs.WebApp.Components.Features.UndoRedo;
 using BeamOs.WebApp.EditorCommands;
 using Fluxor;
@@ -10,16 +12,16 @@ using Fluxor.Blazor.Web.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 
-namespace BeamOs.WebApp.Components.Features.Editors.ReadOnlyEditor;
+namespace BeamOs.WebApp.Components.Features.Editor;
 
-public partial class ReadOnlyEditor(
+public partial class EditorComponent(
     IStructuralAnalysisApiClientV1 apiClient,
     IEditorApiProxyFactory editorApiProxyFactory,
     IState<AllEditorComponentState> allEditorComponentState,
     IStateSelection<AllEditorComponentState, EditorComponentState> state,
     IDispatcher dispatcher,
     LoadModelCommandHandler loadModelCommandHandler,
-    ILogger<ReadOnlyEditor> logger,
+    ILogger<EditorComponent> logger,
     UndoRedoFunctionality undoRedoFunctionality
 ) : FluxorComponent
 {
@@ -51,8 +53,6 @@ public partial class ReadOnlyEditor(
     //private IDispatcher Dispatcher { get; init; }
 
     public static string CreateCanvasId() => "id" + Guid.NewGuid().ToString("N");
-
-    private IEditorApiAlpha? EditorApiAlpha;
 
     //const string physicalModelId = "00000000-0000-0000-0000-000000000000";
 
@@ -132,6 +132,12 @@ public partial class ReadOnlyEditor(
                     }
                 )
             );
+
+            if (nodeResponse.IsSuccess)
+            {
+                //state.Value.CachedModelResponse.Nodes[command.NodeId] = nodeResponse.Value;
+                dispatcher.Dispatch(new UpdateNodeCacheItem(this.CanvasId, nodeResponse.Value));
+            }
         });
     }
 
@@ -139,11 +145,8 @@ public partial class ReadOnlyEditor(
     {
         if (firstRender)
         {
-            this.EditorApiAlpha ??= await editorApiProxyFactory.Create(
-                this.CanvasId,
-                this.IsReadOnly
-            );
-            dispatcher.Dispatch(new EditorApiCreated(this.CanvasId, this.EditorApiAlpha));
+            var editorApi = await editorApiProxyFactory.Create(this.CanvasId, this.IsReadOnly);
+            dispatcher.Dispatch(new EditorApiCreated(this.CanvasId, editorApi));
 
             if (this.ModelId is not null)
             {
@@ -151,11 +154,14 @@ public partial class ReadOnlyEditor(
                 var result = await loadModelCommandHandler.ExecuteAsync(
                     new LoadModelCommand(this.CanvasId, this.ModelId.Value)
                 );
-                dispatcher.Dispatch(new EditorLoadingEnd(this.CanvasId));
 
                 if (result.IsError)
                 {
                     logger.LogError(result.Error.ToString());
+                }
+                else
+                {
+                    dispatcher.Dispatch(new EditorLoadingEnd(this.CanvasId, result.Value));
                 }
             }
             //await this.ChangeComponentState(state => state with { LoadingText = "Fetching Data" });
@@ -207,13 +213,21 @@ public record struct EditorDisposed(string CanvasId);
 
 public record struct EditorLoadingBegin(string CanvasId, string LoadingText);
 
-public record struct EditorLoadingEnd(string CanvasId);
+public record struct EditorLoadingEnd(string CanvasId, CachedModelResponse CachedModelResponse);
+
+public record struct UpdateNodeCacheItem(string CanvasId, NodeResponse NodeResponse);
 
 [FeatureState]
-public record EditorComponentState(string? LoadingText, bool IsLoading, IEditorApiAlpha? EditorApi)
+public record EditorComponentState(
+    string? LoadingText,
+    bool IsLoading,
+    IEditorApiAlpha? EditorApi,
+    CachedModelResponse? CachedModelResponse,
+    SelectedObject[] SelectedObjects
+)
 {
     public EditorComponentState()
-        : this(null, false, null) { }
+        : this(null, false, null, null, []) { }
 }
 
 //public static class EditorComponentStateReducers
@@ -306,7 +320,69 @@ public static class AllEditorComponentStateReducers
             EditorState = state
                 .EditorState
                 .Remove(action.CanvasId)
-                .Add(action.CanvasId, currentEditorState with { IsLoading = false })
+                .Add(
+                    action.CanvasId,
+                    currentEditorState with
+                    {
+                        IsLoading = false,
+                        CachedModelResponse = action.CachedModelResponse
+                    }
+                )
+        };
+    }
+
+    [ReducerMethod]
+    public static AllEditorComponentState ChangeSelectionCommandReducer(
+        AllEditorComponentState state,
+        ChangeSelectionCommand action
+    )
+    {
+        var currentEditorState = state.EditorState[action.CanvasId];
+        return state with
+        {
+            EditorState = state
+                .EditorState
+                .Remove(action.CanvasId)
+                .Add(
+                    action.CanvasId,
+                    currentEditorState with
+                    {
+                        IsLoading = false,
+                        SelectedObjects = action.SelectedObjects
+                    }
+                )
+        };
+    }
+
+    [ReducerMethod]
+    public static AllEditorComponentState ChangeSelectionCommandReducer(
+        AllEditorComponentState state,
+        UpdateNodeCacheItem action
+    )
+    {
+        var currentEditorState = state.EditorState[action.CanvasId];
+        var newNodes = new Dictionary<int, NodeResponse>(
+            currentEditorState.CachedModelResponse.Nodes
+        );
+        newNodes[action.NodeResponse.Id] = action.NodeResponse;
+
+        //currentEditorState.CachedModelResponse.Nodes[action.NodeResponse.Id] = action.NodeResponse;
+
+        return state with
+        {
+            EditorState = state
+                .EditorState
+                .Remove(action.CanvasId)
+                .Add(
+                    action.CanvasId,
+                    currentEditorState with
+                    {
+                        CachedModelResponse = currentEditorState.CachedModelResponse with
+                        {
+                            Nodes = newNodes
+                        }
+                    }
+                )
         };
     }
 }

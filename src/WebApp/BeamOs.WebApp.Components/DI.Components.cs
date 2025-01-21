@@ -14,7 +14,7 @@ public static class DI
     )
     {
         services.AddObjectThatExtendsBase<IAssemblyMarkerWebAppComponents>(
-            typeof(CommandHandlerBase<>),
+            typeof(CommandHandlerBase<,>),
             ServiceLifetime.Scoped
         );
         services.AddFluxor(
@@ -24,6 +24,17 @@ public static class DI
         services.AddMudServices();
         services.AddScoped<UndoRedoFunctionality>();
         services.AddScoped<HistoryManager>();
+
+#pragma warning disable EXTEXP0018 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+        services.AddHybridCache(
+            options =>
+                options.DefaultEntryOptions = new()
+                {
+                    Expiration = TimeSpan.FromMinutes(10),
+                    LocalCacheExpiration = TimeSpan.FromMinutes(10)
+                }
+        );
+#pragma warning restore EXTEXP0018 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 
         return services;
     }
