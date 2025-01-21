@@ -21,13 +21,21 @@ public abstract class BeamOsModelBuilder
     /// </summary>
     public abstract string GuidString { get; }
     public Guid Id => Guid.Parse(this.GuidString);
-    public abstract IEnumerable<CreateNodeRequest> Nodes();
-    public abstract IEnumerable<CreateMaterialRequest> Materials();
-    public abstract IEnumerable<CreateSectionProfileRequest> SectionProfiles();
-    public abstract IEnumerable<CreateElement1dRequest> Element1ds();
-    public abstract IEnumerable<CreatePointLoadRequest> PointLoads();
 
-    public virtual IEnumerable<CreateMomentLoadRequest> MomentLoads() => [];
+    internal IEnumerable<CreateNodeRequest> Nodes => this.NodeRequests();
+    public abstract IEnumerable<CreateNodeRequest> NodeRequests();
+    internal IEnumerable<CreateMaterialRequest> Materials => this.MaterialRequests();
+    public abstract IEnumerable<CreateMaterialRequest> MaterialRequests();
+    internal IEnumerable<CreateSectionProfileRequest> SectionProfiles =>
+        this.SectionProfileRequests();
+    public abstract IEnumerable<CreateSectionProfileRequest> SectionProfileRequests();
+    internal IEnumerable<CreateElement1dRequest> Element1ds => this.Element1dRequests();
+    public abstract IEnumerable<CreateElement1dRequest> Element1dRequests();
+    internal IEnumerable<CreatePointLoadRequest> PointLoads => this.PointLoadRequests();
+    public abstract IEnumerable<CreatePointLoadRequest> PointLoadRequests();
+    internal IEnumerable<CreateMomentLoadRequest> MomentLoads => this.MomentLoadRequests();
+
+    public virtual IEnumerable<CreateMomentLoadRequest> MomentLoadRequests() => [];
 
     public Task Build() => this.Build(CreateDefaultApiClient());
 
@@ -51,32 +59,32 @@ public abstract class BeamOsModelBuilder
         ).ThrowIfError();
 
         // todo : batching
-        foreach (var el in this.Nodes())
+        foreach (var el in this.NodeRequests())
         {
             (await apiClient.CreateNodeAsync(modelId, el)).ThrowIfError();
         }
 
-        foreach (var el in this.PointLoads())
+        foreach (var el in this.PointLoadRequests())
         {
             (await apiClient.CreatePointLoadAsync(modelId, el)).ThrowIfError();
         }
 
-        foreach (var el in this.MomentLoads())
+        foreach (var el in this.MomentLoadRequests())
         {
             (await apiClient.CreateMomentLoadAsync(modelId, el)).ThrowIfError();
         }
 
-        foreach (var el in this.Materials())
+        foreach (var el in this.MaterialRequests())
         {
             (await apiClient.CreateMaterialAsync(modelId, el)).ThrowIfError();
         }
 
-        foreach (var el in this.SectionProfiles())
+        foreach (var el in this.SectionProfileRequests())
         {
             (await apiClient.CreateSectionProfileAsync(modelId, el)).ThrowIfError();
         }
 
-        foreach (var el in this.Element1ds())
+        foreach (var el in this.Element1dRequests())
         {
             (await apiClient.CreateElement1dAsync(modelId, el)).ThrowIfError();
         }

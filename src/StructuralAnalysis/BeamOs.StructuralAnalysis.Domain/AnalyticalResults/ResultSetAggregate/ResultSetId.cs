@@ -1,6 +1,8 @@
+using BeamOs.Common.Domain.Models;
+
 namespace BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 
-public readonly record struct ResultSetId
+public readonly record struct ResultSetId : IIntBasedId
 {
     public int Id { get; }
 

@@ -1,5 +1,7 @@
 using System.Reflection;
+using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Api;
+using BeamOs.StructuralAnalysis.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BeamOs.StructuralAnalysis.Api;
@@ -20,7 +22,7 @@ public static class DependencyInjection
         foreach (var assemblyType in assemblyTypes)
         {
             if (
-                Application.DependencyInjection.GetConcreteBaseType(assemblyType, baseType)
+                Common.Application.DependencyInjection.GetConcreteBaseType(assemblyType, baseType)
                 is Type endpointType
             )
             {
@@ -42,6 +44,18 @@ public static class DependencyInjection
         //EndpointToMinimalApi.Map<CreateNode, CreateNodeCommand, NodeResponse>(endpointGroup);
         //EndpointToMinimalApi.Map<UpdateNode, PatchNodeCommand, NodeResponse>(endpointGroup);
         //EndpointToMinimalApi.Map<CreateModel, CreateModelRequest, ModelResponse>(endpointGroup);
+    }
+
+    public static async Task InitializeBeamOsDb(this WebApplication app)
+    {
+        if (app.Environment.IsDevelopment())
+        {
+            using var scope = app.Services.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<StructuralAnalysisDbContext>();
+
+            await dbContext.Database.EnsureDeletedAsync();
+            await dbContext.Database.EnsureCreatedAsync();
+        }
     }
 }
 
@@ -72,7 +86,8 @@ public static class EndpointToMinimalApi
 
         Delegate mapDelegate;
         if (
-            Application
+            Common
+                .Application
                 .DependencyInjection
                 .ConcreteTypeDerivedFromBase(
                     typeof(TEndpoint),

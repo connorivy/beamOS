@@ -6,7 +6,12 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using BeamOs.StructuralAnalysis.Contracts.Common;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoad;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
 
 namespace BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
 
@@ -15,12 +20,26 @@ public record ModelResponse(
     string Name,
     string Description,
     PhysicalModelSettings Settings,
-    List<NodeResponse>? Nodes = null
-//List<Element1DResponse>? Element1ds = null,
-//List<MaterialResponse>? Materials = null,
-//List<SectionProfileResponse>? SectionProfiles = null,
-//List<PointLoadResponse>? PointLoads = null,
-//List<MomentLoadResponse>? MomentLoads = null,
+    List<NodeResponse>? Nodes = null,
+    List<Element1dResponse>? Element1ds = null,
+    List<MaterialResponse>? Materials = null,
+    List<SectionProfileResponse>? SectionProfiles = null,
+    List<PointLoadResponse>? PointLoads = null,
+    List<MomentLoadResponse>? MomentLoads = null
+//AnalyticalResultsResponse? AnalyticalResults = null
+);
+
+public record ModelResponseHydrated(
+    Guid Id,
+    string Name,
+    string Description,
+    PhysicalModelSettings Settings,
+    List<NodeResponse> Nodes,
+    List<Element1dResponse> Element1ds,
+    List<MaterialResponse> Materials,
+    List<SectionProfileResponse> SectionProfiles,
+    List<PointLoadResponse> PointLoads,
+    List<MomentLoadResponse> MomentLoads
 //AnalyticalResultsResponse? AnalyticalResults = null
 );
 

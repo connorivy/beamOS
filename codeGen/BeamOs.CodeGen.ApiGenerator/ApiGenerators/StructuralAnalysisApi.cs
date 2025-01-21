@@ -7,7 +7,7 @@ public class StructuralAnalysisApi
 {
     public override string ClientName => "StructuralAnalysisApiClientV1";
     protected override string ClientNamespace => "BeamOs.CodeGen.StructuralAnalysisApiClient";
-    protected override string DestinationPath => $"../../../../{this.ClientNamespace}/";
+    protected override string DestinationPath => $"../{this.ClientNamespace}/";
     protected override string OpenApiDefinitionPath => "openapi/v1.json";
 }
 

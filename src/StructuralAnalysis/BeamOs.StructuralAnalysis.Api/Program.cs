@@ -15,15 +15,17 @@ builder
 builder
     .Services
     .AddStructuralAnalysisRequired()
-    .AddStructuralAnalysisConfigurable(
-        "Server=localhost;Port=5432;Database=some-postgres;Username=postgres;Password=mysecretpassword"
-    );
+    .AddStructuralAnalysisConfigurable(builder.Configuration.GetConnectionString("BeamOsDb"));
 
 #if DEBUG
 builder.Services.AddOpenApi();
 #endif
 
 WebApplication app = builder.Build();
+
+#if DEBUG
+await app.InitializeBeamOsDb();
+#endif
 
 app.MapEndpoints<IAssemblyMarkerStructuralAnalysisApiEndpoints>();
 

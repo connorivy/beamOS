@@ -1,0 +1,22 @@
+@using Fluxor
+@using Fluxor.Blazor.Web.Components
+@using MudBlazor
+@inherits FluxorLayout
+
+@inject IState<MainLayoutState> MainLayoutState;
+
+<MudThemeProvider Theme="@_baseTheme"
+                  IsDarkMode="@MainLayoutState.Value.IsDarkMode" />
+
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    @Body
+</MudLayout>
+
+
+@code {
+    protected MudTheme _baseTheme = new();
+}

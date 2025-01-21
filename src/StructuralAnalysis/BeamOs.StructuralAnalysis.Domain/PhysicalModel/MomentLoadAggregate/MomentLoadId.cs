@@ -1,8 +1,9 @@
 using System.Globalization;
+using BeamOs.Common.Domain.Models;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
 
-public readonly struct MomentLoadId(int id)
+public readonly struct MomentLoadId(int id) : IIntBasedId
 {
     public int Id { get; } = id;
 

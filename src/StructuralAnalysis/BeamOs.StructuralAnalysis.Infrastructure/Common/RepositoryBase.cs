@@ -34,7 +34,7 @@ internal abstract class RepositoryBase<TId, TEntity>(StructuralAnalysisDbContext
 internal abstract class ModelResourceRepositoryBase<TId, TEntity>(
     StructuralAnalysisDbContext dbContext
 ) : RepositoryBase<TId, TEntity>(dbContext), IModelResourceRepository<TId, TEntity>
-    where TId : struct, IEquatable<TId>
+    where TId : struct, IEquatable<TId>, IIntBasedId
     where TEntity : BeamOsModelEntity<TId>
 {
     public async Task<TEntity?> GetSingle(ModelId modelId, TId id) =>

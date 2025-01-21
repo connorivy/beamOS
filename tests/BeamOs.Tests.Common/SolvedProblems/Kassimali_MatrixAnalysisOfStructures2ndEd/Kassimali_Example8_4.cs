@@ -70,7 +70,7 @@ public class Kassimali_Example8_4 : ModelFixture, IHasExpectedNodeResults
             }
         ];
 
-    public override IEnumerable<CreateNodeRequest> Nodes()
+    public override IEnumerable<CreateNodeRequest> NodeRequests()
     {
         yield return new()
         {
@@ -101,7 +101,7 @@ public class Kassimali_Example8_4 : ModelFixture, IHasExpectedNodeResults
         };
     }
 
-    public override IEnumerable<CreateMaterialRequest> Materials()
+    public override IEnumerable<CreateMaterialRequest> MaterialRequests()
     {
         yield return new()
         {
@@ -111,7 +111,7 @@ public class Kassimali_Example8_4 : ModelFixture, IHasExpectedNodeResults
         };
     }
 
-    public override IEnumerable<CreateSectionProfileRequest> SectionProfiles()
+    public override IEnumerable<CreateSectionProfileRequest> SectionProfileRequests()
     {
         yield return new()
         {
@@ -126,7 +126,7 @@ public class Kassimali_Example8_4 : ModelFixture, IHasExpectedNodeResults
         };
     }
 
-    public override IEnumerable<CreatePointLoadRequest> PointLoads()
+    public override IEnumerable<CreatePointLoadRequest> PointLoadRequests()
     {
         yield return new()
         {
@@ -145,7 +145,7 @@ public class Kassimali_Example8_4 : ModelFixture, IHasExpectedNodeResults
         };
     }
 
-    public override IEnumerable<CreateMomentLoadRequest> MomentLoads()
+    public override IEnumerable<CreateMomentLoadRequest> MomentLoadRequests()
     {
         yield return new()
         {
@@ -180,7 +180,7 @@ public class Kassimali_Example8_4 : ModelFixture, IHasExpectedNodeResults
         };
     }
 
-    public override IEnumerable<CreateElement1dRequest> Element1ds()
+    public override IEnumerable<CreateElement1dRequest> Element1dRequests()
     {
         yield return new()
         {

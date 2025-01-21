@@ -1,4 +1,5 @@
 using BeamOs.Common.Api;
+using BeamOs.Common.Application;
 using BeamOs.StructuralAnalysis.Application;
 using BeamOs.StructuralAnalysis.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;

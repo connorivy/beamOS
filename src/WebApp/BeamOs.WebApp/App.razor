@@ -1,0 +1,70 @@
+@using BeamOs.WebApp.Components
+
+@inject IConfiguration Configuration
+@* <Fluxor.Blazor.Web.StoreInitializer /> *@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="/" />
+    <link rel="stylesheet" href="@Assets["lib/bootstrap/dist/css/bootstrap.min.css"]" />
+    <link rel="stylesheet" href="@Assets["app.css"]" />
+    <link rel="stylesheet" href="@Assets["BeamOs.WebApp.styles.css"]" />
+    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+    <ImportMap />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <HeadOutlet @rendermode="InteractiveServer" />
+</head>
+
+<body class="h-screen">
+    <Routes @rendermode="InteractiveServer" />
+    <script src="_content/MudBlazor/MudBlazor.min.js"></script>
+    <script src="_framework/blazor.web.js"></script>
+
+    <script type="module">
+        async function fileExists(url) {
+            try {
+                const response = await fetch(url, { method: 'HEAD' });
+                return response.ok;
+            } catch (error) {
+                console.error('Error fetching the file:', error);
+                return false;
+            }
+        }
+
+
+        async function importModule() {
+            const localUrl = 'http://localhost:5173/lib/main.ts';
+            const cdnUrl = 'https://cdn.jsdelivr.net/npm/beamos-editor@0.0.14/+esm';
+
+            const isLocalFileAvailable = await fileExists(localUrl);
+
+            let module;
+            if (isLocalFileAvailable) {
+                module = await import(localUrl);
+                console.log('Loaded from local:', module);
+            } else {
+                module = await import(cdnUrl);
+                console.log('Loaded from CDN:', module);
+            }
+
+            return module;
+
+        }
+
+        let module = await importModule();
+        const { BeamOsEditor } = module;
+
+        // WARNING : the string "createEditorFromId" must match the string in EditorApiProxy.cs
+        window.createEditorFromId = (editorId, dispatcher, isReadOnly) => {
+            return BeamOsEditor.createFromId(editorId, dispatcher, isReadOnly)
+        }
+    </script>
+    @* } *@
+</body>
+
+</html>

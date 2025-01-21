@@ -1,0 +1,55 @@
+@using Fluxor
+@using Microsoft.AspNetCore.Components.Rendering
+@using Microsoft.AspNetCore.Components.Sections
+@using Microsoft.AspNetCore.Http
+@using MudBlazor
+@using Fluxor.Blazor.Web.Components
+
+@inherits FullScreenLayout
+
+@inject IState<MainLayoutState> MainLayoutState;
+
+<MudThemeProvider Theme="@_baseTheme"
+                  IsDarkMode="@MainLayoutState.Value.IsDarkMode" />
+
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <NavBar />
+
+    @* todo: how do I make responsive mode only work when section outlet has content? *@
+    <MudDrawer Width="401px" ClipMode="DrawerClipMode.Docked" Variant="DrawerVariant.Persistent" Open="@this.State.Value.IsDrawerOpen">
+        <SectionOutlet SectionId="Drawer" />
+    </MudDrawer>
+
+    <MudMainContent Class="h-full">
+        <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="relative h-full">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+
+@code {
+    [Inject]
+    IState<MainLayoutState> State { get; init; }
+
+    [Inject]
+    IHttpContextAccessor httpContextAccessor { get; init; }
+
+    private string inputValue = "initial";
+    internal static object Drawer = new();
+
+    protected override void OnInitialized()
+    {
+        var x = httpContextAccessor.HttpContext;
+        base.OnInitialized();
+    }
+}

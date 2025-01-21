@@ -11,4 +11,4 @@ public record SectionProfileResponse(
     AreaMomentOfInertiaContract PolarMomentOfInertia,
     AreaContract StrongAxisShearArea,
     AreaContract WeakAxisShearArea
-);
+) : IModelEntity;

@@ -1,8 +1,9 @@
 using System.Globalization;
+using BeamOs.Common.Domain.Models;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 
-public readonly struct SectionProfileId(int id)
+public readonly struct SectionProfileId(int id) : IIntBasedId
 {
     public int Id { get; } = id;
 

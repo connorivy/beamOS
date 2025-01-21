@@ -1,8 +1,9 @@
 using System.Globalization;
+using BeamOs.Common.Domain.Models;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
 
-public readonly struct PointLoadId(int id)
+public readonly struct PointLoadId(int id) : IIntBasedId
 {
     public int Id { get; } = id;
 

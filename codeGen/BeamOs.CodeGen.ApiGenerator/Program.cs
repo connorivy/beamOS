@@ -1,17 +1,19 @@
 using BeamOs.CodeGen.ApiGenerator.ApiGenerators;
+using BeamOs.CodeGen.Apis.Generator.Utils;
+using Microsoft.OpenApi.Models;
 
 //var builder = WebApplication.CreateBuilder(args);
 
 /// In order to add a new api generator, just add it to this array. Do not modify the rest of the Program.cs
 IApiGenerator[] generators =
 [
-    //new EditorApiGenerator(),
-    //new EditorEventsApi(),
+    new EditorApiGenerator(),
+    new EditorEventsApi(),
     //new StructuralAnalysisContractsTypesApiGenerator(),
     new StructuralAnalysisApi(),
 ];
 
-foreach (var generator in generators)
+foreach (var generator in generators.Where(g => g is not AbstractGenerator))
 {
     await generator.GenerateClients();
 }
@@ -20,48 +22,49 @@ foreach (var generator in generators)
 // *
 // *
 // */
-//builder.Services.AddSwaggerGen(config =>
-//{
-//    config.SchemaFilter<MarkAsRequiredIfNonNullableSchemaProcessor>();
-//    config.SupportNonNullableReferenceTypes();
+var abstractGenerators = generators.OfType<AbstractGenerator>().ToArray();
 
-//    foreach (AbstractGenerator generator in generators)
-//    {
-//        config.SwaggerDoc(
-//            generator.ClientName,
-//            new OpenApiInfo { Title = generator.ClientName, Version = "v0" }
-//        );
-//    }
-//});
+var builder = WebApplication.CreateBuilder(args);
 
-//var app = builder.Build();
+builder
+    .Services
+    .AddSwaggerGen(config =>
+    {
+        config.SchemaFilter<MarkAsRequiredIfNonNullableSchemaProcessor>();
+        config.SupportNonNullableReferenceTypes();
 
-//app.UseSwagger();
-//app.UseSwaggerUI(options =>
-//{
-//    foreach (AbstractGenerator generator in generators)
-//    {
-//        options.SwaggerEndpoint(
-//            $"/swagger/{generator.ClientName}/swagger.json",
-//            generator.ClientName
-//        );
-//    }
-//});
+        foreach (AbstractGenerator generator in abstractGenerators)
+        {
+            config.SwaggerDoc(
+                generator.ClientName,
+                new OpenApiInfo { Title = generator.ClientName, Version = "v0" }
+            );
+        }
+    });
 
-//foreach (AbstractGenerator generator in generators)
-//{
-//    generator.AddMethods(app);
-//}
+var app = builder.Build();
 
-////app.Run();
+app.UseSwagger();
+app.UseSwaggerUI(options =>
+{
+    foreach (AbstractGenerator generator in abstractGenerators)
+    {
+        options.SwaggerEndpoint(
+            $"/swagger/{generator.ClientName}/swagger.json",
+            generator.ClientName
+        );
+    }
+});
 
-//await app.StartAsync();
-//ILogger logger = app.Services.GetRequiredService<ILogger<Program>>();
-//foreach (AbstractGenerator generator in generators)
-//{
-//    await generator.GenerateClients(logger);
-//}
+foreach (AbstractGenerator generator in abstractGenerators)
+{
+    generator.AddMethods(app);
+}
 
-//var apiHost = CreateApiHostBuilder<BeamOs.StructuralAnalysis.Api.Program>(args).Build();
+//app.Run();
 
-//var apiTask = apiHost.RunAsync();
+await app.StartAsync();
+foreach (AbstractGenerator generator in abstractGenerators)
+{
+    await generator.GenerateClients();
+}

@@ -12,6 +12,7 @@ using BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Infrastructure.AnalyticalResults.NodeResults;
 using BeamOs.StructuralAnalysis.Infrastructure.AnalyticalResults.ResultSets;
+using BeamOs.StructuralAnalysis.Infrastructure.Common;
 using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Materials;
 using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Models;
@@ -57,8 +58,14 @@ public static class DependencyInjection
         string connectionString
     )
     {
-        _ = services.AddDbContext<StructuralAnalysisDbContext>(
-            options => options.UseNpgsql(connectionString)
+        _ = services.AddDbContext<StructuralAnalysisDbContext>(options =>
+        {
+            var optionsBuilderNoInterceptor =
+                options.UseSqlServer(connectionString).Options
+                as DbContextOptions<StructuralAnalysisDbContext>;
+
+            options.AddInterceptors(new IdentityInsertInterceptor(optionsBuilderNoInterceptor));
+        }
         //.UseModel(StructuralAnalysisDbContextModel.Instance)
         );
 

@@ -7,8 +7,8 @@ using Microsoft.EntityFrameworkCore;
 namespace BeamOs.StructuralAnalysis.Domain.Common;
 
 [PrimaryKey(nameof(Id), nameof(ModelId))]
-public class BeamOsModelEntity<TId> : BeamOsEntity<TId>
-    where TId : struct
+public class BeamOsModelEntity<TId> : BeamOsEntity<TId>, IBeamOsModelEntity
+    where TId : struct, IIntBasedId
 {
     public BeamOsModelEntity(TId id, ModelId modelId)
         : base(id)
@@ -28,6 +28,13 @@ public class BeamOsModelEntity<TId> : BeamOsEntity<TId>
 
     [Obsolete("EF Ctor")]
     public BeamOsModelEntity() { }
+
+    public int GetIntId() => this.Id.Id;
+}
+
+public interface IBeamOsModelEntity
+{
+    public int GetIntId();
 }
 
 [PrimaryKey(nameof(Id), nameof(ResultSetId), nameof(ModelId))]

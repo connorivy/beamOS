@@ -44,6 +44,11 @@ export interface IStructuralAnalysisApiClientV1 {
     /**
      * @return OK
      */
+    getModel(modelId: string): Promise<ResultOfModelResponseHydrated>;
+
+    /**
+     * @return OK
+     */
     createMaterial(modelId: string, body: CreateMaterialRequest): Promise<ResultOfMaterialResponse>;
 
     /**
@@ -74,7 +79,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
 
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         this.http = http ? http : window as any;
-        this.baseUrl = baseUrl ?? "";
+        this.baseUrl = baseUrl ?? "https://localhost:7060";
     }
 
     /**
@@ -337,6 +342,46 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             });
         }
         return Promise.resolve<ResultOfModelResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    getModel(modelId: string): Promise<ResultOfModelResponseHydrated> {
+        let url_ = this.baseUrl + "/api/models/{modelId}";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetModel(_response);
+        });
+    }
+
+    protected processGetModel(response: Response): Promise<ResultOfModelResponseHydrated> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfModelResponseHydrated.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfModelResponseHydrated>(null as any);
     }
 
     /**
@@ -1487,6 +1532,97 @@ export interface IElement1dResponse {
     [key: string]: any;
 }
 
+export class Element1dResponse2 implements IElement1dResponse2 {
+    id!: number;
+    modelId!: string;
+    startNodeId!: number;
+    endNodeId!: number;
+    materialId!: number;
+    sectionProfileId!: number;
+    sectionProfileRotation!: AngleContract;
+    metadata?: { [key: string]: string; } | undefined;
+
+    [key: string]: any;
+
+    constructor(data?: IElement1dResponse2) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.sectionProfileRotation = new AngleContract();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.modelId = _data["modelId"];
+            this.startNodeId = _data["startNodeId"];
+            this.endNodeId = _data["endNodeId"];
+            this.materialId = _data["materialId"];
+            this.sectionProfileId = _data["sectionProfileId"];
+            this.sectionProfileRotation = _data["sectionProfileRotation"] ? AngleContract.fromJS(_data["sectionProfileRotation"]) : new AngleContract();
+            if (_data["metadata"]) {
+                this.metadata = {} as any;
+                for (let key in _data["metadata"]) {
+                    if (_data["metadata"].hasOwnProperty(key))
+                        (<any>this.metadata)![key] = _data["metadata"][key];
+                }
+            }
+        }
+    }
+
+    static fromJS(data: any): Element1dResponse2 {
+        data = typeof data === 'object' ? data : {};
+        let result = new Element1dResponse2();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["modelId"] = this.modelId;
+        data["startNodeId"] = this.startNodeId;
+        data["endNodeId"] = this.endNodeId;
+        data["materialId"] = this.materialId;
+        data["sectionProfileId"] = this.sectionProfileId;
+        data["sectionProfileRotation"] = this.sectionProfileRotation ? this.sectionProfileRotation.toJSON() : <any>undefined;
+        if (this.metadata) {
+            data["metadata"] = {};
+            for (let key in this.metadata) {
+                if (this.metadata.hasOwnProperty(key))
+                    (<any>data["metadata"])[key] = (<any>this.metadata)[key];
+            }
+        }
+        return data;
+    }
+}
+
+export interface IElement1dResponse2 {
+    id: number;
+    modelId: string;
+    startNodeId: number;
+    endNodeId: number;
+    materialId: number;
+    sectionProfileId: number;
+    sectionProfileRotation: AngleContract;
+    metadata?: { [key: string]: string; } | undefined;
+
+    [key: string]: any;
+}
+
 export class ForceContract implements IForceContract {
     value!: number;
     unit!: number;
@@ -1731,12 +1867,81 @@ export interface IMaterialResponse {
     [key: string]: any;
 }
 
+export class MaterialResponse2 implements IMaterialResponse2 {
+    id!: number;
+    modelId!: string;
+    modulusOfElasticity!: PressureContract;
+    modulusOfRigidity!: PressureContract;
+
+    [key: string]: any;
+
+    constructor(data?: IMaterialResponse2) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.modulusOfElasticity = new PressureContract();
+            this.modulusOfRigidity = new PressureContract();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.modelId = _data["modelId"];
+            this.modulusOfElasticity = _data["modulusOfElasticity"] ? PressureContract.fromJS(_data["modulusOfElasticity"]) : new PressureContract();
+            this.modulusOfRigidity = _data["modulusOfRigidity"] ? PressureContract.fromJS(_data["modulusOfRigidity"]) : new PressureContract();
+        }
+    }
+
+    static fromJS(data: any): MaterialResponse2 {
+        data = typeof data === 'object' ? data : {};
+        let result = new MaterialResponse2();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["modelId"] = this.modelId;
+        data["modulusOfElasticity"] = this.modulusOfElasticity ? this.modulusOfElasticity.toJSON() : <any>undefined;
+        data["modulusOfRigidity"] = this.modulusOfRigidity ? this.modulusOfRigidity.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IMaterialResponse2 {
+    id: number;
+    modelId: string;
+    modulusOfElasticity: PressureContract;
+    modulusOfRigidity: PressureContract;
+
+    [key: string]: any;
+}
+
 export class ModelResponse implements IModelResponse {
     id!: string;
     name!: string;
     description!: string;
     settings!: PhysicalModelSettings;
     nodes?: NodeResponse2[] | undefined;
+    element1ds?: Element1dResponse[] | undefined;
+    materials?: MaterialResponse[] | undefined;
+    sectionProfiles?: SectionProfileResponse2[] | undefined;
+    pointLoads?: PointLoadResponse2[] | undefined;
+    momentLoads?: MomentLoadResponse2[] | undefined;
 
     [key: string]: any;
 
@@ -1767,6 +1972,31 @@ export class ModelResponse implements IModelResponse {
                 for (let item of _data["nodes"])
                     this.nodes!.push(NodeResponse2.fromJS(item));
             }
+            if (Array.isArray(_data["element1ds"])) {
+                this.element1ds = [] as any;
+                for (let item of _data["element1ds"])
+                    this.element1ds!.push(Element1dResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["materials"])) {
+                this.materials = [] as any;
+                for (let item of _data["materials"])
+                    this.materials!.push(MaterialResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["sectionProfiles"])) {
+                this.sectionProfiles = [] as any;
+                for (let item of _data["sectionProfiles"])
+                    this.sectionProfiles!.push(SectionProfileResponse2.fromJS(item));
+            }
+            if (Array.isArray(_data["pointLoads"])) {
+                this.pointLoads = [] as any;
+                for (let item of _data["pointLoads"])
+                    this.pointLoads!.push(PointLoadResponse2.fromJS(item));
+            }
+            if (Array.isArray(_data["momentLoads"])) {
+                this.momentLoads = [] as any;
+                for (let item of _data["momentLoads"])
+                    this.momentLoads!.push(MomentLoadResponse2.fromJS(item));
+            }
         }
     }
 
@@ -1792,6 +2022,31 @@ export class ModelResponse implements IModelResponse {
             for (let item of this.nodes)
                 data["nodes"].push(item.toJSON());
         }
+        if (Array.isArray(this.element1ds)) {
+            data["element1ds"] = [];
+            for (let item of this.element1ds)
+                data["element1ds"].push(item.toJSON());
+        }
+        if (Array.isArray(this.materials)) {
+            data["materials"] = [];
+            for (let item of this.materials)
+                data["materials"].push(item.toJSON());
+        }
+        if (Array.isArray(this.sectionProfiles)) {
+            data["sectionProfiles"] = [];
+            for (let item of this.sectionProfiles)
+                data["sectionProfiles"].push(item.toJSON());
+        }
+        if (Array.isArray(this.pointLoads)) {
+            data["pointLoads"] = [];
+            for (let item of this.pointLoads)
+                data["pointLoads"].push(item.toJSON());
+        }
+        if (Array.isArray(this.momentLoads)) {
+            data["momentLoads"] = [];
+            for (let item of this.momentLoads)
+                data["momentLoads"].push(item.toJSON());
+        }
         return data;
     }
 }
@@ -1802,12 +2057,159 @@ export interface IModelResponse {
     description: string;
     settings: PhysicalModelSettings;
     nodes?: NodeResponse2[] | undefined;
+    element1ds?: Element1dResponse[] | undefined;
+    materials?: MaterialResponse[] | undefined;
+    sectionProfiles?: SectionProfileResponse2[] | undefined;
+    pointLoads?: PointLoadResponse2[] | undefined;
+    momentLoads?: MomentLoadResponse2[] | undefined;
+
+    [key: string]: any;
+}
+
+export class ModelResponseHydrated implements IModelResponseHydrated {
+    id!: string;
+    name!: string;
+    description!: string;
+    settings!: PhysicalModelSettings;
+    nodes!: NodeResponse2[];
+    element1ds!: Element1dResponse[];
+    materials!: MaterialResponse[];
+    sectionProfiles!: SectionProfileResponse2[];
+    pointLoads!: PointLoadResponse2[];
+    momentLoads!: MomentLoadResponse2[];
+
+    [key: string]: any;
+
+    constructor(data?: IModelResponseHydrated) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.settings = new PhysicalModelSettings();
+            this.nodes = [];
+            this.element1ds = [];
+            this.materials = [];
+            this.sectionProfiles = [];
+            this.pointLoads = [];
+            this.momentLoads = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.description = _data["description"];
+            this.settings = _data["settings"] ? PhysicalModelSettings.fromJS(_data["settings"]) : new PhysicalModelSettings();
+            if (Array.isArray(_data["nodes"])) {
+                this.nodes = [] as any;
+                for (let item of _data["nodes"])
+                    this.nodes!.push(NodeResponse2.fromJS(item));
+            }
+            if (Array.isArray(_data["element1ds"])) {
+                this.element1ds = [] as any;
+                for (let item of _data["element1ds"])
+                    this.element1ds!.push(Element1dResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["materials"])) {
+                this.materials = [] as any;
+                for (let item of _data["materials"])
+                    this.materials!.push(MaterialResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["sectionProfiles"])) {
+                this.sectionProfiles = [] as any;
+                for (let item of _data["sectionProfiles"])
+                    this.sectionProfiles!.push(SectionProfileResponse2.fromJS(item));
+            }
+            if (Array.isArray(_data["pointLoads"])) {
+                this.pointLoads = [] as any;
+                for (let item of _data["pointLoads"])
+                    this.pointLoads!.push(PointLoadResponse2.fromJS(item));
+            }
+            if (Array.isArray(_data["momentLoads"])) {
+                this.momentLoads = [] as any;
+                for (let item of _data["momentLoads"])
+                    this.momentLoads!.push(MomentLoadResponse2.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ModelResponseHydrated {
+        data = typeof data === 'object' ? data : {};
+        let result = new ModelResponseHydrated();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["description"] = this.description;
+        data["settings"] = this.settings ? this.settings.toJSON() : <any>undefined;
+        if (Array.isArray(this.nodes)) {
+            data["nodes"] = [];
+            for (let item of this.nodes)
+                data["nodes"].push(item.toJSON());
+        }
+        if (Array.isArray(this.element1ds)) {
+            data["element1ds"] = [];
+            for (let item of this.element1ds)
+                data["element1ds"].push(item.toJSON());
+        }
+        if (Array.isArray(this.materials)) {
+            data["materials"] = [];
+            for (let item of this.materials)
+                data["materials"].push(item.toJSON());
+        }
+        if (Array.isArray(this.sectionProfiles)) {
+            data["sectionProfiles"] = [];
+            for (let item of this.sectionProfiles)
+                data["sectionProfiles"].push(item.toJSON());
+        }
+        if (Array.isArray(this.pointLoads)) {
+            data["pointLoads"] = [];
+            for (let item of this.pointLoads)
+                data["pointLoads"].push(item.toJSON());
+        }
+        if (Array.isArray(this.momentLoads)) {
+            data["momentLoads"] = [];
+            for (let item of this.momentLoads)
+                data["momentLoads"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IModelResponseHydrated {
+    id: string;
+    name: string;
+    description: string;
+    settings: PhysicalModelSettings;
+    nodes: NodeResponse2[];
+    element1ds: Element1dResponse[];
+    materials: MaterialResponse[];
+    sectionProfiles: SectionProfileResponse2[];
+    pointLoads: PointLoadResponse2[];
+    momentLoads: MomentLoadResponse2[];
 
     [key: string]: any;
 }
 
 export class MomentLoadResponse implements IMomentLoadResponse {
     id!: number;
+    nodeId!: number;
     modelId!: string;
     torque!: TorqueContract;
     axisDirection!: Vector3;
@@ -1834,6 +2236,7 @@ export class MomentLoadResponse implements IMomentLoadResponse {
                     this[property] = _data[property];
             }
             this.id = _data["id"];
+            this.nodeId = _data["nodeId"];
             this.modelId = _data["modelId"];
             this.torque = _data["torque"] ? TorqueContract.fromJS(_data["torque"]) : new TorqueContract();
             this.axisDirection = _data["axisDirection"] ? Vector3.fromJS(_data["axisDirection"]) : new Vector3();
@@ -1854,6 +2257,7 @@ export class MomentLoadResponse implements IMomentLoadResponse {
                 data[property] = this[property];
         }
         data["id"] = this.id;
+        data["nodeId"] = this.nodeId;
         data["modelId"] = this.modelId;
         data["torque"] = this.torque ? this.torque.toJSON() : <any>undefined;
         data["axisDirection"] = this.axisDirection ? this.axisDirection.toJSON() : <any>undefined;
@@ -1863,6 +2267,75 @@ export class MomentLoadResponse implements IMomentLoadResponse {
 
 export interface IMomentLoadResponse {
     id: number;
+    nodeId: number;
+    modelId: string;
+    torque: TorqueContract;
+    axisDirection: Vector3;
+
+    [key: string]: any;
+}
+
+export class MomentLoadResponse2 implements IMomentLoadResponse2 {
+    id!: number;
+    nodeId!: number;
+    modelId!: string;
+    torque!: TorqueContract;
+    axisDirection!: Vector3;
+
+    [key: string]: any;
+
+    constructor(data?: IMomentLoadResponse2) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.torque = new TorqueContract();
+            this.axisDirection = new Vector3();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.nodeId = _data["nodeId"];
+            this.modelId = _data["modelId"];
+            this.torque = _data["torque"] ? TorqueContract.fromJS(_data["torque"]) : new TorqueContract();
+            this.axisDirection = _data["axisDirection"] ? Vector3.fromJS(_data["axisDirection"]) : new Vector3();
+        }
+    }
+
+    static fromJS(data: any): MomentLoadResponse2 {
+        data = typeof data === 'object' ? data : {};
+        let result = new MomentLoadResponse2();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["nodeId"] = this.nodeId;
+        data["modelId"] = this.modelId;
+        data["torque"] = this.torque ? this.torque.toJSON() : <any>undefined;
+        data["axisDirection"] = this.axisDirection ? this.axisDirection.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IMomentLoadResponse2 {
+    id: number;
+    nodeId: number;
     modelId: string;
     torque: TorqueContract;
     axisDirection: Vector3;
@@ -2368,6 +2841,7 @@ export interface IPoint {
 
 export class PointLoadResponse implements IPointLoadResponse {
     id!: number;
+    nodeId!: number;
     modelId!: string;
     force!: ForceContract;
     direction!: Vector3;
@@ -2394,6 +2868,7 @@ export class PointLoadResponse implements IPointLoadResponse {
                     this[property] = _data[property];
             }
             this.id = _data["id"];
+            this.nodeId = _data["nodeId"];
             this.modelId = _data["modelId"];
             this.force = _data["force"] ? ForceContract.fromJS(_data["force"]) : new ForceContract();
             this.direction = _data["direction"] ? Vector3.fromJS(_data["direction"]) : new Vector3();
@@ -2414,6 +2889,7 @@ export class PointLoadResponse implements IPointLoadResponse {
                 data[property] = this[property];
         }
         data["id"] = this.id;
+        data["nodeId"] = this.nodeId;
         data["modelId"] = this.modelId;
         data["force"] = this.force ? this.force.toJSON() : <any>undefined;
         data["direction"] = this.direction ? this.direction.toJSON() : <any>undefined;
@@ -2423,6 +2899,75 @@ export class PointLoadResponse implements IPointLoadResponse {
 
 export interface IPointLoadResponse {
     id: number;
+    nodeId: number;
+    modelId: string;
+    force: ForceContract;
+    direction: Vector3;
+
+    [key: string]: any;
+}
+
+export class PointLoadResponse2 implements IPointLoadResponse2 {
+    id!: number;
+    nodeId!: number;
+    modelId!: string;
+    force!: ForceContract;
+    direction!: Vector3;
+
+    [key: string]: any;
+
+    constructor(data?: IPointLoadResponse2) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.force = new ForceContract();
+            this.direction = new Vector3();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.nodeId = _data["nodeId"];
+            this.modelId = _data["modelId"];
+            this.force = _data["force"] ? ForceContract.fromJS(_data["force"]) : new ForceContract();
+            this.direction = _data["direction"] ? Vector3.fromJS(_data["direction"]) : new Vector3();
+        }
+    }
+
+    static fromJS(data: any): PointLoadResponse2 {
+        data = typeof data === 'object' ? data : {};
+        let result = new PointLoadResponse2();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["nodeId"] = this.nodeId;
+        data["modelId"] = this.modelId;
+        data["force"] = this.force ? this.force.toJSON() : <any>undefined;
+        data["direction"] = this.direction ? this.direction.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IPointLoadResponse2 {
+    id: number;
+    nodeId: number;
     modelId: string;
     force: ForceContract;
     direction: Vector3;
@@ -2551,7 +3096,7 @@ export interface IRestraint {
 }
 
 export class ResultOfElement1dResponse implements IResultOfElement1dResponse {
-    value!: Element1dResponse | undefined;
+    value!: Element1dResponse2 | undefined;
     error!: BeamOsError | undefined;
     isError!: boolean;
 
@@ -2572,7 +3117,7 @@ export class ResultOfElement1dResponse implements IResultOfElement1dResponse {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            this.value = _data["value"] ? Element1dResponse.fromJS(_data["value"]) : <any>undefined;
+            this.value = _data["value"] ? Element1dResponse2.fromJS(_data["value"]) : <any>undefined;
             this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
             this.isError = _data["isError"];
         }
@@ -2599,7 +3144,63 @@ export class ResultOfElement1dResponse implements IResultOfElement1dResponse {
 }
 
 export interface IResultOfElement1dResponse {
-    value: Element1dResponse | undefined;
+    value: Element1dResponse2 | undefined;
+    error: BeamOsError | undefined;
+    isError: boolean;
+
+    [key: string]: any;
+}
+
+export class ResultOfint implements IResultOfint {
+    value!: number;
+    error!: BeamOsError | undefined;
+    isError!: boolean;
+
+    [key: string]: any;
+
+    constructor(data?: IResultOfint) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.value = _data["value"];
+            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
+            this.isError = _data["isError"];
+        }
+    }
+
+    static fromJS(data: any): ResultOfint {
+        data = typeof data === 'object' ? data : {};
+        let result = new ResultOfint();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["value"] = this.value;
+        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
+        data["isError"] = this.isError;
+        return data;
+    }
+}
+
+export interface IResultOfint {
+    value: number;
     error: BeamOsError | undefined;
     isError: boolean;
 
@@ -2607,7 +3208,7 @@ export interface IResultOfElement1dResponse {
 }
 
 export class ResultOfMaterialResponse implements IResultOfMaterialResponse {
-    value!: MaterialResponse | undefined;
+    value!: MaterialResponse2 | undefined;
     error!: BeamOsError | undefined;
     isError!: boolean;
 
@@ -2628,7 +3229,7 @@ export class ResultOfMaterialResponse implements IResultOfMaterialResponse {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            this.value = _data["value"] ? MaterialResponse.fromJS(_data["value"]) : <any>undefined;
+            this.value = _data["value"] ? MaterialResponse2.fromJS(_data["value"]) : <any>undefined;
             this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
             this.isError = _data["isError"];
         }
@@ -2655,7 +3256,7 @@ export class ResultOfMaterialResponse implements IResultOfMaterialResponse {
 }
 
 export interface IResultOfMaterialResponse {
-    value: MaterialResponse | undefined;
+    value: MaterialResponse2 | undefined;
     error: BeamOsError | undefined;
     isError: boolean;
 
@@ -2712,6 +3313,62 @@ export class ResultOfModelResponse implements IResultOfModelResponse {
 
 export interface IResultOfModelResponse {
     value: ModelResponse | undefined;
+    error: BeamOsError | undefined;
+    isError: boolean;
+
+    [key: string]: any;
+}
+
+export class ResultOfModelResponseHydrated implements IResultOfModelResponseHydrated {
+    value!: ModelResponseHydrated | undefined;
+    error!: BeamOsError | undefined;
+    isError!: boolean;
+
+    [key: string]: any;
+
+    constructor(data?: IResultOfModelResponseHydrated) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.value = _data["value"] ? ModelResponseHydrated.fromJS(_data["value"]) : <any>undefined;
+            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
+            this.isError = _data["isError"];
+        }
+    }
+
+    static fromJS(data: any): ResultOfModelResponseHydrated {
+        data = typeof data === 'object' ? data : {};
+        let result = new ResultOfModelResponseHydrated();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
+        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
+        data["isError"] = this.isError;
+        return data;
+    }
+}
+
+export interface IResultOfModelResponseHydrated {
+    value: ModelResponseHydrated | undefined;
     error: BeamOsError | undefined;
     isError: boolean;
 
@@ -2998,62 +3655,6 @@ export interface IResultOfSectionProfileResponse {
     [key: string]: any;
 }
 
-export class ResultOfint implements IResultOfint {
-    value!: number;
-    error!: BeamOsError | undefined;
-    isError!: boolean;
-
-    [key: string]: any;
-
-    constructor(data?: IResultOfint) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"];
-            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
-            this.isError = _data["isError"];
-        }
-    }
-
-    static fromJS(data: any): ResultOfint {
-        data = typeof data === 'object' ? data : {};
-        let result = new ResultOfint();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value;
-        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
-        data["isError"] = this.isError;
-        return data;
-    }
-}
-
-export interface IResultOfint {
-    value: number;
-    error: BeamOsError | undefined;
-    isError: boolean;
-
-    [key: string]: any;
-}
-
 export class SectionProfileResponse implements ISectionProfileResponse {
     id!: number;
     modelId!: string;
@@ -3126,6 +3727,90 @@ export class SectionProfileResponse implements ISectionProfileResponse {
 }
 
 export interface ISectionProfileResponse {
+    id: number;
+    modelId: string;
+    area: AreaContract;
+    strongAxisMomentOfInertia: AreaMomentOfInertiaContract;
+    weakAxisMomentOfInertia: AreaMomentOfInertiaContract;
+    polarMomentOfInertia: AreaMomentOfInertiaContract;
+    strongAxisShearArea: AreaContract;
+    weakAxisShearArea: AreaContract;
+
+    [key: string]: any;
+}
+
+export class SectionProfileResponse2 implements ISectionProfileResponse2 {
+    id!: number;
+    modelId!: string;
+    area!: AreaContract;
+    strongAxisMomentOfInertia!: AreaMomentOfInertiaContract;
+    weakAxisMomentOfInertia!: AreaMomentOfInertiaContract;
+    polarMomentOfInertia!: AreaMomentOfInertiaContract;
+    strongAxisShearArea!: AreaContract;
+    weakAxisShearArea!: AreaContract;
+
+    [key: string]: any;
+
+    constructor(data?: ISectionProfileResponse2) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.area = new AreaContract();
+            this.strongAxisMomentOfInertia = new AreaMomentOfInertiaContract();
+            this.weakAxisMomentOfInertia = new AreaMomentOfInertiaContract();
+            this.polarMomentOfInertia = new AreaMomentOfInertiaContract();
+            this.strongAxisShearArea = new AreaContract();
+            this.weakAxisShearArea = new AreaContract();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.modelId = _data["modelId"];
+            this.area = _data["area"] ? AreaContract.fromJS(_data["area"]) : new AreaContract();
+            this.strongAxisMomentOfInertia = _data["strongAxisMomentOfInertia"] ? AreaMomentOfInertiaContract.fromJS(_data["strongAxisMomentOfInertia"]) : new AreaMomentOfInertiaContract();
+            this.weakAxisMomentOfInertia = _data["weakAxisMomentOfInertia"] ? AreaMomentOfInertiaContract.fromJS(_data["weakAxisMomentOfInertia"]) : new AreaMomentOfInertiaContract();
+            this.polarMomentOfInertia = _data["polarMomentOfInertia"] ? AreaMomentOfInertiaContract.fromJS(_data["polarMomentOfInertia"]) : new AreaMomentOfInertiaContract();
+            this.strongAxisShearArea = _data["strongAxisShearArea"] ? AreaContract.fromJS(_data["strongAxisShearArea"]) : new AreaContract();
+            this.weakAxisShearArea = _data["weakAxisShearArea"] ? AreaContract.fromJS(_data["weakAxisShearArea"]) : new AreaContract();
+        }
+    }
+
+    static fromJS(data: any): SectionProfileResponse2 {
+        data = typeof data === 'object' ? data : {};
+        let result = new SectionProfileResponse2();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["modelId"] = this.modelId;
+        data["area"] = this.area ? this.area.toJSON() : <any>undefined;
+        data["strongAxisMomentOfInertia"] = this.strongAxisMomentOfInertia ? this.strongAxisMomentOfInertia.toJSON() : <any>undefined;
+        data["weakAxisMomentOfInertia"] = this.weakAxisMomentOfInertia ? this.weakAxisMomentOfInertia.toJSON() : <any>undefined;
+        data["polarMomentOfInertia"] = this.polarMomentOfInertia ? this.polarMomentOfInertia.toJSON() : <any>undefined;
+        data["strongAxisShearArea"] = this.strongAxisShearArea ? this.strongAxisShearArea.toJSON() : <any>undefined;
+        data["weakAxisShearArea"] = this.weakAxisShearArea ? this.weakAxisShearArea.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ISectionProfileResponse2 {
     id: number;
     modelId: string;
     area: AreaContract;

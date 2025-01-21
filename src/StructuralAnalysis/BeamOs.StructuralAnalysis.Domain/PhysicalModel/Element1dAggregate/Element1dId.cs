@@ -1,8 +1,9 @@
 using System.Globalization;
+using BeamOs.Common.Domain.Models;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 
-public readonly record struct Element1dId
+public readonly record struct Element1dId : IIntBasedId
 {
     public int Id { get; }
 

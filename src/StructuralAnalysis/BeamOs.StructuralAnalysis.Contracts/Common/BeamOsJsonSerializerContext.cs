@@ -23,6 +23,7 @@ namespace BeamOs.StructuralAnalysis.Contracts.Common;
 [JsonSerializable(typeof(NodeResponse))]
 [JsonSerializable(typeof(Result<NodeResponse>))]
 [JsonSerializable(typeof(Result<ModelResponse>))]
+[JsonSerializable(typeof(Result<ModelResponseHydrated>))]
 [JsonSerializable(typeof(Result<Element1dResponse>))]
 [JsonSerializable(typeof(Result<MaterialResponse>))]
 [JsonSerializable(typeof(Result<SectionProfileResponse>))]
@@ -30,6 +31,7 @@ namespace BeamOs.StructuralAnalysis.Contracts.Common;
 [JsonSerializable(typeof(Result<MomentLoadResponse>))]
 [JsonSerializable(typeof(Result<NodeResultResponse>))]
 [JsonSerializable(typeof(Result<int>))]
+[JsonSerializable(typeof(Result))]
 internal partial class BeamOsJsonSerializerContext : JsonSerializerContext { }
 
 public static class BeamOsSerializerOptions
