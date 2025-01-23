@@ -18,7 +18,7 @@
                         <SelectionInfoSingleItemComponent ObjectToDisplay="@nodeResult"></SelectionInfoSingleItemComponent>
                     }
                 </MudExpansionPanel> *@
-            <SelectionInfoSingleItemComponent2 CanvasId="@CanvasId" ObjectName="@($"{selectedObjectInfo.TypeName} {selectedObjectInfo.Id}")" ObjectToDisplay="@GetBeamOsObjectByIdAndTypeName(selectedObjectInfo.Id, selectedObjectInfo.TypeName)"></SelectionInfoSingleItemComponent2>
+            <SelectionInfoSingleItemComponent CanvasId="@CanvasId" ObjectToDisplay="@GetBeamOsObjectByIdAndTypeName(selectedObjectInfo.Id, selectedObjectInfo.TypeName)"></SelectionInfoSingleItemComponent>
             }
             }
         </MudExpansionPanels>

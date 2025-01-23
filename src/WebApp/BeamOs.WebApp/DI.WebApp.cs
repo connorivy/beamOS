@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.CsSdk;
@@ -20,6 +21,7 @@ public static class DI
                 .SerializerOptions
                 .TypeInfoResolverChain
                 .Insert(0, BeamOsWebAppJsonSerializerContext.Default);
+            options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
         });
         services.AddSingleton(typeof(IAssemblyMarkerWebApp).Assembly);
         services.RegisterSharedServices<IAssemblyMarkerWebApp>();

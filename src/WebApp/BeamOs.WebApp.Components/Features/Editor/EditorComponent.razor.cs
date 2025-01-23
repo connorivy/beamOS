@@ -2,9 +2,11 @@ using System.Collections.Immutable;
 using BeamOs.CodeGen.EditorApi;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.StructuralAnalysis.Contracts.Common;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.Editors.ReadOnlyEditor;
+using BeamOs.WebApp.Components.Features.StructuralApi;
 using BeamOs.WebApp.Components.Features.UndoRedo;
 using BeamOs.WebApp.EditorCommands;
 using Fluxor;
@@ -17,7 +19,6 @@ namespace BeamOs.WebApp.Components.Features.Editor;
 public partial class EditorComponent(
     IStructuralAnalysisApiClientV1 apiClient,
     IEditorApiProxyFactory editorApiProxyFactory,
-    IState<AllEditorComponentState> allEditorComponentState,
     IStateSelection<AllEditorComponentState, EditorComponentState> state,
     IDispatcher dispatcher,
     LoadModelCommandHandler loadModelCommandHandler,
@@ -36,6 +37,8 @@ public partial class EditorComponent(
 
     [Parameter]
     public bool IsReadOnly { get; set; } = true;
+
+    public IStateSelection<AllEditorComponentState, EditorComponentState> State => state;
 
     //[Inject]
     //protected LoadModelByIdCommandHandler LoadModelCommandHandler { get; init; }
@@ -139,6 +142,27 @@ public partial class EditorComponent(
                 dispatcher.Dispatch(new UpdateNodeCacheItem(this.CanvasId, nodeResponse.Value));
             }
         });
+
+        this.SubscribeToAction<ModelEntityCreated>(async command =>
+        {
+            var state = this.State.Value;
+            if (state.EditorApi is null || command.ModelEntity.ModelId != state.LoadedModelId)
+            {
+                return;
+            }
+
+            if (!command.HandledByEditor)
+            {
+                if (command.ModelEntity is NodeResponse nodeResponse)
+                {
+                    await state.EditorApi.CreateNodeAsync(nodeResponse);
+                }
+                else if (command.ModelEntity is Element1dResponse element1dResponse)
+                {
+                    await state.EditorApi.CreateElement1dAsync(element1dResponse);
+                }
+            }
+        });
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -221,13 +245,14 @@ public record struct UpdateNodeCacheItem(string CanvasId, NodeResponse NodeRespo
 public record EditorComponentState(
     string? LoadingText,
     bool IsLoading,
+    Guid? LoadedModelId,
     IEditorApiAlpha? EditorApi,
     CachedModelResponse? CachedModelResponse,
     SelectedObject[] SelectedObjects
 )
 {
     public EditorComponentState()
-        : this(null, false, null, null, []) { }
+        : this(null, false, null, null, null, []) { }
 }
 
 //public static class EditorComponentStateReducers
@@ -325,7 +350,8 @@ public static class AllEditorComponentStateReducers
                     currentEditorState with
                     {
                         IsLoading = false,
-                        CachedModelResponse = action.CachedModelResponse
+                        CachedModelResponse = action.CachedModelResponse,
+                        LoadedModelId = action.CachedModelResponse.Id
                     }
                 )
         };

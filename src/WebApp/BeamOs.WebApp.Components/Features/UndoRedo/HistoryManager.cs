@@ -17,7 +17,7 @@ public sealed class HistoryManager(IDispatcher dispatcher)
             return;
         }
 
-        dispatcher.Dispatch(undoable.GetUndoCommand(new(false, false)));
+        dispatcher.Dispatch(undoable.GetUndoCommand(BeamOsClientCommandArgs.Unhandled));
 
         this.undoActions.RemoveFirst();
         this.redoActions.AddFirst(undoable);
@@ -31,7 +31,7 @@ public sealed class HistoryManager(IDispatcher dispatcher)
             return;
         }
 
-        dispatcher.Dispatch(undoable.WithArgs(new(false, false)));
+        dispatcher.Dispatch(undoable.WithArgs(BeamOsClientCommandArgs.Unhandled));
 
         this.redoActions.RemoveFirst();
         this.undoActions.AddFirst(undoable);

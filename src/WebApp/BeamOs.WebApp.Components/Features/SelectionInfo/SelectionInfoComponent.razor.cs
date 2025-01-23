@@ -20,8 +20,25 @@ public partial class SelectionInfoComponent(
 
     //[Inject]
     //private AllStructuralAnalysisModelCaches AllStructuralAnalysisModelCaches { get; init; }
+    private readonly SelectionInfoFactory selectionInfoFactory = new();
 
-    private object GetBeamOsObjectByIdAndTypeName(int id, string typeName)
+    //private object GetBeamOsObjectByIdAndTypeName(int id, string typeName)
+    //{
+    //    var cachedModelResponse = state.Value.CachedModelResponse;
+    //    if (cachedModelResponse is null)
+    //    {
+    //        return null;
+    //    }
+
+    //    return typeName switch
+    //    {
+    //        "Node" => cachedModelResponse.Nodes[id],
+    //        "PointLoad" => cachedModelResponse.PointLoads[id],
+    //        "Element1d" => cachedModelResponse.Element1ds[id]
+    //    };
+    //}
+
+    private ISelectionInfo GetBeamOsObjectByIdAndTypeName(int id, string typeName)
     {
         var cachedModelResponse = state.Value.CachedModelResponse;
         if (cachedModelResponse is null)
@@ -29,12 +46,15 @@ public partial class SelectionInfoComponent(
             return null;
         }
 
-        return typeName switch
+        object selected = typeName switch
         {
             "Node" => cachedModelResponse.Nodes[id],
             "PointLoad" => cachedModelResponse.PointLoads[id],
-            "Element1d" => cachedModelResponse.Element1ds[id]
+            "Element1d" => cachedModelResponse.Element1ds[id],
+            _ => throw new NotImplementedException($"type name, {typeName}, is not implemented")
         };
+
+        return this.selectionInfoFactory.Create(selected, selected.GetType(), $"{typeName} {id}");
     }
 
     protected override void OnInitialized()

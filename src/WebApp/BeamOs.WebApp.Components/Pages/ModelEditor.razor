@@ -15,12 +15,15 @@
 @* @using BeamOs.Contracts.PhysicalModel.PointLoad *@
 @using BeamOs.WebApp.Components.Features.Editor
 @using BeamOs.WebApp.Components.Features.SelectionInfo
+@using BeamOs.WebApp.Components.Features.StructuralApi
 @using BeamOs.WebApp.EditorCommands
 @using Fluxor.Blazor.Web.Components
 @using MudBlazor
 @using BeamOs.WebApp.Components.Features.Editors.ReadOnlyEditor;
 @* @using static BeamOs.WebApp.Components.Components.Editor.EditorComponent *@
 @* @using BeamOs.WebApp.Components.Components.Editor.CommandHandlers; *@
+
+@inherits FluxorComponent
 
 <PageTitle>Editor</PageTitle>
 
@@ -41,7 +44,11 @@
         @*     <SelectionInfoComponent SelectedObjects="@editorComponent.EditorComponentState.SelectedObjects" ModelId="@editorComponent.EditorComponentState.LoadedModelId"></SelectionInfoComponent> *@
         @* </MudPopover> *@
         @* <StructuralApiClientComponent ModelId="@this.ModelId" CanvasId="@this.editorComponent.ElementId"></StructuralApiClientComponent> *@
-        <SelectionInfoComponent Class="absolute right-0 top-0 w-80 p-4" CanvasId="@editorComponent.CanvasId"></SelectionInfoComponent>
+        @if (this.editorState.Value.LoadedModelId is Guid modelId)
+        {
+            <StructuralApiComponent2 Class="absolute left-0 top-0 w-1/4 p-4" ModelId="@modelId" CanvasId="@editorComponent.CanvasId"></StructuralApiComponent2>
+            <SelectionInfoComponent Class="absolute right-0 top-0 w-1/4 p-4" CanvasId="@editorComponent.CanvasId"></SelectionInfoComponent>
+        }
     }
 
 </MudContainer>
@@ -52,31 +59,6 @@
 
     public string? CanvasId { get; private set; }
 
-    // [Inject]
-    // private IApiAlphaClient ApiAlphaClient { get; init; }
-
-    // [Inject]
-    // private AddEntityContractToEditorCommandHandler AddEntityContractToEditorCommandHandler { get; init; }
-
-    // [Inject]
-    // private AddEntityContractToCacheCommandHandler AddEntityContractToCacheCommandHandler { get; init; }
-
-    // [Inject]
-    // private AddShearDiagramsToEditorCommandHandler AddShearDiagramsToEditorCommandHandler { get; init; }
-
-    // [Inject]
-    // private AddMomentDiagramsToEditorCommandHandler AddMomentDiagramsToEditorCommandHandler { get; init; }
-
-    // [Inject]
-    // private AddPointLoadsToEditorCommandHandler AddPointLoadsToEditorCommandHandler { get; init; }
-
-    // [Inject]
-    // private AllStructuralAnalysisModelCaches allStructuralAnalysisModelCaches { get; init; }
-
-    // [Inject]
-    // private NavigationManager NavigationManager { get; init; }
-
-    // public string modelIdInput { get; set; }
     private SelectedObject[] selectedObjects = [];
 
     private EditorComponent editorComponent
@@ -84,10 +66,15 @@
         get;
         set
         {
-            selectedObjects = [new(1, "Node")];
             field = value;
-            this.StateHasChanged();
+            this.editorState.Select(s => s.EditorState[value.CanvasId]);
         }
+    }
+
+    private readonly IStateSelection<AllEditorComponentState, EditorComponentState> editorState;
+    public ModelEditor(IStateSelection<AllEditorComponentState, EditorComponentState> editorState)
+    {
+        this.editorState = editorState;
     }
 
     // protected override void OnInitialized()
