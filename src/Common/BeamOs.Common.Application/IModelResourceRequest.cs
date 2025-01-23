@@ -1,9 +1,6 @@
-namespace BeamOs.Common.Application;
+using BeamOs.Common.Contracts;
 
-public interface IHasModelId
-{
-    public Guid ModelId { get; }
-}
+namespace BeamOs.Common.Application;
 
 public interface IModelResourceRequest<TBody> : IHasModelId
 {

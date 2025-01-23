@@ -9,6 +9,7 @@ global using ResultOfboolean = BeamOs.Common.Contracts.Result<bool>;
 global using ResultOfElement1dResponse = BeamOs.Common.Contracts.Result<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d.Element1dResponse>;
 global using ResultOfint = BeamOs.Common.Contracts.Result<int>;
 global using ResultOfMaterialResponse = BeamOs.Common.Contracts.Result<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material.MaterialResponse>;
+global using ResultOfModelEntityResponse = BeamOs.Common.Contracts.Result<BeamOs.StructuralAnalysis.Contracts.Common.ModelEntityResponse>;
 global using ResultOfModelResponse = BeamOs.Common.Contracts.Result<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model.ModelResponse>;
 global using ResultOfModelResponseHydrated = BeamOs.Common.Contracts.Result<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model.ModelResponseHydrated>;
 global using ResultOfMomentLoadResponse = BeamOs.Common.Contracts.Result<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoad.MomentLoadResponse>;

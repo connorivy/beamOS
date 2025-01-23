@@ -20,6 +20,9 @@ public class EditorApiGenerator : AbstractGenerator
         _ = addMethod("CreateElement1d").Accepts<Element1dResponse>();
         _ = addMethod("CreateElement1ds").Accepts<ICollection<Element1dResponse>>();
 
+        _ = addMethod("DeleteElement1d").Accepts<IModelEntity>();
+        _ = addMethod("DeleteElement1ds").Accepts<ICollection<IModelEntity>>();
+
         _ = addMethod("CreateModel").Accepts<ModelResponse>();
 
         //_ = addMethod("CreateModelHydrated").Accepts<ModelResponseHydrated>();
@@ -27,8 +30,14 @@ public class EditorApiGenerator : AbstractGenerator
         _ = addMethod("CreateNode").Accepts<NodeResponse>();
         _ = addMethod("CreateNodes").Accepts<ICollection<NodeResponse>>();
 
+        _ = addMethod("DeleteNode").Accepts<IModelEntity>();
+        _ = addMethod("DeleteNodes").Accepts<ICollection<IModelEntity>>();
+
         _ = addMethod("CreatePointLoad").Accepts<PointLoadResponse>();
         _ = addMethod("CreatePointLoads").Accepts<ICollection<PointLoadResponse>>();
+
+        _ = addMethod("DeletePointLoad").Accepts<IModelEntity>();
+        _ = addMethod("DeletePointLoads").Accepts<ICollection<IModelEntity>>();
 
         //_ = addMethod("CreateShearDiagram").Accepts<ShearDiagramResponse>();
         //_ = addMethod("CreateShearDiagrams").Accepts<ShearDiagramResponse[]>();

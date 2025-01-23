@@ -8,7 +8,7 @@ public abstract partial class BeamOsModelIdRequestBaseEndpoint<TResponse>
     : BeamOsBaseEndpoint<ModelIdRequest, TResponse> { }
 
 public abstract partial class BeamOsModelResourceQueryBaseEndpoint<TResponse>
-    : BeamOsBaseEndpoint<GetModelResourceQuery, TResponse> { }
+    : BeamOsBaseEndpoint<ModelEntityRequest, TResponse> { }
 
 public abstract partial class BeamOsAnalyticalResultResourceQueryBaseEndpoint<TResponse>
     : BeamOsBaseEndpoint<GetAnalyticalResultResourceQuery, TResponse> { }

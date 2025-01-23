@@ -1,10 +1,15 @@
 using System.Reflection;
 using System.Text.Json;
-using BeamOs.CodeGen.EditorApi;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
+using BeamOs.Common.Api;
 using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis.Contracts.Common;
-using BeamOs.WebApp.Components.Features.Editor;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 using BeamOs.WebApp.Components.Features.SelectionInfo;
 using BeamOs.WebApp.EditorCommands;
 using BeamOs.WebApp.EditorCommands.Interfaces;
@@ -53,6 +58,7 @@ public partial class StructuralApiComponent2 : FluxorComponent
         nameof(IStructuralAnalysisApiClientV1.CreateModelAsync),
         //nameof(IStructuralAnalysisApiClientV1.GetElement1dsAsync),
         nameof(IStructuralAnalysisApiClientV1.GetModelAsync),
+        nameof(IStructuralAnalysisApiClientV1.GetElement1dAsync),
     //nameof(IStructuralAnalysisApiClientV1.GetModelResultsAsync),
     //nameof(IStructuralAnalysisApiClientV1.GetModelsAsync),
     //nameof(IStructuralAnalysisApiClientV1.GetMomentDiagramAsync),
@@ -76,9 +82,30 @@ public partial class StructuralApiComponent2 : FluxorComponent
             )
             .OrderBy(m => m.Name)
             .ToArray();
+
+        ClientMethods = typeof(IStructuralAnalysisApiClientV1)
+            .GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(
+                m =>
+                    m.GetParameters().LastOrDefault() is var x
+                    && x is not null
+                    && x.ParameterType != typeof(CancellationToken)
+                    && !methodsToExclude.Contains(m.Name)
+            )
+            .OrderBy(m => m.Name)
+            .Select(
+                m =>
+                    new ApiClientMethodInfo(
+                        m,
+                        GetHttpMethodForMethodInfo(m),
+                        GetPrimaryElementType(m)
+                    )
+            )
+            .ToArray();
     }
 
     private static readonly MethodInfo[] methods;
+    private static readonly ApiClientMethodInfo[] ClientMethods;
 
     protected override void OnInitialized()
     {
@@ -136,14 +163,15 @@ public partial class StructuralApiComponent2 : FluxorComponent
         await base.OnAfterRenderAsync(firstRender);
     }
 
-    private void SelectMethod(MethodInfo method)
+    private void SelectMethod(ApiClientMethodInfo method)
     {
         this.Dispatcher.Dispatch(new ApiClientMethodSelected(this.ModelId, method));
     }
 
     private async Task HandleSubmit()
     {
-        var selectionInfos = this.State.Value.SelectionInfo;
+        var state = this.State.Value;
+        var selectionInfos = state.SelectionInfo;
         object?[] parameters = new object?[selectionInfos.Length];
 
         for (int i = 0; i < selectionInfos.Length; i++)
@@ -176,9 +204,10 @@ public partial class StructuralApiComponent2 : FluxorComponent
             }
         }
 
-        var result = this.State
-            .Value
+        var result = state
             .SelectedMethod
+            .Value
+            .MethodInfo
             .Invoke(this.StructuralAnalysisApiAlphaClient, parameters);
 
         if (result is Task t)
@@ -194,9 +223,23 @@ public partial class StructuralApiComponent2 : FluxorComponent
 
         if (result is IModelEntity modelEntity)
         {
-            Dispatcher.Dispatch(
-                new ModelEntityCreated() { ModelEntity = modelEntity, HandledByServer = true }
-            );
+            if (state.SelectedMethod.Value.Http == Http.Delete)
+            {
+                this.Dispatcher.Dispatch(
+                    new ModelEntityDeleted()
+                    {
+                        ModelEntity = modelEntity,
+                        EntityType = state.SelectedMethod.Value.PrimaryElementType,
+                        HandledByServer = true
+                    }
+                );
+            }
+            else if (state.SelectedMethod.Value.Http == Http.Post)
+            {
+                this.Dispatcher.Dispatch(
+                    new ModelEntityCreated() { ModelEntity = modelEntity, HandledByServer = true }
+                );
+            }
         }
 
         //if (result is BeamOsEntityContractBase contract)
@@ -236,31 +279,81 @@ public partial class StructuralApiComponent2 : FluxorComponent
         return name;
     }
 
-    private static (Color, string) GetChipInfoForMethod(MethodInfo methodInfo)
+    private static string GetHttpMethodForMethodInfo(MethodInfo methodInfo)
     {
         if (
             methodInfo.Name.StartsWith("Create", StringComparison.Ordinal)
             || methodInfo.Name.StartsWith("Run", StringComparison.Ordinal)
         )
         {
-            return (Color.Success, "POST");
+            return Http.Post;
         }
         else if (methodInfo.Name.StartsWith("Delete", StringComparison.Ordinal))
         {
-            return (Color.Error, "DEL");
+            return Http.Delete;
         }
         else if (
             methodInfo.Name.StartsWith("Patch", StringComparison.Ordinal)
             || methodInfo.Name.StartsWith("Update", StringComparison.Ordinal)
         )
         {
-            return (Color.Warning, "PATCH");
+            return Http.Patch;
         }
         else if (methodInfo.Name.StartsWith("Get", StringComparison.Ordinal))
         {
-            return (Color.Info, "GET");
+            return Http.Get;
         }
         throw new Exception("todo");
+    }
+
+    private static string GetPrimaryElementType(MethodInfo methodInfo)
+    {
+        if (methodInfo.Name.Contains(nameof(Element1d), StringComparison.Ordinal))
+        {
+            return nameof(Element1d);
+        }
+        else if (methodInfo.Name.Contains(nameof(Node), StringComparison.Ordinal))
+        {
+            return nameof(Node);
+        }
+        else if (methodInfo.Name.Contains(nameof(PointLoad), StringComparison.Ordinal))
+        {
+            return nameof(PointLoad);
+        }
+        else if (methodInfo.Name.Contains(nameof(MomentLoad), StringComparison.Ordinal))
+        {
+            return nameof(MomentLoad);
+        }
+        else if (methodInfo.Name.Contains(nameof(Material), StringComparison.Ordinal))
+        {
+            return nameof(Material);
+        }
+        else if (methodInfo.Name.Contains(nameof(SectionProfile), StringComparison.Ordinal))
+        {
+            return nameof(SectionProfile);
+        }
+        else if (methodInfo.Name.Contains(nameof(Model), StringComparison.Ordinal))
+        {
+            return nameof(Model);
+        }
+        else if (methodInfo.Name.Contains("OpenSees", StringComparison.Ordinal))
+        {
+            return nameof(Model);
+        }
+        throw new Exception($"could not find primary element type for method {methodInfo.Name}");
+    }
+
+    private static Color GetChipColor(string http)
+    {
+        return http switch
+        {
+            Http.Delete => Color.Error,
+            Http.Get => Color.Info,
+            Http.Patch => Color.Warning,
+            Http.Post => Color.Success,
+            Http.Put => Color.Warning,
+            _ => throw new Exception("todo")
+        };
     }
 
     private void GoBack()
@@ -268,6 +361,12 @@ public partial class StructuralApiComponent2 : FluxorComponent
         this.Dispatcher.Dispatch(new ApiClientMethodSelected(this.ModelId, null));
     }
 }
+
+public readonly record struct ApiClientMethodInfo(
+    MethodInfo MethodInfo,
+    string Http,
+    string PrimaryElementType
+);
 
 public readonly record struct ModelEntityCreated : IBeamOsClientCommand
 {
@@ -291,6 +390,7 @@ public readonly record struct ModelEntityDeleted : IBeamOsClientCommand
     public bool HandledByBlazor { get; init; }
     public bool HandledByServer { get; init; }
     public IModelEntity ModelEntity { get; init; }
+    public string EntityType { get; init; }
 
     public IBeamOsClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
         new ModelEntityCreated() { ModelEntity = this.ModelEntity };
@@ -302,7 +402,7 @@ public readonly record struct ModelEntityDeleted : IBeamOsClientCommand
 [FeatureState]
 public record class StructuralApiClientState2(
     string? ModelId,
-    MethodInfo? SelectedMethod,
+    ApiClientMethodInfo? SelectedMethod,
     ISelectionInfo[]? SelectionInfo,
     List<Lazy<ElementReference>>? LazyElementRefs,
     List<ElementReference>? ElementRefs,
@@ -356,7 +456,10 @@ public static class FieldSelectedActionReducer
     }
 }
 
-public readonly record struct ApiClientMethodSelected(Guid ModelId, MethodInfo? MethodInfo);
+public readonly record struct ApiClientMethodSelected(
+    Guid ModelId,
+    ApiClientMethodInfo? MethodInfo
+);
 
 public static class ApiClientMethodSelectedActionReducer2
 {
@@ -383,6 +486,8 @@ public static class ApiClientMethodSelectedActionReducer2
         {
             SelectedMethod = action.MethodInfo,
             SelectionInfo = action
+                .MethodInfo
+                .Value
                 .MethodInfo
                 .GetParameters()
                 .Select(p => selectionInfoFactory.Create(null, p.ParameterType, p.Name, true, 1))

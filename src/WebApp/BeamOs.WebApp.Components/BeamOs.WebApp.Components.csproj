@@ -25,6 +25,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\codeGen\BeamOs.CodeGen.EditorApi\BeamOs.CodeGen.EditorApi.csproj" />
     <ProjectReference Include="..\..\..\codeGen\BeamOs.CodeGen.StructuralAnalysisApiClient\BeamOs.CodeGen.StructuralAnalysisApiClient.csproj" />
+    <ProjectReference Include="..\..\Common\BeamOs.Common.Api\BeamOs.Common.Api.csproj" />
     <ProjectReference Include="..\..\Common\BeamOs.Common.Application\BeamOs.Common.Application.csproj" />
     <ProjectReference Include="..\..\StructuralAnalysis\BeamOs.StructuralAnalysis.CsSdk\BeamOs.StructuralAnalysis.CsSdk.csproj" />
     <ProjectReference Include="..\BeamOs.WebApp.EditorCommands\BeamOs.WebApp.EditorCommands.csproj" />

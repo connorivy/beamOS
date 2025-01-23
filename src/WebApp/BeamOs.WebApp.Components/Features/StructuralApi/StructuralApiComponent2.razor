@@ -12,16 +12,15 @@
             <MudDivider Class="mt-1" />
             <MudExpansionPanels MultiExpansion="true" Outlined="false" Elevation="0" Dense="true" Class="grow overflow-y-auto">
                 <MudList T="string" sel>
-                    @foreach (var method in methods)
+                    @foreach (var methodInfo in ClientMethods)
                     {
-                        var cleanMethodName = CleanMethodName(method.Name);
-                        var chipInfo = GetChipInfoForMethod(method);
-                        <MudListItem @onclick="() => SelectMethod(method)">
+                        var cleanMethodName = CleanMethodName(methodInfo.MethodInfo.Name);
+                        <MudListItem @onclick="() => SelectMethod(methodInfo)">
                             <MudStack StretchItems="StretchItems.Start" Row="true">
                                 <MudTooltip Text="@cleanMethodName" RootClass="truncate">
                                     <MudText Class="truncate">@cleanMethodName</MudText>
                                 </MudTooltip>
-                                <MudChip Size="Size.Small" Variant="Variant.Text" Color="@chipInfo.Item1" Class="m-0">@chipInfo.Item2</MudChip>
+                                <MudChip Size="Size.Small" Variant="Variant.Text" Color="@GetChipColor(methodInfo.Http)" Class="m-0">@methodInfo.Http</MudChip>
                             </MudStack>
                         </MudListItem>
                     }
@@ -40,7 +39,7 @@ else
             <div class="flex flex-row h-fit w-fit">
                 <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="GoBack" Class="p-0">Back</MudIconButton>
             </div>
-            <MudText Align="Align.Center" Typo="Typo.h6">@CleanMethodName(this.State.Value.SelectedMethod.Name)</MudText>
+            <MudText Align="Align.Center" Typo="Typo.h6">@CleanMethodName(this.State.Value.SelectedMethod.Value.MethodInfo.Name)</MudText>
             @* <MudText Typo="Typo.body2" Class="mud-text-secondary">@Subtitle</MudText> *@
             <MudDivider Class="mt-1" />
             <MudExpansionPanels MultiExpansion="true" Outlined="false" Elevation="0" Dense="true" Class="grow overflow-y-auto">

@@ -1,3 +1,4 @@
+using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 
 namespace BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;

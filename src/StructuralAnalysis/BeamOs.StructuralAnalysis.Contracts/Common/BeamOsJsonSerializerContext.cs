@@ -30,7 +30,9 @@ namespace BeamOs.StructuralAnalysis.Contracts.Common;
 [JsonSerializable(typeof(Result<PointLoadResponse>))]
 [JsonSerializable(typeof(Result<MomentLoadResponse>))]
 [JsonSerializable(typeof(Result<NodeResultResponse>))]
+[JsonSerializable(typeof(Result<ModelEntityResponse>))]
 [JsonSerializable(typeof(Result<int>))]
+[JsonSerializable(typeof(Result<bool>))]
 [JsonSerializable(typeof(Result))]
 internal partial class BeamOsJsonSerializerContext : JsonSerializerContext { }
 

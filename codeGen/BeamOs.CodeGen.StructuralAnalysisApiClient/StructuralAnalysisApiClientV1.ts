@@ -59,6 +59,11 @@ export interface IStructuralAnalysisApiClientV1 {
     /**
      * @return OK
      */
+    deleteElement1d(modelId: string, id: number): Promise<ResultOfModelEntityResponse>;
+
+    /**
+     * @return OK
+     */
     getElement1d(modelId: string, id: number): Promise<ResultOfElement1dResponse>;
 
     /**
@@ -470,6 +475,49 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             });
         }
         return Promise.resolve<ResultOfElement1dResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    deleteElement1d(modelId: string, id: number): Promise<ResultOfModelEntityResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/element1ds/{id}";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeleteElement1d(_response);
+        });
+    }
+
+    protected processDeleteElement1d(response: Response): Promise<ResultOfModelEntityResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfModelEntityResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfModelEntityResponse>(null as any);
     }
 
     /**
@@ -1931,6 +1979,58 @@ export interface IMaterialResponse2 {
     [key: string]: any;
 }
 
+export class ModelEntityResponse implements IModelEntityResponse {
+    id!: number;
+    modelId!: string;
+
+    [key: string]: any;
+
+    constructor(data?: IModelEntityResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.modelId = _data["modelId"];
+        }
+    }
+
+    static fromJS(data: any): ModelEntityResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ModelEntityResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["modelId"] = this.modelId;
+        return data;
+    }
+}
+
+export interface IModelEntityResponse {
+    id: number;
+    modelId: string;
+
+    [key: string]: any;
+}
+
 export class ModelResponse implements IModelResponse {
     id!: string;
     name!: string;
@@ -3257,6 +3357,62 @@ export class ResultOfMaterialResponse implements IResultOfMaterialResponse {
 
 export interface IResultOfMaterialResponse {
     value: MaterialResponse2 | undefined;
+    error: BeamOsError | undefined;
+    isError: boolean;
+
+    [key: string]: any;
+}
+
+export class ResultOfModelEntityResponse implements IResultOfModelEntityResponse {
+    value!: ModelEntityResponse | undefined;
+    error!: BeamOsError | undefined;
+    isError!: boolean;
+
+    [key: string]: any;
+
+    constructor(data?: IResultOfModelEntityResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.value = _data["value"] ? ModelEntityResponse.fromJS(_data["value"]) : <any>undefined;
+            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
+            this.isError = _data["isError"];
+        }
+    }
+
+    static fromJS(data: any): ResultOfModelEntityResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ResultOfModelEntityResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
+        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
+        data["isError"] = this.isError;
+        return data;
+    }
+}
+
+export interface IResultOfModelEntityResponse {
+    value: ModelEntityResponse | undefined;
     error: BeamOsError | undefined;
     isError: boolean;
 

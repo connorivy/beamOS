@@ -4,6 +4,8 @@ using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.Editors.ReadOnlyEditor;
 using BeamOs.WebApp.Components.Features.StructuralApi;
@@ -40,69 +42,7 @@ public partial class EditorComponent(
 
     public IStateSelection<AllEditorComponentState, EditorComponentState> State => state;
 
-    //[Inject]
-    //protected LoadModelByIdCommandHandler LoadModelCommandHandler { get; init; }
-
-    //[Inject]
-    //protected IStateRepository<EditorComponentState> EditorComponentStateRepository { get; init; }
-
-    //[Inject]
-    //protected ChangeComponentStateCommandHandler<EditorComponentState> ChangeComponentStateCommandHandler { get; init; }
-
-    //public EditorComponentState EditorComponentState =>
-    //    this.EditorComponentStateRepository.GetOrSetComponentStateByCanvasId(this.CanvasId);
-
-    //[Inject]
-    //private IDispatcher Dispatcher { get; init; }
-
     public static string CreateCanvasId() => "id" + Guid.NewGuid().ToString("N");
-
-    //const string physicalModelId = "00000000-0000-0000-0000-000000000000";
-
-    //private HubConnection hubConnection;
-
-    //private List<IIntegrationEvent> integrationEvents = [];
-
-    //protected override void OnInitialized()
-    //{
-    //    EventEmitter.VisibleStateChanged += this.EventEmitter_VisibleStateChanged;
-
-    //    this.SubscribeToAction<ChangeSelectionCommand>(async c =>
-    //    {
-    //        if (c.CanvasId != this.CanvasId)
-    //        {
-    //            return;
-    //        }
-    //        await this.ChangeComponentState(
-    //            state => state with { SelectedObjects = c.SelectedObjects }
-    //        );
-    //    });
-
-    //    this.SubscribeToAction<SetColorFilterCommand>(async command =>
-    //    {
-    //        if (command.CanvasId != this.CanvasId)
-    //        {
-    //            return;
-    //        }
-
-    //        await this.EditorApiAlpha.SetColorFilterAsync(command.Command);
-    //    });
-
-    //    this.SubscribeToAction<RemoveColorFilterCommand>(async command =>
-    //    {
-    //        if (command.CanvasId != this.CanvasId)
-    //        {
-    //            return;
-    //        }
-
-    //        await this.EditorApiAlpha.ClearFiltersAsync(command.Command);
-    //    });
-
-    //    base.OnInitialized();
-    //}
-
-    //private void EventEmitter_VisibleStateChanged(object? sender, EventArgs _) =>
-    //    this.InvokeAsync(this.StateHasChanged);
 
     protected override void OnInitialized()
     {
@@ -160,6 +100,27 @@ public partial class EditorComponent(
                 else if (command.ModelEntity is Element1dResponse element1dResponse)
                 {
                     await state.EditorApi.CreateElement1dAsync(element1dResponse);
+                }
+            }
+        });
+
+        this.SubscribeToAction<ModelEntityDeleted>(async command =>
+        {
+            var state = this.State.Value;
+            if (state.EditorApi is null || command.ModelEntity.ModelId != state.LoadedModelId)
+            {
+                return;
+            }
+
+            if (!command.HandledByEditor)
+            {
+                if (command.EntityType == nameof(Element1d))
+                {
+                    await state.EditorApi.DeleteElement1dAsync(command.ModelEntity);
+                }
+                else if (command.EntityType == nameof(Node))
+                {
+                    await state.EditorApi.DeleteNodeAsync(command.ModelEntity);
                 }
             }
         });

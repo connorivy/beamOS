@@ -77,9 +77,10 @@ public static class EndpointToMinimalApi
 
         Func<string, Delegate, IEndpointConventionBuilder> mapFunc = endpointType switch
         {
-            Http.Post => app.MapPost,
+            Http.Delete => app.MapDelete,
             Http.Get => app.MapGet,
             Http.Patch => app.MapPatch,
+            Http.Post => app.MapPost,
             Http.Put => app.MapPut,
             _ => throw new NotImplementedException()
         };

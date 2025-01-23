@@ -42,6 +42,15 @@ internal abstract class ModelResourceRepositoryBase<TId, TEntity>(
             .Set<TEntity>()
             .AsNoTracking()
             .FirstOrDefaultAsync(m => m.ModelId == modelId && m.Id.Equals((TId)id));
+
+    public async Task RemoveById(ModelId modelId, TId id)
+    {
+        var entity = await this.DbContext.Set<TEntity>().FindAsync([id, modelId]);
+        if (entity is not null)
+        {
+            this.DbContext.Set<TEntity>().Remove(entity);
+        }
+    }
 }
 
 internal abstract class AnalyticalResultRepositoryBase<TId, TEntity>(

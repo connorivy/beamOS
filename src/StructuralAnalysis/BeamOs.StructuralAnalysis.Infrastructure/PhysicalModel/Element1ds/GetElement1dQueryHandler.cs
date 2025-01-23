@@ -1,7 +1,6 @@
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.CsSdk.Mappers.UnitValueDtoMappers;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
@@ -11,10 +10,10 @@ using Riok.Mapperly.Abstractions;
 namespace BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Element1ds;
 
 public class GetElement1dQueryHandler(StructuralAnalysisDbContext dbContext)
-    : IQueryHandler<GetModelResourceQuery, Element1dResponse>
+    : IQueryHandler<IModelEntity, Element1dResponse>
 {
     public async Task<Result<Element1dResponse>> ExecuteAsync(
-        GetModelResourceQuery query,
+        IModelEntity query,
         CancellationToken ct = default
     )
     {

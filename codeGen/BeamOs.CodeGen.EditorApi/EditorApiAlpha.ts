@@ -23,6 +23,16 @@ export interface IEditorApiAlpha {
     /**
      * @return OK
      */
+    deleteElement1d(body: IModelEntity): Promise<Result>;
+
+    /**
+     * @return OK
+     */
+    deleteElement1ds(body: IModelEntity[]): Promise<Result>;
+
+    /**
+     * @return OK
+     */
     createModel(body: ModelResponse): Promise<Result>;
 
     /**
@@ -38,12 +48,32 @@ export interface IEditorApiAlpha {
     /**
      * @return OK
      */
+    deleteNode(body: IModelEntity): Promise<Result>;
+
+    /**
+     * @return OK
+     */
+    deleteNodes(body: IModelEntity[]): Promise<Result>;
+
+    /**
+     * @return OK
+     */
     createPointLoad(body: PointLoadResponse): Promise<Result>;
 
     /**
      * @return OK
      */
     createPointLoads(body: PointLoadResponse[]): Promise<Result>;
+
+    /**
+     * @return OK
+     */
+    deletePointLoad(body: IModelEntity): Promise<Result>;
+
+    /**
+     * @return OK
+     */
+    deletePointLoads(body: IModelEntity[]): Promise<Result>;
 
     /**
      * @return OK
@@ -146,6 +176,88 @@ export class EditorApiAlpha implements IEditorApiAlpha {
     }
 
     protected processCreateElement1ds(response: Response): Promise<Result> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    deleteElement1d(body: IModelEntity): Promise<Result> {
+        let url_ = this.baseUrl + "/EditorApiAlpha/DeleteElement1d";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeleteElement1d(_response);
+        });
+    }
+
+    protected processDeleteElement1d(response: Response): Promise<Result> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    deleteElement1ds(body: IModelEntity[]): Promise<Result> {
+        let url_ = this.baseUrl + "/EditorApiAlpha/DeleteElement1ds";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeleteElement1ds(_response);
+        });
+    }
+
+    protected processDeleteElement1ds(response: Response): Promise<Result> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -289,6 +401,88 @@ export class EditorApiAlpha implements IEditorApiAlpha {
     /**
      * @return OK
      */
+    deleteNode(body: IModelEntity): Promise<Result> {
+        let url_ = this.baseUrl + "/EditorApiAlpha/DeleteNode";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeleteNode(_response);
+        });
+    }
+
+    protected processDeleteNode(response: Response): Promise<Result> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    deleteNodes(body: IModelEntity[]): Promise<Result> {
+        let url_ = this.baseUrl + "/EditorApiAlpha/DeleteNodes";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeleteNodes(_response);
+        });
+    }
+
+    protected processDeleteNodes(response: Response): Promise<Result> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
     createPointLoad(body: PointLoadResponse): Promise<Result> {
         let url_ = this.baseUrl + "/EditorApiAlpha/CreatePointLoad";
         url_ = url_.replace(/[?&]$/, "");
@@ -351,6 +545,88 @@ export class EditorApiAlpha implements IEditorApiAlpha {
     }
 
     protected processCreatePointLoads(response: Response): Promise<Result> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    deletePointLoad(body: IModelEntity): Promise<Result> {
+        let url_ = this.baseUrl + "/EditorApiAlpha/DeletePointLoad";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeletePointLoad(_response);
+        });
+    }
+
+    protected processDeletePointLoad(response: Response): Promise<Result> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    deletePointLoads(body: IModelEntity[]): Promise<Result> {
+        let url_ = this.baseUrl + "/EditorApiAlpha/DeletePointLoads";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeletePointLoads(_response);
+        });
+    }
+
+    protected processDeletePointLoads(response: Response): Promise<Result> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -1047,6 +1323,46 @@ export enum ForceUnitContract {
     _2 = 2,
     _3 = 3,
     _4 = 4,
+}
+
+export class IModelEntity implements IIModelEntity {
+    readonly id!: number;
+    readonly modelId!: string;
+
+    constructor(data?: IIModelEntity) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            (<any>this).id = _data["id"];
+            (<any>this).modelId = _data["modelId"];
+        }
+    }
+
+    static fromJS(data: any): IModelEntity {
+        data = typeof data === 'object' ? data : {};
+        let result = new IModelEntity();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["modelId"] = this.modelId;
+        return data;
+    }
+}
+
+export interface IIModelEntity {
+    id: number;
+    modelId: string;
 }
 
 export enum LengthUnitContract {
