@@ -1,6 +1,7 @@
 ﻿{
   Value: {
     Id: 5,
+    NodeId: 5,
     ModelId: Guid_1,
     Force: {
       Value: 10.0,

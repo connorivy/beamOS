@@ -1,6 +1,6 @@
 using VerifyTUnit;
 
-namespace BeamOs.Tests.StructuralAnalysis.Integration;
+namespace BeamOs.Tests.Architecture;
 
 public class VerifyChecksTest
 {

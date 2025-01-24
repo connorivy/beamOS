@@ -4,7 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <UseSqlServer>true</UseSqlServer>
+    <UseSqlServer Condition="'$(UseSqlServer)' == ''">true</UseSqlServer>
   </PropertyGroup>
 
 	<ItemGroup>
@@ -13,7 +13,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+		<!--<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />-->
 	</ItemGroup>
 
   <PropertyGroup Condition="'$(UseSqlServer)' == true">
@@ -24,9 +24,9 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(UseSqlServer)' == false">
+  <!--<ItemGroup Condition="'$(UseSqlServer)' != false">
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
-  </ItemGroup>
+  </ItemGroup>-->
 
 	<ItemGroup>
 	  <ProjectReference Include="..\BeamOs.StructuralAnalysis.Application\BeamOs.StructuralAnalysis.Application.csproj" />

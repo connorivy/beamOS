@@ -20,7 +20,12 @@
       },
       YAxisUp: true
     },
-    Nodes: null
+    Nodes: null,
+    Element1ds: null,
+    Materials: null,
+    SectionProfiles: null,
+    PointLoads: null,
+    MomentLoads: null
   },
   Error: null,
   IsError: false,

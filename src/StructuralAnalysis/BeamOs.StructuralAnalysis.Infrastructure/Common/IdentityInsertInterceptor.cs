@@ -36,8 +36,7 @@ public class IdentityInsertInterceptor(
         //var entriesWithIds = entries.Where(e => (int)e.CurrentValues["Id"] > 0).ToList();
         var entriesWithoutIds = allEntities.Except(entriesWithIds);
 
-        DbContextOptions<StructuralAnalysisDbContext> options = new();
-        if (entriesWithIds.Any())
+        if (entriesWithIds.Count > 0)
         {
             using var contextWithIds = new StructuralAnalysisDbContext(dbContextOptions);
 
