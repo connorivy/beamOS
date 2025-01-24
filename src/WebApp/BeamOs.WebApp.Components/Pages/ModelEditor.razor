@@ -1,18 +1,6 @@
 @page "/models/{ModelId:guid}"
-@* @using BeamOs.Contracts.PhysicalModel.Common *@
-@* @using BeamOs.WebApp.Components.Caches *@
-@* @using BeamOs.WebApp.Components.Components.Editor *@
-@* @using BeamOs.WebApp.Components.Components.Editor.Commands *@
-@* @using BeamOs.WebApp.Components.Features.Common.Flux *@
-@* @using BeamOs.WebApp.Components.Features.StructuralApiClient *@
-@* @using BeamOs.WebApp.Components.Repositories *@
+
 @using BeamOs.CodeGen.EditorApi
-@* @using BeamOs.ApiClient *@
-@* @using BeamOs.Contracts.Common *@
-@* @using BeamOs.Contracts.PhysicalModel.Element1d *@
-@* @using BeamOs.Contracts.PhysicalModel.Model *@
-@* @using BeamOs.Contracts.PhysicalModel.Node *@
-@* @using BeamOs.Contracts.PhysicalModel.PointLoad *@
 @using BeamOs.WebApp.Components.Features.Editor
 @using BeamOs.WebApp.Components.Features.SelectionInfo
 @using BeamOs.WebApp.Components.Features.StructuralApi
@@ -20,30 +8,15 @@
 @using Fluxor.Blazor.Web.Components
 @using MudBlazor
 @using BeamOs.WebApp.Components.Features.Editors.ReadOnlyEditor;
-@* @using static BeamOs.WebApp.Components.Components.Editor.EditorComponent *@
-@* @using BeamOs.WebApp.Components.Components.Editor.CommandHandlers; *@
 
 @inherits FluxorComponent
 
 <PageTitle>Editor</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="relative h-full w-full">
-    @* <MudTextField @bind-Value="modelIdInput" Label="ModelId" Variant="Variant.Filled"></MudTextField> *@
-    @* <MudButton OnClick="LoadModel">Load Model</MudButton> *@
-    @* <MudButton OnClick="RunAnalysis">Run DSM</MudButton> *@
-    @* <MudButton OnClick="LoadShearDiagrams">Show Shear Diagrams</MudButton> *@
-    @* <MudButton OnClick="LoadMomentDiagrams">Show Moment Diagrams</MudButton> *@
-    @* <MudButton OnClick="ShowReactions">Show Reactions</MudButton> *@
-    @{
-        this.CanvasId ??= "id" + Guid.NewGuid().ToString("N");
-    }
-    <EditorComponent Class="h-full" @ref="editorComponent" ModelId="@ModelId" CanvasId="@CanvasId" IsReadOnly="false"></EditorComponent>
+    <EditorComponent Class="h-full" @ref="editorComponent" ModelId="@ModelId" IsReadOnly="false"></EditorComponent>
     @if (editorComponent is not null)
     {
-        @* <MudPopover Open="@(editorComponent.EditorComponentState.SelectedObjects.Length > 0)" Fixed="true" AnchorOrigin="Origin.TopRight" TransformOrigin="Origin.TopRight" Elevation="0" Class="w-80 p-2 bg-transparent"> *@
-        @*     <SelectionInfoComponent SelectedObjects="@editorComponent.EditorComponentState.SelectedObjects" ModelId="@editorComponent.EditorComponentState.LoadedModelId"></SelectionInfoComponent> *@
-        @* </MudPopover> *@
-        @* <StructuralApiClientComponent ModelId="@this.ModelId" CanvasId="@this.editorComponent.ElementId"></StructuralApiClientComponent> *@
         @if (this.editorState.Value.LoadedModelId is Guid modelId)
         {
             <StructuralApiComponent Class="absolute left-0 top-0 w-1/4 p-4" ModelId="@modelId" CanvasId="@editorComponent.CanvasId"></StructuralApiComponent>
@@ -57,8 +30,6 @@
 @code {
     [Parameter]
     public Guid ModelId { get; set; }
-
-    public string? CanvasId { get; private set; }
 
     private SelectedObject[] selectedObjects = [];
 
@@ -77,70 +48,4 @@
     {
         this.editorState = editorState;
     }
-
-    // protected override void OnInitialized()
-    // {
-    //     base.OnInitialized();
-    //     this.State.Select(s => s.EditorState[editorComponent.CanvasId]);
-
-    // }
-
-    // private void EventEmitter_VisibleStateChanged(object? sender, EventArgs _) =>
-    //     InvokeAsync(StateHasChanged);
-
-    // private async Task LoadShearDiagrams()
-    // {
-    //     var modelResults = await this.ApiAlphaGetModelResultsAsync(editorComponent.EditorComponentState.LoadedModelId);
-    //     await this.editorComponent.EditorApiAlpha.SetModelResultsAsync(modelResults);
-
-    //     var shearDiagrams = await this.ApiAlphaGetShearDiagramsAsync(editorComponent.EditorComponentState.LoadedModelId);
-    //     await AddShearDiagramsToEditorCommandHandler.ExecuteAsync(new(editorComponent.ElementId, shearDiagrams));
-    // }
-
-    // private async Task LoadMomentDiagrams()
-    // {
-    //     var modelResults = await this.ApiAlphaGetModelResultsAsync(editorComponent.EditorComponentState.LoadedModelId);
-    //     await this.editorComponent.EditorApiAlpha.SetModelResultsAsync(modelResults);
-
-    //     var diagrams = await this.ApiAlphaGetMomentDiagramsAsync(editorComponent.EditorComponentState.LoadedModelId);
-    //     await AddMomentDiagramsToEditorCommandHandler.ExecuteAsync(new(editorComponent.ElementId, diagrams));
-    // }
-
-    // private async Task LoadModel()
-    // {
-    //     this.ModelId = modelIdInput;
-    //     this.NavigationManager.NavigateTo($"editor/{this.ModelId}");
-    //     await this.editorComponent.LoadModel(this.ModelId);
-    // }
-
-    // private async Task RunAnalysis()
-    // {
-    //     await ApiAlphaRunDirectStiffnessMethodAsync(editorComponent.EditorComponentState.LoadedModelId, new());
-    // }
-
-    // private async Task ShowReactions()
-    // {
-    //     var allForces = await this.ApiAlphaGetNodeResultsAsync(this.ModelId, null);
-
-    //     await AddPointLoadsToEditorCommandHandler.ExecuteAsync(new(this.editorComponent.ElementId,
-    //         allForces
-    //             .Where(f => Math.Abs(f.Forces.ForceAlongY.Value) > .001)
-    //             .Select(f => new PointLoadResponse(
-    //                 Guid.NewGuid().ToString(),
-    //                 this.ModelId,
-    //                 f.NodeId,
-    //                 f.Forces.ForceAlongY,
-    //                 new(0, 1, 0)
-    //             ))
-    //             .ToArray() must prevent multiple enumerations or different ids will be generated
-    //     ));
-    // }
-
-    // public void Dispose()
-    // {
-    //     EventEmitter.VisibleStateChanged -= this.EventEmitter_VisibleStateChanged;
-    // }
-
-    // public static string GetRelativeUrl(string modelId) =>
-    //     $"editor/{modelId}";
 }
