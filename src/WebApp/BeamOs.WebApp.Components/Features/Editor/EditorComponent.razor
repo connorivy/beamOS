@@ -13,3 +13,11 @@
     </MudOverlay>
 </MudContainer>
 
+<script>
+    function initializeCanvasById(id) {
+        var btn = document.getElementById(id);
+        btn.addEventListener('mousedown', function(event) {
+            event.preventDefault();
+        });
+    }
+</script>

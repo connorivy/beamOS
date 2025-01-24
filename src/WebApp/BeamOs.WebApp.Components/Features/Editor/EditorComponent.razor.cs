@@ -17,6 +17,7 @@ using Fluxor;
 using Fluxor.Blazor.Web.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
+using Microsoft.JSInterop;
 
 namespace BeamOs.WebApp.Components.Features.Editor;
 
@@ -24,11 +25,11 @@ public partial class EditorComponent(
     IStructuralAnalysisApiClientV1 apiClient,
     IEditorApiProxyFactory editorApiProxyFactory,
     IStateSelection<AllEditorComponentState, EditorComponentState> state,
-    IState<CachedModelState> modelState,
     IDispatcher dispatcher,
     LoadModelCommandHandler loadModelCommandHandler,
     ILogger<EditorComponent> logger,
-    UndoRedoFunctionality undoRedoFunctionality
+    UndoRedoFunctionality undoRedoFunctionality,
+    IJSRuntime js
 ) : FluxorComponent
 {
     [Parameter]
@@ -115,33 +116,6 @@ public partial class EditorComponent(
                 return;
             }
 
-            //if (state.SelectedObjects.Length > 0)
-            //{
-            //    bool selectedObjectDeleted = false;
-            //    List<SelectedObject> newSelectedObjects = new(state.SelectedObjects.Length);
-            //    foreach (var selected in state.SelectedObjects)
-            //    {
-            //        if (
-            //            selected.TypeName == command.EntityType
-            //            && selected.Id == command.ModelEntity.Id
-            //        )
-            //        {
-            //            selectedObjectDeleted = true;
-            //        }
-            //        else
-            //        {
-            //            newSelectedObjects.Add(selected);
-            //        }
-            //    }
-
-            //    if (selectedObjectDeleted)
-            //    {
-            //        dispatcher.Dispatch(
-            //            new ChangeSelectionCommand(this.CanvasId, newSelectedObjects.ToArray())
-            //        );
-            //    }
-            //}
-
             if (!command.HandledByEditor)
             {
                 if (command.EntityType == nameof(Element1d))
@@ -154,41 +128,13 @@ public partial class EditorComponent(
                 }
             }
         });
-
-        //this.SubscribeToAction<ChangeSelectionCommand>(async command =>
-        //{
-        //    var state = this.State.Value;
-        //    if (state.LoadedModelId is null || this.CanvasId != command.CanvasId)
-        //    {
-        //        return;
-        //    }
-
-        //    var cachedModelResponse = modelState.Value.Models[state.LoadedModelId.Value];
-
-        //    IModelEntity[] modelEntities = new IModelEntity[command.SelectedObjects.Length];
-        //    for (int i = 0; i < command.SelectedObjects.Length; i++)
-        //    {
-        //        var obj = command.SelectedObjects[i];
-        //        modelEntities[i] = obj.TypeName switch
-        //        {
-        //            "Node" => cachedModelResponse.Nodes[obj.Id],
-        //            "PointLoad" => cachedModelResponse.PointLoads[obj.Id],
-        //            "Element1d" => cachedModelResponse.Element1ds[obj.Id],
-        //            _
-        //                => throw new NotImplementedException(
-        //                    $"type name, {obj.TypeName}, is not implemented"
-        //                )
-        //        };
-        //    }
-
-        //    dispatcher.Dispatch(new SelectionChanged(this.CanvasId, modelEntities));
-        //});
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
+            await js.InvokeVoidAsync("initializeCanvasById", this.CanvasId);
             var editorApi = await editorApiProxyFactory.Create(this.CanvasId, this.IsReadOnly);
             dispatcher.Dispatch(new EditorApiCreated(this.CanvasId, editorApi));
 
@@ -208,33 +154,9 @@ public partial class EditorComponent(
                     dispatcher.Dispatch(new EditorLoadingEnd(this.CanvasId, result.Value));
                 }
             }
-            //await this.ChangeComponentState(state => state with { LoadingText = "Fetching Data" });
-            //await this.LoadModel(physicalModelId);
-
-            //await this.ChangeComponentState(state => state with { IsLoading = false });
         }
         await base.OnAfterRenderAsync(firstRender);
     }
-
-    //protected async Task<Result> ChangeComponentState(
-    //    Func<EditorComponentState, EditorComponentState> stateMutation
-    //)
-    //{
-    //    return await this.ChangeComponentStateCommandHandler.ExecuteAsync(
-    //        new(this.CanvasId, stateMutation)
-    //    );
-    //}
-
-    //protected override async ValueTask DisposeAsyncCore(bool disposing)
-    //{
-    //    EventEmitter.VisibleStateChanged -= this.EventEmitter_VisibleStateChanged;
-    //    if (this.EditorComponentState.EditorApi is IAsyncDisposable asyncDisposable)
-    //    {
-    //        await asyncDisposable.DisposeAsync();
-    //    }
-
-    //    base.DisposeAsyncCore(disposing);
-    //}
 
     protected override async ValueTask DisposeAsyncCore(bool disposing)
     {
@@ -259,34 +181,18 @@ public record struct EditorLoadingBegin(string CanvasId, string LoadingText);
 
 public record struct EditorLoadingEnd(string CanvasId, CachedModelResponse CachedModelResponse);
 
-//public record struct UpdateNodeCacheItem(NodeResponse NodeResponse);
-
 [FeatureState]
 public record EditorComponentState(
     string? LoadingText,
     bool IsLoading,
     Guid? LoadedModelId,
     IEditorApiAlpha? EditorApi,
-    //CachedModelResponse? CachedModelResponse,
     SelectedObject[] SelectedObjects
-//IModelEntity[] SelectedObjects
 )
 {
     public EditorComponentState()
         : this(null, false, null, null, []) { }
 }
-
-//public static class EditorComponentStateReducers
-//{
-//    [ReducerMethod]
-//    public static EditorComponentState EditorCreatedReducer(
-//        EditorComponentState state,
-//        EditorApiCreated action
-//    )
-//    {
-//        return state with { EditorApi = action.EditorApiAlpha };
-//    }
-//}
 
 public record struct SelectionChanged(string CanvasId, IModelEntity[] SelectedObjects);
 
@@ -408,29 +314,6 @@ public static class AllEditorComponentStateReducers
         };
     }
 
-    //[ReducerMethod]
-    //public static AllEditorComponentState ChangeSelectionCommandReducer(
-    //    AllEditorComponentState state,
-    //    SelectionChanged action
-    //)
-    //{
-    //    var currentEditorState = state.EditorState[action.CanvasId];
-    //    return state with
-    //    {
-    //        EditorState = state
-    //            .EditorState
-    //            .Remove(action.CanvasId)
-    //            .Add(
-    //                action.CanvasId,
-    //                currentEditorState with
-    //                {
-    //                    IsLoading = false,
-    //                    SelectedObjects = action.SelectedObjects
-    //                }
-    //            )
-    //    };
-    //}
-
     [ReducerMethod]
     public static AllEditorComponentState ChangeSelectionCommandReducer(
         AllEditorComponentState state,
@@ -452,59 +335,6 @@ public static class AllEditorComponentStateReducers
                 )
         };
     }
-
-    //[ReducerMethod]
-    //public static AllEditorComponentState ChangeSelectionCommandReducer(
-    //    AllEditorComponentState state,
-    //    UpdateNodeCacheItem action
-    //)
-    //{
-    //    var currentEditorState = state.EditorState[action.CanvasId];
-    //    var newNodes = new Dictionary<int, NodeResponse>(
-    //        currentEditorState.CachedModelResponse.Nodes
-    //    );
-    //    newNodes[action.NodeResponse.Id] = action.NodeResponse;
-
-    //    //currentEditorState.CachedModelResponse.Nodes[action.NodeResponse.Id] = action.NodeResponse;
-
-    //    return state with
-    //    {
-    //        EditorState = state
-    //            .EditorState
-    //            .Remove(action.CanvasId)
-    //            .Add(
-    //                action.CanvasId,
-    //                currentEditorState with
-    //                {
-    //                    CachedModelResponse = currentEditorState.CachedModelResponse with
-    //                    {
-    //                        Nodes = newNodes
-    //                    }
-    //                }
-    //            )
-    //    };
-    //}
-
-    //[ReducerMethod]
-    //public static CachedModelState ChangeSelectionCommandReducer(
-    //    CachedModelState state,
-    //    UpdateNodeCacheItem action
-    //)
-    //{
-    //    var model = state.Models[action.NodeResponse.ModelId];
-    //    var newNodes = new Dictionary<int, NodeResponse>(model.Nodes)
-    //    {
-    //        [action.NodeResponse.Id] = action.NodeResponse
-    //    };
-
-    //    return state with
-    //    {
-    //        Models = state
-    //            .Models
-    //            .Remove(action.NodeResponse.ModelId)
-    //            .Add(action.NodeResponse.ModelId, model with { Nodes = newNodes })
-    //    };
-    //}
 
     [ReducerMethod]
     public static CachedModelState EditorLoadingBeginReducer(
