@@ -46,8 +46,9 @@
         @* <StructuralApiClientComponent ModelId="@this.ModelId" CanvasId="@this.editorComponent.ElementId"></StructuralApiClientComponent> *@
         @if (this.editorState.Value.LoadedModelId is Guid modelId)
         {
-            <StructuralApiComponent2 Class="absolute left-0 top-0 w-1/4 p-4" ModelId="@modelId" CanvasId="@editorComponent.CanvasId"></StructuralApiComponent2>
-            <SelectionInfoComponent Class="absolute right-0 top-0 w-1/4 p-4" CanvasId="@editorComponent.CanvasId"></SelectionInfoComponent>
+            <StructuralApiComponent Class="absolute left-0 top-0 w-1/4 p-4" ModelId="@modelId" CanvasId="@editorComponent.CanvasId"></StructuralApiComponent>
+
+            <SelectionInfoComponent ModelId="@modelId" SelectedObjects="@this.editorState.Value.SelectedObjects" Class="absolute right-0 top-0 w-1/4 p-4" CanvasId="@editorComponent.CanvasId"></SelectionInfoComponent>
         }
     }
 

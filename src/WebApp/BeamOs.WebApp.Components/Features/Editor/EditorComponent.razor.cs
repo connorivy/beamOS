@@ -1,13 +1,15 @@
 using System.Collections.Immutable;
+using System.Reflection.Metadata;
 using BeamOs.CodeGen.EditorApi;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
+using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.WebApp.Components.Features.Common;
-using BeamOs.WebApp.Components.Features.Editors.ReadOnlyEditor;
 using BeamOs.WebApp.Components.Features.StructuralApi;
 using BeamOs.WebApp.Components.Features.UndoRedo;
 using BeamOs.WebApp.EditorCommands;
@@ -22,6 +24,7 @@ public partial class EditorComponent(
     IStructuralAnalysisApiClientV1 apiClient,
     IEditorApiProxyFactory editorApiProxyFactory,
     IStateSelection<AllEditorComponentState, EditorComponentState> state,
+    IState<CachedModelState> modelState,
     IDispatcher dispatcher,
     LoadModelCommandHandler loadModelCommandHandler,
     ILogger<EditorComponent> logger,
@@ -79,7 +82,7 @@ public partial class EditorComponent(
             if (nodeResponse.IsSuccess)
             {
                 //state.Value.CachedModelResponse.Nodes[command.NodeId] = nodeResponse.Value;
-                dispatcher.Dispatch(new UpdateNodeCacheItem(this.CanvasId, nodeResponse.Value));
+                dispatcher.Dispatch(new ModelEntityUpdated() { ModelEntity = nodeResponse.Value });
             }
         });
 
@@ -112,6 +115,33 @@ public partial class EditorComponent(
                 return;
             }
 
+            //if (state.SelectedObjects.Length > 0)
+            //{
+            //    bool selectedObjectDeleted = false;
+            //    List<SelectedObject> newSelectedObjects = new(state.SelectedObjects.Length);
+            //    foreach (var selected in state.SelectedObjects)
+            //    {
+            //        if (
+            //            selected.TypeName == command.EntityType
+            //            && selected.Id == command.ModelEntity.Id
+            //        )
+            //        {
+            //            selectedObjectDeleted = true;
+            //        }
+            //        else
+            //        {
+            //            newSelectedObjects.Add(selected);
+            //        }
+            //    }
+
+            //    if (selectedObjectDeleted)
+            //    {
+            //        dispatcher.Dispatch(
+            //            new ChangeSelectionCommand(this.CanvasId, newSelectedObjects.ToArray())
+            //        );
+            //    }
+            //}
+
             if (!command.HandledByEditor)
             {
                 if (command.EntityType == nameof(Element1d))
@@ -124,6 +154,35 @@ public partial class EditorComponent(
                 }
             }
         });
+
+        //this.SubscribeToAction<ChangeSelectionCommand>(async command =>
+        //{
+        //    var state = this.State.Value;
+        //    if (state.LoadedModelId is null || this.CanvasId != command.CanvasId)
+        //    {
+        //        return;
+        //    }
+
+        //    var cachedModelResponse = modelState.Value.Models[state.LoadedModelId.Value];
+
+        //    IModelEntity[] modelEntities = new IModelEntity[command.SelectedObjects.Length];
+        //    for (int i = 0; i < command.SelectedObjects.Length; i++)
+        //    {
+        //        var obj = command.SelectedObjects[i];
+        //        modelEntities[i] = obj.TypeName switch
+        //        {
+        //            "Node" => cachedModelResponse.Nodes[obj.Id],
+        //            "PointLoad" => cachedModelResponse.PointLoads[obj.Id],
+        //            "Element1d" => cachedModelResponse.Element1ds[obj.Id],
+        //            _
+        //                => throw new NotImplementedException(
+        //                    $"type name, {obj.TypeName}, is not implemented"
+        //                )
+        //        };
+        //    }
+
+        //    dispatcher.Dispatch(new SelectionChanged(this.CanvasId, modelEntities));
+        //});
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -200,7 +259,7 @@ public record struct EditorLoadingBegin(string CanvasId, string LoadingText);
 
 public record struct EditorLoadingEnd(string CanvasId, CachedModelResponse CachedModelResponse);
 
-public record struct UpdateNodeCacheItem(string CanvasId, NodeResponse NodeResponse);
+//public record struct UpdateNodeCacheItem(NodeResponse NodeResponse);
 
 [FeatureState]
 public record EditorComponentState(
@@ -208,12 +267,13 @@ public record EditorComponentState(
     bool IsLoading,
     Guid? LoadedModelId,
     IEditorApiAlpha? EditorApi,
-    CachedModelResponse? CachedModelResponse,
+    //CachedModelResponse? CachedModelResponse,
     SelectedObject[] SelectedObjects
+//IModelEntity[] SelectedObjects
 )
 {
     public EditorComponentState()
-        : this(null, false, null, null, null, []) { }
+        : this(null, false, null, null, []) { }
 }
 
 //public static class EditorComponentStateReducers
@@ -227,6 +287,36 @@ public record EditorComponentState(
 //        return state with { EditorApi = action.EditorApiAlpha };
 //    }
 //}
+
+public record struct SelectionChanged(string CanvasId, IModelEntity[] SelectedObjects);
+
+public record struct ModelCacheKey(Guid ModelId, string TypeName, int Id);
+
+[FeatureState]
+public record CachedModelState(ImmutableDictionary<Guid, CachedModelResponse> Models)
+{
+    public CachedModelState()
+        : this(ImmutableDictionary<Guid, CachedModelResponse>.Empty) { }
+
+    public IModelEntity? GetEntityFromCacheOrDefault(ModelCacheKey modelCacheKey)
+    {
+        if (!this.Models.TryGetValue(modelCacheKey.ModelId, out var model))
+        {
+            return null;
+        }
+
+        return modelCacheKey.TypeName switch
+        {
+            "Node" => model.Nodes.GetValueOrDefault(modelCacheKey.Id),
+            "Element1d" => model.Element1ds.GetValueOrDefault(modelCacheKey.Id),
+            "PointLoad" => model.PointLoads.GetValueOrDefault(modelCacheKey.Id),
+            _
+                => throw new NotImplementedException(
+                    $"type {modelCacheKey.TypeName} is not implemented"
+                )
+        };
+    }
+}
 
 [FeatureState]
 public record AllEditorComponentState(ImmutableDictionary<string, EditorComponentState> EditorState)
@@ -311,12 +401,35 @@ public static class AllEditorComponentStateReducers
                     currentEditorState with
                     {
                         IsLoading = false,
-                        CachedModelResponse = action.CachedModelResponse,
+                        //CachedModelResponse = action.CachedModelResponse,
                         LoadedModelId = action.CachedModelResponse.Id
                     }
                 )
         };
     }
+
+    //[ReducerMethod]
+    //public static AllEditorComponentState ChangeSelectionCommandReducer(
+    //    AllEditorComponentState state,
+    //    SelectionChanged action
+    //)
+    //{
+    //    var currentEditorState = state.EditorState[action.CanvasId];
+    //    return state with
+    //    {
+    //        EditorState = state
+    //            .EditorState
+    //            .Remove(action.CanvasId)
+    //            .Add(
+    //                action.CanvasId,
+    //                currentEditorState with
+    //                {
+    //                    IsLoading = false,
+    //                    SelectedObjects = action.SelectedObjects
+    //                }
+    //            )
+    //    };
+    //}
 
     [ReducerMethod]
     public static AllEditorComponentState ChangeSelectionCommandReducer(
@@ -334,42 +447,269 @@ public static class AllEditorComponentStateReducers
                     action.CanvasId,
                     currentEditorState with
                     {
-                        IsLoading = false,
                         SelectedObjects = action.SelectedObjects
                     }
                 )
         };
     }
 
+    //[ReducerMethod]
+    //public static AllEditorComponentState ChangeSelectionCommandReducer(
+    //    AllEditorComponentState state,
+    //    UpdateNodeCacheItem action
+    //)
+    //{
+    //    var currentEditorState = state.EditorState[action.CanvasId];
+    //    var newNodes = new Dictionary<int, NodeResponse>(
+    //        currentEditorState.CachedModelResponse.Nodes
+    //    );
+    //    newNodes[action.NodeResponse.Id] = action.NodeResponse;
+
+    //    //currentEditorState.CachedModelResponse.Nodes[action.NodeResponse.Id] = action.NodeResponse;
+
+    //    return state with
+    //    {
+    //        EditorState = state
+    //            .EditorState
+    //            .Remove(action.CanvasId)
+    //            .Add(
+    //                action.CanvasId,
+    //                currentEditorState with
+    //                {
+    //                    CachedModelResponse = currentEditorState.CachedModelResponse with
+    //                    {
+    //                        Nodes = newNodes
+    //                    }
+    //                }
+    //            )
+    //    };
+    //}
+
+    //[ReducerMethod]
+    //public static CachedModelState ChangeSelectionCommandReducer(
+    //    CachedModelState state,
+    //    UpdateNodeCacheItem action
+    //)
+    //{
+    //    var model = state.Models[action.NodeResponse.ModelId];
+    //    var newNodes = new Dictionary<int, NodeResponse>(model.Nodes)
+    //    {
+    //        [action.NodeResponse.Id] = action.NodeResponse
+    //    };
+
+    //    return state with
+    //    {
+    //        Models = state
+    //            .Models
+    //            .Remove(action.NodeResponse.ModelId)
+    //            .Add(action.NodeResponse.ModelId, model with { Nodes = newNodes })
+    //    };
+    //}
+
     [ReducerMethod]
-    public static AllEditorComponentState ChangeSelectionCommandReducer(
-        AllEditorComponentState state,
-        UpdateNodeCacheItem action
+    public static CachedModelState EditorLoadingBeginReducer(
+        CachedModelState state,
+        EditorLoadingEnd action
     )
     {
-        var currentEditorState = state.EditorState[action.CanvasId];
-        var newNodes = new Dictionary<int, NodeResponse>(
-            currentEditorState.CachedModelResponse.Nodes
-        );
-        newNodes[action.NodeResponse.Id] = action.NodeResponse;
+        return state with
+        {
+            Models = state
+                .Models
+                .Remove(action.CachedModelResponse.Id)
+                .Add(action.CachedModelResponse.Id, action.CachedModelResponse)
+        };
+    }
 
-        //currentEditorState.CachedModelResponse.Nodes[action.NodeResponse.Id] = action.NodeResponse;
+    [ReducerMethod]
+    public static CachedModelState Reducer(CachedModelState state, ModelEntityUpdated action)
+    {
+        if (!state.Models.TryGetValue(action.ModelEntity.ModelId, out var model))
+        {
+            return state;
+        }
+
+        ImmutableDictionary<Guid, CachedModelResponse> newState;
+        if (action.ModelEntity is NodeResponse nodeResponse)
+        {
+            newState = state
+                .Models
+                .Remove(action.ModelEntity.ModelId)
+                .Add(
+                    action.ModelEntity.ModelId,
+                    model with
+                    {
+                        Nodes = model
+                            .Nodes
+                            .Remove(nodeResponse.Id)
+                            .Add(nodeResponse.Id, nodeResponse)
+                    }
+                );
+        }
+        else if (action.ModelEntity is Element1dResponse element1d)
+        {
+            newState = state
+                .Models
+                .Remove(action.ModelEntity.ModelId)
+                .Add(
+                    action.ModelEntity.ModelId,
+                    model with
+                    {
+                        Element1ds = model
+                            .Element1ds
+                            .Remove(element1d.Id)
+                            .Add(element1d.Id, element1d)
+                    }
+                );
+        }
+        else if (action.ModelEntity is PointLoadResponse pointLoad)
+        {
+            newState = state
+                .Models
+                .Remove(action.ModelEntity.ModelId)
+                .Add(
+                    action.ModelEntity.ModelId,
+                    model with
+                    {
+                        PointLoads = model
+                            .PointLoads
+                            .Remove(pointLoad.Id)
+                            .Add(pointLoad.Id, pointLoad)
+                    }
+                );
+        }
+        else
+        {
+            throw new Exception($"Type of {action.ModelEntity.GetType()} is not supported");
+        }
 
         return state with
         {
-            EditorState = state
-                .EditorState
-                .Remove(action.CanvasId)
+            Models = newState
+        };
+    }
+
+    [ReducerMethod]
+    public static CachedModelState ChangeSelectionCommandReducer(
+        CachedModelState state,
+        ModelEntityCreated action
+    )
+    {
+        if (!state.Models.TryGetValue(action.ModelEntity.ModelId, out var model))
+        {
+            return state;
+        }
+
+        ImmutableDictionary<Guid, CachedModelResponse> newState;
+        if (action.ModelEntity is NodeResponse nodeResponse)
+        {
+            newState = state
+                .Models
+                .Remove(action.ModelEntity.ModelId)
                 .Add(
-                    action.CanvasId,
-                    currentEditorState with
+                    action.ModelEntity.ModelId,
+                    model with
                     {
-                        CachedModelResponse = currentEditorState.CachedModelResponse with
-                        {
-                            Nodes = newNodes
-                        }
+                        Nodes = model.Nodes.Add(nodeResponse.Id, nodeResponse)
                     }
-                )
+                );
+        }
+        else if (action.ModelEntity is Element1dResponse element1d)
+        {
+            newState = state
+                .Models
+                .Remove(action.ModelEntity.ModelId)
+                .Add(
+                    action.ModelEntity.ModelId,
+                    model with
+                    {
+                        Element1ds = model.Element1ds.Add(element1d.Id, element1d)
+                    }
+                );
+        }
+        else if (action.ModelEntity is PointLoadResponse pointLoad)
+        {
+            newState = state
+                .Models
+                .Remove(action.ModelEntity.ModelId)
+                .Add(
+                    action.ModelEntity.ModelId,
+                    model with
+                    {
+                        PointLoads = model.PointLoads.Add(pointLoad.Id, pointLoad)
+                    }
+                );
+        }
+        else
+        {
+            throw new Exception($"Type of {action.ModelEntity.GetType()} is not supported");
+        }
+
+        return state with
+        {
+            Models = newState
+        };
+    }
+
+    [ReducerMethod]
+    public static CachedModelState ChangeSelectionCommandReducer(
+        CachedModelState state,
+        ModelEntityDeleted action
+    )
+    {
+        if (!state.Models.TryGetValue(action.ModelEntity.ModelId, out var model))
+        {
+            return state;
+        }
+
+        ImmutableDictionary<Guid, CachedModelResponse> newState;
+        if (action.EntityType == "Node")
+        {
+            newState = state
+                .Models
+                .Remove(action.ModelEntity.ModelId)
+                .Add(
+                    action.ModelEntity.ModelId,
+                    model with
+                    {
+                        Nodes = model.Nodes.Remove(action.ModelEntity.Id)
+                    }
+                );
+        }
+        else if (action.EntityType == "Element1d")
+        {
+            newState = state
+                .Models
+                .Remove(action.ModelEntity.ModelId)
+                .Add(
+                    action.ModelEntity.ModelId,
+                    model with
+                    {
+                        Element1ds = model.Element1ds.Remove(action.ModelEntity.Id)
+                    }
+                );
+        }
+        else if (action.EntityType == "PointLoad")
+        {
+            newState = state
+                .Models
+                .Remove(action.ModelEntity.ModelId)
+                .Add(
+                    action.ModelEntity.ModelId,
+                    model with
+                    {
+                        PointLoads = model.PointLoads.Remove(action.ModelEntity.Id)
+                    }
+                );
+        }
+        else
+        {
+            throw new Exception($"Type of {action.ModelEntity.GetType()} is not supported");
+        }
+
+        return state with
+        {
+            Models = newState
         };
     }
 }

@@ -1,4 +1,6 @@
+using BeamOs.Common.Contracts;
 using BeamOs.WebApp.Components.Features.Editor;
+using BeamOs.WebApp.Components.Features.StructuralApi;
 using BeamOs.WebApp.EditorCommands;
 using Fluxor;
 using Fluxor.Blazor.Web.Components;
@@ -6,73 +8,64 @@ using Microsoft.AspNetCore.Components;
 
 namespace BeamOs.WebApp.Components.Features.SelectionInfo;
 
-public partial class SelectionInfoComponent(
-    IStateSelection<AllEditorComponentState, EditorComponentState> state
-) : FluxorComponent
+public partial class SelectionInfoComponent(IState<CachedModelState> state, IDispatcher dispatcher)
+    : FluxorComponent
 {
-    public SelectedObject[] SelectedObjects => state.Value.SelectedObjects;
+    [Parameter]
+    public SelectedObject[] SelectedObjects { get; init; }
 
     [Parameter]
     public required string CanvasId { get; init; }
 
     [Parameter]
+    public required Guid ModelId { get; init; }
+
+    [Parameter]
     public string? Class { get; init; }
 
-    //[Inject]
-    //private AllStructuralAnalysisModelCaches AllStructuralAnalysisModelCaches { get; init; }
     private readonly SelectionInfoFactory selectionInfoFactory = new();
 
-    //private object GetBeamOsObjectByIdAndTypeName(int id, string typeName)
+    //private ISelectionInfo GetBeamOsObjectByIdAndTypeName(IModelEntity modelEntity)
     //{
-    //    var cachedModelResponse = state.Value.CachedModelResponse;
-    //    if (cachedModelResponse is null)
-    //    {
-    //        return null;
-    //    }
-
-    //    return typeName switch
-    //    {
-    //        "Node" => cachedModelResponse.Nodes[id],
-    //        "PointLoad" => cachedModelResponse.PointLoads[id],
-    //        "Element1d" => cachedModelResponse.Element1ds[id]
-    //    };
+    //    return this.selectionInfoFactory.Create(
+    //        modelEntity,
+    //        modelEntity.GetType(),
+    //        $"{modelEntity.GetType().Name} {modelEntity.Id}"
+    //    );
     //}
 
-    private ISelectionInfo GetBeamOsObjectByIdAndTypeName(int id, string typeName)
+    private ISelectionInfo? GetBeamOsObjectByIdAndTypeName(int id, string typeName)
     {
-        var cachedModelResponse = state.Value.CachedModelResponse;
-        if (cachedModelResponse is null)
+        IModelEntity? modelEntity = state
+            .Value
+            .GetEntityFromCacheOrDefault(new(this.ModelId, typeName, id));
+
+        if (modelEntity is null)
         {
+            //throw new Exception("Could not find selected entity in the cache");
+            // element was deleted
             return null;
         }
 
-        object selected = typeName switch
-        {
-            "Node" => cachedModelResponse.Nodes[id],
-            "PointLoad" => cachedModelResponse.PointLoads[id],
-            "Element1d" => cachedModelResponse.Element1ds[id],
-            _ => throw new NotImplementedException($"type name, {typeName}, is not implemented")
-        };
-
-        return this.selectionInfoFactory.Create(selected, selected.GetType(), $"{typeName} {id}");
+        return this.selectionInfoFactory.Create(
+            modelEntity,
+            modelEntity.GetType(),
+            $"{typeName} {id}"
+        );
     }
 
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        state.Select(s => s.EditorState[this.CanvasId]);
-
-        //this.SubscribeToAction<MoveNodeCommand>(command =>
-        //{
-        //    if (command.CanvasId == this.CanvasId)
-        //    {
-        //        this.StateHasChanged();
-        //    }
-        //});
-    }
-
-    //private object GetAdditionalObjectInfo(string id, string typeName)
+    //private ISelectionInfo GetBeamOsObjectByIdAndTypeName(int id, string typeName)
     //{
-    //    return this.AllStructuralAnalysisModelCaches.GetByModelId(this.ModelId).GetById<BeamOsEntityContractBase>(NodeResultResponseEntity.ResultId(id));
+    //    var cachedModelResponse = state.Value.Models[this.ModelId];
+
+    //    object selected = typeName switch
+    //    {
+    //        "Node" => cachedModelResponse.Nodes[id],
+    //        "PointLoad" => cachedModelResponse.PointLoads[id],
+    //        "Element1d" => cachedModelResponse.Element1ds[id],
+    //        _ => throw new NotImplementedException($"type name, {typeName}, is not implemented")
+    //    };
+
+    //    return this.selectionInfoFactory.Create(selected, selected.GetType(), $"{typeName} {id}");
     //}
 }

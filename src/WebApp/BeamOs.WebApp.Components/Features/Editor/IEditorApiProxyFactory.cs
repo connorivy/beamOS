@@ -1,7 +1,9 @@
 using BeamOs.CodeGen.EditorApi;
+using BeamOs.WebApp.Components.Features.Editors.ReadOnlyEditor;
+//using BeamOs.WebApp.Components.Features.Editor;
 using Microsoft.JSInterop;
 
-namespace BeamOs.WebApp.Components.Features.Editors.ReadOnlyEditor;
+namespace BeamOs.WebApp.Components.Features.Editor;
 
 public interface IEditorApiProxyFactory
 {

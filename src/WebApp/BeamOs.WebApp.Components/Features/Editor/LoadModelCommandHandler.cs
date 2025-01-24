@@ -40,60 +40,59 @@ public class LoadModelCommandHandler(
             );
         }
 
-        var modelCacheResponse = await cache.GetOrCreateAsync<Result<CachedModelResponse>>(
-            command.ModelId.ToString(),
-            async ct =>
-            {
-                var modelResponse = await structuralAnalysisApiClient.GetModelAsync(
-                    command.ModelId,
-                    ct
-                );
-                if (modelResponse.IsError)
-                {
-                    return modelResponse.Error;
-                }
-                else
-                {
-                    return new CachedModelResponse(modelResponse.Value);
-                }
-            },
-            cancellationToken: ct
-        );
+        var modelResponse = await structuralAnalysisApiClient.GetModelAsync(command.ModelId, ct);
 
-        if (modelCacheResponse.IsError)
+        //var modelCacheResponse = await cache.GetOrCreateAsync<Result<CachedModelResponse>>(
+        //    command.ModelId.ToString(),
+        //    async ct =>
+        //    {
+        //        var modelResponse = await structuralAnalysisApiClient.GetModelAsync(
+        //            command.ModelId,
+        //            ct
+        //        );
+        //        if (modelResponse.IsError)
+        //        {
+        //            return modelResponse.Error;
+        //        }
+        //        else
+        //        {
+        //            return new CachedModelResponse(modelResponse.Value);
+        //        }
+        //    },
+        //    cancellationToken: ct
+        //);
+
+        if (modelResponse.IsError)
         {
-            return modelCacheResponse.Error;
+            return modelResponse.Error;
         }
+
+        var modelCacheResponse = new CachedModelResponse(modelResponse.Value);
 
         await editorComponentState.EditorApi.ClearAsync(ct);
 
-        await editorComponentState
-            .EditorApi
-            .SetSettingsAsync(modelCacheResponse.Value.Settings, ct);
+        await editorComponentState.EditorApi.SetSettingsAsync(modelCacheResponse.Settings, ct);
 
         await editorComponentState
             .EditorApi
-            .CreateNodesAsync(
-                modelCacheResponse.Value.Nodes.Values.Select(e => e.ToEditorUnits()),
-                ct
-            );
+            .CreateNodesAsync(modelCacheResponse.Nodes.Values.Select(e => e.ToEditorUnits()), ct);
 
         await editorComponentState
             .EditorApi
             .CreatePointLoadsAsync(
-                modelCacheResponse.Value.PointLoads.Values.Select(e => e.ToEditorUnits()),
+                modelCacheResponse.PointLoads.Values.Select(e => e.ToEditorUnits()),
                 ct
             );
 
         await editorComponentState
             .EditorApi
-            .CreateElement1dsAsync(modelCacheResponse.Value.Element1ds.Values, ct);
+            .CreateElement1dsAsync(modelCacheResponse.Element1ds.Values, ct);
 
         //await editorComponentState.EditorApi.SetModelResultsAsync(momodelCacheResponsedelResponse.Value.AnalyticalResults, ct);
 
         //editorComponentState.EditorApi
 
-        return modelCacheResponse.Value;
+        return modelCacheResponse;
     }
 }
 

@@ -1,55 +1,55 @@
-@* @using BeamOs.WebApp.Components.Features.SelectionInfo *@
-@* @using MudBlazor *@
-@* @inherits FluxorComponent *@
+@using BeamOs.WebApp.Components.Features.SelectionInfo
+@using MudBlazor
+@inherits FluxorComponent
 
-@* @if (this.State.Value.SelectedMethod == null) *@
-@* { *@
-@*     @* <MudContainer Gutters="false" Class=@($"flex flex-col max-h-full rounded {@Class}")> *@
-@*     <div class="flex flex-col max-h-full @Class"> *@
-@*         <MudPaper Class="p-4"> *@
-@*         <MudText Align="Align.Center" Typo="Typo.h6">API Client Methods</MudText> *@
-@*         @* <MudText Typo="Typo.body2" Class="mud-text-secondary">@Subtitle</MudText> *@
-@*         <MudDivider Class="mt-1" /> *@
-@*         <MudExpansionPanels MultiExpansion="true" Outlined="false" Elevation="0" Dense="true" Class="grow overflow-y-auto"> *@
-@*             <MudList T="string" sel> *@
-@*                 @foreach (var method in methods) *@
-@*                 { *@
-@*                     var cleanMethodName = CleanMethodName(method.Name); *@
-@*                     var chipInfo = GetChipInfoForMethod(method); *@
-@*                     <MudListItem @onclick="() => SelectMethod(method)"> *@
-@*                         <MudStack StretchItems="StretchItems.Start" Row="true"> *@
-@*                             <MudTooltip Text="@cleanMethodName" RootClass="truncate"> *@
-@*                                 <MudText Class="truncate">@cleanMethodName</MudText> *@
-@*                             </MudTooltip> *@
-@*                             <MudChip Size="Size.Small" Variant="Variant.Text" Color="@chipInfo.Item1" Class="m-0">@chipInfo.Item2</MudChip> *@
-@*                         </MudStack> *@
-@*                     </MudListItem> *@
-@*                 } *@
-@*             </MudList> *@
-@*         </MudExpansionPanels> *@
-@*         <MudButton OnClick="HandleSubmit" Variant="Variant.Filled" Class="mt-4" Color="Color.Primary">Submit</MudButton> *@
-@*         </MudPaper> *@
-@*     </div> *@
-@*     @* </MudContainer> *@
-
-            
-@* } *@
-@* else *@
-@* { *@
-@*     @* <MudContainer Gutters="false" Class=@($"flex flex-col max-h-full rounded {@Class}")> *@
-@*     <div class="flex flex-col max-h-full @Class"> *@
-@*         <MudPaper Class="p-4"> *@
-@*         <div class="flex flex-row h-fit w-fit"> *@
-@*             <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="GoBack" Class="p-0">Back</MudIconButton> *@
-@*         </div> *@
-@*         <MudText Align="Align.Center" Typo="Typo.h6">@CleanMethodName(this.State.Value.SelectedMethod.Name)</MudText> *@
-@*         @* <MudText Typo="Typo.body2" Class="mud-text-secondary">@Subtitle</MudText> *@
-@*         <MudDivider Class="mt-1" /> *@
-@*         <MudExpansionPanels MultiExpansion="true" Outlined="false" Elevation="0" Dense="true" Class="grow overflow-y-auto"> *@
-@*             <SelectionInfoSingleItemComponent2 ObjectToDisplay="@(this.State.Value.ParameterValues)" ObjectName=""></SelectionInfoSingleItemComponent2> *@
-@*         </MudExpansionPanels> *@
-@*         <MudButton OnClick="HandleSubmit" Variant="Variant.Filled" Class="mt-4" Color="Color.Primary">Submit</MudButton> *@
-@*         </MudPaper> *@
-@*     </div> *@
-@*     @* </MudContainer> *@
-@* } *@
+@if (this.State.Value.SelectedMethod == null)
+{
+    @* <MudContainer Gutters="false" Class=@($"flex flex-col max-h-full rounded {@Class}")> *@
+    <div class="flex flex-col max-h-full @Class">
+        <MudPaper Class="p-4">
+            <MudText Align="Align.Center" Typo="Typo.h6">API Client Methods</MudText>
+            @* <MudText Typo="Typo.body2" Class="mud-text-secondary">@Subtitle</MudText> *@
+            <MudDivider Class="mt-1" />
+            <MudExpansionPanels MultiExpansion="true" Outlined="false" Elevation="0" Dense="true" Class="grow overflow-y-auto">
+                <MudList T="string" sel>
+                    @foreach (var methodInfo in ClientMethods)
+                    {
+                        var cleanMethodName = CleanMethodName(methodInfo.MethodInfo.Name);
+                        <MudListItem @onclick="() => SelectMethod(methodInfo)">
+                            <MudStack StretchItems="StretchItems.Start" Row="true">
+                                <MudTooltip Text="@cleanMethodName" RootClass="truncate">
+                                    <MudText Class="truncate">@cleanMethodName</MudText>
+                                </MudTooltip>
+                                <MudChip Size="Size.Small" Variant="Variant.Text" Color="@GetChipColor(methodInfo.Http)" Class="m-0">@methodInfo.Http</MudChip>
+                            </MudStack>
+                        </MudListItem>
+                    }
+                </MudList>
+            </MudExpansionPanels>
+            <MudButton OnClick="HandleSubmit" Variant="Variant.Filled" Class="mt-4" Color="Color.Primary">Submit</MudButton>
+        </MudPaper>
+    </div>
+    @* </MudContainer> *@
+}
+else
+{
+    @* <MudContainer Gutters="false" Class=@($"flex flex-col max-h-full rounded {@Class}")> *@
+    <div class="flex flex-col max-h-full @Class">
+        <MudPaper Class="p-4">
+            <div class="flex flex-row h-fit w-fit">
+                <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="GoBack" Class="p-0">Back</MudIconButton>
+            </div>
+            <MudText Align="Align.Center" Typo="Typo.h6">@CleanMethodName(this.State.Value.SelectedMethod.Value.MethodInfo.Name)</MudText>
+            @* <MudText Typo="Typo.body2" Class="mud-text-secondary">@Subtitle</MudText> *@
+            <MudDivider Class="mt-1" />
+            <MudExpansionPanels MultiExpansion="true" Outlined="false" Elevation="0" Dense="true" Class="grow overflow-y-auto">
+                @foreach (var selectionInfo in this.State.Value.SelectionInfo ?? [])
+                {
+                    <SelectionInfoSingleItemComponent ObjectToDisplay="@selectionInfo"></SelectionInfoSingleItemComponent>
+                }
+        </MudExpansionPanels>
+        <MudButton OnClick="HandleSubmit" Variant="Variant.Filled" Class="mt-4" Color="Color.Primary">Submit</MudButton>
+        </MudPaper>
+    </div>
+    @* </MudContainer> *@
+}

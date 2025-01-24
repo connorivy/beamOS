@@ -6,7 +6,7 @@ using BeamOs.Tests.Common;
 using BeamOs.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd;
 using BeamOs.WebApp.Components;
 using BeamOs.WebApp.Components.Features.Common;
-using BeamOs.WebApp.Components.Features.Editors.ReadOnlyEditor;
+using BeamOs.WebApp.Components.Features.Editor;
 
 namespace BeamOs.WebApp;
 
