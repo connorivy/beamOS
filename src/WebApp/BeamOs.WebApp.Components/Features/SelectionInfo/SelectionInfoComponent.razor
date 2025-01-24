@@ -8,13 +8,6 @@
         <MudExpansionPanels MultiExpansion="true" Outlined="false" Elevation="0" Dense="true">
             @foreach (var selectedObjectInfo in this.SelectedObjects)
             {
-                @* <MudExpansionPanel Text="@($"{selectedObjectInfo.TypeName} {selectedObjectInfo.Id}")">
-                    <SelectionInfoSingleItemComponent ObjectToDisplay="@GetBeamOsObjectByIdAndTypeName(selectedObjectInfo.Id, selectedObjectInfo.TypeName)"></SelectionInfoSingleItemComponent>
-                    @if (this.AllStructuralAnalysisModelCaches.GetByModelId(this.ModelId).TryGetById(NodeResultResponseEntity.ResultId(selectedObjectInfo.Id), out NodeResultResponseEntity? nodeResult))
-                    {
-                        <SelectionInfoSingleItemComponent ObjectToDisplay="@nodeResult"></SelectionInfoSingleItemComponent>
-                    }
-                </MudExpansionPanel> *@
                 var objectToDisplay = GetBeamOsObjectByIdAndTypeName(selectedObjectInfo.Id, selectedObjectInfo.TypeName);
                 if (objectToDisplay is not null)
                 {
