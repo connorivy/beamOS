@@ -4,7 +4,7 @@ namespace BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 
 public readonly record struct ResultSetId : IIntBasedId
 {
-    public int Id { get; }
+    public int Id { get; init; }
 
     public ResultSetId(int id)
     {

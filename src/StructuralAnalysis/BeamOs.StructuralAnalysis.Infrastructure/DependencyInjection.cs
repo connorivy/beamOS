@@ -60,11 +60,14 @@ public static class DependencyInjection
     {
         _ = services.AddDbContext<StructuralAnalysisDbContext>(options =>
         {
-            var optionsBuilderNoInterceptor =
-                options.UseSqlServer(connectionString).Options
-                as DbContextOptions<StructuralAnalysisDbContext>;
+            options
+                .UseSqlServer(connectionString)
+                .AddInterceptors(new ModelEntityIdIncrementingInterceptor());
+            //var optionsBuilderNoInterceptor =
+            //    options.UseSqlServer(connectionString).Options
+            //    as DbContextOptions<StructuralAnalysisDbContext>;
 
-            options.AddInterceptors(new IdentityInsertInterceptor(optionsBuilderNoInterceptor));
+            //options.AddInterceptors(new IdentityInsertInterceptor(optionsBuilderNoInterceptor));
         }
         //.UseModel(StructuralAnalysisDbContextModel.Instance)
         );

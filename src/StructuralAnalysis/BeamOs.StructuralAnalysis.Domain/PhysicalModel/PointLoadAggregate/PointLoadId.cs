@@ -3,13 +3,18 @@ using BeamOs.Common.Domain.Models;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
 
-public readonly struct PointLoadId(int id) : IIntBasedId
+public readonly record struct PointLoadId : IIntBasedId
 {
-    public int Id { get; } = id;
+    public int Id { get; init; }
 
-    public static explicit operator int(PointLoadId id) => id.Id;
+    public PointLoadId(int id)
+    {
+        this.Id = id;
+    }
 
-    public static explicit operator PointLoadId(int id) => new(id);
+    public static implicit operator int(PointLoadId id) => id.Id;
+
+    public static implicit operator PointLoadId(int id) => new(id);
 
     public override string ToString() => this.Id.ToString(CultureInfo.InvariantCulture);
 }

@@ -3,13 +3,18 @@ using BeamOs.Common.Domain.Models;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 
-public readonly struct SectionProfileId(int id) : IIntBasedId
+public readonly record struct SectionProfileId : IIntBasedId
 {
-    public int Id { get; } = id;
+    public int Id { get; init; }
 
-    public static explicit operator int(SectionProfileId id) => id.Id;
+    public SectionProfileId(int id)
+    {
+        this.Id = id;
+    }
 
-    public static explicit operator SectionProfileId(int id) => new(id);
+    public static implicit operator int(SectionProfileId id) => id.Id;
+
+    public static implicit operator SectionProfileId(int id) => new(id);
 
     public override string ToString() => this.Id.ToString(CultureInfo.InvariantCulture);
 }

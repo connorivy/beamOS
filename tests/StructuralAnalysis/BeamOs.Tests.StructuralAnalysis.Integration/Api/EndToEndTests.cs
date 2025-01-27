@@ -7,6 +7,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoad;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
+using FluentAssertions;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration.Api;
 
@@ -51,6 +52,35 @@ public class EndToEndTests
             .CreateNodeAsync(modelId, createNodeRequestBody);
 
         await Verify(nodeResponseResult);
+    }
+
+    [Test]
+    [DependsOn(nameof(CreateNode_WithNoSpecifiedId_ShouldCreateNode_AndGiveAnId))]
+    public async Task CreateAnotherNode_WithDifferentModelId_ShouldAssignNodeIdOf1()
+    {
+        CreateModelRequest request =
+            new()
+            {
+                Name = "another test model",
+                Description = "test model",
+                Settings = new(UnitSettingsContract.K_FT),
+                Id = Guid.NewGuid()
+            };
+
+        var modelResponse = await AssemblySetup
+            .StructuralAnalysisApiClient
+            .CreateModelAsync(request);
+
+        modelResponse.IsSuccess.Should().BeTrue();
+
+        CreateNodeRequest createNodeRequestBody =
+            new(new(1, 1, 1, LengthUnitContract.Foot), Restraint.Fixed);
+
+        var nodeResponseResult = await AssemblySetup
+            .StructuralAnalysisApiClient
+            .CreateNodeAsync(modelResponse.Value.Id, createNodeRequestBody);
+
+        nodeResponseResult.Value.Id.Should().Be(1);
     }
 
     [Test]

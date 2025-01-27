@@ -11,66 +11,66 @@ public static class Asserter
         ComparedObjectEventArgs<double[,]>
     >? Double2dArrayAssertedEqual;
 
-    public static void AssertEqual(
-        string beamOsObjectId,
-        string comparedValueName,
-        double expected,
-        double actual,
-        double precision = .001,
-        ICollection<string>? comparedValueNameCollection = null
-    )
-    {
-        AssertedEqual2?.Invoke(
-            typeof(Asserter),
-            new()
-            {
-                BeamOsObjectId = beamOsObjectId,
-                ComparedObjectPropertyName = comparedValueName,
-                ExpectedValue = expected,
-                CalculatedValue = actual,
-                ComparedValueNameCollection = comparedValueNameCollection
-            }
-        );
+    //public static void AssertEqual(
+    //    string beamOsObjectId,
+    //    string comparedValueName,
+    //    double expected,
+    //    double actual,
+    //    double precision = .001,
+    //    ICollection<string>? comparedValueNameCollection = null
+    //)
+    //{
+    //    AssertedEqual2?.Invoke(
+    //        typeof(Asserter),
+    //        new()
+    //        {
+    //            BeamOsObjectId = beamOsObjectId,
+    //            ComparedObjectPropertyName = comparedValueName,
+    //            ExpectedValue = expected,
+    //            CalculatedValue = actual,
+    //            ComparedValueNameCollection = comparedValueNameCollection
+    //        }
+    //    );
 
-        actual.Should().BeApproximately(expected, precision);
-    }
+    //    actual.Should().BeApproximately(expected, precision);
+    //}
 
-    public static void AssertEqual(
-        string beamOsObjectId,
-        string comparedValueName,
-        double[] expected,
-        double[] actual,
-        double precision = .001,
-        ICollection<string>? comparedValueNameCollection = null
-    )
-    {
-        AssertedEqual2?.Invoke(
-            typeof(Asserter),
-            new()
-            {
-                BeamOsObjectId = beamOsObjectId,
-                ComparedObjectPropertyName = comparedValueName,
-                ExpectedValue = expected,
-                CalculatedValue = actual,
-                ComparedValueNameCollection = comparedValueNameCollection
-            }
-        );
+    //public static void AssertEqual(
+    //    string beamOsObjectId,
+    //    string comparedValueName,
+    //    double[] expected,
+    //    double[] actual,
+    //    double precision = .001,
+    //    ICollection<string>? comparedValueNameCollection = null
+    //)
+    //{
+    //    AssertedEqual2?.Invoke(
+    //        typeof(Asserter),
+    //        new()
+    //        {
+    //            BeamOsObjectId = beamOsObjectId,
+    //            ComparedObjectPropertyName = comparedValueName,
+    //            ExpectedValue = expected,
+    //            CalculatedValue = actual,
+    //            ComparedValueNameCollection = comparedValueNameCollection
+    //        }
+    //    );
 
-        if (actual.Length != expected.Length)
-        {
-            throw new Exception("Calculated and expected values have different lengths");
-        }
+    //    if (actual.Length != expected.Length)
+    //    {
+    //        throw new Exception("Calculated and expected values have different lengths");
+    //    }
 
-        if (actual.Length == 0)
-        {
-            return;
-        }
+    //    if (actual.Length == 0)
+    //    {
+    //        return;
+    //    }
 
-        for (int col = 0; col < actual.Length; col++)
-        {
-            actual[col].Should().BeApproximately(expected[col], precision);
-        }
-    }
+    //    for (int col = 0; col < actual.Length; col++)
+    //    {
+    //        actual[col].Should().BeApproximately(expected[col], precision);
+    //    }
+    //}
 
     public static void AssertEqual(
         string beamOsObjectId,

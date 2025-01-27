@@ -5,7 +5,7 @@ namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 public readonly record struct NodeId : IIntBasedId
 {
-    public int Id { get; }
+    public int Id { get; init; }
 
     public NodeId(int id)
     {

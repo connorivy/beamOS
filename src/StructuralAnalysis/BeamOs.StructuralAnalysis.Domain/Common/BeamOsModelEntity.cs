@@ -16,7 +16,7 @@ public class BeamOsModelEntity<TId> : BeamOsEntity<TId>, IBeamOsModelEntity
         this.ModelId = modelId;
     }
 
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public override TId Id
     {
         get => base.Id;
@@ -30,11 +30,15 @@ public class BeamOsModelEntity<TId> : BeamOsEntity<TId>, IBeamOsModelEntity
     public BeamOsModelEntity() { }
 
     public int GetIntId() => this.Id.Id;
+
+    public void SetIntId(int value) => this.Id = new TId() { Id = value };
 }
 
 public interface IBeamOsModelEntity
 {
+    public ModelId ModelId { get; }
     public int GetIntId();
+    public void SetIntId(int value);
 }
 
 [PrimaryKey(nameof(Id), nameof(ResultSetId), nameof(ModelId))]

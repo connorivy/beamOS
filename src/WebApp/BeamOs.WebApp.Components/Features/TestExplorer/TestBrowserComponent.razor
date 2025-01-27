@@ -1,0 +1,24 @@
+<MudDrawerHeader>
+    <MudText Typo="Typo.h6">Select an Example Problem</MudText>
+</MudDrawerHeader>
+@* 
+<MudList T="List<TestInfo>" SelectedValueChanged="OnSelectedExampleProblemChanged">
+    @foreach (var testInfoGroup in TestInfoProvider.TestInfos.Values.GroupBy(t => t.SourceInfo?.SourceType ?? FixtureSourceType.Standalone))
+    {
+        <MudListItem Icon="@Icons.Material.Filled.Book" Text="@testInfoGroup.Key.ToString()">
+            <NestedList>
+                @foreach (var testInfoGroupBySourceName in testInfoGroup.GroupBy(t => t.SourceInfo?.SourceName))
+                {
+                    <MudListItem Icon="@Icons.Material.Outlined.Build" Text="@testInfoGroupBySourceName.Key">
+                        <NestedList>
+                            @foreach (var testInfoByModelName in testInfoGroup.GroupBy(t => t.SourceInfo?.ModelName))
+                        {
+                            <MudListItem Icon="@Icons.Material.Outlined.Abc" Text="@testInfoByModelName.Key" Value="@testInfoByModelName.ToList()"></MudListItem>
+                        }
+                    </NestedList>
+                </MudListItem>
+                }
+            </NestedList>
+        </MudListItem>
+    }
+</MudList> *@

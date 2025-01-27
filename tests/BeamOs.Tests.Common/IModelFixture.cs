@@ -1,11 +1,16 @@
-﻿using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
 
 namespace BeamOs.Tests.Common;
-public interface IModelFixture
+
+public interface IModelFixture : IHasSourceInfo
 {
     string Description { get; }
     string GuidString { get; }
     string Name { get; }
     PhysicalModelSettings Settings { get; }
-    SourceInfo SourceInfo { get; }
+}
+
+public interface IHasSourceInfo
+{
+    public SourceInfo SourceInfo { get; }
 }

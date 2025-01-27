@@ -3,13 +3,18 @@ using BeamOs.Common.Domain.Models;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
 
-public readonly struct MomentLoadId(int id) : IIntBasedId
+public readonly record struct MomentLoadId : IIntBasedId
 {
-    public int Id { get; } = id;
+    public int Id { get; init; }
 
-    public static explicit operator int(MomentLoadId id) => id.Id;
+    public MomentLoadId(int id)
+    {
+        this.Id = id;
+    }
 
-    public static explicit operator MomentLoadId(int id) => new(id);
+    public static implicit operator int(MomentLoadId id) => id.Id;
+
+    public static implicit operator MomentLoadId(int id) => new(id);
 
     public override string ToString() => this.Id.ToString(CultureInfo.InvariantCulture);
 }

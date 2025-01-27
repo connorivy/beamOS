@@ -42,7 +42,10 @@ public class WebAppFactory(string connectionString)
             //});
 
             services.AddDbContext<StructuralAnalysisDbContext>(
-                options => options.UseNpgsql(connectionString)
+                options =>
+                    options
+                        .UseNpgsql(connectionString)
+                        .AddInterceptors(new ModelEntityIdIncrementingInterceptor())
             //.UseModel(StructuralAnalysisDbContextModel.Instance)
             );
 

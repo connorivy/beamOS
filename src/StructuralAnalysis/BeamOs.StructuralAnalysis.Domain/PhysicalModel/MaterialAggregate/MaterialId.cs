@@ -3,9 +3,14 @@ using BeamOs.Common.Domain.Models;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 
-public readonly struct MaterialId(int id) : IIntBasedId
+public readonly record struct MaterialId : IIntBasedId
 {
-    public int Id { get; } = id;
+    public int Id { get; init; }
+
+    public MaterialId(int id)
+    {
+        this.Id = id;
+    }
 
     public static implicit operator int(MaterialId id) => id.Id;
 
