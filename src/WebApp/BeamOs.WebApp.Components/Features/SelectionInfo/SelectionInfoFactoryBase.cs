@@ -283,7 +283,7 @@ public readonly struct ComplexFieldSelectionInfo : IComplexSelectionInfo
             }
             else if (
                 selectionInfo is IComplexSelectionInfo nestedComplexSelection
-                && HasAnyValues(complexSelectionInfo)
+                && HasAnyValues(nestedComplexSelection)
             )
             {
                 return true;

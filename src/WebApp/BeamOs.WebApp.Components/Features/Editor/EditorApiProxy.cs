@@ -29,6 +29,17 @@ public class EditorApiProxy : DispatchProxy, IAsyncDisposable
 
         proxy.dotNetObjectReference = DotNetObjectReference.Create(editorEventsApi);
 
+        // for cases when editor page is directly navigated to, you may need to wait a bit
+        // for the editor api to be loaded from npm or local
+        bool importedEditorModule = false;
+        while (!importedEditorModule)
+        {
+            importedEditorModule = await js.InvokeAsync<bool>(
+                "window.hasOwnProperty",
+                "createEditorFromId"
+            );
+        }
+
         // WARNING : the string "createEditorFromId" must match the string in index.js
         proxy.editorReference = await js.InvokeAsync<IJSObjectReference>(
             "createEditorFromId",

@@ -44,16 +44,15 @@ public partial class EditorComponent(
     [Parameter]
     public bool IsReadOnly { get; set; } = true;
 
-    public IStateSelection<AllEditorComponentState, EditorComponentState> State => state;
+    private bool stateSelected;
+    public IStateSelection<AllEditorComponentState, EditorComponentState>? State =>
+        this.stateSelected ? state : null;
 
     public static string CreateCanvasId() => "id" + Guid.NewGuid().ToString("N");
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        dispatcher.Dispatch(new EditorCreated(this.CanvasId));
-        state.Select(s => s.EditorState[this.CanvasId]);
-
         this.SubscribeToAction<MoveNodeCommand>(async command =>
         {
             if (command.CanvasId != this.CanvasId)
@@ -128,6 +127,14 @@ public partial class EditorComponent(
                 }
             }
         });
+
+        this.SubscribeToAction<EditorCreated>(_ =>
+        {
+            this.stateSelected = true;
+            state.Select(s => s.EditorState[this.CanvasId]);
+        });
+
+        dispatcher.Dispatch(new EditorCreated(this.CanvasId));
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

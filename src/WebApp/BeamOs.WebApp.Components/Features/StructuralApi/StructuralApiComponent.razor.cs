@@ -43,6 +43,10 @@ public partial class StructuralApiComponent : FluxorComponent
     [Inject]
     private IDispatcher Dispatcher { get; init; }
 
+    private bool validationSuccess;
+    private string[] errors = [];
+    private MudForm form;
+
     protected override async Task OnInitializedAsync()
     {
         //var client = new HttpClient { BaseAddress = new Uri($"http://localhost:7111") };
@@ -156,6 +160,13 @@ public partial class StructuralApiComponent : FluxorComponent
 
     private async Task HandleSubmit()
     {
+        await this.form.Validate();
+
+        if (!this.validationSuccess)
+        {
+            return;
+        }
+
         var state = this.State.Value;
         var selectionInfos = state.SelectionInfo;
         object?[] parameters = new object?[selectionInfos.Length];

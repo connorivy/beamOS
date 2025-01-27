@@ -15,16 +15,12 @@
 
 <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="relative h-full w-full">
     <EditorComponent Class="h-full" @ref="editorComponent" ModelId="@ModelId" IsReadOnly="false"></EditorComponent>
-    @if (editorComponent is not null)
+    @if (this.editorComponent?.State?.Value.LoadedModelId is Guid modelId)
     {
-        @if (this.editorState.Value.LoadedModelId is Guid modelId)
-        {
-            <StructuralApiComponent Class="absolute left-0 top-0 w-1/4 p-4" ModelId="@modelId" CanvasId="@editorComponent.CanvasId"></StructuralApiComponent>
+        <StructuralApiComponent Class="absolute left-0 top-0 w-1/4 p-4" ModelId="@modelId" CanvasId="@editorComponent.CanvasId"></StructuralApiComponent>
 
-            <SelectionInfoComponent ModelId="@modelId" SelectedObjects="@this.editorState.Value.SelectedObjects" Class="absolute right-0 top-0 w-1/4 p-4" CanvasId="@editorComponent.CanvasId"></SelectionInfoComponent>
-        }
+        <SelectionInfoComponent ModelId="@modelId" SelectedObjects="this.editorComponent.State.Value.SelectedObjects" Class="absolute right-0 top-0 w-1/4 p-4" CanvasId="@editorComponent.CanvasId"></SelectionInfoComponent>
     }
-
 </MudContainer>
 
 @code {
@@ -33,19 +29,15 @@
 
     private SelectedObject[] selectedObjects = [];
 
-    private EditorComponent editorComponent
-    {
-        get;
-        set
-        {
-            field = value;
-            this.editorState.Select(s => s.EditorState[value.CanvasId]);
-        }
-    }
+    private EditorComponent? editorComponent;
 
-    private readonly IStateSelection<AllEditorComponentState, EditorComponentState> editorState;
-    public ModelEditor(IStateSelection<AllEditorComponentState, EditorComponentState> editorState)
+    protected override void OnInitialized()
     {
-        this.editorState = editorState;
+        base.OnInitialized();
+
+        this.SubscribeToAction<EditorLoadingEnd>(_ =>
+        {
+            this.StateHasChanged();
+        });
     }
 }
