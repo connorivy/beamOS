@@ -1,6 +1,8 @@
 @page "/test-explorer"
 @inherits FluxorComponent
 
+@using BeamOs.Tests.Common
+@using BeamOs.WebApp.Components.Features.Editor
 @using BeamOs.WebApp.Components.Layout
 @using Fluxor
 @using Fluxor.Blazor.Web.Components
@@ -10,9 +12,9 @@
 <PageTitle>Test Explorer</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="h-full relative">
-    @* @{
-        var canvasId = this.GetCanvasId();
-    } *@
+    @{
+        var canvasId = EditorComponent.CreateCanvasId();
+    }
     @* <MudDrawer Open="true" Width="400px" Elevation="1">
         @if (this.TestExplorerState.Value.SelectedProblemTests is null)
         {
@@ -66,6 +68,14 @@
         </MudItem>
     </MudGrid> *@
     <SectionContent SectionId="@MainLayout.Drawer">
+        @if (state.Value.TestResults is not null && editorComponent?.State is not null)
+        {
+            <SingleTestSelectorComponent CanvasId="@canvasId" TestResults="@state.Value.TestResults" SelectedObjects="@editorComponent.State.Value.SelectedObjects" />
+        }
+        else
+        {
+            <TestBrowserComponent CanvasId="@canvasId"/>
+        }
         @* @if (this.TestExplorerState.Value.SelectedProblemTests is null)
         {
             <ExampleModelSelectorComponent CanvasId="@canvasId" />
@@ -86,6 +96,9 @@
             </div>
         } *@
     </SectionContent>
+    <div class="flex flex-col h-fit gap-y-2">
+        <EditorComponent @ref="editorComponent" Class="min-h-[600px] h-full w-full z-0" IsReadOnly="true" />
+    </div>
     @* <div class="flex flex-col h-fit gap-y-2">
         <ReadOnlyEditor @ref="readOnlyEditor" Class="min-h-[600px] h-full w-full z-0" CanvasId="@canvasId" />
         <TestResultDisplayComponent />

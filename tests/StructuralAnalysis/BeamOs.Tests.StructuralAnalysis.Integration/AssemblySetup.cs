@@ -2,23 +2,14 @@ using System.Runtime.CompilerServices;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Tests.Common;
 using Testcontainers.PostgreSql;
-#if SQL_SERVER
-using Testcontainers.MsSql;
-#endif
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration;
 
-public static class AssemblySetup
+public static partial class AssemblySetup
 {
     public static PostgreSqlContainer DbContainer { get; } =
         new PostgreSqlBuilder().WithImage("postgres:15-alpine").Build();
 
-#if SQL_SERVER
-    public static MsSqlContainer DbContainer { get; } =
-        new MsSqlBuilder().WithExposedPort(1433).Build();
-#endif
-
-    public static StructuralAnalysisApiClientV1 StructuralAnalysisApiClient { get; set; }
     public static bool ApiIsRunning { get; set; }
     public static bool SetupWebApi { get; set; } = true;
     public static bool SkipOpenSeesTests { get; set; } = BeamOsEnv.IsCiEnv();
@@ -35,7 +26,9 @@ public static class AssemblySetup
 
         var webAppFactory = new WebAppFactory(DbContainer.GetConnectionString());
 
-        StructuralAnalysisApiClient = new(webAppFactory.CreateClient());
+        StructuralAnalysisApiClient = new StructuralAnalysisApiClientV1(
+            webAppFactory.CreateClient()
+        );
 
         ApiIsRunning = true;
     }

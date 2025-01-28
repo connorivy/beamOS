@@ -39,7 +39,10 @@ public abstract class BeamOsModelBuilder
 
     public Task Build() => this.Build(CreateDefaultApiClient());
 
-    public async Task Build(IStructuralAnalysisApiClientV1 apiClient)
+    public async Task<bool> Build(
+        IStructuralAnalysisApiClientV1 apiClient,
+        bool createIfDoesntExist = false
+    )
     {
         if (!Guid.TryParse(this.GuidString, out var modelId))
         {
@@ -60,7 +63,11 @@ public abstract class BeamOsModelBuilder
         }
         catch
         {
-            return;
+            if (createIfDoesntExist)
+            {
+                return false;
+            }
+            throw;
         }
 
         // todo : batching
@@ -93,7 +100,18 @@ public abstract class BeamOsModelBuilder
         {
             (await apiClient.CreateElement1dAsync(modelId, el)).ThrowIfError();
         }
+
+        return true;
     }
+
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name="structuralAnalysisApiClient"></param>
+    /// <returns>a bool that is true if the model was created or false if it already existed</returns>
+    public async Task<bool> CreateIfDoesntExist(
+        IStructuralAnalysisApiClientV1 structuralAnalysisApiClient
+    ) => await this.Build(structuralAnalysisApiClient, true);
 
     private static StructuralAnalysisApiClientV1 CreateDefaultApiClient()
     {

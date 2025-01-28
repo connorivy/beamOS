@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
@@ -27,7 +23,7 @@ public record ModelResponse(
     List<PointLoadResponse>? PointLoads = null,
     List<MomentLoadResponse>? MomentLoads = null
 //AnalyticalResultsResponse? AnalyticalResults = null
-);
+) : IBeamOsEntityResponse;
 
 public record ModelResponseHydrated(
     Guid Id,
@@ -41,7 +37,7 @@ public record ModelResponseHydrated(
     List<PointLoadResponse> PointLoads,
     List<MomentLoadResponse> MomentLoads
 //AnalyticalResultsResponse? AnalyticalResults = null
-);
+) : IBeamOsEntityResponse;
 
 public record ModelSettingsResponse(UnitSettingsResponse UnitSettings);
 

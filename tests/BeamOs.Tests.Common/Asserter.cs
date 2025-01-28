@@ -1,3 +1,4 @@
+using BeamOs.StructuralAnalysis.Contracts.Common;
 using FluentAssertions;
 
 namespace BeamOs.Tests.Common;
@@ -5,7 +6,7 @@ namespace BeamOs.Tests.Common;
 public static class Asserter
 {
     public static event EventHandler<ComparedObjectEventArgs<double>>? DoublesAssertedEqual;
-    public static event EventHandler<ComparedObjectEventArgs2>? AssertedEqual2;
+    public static event EventHandler<ComparedObjectEventArgs>? AssertedEqual2;
     public static event EventHandler<ComparedObjectEventArgs<double[]>>? DoubleArrayAssertedEqual;
     public static event EventHandler<
         ComparedObjectEventArgs<double[,]>
@@ -73,6 +74,7 @@ public static class Asserter
     //}
 
     public static void AssertEqual(
+        BeamOsObjectType beamOsObjectType,
         string beamOsObjectId,
         string comparedValueName,
         double?[] expected,
@@ -85,6 +87,7 @@ public static class Asserter
             typeof(Asserter),
             new()
             {
+                BeamOsObjectType = beamOsObjectType,
                 BeamOsObjectId = beamOsObjectId,
                 ComparedObjectPropertyName = comparedValueName,
                 ExpectedValue = expected,
@@ -118,6 +121,7 @@ public static class Asserter
     }
 
     public static void AssertEqual(
+        BeamOsObjectType beamOsObjectType,
         string beamOsObjectId,
         string comparedValueName,
         double[,] expected,
@@ -130,6 +134,7 @@ public static class Asserter
             typeof(Asserter),
             new()
             {
+                BeamOsObjectType = beamOsObjectType,
                 BeamOsObjectId = beamOsObjectId,
                 ComparedObjectPropertyName = comparedValueName,
                 ExpectedValue = expected,
@@ -160,6 +165,7 @@ public static class Asserter
     }
 
     public static void AssertEqual(
+        BeamOsObjectType beamOsObjectType,
         string beamOsObjectId,
         string comparedValueName,
         double?[,] expected,
@@ -172,6 +178,7 @@ public static class Asserter
             typeof(Asserter),
             new()
             {
+                BeamOsObjectType = beamOsObjectType,
                 BeamOsObjectId = beamOsObjectId,
                 ComparedObjectPropertyName = comparedValueName,
                 ExpectedValue = expected,
@@ -223,9 +230,9 @@ public class ComparedObjectEventArgs<T>(T expected, T calculated, string compare
     public string ComparedObjectName { get; } = comparedObjectName;
 }
 
-public record ComparedObjectEventArgs2
+public record ComparedObjectEventArgs
 {
-    //public required BeamOsObjectType BeamOsObjectType { get; init; }
+    public required BeamOsObjectType BeamOsObjectType { get; init; }
     public required string BeamOsObjectId { get; init; }
     public required string ComparedObjectPropertyName { get; init; }
     public required object ExpectedValue { get; init; }

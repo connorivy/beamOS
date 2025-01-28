@@ -52,7 +52,6 @@ public class BeamOsAnalyticalResultEntity<TId> : BeamOsEntity<TId>
         this.ResultSetId = resultSetId;
     }
 
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public override TId Id
     {
         get => base.Id;

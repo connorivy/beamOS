@@ -1,3 +1,4 @@
+#if !RUNTIME
 using BeamOs.StructuralAnalysis.Api;
 using BeamOs.StructuralAnalysis.Infrastructure;
 using BeamOs.StructuralAnalysis.Infrastructure.Common;
@@ -66,3 +67,5 @@ public class TestsInitializer
 {
     public TestsInitializer() { }
 }
+
+#endif

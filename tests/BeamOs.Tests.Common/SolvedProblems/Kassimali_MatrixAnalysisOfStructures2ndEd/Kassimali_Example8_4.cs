@@ -31,6 +31,7 @@ public class Kassimali_Example8_4 : ModelFixture, IHasExpectedNodeResults
             new()
             {
                 NodeId = 1,
+                ResultSetId = 1,
                 DisplacementAlongX = new(-1.3522e-3, LengthUnit.Inch),
                 DisplacementAlongY = new(-2.7965e-3, LengthUnit.Inch),
                 DisplacementAlongZ = new(-1.812e-3, LengthUnit.Inch),
@@ -41,6 +42,7 @@ public class Kassimali_Example8_4 : ModelFixture, IHasExpectedNodeResults
             new()
             {
                 NodeId = 2,
+                ResultSetId = 1,
                 ForceAlongX = new(5.3757, ForceUnit.KilopoundForce),
                 ForceAlongY = new(44.106, ForceUnit.KilopoundForce),
                 ForceAlongZ = new(-.74272, ForceUnit.KilopoundForce),
@@ -51,6 +53,7 @@ public class Kassimali_Example8_4 : ModelFixture, IHasExpectedNodeResults
             new()
             {
                 NodeId = 3,
+                ResultSetId = 1,
                 ForceAlongX = new(-4.6249, ForceUnit.KilopoundForce),
                 ForceAlongY = new(11.117, ForceUnit.KilopoundForce),
                 ForceAlongZ = new(-6.4607, ForceUnit.KilopoundForce),
@@ -61,6 +64,7 @@ public class Kassimali_Example8_4 : ModelFixture, IHasExpectedNodeResults
             new()
             {
                 NodeId = 4,
+                ResultSetId = 1,
                 ForceAlongX = new(-.75082, ForceUnit.KilopoundForce),
                 ForceAlongY = new(4.7763, ForceUnit.KilopoundForce),
                 ForceAlongZ = new(7.2034, ForceUnit.KilopoundForce),

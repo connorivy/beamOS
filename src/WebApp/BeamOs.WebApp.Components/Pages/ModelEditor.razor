@@ -15,7 +15,7 @@
 
 <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="relative h-full w-full">
     <EditorComponent Class="h-full" @ref="editorComponent" ModelId="@ModelId" IsReadOnly="false"></EditorComponent>
-    @if (this.editorComponent?.State?.Value.LoadedModelId is Guid modelId)
+    @if (this.editorComponent is not null && this.editorComponent.StateSelected && this.editorComponent.State.Value.LoadedModelId is Guid modelId)
     {
         <StructuralApiComponent Class="absolute left-0 top-0 w-1/4 p-4" ModelId="@modelId" CanvasId="@editorComponent.CanvasId"></StructuralApiComponent>
 
@@ -29,7 +29,17 @@
 
     private SelectedObject[] selectedObjects = [];
 
-    private EditorComponent? editorComponent;
+    // private IStateSelection<AllEditorComponentState, EditorComponentState>? State;
+
+    private EditorComponent? editorComponent
+    {
+        get;
+        set
+        {
+            field = value;
+            StateHasChanged();
+        }
+    }
 
     protected override void OnInitialized()
     {

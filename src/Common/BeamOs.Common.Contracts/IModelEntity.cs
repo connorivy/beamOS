@@ -5,7 +5,9 @@ public interface IHasModelId
     public Guid ModelId { get; }
 }
 
-public interface IModelEntity : IHasModelId
+public interface IModelEntity : IHasModelId, IBeamOsEntityResponse
 {
     public int Id { get; }
 }
+
+public interface IBeamOsEntityResponse { }

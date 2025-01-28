@@ -30,24 +30,28 @@ public class Kassimali_Example3_8 : ModelFixture, IHasExpectedNodeResults
             new()
             {
                 NodeId = 1,
+                ResultSetId = 1,
                 DisplacementAlongX = new(.21552, LengthUnit.Inch),
                 DisplacementAlongY = new(-.13995, LengthUnit.Inch)
             },
             new()
             {
                 NodeId = 2,
+                ResultSetId = 1,
                 ForceAlongX = new(-10.064, ForceUnit.KilopoundForce),
                 ForceAlongY = new(-13.419, ForceUnit.KilopoundForce)
             },
             new()
             {
                 NodeId = 3,
+                ResultSetId = 1,
                 ForceAlongX = new(0, ForceUnit.KilopoundForce),
                 ForceAlongY = new(126.83, ForceUnit.KilopoundForce)
             },
             new()
             {
                 NodeId = 4,
+                ResultSetId = 1,
                 ForceAlongX = new(-139.94, ForceUnit.KilopoundForce),
                 ForceAlongY = new(186.58, ForceUnit.KilopoundForce)
             }
@@ -128,14 +132,16 @@ public class Kassimali_Example3_8 : ModelFixture, IHasExpectedNodeResults
         {
             Force = new(150, ForceUnitContract.KilopoundForce),
             Direction = new(1, 0, 0),
-            NodeId = 1
+            NodeId = 1,
+            Id = 1
         };
 
         yield return new()
         {
             Force = new(300, ForceUnitContract.KilopoundForce),
             Direction = new(0, -1, 0),
-            NodeId = 1
+            NodeId = 1,
+            Id = 2
         };
     }
 
@@ -146,7 +152,8 @@ public class Kassimali_Example3_8 : ModelFixture, IHasExpectedNodeResults
             StartNodeId = 2,
             EndNodeId = 1,
             MaterialId = 992,
-            SectionProfileId = 8
+            SectionProfileId = 8,
+            Id = 1
         };
 
         yield return new()
@@ -154,7 +161,8 @@ public class Kassimali_Example3_8 : ModelFixture, IHasExpectedNodeResults
             StartNodeId = 3,
             EndNodeId = 1,
             MaterialId = 992,
-            SectionProfileId = 6
+            SectionProfileId = 6,
+            Id = 2
         };
 
         yield return new()
@@ -162,7 +170,8 @@ public class Kassimali_Example3_8 : ModelFixture, IHasExpectedNodeResults
             StartNodeId = 4,
             EndNodeId = 1,
             MaterialId = 992,
-            SectionProfileId = 8
+            SectionProfileId = 8,
+            Id = 3
         };
     }
 }

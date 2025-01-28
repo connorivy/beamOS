@@ -26,6 +26,7 @@
     <ProjectReference Include="..\..\..\codeGen\BeamOs.CodeGen.EditorApi\BeamOs.CodeGen.EditorApi.csproj" />
     <ProjectReference Include="..\..\..\codeGen\BeamOs.CodeGen.StructuralAnalysisApiClient\BeamOs.CodeGen.StructuralAnalysisApiClient.csproj" />
     <ProjectReference Include="..\..\..\tests\BeamOs.Tests.Common\BeamOs.Tests.Common.csproj" />
+    <ProjectReference Include="..\..\..\tests\Runtime\BeamOs.Tests.Runtime.TestRunner\BeamOs.Tests.Runtime.TestRunner.csproj" />
     <ProjectReference Include="..\..\Common\BeamOs.Common.Api\BeamOs.Common.Api.csproj" />
     <ProjectReference Include="..\..\Common\BeamOs.Common.Application\BeamOs.Common.Application.csproj" />
     <ProjectReference Include="..\..\StructuralAnalysis\BeamOs.StructuralAnalysis.CsSdk\BeamOs.StructuralAnalysis.CsSdk.csproj" />

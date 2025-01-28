@@ -1,5 +1,7 @@
-using BeamOs.CodeGen.StructuralAnalysisApiClient;
+using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.CsSdk;
+using BeamOs.StructuralAnalysis.CsSdk.Mappers;
+using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using UnitsNet;
 
 namespace BeamOs.Tests.Common;
@@ -7,6 +9,12 @@ namespace BeamOs.Tests.Common;
 public abstract class ModelFixture : BeamOsModelBuilder, IModelFixture
 {
     public abstract SourceInfo SourceInfo { get; }
+
+    public IBeamOsEntityResponse MapToResponse()
+    {
+        BeamOsModelBuilderResponseMapper responseMapper = new(this.Id);
+        return responseMapper.ToReponse(this);
+    }
 }
 
 public enum FixtureSourceType
@@ -36,6 +44,7 @@ public interface IHasExpectedNodeResults
 public record NodeResultFixture
 {
     public required int NodeId { get; init; }
+    public required ResultSetId ResultSetId { get; init; }
 
     public Length? DisplacementAlongX { get; init; }
     public Length? DisplacementAlongY { get; init; }

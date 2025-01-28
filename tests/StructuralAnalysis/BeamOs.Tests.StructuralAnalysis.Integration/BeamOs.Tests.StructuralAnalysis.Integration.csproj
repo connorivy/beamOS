@@ -4,13 +4,13 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <UseSqlServer Condition="'$(UseSqlServer)' == ''">false</UseSqlServer>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="TUnit" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
     <PackageReference Include="Testcontainers.PostgreSql" />
-    <PackageReference Include="TUnit" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
     <PackageReference Include="Verify.TUnit" />
     <!--<PackageReference Include="Microsoft.Azure.WebJobs.Core" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Http" />
@@ -28,19 +28,7 @@
     </PackageReference>
     <PackageReference Include="coverlet.collector" />-->
   </ItemGroup>
-
-  <PropertyGroup Condition="'$(UseSqlServer)' == true">
-    <DefineConstants>$(DefineConstants);SQL_SERVER</DefineConstants>
-  </PropertyGroup>
-
-  <ItemGroup Condition="'$(UseSqlServer)' == true">
-    <PackageReference Include="Testcontainers.MsSql" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(UseSqlServer)' != true">
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
-  </ItemGroup>
-
+  
   <ItemGroup>
     <ProjectReference Include="..\..\..\codeGen\BeamOs.CodeGen.StructuralAnalysisApiClient\BeamOs.CodeGen.StructuralAnalysisApiClient.csproj" />
     <ProjectReference Include="..\..\..\src\StructuralAnalysis\BeamOs.StructuralAnalysis.Api\BeamOs.StructuralAnalysis.Api.csproj" />
@@ -54,5 +42,7 @@
     <Exec Condition="Exists('$(OpenSeesDir)bin\')" Command="xcopy /y /s $(OpenSeesDir)bin\** $(OutDir)bin\" />
     <Exec Condition="Exists('$(OpenSeesDir)lib\')" Command="xcopy /y /s $(OpenSeesDir)lib\** $(OutDir)lib\" />
   </Target>
+
+  <Import Project="..\BeamOs.Tests.StructuralAnalysis.Integration.Shared\BeamOs.Tests.StructuralAnalysis.Integration.Shared.projitems" Label="Shared" />
 
 </Project>

@@ -4,6 +4,7 @@ using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.CsSdk;
 using BeamOs.Tests.Common;
 using BeamOs.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd;
+using BeamOs.Tests.Runtime.TestRunner;
 using BeamOs.WebApp.Components;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.Editor;
@@ -28,6 +29,7 @@ public static class DI
         services.AddHttpContextAccessor();
         services.AddHttpClient();
         services.AddCascadingAuthenticationState();
+        services.AddTestServices();
 
         return services;
     }
@@ -56,7 +58,10 @@ public static class DI
 
             foreach (var modelBuilder in AllSolvedProblems.ModelFixtures())
             {
-                await modelBuilder.Build(apiClient);
+                if (await modelBuilder.CreateIfDoesntExist(apiClient))
+                {
+                    await apiClient.RunOpenSeesAnalysisAsync(modelBuilder.Id);
+                }
             }
         }
     }

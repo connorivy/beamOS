@@ -8,6 +8,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.StructuralApi;
@@ -27,6 +28,7 @@ public partial class EditorComponent(
     IStateSelection<AllEditorComponentState, EditorComponentState> state,
     IDispatcher dispatcher,
     LoadModelCommandHandler loadModelCommandHandler,
+    LoadBeamOsEntityCommandHandler loadBeamOsEntityCommandHandler,
     ILogger<EditorComponent> logger,
     UndoRedoFunctionality undoRedoFunctionality,
     IJSRuntime js
@@ -44,9 +46,8 @@ public partial class EditorComponent(
     [Parameter]
     public bool IsReadOnly { get; set; } = true;
 
-    private bool stateSelected;
-    public IStateSelection<AllEditorComponentState, EditorComponentState>? State =>
-        this.stateSelected ? state : null;
+    public bool StateSelected { get; private set; }
+    public IStateSelection<AllEditorComponentState, EditorComponentState> State { get; } = state;
 
     public static string CreateCanvasId() => "id" + Guid.NewGuid().ToString("N");
 
@@ -130,11 +131,17 @@ public partial class EditorComponent(
 
         this.SubscribeToAction<EditorCreated>(_ =>
         {
-            this.stateSelected = true;
+            this.StateSelected = true;
             state.Select(s => s.EditorState[this.CanvasId]);
         });
 
         dispatcher.Dispatch(new EditorCreated(this.CanvasId));
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        state.Select(s => s.EditorState[this.CanvasId]);
+        return Task.CompletedTask;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -147,23 +154,52 @@ public partial class EditorComponent(
 
             if (this.ModelId is not null)
             {
-                dispatcher.Dispatch(new EditorLoadingBegin(this.CanvasId, "Fetching Data"));
-                var result = await loadModelCommandHandler.ExecuteAsync(
-                    new LoadModelCommand(this.CanvasId, this.ModelId.Value)
-                );
-
-                if (result.IsError)
-                {
-                    logger.LogError(result.Error.ToString());
-                }
-                else
-                {
-                    dispatcher.Dispatch(new EditorLoadingEnd(this.CanvasId, result.Value));
-                }
+                await this.LoadModelFromServer(this.ModelId.Value);
             }
         }
         await base.OnAfterRenderAsync(firstRender);
     }
+
+    public async Task LoadModelFromServer(Guid modelId)
+    {
+        dispatcher.Dispatch(new EditorLoadingBegin(this.CanvasId, "Fetching Data"));
+        var result = await loadModelCommandHandler.ExecuteAsync(
+            new LoadModelCommand(this.CanvasId, modelId)
+        );
+
+        if (result.IsError)
+        {
+            logger.LogError(result.Error.ToString());
+        }
+        else
+        {
+            dispatcher.Dispatch(new EditorLoadingEnd(this.CanvasId, result.Value));
+        }
+    }
+
+    public async Task LoadBeamOsEntity(IBeamOsEntityResponse entity, bool clearExisting = false)
+    {
+        if (clearExisting)
+        {
+            await this.State.Value.EditorApi.ClearAsync();
+        }
+
+        dispatcher.Dispatch(new EditorLoadingBegin(this.CanvasId, "Loading"));
+        var result = await loadBeamOsEntityCommandHandler.ExecuteAsync(
+            new LoadEntityCommand(entity, this.State.Value.EditorApi)
+        );
+
+        if (result.IsError)
+        {
+            logger.LogError(result.Error.ToString());
+        }
+        else
+        {
+            dispatcher.Dispatch(new EditorLoadingEnd(this.CanvasId, result.Value));
+        }
+    }
+
+    public async Task Clear() => await this.State.Value.EditorApi.ClearAsync();
 
     protected override async ValueTask DisposeAsyncCore(bool disposing)
     {
@@ -199,6 +235,13 @@ public record EditorComponentState(
 {
     public EditorComponentState()
         : this(null, false, null, null, []) { }
+}
+
+[FeatureState]
+public record EditorStateState(bool IsStateLoaded)
+{
+    public EditorStateState()
+        : this(false) { }
 }
 
 public record struct SelectionChanged(string CanvasId, IModelEntity[] SelectedObjects);

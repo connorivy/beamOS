@@ -63,6 +63,7 @@ public static class DependencyInjection
             options
                 .UseSqlServer(connectionString)
                 .AddInterceptors(new ModelEntityIdIncrementingInterceptor());
+
             //var optionsBuilderNoInterceptor =
             //    options.UseSqlServer(connectionString).Options
             //    as DbContextOptions<StructuralAnalysisDbContext>;
