@@ -1,9 +1,10 @@
 using BeamOs.Common.Contracts;
 using BeamOs.WebApp.EditorCommands.Interfaces;
+using MudBlazor;
 
 namespace BeamOs.WebApp.Components.Features.Common;
 
-public abstract class CommandHandlerBase<TCommand, TResponse>
+public abstract class CommandHandlerBase<TCommand, TResponse>(ISnackbar snackbar)
 //: ICommandHandler<TCommand, Result>,
 //IClientCommandHandler<TCommand>
 //where TCommand : IClientCommand
@@ -13,18 +14,24 @@ public abstract class CommandHandlerBase<TCommand, TResponse>
         CancellationToken ct = default
     )
     {
+        Result<TResponse> response;
         try
         {
-            var response = await this.ExecuteCommandAsync(command, ct);
+            response = await this.ExecuteCommandAsync(command, ct);
 
             this.PostProcess(command);
-
-            return response;
         }
         catch (Exception ex)
         {
-            return BeamOsError.Failure(description: ex.Message);
+            response = BeamOsError.Failure(description: ex.Message);
         }
+
+        if (response.IsError)
+        {
+            snackbar.Add(response.Error.Description, Severity.Error);
+        }
+
+        return response;
     }
 
     protected virtual void PostProcess(TCommand command) { }

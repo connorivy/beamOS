@@ -15,11 +15,11 @@
 
 <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="relative h-full w-full">
     <EditorComponent Class="h-full" @ref="editorComponent" ModelId="@ModelId" IsReadOnly="false"></EditorComponent>
-    @if (this.editorComponent is not null && this.editorComponent.StateSelected && this.editorComponent.State.Value.LoadedModelId is Guid modelId)
+    @if (this.editorComponent is not null && this.State.Value.LoadedModelId is Guid modelId)
     {
         <StructuralApiComponent Class="absolute left-0 top-0 w-1/4 p-4" ModelId="@modelId" CanvasId="@editorComponent.CanvasId"></StructuralApiComponent>
 
-        <SelectionInfoComponent ModelId="@modelId" SelectedObjects="this.editorComponent.State.Value.SelectedObjects" Class="absolute right-0 top-0 w-1/4 p-4" CanvasId="@editorComponent.CanvasId"></SelectionInfoComponent>
+        <SelectionInfoComponent ModelId="@modelId" SelectedObjects="this.State.Value.SelectedObjects" Class="absolute right-0 top-0 w-1/4 p-4" CanvasId="@editorComponent.CanvasId"></SelectionInfoComponent>
     }
 </MudContainer>
 
@@ -27,9 +27,8 @@
     [Parameter]
     public Guid ModelId { get; set; }
 
-    private SelectedObject[] selectedObjects = [];
-
-    // private IStateSelection<AllEditorComponentState, EditorComponentState>? State;
+    [Inject]
+    private IState<EditorComponentState> State { get; init; }
 
     private EditorComponent? editorComponent
     {
@@ -41,13 +40,14 @@
         }
     }
 
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
+    // protected override void OnInitialized()
+    // {
+    //     base.OnInitialized();
 
-        this.SubscribeToAction<EditorLoadingEnd>(_ =>
-        {
-            this.StateHasChanged();
-        });
-    }
+    //     this.SubscribeToAction<EditorLoadingEnd>(_ =>
+    //     {
+    //         this.State.Select(s => s.EditorState[this.editorComponent.CanvasId]);
+    //         this.StateHasChanged();
+    //     });
+    // }
 }

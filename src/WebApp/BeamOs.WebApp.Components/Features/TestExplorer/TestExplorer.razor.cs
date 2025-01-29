@@ -7,7 +7,10 @@ using Fluxor.Blazor.Web.Components;
 
 namespace BeamOs.WebApp.Components.Features.TestExplorer;
 
-public partial class TestExplorer(IState<TestExplorerState> state) : FluxorComponent
+public partial class TestExplorer(
+    IState<TestExplorerState> state,
+    IState<EditorComponentState> editorState
+) : FluxorComponent
 {
     private EditorComponent? editorComponent;
 

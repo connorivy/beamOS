@@ -1,6 +1,5 @@
 using BeamOs.Common.Contracts;
 using BeamOs.WebApp.Components.Features.Editor;
-using BeamOs.WebApp.Components.Features.StructuralApi;
 using BeamOs.WebApp.EditorCommands;
 using Fluxor;
 using Fluxor.Blazor.Web.Components;

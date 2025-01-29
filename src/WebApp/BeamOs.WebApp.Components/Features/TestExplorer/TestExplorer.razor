@@ -68,9 +68,9 @@
         </MudItem>
     </MudGrid> *@
     <SectionContent SectionId="@MainLayout.Drawer">
-        @if (state.Value.TestResults is not null && editorComponent?.State is not null)
+        @if (state.Value.TestResults is not null)
         {
-            <SingleTestSelectorComponent CanvasId="@canvasId" TestResults="@state.Value.TestResults" SelectedObjects="@editorComponent.State.Value.SelectedObjects" />
+            <SingleTestSelectorComponent CanvasId="@canvasId" TestResults="@state.Value.TestResults" SelectedObjects="@editorState.Value.SelectedObjects" />
         }
         else
         {

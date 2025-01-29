@@ -25,7 +25,7 @@ namespace BeamOs.WebApp.Components.Features.Editor;
 public partial class EditorComponent(
     IStructuralAnalysisApiClientV1 apiClient,
     IEditorApiProxyFactory editorApiProxyFactory,
-    IStateSelection<AllEditorComponentState, EditorComponentState> state,
+    IState<EditorComponentState> state,
     IDispatcher dispatcher,
     LoadModelCommandHandler loadModelCommandHandler,
     LoadBeamOsEntityCommandHandler loadBeamOsEntityCommandHandler,
@@ -45,9 +45,6 @@ public partial class EditorComponent(
 
     [Parameter]
     public bool IsReadOnly { get; set; } = true;
-
-    public bool StateSelected { get; private set; }
-    public IStateSelection<AllEditorComponentState, EditorComponentState> State { get; } = state;
 
     public static string CreateCanvasId() => "id" + Guid.NewGuid().ToString("N");
 
@@ -89,8 +86,11 @@ public partial class EditorComponent(
 
         this.SubscribeToAction<ModelEntityCreated>(async command =>
         {
-            var state = this.State.Value;
-            if (state.EditorApi is null || command.ModelEntity.ModelId != state.LoadedModelId)
+            var stateSnapshot = state.Value;
+            if (
+                stateSnapshot.EditorApi is null
+                || command.ModelEntity.ModelId != stateSnapshot.LoadedModelId
+            )
             {
                 return;
             }
@@ -99,19 +99,22 @@ public partial class EditorComponent(
             {
                 if (command.ModelEntity is NodeResponse nodeResponse)
                 {
-                    await state.EditorApi.CreateNodeAsync(nodeResponse);
+                    await stateSnapshot.EditorApi.CreateNodeAsync(nodeResponse);
                 }
                 else if (command.ModelEntity is Element1dResponse element1dResponse)
                 {
-                    await state.EditorApi.CreateElement1dAsync(element1dResponse);
+                    await stateSnapshot.EditorApi.CreateElement1dAsync(element1dResponse);
                 }
             }
         });
 
         this.SubscribeToAction<ModelEntityDeleted>(async command =>
         {
-            var state = this.State.Value;
-            if (state.EditorApi is null || command.ModelEntity.ModelId != state.LoadedModelId)
+            var stateSnapshot = state.Value;
+            if (
+                stateSnapshot.EditorApi is null
+                || command.ModelEntity.ModelId != stateSnapshot.LoadedModelId
+            )
             {
                 return;
             }
@@ -120,28 +123,16 @@ public partial class EditorComponent(
             {
                 if (command.EntityType == nameof(Element1d))
                 {
-                    await state.EditorApi.DeleteElement1dAsync(command.ModelEntity);
+                    await stateSnapshot.EditorApi.DeleteElement1dAsync(command.ModelEntity);
                 }
                 else if (command.EntityType == nameof(Node))
                 {
-                    await state.EditorApi.DeleteNodeAsync(command.ModelEntity);
+                    await stateSnapshot.EditorApi.DeleteNodeAsync(command.ModelEntity);
                 }
             }
         });
 
-        this.SubscribeToAction<EditorCreated>(_ =>
-        {
-            this.StateSelected = true;
-            state.Select(s => s.EditorState[this.CanvasId]);
-        });
-
         dispatcher.Dispatch(new EditorCreated(this.CanvasId));
-    }
-
-    protected override Task OnInitializedAsync()
-    {
-        state.Select(s => s.EditorState[this.CanvasId]);
-        return Task.CompletedTask;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -181,12 +172,12 @@ public partial class EditorComponent(
     {
         if (clearExisting)
         {
-            await this.State.Value.EditorApi.ClearAsync();
+            await state.Value.EditorApi.ClearAsync();
         }
 
         dispatcher.Dispatch(new EditorLoadingBegin(this.CanvasId, "Loading"));
         var result = await loadBeamOsEntityCommandHandler.ExecuteAsync(
-            new LoadEntityCommand(entity, this.State.Value.EditorApi)
+            new LoadEntityCommand(entity, state.Value.EditorApi)
         );
 
         if (result.IsError)
@@ -199,7 +190,7 @@ public partial class EditorComponent(
         }
     }
 
-    public async Task Clear() => await this.State.Value.EditorApi.ClearAsync();
+    public async Task Clear() => await state.Value.EditorApi.ClearAsync();
 
     protected override async ValueTask DisposeAsyncCore(bool disposing)
     {
@@ -223,26 +214,6 @@ public record struct EditorDisposed(string CanvasId);
 public record struct EditorLoadingBegin(string CanvasId, string LoadingText);
 
 public record struct EditorLoadingEnd(string CanvasId, CachedModelResponse CachedModelResponse);
-
-[FeatureState]
-public record EditorComponentState(
-    string? LoadingText,
-    bool IsLoading,
-    Guid? LoadedModelId,
-    IEditorApiAlpha? EditorApi,
-    SelectedObject[] SelectedObjects
-)
-{
-    public EditorComponentState()
-        : this(null, false, null, null, []) { }
-}
-
-[FeatureState]
-public record EditorStateState(bool IsStateLoaded)
-{
-    public EditorStateState()
-        : this(false) { }
-}
 
 public record struct SelectionChanged(string CanvasId, IModelEntity[] SelectedObjects);
 
@@ -270,326 +241,6 @@ public record CachedModelState(ImmutableDictionary<Guid, CachedModelResponse> Mo
                 => throw new NotImplementedException(
                     $"type {modelCacheKey.TypeName} is not implemented"
                 )
-        };
-    }
-}
-
-[FeatureState]
-public record AllEditorComponentState(ImmutableDictionary<string, EditorComponentState> EditorState)
-{
-    public AllEditorComponentState()
-        : this(ImmutableDictionary<string, EditorComponentState>.Empty) { }
-}
-
-public static class AllEditorComponentStateReducers
-{
-    [ReducerMethod]
-    public static AllEditorComponentState EditorCreatedReducer(
-        AllEditorComponentState state,
-        EditorCreated action
-    )
-    {
-        return state with { EditorState = state.EditorState.Add(action.CanvasId, new()) };
-    }
-
-    [ReducerMethod]
-    public static AllEditorComponentState EditorDisposedReducer(
-        AllEditorComponentState state,
-        EditorDisposed action
-    )
-    {
-        return state with { EditorState = state.EditorState.Remove(action.CanvasId) };
-    }
-
-    [ReducerMethod]
-    public static AllEditorComponentState EditorCreatedReducer(
-        AllEditorComponentState state,
-        EditorApiCreated action
-    )
-    {
-        var currentEditorState = state.EditorState[action.CanvasId];
-        return state with
-        {
-            EditorState = state
-                .EditorState
-                .Remove(action.CanvasId)
-                .Add(action.CanvasId, currentEditorState with { EditorApi = action.EditorApiAlpha })
-        };
-    }
-
-    [ReducerMethod]
-    public static AllEditorComponentState EditorLoadingBeginReducer(
-        AllEditorComponentState state,
-        EditorLoadingBegin action
-    )
-    {
-        var currentEditorState = state.EditorState[action.CanvasId];
-        return state with
-        {
-            EditorState = state
-                .EditorState
-                .Remove(action.CanvasId)
-                .Add(
-                    action.CanvasId,
-                    currentEditorState with
-                    {
-                        IsLoading = true,
-                        LoadingText = action.LoadingText
-                    }
-                )
-        };
-    }
-
-    [ReducerMethod]
-    public static AllEditorComponentState EditorLoadingBeginReducer(
-        AllEditorComponentState state,
-        EditorLoadingEnd action
-    )
-    {
-        var currentEditorState = state.EditorState[action.CanvasId];
-        return state with
-        {
-            EditorState = state
-                .EditorState
-                .Remove(action.CanvasId)
-                .Add(
-                    action.CanvasId,
-                    currentEditorState with
-                    {
-                        IsLoading = false,
-                        //CachedModelResponse = action.CachedModelResponse,
-                        LoadedModelId = action.CachedModelResponse.Id
-                    }
-                )
-        };
-    }
-
-    [ReducerMethod]
-    public static AllEditorComponentState ChangeSelectionCommandReducer(
-        AllEditorComponentState state,
-        ChangeSelectionCommand action
-    )
-    {
-        var currentEditorState = state.EditorState[action.CanvasId];
-        return state with
-        {
-            EditorState = state
-                .EditorState
-                .Remove(action.CanvasId)
-                .Add(
-                    action.CanvasId,
-                    currentEditorState with
-                    {
-                        SelectedObjects = action.SelectedObjects
-                    }
-                )
-        };
-    }
-
-    [ReducerMethod]
-    public static CachedModelState EditorLoadingBeginReducer(
-        CachedModelState state,
-        EditorLoadingEnd action
-    )
-    {
-        return state with
-        {
-            Models = state
-                .Models
-                .Remove(action.CachedModelResponse.Id)
-                .Add(action.CachedModelResponse.Id, action.CachedModelResponse)
-        };
-    }
-
-    [ReducerMethod]
-    public static CachedModelState Reducer(CachedModelState state, ModelEntityUpdated action)
-    {
-        if (!state.Models.TryGetValue(action.ModelEntity.ModelId, out var model))
-        {
-            return state;
-        }
-
-        ImmutableDictionary<Guid, CachedModelResponse> newState;
-        if (action.ModelEntity is NodeResponse nodeResponse)
-        {
-            newState = state
-                .Models
-                .Remove(action.ModelEntity.ModelId)
-                .Add(
-                    action.ModelEntity.ModelId,
-                    model with
-                    {
-                        Nodes = model
-                            .Nodes
-                            .Remove(nodeResponse.Id)
-                            .Add(nodeResponse.Id, nodeResponse)
-                    }
-                );
-        }
-        else if (action.ModelEntity is Element1dResponse element1d)
-        {
-            newState = state
-                .Models
-                .Remove(action.ModelEntity.ModelId)
-                .Add(
-                    action.ModelEntity.ModelId,
-                    model with
-                    {
-                        Element1ds = model
-                            .Element1ds
-                            .Remove(element1d.Id)
-                            .Add(element1d.Id, element1d)
-                    }
-                );
-        }
-        else if (action.ModelEntity is PointLoadResponse pointLoad)
-        {
-            newState = state
-                .Models
-                .Remove(action.ModelEntity.ModelId)
-                .Add(
-                    action.ModelEntity.ModelId,
-                    model with
-                    {
-                        PointLoads = model
-                            .PointLoads
-                            .Remove(pointLoad.Id)
-                            .Add(pointLoad.Id, pointLoad)
-                    }
-                );
-        }
-        else
-        {
-            throw new Exception($"Type of {action.ModelEntity.GetType()} is not supported");
-        }
-
-        return state with
-        {
-            Models = newState
-        };
-    }
-
-    [ReducerMethod]
-    public static CachedModelState ChangeSelectionCommandReducer(
-        CachedModelState state,
-        ModelEntityCreated action
-    )
-    {
-        if (!state.Models.TryGetValue(action.ModelEntity.ModelId, out var model))
-        {
-            return state;
-        }
-
-        ImmutableDictionary<Guid, CachedModelResponse> newState;
-        if (action.ModelEntity is NodeResponse nodeResponse)
-        {
-            newState = state
-                .Models
-                .Remove(action.ModelEntity.ModelId)
-                .Add(
-                    action.ModelEntity.ModelId,
-                    model with
-                    {
-                        Nodes = model.Nodes.Add(nodeResponse.Id, nodeResponse)
-                    }
-                );
-        }
-        else if (action.ModelEntity is Element1dResponse element1d)
-        {
-            newState = state
-                .Models
-                .Remove(action.ModelEntity.ModelId)
-                .Add(
-                    action.ModelEntity.ModelId,
-                    model with
-                    {
-                        Element1ds = model.Element1ds.Add(element1d.Id, element1d)
-                    }
-                );
-        }
-        else if (action.ModelEntity is PointLoadResponse pointLoad)
-        {
-            newState = state
-                .Models
-                .Remove(action.ModelEntity.ModelId)
-                .Add(
-                    action.ModelEntity.ModelId,
-                    model with
-                    {
-                        PointLoads = model.PointLoads.Add(pointLoad.Id, pointLoad)
-                    }
-                );
-        }
-        else
-        {
-            throw new Exception($"Type of {action.ModelEntity.GetType()} is not supported");
-        }
-
-        return state with
-        {
-            Models = newState
-        };
-    }
-
-    [ReducerMethod]
-    public static CachedModelState ChangeSelectionCommandReducer(
-        CachedModelState state,
-        ModelEntityDeleted action
-    )
-    {
-        if (!state.Models.TryGetValue(action.ModelEntity.ModelId, out var model))
-        {
-            return state;
-        }
-
-        ImmutableDictionary<Guid, CachedModelResponse> newState;
-        if (action.EntityType == "Node")
-        {
-            newState = state
-                .Models
-                .Remove(action.ModelEntity.ModelId)
-                .Add(
-                    action.ModelEntity.ModelId,
-                    model with
-                    {
-                        Nodes = model.Nodes.Remove(action.ModelEntity.Id)
-                    }
-                );
-        }
-        else if (action.EntityType == "Element1d")
-        {
-            newState = state
-                .Models
-                .Remove(action.ModelEntity.ModelId)
-                .Add(
-                    action.ModelEntity.ModelId,
-                    model with
-                    {
-                        Element1ds = model.Element1ds.Remove(action.ModelEntity.Id)
-                    }
-                );
-        }
-        else if (action.EntityType == "PointLoad")
-        {
-            newState = state
-                .Models
-                .Remove(action.ModelEntity.ModelId)
-                .Add(
-                    action.ModelEntity.ModelId,
-                    model with
-                    {
-                        PointLoads = model.PointLoads.Remove(action.ModelEntity.Id)
-                    }
-                );
-        }
-        else
-        {
-            throw new Exception($"Type of {action.ModelEntity.GetType()} is not supported");
-        }
-
-        return state with
-        {
-            Models = newState
         };
     }
 }

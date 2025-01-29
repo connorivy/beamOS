@@ -6,34 +6,37 @@ using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.Editors.ReadOnlyEditor;
 using Fluxor;
 using Microsoft.Extensions.Caching.Hybrid;
+using MudBlazor;
 
 namespace BeamOs.WebApp.Components.Features.Editor;
 
 public class LoadModelCommandHandler(
+    ISnackbar snackbar,
     IStructuralAnalysisApiClientV1 structuralAnalysisApiClient,
-    IState<AllEditorComponentState> allEditorComponentState,
+    //IState<AllEditorComponentState> allEditorComponentState,
+    IState<EditorComponentState> editorComponentState,
     HybridCache cache,
     LoadBeamOsEntityCommandHandler loadBeamOsEntityCommandHandler
-) : CommandHandlerBase<LoadModelCommand, CachedModelResponse>
+) : CommandHandlerBase<LoadModelCommand, CachedModelResponse>(snackbar)
 {
     protected override async Task<Result<CachedModelResponse>> ExecuteCommandAsync(
         LoadModelCommand command,
         CancellationToken ct = default
     )
     {
-        if (
-            !allEditorComponentState
-                .Value
-                .EditorState
-                .TryGetValue(command.CanvasId, out var editorComponentState)
-        )
-        {
-            return BeamOsError.NotFound(
-                description: $"could not find canvas with Id = {command.CanvasId}"
-            );
-        }
+        //if (
+        //    !allEditorComponentState
+        //        .Value
+        //        .EditorState
+        //        .TryGetValue(command.CanvasId, out var editorComponentState)
+        //)
+        //{
+        //    return BeamOsError.NotFound(
+        //        description: $"could not find canvas with Id = {command.CanvasId}"
+        //    );
+        //}
 
-        if (editorComponentState.EditorApi is null)
+        if (editorComponentState.Value.EditorApi is null)
         {
             return BeamOsError.Failure(
                 description: "Failed to load model because canvas editor api is null"
@@ -70,7 +73,7 @@ public class LoadModelCommandHandler(
         await loadBeamOsEntityCommandHandler.ExecuteAsync(
             new LoadModelResponseHydratedCommand(
                 modelResponse.Value,
-                editorComponentState.EditorApi
+                editorComponentState.Value.EditorApi
             ),
             ct
         );
@@ -133,8 +136,8 @@ public interface ILoadEntityResponseCommand
     public IEditorApiAlpha EditorApi { get; }
 }
 
-public class LoadBeamOsEntityCommandHandler
-    : CommandHandlerBase<ILoadEntityResponseCommand, CachedModelResponse>
+public class LoadBeamOsEntityCommandHandler(ISnackbar snackbar)
+    : CommandHandlerBase<ILoadEntityResponseCommand, CachedModelResponse>(snackbar)
 {
     protected override async Task<Result<CachedModelResponse>> ExecuteCommandAsync(
         ILoadEntityResponseCommand command,
