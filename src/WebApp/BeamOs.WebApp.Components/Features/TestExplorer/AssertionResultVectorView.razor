@@ -1,0 +1,38 @@
+<MudSimpleTable FixedHeader="true" Striped="true" Dense="true" Class="w-max max-h-full pointer-events-auto">
+    <thead class="font-bold">
+        <tr>
+            @if (this.ComparedValueNameCollection is not null)
+            {
+                <th></th>
+            }
+            <th>
+                Expected @ComparedValueName
+            </th>
+            <th class="font-bold">
+                Calculated @ComparedValueName
+            </th>
+            <th class="font-bold">
+                Difference
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < AssertionResultArray.ExpectedValue.Length; i++)
+        {
+            <tr>
+                @if (this.ComparedValueNameCollection is not null)
+                {
+                    <td>@this.ComparedValueNameCollection.ElementAt(i)</td>
+                }
+                <td>@AssertionResultArray.ExpectedValue?.ElementAt(i)</td>
+                <td>@AssertionResultArray.CalculatedValue?.ElementAt(i)</td>
+                <th>
+                    @(GetDifferenceOrNull(
+                        AssertionResultArray.ExpectedValue?.ElementAt(i),
+                        AssertionResultArray.CalculatedValue?.ElementAt(i))?
+                        .ToString() ?? "NaN")
+                </th>
+            </tr>
+        }
+    </tbody>
+</MudSimpleTable>
