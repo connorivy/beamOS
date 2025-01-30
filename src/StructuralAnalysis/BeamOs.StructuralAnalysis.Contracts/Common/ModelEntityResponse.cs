@@ -7,6 +7,7 @@ public record ModelEntityResponse(int Id, Guid ModelId) : IModelEntity;
 public enum BeamOsObjectType
 {
     Undefined = 0,
+    Model,
     Node,
     Element1d,
     Material,

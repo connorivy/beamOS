@@ -32,7 +32,9 @@ public record TestInfoState(ImmutableDictionary<string, SingleTestState> TestInf
     //public TestResult? GetResultFromCache(string testInfoId) =>
     //    this.TestInfoIdToTestResultDict.GetValueOrDefault(testInfoId)?.TestResult;
 
-    public (string, Color) GetIconAndCssColorRepresentingTestResult(TestResult testResult)
+    public (string, Color) GetIconAndCssColorRepresentingTestResult(
+        Tests.Common.TestResult testResult
+    )
     {
         return testResult?.Status switch
         {

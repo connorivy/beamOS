@@ -22,18 +22,18 @@ public abstract class BeamOsModelBuilder
     public abstract string GuidString { get; }
     public Guid Id => Guid.Parse(this.GuidString);
 
-    internal IEnumerable<CreateNodeRequest> Nodes => this.NodeRequests();
+    public IEnumerable<CreateNodeRequest> Nodes => this.NodeRequests();
     public abstract IEnumerable<CreateNodeRequest> NodeRequests();
-    internal IEnumerable<CreateMaterialRequest> Materials => this.MaterialRequests();
+    public IEnumerable<CreateMaterialRequest> Materials => this.MaterialRequests();
     public abstract IEnumerable<CreateMaterialRequest> MaterialRequests();
-    internal IEnumerable<CreateSectionProfileRequest> SectionProfiles =>
+    public IEnumerable<CreateSectionProfileRequest> SectionProfiles =>
         this.SectionProfileRequests();
     public abstract IEnumerable<CreateSectionProfileRequest> SectionProfileRequests();
-    internal IEnumerable<CreateElement1dRequest> Element1ds => this.Element1dRequests();
+    public IEnumerable<CreateElement1dRequest> Element1ds => this.Element1dRequests();
     public abstract IEnumerable<CreateElement1dRequest> Element1dRequests();
-    internal IEnumerable<CreatePointLoadRequest> PointLoads => this.PointLoadRequests();
+    public IEnumerable<CreatePointLoadRequest> PointLoads => this.PointLoadRequests();
     public abstract IEnumerable<CreatePointLoadRequest> PointLoadRequests();
-    internal IEnumerable<CreateMomentLoadRequest> MomentLoads => this.MomentLoadRequests();
+    public IEnumerable<CreateMomentLoadRequest> MomentLoads => this.MomentLoadRequests();
 
     public virtual IEnumerable<CreateMomentLoadRequest> MomentLoadRequests() => [];
 

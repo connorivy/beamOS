@@ -1,4 +1,4 @@
-using BeamOs.Application.PhysicalModel.Materials;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.Materials;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Infrastructure.Common;
 

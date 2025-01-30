@@ -1,7 +1,7 @@
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 
-namespace BeamOs.Application.PhysicalModel.Materials;
+namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Materials;
 
 public interface IMaterialRepository : IRepository<MaterialId, Material>
 {

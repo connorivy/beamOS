@@ -27,13 +27,13 @@ public class Element1d : BeamOsModelEntity<Element1dId>
     }
 
     public NodeId StartNodeId { get; private set; }
-    public Node? StartNode { get; private set; }
+    public Node? StartNode { get; set; }
     public NodeId EndNodeId { get; private set; }
-    public Node? EndNode { get; init; }
+    public Node? EndNode { get; set; }
     public MaterialId MaterialId { get; private set; }
-    public Material? Material { get; init; }
+    public Material? Material { get; set; }
     public SectionProfileId SectionProfileId { get; private set; }
-    public SectionProfile? SectionProfile { get; init; }
+    public SectionProfile? SectionProfile { get; set; }
 
     //public ICollection<ShearForceDiagram>? ShearForceDiagrams { get; init; }
     //public ICollection<MomentDiagram>? MomentDiagrams { get; init; }

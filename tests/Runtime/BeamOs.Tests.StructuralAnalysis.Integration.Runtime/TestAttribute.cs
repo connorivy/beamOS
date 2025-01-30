@@ -1,3 +1,3 @@
-namespace BeamOs.Tests.StructuralAnalysis.Integration;
+//namespace BeamOs.Tests.StructuralAnalysis.Integration;
 
-public class TestAttribute : Attribute { }
+//public class TestAttribute : Attribute { }

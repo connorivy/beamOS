@@ -1,10 +1,10 @@
-﻿using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
+using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using UnitsNet;
 using UnitsNet.Units;
 
-namespace BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Element1ds;
+namespace BeamOs.StructuralAnalysis.Application.Common;
 
 public abstract class AbstractMapperProvidedUnits<TFrom, TTo>(
     LengthUnit lengthUnit,

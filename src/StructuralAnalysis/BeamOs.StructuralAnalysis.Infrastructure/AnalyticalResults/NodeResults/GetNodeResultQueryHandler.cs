@@ -1,11 +1,11 @@
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.CsSdk.Mappers.UnitValueDtoMappers;
+using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.NodeResult;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.NodeResultAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
-using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Element1ds;
 using Microsoft.EntityFrameworkCore;
 using Riok.Mapperly.Abstractions;
 

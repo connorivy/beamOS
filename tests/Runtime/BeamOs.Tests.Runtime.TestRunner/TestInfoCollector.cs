@@ -2,6 +2,7 @@ using System.Collections;
 using System.Reflection;
 using BeamOs.Tests.Common;
 using BeamOs.Tests.StructuralAnalysis.Integration;
+using BeamOs.Tests.StructuralAnalysis.Unit;
 
 namespace BeamOs.Tests.Runtime.TestRunner;
 
@@ -31,6 +32,7 @@ public class TestInfoCollector
     private static IEnumerable<Assembly> TestAssemblies()
     {
         yield return typeof(IAssemblyMarkerStructuralIntegrationTests).Assembly;
+        yield return typeof(IAssemblyMarkerStructuralUnitTests).Assembly;
     }
 
     public static IEnumerable<TestInfo> GetTestInfoFromMethod(MethodInfo methodInfo, Type classType)

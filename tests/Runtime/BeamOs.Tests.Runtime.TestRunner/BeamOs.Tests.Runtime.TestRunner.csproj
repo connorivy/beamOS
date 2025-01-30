@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\StructuralAnalysis\BeamOs.Tests.StructuralAnalysis.Unit\BeamOs.Tests.StructuralAnalysis.Unit.csproj" />
     <ProjectReference Include="..\BeamOs.Tests.StructuralAnalysis.Integration.Runtime\BeamOs.Tests.StructuralAnalysis.Integration.Runtime.csproj" />
   </ItemGroup>
 

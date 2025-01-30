@@ -41,6 +41,26 @@ public interface IHasExpectedNodeResults
     public NodeResultFixture[] ExpectedNodeResults { get; }
 }
 
+public interface IHasDsmElement1dResults
+{
+    public DsmElement1dResultFixture[] ExpectedDsmElement1dResults { get; }
+}
+
+public interface IHasExpectedDisplacementVector
+{
+    public double[] ExpectedDisplacementVector { get; }
+}
+
+public interface IHasExpectedReactionVector
+{
+    public double[] ExpectedReactionVector { get; }
+}
+
+public interface IHasStructuralStiffnessMatrix
+{
+    public double[,] ExpectedStructuralStiffnessMatrix { get; }
+}
+
 public record NodeResultFixture
 {
     public required int NodeId { get; init; }
@@ -66,4 +86,20 @@ public record NodeResultFixture
     public Torque? TorqueAboutZ { get; init; }
     public Torque TorqueTolerance { get; init; } =
         new(5, UnitsNet.Units.TorqueUnit.KilopoundForceInch);
+}
+
+public record DsmElement1dResultFixture
+{
+    public required int ElementId { get; init; }
+    public required ResultSetId ResultSetId { get; init; }
+    public double[,]? ExpectedRotationMatrix { get; init; }
+    public double[,]? ExpectedTransformationMatrix { get; init; }
+    public double[,]? ExpectedLocalStiffnessMatrix { get; init; }
+    public double[,]? ExpectedGlobalStiffnessMatrix { get; init; }
+    public double[]? ExpectedLocalFixedEndForces { get; init; }
+    public double[]? ExpectedGlobalFixedEndForces { get; init; }
+    public double[]? ExpectedLocalEndDisplacements { get; init; }
+    public double[]? ExpectedGlobalEndDisplacements { get; init; }
+    public double[]? ExpectedLocalEndForces { get; init; }
+    public double[]? ExpectedGlobalEndForces { get; init; }
 }

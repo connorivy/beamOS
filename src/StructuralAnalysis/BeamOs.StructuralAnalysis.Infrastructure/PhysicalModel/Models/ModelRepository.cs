@@ -21,7 +21,10 @@ internal class ModelRepository(StructuralAnalysisDbContext dbContext) : IModelRe
             queryable = includeNavigationProperties(queryable);
         }
 
-        return await queryable.AsSplitQuery().FirstOrDefaultAsync(el => el.Id == modelId, ct);
+        return await queryable
+            .AsNoTracking()
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(el => el.Id == modelId, ct);
     }
 
     public async Task<Model?> GetSingle(
@@ -37,6 +40,9 @@ internal class ModelRepository(StructuralAnalysisDbContext dbContext) : IModelRe
             queryable = queryable.Include(prop);
         }
 
-        return await queryable.AsSplitQuery().FirstOrDefaultAsync(el => el.Id == modelId, ct);
+        return await queryable
+            .AsNoTracking()
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(el => el.Id == modelId, ct);
     }
 }

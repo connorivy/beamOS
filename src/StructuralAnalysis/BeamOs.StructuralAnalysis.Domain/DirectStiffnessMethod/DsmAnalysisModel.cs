@@ -32,30 +32,17 @@ public class DsmAnalysisModel(Model model)
 
     public ResultSet RunAnalysis()
     {
-        var (degreeOfFreedomIds, boundaryConditionIds) = this.GetSortedUnsupportedStructureIds();
+        //var (degreeOfFreedomIds, boundaryConditionIds) = this.GetSortedUnsupportedStructureIds();
 
-        MatrixIdentified structureStiffnessMatrix = this.BuildStructureStiffnessMatrix(
-            degreeOfFreedomIds
-        );
+        //MatrixIdentified structureStiffnessMatrix = this.BuildStructureStiffnessMatrix();
 
-        VectorIdentified knownJointDisplacementVector = BuildKnownJointDisplacementVector(
-            boundaryConditionIds
-        );
+        VectorIdentified knownJointDisplacementVector = this.BuildKnownJointDisplacementVector();
 
-        VectorIdentified knownReactionVector = this.BuildKnownJointReactionVector(
-            degreeOfFreedomIds
-        );
+        VectorIdentified knownReactionVector = this.BuildKnownJointReactionVector();
 
-        VectorIdentified unknownJointDisplacementVector = this.GetUnknownJointDisplacementVector(
-            structureStiffnessMatrix,
-            knownReactionVector,
-            degreeOfFreedomIds
-        );
+        VectorIdentified unknownJointDisplacementVector = this.GetUnknownJointDisplacementVector();
 
-        VectorIdentified unknownReactionVector = this.GetUnknownJointReactionVector(
-            boundaryConditionIds,
-            unknownJointDisplacementVector
-        );
+        VectorIdentified unknownReactionVector = this.GetUnknownJointReactionVector();
 
         ResultSetId resultSetId = new();
         List<NodeResult> nodeResults = this.GetAnalyticalNodes(
@@ -144,8 +131,15 @@ public class DsmAnalysisModel(Model model)
         return resultSet;
     }
 
+    private SortedUnsupportedStructureIds? sortedUnsupportedStructureIds;
+
     internal SortedUnsupportedStructureIds GetSortedUnsupportedStructureIds()
     {
+        if (this.sortedUnsupportedStructureIds is not null)
+        {
+            return this.sortedUnsupportedStructureIds;
+        }
+
         List<UnsupportedStructureDisplacementId2> degreeOfFreedomIds = [];
         List<UnsupportedStructureDisplacementId2> boundaryConditionIds = [];
         foreach (var node in model.Nodes)
@@ -170,16 +164,24 @@ public class DsmAnalysisModel(Model model)
                 }
             }
         }
-        return new SortedUnsupportedStructureIds(
+
+        return this.sortedUnsupportedStructureIds = new SortedUnsupportedStructureIds(
             degreeOfFreedomIds: degreeOfFreedomIds,
             boundaryConditionIds: boundaryConditionIds
         );
     }
 
-    internal MatrixIdentified BuildStructureStiffnessMatrix(
-        List<UnsupportedStructureDisplacementId2> degreeOfFreedomIds
-    )
+    private MatrixIdentified? structuralStiffnessMatrix;
+
+    internal MatrixIdentified BuildStructureStiffnessMatrix()
     {
+        if (this.structuralStiffnessMatrix is not null)
+        {
+            return this.structuralStiffnessMatrix;
+        }
+
+        var (degreeOfFreedomIds, _) = this.GetSortedUnsupportedStructureIds();
+
         MatrixIdentified sMatrix = new(degreeOfFreedomIds);
         foreach (var element1D in this.dsmElement1Ds)
         {
@@ -191,25 +193,41 @@ public class DsmAnalysisModel(Model model)
             sMatrix.AddEntriesWithMatchingIdentifiers(globalMatrixWithIdentifiers);
         }
 
-        return sMatrix;
+        return this.structuralStiffnessMatrix = sMatrix;
     }
 
-    private static VectorIdentified BuildKnownJointDisplacementVector(
-        List<UnsupportedStructureDisplacementId2> boundaryConditionIds
-    )
+    private VectorIdentified? knownJointDisplacementVector;
+
+    private VectorIdentified BuildKnownJointDisplacementVector()
     {
+        if (this.knownJointDisplacementVector is not null)
+        {
+            return this.knownJointDisplacementVector;
+        }
+
+        var (_, boundaryConditionIds) = this.GetSortedUnsupportedStructureIds();
+
         // TODO : support non-zero known displacements
         double[] hardcodedNodeDisplacements = Enumerable
             .Repeat(0.0, boundaryConditionIds.Count)
             .ToArray();
 
-        return new VectorIdentified(boundaryConditionIds, hardcodedNodeDisplacements);
+        return this.knownJointDisplacementVector = new VectorIdentified(
+            boundaryConditionIds,
+            hardcodedNodeDisplacements
+        );
     }
 
-    internal VectorIdentified BuildKnownJointReactionVector(
-        List<UnsupportedStructureDisplacementId2> degreeOfFreedomIds
-    )
+    private VectorIdentified? knownJointReactionVector;
+
+    internal VectorIdentified BuildKnownJointReactionVector()
     {
+        if (this.knownJointReactionVector is not null)
+        {
+            return this.knownJointReactionVector;
+        }
+
+        var (degreeOfFreedomIds, _) = this.GetSortedUnsupportedStructureIds();
         VectorIdentified loadVector = new(degreeOfFreedomIds);
         foreach (var node in this.dsmNodes)
         {
@@ -220,29 +238,43 @@ public class DsmAnalysisModel(Model model)
             loadVector.AddEntriesWithMatchingIdentifiers(localLoadVector);
         }
 
-        return loadVector;
+        return this.knownJointReactionVector = loadVector;
     }
 
-    internal VectorIdentified GetUnknownJointDisplacementVector(
-        MatrixIdentified structureStiffnessMatrix,
-        VectorIdentified knownReactionVector,
-        List<UnsupportedStructureDisplacementId2> degreeOfFreedomIds
-    )
+    private VectorIdentified? unknownDisplacementVector;
+
+    internal VectorIdentified GetUnknownJointDisplacementVector()
     {
+        if (this.unknownDisplacementVector is not null)
+        {
+            return this.unknownDisplacementVector;
+        }
+
+        var (degreeOfFreedomIds, _) = this.GetSortedUnsupportedStructureIds();
+        var structureStiffnessMatrix = this.BuildStructureStiffnessMatrix();
+        var knownReactionVector = this.BuildKnownJointReactionVector();
+
         var dofDisplacementMathnetVector = structureStiffnessMatrix
             .Build()
             .Solve(knownReactionVector.Build());
         VectorIdentified dofDisplacementVector =
             new(degreeOfFreedomIds, dofDisplacementMathnetVector.Cast<double>().ToArray());
 
-        return dofDisplacementVector;
+        return this.unknownDisplacementVector = dofDisplacementVector;
     }
 
-    internal VectorIdentified GetUnknownJointReactionVector(
-        List<UnsupportedStructureDisplacementId2> boundaryConditionIds,
-        VectorIdentified unknownJointDisplacementVector
-    )
+    private VectorIdentified? unknownReactionVector;
+
+    internal VectorIdentified GetUnknownJointReactionVector()
     {
+        if (this.unknownReactionVector is not null)
+        {
+            return this.unknownReactionVector;
+        }
+
+        var (_, boundaryConditionIds) = this.GetSortedUnsupportedStructureIds();
+        var unknownJointDisplacementVector = this.GetUnknownJointDisplacementVector();
+
         VectorIdentified reactions = new(boundaryConditionIds);
         foreach (var element1D in this.dsmElement1Ds)
         {
@@ -255,7 +287,7 @@ public class DsmAnalysisModel(Model model)
             reactions.AddEntriesWithMatchingIdentifiers(globalMemberEndForcesVector);
         }
 
-        return reactions;
+        return this.unknownReactionVector = reactions;
     }
 
     private List<NodeResult> GetAnalyticalNodes(

@@ -1,5 +1,6 @@
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
 using UnitsNet;
 using UnitsNet.Units;
@@ -38,6 +39,7 @@ public class Node : BeamOsModelEntity<NodeId>
         }
     }
 
+    //[MapperConstructor]
     public Node(
         ModelId modelId,
         Point locationPoint,
@@ -50,31 +52,31 @@ public class Node : BeamOsModelEntity<NodeId>
         this.Restraint = restraint ?? Restraint.Free;
     }
 
-    public Node(
-        ModelId modelId,
-        double xCoordinate,
-        double yCoordinate,
-        double zCoordinate,
-        LengthUnit lengthUnit,
-        Restraint? restraint = null,
-        NodeId? id = null
-    )
-        : this(
-            modelId,
-            new(xCoordinate, yCoordinate, zCoordinate, lengthUnit),
-            restraint: restraint,
-            id
-        ) { }
+    //public Node(
+    //    ModelId modelId,
+    //    double xCoordinate,
+    //    double yCoordinate,
+    //    double zCoordinate,
+    //    LengthUnit lengthUnit,
+    //    Restraint? restraint = null,
+    //    NodeId? id = null
+    //)
+    //    : this(
+    //        modelId,
+    //        new(xCoordinate, yCoordinate, zCoordinate, lengthUnit),
+    //        restraint: restraint,
+    //        id
+    //    ) { }
 
-    public Node(
-        ModelId modelId,
-        Length xCoordinate,
-        Length yCoordinate,
-        Length zCoordinate,
-        Restraint? restraint = null,
-        NodeId? id = null
-    )
-        : this(modelId, new(xCoordinate, yCoordinate, zCoordinate), restraint: restraint, id) { }
+    //public Node(
+    //    ModelId modelId,
+    //    Length xCoordinate,
+    //    Length yCoordinate,
+    //    Length zCoordinate,
+    //    Restraint? restraint = null,
+    //    NodeId? id = null
+    //)
+    //    : this(modelId, new(xCoordinate, yCoordinate, zCoordinate), restraint: restraint, id) { }
 
     //public List<PointLoadId> PointLoadIds { get; private set; } = [];
     //public List<MomentLoad> MomentLoads { get; } = [];
@@ -104,9 +106,9 @@ public class Node : BeamOsModelEntity<NodeId>
         }
     }
 
-    public ICollection<PointLoad> PointLoads { get; private set; } = [];
+    public ICollection<PointLoad>? PointLoads { get; set; }
 
-    //public ICollection<MomentLoad> MomentLoads { get; private set; } = [];
+    public ICollection<MomentLoad>? MomentLoads { get; set; }
 
     //public NodeResult? NodeResult { get; private set; }
 
@@ -125,12 +127,12 @@ public class Node : BeamOsModelEntity<NodeId>
             forceAlongY += linearLoad.Force * linearLoad.Direction.Y;
             forceAlongZ += linearLoad.Force * linearLoad.Direction.Z;
         }
-        //foreach (var momentLoad in this.MomentLoads)
-        //{
-        //    momentAboutX += momentLoad.Torque * momentLoad.AxisDirection[0];
-        //    momentAboutY += momentLoad.Torque * momentLoad.AxisDirection[1];
-        //    momentAboutZ += momentLoad.Torque * momentLoad.AxisDirection[2];
-        //}
+        foreach (var momentLoad in this.MomentLoads)
+        {
+            momentAboutX += momentLoad.Torque * momentLoad.AxisDirection.X;
+            momentAboutY += momentLoad.Torque * momentLoad.AxisDirection.Y;
+            momentAboutZ += momentLoad.Torque * momentLoad.AxisDirection.Z;
+        }
         return new(forceAlongX, forceAlongY, forceAlongZ, momentAboutX, momentAboutY, momentAboutZ);
     }
 

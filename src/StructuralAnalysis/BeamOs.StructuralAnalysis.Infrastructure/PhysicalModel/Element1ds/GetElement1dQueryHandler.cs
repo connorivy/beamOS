@@ -1,6 +1,7 @@
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.CsSdk.Mappers.UnitValueDtoMappers;
+using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
