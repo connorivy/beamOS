@@ -55,6 +55,21 @@ public class Restraint(
         return true;
     }
 
+    public bool GetValueInDirection(CoordinateSystemDirection3D direction)
+    {
+        return direction switch
+        {
+            CoordinateSystemDirection3D.AlongX => this.CanTranslateAlongX,
+            CoordinateSystemDirection3D.AlongY => this.CanTranslateAlongY,
+            CoordinateSystemDirection3D.AlongZ => this.CanTranslateAlongZ,
+            CoordinateSystemDirection3D.AboutX => this.CanRotateAboutX,
+            CoordinateSystemDirection3D.AboutY => this.CanRotateAboutY,
+            CoordinateSystemDirection3D.AboutZ => this.CanRotateAboutZ,
+            CoordinateSystemDirection3D.Undefined => throw new NotImplementedException(),
+            _ => throw new NotImplementedException(),
+        };
+    }
+
     protected override IEnumerable<object> GetEqualityComponents()
     {
         yield return this.CanTranslateAlongX;
