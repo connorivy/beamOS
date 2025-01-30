@@ -93,6 +93,14 @@ public enum TestResultStatus
     Success,
 }
 
+public enum TestProgressStatus
+{
+    Undefined = 0,
+    Finished,
+    InProgress,
+    NotStarted
+}
+
 public record TestResultBase(TestResultStatus Status, string? ResultMessage);
 
 public record TestResultBase<T>(
@@ -113,7 +121,10 @@ public record TestResult(
     TestResultStatus ResultStatus,
     string? ResultMessage,
     ICollection<string>? ComparedValueNameCollection = null
-) : TestResultBase(ResultStatus, ResultMessage);
+) : TestResultBase(ResultStatus, ResultMessage)
+{
+    public string Id => this.TestName + this.BeamOsObjectId + this.BeamOsObjectType;
+}
 
 //public class ComparedObjectEventArgs<T>(T expected, T calculated, string comparedObjectName)
 //    : EventArgs

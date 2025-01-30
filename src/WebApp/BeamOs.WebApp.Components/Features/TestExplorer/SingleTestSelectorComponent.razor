@@ -60,7 +60,7 @@
                                 numFilteredTests++;
                                 <MudListItem @onmouseover="() => MouseOver(objectType, id)" Value="@result">
                                     <AvatarContent>
-                                        <MudIcon Icon="@Icons.Material.Filled.CheckCircleOutline" />
+                                        <RunTestButton TestId="@result.Id" />
                                     </AvatarContent>
                                     <ChildContent>
                                         @result.TestName
@@ -73,6 +73,25 @@
             }
         </MudList>
     </MudExpansionPanels>
+    @* @foreach (var (objectType, idToResultsDict) in this.TestResults)
+    {
+        if (this.SelectedObjectType is not null && objectType != this.SelectedObjectType.Value)
+        {
+            continue;
+        }
+                @foreach (var (id, testResults) in idToResultsDict)
+                {
+                    if (this.SelectedObjectId is not null && id != this.SelectedObjectId)
+                    {
+                        continue;
+                    }
+
+                    foreach (var result in testResults)
+                    {
+                        <RunTestButton TestId="@result.Id" />
+                    }
+                }
+    } *@
 
     @* <div class="p-2 flex flex-col w-full items-center">
         <MudText>This model has @(this.TestResults.Count - numFilteredTests) other tests.</MudText>
@@ -94,8 +113,21 @@
 
     private string? SelectedObjectId => this.SelectedObjects?.SingleOrDefault()?.Id.ToString();
 
-    private void SelectedTestInfoChanged(TestResult result)
+    private async Task SelectedTestInfoChanged(TestResult result)
     {
+        string resultId = result.Id;
+        SingleTestState testResult = TestInfoState.Value.TestInfoIdToTestResultDict[resultId];
+        if (testResult.FrontEndProgressStatus == TestProgressStatus.NotStarted)
+        {
+            this.Dispatcher.Dispatch(new TestResultProgressChanged(resultId, TestProgressStatus.InProgress));
+
+            var x = Convert.ToInt32(1000 * Random.Shared.NextDouble());
+            await Task.Delay(x);
+
+            this.Dispatcher.Dispatch(new TestResultProgressChanged(resultId, TestProgressStatus.Finished));
+        }
+
+
         this.Dispatcher.Dispatch(new TestResultSelected(result));
     }
 
@@ -108,27 +140,6 @@
 
         // this.Dispatcher.Dispatch(new ChangeSelectionCommand(this.CanvasId, [new SelectedObject(intId, EnumToString(objectType))]));
     }
-
-    // protected override void OnInitialized()
-    // {
-    //     base.OnInitialized();
-    //     this.SubscribeToAction<ChangeSelectionCommand>(command =>
-    //     {
-    //         if (command.CanvasId != this.CanvasId)
-    //         {
-    //             return;
-    //         }
-
-    //         if (command.SelectedObjects.Length != 1)
-    //         {
-    //             this.SelectedObjectId = null;
-    //             this.SelectedObjectType = null;
-    //         }
-
-    //         this.SelectedObjectType = StringToEnum(command.SelectedObjects[0].TypeName);
-    //         this.SelectedObjectId = command.SelectedObjects[0].Id.ToString();
-    //     });
-    // }
 
     [Parameter]
     public required IDictionary<BeamOsObjectType, ImmutableDictionary<string, List<TestResult>>> TestResults { get; init; }
@@ -173,6 +184,9 @@
 
     [Inject]
     private IDispatcher Dispatcher { get; init; }
+
+    [Inject]
+    private IState<TestInfoState> TestInfoState { get; init; }
 
     // [Inject]
     // private TestInfoProvider TestInfoProvider { get; init; }

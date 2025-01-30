@@ -18,16 +18,23 @@
     [Inject]
     private IState<TestResultsForDisplayState> State { get; init; }
 
+    [Inject]
+    private IState<TestInfoState> TestInfoState { get; init; }
+
+    [Inject]
+    private IDispatcher Dispatcher { get; init; }
+
     [FeatureState]
     public record TestResultsForDisplayState(
         bool IsLoading,
         string? ComparedValueName,
         AssertionResult<double?[]>? AssertionResultArray,
         AssertionResult<double?[,]>? AssertionResultMatrix,
-        ICollection<string>? ComparedValueNameCollection
+        ICollection<string>? ComparedValueNameCollection,
+        string? TestResultId
     )
     {
-        public TestResultsForDisplayState() : this(false, null, null, null, null)
+        public TestResultsForDisplayState() : this(false, null, null, null, null, null)
         {
 
         }
@@ -95,13 +102,70 @@
             }
             return state with
             {
+                IsLoading = true,
                 AssertionResultArray = assertionResultArray,
                 AssertionResultMatrix = assertionResultMatrix,
                 ComparedValueName = action.Result.ComparedValueName,
-                ComparedValueNameCollection = action.Result.ComparedValueNameCollection
+                ComparedValueNameCollection = action.Result.ComparedValueNameCollection,
+                TestResultId = action.Result.Id
             };
         }
     }
 
     public readonly record struct TestResultSelected(TestResult Result);
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        // this.SubscribeToAction<TestResultSelected>(action =>
+        // {
+        //     var singleTestInfo = this.TestInfoState.Value.TestInfoIdToTestResultDict[action.Result.Id];
+        //     if (singleTestInfo.FrontEndProgressStatus != TestProgressStatus.NotStarted)
+        //     {
+        //         return;
+        //     }
+
+        //     this.Dispatcher.Dispatch(
+        //         new TestResultProgressChanged(action.Result.Id, TestProgressStatus.InProgress)
+        //     );
+        // });
+        // State.StateChanged += State_StateChanged;
+
+        // this.SubscribeToAction<TestResultProgressChanged>(action =>
+        // {
+        //     var singleTestInfo = this.TestInfoState.Value.TestInfoIdToTestResultDict[action.Result.Id];
+        //     if (singleTestInfo.FrontEndProgressStatus != TestProgressStatus.InProgress)
+        //     {
+        //         return;
+        //     }
+
+        //     var x = Convert.ToInt32(2500 * Random.Shared.NextDouble());
+        //     var x = Convert.ToInt32(2500);
+        //     Thread.Sleep(x);
+
+        //     this.Dispatcher.Dispatch(
+        //         new TestResultProgressChanged(action.Result, TestProgressStatus.Finished)
+        //     );
+        // });
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // this.Dispatcher.Dispatch(new TestResultSelected(this.State.Value.TestResult));
+        }
+        base.OnAfterRender(firstRender);
+    }
+
+    private void State_StateChanged(object? sender, EventArgs e)
+    {
+        if (this.State.Value.IsLoading)
+        {
+            //var x = Convert.ToInt32(2500 * Random.Shared.NextDouble());
+            var x = Convert.ToInt32(2500);
+            Thread.Sleep(x);
+            this.Dispatcher.Dispatch(new TestResultProgressChanged(this.State.Value.TestResultId, TestProgressStatus.Finished));
+        }
+    }
 }
