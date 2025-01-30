@@ -1,5 +1,6 @@
 @using BeamOs.StructuralAnalysis.Contracts.Common
 @using BeamOs.Tests.Common
+@using BeamOs.WebApp.Components.Features.Editor
 @using BeamOs.WebApp.EditorCommands
 @using System.Collections.Immutable
 @using static BeamOs.WebApp.Components.Features.TestExplorer.TestResultDisplayComponent
@@ -15,19 +16,6 @@
 </MudDrawerHeader>
 
 <div class="flex flex-col h-full w-full">
-
-    @*     <MudGrid>
-        <MudItem xs="3">
-
-        </MudItem>
-        <MudItem xs="9">
-
-        </MudItem>
-    </MudGrid> *@
-    @* <div class="px-2">
-        <MudText Typo="Typo.subtitle1" Color="Color.Primary">Id: @this.TestSelectorState.Value.SelectedObjectId</MudText>
-    </div> *@
-
     @{
         int numFilteredTests = 0;
     }
@@ -43,14 +31,14 @@
                 <MudExpansionPanel Expanded="true" Text="@(objectType + "s")" Class="text-nowrap text-clip mud-typography mud-typography-subtitle1 p-4">
                     <TitleContent>
                         <div class="d-flex">
-                            <MudIcon Color="Color.Error" Icon="@Icons.Material.Filled.CheckCircleOutline" class="mr-3"></MudIcon>
-                            <MudText><strong>@(objectType + "s")</strong></MudText>
+                            <RunTestButtonGroup TestIds="@idToResultsDict.Where(kvp => ShouldDisplayTestResult(kvp.Key)).SelectMany(kvp => kvp.Value).Select(results => results.Id).ToArray()" />
+                            <MudText Class="pl-2"><strong>@(objectType + "s")</strong></MudText>
                         </div>
                     </TitleContent>
                     <ChildContent>
                         @foreach (var (id, testResults) in idToResultsDict)
                         {
-                            if (this.SelectedObjectId is not null && id != this.SelectedObjectId)
+                            if (!this.ShouldDisplayTestResult(id))
                             {
                                 continue;
                             }
@@ -73,32 +61,6 @@
             }
         </MudList>
     </MudExpansionPanels>
-    @* @foreach (var (objectType, idToResultsDict) in this.TestResults)
-    {
-        if (this.SelectedObjectType is not null && objectType != this.SelectedObjectType.Value)
-        {
-            continue;
-        }
-                @foreach (var (id, testResults) in idToResultsDict)
-                {
-                    if (this.SelectedObjectId is not null && id != this.SelectedObjectId)
-                    {
-                        continue;
-                    }
-
-                    foreach (var result in testResults)
-                    {
-                        <RunTestButton TestId="@result.Id" />
-                    }
-                }
-    } *@
-
-    @* <div class="p-2 flex flex-col w-full items-center">
-        <MudText>This model has @(this.TestResults.Count - numFilteredTests) other tests.</MudText>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ToggleFilter">
-            @(this.TestSelectorState.Value.EditorFilterApplied ? "Remove Filter" : "Hide Elements Without Tests")
-        </MudButton>
-    </div> *@
 </div>
 
 
@@ -115,18 +77,18 @@
 
     private async Task SelectedTestInfoChanged(TestResult result)
     {
-        string resultId = result.Id;
-        SingleTestState testResult = TestInfoState.Value.TestInfoIdToTestResultDict[resultId];
-        if (testResult.FrontEndProgressStatus == TestProgressStatus.NotStarted)
-        {
-            this.Dispatcher.Dispatch(new TestResultProgressChanged(resultId, TestProgressStatus.InProgress));
+        // string resultId = result.Id;
+        // SingleTestState testResult = TestInfoState.Value.TestInfoIdToTestResultDict[resultId];
+        // if (testResult.FrontEndProgressStatus == TestProgressStatus.NotStarted)
+        // {
+        //     this.Dispatcher.Dispatch(new TestResultProgressChanged(resultId, TestProgressStatus.InProgress));
 
-            var x = Convert.ToInt32(1000 * Random.Shared.NextDouble());
-            await Task.Delay(x);
+        //     var x = Convert.ToInt32(1000 * Random.Shared.NextDouble());
+        //     await Task.Delay(x);
 
-            this.Dispatcher.Dispatch(new TestResultProgressChanged(resultId, TestProgressStatus.Finished));
-        }
-
+        //     this.Dispatcher.Dispatch(new TestResultProgressChanged(resultId, TestProgressStatus.Finished));
+        // }
+        await RunTestsInFrontEndCommandHandler.ExecuteAsync(new RunTestsInFrontEndCommand(result.Id));
 
         this.Dispatcher.Dispatch(new TestResultSelected(result));
     }
@@ -173,14 +135,15 @@
         };
     }
 
-    // [Parameter]
-    // public string ModelId { get; init; }
+    private bool ShouldDisplayTestResult(string id)
+    {
+        if (this.SelectedObjectId is not null && id != this.SelectedObjectId)
+        {
+            return false;
+        }
 
-    // [Parameter]
-    // public string CanvasId { get; init; }
-
-    // [Inject]
-    // private IState<TestSelectorState> TestSelectorState { get; init; }
+        return true;
+    }
 
     [Inject]
     private IDispatcher Dispatcher { get; init; }
@@ -188,52 +151,8 @@
     [Inject]
     private IState<TestInfoState> TestInfoState { get; init; }
 
-    // [Inject]
-    // private TestInfoProvider TestInfoProvider { get; init; }
-
-    // [Inject]
-    // private IServiceProvider ServiceProvider { get; init; }
-
-    // [Inject]
-    // private AllStructuralAnalysisModelCaches AllStructuralAnalysisModelCaches { get; init; }
-
-    // private void OnSelectedTestInfoChanged(TestResult2 testResult)
-    // {
-    //     this.Dispatcher.Dispatch(new ChangeSelectedTestInfoAction(testInfo));
-    //     await this.HandleExecuteTestAction(testInfo.Id);
-    //     this.Dispatcher.Dispatch(new ExecutionTestActionResult("", testResult));
-    // }
-
-    // private async Task OnSelectedTestInfoChanged(TestInfo? testInfo)
-    // {
-    //     this.Dispatcher.Dispatch(new ChangeSelectedTestInfoAction(testInfo));
-    //     await this.HandleExecuteTestAction(testInfo.Id);
-    // }
-
-    // private async Task HandleExecuteTestAction(string testId)
-    // {
-    //     TestInfo testInfo = this.TestInfoProvider.TestInfos[testId];
-
-    //     todo : get and add to cache
-    //     TestResult result = await testInfo.RunTest(this.ServiceProvider);
-    //     this.Dispatcher.Dispatch(new ExecutionTestActionResult(testId, result));
-    // }
-
-    // private bool filterApplied;
-
-    // private void ToggleFilter()
-    // {
-    //     if (this.TestSelectorState.Value.EditorFilterApplied)
-    //     {
-    //         this.RemoveFilters();
-    //         this.Dispatcher.Dispatch(new ChangeEditorFilterApplied(false));
-    //     }
-    //     else
-    //     {
-    //         this.GhostObjectsWithoutTests();
-    //         this.Dispatcher.Dispatch(new ChangeEditorFilterApplied(true));
-    //     }
-    // }
+    [Inject]
+    private RunTestsInFrontEndCommandHandler RunTestsInFrontEndCommandHandler { get; init; }
 
     private void GoBack()
     {

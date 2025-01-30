@@ -86,13 +86,18 @@ public static class TestExplorerStateReducers
         ChangeSelectedProblemTests action
     )
     {
+        var newTestResults =
+            action.SelectedProblemTests == null
+                ? null
+                : ImmutableDictionary<
+                    BeamOsObjectType,
+                    ImmutableDictionary<string, List<TestResult>>
+                >.Empty;
+
         return state with
         {
             SelectedProblemTests = action.SelectedProblemTests,
-            TestResults = ImmutableDictionary<
-                BeamOsObjectType,
-                ImmutableDictionary<string, List<TestResult>>
-            >.Empty
+            TestResults = newTestResults
         };
     }
 

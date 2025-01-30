@@ -2,8 +2,10 @@ using BeamOs.CodeGen.EditorApi;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
+using BeamOs.Tests.Common;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.Editors.ReadOnlyEditor;
+using BeamOs.WebApp.Components.Features.TestExplorer;
 using Fluxor;
 using Microsoft.Extensions.Caching.Hybrid;
 using MudBlazor;
@@ -184,49 +186,88 @@ public class LoadBeamOsEntityCommandHandler(ISnackbar snackbar)
             return new CachedModelResponse(modelResponseH);
         }
 
-        //if (command is LoadModelResponseCommand modelResponseCommand)
-        //{
-        //    var modelResponse = modelResponseCommand.EntityResponse;
-
-        //    await command.EditorApi.ClearAsync(ct);
-
-        //    await command.EditorApi.SetSettingsAsync(modelResponse.Settings, ct);
-
-        //    await command
-        //        .EditorApi
-        //        .CreateNodesAsync(modelResponse.Nodes.Select(e => e.ToEditorUnits()), ct);
-
-        //    await command
-        //        .EditorApi
-        //        .CreatePointLoadsAsync(modelResponse.PointLoads.Select(e => e.ToEditorUnits()), ct);
-
-        //    await command.EditorApi.CreateElement1dsAsync(modelResponse.Element1ds, ct);
-
-        //    return Result.Success;
-        //}
-        //else if (command is LoadModelResponseHydratedCommand modelResponseHydratedCommand)
-        //{
-        //    var modelResponse = modelResponseHydratedCommand.EntityResponse;
-
-        //    await command.EditorApi.ClearAsync(ct);
-
-        //    await command.EditorApi.SetSettingsAsync(modelResponse.Settings, ct);
-
-        //    await command
-        //        .EditorApi
-        //        .CreateNodesAsync(modelResponse.Nodes.Select(e => e.ToEditorUnits()), ct);
-
-        //    await command
-        //        .EditorApi
-        //        .CreatePointLoadsAsync(modelResponse.PointLoads.Select(e => e.ToEditorUnits()), ct);
-
-        //    await command.EditorApi.CreateElement1dsAsync(modelResponse.Element1ds, ct);
-
-        //    return Result.Success;
-        //}
-
         throw new NotImplementedException(
             $"Type {command.EntityResponse.GetType()} is not supported in '{nameof(LoadBeamOsEntityCommandHandler)}'"
         );
+    }
+}
+
+public record struct RunTestCommand(IEnumerable<TestInfo> TestInfos);
+
+public class RunTestCommandHandler(
+    ISnackbar snackbar,
+    IDispatcher dispatcher,
+    IServiceProvider serviceProvider
+) : CommandHandlerBase<RunTestCommand, bool>(snackbar)
+{
+    protected override async Task<Result<bool>> ExecuteCommandAsync(
+        RunTestCommand command,
+        CancellationToken ct = default
+    )
+    {
+        void OnAssertedEqual2(object? _, TestResult args) =>
+            dispatcher.Dispatch(new TestResultComputed(args));
+
+        foreach (var test in command.TestInfos ?? [])
+        {
+            test.OnTestResult += OnAssertedEqual2;
+            try
+            {
+                await test.RunTest(serviceProvider);
+            }
+            finally
+            {
+                test.OnTestResult -= OnAssertedEqual2;
+            }
+        }
+
+        return true;
+    }
+}
+
+public record struct RunTestsInFrontEndCommand(params IEnumerable<string> testResultIds);
+
+public class RunTestsInFrontEndCommandHandler(
+    ISnackbar snackbar,
+    IDispatcher dispatcher,
+    IState<TestInfoState> testInfoState
+) : CommandHandlerBase<RunTestsInFrontEndCommand, bool>(snackbar)
+{
+    protected override async Task<Result<bool>> ExecuteCommandAsync(
+        RunTestsInFrontEndCommand command,
+        CancellationToken ct = default
+    )
+    {
+        List<string> notStartedTestResultIds = [];
+        foreach (var resultId in command.testResultIds)
+        {
+            SingleTestState testResult = testInfoState.Value.TestInfoIdToTestResultDict[resultId];
+            if (testResult.FrontEndProgressStatus == TestProgressStatus.NotStarted)
+            {
+                notStartedTestResultIds.Add(resultId);
+                dispatcher.Dispatch(
+                    new TestResultProgressChanged(resultId, TestProgressStatus.InProgress)
+                );
+            }
+        }
+
+        await foreach (
+            var resultId in Task.WhenEach(notStartedTestResultIds.Select(GiveTestsTimeToRun))
+        )
+        {
+            dispatcher.Dispatch(
+                new TestResultProgressChanged(await resultId, TestProgressStatus.Finished)
+            );
+        }
+
+        return true;
+    }
+
+    public static async Task<string> GiveTestsTimeToRun(string resultId)
+    {
+        var x = Convert.ToInt32(1000 * Random.Shared.NextDouble());
+        await Task.Delay(x);
+
+        return resultId;
     }
 }

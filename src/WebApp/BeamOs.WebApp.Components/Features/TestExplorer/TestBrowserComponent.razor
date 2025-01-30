@@ -53,20 +53,10 @@
 
     private async Task OnSelectedExampleProblemChanged(List<TestInfo>? testInfos)
     {
-        // this.Dispatcher.Dispatch(new ChangeSelectionCommand(this.CanvasId, []));
-        // ITestFixture? fixtureBase = testInfos?.First().GetTestFixture();
-        // if (fixtureBase is not null)
-        // {
-        //     await this.readOnlyEditor.EditorApiAlpha.ClearAsync();
-        //     await this.TestFixtureDisplayer.Display(fixtureBase, this.CanvasId);
-        // }
-
         this.Dispatcher.Dispatch(new ChangeSelectedSourceInfo(testInfos?.FirstOrDefault()?.SourceInfo));
 
         this.Dispatcher.Dispatch(new ChangeSelectedProblemTests(testInfos));
 
-        // Dictionary<string, List<TestResult>> results = [];
-        // Dictionary<BeamOsObjectType, Dictionary<string, List<TestResult>>> results = [];
         void OnAssertedEqual2(object? _, TestResult args)
         {
             this.Dispatcher.Dispatch(new TestResultComputed(args));
@@ -83,13 +73,5 @@
                 test.OnTestResult -= OnAssertedEqual2;
             }
         }
-        // this.Dispatcher.Dispatch(new ChangeTestResultsDict(results));
-
-        // redraw model with data from db. first display is with local data
-        // if (fixtureBase is not null)
-        // {
-        //     await this.readOnlyEditor.EditorApiAlpha.ClearAsync();
-        //     await this.TestFixtureDisplayer.Display(fixtureBase, this.CanvasId);
-        // }
     }
 }
