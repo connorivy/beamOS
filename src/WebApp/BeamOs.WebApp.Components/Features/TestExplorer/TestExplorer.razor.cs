@@ -2,6 +2,7 @@ using System.Collections.Immutable;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.Tests.Common;
 using BeamOs.WebApp.Components.Features.Editor;
+using BeamOs.WebApp.Components.Layout;
 using Fluxor;
 using Fluxor.Blazor.Web.Components;
 
@@ -9,7 +10,8 @@ namespace BeamOs.WebApp.Components.Features.TestExplorer;
 
 public partial class TestExplorer(
     IState<TestExplorerState> state,
-    IState<EditorComponentState> editorState
+    IState<EditorComponentState> editorState,
+    IDispatcher dispatcher
 ) : FluxorComponent
 {
     private EditorComponent? editorComponent;
@@ -17,7 +19,7 @@ public partial class TestExplorer(
     protected override void OnInitialized()
     {
         base.OnInitialized();
-
+        dispatcher.Dispatch(new OpenDrawer());
         this.SubscribeToAction<ChangeSelectedProblemTests>(async command =>
         {
             if (this.editorComponent is null)
@@ -36,6 +38,15 @@ public partial class TestExplorer(
             await this.editorComponent.LoadBeamOsEntity(testFixture.MapToResponse());
             //if (editorComponent.State.Value.LoadedModelId.HasValue)
         });
+    }
+
+    protected override async ValueTask DisposeAsyncCore(bool disposing)
+    {
+        if (disposing)
+        {
+            dispatcher.Dispatch(new CloseDrawer());
+        }
+        await base.DisposeAsyncCore(disposing);
     }
 }
 

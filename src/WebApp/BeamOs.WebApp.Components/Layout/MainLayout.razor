@@ -5,37 +5,28 @@
 @using MudBlazor
 @using Fluxor.Blazor.Web.Components
 
-@inherits FullScreenLayout
+@inherits FluxorLayout
+@layout FullScreenLayout
 
-<MudThemeProvider Theme="@_baseTheme"
-                  IsDarkMode="@this.State.Value.IsDarkMode" />
+<NavBar />
 
-<MudPopoverProvider />
-<MudDialogProvider />
-<MudSnackbarProvider />
+@* todo: how do I make responsive mode only work when section outlet has content? *@
+@if (this.State.Value.HasContent)
+{   
+<MudDrawer Width="401px" ClipMode="DrawerClipMode.Docked" Variant="DrawerVariant.Responsive" Open="true">
+    <SectionOutlet SectionId="Drawer" />
+</MudDrawer>
+}
 
-<MudLayout>
-    <NavBar />
-
-    @* todo: how do I make responsive mode only work when section outlet has content? *@
-    <MudDrawer Width="401px" ClipMode="DrawerClipMode.Docked" Variant="DrawerVariant.Persistent" Open="true">
-        <SectionOutlet SectionId="Drawer" />
-    </MudDrawer>
-
-    <MudMainContent Class="h-full">
-        <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="relative h-full">
-            @Body
-        </MudContainer>
-    </MudMainContent>
-</MudLayout>
-
-<div id="blazor-error-ui">
-    An unhandled error has occurred.
-    <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
-</div>
+<MudMainContent Class="h-full">
+    <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="relative h-full">
+        @Body
+    </MudContainer>
+</MudMainContent>
 
 @code {
+    // protected MudTheme _baseTheme = new();
+
     [Inject]
     IState<MainLayoutState> State { get; init; }
 
