@@ -1,5 +1,4 @@
 using BeamOs.CodeGen.EditorApi;
-using BeamOs.WebApp.Components.Features.Editors.ReadOnlyEditor;
 //using BeamOs.WebApp.Components.Features.Editor;
 using Microsoft.JSInterop;
 

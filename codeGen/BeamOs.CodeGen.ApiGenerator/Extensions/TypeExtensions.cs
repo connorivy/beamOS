@@ -1,4 +1,4 @@
-namespace BeamOs.CodeGen.Apis.Generator.Extensions;
+namespace BeamOs.CodeGen.ApiGenerator.Extensions;
 
 public static class TypeExtensions
 {

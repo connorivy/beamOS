@@ -5,7 +5,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
 using UnitsNet;
 using UnitsNet.Units;
 
-namespace BeamOs.WebApp.Components.Features.Editors.ReadOnlyEditor;
+namespace BeamOs.WebApp.Components.Features.Editor;
 
 internal static class ContractExtensions
 {
@@ -21,9 +21,7 @@ internal static class ContractExtensions
             Force = new(element.Force.MapToForce().Kilonewtons, ForceUnitContract.Kilonewton)
         };
 
-    public static StructuralAnalysis.Contracts.Common.Point InMeters(
-        this StructuralAnalysis.Contracts.Common.Point element
-    )
+    public static Point InMeters(this Point element)
     {
         LengthUnit lengthUnit = element.LengthUnit.MapToLengthUnit();
         return new()
@@ -31,7 +29,7 @@ internal static class ContractExtensions
             X = new Length(element.X, lengthUnit).Meters,
             Y = new Length(element.Y, lengthUnit).Meters,
             Z = new Length(element.Z, lengthUnit).Meters,
-            LengthUnit = StructuralAnalysis.Contracts.Common.LengthUnitContract.Meter
+            LengthUnit = LengthUnitContract.Meter
         };
     }
 }

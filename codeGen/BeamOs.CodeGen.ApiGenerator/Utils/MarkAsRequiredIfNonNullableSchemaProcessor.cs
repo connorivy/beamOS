@@ -1,7 +1,7 @@
-﻿using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace BeamOs.CodeGen.Apis.Generator.Utils;
+namespace BeamOs.CodeGen.ApiGenerator.Utils;
 
 public sealed class MarkAsRequiredIfNonNullableSchemaProcessor : ISchemaFilter
 {

@@ -4,7 +4,7 @@ using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod.Common.ValueObjects;
 using BeamOs.Tests.Common;
 
-namespace BeamOs.Domain.IntegrationTests.DirectStiffnessMethod;
+namespace BeamOs.Tests.StructuralAnalysis.Unit.DirectStiffnessMethod;
 
 public partial class DsmElement1dTests
 {

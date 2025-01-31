@@ -3,7 +3,7 @@ using BeamOs.StructuralAnalysis.CsSdk.Mappers;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 using BeamOs.Tests.Common;
 
-namespace BeamOs.Domain.IntegrationTests.DirectStiffnessMethod;
+namespace BeamOs.Tests.StructuralAnalysis.Unit.DirectStiffnessMethod;
 
 public class DsmModelTests
 {

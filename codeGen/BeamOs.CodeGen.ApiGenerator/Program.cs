@@ -1,5 +1,5 @@
 using BeamOs.CodeGen.ApiGenerator.ApiGenerators;
-using BeamOs.CodeGen.Apis.Generator.Utils;
+using BeamOs.CodeGen.ApiGenerator.Utils;
 using Microsoft.OpenApi.Models;
 
 //var builder = WebApplication.CreateBuilder(args);

@@ -2,7 +2,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace BeamOs.Infrastructure.Data.Configurations;
+namespace BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Models;
 
 internal class ModelConfiguration : IEntityTypeConfiguration<Model>
 {

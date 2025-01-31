@@ -4,7 +4,7 @@ using BeamOs.CodeGen.EditorApi;
 using BeamOs.Common.Contracts;
 using Microsoft.JSInterop;
 
-namespace BeamOs.WebApp.Components.Features.Editors.ReadOnlyEditor;
+namespace BeamOs.WebApp.Components.Features.Editor;
 
 public class EditorApiProxy : DispatchProxy, IAsyncDisposable
 {

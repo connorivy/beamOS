@@ -3,7 +3,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace BeamOs.Infrastructure.Data.Configurations;
+namespace BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Nodes;
 
 public class NodeConfiguration : IEntityTypeConfiguration<Node>
 {

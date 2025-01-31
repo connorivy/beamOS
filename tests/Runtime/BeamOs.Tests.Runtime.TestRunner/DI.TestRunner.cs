@@ -1,5 +1,5 @@
-using BeamOs.Domain.IntegrationTests.DirectStiffnessMethod;
 using BeamOs.Tests.StructuralAnalysis.Integration;
+using BeamOs.Tests.StructuralAnalysis.Unit.DirectStiffnessMethod;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BeamOs.Tests.Runtime.TestRunner;

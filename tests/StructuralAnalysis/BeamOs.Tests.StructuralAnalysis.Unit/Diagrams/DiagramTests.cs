@@ -5,7 +5,7 @@ using MathNet.Numerics;
 using UnitsNet;
 using UnitsNet.Units;
 
-namespace BeamOs.Domain.IntegrationTests.Diagrams;
+namespace BeamOs.Tests.StructuralAnalysis.Unit.Diagrams;
 
 public class DiagramTests
 {
