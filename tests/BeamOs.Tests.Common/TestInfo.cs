@@ -123,7 +123,8 @@ public record TestResult(
     ICollection<string>? ComparedValueNameCollection = null
 ) : TestResultBase(ResultStatus, ResultMessage)
 {
-    public string Id => this.TestName + this.BeamOsObjectId + this.BeamOsObjectType;
+    public string Id =>
+        field ??= $"{this.BeamOsObjectType} {this.BeamOsObjectId} {this.ComparedValueName}";
 }
 
 //public class ComparedObjectEventArgs<T>(T expected, T calculated, string comparedObjectName)

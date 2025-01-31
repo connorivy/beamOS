@@ -28,15 +28,24 @@
                     continue;
                 }
 
-                <MudExpansionPanel Expanded="true" Text="@(objectType + "s")" Class="text-nowrap text-clip mud-typography mud-typography-subtitle1 p-4">
+                string objectDisplayName;
+                @if (objectType == BeamOsObjectType.Model)
+                {
+                    objectDisplayName = "Model";
+                }
+                else
+                {
+                    objectDisplayName = objectType + "s";
+                }
+                <MudExpansionPanel Expanded="true" Class="text-nowrap text-clip mud-typography mud-typography-subtitle1 p-4">
                     <TitleContent>
                         <div class="d-flex">
                             <RunTestButtonGroup TestIds="@idToResultsDict.Where(kvp => ShouldDisplayTestResult(kvp.Key)).SelectMany(kvp => kvp.Value).Select(results => results.Id).ToArray()" />
-                            <MudText Class="pl-2"><strong>@(objectType + "s")</strong></MudText>
+                            <MudText Class="pl-2"><strong>@objectDisplayName</strong></MudText>
                         </div>
                     </TitleContent>
                     <ChildContent>
-                        @foreach (var (id, testResults) in idToResultsDict)
+                        @foreach (var (id, testResults) in idToResultsDict.OrderBy(kvp => kvp.Key))
                         {
                             if (!this.ShouldDisplayTestResult(id))
                             {
@@ -46,12 +55,21 @@
                             foreach (var result in testResults)
                             {
                                 numFilteredTests++;
+                                string content;
+                                @if (objectType == BeamOsObjectType.Model)
+                                {
+                                    content = result.ComparedValueName;
+                                }
+                                else
+                                {
+                                    content = $"Id: {id}, {result.ComparedValueName}";
+                                }
                                 <MudListItem @onmouseover="() => MouseOver(objectType, id)" Value="@result">
                                     <AvatarContent>
                                         <RunTestButton TestId="@result.Id" />
                                     </AvatarContent>
                                     <ChildContent>
-                                        @result.TestName
+                                        @content
                                     </ChildContent>
                                 </MudListItem>
                             }

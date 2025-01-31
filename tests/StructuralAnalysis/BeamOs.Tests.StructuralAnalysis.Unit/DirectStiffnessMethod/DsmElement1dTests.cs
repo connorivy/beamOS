@@ -27,10 +27,11 @@ public partial class DsmElement1dTests
         foreach (var el in dsmFixture.ExpectedDsmElement1dResults)
         {
             var physicalEl = model.Element1ds.First(x => x.Id == el.ElementId);
+            var dsmEl = new DsmElement1d(physicalEl);
 
             if (el.ExpectedGlobalEndDisplacements is not null)
             {
-                var jointDispVector = new DsmElement1d(physicalEl)
+                var jointDispVector = dsmEl
                     .GetGlobalEndDisplacementVector(jointDisplacementVector)
                     .AsArray();
 
@@ -43,9 +44,29 @@ public partial class DsmElement1dTests
                 );
             }
 
+            if (el.ExpectedLocalStiffnessMatrix is not null)
+            {
+                var stiffnessMat = dsmEl
+                    .GetLocalStiffnessMatrix(
+                        model.Settings.UnitSettings.ForceUnit,
+                        model.Settings.UnitSettings.ForcePerLengthUnit,
+                        model.Settings.UnitSettings.TorqueUnit
+                    )
+                    .ToArray();
+
+                Asserter.AssertEqual(
+                    BeamOsObjectType.Element1d,
+                    physicalEl.Id.ToString(),
+                    "Local Stiffness Matrix",
+                    el.ExpectedLocalStiffnessMatrix,
+                    stiffnessMat,
+                    .1
+                );
+            }
+
             if (el.ExpectedGlobalEndForces is not null)
             {
-                var jointDispVector = new DsmElement1d(physicalEl)
+                var jointDispVector = dsmEl
                     .GetGlobalMemberEndForcesVector(
                         jointDisplacementVector,
                         model.Settings.UnitSettings.ForceUnit,
@@ -57,7 +78,7 @@ public partial class DsmElement1dTests
                 Asserter.AssertEqual(
                     BeamOsObjectType.Element1d,
                     physicalEl.Id.ToString(),
-                    "Global Joint Displacements",
+                    "Global Member End Forces",
                     el.ExpectedGlobalEndForces,
                     jointDispVector,
                     .02
