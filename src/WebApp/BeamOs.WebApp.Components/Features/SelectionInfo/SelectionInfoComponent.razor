@@ -1,8 +1,8 @@
 @using MudBlazor
 @inherits FluxorComponent
 
-<MudContainer Gutters="false" Class=@($"rounded {@Class}")>
-    <MudPaper Class="p-4">
+<MudContainer Gutters="false" Class=@($"rounded h-full pointer-events-none {@Class}")>
+    <MudPaper Class="p-4 max-h-full overflow-auto pointer-events-auto">
         <MudText Typo="Typo.h6">Selection Info</MudText>
         <MudDivider Class="my-2" />
         <MudExpansionPanels MultiExpansion="true" Outlined="false" Elevation="0" Dense="true">
