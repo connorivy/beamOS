@@ -12,6 +12,13 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
 
 namespace BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
 
+public record ModelInfoResponse(
+    Guid Id,
+    string Name,
+    string Description,
+    PhysicalModelSettings Settings
+) : IBeamOsEntityResponse;
+
 public record ModelResponse(
     Guid Id,
     string Name,

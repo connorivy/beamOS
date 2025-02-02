@@ -8,6 +8,8 @@ public readonly struct GetModelResourceQuery : IHasModelId
     public int Id { get; init; }
 }
 
+public readonly struct EmptyRequest;
+
 public readonly struct GetAnalyticalResultResourceQuery : IHasModelId
 {
     public Guid ModelId { get; init; }

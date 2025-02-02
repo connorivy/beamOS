@@ -47,7 +47,8 @@ public static class DependencyInjection
         services.AddObjectThatImplementInterface<IAssemblyMarkerInfrastructure>(
             typeof(IQueryHandler<,>),
             ServiceLifetime.Scoped,
-            false
+            true,
+            true
         );
 
         return services;

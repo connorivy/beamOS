@@ -48,6 +48,8 @@ public partial class TestExplorer(
         }
         await base.DisposeAsyncCore(disposing);
     }
+
+    public const string Href = "/test-explorer";
 }
 
 public readonly record struct ChangeSelectedProblemTests(List<TestInfo>? SelectedProblemTests);

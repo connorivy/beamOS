@@ -1181,6 +1181,70 @@ export interface ICoordinate3D {
     z: number;
 }
 
+export class DisplacementsResponse implements IDisplacementsResponse {
+    displacementAlongX!: LengthContract;
+    displacementAlongY!: LengthContract;
+    displacementAlongZ!: LengthContract;
+    rotationAboutX!: AngleContract;
+    rotationAboutY!: AngleContract;
+    rotationAboutZ!: AngleContract;
+
+    constructor(data?: IDisplacementsResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.displacementAlongX = new LengthContract();
+            this.displacementAlongY = new LengthContract();
+            this.displacementAlongZ = new LengthContract();
+            this.rotationAboutX = new AngleContract();
+            this.rotationAboutY = new AngleContract();
+            this.rotationAboutZ = new AngleContract();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.displacementAlongX = _data["displacementAlongX"] ? LengthContract.fromJS(_data["displacementAlongX"]) : new LengthContract();
+            this.displacementAlongY = _data["displacementAlongY"] ? LengthContract.fromJS(_data["displacementAlongY"]) : new LengthContract();
+            this.displacementAlongZ = _data["displacementAlongZ"] ? LengthContract.fromJS(_data["displacementAlongZ"]) : new LengthContract();
+            this.rotationAboutX = _data["rotationAboutX"] ? AngleContract.fromJS(_data["rotationAboutX"]) : new AngleContract();
+            this.rotationAboutY = _data["rotationAboutY"] ? AngleContract.fromJS(_data["rotationAboutY"]) : new AngleContract();
+            this.rotationAboutZ = _data["rotationAboutZ"] ? AngleContract.fromJS(_data["rotationAboutZ"]) : new AngleContract();
+        }
+    }
+
+    static fromJS(data: any): DisplacementsResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new DisplacementsResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["displacementAlongX"] = this.displacementAlongX ? this.displacementAlongX.toJSON() : <any>undefined;
+        data["displacementAlongY"] = this.displacementAlongY ? this.displacementAlongY.toJSON() : <any>undefined;
+        data["displacementAlongZ"] = this.displacementAlongZ ? this.displacementAlongZ.toJSON() : <any>undefined;
+        data["rotationAboutX"] = this.rotationAboutX ? this.rotationAboutX.toJSON() : <any>undefined;
+        data["rotationAboutY"] = this.rotationAboutY ? this.rotationAboutY.toJSON() : <any>undefined;
+        data["rotationAboutZ"] = this.rotationAboutZ ? this.rotationAboutZ.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IDisplacementsResponse {
+    displacementAlongX: LengthContract;
+    displacementAlongY: LengthContract;
+    displacementAlongZ: LengthContract;
+    rotationAboutX: AngleContract;
+    rotationAboutY: AngleContract;
+    rotationAboutZ: AngleContract;
+}
+
 export enum Element1dAnalysisType {
     _0 = 0,
     _1 = 1,
@@ -1325,6 +1389,70 @@ export enum ForceUnitContract {
     _4 = 4,
 }
 
+export class ForcesResponse implements IForcesResponse {
+    forceAlongX!: ForceContract;
+    forceAlongY!: ForceContract;
+    forceAlongZ!: ForceContract;
+    momentAboutX!: TorqueContract;
+    momentAboutY!: TorqueContract;
+    momentAboutZ!: TorqueContract;
+
+    constructor(data?: IForcesResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.forceAlongX = new ForceContract();
+            this.forceAlongY = new ForceContract();
+            this.forceAlongZ = new ForceContract();
+            this.momentAboutX = new TorqueContract();
+            this.momentAboutY = new TorqueContract();
+            this.momentAboutZ = new TorqueContract();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.forceAlongX = _data["forceAlongX"] ? ForceContract.fromJS(_data["forceAlongX"]) : new ForceContract();
+            this.forceAlongY = _data["forceAlongY"] ? ForceContract.fromJS(_data["forceAlongY"]) : new ForceContract();
+            this.forceAlongZ = _data["forceAlongZ"] ? ForceContract.fromJS(_data["forceAlongZ"]) : new ForceContract();
+            this.momentAboutX = _data["momentAboutX"] ? TorqueContract.fromJS(_data["momentAboutX"]) : new TorqueContract();
+            this.momentAboutY = _data["momentAboutY"] ? TorqueContract.fromJS(_data["momentAboutY"]) : new TorqueContract();
+            this.momentAboutZ = _data["momentAboutZ"] ? TorqueContract.fromJS(_data["momentAboutZ"]) : new TorqueContract();
+        }
+    }
+
+    static fromJS(data: any): ForcesResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ForcesResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["forceAlongX"] = this.forceAlongX ? this.forceAlongX.toJSON() : <any>undefined;
+        data["forceAlongY"] = this.forceAlongY ? this.forceAlongY.toJSON() : <any>undefined;
+        data["forceAlongZ"] = this.forceAlongZ ? this.forceAlongZ.toJSON() : <any>undefined;
+        data["momentAboutX"] = this.momentAboutX ? this.momentAboutX.toJSON() : <any>undefined;
+        data["momentAboutY"] = this.momentAboutY ? this.momentAboutY.toJSON() : <any>undefined;
+        data["momentAboutZ"] = this.momentAboutZ ? this.momentAboutZ.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IForcesResponse {
+    forceAlongX: ForceContract;
+    forceAlongY: ForceContract;
+    forceAlongZ: ForceContract;
+    momentAboutX: TorqueContract;
+    momentAboutY: TorqueContract;
+    momentAboutZ: TorqueContract;
+}
+
 export class IModelEntity implements IIModelEntity {
     readonly id!: number;
     readonly modelId!: string;
@@ -1363,6 +1491,46 @@ export class IModelEntity implements IIModelEntity {
 export interface IIModelEntity {
     id: number;
     modelId: string;
+}
+
+export class LengthContract implements ILengthContract {
+    value!: number;
+    unit!: LengthUnitContract;
+
+    constructor(data?: ILengthContract) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.value = _data["value"];
+            this.unit = _data["unit"];
+        }
+    }
+
+    static fromJS(data: any): LengthContract {
+        data = typeof data === 'object' ? data : {};
+        let result = new LengthContract();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["value"] = this.value;
+        data["unit"] = this.unit;
+        return data;
+    }
+}
+
+export interface ILengthContract {
+    value: number;
+    unit: LengthUnitContract;
 }
 
 export enum LengthUnitContract {
@@ -1437,6 +1605,7 @@ export class ModelResponse implements IModelResponse {
     sectionProfiles?: SectionProfileResponse[] | undefined;
     pointLoads?: PointLoadResponse[] | undefined;
     momentLoads?: MomentLoadResponse[] | undefined;
+    resultSets?: ResultSetResponse[] | undefined;
 
     constructor(data?: IModelResponse) {
         if (data) {
@@ -1486,6 +1655,11 @@ export class ModelResponse implements IModelResponse {
                 for (let item of _data["momentLoads"])
                     this.momentLoads!.push(MomentLoadResponse.fromJS(item));
             }
+            if (Array.isArray(_data["resultSets"])) {
+                this.resultSets = [] as any;
+                for (let item of _data["resultSets"])
+                    this.resultSets!.push(ResultSetResponse.fromJS(item));
+            }
         }
     }
 
@@ -1532,6 +1706,11 @@ export class ModelResponse implements IModelResponse {
             for (let item of this.momentLoads)
                 data["momentLoads"].push(item.toJSON());
         }
+        if (Array.isArray(this.resultSets)) {
+            data["resultSets"] = [];
+            for (let item of this.resultSets)
+                data["resultSets"].push(item.toJSON());
+        }
         return data;
     }
 }
@@ -1547,6 +1726,7 @@ export interface IModelResponse {
     sectionProfiles?: SectionProfileResponse[] | undefined;
     pointLoads?: PointLoadResponse[] | undefined;
     momentLoads?: MomentLoadResponse[] | undefined;
+    resultSets?: ResultSetResponse[] | undefined;
 }
 
 export class MomentLoadResponse implements IMomentLoadResponse {
@@ -1715,6 +1895,62 @@ export interface INodeResponse {
     modelId: string;
     locationPoint: Point;
     restraint: Restraint;
+}
+
+export class NodeResultResponse implements INodeResultResponse {
+    modelId!: string;
+    resultSetId!: number;
+    nodeId!: number;
+    forces!: ForcesResponse;
+    displacements!: DisplacementsResponse;
+
+    constructor(data?: INodeResultResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.forces = new ForcesResponse();
+            this.displacements = new DisplacementsResponse();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.modelId = _data["modelId"];
+            this.resultSetId = _data["resultSetId"];
+            this.nodeId = _data["nodeId"];
+            this.forces = _data["forces"] ? ForcesResponse.fromJS(_data["forces"]) : new ForcesResponse();
+            this.displacements = _data["displacements"] ? DisplacementsResponse.fromJS(_data["displacements"]) : new DisplacementsResponse();
+        }
+    }
+
+    static fromJS(data: any): NodeResultResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new NodeResultResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["modelId"] = this.modelId;
+        data["resultSetId"] = this.resultSetId;
+        data["nodeId"] = this.nodeId;
+        data["forces"] = this.forces ? this.forces.toJSON() : <any>undefined;
+        data["displacements"] = this.displacements ? this.displacements.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface INodeResultResponse {
+    modelId: string;
+    resultSetId: number;
+    nodeId: number;
+    forces: ForcesResponse;
+    displacements: DisplacementsResponse;
 }
 
 export class PhysicalModelSettings implements IPhysicalModelSettings {
@@ -2020,6 +2256,58 @@ export class Result implements IResult {
 export interface IResult {
     error: BeamOsError;
     isError: boolean;
+}
+
+export class ResultSetResponse implements IResultSetResponse {
+    id!: number;
+    modelId!: string;
+    nodeResults?: NodeResultResponse[] | undefined;
+
+    constructor(data?: IResultSetResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.modelId = _data["modelId"];
+            if (Array.isArray(_data["nodeResults"])) {
+                this.nodeResults = [] as any;
+                for (let item of _data["nodeResults"])
+                    this.nodeResults!.push(NodeResultResponse.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ResultSetResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ResultSetResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["modelId"] = this.modelId;
+        if (Array.isArray(this.nodeResults)) {
+            data["nodeResults"] = [];
+            for (let item of this.nodeResults)
+                data["nodeResults"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IResultSetResponse {
+    id: number;
+    modelId: string;
+    nodeResults?: NodeResultResponse[] | undefined;
 }
 
 export class SectionProfileResponse implements ISectionProfileResponse {

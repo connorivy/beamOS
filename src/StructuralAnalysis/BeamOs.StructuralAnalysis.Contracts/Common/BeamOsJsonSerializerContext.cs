@@ -33,6 +33,7 @@ namespace BeamOs.StructuralAnalysis.Contracts.Common;
 [JsonSerializable(typeof(Result<NodeResultResponse>))]
 [JsonSerializable(typeof(Result<ResultSetResponse>))]
 [JsonSerializable(typeof(Result<ModelEntityResponse>))]
+[JsonSerializable(typeof(Result<List<ModelInfoResponse>))]
 [JsonSerializable(typeof(Result<int>))]
 [JsonSerializable(typeof(Result<bool>))]
 [JsonSerializable(typeof(Result))]

@@ -25,7 +25,8 @@
     Materials: null,
     SectionProfiles: null,
     PointLoads: null,
-    MomentLoads: null
+    MomentLoads: null,
+    ResultSets: null
   },
   Error: null,
   IsError: false,

@@ -4,6 +4,9 @@ using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints;
 
+public abstract partial class BeamOsEmptyRequestBaseEndpoint<TResponse>
+    : BeamOsBaseEndpoint<EmptyRequest, TResponse> { }
+
 public abstract partial class BeamOsModelIdRequestBaseEndpoint<TResponse>
     : BeamOsBaseEndpoint<ModelIdRequest, TResponse> { }
 

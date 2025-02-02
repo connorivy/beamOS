@@ -44,6 +44,11 @@ export interface IStructuralAnalysisApiClientV1 {
     /**
      * @return OK
      */
+    getModels(): Promise<ResultOfListOfModelInfoResponse>;
+
+    /**
+     * @return OK
+     */
     getModel(modelId: string): Promise<ResultOfModelResponseHydrated>;
 
     /**
@@ -70,6 +75,16 @@ export interface IStructuralAnalysisApiClientV1 {
      * @return OK
      */
     runOpenSeesAnalysis(modelId: string): Promise<ResultOfint>;
+
+    /**
+     * @return OK
+     */
+    directStiffnessMethod(modelId: string): Promise<ResultOfboolean>;
+
+    /**
+     * @return OK
+     */
+    getResultSet(modelId: string, id: number): Promise<ResultOfResultSetResponse>;
 
     /**
      * @return OK
@@ -352,6 +367,43 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     /**
      * @return OK
      */
+    getModels(): Promise<ResultOfListOfModelInfoResponse> {
+        let url_ = this.baseUrl + "/api/models";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetModels(_response);
+        });
+    }
+
+    protected processGetModels(response: Response): Promise<ResultOfListOfModelInfoResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfListOfModelInfoResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfListOfModelInfoResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
     getModel(modelId: string): Promise<ResultOfModelResponseHydrated> {
         let url_ = this.baseUrl + "/api/models/{modelId}";
         if (modelId === undefined || modelId === null)
@@ -601,6 +653,89 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             });
         }
         return Promise.resolve<ResultOfint>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    directStiffnessMethod(modelId: string): Promise<ResultOfboolean> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/analyze/dsm";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDirectStiffnessMethod(_response);
+        });
+    }
+
+    protected processDirectStiffnessMethod(response: Response): Promise<ResultOfboolean> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfboolean.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfboolean>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    getResultSet(modelId: string, id: number): Promise<ResultOfResultSetResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/result-sets/{id}";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetResultSet(_response);
+        });
+    }
+
+    protected processGetResultSet(response: Response): Promise<ResultOfResultSetResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfResultSetResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfResultSetResponse>(null as any);
     }
 
     /**
@@ -2031,6 +2166,69 @@ export interface IModelEntityResponse {
     [key: string]: any;
 }
 
+export class ModelInfoResponse implements IModelInfoResponse {
+    id!: string;
+    name!: string;
+    description!: string;
+    settings!: PhysicalModelSettings;
+
+    [key: string]: any;
+
+    constructor(data?: IModelInfoResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.settings = new PhysicalModelSettings();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.description = _data["description"];
+            this.settings = _data["settings"] ? PhysicalModelSettings.fromJS(_data["settings"]) : new PhysicalModelSettings();
+        }
+    }
+
+    static fromJS(data: any): ModelInfoResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ModelInfoResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["description"] = this.description;
+        data["settings"] = this.settings ? this.settings.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IModelInfoResponse {
+    id: string;
+    name: string;
+    description: string;
+    settings: PhysicalModelSettings;
+
+    [key: string]: any;
+}
+
 export class ModelResponse implements IModelResponse {
     id!: string;
     name!: string;
@@ -2042,6 +2240,7 @@ export class ModelResponse implements IModelResponse {
     sectionProfiles?: SectionProfileResponse2[] | undefined;
     pointLoads?: PointLoadResponse2[] | undefined;
     momentLoads?: MomentLoadResponse2[] | undefined;
+    resultSets?: ResultSetResponse[] | undefined;
 
     [key: string]: any;
 
@@ -2097,6 +2296,11 @@ export class ModelResponse implements IModelResponse {
                 for (let item of _data["momentLoads"])
                     this.momentLoads!.push(MomentLoadResponse2.fromJS(item));
             }
+            if (Array.isArray(_data["resultSets"])) {
+                this.resultSets = [] as any;
+                for (let item of _data["resultSets"])
+                    this.resultSets!.push(ResultSetResponse.fromJS(item));
+            }
         }
     }
 
@@ -2147,6 +2351,11 @@ export class ModelResponse implements IModelResponse {
             for (let item of this.momentLoads)
                 data["momentLoads"].push(item.toJSON());
         }
+        if (Array.isArray(this.resultSets)) {
+            data["resultSets"] = [];
+            for (let item of this.resultSets)
+                data["resultSets"].push(item.toJSON());
+        }
         return data;
     }
 }
@@ -2162,6 +2371,7 @@ export interface IModelResponse {
     sectionProfiles?: SectionProfileResponse2[] | undefined;
     pointLoads?: PointLoadResponse2[] | undefined;
     momentLoads?: MomentLoadResponse2[] | undefined;
+    resultSets?: ResultSetResponse[] | undefined;
 
     [key: string]: any;
 }
@@ -2177,6 +2387,7 @@ export class ModelResponseHydrated implements IModelResponseHydrated {
     sectionProfiles!: SectionProfileResponse2[];
     pointLoads!: PointLoadResponse2[];
     momentLoads!: MomentLoadResponse2[];
+    resultSets!: ResultSetResponse[];
 
     [key: string]: any;
 
@@ -2195,6 +2406,7 @@ export class ModelResponseHydrated implements IModelResponseHydrated {
             this.sectionProfiles = [];
             this.pointLoads = [];
             this.momentLoads = [];
+            this.resultSets = [];
         }
     }
 
@@ -2237,6 +2449,11 @@ export class ModelResponseHydrated implements IModelResponseHydrated {
                 this.momentLoads = [] as any;
                 for (let item of _data["momentLoads"])
                     this.momentLoads!.push(MomentLoadResponse2.fromJS(item));
+            }
+            if (Array.isArray(_data["resultSets"])) {
+                this.resultSets = [] as any;
+                for (let item of _data["resultSets"])
+                    this.resultSets!.push(ResultSetResponse.fromJS(item));
             }
         }
     }
@@ -2288,6 +2505,11 @@ export class ModelResponseHydrated implements IModelResponseHydrated {
             for (let item of this.momentLoads)
                 data["momentLoads"].push(item.toJSON());
         }
+        if (Array.isArray(this.resultSets)) {
+            data["resultSets"] = [];
+            for (let item of this.resultSets)
+                data["resultSets"].push(item.toJSON());
+        }
         return data;
     }
 }
@@ -2303,6 +2525,7 @@ export interface IModelResponseHydrated {
     sectionProfiles: SectionProfileResponse2[];
     pointLoads: PointLoadResponse2[];
     momentLoads: MomentLoadResponse2[];
+    resultSets: ResultSetResponse[];
 
     [key: string]: any;
 }
@@ -2630,6 +2853,74 @@ export class NodeResultResponse implements INodeResultResponse {
 }
 
 export interface INodeResultResponse {
+    modelId: string;
+    resultSetId: number;
+    nodeId: number;
+    forces: ForcesResponse;
+    displacements: DisplacementsResponse;
+
+    [key: string]: any;
+}
+
+export class NodeResultResponse2 implements INodeResultResponse2 {
+    modelId!: string;
+    resultSetId!: number;
+    nodeId!: number;
+    forces!: ForcesResponse;
+    displacements!: DisplacementsResponse;
+
+    [key: string]: any;
+
+    constructor(data?: INodeResultResponse2) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.forces = new ForcesResponse();
+            this.displacements = new DisplacementsResponse();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.modelId = _data["modelId"];
+            this.resultSetId = _data["resultSetId"];
+            this.nodeId = _data["nodeId"];
+            this.forces = _data["forces"] ? ForcesResponse.fromJS(_data["forces"]) : new ForcesResponse();
+            this.displacements = _data["displacements"] ? DisplacementsResponse.fromJS(_data["displacements"]) : new DisplacementsResponse();
+        }
+    }
+
+    static fromJS(data: any): NodeResultResponse2 {
+        data = typeof data === 'object' ? data : {};
+        let result = new NodeResultResponse2();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["modelId"] = this.modelId;
+        data["resultSetId"] = this.resultSetId;
+        data["nodeId"] = this.nodeId;
+        data["forces"] = this.forces ? this.forces.toJSON() : <any>undefined;
+        data["displacements"] = this.displacements ? this.displacements.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface INodeResultResponse2 {
     modelId: string;
     resultSetId: number;
     nodeId: number;
@@ -3195,6 +3486,62 @@ export interface IRestraint {
     [key: string]: any;
 }
 
+export class ResultOfboolean implements IResultOfboolean {
+    value!: boolean;
+    error!: BeamOsError | undefined;
+    isError!: boolean;
+
+    [key: string]: any;
+
+    constructor(data?: IResultOfboolean) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.value = _data["value"];
+            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
+            this.isError = _data["isError"];
+        }
+    }
+
+    static fromJS(data: any): ResultOfboolean {
+        data = typeof data === 'object' ? data : {};
+        let result = new ResultOfboolean();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["value"] = this.value;
+        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
+        data["isError"] = this.isError;
+        return data;
+    }
+}
+
+export interface IResultOfboolean {
+    value: boolean;
+    error: BeamOsError | undefined;
+    isError: boolean;
+
+    [key: string]: any;
+}
+
 export class ResultOfElement1dResponse implements IResultOfElement1dResponse {
     value!: Element1dResponse2 | undefined;
     error!: BeamOsError | undefined;
@@ -3301,6 +3648,70 @@ export class ResultOfint implements IResultOfint {
 
 export interface IResultOfint {
     value: number;
+    error: BeamOsError | undefined;
+    isError: boolean;
+
+    [key: string]: any;
+}
+
+export class ResultOfListOfModelInfoResponse implements IResultOfListOfModelInfoResponse {
+    value!: ModelInfoResponse[] | undefined;
+    error!: BeamOsError | undefined;
+    isError!: boolean;
+
+    [key: string]: any;
+
+    constructor(data?: IResultOfListOfModelInfoResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            if (Array.isArray(_data["value"])) {
+                this.value = [] as any;
+                for (let item of _data["value"])
+                    this.value!.push(ModelInfoResponse.fromJS(item));
+            }
+            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
+            this.isError = _data["isError"];
+        }
+    }
+
+    static fromJS(data: any): ResultOfListOfModelInfoResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ResultOfListOfModelInfoResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        if (Array.isArray(this.value)) {
+            data["value"] = [];
+            for (let item of this.value)
+                data["value"].push(item.toJSON());
+        }
+        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
+        data["isError"] = this.isError;
+        return data;
+    }
+}
+
+export interface IResultOfListOfModelInfoResponse {
+    value: ModelInfoResponse[] | undefined;
     error: BeamOsError | undefined;
     isError: boolean;
 
@@ -3644,7 +4055,7 @@ export interface IResultOfNodeResponse {
 }
 
 export class ResultOfNodeResultResponse implements IResultOfNodeResultResponse {
-    value!: NodeResultResponse | undefined;
+    value!: NodeResultResponse2 | undefined;
     error!: BeamOsError | undefined;
     isError!: boolean;
 
@@ -3665,7 +4076,7 @@ export class ResultOfNodeResultResponse implements IResultOfNodeResultResponse {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            this.value = _data["value"] ? NodeResultResponse.fromJS(_data["value"]) : <any>undefined;
+            this.value = _data["value"] ? NodeResultResponse2.fromJS(_data["value"]) : <any>undefined;
             this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
             this.isError = _data["isError"];
         }
@@ -3692,7 +4103,7 @@ export class ResultOfNodeResultResponse implements IResultOfNodeResultResponse {
 }
 
 export interface IResultOfNodeResultResponse {
-    value: NodeResultResponse | undefined;
+    value: NodeResultResponse2 | undefined;
     error: BeamOsError | undefined;
     isError: boolean;
 
@@ -3755,6 +4166,62 @@ export interface IResultOfPointLoadResponse {
     [key: string]: any;
 }
 
+export class ResultOfResultSetResponse implements IResultOfResultSetResponse {
+    value!: ResultSetResponse2 | undefined;
+    error!: BeamOsError | undefined;
+    isError!: boolean;
+
+    [key: string]: any;
+
+    constructor(data?: IResultOfResultSetResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.value = _data["value"] ? ResultSetResponse2.fromJS(_data["value"]) : <any>undefined;
+            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
+            this.isError = _data["isError"];
+        }
+    }
+
+    static fromJS(data: any): ResultOfResultSetResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ResultOfResultSetResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
+        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
+        data["isError"] = this.isError;
+        return data;
+    }
+}
+
+export interface IResultOfResultSetResponse {
+    value: ResultSetResponse2 | undefined;
+    error: BeamOsError | undefined;
+    isError: boolean;
+
+    [key: string]: any;
+}
+
 export class ResultOfSectionProfileResponse implements IResultOfSectionProfileResponse {
     value!: SectionProfileResponse | undefined;
     error!: BeamOsError | undefined;
@@ -3807,6 +4274,134 @@ export interface IResultOfSectionProfileResponse {
     value: SectionProfileResponse | undefined;
     error: BeamOsError | undefined;
     isError: boolean;
+
+    [key: string]: any;
+}
+
+export class ResultSetResponse implements IResultSetResponse {
+    id!: number;
+    modelId!: string;
+    nodeResults?: NodeResultResponse[] | undefined;
+
+    [key: string]: any;
+
+    constructor(data?: IResultSetResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.modelId = _data["modelId"];
+            if (Array.isArray(_data["nodeResults"])) {
+                this.nodeResults = [] as any;
+                for (let item of _data["nodeResults"])
+                    this.nodeResults!.push(NodeResultResponse.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ResultSetResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ResultSetResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["modelId"] = this.modelId;
+        if (Array.isArray(this.nodeResults)) {
+            data["nodeResults"] = [];
+            for (let item of this.nodeResults)
+                data["nodeResults"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IResultSetResponse {
+    id: number;
+    modelId: string;
+    nodeResults?: NodeResultResponse[] | undefined;
+
+    [key: string]: any;
+}
+
+export class ResultSetResponse2 implements IResultSetResponse2 {
+    id!: number;
+    modelId!: string;
+    nodeResults?: NodeResultResponse[] | undefined;
+
+    [key: string]: any;
+
+    constructor(data?: IResultSetResponse2) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.modelId = _data["modelId"];
+            if (Array.isArray(_data["nodeResults"])) {
+                this.nodeResults = [] as any;
+                for (let item of _data["nodeResults"])
+                    this.nodeResults!.push(NodeResultResponse.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ResultSetResponse2 {
+        data = typeof data === 'object' ? data : {};
+        let result = new ResultSetResponse2();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["modelId"] = this.modelId;
+        if (Array.isArray(this.nodeResults)) {
+            data["nodeResults"] = [];
+            for (let item of this.nodeResults)
+                data["nodeResults"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IResultSetResponse2 {
+    id: number;
+    modelId: string;
+    nodeResults?: NodeResultResponse[] | undefined;
 
     [key: string]: any;
 }
