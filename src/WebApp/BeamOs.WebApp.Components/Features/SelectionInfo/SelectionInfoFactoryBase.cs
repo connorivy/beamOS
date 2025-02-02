@@ -24,7 +24,8 @@ public abstract class SelectionInfoFactoryBase
         Type objectType,
         string name,
         bool isRequired = false,
-        int flattenDepth = 0
+        int flattenDepth = 0,
+        List<ISelectionInfo>? additionalSelectionInfo = null
     )
     {
         string properName;
@@ -53,12 +54,16 @@ public abstract class SelectionInfoFactoryBase
             {
                 selectionInfos.Add(this.CreateNested(obj, propInfo, flattenDepth - 1, isRequired));
             }
+
+            selectionInfos.AddRange(additionalSelectionInfo ?? []);
+
             return new ComplexFieldSelectionInfo()
             {
                 FieldName = properName,
                 FieldType = nonNullType,
                 SelectionInfos = selectionInfos,
-                Flatten = flattenDepth > 0
+                Flatten = flattenDepth > 0,
+                IsRequired = isRequired
             };
         }
     }
@@ -237,6 +242,7 @@ public readonly struct ComplexFieldSelectionInfo : IComplexSelectionInfo
     public required Type FieldType { get; init; }
     public required List<ISelectionInfo> SelectionInfos { get; init; }
     public bool Flatten { get; init; }
+    public bool IsRequired { get; init; }
 
     public JsonObject? ToJsonObject()
     {

@@ -243,4 +243,30 @@ public record CachedModelState(ImmutableDictionary<Guid, CachedModelResponse> Mo
                 )
         };
     }
+
+    public IHasModelId? GetEntityResultsFromCacheOrDefault(
+        ModelCacheKey modelCacheKey,
+        int resultSetId
+    )
+    {
+        if (!this.Models.TryGetValue(modelCacheKey.ModelId, out var model))
+        {
+            return null;
+        }
+
+        return modelCacheKey.TypeName switch
+        {
+            "Node"
+                => model
+                    .NodeResults
+                    .GetValueOrDefault(resultSetId)
+                    .GetValueOrDefault(modelCacheKey.Id),
+            //"Element1d" => model.Element1ds.GetValueOrDefault(modelCacheKey.Id),
+            //"PointLoad" => model.PointLoads.GetValueOrDefault(modelCacheKey.Id),
+            _
+                => throw new NotImplementedException(
+                    $"type {modelCacheKey.TypeName} is not implemented"
+                )
+        };
+    }
 }

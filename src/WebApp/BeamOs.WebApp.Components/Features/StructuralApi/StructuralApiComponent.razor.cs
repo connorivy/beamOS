@@ -41,6 +41,9 @@ public partial class StructuralApiComponent : FluxorComponent
     private IState<StructuralApiClientState> State { get; init; }
 
     [Inject]
+    private ISnackbar Snackbar { get; init; }
+
+    [Inject]
     private IDispatcher Dispatcher { get; init; }
 
     private bool validationSuccess;
@@ -190,6 +193,7 @@ public partial class StructuralApiComponent : FluxorComponent
                 }
                 catch (JsonException ex)
                 {
+                    this.Snackbar.Add($"Error deserializing JSON: {ex.Message}", Severity.Error);
                     // Handle JSON deserialization error
                     Console.WriteLine($"Error deserializing JSON: {ex.Message}");
                     return;

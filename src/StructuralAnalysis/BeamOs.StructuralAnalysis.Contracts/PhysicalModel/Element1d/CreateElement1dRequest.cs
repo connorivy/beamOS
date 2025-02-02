@@ -31,7 +31,7 @@ public record CreateElement1dRequest
     public required int EndNodeId { get; init; }
     public required int MaterialId { get; init; }
     public required int SectionProfileId { get; init; }
-    public AngleContract SectionProfileRotation { get; init; } = new(0, AngleUnitContract.Degree);
+    public AngleContract? SectionProfileRotation { get; init; } = new(0, AngleUnitContract.Degree);
     public int? Id { get; init; }
     public Dictionary<string, string>? Metadata { get; init; }
 }

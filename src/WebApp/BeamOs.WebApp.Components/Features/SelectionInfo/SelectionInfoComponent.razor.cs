@@ -35,9 +35,8 @@ public partial class SelectionInfoComponent(IState<CachedModelState> state, IDis
 
     private ISelectionInfo? GetBeamOsObjectByIdAndTypeName(int id, string typeName)
     {
-        IModelEntity? modelEntity = state
-            .Value
-            .GetEntityFromCacheOrDefault(new(this.ModelId, typeName, id));
+        ModelCacheKey cacheKey = new(this.ModelId, typeName, id);
+        IModelEntity? modelEntity = state.Value.GetEntityFromCacheOrDefault(cacheKey);
 
         if (modelEntity is null)
         {
@@ -46,10 +45,20 @@ public partial class SelectionInfoComponent(IState<CachedModelState> state, IDis
             return null;
         }
 
+        List<ISelectionInfo>? resultInfo = null;
+        if (state.Value.GetEntityResultsFromCacheOrDefault(cacheKey, 1) is IHasModelId response)
+        {
+            resultInfo =
+            [
+                this.selectionInfoFactory.Create(response, response.GetType(), $"Analysis Results")
+            ];
+        }
+
         return this.selectionInfoFactory.Create(
             modelEntity,
             modelEntity.GetType(),
-            $"{typeName} {id}"
+            $"{typeName} {id}",
+            additionalSelectionInfo: resultInfo
         );
     }
 

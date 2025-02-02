@@ -10,12 +10,11 @@
 
 <NavBar />
 
-@* todo: how do I make responsive mode only work when section outlet has content? *@
 @if (this.State.Value.HasContent)
 {   
-<MudDrawer Width="401px" ClipMode="DrawerClipMode.Docked" Variant="DrawerVariant.Responsive" Open="true">
-    <SectionOutlet SectionId="Drawer" />
-</MudDrawer>
+    <MudDrawer Width="401px" ClipMode="DrawerClipMode.Docked" Variant="DrawerVariant.Responsive" Open="true">
+        <SectionOutlet SectionId="Drawer" />
+    </MudDrawer>
 }
 
 <MudMainContent Class="h-full">

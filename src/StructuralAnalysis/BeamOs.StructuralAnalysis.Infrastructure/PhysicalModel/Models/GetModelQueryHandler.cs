@@ -27,6 +27,8 @@ public class GetModelQueryHandler(StructuralAnalysisDbContext dbContext)
             .Include(m => m.Element1ds)
             .Include(el => el.SectionProfiles)
             .Include(el => el.Materials)
+            .Include(m => m.ResultSets)
+            .ThenInclude(rs => rs.NodeResults)
             .FirstOrDefaultAsync(cancellationToken: ct);
 
         if (model is null)

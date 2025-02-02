@@ -29,13 +29,10 @@ public class Model : BeamOsEntity<ModelId>
     public ICollection<Element1d>? Element1ds { get; init; }
     public ICollection<Material>? Materials { get; init; }
     public ICollection<SectionProfile>? SectionProfiles { get; init; }
-
-    //public ICollection<ModelResult> ModelResults { get; init; }
     public ICollection<PointLoad>? PointLoads { get; init; }
     public ICollection<MomentLoad>? MomentLoads { get; init; }
     public ICollection<ResultSet>? ResultSets { get; init; }
 
-    //public ICollection<MomentLoad>? MomentLoads { get; init; }
     //public AnalyticalResults? AnalyticalResults { get; init; }
 
     [Obsolete("EF Core Constructor", true)]

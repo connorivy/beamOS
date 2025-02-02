@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BeamOs.StructuralAnalysis.Contracts.Common;
 
@@ -82,7 +82,9 @@ public readonly record struct AngleContract
     public required double Value { get; init; }
     public required AngleUnitContract Unit { get; init; }
 
-    public AngleContract() { }
+    [SetsRequiredMembers]
+    public AngleContract()
+        : this(0, AngleUnitContract.Radian) { }
 
     [SetsRequiredMembers]
     public AngleContract(double value, AngleUnitContract unit)

@@ -1,3 +1,4 @@
+using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 
 namespace BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.NodeResult;
@@ -8,7 +9,7 @@ public record NodeResultResponse(
     int NodeId,
     ForcesResponse Forces,
     DisplacementsResponse Displacements
-);
+) : IHasModelId;
 
 public record ForcesResponse(
     ForceContract ForceAlongX,
