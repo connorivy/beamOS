@@ -1,4 +1,5 @@
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
+using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
@@ -16,6 +17,7 @@ public partial class BeamOsModelBuilderResponseMapper(Guid modelId)
 {
     private Guid GetModelId() => modelId;
 
+    [MapValue(nameof(ModelResponse.ResultSets), Use = nameof(EmptyResultSets))]
     public partial ModelResponse ToReponse(BeamOsModelBuilder builder);
 
     [MapValue("ModelId", Use = nameof(GetModelId))]
@@ -35,4 +37,6 @@ public partial class BeamOsModelBuilderResponseMapper(Guid modelId)
 
     [MapValue("ModelId", Use = nameof(GetModelId))]
     public partial SectionProfileResponse ToResponse(CreateSectionProfileRequest request);
+
+    private List<ResultSetResponse> EmptyResultSets() => [];
 }
