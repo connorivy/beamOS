@@ -1,0 +1,296 @@
+@page "/user-settings"
+
+@using BeamOs.WebApp.Components.Features.Dialogs
+@using MudBlazor
+@using MudBlazor.Services
+@inject NavigationManager NavigationManager
+
+<AuthorizeView>
+    <Authorized>
+        <MudContainer MaxWidth="MaxWidth.Large" Class="py-8">
+            <!-- Page Header -->
+            <MudText Typo="Typo.h4" Class="font-bold mb-6">Settings</MudText>
+
+            <!-- Main Layout -->
+            <div class="flex gap-8">
+                <!-- Sidebar Navigation -->
+                <div class="w-64">
+                    <MudPaper Class="p-4 rounded-lg" Elevation="1">
+                        <MudList T="string" SelectedValueChanged="SelectedSectionChanged">
+                            <MudListItem Icon="@Icons.Material.Filled.Person" Value="@("Profile")">Profile</MudListItem>
+                            <MudListItem Icon="@Icons.Material.Filled.Code" Value="@("Dev")">Developer</MudListItem>
+                            <MudListItem Icon="@Icons.Material.Filled.Settings" Value="@("Account")">Account</MudListItem>
+                            <MudListItem Icon="@Icons.Material.Filled.Notifications" Value="@("Notifications")">Notifications</MudListItem>
+                            <MudListItem Icon="@Icons.Material.Filled.Lock" Value="@("Security")">Security</MudListItem>
+                            <MudListItem Icon="@Icons.Material.Filled.Link" Value="@("Integrations")">Integrations</MudListItem>
+                        </MudList>
+                        @* <MudNavMenu>
+                            <MudNavLink Href="/user-settings#profile" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">
+                                Profile
+                            </MudNavLink>
+                            <MudNavLink Href="/user-settings#account" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Settings">
+                                Account
+                            </MudNavLink>
+                            <MudNavLink Href="/user-settings#notifications" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Notifications">
+                                Notifications
+                            </MudNavLink>
+                            <MudNavLink Href="/user-settings#security" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Lock">
+                                Security
+                            </MudNavLink>
+                            <MudNavLink Href="/user-settings#integrations" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Link">
+                                Integrations
+                            </MudNavLink>
+                        </MudNavMenu> *@
+                    </MudPaper>
+                </div>
+
+                <!-- Main Content -->
+                <div class="flex-1">
+                    <MudPaper Class="p-6 rounded-lg" Elevation="1">
+                        <!-- Profile Section -->
+                        @if (ActiveSection == "Profile")
+                        {
+                            <MudText Typo="Typo.h5" Class="font-semibold mb-4">Profile Settings</MudText>
+                            <MudTextField @bind-Value="Profile.Name" Label="Full Name" Class="mb-4" />
+                            <MudTextField @bind-Value="Profile.Email" Label="Email" Class="mb-4" />
+                            <MudTextField @bind-Value="Profile.Bio" Label="Bio" Multiline="true" Rows="3" Class="mb-4" />
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveProfile">
+                                Save Changes
+                            </MudButton>
+                        }
+
+                        <!-- Developer Section -->
+                        @if (ActiveSection == "Dev")
+                        {
+                            <MudText Typo="Typo.h5" Class="font-semibold mb-4">Developer Settings</MudText>
+                        <MudText Typo="Typo.body2" Class="mb-6">
+                            Manage your API tokens for accessing the platform programmatically.
+                        </MudText>
+
+                        <!-- Create Token Button -->
+                        <MudButton Variant="Variant.Filled" 
+                                   Color="Color.Primary" 
+                                   StartIcon="@Icons.Material.Filled.Add"
+                                   OnClick="OpenCreateTokenDialog"
+                                   Class="mb-6">
+                            Create New Token
+                        </MudButton>
+
+                        <!-- Tokens List -->
+                        @if (ApiTokens.Any())
+                        {
+                            <MudTable Items="@ApiTokens" Hover="true" Dense="true" Class="mb-6">
+                                <HeaderContent>
+                                    <MudTh>Token Name</MudTh>
+                                    <MudTh>Created On</MudTh>
+                                    <MudTh>Actions</MudTh>
+                                </HeaderContent>
+                                <RowTemplate Context="rowContext">
+                                        <MudTd DataLabel="Token Name">@rowContext.Name</MudTd>
+                                        <MudTd DataLabel="Created On">@rowContext.CreatedOn.ToString("yyyy-MM-dd")</MudTd>
+                                    <MudTd DataLabel="Actions">
+                                        <MudIconButton Icon="@Icons.Material.Filled.Delete" 
+                                                       Color="Color.Error"
+                                                           OnClick="() => DeleteToken(rowContext.Id)" />
+                                    </MudTd>
+                                </RowTemplate>
+                            </MudTable>
+                        }
+                        else
+                        {
+                            <MudText Typo="Typo.body2" Class="text-gray-600">No API tokens found.</MudText>
+                        }
+                        }
+
+                        <!-- Account Section -->
+                        @if (ActiveSection == "Account")
+                        {
+                            <MudText Typo="Typo.h5" Class="font-semibold mb-4">Account Settings</MudText>
+                            <MudTextField @bind-Value="Account.Username" Label="Username" Class="mb-4" />
+                            <MudTextField @bind-Value="Account.Timezone" Label="Timezone" Class="mb-4" />
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveAccount">
+                                Save Changes
+                            </MudButton>
+                        }
+
+                        <!-- Notifications Section -->
+                        @if (ActiveSection == "Notifications")
+                        {
+                            <MudText Typo="Typo.h5" Class="font-semibold mb-4">Notification Settings</MudText>
+                            <MudCheckBox @bind-Value="Notifications.EmailNotifications" Label="Enable Email Notifications" Class="mb-4" />
+                            <MudCheckBox @bind-Value="Notifications.PushNotifications" Label="Enable Push Notifications" Class="mb-4" />
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveNotifications">
+                                Save Changes
+                            </MudButton>
+                        }
+
+                        <!-- Security Section -->
+                        @if (ActiveSection == "Security")
+                        {
+                            <MudText Typo="Typo.h5" Class="font-semibold mb-4">Security Settings</MudText>
+                            <MudTextField @bind-Value="Security.CurrentPassword" Label="Current Password" Type="password" Class="mb-4" />
+                            <MudTextField @bind-Value="Security.NewPassword" Label="New Password" Type="password" Class="mb-4" />
+                            <MudTextField @bind-Value="Security.ConfirmPassword" Label="Confirm Password" Type="password" Class="mb-4" />
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveSecurity">
+                                Change Password
+                            </MudButton>
+                        }
+
+                        <!-- Integrations Section -->
+                        @if (ActiveSection == "Integrations")
+                        {
+                            <MudText Typo="Typo.h5" Class="font-semibold mb-4">Integrations</MudText>
+                            <MudText Typo="Typo.body2" Class="mb-4">Connect your account to third-party services.</MudText>
+                            <MudButton Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Link" Class="mb-4">
+                                Connect GitHub
+                            </MudButton>
+                            <MudButton Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Link" Class="mb-4">
+                                Connect Google
+                            </MudButton>
+                        }
+                    </MudPaper>
+                </div>
+            </div>
+        </MudContainer>
+    </Authorized>
+    <NotAuthorized>
+        <MudContainer MaxWidth="MaxWidth.Medium" Class="py-8">
+            <MudPaper Class="p-8 text-center">
+                <MudText Typo="Typo.h5" Class="mb-4">You need to log in to access settings.</MudText>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="RedirectToLogin">
+                    Log In
+                </MudButton>
+            </MudPaper>
+        </MudContainer>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private string ActiveSection = "profile";
+
+    [Inject]
+    private IDialogService DialogService { get; init; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        this.SelectedSectionChanged("Profile");
+    }
+
+    private void SelectedSectionChanged(string section)
+    {
+        ActiveSection = section;
+    }
+
+    private List<ApiToken> ApiTokens = new List<ApiToken>
+    {
+        new ApiToken { Id = 1, Name = "Token 1", CreatedOn = DateTime.Now.AddDays(-5) },
+        new ApiToken { Id = 2, Name = "Token 2", CreatedOn = DateTime.Now.AddDays(-2) }
+    };
+
+    private async Task OpenCreateTokenDialog()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        var dialog = DialogService.Show<CreateApiTokenDialog>("Create New Token", options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            var newToken = result.Data as ApiToken;
+            ApiTokens.Add(newToken);
+        }
+    }
+
+    private void DeleteToken(int tokenId)
+    {
+        var tokenToDelete = ApiTokens.FirstOrDefault(t => t.Id == tokenId);
+        if (tokenToDelete != null)
+        {
+            ApiTokens.Remove(tokenToDelete);
+        }
+    }
+
+    private void RedirectToLogin()
+    {
+        NavigationManager.NavigateTo("/login");
+    }
+
+    public class ApiToken
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public DateTime CreatedOn { get; set; }
+    }
+
+    private ProfileSettings Profile = new ProfileSettings
+        {
+            Name = "John Doe",
+            Email = "john.doe@example.com",
+            Bio = "Structural Engineer with a passion for innovation."
+        };
+
+    private AccountSettings Account = new AccountSettings
+        {
+            Username = "johndoe",
+            Timezone = "UTC"
+        };
+
+    private NotificationSettings Notifications = new NotificationSettings
+        {
+            EmailNotifications = true,
+            PushNotifications = false
+        };
+
+    private SecuritySettings Security = new SecuritySettings
+        {
+            CurrentPassword = "",
+            NewPassword = "",
+            ConfirmPassword = ""
+        };
+
+    private void SaveProfile()
+    {
+        // Save profile logic
+    }
+
+    private void SaveAccount()
+    {
+        // Save account logic
+    }
+
+    private void SaveNotifications()
+    {
+        // Save notifications logic
+    }
+
+    private void SaveSecurity()
+    {
+        // Save security logic
+    }
+
+    public class ProfileSettings
+    {
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string Bio { get; set; }
+    }
+
+    public class AccountSettings
+    {
+        public string Username { get; set; }
+        public string Timezone { get; set; }
+    }
+
+    public class NotificationSettings
+    {
+        public bool EmailNotifications { get; set; }
+        public bool PushNotifications { get; set; }
+    }
+
+    public class SecuritySettings
+    {
+        public string CurrentPassword { get; set; }
+        public string NewPassword { get; set; }
+        public string ConfirmPassword { get; set; }
+    }
+}

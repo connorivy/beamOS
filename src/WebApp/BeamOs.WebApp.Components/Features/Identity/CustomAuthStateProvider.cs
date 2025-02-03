@@ -3,7 +3,7 @@ using System.Text.Json;
 //using BeamOs.Common.Identity;
 using Microsoft.AspNetCore.Components.Authorization;
 
-namespace BeamOs.WebApp.Components.Features.Auth;
+namespace BeamOs.WebApp.Components.Features.Identity;
 
 public class CustomAuthStateProvider
     : AuthenticationStateProvider,

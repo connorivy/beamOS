@@ -1,0 +1,34 @@
+@using Microsoft.AspNetCore.Components
+@using static BeamOs.WebApp.Components.Features.Identity.UserSettings.UserSettings
+@inject NavigationManager NavigationManager
+
+<MudDialog>
+    <DialogContent>
+        <MudTextField @bind-Value="NewToken.Name" Label="Token Name" Required="true" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel" Color="Color.Secondary">Cancel</MudButton>
+        <MudButton OnClick="Submit" Color="Color.Primary">Create</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    private ApiToken NewToken = new ApiToken();
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private void Submit()
+    {
+        if (!string.IsNullOrEmpty(NewToken.Name))
+        {
+            NewToken.Id = 99; // Assign a new ID
+            NewToken.CreatedOn = DateTime.Now;
+            MudDialog.Close(DialogResult.Ok(NewToken));
+        }
+    }
+}

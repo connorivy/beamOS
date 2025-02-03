@@ -1,6 +1,6 @@
 using BeamOs.Common.Application;
-using BeamOs.WebApp.Components.Features.Auth;
 using BeamOs.WebApp.Components.Features.Common;
+using BeamOs.WebApp.Components.Features.Identity;
 using BeamOs.WebApp.Components.Features.UndoRedo;
 using Fluxor;
 using Microsoft.AspNetCore.Components.Authorization;
