@@ -82,11 +82,27 @@
                             <MudTable Items="@ApiTokens" Hover="true" Dense="true" Class="mb-6">
                                 <HeaderContent>
                                     <MudTh>Token Name</MudTh>
+                                    <MudTh>Scopes</MudTh>
                                     <MudTh>Created On</MudTh>
                                     <MudTh>Actions</MudTh>
                                 </HeaderContent>
                                 <RowTemplate Context="rowContext">
                                         <MudTd DataLabel="Token Name">@rowContext.Name</MudTd>
+                                    <MudTd DataLabel="Scopes">
+                                        @if (rowContext.Scopes.Any())
+                                        {
+                                            <MudChipSet T="string">
+                                                @foreach (var scope in rowContext.Scopes)
+                                                {
+                                                    <MudChip Text="@scope" Color="Color.Primary" Class="mr-2" />
+                                                }
+                                            </MudChipSet>
+                                        }
+                                        else
+                                        {
+                                            <MudText Typo="Typo.body2">No scopes assigned.</MudText>
+                                        }
+                                    </MudTd>
                                         <MudTd DataLabel="Created On">@rowContext.CreatedOn.ToString("yyyy-MM-dd")</MudTd>
                                     <MudTd DataLabel="Actions">
                                         <MudIconButton Icon="@Icons.Material.Filled.Delete" 
@@ -98,7 +114,7 @@
                         }
                         else
                         {
-                            <MudText Typo="Typo.body2" Class="text-gray-600">No API tokens found.</MudText>
+                            <MudText Typo="Typo.body2">No API tokens found.</MudText>
                         }
                         }
 
@@ -220,6 +236,7 @@
         public int Id { get; set; }
         public string Name { get; set; }
         public DateTime CreatedOn { get; set; }
+        public List<string> Scopes { get; set; } = new List<string>();
     }
 
     private ProfileSettings Profile = new ProfileSettings
