@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using BeamOs.Common.Contracts;
 using BeamOs.Common.Domain.Models;
@@ -180,6 +181,8 @@ public class ModelEntityIdIncrementingInterceptor : SaveChangesInterceptor
 
         foreach (var entity in addedModelEntities.Where(e => e.GetIntId() == 0))
         {
+            Debug.Assert(entityTypeToMaxIdDict.ContainsKey(entity.GetType()));
+
             ref int maxId = ref CollectionsMarshal.GetValueRefOrNullRef(
                 entityTypeToMaxIdDict,
                 entity.GetType()

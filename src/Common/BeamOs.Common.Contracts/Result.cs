@@ -64,12 +64,11 @@ public sealed class Result<TValue> : Result
 {
     public TValue? Value { get; }
 
-    public override BeamOsError? Error { get; }
+    public override BeamOsError? Error => base.Error;
 
     private Result(TValue value)
         : base()
     {
-        this.IsError = false;
         this.Value = value;
     }
 
@@ -88,7 +87,7 @@ public sealed class Result<TValue> : Result
     [MemberNotNullWhen(true, nameof(Error))]
     [MemberNotNullWhen(false, nameof(Value))]
 #endif
-    public override bool IsError { get; }
+    public override bool IsError => base.IsError;
 
 #if NET6_0_OR_GREATER
     [MemberNotNullWhen(true, nameof(Value))]

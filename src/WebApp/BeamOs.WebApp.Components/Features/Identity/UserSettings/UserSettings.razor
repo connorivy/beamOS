@@ -19,28 +19,12 @@
                         <MudList T="string" SelectedValueChanged="SelectedSectionChanged">
                             <MudListItem Icon="@Icons.Material.Filled.Person" Value="@("Profile")">Profile</MudListItem>
                             <MudListItem Icon="@Icons.Material.Filled.Code" Value="@("Dev")">Developer</MudListItem>
+                            <MudListItem Icon="@Icons.Material.Filled.Code" Value="@("Api")">Api Usage</MudListItem>
                             <MudListItem Icon="@Icons.Material.Filled.Settings" Value="@("Account")">Account</MudListItem>
                             <MudListItem Icon="@Icons.Material.Filled.Notifications" Value="@("Notifications")">Notifications</MudListItem>
                             <MudListItem Icon="@Icons.Material.Filled.Lock" Value="@("Security")">Security</MudListItem>
                             <MudListItem Icon="@Icons.Material.Filled.Link" Value="@("Integrations")">Integrations</MudListItem>
                         </MudList>
-                        @* <MudNavMenu>
-                            <MudNavLink Href="/user-settings#profile" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">
-                                Profile
-                            </MudNavLink>
-                            <MudNavLink Href="/user-settings#account" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Settings">
-                                Account
-                            </MudNavLink>
-                            <MudNavLink Href="/user-settings#notifications" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Notifications">
-                                Notifications
-                            </MudNavLink>
-                            <MudNavLink Href="/user-settings#security" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Lock">
-                                Security
-                            </MudNavLink>
-                            <MudNavLink Href="/user-settings#integrations" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Link">
-                                Integrations
-                            </MudNavLink>
-                        </MudNavMenu> *@
                     </MudPaper>
                 </div>
 
@@ -63,59 +47,125 @@
                         @if (ActiveSection == "Dev")
                         {
                             <MudText Typo="Typo.h5" Class="font-semibold mb-4">Developer Settings</MudText>
-                        <MudText Typo="Typo.body2" Class="mb-6">
-                            Manage your API tokens for accessing the platform programmatically.
-                        </MudText>
+                            <MudText Typo="Typo.body2" Class="mb-6">
+                                Manage your API tokens for accessing the platform programmatically.
+                            </MudText>
 
-                        <!-- Create Token Button -->
-                        <MudButton Variant="Variant.Filled" 
-                                   Color="Color.Primary" 
-                                   StartIcon="@Icons.Material.Filled.Add"
-                                   OnClick="OpenCreateTokenDialog"
-                                   Class="mb-6">
-                            Create New Token
-                        </MudButton>
+                            <!-- Create Token Button -->
+                            <MudButton Variant="Variant.Filled" 
+                                       Color="Color.Primary" 
+                                       StartIcon="@Icons.Material.Filled.Add"
+                                       OnClick="OpenCreateTokenDialog"
+                                       Class="mb-6">
+                                Create New Token
+                            </MudButton>
 
-                        <!-- Tokens List -->
-                        @if (ApiTokens.Any())
-                        {
-                            <MudTable Items="@ApiTokens" Hover="true" Dense="true" Class="mb-6">
-                                <HeaderContent>
-                                    <MudTh>Token Name</MudTh>
-                                    <MudTh>Scopes</MudTh>
-                                    <MudTh>Created On</MudTh>
-                                    <MudTh>Actions</MudTh>
-                                </HeaderContent>
-                                <RowTemplate Context="rowContext">
-                                        <MudTd DataLabel="Token Name">@rowContext.Name</MudTd>
-                                    <MudTd DataLabel="Scopes">
-                                        @if (rowContext.Scopes.Any())
-                                        {
-                                            <MudChipSet T="string">
-                                                @foreach (var scope in rowContext.Scopes)
-                                                {
-                                                    <MudChip Text="@scope" Color="Color.Primary" Class="mr-2" />
-                                                }
-                                            </MudChipSet>
-                                        }
-                                        else
-                                        {
-                                            <MudText Typo="Typo.body2">No scopes assigned.</MudText>
-                                        }
-                                    </MudTd>
+                            <!-- Tokens List -->
+                            @if (ApiTokens.Any())
+                            {
+                                <MudTable Items="@ApiTokens" Hover="true" Dense="true" Class="mb-6">
+                                    <HeaderContent>
+                                        <MudTh>Token Name</MudTh>
+                                        <MudTh>Scopes</MudTh>
+                                        <MudTh>Created On</MudTh>
+                                        <MudTh>Actions</MudTh>
+                                    </HeaderContent>
+                                    <RowTemplate Context="rowContext">
+                                            <MudTd DataLabel="Token Name">@rowContext.Name</MudTd>
+                                        <MudTd DataLabel="Scopes">
+                                            @if (rowContext.Scopes.Any())
+                                            {
+                                                <MudChipSet T="string">
+                                                    @foreach (var scope in rowContext.Scopes)
+                                                    {
+                                                        <MudChip Text="@scope" Color="Color.Primary" Class="mr-2" />
+                                                    }
+                                                </MudChipSet>
+                                            }
+                                            else
+                                            {
+                                                <MudText Typo="Typo.body2">No scopes assigned.</MudText>
+                                            }
+                                        </MudTd>
                                         <MudTd DataLabel="Created On">@rowContext.CreatedOn.ToString("yyyy-MM-dd")</MudTd>
-                                    <MudTd DataLabel="Actions">
-                                        <MudIconButton Icon="@Icons.Material.Filled.Delete" 
-                                                       Color="Color.Error"
-                                                           OnClick="() => DeleteToken(rowContext.Id)" />
-                                    </MudTd>
-                                </RowTemplate>
-                            </MudTable>
+                                        <MudTd DataLabel="Actions">
+                                            <MudIconButton Icon="@Icons.Material.Filled.Delete" 
+                                                           Color="Color.Error"
+                                                               OnClick="() => DeleteToken(rowContext.Id)" />
+                                        </MudTd>
+                                    </RowTemplate>
+                                </MudTable>
+                            }
+                            else
+                            {
+                                <MudText Typo="Typo.body2">No API tokens found.</MudText>
+                            }
                         }
-                        else
+
+                        <!-- API Usage Section -->
+                        @if (ActiveSection == "Api")
                         {
-                            <MudText Typo="Typo.body2">No API tokens found.</MudText>
-                        }
+                            <div class="space-y-6">
+                                <!-- Usage Summary -->
+                                <div>
+                                    <MudText Typo="Typo.h5" Class="font-semibold mb-4">API Usage Summary</MudText>
+                                    <MudGrid>
+                                        <MudItem xs="12" sm="6" Class="mb-4">
+                                            <MudCard>
+                                                <MudCardContent>
+                                                    <MudText Typo="Typo.h6">Total API Calls</MudText>
+                                                    <MudText Typo="Typo.h4" Class="font-bold">@UsageSummary.TotalCalls</MudText>
+                                                </MudCardContent>
+                                            </MudCard>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="6" Class="mb-4">
+                                            <MudCard>
+                                                <MudCardContent>
+                                                    <MudText Typo="Typo.h6">Total Duration</MudText>
+                                                    <MudText Typo="Typo.h4" Class="font-bold">@FormatDuration(UsageSummary.TotalDurationMs)</MudText>
+                                                </MudCardContent>
+                                            </MudCard>
+                                        </MudItem>
+                                    </MudGrid>
+                                </div>
+
+                                <!-- Usage Breakdown -->
+                                <div>
+                                    <MudText Typo="Typo.h5" Class="font-semibold mb-4">Usage Breakdown</MudText>
+                                    <MudTable Items="@UsageSummary.Breakdown" Hover="true" Dense="true">
+                                        <HeaderContent>
+                                            <MudTh>Name</MudTh>
+                                            <MudTh>Calls</MudTh>
+                                            <MudTh>Duration</MudTh>
+                                            <MudTh>Share</MudTh>
+                                        </HeaderContent>
+                                        <RowTemplate Context="rowContext">
+                                            <MudTd DataLabel="Name">
+                                                @if (rowContext.IsToken)
+                                                {
+                                                    <MudChip T="string" Text="Token" Color="Color.Primary" Class="mr-2" />
+                                                    @rowContext.Name
+                                                }
+                                                else
+                                                {
+                                                    <MudChip T="string" Text="Function" Color="Color.Secondary" Class="mr-2" />
+                                                    @rowContext.Name
+                                                }
+                                            </MudTd>
+                                            <MudTd DataLabel="Calls">@rowContext.Calls</MudTd>
+                                            <MudTd DataLabel="Duration">@FormatDuration(rowContext.TotalDurationMs)</MudTd>
+                                            <MudTd DataLabel="Share">
+                                                <div class="flex items-center gap-2">
+                                                    <MudProgressLinear Value="@rowContext.SharePercentage(UsageSummary.TotalDurationMs)"
+                                                                       Color="Color.Primary" 
+                                                                       Class="w-32" />
+                                                    <MudText>@Math.Round(rowContext.SharePercentage(UsageSummary.TotalDurationMs), 1)%</MudText>
+                                                </div>
+                                            </MudTd>
+                                        </RowTemplate>
+                                    </MudTable>
+                                </div>
+                            </div>
                         }
 
                         <!-- Account Section -->
@@ -309,5 +359,60 @@
         public string CurrentPassword { get; set; }
         public string NewPassword { get; set; }
         public string ConfirmPassword { get; set; }
+    }
+
+    private ApiUsageSummary UsageSummary = new ApiUsageSummary
+        {
+            TotalCalls = 142,
+            TotalDurationMs = 24560,
+            Breakdown = new List<UsageBreakdown>
+        {
+            new UsageBreakdown
+            {
+                Name = "Web Dashboard",
+                Calls = 45,
+                TotalDurationMs = 8200,
+                IsToken = false
+            },
+            new UsageBreakdown
+            {
+                Name = "CI/CD Pipeline",
+                Calls = 32,
+                TotalDurationMs = 6800,
+                IsToken = false
+            },
+            new UsageBreakdown
+            {
+                Name = "Mobile App",
+                Calls = 65,
+                TotalDurationMs = 9560,
+                IsToken = true
+            }
+        }
+        };
+
+    private string FormatDuration(long milliseconds)
+    {
+        if (milliseconds < 1000) return $"{milliseconds}ms";
+        return $"{(milliseconds / 1000.0):0.00}s";
+    }
+
+    public class ApiUsageSummary
+    {
+        public int TotalCalls { get; set; }
+        public long TotalDurationMs { get; set; }
+        public List<UsageBreakdown> Breakdown { get; set; } = new();
+    }
+
+    public class UsageBreakdown
+    {
+        public string Name { get; set; }
+        public int Calls { get; set; }
+        public long TotalDurationMs { get; set; }
+        public bool IsToken { get; set; }
+
+        public double SharePercentage(long totalDurationMs) =>
+            TotalDurationMs == 0 ? 0 :
+            Math.Round((TotalDurationMs / (double)(totalDurationMs)) * 100, 1);
     }
 }
