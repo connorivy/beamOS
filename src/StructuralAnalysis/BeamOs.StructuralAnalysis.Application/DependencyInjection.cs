@@ -13,8 +13,7 @@ public static class DependencyInjection
         return services.AddObjectThatImplementInterface<IAssemblyMarkerStructuralAnalysisApplication>(
             typeof(ICommandHandler<,>),
             ServiceLifetime.Scoped,
-            false,
-            true
+            false
         );
     }
 }

@@ -6,7 +6,9 @@
 
 <MudDialog>
     <DialogContent>
-        <SelectionInfoSingleItemComponent ObjectToDisplay="@parameterValues" ObjectName=""></SelectionInfoSingleItemComponent>
+        <MudForm @ref="form" @bind-IsValid="@validationSuccess" @bind-Errors="@errors">
+            <SelectionInfoSingleItemComponent ObjectToDisplay="@parameterValues"></SelectionInfoSingleItemComponent>
+        </MudForm>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
@@ -61,11 +63,15 @@
 
     // private ComplexFieldTypeMarker parameterValues = StructuralApiClientComponent.GetSettableParameterProperties(typeof(CreateModelRequest), null, true);
 
+    private bool validationSuccess;
+    private string[] errors = [];
+    private MudForm form;
+
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
         EditableSelectionInfoFactory selectionInfoFactory = new(new Guid());
-        parameterValues = selectionInfoFactory.Create(null, typeof(CreateModelRequest), "Create Model", true, 0);
+        parameterValues = selectionInfoFactory.Create(null, typeof(CreateModelRequest), "Create Model", true, 1);
     }
 
     private static MethodInfo CreateModel { get; } = typeof(IStructuralAnalysisApiClientV1)
@@ -79,6 +85,13 @@
 
     private async Task HandleSubmit()
     {
+        await this.form.Validate();
+
+        if (!this.validationSuccess)
+        {
+            return;
+        }
+
         var parameterType = typeof(CreateModelRequest);
         object parameterInstance;
         var serialized = JsonSerializer.Serialize(this.parameterValues);

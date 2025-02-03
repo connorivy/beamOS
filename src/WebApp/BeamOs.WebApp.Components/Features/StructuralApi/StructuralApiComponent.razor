@@ -42,14 +42,14 @@ else
             @* <MudText Typo="Typo.body2" Class="mud-text-secondary">@Subtitle</MudText> *@
             <MudDivider Class="mt-1" />
             <MudForm @ref="form" @bind-IsValid="@validationSuccess" @bind-Errors="@errors">
-            <MudExpansionPanels MultiExpansion="true" Outlined="false" Elevation="0" Dense="true" Class="grow overflow-y-auto">
-                @foreach (var selectionInfo in this.State.Value.SelectionInfo ?? [])
-                {
-                    <SelectionInfoSingleItemComponent ObjectToDisplay="@selectionInfo"></SelectionInfoSingleItemComponent>
-                }
-            </MudExpansionPanels>
-        </MudForm>
-        <MudButton OnClick="HandleSubmit" Variant="Variant.Filled" Class="mt-4" Color="Color.Primary">Submit</MudButton>
+                <MudExpansionPanels MultiExpansion="true" Outlined="false" Elevation="0" Dense="true" Class="grow overflow-y-auto">
+                    @foreach (var selectionInfo in this.State.Value.SelectionInfo ?? [])
+                    {
+                        <SelectionInfoSingleItemComponent ObjectToDisplay="@selectionInfo"></SelectionInfoSingleItemComponent>
+                    }
+                </MudExpansionPanels>
+            </MudForm>
+            <MudButton OnClick="HandleSubmit" Variant="Variant.Filled" Class="mt-4" Color="Color.Primary">Submit</MudButton>
         </MudPaper>
     </div>
     @* </MudContainer> *@

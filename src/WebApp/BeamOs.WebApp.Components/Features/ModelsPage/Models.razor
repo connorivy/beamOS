@@ -1,5 +1,6 @@
 @page "/models"
 @using System.Security.Claims
+@using BeamOs.WebApp.Components.Pages
 @using Microsoft.AspNetCore.Authorization
 
 @inherits FluxorComponent
@@ -8,56 +9,50 @@
 
 <AuthorizeView>
     <Authorized>
-        <MudGrid Justify="Justify.Center">
-            <MudItem xs="9">
-                <MudGrid>
-                    <MudItem xs="9">
-                        <MudTextField T="string" Placeholder="Search..." Icon="Icons.Material.Filled.Search" />
-                    </MudItem>
-                    <MudItem xs="3" Class="d-flex justify-end">
-                        <MudButton @onclick="CreateModelDialog" Variant="Variant.Filled" Color="Color.Primary" StartIcon="Icons.Material.Filled.Add">New Project</MudButton>
-                    </MudItem>
-                </MudGrid>
+        <MudContainer MaxWidth="MaxWidth.Large" Class="py-8">
+            <!-- Search Bar and Create Button -->
+            <div class="flex justify-between items-center mb-6">
+                <MudTextField @bind-Value="SearchTerm" Placeholder="Search by model name..." Variant="Variant.Outlined" Class="w-1/2 mr-6" />
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ShowCreateModelDialog">
+                    Create New Model
+                </MudButton>
+            </div>
 
-                <MudGrid>
-                    @foreach (var model in ModelState.Value.ModelResponses)
-                    {
-                        <MudItem xs="12">
-                            <MudCard>
-                                <MudCardHeader>
-                                    <MudText Typo="Typo.h6">@model.Name</MudText>
-                                    <MudMenu Icon="Icons.Material.Filled.MoreVert">
-                                        <MudMenuItem>Option 1</MudMenuItem>
-                                        <MudMenuItem>Option 2</MudMenuItem>
-                                    </MudMenu>
-                                </MudCardHeader>
-                                <MudCardContent>
-                                    @* <img src="@model.Image" alt="Project Image" class="img-fluid"/>
-                                <MudText Typo="Typo.caption">@model.UpdatedDate.ToShortDateString()</MudText> *@
-                                </MudCardContent>
-                                <MudCardActions>
-                                    <MudButton Href="@BeamOs.WebApp.Client.Components.Pages.Editor.GetRelativeUrl(model.Id)" Variant="Variant.Text" Color="Color.Primary">Open</MudButton>
-                                </MudCardActions>
-                            </MudCard>
-                        </MudItem>
-                    }
-                </MudGrid>
-            </MudItem>
-        </MudGrid>
+            <!-- Models Grid -->
+            <MudText Typo="Typo.h4" Class="mb-4">Available Models</MudText>
+            <MudGrid>
+                @foreach (var model in FilteredModels)
+                {
+                    <MudItem xs="12" sm="6" md="4" lg="3" Class="mb-4">
+                        <MudCard Class="h-full">
+                            <MudCardHeader>
+                                <MudText Typo="Typo.h6">@model.Name</MudText>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                <MudText Typo="Typo.body2">@model.Description</MudText>
+                                <MudChip T="string" Color="GetBadgeColor(model.Role)" Variant="Variant.Text" Class="ml-2">
+                                    @model.Role
+                                </MudChip>
+                            </MudCardContent>
+                            <MudCardActions>
+                                <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="@ModelEditor.GetRelativeUrl(model.Id)">
+                                    View
+                                </MudButton>
+                            </MudCardActions>
+                        </MudCard>
+                    </MudItem>
+                }
+            </MudGrid>
+        </MudContainer>
     </Authorized>
     <NotAuthorized>
-        <div class="flex justify-center items-center h-3/6">
-            <MudCard Class="p-4"> 
-                <MudText>
-                    You must 
-                    <MudLink Href="@Login.Href" Underline="Underline.Always">login</MudLink>
-                     to create and view models
-                </MudText>
-                <MudText>
-                    Or you can 
-                    <MudLink Href="@TestExplorer.Href" Underline="Underline.Always">view the test models</MudLink>
-                </MudText>
-            </MudCard>
-        </div>
+        <MudContainer MaxWidth="MaxWidth.Medium" Class="py-8">
+            <MudPaper Class="p-8 text-center">
+                <MudText Typo="Typo.h5" Class="mb-4">You need to log in to view or modify models.</MudText>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="RedirectToLogin">
+                    Log In
+                </MudButton>
+            </MudPaper>
+        </MudContainer>
     </NotAuthorized>
 </AuthorizeView>

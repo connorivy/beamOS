@@ -144,12 +144,12 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfboolean> DirectStiffnessMethodAsync(System.Guid modelId);
+        System.Threading.Tasks.Task<ResultOfboolean> RunDirectStiffnessMethodAsync(System.Guid modelId);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfboolean> DirectStiffnessMethodAsync(System.Guid modelId, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<ResultOfboolean> RunDirectStiffnessMethodAsync(System.Guid modelId, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
@@ -1335,15 +1335,15 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ResultOfboolean> DirectStiffnessMethodAsync(System.Guid modelId)
+        public virtual System.Threading.Tasks.Task<ResultOfboolean> RunDirectStiffnessMethodAsync(System.Guid modelId)
         {
-            return DirectStiffnessMethodAsync(modelId, System.Threading.CancellationToken.None);
+            return RunDirectStiffnessMethodAsync(modelId, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfboolean> DirectStiffnessMethodAsync(System.Guid modelId, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ResultOfboolean> RunDirectStiffnessMethodAsync(System.Guid modelId, System.Threading.CancellationToken cancellationToken)
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");

@@ -1,4 +1,6 @@
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
+using BeamOs.WebApp.Components.Features.Dialogs;
 using Fluxor;
 using Fluxor.Blazor.Web.Components;
 using Microsoft.AspNetCore.Components;
@@ -22,7 +24,19 @@ public partial class Models : FluxorComponent
     private IDispatcher Dispatcher { get; init; }
 
     [Inject]
+    private NavigationManager NavigationManager { get; init; }
+
+    [Inject]
     private IDialogService DialogService { get; init; }
+
+    private string SearchTerm { get; set; } = string.Empty;
+
+    private List<ModelInfoResponse> FilteredModels =>
+        this.ModelState
+            .Value
+            .ModelResponses
+            .Where(model => model.Name.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase))
+            .ToList();
 
     protected override async Task OnInitializedAsync()
     {
@@ -40,7 +54,23 @@ public partial class Models : FluxorComponent
         await base.OnInitializedAsync();
     }
 
-    private Task CreateModelDialog()
+    private void RedirectToLogin()
+    {
+        NavigationManager.NavigateTo("/login");
+    }
+
+    private Color GetBadgeColor(string role)
+    {
+        return role switch
+        {
+            "Owner" => Color.Primary,
+            "Contributor" => Color.Secondary,
+            "Reviewer" => Color.Info,
+            _ => Color.Default
+        };
+    }
+
+    private Task ShowCreateModelDialog()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
 

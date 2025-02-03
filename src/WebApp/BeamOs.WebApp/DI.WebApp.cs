@@ -26,6 +26,7 @@ public static class DI
         });
         services.AddSingleton(typeof(IAssemblyMarkerWebApp).Assembly);
         services.RegisterSharedServices<IAssemblyMarkerWebApp>();
+        services.RegisterSharedServicesConfigurable<IAssemblyMarkerWebApp>();
         services.AddHttpContextAccessor();
         services.AddHttpClient();
         services.AddCascadingAuthenticationState();

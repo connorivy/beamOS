@@ -16,7 +16,8 @@ public record ModelInfoResponse(
     Guid Id,
     string Name,
     string Description,
-    PhysicalModelSettings Settings
+    PhysicalModelSettings Settings,
+    string Role
 ) : IBeamOsEntityResponse;
 
 public record ModelResponse(

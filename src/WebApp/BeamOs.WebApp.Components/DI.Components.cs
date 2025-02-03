@@ -1,7 +1,9 @@
 using BeamOs.Common.Application;
+using BeamOs.WebApp.Components.Features.Auth;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.UndoRedo;
 using Fluxor;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor.Services;
 
@@ -35,6 +37,15 @@ public static class DI
                 }
         );
 #pragma warning restore EXTEXP0018 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+
+        return services;
+    }
+
+    public static IServiceCollection RegisterSharedServicesConfigurable<TAssembly>(
+        this IServiceCollection services
+    )
+    {
+        services.AddSingleton<AuthenticationStateProvider, CustomAuthStateProvider>();
 
         return services;
     }

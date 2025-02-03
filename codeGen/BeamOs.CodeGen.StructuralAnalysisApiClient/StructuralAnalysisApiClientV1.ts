@@ -79,7 +79,7 @@ export interface IStructuralAnalysisApiClientV1 {
     /**
      * @return OK
      */
-    directStiffnessMethod(modelId: string): Promise<ResultOfboolean>;
+    runDirectStiffnessMethod(modelId: string): Promise<ResultOfboolean>;
 
     /**
      * @return OK
@@ -658,7 +658,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     /**
      * @return OK
      */
-    directStiffnessMethod(modelId: string): Promise<ResultOfboolean> {
+    runDirectStiffnessMethod(modelId: string): Promise<ResultOfboolean> {
         let url_ = this.baseUrl + "/api/models/{modelId}/analyze/dsm";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -673,11 +673,11 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDirectStiffnessMethod(_response);
+            return this.processRunDirectStiffnessMethod(_response);
         });
     }
 
-    protected processDirectStiffnessMethod(response: Response): Promise<ResultOfboolean> {
+    protected processRunDirectStiffnessMethod(response: Response): Promise<ResultOfboolean> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -2171,6 +2171,7 @@ export class ModelInfoResponse implements IModelInfoResponse {
     name!: string;
     description!: string;
     settings!: PhysicalModelSettings;
+    role!: string;
 
     [key: string]: any;
 
@@ -2196,6 +2197,7 @@ export class ModelInfoResponse implements IModelInfoResponse {
             this.name = _data["name"];
             this.description = _data["description"];
             this.settings = _data["settings"] ? PhysicalModelSettings.fromJS(_data["settings"]) : new PhysicalModelSettings();
+            this.role = _data["role"];
         }
     }
 
@@ -2216,6 +2218,7 @@ export class ModelInfoResponse implements IModelInfoResponse {
         data["name"] = this.name;
         data["description"] = this.description;
         data["settings"] = this.settings ? this.settings.toJSON() : <any>undefined;
+        data["role"] = this.role;
         return data;
     }
 }
@@ -2225,6 +2228,7 @@ export interface IModelInfoResponse {
     name: string;
     description: string;
     settings: PhysicalModelSettings;
+    role: string;
 
     [key: string]: any;
 }

@@ -8,8 +8,7 @@ public static class DependencyInjection
         this IServiceCollection services,
         Type interfaceType,
         ServiceLifetime serviceLifetime,
-        bool registerAsInterface,
-        bool registerAsBaseType
+        bool registerAsInterface
     )
     {
         IEnumerable<Type> assemblyTypes = typeof(TAssemblyMarker)
@@ -34,8 +33,7 @@ public static class DependencyInjection
                         _ => throw new NotImplementedException(),
                     };
                 }
-
-                if (registerAsBaseType)
+                else
                 {
                     _ = serviceLifetime switch
                     {

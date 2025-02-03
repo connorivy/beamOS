@@ -1,4 +1,4 @@
-﻿using BeamOs.Common.Application;
+using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
@@ -18,7 +18,14 @@ public class GetModelsQueryHandler(StructuralAnalysisDbContext dbContext)
         return await dbContext
             .Models
             .Select(
-                m => new ModelInfoResponse(m.Id, m.Name, m.Description, m.Settings.ToContract())
+                m =>
+                    new ModelInfoResponse(
+                        m.Id,
+                        m.Name,
+                        m.Description,
+                        m.Settings.ToContract(),
+                        "Owner"
+                    )
             )
             .ToListAsync(cancellationToken: ct);
     }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using BeamOs.Common.Application;
 using BeamOs.StructuralAnalysis.Application;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.NodeResults;
@@ -10,6 +11,7 @@ using BeamOs.StructuralAnalysis.Application.PhysicalModel.MomentLoads;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
 using BeamOs.StructuralAnalysis.Infrastructure.AnalyticalResults.NodeResults;
 using BeamOs.StructuralAnalysis.Infrastructure.AnalyticalResults.ResultSets;
 using BeamOs.StructuralAnalysis.Infrastructure.Common;
@@ -47,9 +49,13 @@ public static class DependencyInjection
         services.AddObjectThatImplementInterface<IAssemblyMarkerInfrastructure>(
             typeof(IQueryHandler<,>),
             ServiceLifetime.Scoped,
-            true,
-            true
+            false
         );
+
+        services.AddScoped<
+            IQueryHandler<EmptyRequest, List<ModelInfoResponse>>,
+            GetModelsQueryHandler
+        >();
 
         return services;
     }

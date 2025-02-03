@@ -6,9 +6,7 @@ using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.StructuralApi;
@@ -260,9 +258,9 @@ public record CachedModelState(ImmutableDictionary<Guid, CachedModelResponse> Mo
                 => model
                     .NodeResults
                     .GetValueOrDefault(resultSetId)
-                    .GetValueOrDefault(modelCacheKey.Id),
-            //"Element1d" => model.Element1ds.GetValueOrDefault(modelCacheKey.Id),
-            //"PointLoad" => model.PointLoads.GetValueOrDefault(modelCacheKey.Id),
+                    ?.GetValueOrDefault(modelCacheKey.Id),
+            "Element1d" => null,
+            "PointLoad" => null,
             _
                 => throw new NotImplementedException(
                     $"type {modelCacheKey.TypeName} is not implemented"

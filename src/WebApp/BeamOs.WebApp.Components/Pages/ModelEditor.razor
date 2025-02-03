@@ -39,14 +39,6 @@
         }
     }
 
-    // protected override void OnInitialized()
-    // {
-    //     base.OnInitialized();
-
-    //     this.SubscribeToAction<EditorLoadingEnd>(_ =>
-    //     {
-    //         this.State.Select(s => s.EditorState[this.editorComponent.CanvasId]);
-    //         this.StateHasChanged();
-    //     });
-    // }
+    public static string GetRelativeUrl(Guid guid)
+        => $"/models/{guid}";
 }

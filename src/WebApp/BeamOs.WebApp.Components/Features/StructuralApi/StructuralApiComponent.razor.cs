@@ -3,6 +3,7 @@ using System.Text.Json;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Api;
 using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
@@ -337,7 +338,14 @@ public partial class StructuralApiComponent : FluxorComponent
         {
             return nameof(Model);
         }
-        else if (methodInfo.Name.Contains("OpenSees", StringComparison.Ordinal))
+        else if (methodInfo.Name.Contains(nameof(ResultSet), StringComparison.Ordinal))
+        {
+            return nameof(ResultSet);
+        }
+        else if (
+            methodInfo.Name.Contains("OpenSees", StringComparison.Ordinal)
+            || methodInfo.Name.Contains("DirectStiffness", StringComparison.Ordinal)
+        )
         {
             return nameof(Model);
         }
