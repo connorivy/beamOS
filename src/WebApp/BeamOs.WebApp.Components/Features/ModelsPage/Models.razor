@@ -10,32 +10,47 @@
 <AuthorizeView>
     <Authorized>
         <MudContainer MaxWidth="MaxWidth.Large" Class="py-8">
-            <!-- Search Bar and Create Button -->
-            <div class="flex justify-between items-center mb-6">
-                <MudTextField @bind-Value="SearchTerm" Placeholder="Search by model name..." Variant="Variant.Outlined" Class="w-1/2 mr-6" />
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ShowCreateModelDialog">
-                    Create New Model
-                </MudButton>
+            <!-- Page Header -->
+            <div class="flex justify-between items-center mb-8">
+                <MudText Typo="Typo.h4" Class="font-bold">Models</MudText>
+                <div class="flex items-center gap-4">
+                    <MudTextField @bind-Value="SearchTerm"
+                                  Placeholder="Search models..."
+                                  Variant="Variant.Outlined"
+                                  Adornment="Adornment.Start"
+                                  AdornmentIcon="@Icons.Material.Filled.Search"
+                                  Class="w-64" />
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               StartIcon="@Icons.Material.Filled.Add"
+                               OnClick="ShowCreateModelDialog">
+                        Create Model
+                    </MudButton>
+                </div>
             </div>
 
             <!-- Models Grid -->
-            <MudText Typo="Typo.h4" Class="mb-4">Available Models</MudText>
-            <MudGrid>
+            <MudGrid Spacing="3" Justify="Justify.FlexStart">
                 @foreach (var model in FilteredModels)
                 {
-                    <MudItem xs="12" sm="6" md="4" lg="3" Class="mb-4">
-                        <MudCard Class="h-full">
+                    <MudItem xs="12" sm="6" md="4" lg="3">
+                        <MudCard Class="h-full hover:shadow-lg transition-shadow">
                             <MudCardHeader>
-                                <MudText Typo="Typo.h6">@model.Name</MudText>
+                                <MudAvatar Color="Color.Primary" Class="mr-2">@model.Name[0]</MudAvatar>
+                                <MudText Typo="Typo.h6" Class="font-semibold">@model.Name</MudText>
                             </MudCardHeader>
                             <MudCardContent>
                                 <MudText Typo="Typo.body2">@model.Description</MudText>
-                                <MudChip T="string" Color="GetBadgeColor(model.Role)" Variant="Variant.Text" Class="ml-2">
-                                    @model.Role
-                                </MudChip>
+                                <div class="mt-2">
+                                    <MudChip T="string" Variant="Variant.Text" Color="GetBadgeColor(model.Role)" Class="text-sm">
+                                        @model.Role
+                                    </MudChip>
+                                </div>
                             </MudCardContent>
-                            <MudCardActions>
-                                <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="@ModelEditor.GetRelativeUrl(model.Id)">
+                            <MudCardActions Class="justify-end">
+                                <MudButton Variant="Variant.Text"
+                                           Color="Color.Primary"
+                                           Href="@ModelEditor.GetRelativeUrl(model.Id)">
                                     View
                                 </MudButton>
                             </MudCardActions>
