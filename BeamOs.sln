@@ -85,6 +85,10 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "BeamOs.Tests.StructuralAnal
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.Tests.StructuralAnalysis.Unit", "tests\StructuralAnalysis\BeamOs.Tests.StructuralAnalysis.Unit\BeamOs.Tests.StructuralAnalysis.Unit.csproj", "{8EB56216-5E92-41ED-BF1F-3C14F8C283B9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Identity", "Identity", "{C0012B1E-CA69-4A5A-9238-03F3E4C01D5E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.Identity", "src\Identity\BeamOs.Identity\BeamOs.Identity.csproj", "{7B5E8D5B-6225-4BC2-9C28-269EEF909EB3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -183,6 +187,10 @@ Global
 		{8EB56216-5E92-41ED-BF1F-3C14F8C283B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8EB56216-5E92-41ED-BF1F-3C14F8C283B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8EB56216-5E92-41ED-BF1F-3C14F8C283B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B5E8D5B-6225-4BC2-9C28-269EEF909EB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B5E8D5B-6225-4BC2-9C28-269EEF909EB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B5E8D5B-6225-4BC2-9C28-269EEF909EB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B5E8D5B-6225-4BC2-9C28-269EEF909EB3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -216,6 +224,8 @@ Global
 		{FF3283C0-5E8D-4870-A303-FD0B6A704B12} = {E3119CBF-1995-4C4F-AFF4-C12E4A2CF139}
 		{7CA91BC8-60CB-4F02-9C75-615ECD5B73A3} = {E2A070EF-D8E8-42B4-88A0-3084C89601A4}
 		{8EB56216-5E92-41ED-BF1F-3C14F8C283B9} = {E2A070EF-D8E8-42B4-88A0-3084C89601A4}
+		{C0012B1E-CA69-4A5A-9238-03F3E4C01D5E} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{7B5E8D5B-6225-4BC2-9C28-269EEF909EB3} = {C0012B1E-CA69-4A5A-9238-03F3E4C01D5E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A4E54AF5-719C-45F7-8978-E734B3D3060B}
