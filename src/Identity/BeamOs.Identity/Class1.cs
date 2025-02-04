@@ -9,7 +9,7 @@ public record CreateApiTokenRequest
 public record ApiTokenResponse
 {
     public string Name { get; init; }
-    public DateTime CreatedOn { get; init; }
+    public DateTimeOffset CreatedOn { get; init; }
     public List<string> Scopes { get; init; }
     public string Value { get; init; }
 }
