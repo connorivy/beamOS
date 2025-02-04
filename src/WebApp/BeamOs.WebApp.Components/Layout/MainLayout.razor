@@ -29,15 +29,15 @@
     [Inject]
     IState<MainLayoutState> State { get; init; }
 
-    [Inject]
-    IHttpContextAccessor httpContextAccessor { get; init; }
+    // [Inject]
+    // IHttpContextAccessor httpContextAccessor { get; init; }
 
     private string inputValue = "initial";
     internal static object Drawer = new();
 
     protected override void OnInitialized()
     {
-        var x = httpContextAccessor.HttpContext;
+        // var x = httpContextAccessor.HttpContext;
         base.OnInitialized();
     }
 }

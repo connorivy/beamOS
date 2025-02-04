@@ -69,27 +69,3 @@ public static class DI
 }
 
 public interface IAssemblyMarkerWebApp { }
-
-public class DatabaseSeeder(IServiceProvider serviceProvider) : IHostedService
-{
-    public async Task StartAsync(CancellationToken cancellationToken)
-    {
-        using var scope = serviceProvider.CreateScope();
-        var apiClientV1 = scope
-            .ServiceProvider
-            .GetRequiredService<IStructuralAnalysisApiClientV1>();
-
-        foreach (var modelBuilder in this.ModelFixtures())
-        {
-            await modelBuilder.Build(apiClientV1);
-        }
-    }
-
-    public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
-
-    public IEnumerable<BeamOsModelBuilder> ModelFixtures()
-    {
-        yield return new Kassimali_Example3_8();
-        yield return new Kassimali_Example8_4();
-    }
-}

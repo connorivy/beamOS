@@ -19,6 +19,16 @@ builder
 
 #if DEBUG
 builder.Services.AddOpenApi();
+
+builder
+    .Services
+    .AddCors(options =>
+    {
+        options.AddDefaultPolicy(policy =>
+        {
+            policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+        });
+    });
 #endif
 
 WebApplication app = builder.Build();
@@ -28,6 +38,7 @@ await app.InitializeBeamOsDb();
 #endif
 
 app.MapEndpoints<IAssemblyMarkerStructuralAnalysisApiEndpoints>();
+app.UseCors();
 
 #if DEBUG
 app.MapOpenApi();
