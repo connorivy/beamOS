@@ -1,4 +1,5 @@
 using BeamOs.Common.Application;
+using BeamOs.Identity;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.Identity;
 using BeamOs.WebApp.Components.Features.UndoRedo;
@@ -46,7 +47,8 @@ public static class DI
     )
     {
         services.AddSingleton<AuthenticationStateProvider, CustomAuthStateProvider>();
-
+        services.AddScoped<IUserApiTokenService, ExampleUserApiTokenService>();
+        services.AddScoped<IUserApiUsageService, ExampleUserApiUsageService>();
         return services;
     }
 }

@@ -1,5 +1,6 @@
 @page "/user-settings"
 
+@using BeamOs.Identity
 @using BeamOs.WebApp.Components.Features.Dialogs
 @using MudBlazor
 @using MudBlazor.Services
@@ -53,10 +54,10 @@
 
                             <!-- Create Token Button -->
                             <MudButton Variant="Variant.Filled" 
-                                       Color="Color.Primary" 
-                                       StartIcon="@Icons.Material.Filled.Add"
-                                       OnClick="OpenCreateTokenDialog"
-                                       Class="mb-6">
+                            Color="Color.Primary" 
+                            StartIcon="@Icons.Material.Filled.Add"
+                            OnClick="OpenCreateTokenDialog"
+                            Class="mb-6">
                                 Create New Token
                             </MudButton>
 
@@ -71,7 +72,7 @@
                                         <MudTh>Actions</MudTh>
                                     </HeaderContent>
                                     <RowTemplate Context="rowContext">
-                                            <MudTd DataLabel="Token Name">@rowContext.Name</MudTd>
+                                        <MudTd DataLabel="Token Name">@rowContext.Name</MudTd>
                                         <MudTd DataLabel="Scopes">
                                             @if (rowContext.Scopes.Any())
                                             {
@@ -90,8 +91,8 @@
                                         <MudTd DataLabel="Created On">@rowContext.CreatedOn.ToString("yyyy-MM-dd")</MudTd>
                                         <MudTd DataLabel="Actions">
                                             <MudIconButton Icon="@Icons.Material.Filled.Delete" 
-                                                           Color="Color.Error"
-                                                               OnClick="() => DeleteToken(rowContext.Id)" />
+                                            Color="Color.Error"
+                                            OnClick="() => DeleteToken(rowContext.Name)" />
                                         </MudTd>
                                     </RowTemplate>
                                 </MudTable>
@@ -144,21 +145,21 @@
                                                 @if (rowContext.IsToken)
                                                 {
                                                     <MudChip T="string" Text="Token" Color="Color.Primary" Class="mr-2" />
-                                                    @rowContext.Name
+                                                    @rowContext.ActorName
                                                 }
                                                 else
                                                 {
                                                     <MudChip T="string" Text="Function" Color="Color.Secondary" Class="mr-2" />
-                                                    @rowContext.Name
+                                                    @rowContext.ActorName
                                                 }
                                             </MudTd>
-                                            <MudTd DataLabel="Calls">@rowContext.Calls</MudTd>
+                                            <MudTd DataLabel="Calls">@rowContext.NumCalls</MudTd>
                                             <MudTd DataLabel="Duration">@FormatDuration(rowContext.TotalDurationMs)</MudTd>
                                             <MudTd DataLabel="Share">
                                                 <div class="flex items-center gap-2">
                                                     <MudProgressLinear Value="@rowContext.SharePercentage(UsageSummary.TotalDurationMs)"
-                                                                       Color="Color.Primary" 
-                                                                       Class="w-32" />
+                                                    Color="Color.Primary" 
+                                                    Class="w-32" />
                                                     <MudText>@Math.Round(rowContext.SharePercentage(UsageSummary.TotalDurationMs), 1)%</MudText>
                                                 </div>
                                             </MudTd>
@@ -237,22 +238,32 @@
     [Inject]
     private IDialogService DialogService { get; init; }
 
+    [Inject]
+    private IUserApiUsageService UserApiUsageService { get; init; }
+
+    [Inject]
+    private IUserApiTokenService UserApiTokenService { get; init; }
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
         this.SelectedSectionChanged("Profile");
     }
 
+    private ApiUsageResponse UsageSummary;
+    private List<ApiTokenResponse> ApiTokens;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        UsageSummary = await UserApiUsageService.GetApiUsage();
+        ApiTokens = (await UserApiTokenService.GetTokens()).Value;
+    }
+
     private void SelectedSectionChanged(string section)
     {
         ActiveSection = section;
     }
-
-    private List<ApiToken> ApiTokens = new List<ApiToken>
-    {
-        new ApiToken { Id = 1, Name = "Token 1", CreatedOn = DateTime.Now.AddDays(-5) },
-        new ApiToken { Id = 2, Name = "Token 2", CreatedOn = DateTime.Now.AddDays(-2) }
-    };
 
     private async Task OpenCreateTokenDialog()
     {
@@ -262,18 +273,14 @@
 
         if (!result.Canceled)
         {
-            var newToken = result.Data as ApiToken;
-            ApiTokens.Add(newToken);
+            var newToken = result.Data as CreateApiTokenRequest;
+            await UserApiTokenService.CreateToken(newToken);
         }
     }
 
-    private void DeleteToken(int tokenId)
+    private async Task DeleteToken(string tokenName)
     {
-        var tokenToDelete = ApiTokens.FirstOrDefault(t => t.Id == tokenId);
-        if (tokenToDelete != null)
-        {
-            ApiTokens.Remove(tokenToDelete);
-        }
+        await UserApiTokenService.RevokeToken(tokenName);
     }
 
     private void RedirectToLogin()
@@ -361,58 +368,9 @@
         public string ConfirmPassword { get; set; }
     }
 
-    private ApiUsageSummary UsageSummary = new ApiUsageSummary
-        {
-            TotalCalls = 142,
-            TotalDurationMs = 24560,
-            Breakdown = new List<UsageBreakdown>
-        {
-            new UsageBreakdown
-            {
-                Name = "Web Dashboard",
-                Calls = 45,
-                TotalDurationMs = 8200,
-                IsToken = false
-            },
-            new UsageBreakdown
-            {
-                Name = "CI/CD Pipeline",
-                Calls = 32,
-                TotalDurationMs = 6800,
-                IsToken = false
-            },
-            new UsageBreakdown
-            {
-                Name = "Mobile App",
-                Calls = 65,
-                TotalDurationMs = 9560,
-                IsToken = true
-            }
-        }
-        };
-
     private string FormatDuration(long milliseconds)
     {
         if (milliseconds < 1000) return $"{milliseconds}ms";
         return $"{(milliseconds / 1000.0):0.00}s";
-    }
-
-    public class ApiUsageSummary
-    {
-        public int TotalCalls { get; set; }
-        public long TotalDurationMs { get; set; }
-        public List<UsageBreakdown> Breakdown { get; set; } = new();
-    }
-
-    public class UsageBreakdown
-    {
-        public string Name { get; set; }
-        public int Calls { get; set; }
-        public long TotalDurationMs { get; set; }
-        public bool IsToken { get; set; }
-
-        public double SharePercentage(long totalDurationMs) =>
-            TotalDurationMs == 0 ? 0 :
-            Math.Round((TotalDurationMs / (double)(totalDurationMs)) * 100, 1);
     }
 }

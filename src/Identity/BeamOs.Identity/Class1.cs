@@ -1,5 +1,3 @@
-using BeamOs.Common.Contracts;
-
 namespace BeamOs.Identity;
 
 public record CreateApiTokenRequest
@@ -13,15 +11,7 @@ public record ApiTokenResponse
     public string Name { get; init; }
     public DateTime CreatedOn { get; init; }
     public List<string> Scopes { get; init; }
-}
-
-public interface IUserApiTokenService
-{
-    public Task<Result<ApiTokenResponse>> CreateToken(CreateApiTokenRequest token);
-
-    public Task<Result<List<ApiTokenResponse>>> GetTokens();
-
-    public Task RevokeToken(string tokenName);
+    public string Value { get; init; }
 }
 
 public record ApiUsageResponse
@@ -42,9 +32,4 @@ public record UsageBreakdownResponse
         TotalDurationMs == 0
             ? 0
             : Math.Round((TotalDurationMs / (double)(totalDurationMs)) * 100, 1);
-}
-
-public interface IUserApiUsageService
-{
-    public Task<ApiUsageResponse?> GetApiUsage();
 }
