@@ -1,5 +1,7 @@
+using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Application;
 using BeamOs.Identity;
+using BeamOs.Tests.Common;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.Identity;
 using BeamOs.WebApp.Components.Features.UndoRedo;
@@ -50,6 +52,20 @@ public static class DI
         services.AddScoped<IUserApiTokenService, ExampleUserApiTokenService>();
         services.AddScoped<IUserApiUsageService, ExampleUserApiUsageService>();
         return services;
+    }
+
+    public static async Task InitializeBeamOsData(this IServiceProvider services)
+    {
+        using var scope = services.CreateScope();
+        var apiClient = scope.ServiceProvider.GetRequiredService<IStructuralAnalysisApiClientV1>();
+
+        foreach (var modelBuilder in AllSolvedProblems.ModelFixtures())
+        {
+            if (await modelBuilder.CreateIfDoesntExist(apiClient))
+            {
+                await apiClient.RunOpenSeesAnalysisAsync(modelBuilder.Id);
+            }
+        }
     }
 }
 

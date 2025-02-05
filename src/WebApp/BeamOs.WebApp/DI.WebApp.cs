@@ -46,26 +46,6 @@ public static class DI
 
         return services;
     }
-
-    public static async Task InitializeBeamOsData(this WebApplication app)
-    {
-        if (app.Environment.IsDevelopment())
-        {
-            //Thread.Sleep(5000);
-            using var scope = app.Services.CreateScope();
-            var apiClient = scope
-                .ServiceProvider
-                .GetRequiredService<IStructuralAnalysisApiClientV1>();
-
-            foreach (var modelBuilder in AllSolvedProblems.ModelFixtures())
-            {
-                if (await modelBuilder.CreateIfDoesntExist(apiClient))
-                {
-                    await apiClient.RunOpenSeesAnalysisAsync(modelBuilder.Id);
-                }
-            }
-        }
-    }
 }
 
 public interface IAssemblyMarkerWebApp { }

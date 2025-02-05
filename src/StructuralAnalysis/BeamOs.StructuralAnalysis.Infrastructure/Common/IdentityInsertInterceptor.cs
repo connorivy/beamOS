@@ -13,6 +13,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.Common;
 
@@ -128,66 +129,89 @@ public class ModelEntityIdIncrementingInterceptor : SaveChangesInterceptor
             return await base.SavingChangesAsync(eventData, result, cancellationToken);
         }
 
-        Dictionary<Type, HashSet<int>> entityTypeToTakenIdsDict = [];
-
-        foreach (var entity in addedModelEntities.Where(e => e.GetIntId() != 0))
+        foreach (
+            var entityInfoGroup in addedModelEntities
+                .Select(
+                    e =>
+                        new
+                        {
+                            Entity = e,
+                            Id = e.GetIntId(),
+                            Type = e.GetType()
+                        }
+                )
+                .GroupBy(e => e.Entity.ModelId)
+        )
         {
-            int entityId = entity.GetIntId();
-            if (!entityTypeToTakenIdsDict.TryGetValue(entity.GetType(), out var takenIds))
+            var idResults = await context
+                .Models
+                .Where(m => m.Id == entityInfoGroup.Key)
+                .Select(
+                    m =>
+                        new
+                        {
+                            MaxNodeId = m.Nodes.Max(el => (int?)el.Id) ?? 0,
+                            MaxElement1dId = m.Element1ds.Max(el => (int?)el.Id) ?? 0,
+                            MaxMaterialId = m.Materials.Max(el => (int?)el.Id) ?? 0,
+                            MaxSectionProfileId = m.SectionProfiles.Max(el => (int?)el.Id) ?? 0,
+                            MaxPointLoadId = m.PointLoads.Max(el => (int?)el.Id) ?? 0,
+                            MaxMomentLoadId = m.MomentLoads.Max(el => (int?)el.Id) ?? 0,
+                            MaxResultSetId = m.ResultSets.Max(el => (int?)el.Id) ?? 0,
+                        }
+                )
+                .FirstOrDefaultAsync(cancellationToken);
+
+            idResults ??= new
             {
-                takenIds = new();
-                entityTypeToTakenIdsDict.Add(entity.GetType(), takenIds);
-            }
-
-            if (!takenIds.Add(entityId))
-            {
-                throw new InvalidOperationException(
-                    $"Cannot add multiple entities of type {entity.GetType()} with Id {entityId}"
-                );
-            }
-        }
-
-        var modelId = addedModelEntities[0].ModelId; // todo: assuming same model id for all entities...
-
-        var idResults = await context
-            .Models
-            .Where(m => m.Id == modelId)
-            .Select(
-                m =>
-                    new
-                    {
-                        MaxNodeId = m.Nodes.Max(el => (int?)el.Id) ?? 0,
-                        MaxElement1dId = m.Element1ds.Max(el => (int?)el.Id) ?? 0,
-                        MaxMaterialId = m.Materials.Max(el => (int?)el.Id) ?? 0,
-                        MaxSectionProfileId = m.SectionProfiles.Max(el => (int?)el.Id) ?? 0,
-                        MaxPointLoadId = m.PointLoads.Max(el => (int?)el.Id) ?? 0,
-                        MaxMomentLoadId = m.MomentLoads.Max(el => (int?)el.Id) ?? 0,
-                        MaxResultSetId = m.ResultSets.Max(el => (int?)el.Id) ?? 0,
-                    }
-            )
-            .FirstAsync(cancellationToken);
-
-        Dictionary<Type, int> entityTypeToMaxIdDict =
-            new()
-            {
-                { typeof(Node), idResults.MaxNodeId },
-                { typeof(Element1d), idResults.MaxElement1dId },
-                { typeof(Material), idResults.MaxMaterialId },
-                { typeof(SectionProfile), idResults.MaxSectionProfileId },
-                { typeof(PointLoad), idResults.MaxPointLoadId },
-                { typeof(MomentLoad), idResults.MaxMomentLoadId },
-                { typeof(ResultSet), idResults.MaxResultSetId },
+                MaxNodeId = 0,
+                MaxElement1dId = 0,
+                MaxMaterialId = 0,
+                MaxSectionProfileId = 0,
+                MaxPointLoadId = 0,
+                MaxMomentLoadId = 0,
+                MaxResultSetId = 0,
             };
 
-        foreach (var entity in addedModelEntities.Where(e => e.GetIntId() == 0))
-        {
-            Debug.Assert(entityTypeToMaxIdDict.ContainsKey(entity.GetType()));
+            Dictionary<Type, int> entityTypeToMaxIdDict =
+                new()
+                {
+                    { typeof(Node), idResults.MaxNodeId },
+                    { typeof(Element1d), idResults.MaxElement1dId },
+                    { typeof(Material), idResults.MaxMaterialId },
+                    { typeof(SectionProfile), idResults.MaxSectionProfileId },
+                    { typeof(PointLoad), idResults.MaxPointLoadId },
+                    { typeof(MomentLoad), idResults.MaxMomentLoadId },
+                    { typeof(ResultSet), idResults.MaxResultSetId },
+                };
 
-            ref int maxId = ref CollectionsMarshal.GetValueRefOrNullRef(
-                entityTypeToMaxIdDict,
-                entity.GetType()
-            );
-            entity.SetIntId(++maxId);
+            Dictionary<Type, HashSet<int>> entityTypeToTakenIdsDict = entityInfoGroup
+                .GroupBy(i => i.Type)
+                .ToDictionary(info => info.Key, info => info.Select(i => i.Id).ToHashSet());
+
+            foreach (
+                var entityInfoByType in entityInfoGroup
+                    .Where(info => info.Id == 0)
+                    .GroupBy(info => info.Type)
+            )
+            {
+                var entityType = entityInfoByType.Key;
+                Debug.Assert(entityTypeToMaxIdDict.ContainsKey(entityType));
+
+                ref int maxId = ref CollectionsMarshal.GetValueRefOrNullRef(
+                    entityTypeToMaxIdDict,
+                    entityType
+                );
+
+                HashSet<int>? takenIds = entityTypeToTakenIdsDict.GetValueOrDefault(entityType);
+                foreach (var entityInfo in entityInfoByType)
+                {
+                    while (takenIds?.Contains(++maxId) ?? false)
+                    {
+                        // do nothing
+                    }
+                    entityInfo.Entity.SetIntId(maxId);
+                }
+            }
         }
 
         return result;

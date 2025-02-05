@@ -84,6 +84,7 @@ public class EndToEndTests
     }
 
     [Test]
+    [DependsOn(nameof(CreateNode_WithNoSpecifiedId_ShouldCreateNode_AndGiveAnId))]
     public async Task CreateNode_WithIdOf5_ShouldCreateNode_WithCorrectId()
     {
         CreateNodeRequest createNodeRequestBody =

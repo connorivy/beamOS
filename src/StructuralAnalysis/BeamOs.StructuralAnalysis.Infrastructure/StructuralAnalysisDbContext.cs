@@ -1,4 +1,5 @@
 using BeamOs.Common.Domain.Models;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models.Mappers;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.NodeResultAggregate;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
@@ -8,6 +9,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
+using BeamOs.Tests.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure;
@@ -54,5 +56,23 @@ public class StructuralAnalysisDbContext : DbContext
         //    .ForEach(
         //        p => p.ValueGenerated = Microsoft.EntityFrameworkCore.Metadata.ValueGenerated.Never
         //    );
+    }
+
+    public async Task SeedTestModels()
+    {
+        foreach (var modelBuilder in AllSolvedProblems.ModelFixtures())
+        {
+            BeamOsModelBuilderDomainMapper mapper = new(modelBuilder.Id);
+            ModelId typedId = new(modelBuilder.Id);
+
+            if (await this.Models.AnyAsync(x => x.Id == typedId))
+            {
+                continue;
+            }
+
+            var model = mapper.ToDomain(modelBuilder);
+            this.Models.Add(model);
+        }
+        await this.SaveChangesAsync();
     }
 }
