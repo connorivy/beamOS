@@ -1,6 +1,8 @@
+@using BeamOs.Identity
 @using Fluxor
 @using Microsoft.AspNetCore.Components.Authorization
 @using MudBlazor
+@using System.Security.Claims
 @* @using BeamOs.Common.Identity *@
 @* @using BeamOs.WebApp.Client.Components.Components *@
 @* @using BeamOs.WebApp.Client.Components.Features.Styles *@
@@ -46,7 +48,24 @@
         <MudIconButton Target="_blank" Href="https://github.com/connorivy/beamOS" Icon="@Icons.Custom.Brands.GitHub" Edge="Edge.Start" />
         <AuthorizeView>
             <Authorized>
-                <MudLink OnClick="LogoutUser" >Log Out @context.User.Identity?.Name</MudLink>
+                <MudMenu>
+                    <ActivatorContent>
+                        <MudAvatar Color="Color.Primary">
+                            @if (context.User.Claims.Where(c => c.Type == "picture").FirstOrDefault() is Claim claim)
+                            {
+                                <MudImage Src="@claim.Value" Alt="@context.User.Identity?.Name"></MudImage>
+                            }
+                            else
+                            {
+                                @context.User.Identity?.Name[0]
+                            }
+                        </MudAvatar>
+                    </ActivatorContent>
+                    <ChildContent>
+                        <MudMenuItem Href="/user-settings">Settings</MudMenuItem>
+                        <MudMenuItem OnClick="LogoutUser">Log Out</MudMenuItem>
+                    </ChildContent>
+                </MudMenu>
                 @* <MudLink Href="@logoutRef">Log Out @context.User.Identity?.Name</MudLink> *@
             </Authorized>
             <NotAuthorized>
@@ -75,6 +94,9 @@
     //     await IsDarkModeChanged.InvokeAsync(value);
     // }
 
+    [Inject]
+    private AuthenticationStateProvider AuthenticationStateProvider { get; init; }
+
     private void ToggleDarkMode(bool value)
     {
         Dispatcher.Dispatch(new ToggleDarkMode());
@@ -93,7 +115,7 @@
 
     private async Task LogoutUser()
     {
-        // await ((IAuthStateProvider)AuthenticationStateProvider).Logout();
+        await ((IAuthStateProvider)AuthenticationStateProvider).Logout();
     }
 
     private void OnLocationChanged(object? sender, LocationChangedEventArgs e)

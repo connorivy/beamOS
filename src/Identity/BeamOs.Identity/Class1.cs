@@ -33,3 +33,9 @@ public record UsageBreakdownResponse
             ? 0
             : Math.Round((TotalDurationMs / (double)(totalDurationMs)) * 100, 1);
 }
+
+public interface IAuthStateProvider
+{
+    public Task Login(string accessToken);
+    public Task Logout();
+}

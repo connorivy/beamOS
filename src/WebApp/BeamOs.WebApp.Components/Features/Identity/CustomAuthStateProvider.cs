@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using System.Text.Json;
+using BeamOs.Identity;
 //using BeamOs.Common.Identity;
 using Microsoft.AspNetCore.Components.Authorization;
 
@@ -7,8 +8,8 @@ namespace BeamOs.WebApp.Components.Features.Identity;
 
 public class CustomAuthStateProvider
     : AuthenticationStateProvider,
-        IHostEnvironmentAuthenticationStateProvider
-//IAuthStateProvider
+        IHostEnvironmentAuthenticationStateProvider,
+        IAuthStateProvider
 {
     private static readonly AuthenticationState UnauthenticatedState = new(new ClaimsPrincipal());
 
