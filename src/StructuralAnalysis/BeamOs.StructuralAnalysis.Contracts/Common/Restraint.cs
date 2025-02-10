@@ -35,6 +35,7 @@ public readonly record struct Restraint
     public static Restraint FreeXzPlane { get; } = new(true, false, true, false, true, false);
     public static Restraint FreeXyPlane { get; } = new(true, true, false, false, false, true);
     public static Restraint Pinned { get; } = new(false, false, false, true, true, true);
+    public static Restraint PinnedXyPlane { get; } = new(false, false, false, false, false, true);
     public static Restraint Fixed { get; } = new(false, false, false, false, false, false);
 }
 

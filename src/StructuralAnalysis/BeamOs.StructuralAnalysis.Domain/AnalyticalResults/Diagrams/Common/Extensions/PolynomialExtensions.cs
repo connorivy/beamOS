@@ -31,4 +31,13 @@ public static class PolynomialExtensions
             _ => throw new ArgumentNullException($"Unsupported polynomial degree, {poly.Degree}"),
         };
     }
+
+    public static double SafeEvaluate(this Polynomial poly, double x)
+    {
+        if (poly.Degree == -1)
+        {
+            return 0;
+        }
+        return poly.Evaluate(x);
+    }
 }

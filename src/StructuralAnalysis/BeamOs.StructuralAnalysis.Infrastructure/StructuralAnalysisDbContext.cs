@@ -1,5 +1,8 @@
 using BeamOs.Common.Domain.Models;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models.Mappers;
+using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.Common;
+using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.MomentDiagramAggregate;
+using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.ShearForceDiagramAggregate;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.NodeResultAggregate;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
@@ -34,6 +37,9 @@ public class StructuralAnalysisDbContext : DbContext
     public DbSet<NodeResult> NodeResults { get; set; }
     public DbSet<PointLoad> PointLoads { get; set; }
     public DbSet<MomentLoad> MomentLoads { get; set; }
+    public DbSet<ShearForceDiagram> ShearForceDiagrams { get; set; }
+    public DbSet<MomentDiagram> MomentDiagrams { get; set; }
+    public DbSet<MomentDiagramConsistentInterval> MomentDiagramConsistentIntervals { get; set; }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {

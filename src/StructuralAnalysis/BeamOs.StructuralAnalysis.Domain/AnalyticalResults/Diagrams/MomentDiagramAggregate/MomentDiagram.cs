@@ -101,8 +101,8 @@ public sealed class MomentDiagram : DiagramBase<MomentDiagramId, MomentDiagramCo
 
         var db = shearForceDiagram
             .Integrate()
-            .AddPointLoads([.. pointValues])
-            //.ApplyIntegrationBoundaryConditions(1, startPointValue)
+            .AddPointLoads(endPointValue)
+            .ApplyIntegrationBoundaryConditions(1, startPointValue)
             .Build();
 
         var origin = new Point3D(

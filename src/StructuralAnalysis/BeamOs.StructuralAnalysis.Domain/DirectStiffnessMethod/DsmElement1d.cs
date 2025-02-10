@@ -81,6 +81,13 @@ public class DsmElement1d(
     public NodeId StartNodeId { get; } = startNodeId;
     public NodeId EndNodeId { get; } = endNodeId;
 
+    public (Length x, Length y, Length z) GetPointAlongBeam(double percentage) =>
+        (
+            this.StartPoint.X + (this.EndPoint.X - this.StartPoint.X) * percentage,
+            this.StartPoint.Y + (this.EndPoint.Y - this.StartPoint.Y) * percentage,
+            this.StartPoint.Z + (this.EndPoint.Z - this.StartPoint.Z) * percentage
+        );
+
     public IEnumerable<UnsupportedStructureDisplacementId2> GetUnsupportedStructureDisplacementIds()
     {
         for (var i = 0; i < 2; i++)

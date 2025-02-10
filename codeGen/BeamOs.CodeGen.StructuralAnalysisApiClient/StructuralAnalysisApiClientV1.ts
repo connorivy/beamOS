@@ -89,6 +89,11 @@ export interface IStructuralAnalysisApiClientV1 {
     /**
      * @return OK
      */
+    deleteAllResultSets(modelId: string): Promise<ResultOfint>;
+
+    /**
+     * @return OK
+     */
     getNodeResult(modelId: string, resultSetId: number, id: number): Promise<ResultOfNodeResultResponse>;
 }
 
@@ -736,6 +741,46 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             });
         }
         return Promise.resolve<ResultOfResultSetResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    deleteAllResultSets(modelId: string): Promise<ResultOfint> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/result-sets";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeleteAllResultSets(_response);
+        });
+    }
+
+    protected processDeleteAllResultSets(response: Response): Promise<ResultOfint> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfint.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfint>(null as any);
     }
 
     /**

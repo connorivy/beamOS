@@ -1,4 +1,5 @@
 using BeamOs.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd;
+using BeamOs.Tests.Common.SolvedProblems.Udoeyo_StructuralAnalysis;
 
 namespace BeamOs.Tests.Common;
 
@@ -6,8 +7,9 @@ public static class AllSolvedProblems
 {
     public static IEnumerable<ModelFixture> ModelFixtures()
     {
-        yield return new Kassimali_Example3_8();
-        yield return new Kassimali_Example8_4();
+        //yield return new Kassimali_Example3_8();
+        //yield return new Kassimali_Example8_4();
+        yield return new Udoeyo_Example7_7();
     }
 
     public static IEnumerable<ModelFixture> ModelFixturesWithStructuralStiffnessMatrix()

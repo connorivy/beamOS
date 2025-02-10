@@ -27,6 +27,15 @@ public class Point : BeamOSValueObject
     public static Point operator -(Point lhs, Point rhs) =>
         new(lhs.X - rhs.X, lhs.Y - rhs.Y, rhs.Z - rhs.Z);
 
+    public double CalculateDistance(Length x1, Length y1, Length z1)
+    {
+        return Math.Sqrt(
+            Math.Pow(this.X.Meters - x1.Meters, 2)
+                + Math.Pow(this.Y.Meters - y1.Meters, 2)
+                + Math.Pow(this.Z.Meters - z1.Meters, 2)
+        );
+    }
+
     protected override IEnumerable<object> GetEqualityComponents()
     {
         yield return this.X;

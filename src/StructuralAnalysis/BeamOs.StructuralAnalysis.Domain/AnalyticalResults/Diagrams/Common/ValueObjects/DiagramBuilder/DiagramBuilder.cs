@@ -1,5 +1,7 @@
+using System.Security.Cryptography.X509Certificates;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.Common;
+using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.Common.Extensions;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using UnitsNet;
@@ -64,10 +66,10 @@ public class DiagramBuilder
 
     private List<DiagramConsistentInterval> BuildConsistentIntervals()
     {
-        List<DiagramConsistentInterval> intervals =
-        [
-            new(new Length(0, this.lengthUnit), this.elementLength, new())
-        ];
+        //List<DiagramConsistentInterval> intervals =
+        //[
+        //    new(new Length(0, this.lengthUnit), this.elementLength, new Polynomial(0.0))
+        //];
 
         var orderedLengths = this.pointValues
             .Select(pv => pv.Location)
@@ -76,12 +78,27 @@ public class DiagramBuilder
             .Concat(this.previousDiagramIntervals.Select(i => i.StartLocation))
             .Concat(this.previousDiagramIntervals.Select(i => i.EndLocation))
             .Distinct()
-            .OrderBy(l => l.As(this.lengthUnit));
+            .OrderBy(l => l.As(this.lengthUnit))
+            .ToList();
 
-        foreach (var point in orderedLengths)
+        orderedLengths.Insert(0, new Length(0, this.lengthUnit));
+        orderedLengths.Add(this.elementLength);
+
+        Length previousLength = orderedLengths[0];
+        List<DiagramConsistentInterval> intervals = [];
+        for (int i = 1; i < orderedLengths.Count; i++)
         {
-            InsertPointInIntervals(intervals, point);
+            var currentPoint = orderedLengths[i];
+            intervals.Add(
+                new DiagramConsistentInterval(previousLength, currentPoint, Polynomial.Zero)
+            );
+            previousLength = currentPoint;
         }
+
+        //foreach (var point in orderedLengths)
+        //{
+        //    InsertPointInIntervals(intervals, point);
+        //}
 
         foreach (var pointValue in this.pointValues)
         {
@@ -143,19 +160,37 @@ public class DiagramBuilder
         double value
     )
     {
-        var intervalIndex = intervals.FindIndex(
-            i => i.StartLocation.Equals(startLocation, this.equalityTolerance)
-        );
-
-        if (intervalIndex < 0)
-        {
-            throw new Exception($"Could not find interval with start location {startLocation}");
-        }
+        var intervalIndex = GetIndexOfIntervalWithStartLocation(intervals, startLocation);
 
         foreach (var interval in intervals.Skip(intervalIndex))
         {
             interval.Polynomial += value;
         }
+    }
+
+    private int GetIndexOfIntervalWithStartLocation(
+        List<DiagramConsistentInterval> intervals,
+        Length location
+    )
+    {
+        var intervalIndex = intervals.FindIndex(
+            i => i.StartLocation.Equals(location, this.equalityTolerance)
+        );
+
+        if (intervalIndex < 0)
+        {
+            throw new Exception($"Could not find interval with start location {location}");
+        }
+
+        if (
+            location < this.equalityTolerance
+            && intervals[intervalIndex].Length < this.equalityTolerance
+        )
+        {
+            intervalIndex++;
+        }
+
+        return intervalIndex;
     }
 
     private void AddDistributedValue(
@@ -165,19 +200,8 @@ public class DiagramBuilder
         Polynomial polynomialValue
     )
     {
-        var startIntervalIndex = intervals.FindIndex(
-            i => i.StartLocation.Equals(startLocation, this.equalityTolerance)
-        );
-        var endIntervalIndex = intervals.FindIndex(
-            i => i.StartLocation.Equals(endLocation, this.equalityTolerance)
-        );
-
-        if (startIntervalIndex < 0 || endIntervalIndex < 0)
-        {
-            throw new Exception(
-                $"Could not find interval with start location {startLocation} or {endLocation}"
-            );
-        }
+        var startIntervalIndex = GetIndexOfIntervalWithStartLocation(intervals, startLocation);
+        var endIntervalIndex = GetIndexOfIntervalWithStartLocation(intervals, endLocation);
 
         var integrated = polynomialValue.Integrate();
         double boundedIntegral = 0;
@@ -302,7 +326,8 @@ public class DiagramBuilder
         var containingIntervals = this.GetContainingIntervals(intervals, location).ToList();
         var valInFirstInterval = containingIntervals[0]
             .Polynomial
-            .Evaluate(location.As(this.lengthUnit));
+            .SafeEvaluate(location.As(this.lengthUnit));
+
         if (containingIntervals.Count > 1)
         {
             if (containingIntervals.Count > 2)
@@ -312,7 +337,7 @@ public class DiagramBuilder
 
             var valInLastInterval = containingIntervals[1]
                 .Polynomial
-                .Evaluate(location.As(this.lengthUnit));
+                .SafeEvaluate(location.As(this.lengthUnit));
             if (
                 Math.Abs(valInFirstInterval - valInLastInterval)
                 > this.equalityTolerance.As(this.lengthUnit)

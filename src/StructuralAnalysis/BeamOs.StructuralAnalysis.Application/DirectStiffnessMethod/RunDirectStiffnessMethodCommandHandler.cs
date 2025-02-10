@@ -26,6 +26,8 @@ public class RunDirectStiffnessMethodCommandHandler(
             nameof(Model.Element1ds),
             $"{nameof(Model.Element1ds)}.{nameof(Element1d.SectionProfile)}",
             $"{nameof(Model.Element1ds)}.{nameof(Element1d.Material)}",
+            $"{nameof(Model.Element1ds)}.{nameof(Element1d.StartNode)}",
+            $"{nameof(Model.Element1ds)}.{nameof(Element1d.EndNode)}",
             $"{nameof(Model.Nodes)}.{nameof(Node.PointLoads)}",
             $"{nameof(Model.Nodes)}.{nameof(Node.MomentLoads)}"
         );

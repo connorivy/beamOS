@@ -79,6 +79,10 @@ public class ShearDiagramConsistentInterval : DiagramConsistentInterval
             diagramConsistentInterval.Polynomial,
             diagramConsistentInterval.Id
         ) { }
+
+    [Obsolete("EF Core Constructor", true)]
+    public ShearDiagramConsistentInterval()
+        : base(default, default, default) { }
 }
 
 public class MomentDiagramConsistentInterval : DiagramConsistentInterval
@@ -108,4 +112,8 @@ public class MomentDiagramConsistentInterval : DiagramConsistentInterval
             diagramConsistentInterval.Polynomial,
             diagramConsistentInterval.Id
         ) { }
+
+    [Obsolete("EF Core Constructor", true)]
+    public MomentDiagramConsistentInterval()
+        : base(default, default, default) { }
 }
