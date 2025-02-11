@@ -9,6 +9,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
+using BeamOs.WebApp.Components.Features.ApiResponseHandlers;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.StructuralApi;
 using BeamOs.WebApp.Components.Features.UndoRedo;
@@ -132,6 +133,22 @@ public partial class EditorComponent(
             }
         });
 
+        this.SubscribeToAction<AnalyticalResultsCreated>(async command =>
+        {
+            var stateSnapshot = state.Value;
+            if (
+                stateSnapshot.EditorApi is null
+                || command.AnalyticalResults.ModelId != stateSnapshot.LoadedModelId
+            )
+            {
+                return;
+            }
+
+            await stateSnapshot
+                .EditorApi
+                .SetGlobalStressesAsync(command.AnalyticalResults.GlobalStresses);
+        });
+
         dispatcher.Dispatch(new EditorCreated(this.CanvasId));
     }
 
@@ -194,7 +211,7 @@ public partial class EditorComponent(
     {
         cachedModelState.Value.Models.TryGetValue(this.ModelId.Value, out var model);
         //await state.Value.EditorApi.CreateDeflectionDiagramsAsync(model.DeflectionDiagrams.Values);
-        await state.Value.EditorApi.CreateMomentDiagramsAsync(model.MomentDiagrams.Values);
+        await state.Value.EditorApi.CreateDeflectionDiagramsAsync(model.DeflectionDiagrams.Values);
     }
 
     public async Task Clear() => await state.Value.EditorApi.ClearAsync();

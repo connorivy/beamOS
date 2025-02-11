@@ -227,7 +227,13 @@ public partial class StructuralApiComponent : FluxorComponent
             result = ((dynamic)resultContract).Value;
         }
 
-        if (result is IModelEntity modelEntity)
+        if (result is AnalyticalResultsResponse analyticalResults)
+        {
+            this.Dispatcher.Dispatch(
+                new AnalyticalResultsCreated() { AnalyticalResults = analyticalResults }
+            );
+        }
+        else if (result is IModelEntity modelEntity)
         {
             if (state.SelectedMethod.Value.Http == Http.Delete)
             {
@@ -246,16 +252,6 @@ public partial class StructuralApiComponent : FluxorComponent
                     new ModelEntityCreated() { ModelEntity = modelEntity, HandledByServer = true }
                 );
             }
-        }
-        if (result is DiagramResponse diagramResponse)
-        {
-            this.Dispatcher.Dispatch(
-                new DiagramResponseCreated()
-                {
-                    ModelId = new(this.ModelId),
-                    DiagramResponse = diagramResponse
-                }
-            );
         }
 
         //if (result is BeamOsEntityContractBase contract)

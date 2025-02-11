@@ -18,9 +18,9 @@ public class RunDirectStiffnessMethodCommandHandler(
     IResultSetRepository resultSetRepository,
     IStructuralAnalysisUnitOfWork unitOfWork,
     ILogger<RunDirectStiffnessMethodCommandHandler> logger
-) : ICommandHandler<RunDsmCommand, DiagramResponse>
+) : ICommandHandler<RunDsmCommand, AnalyticalResultsResponse>
 {
-    public async Task<Result<DiagramResponse>> ExecuteAsync(
+    public async Task<Result<AnalyticalResultsResponse>> ExecuteAsync(
         RunDsmCommand command,
         CancellationToken ct = default
     )
@@ -70,7 +70,7 @@ public class RunDirectStiffnessMethodCommandHandler(
 
         await unitOfWork.SaveChangesAsync(ct);
 
-        return analysisResults.DiagramResult.Map();
+        return analysisResults.OtherAnalyticalResults.Map();
     }
 
     private static UnitSettings GetUnitSettings(string unitsOverride) =>
@@ -99,5 +99,5 @@ public readonly struct RunDsmCommand : IHasModelId
 [UseStaticMapper(typeof(UnitsNetMappers))]
 public static partial class DiagramToResponseMapper
 {
-    public static partial DiagramResponse Map(this DiagramResult diagram);
+    public static partial AnalyticalResultsResponse Map(this OtherAnalyticalResults diagram);
 }

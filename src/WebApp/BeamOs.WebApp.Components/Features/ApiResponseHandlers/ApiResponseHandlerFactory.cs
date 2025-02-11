@@ -96,8 +96,7 @@ public interface IApiResponseHandler<T> : IApiResponseHandler
 //    }
 //}
 
-public readonly record struct DiagramResponseCreated
+public readonly record struct AnalyticalResultsCreated
 {
-    public required ModelId ModelId { get; init; }
-    public required DiagramResponse DiagramResponse { get; init; }
+    public required AnalyticalResultsResponse AnalyticalResults { get; init; }
 }

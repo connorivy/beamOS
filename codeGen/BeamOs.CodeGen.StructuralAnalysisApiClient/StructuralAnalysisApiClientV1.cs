@@ -94,7 +94,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfDiagramResponse> RunDirectStiffnessMethodAsync(System.Guid modelId, string unitsOverride = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ResultOfAnalyticalResultsResponse> RunDirectStiffnessMethodAsync(System.Guid modelId, string unitsOverride = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
@@ -1187,7 +1187,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfDiagramResponse> RunDirectStiffnessMethodAsync(System.Guid modelId, string unitsOverride = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ResultOfAnalyticalResultsResponse> RunDirectStiffnessMethodAsync(System.Guid modelId, string unitsOverride = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -1240,7 +1240,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfDiagramResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfAnalyticalResultsResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);

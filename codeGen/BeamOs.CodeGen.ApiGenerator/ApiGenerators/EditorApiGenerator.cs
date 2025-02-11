@@ -51,7 +51,7 @@ public class EditorApiGenerator : AbstractGenerator
 
         _ = addMethod("SetSettings").Accepts<PhysicalModelSettings>();
 
-        //_ = addMethod("SetModelResults").Accepts<AnalyticalResultsResponse>();
+        _ = addMethod("SetGlobalStresses").Accepts<GlobalStresses>();
 
         _ = addMethod("Clear");
 

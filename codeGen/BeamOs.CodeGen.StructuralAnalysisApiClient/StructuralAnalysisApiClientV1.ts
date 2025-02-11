@@ -80,7 +80,7 @@ export interface IStructuralAnalysisApiClientV1 {
      * @param unitsOverride (optional) 
      * @return OK
      */
-    runDirectStiffnessMethod(modelId: string, unitsOverride: string | undefined): Promise<ResultOfDiagramResponse>;
+    runDirectStiffnessMethod(modelId: string, unitsOverride: string | undefined): Promise<ResultOfAnalyticalResultsResponse>;
 
     /**
      * @return OK
@@ -665,7 +665,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @param unitsOverride (optional) 
      * @return OK
      */
-    runDirectStiffnessMethod(modelId: string, unitsOverride: string | undefined): Promise<ResultOfDiagramResponse> {
+    runDirectStiffnessMethod(modelId: string, unitsOverride: string | undefined): Promise<ResultOfAnalyticalResultsResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/analyze/dsm?";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -688,14 +688,14 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processRunDirectStiffnessMethod(response: Response): Promise<ResultOfDiagramResponse> {
+    protected processRunDirectStiffnessMethod(response: Response): Promise<ResultOfAnalyticalResultsResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfDiagramResponse.fromJS(resultData200);
+            result200 = ResultOfAnalyticalResultsResponse.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -703,7 +703,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfDiagramResponse>(null as any);
+        return Promise.resolve<ResultOfAnalyticalResultsResponse>(null as any);
     }
 
     /**
@@ -880,6 +880,98 @@ export class AnalysisSettingsContract implements IAnalysisSettingsContract {
 
 export interface IAnalysisSettingsContract {
     element1DAnalysisType?: number;
+
+    [key: string]: any;
+}
+
+export class AnalyticalResultsResponse implements IAnalyticalResultsResponse {
+    shearDiagrams?: ShearDiagramResponse[];
+    momentDiagrams?: MomentDiagramResponse[];
+    deflectionDiagrams?: DeflectionDiagramResponse[];
+    globalStresses?: GlobalStresses;
+    id!: number;
+    modelId!: string;
+
+    [key: string]: any;
+
+    constructor(data?: IAnalyticalResultsResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            if (Array.isArray(_data["shearDiagrams"])) {
+                this.shearDiagrams = [] as any;
+                for (let item of _data["shearDiagrams"])
+                    this.shearDiagrams!.push(ShearDiagramResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["momentDiagrams"])) {
+                this.momentDiagrams = [] as any;
+                for (let item of _data["momentDiagrams"])
+                    this.momentDiagrams!.push(MomentDiagramResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["deflectionDiagrams"])) {
+                this.deflectionDiagrams = [] as any;
+                for (let item of _data["deflectionDiagrams"])
+                    this.deflectionDiagrams!.push(DeflectionDiagramResponse.fromJS(item));
+            }
+            this.globalStresses = _data["globalStresses"] ? GlobalStresses.fromJS(_data["globalStresses"]) : <any>undefined;
+            this.id = _data["id"];
+            this.modelId = _data["modelId"];
+        }
+    }
+
+    static fromJS(data: any): AnalyticalResultsResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new AnalyticalResultsResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        if (Array.isArray(this.shearDiagrams)) {
+            data["shearDiagrams"] = [];
+            for (let item of this.shearDiagrams)
+                data["shearDiagrams"].push(item.toJSON());
+        }
+        if (Array.isArray(this.momentDiagrams)) {
+            data["momentDiagrams"] = [];
+            for (let item of this.momentDiagrams)
+                data["momentDiagrams"].push(item.toJSON());
+        }
+        if (Array.isArray(this.deflectionDiagrams)) {
+            data["deflectionDiagrams"] = [];
+            for (let item of this.deflectionDiagrams)
+                data["deflectionDiagrams"].push(item.toJSON());
+        }
+        data["globalStresses"] = this.globalStresses ? this.globalStresses.toJSON() : <any>undefined;
+        data["id"] = this.id;
+        data["modelId"] = this.modelId;
+        return data;
+    }
+}
+
+export interface IAnalyticalResultsResponse {
+    shearDiagrams?: ShearDiagramResponse[];
+    momentDiagrams?: MomentDiagramResponse[];
+    deflectionDiagrams?: DeflectionDiagramResponse[];
+    globalStresses?: GlobalStresses;
+    id: number;
+    modelId: string;
 
     [key: string]: any;
 }
@@ -1599,6 +1691,73 @@ export interface ICreateSectionProfileRequest {
     [key: string]: any;
 }
 
+export class DeflectionDiagramResponse implements IDeflectionDiagramResponse {
+    element1dId!: number;
+    numSteps!: number;
+    offsets!: number[];
+
+    [key: string]: any;
+
+    constructor(data?: IDeflectionDiagramResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.offsets = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.element1dId = _data["element1dId"];
+            this.numSteps = _data["numSteps"];
+            if (Array.isArray(_data["offsets"])) {
+                this.offsets = [] as any;
+                for (let item of _data["offsets"])
+                    this.offsets!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): DeflectionDiagramResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeflectionDiagramResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["element1dId"] = this.element1dId;
+        data["numSteps"] = this.numSteps;
+        if (Array.isArray(this.offsets)) {
+            data["offsets"] = [];
+            for (let item of this.offsets)
+                data["offsets"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IDeflectionDiagramResponse {
+    element1dId: number;
+    numSteps: number;
+    offsets: number[];
+
+    [key: string]: any;
+}
+
 export class DiagramConsistentIntervalResponse implements IDiagramConsistentIntervalResponse {
     startLocation!: LengthContract;
     endLocation!: LengthContract;
@@ -1733,146 +1892,6 @@ export interface IDiagramConsistentIntervalResponse2 {
     startLocation: LengthContract;
     endLocation: LengthContract;
     polynomialCoefficients: number[];
-
-    [key: string]: any;
-}
-
-export class DiagramResponse implements IDiagramResponse {
-    shearDiagrams?: ShearDiagramResponse[];
-    momentDiagrams?: MomentDiagramResponse[];
-    displacements?: DisplacementDiagramResponse[];
-
-    [key: string]: any;
-
-    constructor(data?: IDiagramResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            if (Array.isArray(_data["shearDiagrams"])) {
-                this.shearDiagrams = [] as any;
-                for (let item of _data["shearDiagrams"])
-                    this.shearDiagrams!.push(ShearDiagramResponse.fromJS(item));
-            }
-            if (Array.isArray(_data["momentDiagrams"])) {
-                this.momentDiagrams = [] as any;
-                for (let item of _data["momentDiagrams"])
-                    this.momentDiagrams!.push(MomentDiagramResponse.fromJS(item));
-            }
-            if (Array.isArray(_data["displacements"])) {
-                this.displacements = [] as any;
-                for (let item of _data["displacements"])
-                    this.displacements!.push(DisplacementDiagramResponse.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): DiagramResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new DiagramResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        if (Array.isArray(this.shearDiagrams)) {
-            data["shearDiagrams"] = [];
-            for (let item of this.shearDiagrams)
-                data["shearDiagrams"].push(item.toJSON());
-        }
-        if (Array.isArray(this.momentDiagrams)) {
-            data["momentDiagrams"] = [];
-            for (let item of this.momentDiagrams)
-                data["momentDiagrams"].push(item.toJSON());
-        }
-        if (Array.isArray(this.displacements)) {
-            data["displacements"] = [];
-            for (let item of this.displacements)
-                data["displacements"].push(item.toJSON());
-        }
-        return data;
-    }
-}
-
-export interface IDiagramResponse {
-    shearDiagrams?: ShearDiagramResponse[];
-    momentDiagrams?: MomentDiagramResponse[];
-    displacements?: DisplacementDiagramResponse[];
-
-    [key: string]: any;
-}
-
-export class DisplacementDiagramResponse implements IDisplacementDiagramResponse {
-    numSteps?: number;
-    offsets?: number[];
-
-    [key: string]: any;
-
-    constructor(data?: IDisplacementDiagramResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.numSteps = _data["numSteps"];
-            if (Array.isArray(_data["offsets"])) {
-                this.offsets = [] as any;
-                for (let item of _data["offsets"])
-                    this.offsets!.push(item);
-            }
-        }
-    }
-
-    static fromJS(data: any): DisplacementDiagramResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new DisplacementDiagramResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["numSteps"] = this.numSteps;
-        if (Array.isArray(this.offsets)) {
-            data["offsets"] = [];
-            for (let item of this.offsets)
-                data["offsets"].push(item);
-        }
-        return data;
-    }
-}
-
-export interface IDisplacementDiagramResponse {
-    numSteps?: number;
-    offsets?: number[];
 
     [key: string]: any;
 }
@@ -2259,6 +2278,72 @@ export interface IForcesResponse {
     momentAboutX: TorqueContract;
     momentAboutY: TorqueContract;
     momentAboutZ: TorqueContract;
+
+    [key: string]: any;
+}
+
+export class GlobalStresses implements IGlobalStresses {
+    maxShear!: ForceContract;
+    minShear!: ForceContract;
+    maxMoment!: TorqueContract;
+    minMoment!: TorqueContract;
+
+    [key: string]: any;
+
+    constructor(data?: IGlobalStresses) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.maxShear = new ForceContract();
+            this.minShear = new ForceContract();
+            this.maxMoment = new TorqueContract();
+            this.minMoment = new TorqueContract();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.maxShear = _data["maxShear"] ? ForceContract.fromJS(_data["maxShear"]) : new ForceContract();
+            this.minShear = _data["minShear"] ? ForceContract.fromJS(_data["minShear"]) : new ForceContract();
+            this.maxMoment = _data["maxMoment"] ? TorqueContract.fromJS(_data["maxMoment"]) : new TorqueContract();
+            this.minMoment = _data["minMoment"] ? TorqueContract.fromJS(_data["minMoment"]) : new TorqueContract();
+        }
+    }
+
+    static fromJS(data: any): GlobalStresses {
+        data = typeof data === 'object' ? data : {};
+        let result = new GlobalStresses();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["maxShear"] = this.maxShear ? this.maxShear.toJSON() : <any>undefined;
+        data["minShear"] = this.minShear ? this.minShear.toJSON() : <any>undefined;
+        data["maxMoment"] = this.maxMoment ? this.maxMoment.toJSON() : <any>undefined;
+        data["minMoment"] = this.minMoment ? this.minMoment.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IGlobalStresses {
+    maxShear: ForceContract;
+    minShear: ForceContract;
+    maxMoment: TorqueContract;
+    minMoment: TorqueContract;
 
     [key: string]: any;
 }
@@ -3903,14 +3988,14 @@ export interface IRestraint {
     [key: string]: any;
 }
 
-export class ResultOfDiagramResponse implements IResultOfDiagramResponse {
-    value!: DiagramResponse | undefined;
+export class ResultOfAnalyticalResultsResponse implements IResultOfAnalyticalResultsResponse {
+    value!: AnalyticalResultsResponse | undefined;
     error!: BeamOsError | undefined;
     isError!: boolean;
 
     [key: string]: any;
 
-    constructor(data?: IResultOfDiagramResponse) {
+    constructor(data?: IResultOfAnalyticalResultsResponse) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -3925,15 +4010,15 @@ export class ResultOfDiagramResponse implements IResultOfDiagramResponse {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            this.value = _data["value"] ? DiagramResponse.fromJS(_data["value"]) : <any>undefined;
+            this.value = _data["value"] ? AnalyticalResultsResponse.fromJS(_data["value"]) : <any>undefined;
             this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
             this.isError = _data["isError"];
         }
     }
 
-    static fromJS(data: any): ResultOfDiagramResponse {
+    static fromJS(data: any): ResultOfAnalyticalResultsResponse {
         data = typeof data === 'object' ? data : {};
-        let result = new ResultOfDiagramResponse();
+        let result = new ResultOfAnalyticalResultsResponse();
         result.init(data);
         return result;
     }
@@ -3951,8 +4036,8 @@ export class ResultOfDiagramResponse implements IResultOfDiagramResponse {
     }
 }
 
-export interface IResultOfDiagramResponse {
-    value: DiagramResponse | undefined;
+export interface IResultOfAnalyticalResultsResponse {
+    value: AnalyticalResultsResponse | undefined;
     error: BeamOsError | undefined;
     isError: boolean;
 

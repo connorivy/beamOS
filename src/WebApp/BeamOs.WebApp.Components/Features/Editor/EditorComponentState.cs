@@ -269,9 +269,9 @@ public static class EditorComponentStateReducers
     }
 
     [ReducerMethod]
-    public static CachedModelState Reducer(CachedModelState state, DiagramResponseCreated action)
+    public static CachedModelState Reducer(CachedModelState state, AnalyticalResultsCreated action)
     {
-        if (!state.Models.TryGetValue(action.ModelId, out var model))
+        if (!state.Models.TryGetValue(action.AnalyticalResults.ModelId, out var model))
         {
             return state;
         }
@@ -280,21 +280,21 @@ public static class EditorComponentStateReducers
         {
             Models = state
                 .Models
-                .Remove(action.ModelId)
+                .Remove(action.AnalyticalResults.ModelId)
                 .Add(
-                    action.ModelId,
+                    action.AnalyticalResults.ModelId,
                     model with
                     {
                         ShearDiagrams = action
-                            .DiagramResponse
+                            .AnalyticalResults
                             .ShearDiagrams
                             .ToImmutableDictionary(d => d.Element1dId, d => d),
                         MomentDiagrams = action
-                            .DiagramResponse
+                            .AnalyticalResults
                             .MomentDiagrams
                             .ToImmutableDictionary(d => d.Element1dId, d => d),
                         DeflectionDiagrams = action
-                            .DiagramResponse
+                            .AnalyticalResults
                             .DeflectionDiagrams
                             .ToImmutableDictionary(d => d.Element1dId, d => d),
                     }

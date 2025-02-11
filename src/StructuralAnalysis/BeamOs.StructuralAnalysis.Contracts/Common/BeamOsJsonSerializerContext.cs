@@ -35,7 +35,7 @@ namespace BeamOs.StructuralAnalysis.Contracts.Common;
 [JsonSerializable(typeof(Result<ResultSetResponse>))]
 [JsonSerializable(typeof(Result<ModelEntityResponse>))]
 [JsonSerializable(typeof(Result<List<ModelInfoResponse>>))]
-[JsonSerializable(typeof(Result<DiagramResponse>))]
+[JsonSerializable(typeof(Result<AnalyticalResultsResponse>))]
 [JsonSerializable(typeof(DiagramConsistentIntervalResponse))]
 [JsonSerializable(typeof(MomentDiagramResponse))]
 [JsonSerializable(typeof(Result<int>))]

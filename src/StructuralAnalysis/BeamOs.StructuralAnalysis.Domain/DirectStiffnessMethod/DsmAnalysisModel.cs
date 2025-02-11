@@ -6,6 +6,7 @@ using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod.Common.ValueObjects;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
+using MathNet.Numerics.LinearAlgebra.Double;
 using UnitsNet;
 using UnitsNet.Units;
 
@@ -136,12 +137,13 @@ public class DsmAnalysisModel
             double displacementMax = double.MinValue;
             for (int j = 0; j < numIntervals; j++)
             {
-                double step = (double)j / numIntervals;
+                double step = (double)j / (numIntervals + 1);
 
                 var displacements = DeflectedShapeShapeFunctionCalculator.Solve(
                     step,
                     beamLength,
-                    localElementDisplacements
+                    localElementDisplacements,
+                    DenseMatrix.OfArray(this.dsmElement1Ds[i].GetRotationMatrix())
                 );
                 Array.Copy(displacements, 0, offsets, j * 3, 3);
 
@@ -239,11 +241,20 @@ public class DsmAnalysisModel
         return new()
         {
             ResultSet = resultSet,
-            DiagramResult = new()
+            OtherAnalyticalResults = new()
             {
+                Id = resultSetId,
+                ModelId = modelId,
                 ShearDiagrams = shearForceDiagrams,
                 MomentDiagrams = momentDiagrams,
                 DeflectionDiagrams = displacementResults,
+                GlobalStresses = new()
+                {
+                    MaxMoment = new(globalMomentMax, this.unitSettings.TorqueUnit),
+                    MaxShear = new(globalShearMax, this.unitSettings.ForceUnit),
+                    MinMoment = new(globalMomentMin, this.unitSettings.TorqueUnit),
+                    MinShear = new(globalShearMin, this.unitSettings.ForceUnit)
+                }
             }
         };
     }
@@ -537,12 +548,23 @@ public class DsmAnalysisModel
 public record AnalysisResults
 {
     public required ResultSet ResultSet { get; init; }
-    public required DiagramResult DiagramResult { get; init; }
+    public required OtherAnalyticalResults OtherAnalyticalResults { get; init; }
 }
 
-public record DiagramResult
+public record OtherAnalyticalResults
 {
+    public ResultSetId Id { get; init; }
+    public ModelId ModelId { get; init; }
     public required ShearForceDiagram[] ShearDiagrams { get; init; }
     public required MomentDiagram[] MomentDiagrams { get; init; }
     public required DeflectionDiagrams[] DeflectionDiagrams { get; init; }
+    public required GlobalStresses GlobalStresses { get; init; }
+}
+
+public readonly record struct GlobalStresses
+{
+    public required Force MaxShear { get; init; }
+    public required Force MinShear { get; init; }
+    public required Torque MaxMoment { get; init; }
+    public required Torque MinMoment { get; init; }
 }

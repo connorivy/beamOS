@@ -66,11 +66,22 @@ public readonly record struct DeflectionDiagramResponse
     public required double[] Offsets { get; init; }
 }
 
-public record DiagramResponse
+public record AnalyticalResultsResponse : IModelEntity
 {
     public ShearDiagramResponse[] ShearDiagrams { get; init; }
     public MomentDiagramResponse[] MomentDiagrams { get; init; }
     public DeflectionDiagramResponse[] DeflectionDiagrams { get; init; }
+    public GlobalStresses GlobalStresses { get; init; }
+    public required int Id { get; init; }
+    public required Guid ModelId { get; init; }
+}
+
+public readonly record struct GlobalStresses
+{
+    public required ForceContract MaxShear { get; init; }
+    public required ForceContract MinShear { get; init; }
+    public required TorqueContract MaxMoment { get; init; }
+    public required TorqueContract MinMoment { get; init; }
 }
 
 public enum DiagramType

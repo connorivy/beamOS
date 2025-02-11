@@ -44,19 +44,24 @@ public sealed class DeflectedShapeShapeFunctionCalculator
             { 0, 0, N3(x, l), 0, -N4(x, l), 0, 0, 0, N5(x, l), 0, -N6(x, l), 0 },
         };
 
-    public static double[] Solve(double x, double l, double[] elementDisplacementVector)
-    {
-        Vector<double> displacementVector = Vector<double>
-            .Build
-            .DenseOfArray(elementDisplacementVector);
+    //public static double[] Solve(double x, double l, double[] elementDisplacementVector)
+    //{
+    //    Vector<double> displacementVector = Vector<double>
+    //        .Build
+    //        .DenseOfArray(elementDisplacementVector);
 
-        return Solve(x, l, displacementVector);
-    }
+    //    return Solve(x, l, displacementVector);
+    //}
 
-    public static double[] Solve(double x, double l, Vector<double> displacementVector)
+    public static double[] Solve(
+        double x,
+        double l,
+        Vector<double> displacementVector,
+        Matrix<double> elementRotationMatrix
+    )
     {
         Matrix<double> N = Matrix<double>.Build.DenseOfArray(Nx(x, l));
 
-        return N.Multiply(displacementVector).AsArray();
+        return (elementRotationMatrix * N.Multiply(displacementVector)).AsArray();
     }
 }

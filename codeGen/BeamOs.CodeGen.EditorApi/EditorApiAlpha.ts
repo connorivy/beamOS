@@ -98,17 +98,22 @@ export interface IEditorApiAlpha {
     /**
      * @return OK
      */
-    createDeflectionDiagram(body: DisplacementDiagramResponse): Promise<Result>;
+    createDeflectionDiagram(body: DeflectionDiagramResponse): Promise<Result>;
 
     /**
      * @return OK
      */
-    createDeflectionDiagrams(body: DisplacementDiagramResponse[]): Promise<Result>;
+    createDeflectionDiagrams(body: DeflectionDiagramResponse[]): Promise<Result>;
 
     /**
      * @return OK
      */
     setSettings(body: PhysicalModelSettings): Promise<Result>;
+
+    /**
+     * @return OK
+     */
+    setGlobalStresses(body: GlobalStresses): Promise<Result>;
 
     /**
      * @return OK
@@ -841,7 +846,7 @@ export class EditorApiAlpha implements IEditorApiAlpha {
     /**
      * @return OK
      */
-    createDeflectionDiagram(body: DisplacementDiagramResponse): Promise<Result> {
+    createDeflectionDiagram(body: DeflectionDiagramResponse): Promise<Result> {
         let url_ = this.baseUrl + "/EditorApiAlpha/CreateDeflectionDiagram";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -882,7 +887,7 @@ export class EditorApiAlpha implements IEditorApiAlpha {
     /**
      * @return OK
      */
-    createDeflectionDiagrams(body: DisplacementDiagramResponse[]): Promise<Result> {
+    createDeflectionDiagrams(body: DeflectionDiagramResponse[]): Promise<Result> {
         let url_ = this.baseUrl + "/EditorApiAlpha/CreateDeflectionDiagrams";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -944,6 +949,47 @@ export class EditorApiAlpha implements IEditorApiAlpha {
     }
 
     protected processSetSettings(response: Response): Promise<Result> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    setGlobalStresses(body: GlobalStresses): Promise<Result> {
+        let url_ = this.baseUrl + "/EditorApiAlpha/SetGlobalStresses";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSetGlobalStresses(_response);
+        });
+    }
+
+    protected processSetGlobalStresses(response: Response): Promise<Result> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -1457,6 +1503,61 @@ export interface ICoordinate3D {
     z: number;
 }
 
+export class DeflectionDiagramResponse implements IDeflectionDiagramResponse {
+    element1dId!: number;
+    numSteps!: number;
+    offsets!: number[];
+
+    constructor(data?: IDeflectionDiagramResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.offsets = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.element1dId = _data["element1dId"];
+            this.numSteps = _data["numSteps"];
+            if (Array.isArray(_data["offsets"])) {
+                this.offsets = [] as any;
+                for (let item of _data["offsets"])
+                    this.offsets!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): DeflectionDiagramResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeflectionDiagramResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["element1dId"] = this.element1dId;
+        data["numSteps"] = this.numSteps;
+        if (Array.isArray(this.offsets)) {
+            data["offsets"] = [];
+            for (let item of this.offsets)
+                data["offsets"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IDeflectionDiagramResponse {
+    element1dId: number;
+    numSteps: number;
+    offsets: number[];
+}
+
 export class DiagramConsistentIntervalResponse implements IDiagramConsistentIntervalResponse {
     startLocation!: LengthContract;
     endLocation!: LengthContract;
@@ -1569,57 +1670,6 @@ export interface IDiagramConsistentIntervalResponse2 {
     startLocation: LengthContract;
     endLocation: LengthContract;
     polynomialCoefficients: number[];
-}
-
-export class DisplacementDiagramResponse implements IDisplacementDiagramResponse {
-    numSteps!: number;
-    offsets!: number[];
-
-    constructor(data?: IDisplacementDiagramResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.offsets = [];
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.numSteps = _data["numSteps"];
-            if (Array.isArray(_data["offsets"])) {
-                this.offsets = [] as any;
-                for (let item of _data["offsets"])
-                    this.offsets!.push(item);
-            }
-        }
-    }
-
-    static fromJS(data: any): DisplacementDiagramResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new DisplacementDiagramResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["numSteps"] = this.numSteps;
-        if (Array.isArray(this.offsets)) {
-            data["offsets"] = [];
-            for (let item of this.offsets)
-                data["offsets"].push(item);
-        }
-        return data;
-    }
-}
-
-export interface IDisplacementDiagramResponse {
-    numSteps: number;
-    offsets: number[];
 }
 
 export class DisplacementsResponse implements IDisplacementsResponse {
@@ -1892,6 +1942,60 @@ export interface IForcesResponse {
     momentAboutX: TorqueContract;
     momentAboutY: TorqueContract;
     momentAboutZ: TorqueContract;
+}
+
+export class GlobalStresses implements IGlobalStresses {
+    maxShear!: ForceContract;
+    minShear!: ForceContract;
+    maxMoment!: TorqueContract;
+    minMoment!: TorqueContract;
+
+    constructor(data?: IGlobalStresses) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.maxShear = new ForceContract();
+            this.minShear = new ForceContract();
+            this.maxMoment = new TorqueContract();
+            this.minMoment = new TorqueContract();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.maxShear = _data["maxShear"] ? ForceContract.fromJS(_data["maxShear"]) : new ForceContract();
+            this.minShear = _data["minShear"] ? ForceContract.fromJS(_data["minShear"]) : new ForceContract();
+            this.maxMoment = _data["maxMoment"] ? TorqueContract.fromJS(_data["maxMoment"]) : new TorqueContract();
+            this.minMoment = _data["minMoment"] ? TorqueContract.fromJS(_data["minMoment"]) : new TorqueContract();
+        }
+    }
+
+    static fromJS(data: any): GlobalStresses {
+        data = typeof data === 'object' ? data : {};
+        let result = new GlobalStresses();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["maxShear"] = this.maxShear ? this.maxShear.toJSON() : <any>undefined;
+        data["minShear"] = this.minShear ? this.minShear.toJSON() : <any>undefined;
+        data["maxMoment"] = this.maxMoment ? this.maxMoment.toJSON() : <any>undefined;
+        data["minMoment"] = this.minMoment ? this.minMoment.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IGlobalStresses {
+    maxShear: ForceContract;
+    minShear: ForceContract;
+    maxMoment: TorqueContract;
+    minMoment: TorqueContract;
 }
 
 export class IModelEntity implements IIModelEntity {
