@@ -7,8 +7,8 @@ public static class AllSolvedProblems
 {
     public static IEnumerable<ModelFixture> ModelFixtures()
     {
-        //yield return new Kassimali_Example3_8();
-        //yield return new Kassimali_Example8_4();
+        yield return new Kassimali_Example3_8();
+        yield return new Kassimali_Example8_4();
         yield return new Udoeyo_Example7_7();
     }
 

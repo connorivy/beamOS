@@ -6,6 +6,7 @@ global using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 global using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
 global using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
 global using ResultOfboolean = BeamOs.Common.Contracts.Result<bool>;
+global using ResultOfDiagramResponse = BeamOs.Common.Contracts.Result<BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams.DiagramResponse>;
 global using ResultOfElement1dResponse = BeamOs.Common.Contracts.Result<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d.Element1dResponse>;
 global using ResultOfint = BeamOs.Common.Contracts.Result<int>;
 global using ResultOfListOfModelInfoResponse = BeamOs.Common.Contracts.Result<System.Collections.Generic.List<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model.ModelInfoResponse>>;

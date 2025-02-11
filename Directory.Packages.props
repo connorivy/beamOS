@@ -3,7 +3,7 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
-    <AspnetVersion>9.0.0</AspnetVersion>
+    <AspnetVersion>9.0.1</AspnetVersion>
     <MicrosoftExtensionsVersion>9.0.0</MicrosoftExtensionsVersion>
     <EfVersion>9.0.0</EfVersion>
     <FastEndpointVersion>5.30.0</FastEndpointVersion>
@@ -29,7 +29,6 @@
     <PackageVersion Include="Microsoft.AspNetCore.WebUtilities" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="$(AspnetVersion)" />
-    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
     <!-- Azure -->
     <PackageVersion Include="Microsoft.Azure.WebJobs.Core" Version="3.0.41" />

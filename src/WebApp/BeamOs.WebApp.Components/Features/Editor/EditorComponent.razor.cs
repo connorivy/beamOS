@@ -3,6 +3,7 @@ using System.Reflection.Metadata;
 using BeamOs.CodeGen.EditorApi;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
@@ -24,6 +25,7 @@ public partial class EditorComponent(
     IStructuralAnalysisApiClientV1 apiClient,
     IEditorApiProxyFactory editorApiProxyFactory,
     IState<EditorComponentState> state,
+    IState<CachedModelState> cachedModelState,
     IDispatcher dispatcher,
     LoadModelCommandHandler loadModelCommandHandler,
     LoadBeamOsEntityCommandHandler loadBeamOsEntityCommandHandler,
@@ -186,6 +188,13 @@ public partial class EditorComponent(
         {
             dispatcher.Dispatch(new EditorLoadingEnd(this.CanvasId, result.Value));
         }
+    }
+
+    public async Task Test()
+    {
+        cachedModelState.Value.Models.TryGetValue(this.ModelId.Value, out var model);
+        //await state.Value.EditorApi.CreateDeflectionDiagramsAsync(model.DeflectionDiagrams.Values);
+        await state.Value.EditorApi.CreateMomentDiagramsAsync(model.MomentDiagrams.Values);
     }
 
     public async Task Clear() => await state.Value.EditorApi.ClearAsync();

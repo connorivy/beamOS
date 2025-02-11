@@ -8,6 +8,8 @@ namespace BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 
 public class DsmNodeVo(Node node) : BeamOSValueObject
 {
+    public Node Node => node;
+
     public VectorIdentified GetForceVectorIdentifiedInGlobalCoordinates(
         ForceUnit forceUnit,
         TorqueUnit torqueUnit

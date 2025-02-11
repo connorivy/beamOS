@@ -1,7 +1,8 @@
 using BeamOs.Common.Api;
 using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis.Api.Endpoints.OpenSees;
 using BeamOs.StructuralAnalysis.Application.DirectStiffnessMethod;
+using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.DirectStiffnessMethod;
 
@@ -9,10 +10,23 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.DirectStiffnessMethod;
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 public class RunDirectStiffnessMethod(RunDirectStiffnessMethodCommandHandler dsmCommandHandler)
-    : BeamOsModelIdRequestBaseEndpoint<bool>
+    : BeamOsBaseEndpoint<RunDsmRequest, DiagramResponse>
 {
-    public override async Task<Result<bool>> ExecuteRequestAsync(
-        ModelIdRequest req,
+    public override async Task<Result<DiagramResponse>> ExecuteRequestAsync(
+        RunDsmRequest req,
         CancellationToken ct = default
-    ) => await dsmCommandHandler.ExecuteAsync(req.ModelId, ct);
+    ) =>
+        await dsmCommandHandler.ExecuteAsync(
+            new() { ModelId = req.ModelId, UnitsOverride = req.UnitsOverride },
+            ct
+        );
+}
+
+public record RunDsmRequest : IHasModelId
+{
+    [FromRoute]
+    public Guid ModelId { get; init; }
+
+    [FromQuery]
+    public string? UnitsOverride { get; init; } = null;
 }

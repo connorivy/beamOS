@@ -19,6 +19,22 @@ public readonly record struct ModelEntityCreated : IBeamOsClientCommand
         throw new NotImplementedException();
 }
 
+public readonly record struct ModelEntitiesCreated : IBeamOsClientCommand
+{
+    public Guid Id { get; }
+    public bool HandledByEditor { get; init; }
+    public bool HandledByBlazor { get; init; }
+    public bool HandledByServer { get; init; }
+    public ICollection<IModelEntity> ModelEntity { get; init; }
+
+    public IBeamOsClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
+        //new ModelEntityDeleted() { ModelEntity = this.ModelEntity };
+        throw new NotImplementedException();
+
+    public IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
+        throw new NotImplementedException();
+}
+
 public readonly record struct ModelEntityUpdated
 //: IBeamOsClientCommand
 {

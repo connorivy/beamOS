@@ -21,6 +21,7 @@ public sealed class MomentDiagram : DiagramBase<MomentDiagramId, MomentDiagramCo
     public LinearCoordinateDirection3D ShearDirection { get; private set; }
     public Vector3D GlobalShearDirection { get; private init; }
     public ForceUnit ForceUnit { get; }
+    public TorqueUnit TorqueUnit { get; }
 
     private MomentDiagram(
         ModelId modelId,
@@ -30,6 +31,7 @@ public sealed class MomentDiagram : DiagramBase<MomentDiagramId, MomentDiagramCo
         Length elementLength,
         LengthUnit lengthUnit,
         ForceUnit forceUnit,
+        TorqueUnit torqueUnit,
         List<MomentDiagramConsistentInterval> intervals,
         MomentDiagramId? id = null
     )
@@ -38,6 +40,7 @@ public sealed class MomentDiagram : DiagramBase<MomentDiagramId, MomentDiagramCo
         this.Element1dId = element1DId;
         this.ShearDirection = shearDirection;
         this.ForceUnit = forceUnit;
+        this.TorqueUnit = torqueUnit;
     }
 
     public static MomentDiagram Create(
@@ -130,6 +133,7 @@ public sealed class MomentDiagram : DiagramBase<MomentDiagramId, MomentDiagramCo
             elementLength,
             lengthUnit,
             forceUnit,
+            torqueUnit,
             db.Intervals.Select(i => new MomentDiagramConsistentInterval(diagramId, i)).ToList(),
             diagramId
         )

@@ -13,8 +13,9 @@ public class ResultSet : BeamOsModelEntity<ResultSetId>
 
     public ICollection<NodeResult>? NodeResults { get; set; }
     public ICollection<Element1dResult>? Element1dResults { get; set; }
-    public ICollection<ShearForceDiagram>? ShearForceDiagrams { get; set; }
-    public ICollection<MomentDiagram>? MomentDiagrams { get; set; }
+
+    //public ICollection<ShearForceDiagram>? ShearForceDiagrams { get; set; }
+    //public ICollection<MomentDiagram>? MomentDiagrams { get; set; }
 
     [Obsolete("EF Core Constructor", true)]
     private ResultSet() { }

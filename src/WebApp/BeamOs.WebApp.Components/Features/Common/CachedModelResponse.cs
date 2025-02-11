@@ -1,6 +1,7 @@
 using System.Collections.Immutable;
 using System.Text.Json.Serialization;
 using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.NodeResult;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
@@ -29,6 +30,10 @@ public record CachedModelResponse
         int,
         ImmutableDictionary<int, NodeResultResponse>
     > NodeResults { get; init; }
+
+    public ImmutableDictionary<int, ShearDiagramResponse> ShearDiagrams { get; init; }
+    public ImmutableDictionary<int, MomentDiagramResponse> MomentDiagrams { get; init; }
+    public ImmutableDictionary<int, DeflectionDiagramResponse> DeflectionDiagrams { get; init; }
 
     public CachedModelResponse(ModelResponse modelResponse)
         : this(

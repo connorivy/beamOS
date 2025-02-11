@@ -1,12 +1,15 @@
+using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.ResultSets;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
+using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using Microsoft.Extensions.Logging;
+using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.StructuralAnalysis.Application.DirectStiffnessMethod;
 
@@ -15,12 +18,21 @@ public class RunDirectStiffnessMethodCommandHandler(
     IResultSetRepository resultSetRepository,
     IStructuralAnalysisUnitOfWork unitOfWork,
     ILogger<RunDirectStiffnessMethodCommandHandler> logger
-) : ICommandHandler<ModelId, bool>
+) : ICommandHandler<RunDsmCommand, DiagramResponse>
 {
-    public async Task<Result<bool>> ExecuteAsync(ModelId modelId, CancellationToken ct = default)
+    public async Task<Result<DiagramResponse>> ExecuteAsync(
+        RunDsmCommand command,
+        CancellationToken ct = default
+    )
     {
+        UnitSettings? unitSettings = null;
+        if (command.UnitsOverride is not null)
+        {
+            unitSettings = GetUnitSettings(command.UnitsOverride);
+        }
+
         var model = await modelRepository.GetSingle(
-            modelId,
+            command.ModelId,
             ct,
             nameof(Model.Nodes),
             nameof(Model.Element1ds),
@@ -31,11 +43,12 @@ public class RunDirectStiffnessMethodCommandHandler(
             $"{nameof(Model.Nodes)}.{nameof(Node.PointLoads)}",
             $"{nameof(Model.Nodes)}.{nameof(Node.MomentLoads)}"
         );
-        var dsmModel = new DsmAnalysisModel(model);
 
-        var resultSet = dsmModel.RunAnalysis();
+        var dsmModel = new DsmAnalysisModel(model, unitSettings);
 
-        resultSetRepository.Add(resultSet);
+        var analysisResults = dsmModel.RunAnalysis();
+
+        resultSetRepository.Add(analysisResults.ResultSet);
 
         //foreach (var nodeResult in results.NodeResults ?? Enumerable.Empty<NodeResult>())
         //{
@@ -57,6 +70,34 @@ public class RunDirectStiffnessMethodCommandHandler(
 
         await unitOfWork.SaveChangesAsync(ct);
 
-        return true;
+        return analysisResults.DiagramResult.Map();
     }
+
+    private static UnitSettings GetUnitSettings(string unitsOverride) =>
+        unitsOverride.ToLowerInvariant() switch
+        {
+            "k_in" or "k-in" => UnitSettings.K_IN,
+            "k_ft" or "k-ft" => UnitSettings.K_FT,
+            "kn_m" or "kn-m" => UnitSettings.kN_M,
+            _
+                => throw new ArgumentException(
+                    $"Invalid units override, {unitsOverride}",
+                    nameof(unitsOverride)
+                )
+        };
+}
+
+public readonly struct RunDsmCommand : IHasModelId
+{
+    public Guid ModelId { get; init; }
+
+    public string? UnitsOverride { get; init; }
+}
+
+[Mapper]
+[UseStaticMapper(typeof(BeamOsDomainContractMappers))]
+[UseStaticMapper(typeof(UnitsNetMappers))]
+public static partial class DiagramToResponseMapper
+{
+    public static partial DiagramResponse Map(this DiagramResult diagram);
 }

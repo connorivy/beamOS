@@ -11,27 +11,36 @@ using UnitsNet.Units;
 
 namespace BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 
-public class DsmAnalysisModel(Model model)
+public class DsmAnalysisModel
 {
-    private readonly DsmElement1d[] dsmElement1Ds = model
-        .Settings
-        .AnalysisSettings
-        .Element1DAnalysisType switch
+    public DsmAnalysisModel(Model model, UnitSettings? unitSettings = null)
     {
-        Element1dAnalysisType.Euler
-            => model.Element1ds.Select(el => new DsmElement1d(el)).ToArray(),
-        Element1dAnalysisType.Timoshenko
-            => model.Element1ds.Select(el => new TimoshenkoDsmElement1d(el)).ToArray(),
-        Element1dAnalysisType.Undefined
-        or _
-            => throw new Exception(
-                $"Unsupported Element1DAnalysisType {model.Settings.AnalysisSettings.Element1DAnalysisType}"
-            )
-    };
+        this.dsmElement1Ds = model.Settings.AnalysisSettings.Element1DAnalysisType switch
+        {
+            Element1dAnalysisType.Euler
+                => model.Element1ds.Select(el => new DsmElement1d(el)).ToArray(),
+            Element1dAnalysisType.Timoshenko
+                => model.Element1ds.Select(el => new TimoshenkoDsmElement1d(el)).ToArray(),
+            Element1dAnalysisType.Undefined
+            or _
+                => throw new Exception(
+                    $"Unsupported Element1DAnalysisType {model.Settings.AnalysisSettings.Element1DAnalysisType}"
+                )
+        };
 
-    private readonly DsmNodeVo[] dsmNodes = model.Nodes.Select(el => new DsmNodeVo(el)).ToArray();
+        this.dsmNodes = model.Nodes.Select(el => new DsmNodeVo(el)).ToArray();
+        this.unitSettings = unitSettings ?? model.Settings.UnitSettings;
+        this.modelId = model.Id;
+    }
 
-    public ResultSet RunAnalysis()
+    private readonly ModelId modelId;
+    private readonly UnitSettings unitSettings;
+
+    private readonly DsmElement1d[] dsmElement1Ds;
+
+    private readonly DsmNodeVo[] dsmNodes;
+
+    public AnalysisResults RunAnalysis()
     {
         //var (degreeOfFreedomIds, boundaryConditionIds) = this.GetSortedUnsupportedStructureIds();
 
@@ -57,6 +66,9 @@ public class DsmAnalysisModel(Model model)
         ShearForceDiagram[] shearForceDiagrams = new ShearForceDiagram[this.dsmElement1Ds.Length];
         MomentDiagram[] momentDiagrams = new MomentDiagram[this.dsmElement1Ds.Length];
         Element1dResult[] element1DResults = new Element1dResult[this.dsmElement1Ds.Length];
+        DeflectionDiagrams[] displacementResults = new DeflectionDiagrams[
+            this.dsmElement1Ds.Length
+        ];
 
         double globalShearMin = double.MaxValue;
         double globalShearMax = double.MinValue;
@@ -72,13 +84,13 @@ public class DsmAnalysisModel(Model model)
 
             var localMemberEndForcesVector = this.dsmElement1Ds[i].GetLocalMemberEndForcesVector(
                 unknownJointDisplacementVector,
-                model.Settings.UnitSettings.ForceUnit,
-                model.Settings.UnitSettings.ForcePerLengthUnit,
-                model.Settings.UnitSettings.TorqueUnit
+                this.unitSettings.ForceUnit,
+                this.unitSettings.ForcePerLengthUnit,
+                this.unitSettings.TorqueUnit
             );
 
             var sfd = ShearForceDiagram.Create(
-                model.Id,
+                this.modelId,
                 resultSetId,
                 this.dsmElement1Ds[i].Element1dId,
                 this.dsmElement1Ds[i].StartPoint,
@@ -86,16 +98,16 @@ public class DsmAnalysisModel(Model model)
                 this.dsmElement1Ds[i].SectionProfileRotation,
                 this.dsmElement1Ds[i].Length,
                 localMemberEndForcesVector,
-                model.Settings.UnitSettings.LengthUnit,
-                model.Settings.UnitSettings.ForceUnit,
-                model.Settings.UnitSettings.TorqueUnit,
+                this.unitSettings.LengthUnit,
+                this.unitSettings.ForceUnit,
+                this.unitSettings.TorqueUnit,
                 LinearCoordinateDirection3D.AlongY
             );
             shearForceDiagrams[i] = sfd;
             sfd.MinMax(ref shearMin, ref shearMax);
 
             momentDiagrams[i] = MomentDiagram.Create(
-                model.Id,
+                this.modelId,
                 resultSetId,
                 this.dsmElement1Ds[i].Element1dId,
                 this.dsmElement1Ds[i].StartPoint,
@@ -103,9 +115,9 @@ public class DsmAnalysisModel(Model model)
                 this.dsmElement1Ds[i].SectionProfileRotation,
                 this.dsmElement1Ds[i].Length,
                 localMemberEndForcesVector,
-                model.Settings.UnitSettings.LengthUnit,
-                model.Settings.UnitSettings.ForceUnit,
-                model.Settings.UnitSettings.TorqueUnit,
+                this.unitSettings.LengthUnit,
+                this.unitSettings.ForceUnit,
+                this.unitSettings.TorqueUnit,
                 LinearCoordinateDirection3D.AlongY,
                 sfd
             );
@@ -115,12 +127,10 @@ public class DsmAnalysisModel(Model model)
                 unknownJointDisplacementVector
             );
 
-            List<double[]> hello = [];
-
             int numIntervals = 10;
-            double beamLength = this.dsmElement1Ds[i]
-                .Length
-                .As(model.Settings.UnitSettings.LengthUnit);
+            double[] offsets = new double[numIntervals * 3];
+
+            double beamLength = this.dsmElement1Ds[i].Length.As(this.unitSettings.LengthUnit);
 
             double displacementMin = double.MaxValue;
             double displacementMax = double.MinValue;
@@ -133,6 +143,7 @@ public class DsmAnalysisModel(Model model)
                     beamLength,
                     localElementDisplacements
                 );
+                Array.Copy(displacements, 0, offsets, j * 3, 3);
 
                 var displacement = Math.Sqrt(
                     Math.Pow(displacements[0], 2)
@@ -144,43 +155,50 @@ public class DsmAnalysisModel(Model model)
                 displacementMax = Math.Max(displacementMax, displacement);
             }
 
+            displacementResults[i] = new DeflectionDiagrams()
+            {
+                Element1dId = this.dsmElement1Ds[i].Element1dId,
+                NumSteps = numIntervals,
+                Offsets = offsets,
+            };
+
             Element1dResult element1DResult =
-                new(model.Id, resultSetId, this.dsmElement1Ds[i].Element1dId)
+                new(this.modelId, resultSetId, this.dsmElement1Ds[i].Element1dId)
                 {
-                    MaxMoment = new(momentMax, model.Settings.UnitSettings.TorqueUnit),
-                    MinMoment = new(momentMin, model.Settings.UnitSettings.TorqueUnit),
-                    MaxShear = new(shearMax, model.Settings.UnitSettings.ForceUnit),
-                    MinShear = new(shearMin, model.Settings.UnitSettings.ForceUnit),
-                    MaxDisplacement = new(displacementMax, model.Settings.UnitSettings.LengthUnit),
-                    MinDisplacement = new(displacementMin, model.Settings.UnitSettings.LengthUnit),
+                    MaxMoment = new(momentMax, this.unitSettings.TorqueUnit),
+                    MinMoment = new(momentMin, this.unitSettings.TorqueUnit),
+                    MaxShear = new(shearMax, this.unitSettings.ForceUnit),
+                    MinShear = new(shearMin, this.unitSettings.ForceUnit),
+                    MaxDisplacement = new(displacementMax, this.unitSettings.LengthUnit),
+                    MinDisplacement = new(displacementMin, this.unitSettings.LengthUnit),
                     LocalStartForces = new Forces(
-                        new(localMemberEndForcesVector[0], model.Settings.UnitSettings.ForceUnit),
-                        new(localMemberEndForcesVector[1], model.Settings.UnitSettings.ForceUnit),
-                        new(localMemberEndForcesVector[2], model.Settings.UnitSettings.ForceUnit),
-                        new(localMemberEndForcesVector[3], model.Settings.UnitSettings.TorqueUnit),
-                        new(localMemberEndForcesVector[4], model.Settings.UnitSettings.TorqueUnit),
-                        new(localMemberEndForcesVector[5], model.Settings.UnitSettings.TorqueUnit)
+                        new(localMemberEndForcesVector[0], this.unitSettings.ForceUnit),
+                        new(localMemberEndForcesVector[1], this.unitSettings.ForceUnit),
+                        new(localMemberEndForcesVector[2], this.unitSettings.ForceUnit),
+                        new(localMemberEndForcesVector[3], this.unitSettings.TorqueUnit),
+                        new(localMemberEndForcesVector[4], this.unitSettings.TorqueUnit),
+                        new(localMemberEndForcesVector[5], this.unitSettings.TorqueUnit)
                     ),
                     LocalEndForces = new Forces(
-                        new(localMemberEndForcesVector[6], model.Settings.UnitSettings.ForceUnit),
-                        new(localMemberEndForcesVector[7], model.Settings.UnitSettings.ForceUnit),
-                        new(localMemberEndForcesVector[8], model.Settings.UnitSettings.ForceUnit),
-                        new(localMemberEndForcesVector[9], model.Settings.UnitSettings.TorqueUnit),
-                        new(localMemberEndForcesVector[10], model.Settings.UnitSettings.TorqueUnit),
-                        new(localMemberEndForcesVector[11], model.Settings.UnitSettings.TorqueUnit)
+                        new(localMemberEndForcesVector[6], this.unitSettings.ForceUnit),
+                        new(localMemberEndForcesVector[7], this.unitSettings.ForceUnit),
+                        new(localMemberEndForcesVector[8], this.unitSettings.ForceUnit),
+                        new(localMemberEndForcesVector[9], this.unitSettings.TorqueUnit),
+                        new(localMemberEndForcesVector[10], this.unitSettings.TorqueUnit),
+                        new(localMemberEndForcesVector[11], this.unitSettings.TorqueUnit)
                     ),
                     LocalStartDisplacements = new Displacements(
-                        new(localElementDisplacements[0], model.Settings.UnitSettings.LengthUnit),
-                        new(localElementDisplacements[1], model.Settings.UnitSettings.LengthUnit),
-                        new(localElementDisplacements[2], model.Settings.UnitSettings.LengthUnit),
+                        new(localElementDisplacements[0], this.unitSettings.LengthUnit),
+                        new(localElementDisplacements[1], this.unitSettings.LengthUnit),
+                        new(localElementDisplacements[2], this.unitSettings.LengthUnit),
                         new(localElementDisplacements[3], AngleUnit.Radian),
                         new(localElementDisplacements[4], AngleUnit.Radian),
                         new(localElementDisplacements[5], AngleUnit.Radian)
                     ),
                     LocalEndDisplacements = new Displacements(
-                        new(localElementDisplacements[6], model.Settings.UnitSettings.LengthUnit),
-                        new(localElementDisplacements[7], model.Settings.UnitSettings.LengthUnit),
-                        new(localElementDisplacements[8], model.Settings.UnitSettings.LengthUnit),
+                        new(localElementDisplacements[6], this.unitSettings.LengthUnit),
+                        new(localElementDisplacements[7], this.unitSettings.LengthUnit),
+                        new(localElementDisplacements[8], this.unitSettings.LengthUnit),
                         new(localElementDisplacements[9], AngleUnit.Radian),
                         new(localElementDisplacements[10], AngleUnit.Radian),
                         new(localElementDisplacements[11], AngleUnit.Radian)
@@ -195,21 +213,21 @@ public class DsmAnalysisModel(Model model)
         }
 
         ResultSet resultSet =
-            new(model.Id, resultSetId)
+            new(this.modelId, resultSetId)
             {
                 NodeResults = nodeResults,
-                ShearForceDiagrams = shearForceDiagrams,
-                MomentDiagrams = momentDiagrams,
+                //ShearForceDiagrams = shearForceDiagrams,
+                //MomentDiagrams = momentDiagrams,
                 Element1dResults = element1DResults,
             };
 
         //AnalyticalResults analyticalModelResults =
         //    new(
-        //        model.Id,
-        //        new(shearMax, model.Settings.UnitSettings.ForceUnit),
-        //        new(shearMin, model.Settings.UnitSettings.ForceUnit),
-        //        new(momentMax, model.Settings.UnitSettings.TorqueUnit),
-        //        new(momentMin, model.Settings.UnitSettings.TorqueUnit),
+        //        this.modelId,
+        //        new(shearMax, this.unitSettings.ForceUnit),
+        //        new(shearMin, this.unitSettings.ForceUnit),
+        //        new(momentMax, this.unitSettings.TorqueUnit),
+        //        new(momentMin, this.unitSettings.TorqueUnit),
         //        resultSetId
         //    )
         //    {
@@ -218,13 +236,16 @@ public class DsmAnalysisModel(Model model)
         //        MomentDiagrams = momentDiagrams,
         //    };
 
-        return resultSet;
-    }
-
-    private static void AssignMinMax(ref double min, ref double max, double rootValue)
-    {
-        min = Math.Min(min, rootValue);
-        max = Math.Max(max, rootValue);
+        return new()
+        {
+            ResultSet = resultSet,
+            DiagramResult = new()
+            {
+                ShearDiagrams = shearForceDiagrams,
+                MomentDiagrams = momentDiagrams,
+                DeflectionDiagrams = displacementResults,
+            }
+        };
     }
 
     private SortedUnsupportedStructureIds? sortedUnsupportedStructureIds;
@@ -238,7 +259,7 @@ public class DsmAnalysisModel(Model model)
 
         List<UnsupportedStructureDisplacementId2> degreeOfFreedomIds = [];
         List<UnsupportedStructureDisplacementId2> boundaryConditionIds = [];
-        foreach (var node in model.Nodes)
+        foreach (var dsmNode in this.dsmNodes)
         {
             foreach (
                 CoordinateSystemDirection3D direction in Enum.GetValues<CoordinateSystemDirection3D>()
@@ -250,13 +271,13 @@ public class DsmAnalysisModel(Model model)
                 }
 
                 // if UnsupportedStructureDisplacement is degree of freedom
-                if (node.Restraint.GetValueInDirection(direction) == true)
+                if (dsmNode.Node.Restraint.GetValueInDirection(direction) == true)
                 {
-                    degreeOfFreedomIds.Add(new(node.Id, direction));
+                    degreeOfFreedomIds.Add(new(dsmNode.Node.Id, direction));
                 }
                 else
                 {
-                    boundaryConditionIds.Add(new(node.Id, direction));
+                    boundaryConditionIds.Add(new(dsmNode.Node.Id, direction));
                 }
             }
         }
@@ -282,9 +303,9 @@ public class DsmAnalysisModel(Model model)
         foreach (var element1D in this.dsmElement1Ds)
         {
             var globalMatrixWithIdentifiers = element1D.GetGlobalStiffnessMatrixIdentified(
-                model.Settings.UnitSettings.ForceUnit,
-                model.Settings.UnitSettings.ForcePerLengthUnit,
-                model.Settings.UnitSettings.TorqueUnit
+                this.unitSettings.ForceUnit,
+                this.unitSettings.ForcePerLengthUnit,
+                this.unitSettings.TorqueUnit
             );
             sMatrix.AddEntriesWithMatchingIdentifiers(globalMatrixWithIdentifiers);
         }
@@ -328,8 +349,8 @@ public class DsmAnalysisModel(Model model)
         foreach (var node in this.dsmNodes)
         {
             var localLoadVector = node.GetForceVectorIdentifiedInGlobalCoordinates(
-                model.Settings.UnitSettings.ForceUnit,
-                model.Settings.UnitSettings.TorqueUnit
+                this.unitSettings.ForceUnit,
+                this.unitSettings.TorqueUnit
             );
             loadVector.AddEntriesWithMatchingIdentifiers(localLoadVector);
         }
@@ -376,9 +397,9 @@ public class DsmAnalysisModel(Model model)
         {
             var globalMemberEndForcesVector = element1D.GetGlobalMemberEndForcesVectorIdentified(
                 unknownJointDisplacementVector,
-                model.Settings.UnitSettings.ForceUnit,
-                model.Settings.UnitSettings.ForcePerLengthUnit,
-                model.Settings.UnitSettings.TorqueUnit
+                this.unitSettings.ForceUnit,
+                this.unitSettings.ForcePerLengthUnit,
+                this.unitSettings.TorqueUnit
             );
             reactions.AddEntriesWithMatchingIdentifiers(globalMemberEndForcesVector);
         }
@@ -447,7 +468,13 @@ public class DsmAnalysisModel(Model model)
                 displacementAngles[CoordinateSystemDirection3D.AboutZ]
             );
             analyticalNodes.Add(
-                new NodeResult(model.Id, resultSetId, nodeId, forcesResponse, displacementResponse)
+                new NodeResult(
+                    this.modelId,
+                    resultSetId,
+                    nodeId,
+                    forcesResponse,
+                    displacementResponse
+                )
             );
         }
 
@@ -466,14 +493,14 @@ public class DsmAnalysisModel(Model model)
             {
                 forceForces.Add(
                     kvp.Key.Direction,
-                    new Force(kvp.Value, model.Settings.UnitSettings.ForceUnit)
+                    new Force(kvp.Value, this.unitSettings.ForceUnit)
                 );
             }
             else
             {
                 forceTorques.Add(
                     kvp.Key.Direction,
-                    new Torque(kvp.Value, model.Settings.UnitSettings.TorqueUnit)
+                    new Torque(kvp.Value, this.unitSettings.TorqueUnit)
                 );
             }
         }
@@ -493,7 +520,7 @@ public class DsmAnalysisModel(Model model)
             {
                 displacementLengths.Add(
                     kvp.Key.Direction,
-                    new Length(kvp.Value, model.Settings.UnitSettings.LengthUnit)
+                    new Length(kvp.Value, this.unitSettings.LengthUnit)
                 );
             }
             else
@@ -505,4 +532,17 @@ public class DsmAnalysisModel(Model model)
             }
         }
     }
+}
+
+public record AnalysisResults
+{
+    public required ResultSet ResultSet { get; init; }
+    public required DiagramResult DiagramResult { get; init; }
+}
+
+public record DiagramResult
+{
+    public required ShearForceDiagram[] ShearDiagrams { get; init; }
+    public required MomentDiagram[] MomentDiagrams { get; init; }
+    public required DeflectionDiagrams[] DeflectionDiagrams { get; init; }
 }

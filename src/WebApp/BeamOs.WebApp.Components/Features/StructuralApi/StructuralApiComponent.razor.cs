@@ -3,6 +3,7 @@ using System.Text.Json;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Api;
 using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
@@ -11,6 +12,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
+using BeamOs.WebApp.Components.Features.ApiResponseHandlers;
 using BeamOs.WebApp.Components.Features.SelectionInfo;
 using BeamOs.WebApp.EditorCommands;
 using Fluxor;
@@ -84,7 +86,7 @@ public partial class StructuralApiComponent : FluxorComponent
                 m =>
                     m.GetParameters().LastOrDefault() is var x
                     && x is not null
-                    && x.ParameterType != typeof(CancellationToken)
+                    //&& x.ParameterType != typeof(CancellationToken)
                     && !methodsToExclude.Contains(m.Name)
             )
             .OrderBy(m => m.Name)
@@ -173,7 +175,7 @@ public partial class StructuralApiComponent : FluxorComponent
 
         var state = this.State.Value;
         var selectionInfos = state.SelectionInfo;
-        object?[] parameters = new object?[selectionInfos.Length];
+        object?[] parameters = new object?[selectionInfos.Length + 1];
 
         for (int i = 0; i < selectionInfos.Length; i++)
         {
@@ -205,6 +207,8 @@ public partial class StructuralApiComponent : FluxorComponent
                 throw new NotImplementedException();
             }
         }
+
+        parameters[^1] = CancellationToken.None;
 
         var result = state
             .SelectedMethod
@@ -242,6 +246,16 @@ public partial class StructuralApiComponent : FluxorComponent
                     new ModelEntityCreated() { ModelEntity = modelEntity, HandledByServer = true }
                 );
             }
+        }
+        if (result is DiagramResponse diagramResponse)
+        {
+            this.Dispatcher.Dispatch(
+                new DiagramResponseCreated()
+                {
+                    ModelId = new(this.ModelId),
+                    DiagramResponse = diagramResponse
+                }
+            );
         }
 
         //if (result is BeamOsEntityContractBase contract)
@@ -444,14 +458,14 @@ public static class ApiClientComponentReducers
         }
 
         EditableSelectionInfoFactory selectionInfoFactory = new(action.ModelId);
+
+        var parameters = action.MethodInfo.Value.MethodInfo.GetParameters();
+
         return state with
         {
             SelectedMethod = action.MethodInfo,
-            SelectionInfo = action
-                .MethodInfo
-                .Value
-                .MethodInfo
-                .GetParameters()
+            SelectionInfo = parameters
+                .Take(parameters.Length - 1)
                 .Select(p => selectionInfoFactory.Create(null, p.ParameterType, p.Name, true, 1))
                 .ToArray()
         };

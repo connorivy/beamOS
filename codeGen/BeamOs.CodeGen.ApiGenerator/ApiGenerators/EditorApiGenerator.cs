@@ -1,4 +1,5 @@
 using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
@@ -39,11 +40,14 @@ public class EditorApiGenerator : AbstractGenerator
         _ = addMethod("DeletePointLoad").Accepts<IModelEntity>();
         _ = addMethod("DeletePointLoads").Accepts<ICollection<IModelEntity>>();
 
-        //_ = addMethod("CreateShearDiagram").Accepts<ShearDiagramResponse>();
-        //_ = addMethod("CreateShearDiagrams").Accepts<ShearDiagramResponse[]>();
+        _ = addMethod("CreateShearDiagram").Accepts<ShearDiagramResponse>();
+        _ = addMethod("CreateShearDiagrams").Accepts<ShearDiagramResponse[]>();
 
-        //_ = addMethod("CreateMomentDiagram").Accepts<MomentDiagramResponse>();
-        //_ = addMethod("CreateMomentDiagrams").Accepts<MomentDiagramResponse[]>();
+        _ = addMethod("CreateMomentDiagram").Accepts<MomentDiagramResponse>();
+        _ = addMethod("CreateMomentDiagrams").Accepts<MomentDiagramResponse[]>();
+
+        _ = addMethod("CreateDeflectionDiagram").Accepts<DeflectionDiagramResponse>();
+        _ = addMethod("CreateDeflectionDiagrams").Accepts<DeflectionDiagramResponse[]>();
 
         _ = addMethod("SetSettings").Accepts<PhysicalModelSettings>();
 

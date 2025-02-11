@@ -2,6 +2,7 @@
 @inherits FluxorComponent
 
 <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class=@($"relative {@Class}")>
+
     <MudPaper Class="h-full w-full absolute z-0"></MudPaper>
 
     <canvas id="@CanvasId" class="h-full w-full absolute z-1"></canvas>
@@ -13,6 +14,7 @@
         </MudStack>
     </MudOverlay>
 </MudContainer>
+    <MudButton OnClick="Test">Test</MudButton>
 
 <script>
     function initializeCanvasById(id) {

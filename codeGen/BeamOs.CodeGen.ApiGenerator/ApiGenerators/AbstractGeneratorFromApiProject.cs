@@ -53,6 +53,7 @@ public abstract class AbstractGeneratorFromApiProject<TAssemblyMarker> : IApiGen
                 GenerateDtoTypes = false,
                 UseBaseUrl = false,
                 ExceptionClass = $"{this.ClientName}Exception",
+                GenerateOptionalParameters = true,
             };
 
             var source = new CSharpClientGenerator(doc, csGenSettings).GenerateFile();
