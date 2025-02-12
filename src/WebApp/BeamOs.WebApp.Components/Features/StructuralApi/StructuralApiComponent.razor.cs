@@ -462,7 +462,21 @@ public static class ApiClientComponentReducers
             SelectedMethod = action.MethodInfo,
             SelectionInfo = parameters
                 .Take(parameters.Length - 1)
-                .Select(p => selectionInfoFactory.Create(null, p.ParameterType, p.Name, true, 1))
+                .Select(p =>
+                {
+                    var isPropRequired =
+                        p.GetCustomAttribute<System.Runtime.InteropServices.OptionalAttribute>()
+                            is null
+                        || Nullable.GetUnderlyingType(p.ParameterType) is not null;
+
+                    return selectionInfoFactory.Create(
+                        null,
+                        p.ParameterType,
+                        p.Name,
+                        isPropRequired,
+                        1
+                    );
+                })
                 .ToArray()
         };
     }

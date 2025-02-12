@@ -6,10 +6,14 @@ using UnitsNet.Units;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration;
 
+[ParallelGroup("OpenSeesTests")]
 public partial class OpenSeesTests
 {
     [Test]
-    [MethodDataSource(typeof(AllSolvedProblems), nameof(AllSolvedProblems.ModelFixtures))]
+    [MethodDataSource(
+        typeof(AllSolvedProblems),
+        nameof(AllSolvedProblems.ModelFixturesWithExpectedNodeResults)
+    )]
     public async Task AssertNodeResults_AreApproxEqualToExpectedValues(ModelFixture modelFixture)
     {
         if (AssemblySetup.SkipOpenSeesTests)

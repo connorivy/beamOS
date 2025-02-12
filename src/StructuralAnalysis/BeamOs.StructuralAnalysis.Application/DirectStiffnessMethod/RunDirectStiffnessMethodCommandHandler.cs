@@ -50,24 +50,6 @@ public class RunDirectStiffnessMethodCommandHandler(
 
         resultSetRepository.Add(analysisResults.ResultSet);
 
-        //foreach (var nodeResult in results.NodeResults ?? Enumerable.Empty<NodeResult>())
-        //{
-        //    nodeResultRepository.Add(nodeResult);
-        //}
-
-        //foreach (
-        //    var shearForceDiagram in results.ShearForceDiagrams
-        //        ?? Enumerable.Empty<ShearForceDiagram>()
-        //)
-        //{
-        //    shearDiagramRepository.Add(shearForceDiagram);
-        //}
-
-        //foreach (var momentDiagram in results.MomentDiagrams ?? Enumerable.Empty<MomentDiagram>())
-        //{
-        //    momentDiagramRepository.Add(momentDiagram);
-        //}
-
         await unitOfWork.SaveChangesAsync(ct);
 
         return analysisResults.OtherAnalyticalResults.Map();

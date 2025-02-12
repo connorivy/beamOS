@@ -31,6 +31,11 @@ public static class AllSolvedProblems
     {
         return ModelFixtures().Where(x => x is IHasDsmElement1dResults);
     }
+
+    public static IEnumerable<ModelFixture> ModelFixturesWithExpectedNodeResults()
+    {
+        return ModelFixtures().Where(x => x is IHasExpectedNodeResults);
+    }
 }
 
 public static class AllSolvedProblemsFilter<T>

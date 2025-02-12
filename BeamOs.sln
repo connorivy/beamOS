@@ -35,6 +35,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E2A070EF-D8E8-42B4-88A0-3084C89601A4}"
 	ProjectSection(SolutionItems) = preProject
 		src\WebApp\Directory.Build.props = src\WebApp\Directory.Build.props
+		tests\StructuralAnalysis\BeamOs.Tests.StructuralAnalysis.Integration.Shared\OpenSeesTests.cs = tests\StructuralAnalysis\BeamOs.Tests.StructuralAnalysis.Integration.Shared\OpenSeesTests.cs
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.Tests.StructuralAnalysis.Integration", "tests\StructuralAnalysis\BeamOs.Tests.StructuralAnalysis.Integration\BeamOs.Tests.StructuralAnalysis.Integration.csproj", "{20BDE12A-686C-4C36-A51D-151845FF0938}"

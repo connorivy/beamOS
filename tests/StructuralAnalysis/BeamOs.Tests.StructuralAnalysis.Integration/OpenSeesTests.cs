@@ -14,7 +14,7 @@ public partial class OpenSeesTests
 
         foreach (var modelBuilder in AllSolvedProblems.ModelFixtures())
         {
-            await modelBuilder.Build(AssemblySetup.StructuralAnalysisApiClient);
+            await modelBuilder.CreateIfDoesntExist(AssemblySetup.StructuralAnalysisApiClient);
 
             await AssemblySetup
                 .StructuralAnalysisApiClient

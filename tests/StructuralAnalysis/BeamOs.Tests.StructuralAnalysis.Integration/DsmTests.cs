@@ -6,6 +6,7 @@ using UnitsNet.Units;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration;
 
+[ParallelGroup("DsmTests")]
 public sealed class DsmTests
 {
     [Before(HookType.Class)]
@@ -18,7 +19,7 @@ public sealed class DsmTests
 
         foreach (var modelBuilder in AllSolvedProblems.ModelFixtures())
         {
-            await modelBuilder.Build(AssemblySetup.StructuralAnalysisApiClient);
+            await modelBuilder.CreateIfDoesntExist(AssemblySetup.StructuralAnalysisApiClient);
 
             await AssemblySetup
                 .StructuralAnalysisApiClient
@@ -36,7 +37,10 @@ public sealed class DsmTests
     }
 
     [Test]
-    [MethodDataSource(typeof(AllSolvedProblems), nameof(AllSolvedProblems.ModelFixtures))]
+    [MethodDataSource(
+        typeof(AllSolvedProblems),
+        nameof(AllSolvedProblems.ModelFixturesWithExpectedNodeResults)
+    )]
     public async Task AssertNodeResults_AreApproxEqualToExpectedValues(ModelFixture modelFixture)
     {
         var nodeResultsFixture = (IHasExpectedNodeResults)modelFixture;
