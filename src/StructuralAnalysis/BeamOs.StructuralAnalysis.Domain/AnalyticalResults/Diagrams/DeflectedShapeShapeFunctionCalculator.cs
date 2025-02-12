@@ -57,11 +57,11 @@ public sealed class DeflectedShapeShapeFunctionCalculator
         double x,
         double l,
         Vector<double> displacementVector,
-        Matrix<double> elementRotationMatrix
+        Matrix<double> elementRotationMatrixTranspose
     )
     {
         Matrix<double> N = Matrix<double>.Build.DenseOfArray(Nx(x, l));
 
-        return (elementRotationMatrix * N.Multiply(displacementVector)).AsArray();
+        return (elementRotationMatrixTranspose * N.Multiply(displacementVector)).AsArray();
     }
 }
