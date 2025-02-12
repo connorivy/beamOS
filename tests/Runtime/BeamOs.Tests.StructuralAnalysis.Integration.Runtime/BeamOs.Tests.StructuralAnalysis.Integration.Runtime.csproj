@@ -4,11 +4,8 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <DefineConstants>$(DefineConstants);RUNTIME</DefineConstants>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="TUnit" />
-  </ItemGroup>
 
   <Import Project="..\..\StructuralAnalysis\BeamOs.Tests.StructuralAnalysis.Integration.Shared\BeamOs.Tests.StructuralAnalysis.Integration.Shared.projitems" Label="Shared" />
 

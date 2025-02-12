@@ -31,6 +31,9 @@
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>BeamOs.Tests.StructuralAnalysis.Unit</_Parameter1>
     </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>BeamOs.Tests.StructuralAnalysis.Unit.Runtime</_Parameter1>
+    </AssemblyAttribute>
   </ItemGroup>
 
 </Project>

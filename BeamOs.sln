@@ -33,10 +33,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.StructuralAnalysis.Domain", "src\StructuralAnalysis\BeamOs.StructuralAnalysis.Domain\BeamOs.StructuralAnalysis.Domain.csproj", "{5AAE3F28-F0AB-4B23-88D1-FA1257A6BAE0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E2A070EF-D8E8-42B4-88A0-3084C89601A4}"
-	ProjectSection(SolutionItems) = preProject
-		src\WebApp\Directory.Build.props = src\WebApp\Directory.Build.props
-		tests\StructuralAnalysis\BeamOs.Tests.StructuralAnalysis.Integration.Shared\OpenSeesTests.cs = tests\StructuralAnalysis\BeamOs.Tests.StructuralAnalysis.Integration.Shared\OpenSeesTests.cs
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.Tests.StructuralAnalysis.Integration", "tests\StructuralAnalysis\BeamOs.Tests.StructuralAnalysis.Integration\BeamOs.Tests.StructuralAnalysis.Integration.csproj", "{20BDE12A-686C-4C36-A51D-151845FF0938}"
 EndProject
@@ -89,6 +85,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Identity", "Identity", "{C0012B1E-CA69-4A5A-9238-03F3E4C01D5E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.Identity", "src\Identity\BeamOs.Identity\BeamOs.Identity.csproj", "{7B5E8D5B-6225-4BC2-9C28-269EEF909EB3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.Tests.StructuralAnalysis.Unit.Runtime", "tests\Runtime\BeamOs.Tests.StructuralAnalysis.Unit.Runtime\BeamOs.Tests.StructuralAnalysis.Unit.Runtime.csproj", "{44F9BE0D-BC4F-4CEB-9CFB-83D796B96863}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "BeamOs.Tests.StructuralAnalysis.Unit.Shared", "tests\StructuralAnalysis\BeamOs.Tests.StructuralAnalysis.Unit.Shared\BeamOs.Tests.StructuralAnalysis.Unit.Shared.shproj", "{CDCD9EDD-DC7A-41A2-8733-D60E0D1E1446}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -192,6 +192,10 @@ Global
 		{7B5E8D5B-6225-4BC2-9C28-269EEF909EB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B5E8D5B-6225-4BC2-9C28-269EEF909EB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B5E8D5B-6225-4BC2-9C28-269EEF909EB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44F9BE0D-BC4F-4CEB-9CFB-83D796B96863}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44F9BE0D-BC4F-4CEB-9CFB-83D796B96863}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44F9BE0D-BC4F-4CEB-9CFB-83D796B96863}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44F9BE0D-BC4F-4CEB-9CFB-83D796B96863}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -227,13 +231,18 @@ Global
 		{8EB56216-5E92-41ED-BF1F-3C14F8C283B9} = {E2A070EF-D8E8-42B4-88A0-3084C89601A4}
 		{C0012B1E-CA69-4A5A-9238-03F3E4C01D5E} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{7B5E8D5B-6225-4BC2-9C28-269EEF909EB3} = {C0012B1E-CA69-4A5A-9238-03F3E4C01D5E}
+		{44F9BE0D-BC4F-4CEB-9CFB-83D796B96863} = {E3119CBF-1995-4C4F-AFF4-C12E4A2CF139}
+		{CDCD9EDD-DC7A-41A2-8733-D60E0D1E1446} = {E2A070EF-D8E8-42B4-88A0-3084C89601A4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A4E54AF5-719C-45F7-8978-E734B3D3060B}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		tests\StructuralAnalysis\BeamOs.Tests.StructuralAnalysis.Integration.Shared\BeamOs.Tests.StructuralAnalysis.Integration.Shared.projitems*{20bde12a-686c-4c36-a51d-151845ff0938}*SharedItemsImports = 5
+		tests\StructuralAnalysis\BeamOs.Tests.StructuralAnalysis.Unit.Shared\BeamOs.Tests.StructuralAnalysis.Unit.Shared.projitems*{44f9be0d-bc4f-4ceb-9cfb-83d796b96863}*SharedItemsImports = 5
 		tests\StructuralAnalysis\BeamOs.Tests.StructuralAnalysis.Integration.Shared\BeamOs.Tests.StructuralAnalysis.Integration.Shared.projitems*{71bff578-b944-48ae-bb0e-369f0ed2cf2a}*SharedItemsImports = 5
 		tests\StructuralAnalysis\BeamOs.Tests.StructuralAnalysis.Integration.Shared\BeamOs.Tests.StructuralAnalysis.Integration.Shared.projitems*{7ca91bc8-60cb-4f02-9c75-615ecd5b73a3}*SharedItemsImports = 13
+		tests\StructuralAnalysis\BeamOs.Tests.StructuralAnalysis.Unit.Shared\BeamOs.Tests.StructuralAnalysis.Unit.Shared.projitems*{8eb56216-5e92-41ed-bf1f-3c14f8c283b9}*SharedItemsImports = 5
+		tests\StructuralAnalysis\BeamOs.Tests.StructuralAnalysis.Unit.Shared\BeamOs.Tests.StructuralAnalysis.Unit.Shared.projitems*{cdcd9edd-dc7a-41a2-8733-d60e0d1e1446}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal
