@@ -1,0 +1,83 @@
+@using BeamOs.WebApp.Components.Features.Common
+@using BeamOs.WebApp.Components.Features.Editor
+
+@inherits FluxorComponent
+
+<MudPaper Class="@Class">
+    <MudToolBar>
+        <MudTooltip Text="Run Analysis">
+            @if (this.state.Value.IsCalculating)
+            {
+                <MudProgressCircular Color="Color.Default" Indeterminate="true" />
+            }
+            else
+            {
+                <MudIconButton OnClick="RunAnalysis" Icon="@Icons.Material.Outlined.Calculate" Color="Color.Inherit" Class="mr-5">Run Analysis</MudIconButton>
+            }
+        </MudTooltip>
+        <MudTooltip Text="Show Diagrams">
+            <MudMenu Icon="@Icons.Material.Outlined.AreaChart">
+                <MudMenuItem OnClick="@editorComponent.ShowShear">Shear Diagrams</MudMenuItem>
+                <MudMenuItem OnClick="@editorComponent.ShowMoment">Moment Diagrams</MudMenuItem>
+                <MudMenuItem OnClick="@editorComponent.ShowDeflection">Deflection Diagrams</MudMenuItem>
+            </MudMenu>
+        </MudTooltip>
+    </MudToolBar>
+</MudPaper>
+
+@code {
+    [Parameter]
+    public string Class { get; init; }
+
+    [Parameter]
+    public EditorComponent editorComponent { get; init; }
+
+    [Parameter]
+    public Guid ModelId { get; init; }
+
+    private RunDsmCommandCommandHandler runDsmCommandCommandHandler1;
+    private IState<AnalysisToolbarState> state;
+
+    public AnalysisToolbar(
+        RunDsmCommandCommandHandler runDsmCommandCommandHandler,
+        IState<AnalysisToolbarState> state
+    )
+    {
+        this.runDsmCommandCommandHandler1 = runDsmCommandCommandHandler;
+        this.state = state;
+    }
+
+    private async Task RunAnalysis()
+    {
+        var result = await runDsmCommandCommandHandler1.ExecuteAsync(new() { ModelId = this.ModelId, UnitsOverride = "kn-m" });
+
+        if (result.IsSuccess)
+        {
+            await editorComponent.ShowDeflection();
+        }
+    }
+
+    [FeatureState]
+    public record AnalysisToolbarState(bool IsCalculating)
+    {
+        public AnalysisToolbarState() : this(false)
+        {
+
+        }
+    }
+
+    public static class AnalysisToolbarStateReducers
+    {
+        [ReducerMethod]
+        public static AnalysisToolbarState Reducer(AnalysisToolbarState state, AnalysisBegan analysisBegan)
+        {
+            return state with { IsCalculating = true };
+        }
+
+        [ReducerMethod]
+        public static AnalysisToolbarState Reducer(AnalysisToolbarState state, AnalysisEnded analysisEnded)
+        {
+            return state with { IsCalculating = false };
+        }
+    }
+}

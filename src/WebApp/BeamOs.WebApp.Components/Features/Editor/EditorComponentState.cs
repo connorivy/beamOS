@@ -1,9 +1,10 @@
 using System.Collections.Immutable;
 using BeamOs.CodeGen.EditorApi;
+using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
-using BeamOs.WebApp.Components.Features.ApiResponseHandlers;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.StructuralApi;
 using BeamOs.WebApp.EditorCommands;
@@ -301,4 +302,19 @@ public static class EditorComponentStateReducers
                 )
         };
     }
+}
+
+public readonly record struct AnalysisBegan
+{
+    public required Guid ModelId { get; init; }
+}
+
+public readonly record struct AnalysisEnded
+{
+    public required Guid ModelId { get; init; }
+}
+
+public readonly record struct AnalyticalResultsCreated
+{
+    public required AnalyticalResultsResponse AnalyticalResults { get; init; }
 }

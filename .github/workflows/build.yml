@@ -18,10 +18,6 @@ jobs:
       with:
         dotnet-version: 9.0.x
 
-    - name: Install Azure Functions Core Tools
-      run: |
-        npm install -g azure-functions-core-tools@4
-
     - name: Test And Collect CodeCov
       run: |
         dotnet tool install --global dotnet-coverage

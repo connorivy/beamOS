@@ -1,4 +1,5 @@
 @using BeamOs.Identity
+@using BeamOs.WebApp.Components.Features.TestExplorer
 @using Fluxor
 @using Microsoft.AspNetCore.Components.Authorization
 @using MudBlazor
@@ -16,24 +17,20 @@
 @* @inject AuthenticationStateProvider AuthenticationStateProvider *@
 
 <MudAppBar>
-    @*     <MudHidden Breakpoint="Breakpoint.SmAndDown">
+    @* <MudHidden Breakpoint="Breakpoint.SmAndDown">
         <MudIcon Icon="@Icons.Custom.Brands.MudBlazor" Size="Size.Large" />
-    </MudHidden>
-    <MudHidden Breakpoint="Breakpoint.MdAndUp">
-        <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit" Edge="Edge.Start" />
-    </MudHidden>
-    <MudHidden Breakpoint="Breakpoint.Xs">
-        <MudText Typo="Typo.h6" Class="ml-4">beamOS</MudText>
-    </MudHidden>
-    <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
-        <MudText Typo="Typo.subtitle2">beamOS</MudText>
     </MudHidden> *@
+    @* <MudHidden Breakpoint="Breakpoint.MdAndUp">
+        <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit" Edge="Edge.Start" />
+    </MudHidden> *@
+
+    <MudButton Href="/" Class="mr-12">beamOS</MudButton>
     @* <Logo Class="pr-8"/> *@
     <MudStack Row="true">
-        <MudButton Href="/test-explorer-dashboard">Reliability</MudButton>
-        @* <MudButton Href="@TestExplorer.Href">Test Explorer</MudButton> *@
+        <MudButton Href="/reliability">Reliability</MudButton>
+        <MudButton Href="@TestExplorer.Href">Test Explorer</MudButton>
         <MudButton Href="/models">Models</MudButton>
-        <MudButton Href="/models/0a83df88-656e-47d9-98fe-25fd7d370b06">TestModelPage</MudButton>
+        @* <MudButton Href="/models/0a83df88-656e-47d9-98fe-25fd7d370b06">TestModelPage</MudButton> *@
     </MudStack>
     <MudSpacer />
     <MudStack Row="true">

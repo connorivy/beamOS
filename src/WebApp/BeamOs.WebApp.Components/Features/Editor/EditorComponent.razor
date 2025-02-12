@@ -14,7 +14,14 @@
         </MudStack>
     </MudOverlay>
 </MudContainer>
-    <MudButton OnClick="Test">Test</MudButton>
+@{
+    #if DEBUG
+}
+
+        <MudButton OnClick="Test">Test</MudButton>
+@{
+    #endif
+}
 
 <script>
     function initializeCanvasById(id) {

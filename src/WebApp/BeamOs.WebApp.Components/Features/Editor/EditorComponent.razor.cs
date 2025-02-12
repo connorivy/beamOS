@@ -3,13 +3,11 @@ using System.Reflection.Metadata;
 using BeamOs.CodeGen.EditorApi;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
-using BeamOs.WebApp.Components.Features.ApiResponseHandlers;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.StructuralApi;
 using BeamOs.WebApp.Components.Features.UndoRedo;
@@ -19,6 +17,7 @@ using Fluxor.Blazor.Web.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
+using MudBlazor;
 
 namespace BeamOs.WebApp.Components.Features.Editor;
 
@@ -32,7 +31,8 @@ public partial class EditorComponent(
     LoadBeamOsEntityCommandHandler loadBeamOsEntityCommandHandler,
     ILogger<EditorComponent> logger,
     UndoRedoFunctionality undoRedoFunctionality,
-    IJSRuntime js
+    IJSRuntime js,
+    ISnackbar snackbar
 ) : FluxorComponent
 {
     [Parameter]
@@ -214,6 +214,42 @@ public partial class EditorComponent(
         await state.Value.EditorApi.CreateDeflectionDiagramsAsync(model.DeflectionDiagrams.Values);
     }
 
+    public async Task ShowShear()
+    {
+        cachedModelState.Value.Models.TryGetValue(this.ModelId.Value, out var model);
+        if (model.ShearDiagrams is null)
+        {
+            snackbar.Add("Analysis must be run before showing diagrams", Severity.Info);
+            return;
+        }
+        await state.Value.EditorApi.ClearCurrentOverlayAsync();
+        await state.Value.EditorApi.CreateShearDiagramsAsync(model.ShearDiagrams.Values);
+    }
+
+    public async Task ShowMoment()
+    {
+        cachedModelState.Value.Models.TryGetValue(this.ModelId.Value, out var model);
+        if (model.MomentDiagrams is null)
+        {
+            snackbar.Add("Analysis must be run before showing diagrams", Severity.Info);
+            return;
+        }
+        await state.Value.EditorApi.ClearCurrentOverlayAsync();
+        await state.Value.EditorApi.CreateMomentDiagramsAsync(model.MomentDiagrams.Values);
+    }
+
+    public async Task ShowDeflection()
+    {
+        cachedModelState.Value.Models.TryGetValue(this.ModelId.Value, out var model);
+        if (model.DeflectionDiagrams is null)
+        {
+            snackbar.Add("Analysis must be run before showing diagrams", Severity.Info);
+            return;
+        }
+        await state.Value.EditorApi.ClearCurrentOverlayAsync();
+        await state.Value.EditorApi.CreateDeflectionDiagramsAsync(model.DeflectionDiagrams.Values);
+    }
+
     public async Task Clear() => await state.Value.EditorApi.ClearAsync();
 
     protected override async ValueTask DisposeAsyncCore(bool disposing)
@@ -261,10 +297,7 @@ public record CachedModelState(ImmutableDictionary<Guid, CachedModelResponse> Mo
             "Node" => model.Nodes.GetValueOrDefault(modelCacheKey.Id),
             "Element1d" => model.Element1ds.GetValueOrDefault(modelCacheKey.Id),
             "PointLoad" => model.PointLoads.GetValueOrDefault(modelCacheKey.Id),
-            _
-                => throw new NotImplementedException(
-                    $"type {modelCacheKey.TypeName} is not implemented"
-                )
+            _ => null
         };
     }
 
@@ -287,10 +320,7 @@ public record CachedModelState(ImmutableDictionary<Guid, CachedModelResponse> Mo
                     ?.GetValueOrDefault(modelCacheKey.Id),
             "Element1d" => null,
             "PointLoad" => null,
-            _
-                => throw new NotImplementedException(
-                    $"type {modelCacheKey.TypeName} is not implemented"
-                )
+            _ => null
         };
     }
 }
