@@ -84,8 +84,8 @@
     <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.9.0" />
     <PackageVersion Include="PuppeteerSharp" Version="18.0.1" />
     <PackageVersion Include="Scalar.AspNetCore" Version="1.2.53" />
-    <PackageVersion Include="Speckle.Core" Version="3.1.0-dev.79" />
-    <PackageVersion Include="Speckle.Objects" Version="3.1.0-dev.79" />
+    <PackageVersion Include="Speckle.Core" Version="2.21.3" />
+    <PackageVersion Include="Speckle.Objects" Version="2.21.3" />
     <PackageVersion Include="System.CodeDom" Version="4.4.0" />
     <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="7.1.2" />
     <PackageVersion Include="Testcontainers.MsSql" Version="4.1.0" />

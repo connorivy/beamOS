@@ -13,6 +13,5 @@
     <Compile Include="$(MSBuildThisFileDirectory)DirectStiffnessMethod\DsmModelTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GlobalUsings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IAssemblyMarkerStructuralUnitTests.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Mappers\BeamOsModelBuilderResponseMapper.cs" />
   </ItemGroup>
 </Project>

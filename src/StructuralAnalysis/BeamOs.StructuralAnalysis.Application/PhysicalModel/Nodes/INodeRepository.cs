@@ -1,10 +1,10 @@
+using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 
-public interface INodeRepository
+public interface INodeRepository : IModelResourceRepository<NodeId, Node>
 {
-    void Add(Node entity);
-    Task<Node> Update(PatchNodeCommand patchCommand);
-    Task<List<Node>> GetAll();
+    public Task<Node> Update(PatchNodeCommand patchCommand);
+    public Task<List<Node>> GetAll();
 }

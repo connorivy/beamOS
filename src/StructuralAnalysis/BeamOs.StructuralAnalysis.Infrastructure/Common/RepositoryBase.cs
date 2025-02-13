@@ -3,6 +3,7 @@ using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.Common;
@@ -17,6 +18,11 @@ internal abstract class RepositoryBase<TId, TEntity>(StructuralAnalysisDbContext
     public void Add(TEntity aggregate)
     {
         _ = dbContext.Set<TEntity>().Add(aggregate);
+    }
+
+    public void Put(TEntity aggregate)
+    {
+        _ = dbContext.Set<TEntity>().Update(aggregate);
     }
 
     public void Remove(TEntity aggregate)
@@ -37,6 +43,13 @@ internal abstract class ModelResourceRepositoryBase<TId, TEntity>(
     where TId : struct, IEquatable<TId>, IIntBasedId
     where TEntity : BeamOsModelEntity<TId>
 {
+    public async Task<List<TId>> GetIdsInModel(ModelId modelId, CancellationToken ct = default) =>
+        await dbContext
+            .Set<TEntity>()
+            .Where(m => m.ModelId == modelId)
+            .Select(m => m.Id)
+            .ToListAsync(ct);
+
     public async Task<TEntity?> GetSingle(ModelId modelId, TId id) =>
         await this.DbContext
             .Set<TEntity>()

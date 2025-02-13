@@ -17,3 +17,7 @@ public abstract partial class BeamOsFromBodyBaseEndpoint<TRequest, TResponse>
 public abstract partial class BeamOsModelResourceBaseEndpoint<TCommand, TBody, TResponse>
     : BeamOsBaseEndpoint<TCommand, TResponse>
     where TCommand : IModelResourceRequest<TBody>, new() { }
+
+public abstract partial class BeamOsModelResourceWithIntIdBaseEndpoint<TCommand, TBody, TResponse>
+    : BeamOsBaseEndpoint<TCommand, TResponse>
+    where TCommand : IModelResourceWithIntIdRequest<TBody>, new() { }

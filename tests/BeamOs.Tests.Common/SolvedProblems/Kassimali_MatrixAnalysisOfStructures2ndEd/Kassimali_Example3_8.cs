@@ -60,7 +60,7 @@ public class Kassimali_Example3_8 : ModelFixture, IHasExpectedNodeResults
     private static readonly Restraint free2D = new(true, true, false, false, false, true);
     private static readonly Restraint pinned2d = new(false, false, false, false, false, true);
 
-    public override IEnumerable<CreateNodeRequest> NodeRequests()
+    public override IEnumerable<PutNodeRequest> NodeRequests()
     {
         yield return new()
         {
@@ -91,7 +91,7 @@ public class Kassimali_Example3_8 : ModelFixture, IHasExpectedNodeResults
         };
     }
 
-    public override IEnumerable<CreateMaterialRequest> MaterialRequests()
+    public override IEnumerable<PutMaterialRequest> MaterialRequests()
     {
         yield return new()
         {
@@ -101,7 +101,7 @@ public class Kassimali_Example3_8 : ModelFixture, IHasExpectedNodeResults
         };
     }
 
-    public override IEnumerable<CreateSectionProfileRequest> SectionProfileRequests()
+    public override IEnumerable<PutSectionProfileRequest> SectionProfileRequests()
     {
         yield return new()
         {
@@ -126,7 +126,7 @@ public class Kassimali_Example3_8 : ModelFixture, IHasExpectedNodeResults
         };
     }
 
-    public override IEnumerable<CreatePointLoadRequest> PointLoadRequests()
+    public override IEnumerable<PutPointLoadRequest> PointLoadRequests()
     {
         yield return new()
         {
@@ -145,7 +145,7 @@ public class Kassimali_Example3_8 : ModelFixture, IHasExpectedNodeResults
         };
     }
 
-    public override IEnumerable<CreateElement1dRequest> Element1dRequests()
+    public override IEnumerable<PutElement1dRequest> Element1dRequests()
     {
         yield return new()
         {

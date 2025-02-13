@@ -53,26 +53,18 @@ public partial class StructuralApiComponent : FluxorComponent
     private string[] errors = [];
     private MudForm form;
 
-    protected override async Task OnInitializedAsync()
-    {
-        //var client = new HttpClient { BaseAddress = new Uri($"http://localhost:7111") };
-        //var stream = await client.GetStreamAsync("swagger/Alpha%20Release/swagger.json");
-        //var openApiDocument = new OpenApiStreamReader().Read(stream, out var diagnostic);
-
-        base.OnInitializedAsync();
-    }
-
     private static HashSet<string> methodsToExclude =
     [
         nameof(IStructuralAnalysisApiClientV1.CreateModelAsync),
         //nameof(IStructuralAnalysisApiClientV1.GetElement1dsAsync),
         nameof(IStructuralAnalysisApiClientV1.GetModelAsync),
         nameof(IStructuralAnalysisApiClientV1.GetElement1dAsync),
-    //nameof(IStructuralAnalysisApiClientV1.GetModelResultsAsync),
-    //nameof(IStructuralAnalysisApiClientV1.GetModelsAsync),
-    //nameof(IStructuralAnalysisApiClientV1.GetMomentDiagramAsync),
-    //nameof(IStructuralAnalysisApiClientV1.GetMomentLoadsAsync),
-    //nameof(IStructuralAnalysisApiClientV1.GetNodeResultsAsync),
+        //nameof(IStructuralAnalysisApiClientV1.GetModelResultsAsync),
+        nameof(IStructuralAnalysisApiClientV1.GetModelsAsync),
+        //nameof(IStructuralAnalysisApiClientV1.GetMomentDiagramAsync),
+        //nameof(IStructuralAnalysisApiClientV1.GetMomentLoadsAsync),
+        nameof(IStructuralAnalysisApiClientV1.GetResultSetAsync),
+        nameof(IStructuralAnalysisApiClientV1.GetNodeResultAsync),
     //nameof(IStructuralAnalysisApiClientV1.GetShearDiagramAsync),
     //nameof(IStructuralAnalysisApiClientV1.GetSingleElement1dAsync),
     //nameof(IStructuralAnalysisApiClientV1.GetSingleNodeResultAsync),
@@ -82,13 +74,7 @@ public partial class StructuralApiComponent : FluxorComponent
     {
         ClientMethods = typeof(IStructuralAnalysisApiClientV1)
             .GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(
-                m =>
-                    m.GetParameters().LastOrDefault() is var x
-                    && x is not null
-                    //&& x.ParameterType != typeof(CancellationToken)
-                    && !methodsToExclude.Contains(m.Name)
-            )
+            .Where(m => !methodsToExclude.Contains(m.Name))
             .OrderBy(m => m.Name)
             .Select(
                 m =>
@@ -314,6 +300,13 @@ public partial class StructuralApiComponent : FluxorComponent
         else if (methodInfo.Name.StartsWith("Get", StringComparison.Ordinal))
         {
             return Http.Get;
+        }
+        else if (
+            methodInfo.Name.StartsWith("Put", StringComparison.Ordinal)
+            || methodInfo.Name.StartsWith("BatchPut", StringComparison.Ordinal)
+        )
+        {
+            return Http.Put;
         }
         throw new Exception("todo");
     }

@@ -1,24 +1,21 @@
-using System.Collections.Generic;
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Contracts.Common;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
+using BeamOs.StructuralAnalysis.Infrastructure.Common;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Riok.Mapperly.Abstractions;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Nodes;
 
-internal sealed class NodeRepository(StructuralAnalysisDbContext dbContext) : INodeRepository
+internal sealed class NodeRepository(StructuralAnalysisDbContext dbContext)
+    : ModelResourceRepositoryBase<NodeId, Node>(dbContext),
+        INodeRepository
 {
-    public void Add(Node entity) => dbContext.Nodes.Add(entity);
-
     public Task<List<Node>> GetAll()
     {
-        dbContext.ChangeTracker.Clear();
-        return dbContext.Nodes.ToListAsync();
+        this.DbContext.ChangeTracker.Clear();
+        return this.DbContext.Nodes.ToListAsync();
     }
 
     // this works, but the local version of the entity doesn't reflect the db version, so you'd still ahve
@@ -36,16 +33,16 @@ internal sealed class NodeRepository(StructuralAnalysisDbContext dbContext) : IN
     //            patchCommand.Id
     //        );
 
-    //    EntityEntry<Node> attachedNode = dbContext.Nodes.Attach(node);
+    //    EntityEntry<Node> attachedNode = this.DbContext.Nodes.Attach(node);
     //    var p = attachedNode.ComplexProperty(n => n.LocationPoint).CurrentValue;
-    //    //EntityEntry<Node> attachedNode = dbContext.Entry(node);
+    //    //EntityEntry<Node> attachedNode = this.DbContext.Entry(node);
 
     //    if (patchCommand.LocationPoint is not null)
     //    {
     //        var currentAttachedProp = attachedNode.ComplexProperty(n => n.LocationPoint);
     //        //currentAttachedProp.IsModified = true;
     //        //attachedNode.Property(n => n.LocationPoint).IsModified = true;
-    //        //var currentAttachedProp = dbContext.Entry(node.LocationPoint);
+    //        //var currentAttachedProp = this.DbContext.Entry(node.LocationPoint);
     //        if (patchCommand.LocationPoint.Value.X is not null)
     //        {
     //            currentAttachedProp.Property(n => n.X).IsModified = true;
@@ -64,7 +61,7 @@ internal sealed class NodeRepository(StructuralAnalysisDbContext dbContext) : IN
     //        }
     //    }
 
-    //    //dbContext.Nodes.Where(n => n.ModelId == new ModelId()).up
+    //    //this.DbContext.Nodes.Where(n => n.ModelId == new ModelId()).up
 
     //    if (patchCommand.Restraint is not null)
     //    {
@@ -101,7 +98,7 @@ internal sealed class NodeRepository(StructuralAnalysisDbContext dbContext) : IN
 
     public async Task<Node> Update(PatchNodeCommand patchCommand)
     {
-        Node node = await dbContext
+        Node node = await this.DbContext
             .Nodes
             .FirstAsync(n => n.ModelId.Equals(patchCommand.ModelId) && n.Id == patchCommand.Id);
 

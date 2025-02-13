@@ -13,6 +13,8 @@ public interface IRepository<TId, T>
 
     void Add(T aggregate);
 
+    void Put(T aggregate);
+
     //void Update(T aggregate);
 
     void Remove(T aggregate);
@@ -22,6 +24,8 @@ public interface IModelResourceRepository<TId, T> : IRepository<TId, T>
     where TId : struct, IIntBasedId
     where T : BeamOsModelEntity<TId>
 {
+    public Task<List<TId>> GetIdsInModel(ModelId modelId, CancellationToken ct = default);
+
     public Task<T?> GetSingle(ModelId modelId, TId id);
     public Task RemoveById(ModelId modelId, TId id);
 }

@@ -1,5 +1,10 @@
+@using BeamOs.CodeGen.StructuralAnalysisApiClient
+@using BeamOs.SpeckleConnector
+@using BeamOs.StructuralAnalysis.Contracts.Common
 @using BeamOs.WebApp.Components.Features.Common
+@using BeamOs.WebApp.Components.Features.Dialogs
 @using BeamOs.WebApp.Components.Features.Editor
+@using static BeamOs.WebApp.Components.Features.Dialogs.ReceiveFromSpeckleDialog
 
 @inherits FluxorComponent
 
@@ -22,6 +27,9 @@
                 <MudMenuItem OnClick="@editorComponent.ShowDeflection">Deflection Diagrams</MudMenuItem>
             </MudMenu>
         </MudTooltip>
+        <MudTooltip Text="Recieve Date From Speckle">
+            <MudIconButton OnClick="ReceiveFromSpeckle" Icon="@Icons.Material.Filled.CallReceived" />
+        </MudTooltip>
     </MudToolBar>
 </MudPaper>
 
@@ -33,18 +41,23 @@
     public EditorComponent editorComponent { get; init; }
 
     [Parameter]
-    public Guid ModelId { get; init; }
+    public required Guid ModelId { get; init; }
 
     private RunDsmCommandCommandHandler runDsmCommandCommandHandler1;
     private IState<AnalysisToolbarState> state;
+    private IStructuralAnalysisApiClientV1 structuralAnalysisApiClientV1;
+    private IDialogService dialogService;
 
     public AnalysisToolbar(
         RunDsmCommandCommandHandler runDsmCommandCommandHandler,
-        IState<AnalysisToolbarState> state
-    )
+        IState<AnalysisToolbarState> state,
+        IStructuralAnalysisApiClientV1 structuralAnalysisApiClientV1,
+        IDialogService dialogService)
     {
         this.runDsmCommandCommandHandler1 = runDsmCommandCommandHandler;
         this.state = state;
+        this.structuralAnalysisApiClientV1 = structuralAnalysisApiClientV1;
+        this.dialogService = dialogService;
     }
 
     private async Task RunAnalysis()
@@ -54,6 +67,23 @@
         if (result.IsSuccess)
         {
             await editorComponent.ShowDeflection();
+        }
+    }
+
+    private async Task ReceiveFromSpeckle()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        var dialog = dialogService.Show<ReceiveFromSpeckleDialog>("Receive Data From Speckle", options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            var newToken = (SpeckleReceiveInfo)result.Data;
+            BeamOsModelBuilderSpeckleFactory beamOsModelBuilderSpeckleFactory = new(this.ModelId.ToString(), new(UnitSettingsContract.K_IN), "na", "na");
+
+            var builder = await beamOsModelBuilderSpeckleFactory.Build(newToken.ApiToken, newToken.ProjectId, newToken.ObjectId, newToken.ServerUrl);
+
+            await builder.CreateOrUpdate(structuralAnalysisApiClientV1);
         }
     }
 

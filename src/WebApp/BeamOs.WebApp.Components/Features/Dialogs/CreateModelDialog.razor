@@ -76,7 +76,7 @@
 
     private static MethodInfo CreateModel { get; } = typeof(IStructuralAnalysisApiClientV1)
         .GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.GetParameters().Length == 1 && m.Name.Equals(nameof(IStructuralAnalysisApiClientV1.CreateModelAsync)))
+            .Where(m => m.Name.Equals(nameof(IStructuralAnalysisApiClientV1.CreateModelAsync)))
             .First();
 
     private void Cancel() => MudDialog.Cancel();
@@ -94,7 +94,17 @@
 
         var parameterType = typeof(CreateModelRequest);
         object parameterInstance;
-        var serialized = JsonSerializer.Serialize(this.parameterValues);
+
+        string serialized;
+        if (this.parameterValues is ComplexFieldSelectionInfo complexFieldSelectionInfo)
+        {
+            serialized = complexFieldSelectionInfo.ToJsonObject()?.ToString();
+        }
+        else
+        {
+            throw new InvalidOperationException($"The 'parameterValues' object is of an unexpected type, {parameterValues.GetType()}");
+        }
+
         try
         {
             parameterInstance = JsonSerializer.Deserialize(serialized, parameterType);
@@ -107,7 +117,7 @@
         }
 
         var result = CreateModel
-            .Invoke(this.StructuralAnalysisApiAlphaClient, new[] { parameterInstance });
+            .Invoke(this.StructuralAnalysisApiAlphaClient, new[] { parameterInstance, CancellationToken.None });
 
         if (result is Task t)
         {

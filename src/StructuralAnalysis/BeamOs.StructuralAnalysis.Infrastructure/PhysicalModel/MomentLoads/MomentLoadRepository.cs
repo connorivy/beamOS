@@ -5,5 +5,5 @@ using BeamOs.StructuralAnalysis.Infrastructure.Common;
 namespace BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.MomentLoads;
 
 internal class MomentLoadRepository(StructuralAnalysisDbContext dbContext)
-    : RepositoryBase<MomentLoadId, MomentLoad>(dbContext),
+    : ModelResourceRepositoryBase<MomentLoadId, MomentLoad>(dbContext),
         IMomentLoadRepository { }

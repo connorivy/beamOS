@@ -117,6 +117,11 @@ public class DiagramBuilder
 
         foreach (var distributedValue in this.previousDiagramIntervals)
         {
+            if (distributedValue.Polynomial == Polynomial.Zero)
+            {
+                continue;
+            }
+
             this.AddDistributedValue(
                 intervals,
                 distributedValue.StartLocation,

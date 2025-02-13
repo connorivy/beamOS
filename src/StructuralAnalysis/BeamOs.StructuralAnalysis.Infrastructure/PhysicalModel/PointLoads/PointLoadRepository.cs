@@ -5,5 +5,5 @@ using BeamOs.StructuralAnalysis.Infrastructure.Common;
 namespace BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.PointLoads;
 
 internal class PointLoadRepository(StructuralAnalysisDbContext dbContext)
-    : RepositoryBase<PointLoadId, PointLoad>(dbContext),
+    : ModelResourceRepositoryBase<PointLoadId, PointLoad>(dbContext),
         IPointLoadRepository { }

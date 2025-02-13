@@ -18,7 +18,7 @@ public sealed class Udoeyo_Example7_7 : ModelFixture
     public override PhysicalModelSettings Settings { get; } = new(UnitSettingsContract.kN_M);
     public override string GuidString => "e63cca48-5585-4117-8dd9-0d0bf56f3d50";
 
-    public override IEnumerable<CreateElement1dRequest> Element1dRequests()
+    public override IEnumerable<PutElement1dRequest> Element1dRequests()
     {
         yield return new()
         {
@@ -30,7 +30,7 @@ public sealed class Udoeyo_Example7_7 : ModelFixture
         };
     }
 
-    public override IEnumerable<CreateMaterialRequest> MaterialRequests()
+    public override IEnumerable<PutMaterialRequest> MaterialRequests()
     {
         yield return new()
         {
@@ -40,7 +40,7 @@ public sealed class Udoeyo_Example7_7 : ModelFixture
         };
     }
 
-    public override IEnumerable<CreateNodeRequest> NodeRequests()
+    public override IEnumerable<PutNodeRequest> NodeRequests()
     {
         yield return new()
         {
@@ -57,9 +57,9 @@ public sealed class Udoeyo_Example7_7 : ModelFixture
         };
     }
 
-    public override IEnumerable<CreatePointLoadRequest> PointLoadRequests() => [];
+    public override IEnumerable<PutPointLoadRequest> PointLoadRequests() => [];
 
-    public override IEnumerable<CreateSectionProfileRequest> SectionProfileRequests()
+    public override IEnumerable<PutSectionProfileRequest> SectionProfileRequests()
     {
         yield return new()
         {
@@ -73,7 +73,7 @@ public sealed class Udoeyo_Example7_7 : ModelFixture
         };
     }
 
-    public override IEnumerable<CreateMomentLoadRequest> MomentLoadRequests()
+    public override IEnumerable<PutMomentLoadRequest> MomentLoadRequests()
     {
         yield return new()
         {

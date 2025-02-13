@@ -5,5 +5,5 @@ using BeamOs.StructuralAnalysis.Infrastructure.Common;
 namespace BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Materials;
 
 internal class MaterialRepository(StructuralAnalysisDbContext dbContext)
-    : RepositoryBase<MaterialId, Material>(dbContext),
+    : ModelResourceRepositoryBase<MaterialId, Material>(dbContext),
         IMaterialRepository { }

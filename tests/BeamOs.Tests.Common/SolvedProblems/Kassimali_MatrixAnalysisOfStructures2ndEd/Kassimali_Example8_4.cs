@@ -82,7 +82,7 @@ public class Kassimali_Example8_4
             }
         ];
 
-    public override IEnumerable<CreateNodeRequest> NodeRequests()
+    public override IEnumerable<PutNodeRequest> NodeRequests()
     {
         yield return new()
         {
@@ -113,7 +113,7 @@ public class Kassimali_Example8_4
         };
     }
 
-    public override IEnumerable<CreateMaterialRequest> MaterialRequests()
+    public override IEnumerable<PutMaterialRequest> MaterialRequests()
     {
         yield return new()
         {
@@ -123,7 +123,7 @@ public class Kassimali_Example8_4
         };
     }
 
-    public override IEnumerable<CreateSectionProfileRequest> SectionProfileRequests()
+    public override IEnumerable<PutSectionProfileRequest> SectionProfileRequests()
     {
         yield return new()
         {
@@ -138,7 +138,7 @@ public class Kassimali_Example8_4
         };
     }
 
-    public override IEnumerable<CreatePointLoadRequest> PointLoadRequests()
+    public override IEnumerable<PutPointLoadRequest> PointLoadRequests()
     {
         yield return new()
         {
@@ -157,7 +157,7 @@ public class Kassimali_Example8_4
         };
     }
 
-    public override IEnumerable<CreateMomentLoadRequest> MomentLoadRequests()
+    public override IEnumerable<PutMomentLoadRequest> MomentLoadRequests()
     {
         yield return new()
         {
@@ -192,7 +192,7 @@ public class Kassimali_Example8_4
         };
     }
 
-    public override IEnumerable<CreateElement1dRequest> Element1dRequests()
+    public override IEnumerable<PutElement1dRequest> Element1dRequests()
     {
         yield return new()
         {

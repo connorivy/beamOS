@@ -19,7 +19,7 @@ public sealed class DsmTests
 
         foreach (var modelBuilder in AllSolvedProblems.ModelFixtures())
         {
-            await modelBuilder.CreateIfDoesntExist(AssemblySetup.StructuralAnalysisApiClient);
+            await modelBuilder.CreateOnly(AssemblySetup.StructuralAnalysisApiClient);
 
             await AssemblySetup
                 .StructuralAnalysisApiClient

@@ -21,22 +21,22 @@ public partial class BeamOsModelBuilderResponseMapper(Guid modelId)
     public partial ModelResponse ToReponse(BeamOsModelBuilder builder);
 
     [MapValue("ModelId", Use = nameof(GetModelId))]
-    public partial NodeResponse ToResponse(CreateNodeRequest request);
+    public partial NodeResponse ToResponse(PutNodeRequest request);
 
     [MapValue("ModelId", Use = nameof(GetModelId))]
-    public partial Element1dResponse ToResponse(CreateElement1dRequest request);
+    public partial Element1dResponse ToResponse(PutElement1dRequest request);
 
     [MapValue("ModelId", Use = nameof(GetModelId))]
-    public partial PointLoadResponse ToResponse(CreatePointLoadRequest request);
+    public partial PointLoadResponse ToResponse(PutPointLoadRequest request);
 
     [MapValue("ModelId", Use = nameof(GetModelId))]
-    public partial MomentLoadResponse ToResponse(CreateMomentLoadRequest request);
+    public partial MomentLoadResponse ToResponse(PutMomentLoadRequest request);
 
     [MapValue("ModelId", Use = nameof(GetModelId))]
-    public partial MaterialResponse ToResponse(CreateMaterialRequest request);
+    public partial MaterialResponse ToResponse(PutMaterialRequest request);
 
     [MapValue("ModelId", Use = nameof(GetModelId))]
-    public partial SectionProfileResponse ToResponse(CreateSectionProfileRequest request);
+    public partial SectionProfileResponse ToResponse(PutSectionProfileRequest request);
 
     private List<ResultSetResponse> EmptyResultSets() => [];
 }

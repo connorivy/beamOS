@@ -257,15 +257,25 @@ public readonly struct ComplexFieldSelectionInfo : IComplexSelectionInfo
         {
             if (selectionInfo is ISimpleSelectionInfo simpleSelectionInfo)
             {
+                bool isRequired = (selectionInfo as IEditableSelectionInfo)?.IsRequired ?? false;
+
                 AddObjectToJsonObject(
                     jsonObject,
                     selectionInfo.FieldName,
-                    simpleSelectionInfo.Value
+                    simpleSelectionInfo.Value,
+                    simpleSelectionInfo.FieldType,
+                    isRequired
                 );
             }
             else if (selectionInfo is ComplexFieldSelectionInfo complex)
             {
-                AddObjectToJsonObject(jsonObject, selectionInfo.FieldName, complex.ToJsonObject());
+                AddObjectToJsonObject(
+                    jsonObject,
+                    selectionInfo.FieldName,
+                    complex.ToJsonObject(),
+                    complex.FieldType,
+                    complex.IsRequired
+                );
             }
             else
             {
@@ -298,12 +308,27 @@ public readonly struct ComplexFieldSelectionInfo : IComplexSelectionInfo
         return false;
     }
 
-    static void AddObjectToJsonObject(JsonObject jsonObject, string key, object? value)
+    static void AddObjectToJsonObject(
+        JsonObject jsonObject,
+        string key,
+        object? value,
+        Type fieldType,
+        bool isRequired
+    )
     {
         switch (value)
         {
             case null:
-                jsonObject[key] = null;
+                if (isRequired)
+                {
+                    jsonObject[key] = JsonValue.Create(
+                        fieldType.IsValueType ? Activator.CreateInstance(fieldType) : null
+                    );
+                }
+                else
+                {
+                    jsonObject[key] = null;
+                }
                 break;
             case int intValue:
                 jsonObject[key] = JsonValue.Create(intValue);

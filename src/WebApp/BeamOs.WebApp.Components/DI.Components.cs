@@ -61,7 +61,7 @@ public static class DI
 
         foreach (var modelBuilder in AllSolvedProblems.ModelFixtures())
         {
-            if (await modelBuilder.CreateIfDoesntExist(apiClient))
+            if (await modelBuilder.CreateOnly(apiClient))
             {
                 await apiClient.RunOpenSeesAnalysisAsync(modelBuilder.Id);
             }

@@ -74,20 +74,20 @@ public partial class BeamOsModelBuilderDomainMapper(Guid modelId)
     }
 
     [MapValue("ModelId", Use = nameof(GetModelId))]
-    public partial Node ToDomain(CreateNodeRequest request);
+    public partial Node ToDomain(PutNodeRequest request);
 
     [MapValue("ModelId", Use = nameof(GetModelId))]
-    public partial Element1d ToDomain(CreateElement1dRequest request);
+    public partial Element1d ToDomain(PutElement1dRequest request);
 
     [MapValue("ModelId", Use = nameof(GetModelId))]
-    public partial PointLoad ToDomain(CreatePointLoadRequest request);
+    public partial PointLoad ToDomain(PutPointLoadRequest request);
 
     [MapValue("ModelId", Use = nameof(GetModelId))]
-    public partial MomentLoad ToDomain(CreateMomentLoadRequest request);
+    public partial MomentLoad ToDomain(PutMomentLoadRequest request);
 
     [MapValue("ModelId", Use = nameof(GetModelId))]
-    public partial Material ToDomain(CreateMaterialRequest request);
+    public partial Material ToDomain(PutMaterialRequest request);
 
     [MapValue("ModelId", Use = nameof(GetModelId))]
-    public partial SectionProfile ToDomain(CreateSectionProfileRequest request);
+    public partial SectionProfile ToDomain(PutSectionProfileRequest request);
 }

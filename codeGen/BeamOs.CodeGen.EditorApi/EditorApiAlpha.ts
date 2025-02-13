@@ -1999,8 +1999,8 @@ export interface IGlobalStresses {
 }
 
 export class IModelEntity implements IIModelEntity {
-    readonly id!: number;
     readonly modelId!: string;
+    readonly id!: number;
 
     constructor(data?: IIModelEntity) {
         if (data) {
@@ -2013,8 +2013,8 @@ export class IModelEntity implements IIModelEntity {
 
     init(_data?: any) {
         if (_data) {
-            (<any>this).id = _data["id"];
             (<any>this).modelId = _data["modelId"];
+            (<any>this).id = _data["id"];
         }
     }
 
@@ -2027,15 +2027,15 @@ export class IModelEntity implements IIModelEntity {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
         data["modelId"] = this.modelId;
+        data["id"] = this.id;
         return data;
     }
 }
 
 export interface IIModelEntity {
-    id: number;
     modelId: string;
+    id: number;
 }
 
 export class LengthContract implements ILengthContract {

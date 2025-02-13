@@ -31,6 +31,8 @@ builder
     });
 #endif
 
+MathNet.Numerics.Control.UseNativeMKL();
+
 WebApplication app = builder.Build();
 
 #if DEBUG

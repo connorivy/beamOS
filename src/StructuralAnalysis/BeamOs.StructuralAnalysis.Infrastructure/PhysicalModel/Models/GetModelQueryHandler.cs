@@ -20,6 +20,7 @@ public class GetModelQueryHandler(StructuralAnalysisDbContext dbContext)
         var model = await dbContext
             .Models
             .AsNoTracking()
+            .AsSplitQuery()
             .Where(e => e.Id.Equals(query))
             .Include(m => m.Nodes)
             .Include(m => m.PointLoads)
