@@ -6,7 +6,7 @@ namespace BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod.Common.Extensio
 
 public static class NodeIdExtensions
 {
-    public static IEnumerable<UnsupportedStructureDisplacementId2> GetUnsupportedStructureDisplacementIds(
+    public static IEnumerable<UnsupportedStructureDisplacementId> GetUnsupportedStructureDisplacementIds(
         this NodeId nodeId
     )
     {

@@ -88,7 +88,7 @@ public class DsmElement1d(
             this.StartPoint.Z + (this.EndPoint.Z - this.StartPoint.Z) * percentage
         );
 
-    public IEnumerable<UnsupportedStructureDisplacementId2> GetUnsupportedStructureDisplacementIds()
+    public IEnumerable<UnsupportedStructureDisplacementId> GetUnsupportedStructureDisplacementIds()
     {
         for (var i = 0; i < 2; i++)
         {

@@ -1,3 +1,4 @@
+using System.Linq;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models.Mappers;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.CsSdk.Mappers;
@@ -50,7 +51,7 @@ public class DsmModelTests
 
         double[] jointDisplacementVector = dsmAnalysisModel
             .GetUnknownJointDisplacementVector()
-            .Values;
+            .ToArray();
 
         Asserter.AssertEqual(
             BeamOsObjectType.Model,
@@ -75,7 +76,7 @@ public class DsmModelTests
         var dsmFixture = (IHasExpectedReactionVector)modelFixture;
         DsmAnalysisModel dsmAnalysisModel = mapper.ToDsm(modelFixture, out _);
 
-        double[] jointReactionVector = dsmAnalysisModel.GetUnknownJointReactionVector().Values;
+        double[] jointReactionVector = dsmAnalysisModel.GetUnknownJointReactionVector().ToArray();
 
         Asserter.AssertEqual(
             BeamOsObjectType.Model,

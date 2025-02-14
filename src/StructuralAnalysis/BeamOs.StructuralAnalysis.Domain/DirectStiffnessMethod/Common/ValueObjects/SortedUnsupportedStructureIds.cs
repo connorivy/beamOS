@@ -3,18 +3,18 @@ using BeamOs.Common.Domain.Models;
 namespace BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod.Common.ValueObjects;
 
 public class SortedUnsupportedStructureIds(
-    List<UnsupportedStructureDisplacementId2> degreeOfFreedomIds,
-    List<UnsupportedStructureDisplacementId2> boundaryConditionIds
+    List<UnsupportedStructureDisplacementId> degreeOfFreedomIds,
+    List<UnsupportedStructureDisplacementId> boundaryConditionIds
 ) : BeamOSValueObject
 {
-    public List<UnsupportedStructureDisplacementId2> DegreeOfFreedomIds { get; } =
+    public List<UnsupportedStructureDisplacementId> DegreeOfFreedomIds { get; } =
         degreeOfFreedomIds;
-    public List<UnsupportedStructureDisplacementId2> BoundaryConditionIds { get; } =
+    public List<UnsupportedStructureDisplacementId> BoundaryConditionIds { get; } =
         boundaryConditionIds;
 
     public void Deconstruct(
-        out List<UnsupportedStructureDisplacementId2> degreeOfFreedomIds,
-        out List<UnsupportedStructureDisplacementId2> boundaryConditionIds
+        out List<UnsupportedStructureDisplacementId> degreeOfFreedomIds,
+        out List<UnsupportedStructureDisplacementId> boundaryConditionIds
     )
     {
         degreeOfFreedomIds = this.DegreeOfFreedomIds;
