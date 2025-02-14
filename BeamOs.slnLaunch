@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "FullStack",
+    "Projects": [
+      {
+        "Path": "src\\StructuralAnalysis\\BeamOs.StructuralAnalysis.Api\\BeamOs.StructuralAnalysis.Api.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "src\\WebApp\\BeamOs.WebApp\\BeamOs.WebApp.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

@@ -1,0 +1,200 @@
+@using BeamOs.StructuralAnalysis.Contracts.Common
+@using BeamOs.Tests.Common
+@using BeamOs.WebApp.Components.Features.Editor
+@using BeamOs.WebApp.EditorCommands
+@using System.Collections.Immutable
+@using static BeamOs.WebApp.Components.Features.TestExplorer.TestResultDisplayComponent
+
+@inherits FluxorComponent
+
+<MudDrawerHeader Class="flex flex-row p-0 h-fit min-h-4 items-center">
+    <MudTooltip Text="Back to All Example Problems">
+        <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="GoBack"></MudIconButton>
+    </MudTooltip>
+    <MudText Typo="Typo.h6" Class="grow text-center">Test Results</MudText>
+    <div class="w-12"></div>
+</MudDrawerHeader>
+
+<div class="flex flex-col h-full w-full">
+    @{
+        int numFilteredTests = 0;
+    }
+    <MudExpansionPanels Class="grow" MultiExpansion="true" Outlined="false" Elevation="0" Dense="true">
+        <MudList Class="grow" T="TestResult" SelectedValueChanged="SelectedTestInfoChanged">
+            @foreach (var (objectType, idToResultsDict) in this.TestResults)
+            {
+                if (this.SelectedObjectType is not null && objectType != this.SelectedObjectType.Value)
+                {
+                    continue;
+                }
+
+                string objectDisplayName;
+                @if (objectType == BeamOsObjectType.Model)
+                {
+                    objectDisplayName = "Model";
+                }
+                else
+                {
+                    objectDisplayName = objectType + "s";
+                }
+                <MudExpansionPanel Expanded="true" Class="text-nowrap text-clip mud-typography mud-typography-subtitle1 p-4">
+                    <TitleContent>
+                        <div class="d-flex">
+                            <RunTestButtonGroup TestIds="@idToResultsDict.Where(kvp => ShouldDisplayTestResult(kvp.Key)).SelectMany(kvp => kvp.Value).Select(results => results.Id).ToArray()" />
+                            <MudText Class="pl-2"><strong>@objectDisplayName</strong></MudText>
+                        </div>
+                    </TitleContent>
+                    <ChildContent>
+                        @foreach (var (id, testResults) in idToResultsDict.OrderBy(kvp => kvp.Key))
+                        {
+                            if (!this.ShouldDisplayTestResult(id))
+                            {
+                                continue;
+                            }
+
+                            foreach (var result in testResults)
+                            {
+                                numFilteredTests++;
+                                string content;
+                                @if (objectType == BeamOsObjectType.Model)
+                                {
+                                    content = result.ComparedValueName;
+                                }
+                                else
+                                {
+                                    content = $"Id: {id}, {result.ComparedValueName}";
+                                }
+                                <MudListItem @onmouseover="() => MouseOver(objectType, id)" Value="@result">
+                                    <AvatarContent>
+                                        <RunTestButton TestId="@result.Id" />
+                                    </AvatarContent>
+                                    <ChildContent>
+                                        @content
+                                    </ChildContent>
+                                </MudListItem>
+                            }
+                        }
+                    </ChildContent>
+                </MudExpansionPanel>
+            }
+        </MudList>
+    </MudExpansionPanels>
+</div>
+
+
+@code {
+    [Parameter]
+    public required string CanvasId { get; init; }
+
+    [Parameter]
+    public SelectedObject[]? SelectedObjects { get; init; }
+
+    private BeamOsObjectType? SelectedObjectType => StringToEnum(this.SelectedObjects?.SingleOrDefault()?.TypeName);
+
+    private string? SelectedObjectId => this.SelectedObjects?.SingleOrDefault()?.Id.ToString();
+
+    private async Task SelectedTestInfoChanged(TestResult result)
+    {
+        // string resultId = result.Id;
+        // SingleTestState testResult = TestInfoState.Value.TestInfoIdToTestResultDict[resultId];
+        // if (testResult.FrontEndProgressStatus == TestProgressStatus.NotStarted)
+        // {
+        //     this.Dispatcher.Dispatch(new TestResultProgressChanged(resultId, TestProgressStatus.InProgress));
+
+        //     var x = Convert.ToInt32(1000 * Random.Shared.NextDouble());
+        //     await Task.Delay(x);
+
+        //     this.Dispatcher.Dispatch(new TestResultProgressChanged(resultId, TestProgressStatus.Finished));
+        // }
+        await RunTestsInFrontEndCommandHandler.ExecuteAsync(new RunTestsInFrontEndCommand(result.Id));
+
+        this.Dispatcher.Dispatch(new TestResultSelected(result));
+    }
+
+    private void MouseOver(BeamOsObjectType objectType, string id)
+    {
+        if (!int.TryParse(id, out var intId))
+        {
+            return;
+        }
+
+        // this.Dispatcher.Dispatch(new ChangeSelectionCommand(this.CanvasId, [new SelectedObject(intId, EnumToString(objectType))]));
+    }
+
+    [Parameter]
+    public required IDictionary<BeamOsObjectType, ImmutableDictionary<string, List<TestResult>>> TestResults { get; init; }
+
+    public BeamOsObjectType? StringToEnum(string? objectType)
+    {
+        return objectType switch
+        {
+            null => null,
+            "Node" => BeamOsObjectType.Node,
+            "Element1d" => BeamOsObjectType.Element1d,
+            "Material" => BeamOsObjectType.Material,
+            "SectionProfile" => BeamOsObjectType.SectionProfile,
+            "PointLoad" => BeamOsObjectType.PointLoad,
+            "MomentLoad" => BeamOsObjectType.MomentLoad,
+            _ => throw new NotImplementedException($"Object type {objectType} is not implemented")
+        };
+    }
+
+    public string EnumToString(BeamOsObjectType objectType)
+    {
+        return objectType switch
+        {
+            BeamOsObjectType.Node => "Node",
+            BeamOsObjectType.Element1d => "Element1d",
+            BeamOsObjectType.Material => "Material",
+            BeamOsObjectType.SectionProfile => "SectionProfile",
+            BeamOsObjectType.PointLoad => "PointLoad",
+            BeamOsObjectType.MomentLoad => "MomentLoad",
+            _ => throw new NotImplementedException($"Object type {objectType} is not implemented")
+        };
+    }
+
+    private bool ShouldDisplayTestResult(string id)
+    {
+        if (this.SelectedObjectId is not null && id != this.SelectedObjectId)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    [Inject]
+    private IDispatcher Dispatcher { get; init; }
+
+    [Inject]
+    private IState<TestInfoState> TestInfoState { get; init; }
+
+    [Inject]
+    private RunTestsInFrontEndCommandHandler RunTestsInFrontEndCommandHandler { get; init; }
+
+    private void GoBack()
+    {
+        this.Dispatcher.Dispatch(new ChangeSelectedProblemTests(null));
+    }
+
+    // private void GhostObjectsWithoutTests()
+    // {
+    //     var testIds = this.TestSelectorState.Value.AllTestResults.SelectMany(kvp => kvp.Value.Select(r => r.BeamOsObjectId)).ToList();
+
+    //     this.Dispatcher.Dispatch(new SetColorFilterCommand(this.TestSelectorState.Value.CanvasId, new(testIds, true, "0x808080", true)));
+
+    //     var idsToGhost = this.AllStructuralAnalysisModelCaches.GetByModelId(modelId).GetEntityIdsOfType<BeamOsEntityContractBase>();
+    //     foreach (var id in this.TestSelectorState.Value.AllTestResults.SelectMany(kvp => kvp.Value.Select(r => r.BeamOsObjectId)))
+    //     {
+    //         idsToGhost.Remove(id);
+    //     }
+
+    // }
+
+    // private void RemoveFilters()
+    // {
+    //     var testIds = this.TestSelectorState.Value.AllTestResults.SelectMany(kvp => kvp.Value.Select(r => r.BeamOsObjectId)).ToList();
+
+    //     this.Dispatcher.Dispatch(new RemoveColorFilterCommand(this.TestSelectorState.Value.CanvasId, new(testIds, true)));
+    // }
+}

@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UseSqlServer Condition="'$(UseSqlServer)' == ''">true</UseSqlServer>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<!--<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />-->
+	</ItemGroup>
+
+  <PropertyGroup Condition="'$(UseSqlServer)' == true">
+    <DefineConstants>$(DefineConstants);SQL_SERVER</DefineConstants>
+  </PropertyGroup>
+  
+  <ItemGroup Condition="'$(UseSqlServer)' == true">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+  </ItemGroup>
+
+  <!--<ItemGroup Condition="'$(UseSqlServer)' != false">
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+  </ItemGroup>-->
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\..\tests\BeamOs.Tests.Common\BeamOs.Tests.Common.csproj" />
+	  <ProjectReference Include="..\BeamOs.StructuralAnalysis.Application\BeamOs.StructuralAnalysis.Application.csproj" />
+	  <ProjectReference Include="..\BeamOs.StructuralAnalysis.Domain\BeamOs.StructuralAnalysis.Domain.csproj" />
+	</ItemGroup>
+</Project>

@@ -1,0 +1,33 @@
+@using MudBlazor
+@inherits FluxorComponent
+
+<MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class=@($"relative {@Class}")>
+
+    <MudPaper Class="h-full w-full absolute z-0"></MudPaper>
+
+    <canvas id="@CanvasId" class="h-full w-full absolute z-1"></canvas>
+ 
+    <MudOverlay Absolute="true" Visible="@state.Value.IsLoading" DarkBackground="true">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.Center">
+            <div class="rounded animate-spin ease duration-300 w-10 h-10 border-4 border-white"></div>
+            <h2 class="px-3 font-bold text-white"> @state.Value.LoadingText ...</h2>
+        </MudStack>
+    </MudOverlay>
+</MudContainer>
+@{
+    #if DEBUG
+}
+
+        <MudButton OnClick="Test">Test</MudButton>
+@{
+    #endif
+}
+
+<script>
+    function initializeCanvasById(id) {
+        var btn = document.getElementById(id);
+        btn.addEventListener('mousedown', function(event) {
+            event.preventDefault();
+        });
+    }
+</script>

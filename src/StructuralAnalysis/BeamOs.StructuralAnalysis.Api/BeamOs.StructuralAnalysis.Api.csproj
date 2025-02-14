@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <InvariantGlobalization>false</InvariantGlobalization>
+    <!--<PublishAot>true</PublishAot>--> <!-- Need to wait for AOT EF Core support --> 
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Scalar.AspNetCore" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\tests\BeamOs.Tests.Common\BeamOs.Tests.Common.csproj" />
+    <ProjectReference Include="..\..\Common\BeamOs.Common.Api\BeamOs.Common.Api.csproj" />
+    <ProjectReference Include="..\BeamOs.StructuralAnalysis.Api.Endpoints\BeamOs.StructuralAnalysis.Api.Endpoints.csproj" />
+    <ProjectReference Include="..\BeamOs.StructuralAnalysis.Application\BeamOs.StructuralAnalysis.Application.csproj" />
+    <ProjectReference Include="..\BeamOs.StructuralAnalysis.Contracts\BeamOs.StructuralAnalysis.Contracts.csproj" />
+    <ProjectReference Include="..\BeamOs.StructuralAnalysis.Infrastructure\BeamOs.StructuralAnalysis.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <Target Name="CopyOpenSees" AfterTargets="AfterBuild" Condition="'$(ContinuousIntegrationEnv)' == false">
+    <!-- /y will surpress prompt to override existing files -->
+    <!-- /s will copy subdirectories unless they are empty-->
+    <Exec Condition="Exists('$(OpenSeesDir)bin\')" Command="xcopy /y /s $(OpenSeesDir)bin\** $(OutDir)bin\" />
+    <Exec Condition="Exists('$(OpenSeesDir)lib\')" Command="xcopy /y /s $(OpenSeesDir)lib\** $(OutDir)lib\" />
+  </Target>
+
+</Project>

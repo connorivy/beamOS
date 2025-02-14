@@ -1,0 +1,57 @@
+@page "/models/{ModelId:guid}"
+
+@using BeamOs.CodeGen.EditorApi
+@using BeamOs.WebApp.Components.Features.AnalysisToolbar
+@using BeamOs.WebApp.Components.Features.Editor
+@using BeamOs.WebApp.Components.Features.SelectionInfo
+@using BeamOs.WebApp.Components.Features.StructuralApi
+@using BeamOs.WebApp.EditorCommands
+@using Fluxor.Blazor.Web.Components
+@using MudBlazor
+
+@inherits FluxorComponent
+
+<PageTitle>Editor</PageTitle>
+@* 
+@if (this.editorComponent is not null)
+{
+    <MudStack Row="true">
+        <MudButton OnClick="@editorComponent.ShowShear">Show Shear Diagrams</MudButton>
+        <MudButton OnClick="@editorComponent.ShowMoment">Show Moment Diagrams</MudButton>
+        <MudButton OnClick="@editorComponent.ShowDeflection">Show Deflection Diagrams</MudButton>
+    </MudStack>
+} *@
+<MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="relative h-full w-full">
+    <EditorComponent Class="h-full" @ref="editorComponent" ModelId="@ModelId" IsReadOnly="false"></EditorComponent>
+    @if (this.editorComponent is not null && this.State.Value.LoadedModelId is Guid modelId)
+    {
+        <div class="flex justify-center absolute left-0 right-0 top-4">
+            <AnalysisToolbar Class="w-1/2" editorComponent="@editorComponent" ModelId="@modelId"></AnalysisToolbar>
+        </div>
+
+        <StructuralApiComponent Class="absolute left-0 top-0 w-1/5 p-4" ModelId="@modelId" CanvasId="@editorComponent.CanvasId"></StructuralApiComponent>
+
+        <SelectionInfoComponent ModelId="@modelId" SelectedObjects="this.State.Value.SelectedObjects" Class="absolute right-0 top-0 w-1/5 p-4" CanvasId="@editorComponent.CanvasId"></SelectionInfoComponent>
+    }
+</MudContainer>
+
+@code {
+    [Parameter]
+    public Guid ModelId { get; set; }
+
+    [Inject]
+    private IState<EditorComponentState> State { get; init; }
+
+    private EditorComponent? editorComponent
+    {
+        get;
+        set
+        {
+            field = value;
+            StateHasChanged();
+        }
+    }
+
+    public static string GetRelativeUrl(Guid guid)
+        => $"/models/{guid}";
+}

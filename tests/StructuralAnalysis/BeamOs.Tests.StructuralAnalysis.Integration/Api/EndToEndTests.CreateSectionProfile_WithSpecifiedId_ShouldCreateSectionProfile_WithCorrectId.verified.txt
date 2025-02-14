@@ -1,0 +1,33 @@
+﻿{
+  Value: {
+    Id: 1636,
+    ModelId: Guid_1,
+    Area: {
+      Value: 10.6,
+      Unit: SquareInch
+    },
+    StrongAxisMomentOfInertia: {
+      Value: 448.0,
+      Unit: InchToTheFourth
+    },
+    WeakAxisMomentOfInertia: {
+      Value: 24.5,
+      Unit: InchToTheFourth
+    },
+    PolarMomentOfInertia: {
+      Value: 0.55,
+      Unit: InchToTheFourth
+    },
+    StrongAxisShearArea: {
+      Value: 5.0095,
+      Unit: SquareInch
+    },
+    WeakAxisShearArea: {
+      Value: 4.6905,
+      Unit: SquareInch
+    }
+  },
+  Error: null,
+  IsError: false,
+  IsSuccess: true
+}

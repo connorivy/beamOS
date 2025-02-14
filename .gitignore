@@ -363,4 +363,12 @@ MigrationBackup/
 .idea/
 
 # OpenSees
-openSees/lib
+openSees/*
+
+# Verify
+*.received.*
+*.received/
+
+# Results
+output.xml
+output.cobertura.xml

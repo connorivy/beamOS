@@ -9,40 +9,27 @@ jobs:
     name: Build and Test
     runs-on: ubuntu-latest
     env:
-      ContinuousIntegrationBuild: true
-
-    services:
-      mssql:
-        image: mcr.microsoft.com/mssql/server:2022-latest
-        env:
-          SA_PASSWORD: yourStrong(!)Password
-          ACCEPT_EULA: 'Y'
-        ports:
-          - 1433:1433
+      ContinuousIntegrationEnv: true
 
     steps:
     - uses: actions/checkout@v4
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: 9.0.x
 
-    - name: Restore dependencies
-      run: dotnet restore
-
-    - name: Build
-      run: dotnet build --no-restore -c Release /p:ContinuousIntegrationBuild=true
-
-    - name: Test
-      run: dotnet test --no-build -c Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
+    - name: Test And Collect CodeCov
+      run: |
+        dotnet tool install --global dotnet-coverage
+        export PATH="$PATH:/root/.dotnet/tools"
+        dotnet-coverage collect "dotnet test" -f cobertura -s ./CodeCov.runsettings
 
     - name: ReportGenerator
       uses: danielpalme/ReportGenerator-GitHub-Action@5.2.0
       with:
-        reports: './tests/**/*.info'
+        reports: './output.cobertura.xml'
         targetdir: './tests/TestResults'
         reporttypes: 'lcov'
-        filefilters: '-*\*.g.cs'
 
     - name: Coveralls
       uses: coverallsapp/github-action@master
@@ -58,7 +45,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: 9.0.x
 
     - name: Restore csharpier tool
       run: dotnet tool restore

@@ -1,0 +1,70 @@
+@using Microsoft.AspNetCore.Components
+@using static BeamOs.WebApp.Components.Features.Identity.UserSettings.UserSettings
+@inject NavigationManager NavigationManager
+
+<MudDialog>
+    <DialogContent>
+        <!-- Token Name -->
+        <MudTextField @bind-Value="NewToken.Name" Label="Token Name" Required="true" Class="mb-4" />
+
+        <!-- Scopes Selection -->
+        <MudText Typo="Typo.h6" Class="font-semibold mb-2">Select Scopes</MudText>
+        <MudText Typo="Typo.body2" Class="text-gray-600 mb-4">
+            Choose the permissions this token will have.
+        </MudText>
+
+        @foreach (var scope in AvailableScopes)
+        {
+            <MudCheckBox T="bool" ValueChanged="@(val => OnCheckedChanged(scope, val))"
+                         Label="@scope" 
+                         Class="mb-2" />
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel" Color="Color.Secondary">Cancel</MudButton>
+        <MudButton OnClick="Submit" Color="Color.Primary">Create</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    private ApiToken NewToken = new ApiToken();
+
+    private List<string> AvailableScopes = new List<string>
+    {
+        "models:read",
+        "models:write",
+        // "projects:read",
+        // "projects:write",
+        // "users:read",
+        // "users:write"
+    };
+
+    private void OnCheckedChanged(string item, bool value)
+    {
+        if (value)
+        {
+            NewToken.Scopes.Add(item);
+        }
+        else
+        {
+            NewToken.Scopes.Remove(item);
+        }
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private void Submit()
+    {
+        if (!string.IsNullOrEmpty(NewToken.Name))
+        {
+            NewToken.Id = 99; // Assign a new ID
+            NewToken.CreatedOn = DateTime.Now;
+            MudDialog.Close(DialogResult.Ok(NewToken));
+        }
+    }
+}

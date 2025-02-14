@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
-  <PropertyGroup Label="Packaging">
-    <!--<Version>0.0.38</Version>-->
-    <IsPackable>true</IsPackable>
-  </PropertyGroup>
   <PropertyGroup Label="General Config">
-    <TargetFramework>net8.0</TargetFramework>
-    <ContinuousIntegrationBuild Condition="'$(ContinuousIntegrationBuild)' == ''">false</ContinuousIntegrationBuild>
+    <TargetFramework>net9.0</TargetFramework>
+    <LangVersion>preview</LangVersion>
+    <OpenSeesDir Condition="'$(OpenSeesDir)' == ''">$(MSBuildThisFileDirectory)openSees\OpenSees3.7.0\</OpenSeesDir>
+    <ContinuousIntegrationEnv Condition="'$(ContinuousIntegrationEnv)' == ''">false</ContinuousIntegrationEnv>
+
+    <!--<TUnitImplicitUsings>false</TUnitImplicitUsings>-->
+    <!--<InvariantGlobalization>true</InvariantGlobalization>-->
     <NoWarn>
       CA1707; <!-- Remove the underscores from method name -->
       CA1725; <!--Parameter names should match base declaration-->

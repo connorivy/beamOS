@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TUnitImplicitUsings>false</TUnitImplicitUsings>
+    <LangVersion>preview</LangVersion>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Hybrid" />
+    <PackageReference Include="MudBlazor" />
+    <PackageReference Include="Fluxor" />
+    <PackageReference Include="Fluxor.Blazor.Web" />
+    <PackageReference Include="UnitsNet" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\codeGen\BeamOs.CodeGen.EditorApi\BeamOs.CodeGen.EditorApi.csproj" />
+    <ProjectReference Include="..\..\..\codeGen\BeamOs.CodeGen.StructuralAnalysisApiClient\BeamOs.CodeGen.StructuralAnalysisApiClient.csproj" />
+    <ProjectReference Include="..\..\..\tests\BeamOs.Tests.Common\BeamOs.Tests.Common.csproj" />
+    <ProjectReference Include="..\..\..\tests\Runtime\BeamOs.Tests.Runtime.TestRunner\BeamOs.Tests.Runtime.TestRunner.csproj" />
+    <ProjectReference Include="..\..\Common\BeamOs.Common.Api\BeamOs.Common.Api.csproj" />
+    <ProjectReference Include="..\..\Common\BeamOs.Common.Application\BeamOs.Common.Application.csproj" />
+    <ProjectReference Include="..\..\Identity\BeamOs.Identity\BeamOs.Identity.csproj" />
+    <ProjectReference Include="..\..\SpeckleConnector\BeamOs.SpeckleConnector\BeamOs.SpeckleConnector.csproj" />
+    <ProjectReference Include="..\..\StructuralAnalysis\BeamOs.StructuralAnalysis.CsSdk\BeamOs.StructuralAnalysis.CsSdk.csproj" />
+    <ProjectReference Include="..\BeamOs.WebApp.EditorCommands\BeamOs.WebApp.EditorCommands.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+</Project>

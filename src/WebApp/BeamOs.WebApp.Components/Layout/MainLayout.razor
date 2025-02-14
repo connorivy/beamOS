@@ -1,0 +1,43 @@
+@using Fluxor
+@using Microsoft.AspNetCore.Components.Rendering
+@using Microsoft.AspNetCore.Components.Sections
+@using Microsoft.AspNetCore.Http
+@using MudBlazor
+@using Fluxor.Blazor.Web.Components
+
+@inherits FluxorLayout
+@layout FullScreenLayout
+
+<NavBar />
+
+@if (this.State.Value.HasContent)
+{   
+    <MudDrawer Width="401px" ClipMode="DrawerClipMode.Docked" Variant="DrawerVariant.Responsive" Open="true">
+        <SectionOutlet SectionId="Drawer" />
+    </MudDrawer>
+}
+
+<MudMainContent Class="h-full">
+    <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="relative h-full">
+        @Body
+    </MudContainer>
+</MudMainContent>
+
+@code {
+    // protected MudTheme _baseTheme = new();
+
+    [Inject]
+    IState<MainLayoutState> State { get; init; }
+
+    // [Inject]
+    // IHttpContextAccessor httpContextAccessor { get; init; }
+
+    private string inputValue = "initial";
+    internal static object Drawer = new();
+
+    protected override void OnInitialized()
+    {
+        // var x = httpContextAccessor.HttpContext;
+        base.OnInitialized();
+    }
+}

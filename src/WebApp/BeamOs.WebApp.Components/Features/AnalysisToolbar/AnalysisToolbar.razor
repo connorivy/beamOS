@@ -1,0 +1,113 @@
+@using BeamOs.CodeGen.StructuralAnalysisApiClient
+@using BeamOs.SpeckleConnector
+@using BeamOs.StructuralAnalysis.Contracts.Common
+@using BeamOs.WebApp.Components.Features.Common
+@using BeamOs.WebApp.Components.Features.Dialogs
+@using BeamOs.WebApp.Components.Features.Editor
+@using static BeamOs.WebApp.Components.Features.Dialogs.ReceiveFromSpeckleDialog
+
+@inherits FluxorComponent
+
+<MudPaper Class="@Class">
+    <MudToolBar>
+        <MudTooltip Text="Run Analysis">
+            @if (this.state.Value.IsCalculating)
+            {
+                <MudProgressCircular Color="Color.Default" Indeterminate="true" />
+            }
+            else
+            {
+                <MudIconButton OnClick="RunAnalysis" Icon="@Icons.Material.Outlined.Calculate" Color="Color.Inherit" Class="mr-5">Run Analysis</MudIconButton>
+            }
+        </MudTooltip>
+        <MudTooltip Text="Show Diagrams">
+            <MudMenu Icon="@Icons.Material.Outlined.AreaChart">
+                <MudMenuItem OnClick="@editorComponent.ShowShear">Shear Diagrams</MudMenuItem>
+                <MudMenuItem OnClick="@editorComponent.ShowMoment">Moment Diagrams</MudMenuItem>
+                <MudMenuItem OnClick="@editorComponent.ShowDeflection">Deflection Diagrams</MudMenuItem>
+            </MudMenu>
+        </MudTooltip>
+        <MudTooltip Text="Recieve Date From Speckle">
+            <MudIconButton OnClick="ReceiveFromSpeckle" Icon="@Icons.Material.Filled.CallReceived" />
+        </MudTooltip>
+    </MudToolBar>
+</MudPaper>
+
+@code {
+    [Parameter]
+    public string Class { get; init; }
+
+    [Parameter]
+    public EditorComponent editorComponent { get; init; }
+
+    [Parameter]
+    public required Guid ModelId { get; init; }
+
+    private RunDsmCommandCommandHandler runDsmCommandCommandHandler1;
+    private IState<AnalysisToolbarState> state;
+    private IStructuralAnalysisApiClientV1 structuralAnalysisApiClientV1;
+    private IDialogService dialogService;
+
+    public AnalysisToolbar(
+        RunDsmCommandCommandHandler runDsmCommandCommandHandler,
+        IState<AnalysisToolbarState> state,
+        IStructuralAnalysisApiClientV1 structuralAnalysisApiClientV1,
+        IDialogService dialogService)
+    {
+        this.runDsmCommandCommandHandler1 = runDsmCommandCommandHandler;
+        this.state = state;
+        this.structuralAnalysisApiClientV1 = structuralAnalysisApiClientV1;
+        this.dialogService = dialogService;
+    }
+
+    private async Task RunAnalysis()
+    {
+        var result = await runDsmCommandCommandHandler1.ExecuteAsync(new() { ModelId = this.ModelId, UnitsOverride = "kn-m" });
+
+        if (result.IsSuccess)
+        {
+            await editorComponent.ShowDeflection();
+        }
+    }
+
+    private async Task ReceiveFromSpeckle()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        var dialog = dialogService.Show<ReceiveFromSpeckleDialog>("Receive Data From Speckle", options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            var newToken = (SpeckleReceiveInfo)result.Data;
+            BeamOsModelBuilderSpeckleFactory beamOsModelBuilderSpeckleFactory = new(this.ModelId.ToString(), new(UnitSettingsContract.K_IN), "na", "na");
+
+            var builder = await beamOsModelBuilderSpeckleFactory.Build(newToken.ApiToken, newToken.ProjectId, newToken.ObjectId, newToken.ServerUrl);
+
+            await builder.CreateOrUpdate(structuralAnalysisApiClientV1);
+        }
+    }
+
+    [FeatureState]
+    public record AnalysisToolbarState(bool IsCalculating)
+    {
+        public AnalysisToolbarState() : this(false)
+        {
+
+        }
+    }
+
+    public static class AnalysisToolbarStateReducers
+    {
+        [ReducerMethod]
+        public static AnalysisToolbarState Reducer(AnalysisToolbarState state, AnalysisBegan analysisBegan)
+        {
+            return state with { IsCalculating = true };
+        }
+
+        [ReducerMethod]
+        public static AnalysisToolbarState Reducer(AnalysisToolbarState state, AnalysisEnded analysisEnded)
+        {
+            return state with { IsCalculating = false };
+        }
+    }
+}

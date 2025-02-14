@@ -1,0 +1,37 @@
+@using BeamOs.Tests.Common
+@using Fluxor.Blazor.Web.Components
+@using System.Collections.Immutable
+
+@inherits FluxorComponent 
+
+@{
+    var (status, result) = this.GetGroupStatus();
+}
+
+@if (status == TestProgressStatus.InProgress)
+{
+    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+}
+else if (status == TestProgressStatus.NotStarted)
+{
+    <MudFab Class="w-fit h-fit min-h-fit" StartIcon="@Icons.Material.Filled.PlayCircle" OnClick="RunAllTests"></MudFab>
+}
+else if (status == TestProgressStatus.Finished)
+{
+    if (result == TestResultStatus.Skipped)
+    {
+        <MudIcon Icon="@Icons.Material.Filled.Warning" Color="Color.Warning" />
+    }
+    else if (result == TestResultStatus.Success)
+    {
+        <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" />
+    }
+    else if (result == TestResultStatus.Failure)
+    {
+        <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" />
+    }
+}
+else
+{
+    <MudFab StartIcon="@Icons.Material.Filled.Warning"></MudFab>
+}

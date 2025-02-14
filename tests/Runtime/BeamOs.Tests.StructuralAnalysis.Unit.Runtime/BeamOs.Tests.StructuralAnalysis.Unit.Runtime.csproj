@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <DefineConstants>$(DefineConstants);RUNTIME</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\StructuralAnalysis\BeamOs.StructuralAnalysis.Application\BeamOs.StructuralAnalysis.Application.csproj" />
+    <ProjectReference Include="..\..\BeamOs.Tests.Common\BeamOs.Tests.Common.csproj" />
+  </ItemGroup>
+
+  <Import Project="..\..\StructuralAnalysis\BeamOs.Tests.StructuralAnalysis.Unit.Shared\BeamOs.Tests.StructuralAnalysis.Unit.Shared.projitems" Label="Shared" />
+
+</Project>

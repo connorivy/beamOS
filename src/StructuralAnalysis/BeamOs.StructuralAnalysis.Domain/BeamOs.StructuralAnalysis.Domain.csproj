@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--<PackageReference Include="MathNet.Numerics" />-->
+    <PackageReference Include="MathNet.Numerics.MKL.Win-x64" />
+    <PackageReference Include="MathNet.Spatial" />
+    <PackageReference Include="MediatR" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="Riok.Mapperly" />
+    <PackageReference Include="UnitsNet" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\BeamOs.Common.Domain\BeamOs.Common.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>BeamOs.Tests.StructuralAnalysis.Integration</_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>BeamOs.Tests.StructuralAnalysis.Integration.Runtime</_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>BeamOs.Tests.StructuralAnalysis.Unit</_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>BeamOs.Tests.StructuralAnalysis.Unit.Runtime</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+</Project>
