@@ -64,6 +64,8 @@ public sealed class DsmTests
                         expectedNodeDisplacementResult.NodeId
                     );
 
+                result.ThrowIfError();
+
                 AssertDisplacementsEqual(
                     BeamOsObjectType.Node,
                     expectedNodeDisplacementResult.NodeId.ToString(),
@@ -91,6 +93,8 @@ public sealed class DsmTests
                         expectedNodeDisplacementResult.ResultSetId,
                         expectedNodeDisplacementResult.NodeId
                     );
+
+                result.ThrowIfError();
 
                 AssertReactionsEqual(
                     BeamOsObjectType.Node,
