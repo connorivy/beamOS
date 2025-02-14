@@ -8,6 +8,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
 using BeamOs.StructuralAnalysis.CsSdk;
 using Speckle.Core.Api.GraphQL.Models;
 using Speckle.Core.Credentials;
+using Speckle.Core.Logging;
 using Speckle.Core.Models;
 using Speckle.Core.Models.Extensions;
 using Speckle.Core.Transports;
@@ -25,6 +26,19 @@ public class BeamOsModelBuilderSpeckleFactory(
         new(guidString, physicalModelSettings, name, description);
 
     private bool isBuilt;
+
+    static BeamOsModelBuilderSpeckleFactory()
+    {
+        var speckleLoggerField =
+            typeof(SpeckleLog).GetField(
+                "s_logger",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static
+            ) ?? throw new ArgumentException("Could not find private speckle logger field");
+
+        // we need to assign a value to the speckle logger because the initialize method throws an exception.
+        // it tries to use an MD5 hash which is not implemented in webAssembly.
+        speckleLoggerField.SetValue(null, Serilog.Core.Logger.None);
+    }
 
     public async Task<BeamOsModelBuilder> Build(
         string apiToken,
@@ -49,7 +63,12 @@ public class BeamOsModelBuilderSpeckleFactory(
             .Core
             .Api
             .Operations
-            .Receive(objectId, transport, cancellationToken: ct)
+            .Receive(
+                objectId,
+                transport,
+                //localTransport: new DummyLocalTransport(),
+                cancellationToken: ct
+            )
             .ConfigureAwait(false);
 
         this.modelBuilder.AddSectionProfiles(
@@ -185,4 +204,36 @@ public class BeamOsModelBuilderSpeckleFactory(
             _ => throw new NotSupportedException()
         };
     }
+}
+
+public class DummyLocalTransport : ITransport
+{
+    public string TransportName { get; set; } = "Not real";
+    public Dictionary<string, object> TransportContext { get; } = [];
+    public TimeSpan Elapsed => TimeSpan.Zero;
+    public int SavedObjectCount => 0;
+    public CancellationToken CancellationToken { get; set; }
+    public Action<string, int>? OnProgressAction { get; set; }
+    public Action<string, Exception>? OnErrorAction { get; set; }
+
+    public void BeginWrite() { }
+
+    public Task<string> CopyObjectAndChildren(
+        string id,
+        ITransport targetTransport,
+        Action<int>? onTotalChildrenCountKnown = null
+    ) => Task.FromResult("");
+
+    public void EndWrite() { }
+
+    public string? GetObject(string id) => null;
+
+    public Task<Dictionary<string, bool>> HasObjects(IReadOnlyList<string> objectIds) =>
+        Task.FromResult(objectIds.ToDictionary(x => x, x => false));
+
+    public void SaveObject(string id, string serializedObject) { }
+
+    public void SaveObject(string id, ITransport sourceTransport) { }
+
+    public Task WriteComplete() => Task.CompletedTask;
 }

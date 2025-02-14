@@ -1,3 +1,4 @@
+using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
@@ -21,6 +22,23 @@ public sealed class BeamOsDynamicModelBuilder(
     public override string GuidString => guidString;
 
     private readonly List<PutNodeRequest> nodes = [];
+
+    public BeamOsDynamicModelBuilder(
+        string guidString,
+        PhysicalModelSettings physicalModelSettings,
+        string name,
+        string description,
+        BeamOsModelBuilderDto beamOsModelBuilderDto
+    )
+        : this(guidString, physicalModelSettings, name, description)
+    {
+        this.nodes = beamOsModelBuilderDto.Nodes.ToList();
+        this.materials = beamOsModelBuilderDto.Materials.ToList();
+        this.element1ds = beamOsModelBuilderDto.Element1ds.ToList();
+        this.pointLoads = beamOsModelBuilderDto.PointLoads.ToList();
+        this.momentLoads = beamOsModelBuilderDto.MomentLoads.ToList();
+        this.sectionProfiles = beamOsModelBuilderDto.SectionProfiles.ToList();
+    }
 
     public void AddNodes(params Span<PutNodeRequest> nodes) => this.nodes.AddRange(nodes);
 

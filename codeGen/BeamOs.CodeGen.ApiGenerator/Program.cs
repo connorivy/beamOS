@@ -11,6 +11,7 @@ IApiGenerator[] generators =
     new EditorEventsApi(),
     //new StructuralAnalysisContractsTypesApiGenerator(),
     new StructuralAnalysisApi(),
+    new SpeckleConnectorApi()
 ];
 
 foreach (var generator in generators.Where(g => g is not AbstractGenerator))

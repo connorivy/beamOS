@@ -1,6 +1,7 @@
+@using BeamOs.CodeGen.SpeckleConnectorApi
 @using BeamOs.CodeGen.StructuralAnalysisApiClient
-@using BeamOs.SpeckleConnector
 @using BeamOs.StructuralAnalysis.Contracts.Common
+@using BeamOs.StructuralAnalysis.CsSdk
 @using BeamOs.WebApp.Components.Features.Common
 @using BeamOs.WebApp.Components.Features.Dialogs
 @using BeamOs.WebApp.Components.Features.Editor
@@ -43,26 +44,35 @@
     [Parameter]
     public required Guid ModelId { get; init; }
 
-    private RunDsmCommandCommandHandler runDsmCommandCommandHandler1;
+    [Parameter]
+    public required string CanvasId { get; init; }
+
+    private RunDsmCommandCommandHandler runDsmCommandCommandHandler;
+    private ReceiveFromSpeckleCommandHandler ReceiveFromSpeckleCommandHandler;
     private IState<AnalysisToolbarState> state;
     private IStructuralAnalysisApiClientV1 structuralAnalysisApiClientV1;
     private IDialogService dialogService;
+    private ISpeckleConnectorApi speckleConnectorApi;
 
     public AnalysisToolbar(
         RunDsmCommandCommandHandler runDsmCommandCommandHandler,
+        ReceiveFromSpeckleCommandHandler receiveFromSpeckleCommandHandler,
         IState<AnalysisToolbarState> state,
         IStructuralAnalysisApiClientV1 structuralAnalysisApiClientV1,
-        IDialogService dialogService)
+        IDialogService dialogService,
+        ISpeckleConnectorApi speckleConnectorApi)
     {
-        this.runDsmCommandCommandHandler1 = runDsmCommandCommandHandler;
+        this.runDsmCommandCommandHandler = runDsmCommandCommandHandler;
+        this.ReceiveFromSpeckleCommandHandler = receiveFromSpeckleCommandHandler;
         this.state = state;
         this.structuralAnalysisApiClientV1 = structuralAnalysisApiClientV1;
         this.dialogService = dialogService;
+        this.speckleConnectorApi = speckleConnectorApi;
     }
 
     private async Task RunAnalysis()
     {
-        var result = await runDsmCommandCommandHandler1.ExecuteAsync(new() { ModelId = this.ModelId, UnitsOverride = "kn-m" });
+        var result = await runDsmCommandCommandHandler.ExecuteAsync(new() { ModelId = this.ModelId, UnitsOverride = "kn-m" });
 
         if (result.IsSuccess)
         {
@@ -79,11 +89,15 @@
         if (!result.Canceled)
         {
             var newToken = (SpeckleReceiveInfo)result.Data;
-            BeamOsModelBuilderSpeckleFactory beamOsModelBuilderSpeckleFactory = new(this.ModelId.ToString(), new(UnitSettingsContract.K_IN), "na", "na");
+            var speckleToken = new SpeckleReceiveParameters
+                (
+                    newToken.ApiToken,
+                    newToken.ProjectId,
+                    newToken.ObjectId,
+                    newToken.ServerUrl
+                );
 
-            var builder = await beamOsModelBuilderSpeckleFactory.Build(newToken.ApiToken, newToken.ProjectId, newToken.ObjectId, newToken.ServerUrl);
-
-            await builder.CreateOrUpdate(structuralAnalysisApiClientV1);
+            await this.ReceiveFromSpeckleCommandHandler.ExecuteAsync(new ReceiveFromSpeckleCommand(this.CanvasId, this.ModelId, speckleToken));
         }
     }
 

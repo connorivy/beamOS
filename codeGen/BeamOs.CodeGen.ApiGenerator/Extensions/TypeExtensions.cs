@@ -47,13 +47,15 @@ public static class TypeExtensions
 
         if (givenType.IsGenericType && givenType.GetGenericTypeDefinition() == genericType)
         {
-            implementedType = genericType;
+            implementedType = givenType;
             return true;
         }
 
         if (givenType.BaseType is not null)
         {
-            return givenType.BaseType.IsAssignableToGenericType(genericType);
+            return givenType
+                .BaseType
+                .TryGetImplementedGenericType(genericType, out implementedType);
         }
 
         return false;

@@ -52,11 +52,6 @@ public static class DependencyInjection
             false
         );
 
-        services.AddScoped<
-            IQueryHandler<EmptyRequest, List<ModelInfoResponse>>,
-            GetModelsQueryHandler
-        >();
-
         return services;
     }
 
@@ -79,6 +74,11 @@ public static class DependencyInjection
         }
         //.UseModel(StructuralAnalysisDbContextModel.Instance)
         );
+
+        services.AddScoped<
+            IQueryHandler<EmptyRequest, List<ModelInfoResponse>>,
+            GetModelsQueryHandler
+        >();
 
         return services;
     }

@@ -19,11 +19,11 @@ public static class DependencyInjection
     public static IServiceCollection AddStructuralAnalysisConfigurable(
         this IServiceCollection services,
         string connectionString
-    ) =>
-        services
-        //.AddStructuralAnalysisApplication()
-        //.AddStructuralAnalysisApi()
-        .AddStructuralAnalysisInfrastructureConfigurable(connectionString);
+    )
+    {
+        services.AddStructuralAnalysisInfrastructureConfigurable(connectionString);
+        return services;
+    }
 
     public static IServiceCollection AddStructuralAnalysisApi(this IServiceCollection services)
     {
