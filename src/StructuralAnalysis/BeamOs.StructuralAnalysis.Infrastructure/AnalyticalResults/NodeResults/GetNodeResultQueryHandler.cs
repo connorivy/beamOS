@@ -32,7 +32,9 @@ public class GetNodeResultQueryHandler(StructuralAnalysisDbContext dbContext)
 
         if (elementAndModelUnits is null)
         {
-            return BeamOsError.NotFound();
+            return BeamOsError.NotFound(
+                description: $"Could not find node result for node {query.Id}, result set {query.ResultSetId}, and model {query.ModelId}"
+            );
         }
 
         var mapper = NodeResultToResponseMapper.Create(elementAndModelUnits.UnitSettings);

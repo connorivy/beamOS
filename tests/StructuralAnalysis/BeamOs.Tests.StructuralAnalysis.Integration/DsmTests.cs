@@ -12,11 +12,6 @@ public sealed class DsmTests
     [Before(HookType.Class)]
     public static async Task RunDsmAnalysis()
     {
-        if (AssemblySetup.SkipOpenSeesTests)
-        {
-            return;
-        }
-
         foreach (var modelBuilder in AllSolvedProblems.ModelFixtures())
         {
             await modelBuilder.CreateOnly(AssemblySetup.StructuralAnalysisApiClient);
@@ -29,10 +24,7 @@ public sealed class DsmTests
                 .StructuralAnalysisApiClient
                 .RunDirectStiffnessMethodAsync(modelBuilder.Id);
 
-            if (resultSetIdResponse.IsError)
-            {
-                throw new Exception(resultSetIdResponse.Error.Description);
-            }
+            resultSetIdResponse.ThrowIfError();
         }
     }
 
