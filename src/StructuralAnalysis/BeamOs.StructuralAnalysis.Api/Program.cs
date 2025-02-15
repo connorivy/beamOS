@@ -56,9 +56,9 @@ await app.InitializeBeamOsDb();
 
 app.MapEndpoints<IAssemblyMarkerStructuralAnalysisApiEndpoints>();
 app.MapEndpoints<IAssemblyMarkerSpeckleConnectorApi>();
-app.UseCors();
 
 #if DEBUG
+app.UseCors();
 app.MapOpenApi();
 app.MapScalarApiReference();
 #endif

@@ -18,11 +18,11 @@ else
             </MudText>
 
             <!-- Display the exception message -->
-            @if (ExceptionMessage != null)
+            @if (this.CurrentException != null)
             {
                 <MudAlert Severity="Severity.Error" Class="mb-6">
                     <MudText Typo="Typo.body2">Error Details:</MudText>
-                    <MudText Typo="Typo.body2" Class="mt-2">@ExceptionMessage</MudText>
+                    <MudText Typo="Typo.body2" Class="mt-2">@this.CurrentException.Message</MudText>
                 </MudAlert>
             }
 
@@ -43,10 +43,6 @@ else
 }
 
 @code {
-    private ErrorBoundary? errorBoundary;
-
-    private string? ExceptionMessage => this.CurrentException?.Message;
-
     protected override Task OnErrorAsync(Exception ex)
     {
         Logger.LogError(ex, "A client side error has occured");
