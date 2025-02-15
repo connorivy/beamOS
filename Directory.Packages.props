@@ -4,7 +4,7 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
     <AspnetVersion>9.0.1</AspnetVersion>
-    <MicrosoftExtensionsVersion>9.0.0</MicrosoftExtensionsVersion>
+    <MicrosoftExtensionsVersion>9.0.1</MicrosoftExtensionsVersion>
     <EfVersion>9.0.0</EfVersion>
     <FastEndpointVersion>5.30.0</FastEndpointVersion>
     <FluxorVersion>6.5.2</FluxorVersion>
@@ -61,11 +61,11 @@
     <PackageVersion Include="Fluxor.Blazor.Web" Version="$(FluxorVersion)" />
     <PackageVersion Include="Fluxor.Blazor.Web.ReduxDevTools" Version="$(FluxorVersion)" />
     <!--Microsoft Extensions-->
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Http" Version="9.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="$(MicrosoftExtensionsVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(MicrosoftExtensionsVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="$(MicrosoftExtensionsVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="$(MicrosoftExtensionsVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftExtensionsVersion)" />
     <!-- Fast Endpoints -->
     <PackageVersion Include="FastEndpoints" Version="$(FastEndpointVersion)" />
     <PackageVersion Include="FastEndpoints.Attributes" Version="$(FastEndpointVersion)" />
@@ -87,7 +87,6 @@
     <PackageVersion Include="Speckle.Core" Version="2.21.3" />
     <PackageVersion Include="Speckle.Objects" Version="2.21.3" />
     <PackageVersion Include="System.CodeDom" Version="4.4.0" />
-    <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="7.1.2" />
     <PackageVersion Include="Testcontainers.MsSql" Version="4.1.0" />
     <PackageVersion Include="Testcontainers.PostgreSql" Version="4.1.0" />
     <PackageVersion Include="TUnit" Version="0.6.100" />

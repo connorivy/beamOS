@@ -1,0 +1,55 @@
+@using Microsoft.Extensions.Logging
+
+@inherits ErrorBoundary
+@inject ILogger<BeamOsErrorBoundary> Logger
+
+@if (CurrentException is null)
+{
+    @ChildContent
+}
+else
+{
+    <MudContainer MaxWidth="MaxWidth.Medium" Class="mt-16">
+        <MudPaper Elevation="10" Class="p-8 text-center">
+            <MudIcon Icon="@Icons.Material.Filled.MoodBad" Size="Size.Large" Color="Color.Error" Class="mb-4" />
+            <MudText Typo="Typo.h4" Class="mb-4">Oops! Something went wrong.</MudText>
+            <MudText Typo="Typo.body1" Class="mb-4">
+                We're sorry, but an unexpected error has occurred. See below for error details.
+            </MudText>
+
+            <!-- Display the exception message -->
+            @if (ExceptionMessage != null)
+            {
+                <MudAlert Severity="Severity.Error" Class="mb-6">
+                    <MudText Typo="Typo.body2">Error Details:</MudText>
+                    <MudText Typo="Typo.body2" Class="mt-2">@ExceptionMessage</MudText>
+                </MudAlert>
+            }
+
+            <!-- Suggest opening a GitHub issue -->
+            <MudText Typo="Typo.body1" Class="mb-6">
+                If the problem persists, please consider opening an issue on our
+                <MudLink Href="https://github.com/connorivy/beamOS/issues" Target="_blank" Color="Color.Primary">
+                    GitHub repository
+                </MudLink>.
+            </MudText>
+
+            <!-- Button to go back home -->
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => this.Recover()">
+                Okay
+            </MudButton>
+        </MudPaper>
+    </MudContainer>
+}
+
+@code {
+    private ErrorBoundary? errorBoundary;
+
+    private string? ExceptionMessage => this.CurrentException?.Message;
+
+    protected override Task OnErrorAsync(Exception ex)
+    {
+        Logger.LogError(ex, "A client side error has occured");
+        return Task.CompletedTask;
+    }
+}

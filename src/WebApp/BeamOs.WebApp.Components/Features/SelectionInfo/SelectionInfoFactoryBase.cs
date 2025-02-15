@@ -325,10 +325,10 @@ public readonly struct ComplexFieldSelectionInfo : IComplexSelectionInfo
                         fieldType.IsValueType ? Activator.CreateInstance(fieldType) : null
                     );
                 }
-                else
-                {
-                    jsonObject[key] = null;
-                }
+                //else
+                //{
+                //    jsonObject[key] = null;
+                //}
                 break;
             case int intValue:
                 jsonObject[key] = JsonValue.Create(intValue);

@@ -26,7 +26,7 @@
     @if (this.editorComponent is not null && this.State.Value.LoadedModelId is Guid modelId)
     {
         <div class="flex justify-center absolute left-0 right-0 top-4">
-            <AnalysisToolbar Class="w-1/2" editorComponent="@editorComponent" ModelId="@modelId"></AnalysisToolbar>
+            <AnalysisToolbar Class="w-1/2" editorComponent="@editorComponent" ModelId="@modelId" CanvasId="@editorComponent.CanvasId"></AnalysisToolbar>
         </div>
 
         <StructuralApiComponent Class="absolute left-0 top-0 w-1/5 p-4" ModelId="@modelId" CanvasId="@editorComponent.CanvasId"></StructuralApiComponent>

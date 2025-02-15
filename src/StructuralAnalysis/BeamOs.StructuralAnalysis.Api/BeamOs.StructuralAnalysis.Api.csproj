@@ -20,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\tests\BeamOs.Tests.Common\BeamOs.Tests.Common.csproj" />
     <ProjectReference Include="..\..\Common\BeamOs.Common.Api\BeamOs.Common.Api.csproj" />
+    <ProjectReference Include="..\..\SpeckleConnector\BeamOs.SpeckleConnector\BeamOs.SpeckleConnector.csproj" />
     <ProjectReference Include="..\BeamOs.StructuralAnalysis.Api.Endpoints\BeamOs.StructuralAnalysis.Api.Endpoints.csproj" />
     <ProjectReference Include="..\BeamOs.StructuralAnalysis.Application\BeamOs.StructuralAnalysis.Application.csproj" />
     <ProjectReference Include="..\BeamOs.StructuralAnalysis.Contracts\BeamOs.StructuralAnalysis.Contracts.csproj" />

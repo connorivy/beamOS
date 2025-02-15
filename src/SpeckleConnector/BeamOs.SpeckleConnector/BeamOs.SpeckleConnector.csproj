@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Common\BeamOs.Common.Api\BeamOs.Common.Api.csproj" />
     <ProjectReference Include="..\..\StructuralAnalysis\BeamOs.StructuralAnalysis.CsSdk\BeamOs.StructuralAnalysis.CsSdk.csproj" />
   </ItemGroup>
 

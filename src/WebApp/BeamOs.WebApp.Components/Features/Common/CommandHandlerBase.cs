@@ -18,13 +18,13 @@ public abstract class CommandHandlerBase<TCommand, TResponse>(ISnackbar snackbar
         try
         {
             response = await this.ExecuteCommandAsync(command, ct);
-
-            this.PostProcess(command);
         }
         catch (Exception ex)
         {
             response = BeamOsError.Failure(description: ex.Message);
         }
+
+        this.PostProcess(command, response);
 
         if (response.IsError)
         {
@@ -34,7 +34,7 @@ public abstract class CommandHandlerBase<TCommand, TResponse>(ISnackbar snackbar
         return response;
     }
 
-    protected virtual void PostProcess(TCommand command) { }
+    protected virtual void PostProcess(TCommand command, Result<TResponse> response) { }
 
     protected abstract Task<Result<TResponse>> ExecuteCommandAsync(
         TCommand command,

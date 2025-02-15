@@ -209,9 +209,7 @@ public partial class EditorComponent(
 
     public async Task Test()
     {
-        cachedModelState.Value.Models.TryGetValue(this.ModelId.Value, out var model);
-        //await state.Value.EditorApi.CreateDeflectionDiagramsAsync(model.DeflectionDiagrams.Values);
-        await state.Value.EditorApi.CreateDeflectionDiagramsAsync(model.DeflectionDiagrams.Values);
+        throw new Exception("hahaha");
     }
 
     public async Task ShowShear()

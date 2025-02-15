@@ -1,6 +1,9 @@
 @using Fluxor
 @using Fluxor.Blazor.Web.Components
+@using Microsoft.Extensions.Logging
 @using MudBlazor
+@using static FullScreenLayout
+
 @inherits FluxorLayout
 
 @inject IState<MainLayoutState> MainLayoutState;
@@ -13,7 +16,9 @@
 <MudSnackbarProvider />
 
 <MudLayout>
-    @Body
+    <BeamOsErrorBoundary>
+        @Body
+    </BeamOsErrorBoundary>
 </MudLayout>
 
 <div id="blazor-error-ui">
