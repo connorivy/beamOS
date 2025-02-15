@@ -4,6 +4,9 @@ public readonly record struct ModelId
 {
     public Guid Id { get; }
 
+    public ModelId()
+        : this(null) { }
+
     public ModelId(Guid? id = null)
     {
         this.Id = id ?? Guid.NewGuid();
