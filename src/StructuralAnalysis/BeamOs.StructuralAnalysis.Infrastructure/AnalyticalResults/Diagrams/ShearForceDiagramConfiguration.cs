@@ -8,17 +8,6 @@ public class ShearForceDiagramConfiguration : IEntityTypeConfiguration<ShearForc
 {
     public void Configure(EntityTypeBuilder<ShearForceDiagram> builder)
     {
-        builder.HasKey(
-            el =>
-                new
-                {
-                    el.Id,
-                    el.ResultSetId,
-                    el.ModelId
-                }
-        );
-        //builder.ComplexProperty(n => n.Displacements);
-
 #if SQL_SERVER
         builder
             .HasOne(e => e.Model)

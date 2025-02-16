@@ -16,6 +16,14 @@ public class ResultSetConfiguration : IEntityTypeConfiguration<ResultSet>
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
+        _ = builder
+            .HasMany(el => el.Element1dResults)
+            .WithOne(el => el.ResultSet)
+            .HasPrincipalKey(el => new { el.Id, el.ModelId })
+            .HasForeignKey(el => new { el.ResultSetId, el.ModelId })
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+
         //_ = builder
         //    .HasMany(el => el.ShearForceDiagrams)
         //    .WithOne(el => el.ResultSet)

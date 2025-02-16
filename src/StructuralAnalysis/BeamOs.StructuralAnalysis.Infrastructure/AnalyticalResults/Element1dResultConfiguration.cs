@@ -8,17 +8,6 @@ public class Element1dResultConfiguration : IEntityTypeConfiguration<Element1dRe
 {
     public void Configure(EntityTypeBuilder<Element1dResult> builder)
     {
-        builder.HasKey(
-            el =>
-                new
-                {
-                    el.Id,
-                    el.ResultSetId,
-                    el.ModelId
-                }
-        );
-        //builder.ComplexProperty(n => n.Displacements);
-
 #if SQL_SERVER
         builder
             .HasOne(e => e.Model)
