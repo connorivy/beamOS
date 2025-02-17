@@ -34,7 +34,7 @@ public record Element1dData
     public Dictionary<string, string>? Metadata { get; init; }
 }
 
-public record PutElement1dRequest : Element1dData, IHasIntId
+public record PutElement1dRequest : Element1dData, IHasIntId, IBeamOsEntityRequest
 {
     [SetsRequiredMembers]
     public PutElement1dRequest(

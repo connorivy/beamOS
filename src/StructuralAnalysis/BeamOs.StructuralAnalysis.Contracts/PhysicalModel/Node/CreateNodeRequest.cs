@@ -49,7 +49,7 @@ public record NodeData
     public Dictionary<string, string>? Metadata { get; init; }
 }
 
-public record PutNodeRequest : NodeData, IHasIntId
+public record PutNodeRequest : NodeData, IHasIntId, IBeamOsEntityRequest
 {
     public PutNodeRequest() { }
 

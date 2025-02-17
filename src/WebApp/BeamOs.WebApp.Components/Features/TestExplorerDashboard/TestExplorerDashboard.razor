@@ -6,47 +6,59 @@
 <PageTitle>Reliability</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.False" Class="h-full overflow-scroll p-4">
-    <MudGrid>
-        <MudItem xs="12" md="6">
-            <MudText Typo="Typo.h3" GutterBottom="true">Are the results accurate?</MudText>
-            <MudText Typo="Typo.subtitle1" GutterBottom="true">
-                Accurate and reliable analysis results are the top priority for beamOS. Find out below how we ensure our results are correct.
-            </MudText>
-            @* <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-4">Get Started</MudButton> *@
-        </MudItem>
-        <MudItem xs="12" md="6" Class="d-flex justify-content-center align-items-center">
-            <MudImage Src="your-image-url-here" Alt="Hero Image" Width="300" />
-        </MudItem>
-    </MudGrid>
-
-    <MudGrid Spacing="3" Class="mt-6">
-        <MudItem xs="12" md="6">
-            <MudCard Class="shadow hover:shadow-lg">
-                <MudCardContent>
-                    <MudText Typo="Typo.h6" GutterBottom="true" Class="text-center">Number Of Tests</MudText>
-                    <CounterAnimation TargetValue="24" Class="text-center" />
-                </MudCardContent>
-            </MudCard>
-        </MudItem>
-        <MudItem xs="12" md="6">
-            <MudCard Class="shadow hover:shadow-lg">
-                <MudCardContent>
-                    <MudText Typo="Typo.h6" GutterBottom="true" Class="text-center">Code Coverage</MudText>
-                    <CounterAnimation TargetValue="@(73)" AfterNumber=" %" Class="text-center" />
-                </MudCardContent>
-            </MudCard>
-        </MudItem>
-        @* <MudItem xs="12" md="4">
-            <MudCard Class="shadow hover:shadow-lg">
-                <MudCardContent>
-                    <MudText Typo="Typo.h6" GutterBottom="true" Class="text-center">Mutation Score</MudText>
-                    <CounterAnimation TargetValue="@((int)Math.Round(CodeTestScoresTracker.LatestScores.MutationScore))" AfterNumber=" %" Class="text-center" />
-                </MudCardContent>
-            </MudCard>
-        </MudItem> *@
-    </MudGrid>
+    <MudText Typo="Typo.h3" Class="text-center mb-8" Color="Color.Primary">
+        Are beamOS results accurate?
+    </MudText>
+    <MudText Class="text-center" Typo="Typo.h6" GutterBottom="true">
+        Accurate and reliable analysis results are the top priority for beamOS. Find out below how we ensure our results are correct.
+    </MudText>
+    @* <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-4">Get Started</MudButton> *@
 
     <MudDivider Class="mt-6 mb-6" />
+
+    <div class="scroll-section" id="section2" style="margin-top: 50px;">
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Gutters="false" Class="mx-4 my-12">
+            <MudGrid>
+                <!-- Image Comparison Section -->
+                <MudItem xs="12" md="6" Class="flex justify-center">
+                    <MudCard Class="h-full">
+                        <MudCardContent>
+                            <MudText Typo="Typo.h6" Class="text-center mb-4">beamOS</MudText>
+                            <MudImage Src="/images/beamOSTwistyBowlResults.png" Alt="Our Software Results" Class="rounded-lg shadow-md" />
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+
+                <MudItem xs="12" md="6" Class="flex justify-center">
+                    <MudCard Class="h-full">
+                        <MudCardContent>
+                            <MudText Typo="Typo.h6" Class="text-center mb-4">SAP2000</MudText>
+                            <MudImage Src="/images/SapTwistyBowlResults.png" Alt="SAP2000 Results" Class="rounded-lg shadow-md" />
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+            </MudGrid>
+
+            <MudAlert Severity="Severity.Info" Class="mb-6">
+                <MudText Typo="Typo.body2">Result Comparison:</MudText>
+                <MudText Typo="Typo.body2" Class="mt-2">Our software currently defines the 'Y' axis as up whereas SAP2000 defines the 'z' axis as up. That is why beamOS U2 = SAP U3 and beamOS U3 = -1 * SAP U2</MudText>
+            </MudAlert>
+
+            <!-- Description Section -->
+            <MudText Typo="Typo.body1" Class="mt-8">
+                Accurate and reliable analysis results are the top priority for beamOS. The comparision above shows just one of many ways that we test our software against the industry leaders. The results from our software are nearly <strong>identical</strong> to those produced by SAP2000, a leading structural analysis software.
+                Both models were analyzed under the same conditions with nonlinear analysis,
+                and the outputs match perfectly, ensuring confidence in our software's capabilities.
+            </MudText>
+
+            <!-- Call-to-Action Button -->
+            <div class="flex justify-center mt-8">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="px-8 py-3" Href="/test-explorer">
+                    View In Tests Explorer
+                </MudButton>
+            </div>
+        </MudContainer>
+    </div>
 
     <div class="scroll-section" id="section2" style="margin-top: 50px;">
         <MudCard Class="shadow hover:shadow-lg animate-scroll">
@@ -74,6 +86,35 @@
                 </MudGrid>
             </MudCardContent>
         </MudCard>
+    </div>
+
+    <div class="scroll-section" style="margin-top: 50px;">
+        <MudGrid Spacing="3" Class="mt-6">
+            <MudItem xs="12" md="6">
+                <MudCard Class="shadow hover:shadow-lg">
+                    <MudCardContent>
+                        <MudText Typo="Typo.h6" GutterBottom="true" Class="text-center">Number Of Tests</MudText>
+                        <CounterAnimation TargetValue="24" Class="text-center" />
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudCard Class="shadow hover:shadow-lg">
+                    <MudCardContent>
+                        <MudText Typo="Typo.h6" GutterBottom="true" Class="text-center">Code Coverage</MudText>
+                        <CounterAnimation TargetValue="@(73)" AfterNumber=" %" Class="text-center" />
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+            @* <MudItem xs="12" md="4">
+                <MudCard Class="shadow hover:shadow-lg">
+                    <MudCardContent>
+                        <MudText Typo="Typo.h6" GutterBottom="true" Class="text-center">Mutation Score</MudText>
+                        <CounterAnimation TargetValue="@((int)Math.Round(CodeTestScoresTracker.LatestScores.MutationScore))" AfterNumber=" %" Class="text-center" />
+                    </MudCardContent>
+                </MudCard>
+            </MudItem> *@
+        </MudGrid>
     </div>
 
     <div class="scroll-section" id="section1">
@@ -124,7 +165,7 @@ public void GetRotationMatrix_ForVerticalMember_ShouldEqualExpectedValue()
         </MudCard>
     </div>
 
-    <div class="scroll-section" id="section2" style="margin-top: 50px;">
+    <div class="scroll-section" id="section3" style="margin-top: 50px;">
         <MudCard Class="shadow hover:shadow-lg animate-scroll">
             <MudCardContent>
                 <MudGrid>
