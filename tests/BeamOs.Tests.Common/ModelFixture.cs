@@ -10,11 +10,14 @@ public abstract class ModelFixture : BeamOsModelBuilder, IModelFixture
 {
     public abstract SourceInfo SourceInfo { get; }
 
-    public IBeamOsEntityResponse MapToResponse()
+    public async ValueTask<IBeamOsEntityResponse> MapToResponse()
     {
         BeamOsModelBuilderResponseMapper responseMapper = new(this.Id);
+        await this.InitializeAsync();
         return responseMapper.ToReponse(this);
     }
+
+    public virtual ValueTask InitializeAsync() => ValueTask.CompletedTask;
 }
 
 public enum FixtureSourceType

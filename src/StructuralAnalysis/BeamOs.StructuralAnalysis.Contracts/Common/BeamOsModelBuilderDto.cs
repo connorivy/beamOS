@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
@@ -34,3 +36,8 @@ public record SpeckleReceiveParameters(
     string ObjectId,
     string ServerUrl
 );
+
+[JsonPolymorphic]
+[JsonDerivedType(typeof(PutNodeRequest), 1)]
+[JsonDerivedType(typeof(PutElement1dRequest), 2)]
+public interface IBeamOsEntityRequest { }

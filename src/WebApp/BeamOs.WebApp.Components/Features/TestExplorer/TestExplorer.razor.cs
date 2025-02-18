@@ -35,7 +35,7 @@ public partial class TestExplorer(
 
             var testFixture = command.SelectedProblemTests.First().GetTestFixture();
 
-            await this.editorComponent.LoadBeamOsEntity(testFixture.MapToResponse());
+            await this.editorComponent.LoadBeamOsEntity(await testFixture.MapToResponse());
             //if (editorComponent.State.Value.LoadedModelId.HasValue)
         });
     }

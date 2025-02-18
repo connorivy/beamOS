@@ -33,13 +33,16 @@ public class StructuralAnalysisDbContext : DbContext
     public DbSet<Material> Materials { get; set; }
     public DbSet<SectionProfile> SectionProfiles { get; set; }
     public DbSet<Element1d> Element1ds { get; set; }
-    public DbSet<ResultSet> ResultSets { get; set; }
-    public DbSet<NodeResult> NodeResults { get; set; }
     public DbSet<PointLoad> PointLoads { get; set; }
     public DbSet<MomentLoad> MomentLoads { get; set; }
-    public DbSet<ShearForceDiagram> ShearForceDiagrams { get; set; }
-    public DbSet<MomentDiagram> MomentDiagrams { get; set; }
-    public DbSet<MomentDiagramConsistentInterval> MomentDiagramConsistentIntervals { get; set; }
+
+    public DbSet<ResultSet> ResultSets { get; set; }
+    public DbSet<NodeResult> NodeResults { get; set; }
+    public DbSet<Element1dResult> Element1dResults { get; set; }
+
+    //public DbSet<ShearForceDiagram> ShearForceDiagrams { get; set; }
+    //public DbSet<MomentDiagram> MomentDiagrams { get; set; }
+    //public DbSet<MomentDiagramConsistentInterval> MomentDiagramConsistentIntervals { get; set; }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {

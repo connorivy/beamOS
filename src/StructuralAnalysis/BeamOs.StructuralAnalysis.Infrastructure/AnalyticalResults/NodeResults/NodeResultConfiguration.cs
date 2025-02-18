@@ -8,17 +8,6 @@ public class NodeResultConfiguration : IEntityTypeConfiguration<NodeResult>
 {
     public void Configure(EntityTypeBuilder<NodeResult> builder)
     {
-        builder.HasKey(
-            el =>
-                new
-                {
-                    el.Id,
-                    el.ResultSetId,
-                    el.ModelId
-                }
-        );
-        //builder.ComplexProperty(n => n.Displacements);
-
 #if SQL_SERVER
         builder
             .HasOne(e => e.Model)
