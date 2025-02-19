@@ -1,8 +1,6 @@
 using BeamOs.Common.Api;
-using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.OpenSees;
-using Microsoft.AspNetCore.Mvc;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.OpenSees;
 

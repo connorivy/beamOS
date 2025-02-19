@@ -5,6 +5,7 @@ namespace BeamOs.Tests.Common;
 
 public interface IModelFixture : ITestFixture
 {
+    public Guid Id => Guid.Parse(this.GuidString);
     public string GuidString { get; }
     public PhysicalModelSettings Settings { get; }
 }
@@ -18,5 +19,5 @@ public interface ITestFixture : IHasSourceInfo
 {
     public string Description { get; }
     public string Name { get; }
-    public ValueTask<IBeamOsEntityResponse> MapToResponse();
+    public IBeamOsEntityResponse MapToResponse();
 }

@@ -372,3 +372,6 @@ openSees/*
 # Results
 output.xml
 output.cobertura.xml
+
+# generated test models
+# /tests/BeamOs.Tests.Common/SolvedProblems/**/*.g.cs

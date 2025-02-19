@@ -14,8 +14,6 @@ public sealed class DsmTests
     {
         foreach (var modelBuilder in AllSolvedProblems.ModelFixtures())
         {
-            await modelBuilder.InitializeAsync();
-
             await modelBuilder.CreateOnly(AssemblySetup.StructuralAnalysisApiClient);
 
             await AssemblySetup
@@ -35,9 +33,8 @@ public sealed class DsmTests
         typeof(AllSolvedProblems),
         nameof(AllSolvedProblems.ModelFixturesWithExpectedNodeResults)
     )]
-    public async Task AssertNodeResults_AreApproxEqualToExpectedValues(ModelFixture modelFixture)
+    public async Task AssertNodeResults_AreApproxEqualToExpectedValues(IModelFixture modelFixture)
     {
-        await modelFixture.InitializeAsync();
         var nodeResultsFixture = (IHasExpectedNodeResults)modelFixture;
         var strongUnits = modelFixture.Settings.UnitSettings.ToDomain();
         foreach (var expectedNodeDisplacementResult in nodeResultsFixture.ExpectedNodeResults)
