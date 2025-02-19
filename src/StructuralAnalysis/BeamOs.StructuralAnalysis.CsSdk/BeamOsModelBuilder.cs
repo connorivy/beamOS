@@ -1,4 +1,3 @@
-using System.Linq;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
@@ -32,7 +31,9 @@ public abstract class BeamOsModelBuilder
     public IEnumerable<PutElement1dRequest> Element1ds => this.Element1dRequests();
     public abstract IEnumerable<PutElement1dRequest> Element1dRequests();
     public IEnumerable<PutPointLoadRequest> PointLoads => this.PointLoadRequests();
-    public abstract IEnumerable<PutPointLoadRequest> PointLoadRequests();
+
+    public virtual IEnumerable<PutPointLoadRequest> PointLoadRequests() => [];
+
     public IEnumerable<PutMomentLoadRequest> MomentLoads => this.MomentLoadRequests();
 
     public virtual IEnumerable<PutMomentLoadRequest> MomentLoadRequests() => [];
@@ -46,7 +47,7 @@ public abstract class BeamOsModelBuilder
 
         try
         {
-            await apiClient.CreateModelAsync(
+            var createModelResult = await apiClient.CreateModelAsync(
                 new()
                 {
                     Name = this.Name,
@@ -55,6 +56,7 @@ public abstract class BeamOsModelBuilder
                     Id = modelId
                 }
             );
+            createModelResult.ThrowIfError();
         }
         catch
         {

@@ -2,7 +2,6 @@ using BeamOs.Common.Api;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.DirectStiffnessMethod;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams;
-using Microsoft.AspNetCore.Mvc;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.DirectStiffnessMethod;
 

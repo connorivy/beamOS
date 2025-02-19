@@ -44,7 +44,7 @@ public record PutElement1dRequest : Element1dData, IHasIntId, IBeamOsEntityReque
         int materialId,
         int sectionProfileId,
         AngleContract? sectionProfileRotation,
-        Dictionary<string, string>? metadata
+        Dictionary<string, string>? metadata = null
     )
         : base(
             startNodeId,
