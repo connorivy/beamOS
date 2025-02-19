@@ -15,11 +15,4 @@
     <ProjectReference Include="..\..\src\StructuralAnalysis\BeamOs.StructuralAnalysis.CsSdk\BeamOs.StructuralAnalysis.CsSdk.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="SolvedProblems\SAP2000\TwistyBowlFraming.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>TwistyBowlFraming.json</TargetPath>
-    </None>
-  </ItemGroup>
-
 </Project>

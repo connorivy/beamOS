@@ -13,7 +13,6 @@ public abstract class ModelFixture : BeamOsModelBuilder, IModelFixture
     public virtual IBeamOsEntityResponse MapToResponse()
     {
         BeamOsModelBuilderResponseMapper responseMapper = new(this.Id);
-        await this.InitializeAsync();
         return responseMapper.ToReponse(this);
     }
 
