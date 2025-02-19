@@ -19,5 +19,5 @@ public interface ITestFixture : IHasSourceInfo
 {
     public string Description { get; }
     public string Name { get; }
-    public IBeamOsEntityResponse MapToResponse();
+    public ValueTask<IBeamOsEntityResponse> MapToResponse();
 }
