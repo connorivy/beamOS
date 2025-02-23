@@ -355,6 +355,8 @@ MigrationBackup/
 
 # ignore generated js files from webpack output
 **/wwwroot/js/
+# razor.js files are generated from the razor.ts files
+*.razor.js 
 # **/wwwroot/css/
 **/wwwroot/css/tailwind.css
 **/wwwroot/test-results
