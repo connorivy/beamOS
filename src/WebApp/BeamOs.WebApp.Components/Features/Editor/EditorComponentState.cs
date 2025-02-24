@@ -4,7 +4,6 @@ using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.StructuralApi;
 using BeamOs.WebApp.EditorCommands;

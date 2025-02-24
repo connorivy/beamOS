@@ -4,60 +4,133 @@ import { Chart, Colors, Filler, Plugin, LineController, LineElement, PointElemen
 
 Chart.register(Colors, Filler, LineController, LineElement, PointElement, LinearScale, CategoryScale, BarController, BarElement, Title, Tooltip, Legend);
 
-//function getGradient(ctx: CanvasRenderingContext2D, chartArea: { top: number, bottom: number, left: number, right: number }) {
-//  const chartWidth = chartArea.right - chartArea.left;
-//  const chartHeight = chartArea.bottom - chartArea.top;
-//  let gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
-//  gradient.addColorStop(0, 'rgba(255, 99, 132, 0.5)');
-//  gradient.addColorStop(0.5, 'rgba(54, 162, 235, 0.5)');
-//  gradient.addColorStop(1, 'rgba(75, 192, 192, 0.5)');
-//  return gradient;
-//}
+class ResultCharts {
 
-function createChart(canvasId: string) {
-  const numData: number[] = Array.from({ length: 100 }, () => 50 - Math.floor(Math.random() * 100));
-  const minValue = Math.min(...numData);
-  const maxValue = Math.max(...numData);
+  private verticalLineX: number | null = null;
+  private snapIndex: number | null = null;
+  private hoveredIndex: number | null = null;
 
-  const chart1Canvas = document.getElementById('chart1') as HTMLCanvasElement;
-  const ctx = chart1Canvas.getContext("2d");
-  const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-  gradient.addColorStop(0, 'rgba(75, 192, 192, 1)'); // Start color
-  gradient.addColorStop(1, 'rgba(75, 192, 192, 0)'); // End color
+  private chart1: Chart | null = null;
+  private chart2: Chart | null = null;
+  private chart3: Chart | null = null;
 
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, chart1Canvas.width, chart1Canvas.height);
+  private charts: Chart[] = [this.chart1, this.chart2, this.chart3];
 
-  // Sample data for the charts
-  const data = {
-    labels: Array.from({ length: 100 }, (_, i) => `Point ${i + 1}`), // 100 points
-    datasets: [{
-      label: 'Dataset 1',
-      data: numData, // Random data for 100 points
-      fill: true,
-      //backgroundColor: (context: any) => {
-      //  const chart = context.chart;
-      //  const { ctx, chartArea } = chart;
-      //  if (!chartArea) {
-      //    // This case happens on initial chart load
-      //    return null;
-      //  }
-      //  return getGradient(ctx, chartArea);
-      //},
-      borderColor: 'rgba(255, 99, 132, 1)',
-      borderWidth: 2,
-      pointRadius: numData.map((value) => (value === minValue || value === maxValue ? 5 : 0)), // Show circles every 10 points
-      pointHoverRadius: numData.map((value) => (value === minValue || value === maxValue ? 10 : 0)) // Increase size on hover
-    }]
-  };
+  private isInit: boolean;
 
-  // Shared state for the vertical line position
-  let verticalLineX: number | null = null;
-  let snapIndex: number | null = null;
-  let hoveredIndex: number | null = null;
+  private Init() {
+    if (this.isInit) {
+      return;
+    }
+    this.isInit = true;
 
-  // Custom plugin to draw the vertical line
-  const verticalLinePlugin: Plugin = {
+    const container = document.querySelector('.chart-container') as HTMLDivElement;
+
+    container.addEventListener('mousemove', (event: MouseEvent) => {
+      if (this.chart1 === null) {
+        this.hoveredIndex = null;
+        this.snapIndex = null;
+        return;
+      }
+
+      const xAxis = this.chart1.scales.x;
+
+      if (this.snapIndex !== null) {
+        this.hoveredIndex = this.snapIndex
+      }
+      else {
+        let nearestIndex = 0;
+        const rect = container.getBoundingClientRect();
+        const mouseX = event.clientX - rect.left;
+
+        // Get the x-axis scale and data points
+        const dataPoints = this.chart1.data.labels!.length; // Use the number of labels as data points
+
+        // Find the nearest data point
+        let minDistance = Infinity;
+
+        for (let i = 0; i < dataPoints; i++) {
+          const pointX = xAxis.getPixelForValue(i); // Get the X pixel for the data point
+          const distance = Math.abs(pointX - mouseX);
+
+          if (distance < minDistance) {
+            minDistance = distance;
+            nearestIndex = i;
+          }
+        }
+
+        this.hoveredIndex = nearestIndex;
+      }
+
+      const snapX = xAxis.getPixelForValue(this.hoveredIndex);
+
+      // Update the vertical line position
+      this.verticalLineX = snapX;
+
+      // Redraw all charts to show the vertical line
+      this.charts.forEach((chart: Chart) => {
+        const tooltip = chart.tooltip;
+
+        const activeElements: ActiveDataPoint[] = [{ datasetIndex: 0, index: this.hoveredIndex }];
+        const point: Point = { x: event.clientX, y: event.clientY };
+
+        // Set the active element
+        tooltip?.setActiveElements(activeElements, point);
+
+        chart.update();
+      });
+    });
+
+    container.addEventListener('mouseleave', () => {
+      // Hide the vertical line when the mouse leaves the container
+      this.verticalLineX = null;
+      this.hoveredIndex = null;
+
+      if (this.chart1 === null) {
+        return;
+      }
+
+      this.charts.forEach((chart: Chart) => {
+        const chartIndex = chart.canvas.id.slice(-1);
+        const tooltipEl = document.getElementById('custom-tooltip' + chartIndex) as HTMLDivElement;
+        tooltipEl.style.display = 'none';
+        chart.update();
+      });
+    });
+  }
+
+
+  static getData(axisLabels: number[], data: number[], color: string) {
+    const minValue = Math.min(...data);
+    const maxValue = Math.max(...data);
+
+    return {
+      labels: axisLabels,
+      datasets: [{
+        label: 'Shear Diagram',
+        data: data,
+        //data: shearData,
+        fill: true,
+        borderColor: color,
+        borderWidth: 2,
+        pointRadius: data.map((value) => (value === minValue || value === maxValue ? 5 : 0)),
+        pointHoverRadius: data.map((value) => (value === minValue || value === maxValue ? 10 : 0))
+      }]
+    }
+  }
+
+  public createCharts(xValues: number[], shearData: number[], momentData: number[], deflectionData: number[]) {
+    this.Init();
+    this.destroyCharts();
+  
+    this.chart1 = new Chart(document.getElementById('chart1') as ChartItem, this.getConfig(xValues, shearData, 'rgba(255,199,0,1)'));
+    this.chart2 = new Chart(document.getElementById('chart2') as ChartItem, this.getConfig(xValues, momentData, 'rgba(6,120,255,1)'));
+    this.chart3 = new Chart(document.getElementById('chart3') as ChartItem, this.getConfig(xValues, deflectionData, 'rgba(33, 166, 81,1)'));
+
+    this.charts = [this.chart1, this.chart2, this.chart3];
+  }
+
+  private verticalLinePlugin: Plugin = {
     id: 'verticalLinePlugin',
     afterLayout: (chart: Chart) => {
       /*** Set Gradient For Graph ***/
@@ -74,15 +147,15 @@ function createChart(canvasId: string) {
       chart.data.datasets[0].backgroundColor = gradient;
     },
     afterDraw: (chart: Chart) => {
-      if (verticalLineX !== null) {
+      if (this.verticalLineX !== null) {
         const ctx = chart.ctx;
         const yAxis = chart.scales.y;
 
         ctx.save();
         ctx.beginPath();
-        ctx.moveTo(verticalLineX, yAxis.top);
-        ctx.lineTo(verticalLineX, yAxis.bottom);
-        ctx.strokeStyle = 'red';
+        ctx.moveTo(this.verticalLineX, yAxis.top);
+        ctx.lineTo(this.verticalLineX, yAxis.bottom);
+        ctx.strokeStyle = 'black';
         ctx.lineWidth = 1;
         ctx.stroke();
         ctx.restore();
@@ -90,140 +163,84 @@ function createChart(canvasId: string) {
     }
   };
 
-  // Chart configuration
-  const config: ChartConfiguration = {
-    type: 'line',
-    data: data,
-    options: {
-      responsive: true,
-      interaction: {
-        intersect: false,
-        mode: 'point',
-      },
-      hover: {
-        mode: 'nearest',
-        intersect: true // Set to true if you want the nearest point only when intersected
-      },
-      onHover: (event: ChartEvent, activeElements: ActiveElement[], chart: Chart) => {
-        if (activeElements.length > 0) {
-          snapIndex = activeElements[0].index;
-        }
-        else {
-          snapIndex = null;
-        }
-      },
-      plugins: {
-        tooltip: {
-          enabled: false,
-          mode: 'index',
+  private getConfig(axisLabels: number[], yData: number[], color: string): ChartConfiguration {
+    const data = ResultCharts.getData(axisLabels, yData, color);
+
+    return {
+      type: 'line',
+      data: data,
+      options: {
+        responsive: true,
+        interaction: {
           intersect: false,
-          external: (context) => {
-            const tooltipEl = document.getElementById('custom-tooltip'+context.chart.id) as HTMLDivElement;
-
-            // Hide if no tooltip
-            if (hoveredIndex === null) {
-              tooltipEl.style.display = 'none';
-              return;
-            }
-
-            const label = data.labels[hoveredIndex];
-            const value = data.datasets[0].data[hoveredIndex];
-
-            // Set tooltip content
-            tooltipEl.innerHTML = `
-            <div><strong>${label}</strong></div>
-            <div>Value: ${value}</div>
-          `;
-
-            //const xAxis = context.chart.scales.x;
-            const x = context.chart.scales.x.getPixelForValue(hoveredIndex);
-            const y = context.chart.scales.y.getPixelForValue(value);
-
-            // Position the tooltip
-            const { offsetLeft: positionX, offsetTop: positionY } = context.chart.canvas;
-
-            tooltipEl.style.left = `${positionX + x + 5}px`;
-            tooltipEl.style.top = `${positionY + y - 25}px`;
-            tooltipEl.style.display = 'block';
+          mode: 'point',
+        },
+        hover: {
+          mode: 'nearest',
+          intersect: true // Set to true if you want the nearest point only when intersected
+        },
+        onHover: (event: ChartEvent, activeElements: ActiveElement[], chart: Chart) => {
+          if (activeElements.length > 0) {
+            this.snapIndex = activeElements[0].index;
+          }
+          else {
+            this.snapIndex = null;
           }
         },
-        legend: {
-          display: false
+        plugins: {
+          tooltip: {
+            enabled: false,
+            mode: 'index',
+            intersect: false,
+            external: (context) => {
+              const chartIndex = context.chart.canvas.id.slice(-1);
+              const tooltipEl = document.getElementById('custom-tooltip' + chartIndex) as HTMLDivElement;
+
+              // Hide if no tooltip
+              if (this.hoveredIndex === null) {
+                tooltipEl.style.display = 'none';
+                return;
+              }
+
+              const label = data.labels[this.hoveredIndex];
+              const value = data.datasets[0].data[this.hoveredIndex];
+
+              // Set tooltip content
+              tooltipEl.innerHTML = `
+                <div><strong>${label}</strong></div>
+                <div>Value: ${value}</div>
+              `;
+
+              //const xAxis = context.chart.scales.x;
+              const x = context.chart.scales.x.getPixelForValue(this.hoveredIndex);
+              const y = context.chart.scales.y.getPixelForValue(value);
+
+              // Position the tooltip
+              const { offsetLeft: positionX, offsetTop: positionY } = context.chart.canvas;
+
+              tooltipEl.style.left = `${positionX + x + 5}px`;
+              tooltipEl.style.top = `${positionY + y - 25}px`;
+              tooltipEl.style.display = 'block';
+            }
+          },
+          legend: {
+            display: false
+          }
         }
-      }
-    },
-    plugins: [verticalLinePlugin] // Add the custom plugin
-  };
+      },
+      plugins: [this.verticalLinePlugin] // Add the custom plugin
+    };
+  }
 
-  // Initialize charts
-  const chart1 = new Chart(chart1Canvas, config);
-  const chart2 = new Chart(document.getElementById('chart2') as ChartItem, config);
-  const chart3 = new Chart(document.getElementById('chart3') as ChartItem, config);
+  public destroyCharts() {
+    this.chart1?.destroy();
+    this.chart2?.destroy();
+    this.chart3?.destroy();
 
-  const charts: Chart[] = [chart1, chart2, chart3];
-
-  // Sync hover events
-  const container = document.querySelector('.chart-container') as HTMLDivElement;
-
-  container.addEventListener('mousemove', (event: MouseEvent) => {
-    const xAxis = chart1.scales.x;
-
-    if (snapIndex !== null) {
-      hoveredIndex = snapIndex
-    }
-    else {
-      let nearestIndex = 0;
-      const rect = container.getBoundingClientRect();
-      const mouseX = event.clientX - rect.left;
-
-      // Get the x-axis scale and data points
-      const dataPoints = chart1.data.labels!.length; // Use the number of labels as data points
-
-      // Find the nearest data point
-      let minDistance = Infinity;
-
-      for (let i = 0; i < dataPoints; i++) {
-        const pointX = xAxis.getPixelForValue(i); // Get the X pixel for the data point
-        const distance = Math.abs(pointX - mouseX);
-
-        if (distance < minDistance) {
-          minDistance = distance;
-          nearestIndex = i;
-        }
-      }
-
-      hoveredIndex = nearestIndex;
-    }
-
-    const snapX = xAxis.getPixelForValue(hoveredIndex);
-
-    // Update the vertical line position
-    verticalLineX = snapX;
-
-    // Redraw all charts to show the vertical line
-    charts.forEach((chart: Chart) => {
-      const tooltip = chart.tooltip;
-
-      const activeElements: ActiveDataPoint[] = [{ datasetIndex: 0, index: hoveredIndex }];
-      const point: Point = { x: event.clientX, y: event.clientY };
-
-      // Set the active element
-      tooltip.setActiveElements(activeElements, point);
-
-      chart.update();
-    });
-  });
-
-  container.addEventListener('mouseleave', () => {
-    // Hide the vertical line when the mouse leaves the container
-    verticalLineX = null;
-    hoveredIndex = null;
-    charts.forEach((chart: Chart) => {
-      const tooltipEl = document.getElementById('custom-tooltip' + chart.id) as HTMLDivElement;
-      tooltipEl.style.display = 'none';
-      chart.update();
-    });
-  });
+    this.chart1 = null;
+    this.chart2 = null;
+    this.chart3 = null;
+  }
 }
 
-(<any>window).createCharts = createChart;
+(<any>window).resultCharts = new ResultCharts();
