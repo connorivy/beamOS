@@ -1,25 +1,53 @@
 //declare var Chart: typeof import("chart.js");
 
-import { Chart, Colors, Plugin, LineController, LineElement, PointElement, LinearScale, CategoryScale, BarController, BarElement, Title, Tooltip, Legend, InteractionModeMap, ChartTypeRegistry, ChartConfiguration, ChartItem, ChartEvent, ActiveElement, ActiveDataPoint, Point, TooltipModel } from 'chart.js';
+import { Chart, Colors, Filler, Plugin, LineController, LineElement, PointElement, LinearScale, CategoryScale, BarController, BarElement, Title, Tooltip, Legend, InteractionModeMap, ChartTypeRegistry, ChartConfiguration, ChartItem, ChartEvent, ActiveElement, ActiveDataPoint, Point, TooltipModel } from 'chart.js';
 
-Chart.register(Colors, LineController, LineElement, PointElement, LinearScale, CategoryScale, BarController, BarElement, Title, Tooltip, Legend);
+Chart.register(Colors, Filler, LineController, LineElement, PointElement, LinearScale, CategoryScale, BarController, BarElement, Title, Tooltip, Legend);
+
+//function getGradient(ctx: CanvasRenderingContext2D, chartArea: { top: number, bottom: number, left: number, right: number }) {
+//  const chartWidth = chartArea.right - chartArea.left;
+//  const chartHeight = chartArea.bottom - chartArea.top;
+//  let gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
+//  gradient.addColorStop(0, 'rgba(255, 99, 132, 0.5)');
+//  gradient.addColorStop(0.5, 'rgba(54, 162, 235, 0.5)');
+//  gradient.addColorStop(1, 'rgba(75, 192, 192, 0.5)');
+//  return gradient;
+//}
 
 function createChart(canvasId: string) {
-  const numData: number[] = Array.from({ length: 100 }, () => Math.floor(Math.random() * 100));
+  const numData: number[] = Array.from({ length: 100 }, () => 50 - Math.floor(Math.random() * 100));
   const minValue = Math.min(...numData);
   const maxValue = Math.max(...numData);
+
+  const chart1Canvas = document.getElementById('chart1') as HTMLCanvasElement;
+  const ctx = chart1Canvas.getContext("2d");
+  const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+  gradient.addColorStop(0, 'rgba(75, 192, 192, 1)'); // Start color
+  gradient.addColorStop(1, 'rgba(75, 192, 192, 0)'); // End color
+
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, chart1Canvas.width, chart1Canvas.height);
 
   // Sample data for the charts
   const data = {
     labels: Array.from({ length: 100 }, (_, i) => `Point ${i + 1}`), // 100 points
     datasets: [{
       label: 'Dataset 1',
-      data: Array.from({ length: 100 }, () => Math.floor(Math.random() * 100)), // Random data for 100 points
-      backgroundColor: 'rgba(255, 99, 132, 0.2)',
+      data: numData, // Random data for 100 points
+      fill: true,
+      //backgroundColor: (context: any) => {
+      //  const chart = context.chart;
+      //  const { ctx, chartArea } = chart;
+      //  if (!chartArea) {
+      //    // This case happens on initial chart load
+      //    return null;
+      //  }
+      //  return getGradient(ctx, chartArea);
+      //},
       borderColor: 'rgba(255, 99, 132, 1)',
-      borderWidth: 1,
-      pointRadius: Array.from({ length: 100 }, (_, i) => (i % 10 === 0 ? 5 : 0)), // Show circles every 10 points
-      pointHoverRadius: 10 // Increase size on hover
+      borderWidth: 2,
+      pointRadius: numData.map((value) => (value === minValue || value === maxValue ? 5 : 0)), // Show circles every 10 points
+      pointHoverRadius: numData.map((value) => (value === minValue || value === maxValue ? 10 : 0)) // Increase size on hover
     }]
   };
 
@@ -31,6 +59,20 @@ function createChart(canvasId: string) {
   // Custom plugin to draw the vertical line
   const verticalLinePlugin: Plugin = {
     id: 'verticalLinePlugin',
+    afterLayout: (chart: Chart) => {
+      /*** Set Gradient For Graph ***/
+
+      var color = chart.data.datasets[0].borderColor as string;
+
+      var zeroColor = Math.abs(chart.scales.y.min) / (Math.abs(chart.scales.y.max - chart.scales.y.min))
+      var gradient = chart.ctx.createLinearGradient(0, chart.chartArea.bottom, 0, chart.chartArea.top);
+
+      gradient.addColorStop(0, color.replace(/[\d\.]+\)$/g, '.5)'));
+      gradient.addColorStop(zeroColor, color.replace(/[\d\.]+\)$/g, '0)'));
+      gradient.addColorStop(1, color.replace(/[\d\.]+\)$/g, '.5)'));
+
+      chart.data.datasets[0].backgroundColor = gradient;
+    },
     afterDraw: (chart: Chart) => {
       if (verticalLineX !== null) {
         const ctx = chart.ctx;
@@ -73,7 +115,7 @@ function createChart(canvasId: string) {
       plugins: {
         tooltip: {
           enabled: false,
-          mode: 'nearest',
+          mode: 'index',
           intersect: false,
           external: (context) => {
             const tooltipEl = document.getElementById('custom-tooltip'+context.chart.id) as HTMLDivElement;
@@ -93,15 +135,20 @@ function createChart(canvasId: string) {
             <div>Value: ${value}</div>
           `;
 
+            //const xAxis = context.chart.scales.x;
+            const x = context.chart.scales.x.getPixelForValue(hoveredIndex);
+            const y = context.chart.scales.y.getPixelForValue(value);
+
             // Position the tooltip
             const { offsetLeft: positionX, offsetTop: positionY } = context.chart.canvas;
-            const x = context.tooltip.caretX;
-            const y = context.tooltip.caretY;
 
             tooltipEl.style.left = `${positionX + x + 5}px`;
             tooltipEl.style.top = `${positionY + y - 25}px`;
             tooltipEl.style.display = 'block';
           }
+        },
+        legend: {
+          display: false
         }
       }
     },
@@ -109,7 +156,7 @@ function createChart(canvasId: string) {
   };
 
   // Initialize charts
-  const chart1 = new Chart(document.getElementById('chart1') as ChartItem, config);
+  const chart1 = new Chart(chart1Canvas, config);
   const chart2 = new Chart(document.getElementById('chart2') as ChartItem, config);
   const chart3 = new Chart(document.getElementById('chart3') as ChartItem, config);
 
