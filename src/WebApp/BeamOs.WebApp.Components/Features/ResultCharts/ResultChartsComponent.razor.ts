@@ -1,116 +1,32 @@
 //declare var Chart: typeof import("chart.js");
 
-import { Chart, Colors, Plugin, LineController, LineElement, PointElement, LinearScale, CategoryScale, BarController, BarElement, Title, Tooltip, Legend, InteractionModeMap, ChartTypeRegistry, ChartConfiguration, ChartItem } from 'chart.js';
+import { Chart, Colors, Plugin, LineController, LineElement, PointElement, LinearScale, CategoryScale, BarController, BarElement, Title, Tooltip, Legend, InteractionModeMap, ChartTypeRegistry, ChartConfiguration, ChartItem, ChartEvent, ActiveElement, ActiveDataPoint, Point, TooltipModel } from 'chart.js';
 
 Chart.register(Colors, LineController, LineElement, PointElement, LinearScale, CategoryScale, BarController, BarElement, Title, Tooltip, Legend);
 
-//export function createChart(canvasId: string) {
-//  const plugin = {
-//    id: 'corsair',
-//    defaults: {
-//      width: 1,
-//      color: '#FF4949',
-//      dash: [3, 3],
-//    },
-//    afterInit: (chart, args, opts) => {
-//      chart.corsair = {
-//        x: 0,
-//        y: 0,
-//      }
-//    },
-//    afterEvent: (chart, args) => {
-//      const { inChartArea } = args
-//      const { type, x, y } = args.event
-
-//      chart.corsair = { x, y, draw: inChartArea }
-//      chart.draw()
-//    },
-//    beforeDatasetsDraw: (chart, args, opts) => {
-//      const { ctx } = chart
-//      const { top, bottom, left, right } = chart.chartArea
-//      if (!chart.corsair) {
-//        chart.corsair = { x: 0, y: 0, draw: false };
-//      }
-
-//      const { x, y, draw } = chart.corsair
-//      if (!draw) return
-
-//      ctx.save()
-
-//      ctx.beginPath()
-//      ctx.lineWidth = opts.width
-//      ctx.strokeStyle = opts.color
-//      ctx.setLineDash(opts.dash)
-//      ctx.moveTo(x, bottom)
-//      ctx.lineTo(x, top)
-//      ctx.moveTo(left, y)
-//      ctx.lineTo(right, y)
-//      ctx.stroke()
-
-//      ctx.restore()
-//    }
-//  }
-
-//  const data = {
-//    labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-//    datasets: [{
-//      label: '# of Votes',
-//      data: [12, 19, 3, 5, 2, 3],
-//      borderWidth: 1,
-//      pointHitRadius: 10
-//    },
-//    {
-//      label: '# of Points',
-//      data: [7, 11, 5, 8, 3, 7],
-//      borderWidth: 1,
-//      pointHitRadius: 10
-//    }
-//    ]
-//  }
-//  const options = {
-//    maintainAspectRatio: false,
-//    hover: {
-//      mode: 'nearest',
-//      intersect: true,
-//    },
-//    plugins: {
-//      corsair: {
-//        color: 'black',
-//      }
-//    }
-//  }
-
-//  const config = {
-//    type: 'line',
-//    data,
-//    options,
-//    plugins: [plugin],
-//  }
-
-//  const $chart = document.getElementById(canvasId)
-//  const chart = new Chart($chart, config)
-//}
-
-//window.createChart = createChart;
-
 function createChart(canvasId: string) {
+  const numData: number[] = Array.from({ length: 100 }, () => Math.floor(Math.random() * 100));
+  const minValue = Math.min(...numData);
+  const maxValue = Math.max(...numData);
+
   // Sample data for the charts
   const data = {
-    labels: Array.from({ length: 100 }, (_, i) => `Point ${i + 1}`), // 500 points
+    labels: Array.from({ length: 100 }, (_, i) => `Point ${i + 1}`), // 100 points
     datasets: [{
       label: 'Dataset 1',
-      data: Array.from({ length: 100 }, () => Math.floor(Math.random() * 100)), // Random data for 500 points
+      data: Array.from({ length: 100 }, () => Math.floor(Math.random() * 100)), // Random data for 100 points
       backgroundColor: 'rgba(255, 99, 132, 0.2)',
       borderColor: 'rgba(255, 99, 132, 1)',
       borderWidth: 1,
-      pointRadius: Array.from({ length: 100 }, (_, i) => (i % 10 === 0 ? 3 : 0)), // Show circles every 10 points
-      pointHoverRadius: Array.from({ length: 100 }, (_, i) => (i % 10 === 0 ? 5 : 3)) // Larger hover radius for visible points
+      pointRadius: Array.from({ length: 100 }, (_, i) => (i % 10 === 0 ? 5 : 0)), // Show circles every 10 points
+      pointHoverRadius: 10 // Increase size on hover
     }]
   };
 
   // Shared state for the vertical line position
   let verticalLineX: number | null = null;
-  let hoveredIndex: number | null = null; // Track the currently hovered point
+  let snapIndex: number | null = null;
+  let hoveredIndex: number | null = null;
 
   // Custom plugin to draw the vertical line
   const verticalLinePlugin: Plugin = {
@@ -139,14 +55,53 @@ function createChart(canvasId: string) {
     options: {
       responsive: true,
       interaction: {
-        mode: 'index',
-        intersect: false
+        intersect: false,
+        mode: 'point',
+      },
+      hover: {
+        mode: 'nearest',
+        intersect: true // Set to true if you want the nearest point only when intersected
+      },
+      onHover: (event: ChartEvent, activeElements: ActiveElement[], chart: Chart) => {
+        if (activeElements.length > 0) {
+          snapIndex = activeElements[0].index;
+        }
+        else {
+          snapIndex = null;
+        }
       },
       plugins: {
         tooltip: {
-          enabled: true,
-          mode: 'index',
-          intersect: false
+          enabled: false,
+          mode: 'nearest',
+          intersect: false,
+          external: (context) => {
+            const tooltipEl = document.getElementById('custom-tooltip'+context.chart.id) as HTMLDivElement;
+
+            // Hide if no tooltip
+            if (hoveredIndex === null) {
+              tooltipEl.style.display = 'none';
+              return;
+            }
+
+            const label = data.labels[hoveredIndex];
+            const value = data.datasets[0].data[hoveredIndex];
+
+            // Set tooltip content
+            tooltipEl.innerHTML = `
+            <div><strong>${label}</strong></div>
+            <div>Value: ${value}</div>
+          `;
+
+            // Position the tooltip
+            const { offsetLeft: positionX, offsetTop: positionY } = context.chart.canvas;
+            const x = context.tooltip.caretX;
+            const y = context.tooltip.caretY;
+
+            tooltipEl.style.left = `${positionX + x + 5}px`;
+            tooltipEl.style.top = `${positionY + y - 25}px`;
+            tooltipEl.style.display = 'block';
+          }
         }
       }
     },
@@ -164,56 +119,50 @@ function createChart(canvasId: string) {
   const container = document.querySelector('.chart-container') as HTMLDivElement;
 
   container.addEventListener('mousemove', (event: MouseEvent) => {
-    const rect = container.getBoundingClientRect();
-    const mouseX = event.clientX - rect.left;
-
-    // Get the x-axis scale and data points
     const xAxis = chart1.scales.x;
-    const dataPoints = chart1.data.labels!.length; // Use the number of labels as data points
 
-    // Check if the mouse is still within the hover radius of the currently hovered point
-    if (hoveredIndex !== null) {
-      const dataset = chart1.data.datasets[0];
-      const pointHoverRadius = (<any>dataset).pointHoverRadius;
+    if (snapIndex !== null) {
+      hoveredIndex = snapIndex
+    }
+    else {
+      let nearestIndex = 0;
+      const rect = container.getBoundingClientRect();
+      const mouseX = event.clientX - rect.left;
 
-      // Handle case where pointHoverRadius is a number or an array
-      const hoverRadius = Array.isArray(pointHoverRadius)
-        ? pointHoverRadius[hoveredIndex]
-        : pointHoverRadius;
+      // Get the x-axis scale and data points
+      const dataPoints = chart1.data.labels!.length; // Use the number of labels as data points
 
-      const pointX = xAxis.getPixelForValue(hoveredIndex);
-      const distance = Math.abs(pointX - mouseX);
+      // Find the nearest data point
+      let minDistance = Infinity;
 
-      // If the mouse is within the hover radius, keep the vertical line snapped to this point
-      if (distance <= hoverRadius) {
-        verticalLineX = pointX;
-        charts.forEach((chart: Chart) => chart.update());
-        return;
+      for (let i = 0; i < dataPoints; i++) {
+        const pointX = xAxis.getPixelForValue(i); // Get the X pixel for the data point
+        const distance = Math.abs(pointX - mouseX);
+
+        if (distance < minDistance) {
+          minDistance = distance;
+          nearestIndex = i;
+        }
       }
+
+      hoveredIndex = nearestIndex;
     }
 
-    // Find the nearest data point
-    let nearestIndex = 0;
-    let minDistance = Infinity;
-
-    for (let i = 0; i < dataPoints; i++) {
-      const pointX = xAxis.getPixelForValue(i); // Get the X pixel for the data point
-      const distance = Math.abs(pointX - mouseX);
-
-      if (distance < minDistance) {
-        minDistance = distance;
-        nearestIndex = i;
-      }
-    }
-
-    // Update the currently hovered point
-    hoveredIndex = nearestIndex;
+    const snapX = xAxis.getPixelForValue(hoveredIndex);
 
     // Update the vertical line position
-    verticalLineX = xAxis.getPixelForValue(nearestIndex);
+    verticalLineX = snapX;
 
     // Redraw all charts to show the vertical line
     charts.forEach((chart: Chart) => {
+      const tooltip = chart.tooltip;
+
+      const activeElements: ActiveDataPoint[] = [{ datasetIndex: 0, index: hoveredIndex }];
+      const point: Point = { x: event.clientX, y: event.clientY };
+
+      // Set the active element
+      tooltip.setActiveElements(activeElements, point);
+
       chart.update();
     });
   });
@@ -223,6 +172,8 @@ function createChart(canvasId: string) {
     verticalLineX = null;
     hoveredIndex = null;
     charts.forEach((chart: Chart) => {
+      const tooltipEl = document.getElementById('custom-tooltip' + chart.id) as HTMLDivElement;
+      tooltipEl.style.display = 'none';
       chart.update();
     });
   });

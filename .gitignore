@@ -357,6 +357,7 @@ MigrationBackup/
 **/wwwroot/js/
 # razor.js files are generated from the razor.ts files
 *.razor.js 
+*.razor.js.map
 # **/wwwroot/css/
 **/wwwroot/css/tailwind.css
 **/wwwroot/test-results
