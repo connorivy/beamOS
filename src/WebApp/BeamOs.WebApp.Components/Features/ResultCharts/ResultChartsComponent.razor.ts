@@ -4,6 +4,8 @@ import { Chart, Colors, Filler, Plugin, LineController, LineElement, PointElemen
 
 Chart.register(Colors, Filler, LineController, LineElement, PointElement, LinearScale, CategoryScale, BarController, BarElement, Title, Tooltip, Legend);
 
+//Chart.defaults.color = "#fff";
+
 class ResultCharts {
 
   private verticalLineX: number | null = null;
@@ -16,14 +18,7 @@ class ResultCharts {
 
   private charts: Chart[] = [this.chart1, this.chart2, this.chart3];
 
-  private isInit: boolean;
-
-  private Init() {
-    if (this.isInit) {
-      return;
-    }
-    this.isInit = true;
-
+  public init() {
     const container = document.querySelector('.chart-container') as HTMLDivElement;
 
     container.addEventListener('mousemove', (event: MouseEvent) => {
@@ -34,7 +29,7 @@ class ResultCharts {
       }
 
       const xAxis = this.chart1.scales.x;
-
+      const dataPoints = this.chart1.data.labels!.length; // Use the number of labels as data points
       if (this.snapIndex !== null) {
         this.hoveredIndex = this.snapIndex
       }
@@ -43,14 +38,18 @@ class ResultCharts {
         const rect = container.getBoundingClientRect();
         const mouseX = event.clientX - rect.left;
 
-        // Get the x-axis scale and data points
-        const dataPoints = this.chart1.data.labels!.length; // Use the number of labels as data points
+        //if (mouseX < xAxis.getPixelForDecimal(0) || mouseX > xAxis.getPixelForDecimal(1)) {
+        //  this.hoveredIndex = null;
+        //  this.snapIndex = null;
+        //  return;
+        //}
 
         // Find the nearest data point
         let minDistance = Infinity;
 
         for (let i = 0; i < dataPoints; i++) {
-          const pointX = xAxis.getPixelForValue(i); // Get the X pixel for the data point
+          const xVal = <number>this.chart1.data.labels[i];
+          const pointX = xAxis.getPixelForValue(xVal); // Get the X pixel for the data point
           const distance = Math.abs(pointX - mouseX);
 
           if (distance < minDistance) {
@@ -62,7 +61,8 @@ class ResultCharts {
         this.hoveredIndex = nearestIndex;
       }
 
-      const snapX = xAxis.getPixelForValue(this.hoveredIndex);
+      const xVal = <number>this.chart1.data.labels[this.hoveredIndex];
+      const snapX = xAxis.getPixelForValue(xVal);
 
       // Update the vertical line position
       this.verticalLineX = snapX;
@@ -104,6 +104,43 @@ class ResultCharts {
     const minValue = Math.min(...data);
     const maxValue = Math.max(...data);
 
+    const pointRad: number = 5;
+    const pointHoverRad: number = 10;
+
+    const pointRads: number[] = [];
+    const pointHoverRads: number[] = [];
+    let foundMax = false;
+    let foundMin = false;
+
+    for (let i = 0; i < data.length; i++) {
+      if (data[i] === maxValue) {
+        foundMin = false;
+        if (!foundMax) {
+          pointRads.push(pointRad);
+          pointHoverRads.push(pointHoverRad);
+          foundMax = true;
+        } else {
+          pointRads.push(0);
+          pointHoverRads.push(0);
+        }
+      } else if (data[i] === minValue) {
+        foundMax = false;
+        if (!foundMin) {
+          pointRads.push(pointRad);
+          pointHoverRads.push(pointHoverRad);
+          foundMin = true;
+        } else {
+          pointRads.push(0);
+          pointHoverRads.push(0);
+        }
+      } else {
+        pointRads.push(0);
+        pointHoverRads.push(0);
+        foundMax = false;
+        foundMin = false;
+      }
+    }
+
     return {
       labels: axisLabels,
       datasets: [{
@@ -113,19 +150,18 @@ class ResultCharts {
         fill: true,
         borderColor: color,
         borderWidth: 2,
-        pointRadius: data.map((value) => (value === minValue || value === maxValue ? 5 : 0)),
-        pointHoverRadius: data.map((value) => (value === minValue || value === maxValue ? 10 : 0))
+        pointRadius: pointRads,
+        pointHoverRadius: pointHoverRads
       }]
     }
   }
 
   public createCharts(xValues: number[], shearData: number[], momentData: number[], deflectionData: number[]) {
-    this.Init();
     this.destroyCharts();
   
-    this.chart1 = new Chart(document.getElementById('chart1') as ChartItem, this.getConfig(xValues, shearData, 'rgba(255,199,0,1)'));
-    this.chart2 = new Chart(document.getElementById('chart2') as ChartItem, this.getConfig(xValues, momentData, 'rgba(6,120,255,1)'));
-    this.chart3 = new Chart(document.getElementById('chart3') as ChartItem, this.getConfig(xValues, deflectionData, 'rgba(33, 166, 81,1)'));
+    this.chart1 = new Chart(document.getElementById('chart1') as ChartItem, this.getConfig(xValues, shearData, 'rgba(255,199,0,1)', 'Shear'));
+    this.chart2 = new Chart(document.getElementById('chart2') as ChartItem, this.getConfig(xValues, momentData, 'rgba(6,120,255,1)', 'Moment'));
+    this.chart3 = new Chart(document.getElementById('chart3') as ChartItem, this.getConfig(xValues, deflectionData, 'rgba(33, 166, 81,1)', 'Deflection'));
 
     this.charts = [this.chart1, this.chart2, this.chart3];
   }
@@ -141,7 +177,10 @@ class ResultCharts {
       var gradient = chart.ctx.createLinearGradient(0, chart.chartArea.bottom, 0, chart.chartArea.top);
 
       gradient.addColorStop(0, color.replace(/[\d\.]+\)$/g, '.5)'));
-      gradient.addColorStop(zeroColor, color.replace(/[\d\.]+\)$/g, '0)'));
+
+      if (0 <= zeroColor && zeroColor <= 1) {
+        gradient.addColorStop(zeroColor, color.replace(/[\d\.]+\)$/g, '0)'));
+      }
       gradient.addColorStop(1, color.replace(/[\d\.]+\)$/g, '.5)'));
 
       chart.data.datasets[0].backgroundColor = gradient;
@@ -163,7 +202,7 @@ class ResultCharts {
     }
   };
 
-  private getConfig(axisLabels: number[], yData: number[], color: string): ChartConfiguration {
+  private getConfig(axisLabels: number[], yData: number[], color: string, yAxisLable: string): ChartConfiguration {
     const data = ResultCharts.getData(axisLabels, yData, color);
 
     return {
@@ -187,6 +226,29 @@ class ResultCharts {
             this.snapIndex = null;
           }
         },
+        scales: {
+          x: {
+            type: 'linear',
+            max: axisLabels.slice(-1)[0],
+            ticks: {
+              maxTicksLimit: 11,
+              precision: 3,
+            }
+          },
+          y: {
+            type: 'linear',
+            afterFit: function (scale) {
+              scale.width = 65
+            },
+            ticks: {
+              precision: 3
+            },
+            title: {
+              display: true,
+              text: yAxisLable,
+            }
+          }
+        },
         plugins: {
           tooltip: {
             enabled: false,
@@ -207,18 +269,26 @@ class ResultCharts {
 
               // Set tooltip content
               tooltipEl.innerHTML = `
-                <div><strong>${label}</strong></div>
-                <div>Value: ${value}</div>
+                <div><strong>${label.toFixed(4)}</strong></div>
+                <div>Value: ${value.toFixed(4)}</div>
               `;
 
               //const xAxis = context.chart.scales.x;
-              const x = context.chart.scales.x.getPixelForValue(this.hoveredIndex);
+              const x = context.chart.scales.x.getPixelForValue(label);
               const y = context.chart.scales.y.getPixelForValue(value);
 
               // Position the tooltip
               const { offsetLeft: positionX, offsetTop: positionY } = context.chart.canvas;
 
-              tooltipEl.style.left = `${positionX + x + 5}px`;
+              if (this.hoveredIndex < data.labels.length / 2) {
+                tooltipEl.style.left = `${positionX + x + 5}px`;
+                tooltipEl.classList.remove('flipped');
+              }
+              else {
+                const tooltipWidth = tooltipEl.offsetWidth;
+                tooltipEl.classList.add('flipped');
+                tooltipEl.style.left = `${positionX + x - 5 - tooltipWidth}px`;
+              }
               tooltipEl.style.top = `${positionY + y - 25}px`;
               tooltipEl.style.display = 'block';
             }

@@ -1,0 +1,84 @@
+using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
+using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams;
+using UnitsNet;
+
+namespace BeamOs.WebApp.Components.Features.ResultCharts;
+
+internal static class DiagramConsistantIntervalExtensions
+{
+    internal static (double leftValue, double rightValue) GetValueAtLocation(
+        this IList<IDiagramConsistentIntervalResponse> intervals,
+        Length location,
+        Length equalityTolerance,
+        out bool isBetweenConsistantIntervals
+    )
+    {
+        for (int i = 0; i < intervals.Count; i++)
+        {
+            var interval = intervals[i];
+            if (location < interval.StartLocation.MapToLength())
+            {
+                continue;
+            }
+
+            // not needed for ordered intervals
+            if (location > interval.EndLocation.MapToLength())
+            {
+                continue;
+            }
+
+            double left = interval.EvaluateAtLocation(location);
+            double? right = null;
+            if (
+                i < intervals.Count - 1
+                && location.Equals(interval.EndLocation.MapToLength(), equalityTolerance)
+            )
+            {
+                //var rightInterval = intervals[i + 1];
+                right = intervals[i + 1].EvaluateAtLocation(location);
+                //if (
+                //    !rightInterval
+                //        .StartLocation
+                //        .MapToLength()
+                //        .Equals(new Length(), equalityTolerance)
+                //)
+                //{
+                //    right = intervals[i + 1].EvaluateAtLocation(location);
+                //}
+            }
+            isBetweenConsistantIntervals = right is not null;
+            return (left, right ?? left);
+        }
+
+        throw new Exception("Out of bounds, I guess??");
+    }
+
+    public static double EvaluateAtLocation(
+        this IDiagramConsistentIntervalResponse interval,
+        Length location
+    )
+    {
+        if (
+            location < interval.StartLocation.MapToLength()
+            || location > interval.EndLocation.MapToLength()
+        )
+        {
+            throw new Exception("Out of bounds my guy");
+        }
+
+        return interval
+            .PolynomialCoefficients
+            .Evaluate(location.As(interval.StartLocation.Unit.MapToLengthUnit()));
+    }
+
+    public static double Evaluate(this IList<double> coefficients, double loc)
+    {
+        double result = 0;
+        for (var i = 0; i < coefficients.Count; i++)
+        {
+            result += coefficients[i] * Math.Pow(loc, i);
+        }
+
+        return result;
+    }
+}

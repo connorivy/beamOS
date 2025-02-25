@@ -28,7 +28,7 @@ public record DiagramConsistentIntervalResponse(
     LengthContract StartLocation,
     LengthContract EndLocation,
     double[] PolynomialCoefficients
-);
+) : IDiagramConsistentIntervalResponse;
 
 public record ShearDiagramResponse(
     Guid ModelId,
@@ -57,7 +57,7 @@ public record DiagramConsistentIntervalResponse2(
     LengthContract StartLocation,
     LengthContract EndLocation,
     double[] PolynomialCoefficients
-);
+) : IDiagramConsistentIntervalResponse;
 
 public readonly record struct DeflectionDiagramResponse
 {

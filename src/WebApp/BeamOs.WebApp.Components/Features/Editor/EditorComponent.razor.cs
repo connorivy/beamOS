@@ -273,7 +273,7 @@ public record struct EditorLoadingBegin(string CanvasId, string LoadingText);
 
 public record struct EditorLoadingEnd(string CanvasId, CachedModelResponse CachedModelResponse);
 
-public record struct SelectionChanged(string CanvasId, IModelEntity[] SelectedObjects);
+//public record struct SelectionChanged(string CanvasId, IModelEntity[] SelectedObjects);
 
 public record struct ModelCacheKey(Guid ModelId, string TypeName, int Id);
 

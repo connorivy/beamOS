@@ -1,22 +1,22 @@
-@page "/test"
-
 @inherits FluxorComponent;
 
-<h3>ResultChartsComponent</h3>
 
-<div class="custom-tooltip" id="custom-tooltip1" style="position: absolute; display: none; pointer-events: none;" />
-<div class="custom-tooltip" id="custom-tooltip2" style="position: absolute; display: none; pointer-events: none;" />
-<div class="custom-tooltip" id="custom-tooltip3" style="position: absolute; display: none; pointer-events: none;" />
+<div class="custom-tooltip flipped" id="custom-tooltip1" style="position: absolute; display: none; pointer-events: none;" />
+<div class="custom-tooltip flipped" id="custom-tooltip2" style="position: absolute; display: none; pointer-events: none;" />
+<div class="custom-tooltip flipped" id="custom-tooltip3" style="position: absolute; display: none; pointer-events: none;" />
 
-<div class="chart-container h-full">
-    <canvas id="chart1" class="h-1/3"></canvas>
-    <canvas id="chart2" class="h-1/3"></canvas>
-    <canvas id="chart3" class="h-1/3"></canvas>
+<div class="chart-container h-full pointer-events-none">
+    <MudPaper Class="@($"pointer-events-auto pt-4 {(state.Value.ChartXValues is null ? "hidden" : "")}")">
+        <MudText Class="ml-4" Typo="Typo.h6">Element Results</MudText>
+        <canvas id="chart1" class="w-full"></canvas>
+        <canvas id="chart2" class="w-full"></canvas>
+        <canvas id="chart3" class="w-full"></canvas>
+    </MudPaper>
 </div>
 
 <style>
     .custom-tooltip {
-        background: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
+        background: rgba(0, 0, 0, 0.8); /* Semi-transparent black background */
         border-radius: 4px; /* Rounded corners */
         color: white; /* Text color */
         font-family: Arial, sans-serif; /* Match Chart.js font */
@@ -37,5 +37,11 @@
             border-width: 5px;
             border-style: solid;
             border-color: transparent rgba(0, 0, 0, 0.7) transparent transparent; /* Arrow color */
+        }
+
+        .custom-tooltip.flipped::before {
+            left: auto; /* Remove the left positioning */
+            right: -10px; /* Position the arrow to the right of the tooltip */
+            border-color: transparent transparent transparent rgba(0, 0, 0, 0.7); /* Flip the arrow color */
         }
 </style>
