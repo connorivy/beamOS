@@ -28,13 +28,14 @@
     <EditorComponent Class="h-full" @ref="editorComponent" ModelId="@ModelId" IsReadOnly="false"></EditorComponent>
     @if (this.editorComponent is not null && this.State.Value.LoadedModelId is Guid modelId)
     {
-        <div class="flex justify-center absolute left-0 right-0 top-4">
-            <AnalysisToolbar Class="w-1/2" editorComponent="@editorComponent" ModelId="@modelId" CanvasId="@editorComponent.CanvasId"></AnalysisToolbar>
+        <div class="flex absolute left-4 right-4 top-4">
+            <AnalysisToolbar Class="" editorComponent="@editorComponent" ModelId="@modelId" CanvasId="@editorComponent.CanvasId"></AnalysisToolbar>
         </div>
 
         @* <StructuralApiComponent Class="absolute left-0 top-0 w-1/5 p-4" ModelId="@modelId" CanvasId="@editorComponent.CanvasId"></StructuralApiComponent> *@
-
-        <SelectionInfoComponent ModelId="@modelId" SelectedObjects="this.State.Value.SelectedObjects" Class="absolute left-0 top-0 w-1/5 p-4" CanvasId="@editorComponent.CanvasId"></SelectionInfoComponent>
+        <SectionContent SectionId="@MainLayout.Drawer">
+            <SelectionInfoComponent ModelId="@modelId" SelectedObjects="this.State.Value.SelectedObjects" Class="p-4" CanvasId="@editorComponent.CanvasId"></SelectionInfoComponent>
+        </SectionContent>
 
         @* <div class="flex justify-center absolute bottom-0 right-0 left-0 h-2/5">
             <ResultsTableComponent ModelId="@modelId" Class="w-5/6 p-4" />
@@ -59,7 +60,7 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        // dispatcher.Dispatch(new OpenDrawer());
+        dispatcher.Dispatch(new OpenDrawer());
     }
 
     private EditorComponent? editorComponent
@@ -72,6 +73,12 @@
         }
     }
 
+    protected override ValueTask DisposeAsyncCore(bool disposing)
+    {
+        dispatcher.Dispatch(new CloseDrawer());
+        return base.DisposeAsyncCore(disposing);
+    }
+
     public static string GetRelativeUrl(Guid guid)
-        => $"/models/{guid}";
+    => $"/models/{guid}";
 }
