@@ -1,5 +1,3 @@
-using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.MomentDiagramAggregate;
-using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.ShearForceDiagramAggregate;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.NodeResultAggregate;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;

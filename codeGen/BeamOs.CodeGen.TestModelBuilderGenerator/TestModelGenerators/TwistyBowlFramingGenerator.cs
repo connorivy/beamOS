@@ -131,5 +131,6 @@ internal class TwistyBowlFramingGenerator(string speckleToken)
         }
 
         modelBuilder.GenerateStaticModelClass(OutputPath, "ModelFixture");
+        //modelBuilder.WriteToPyniteFile(OutputPath);
     }
 }

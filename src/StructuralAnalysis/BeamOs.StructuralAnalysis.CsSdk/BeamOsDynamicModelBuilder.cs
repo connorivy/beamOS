@@ -1,4 +1,6 @@
 using System.Text;
+using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
+using BeamOs.CodeGen.TestModelBuilderGenerator.Extensions;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
@@ -7,6 +9,9 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoad;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
 
 namespace BeamOs.StructuralAnalysis.CsSdk;
 
@@ -23,6 +28,8 @@ public sealed class BeamOsDynamicModelBuilder(
     public override string GuidString => guidString;
 
     private readonly List<PutNodeRequest> nodes = [];
+
+    public UnitSettingsContract UnitSettings => this.Settings.UnitSettings;
 
     public BeamOsDynamicModelBuilder(
         string guidString,
@@ -286,5 +293,127 @@ namespace {namespac};"
         sb.AppendLine("}");
 
         File.WriteAllText(Path.Combine(outputDir, className + ".g.cs"), sb.ToString());
+    }
+
+    public void WriteToPyniteFile(string outputDir)
+    {
+        StringBuilder sb = new();
+
+        string className = this.Name.Replace(" ", "");
+
+        sb.AppendLine(
+            @"
+from Pynite import FEModel3D
+import time
+
+model = FEModel3D()"
+        );
+
+        foreach (var node in this.NodeRequests())
+        {
+            sb.AppendLine(
+                $"model.add_node('N{node.Id}', {node.LocationPoint.X.Convert(node.LocationPoint.LengthUnit, this.Settings.UnitSettings.LengthUnit)}, {node.LocationPoint.Y.Convert(node.LocationPoint.LengthUnit, this.Settings.UnitSettings.LengthUnit)}, {node.LocationPoint.Z.Convert(node.LocationPoint.LengthUnit, this.Settings.UnitSettings.LengthUnit)})"
+            );
+            sb.AppendLine(
+                $"model.def_support('N{node.Id}', {node.Restraint.CanTranslateAlongX.ToString()}, {node.Restraint.CanTranslateAlongY.ToString()}, {node.Restraint.CanTranslateAlongZ.ToString()}, {node.Restraint.CanRotateAboutX.ToString()}, {node.Restraint.CanRotateAboutY.ToString()}, {node.Restraint.CanRotateAboutZ.ToString()})"
+            );
+        }
+
+        sb.AppendLine();
+        foreach (var material in this.MaterialRequests())
+        {
+            sb.AppendLine(
+                @$"
+nu = 0.3  # Poisson's ratio
+rho = 0.490/12**3  # Density (kci)
+model.add_material('M{material.Id}', {material.ModulusOfElasticity.As(this.UnitSettings.PressureUnit)}, {material.ModulusOfRigidity.As(this.UnitSettings.PressureUnit)}, nu, rho)"
+            );
+        }
+        sb.AppendLine();
+        foreach (var sectionProfile in this.SectionProfileRequests())
+        {
+            sb.AppendLine(
+                $"model.add_section('S{sectionProfile.Id}', {sectionProfile.Area.As(this.Settings.UnitSettings.AreaUnit)}, {sectionProfile.WeakAxisMomentOfInertia.As(this.UnitSettings.AreaMomentOfInertiaUnit)}, {sectionProfile.StrongAxisMomentOfInertia.As(this.UnitSettings.AreaMomentOfInertiaUnit)}, {sectionProfile.PolarMomentOfInertia.As(this.UnitSettings.AreaMomentOfInertiaUnit)})"
+            );
+        }
+        sb.AppendLine();
+        foreach (var element in this.Element1dRequests())
+        {
+            sb.AppendLine(
+                $"model.add_member('El{element.Id}', 'N{element.StartNodeId}', 'N{element.EndNodeId}', 'M{element.MaterialId}', 'S{element.SectionProfileId}')"
+            );
+        }
+        sb.AppendLine();
+
+        foreach (var pointLoad in this.PointLoadRequests())
+        {
+            var (pyniteDir, forceMult) = BeamOsDirectionToPyniteStringAndForceMultiplier(
+                pointLoad.Direction
+            );
+            sb.AppendLine(
+                $"model.add_node_load('N{pointLoad.NodeId}', 'F{pyniteDir}', {forceMult * pointLoad.Force.As(this.UnitSettings.ForceUnit)}, case='D')"
+            );
+        }
+        sb.AppendLine();
+
+        foreach (var momentLoad in this.MomentLoadRequests())
+        {
+            var (pyniteDir, forceMult) = BeamOsDirectionToPyniteStringAndForceMultiplier(
+                momentLoad.AxisDirection
+            );
+            sb.AppendLine(
+                $"model.add_node_load('N{momentLoad.NodeId}', 'M{pyniteDir}', {forceMult * momentLoad.Torque.As(this.UnitSettings.TorqueUnit)}, case='D')"
+            );
+        }
+
+        sb.AppendLine(
+            @"
+model.add_load_combo('1.0D', factors={'D':1.0})
+
+start_time = time.time()
+
+model.analyze()
+
+end_time = time.time()
+
+execution_time = end_time - start_time
+
+print(f""Execution time: {execution_time} seconds"")
+"
+        );
+
+        File.WriteAllText(Path.Combine(outputDir, className + ".g.py"), sb.ToString());
+    }
+
+    private static (string, int) BeamOsDirectionToPyniteStringAndForceMultiplier(Vector3 direction)
+    {
+        if (Math.Abs(direction.X - 1) < .001)
+        {
+            return ("X", 1);
+        }
+        if (Math.Abs(direction.Y - 1) < .001)
+        {
+            return ("Y", 1);
+        }
+        if (Math.Abs(direction.Z - 1) < .001)
+        {
+            return ("Z", 1);
+        }
+        if (Math.Abs(direction.X + 1) < .001)
+        {
+            return ("X", -1);
+        }
+        if (Math.Abs(direction.Y + 1) < .001)
+        {
+            return ("Y", -1);
+        }
+        if (Math.Abs(direction.Z + 1) < .001)
+        {
+            return ("Z", -1);
+        }
+
+        throw new NotImplementedException(
+            $"Translation from {direction} to pynite has not been implemented"
+        );
     }
 }
