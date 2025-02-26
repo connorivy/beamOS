@@ -24,6 +24,7 @@ public class Model : BeamOsEntity<ModelId>
     public string Name { get; private set; }
     public string Description { get; private set; }
     public ModelSettings Settings { get; private set; }
+    public DateTimeOffset LastModified { get; set; }
 
     public ICollection<Node>? Nodes { get; init; }
     public ICollection<Element1d>? Element1ds { get; init; }

@@ -1,6 +1,8 @@
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
+using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
 using BeamOs.WebApp.Components.Features.Dialogs;
+using BeamOs.WebApp.Components.Pages;
 using Fluxor;
 using Fluxor.Blazor.Web.Components;
 using Microsoft.AspNetCore.Components;
@@ -31,25 +33,35 @@ public partial class Models : FluxorComponent
 
     private string SearchTerm { get; set; } = string.Empty;
 
+    private List<ModelInfoResponse> RecentlyModifiedModels = new List<ModelInfoResponse>();
+
     private List<ModelInfoResponse> FilteredModels =>
         this.ModelState
             .Value
-            .ModelResponses
+            .UserModelResponses
             .Where(model => model.Name.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase))
             .ToList();
 
     protected override async Task OnInitializedAsync()
     {
         var authState = await this.AuthenticationStateTask;
+        List<ModelInfoResponse>? userModels = null;
         if (authState?.User.Identity is not null && authState.User.Identity.IsAuthenticated)
         {
             var modelResponses = await this.StructuralAnalysisApiClient.GetModelsAsync();
 
             if (modelResponses.IsSuccess)
             {
+                userModels = modelResponses.Value;
                 this.Dispatcher.Dispatch(new UserModelsLoaded(modelResponses.Value));
             }
         }
+
+        this.RecentlyModifiedModels =
+        [
+            .. userModels?.Take(4) ?? [],
+            .. ModelPageState.SampleModelResponses.Take(4 - userModels?.Count ?? 0)
+        ];
 
         await base.OnInitializedAsync();
     }
@@ -66,14 +78,28 @@ public partial class Models : FluxorComponent
             "Owner" => Color.Primary,
             "Contributor" => Color.Secondary,
             "Reviewer" => Color.Info,
+            "Sample" => Color.Warning,
             _ => Color.Default
         };
     }
 
-    private Task ShowCreateModelDialog()
+    private async Task ShowCreateModelDialog()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
 
-        return this.DialogService.ShowAsync<CreateModelDialog>("Create Model", options);
+        var dialog = await this.DialogService
+            .ShowAsync<CreateModelDialog>("Create Model", options)
+            .ConfigureAwait(true);
+
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            var modelResponse = result.Data as Result<ModelResponse>;
+            if (modelResponse.IsSuccess)
+            {
+                NavigationManager.NavigateTo(ModelEditor.GetRelativeUrl(modelResponse.Value.Id));
+            }
+        }
     }
 }

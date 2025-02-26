@@ -22,7 +22,7 @@ public class EditorApiProxyFactory(
             editorEventsApi,
             //changeComponentStateCommandHandler,
             canvasId,
-            isReadOnly
+            true // for now, disable editor based model edits
         );
     }
 }

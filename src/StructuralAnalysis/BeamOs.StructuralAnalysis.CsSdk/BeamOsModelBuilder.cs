@@ -14,6 +14,7 @@ public abstract class BeamOsModelBuilder
     public abstract string Name { get; }
     public abstract string Description { get; }
     public abstract PhysicalModelSettings Settings { get; }
+    public DateTimeOffset LastModified { get; } = DateTimeOffset.UtcNow;
 
     /// <summary>
     /// You can go to this website to generate a random guid string

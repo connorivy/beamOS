@@ -121,9 +121,10 @@
 
         if (result is Task t)
         {
-            await t.ConfigureAwait(false);
+            await t.ConfigureAwait(true);
+            result = ((dynamic)result).Result;
         }
 
-        MudDialog.Close(DialogResult.Ok(true));
+        MudDialog.Close(DialogResult.Ok(result));
     }
 }

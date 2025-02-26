@@ -37,6 +37,7 @@ public class BeamOsModelEntity<TId> : BeamOsEntity<TId>, IBeamOsModelEntity
 public interface IBeamOsModelEntity
 {
     public ModelId ModelId { get; }
+    public Model? Model { get; }
     public int GetIntId();
     public void SetIntId(int value);
 }

@@ -17,6 +17,7 @@ public record ModelInfoResponse(
     string Name,
     string Description,
     PhysicalModelSettings Settings,
+    DateTimeOffset LastModified,
     string Role
 ) : IBeamOsEntityResponse;
 
@@ -25,6 +26,7 @@ public record ModelResponse(
     string Name,
     string Description,
     PhysicalModelSettings Settings,
+    DateTimeOffset LastModified,
     List<NodeResponse>? Nodes = null,
     List<Element1dResponse>? Element1ds = null,
     List<MaterialResponse>? Materials = null,

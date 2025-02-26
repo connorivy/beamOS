@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration;
 
-public class WebAppFactory(string connectionString)
+public class WebAppFactory(string connectionString, TimeProvider? timeProvider = null)
     : WebApplicationFactory<IAssemblyMarkerStructuralAnalysisApi>
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -46,7 +46,10 @@ public class WebAppFactory(string connectionString)
                 options =>
                     options
                         .UseNpgsql(connectionString)
-                        .AddInterceptors(new ModelEntityIdIncrementingInterceptor())
+                        .AddInterceptors(
+                            new ModelEntityIdIncrementingInterceptor(),
+                            new ModelLastModifiedUpdater(timeProvider ?? TimeProvider.System)
+                        )
             //.UseModel(StructuralAnalysisDbContextModel.Instance)
             );
 

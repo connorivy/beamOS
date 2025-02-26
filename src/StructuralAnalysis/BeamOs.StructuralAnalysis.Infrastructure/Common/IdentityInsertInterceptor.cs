@@ -1,11 +1,10 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using BeamOs.Common.Contracts;
-using BeamOs.Common.Domain.Models;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
@@ -13,7 +12,6 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.Common;
 
@@ -216,15 +214,50 @@ public class ModelEntityIdIncrementingInterceptor : SaveChangesInterceptor
 
         return result;
     }
+}
 
-    private async Task SaveEntitiesAsync(DbContext context, IEnumerable<EntityEntry> entries)
+public class ModelLastModifiedUpdater(TimeProvider timeProvider) : SaveChangesInterceptor
+{
+    public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(
+        DbContextEventData eventData,
+        InterceptionResult<int> result,
+        CancellationToken cancellationToken = default
+    )
     {
-        foreach (var entry in entries)
+        if (eventData.Context is not StructuralAnalysisDbContext context)
         {
-            var newEntry = context.Add(entry.Entity);
-            newEntry.State = entry.State;
-            //context.Entry(entry.Entity).State = EntityState.Added;
+            return await base.SavingChangesAsync(eventData, result, cancellationToken);
         }
-        await context.SaveChangesAsync();
+
+        var modifiedModelIds = context
+            .ChangeTracker
+            .Entries()
+            .Where(
+                e =>
+                    e.State != EntityState.Detached
+                    && e.State != EntityState.Unchanged
+                    && e.Entity is IBeamOsModelEntity
+            )
+            .Select(e => ((IBeamOsModelEntity)e.Entity).ModelId)
+            .Distinct();
+
+        DateTimeOffset lastModified = timeProvider.GetUtcNow();
+
+        foreach (var modelId in modifiedModelIds)
+        {
+            var model = context.Models.Local.FirstOrDefault(m => m.Id == modelId);
+
+            if (model is null)
+            {
+                model = new("", "", new(UnitSettings.kN_M), modelId);
+                context.Models.Attach(model);
+            }
+
+            model.LastModified = DateTime.UtcNow;
+
+            context.Entry(model).Property(m => m.LastModified).IsModified = true;
+        }
+
+        return result;
     }
 }
