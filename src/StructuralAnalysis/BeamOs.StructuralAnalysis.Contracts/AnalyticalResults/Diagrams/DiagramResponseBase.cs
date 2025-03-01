@@ -76,6 +76,13 @@ public record AnalyticalResultsResponse : IModelEntity
     public required Guid ModelId { get; init; }
 }
 
+public record DiagramResponse
+{
+    public required ShearDiagramResponse[] ShearDiagrams { get; init; }
+    public required MomentDiagramResponse[] MomentDiagrams { get; init; }
+    public required DeflectionDiagramResponse[] DeflectionDiagrams { get; init; }
+}
+
 public readonly record struct GlobalStresses
 {
     public required ForceContract MaxShear { get; init; }
@@ -90,4 +97,15 @@ public enum DiagramType
     Shear,
     Moment,
     Displacement
+}
+
+public enum RelativeDirection3D
+{
+    Undefined = 0,
+    LocalX,
+    LocalY,
+    LocalZ,
+    GlobalX,
+    GlobalY,
+    GlobalZ
 }

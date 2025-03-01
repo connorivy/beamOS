@@ -29,11 +29,11 @@ public record CachedModelResponse
     public ImmutableDictionary<
         int,
         ImmutableDictionary<int, NodeResultResponse>
-    > NodeResults { get; init; }
+    >? NodeResults { get; init; }
 
-    public ImmutableDictionary<int, ShearDiagramResponse> ShearDiagrams { get; init; }
-    public ImmutableDictionary<int, MomentDiagramResponse> MomentDiagrams { get; init; }
-    public ImmutableDictionary<int, DeflectionDiagramResponse> DeflectionDiagrams { get; init; }
+    public ImmutableDictionary<int, ShearDiagramResponse>? ShearDiagrams { get; init; }
+    public ImmutableDictionary<int, MomentDiagramResponse>? MomentDiagrams { get; init; }
+    public ImmutableDictionary<int, DeflectionDiagramResponse>? DeflectionDiagrams { get; init; }
 
     public CachedModelResponse(ModelResponse modelResponse)
         : this(

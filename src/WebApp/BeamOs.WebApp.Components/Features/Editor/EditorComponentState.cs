@@ -17,11 +17,12 @@ public record EditorComponentState(
     bool IsLoading,
     Guid? LoadedModelId,
     IEditorApiAlpha? EditorApi,
-    SelectedObject[] SelectedObjects
+    SelectedObject[] SelectedObjects,
+    bool HasResults
 )
 {
     public EditorComponentState()
-        : this(null, false, null, null, []) { }
+        : this(null, false, null, null, [], false) { }
 }
 
 public static class EditorComponentStateReducers
@@ -44,17 +45,22 @@ public static class EditorComponentStateReducers
         return state with { IsLoading = true, LoadingText = action.LoadingText };
     }
 
+    [ReducerMethod(typeof(EditorLoadingEnd))]
+    public static EditorComponentState EditorLoadingEndReducer(EditorComponentState state)
+    {
+        return state with { IsLoading = false };
+    }
+
     [ReducerMethod]
     public static EditorComponentState EditorLoadingBeginReducer(
         EditorComponentState state,
-        EditorLoadingEnd action
+        ModelLoaded action
     )
     {
         return state with
         {
-            IsLoading = false,
-            //CachedModelResponse = action.CachedModelResponse,
-            LoadedModelId = action.CachedModelResponse.Id
+            LoadedModelId = action.CachedModelResponse.Id,
+            HasResults = (action.CachedModelResponse.NodeResults?.Count ?? 0) > 0
         };
     }
 
@@ -67,10 +73,22 @@ public static class EditorComponentStateReducers
         return state with { SelectedObjects = action.SelectedObjects };
     }
 
+    [ReducerMethod(typeof(AnalyticalResultsCreated))]
+    public static EditorComponentState ResultsCreatedReducer(EditorComponentState state)
+    {
+        return state with { HasResults = true };
+    }
+
+    [ReducerMethod(typeof(AnalyticalResultsCleared))]
+    public static EditorComponentState ResultsClearedReducer(EditorComponentState state)
+    {
+        return state with { HasResults = false };
+    }
+
     [ReducerMethod]
     public static CachedModelState EditorLoadingBeginReducer(
         CachedModelState state,
-        EditorLoadingEnd action
+        ModelLoaded action
     )
     {
         return state with
@@ -301,6 +319,32 @@ public static class EditorComponentStateReducers
                 )
         };
     }
+
+    [ReducerMethod]
+    public static CachedModelState Reducer(CachedModelState state, AnalyticalResultsCleared action)
+    {
+        if (!state.Models.TryGetValue(action.ModelId, out var model))
+        {
+            return state;
+        }
+
+        return state with
+        {
+            Models = state
+                .Models
+                .Remove(action.ModelId)
+                .Add(
+                    action.ModelId,
+                    model with
+                    {
+                        NodeResults = null,
+                        ShearDiagrams = null,
+                        MomentDiagrams = null,
+                        DeflectionDiagrams = null,
+                    }
+                )
+        };
+    }
 }
 
 public readonly record struct AnalysisBegan
@@ -316,4 +360,9 @@ public readonly record struct AnalysisEnded
 public readonly record struct AnalyticalResultsCreated
 {
     public required AnalyticalResultsResponse AnalyticalResults { get; init; }
+}
+
+public readonly record struct AnalyticalResultsCleared
+{
+    public required Guid ModelId { get; init; }
 }

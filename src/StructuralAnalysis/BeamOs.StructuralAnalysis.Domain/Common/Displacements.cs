@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using BeamOs.Common.Domain.Models;
 using UnitsNet;
 using UnitsNet.Units;
@@ -50,6 +51,18 @@ public sealed class Displacements(
             this.RotationAboutY.As(angleUnit),
             this.RotationAboutZ.As(angleUnit),
         ];
+    }
+
+    public void CopyTo(Span<double> span, LengthUnit lengthUnit, AngleUnit angleUnit)
+    {
+        Debug.Assert(span.Length >= 6);
+
+        span[0] = this.DisplacementAlongX.As(lengthUnit);
+        span[1] = this.DisplacementAlongY.As(lengthUnit);
+        span[2] = this.DisplacementAlongZ.As(lengthUnit);
+        span[3] = this.RotationAboutX.As(angleUnit);
+        span[4] = this.RotationAboutY.As(angleUnit);
+        span[5] = this.RotationAboutZ.As(angleUnit);
     }
 
     protected override IEnumerable<object> GetEqualityComponents()

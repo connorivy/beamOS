@@ -1,6 +1,5 @@
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models.Mappers;
 using BeamOs.StructuralAnalysis.Contracts.Common;
-using BeamOs.StructuralAnalysis.CsSdk.Mappers;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod.Common.ValueObjects;
 using BeamOs.Tests.Common;

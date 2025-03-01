@@ -165,8 +165,12 @@ public class DsmAnalysisModel
                 unknownJointDisplacementVector
             );
 
-            displacementResults[i] = this.CalculateDeflectionDiagram(
-                this.dsmElement1Ds[i],
+            displacementResults[i] = DeflectionDiagrams.Create(
+                this.dsmElement1Ds[i].Element1dId,
+                this.dsmElement1Ds[i].StartPoint,
+                this.dsmElement1Ds[i].EndPoint,
+                this.dsmElement1Ds[i].SectionProfileRotation,
+                this.unitSettings.LengthUnit,
                 localElementDisplacements,
                 out var displacementMin,
                 out var displacementMax
@@ -226,53 +230,6 @@ public class DsmAnalysisModel
             MaxShear = new(globalShearMax, this.unitSettings.ForceUnit),
             MinMoment = new(globalMomentMin, this.unitSettings.TorqueUnit),
             MinShear = new(globalShearMin, this.unitSettings.ForceUnit)
-        };
-    }
-
-    private DeflectionDiagrams CalculateDeflectionDiagram(
-        DsmElement1d dsmElement1d,
-        Vector<double> localElementDisplacements,
-        out double displacementMin,
-        out double displacementMax
-    )
-    {
-        int numIntervals = 10;
-        double[] offsets = new double[numIntervals * 3];
-
-        double beamLength = dsmElement1d.Length.As(this.unitSettings.LengthUnit);
-        Matrix<double> rotationMatrixTranspose = DenseMatrix
-            .OfArray(dsmElement1d.GetRotationMatrix())
-            .Transpose();
-
-        displacementMin = double.MaxValue;
-        displacementMax = double.MinValue;
-        for (int j = 0; j < numIntervals; j++)
-        {
-            double step = (double)j / (numIntervals - 1);
-
-            var displacements = DeflectedShapeShapeFunctionCalculator.Solve(
-                step * beamLength,
-                beamLength,
-                localElementDisplacements,
-                rotationMatrixTranspose
-            );
-            Array.Copy(displacements, 0, offsets, j * 3, 3);
-
-            var displacement = Math.Sqrt(
-                Math.Pow(displacements[0], 2)
-                    + Math.Pow(displacements[1], 2)
-                    + Math.Pow(displacements[2], 2)
-            );
-
-            displacementMin = Math.Min(displacementMin, displacement);
-            displacementMax = Math.Max(displacementMax, displacement);
-        }
-
-        return new DeflectionDiagrams()
-        {
-            Element1dId = dsmElement1d.Element1dId,
-            NumSteps = numIntervals,
-            Offsets = offsets,
         };
     }
 
@@ -568,8 +525,8 @@ public record AnalysisResults
 
 public record OtherAnalyticalResults
 {
-    public ResultSetId Id { get; init; }
-    public ModelId ModelId { get; init; }
+    public required ResultSetId Id { get; init; }
+    public required ModelId ModelId { get; init; }
     public required ShearForceDiagram[] ShearDiagrams { get; init; }
     public required MomentDiagram[] MomentDiagrams { get; init; }
     public required DeflectionDiagrams[] DeflectionDiagrams { get; init; }

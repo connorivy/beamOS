@@ -26,13 +26,13 @@ public class Model : BeamOsEntity<ModelId>
     public ModelSettings Settings { get; private set; }
     public DateTimeOffset LastModified { get; set; }
 
-    public ICollection<Node>? Nodes { get; init; }
-    public ICollection<Element1d>? Element1ds { get; init; }
-    public ICollection<Material>? Materials { get; init; }
-    public ICollection<SectionProfile>? SectionProfiles { get; init; }
-    public ICollection<PointLoad>? PointLoads { get; init; }
-    public ICollection<MomentLoad>? MomentLoads { get; init; }
-    public ICollection<ResultSet>? ResultSets { get; init; }
+    public IList<Node>? Nodes { get; init; }
+    public IList<Element1d>? Element1ds { get; init; }
+    public IList<Material>? Materials { get; init; }
+    public IList<SectionProfile>? SectionProfiles { get; init; }
+    public IList<PointLoad>? PointLoads { get; init; }
+    public IList<MomentLoad>? MomentLoads { get; init; }
+    public IList<ResultSet>? ResultSets { get; init; }
 
     //public AnalyticalResults? AnalyticalResults { get; init; }
 

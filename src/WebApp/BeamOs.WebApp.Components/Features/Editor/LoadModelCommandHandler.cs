@@ -16,6 +16,7 @@ public class LoadModelCommandHandler(
     IStructuralAnalysisApiClientV1 structuralAnalysisApiClient,
     //IState<AllEditorComponentState> allEditorComponentState,
     IState<EditorComponentState> editorComponentState,
+    IDispatcher dispatcher,
     HybridCache cache,
     LoadBeamOsEntityCommandHandler loadBeamOsEntityCommandHandler
 ) : CommandHandlerBase<LoadModelCommand, CachedModelResponse>(snackbar)
@@ -80,31 +81,39 @@ public class LoadModelCommandHandler(
         );
 
         var modelCacheResponse = new CachedModelResponse(modelResponse.Value);
+        dispatcher.Dispatch(new ModelLoaded(modelCacheResponse));
 
-        //await editorComponentState.EditorApi.ClearAsync(ct);
-
-        //await editorComponentState.EditorApi.SetSettingsAsync(modelCacheResponse.Settings, ct);
-
-        //await editorComponentState
-        //    .EditorApi
-        //    .CreateNodesAsync(modelCacheResponse.Nodes.Values.Select(e => e.ToEditorUnits()), ct);
-
-        //await editorComponentState
-        //    .EditorApi
-        //    .CreatePointLoadsAsync(
-        //        modelCacheResponse.PointLoads.Values.Select(e => e.ToEditorUnits()),
-        //        ct
-        //    );
-
-        //await editorComponentState
-        //    .EditorApi
-        //    .CreateElement1dsAsync(modelCacheResponse.Element1ds.Values, ct);
-
-        //await editorComponentState.EditorApi.SetModelResultsAsync(momodelCacheResponsedelResponse.Value.AnalyticalResults, ct);
-
-        //editorComponentState.EditorApi
+        if (modelResponse.Value.ResultSets is not null && modelResponse.Value.ResultSets.Count > 0)
+        {
+            dispatcher.Dispatch(new EditorLoadingBegin(command.CanvasId, "Fetching Results"));
+            var resultId = modelResponse.Value.ResultSets[0].Id;
+            var diagrams = await structuralAnalysisApiClient.GetDiagramsAsync(
+                command.ModelId,
+                resultId,
+                ct
+            );
+            if (diagrams.IsError)
+            {
+                this.Snackbar.Add(diagrams.Error.Description, Severity.Error);
+                return diagrams.Error;
+            }
+            else
+            {
+                dispatcher.Dispatch(
+                    new AnalyticalResultsCreated() { AnalyticalResults = diagrams.Value }
+                );
+            }
+        }
 
         return modelCacheResponse;
+    }
+
+    protected override void PostProcess(
+        LoadModelCommand command,
+        Result<CachedModelResponse> response
+    )
+    {
+        dispatcher.Dispatch(new EditorLoadingEnd(command.CanvasId));
     }
 }
 

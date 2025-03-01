@@ -95,7 +95,10 @@ public sealed class ReceiveFromSpeckleCommandHandler(
             return modelResponse.Error;
         }
 
-        return new CachedModelResponse(modelResponse.Value);
+        var result = new CachedModelResponse(modelResponse.Value);
+        dispatcher.Dispatch(new ModelLoaded() { CachedModelResponse = result });
+
+        return result;
     }
 
     protected override void PostProcess(
@@ -103,13 +106,7 @@ public sealed class ReceiveFromSpeckleCommandHandler(
         Result<CachedModelResponse> result
     )
     {
-        dispatcher.Dispatch(
-            new EditorLoadingEnd()
-            {
-                CanvasId = command.CanvasId,
-                CachedModelResponse = result.Value
-            }
-        );
+        dispatcher.Dispatch(new EditorLoadingEnd() { CanvasId = command.CanvasId });
     }
 }
 
