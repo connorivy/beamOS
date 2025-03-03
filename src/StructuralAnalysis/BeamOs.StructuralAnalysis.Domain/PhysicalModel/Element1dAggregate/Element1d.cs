@@ -1,4 +1,5 @@
 using BeamOs.StructuralAnalysis.Domain.Common;
+using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
@@ -7,7 +8,7 @@ using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 
-public class Element1d : BeamOsModelEntity<Element1dId>
+public class Element1d : BeamOsModelEntity<Element1dId>, IHydratedElement1d
 {
     public Element1d(
         ModelId modelId,
@@ -46,6 +47,19 @@ public class Element1d : BeamOsModelEntity<Element1dId>
     /// counter-clockwise rotation in radians when looking in the negative (local) x direction
     /// </summary>
     public Angle SectionProfileRotation { get; set; }
+
+    Area IHydratedElement1d.Area => this.SectionProfile.Area;
+    Element1dId IHydratedElement1d.Element1dId => this.Id;
+    Point IHydratedElement1d.StartPoint => this.StartNode.LocationPoint;
+    Point IHydratedElement1d.EndPoint => this.EndNode.LocationPoint;
+    Pressure IHydratedElement1d.ModulusOfElasticity => this.Material.ModulusOfElasticity;
+    Pressure IHydratedElement1d.ModulusOfRigidity => this.Material.ModulusOfRigidity;
+    AreaMomentOfInertia IHydratedElement1d.PolarMomentOfInertia =>
+        this.SectionProfile.PolarMomentOfInertia;
+    AreaMomentOfInertia IHydratedElement1d.StrongAxisMomentOfInertia =>
+        this.SectionProfile.StrongAxisMomentOfInertia;
+    AreaMomentOfInertia IHydratedElement1d.WeakAxisMomentOfInertia =>
+        this.SectionProfile.WeakAxisMomentOfInertia;
 
     //private readonly SortedList<double, PointLoad> loads = new();
     //public IReadOnlyDictionary<double, PointLoad> Loads => this.loads.AsReadOnly();

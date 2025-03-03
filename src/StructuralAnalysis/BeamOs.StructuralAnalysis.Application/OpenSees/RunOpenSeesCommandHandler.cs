@@ -2,12 +2,18 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis.Application.AnalyticalResults;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.ResultSets;
 using BeamOs.StructuralAnalysis.Application.Common;
+using BeamOs.StructuralAnalysis.Application.DirectStiffnessMethod;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
+using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams;
+using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.MomentDiagramAggregate;
+using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.ShearForceDiagramAggregate;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.NodeResultAggregate;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.Common;
+using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 using BeamOs.StructuralAnalysis.Domain.OpenSees;
 using BeamOs.StructuralAnalysis.Domain.OpenSees.TcpServer;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
@@ -18,29 +24,25 @@ using Microsoft.Extensions.Logging;
 namespace BeamOs.StructuralAnalysis.Application.OpenSees;
 
 public sealed class RunOpenSeesCommandHandler(
-    //{
-    //}
-    //public class RunOpenSeesAnalysisCommandHandler(
     IModelRepository modelRepository,
     IResultSetRepository resultSetRepository,
-    //IModelResultRepository modelResultRepository,
-    //INodeResultRepository nodeResultRepository,
-    //IShearDiagramRepository shearDiagramRepository,
-    //IMomentDiagramRepository momentDiagramRepository,
     IStructuralAnalysisUnitOfWork unitOfWork,
     ILogger<RunOpenSeesCommandHandler> logger
-) : ICommandHandler<ModelId, int>, IDisposable
+) : ICommandHandler<RunDsmCommand, AnalyticalResultsResponse>, IDisposable
 {
     private readonly TcpServer displacementServer = TcpServer.CreateStarted(logger);
     private readonly TcpServer reactionServer = TcpServer.CreateStarted(logger);
     private readonly TcpServer elementForceServer = TcpServer.CreateStarted(logger);
 
-    public async Task<Result<int>> ExecuteAsync(ModelId modelId, CancellationToken ct = default)
+    public async Task<Result<AnalyticalResultsResponse>> ExecuteAsync(
+        RunDsmCommand command,
+        CancellationToken ct = default
+    )
     {
         string outputDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
         var model = await modelRepository.GetSingle(
-            modelId,
+            command.ModelId,
             static queryable =>
                 queryable
                     .Include(m => m.PointLoads)
@@ -58,14 +60,25 @@ public sealed class RunOpenSeesCommandHandler(
 
         if (model is null)
         {
-            return BeamOsError.NotFound(description: $"Could not find model with id {modelId}");
+            return BeamOsError.NotFound(
+                description: $"Could not find model with id {command.ModelId}"
+            );
+        }
+
+        UnitSettings unitSettings = model.Settings.UnitSettings;
+        if (command.UnitsOverride is not null)
+        {
+            unitSettings = RunDirectStiffnessMethodCommandHandler.GetUnitSettings(
+                command.UnitsOverride
+            );
         }
 
         TclWriter tclWriter = this.CreateWriterFromModel(
             model,
             this.displacementServer.Port,
             this.reactionServer.Port,
-            this.elementForceServer.Port
+            this.elementForceServer.Port,
+            unitSettings
         );
 
         if (tclWriter.OutputFileWithPath is null)
@@ -77,15 +90,23 @@ public sealed class RunOpenSeesCommandHandler(
 
         await this.RunTclWithOpenSees(tclWriter.OutputFileWithPath, outputDir);
 
-        var resultSet = new ResultSet(modelId);
+        var resultSet = new ResultSet(command.ModelId)
+        {
+            NodeResults = this.GetResults(model, tclWriter)
+        };
 
-        resultSet.NodeResults = this.GetResults(model, tclWriter);
+        var dsmElements =
+            model.Settings.AnalysisSettings.Element1DAnalysisType == Element1dAnalysisType.Euler
+                ? model.Element1ds.Select(el => new DsmElement1d(el)).ToArray()
+                : model.Element1ds.Select(el => new TimoshenkoDsmElement1d(el)).ToArray();
+
+        var otherResults = resultSet.ComputeDiagramsAndElement1dResults(dsmElements, unitSettings);
 
         resultSetRepository.Add(resultSet);
 
         await unitOfWork.SaveChangesAsync(ct);
 
-        return resultSet.Id.Id;
+        return otherResults.Map();
     }
 
     private Dictionary<Element1dId, Element1d> element1dCache;
@@ -94,11 +115,18 @@ public sealed class RunOpenSeesCommandHandler(
         Model model,
         int displacementPort,
         int reactionPort,
-        int elementForcesPort
+        int elementForcesPort,
+        UnitSettings? unitSettingsOverride = null
     )
     {
         TclWriter tclWriter =
-            new(model.Settings, displacementPort, reactionPort, elementForcesPort);
+            new(
+                model.Settings,
+                displacementPort,
+                reactionPort,
+                elementForcesPort,
+                unitSettingsOverride
+            );
 
         this.element1dCache = new(model.Element1ds.Count);
         foreach (var element1d in model.Element1ds)

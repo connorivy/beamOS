@@ -28,12 +28,13 @@ public class TclWriter
         ModelSettings modelSettings,
         int displacementPort,
         int reactionPort,
-        int elementForcesPort
+        int elementForcesPort,
+        UnitSettings? unitSettingsOverride = null
     )
     {
         this.modelSettings = modelSettings;
-        this.unitSettings = modelSettings.UnitSettings;
-        this.beamOsToOpenSeesConverter = new(modelSettings);
+        this.unitSettings = unitSettingsOverride ?? modelSettings.UnitSettings;
+        this.beamOsToOpenSeesConverter = new(modelSettings, unitSettingsOverride);
 
         this.document.AppendLine("wipe");
         this.document.AppendLine("model basic -ndm 3 -ndf 6");

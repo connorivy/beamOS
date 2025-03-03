@@ -1,4 +1,4 @@
-﻿{
+{
   Value: {
     Id: Guid_1,
     Name: test model,
@@ -20,6 +20,7 @@
       },
       YAxisUp: true
     },
+    LastModified: DateTimeOffset_1,
     Nodes: null,
     Element1ds: null,
     Materials: null,

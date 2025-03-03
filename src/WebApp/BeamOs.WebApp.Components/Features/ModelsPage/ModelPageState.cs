@@ -27,6 +27,12 @@ public record ModelPageState
         List<ModelInfoResponse> sampleModels = [];
         foreach (var modelBuilder in AllSolvedProblems.ModelFixtures())
         {
+            // Only add sample models from SAP2000 because they look the coolest
+            if (modelBuilder.SourceInfo?.SourceType != FixtureSourceType.SAP2000)
+            {
+                continue;
+            }
+
             sampleModels.Add(
                 new(
                     modelBuilder.Id,

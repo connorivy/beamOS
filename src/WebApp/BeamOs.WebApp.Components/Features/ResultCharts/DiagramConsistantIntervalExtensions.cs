@@ -16,18 +16,18 @@ internal static class DiagramConsistantIntervalExtensions
         for (int i = 0; i < intervals.Count; i++)
         {
             var interval = intervals[i];
-            if (location < interval.StartLocation.MapToLength())
+            if (location < interval.StartLocation.MapToLength() - equalityTolerance)
             {
                 continue;
             }
 
             // not needed for ordered intervals
-            if (location > interval.EndLocation.MapToLength())
+            if (location > interval.EndLocation.MapToLength() + equalityTolerance)
             {
                 continue;
             }
 
-            double left = interval.EvaluateAtLocation(location);
+            double left = interval.EvaluateAtLocation(location, equalityTolerance);
             double? right = null;
             if (
                 i < intervals.Count - 1
@@ -35,7 +35,7 @@ internal static class DiagramConsistantIntervalExtensions
             )
             {
                 //var rightInterval = intervals[i + 1];
-                right = intervals[i + 1].EvaluateAtLocation(location);
+                right = intervals[i + 1].EvaluateAtLocation(location, equalityTolerance);
                 //if (
                 //    !rightInterval
                 //        .StartLocation
@@ -55,12 +55,13 @@ internal static class DiagramConsistantIntervalExtensions
 
     public static double EvaluateAtLocation(
         this IDiagramConsistentIntervalResponse interval,
-        Length location
+        Length location,
+        Length equalityTolerance
     )
     {
         if (
-            location < interval.StartLocation.MapToLength()
-            || location > interval.EndLocation.MapToLength()
+            location < interval.StartLocation.MapToLength() - equalityTolerance
+            || location > interval.EndLocation.MapToLength() + equalityTolerance
         )
         {
             throw new Exception("Out of bounds my guy");

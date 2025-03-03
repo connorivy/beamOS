@@ -239,7 +239,8 @@ public class ModelLastModifiedUpdater(TimeProvider timeProvider) : SaveChangesIn
                     && e.Entity is IBeamOsModelEntity
             )
             .Select(e => ((IBeamOsModelEntity)e.Entity).ModelId)
-            .Distinct();
+            .Distinct()
+            .ToArray();
 
         DateTimeOffset lastModified = timeProvider.GetUtcNow();
 

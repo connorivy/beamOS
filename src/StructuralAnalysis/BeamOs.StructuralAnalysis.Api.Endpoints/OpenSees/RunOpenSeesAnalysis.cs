@@ -1,6 +1,8 @@
 using BeamOs.Common.Api;
 using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis.Api.Endpoints.DirectStiffnessMethod;
 using BeamOs.StructuralAnalysis.Application.OpenSees;
+using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.OpenSees;
 
@@ -8,12 +10,16 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.OpenSees;
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 public class RunOpenSeesAnalysis(RunOpenSeesCommandHandler runOpenSeesCommandHandler)
-    : BeamOsModelIdRequestBaseEndpoint<int>
+    : BeamOsBaseEndpoint<RunDsmRequest, AnalyticalResultsResponse>
 {
-    public override async Task<Result<int>> ExecuteRequestAsync(
-        ModelIdRequest req,
+    public override async Task<Result<AnalyticalResultsResponse>> ExecuteRequestAsync(
+        RunDsmRequest req,
         CancellationToken ct = default
-    ) => await runOpenSeesCommandHandler.ExecuteAsync(req.ModelId, ct);
+    ) =>
+        await runOpenSeesCommandHandler.ExecuteAsync(
+            new() { ModelId = req.ModelId, UnitsOverride = req.UnitsOverride },
+            ct
+        );
 }
 
 public readonly struct ModelIdRequest : IHasModelId

@@ -1,8 +1,6 @@
-using System.Security.Cryptography.X509Certificates;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.Common;
-using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using MathNet.Numerics.LinearAlgebra;
@@ -17,11 +15,11 @@ public class Element1dResult : BeamOsAnalyticalResultEntity<Element1dId>
     public Element1dResult(ModelId modelId, ResultSetId resultSetId, Element1dId element1dId)
         : base(element1dId, resultSetId, modelId) { }
 
-    public required Forces LocalStartForces { get; init; }
-    public required Forces LocalEndForces { get; init; }
+    //public required Forces LocalStartForces { get; init; }
+    //public required Forces LocalEndForces { get; init; }
 
-    public required Displacements LocalStartDisplacements { get; init; }
-    public required Displacements LocalEndDisplacements { get; init; }
+    //public required Displacements LocalStartDisplacements { get; init; }
+    //public required Displacements LocalEndDisplacements { get; init; }
 
     public required Force MaxShear { get; init; }
     public required Force MinShear { get; init; }
@@ -97,7 +95,7 @@ public readonly record struct DeflectionDiagrams(
                 localElementDisplacements,
                 rotationMatrixTranspose
             );
-            //Array.Copy(displacements, 0, offsets, j * 3, 3);
+
             displacements.AsSpan().CopyTo(offsets.AsSpan(j * 3));
 
             var displacement = Math.Sqrt(

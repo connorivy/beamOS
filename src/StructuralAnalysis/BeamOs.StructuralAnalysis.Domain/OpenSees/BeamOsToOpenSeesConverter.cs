@@ -5,9 +5,12 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.OpenSees;
 
-public class BeamOsToOpenSeesConverter(ModelSettings modelSettings)
+public class BeamOsToOpenSeesConverter(
+    ModelSettings modelSettings,
+    UnitSettings? unitSettingsOverride = null
+)
 {
-    protected UnitSettings UnitSettings => modelSettings.UnitSettings;
+    protected UnitSettings UnitSettings => unitSettingsOverride ?? modelSettings.UnitSettings;
 
     public string Element1d(
         Element1d element1d,

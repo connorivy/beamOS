@@ -124,7 +124,7 @@ public partial class ResultChartsComponent(
             int iEff = i + numDuplicateXValues;
             double location = evalPoints[iEff];
 
-            if (!regularIntervalLocations.Contains(location))
+            if (!regularIntervalLocations.Any(value => Math.Abs(value - location) <= 1e-4))
             {
                 Debug.Assert(i != evalPoints.Count - 1);
 
@@ -166,7 +166,7 @@ public partial class ResultChartsComponent(
                 evalPoints.Insert(iEff, location);
                 if (iEff == relativeOffsets.Count)
                 {
-                    relativeOffsets.Add(relativeOffsets[iEff]);
+                    relativeOffsets.Add(relativeOffsets.Last());
                 }
                 else
                 {
