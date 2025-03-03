@@ -5,6 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <TUnitImplicitUsings>false</TUnitImplicitUsings>
     <LangVersion>preview</LangVersion>
+    <NpmFolder>.\</NpmFolder>
   </PropertyGroup>
 
 

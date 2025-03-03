@@ -22,6 +22,8 @@ internal sealed class ResultSetRepository(StructuralAnalysisDbContext dbContext)
     {
         var query = this.DbContext
             .ResultSets
+            .AsNoTracking()
+            .AsSplitQuery()
             .Where(s => s.ModelId == modelId && s.Id == resultSetId);
 
         foreach (var member in resultSetMembersToLoad)
