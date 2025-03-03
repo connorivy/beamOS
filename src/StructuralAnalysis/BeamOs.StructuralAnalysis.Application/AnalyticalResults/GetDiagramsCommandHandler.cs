@@ -21,10 +21,10 @@ namespace BeamOs.StructuralAnalysis.Application.AnalyticalResults;
 public sealed class GetDiagramsCommandHandler(
     IModelRepository modelRepository,
     IResultSetRepository resultSetRepository
-) : ICommandHandler<GetModelResourceQuery, AnalyticalResultsResponse>
+) : ICommandHandler<GetDiagramsCommand, AnalyticalResultsResponse>
 {
     public async Task<Result<AnalyticalResultsResponse>> ExecuteAsync(
-        GetModelResourceQuery command,
+        GetDiagramsCommand command,
         CancellationToken ct = default
     )
     {
@@ -67,7 +67,17 @@ public sealed class GetDiagramsCommandHandler(
         Element1dResult[] element1DResults = new Element1dResult[model.Element1ds.Count];
         DeflectionDiagrams[] displacementResults = new DeflectionDiagrams[model.Element1ds.Count];
 
-        var unitSettings = model.Settings.UnitSettings;
+        UnitSettings unitSettings;
+        if (command.UnitsOverride is not null)
+        {
+            unitSettings = RunDirectStiffnessMethodCommandHandler.GetUnitSettings(
+                command.UnitsOverride
+            );
+        }
+        else
+        {
+            unitSettings = model.Settings.UnitSettings;
+        }
 
         double globalShearMin = double.MaxValue;
         double globalShearMax = double.MinValue;
@@ -142,13 +152,23 @@ public sealed class GetDiagramsCommandHandler(
                 LinearCoordinateDirection3D.AlongY,
                 sfd
             );
+            var transformationMatrix = Element1d.GetTransformationMatrix(
+                element.EndNode.LocationPoint,
+                element.StartNode.LocationPoint,
+                element.SectionProfileRotation
+            );
+            var x =
+                Matrix<double>.Build.DenseOfArray(transformationMatrix)
+                * Vector<double>.Build.Dense(elementDisplacements);
+
+            // transform el displacemnts to local coords
             displacementResults[i] = DeflectionDiagrams.Create(
                 element.Id,
                 element.StartNode.LocationPoint,
                 element.EndNode.LocationPoint,
                 element.SectionProfileRotation,
-                UnitsNet.Units.LengthUnit.Meter,
-                Vector<double>.Build.Dense(elementDisplacements),
+                unitSettings.LengthUnit,
+                x,
                 out var displacementMin,
                 out var displacementMax
             );
@@ -193,4 +213,13 @@ public sealed class GetDiagramsCommandHandler(
 
         return domainResults.Map();
     }
+}
+
+public readonly struct GetDiagramsCommand : IHasModelId
+{
+    public Guid ModelId { get; init; }
+
+    public int Id { get; init; }
+
+    public string? UnitsOverride { get; init; }
 }

@@ -55,7 +55,7 @@ public class RunDirectStiffnessMethodCommandHandler(
         return analysisResults.OtherAnalyticalResults.Map();
     }
 
-    private static UnitSettings GetUnitSettings(string unitsOverride) =>
+    public static UnitSettings GetUnitSettings(string unitsOverride) =>
         unitsOverride.ToLowerInvariant() switch
         {
             "k_in" or "k-in" => UnitSettings.K_IN,

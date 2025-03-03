@@ -64,7 +64,7 @@ public static class DI
             await modelBuilder.InitializeAsync();
             if (await modelBuilder.CreateOnly(apiClient))
             {
-                await apiClient.RunOpenSeesAnalysisAsync(modelBuilder.Id);
+                //await apiClient.RunOpenSeesAnalysisAsync(modelBuilder.Id);
             }
         }
     }

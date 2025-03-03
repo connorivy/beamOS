@@ -1,6 +1,5 @@
 using BeamOs.Common.Api;
 using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis.Api.Endpoints.OpenSees;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams;
 
@@ -10,14 +9,31 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.AnalyticalResults;
 [BeamOsEndpointType(Http.Get)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Reviewer)]
 public class GetDiagrams(GetDiagramsCommandHandler getDiagramsCommandHandler)
-    : BeamOsModelResourceQueryBaseEndpoint<AnalyticalResultsResponse>
+    : BeamOsBaseEndpoint<GetDiagramsRequest, AnalyticalResultsResponse>
 {
     public override async Task<Result<AnalyticalResultsResponse>> ExecuteRequestAsync(
-        ModelEntityRequest req,
+        GetDiagramsRequest req,
         CancellationToken ct = default
     ) =>
         await getDiagramsCommandHandler.ExecuteAsync(
-            new() { Id = req.Id, ModelId = req.ModelId },
+            new()
+            {
+                Id = req.Id,
+                ModelId = req.ModelId,
+                UnitsOverride = req.UnitsOverride
+            },
             ct
         );
+}
+
+public readonly record struct GetDiagramsRequest : IHasModelId
+{
+    [FromRoute]
+    public Guid ModelId { get; init; }
+
+    [FromRoute]
+    public int Id { get; init; }
+
+    [FromQuery]
+    public string? UnitsOverride { get; init; }
 }

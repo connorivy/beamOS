@@ -148,9 +148,10 @@ export interface IStructuralAnalysisApiClientV1 {
     deleteAllResultSets(modelId: string): Promise<ResultOfint>;
 
     /**
+     * @param unitsOverride (optional) 
      * @return OK
      */
-    getDiagrams(modelId: string, id: number): Promise<ResultOfAnalyticalResultsResponse>;
+    getDiagrams(modelId: string, id: number, unitsOverride: string | undefined): Promise<ResultOfAnalyticalResultsResponse>;
 
     /**
      * @return OK
@@ -1364,16 +1365,21 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     }
 
     /**
+     * @param unitsOverride (optional) 
      * @return OK
      */
-    getDiagrams(modelId: string, id: number): Promise<ResultOfAnalyticalResultsResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/result-sets/{id}/diagrams";
+    getDiagrams(modelId: string, id: number, unitsOverride: string | undefined): Promise<ResultOfAnalyticalResultsResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/result-sets/{id}/diagrams?";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (unitsOverride === null)
+            throw new Error("The parameter 'unitsOverride' cannot be null.");
+        else if (unitsOverride !== undefined)
+            url_ += "UnitsOverride=" + encodeURIComponent("" + unitsOverride) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {

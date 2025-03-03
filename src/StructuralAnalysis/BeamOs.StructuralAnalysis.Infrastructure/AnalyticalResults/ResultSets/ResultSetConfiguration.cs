@@ -9,6 +9,13 @@ public class ResultSetConfiguration : IEntityTypeConfiguration<ResultSet>
     public void Configure(EntityTypeBuilder<ResultSet> builder)
     {
         _ = builder
+            .HasOne(e => e.Model)
+            .WithMany(e => e.ResultSets)
+            .HasForeignKey(e => e.ModelId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+
+        _ = builder
             .HasMany(el => el.NodeResults)
             .WithOne(el => el.ResultSet)
             .HasPrincipalKey(el => new { el.Id, el.ModelId })

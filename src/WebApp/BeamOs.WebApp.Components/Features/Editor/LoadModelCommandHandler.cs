@@ -90,6 +90,7 @@ public class LoadModelCommandHandler(
             var diagrams = await structuralAnalysisApiClient.GetDiagramsAsync(
                 command.ModelId,
                 resultId,
+                "kn-m",
                 ct
             );
             if (diagrams.IsError)
