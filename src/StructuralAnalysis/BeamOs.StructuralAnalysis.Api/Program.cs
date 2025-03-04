@@ -1,4 +1,3 @@
-using System.Text.Json.Serialization;
 using BeamOs.Common.Api;
 using BeamOs.Common.Application;
 using BeamOs.SpeckleConnector;
@@ -6,7 +5,6 @@ using BeamOs.StructuralAnalysis.Api;
 using BeamOs.StructuralAnalysis.Api.Endpoints;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.Tests.Common;
-using FluentAssertions.Common;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,7 +14,6 @@ builder
     .ConfigureHttpJsonOptions(options =>
     {
         BeamOsSerializerOptions.DefaultConfig(options.SerializerOptions);
-        options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
 builder

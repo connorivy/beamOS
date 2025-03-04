@@ -69,6 +69,7 @@ public static class BeamOsSerializerOptions
             {
                 options = new() { PropertyNameCaseInsensitive = true };
                 options.TypeInfoResolverChain.Insert(0, BeamOsJsonSerializerContext.Default);
+                options.Converters.Add(new JsonStringEnumConverter());
             }
             return options;
         }
@@ -79,5 +80,6 @@ public static class BeamOsSerializerOptions
         {
             options.PropertyNameCaseInsensitive = true;
             options.TypeInfoResolverChain.Insert(0, BeamOsJsonSerializerContext.Default);
+            options.Converters.Add(new JsonStringEnumConverter());
         };
 }

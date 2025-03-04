@@ -1,7 +1,6 @@
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.CsSdk;
 using BeamOs.StructuralAnalysis.CsSdk.Mappers;
-using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using UnitsNet;
 
 namespace BeamOs.Tests.Common;
@@ -71,7 +70,7 @@ public interface IHasStructuralStiffnessMatrix
 public record NodeResultFixture
 {
     public required int NodeId { get; init; }
-    public required ResultSetId ResultSetId { get; init; }
+    public required int ResultSetId { get; init; }
 
     public Length? DisplacementAlongX { get; init; }
     public Length? DisplacementAlongY { get; init; }
@@ -98,7 +97,7 @@ public record NodeResultFixture
 public record DsmElement1dResultFixture
 {
     public required int ElementId { get; init; }
-    public required ResultSetId ResultSetId { get; init; }
+    public required int ResultSetId { get; init; }
     public double[,]? ExpectedRotationMatrix { get; init; }
     public double[,]? ExpectedTransformationMatrix { get; init; }
     public double[,]? ExpectedLocalStiffnessMatrix { get; init; }
@@ -114,7 +113,7 @@ public record DsmElement1dResultFixture
 public record DiagramResultFixture
 {
     public required int NodeId { get; init; }
-    public required ResultSetId ResultSetId { get; init; }
+    public required int ResultSetId { get; init; }
 
     public Force? MinShear { get; init; }
     public Force? MaxShear { get; init; }

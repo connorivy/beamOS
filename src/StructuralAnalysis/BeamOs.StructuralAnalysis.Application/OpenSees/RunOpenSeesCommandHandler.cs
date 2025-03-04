@@ -169,7 +169,7 @@ public sealed class RunOpenSeesCommandHandler(
             throw new Exception("Program running on unsupported platform");
         }
 
-        Process process =
+        using Process process =
             new()
             {
                 StartInfo = new ProcessStartInfo(Path.Combine(outputDir, "bin", exeName))
@@ -229,8 +229,7 @@ public sealed class RunOpenSeesCommandHandler(
         //await listenDisp;
         //await listenReact;
         //await listenElemForces;
-
-        await process.WaitForExitAsync();
+        process.Kill();
         //await TcpServerCallback.Result;
     }
 
