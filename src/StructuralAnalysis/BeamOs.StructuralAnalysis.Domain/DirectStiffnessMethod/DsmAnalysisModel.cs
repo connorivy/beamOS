@@ -1,4 +1,3 @@
-using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.MomentDiagramAggregate;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.ShearForceDiagramAggregate;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.NodeResultAggregate;
@@ -6,8 +5,6 @@ using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod.Common.ValueObjects;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
-using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Double;
 using UnitsNet;
 using UnitsNet.Units;
 
@@ -61,184 +58,15 @@ public class DsmAnalysisModel
             knownReactionVector
         );
 
-        //ShearForceDiagram[] shearForceDiagrams = new ShearForceDiagram[this.dsmElement1Ds.Length];
-        //MomentDiagram[] momentDiagrams = new MomentDiagram[this.dsmElement1Ds.Length];
-        //Element1dResult[] element1DResults = new Element1dResult[this.dsmElement1Ds.Length];
-        //DeflectionDiagrams[] displacementResults = new DeflectionDiagrams[
-        //    this.dsmElement1Ds.Length
-        //];
-
-        //GlobalStresses globalStresses = this.CalculateElement1dResults(
-        //    unknownJointDisplacementVector,
-        //    resultSetId,
-        //    shearForceDiagrams,
-        //    momentDiagrams,
-        //    displacementResults,
-        //    element1DResults
-        //);
-
-        ResultSet resultSet =
-            new(this.modelId, resultSetId)
-            {
-                NodeResults = nodeResults,
-                //Element1dResults = element1DResults,
-            };
+        ResultSet resultSet = new(this.modelId, resultSetId) { NodeResults = nodeResults };
 
         var otherResults = resultSet.ComputeDiagramsAndElement1dResults(
             this.dsmElement1Ds,
             this.unitSettings
         );
 
-        //return new()
-        //{
-        //    ResultSet = resultSet,
-        //    OtherAnalyticalResults = new()
-        //    {
-        //        Id = resultSetId,
-        //        ModelId = modelId,
-        //        ShearDiagrams = shearForceDiagrams,
-        //        MomentDiagrams = momentDiagrams,
-        //        DeflectionDiagrams = displacementResults,
-        //        GlobalStresses = globalStresses
-        //    }
-        //};
-
         return new() { ResultSet = resultSet, OtherAnalyticalResults = otherResults };
     }
-
-    //private GlobalStresses CalculateElement1dResults(
-    //    VectorIdentified unknownJointDisplacementVector,
-    //    ResultSetId resultSetId,
-    //    ShearForceDiagram[] shearForceDiagrams,
-    //    MomentDiagram[] momentDiagrams,
-    //    DeflectionDiagrams[] displacementResults,
-    //    Element1dResult[] element1DResults
-    //)
-    //{
-    //    double globalShearMin = double.MaxValue;
-    //    double globalShearMax = double.MinValue;
-    //    double globalMomentMin = double.MaxValue;
-    //    double globalMomentMax = double.MinValue;
-
-    //    for (int i = 0; i < this.dsmElement1Ds.Length; i++)
-    //    {
-    //        double shearMin = double.MaxValue;
-    //        double shearMax = double.MinValue;
-    //        double momentMin = double.MaxValue;
-    //        double momentMax = double.MinValue;
-
-    //        var localMemberEndForcesVector = this.dsmElement1Ds[i].GetLocalMemberEndForcesVector(
-    //            unknownJointDisplacementVector,
-    //            this.unitSettings.ForceUnit,
-    //            this.unitSettings.ForcePerLengthUnit,
-    //            this.unitSettings.TorqueUnit
-    //        );
-
-    //        var sfd = ShearForceDiagram.Create(
-    //            this.modelId,
-    //            resultSetId,
-    //            this.dsmElement1Ds[i].Element1dId,
-    //            this.dsmElement1Ds[i].StartPoint,
-    //            this.dsmElement1Ds[i].EndPoint,
-    //            this.dsmElement1Ds[i].SectionProfileRotation,
-    //            this.dsmElement1Ds[i].Length,
-    //            localMemberEndForcesVector,
-    //            this.unitSettings.LengthUnit,
-    //            this.unitSettings.ForceUnit,
-    //            this.unitSettings.TorqueUnit,
-    //            LinearCoordinateDirection3D.AlongY
-    //        );
-    //        shearForceDiagrams[i] = sfd;
-    //        sfd.MinMax(ref shearMin, ref shearMax);
-
-    //        momentDiagrams[i] = MomentDiagram.Create(
-    //            this.modelId,
-    //            resultSetId,
-    //            this.dsmElement1Ds[i].Element1dId,
-    //            this.dsmElement1Ds[i].StartPoint,
-    //            this.dsmElement1Ds[i].EndPoint,
-    //            this.dsmElement1Ds[i].SectionProfileRotation,
-    //            this.dsmElement1Ds[i].Length,
-    //            localMemberEndForcesVector,
-    //            this.unitSettings.LengthUnit,
-    //            this.unitSettings.ForceUnit,
-    //            this.unitSettings.TorqueUnit,
-    //            LinearCoordinateDirection3D.AlongY,
-    //            sfd
-    //        );
-    //        momentDiagrams[i].MinMax(ref momentMin, ref momentMax);
-
-    //        var localElementDisplacements = this.dsmElement1Ds[i].GetLocalEndDisplacementVector(
-    //            unknownJointDisplacementVector
-    //        );
-
-    //        displacementResults[i] = DeflectionDiagrams.Create(
-    //            this.dsmElement1Ds[i].Element1dId,
-    //            this.dsmElement1Ds[i].StartPoint,
-    //            this.dsmElement1Ds[i].EndPoint,
-    //            this.dsmElement1Ds[i].SectionProfileRotation,
-    //            this.unitSettings.LengthUnit,
-    //            localElementDisplacements,
-    //            out var displacementMin,
-    //            out var displacementMax
-    //        );
-
-    //        element1DResults[i] = new(this.modelId, resultSetId, this.dsmElement1Ds[i].Element1dId)
-    //        {
-    //            MaxMoment = new(momentMax, this.unitSettings.TorqueUnit),
-    //            MinMoment = new(momentMin, this.unitSettings.TorqueUnit),
-    //            MaxShear = new(shearMax, this.unitSettings.ForceUnit),
-    //            MinShear = new(shearMin, this.unitSettings.ForceUnit),
-    //            MaxDisplacement = new(displacementMax, this.unitSettings.LengthUnit),
-    //            MinDisplacement = new(displacementMin, this.unitSettings.LengthUnit),
-    //            //LocalStartForces = new Forces(
-    //            //    new(localMemberEndForcesVector[0], this.unitSettings.ForceUnit),
-    //            //    new(localMemberEndForcesVector[1], this.unitSettings.ForceUnit),
-    //            //    new(localMemberEndForcesVector[2], this.unitSettings.ForceUnit),
-    //            //    new(localMemberEndForcesVector[3], this.unitSettings.TorqueUnit),
-    //            //    new(localMemberEndForcesVector[4], this.unitSettings.TorqueUnit),
-    //            //    new(localMemberEndForcesVector[5], this.unitSettings.TorqueUnit)
-    //            //),
-    //            //LocalEndForces = new Forces(
-    //            //    new(localMemberEndForcesVector[6], this.unitSettings.ForceUnit),
-    //            //    new(localMemberEndForcesVector[7], this.unitSettings.ForceUnit),
-    //            //    new(localMemberEndForcesVector[8], this.unitSettings.ForceUnit),
-    //            //    new(localMemberEndForcesVector[9], this.unitSettings.TorqueUnit),
-    //            //    new(localMemberEndForcesVector[10], this.unitSettings.TorqueUnit),
-    //            //    new(localMemberEndForcesVector[11], this.unitSettings.TorqueUnit)
-    //            //),
-    //            //LocalStartDisplacements = new Displacements(
-    //            //    new(localElementDisplacements[0], this.unitSettings.LengthUnit),
-    //            //    new(localElementDisplacements[1], this.unitSettings.LengthUnit),
-    //            //    new(localElementDisplacements[2], this.unitSettings.LengthUnit),
-    //            //    new(localElementDisplacements[3], AngleUnit.Radian),
-    //            //    new(localElementDisplacements[4], AngleUnit.Radian),
-    //            //    new(localElementDisplacements[5], AngleUnit.Radian)
-    //            //),
-    //            //LocalEndDisplacements = new Displacements(
-    //            //    new(localElementDisplacements[6], this.unitSettings.LengthUnit),
-    //            //    new(localElementDisplacements[7], this.unitSettings.LengthUnit),
-    //            //    new(localElementDisplacements[8], this.unitSettings.LengthUnit),
-    //            //    new(localElementDisplacements[9], AngleUnit.Radian),
-    //            //    new(localElementDisplacements[10], AngleUnit.Radian),
-    //            //    new(localElementDisplacements[11], AngleUnit.Radian)
-    //            //)
-    //        };
-
-    //        globalShearMin = Math.Min(globalShearMin, shearMin);
-    //        globalShearMax = Math.Max(globalShearMax, shearMax);
-    //        globalMomentMin = Math.Min(globalMomentMin, momentMin);
-    //        globalMomentMax = Math.Max(globalMomentMax, momentMax);
-    //    }
-
-    //    return new()
-    //    {
-    //        MaxMoment = new(globalMomentMax, this.unitSettings.TorqueUnit),
-    //        MaxShear = new(globalShearMax, this.unitSettings.ForceUnit),
-    //        MinMoment = new(globalMomentMin, this.unitSettings.TorqueUnit),
-    //        MinShear = new(globalShearMin, this.unitSettings.ForceUnit)
-    //    };
-    //}
 
     private SortedUnsupportedStructureIds? sortedUnsupportedStructureIds;
 

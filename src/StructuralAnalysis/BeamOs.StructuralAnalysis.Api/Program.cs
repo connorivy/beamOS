@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using BeamOs.Common.Api;
 using BeamOs.Common.Application;
 using BeamOs.SpeckleConnector;
@@ -15,6 +16,7 @@ builder
     .ConfigureHttpJsonOptions(options =>
     {
         BeamOsSerializerOptions.DefaultConfig(options.SerializerOptions);
+        options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
 builder
@@ -30,7 +32,12 @@ builder
     );
 
 #if DEBUG
-builder.Services.AddOpenApi();
+builder
+    .Services
+    .AddOpenApi(o =>
+    {
+        //o.AddSchemaTransformer<EnumSchemaTransformer>();
+    });
 
 builder
     .Services

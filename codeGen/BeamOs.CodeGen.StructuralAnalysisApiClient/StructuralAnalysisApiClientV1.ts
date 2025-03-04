@@ -1551,7 +1551,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
 }
 
 export class AnalysisSettingsContract implements IAnalysisSettingsContract {
-    element1DAnalysisType?: number;
+    element1DAnalysisType?: Element1dAnalysisType;
 
     [key: string]: any;
 
@@ -1593,7 +1593,7 @@ export class AnalysisSettingsContract implements IAnalysisSettingsContract {
 }
 
 export interface IAnalysisSettingsContract {
-    element1DAnalysisType?: number;
+    element1DAnalysisType?: Element1dAnalysisType;
 
     [key: string]: any;
 }
@@ -1692,7 +1692,7 @@ export interface IAnalyticalResultsResponse {
 
 export class AngleContract implements IAngleContract {
     value!: number;
-    unit!: number;
+    unit!: AngleUnitContract;
 
     [key: string]: any;
 
@@ -1737,14 +1737,20 @@ export class AngleContract implements IAngleContract {
 
 export interface IAngleContract {
     value: number;
-    unit: number;
+    unit: AngleUnitContract;
 
     [key: string]: any;
 }
 
+export enum AngleUnitContract {
+    Undefined = "Undefined",
+    Degree = "Degree",
+    Radian = "Radian",
+}
+
 export class AreaContract implements IAreaContract {
     value!: number;
-    unit!: number;
+    unit!: AreaUnitContract;
 
     [key: string]: any;
 
@@ -1789,14 +1795,14 @@ export class AreaContract implements IAreaContract {
 
 export interface IAreaContract {
     value: number;
-    unit: number;
+    unit: AreaUnitContract;
 
     [key: string]: any;
 }
 
 export class AreaMomentOfInertiaContract implements IAreaMomentOfInertiaContract {
     value!: number;
-    unit!: number;
+    unit!: AreaMomentOfInertiaUnitContract;
 
     [key: string]: any;
 
@@ -1841,9 +1847,27 @@ export class AreaMomentOfInertiaContract implements IAreaMomentOfInertiaContract
 
 export interface IAreaMomentOfInertiaContract {
     value: number;
-    unit: number;
+    unit: AreaMomentOfInertiaUnitContract;
 
     [key: string]: any;
+}
+
+export enum AreaMomentOfInertiaUnitContract {
+    Undefined = "Undefined",
+    CentimeterToTheFourth = "CentimeterToTheFourth",
+    FootToTheFourth = "FootToTheFourth",
+    InchToTheFourth = "InchToTheFourth",
+    MeterToTheFourth = "MeterToTheFourth",
+    MillimeterToTheFourth = "MillimeterToTheFourth",
+}
+
+export enum AreaUnitContract {
+    Undefined = "Undefined",
+    SquareCentimeter = "SquareCentimeter",
+    SquareFoot = "SquareFoot",
+    SquareInch = "SquareInch",
+    SquareMeter = "SquareMeter",
+    SquareMillimeter = "SquareMillimeter",
 }
 
 export class BatchResponse implements IBatchResponse {
@@ -1921,7 +1945,7 @@ export interface IBatchResponse {
 export class BeamOsError implements IBeamOsError {
     code!: string;
     description!: string;
-    type!: number;
+    type!: ErrorType;
     numericType?: number;
     metadata!: { [key: string]: string; } | undefined;
 
@@ -1987,7 +2011,7 @@ export class BeamOsError implements IBeamOsError {
 export interface IBeamOsError {
     code: string;
     description: string;
-    type: number;
+    type: ErrorType;
     numericType?: number;
     metadata: { [key: string]: string; } | undefined;
 
@@ -2890,6 +2914,12 @@ export interface IDisplacementsResponse {
     [key: string]: any;
 }
 
+export enum Element1dAnalysisType {
+    Undefined = "Undefined",
+    Euler = "Euler",
+    Timoshenko = "Timoshenko",
+}
+
 export class Element1dData implements IElement1dData {
     startNodeId!: number;
     endNodeId!: number;
@@ -3152,9 +3182,17 @@ export interface IElement1dResponse2 {
     [key: string]: any;
 }
 
+export enum EntityOperationStatus {
+    Undefined = "Undefined",
+    Created = "Created",
+    Updated = "Updated",
+    Deleted = "Deleted",
+    Error = "Error",
+}
+
 export class EntityStatus implements IEntityStatus {
     id!: number;
-    entityOperationStatus!: number;
+    entityOperationStatus!: EntityOperationStatus;
     errorMessage?: string;
 
     [key: string]: any;
@@ -3202,15 +3240,26 @@ export class EntityStatus implements IEntityStatus {
 
 export interface IEntityStatus {
     id: number;
-    entityOperationStatus: number;
+    entityOperationStatus: EntityOperationStatus;
     errorMessage?: string;
 
     [key: string]: any;
 }
 
+export enum ErrorType {
+    None = "None",
+    Failure = "Failure",
+    Unexpected = "Unexpected",
+    Validation = "Validation",
+    Conflict = "Conflict",
+    NotFound = "NotFound",
+    Unauthorized = "Unauthorized",
+    Forbidden = "Forbidden",
+}
+
 export class ForceContract implements IForceContract {
     value!: number;
-    unit!: number;
+    unit!: ForceUnitContract;
 
     [key: string]: any;
 
@@ -3255,7 +3304,7 @@ export class ForceContract implements IForceContract {
 
 export interface IForceContract {
     value: number;
-    unit: number;
+    unit: ForceUnitContract;
 
     [key: string]: any;
 }
@@ -3336,6 +3385,14 @@ export interface IForcesResponse {
     [key: string]: any;
 }
 
+export enum ForceUnitContract {
+    Undefined = "Undefined",
+    Kilonewton = "Kilonewton",
+    KilopoundForce = "KilopoundForce",
+    Newton = "Newton",
+    PoundForce = "PoundForce",
+}
+
 export class GlobalStresses implements IGlobalStresses {
     maxShear!: ForceContract;
     minShear!: ForceContract;
@@ -3404,7 +3461,7 @@ export interface IGlobalStresses {
 
 export class LengthContract implements ILengthContract {
     value!: number;
-    unit!: number;
+    unit!: LengthUnitContract;
 
     [key: string]: any;
 
@@ -3449,9 +3506,18 @@ export class LengthContract implements ILengthContract {
 
 export interface ILengthContract {
     value: number;
-    unit: number;
+    unit: LengthUnitContract;
 
     [key: string]: any;
+}
+
+export enum LengthUnitContract {
+    Undefined = "Undefined",
+    Centimeter = "Centimeter",
+    Foot = "Foot",
+    Inch = "Inch",
+    Meter = "Meter",
+    Millimeter = "Millimeter",
 }
 
 export class MaterialRequestData implements IMaterialRequestData {
@@ -4070,8 +4136,8 @@ export class MomentDiagramResponse implements IMomentDiagramResponse {
     modelId!: string;
     resultSetId!: number;
     element1dId!: number;
-    lengthUnit!: number;
-    torqueUnit!: number;
+    lengthUnit!: LengthUnitContract;
+    torqueUnit!: TorqueUnitContract;
     elementLength!: LengthContract;
     intervals!: DiagramConsistentIntervalResponse2[];
 
@@ -4142,8 +4208,8 @@ export interface IMomentDiagramResponse {
     modelId: string;
     resultSetId: number;
     element1dId: number;
-    lengthUnit: number;
-    torqueUnit: number;
+    lengthUnit: LengthUnitContract;
+    torqueUnit: TorqueUnitContract;
     elementLength: LengthContract;
     intervals: DiagramConsistentIntervalResponse2[];
 
@@ -4684,7 +4750,7 @@ export interface INodeResultResponse2 {
 
 export class NullableOfAngleContract implements INullableOfAngleContract {
     value!: number;
-    unit!: number;
+    unit!: AngleUnitContract;
 
     [key: string]: any;
 
@@ -4729,7 +4795,7 @@ export class NullableOfAngleContract implements INullableOfAngleContract {
 
 export interface INullableOfAngleContract {
     value: number;
-    unit: number;
+    unit: AngleUnitContract;
 
     [key: string]: any;
 }
@@ -4738,7 +4804,7 @@ export class NullableOfPartialPoint implements INullableOfPartialPoint {
     x?: number | undefined;
     y?: number | undefined;
     z?: number | undefined;
-    lengthUnit!: number;
+    lengthUnit!: LengthUnitContract;
 
     [key: string]: any;
 
@@ -4789,7 +4855,7 @@ export interface INullableOfPartialPoint {
     x?: number | undefined;
     y?: number | undefined;
     z?: number | undefined;
-    lengthUnit: number;
+    lengthUnit: LengthUnitContract;
 
     [key: string]: any;
 }
@@ -4926,7 +4992,7 @@ export class Point implements IPoint {
     x!: number;
     y!: number;
     z!: number;
-    lengthUnit!: number;
+    lengthUnit!: LengthUnitContract;
 
     [key: string]: any;
 
@@ -4977,7 +5043,7 @@ export interface IPoint {
     x: number;
     y: number;
     z: number;
-    lengthUnit: number;
+    lengthUnit: LengthUnitContract;
 
     [key: string]: any;
 }
@@ -5180,7 +5246,7 @@ export interface IPointLoadResponse2 {
 
 export class PressureContract implements IPressureContract {
     value!: number;
-    unit!: number;
+    unit!: PressureUnitContract;
 
     [key: string]: any;
 
@@ -5225,9 +5291,23 @@ export class PressureContract implements IPressureContract {
 
 export interface IPressureContract {
     value: number;
-    unit: number;
+    unit: PressureUnitContract;
 
     [key: string]: any;
+}
+
+export enum PressureUnitContract {
+    Undefined = "Undefined",
+    KilonewtonPerSquareCentimeter = "KilonewtonPerSquareCentimeter",
+    KilonewtonPerSquareMeter = "KilonewtonPerSquareMeter",
+    KilonewtonPerSquareMillimeter = "KilonewtonPerSquareMillimeter",
+    KilopoundForcePerSquareFoot = "KilopoundForcePerSquareFoot",
+    KilopoundForcePerSquareInch = "KilopoundForcePerSquareInch",
+    NewtonPerSquareCentimeter = "NewtonPerSquareCentimeter",
+    NewtonPerSquareMeter = "NewtonPerSquareMeter",
+    NewtonPerSquareMillimeter = "NewtonPerSquareMillimeter",
+    PoundForcePerSquareFoot = "PoundForcePerSquareFoot",
+    PoundForcePerSquareInch = "PoundForcePerSquareInch",
 }
 
 export class PutElement1dRequest implements IPutElement1dRequest {
@@ -6988,8 +7068,8 @@ export interface ISectionProfileResponse2 {
 
 export class ShearDiagramResponse implements IShearDiagramResponse {
     globalShearDirection!: Vector3;
-    lengthUnit!: number;
-    forceUnit!: number;
+    lengthUnit!: LengthUnitContract;
+    forceUnit!: ForceUnitContract;
     elementLength!: LengthContract;
     modelId!: string;
     resultSetId!: number;
@@ -7064,8 +7144,8 @@ export class ShearDiagramResponse implements IShearDiagramResponse {
 
 export interface IShearDiagramResponse {
     globalShearDirection: Vector3;
-    lengthUnit: number;
-    forceUnit: number;
+    lengthUnit: LengthUnitContract;
+    forceUnit: ForceUnitContract;
     elementLength: LengthContract;
     modelId: string;
     resultSetId: number;
@@ -7137,7 +7217,7 @@ export interface ISpeckleReceiveParameters {
 
 export class TorqueContract implements ITorqueContract {
     value!: number;
-    unit!: number;
+    unit!: TorqueUnitContract;
 
     [key: string]: any;
 
@@ -7182,15 +7262,29 @@ export class TorqueContract implements ITorqueContract {
 
 export interface ITorqueContract {
     value: number;
-    unit: number;
+    unit: TorqueUnitContract;
 
     [key: string]: any;
 }
 
+export enum TorqueUnitContract {
+    Undefined = "Undefined",
+    KilonewtonCentimeter = "KilonewtonCentimeter",
+    KilonewtonMeter = "KilonewtonMeter",
+    KilonewtonMillimeter = "KilonewtonMillimeter",
+    KilopoundForceFoot = "KilopoundForceFoot",
+    KilopoundForceInch = "KilopoundForceInch",
+    NewtonCentimeter = "NewtonCentimeter",
+    NewtonMeter = "NewtonMeter",
+    NewtonMillimeter = "NewtonMillimeter",
+    PoundForceFoot = "PoundForceFoot",
+    PoundForceInch = "PoundForceInch",
+}
+
 export class UnitSettingsContract implements IUnitSettingsContract {
-    lengthUnit!: number;
-    forceUnit!: number;
-    angleUnit?: number;
+    lengthUnit!: LengthUnitContract;
+    forceUnit!: ForceUnitContract;
+    angleUnit?: AngleUnitContract;
 
     [key: string]: any;
 
@@ -7236,9 +7330,9 @@ export class UnitSettingsContract implements IUnitSettingsContract {
 }
 
 export interface IUnitSettingsContract {
-    lengthUnit: number;
-    forceUnit: number;
-    angleUnit?: number;
+    lengthUnit: LengthUnitContract;
+    forceUnit: ForceUnitContract;
+    angleUnit?: AngleUnitContract;
 
     [key: string]: any;
 }

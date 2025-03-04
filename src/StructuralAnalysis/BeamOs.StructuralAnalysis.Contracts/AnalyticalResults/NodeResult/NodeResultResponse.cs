@@ -28,3 +28,15 @@ public record DisplacementsResponse(
     AngleContract RotationAboutY,
     AngleContract RotationAboutZ
 );
+
+public record Element1dResultResponse(
+    Guid ModelId,
+    int ResultSetId,
+    int Element1dId,
+    LengthContract MinShear,
+    LengthContract MaxShear,
+    TorqueContract MinMoment,
+    TorqueContract MaxMoment,
+    LengthContract MinDisplacement,
+    LengthContract MaxDisplacement
+) : IHasModelId;

@@ -9,9 +9,6 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoad;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
 
 namespace BeamOs.StructuralAnalysis.CsSdk;
 
@@ -315,7 +312,7 @@ model = FEModel3D()"
                 $"model.add_node('N{node.Id}', {node.LocationPoint.X.Convert(node.LocationPoint.LengthUnit, this.Settings.UnitSettings.LengthUnit)}, {node.LocationPoint.Y.Convert(node.LocationPoint.LengthUnit, this.Settings.UnitSettings.LengthUnit)}, {node.LocationPoint.Z.Convert(node.LocationPoint.LengthUnit, this.Settings.UnitSettings.LengthUnit)})"
             );
             sb.AppendLine(
-                $"model.def_support('N{node.Id}', {node.Restraint.CanTranslateAlongX.ToString()}, {node.Restraint.CanTranslateAlongY.ToString()}, {node.Restraint.CanTranslateAlongZ.ToString()}, {node.Restraint.CanRotateAboutX.ToString()}, {node.Restraint.CanRotateAboutY.ToString()}, {node.Restraint.CanRotateAboutZ.ToString()})"
+                $"model.def_support('N{node.Id}', {(!node.Restraint.CanTranslateAlongX).ToString()}, {(!node.Restraint.CanTranslateAlongY).ToString()}, {(!node.Restraint.CanTranslateAlongZ).ToString()}, {(!node.Restraint.CanRotateAboutX).ToString()}, {(!node.Restraint.CanRotateAboutY).ToString()}, {(!node.Restraint.CanRotateAboutZ).ToString()})"
             );
         }
 

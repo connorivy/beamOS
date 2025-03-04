@@ -11,7 +11,14 @@ namespace BeamOs.Tests.Common.SolvedProblems.Udoeyo_StructuralAnalysis;
 
 public sealed class Udoeyo_Example7_7 : ModelFixture
 {
-    public override SourceInfo SourceInfo { get; }
+    public override SourceInfo SourceInfo { get; } =
+        new(
+            "Structural Analysis by Felix Udoeyo",
+            FixtureSourceType.Textbook,
+            "Example 7.7",
+            null,
+            "https://temple.manifoldapp.org/read/structural-analysis/section/072c774b-392a-4b99-a65d-f2e9d1fddfbd#sec7-5"
+        );
     public override string Name { get; } = nameof(Udoeyo_Example7_7);
     public override string Description { get; } =
         "Example 7.7 from Udoeyo's Structural Analysis book";

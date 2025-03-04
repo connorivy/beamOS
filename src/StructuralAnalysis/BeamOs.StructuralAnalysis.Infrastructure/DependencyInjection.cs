@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using BeamOs.Common.Application;
-using BeamOs.StructuralAnalysis.Application;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.NodeResults;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.ResultSets;
 using BeamOs.StructuralAnalysis.Application.Common;

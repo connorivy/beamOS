@@ -58,6 +58,11 @@ public interface IHasExpectedReactionVector
     public double[] ExpectedReactionVector { get; }
 }
 
+public interface IHasExpectedDiagramResults
+{
+    public DiagramResultFixture[] ExpectedDiagramResults { get; }
+}
+
 public interface IHasStructuralStiffnessMatrix
 {
     public double[,] ExpectedStructuralStiffnessMatrix { get; }
@@ -104,4 +109,17 @@ public record DsmElement1dResultFixture
     public double[]? ExpectedGlobalEndDisplacements { get; init; }
     public double[]? ExpectedLocalEndForces { get; init; }
     public double[]? ExpectedGlobalEndForces { get; init; }
+}
+
+public record DiagramResultFixture
+{
+    public required int NodeId { get; init; }
+    public required ResultSetId ResultSetId { get; init; }
+
+    public Force? MinShear { get; init; }
+    public Force? MaxShear { get; init; }
+    public Torque? MinMoment { get; init; }
+    public Torque? MaxMoment { get; init; }
+    public Length? MaxDeflection { get; init; }
+    public Length? MinDeflection { get; init; }
 }
