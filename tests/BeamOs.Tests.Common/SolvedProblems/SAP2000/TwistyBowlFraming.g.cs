@@ -1,3 +1,4 @@
+
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
@@ -9,6 +10,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
 using BeamOs.StructuralAnalysis.CsSdk;
 using static BeamOs.StructuralAnalysis.Contracts.Common.AngleUnitContract;
 using static BeamOs.StructuralAnalysis.Contracts.Common.LengthUnitContract;
+using static BeamOs.StructuralAnalysis.Contracts.Common.PressureUnitContract;
 
 namespace BeamOs.Tests.Common.SolvedProblems.SAP2000;
 
@@ -574,8 +576,9 @@ yield return new(5,new(-6989.299597312555, 0, 20194.23866023988,Millimeter),new(
         yield return new PutMaterialRequest
         {
             Id = 992,
-            ModulusOfElasticity = new PressureContract(29000, PressureUnitContract.KilopoundForcePerSquareInch),
-            ModulusOfRigidity = new PressureContract(11153.85, PressureUnitContract.KilopoundForcePerSquareInch)
+            ModulusOfElasticity = 29000,
+            ModulusOfRigidity = 11153.85,
+            PressureUnit = KilopoundForcePerSquareInch,
         };
     }
 

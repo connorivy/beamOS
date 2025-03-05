@@ -117,8 +117,9 @@ public class Kassimali_Example8_4
     {
         yield return new()
         {
-            ModulusOfElasticity = new(29000, PressureUnitContract.KilopoundForcePerSquareInch),
-            ModulusOfRigidity = new(11500, PressureUnitContract.KilopoundForcePerSquareInch),
+            ModulusOfElasticity = 29000,
+            ModulusOfRigidity = 11500,
+            PressureUnit = PressureUnitContract.KilopoundForcePerSquareInch,
             Id = 1
         };
     }

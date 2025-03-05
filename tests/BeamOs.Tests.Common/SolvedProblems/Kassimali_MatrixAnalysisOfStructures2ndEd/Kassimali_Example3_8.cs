@@ -95,8 +95,9 @@ public class Kassimali_Example3_8 : ModelFixture, IHasExpectedNodeResults
     {
         yield return new()
         {
-            ModulusOfElasticity = new(29000, PressureUnitContract.KilopoundForcePerSquareInch),
-            ModulusOfRigidity = new(1, PressureUnitContract.KilopoundForcePerSquareInch),
+            ModulusOfElasticity = 29000,
+            ModulusOfRigidity = 1,
+            PressureUnit = PressureUnitContract.KilopoundForcePerSquareInch,
             Id = 992
         };
     }

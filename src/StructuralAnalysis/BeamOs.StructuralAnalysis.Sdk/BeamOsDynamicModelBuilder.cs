@@ -1,6 +1,5 @@
 using System.Text;
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
-using BeamOs.CodeGen.TestModelBuilderGenerator.Extensions;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
@@ -9,8 +8,9 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoad;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
+using BeamOs.StructuralAnalysis.Sdk.Extensions;
 
-namespace BeamOs.StructuralAnalysis.CsSdk;
+namespace BeamOs.StructuralAnalysis.Sdk;
 
 public sealed class BeamOsDynamicModelBuilder(
     string guidString,
@@ -117,6 +117,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
 using BeamOs.StructuralAnalysis.CsSdk;
 using static BeamOs.StructuralAnalysis.Contracts.Common.AngleUnitContract;
 using static BeamOs.StructuralAnalysis.Contracts.Common.LengthUnitContract;
+using static BeamOs.StructuralAnalysis.Contracts.Common.PressureUnitContract;
 
 namespace {namespac};"
         );
@@ -179,12 +180,9 @@ namespace {namespac};"
             sb.AppendLine($"        yield return new PutMaterialRequest");
             sb.AppendLine($"        {{");
             sb.AppendLine($"            Id = {material.Id},");
-            sb.AppendLine(
-                $"            ModulusOfElasticity = new PressureContract({material.ModulusOfElasticity.Value}, PressureUnitContract.{material.ModulusOfElasticity.Unit}),"
-            );
-            sb.AppendLine(
-                $"            ModulusOfRigidity = new PressureContract({material.ModulusOfRigidity.Value}, PressureUnitContract.{material.ModulusOfRigidity.Unit})"
-            );
+            sb.AppendLine($"            ModulusOfElasticity = {material.ModulusOfElasticity},");
+            sb.AppendLine($"            ModulusOfRigidity = {material.ModulusOfRigidity},");
+            sb.AppendLine($"            PressureUnit = {material.PressureUnit},");
             sb.AppendLine($"        }};");
         }
         sb.AppendLine("    }");
@@ -323,7 +321,7 @@ model = FEModel3D()"
                 @$"
 nu = 0.3  # Poisson's ratio
 rho = 0.490/12**3  # Density (kci)
-model.add_material('M{material.Id}', {material.ModulusOfElasticity.As(this.UnitSettings.PressureUnit)}, {material.ModulusOfRigidity.As(this.UnitSettings.PressureUnit)}, nu, rho)"
+model.add_material('M{material.Id}', {new PressureContract(material.ModulusOfElasticity, material.PressureUnit).As(this.UnitSettings.PressureUnit)}, {new PressureContract(material.ModulusOfRigidity, material.PressureUnit).As(this.UnitSettings.PressureUnit)}, nu, rho)"
             );
         }
         sb.AppendLine();

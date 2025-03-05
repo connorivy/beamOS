@@ -4,7 +4,7 @@ using BeamOs.CodeGen.SpeckleConnectorApi;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BeamOs.StructuralAnalysis.CsSdk;
+namespace BeamOs.StructuralAnalysis.Sdk;
 
 public static class DI
 {

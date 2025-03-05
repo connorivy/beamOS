@@ -174,11 +174,9 @@ public class EndToEndTests
         CreateMaterialRequest a992Request =
             new()
             {
-                ModulusOfElasticity = new(29000, PressureUnitContract.KilopoundForcePerSquareInch),
-                ModulusOfRigidity = new(
-                    11_153.85,
-                    PressureUnitContract.KilopoundForcePerSquareInch
-                ),
+                ModulusOfElasticity = 29000,
+                ModulusOfRigidity = 11_153.85,
+                PressureUnit = PressureUnitContract.KilopoundForcePerSquareInch,
                 Id = 992
             };
 

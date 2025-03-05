@@ -2,7 +2,7 @@ using BeamOs.CsSdk.Mappers.UnitValueDtoMappers;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using UnitsNet;
 
-namespace BeamOs.CodeGen.TestModelBuilderGenerator.Extensions;
+namespace BeamOs.StructuralAnalysis.Sdk.Extensions;
 
 internal static class DoubleExtensions
 {

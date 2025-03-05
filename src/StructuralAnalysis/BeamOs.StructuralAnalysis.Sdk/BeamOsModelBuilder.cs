@@ -7,7 +7,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
 
-namespace BeamOs.StructuralAnalysis.CsSdk;
+namespace BeamOs.StructuralAnalysis.Sdk;
 
 public abstract class BeamOsModelBuilder
 {

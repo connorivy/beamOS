@@ -54,8 +54,9 @@ public sealed class Udoeyo_Example7_7 : ModelFixture, IHasExpectedDiagramResults
         yield return new()
         {
             Id = 1,
-            ModulusOfElasticity = new(1, PressureUnitContract.KilonewtonPerSquareMeter),
-            ModulusOfRigidity = new(1, PressureUnitContract.KilonewtonPerSquareMeter),
+            ModulusOfElasticity = 1,
+            ModulusOfRigidity = 1,
+            PressureUnit = PressureUnitContract.KilonewtonPerSquareMeter
         };
     }
 

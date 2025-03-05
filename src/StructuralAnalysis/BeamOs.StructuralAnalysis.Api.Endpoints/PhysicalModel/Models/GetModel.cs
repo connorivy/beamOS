@@ -10,9 +10,9 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Models;
 [BeamOsEndpointType(Http.Get)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Reviewer)]
 public class GetModel(GetModelQueryHandler getModelCommandHandler)
-    : BeamOsModelIdRequestBaseEndpoint<ModelResponseHydrated>
+    : BeamOsModelIdRequestBaseEndpoint<ModelResponse>
 {
-    public override async Task<Result<ModelResponseHydrated>> ExecuteRequestAsync(
+    public override async Task<Result<ModelResponse>> ExecuteRequestAsync(
         ModelIdRequest req,
         CancellationToken ct = default
     ) => await getModelCommandHandler.ExecuteAsync(req.ModelId, ct);

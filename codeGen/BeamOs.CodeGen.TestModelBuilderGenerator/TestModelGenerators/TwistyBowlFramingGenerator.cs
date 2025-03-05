@@ -7,7 +7,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
-using BeamOs.StructuralAnalysis.CsSdk;
+using BeamOs.StructuralAnalysis.Sdk;
 using UnitsNet;
 
 namespace BeamOs.CodeGen.TestModelBuilderGenerator.TestModelGenerators;
@@ -51,14 +51,9 @@ internal class TwistyBowlFramingGenerator(string speckleToken)
         modelBuilder.AddMaterials(
             new PutMaterialRequest()
             {
-                ModulusOfElasticity = new PressureContract(
-                    29000,
-                    PressureUnitContract.KilopoundForcePerSquareInch
-                ),
-                ModulusOfRigidity = new PressureContract(
-                    11_153.85,
-                    PressureUnitContract.KilopoundForcePerSquareInch
-                ),
+                ModulusOfElasticity = 29000,
+                ModulusOfRigidity = 11_153.85,
+                PressureUnit = PressureUnitContract.KilopoundForcePerSquareInch,
                 Id = 992
             }
         );
