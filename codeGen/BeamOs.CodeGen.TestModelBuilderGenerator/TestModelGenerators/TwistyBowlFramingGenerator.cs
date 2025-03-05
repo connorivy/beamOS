@@ -8,14 +8,13 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
 using BeamOs.StructuralAnalysis.Sdk;
-using UnitsNet;
 
 namespace BeamOs.CodeGen.TestModelBuilderGenerator.TestModelGenerators;
 
 internal class TwistyBowlFramingGenerator(string speckleToken)
 {
     private static string GuidString => "4ce66084-4ac1-40bc-99ae-3d0f334c66fa";
-    private static PhysicalModelSettings Settings { get; } = new(UnitSettingsContract.K_IN);
+    private static ModelSettings Settings { get; } = new(UnitSettingsContract.K_IN);
     private static string Name => "TwistyBowlFraming";
     private static string Description =>
         "A crazy twisting bowl type structure. Made by Bjorn Steinhagen in grasshopper and then sent to beamOS using Speckle";

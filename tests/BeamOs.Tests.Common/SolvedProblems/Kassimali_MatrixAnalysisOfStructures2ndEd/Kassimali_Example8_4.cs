@@ -21,7 +21,7 @@ public class Kassimali_Example8_4
     public override string Name => nameof(Kassimali_Example8_4);
     public override string Description => "Example model";
     public override string GuidString => "6b04df0f-45d6-4aed-9c04-8272ed23f811";
-    public override PhysicalModelSettings Settings { get; } =
+    public override ModelSettings Settings { get; } =
         new(UnitSettingsContract.K_IN, new(Element1dAnalysisType.Euler));
     public override SourceInfo SourceInfo { get; } =
         new(

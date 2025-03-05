@@ -7,19 +7,14 @@ namespace BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
 public record CreatePointLoadRequest
 {
     public required int NodeId { get; init; }
-    public required ForceContract Force { get; init; }
+    public required Force Force { get; init; }
     public required Vector3 Direction { get; init; }
     public int? Id { get; init; }
 
     public CreatePointLoadRequest() { }
 
     [SetsRequiredMembers]
-    public CreatePointLoadRequest(
-        int nodeId,
-        ForceContract force,
-        Vector3 direction,
-        int? id = null
-    )
+    public CreatePointLoadRequest(int nodeId, Force force, Vector3 direction, int? id = null)
     {
         this.NodeId = nodeId;
         this.Force = force;
@@ -31,13 +26,13 @@ public record CreatePointLoadRequest
 public record PointLoadRequestData
 {
     public required int NodeId { get; init; }
-    public required ForceContract Force { get; init; }
+    public required Force Force { get; init; }
     public required Vector3 Direction { get; init; }
 
     public PointLoadRequestData() { }
 
     [SetsRequiredMembers]
-    public PointLoadRequestData(int nodeId, ForceContract force, Vector3 direction)
+    public PointLoadRequestData(int nodeId, Force force, Vector3 direction)
     {
         this.NodeId = nodeId;
         this.Force = force;

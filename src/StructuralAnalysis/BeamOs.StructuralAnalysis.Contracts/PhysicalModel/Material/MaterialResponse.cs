@@ -8,5 +8,5 @@ public record MaterialResponse(
     Guid ModelId,
     double ModulusOfElasticity,
     double ModulusOfRigidity,
-    PressureUnitContract PressureUnit
+    PressureUnit PressureUnit
 ) : IModelEntity;

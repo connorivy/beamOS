@@ -2,53 +2,45 @@ using System.Text.Json.Serialization;
 
 namespace BeamOs.StructuralAnalysis.Contracts.Common;
 
-public record UnitSettingsContract
+public record UnitSettings
 {
-    public required LengthUnitContract LengthUnit { get; init; }
-    public required ForceUnitContract ForceUnit { get; init; }
-    public AngleUnitContract AngleUnit { get; init; } = AngleUnitContract.Radian;
+    public required LengthUnit LengthUnit { get; init; }
+    public required ForceUnit ForceUnit { get; init; }
+    public AngleUnit AngleUnit { get; init; } = AngleUnit.Radian;
 
-    public static UnitSettingsContract K_IN { get; } =
-        new()
-        {
-            LengthUnit = LengthUnitContract.Inch,
-            ForceUnit = ForceUnitContract.KilopoundForce,
-        };
+    public static UnitSettings K_IN { get; } =
+        new() { LengthUnit = LengthUnit.Inch, ForceUnit = ForceUnit.KilopoundForce, };
 
-    public static UnitSettingsContract K_FT { get; } =
-        new()
-        {
-            LengthUnit = LengthUnitContract.Foot,
-            ForceUnit = ForceUnitContract.KilopoundForce,
-        };
+    public static UnitSettings K_FT { get; } =
+        new() { LengthUnit = LengthUnit.Foot, ForceUnit = ForceUnit.KilopoundForce, };
 
-    public static UnitSettingsContract N_M { get; } =
-        new() { LengthUnit = LengthUnitContract.Meter, ForceUnit = ForceUnitContract.Newton };
+    public static UnitSettings N_M { get; } =
+        new() { LengthUnit = LengthUnit.Meter, ForceUnit = ForceUnit.Newton };
 
-    public static UnitSettingsContract kN_M { get; } =
-        new() { LengthUnit = LengthUnitContract.Meter, ForceUnit = ForceUnitContract.Kilonewton };
+    public static UnitSettings kN_M { get; } =
+        new() { LengthUnit = LengthUnit.Meter, ForceUnit = ForceUnit.Kilonewton };
 
     [JsonIgnore]
-    public AreaUnitContract AreaUnit => LengthUnit.ToArea();
+    public AreaUnit AreaUnit => this.LengthUnit.ToArea();
 
     [JsonIgnore]
-    public VolumeUnitContract VolumeUnit => LengthUnit.ToVolume();
+    public VolumeUnit VolumeUnit => this.LengthUnit.ToVolume();
 
     [JsonIgnore]
-    public AreaMomentOfInertiaUnitContract AreaMomentOfInertiaUnit =>
-        LengthUnit.ToAreaMomentOfInertia();
+    public AreaMomentOfInertiaUnit AreaMomentOfInertiaUnit =>
+        this.LengthUnit.ToAreaMomentOfInertia();
 
     [JsonIgnore]
-    public TorqueUnitContract TorqueUnit => ForceUnit.MultiplyBy(LengthUnit);
+    public TorqueUnit TorqueUnit => this.ForceUnit.MultiplyBy(this.LengthUnit);
 
     [JsonIgnore]
-    public ForcePerLengthUnitContract ForcePerLengthUnit => ForceUnit.DivideBy(LengthUnit);
+    public ForcePerLengthUnit ForcePerLengthUnit => this.ForceUnit.DivideBy(this.LengthUnit);
 
     [JsonIgnore]
-    public PressureUnitContract PressureUnit => ForceUnit.GetPressure(LengthUnit);
+    public PressureUnit PressureUnit => this.ForceUnit.GetPressure(this.LengthUnit);
 }
 
-public enum LengthUnitContract
+public enum LengthUnit
 {
     Undefined = 0,
     Centimeter,
@@ -58,7 +50,7 @@ public enum LengthUnitContract
     Millimeter,
 }
 
-public enum AreaUnitContract
+public enum AreaUnit
 {
     Undefined = 0,
     SquareCentimeter,
@@ -68,7 +60,7 @@ public enum AreaUnitContract
     SquareMillimeter,
 }
 
-public enum VolumeUnitContract
+public enum VolumeUnit
 {
     Undefined = 0,
     CubicCentimeter,
@@ -78,7 +70,7 @@ public enum VolumeUnitContract
     CubicMillimeter,
 }
 
-public enum AreaMomentOfInertiaUnitContract
+public enum AreaMomentOfInertiaUnit
 {
     Undefined = 0,
     CentimeterToTheFourth,
@@ -88,7 +80,7 @@ public enum AreaMomentOfInertiaUnitContract
     MillimeterToTheFourth,
 }
 
-public enum ForceUnitContract
+public enum ForceUnit
 {
     Undefined = 0,
     Kilonewton,
@@ -97,14 +89,14 @@ public enum ForceUnitContract
     PoundForce,
 }
 
-public enum AngleUnitContract
+public enum AngleUnit
 {
     Undefined = 0,
     Degree,
     Radian,
 }
 
-public enum TorqueUnitContract
+public enum TorqueUnit
 {
     Undefined = 0,
 
@@ -135,7 +127,7 @@ public enum TorqueUnitContract
     //TonneForceMillimeter = 25,
 }
 
-public enum ForcePerLengthUnitContract
+public enum ForcePerLengthUnit
 {
     Undefined = 0,
     KilonewtonPerCentimeter = 7,
@@ -150,7 +142,7 @@ public enum ForcePerLengthUnitContract
     PoundForcePerInch = 22,
 }
 
-public enum PressureUnitContract
+public enum PressureUnit
 {
     Undefined = 0,
     KilonewtonPerSquareCentimeter = 7,

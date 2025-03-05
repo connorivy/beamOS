@@ -7,7 +7,7 @@ public interface IModelFixture : ITestFixture
 {
     public Guid Id => Guid.Parse(this.GuidString);
     public string GuidString { get; }
-    public PhysicalModelSettings Settings { get; }
+    public ModelSettings Settings { get; }
 }
 
 public interface IHasSourceInfo

@@ -12,31 +12,31 @@ public record NodeResultResponse(
 ) : IHasModelId;
 
 public record ForcesResponse(
-    ForceContract ForceAlongX,
-    ForceContract ForceAlongY,
-    ForceContract ForceAlongZ,
-    TorqueContract MomentAboutX,
-    TorqueContract MomentAboutY,
-    TorqueContract MomentAboutZ
+    Force ForceAlongX,
+    Force ForceAlongY,
+    Force ForceAlongZ,
+    Torque MomentAboutX,
+    Torque MomentAboutY,
+    Torque MomentAboutZ
 );
 
 public record DisplacementsResponse(
-    LengthContract DisplacementAlongX,
-    LengthContract DisplacementAlongY,
-    LengthContract DisplacementAlongZ,
-    AngleContract RotationAboutX,
-    AngleContract RotationAboutY,
-    AngleContract RotationAboutZ
+    Length DisplacementAlongX,
+    Length DisplacementAlongY,
+    Length DisplacementAlongZ,
+    Angle RotationAboutX,
+    Angle RotationAboutY,
+    Angle RotationAboutZ
 );
 
 public record Element1dResultResponse(
     Guid ModelId,
     int ResultSetId,
     int Element1dId,
-    LengthContract MinShear,
-    LengthContract MaxShear,
-    TorqueContract MinMoment,
-    TorqueContract MaxMoment,
-    LengthContract MinDisplacement,
-    LengthContract MaxDisplacement
+    Length MinShear,
+    Length MaxShear,
+    Torque MinMoment,
+    Torque MaxMoment,
+    Length MinDisplacement,
+    Length MaxDisplacement
 ) : IHasModelId;

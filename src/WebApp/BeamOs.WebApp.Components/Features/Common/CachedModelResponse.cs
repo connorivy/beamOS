@@ -18,7 +18,7 @@ public record CachedModelResponse
     public Guid Id { get; init; }
     public string Name { get; init; }
     public string Description { get; init; }
-    public PhysicalModelSettings Settings { get; init; }
+    public ModelSettings Settings { get; init; }
     public ImmutableDictionary<int, NodeResponse> Nodes { get; init; }
     public ImmutableDictionary<int, Element1dResponse> Element1ds { get; init; }
     public ImmutableDictionary<int, MaterialResponse> Materials { get; init; }
@@ -80,7 +80,7 @@ public record CachedModelResponse
         Guid id,
         string name,
         string description,
-        PhysicalModelSettings settings,
+        ModelSettings settings,
         ImmutableDictionary<int, NodeResponse> nodes,
         ImmutableDictionary<int, Element1dResponse> element1ds,
         ImmutableDictionary<int, MaterialResponse> materials,

@@ -22,7 +22,7 @@ public sealed class Udoeyo_Example7_7 : ModelFixture, IHasExpectedDiagramResults
     public override string Name { get; } = nameof(Udoeyo_Example7_7);
     public override string Description { get; } =
         "Example 7.7 from Udoeyo's Structural Analysis book";
-    public override PhysicalModelSettings Settings { get; } = new(UnitSettingsContract.kN_M);
+    public override ModelSettings Settings { get; } = new(UnitSettings.kN_M);
     public override string GuidString => "e63cca48-5585-4117-8dd9-0d0bf56f3d50";
 
     public DiagramResultFixture[] ExpectedDiagramResults { get; } =

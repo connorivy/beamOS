@@ -8,9 +8,11 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
 using BeamOs.StructuralAnalysis.CsSdk;
-using static BeamOs.StructuralAnalysis.Contracts.Common.AngleUnitContract;
-using static BeamOs.StructuralAnalysis.Contracts.Common.LengthUnitContract;
-using static BeamOs.StructuralAnalysis.Contracts.Common.PressureUnitContract;
+using static BeamOs.StructuralAnalysis.Contracts.Common.AngleUnit;
+using static BeamOs.StructuralAnalysis.Contracts.Common.LengthUnit;
+using static BeamOs.StructuralAnalysis.Contracts.Common.PressureUnit;
+using static BeamOs.StructuralAnalysis.Contracts.Common.AreaUnit;
+using static BeamOs.StructuralAnalysis.Contracts.Common.AreaMomentOfInertiaUnit;
 
 namespace BeamOs.Tests.Common.SolvedProblems.SAP2000;
 
@@ -18,7 +20,7 @@ public partial class TwistyBowlFraming : ModelFixture
 {
     public override string Name => nameof(TwistyBowlFraming);
     public override string Description => "A crazy twisting bowl type structure. Made by Bjorn Steinhagen in grasshopper and then sent to beamOS using Speckle";
-    public override PhysicalModelSettings Settings => new PhysicalModelSettings
+    public override ModelSettings Settings => new ModelSettings
     (
         unitSettings: new UnitSettingsContract
         {
@@ -26,7 +28,7 @@ public partial class TwistyBowlFraming : ModelFixture
             ForceUnit = ForceUnitContract.KilopoundForce,
             AngleUnit = AngleUnitContract.Radian
         },
-        analysisSettings: new AnalysisSettingsContract
+        analysisSettings: new AnalysisSettings
         {
             Element1DAnalysisType = Element1dAnalysisType.Timoshenko
         },
@@ -584,17 +586,17 @@ yield return new(5,new(-6989.299597312555, 0, 20194.23866023988,Millimeter),new(
 
     public override IEnumerable<PutSectionProfileRequest> SectionProfileRequests()
     {
-        yield return new PutSectionProfileRequest()
+        yield return new PutSectionProfileRequest
         {
+            Id = 1636,
             Area = 10.6,
             StrongAxisMomentOfInertia = 448,
             WeakAxisMomentOfInertia = 24.5,
-            PolarMomentOfInertia = .55,
+            PolarMomentOfInertia = 0.55,
             StrongAxisShearArea = 5.0095,
             WeakAxisShearArea = 4.6905,
-            AreaUnit = AreaUnitContract.SquareInch,
-            AreaMomentOfInertiaUnit = AreaMomentOfInertiaUnitContract.InchToTheFourth,
-            Id = 1636
+            AreaUnit = SquareInch,
+            AreaMomentOfInertiaUnit = InchToTheFourth
         };
     }
 

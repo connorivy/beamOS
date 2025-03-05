@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 
@@ -18,8 +17,8 @@ public record SectionProfileRequestData
     public double StrongAxisShearArea { get; init; }
     public double WeakAxisShearArea { get; init; }
 
-    public AreaUnitContract AreaUnit { get; init; }
-    public AreaMomentOfInertiaUnitContract AreaMomentOfInertiaUnit { get; init; }
+    public AreaUnit AreaUnit { get; init; }
+    public AreaMomentOfInertiaUnit AreaMomentOfInertiaUnit { get; init; }
 
     public SectionProfileRequestData() { }
 }

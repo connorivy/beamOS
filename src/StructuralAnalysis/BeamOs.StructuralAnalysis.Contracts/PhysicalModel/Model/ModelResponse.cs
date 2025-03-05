@@ -16,7 +16,7 @@ public record ModelInfoResponse(
     Guid Id,
     string Name,
     string Description,
-    PhysicalModelSettings Settings,
+    ModelSettings Settings,
     DateTimeOffset LastModified,
     string Role
 ) : IBeamOsEntityResponse;
@@ -25,7 +25,7 @@ public record ModelResponse(
     Guid Id,
     string Name,
     string Description,
-    PhysicalModelSettings Settings,
+    ModelSettings Settings,
     DateTimeOffset LastModified,
     List<NodeResponse>? Nodes = null,
     List<Element1dResponse>? Element1ds = null,
@@ -40,7 +40,7 @@ public record ModelResponseHydrated(
     Guid Id,
     string Name,
     string Description,
-    PhysicalModelSettings Settings,
+    ModelSettings Settings,
     List<NodeResponse> Nodes,
     List<Element1dResponse> Element1ds,
     List<MaterialResponse> Materials,
@@ -50,43 +50,17 @@ public record ModelResponseHydrated(
     List<ResultSetResponse> ResultSets
 ) : IBeamOsEntityResponse;
 
-public record ModelSettingsResponse(UnitSettingsResponse UnitSettings);
-
-public record UnitSettingsResponse(
-    string LengthUnit,
-    string AreaUnit,
-    string VolumeUnit,
-    string ForceUnit,
-    string ForcePerLengthUnit,
-    string TorqueUnit,
-    string PressureUnit,
-    string AreaMomentOfInertiaUnit
-)
+public record ModelSettings
 {
-    public static UnitSettingsResponse K_IN { get; } =
-        new(
-            "Inch",
-            "SquareInch",
-            "CubicInch",
-            "KilopoundForce",
-            "KilopoundForcePerInch",
-            "KilopoundForceInch",
-            "KilopoundForcePerSquareInch",
-            "InchToTheFourth"
-        );
-}
-
-public record PhysicalModelSettings
-{
-    public required UnitSettingsContract UnitSettings { get; init; }
-    public AnalysisSettingsContract AnalysisSettings { get; init; }
+    public required UnitSettings UnitSettings { get; init; }
+    public AnalysisSettings AnalysisSettings { get; init; }
     public bool YAxisUp { get; init; }
 
     [JsonConstructor]
     [SetsRequiredMembers]
-    public PhysicalModelSettings(
-        UnitSettingsContract unitSettings,
-        AnalysisSettingsContract? analysisSettings = null,
+    public ModelSettings(
+        UnitSettings unitSettings,
+        AnalysisSettings? analysisSettings = null,
         bool yAxisUp = true
     )
     {
@@ -96,17 +70,17 @@ public record PhysicalModelSettings
     }
 }
 
-public record AnalysisSettingsContract
+public record AnalysisSettings
 {
     public Element1dAnalysisType Element1DAnalysisType { get; set; } =
         Element1dAnalysisType.Timoshenko;
 
-    public AnalysisSettingsContract(Element1dAnalysisType? element1DAnalysisType)
+    public AnalysisSettings(Element1dAnalysisType? element1DAnalysisType)
     {
         this.Element1DAnalysisType = element1DAnalysisType ?? Element1dAnalysisType.Timoshenko;
     }
 
-    public AnalysisSettingsContract()
+    public AnalysisSettings()
         : this(Element1dAnalysisType.Timoshenko) { }
 }
 

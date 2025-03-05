@@ -14,23 +14,23 @@ namespace BeamOs.StructuralAnalysis.Sdk;
 
 public sealed class BeamOsDynamicModelBuilder(
     string guidString,
-    PhysicalModelSettings physicalModelSettings,
+    ModelSettings physicalModelSettings,
     string name,
     string description
 ) : BeamOsModelBuilder
 {
     public override string Name => name;
     public override string Description => description;
-    public override PhysicalModelSettings Settings => physicalModelSettings;
+    public override ModelSettings Settings => physicalModelSettings;
     public override string GuidString => guidString;
 
     private readonly List<PutNodeRequest> nodes = [];
 
-    public UnitSettingsContract UnitSettings => this.Settings.UnitSettings;
+    public UnitSettings UnitSettings => this.Settings.UnitSettings;
 
     public BeamOsDynamicModelBuilder(
         string guidString,
-        PhysicalModelSettings physicalModelSettings,
+        ModelSettings physicalModelSettings,
         string name,
         string description,
         BeamOsModelBuilderDto beamOsModelBuilderDto
@@ -115,11 +115,11 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
 using BeamOs.StructuralAnalysis.CsSdk;
-using static BeamOs.StructuralAnalysis.Contracts.Common.AngleUnitContract;
-using static BeamOs.StructuralAnalysis.Contracts.Common.LengthUnitContract;
-using static BeamOs.StructuralAnalysis.Contracts.Common.PressureUnitContract;
-using static BeamOs.StructuralAnalysis.Contracts.Common.AreaUnitContract;
-using static BeamOs.StructuralAnalysis.Contracts.Common.AreaMomentOfInertiaUnitContract;
+using static BeamOs.StructuralAnalysis.Contracts.Common.AngleUnit;
+using static BeamOs.StructuralAnalysis.Contracts.Common.LengthUnit;
+using static BeamOs.StructuralAnalysis.Contracts.Common.PressureUnit;
+using static BeamOs.StructuralAnalysis.Contracts.Common.AreaUnit;
+using static BeamOs.StructuralAnalysis.Contracts.Common.AreaMomentOfInertiaUnit;
 
 namespace {namespac};"
         );
@@ -130,9 +130,7 @@ namespace {namespac};"
         sb.AppendLine("{");
         sb.AppendLine($"    public override string Name => nameof({className});");
         sb.AppendLine($"    public override string Description => \"{this.Description}\";");
-        sb.AppendLine(
-            "    public override PhysicalModelSettings Settings => new PhysicalModelSettings"
-        );
+        sb.AppendLine("    public override ModelSettings Settings => new ModelSettings");
         sb.AppendLine("    (");
         sb.AppendLine("        unitSettings: new UnitSettingsContract");
         sb.AppendLine("        {");
@@ -146,7 +144,7 @@ namespace {namespac};"
             $"            AngleUnit = AngleUnitContract.{this.Settings.UnitSettings.AngleUnit}"
         );
         sb.AppendLine("        },");
-        sb.AppendLine("        analysisSettings: new AnalysisSettingsContract");
+        sb.AppendLine("        analysisSettings: new AnalysisSettings");
         sb.AppendLine("        {");
         sb.AppendLine(
             $"            Element1DAnalysisType = Element1dAnalysisType.{this.Settings.AnalysisSettings.Element1DAnalysisType}"

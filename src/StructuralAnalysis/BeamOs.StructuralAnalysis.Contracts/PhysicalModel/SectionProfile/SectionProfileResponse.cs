@@ -12,6 +12,6 @@ public record SectionProfileResponse(
     double PolarMomentOfInertia,
     double StrongAxisShearArea,
     double WeakAxisShearArea,
-    AreaUnitContract AreaUnit,
-    AreaMomentOfInertiaUnitContract AreaMomentOfInertiaUnit
+    AreaUnit AreaUnit,
+    AreaMomentOfInertiaUnit AreaMomentOfInertiaUnit
 ) : IModelEntity;

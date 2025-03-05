@@ -14,8 +14,8 @@ public class Kassimali_Example3_8 : ModelFixture, IHasExpectedNodeResults
     public override string Name => nameof(Kassimali_Example3_8);
     public override string Description => "Example model";
     public override string GuidString => "0a83df88-656e-47d9-98fe-25fd7d370b06";
-    public override PhysicalModelSettings Settings { get; } =
-        new(UnitSettingsContract.K_IN, new(Element1dAnalysisType.Euler));
+    public override ModelSettings Settings { get; } =
+        new(UnitSettings.K_IN, new(Element1dAnalysisType.Euler));
     public override SourceInfo SourceInfo { get; } =
         new(
             "Matrix Analysis Of Structures 2nd Edition by Kassimali",
