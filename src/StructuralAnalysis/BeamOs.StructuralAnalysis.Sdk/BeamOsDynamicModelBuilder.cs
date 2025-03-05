@@ -45,11 +45,40 @@ public sealed class BeamOsDynamicModelBuilder(
         this.sectionProfiles = beamOsModelBuilderDto.SectionProfiles.ToList();
     }
 
+    public void AddNode(int id, double x, double y, double z, Restraint? restraint = null) =>
+        this.AddNodes(
+            new PutNodeRequest()
+            {
+                Id = id,
+                LocationPoint = new(x, y, z, this.UnitSettings.LengthUnit),
+                Restraint = restraint ?? Restraint.Free
+            }
+        );
+
     public void AddNodes(params Span<PutNodeRequest> nodes) => this.nodes.AddRange(nodes);
 
     public override IEnumerable<PutNodeRequest> NodeRequests() => this.nodes.AsReadOnly();
 
     private readonly List<PutElement1dRequest> element1ds = [];
+
+    public void AddElement1d(
+        int id,
+        int startNodeId,
+        int endNodeId,
+        int materialId,
+        int sectionProfileId,
+        AngleContract? sectionProfileRotation = null
+    ) =>
+        this.AddElement1ds(
+            new PutElement1dRequest(
+                id,
+                startNodeId,
+                endNodeId,
+                materialId,
+                sectionProfileId,
+                sectionProfileRotation ?? new(0, AngleUnitContract.Radian)
+            )
+        );
 
     public void AddElement1ds(params Span<PutElement1dRequest> els) =>
         this.element1ds.AddRange(els);
@@ -59,6 +88,17 @@ public sealed class BeamOsDynamicModelBuilder(
 
     private readonly List<PutMaterialRequest> materials = [];
 
+    public void AddMaterial(int id, double modulusOfElasticity, double modulusOfRigidity) =>
+        this.AddMaterials(
+            new PutMaterialRequest()
+            {
+                Id = id,
+                ModulusOfElasticity = modulusOfElasticity,
+                ModulusOfRigidity = modulusOfRigidity,
+                PressureUnit = this.UnitSettings.PressureUnit
+            }
+        );
+
     public void AddMaterials(params Span<PutMaterialRequest> materials) =>
         this.materials.AddRange(materials);
 
@@ -66,6 +106,17 @@ public sealed class BeamOsDynamicModelBuilder(
         this.materials.AsReadOnly();
 
     private readonly List<PutPointLoadRequest> pointLoads = [];
+
+    public void AddPointLoad(int id, int nodeId, double force, Vector3 direction) =>
+        this.AddPointLoads(
+            new PutPointLoadRequest()
+            {
+                Id = id,
+                NodeId = nodeId,
+                Force = new(force, this.UnitSettings.ForceUnit),
+                Direction = direction
+            }
+        );
 
     public void AddPointLoads(params Span<PutPointLoadRequest> pointLoads) =>
         this.pointLoads.AddRange(pointLoads);
@@ -75,6 +126,17 @@ public sealed class BeamOsDynamicModelBuilder(
 
     private readonly List<PutMomentLoadRequest> momentLoads = [];
 
+    public void AddMomentLoad(int id, int nodeId, double moment, Vector3 axisDirection) =>
+        this.AddMomentLoads(
+            new PutMomentLoadRequest()
+            {
+                Id = id,
+                NodeId = nodeId,
+                Torque = new(moment, this.UnitSettings.TorqueUnit),
+                AxisDirection = axisDirection
+            }
+        );
+
     public void AddMomentLoads(params Span<PutMomentLoadRequest> momentLoads) =>
         this.momentLoads.AddRange(momentLoads);
 
@@ -83,17 +145,35 @@ public sealed class BeamOsDynamicModelBuilder(
 
     private readonly List<PutSectionProfileRequest> sectionProfiles = [];
 
+    public void AddSectionProfile(
+        int id,
+        double area,
+        double strongAxisMomentOfInertia,
+        double weakAxisMomentOfInertia,
+        double polarMomentOfInertia,
+        double strongAxisShearArea,
+        double weakAxisShearArea
+    ) =>
+        this.AddSectionProfiles(
+            new PutSectionProfileRequest()
+            {
+                Id = id,
+                Area = area,
+                StrongAxisMomentOfInertia = strongAxisMomentOfInertia,
+                WeakAxisMomentOfInertia = weakAxisMomentOfInertia,
+                PolarMomentOfInertia = polarMomentOfInertia,
+                StrongAxisShearArea = strongAxisShearArea,
+                WeakAxisShearArea = weakAxisShearArea,
+                AreaUnit = this.UnitSettings.AreaUnit,
+                AreaMomentOfInertiaUnit = this.UnitSettings.AreaMomentOfInertiaUnit
+            }
+        );
+
     public void AddSectionProfiles(params Span<PutSectionProfileRequest> sectionProfiles) =>
         this.sectionProfiles.AddRange(sectionProfiles);
 
     public override IEnumerable<PutSectionProfileRequest> SectionProfileRequests() =>
         this.sectionProfiles.AsReadOnly();
-
-    //public static async Task<BeamOsDynamicModelBuilder> CreateFromModel(ModelId modelId, IStructuralAnalysisApiClientV1 apiClient)
-    //{
-    //    var model = await apiClient.GetModelAsync(modelId);
-    //    BeamOsDynamicModelBuilder modelBuilder = new(modelId.Id.ToString(), model.Value.Settings, model.Value.Name, model.Value.Description);
-    //}
 
     public void GenerateStaticModelClass(string outputDir, string? baseClass = null)
     {
