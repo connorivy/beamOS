@@ -4,8 +4,10 @@ using BeamOs.CsSdk.Mappers.UnitValueDtoMappers;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 using Riok.Mapperly.Abstractions;
 using UnitsNet.Units;
 
@@ -59,6 +61,15 @@ public partial class ModelToResponseMapper : AbstractMapperProvidedUnits<Model, 
         this.ToResponse(entity, this.PressureUnit);
 
     private partial MaterialResponse ToResponse(Material entity, PressureUnit pressureUnit);
+
+    public SectionProfileResponse ToResponse(SectionProfile entity) =>
+        this.ToResponse(entity, this.AreaUnit, this.AreaMomentOfInertiaUnit);
+
+    private partial SectionProfileResponse ToResponse(
+        SectionProfile entity,
+        AreaUnit areaUnit,
+        AreaMomentOfInertiaUnit areaMomentOfInertiaUnit
+    );
 
     public ModelResponse Map(Model source) => this.ToResponse(source);
 

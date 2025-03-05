@@ -118,6 +118,8 @@ using BeamOs.StructuralAnalysis.CsSdk;
 using static BeamOs.StructuralAnalysis.Contracts.Common.AngleUnitContract;
 using static BeamOs.StructuralAnalysis.Contracts.Common.LengthUnitContract;
 using static BeamOs.StructuralAnalysis.Contracts.Common.PressureUnitContract;
+using static BeamOs.StructuralAnalysis.Contracts.Common.AreaUnitContract;
+using static BeamOs.StructuralAnalysis.Contracts.Common.AreaMomentOfInertiaUnitContract;
 
 namespace {namespac};"
         );
@@ -196,23 +198,23 @@ namespace {namespac};"
             sb.AppendLine($"        yield return new PutSectionProfileRequest");
             sb.AppendLine($"        {{");
             sb.AppendLine($"            Id = {sectionProfile.Id},");
+            sb.AppendLine($"            Area = {sectionProfile.Area},");
             sb.AppendLine(
-                $"            Area = new AreaContract({sectionProfile.Area.Value}, AreaUnitContract.{sectionProfile.Area.Unit}),"
+                $"            StrongAxisMomentOfInertia = {sectionProfile.StrongAxisMomentOfInertia},"
             );
             sb.AppendLine(
-                $"            StrongAxisMomentOfInertia = new AreaMomentOfInertiaContract({sectionProfile.StrongAxisMomentOfInertia.Value}, AreaMomentOfInertiaUnitContract.{sectionProfile.StrongAxisMomentOfInertia.Unit}),"
+                $"            WeakAxisMomentOfInertia = {sectionProfile.WeakAxisMomentOfInertia},"
             );
             sb.AppendLine(
-                $"            WeakAxisMomentOfInertia = new AreaMomentOfInertiaContract({sectionProfile.WeakAxisMomentOfInertia.Value}, AreaMomentOfInertiaUnitContract.{sectionProfile.WeakAxisMomentOfInertia.Unit}),"
+                $"            PolarMomentOfInertia = {sectionProfile.PolarMomentOfInertia},"
             );
             sb.AppendLine(
-                $"            PolarMomentOfInertia = new AreaMomentOfInertiaContract({sectionProfile.PolarMomentOfInertia.Value}, AreaMomentOfInertiaUnitContract.{sectionProfile.PolarMomentOfInertia.Unit}),"
+                $"            StrongAxisShearArea = {sectionProfile.StrongAxisShearArea},"
             );
+            sb.AppendLine($"            WeakAxisShearArea = {sectionProfile.WeakAxisShearArea},");
+            sb.AppendLine($"            AreaUnit = {sectionProfile.AreaUnit},");
             sb.AppendLine(
-                $"            StrongAxisShearArea = new AreaContract({sectionProfile.StrongAxisShearArea.Value}, AreaUnitContract.{sectionProfile.StrongAxisShearArea.Unit}),"
-            );
-            sb.AppendLine(
-                $"            WeakAxisShearArea = new AreaContract({sectionProfile.WeakAxisShearArea.Value}, AreaUnitContract.{sectionProfile.WeakAxisShearArea.Unit})"
+                $"            AreaMomentOfInertiaUnit = {sectionProfile.AreaMomentOfInertiaUnit}"
             );
             sb.AppendLine($"        }};");
         }
@@ -328,7 +330,7 @@ model.add_material('M{material.Id}', {new PressureContract(material.ModulusOfEla
         foreach (var sectionProfile in this.SectionProfileRequests())
         {
             sb.AppendLine(
-                $"model.add_section('S{sectionProfile.Id}', {sectionProfile.Area.As(this.Settings.UnitSettings.AreaUnit)}, {sectionProfile.WeakAxisMomentOfInertia.As(this.UnitSettings.AreaMomentOfInertiaUnit)}, {sectionProfile.StrongAxisMomentOfInertia.As(this.UnitSettings.AreaMomentOfInertiaUnit)}, {sectionProfile.PolarMomentOfInertia.As(this.UnitSettings.AreaMomentOfInertiaUnit)})"
+                $"model.add_section('S{sectionProfile.Id}', {new AreaContract(sectionProfile.Area, sectionProfile.AreaUnit).As(this.Settings.UnitSettings.AreaUnit)}, {new AreaMomentOfInertiaContract(sectionProfile.WeakAxisMomentOfInertia, sectionProfile.AreaMomentOfInertiaUnit).As(this.UnitSettings.AreaMomentOfInertiaUnit)}, {new AreaMomentOfInertiaContract(sectionProfile.StrongAxisMomentOfInertia, sectionProfile.AreaMomentOfInertiaUnit).As(this.UnitSettings.AreaMomentOfInertiaUnit)}, {new AreaMomentOfInertiaContract(sectionProfile.PolarMomentOfInertia, sectionProfile.AreaMomentOfInertiaUnit).As(this.UnitSettings.AreaMomentOfInertiaUnit)})"
             );
         }
         sb.AppendLine();

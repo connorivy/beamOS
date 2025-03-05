@@ -106,23 +106,27 @@ public class Kassimali_Example3_8 : ModelFixture, IHasExpectedNodeResults
     {
         yield return new()
         {
-            Area = new(8, AreaUnitContract.SquareInch),
-            StrongAxisMomentOfInertia = new(1, AreaMomentOfInertiaUnitContract.InchToTheFourth),
-            WeakAxisMomentOfInertia = new(1, AreaMomentOfInertiaUnitContract.InchToTheFourth),
-            PolarMomentOfInertia = new(1, AreaMomentOfInertiaUnitContract.InchToTheFourth),
-            StrongAxisShearArea = new(1, AreaUnitContract.SquareInch),
-            WeakAxisShearArea = new(1, AreaUnitContract.SquareInch),
+            Area = 8,
+            StrongAxisMomentOfInertia = 1,
+            WeakAxisMomentOfInertia = 1,
+            PolarMomentOfInertia = 1,
+            StrongAxisShearArea = 1,
+            WeakAxisShearArea = 1,
+            AreaUnit = AreaUnitContract.SquareInch,
+            AreaMomentOfInertiaUnit = AreaMomentOfInertiaUnitContract.InchToTheFourth,
             Id = 8
         };
 
         yield return new()
         {
-            Area = new(6, AreaUnitContract.SquareInch),
-            StrongAxisMomentOfInertia = new(1, AreaMomentOfInertiaUnitContract.InchToTheFourth),
-            WeakAxisMomentOfInertia = new(1, AreaMomentOfInertiaUnitContract.InchToTheFourth),
-            PolarMomentOfInertia = new(1, AreaMomentOfInertiaUnitContract.InchToTheFourth),
-            StrongAxisShearArea = new(1, AreaUnitContract.SquareInch),
-            WeakAxisShearArea = new(1, AreaUnitContract.SquareInch),
+            Area = 6,
+            StrongAxisMomentOfInertia = 1,
+            WeakAxisMomentOfInertia = 1,
+            PolarMomentOfInertia = 1,
+            StrongAxisShearArea = 1,
+            WeakAxisShearArea = 1,
+            AreaUnit = AreaUnitContract.SquareInch,
+            AreaMomentOfInertiaUnit = AreaMomentOfInertiaUnitContract.InchToTheFourth,
             Id = 6
         };
     }

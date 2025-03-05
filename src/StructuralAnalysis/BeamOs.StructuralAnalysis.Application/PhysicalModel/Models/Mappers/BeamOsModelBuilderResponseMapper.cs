@@ -93,6 +93,25 @@ public partial class BeamOsModelBuilderDomainMapper(Guid modelId)
             new(request.Id)
         );
 
-    [MapValue("ModelId", Use = nameof(GetModelId))]
-    public partial SectionProfile ToDomain(PutSectionProfileRequest request);
+    //[MapValue("ModelId", Use = nameof(GetModelId))]
+    public SectionProfile ToDomain(PutSectionProfileRequest request) =>
+        new(
+            modelId,
+            new(request.Area, request.AreaUnit.MapToAreaUnit()),
+            new(
+                request.StrongAxisMomentOfInertia,
+                request.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
+            ),
+            new(
+                request.WeakAxisMomentOfInertia,
+                request.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
+            ),
+            new(
+                request.PolarMomentOfInertia,
+                request.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
+            ),
+            new(request.StrongAxisShearArea, request.AreaUnit.MapToAreaUnit()),
+            new(request.WeakAxisShearArea, request.AreaUnit.MapToAreaUnit()),
+            new(request.Id)
+        );
 }
