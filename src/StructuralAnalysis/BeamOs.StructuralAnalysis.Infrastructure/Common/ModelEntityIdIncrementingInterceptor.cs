@@ -4,102 +4,14 @@ using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.Common;
-
-public class IdentityInsertInterceptor(
-    DbContextOptions<StructuralAnalysisDbContext> dbContextOptions
-) : SaveChangesInterceptor
-{
-    public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(
-        DbContextEventData eventData,
-        InterceptionResult<int> result,
-        CancellationToken cancellationToken = default
-    )
-    {
-        var context = eventData.Context;
-        if (context == null)
-        {
-            return await base.SavingChangesAsync(eventData, result, cancellationToken);
-        }
-
-        var allEntities = context.ChangeTracker.Entries().ToList();
-
-        var entriesWithIds = allEntities
-            .Where(
-                e =>
-                    e.State == EntityState.Added
-                    && e.Entity is IBeamOsModelEntity beamOsModelEntity
-                    && beamOsModelEntity.GetIntId() != 0
-            )
-            .ToList();
-
-        //var entriesWithIds = entries.Where(e => (int)e.CurrentValues["Id"] > 0).ToList();
-        var entriesWithoutIds = allEntities.Except(entriesWithIds);
-
-        if (entriesWithIds.Count > 0)
-        {
-            using var contextWithIds = new StructuralAnalysisDbContext(dbContextOptions);
-
-            var entityTypesWithIds = entriesWithIds
-                .GroupBy(e => e.Entity.GetType())
-                .Select(g => new { EntityType = g.Key, Entries = g.ToList() })
-                .ToList();
-
-            foreach (var entityType in entityTypesWithIds)
-            {
-                using var transaction = await contextWithIds.Database.BeginTransactionAsync();
-                var modelEntityType = contextWithIds.Model.FindEntityType(entityType.EntityType);
-
-                await contextWithIds
-                    .Database
-                    .ExecuteSqlRawAsync(
-                        $"SET IDENTITY_INSERT {modelEntityType.GetTableName()} ON",
-                        cancellationToken
-                    );
-                await this.SaveEntitiesAsync(contextWithIds, entityType.Entries);
-                await contextWithIds
-                    .Database
-                    .ExecuteSqlRawAsync(
-                        $"SET IDENTITY_INSERT {modelEntityType.GetTableName()} OFF",
-                        cancellationToken
-                    );
-                await transaction.CommitAsync();
-            }
-        }
-
-        using (var contextWithoutIds = new StructuralAnalysisDbContext(dbContextOptions))
-        {
-            if (entriesWithoutIds.Any())
-            {
-                await this.SaveEntitiesAsync(contextWithoutIds, entriesWithoutIds);
-            }
-        }
-
-        context.ChangeTracker.Clear();
-
-        return result;
-    }
-
-    private async Task SaveEntitiesAsync(DbContext context, IEnumerable<EntityEntry> entries)
-    {
-        foreach (var entry in entries)
-        {
-            var newEntry = context.Add(entry.Entity);
-            newEntry.State = entry.State;
-            //context.Entry(entry.Entity).State = EntityState.Added;
-        }
-        await context.SaveChangesAsync();
-    }
-}
 
 public class ModelEntityIdIncrementingInterceptor : SaveChangesInterceptor
 {
@@ -109,8 +21,7 @@ public class ModelEntityIdIncrementingInterceptor : SaveChangesInterceptor
         CancellationToken cancellationToken = default
     )
     {
-        var context = (StructuralAnalysisDbContext)eventData.Context;
-        if (context == null)
+        if (eventData.Context is not StructuralAnalysisDbContext context)
         {
             return await base.SavingChangesAsync(eventData, result, cancellationToken);
         }
@@ -210,53 +121,6 @@ public class ModelEntityIdIncrementingInterceptor : SaveChangesInterceptor
                     entityInfo.Entity.SetIntId(maxId);
                 }
             }
-        }
-
-        return result;
-    }
-}
-
-public class ModelLastModifiedUpdater(TimeProvider timeProvider) : SaveChangesInterceptor
-{
-    public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(
-        DbContextEventData eventData,
-        InterceptionResult<int> result,
-        CancellationToken cancellationToken = default
-    )
-    {
-        if (eventData.Context is not StructuralAnalysisDbContext context)
-        {
-            return await base.SavingChangesAsync(eventData, result, cancellationToken);
-        }
-
-        var modifiedModelIds = context
-            .ChangeTracker
-            .Entries()
-            .Where(
-                e =>
-                    e.State != EntityState.Detached
-                    && e.State != EntityState.Unchanged
-                    && e.Entity is IBeamOsModelEntity
-            )
-            .Select(e => ((IBeamOsModelEntity)e.Entity).ModelId)
-            .Distinct()
-            .ToArray();
-
-        DateTimeOffset lastModified = timeProvider.GetUtcNow();
-
-        foreach (var modelId in modifiedModelIds)
-        {
-            var model = context.Models.Local.FirstOrDefault(m => m.Id == modelId);
-
-            if (model is null)
-            {
-                model = new("", "", new(UnitSettings.kN_M), modelId);
-                context.Models.Attach(model);
-            }
-
-            model.LastModified = DateTime.UtcNow;
-
-            context.Entry(model).Property(m => m.LastModified).IsModified = true;
         }
 
         return result;

@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
   <PropertyGroup>
-    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
     <AspnetVersion>9.0.1</AspnetVersion>
     <MicrosoftExtensionsVersion>9.0.1</MicrosoftExtensionsVersion>
     <EfVersion>9.0.0</EfVersion>
