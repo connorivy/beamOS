@@ -9,7 +9,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
 
 namespace BeamOs.Tests.Common.SolvedProblems.Udoeyo_StructuralAnalysis;
 
-public sealed class Udoeyo_Example7_7 : ModelFixture
+public sealed class Udoeyo_Example7_7 : ModelFixture, IHasExpectedDiagramResults
 {
     public override SourceInfo SourceInfo { get; } =
         new(
@@ -24,6 +24,18 @@ public sealed class Udoeyo_Example7_7 : ModelFixture
         "Example 7.7 from Udoeyo's Structural Analysis book";
     public override PhysicalModelSettings Settings { get; } = new(UnitSettingsContract.kN_M);
     public override string GuidString => "e63cca48-5585-4117-8dd9-0d0bf56f3d50";
+
+    public DiagramResultFixture[] ExpectedDiagramResults { get; } =
+
+        [
+            new()
+            {
+                NodeId = 1,
+                ResultSetId = 1,
+                MaxMoment = new(20, UnitsNet.Units.TorqueUnit.KilonewtonMeter),
+                MaxDeflection = new(360, UnitsNet.Units.LengthUnit.Meter)
+            }
+        ];
 
     public override IEnumerable<PutElement1dRequest> Element1dRequests()
     {
