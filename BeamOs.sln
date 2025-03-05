@@ -21,7 +21,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.github\workflows\build.yml = .github\workflows\build.yml
 		CodeCov.runsettings = CodeCov.runsettings
 		Directory.Build.props = Directory.Build.props
-		Directory.Packages.net6.props = Directory.Packages.net6.props
 		Directory.Packages.props = Directory.Packages.props
 		global.json = global.json
 		IAssemblyMarkerRepoRoot.cs = IAssemblyMarkerRepoRoot.cs
@@ -38,8 +37,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.Tests.StructuralAnalysis.Integration", "tests\StructuralAnalysis\BeamOs.Tests.StructuralAnalysis.Integration\BeamOs.Tests.StructuralAnalysis.Integration.csproj", "{20BDE12A-686C-4C36-A51D-151845FF0938}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.StructuralAnalysis.Application", "src\StructuralAnalysis\BeamOs.StructuralAnalysis.Application\BeamOs.StructuralAnalysis.Application.csproj", "{74F8B27C-ECAF-4BCD-B3C3-53A3F776BF10}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.StructuralAnalysis.CsSdk", "src\StructuralAnalysis\BeamOs.StructuralAnalysis.CsSdk\BeamOs.StructuralAnalysis.CsSdk.csproj", "{F7A60C0C-DF0B-47D7-9D52-C4C3B011EC6C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "codeGen", "codeGen", "{48C54BAE-EA56-4542-92EB-CAFBE1F6288F}"
 EndProject
@@ -97,6 +94,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.SpeckleConnector", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.CodeGen.TestModelBuilderGenerator", "codeGen\BeamOs.CodeGen.TestModelBuilderGenerator\BeamOs.CodeGen.TestModelBuilderGenerator.csproj", "{2DB41960-8F1E-494E-A30D-E95256F71332}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.StructuralAnalysis.Sdk", "src\StructuralAnalysis\BeamOs.StructuralAnalysis.Sdk\BeamOs.StructuralAnalysis.Sdk.csproj", "{65D1A729-4913-2624-ED4A-71EA362E5C01}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -127,10 +126,6 @@ Global
 		{74F8B27C-ECAF-4BCD-B3C3-53A3F776BF10}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74F8B27C-ECAF-4BCD-B3C3-53A3F776BF10}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74F8B27C-ECAF-4BCD-B3C3-53A3F776BF10}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F7A60C0C-DF0B-47D7-9D52-C4C3B011EC6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F7A60C0C-DF0B-47D7-9D52-C4C3B011EC6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F7A60C0C-DF0B-47D7-9D52-C4C3B011EC6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F7A60C0C-DF0B-47D7-9D52-C4C3B011EC6C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{910283A3-0BD5-86F9-7A79-67BE292A5BB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{910283A3-0BD5-86F9-7A79-67BE292A5BB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{910283A3-0BD5-86F9-7A79-67BE292A5BB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -211,6 +206,10 @@ Global
 		{2DB41960-8F1E-494E-A30D-E95256F71332}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2DB41960-8F1E-494E-A30D-E95256F71332}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2DB41960-8F1E-494E-A30D-E95256F71332}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65D1A729-4913-2624-ED4A-71EA362E5C01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65D1A729-4913-2624-ED4A-71EA362E5C01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65D1A729-4913-2624-ED4A-71EA362E5C01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65D1A729-4913-2624-ED4A-71EA362E5C01}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -223,7 +222,6 @@ Global
 		{5AAE3F28-F0AB-4B23-88D1-FA1257A6BAE0} = {D0D7F508-C416-4B8C-AD30-4FC707F0D154}
 		{20BDE12A-686C-4C36-A51D-151845FF0938} = {E2A070EF-D8E8-42B4-88A0-3084C89601A4}
 		{74F8B27C-ECAF-4BCD-B3C3-53A3F776BF10} = {D0D7F508-C416-4B8C-AD30-4FC707F0D154}
-		{F7A60C0C-DF0B-47D7-9D52-C4C3B011EC6C} = {D0D7F508-C416-4B8C-AD30-4FC707F0D154}
 		{910283A3-0BD5-86F9-7A79-67BE292A5BB6} = {48C54BAE-EA56-4542-92EB-CAFBE1F6288F}
 		{0FB5C72E-9E34-12BE-569E-C832E446E04C} = {48C54BAE-EA56-4542-92EB-CAFBE1F6288F}
 		{30FE207F-79D9-4D64-A443-FE1A1A22A619} = {E2A070EF-D8E8-42B4-88A0-3084C89601A4}
@@ -251,6 +249,7 @@ Global
 		{0199506B-6829-4BD5-BD2C-A0EF56CC34AA} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{EA3CFCC6-2EBB-4A40-86CB-E64474A5F7D3} = {0199506B-6829-4BD5-BD2C-A0EF56CC34AA}
 		{2DB41960-8F1E-494E-A30D-E95256F71332} = {48C54BAE-EA56-4542-92EB-CAFBE1F6288F}
+		{65D1A729-4913-2624-ED4A-71EA362E5C01} = {D0D7F508-C416-4B8C-AD30-4FC707F0D154}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A4E54AF5-719C-45F7-8978-E734B3D3060B}
