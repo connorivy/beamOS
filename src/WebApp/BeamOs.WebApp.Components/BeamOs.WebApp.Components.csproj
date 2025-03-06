@@ -43,7 +43,7 @@
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
-  <Target Name="NpmInstall" Condition="'$(Configuration)' == 'Release' AND '$(ContinuousIntegrationEnv)' == false" Inputs="$(NpmFolder)/package.json" Outputs="$(NpmFolder)/node_modules/.install-stamp">
+  <Target Name="NpmInstall" Condition="'$(Configuration)' == 'Release'" Inputs="$(NpmFolder)/package.json" Outputs="$(NpmFolder)/node_modules/.install-stamp">
 
 
     <!--Use npm install or npm ci depending on RestorePackagesWithLockFile value.
@@ -69,7 +69,7 @@
       MSBuild runs NpmInstall before this task because of the DependsOnTargets attribute.-->
 
 
-  <Target Name="NpmRunBuild" DependsOnTargets="NpmInstall" BeforeTargets="BeforeBuild" Condition="'$(Configuration)' == 'Release' AND '$(ContinuousIntegrationEnv)' == false">
+  <Target Name="NpmRunBuild" DependsOnTargets="NpmInstall" BeforeTargets="BeforeBuild" Condition="'$(Configuration)' == 'Release'">
     <Exec WorkingDirectory="$(NpmFolder)" Command="npm run build" />
     <!--<Exec WorkingDirectory="$(NpmFolder)" Command="npx @tailwindcss/cli -i ./src/app.css -o ../wwwroot/css/tailwind.css" />-->
   </Target>
