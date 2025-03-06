@@ -18,7 +18,7 @@ public record ApiUsageResponse
 {
     public required int TotalCalls { get; init; }
     public required long TotalDurationMs { get; init; }
-    public required List<UsageBreakdownResponse> Breakdown { get; init; }
+    public required List<UsageBreakdownResponse>? Breakdown { get; init; }
 }
 
 public record UsageBreakdownResponse
