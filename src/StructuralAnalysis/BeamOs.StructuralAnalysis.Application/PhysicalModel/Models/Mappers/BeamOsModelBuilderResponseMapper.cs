@@ -6,7 +6,6 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoad;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
-using BeamOs.StructuralAnalysis.CsSdk;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
@@ -15,6 +14,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
+using BeamOs.StructuralAnalysis.Sdk;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Models.Mappers;
@@ -85,9 +85,33 @@ public partial class BeamOsModelBuilderDomainMapper(Guid modelId)
     [MapValue("ModelId", Use = nameof(GetModelId))]
     public partial MomentLoad ToDomain(PutMomentLoadRequest request);
 
-    [MapValue("ModelId", Use = nameof(GetModelId))]
-    public partial Material ToDomain(PutMaterialRequest request);
+    public Material ToDomain(PutMaterialRequest request) =>
+        new Material(
+            modelId,
+            new(request.ModulusOfElasticity, request.PressureUnit.MapToPressureUnit()),
+            new(request.ModulusOfRigidity, request.PressureUnit.MapToPressureUnit()),
+            new(request.Id)
+        );
 
-    [MapValue("ModelId", Use = nameof(GetModelId))]
-    public partial SectionProfile ToDomain(PutSectionProfileRequest request);
+    //[MapValue("ModelId", Use = nameof(GetModelId))]
+    public SectionProfile ToDomain(PutSectionProfileRequest request) =>
+        new(
+            modelId,
+            new(request.Area, request.AreaUnit.MapToAreaUnit()),
+            new(
+                request.StrongAxisMomentOfInertia,
+                request.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
+            ),
+            new(
+                request.WeakAxisMomentOfInertia,
+                request.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
+            ),
+            new(
+                request.PolarMomentOfInertia,
+                request.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
+            ),
+            new(request.StrongAxisShearArea, request.AreaUnit.MapToAreaUnit()),
+            new(request.WeakAxisShearArea, request.AreaUnit.MapToAreaUnit()),
+            new(request.Id)
+        );
 }

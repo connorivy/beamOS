@@ -7,15 +7,14 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
-using BeamOs.StructuralAnalysis.CsSdk;
-using UnitsNet;
+using BeamOs.StructuralAnalysis.Sdk;
 
 namespace BeamOs.CodeGen.TestModelBuilderGenerator.TestModelGenerators;
 
 internal class TwistyBowlFramingGenerator(string speckleToken)
 {
     private static string GuidString => "4ce66084-4ac1-40bc-99ae-3d0f334c66fa";
-    private static PhysicalModelSettings Settings { get; } = new(UnitSettingsContract.K_IN);
+    private static ModelSettings Settings { get; } = new(UnitSettingsContract.K_IN);
     private static string Name => "TwistyBowlFraming";
     private static string Description =>
         "A crazy twisting bowl type structure. Made by Bjorn Steinhagen in grasshopper and then sent to beamOS using Speckle";
@@ -29,21 +28,14 @@ internal class TwistyBowlFramingGenerator(string speckleToken)
         modelBuilder.AddSectionProfiles(
             new PutSectionProfileRequest()
             {
-                Area = new AreaContract(10.6, AreaUnitContract.SquareInch),
-                StrongAxisMomentOfInertia = new AreaMomentOfInertiaContract(
-                    448,
-                    AreaMomentOfInertiaUnitContract.InchToTheFourth
-                ),
-                WeakAxisMomentOfInertia = new AreaMomentOfInertiaContract(
-                    24.5,
-                    AreaMomentOfInertiaUnitContract.InchToTheFourth
-                ),
-                PolarMomentOfInertia = new AreaMomentOfInertiaContract(
-                    .55,
-                    AreaMomentOfInertiaUnitContract.InchToTheFourth
-                ),
-                StrongAxisShearArea = new AreaContract(5.0095, AreaUnitContract.SquareInch),
-                WeakAxisShearArea = new AreaContract(4.6905, AreaUnitContract.SquareInch),
+                Area = 10.6,
+                StrongAxisMomentOfInertia = 448,
+                WeakAxisMomentOfInertia = 24.5,
+                PolarMomentOfInertia = .55,
+                StrongAxisShearArea = 5.0095,
+                WeakAxisShearArea = 4.6905,
+                AreaUnit = AreaUnitContract.SquareInch,
+                AreaMomentOfInertiaUnit = AreaMomentOfInertiaUnitContract.InchToTheFourth,
                 Id = 1636
             }
         );
@@ -51,14 +43,9 @@ internal class TwistyBowlFramingGenerator(string speckleToken)
         modelBuilder.AddMaterials(
             new PutMaterialRequest()
             {
-                ModulusOfElasticity = new PressureContract(
-                    29000,
-                    PressureUnitContract.KilopoundForcePerSquareInch
-                ),
-                ModulusOfRigidity = new PressureContract(
-                    11_153.85,
-                    PressureUnitContract.KilopoundForcePerSquareInch
-                ),
+                ModulusOfElasticity = 29000,
+                ModulusOfRigidity = 11_153.85,
+                PressureUnit = PressureUnitContract.KilopoundForcePerSquareInch,
                 Id = 992
             }
         );
@@ -131,5 +118,6 @@ internal class TwistyBowlFramingGenerator(string speckleToken)
         }
 
         modelBuilder.GenerateStaticModelClass(OutputPath, "ModelFixture");
+        //modelBuilder.WriteToPyniteFile(OutputPath);
     }
 }

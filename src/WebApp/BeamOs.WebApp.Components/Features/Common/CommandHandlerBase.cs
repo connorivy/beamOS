@@ -9,6 +9,8 @@ public abstract class CommandHandlerBase<TCommand, TResponse>(ISnackbar snackbar
 //IClientCommandHandler<TCommand>
 //where TCommand : IClientCommand
 {
+    protected ISnackbar Snackbar => snackbar;
+
     public async Task<Result<TResponse>> ExecuteAsync(
         TCommand command,
         CancellationToken ct = default

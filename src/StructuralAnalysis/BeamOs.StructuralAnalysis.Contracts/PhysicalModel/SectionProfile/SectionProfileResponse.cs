@@ -6,10 +6,12 @@ namespace BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
 public record SectionProfileResponse(
     int Id,
     Guid ModelId,
-    AreaContract Area,
-    AreaMomentOfInertiaContract StrongAxisMomentOfInertia,
-    AreaMomentOfInertiaContract WeakAxisMomentOfInertia,
-    AreaMomentOfInertiaContract PolarMomentOfInertia,
-    AreaContract StrongAxisShearArea,
-    AreaContract WeakAxisShearArea
+    double Area,
+    double StrongAxisMomentOfInertia,
+    double WeakAxisMomentOfInertia,
+    double PolarMomentOfInertia,
+    double StrongAxisShearArea,
+    double WeakAxisShearArea,
+    AreaUnit AreaUnit,
+    AreaMomentOfInertiaUnit AreaMomentOfInertiaUnit
 ) : IModelEntity;

@@ -25,19 +25,19 @@ public record DiagramResponseBase
 }
 
 public record DiagramConsistentIntervalResponse(
-    LengthContract StartLocation,
-    LengthContract EndLocation,
+    Length StartLocation,
+    Length EndLocation,
     double[] PolynomialCoefficients
-);
+) : IDiagramConsistentIntervalResponse;
 
 public record ShearDiagramResponse(
     Guid ModelId,
     int ResultSetId,
     int Element1dId,
     Vector3 GlobalShearDirection,
-    LengthUnitContract LengthUnit,
-    ForceUnitContract ForceUnit,
-    LengthContract ElementLength,
+    LengthUnit LengthUnit,
+    ForceUnit ForceUnit,
+    Length ElementLength,
     DiagramConsistentIntervalResponse[] Intervals
 ) : DiagramResponseBase(ModelId, ResultSetId, Element1dId, Intervals);
 
@@ -45,19 +45,19 @@ public record MomentDiagramResponse(
     Guid ModelId,
     int ResultSetId,
     int Element1dId,
-    LengthUnitContract LengthUnit,
-    TorqueUnitContract TorqueUnit,
-    LengthContract ElementLength,
+    LengthUnit LengthUnit,
+    TorqueUnit TorqueUnit,
+    Length ElementLength,
     DiagramConsistentIntervalResponse2[] Intervals
 );
 
 // weird bug with generating the openapi document if I use the same diagramConsistantIntervalResponse
 // as the shear diagram response
 public record DiagramConsistentIntervalResponse2(
-    LengthContract StartLocation,
-    LengthContract EndLocation,
+    Length StartLocation,
+    Length EndLocation,
     double[] PolynomialCoefficients
-);
+) : IDiagramConsistentIntervalResponse;
 
 public readonly record struct DeflectionDiagramResponse
 {
@@ -76,12 +76,19 @@ public record AnalyticalResultsResponse : IModelEntity
     public required Guid ModelId { get; init; }
 }
 
+public record DiagramResponse
+{
+    public required ShearDiagramResponse[] ShearDiagrams { get; init; }
+    public required MomentDiagramResponse[] MomentDiagrams { get; init; }
+    public required DeflectionDiagramResponse[] DeflectionDiagrams { get; init; }
+}
+
 public readonly record struct GlobalStresses
 {
-    public required ForceContract MaxShear { get; init; }
-    public required ForceContract MinShear { get; init; }
-    public required TorqueContract MaxMoment { get; init; }
-    public required TorqueContract MinMoment { get; init; }
+    public required Force MaxShear { get; init; }
+    public required Force MinShear { get; init; }
+    public required Torque MaxMoment { get; init; }
+    public required Torque MinMoment { get; init; }
 }
 
 public enum DiagramType
@@ -90,4 +97,15 @@ public enum DiagramType
     Shear,
     Moment,
     Displacement
+}
+
+public enum RelativeDirection3D
+{
+    Undefined = 0,
+    LocalX,
+    LocalY,
+    LocalZ,
+    GlobalX,
+    GlobalY,
+    GlobalZ
 }

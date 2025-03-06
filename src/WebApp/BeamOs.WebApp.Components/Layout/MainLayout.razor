@@ -12,8 +12,8 @@
 <NavBar />
 
 @if (this.State.Value.HasContent)
-{   
-    <MudDrawer Width="401px" ClipMode="DrawerClipMode.Docked" Variant="DrawerVariant.Responsive" Open="true">
+{
+    <MudDrawer Width="400px" ClipMode="DrawerClipMode.Always" Variant="DrawerVariant.Responsive" @bind-Open="@IsDrawerOpen">
         <SectionOutlet SectionId="Drawer" />
     </MudDrawer>
 }
@@ -30,6 +30,15 @@
     [Inject]
     IState<MainLayoutState> State { get; init; }
 
+    [Inject]
+    IDispatcher Dispatcher { get; init; }
+
+    public bool IsDrawerOpen
+    {
+        get;
+        set;
+    }
+
     // [Inject]
     // IHttpContextAccessor httpContextAccessor { get; init; }
 
@@ -40,5 +49,7 @@
     {
         // var x = httpContextAccessor.HttpContext;
         base.OnInitialized();
+        this.SubscribeToAction<OpenDrawer>((_) => this.IsDrawerOpen = true);
+        this.SubscribeToAction<CloseDrawer>((_) => this.IsDrawerOpen = true);
     }
 }

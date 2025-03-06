@@ -2,11 +2,11 @@ using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.Common;
-using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using Riok.Mapperly.Abstractions;
+using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Materials;
 
@@ -24,7 +24,7 @@ public class PutMaterialCommandHandler(
         materialRepository.Put(material);
         await unitOfWork.SaveChangesAsync(ct);
 
-        return material.ToResponse();
+        return material.ToResponse(command.Body.PressureUnit.MapToPressureUnit());
     }
 }
 
@@ -54,8 +54,10 @@ public readonly struct PutMaterialCommand : IModelResourceWithIntIdRequest<Mater
     public int Id { get; init; }
     public Guid ModelId { get; init; }
     public MaterialRequestData Body { get; init; }
-    public PressureContract ModulusOfElasticity => this.Body.ModulusOfElasticity;
-    public PressureContract ModulusOfRigidity => this.Body.ModulusOfRigidity;
+    public Pressure ModulusOfElasticity =>
+        new(this.Body.ModulusOfElasticity, this.Body.PressureUnit.MapToPressureUnit());
+    public Pressure ModulusOfRigidity =>
+        new(this.Body.ModulusOfRigidity, this.Body.PressureUnit.MapToPressureUnit());
 
     public PutMaterialCommand() { }
 

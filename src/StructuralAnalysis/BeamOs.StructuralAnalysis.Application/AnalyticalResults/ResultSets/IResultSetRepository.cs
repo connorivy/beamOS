@@ -7,4 +7,10 @@ namespace BeamOs.StructuralAnalysis.Application.AnalyticalResults.ResultSets;
 public interface IResultSetRepository : IModelResourceRepository<ResultSetId, ResultSet>
 {
     public Task<int> DeleteAll(ModelId modelId, CancellationToken ct);
+    public Task<ResultSet?> GetSingle(
+        ModelId modelId,
+        ResultSetId resultSetId,
+        CancellationToken ct,
+        params string[] resultSetMembersToLoad
+    );
 }

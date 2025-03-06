@@ -4,7 +4,7 @@ using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.DirectStiffnessMethod;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams;
 using BeamOs.StructuralAnalysis.Contracts.Common;
-using BeamOs.StructuralAnalysis.CsSdk;
+using BeamOs.StructuralAnalysis.Sdk;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.Editor;
 using Fluxor;
@@ -25,7 +25,7 @@ public sealed class RunDsmCommandCommandHandler(
     {
         dispatcher.Dispatch(new AnalysisBegan() { ModelId = command.ModelId });
 
-        var result = await structuralAnalysisApiClientV1.RunDirectStiffnessMethodAsync(
+        var result = await structuralAnalysisApiClientV1.RunOpenSeesAnalysisAsync(
             command.ModelId,
             command.UnitsOverride,
             ct
@@ -95,7 +95,10 @@ public sealed class ReceiveFromSpeckleCommandHandler(
             return modelResponse.Error;
         }
 
-        return new CachedModelResponse(modelResponse.Value);
+        var result = new CachedModelResponse(modelResponse.Value);
+        dispatcher.Dispatch(new ModelLoaded() { CachedModelResponse = result });
+
+        return result;
     }
 
     protected override void PostProcess(
@@ -103,13 +106,7 @@ public sealed class ReceiveFromSpeckleCommandHandler(
         Result<CachedModelResponse> result
     )
     {
-        dispatcher.Dispatch(
-            new EditorLoadingEnd()
-            {
-                CanvasId = command.CanvasId,
-                CachedModelResponse = result.Value
-            }
-        );
+        dispatcher.Dispatch(new EditorLoadingEnd() { CanvasId = command.CanvasId });
     }
 }
 

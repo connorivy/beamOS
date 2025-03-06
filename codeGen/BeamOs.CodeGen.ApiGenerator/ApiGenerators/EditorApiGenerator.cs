@@ -49,7 +49,7 @@ public class EditorApiGenerator : AbstractGenerator
         _ = addMethod("CreateDeflectionDiagram").Accepts<DeflectionDiagramResponse>();
         _ = addMethod("CreateDeflectionDiagrams").Accepts<DeflectionDiagramResponse[]>();
 
-        _ = addMethod("SetSettings").Accepts<PhysicalModelSettings>();
+        _ = addMethod("SetSettings").Accepts<ModelSettings>();
 
         _ = addMethod("SetGlobalStresses").Accepts<GlobalStresses>();
 

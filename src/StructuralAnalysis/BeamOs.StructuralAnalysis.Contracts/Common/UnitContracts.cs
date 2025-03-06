@@ -2,139 +2,139 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace BeamOs.StructuralAnalysis.Contracts.Common;
 
-public readonly record struct LengthContract
+public readonly record struct Length
 {
     public required double Value { get; init; }
-    public required LengthUnitContract Unit { get; init; }
+    public required LengthUnit Unit { get; init; }
 
-    public LengthContract() { }
+    public Length() { }
 
     [SetsRequiredMembers]
-    public LengthContract(double value, LengthUnitContract unit)
+    public Length(double value, LengthUnit unit)
     {
-        Value = value;
-        Unit = unit;
+        this.Value = value;
+        this.Unit = unit;
     }
 }
 
-public readonly record struct AreaContract
+public readonly record struct Area
 {
     public required double Value { get; init; }
-    public required AreaUnitContract Unit { get; init; }
+    public required AreaUnit Unit { get; init; }
 
-    public AreaContract() { }
+    public Area() { }
 
     [SetsRequiredMembers]
-    public AreaContract(double value, AreaUnitContract unit)
+    public Area(double value, AreaUnit unit)
     {
-        Value = value;
-        Unit = unit;
+        this.Value = value;
+        this.Unit = unit;
     }
 }
 
-public readonly record struct VolumeContract
+public readonly record struct Volume
 {
     public required double Value { get; init; }
-    public required VolumeUnitContract Unit { get; init; }
+    public required VolumeUnit Unit { get; init; }
 
-    public VolumeContract() { }
+    public Volume() { }
 
     [SetsRequiredMembers]
-    public VolumeContract(double value, VolumeUnitContract unit)
+    public Volume(double value, VolumeUnit unit)
     {
-        Value = value;
-        Unit = unit;
+        this.Value = value;
+        this.Unit = unit;
     }
 }
 
-public readonly record struct AreaMomentOfInertiaContract
+public readonly record struct AreaMomentOfInertia
 {
     public required double Value { get; init; }
-    public required AreaMomentOfInertiaUnitContract Unit { get; init; }
+    public required AreaMomentOfInertiaUnit Unit { get; init; }
 
-    public AreaMomentOfInertiaContract() { }
+    public AreaMomentOfInertia() { }
 
     [SetsRequiredMembers]
-    public AreaMomentOfInertiaContract(double value, AreaMomentOfInertiaUnitContract unit)
+    public AreaMomentOfInertia(double value, AreaMomentOfInertiaUnit unit)
     {
-        Value = value;
-        Unit = unit;
+        this.Value = value;
+        this.Unit = unit;
     }
 }
 
-public readonly record struct ForceContract
+public readonly record struct Force
 {
     public required double Value { get; init; }
-    public required ForceUnitContract Unit { get; init; }
+    public required ForceUnit Unit { get; init; }
 
-    public ForceContract() { }
+    public Force() { }
 
     [SetsRequiredMembers]
-    public ForceContract(double value, ForceUnitContract unit)
+    public Force(double value, ForceUnit unit)
     {
-        Value = value;
-        Unit = unit;
+        this.Value = value;
+        this.Unit = unit;
     }
 }
 
-public readonly record struct AngleContract
+public readonly record struct Angle
 {
     public required double Value { get; init; }
-    public required AngleUnitContract Unit { get; init; }
+    public required AngleUnit Unit { get; init; }
 
     [SetsRequiredMembers]
-    public AngleContract()
-        : this(0, AngleUnitContract.Radian) { }
+    public Angle()
+        : this(0, AngleUnit.Radian) { }
 
     [SetsRequiredMembers]
-    public AngleContract(double value, AngleUnitContract unit)
+    public Angle(double value, AngleUnit unit)
     {
-        Value = value;
-        Unit = unit;
+        this.Value = value;
+        this.Unit = unit;
     }
 }
 
-public readonly record struct TorqueContract
+public readonly record struct Torque
 {
     public required double Value { get; init; }
-    public required TorqueUnitContract Unit { get; init; }
+    public required TorqueUnit Unit { get; init; }
 
-    public TorqueContract() { }
+    public Torque() { }
 
     [SetsRequiredMembers]
-    public TorqueContract(double value, TorqueUnitContract unit)
+    public Torque(double value, TorqueUnit unit)
     {
-        Value = value;
-        Unit = unit;
+        this.Value = value;
+        this.Unit = unit;
     }
 }
 
-public readonly record struct ForcePerLengthContract
+public readonly record struct ForcePerLength
 {
     public required double Value { get; init; }
-    public required ForcePerLengthUnitContract Unit { get; init; }
+    public required ForcePerLengthUnit Unit { get; init; }
 
-    public ForcePerLengthContract() { }
+    public ForcePerLength() { }
 
     [SetsRequiredMembers]
-    public ForcePerLengthContract(double value, ForcePerLengthUnitContract unit)
+    public ForcePerLength(double value, ForcePerLengthUnit unit)
     {
-        Value = value;
-        Unit = unit;
+        this.Value = value;
+        this.Unit = unit;
     }
 }
 
-public readonly record struct PressureContract
+public readonly record struct Pressure
 {
     public required double Value { get; init; }
-    public required PressureUnitContract Unit { get; init; }
+    public required PressureUnit Unit { get; init; }
 
-    public PressureContract() { }
+    public Pressure() { }
 
     [SetsRequiredMembers]
-    public PressureContract(double value, PressureUnitContract unit)
+    public Pressure(double value, PressureUnit unit)
     {
-        Value = value;
-        Unit = unit;
+        this.Value = value;
+        this.Unit = unit;
     }
 }

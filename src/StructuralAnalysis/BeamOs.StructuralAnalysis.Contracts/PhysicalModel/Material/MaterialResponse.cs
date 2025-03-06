@@ -6,6 +6,7 @@ namespace BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
 public record MaterialResponse(
     int Id,
     Guid ModelId,
-    PressureContract ModulusOfElasticity,
-    PressureContract ModulusOfRigidity
+    double ModulusOfElasticity,
+    double ModulusOfRigidity,
+    PressureUnit PressureUnit
 ) : IModelEntity;

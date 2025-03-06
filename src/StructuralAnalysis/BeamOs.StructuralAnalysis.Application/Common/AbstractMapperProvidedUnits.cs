@@ -45,29 +45,47 @@ public abstract class AbstractMapperProvidedUnits<TFrom, TTo>(
     protected AngleContract UnitsNetToContractMapper(Angle unit) =>
         new(unit.As(this.AngleUnit), this.AngleUnit.MapToContract());
 
+    protected double ToPrimitive(Angle unit) => unit.As(this.AngleUnit);
+
     protected AreaContract UnitsNetToContractMapper(Area unit) =>
         new(unit.As(this.AreaUnit), this.AreaUnit.MapToContract());
+
+    protected double ToPrimitive(Area unit) => unit.As(this.AreaUnit);
 
     protected AreaMomentOfInertiaContract UnitsNetToContractMapper(AreaMomentOfInertia unit) =>
         new(unit.As(this.AreaMomentOfInertiaUnit), this.AreaMomentOfInertiaUnit.MapToContract());
 
+    protected double ToPrimitive(AreaMomentOfInertia unit) => unit.As(this.AreaMomentOfInertiaUnit);
+
     protected ForceContract UnitsNetToContractMapper(Force unit) =>
         new(unit.As(this.ForceUnit), this.ForceUnit.MapToContract());
+
+    protected double ToPrimitive(Force unit) => unit.As(this.ForceUnit);
 
     protected ForcePerLengthContract UnitsNetToContractMapper(ForcePerLength unit) =>
         new(unit.As(this.ForcePerLengthUnit), this.ForcePerLengthUnit.MapToContract());
 
+    protected double ToPrimitive(ForcePerLength unit) => unit.As(this.ForcePerLengthUnit);
+
     protected LengthContract UnitsNetToContractMapper(Length unit) =>
         new(unit.As(this.LengthUnit), this.LengthUnit.MapToContract());
+
+    protected double ToPrimitive(Length unit) => unit.As(this.LengthUnit);
 
     protected PressureContract UnitsNetToContractMapper(Pressure unit) =>
         new(unit.As(this.PressureUnit), this.PressureUnit.MapToContract());
 
+    protected double ToPrimitive(Pressure unit) => unit.As(this.PressureUnit);
+
     protected TorqueContract UnitsNetToContractMapper(Torque unit) =>
         new(unit.As(this.TorqueUnit), this.TorqueUnit.MapToContract());
 
+    protected double ToPrimitive(Torque unit) => unit.As(this.TorqueUnit);
+
     protected VolumeContract UnitsNetToContractMapper(Volume unit) =>
         new(unit.As(this.VolumeUnit), this.VolumeUnit.MapToContract());
+
+    protected double ToPrimitive(Volume unit) => unit.As(this.VolumeUnit);
 
     //protected BeamOs.StructuralAnalysis.Contracts.Common.Point ToContract(
     //    BeamOs.StructuralAnalysis.Domain.Common.Point source

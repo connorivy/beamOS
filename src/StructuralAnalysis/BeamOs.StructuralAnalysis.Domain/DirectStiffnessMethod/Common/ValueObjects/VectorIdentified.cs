@@ -10,17 +10,53 @@ public readonly record struct VectorIdentified
 {
     private readonly Dictionary<UnsupportedStructureDisplacementId, double> identifiers;
 
+    public VectorIdentified(Dictionary<UnsupportedStructureDisplacementId, double> identifiers)
+    {
+        this.identifiers = identifiers;
+    }
+
     public VectorIdentified(
         IList<UnsupportedStructureDisplacementId> identifiers,
         IList<double>? values = null
     )
+        : this(CreateIdentifiers(identifiers, values)) { }
+
+    public VectorIdentified(
+        Span<UnsupportedStructureDisplacementId> identifiers,
+        Span<double> values
+    )
+        : this(CreateIdentifiers(identifiers, values)) { }
+
+    private static Dictionary<UnsupportedStructureDisplacementId, double> CreateIdentifiers(
+        IList<UnsupportedStructureDisplacementId> identifiers,
+        IList<double>? values
+    )
     {
-        this.identifiers = new(identifiers.Count);
+        Dictionary<UnsupportedStructureDisplacementId, double> identifierDict =
+            new(identifiers.Count);
 
         for (int i = 0; i < identifiers.Count; i++)
         {
-            this.identifiers.Add(identifiers[i], values?.ElementAt(i) ?? 0);
+            identifierDict.Add(identifiers[i], values?.ElementAt(i) ?? 0);
         }
+
+        return identifierDict;
+    }
+
+    private static Dictionary<UnsupportedStructureDisplacementId, double> CreateIdentifiers(
+        Span<UnsupportedStructureDisplacementId> identifiers,
+        Span<double> values
+    )
+    {
+        Dictionary<UnsupportedStructureDisplacementId, double> identifierDict =
+            new(identifiers.Length);
+
+        for (int i = 0; i < identifiers.Length; i++)
+        {
+            identifierDict.Add(identifiers[i], values[i]);
+        }
+
+        return identifierDict;
     }
 
     public void AddEntriesWithMatchingIdentifiers(VectorIdentified vectorToBeAdded)

@@ -8,6 +8,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoad;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
+using BeamOs.StructuralAnalysis.Sdk;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.StructuralAnalysis.CsSdk.Mappers;

@@ -26,7 +26,8 @@ public class ExampleUserApiTokenService : IUserApiTokenService
             {
                 Name = token.Name,
                 Scopes = token.Scopes,
-                CreatedOn = DateTime.UtcNow
+                CreatedOn = DateTime.UtcNow,
+                Value = Guid.NewGuid().ToString()
             };
         this.apiTokenResponses.Add(resp);
 

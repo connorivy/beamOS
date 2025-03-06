@@ -1,7 +1,6 @@
 using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis.CsSdk;
 using BeamOs.StructuralAnalysis.CsSdk.Mappers;
-using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
+using BeamOs.StructuralAnalysis.Sdk;
 using UnitsNet;
 
 namespace BeamOs.Tests.Common;
@@ -58,6 +57,11 @@ public interface IHasExpectedReactionVector
     public double[] ExpectedReactionVector { get; }
 }
 
+public interface IHasExpectedDiagramResults
+{
+    public DiagramResultFixture[] ExpectedDiagramResults { get; }
+}
+
 public interface IHasStructuralStiffnessMatrix
 {
     public double[,] ExpectedStructuralStiffnessMatrix { get; }
@@ -66,7 +70,7 @@ public interface IHasStructuralStiffnessMatrix
 public record NodeResultFixture
 {
     public required int NodeId { get; init; }
-    public required ResultSetId ResultSetId { get; init; }
+    public required int ResultSetId { get; init; }
 
     public Length? DisplacementAlongX { get; init; }
     public Length? DisplacementAlongY { get; init; }
@@ -93,7 +97,7 @@ public record NodeResultFixture
 public record DsmElement1dResultFixture
 {
     public required int ElementId { get; init; }
-    public required ResultSetId ResultSetId { get; init; }
+    public required int ResultSetId { get; init; }
     public double[,]? ExpectedRotationMatrix { get; init; }
     public double[,]? ExpectedTransformationMatrix { get; init; }
     public double[,]? ExpectedLocalStiffnessMatrix { get; init; }
@@ -104,4 +108,17 @@ public record DsmElement1dResultFixture
     public double[]? ExpectedGlobalEndDisplacements { get; init; }
     public double[]? ExpectedLocalEndForces { get; init; }
     public double[]? ExpectedGlobalEndForces { get; init; }
+}
+
+public record DiagramResultFixture
+{
+    public required int NodeId { get; init; }
+    public required int ResultSetId { get; init; }
+
+    public Force? MinShear { get; init; }
+    public Force? MaxShear { get; init; }
+    public Torque? MinMoment { get; init; }
+    public Torque? MaxMoment { get; init; }
+    public Length? MaxDeflection { get; init; }
+    public Length? MinDeflection { get; init; }
 }

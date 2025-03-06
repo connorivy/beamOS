@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
   <PropertyGroup Label="General Config">
-    <TargetFramework>net9.0</TargetFramework>
+    <BeamOsTargetFramework Condition="'$(BeamOsTargetFramework)' == ''">net9.0</BeamOsTargetFramework>
+    <TargetFramework>$(BeamOsTargetFramework)</TargetFramework>
     <LangVersion>preview</LangVersion>
     <OpenSeesDir Condition="'$(OpenSeesDir)' == ''">$(MSBuildThisFileDirectory)openSees\OpenSees3.7.0\</OpenSeesDir>
     <ContinuousIntegrationEnv Condition="'$(ContinuousIntegrationEnv)' == ''">false</ContinuousIntegrationEnv>
-
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
+    
     <!--<TUnitImplicitUsings>false</TUnitImplicitUsings>-->
     <!--<InvariantGlobalization>true</InvariantGlobalization>-->
     <NoWarn>

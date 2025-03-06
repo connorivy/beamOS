@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using BeamOs.Common.Application;
-using BeamOs.StructuralAnalysis.Application;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.NodeResults;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.ResultSets;
 using BeamOs.StructuralAnalysis.Application.Common;
@@ -60,11 +58,15 @@ public static class DependencyInjection
         string connectionString
     )
     {
+        services.AddSingleton(TimeProvider.System);
         _ = services.AddDbContext<StructuralAnalysisDbContext>(options =>
         {
             options
                 .UseSqlServer(connectionString)
-                .AddInterceptors(new ModelEntityIdIncrementingInterceptor());
+                .AddInterceptors(
+                    new ModelEntityIdIncrementingInterceptor(),
+                    new ModelLastModifiedUpdater(TimeProvider.System)
+                );
 
             //var optionsBuilderNoInterceptor =
             //    options.UseSqlServer(connectionString).Options

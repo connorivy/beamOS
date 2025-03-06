@@ -20,13 +20,13 @@ public static class MainLayoutStateReducers
     [ReducerMethod(typeof(OpenDrawer))]
     public static MainLayoutState OpenDrawerReducer(MainLayoutState state)
     {
-        return state with { HasContent = true };
+        return state with { HasContent = true, IsDrawerOpen = true };
     }
 
     [ReducerMethod(typeof(CloseDrawer))]
     public static MainLayoutState CloseDrawerReducer(MainLayoutState state)
     {
-        return state with { HasContent = false };
+        return state with { HasContent = false, IsDrawerOpen = false };
     }
 
     [ReducerMethod(typeof(ToggleDarkMode))]

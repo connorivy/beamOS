@@ -1,4 +1,5 @@
 using BeamOs.StructuralAnalysis.Contracts.Common;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
 using Riok.Mapperly.Abstractions;
 using UnitsNet;
 
@@ -9,9 +10,15 @@ public static partial class UnitsNetMappers
 {
     public static partial Angle MapToAngle(this AngleContract unit);
 
+    public static double As(this AngleContract value, AngleUnitContract unitContract) =>
+        value.MapToAngle().As(unitContract.MapToAngleUnit());
+
     public static partial AngleContract MapToContract(this Angle unit);
 
     public static partial Area MapToArea(this AreaContract unit);
+
+    public static double As(this AreaContract unit, AreaUnitContract unitContract) =>
+        unit.MapToArea().As(unitContract.MapToAreaUnit());
 
     public static partial AreaContract MapToContract(this Area unit);
 
@@ -19,9 +26,17 @@ public static partial class UnitsNetMappers
         this AreaMomentOfInertiaContract unit
     );
 
+    public static double As(
+        this AreaMomentOfInertiaContract unit,
+        AreaMomentOfInertiaUnitContract unitContract
+    ) => unit.MapToAreaMomentOfInertia().As(unitContract.MapToAreaMomentOfInertiaUnit());
+
     public static partial AreaMomentOfInertiaContract MapToContract(this AreaMomentOfInertia unit);
 
     public static partial Force MapToForce(this ForceContract unit);
+
+    public static double As(this ForceContract unit, ForceUnitContract unitContract) =>
+        unit.MapToForce().As(unitContract.MapToForceUnit());
 
     public static partial ForceContract MapToContract(this Force unit);
 
@@ -35,9 +50,15 @@ public static partial class UnitsNetMappers
 
     public static partial Pressure MapToPressure(this PressureContract unit);
 
+    public static double As(this PressureContract unit, PressureUnitContract unitContract) =>
+        unit.MapToPressure().As(unitContract.MapToPressureUnit());
+
     public static partial PressureContract MapToContract(this Pressure unit);
 
     public static partial Torque MapToTorque(this TorqueContract unit);
+
+    public static double As(this TorqueContract unit, TorqueUnitContract unitContract) =>
+        unit.MapToTorque().As(unitContract.MapToTorqueUnit());
 
     public static partial TorqueContract MapToContract(this Torque unit);
 

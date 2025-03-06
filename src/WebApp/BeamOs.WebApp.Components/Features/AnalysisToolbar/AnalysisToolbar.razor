@@ -11,16 +11,22 @@
 
 <MudPaper Class="@Class">
     <MudToolBar>
-        <MudTooltip Text="Run Analysis">
             @if (this.state.Value.IsCalculating)
             {
                 <MudProgressCircular Color="Color.Default" Indeterminate="true" />
             }
+            else if (this.editorState.Value.HasResults)
+            {
+                <MudTooltip Text="Unlock Model">
+                    <MudIconButton OnClick="UnlockModel" Icon="@Icons.Material.Outlined.Lock" Color="Color.Inherit" Class="">Unlock Model</MudIconButton>
+                </MudTooltip>
+            }
             else
             {
-                <MudIconButton OnClick="RunAnalysis" Icon="@Icons.Material.Outlined.Calculate" Color="Color.Inherit" Class="mr-5">Run Analysis</MudIconButton>
+                <MudTooltip Text="Run Analysis">
+                    <MudIconButton OnClick="RunAnalysis" Icon="@Icons.Material.Outlined.Calculate" Color="Color.Inherit" Class="">Run Analysis</MudIconButton>
+                </MudTooltip>
             }
-        </MudTooltip>
         <MudTooltip Text="Show Diagrams">
             <MudMenu Icon="@Icons.Material.Outlined.AreaChart">
                 <MudMenuItem OnClick="@editorComponent.ShowShear">Shear Diagrams</MudMenuItem>
@@ -36,7 +42,7 @@
 
 @code {
     [Parameter]
-    public string Class { get; init; }
+    public string? Class { get; init; }
 
     [Parameter]
     public EditorComponent editorComponent { get; init; }
@@ -50,9 +56,12 @@
     private RunDsmCommandCommandHandler runDsmCommandCommandHandler;
     private ReceiveFromSpeckleCommandHandler ReceiveFromSpeckleCommandHandler;
     private IState<AnalysisToolbarState> state;
+    private IState<EditorComponentState> editorState;
     private IStructuralAnalysisApiClientV1 structuralAnalysisApiClientV1;
     private IDialogService dialogService;
     private ISpeckleConnectorApi speckleConnectorApi;
+    private ISnackbar snackbar;
+    private IDispatcher dispatcher;
 
     public AnalysisToolbar(
         RunDsmCommandCommandHandler runDsmCommandCommandHandler,
@@ -60,7 +69,10 @@
         IState<AnalysisToolbarState> state,
         IStructuralAnalysisApiClientV1 structuralAnalysisApiClientV1,
         IDialogService dialogService,
-        ISpeckleConnectorApi speckleConnectorApi)
+        ISpeckleConnectorApi speckleConnectorApi,
+        IState<EditorComponentState> editorState,
+        ISnackbar snackbar,
+        IDispatcher dispatcher)
     {
         this.runDsmCommandCommandHandler = runDsmCommandCommandHandler;
         this.ReceiveFromSpeckleCommandHandler = receiveFromSpeckleCommandHandler;
@@ -68,6 +80,9 @@
         this.structuralAnalysisApiClientV1 = structuralAnalysisApiClientV1;
         this.dialogService = dialogService;
         this.speckleConnectorApi = speckleConnectorApi;
+        this.editorState = editorState;
+        this.snackbar = snackbar;
+        this.dispatcher = dispatcher;
     }
 
     private async Task RunAnalysis()
@@ -77,6 +92,21 @@
         if (result.IsSuccess)
         {
             await editorComponent.ShowDeflection();
+        }
+    }
+
+    private async Task UnlockModel()
+    {
+        var result = await structuralAnalysisApiClientV1.DeleteAllResultSetsAsync(this.ModelId, CancellationToken.None);
+
+        if (result.IsSuccess)
+        {
+            await editorState.Value.EditorApi.ClearCurrentOverlayAsync();
+            dispatcher.Dispatch(new AnalyticalResultsCleared() { ModelId = this.ModelId });
+        }
+        else
+        {
+            snackbar.Add("You are not authorized to make changes to this model", Severity.Info);
         }
     }
 

@@ -132,9 +132,10 @@ export interface IStructuralAnalysisApiClientV1 {
     putElement1d(id: number, modelId: string, body: Element1dData): Promise<ResultOfElement1dResponse>;
 
     /**
+     * @param unitsOverride (optional) 
      * @return OK
      */
-    runOpenSeesAnalysis(modelId: string): Promise<ResultOfint>;
+    runOpenSeesAnalysis(modelId: string, unitsOverride: string | undefined): Promise<ResultOfAnalyticalResultsResponse>;
 
     /**
      * @param unitsOverride (optional) 
@@ -145,17 +146,29 @@ export interface IStructuralAnalysisApiClientV1 {
     /**
      * @return OK
      */
-    getResultSet(modelId: string, id: number): Promise<ResultOfResultSetResponse>;
+    deleteAllResultSets(modelId: string): Promise<ResultOfint>;
 
     /**
+     * @param unitsOverride (optional) 
      * @return OK
      */
-    deleteAllResultSets(modelId: string): Promise<ResultOfint>;
+    getDiagrams(modelId: string, id: number, unitsOverride: string | undefined): Promise<ResultOfAnalyticalResultsResponse>;
 
     /**
      * @return OK
      */
     getNodeResult(modelId: string, resultSetId: number, id: number): Promise<ResultOfNodeResultResponse>;
+
+    /**
+     * @return OK
+     */
+    getResultSet(modelId: string, id: number): Promise<ResultOfResultSetResponse>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    convertToBeamOs(body: SpeckleReceiveParameters | undefined): Promise<ResultOfBeamOsModelBuilderDto>;
 }
 
 export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClientV1 {
@@ -1228,13 +1241,18 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     }
 
     /**
+     * @param unitsOverride (optional) 
      * @return OK
      */
-    runOpenSeesAnalysis(modelId: string): Promise<ResultOfint> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/analyze/opensees";
+    runOpenSeesAnalysis(modelId: string, unitsOverride: string | undefined): Promise<ResultOfAnalyticalResultsResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/analyze/opensees?";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (unitsOverride === null)
+            throw new Error("The parameter 'unitsOverride' cannot be null.");
+        else if (unitsOverride !== undefined)
+            url_ += "UnitsOverride=" + encodeURIComponent("" + unitsOverride) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -1249,14 +1267,14 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processRunOpenSeesAnalysis(response: Response): Promise<ResultOfint> {
+    protected processRunOpenSeesAnalysis(response: Response): Promise<ResultOfAnalyticalResultsResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfint.fromJS(resultData200);
+            result200 = ResultOfAnalyticalResultsResponse.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1264,7 +1282,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfint>(null as any);
+        return Promise.resolve<ResultOfAnalyticalResultsResponse>(null as any);
     }
 
     /**
@@ -1315,49 +1333,6 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     /**
      * @return OK
      */
-    getResultSet(modelId: string, id: number): Promise<ResultOfResultSetResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/result-sets/{id}";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetResultSet(_response);
-        });
-    }
-
-    protected processGetResultSet(response: Response): Promise<ResultOfResultSetResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfResultSetResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<ResultOfResultSetResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
     deleteAllResultSets(modelId: string): Promise<ResultOfint> {
         let url_ = this.baseUrl + "/api/models/{modelId}/result-sets";
         if (modelId === undefined || modelId === null)
@@ -1393,6 +1368,54 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             });
         }
         return Promise.resolve<ResultOfint>(null as any);
+    }
+
+    /**
+     * @param unitsOverride (optional) 
+     * @return OK
+     */
+    getDiagrams(modelId: string, id: number, unitsOverride: string | undefined): Promise<ResultOfAnalyticalResultsResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/result-sets/{id}/diagrams?";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (unitsOverride === null)
+            throw new Error("The parameter 'unitsOverride' cannot be null.");
+        else if (unitsOverride !== undefined)
+            url_ += "UnitsOverride=" + encodeURIComponent("" + unitsOverride) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetDiagrams(_response);
+        });
+    }
+
+    protected processGetDiagrams(response: Response): Promise<ResultOfAnalyticalResultsResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfAnalyticalResultsResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfAnalyticalResultsResponse>(null as any);
     }
 
     /**
@@ -1440,10 +1463,95 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         }
         return Promise.resolve<ResultOfNodeResultResponse>(null as any);
     }
+
+    /**
+     * @return OK
+     */
+    getResultSet(modelId: string, id: number): Promise<ResultOfResultSetResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/result-sets/{id}";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetResultSet(_response);
+        });
+    }
+
+    protected processGetResultSet(response: Response): Promise<ResultOfResultSetResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfResultSetResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfResultSetResponse>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    convertToBeamOs(body: SpeckleReceiveParameters | undefined): Promise<ResultOfBeamOsModelBuilderDto> {
+        let url_ = this.baseUrl + "/api/speckle-receive";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processConvertToBeamOs(_response);
+        });
+    }
+
+    protected processConvertToBeamOs(response: Response): Promise<ResultOfBeamOsModelBuilderDto> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfBeamOsModelBuilderDto.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfBeamOsModelBuilderDto>(null as any);
+    }
 }
 
 export class AnalysisSettingsContract implements IAnalysisSettingsContract {
-    element1DAnalysisType?: number;
+    element1DAnalysisType?: Element1dAnalysisType;
 
     [key: string]: any;
 
@@ -1485,7 +1593,7 @@ export class AnalysisSettingsContract implements IAnalysisSettingsContract {
 }
 
 export interface IAnalysisSettingsContract {
-    element1DAnalysisType?: number;
+    element1DAnalysisType?: Element1dAnalysisType;
 
     [key: string]: any;
 }
@@ -1584,7 +1692,7 @@ export interface IAnalyticalResultsResponse {
 
 export class AngleContract implements IAngleContract {
     value!: number;
-    unit!: number;
+    unit!: AngleUnitContract;
 
     [key: string]: any;
 
@@ -1629,14 +1737,20 @@ export class AngleContract implements IAngleContract {
 
 export interface IAngleContract {
     value: number;
-    unit: number;
+    unit: AngleUnitContract;
 
     [key: string]: any;
 }
 
+export enum AngleUnitContract {
+    Undefined = "Undefined",
+    Degree = "Degree",
+    Radian = "Radian",
+}
+
 export class AreaContract implements IAreaContract {
     value!: number;
-    unit!: number;
+    unit!: AreaUnitContract;
 
     [key: string]: any;
 
@@ -1681,14 +1795,14 @@ export class AreaContract implements IAreaContract {
 
 export interface IAreaContract {
     value: number;
-    unit: number;
+    unit: AreaUnitContract;
 
     [key: string]: any;
 }
 
 export class AreaMomentOfInertiaContract implements IAreaMomentOfInertiaContract {
     value!: number;
-    unit!: number;
+    unit!: AreaMomentOfInertiaUnitContract;
 
     [key: string]: any;
 
@@ -1733,9 +1847,27 @@ export class AreaMomentOfInertiaContract implements IAreaMomentOfInertiaContract
 
 export interface IAreaMomentOfInertiaContract {
     value: number;
-    unit: number;
+    unit: AreaMomentOfInertiaUnitContract;
 
     [key: string]: any;
+}
+
+export enum AreaMomentOfInertiaUnitContract {
+    Undefined = "Undefined",
+    CentimeterToTheFourth = "CentimeterToTheFourth",
+    FootToTheFourth = "FootToTheFourth",
+    InchToTheFourth = "InchToTheFourth",
+    MeterToTheFourth = "MeterToTheFourth",
+    MillimeterToTheFourth = "MillimeterToTheFourth",
+}
+
+export enum AreaUnitContract {
+    Undefined = "Undefined",
+    SquareCentimeter = "SquareCentimeter",
+    SquareFoot = "SquareFoot",
+    SquareInch = "SquareInch",
+    SquareMeter = "SquareMeter",
+    SquareMillimeter = "SquareMillimeter",
 }
 
 export class BatchResponse implements IBatchResponse {
@@ -1813,7 +1945,7 @@ export interface IBatchResponse {
 export class BeamOsError implements IBeamOsError {
     code!: string;
     description!: string;
-    type!: number;
+    type!: ErrorType;
     numericType?: number;
     metadata!: { [key: string]: string; } | undefined;
 
@@ -1879,9 +2011,141 @@ export class BeamOsError implements IBeamOsError {
 export interface IBeamOsError {
     code: string;
     description: string;
-    type: number;
+    type: ErrorType;
     numericType?: number;
     metadata: { [key: string]: string; } | undefined;
+
+    [key: string]: any;
+}
+
+export class BeamOsModelBuilderDto implements IBeamOsModelBuilderDto {
+    name?: string;
+    description?: string;
+    settings?: PhysicalModelSettings;
+    guidString?: string;
+    nodes?: PutNodeRequest[];
+    materials?: PutMaterialRequest[];
+    sectionProfiles?: PutSectionProfileRequest[];
+    element1ds?: PutElement1dRequest[];
+    pointLoads?: PutPointLoadRequest[];
+    momentLoads?: PutMomentLoadRequest[];
+
+    [key: string]: any;
+
+    constructor(data?: IBeamOsModelBuilderDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.name = _data["name"];
+            this.description = _data["description"];
+            this.settings = _data["settings"] ? PhysicalModelSettings.fromJS(_data["settings"]) : <any>undefined;
+            this.guidString = _data["guidString"];
+            if (Array.isArray(_data["nodes"])) {
+                this.nodes = [] as any;
+                for (let item of _data["nodes"])
+                    this.nodes!.push(PutNodeRequest.fromJS(item));
+            }
+            if (Array.isArray(_data["materials"])) {
+                this.materials = [] as any;
+                for (let item of _data["materials"])
+                    this.materials!.push(PutMaterialRequest.fromJS(item));
+            }
+            if (Array.isArray(_data["sectionProfiles"])) {
+                this.sectionProfiles = [] as any;
+                for (let item of _data["sectionProfiles"])
+                    this.sectionProfiles!.push(PutSectionProfileRequest.fromJS(item));
+            }
+            if (Array.isArray(_data["element1ds"])) {
+                this.element1ds = [] as any;
+                for (let item of _data["element1ds"])
+                    this.element1ds!.push(PutElement1dRequest.fromJS(item));
+            }
+            if (Array.isArray(_data["pointLoads"])) {
+                this.pointLoads = [] as any;
+                for (let item of _data["pointLoads"])
+                    this.pointLoads!.push(PutPointLoadRequest.fromJS(item));
+            }
+            if (Array.isArray(_data["momentLoads"])) {
+                this.momentLoads = [] as any;
+                for (let item of _data["momentLoads"])
+                    this.momentLoads!.push(PutMomentLoadRequest.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): BeamOsModelBuilderDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new BeamOsModelBuilderDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["name"] = this.name;
+        data["description"] = this.description;
+        data["settings"] = this.settings ? this.settings.toJSON() : <any>undefined;
+        data["guidString"] = this.guidString;
+        if (Array.isArray(this.nodes)) {
+            data["nodes"] = [];
+            for (let item of this.nodes)
+                data["nodes"].push(item.toJSON());
+        }
+        if (Array.isArray(this.materials)) {
+            data["materials"] = [];
+            for (let item of this.materials)
+                data["materials"].push(item.toJSON());
+        }
+        if (Array.isArray(this.sectionProfiles)) {
+            data["sectionProfiles"] = [];
+            for (let item of this.sectionProfiles)
+                data["sectionProfiles"].push(item.toJSON());
+        }
+        if (Array.isArray(this.element1ds)) {
+            data["element1ds"] = [];
+            for (let item of this.element1ds)
+                data["element1ds"].push(item.toJSON());
+        }
+        if (Array.isArray(this.pointLoads)) {
+            data["pointLoads"] = [];
+            for (let item of this.pointLoads)
+                data["pointLoads"].push(item.toJSON());
+        }
+        if (Array.isArray(this.momentLoads)) {
+            data["momentLoads"] = [];
+            for (let item of this.momentLoads)
+                data["momentLoads"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IBeamOsModelBuilderDto {
+    name?: string;
+    description?: string;
+    settings?: PhysicalModelSettings;
+    guidString?: string;
+    nodes?: PutNodeRequest[];
+    materials?: PutMaterialRequest[];
+    sectionProfiles?: PutSectionProfileRequest[];
+    element1ds?: PutElement1dRequest[];
+    pointLoads?: PutPointLoadRequest[];
+    momentLoads?: PutMomentLoadRequest[];
 
     [key: string]: any;
 }
@@ -2650,6 +2914,12 @@ export interface IDisplacementsResponse {
     [key: string]: any;
 }
 
+export enum Element1dAnalysisType {
+    Undefined = "Undefined",
+    Euler = "Euler",
+    Timoshenko = "Timoshenko",
+}
+
 export class Element1dData implements IElement1dData {
     startNodeId!: number;
     endNodeId!: number;
@@ -2912,9 +3182,17 @@ export interface IElement1dResponse2 {
     [key: string]: any;
 }
 
+export enum EntityOperationStatus {
+    Undefined = "Undefined",
+    Created = "Created",
+    Updated = "Updated",
+    Deleted = "Deleted",
+    Error = "Error",
+}
+
 export class EntityStatus implements IEntityStatus {
     id!: number;
-    entityOperationStatus!: number;
+    entityOperationStatus!: EntityOperationStatus;
     errorMessage?: string;
 
     [key: string]: any;
@@ -2962,15 +3240,26 @@ export class EntityStatus implements IEntityStatus {
 
 export interface IEntityStatus {
     id: number;
-    entityOperationStatus: number;
+    entityOperationStatus: EntityOperationStatus;
     errorMessage?: string;
 
     [key: string]: any;
 }
 
+export enum ErrorType {
+    None = "None",
+    Failure = "Failure",
+    Unexpected = "Unexpected",
+    Validation = "Validation",
+    Conflict = "Conflict",
+    NotFound = "NotFound",
+    Unauthorized = "Unauthorized",
+    Forbidden = "Forbidden",
+}
+
 export class ForceContract implements IForceContract {
     value!: number;
-    unit!: number;
+    unit!: ForceUnitContract;
 
     [key: string]: any;
 
@@ -3015,7 +3304,7 @@ export class ForceContract implements IForceContract {
 
 export interface IForceContract {
     value: number;
-    unit: number;
+    unit: ForceUnitContract;
 
     [key: string]: any;
 }
@@ -3096,6 +3385,14 @@ export interface IForcesResponse {
     [key: string]: any;
 }
 
+export enum ForceUnitContract {
+    Undefined = "Undefined",
+    Kilonewton = "Kilonewton",
+    KilopoundForce = "KilopoundForce",
+    Newton = "Newton",
+    PoundForce = "PoundForce",
+}
+
 export class GlobalStresses implements IGlobalStresses {
     maxShear!: ForceContract;
     minShear!: ForceContract;
@@ -3164,7 +3461,7 @@ export interface IGlobalStresses {
 
 export class LengthContract implements ILengthContract {
     value!: number;
-    unit!: number;
+    unit!: LengthUnitContract;
 
     [key: string]: any;
 
@@ -3209,9 +3506,18 @@ export class LengthContract implements ILengthContract {
 
 export interface ILengthContract {
     value: number;
-    unit: number;
+    unit: LengthUnitContract;
 
     [key: string]: any;
+}
+
+export enum LengthUnitContract {
+    Undefined = "Undefined",
+    Centimeter = "Centimeter",
+    Foot = "Foot",
+    Inch = "Inch",
+    Meter = "Meter",
+    Millimeter = "Millimeter",
 }
 
 export class MaterialRequestData implements IMaterialRequestData {
@@ -3455,6 +3761,7 @@ export class ModelInfoResponse implements IModelInfoResponse {
     name!: string;
     description!: string;
     settings!: PhysicalModelSettings;
+    lastModified!: Date;
     role!: string;
 
     [key: string]: any;
@@ -3481,6 +3788,7 @@ export class ModelInfoResponse implements IModelInfoResponse {
             this.name = _data["name"];
             this.description = _data["description"];
             this.settings = _data["settings"] ? PhysicalModelSettings.fromJS(_data["settings"]) : new PhysicalModelSettings();
+            this.lastModified = _data["lastModified"] ? new Date(_data["lastModified"].toString()) : <any>undefined;
             this.role = _data["role"];
         }
     }
@@ -3502,6 +3810,7 @@ export class ModelInfoResponse implements IModelInfoResponse {
         data["name"] = this.name;
         data["description"] = this.description;
         data["settings"] = this.settings ? this.settings.toJSON() : <any>undefined;
+        data["lastModified"] = this.lastModified ? this.lastModified.toISOString() : <any>undefined;
         data["role"] = this.role;
         return data;
     }
@@ -3512,6 +3821,7 @@ export interface IModelInfoResponse {
     name: string;
     description: string;
     settings: PhysicalModelSettings;
+    lastModified: Date;
     role: string;
 
     [key: string]: any;
@@ -3522,6 +3832,7 @@ export class ModelResponse implements IModelResponse {
     name!: string;
     description!: string;
     settings!: PhysicalModelSettings;
+    lastModified!: Date;
     nodes?: NodeResponse2[] | undefined;
     element1ds?: Element1dResponse[] | undefined;
     materials?: MaterialResponse[] | undefined;
@@ -3554,6 +3865,7 @@ export class ModelResponse implements IModelResponse {
             this.name = _data["name"];
             this.description = _data["description"];
             this.settings = _data["settings"] ? PhysicalModelSettings.fromJS(_data["settings"]) : new PhysicalModelSettings();
+            this.lastModified = _data["lastModified"] ? new Date(_data["lastModified"].toString()) : <any>undefined;
             if (Array.isArray(_data["nodes"])) {
                 this.nodes = [] as any;
                 for (let item of _data["nodes"])
@@ -3609,6 +3921,7 @@ export class ModelResponse implements IModelResponse {
         data["name"] = this.name;
         data["description"] = this.description;
         data["settings"] = this.settings ? this.settings.toJSON() : <any>undefined;
+        data["lastModified"] = this.lastModified ? this.lastModified.toISOString() : <any>undefined;
         if (Array.isArray(this.nodes)) {
             data["nodes"] = [];
             for (let item of this.nodes)
@@ -3653,6 +3966,7 @@ export interface IModelResponse {
     name: string;
     description: string;
     settings: PhysicalModelSettings;
+    lastModified: Date;
     nodes?: NodeResponse2[] | undefined;
     element1ds?: Element1dResponse[] | undefined;
     materials?: MaterialResponse[] | undefined;
@@ -3822,8 +4136,8 @@ export class MomentDiagramResponse implements IMomentDiagramResponse {
     modelId!: string;
     resultSetId!: number;
     element1dId!: number;
-    lengthUnit!: number;
-    torqueUnit!: number;
+    lengthUnit!: LengthUnitContract;
+    torqueUnit!: TorqueUnitContract;
     elementLength!: LengthContract;
     intervals!: DiagramConsistentIntervalResponse2[];
 
@@ -3894,8 +4208,8 @@ export interface IMomentDiagramResponse {
     modelId: string;
     resultSetId: number;
     element1dId: number;
-    lengthUnit: number;
-    torqueUnit: number;
+    lengthUnit: LengthUnitContract;
+    torqueUnit: TorqueUnitContract;
     elementLength: LengthContract;
     intervals: DiagramConsistentIntervalResponse2[];
 
@@ -4436,7 +4750,7 @@ export interface INodeResultResponse2 {
 
 export class NullableOfAngleContract implements INullableOfAngleContract {
     value!: number;
-    unit!: number;
+    unit!: AngleUnitContract;
 
     [key: string]: any;
 
@@ -4481,7 +4795,7 @@ export class NullableOfAngleContract implements INullableOfAngleContract {
 
 export interface INullableOfAngleContract {
     value: number;
-    unit: number;
+    unit: AngleUnitContract;
 
     [key: string]: any;
 }
@@ -4490,7 +4804,7 @@ export class NullableOfPartialPoint implements INullableOfPartialPoint {
     x?: number | undefined;
     y?: number | undefined;
     z?: number | undefined;
-    lengthUnit!: number;
+    lengthUnit!: LengthUnitContract;
 
     [key: string]: any;
 
@@ -4541,7 +4855,7 @@ export interface INullableOfPartialPoint {
     x?: number | undefined;
     y?: number | undefined;
     z?: number | undefined;
-    lengthUnit: number;
+    lengthUnit: LengthUnitContract;
 
     [key: string]: any;
 }
@@ -4678,7 +4992,7 @@ export class Point implements IPoint {
     x!: number;
     y!: number;
     z!: number;
-    lengthUnit!: number;
+    lengthUnit!: LengthUnitContract;
 
     [key: string]: any;
 
@@ -4729,7 +5043,7 @@ export interface IPoint {
     x: number;
     y: number;
     z: number;
-    lengthUnit: number;
+    lengthUnit: LengthUnitContract;
 
     [key: string]: any;
 }
@@ -4932,7 +5246,7 @@ export interface IPointLoadResponse2 {
 
 export class PressureContract implements IPressureContract {
     value!: number;
-    unit!: number;
+    unit!: PressureUnitContract;
 
     [key: string]: any;
 
@@ -4977,9 +5291,23 @@ export class PressureContract implements IPressureContract {
 
 export interface IPressureContract {
     value: number;
-    unit: number;
+    unit: PressureUnitContract;
 
     [key: string]: any;
+}
+
+export enum PressureUnitContract {
+    Undefined = "Undefined",
+    KilonewtonPerSquareCentimeter = "KilonewtonPerSquareCentimeter",
+    KilonewtonPerSquareMeter = "KilonewtonPerSquareMeter",
+    KilonewtonPerSquareMillimeter = "KilonewtonPerSquareMillimeter",
+    KilopoundForcePerSquareFoot = "KilopoundForcePerSquareFoot",
+    KilopoundForcePerSquareInch = "KilopoundForcePerSquareInch",
+    NewtonPerSquareCentimeter = "NewtonPerSquareCentimeter",
+    NewtonPerSquareMeter = "NewtonPerSquareMeter",
+    NewtonPerSquareMillimeter = "NewtonPerSquareMillimeter",
+    PoundForcePerSquareFoot = "PoundForcePerSquareFoot",
+    PoundForcePerSquareInch = "PoundForcePerSquareInch",
 }
 
 export class PutElement1dRequest implements IPutElement1dRequest {
@@ -5576,6 +5904,62 @@ export class ResultOfBatchResponse implements IResultOfBatchResponse {
 
 export interface IResultOfBatchResponse {
     value: BatchResponse | undefined;
+    error: BeamOsError | undefined;
+    isError: boolean;
+
+    [key: string]: any;
+}
+
+export class ResultOfBeamOsModelBuilderDto implements IResultOfBeamOsModelBuilderDto {
+    value!: BeamOsModelBuilderDto | undefined;
+    error!: BeamOsError | undefined;
+    isError!: boolean;
+
+    [key: string]: any;
+
+    constructor(data?: IResultOfBeamOsModelBuilderDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.value = _data["value"] ? BeamOsModelBuilderDto.fromJS(_data["value"]) : <any>undefined;
+            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
+            this.isError = _data["isError"];
+        }
+    }
+
+    static fromJS(data: any): ResultOfBeamOsModelBuilderDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ResultOfBeamOsModelBuilderDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
+        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
+        data["isError"] = this.isError;
+        return data;
+    }
+}
+
+export interface IResultOfBeamOsModelBuilderDto {
+    value: BeamOsModelBuilderDto | undefined;
     error: BeamOsError | undefined;
     isError: boolean;
 
@@ -6684,8 +7068,8 @@ export interface ISectionProfileResponse2 {
 
 export class ShearDiagramResponse implements IShearDiagramResponse {
     globalShearDirection!: Vector3;
-    lengthUnit!: number;
-    forceUnit!: number;
+    lengthUnit!: LengthUnitContract;
+    forceUnit!: ForceUnitContract;
     elementLength!: LengthContract;
     modelId!: string;
     resultSetId!: number;
@@ -6760,8 +7144,8 @@ export class ShearDiagramResponse implements IShearDiagramResponse {
 
 export interface IShearDiagramResponse {
     globalShearDirection: Vector3;
-    lengthUnit: number;
-    forceUnit: number;
+    lengthUnit: LengthUnitContract;
+    forceUnit: ForceUnitContract;
     elementLength: LengthContract;
     modelId: string;
     resultSetId: number;
@@ -6771,9 +7155,69 @@ export interface IShearDiagramResponse {
     [key: string]: any;
 }
 
+export class SpeckleReceiveParameters implements ISpeckleReceiveParameters {
+    apiToken!: string;
+    projectId!: string;
+    objectId!: string;
+    serverUrl!: string;
+
+    [key: string]: any;
+
+    constructor(data?: ISpeckleReceiveParameters) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.apiToken = _data["apiToken"];
+            this.projectId = _data["projectId"];
+            this.objectId = _data["objectId"];
+            this.serverUrl = _data["serverUrl"];
+        }
+    }
+
+    static fromJS(data: any): SpeckleReceiveParameters {
+        data = typeof data === 'object' ? data : {};
+        let result = new SpeckleReceiveParameters();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["apiToken"] = this.apiToken;
+        data["projectId"] = this.projectId;
+        data["objectId"] = this.objectId;
+        data["serverUrl"] = this.serverUrl;
+        return data;
+    }
+}
+
+export interface ISpeckleReceiveParameters {
+    apiToken: string;
+    projectId: string;
+    objectId: string;
+    serverUrl: string;
+
+    [key: string]: any;
+}
+
 export class TorqueContract implements ITorqueContract {
     value!: number;
-    unit!: number;
+    unit!: TorqueUnitContract;
 
     [key: string]: any;
 
@@ -6818,15 +7262,29 @@ export class TorqueContract implements ITorqueContract {
 
 export interface ITorqueContract {
     value: number;
-    unit: number;
+    unit: TorqueUnitContract;
 
     [key: string]: any;
 }
 
+export enum TorqueUnitContract {
+    Undefined = "Undefined",
+    KilonewtonCentimeter = "KilonewtonCentimeter",
+    KilonewtonMeter = "KilonewtonMeter",
+    KilonewtonMillimeter = "KilonewtonMillimeter",
+    KilopoundForceFoot = "KilopoundForceFoot",
+    KilopoundForceInch = "KilopoundForceInch",
+    NewtonCentimeter = "NewtonCentimeter",
+    NewtonMeter = "NewtonMeter",
+    NewtonMillimeter = "NewtonMillimeter",
+    PoundForceFoot = "PoundForceFoot",
+    PoundForceInch = "PoundForceInch",
+}
+
 export class UnitSettingsContract implements IUnitSettingsContract {
-    lengthUnit!: number;
-    forceUnit!: number;
-    angleUnit?: number;
+    lengthUnit!: LengthUnitContract;
+    forceUnit!: ForceUnitContract;
+    angleUnit?: AngleUnitContract;
 
     [key: string]: any;
 
@@ -6872,9 +7330,9 @@ export class UnitSettingsContract implements IUnitSettingsContract {
 }
 
 export interface IUnitSettingsContract {
-    lengthUnit: number;
-    forceUnit: number;
-    angleUnit?: number;
+    lengthUnit: LengthUnitContract;
+    forceUnit: ForceUnitContract;
+    angleUnit?: AngleUnitContract;
 
     [key: string]: any;
 }

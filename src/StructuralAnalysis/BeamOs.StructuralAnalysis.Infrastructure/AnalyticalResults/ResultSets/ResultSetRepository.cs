@@ -12,4 +12,25 @@ internal sealed class ResultSetRepository(StructuralAnalysisDbContext dbContext)
 {
     public Task<int> DeleteAll(ModelId modelId, CancellationToken ct) =>
         this.DbContext.ResultSets.Where(s => s.ModelId == modelId).ExecuteDeleteAsync(ct);
+
+    public async Task<ResultSet?> GetSingle(
+        ModelId modelId,
+        ResultSetId resultSetId,
+        CancellationToken ct,
+        params string[] resultSetMembersToLoad
+    )
+    {
+        var query = this.DbContext
+            .ResultSets
+            .AsNoTracking()
+            .AsSplitQuery()
+            .Where(s => s.ModelId == modelId && s.Id == resultSetId);
+
+        foreach (var member in resultSetMembersToLoad)
+        {
+            query = query.Include(member);
+        }
+
+        return await query.FirstOrDefaultAsync(ct);
+    }
 }

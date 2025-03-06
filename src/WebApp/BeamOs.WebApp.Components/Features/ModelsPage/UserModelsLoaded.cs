@@ -11,5 +11,5 @@ public static class UserModelsLoadedReducer
     public static ModelPageState ReduceIncrementCounterAction(
         ModelPageState state,
         UserModelsLoaded action
-    ) => state with { ModelResponses = action.ModelResponses };
+    ) => state with { UserModelResponses = action.ModelResponses, IsLoading = false };
 }

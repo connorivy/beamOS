@@ -1,12 +1,5 @@
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.Common.ValueObjects.DiagramBuilder;
-using BeamOs.StructuralAnalysis.Domain.Common;
-using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 using FluentAssertions;
 using MathNet.Numerics;
 using UnitsNet;

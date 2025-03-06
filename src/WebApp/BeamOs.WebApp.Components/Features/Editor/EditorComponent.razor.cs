@@ -178,10 +178,7 @@ public partial class EditorComponent(
         if (result.IsError)
         {
             logger.LogError(result.Error.ToString());
-        }
-        else
-        {
-            dispatcher.Dispatch(new EditorLoadingEnd(this.CanvasId, result.Value));
+            return;
         }
     }
 
@@ -203,7 +200,8 @@ public partial class EditorComponent(
         }
         else
         {
-            dispatcher.Dispatch(new EditorLoadingEnd(this.CanvasId, result.Value));
+            dispatcher.Dispatch(new ModelLoaded(result.Value));
+            dispatcher.Dispatch(new EditorLoadingEnd(this.CanvasId));
         }
     }
 
@@ -271,9 +269,11 @@ public record struct EditorDisposed(string CanvasId);
 
 public record struct EditorLoadingBegin(string CanvasId, string LoadingText);
 
-public record struct EditorLoadingEnd(string CanvasId, CachedModelResponse CachedModelResponse);
+public record struct EditorLoadingEnd(string CanvasId);
 
-public record struct SelectionChanged(string CanvasId, IModelEntity[] SelectedObjects);
+public record struct ModelLoaded(CachedModelResponse CachedModelResponse);
+
+//public record struct SelectionChanged(string CanvasId, IModelEntity[] SelectedObjects);
 
 public record struct ModelCacheKey(Guid ModelId, string TypeName, int Id);
 
@@ -314,7 +314,7 @@ public record CachedModelState(ImmutableDictionary<Guid, CachedModelResponse> Mo
             "Node"
                 => model
                     .NodeResults
-                    .GetValueOrDefault(resultSetId)
+                    ?.GetValueOrDefault(resultSetId)
                     ?.GetValueOrDefault(modelCacheKey.Id),
             "Element1d" => null,
             "PointLoad" => null,

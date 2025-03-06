@@ -1,18 +1,15 @@
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
-using BeamOs.CsSdk.Mappers.UnitValueDtoMappers;
-using BeamOs.StructuralAnalysis.Application.Common;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using Microsoft.EntityFrameworkCore;
-using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Models;
 
 public class GetModelQueryHandler(StructuralAnalysisDbContext dbContext)
-    : IQueryHandler<Guid, ModelResponseHydrated>
+    : IQueryHandler<Guid, ModelResponse>
 {
-    public async Task<Result<ModelResponseHydrated>> ExecuteAsync(
+    public async Task<Result<ModelResponse>> ExecuteAsync(
         Guid query,
         CancellationToken ct = default
     )
@@ -42,24 +39,24 @@ public class GetModelQueryHandler(StructuralAnalysisDbContext dbContext)
     }
 }
 
-[Mapper]
-[UseStaticMapper(typeof(BeamOsDomainContractMappers))]
-[UseStaticMapper(typeof(UnitsNetMappersJustEnums))]
-internal partial class ModelToResponseMapper : AbstractMapperProvidedUnits<Model, ModelResponse>
-{
-    [Obsolete()]
-    public ModelToResponseMapper()
-        : base(null) { }
+//[Mapper]
+//[UseStaticMapper(typeof(BeamOsDomainContractMappers))]
+//[UseStaticMapper(typeof(UnitsNetMappersJustEnums))]
+//internal partial class ModelToResponseMapper : AbstractMapperProvidedUnits<Model, ModelResponse>
+//{
+//    [Obsolete()]
+//    public ModelToResponseMapper()
+//        : base(null) { }
 
-    private ModelToResponseMapper(UnitSettings unitSettings)
-        : base(unitSettings) { }
+//    private ModelToResponseMapper(UnitSettings unitSettings)
+//        : base(unitSettings) { }
 
-    public static ModelToResponseMapper Create(UnitSettings unitSettings)
-    {
-        return new(unitSettings);
-    }
+//    public static ModelToResponseMapper Create(UnitSettings unitSettings)
+//    {
+//        return new(unitSettings);
+//    }
 
-    public ModelResponseHydrated Map(Model source) => this.ToResponse(source);
+//    public ModelResponseHydrated Map(Model source) => this.ToResponse(source);
 
-    private partial ModelResponseHydrated ToResponse(Model source);
-}
+//    private partial ModelResponseHydrated ToResponse(Model source);
+//}

@@ -7,8 +7,8 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
-using BeamOs.StructuralAnalysis.CsSdk;
 using BeamOs.StructuralAnalysis.CsSdk.Mappers;
+using BeamOs.StructuralAnalysis.Sdk;
 using UnitsNet;
 
 namespace BeamOs.SpeckleConnector;
@@ -35,21 +35,14 @@ public class ConvertToBeamOs
         modelBuilder.AddSectionProfiles(
             new PutSectionProfileRequest()
             {
-                Area = new AreaContract(10.6, AreaUnitContract.SquareInch),
-                StrongAxisMomentOfInertia = new AreaMomentOfInertiaContract(
-                    448,
-                    AreaMomentOfInertiaUnitContract.InchToTheFourth
-                ),
-                WeakAxisMomentOfInertia = new AreaMomentOfInertiaContract(
-                    24.5,
-                    AreaMomentOfInertiaUnitContract.InchToTheFourth
-                ),
-                PolarMomentOfInertia = new AreaMomentOfInertiaContract(
-                    .55,
-                    AreaMomentOfInertiaUnitContract.InchToTheFourth
-                ),
-                StrongAxisShearArea = new AreaContract(5.0095, AreaUnitContract.SquareInch),
-                WeakAxisShearArea = new AreaContract(4.6905, AreaUnitContract.SquareInch),
+                Area = 10.6,
+                StrongAxisMomentOfInertia = 448,
+                WeakAxisMomentOfInertia = 24.5,
+                PolarMomentOfInertia = .55,
+                StrongAxisShearArea = 5.0095,
+                WeakAxisShearArea = 4.6905,
+                AreaUnit = AreaUnitContract.SquareInch,
+                AreaMomentOfInertiaUnit = AreaMomentOfInertiaUnitContract.InchToTheFourth,
                 Id = 1636
             }
         );
@@ -57,14 +50,9 @@ public class ConvertToBeamOs
         modelBuilder.AddMaterials(
             new PutMaterialRequest()
             {
-                ModulusOfElasticity = new PressureContract(
-                    29000,
-                    PressureUnitContract.KilopoundForcePerSquareInch
-                ),
-                ModulusOfRigidity = new PressureContract(
-                    11_153.85,
-                    PressureUnitContract.KilopoundForcePerSquareInch
-                ),
+                ModulusOfElasticity = 29000,
+                ModulusOfRigidity = 11_153.85,
+                PressureUnit = PressureUnitContract.KilopoundForcePerSquareInch,
                 Id = 992
             }
         );

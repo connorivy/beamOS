@@ -6,7 +6,6 @@ using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
-using MathNet.Numerics.LinearAlgebra;
 using MathNet.Spatial.Euclidean;
 using UnitsNet;
 using UnitsNet.Units;
@@ -47,7 +46,7 @@ public class ShearForceDiagram : DiagramBase<ShearForceDiagramId, ShearDiagramCo
         Point endPoint,
         Angle rotation,
         Length elementLength,
-        Vector<double> localMemberForces,
+        IList<double> localMemberForces,
         LengthUnit lengthUnit,
         ForceUnit forceUnit,
         TorqueUnit torqueUnit,

@@ -1,4 +1,5 @@
 using System.Text;
+using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
@@ -7,26 +8,29 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoad;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
+using BeamOs.StructuralAnalysis.Sdk.Extensions;
 
-namespace BeamOs.StructuralAnalysis.CsSdk;
+namespace BeamOs.StructuralAnalysis.Sdk;
 
 public sealed class BeamOsDynamicModelBuilder(
     string guidString,
-    PhysicalModelSettings physicalModelSettings,
+    ModelSettings physicalModelSettings,
     string name,
     string description
 ) : BeamOsModelBuilder
 {
     public override string Name => name;
     public override string Description => description;
-    public override PhysicalModelSettings Settings => physicalModelSettings;
+    public override ModelSettings Settings => physicalModelSettings;
     public override string GuidString => guidString;
 
     private readonly List<PutNodeRequest> nodes = [];
 
+    public UnitSettings UnitSettings => this.Settings.UnitSettings;
+
     public BeamOsDynamicModelBuilder(
         string guidString,
-        PhysicalModelSettings physicalModelSettings,
+        ModelSettings physicalModelSettings,
         string name,
         string description,
         BeamOsModelBuilderDto beamOsModelBuilderDto
@@ -41,11 +45,40 @@ public sealed class BeamOsDynamicModelBuilder(
         this.sectionProfiles = beamOsModelBuilderDto.SectionProfiles.ToList();
     }
 
+    public void AddNode(int id, double x, double y, double z, Restraint? restraint = null) =>
+        this.AddNodes(
+            new PutNodeRequest()
+            {
+                Id = id,
+                LocationPoint = new(x, y, z, this.UnitSettings.LengthUnit),
+                Restraint = restraint ?? Restraint.Free
+            }
+        );
+
     public void AddNodes(params Span<PutNodeRequest> nodes) => this.nodes.AddRange(nodes);
 
     public override IEnumerable<PutNodeRequest> NodeRequests() => this.nodes.AsReadOnly();
 
     private readonly List<PutElement1dRequest> element1ds = [];
+
+    public void AddElement1d(
+        int id,
+        int startNodeId,
+        int endNodeId,
+        int materialId,
+        int sectionProfileId,
+        AngleContract? sectionProfileRotation = null
+    ) =>
+        this.AddElement1ds(
+            new PutElement1dRequest(
+                id,
+                startNodeId,
+                endNodeId,
+                materialId,
+                sectionProfileId,
+                sectionProfileRotation ?? new(0, AngleUnitContract.Radian)
+            )
+        );
 
     public void AddElement1ds(params Span<PutElement1dRequest> els) =>
         this.element1ds.AddRange(els);
@@ -55,6 +88,17 @@ public sealed class BeamOsDynamicModelBuilder(
 
     private readonly List<PutMaterialRequest> materials = [];
 
+    public void AddMaterial(int id, double modulusOfElasticity, double modulusOfRigidity) =>
+        this.AddMaterials(
+            new PutMaterialRequest()
+            {
+                Id = id,
+                ModulusOfElasticity = modulusOfElasticity,
+                ModulusOfRigidity = modulusOfRigidity,
+                PressureUnit = this.UnitSettings.PressureUnit
+            }
+        );
+
     public void AddMaterials(params Span<PutMaterialRequest> materials) =>
         this.materials.AddRange(materials);
 
@@ -62,6 +106,17 @@ public sealed class BeamOsDynamicModelBuilder(
         this.materials.AsReadOnly();
 
     private readonly List<PutPointLoadRequest> pointLoads = [];
+
+    public void AddPointLoad(int id, int nodeId, double force, Vector3 direction) =>
+        this.AddPointLoads(
+            new PutPointLoadRequest()
+            {
+                Id = id,
+                NodeId = nodeId,
+                Force = new(force, this.UnitSettings.ForceUnit),
+                Direction = direction
+            }
+        );
 
     public void AddPointLoads(params Span<PutPointLoadRequest> pointLoads) =>
         this.pointLoads.AddRange(pointLoads);
@@ -71,6 +126,17 @@ public sealed class BeamOsDynamicModelBuilder(
 
     private readonly List<PutMomentLoadRequest> momentLoads = [];
 
+    public void AddMomentLoad(int id, int nodeId, double moment, Vector3 axisDirection) =>
+        this.AddMomentLoads(
+            new PutMomentLoadRequest()
+            {
+                Id = id,
+                NodeId = nodeId,
+                Torque = new(moment, this.UnitSettings.TorqueUnit),
+                AxisDirection = axisDirection
+            }
+        );
+
     public void AddMomentLoads(params Span<PutMomentLoadRequest> momentLoads) =>
         this.momentLoads.AddRange(momentLoads);
 
@@ -79,17 +145,35 @@ public sealed class BeamOsDynamicModelBuilder(
 
     private readonly List<PutSectionProfileRequest> sectionProfiles = [];
 
+    public void AddSectionProfile(
+        int id,
+        double area,
+        double strongAxisMomentOfInertia,
+        double weakAxisMomentOfInertia,
+        double polarMomentOfInertia,
+        double strongAxisShearArea,
+        double weakAxisShearArea
+    ) =>
+        this.AddSectionProfiles(
+            new PutSectionProfileRequest()
+            {
+                Id = id,
+                Area = area,
+                StrongAxisMomentOfInertia = strongAxisMomentOfInertia,
+                WeakAxisMomentOfInertia = weakAxisMomentOfInertia,
+                PolarMomentOfInertia = polarMomentOfInertia,
+                StrongAxisShearArea = strongAxisShearArea,
+                WeakAxisShearArea = weakAxisShearArea,
+                AreaUnit = this.UnitSettings.AreaUnit,
+                AreaMomentOfInertiaUnit = this.UnitSettings.AreaMomentOfInertiaUnit
+            }
+        );
+
     public void AddSectionProfiles(params Span<PutSectionProfileRequest> sectionProfiles) =>
         this.sectionProfiles.AddRange(sectionProfiles);
 
     public override IEnumerable<PutSectionProfileRequest> SectionProfileRequests() =>
         this.sectionProfiles.AsReadOnly();
-
-    //public static async Task<BeamOsDynamicModelBuilder> CreateFromModel(ModelId modelId, IStructuralAnalysisApiClientV1 apiClient)
-    //{
-    //    var model = await apiClient.GetModelAsync(modelId);
-    //    BeamOsDynamicModelBuilder modelBuilder = new(modelId.Id.ToString(), model.Value.Settings, model.Value.Name, model.Value.Description);
-    //}
 
     public void GenerateStaticModelClass(string outputDir, string? baseClass = null)
     {
@@ -111,8 +195,11 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
 using BeamOs.StructuralAnalysis.CsSdk;
-using static BeamOs.StructuralAnalysis.Contracts.Common.AngleUnitContract;
-using static BeamOs.StructuralAnalysis.Contracts.Common.LengthUnitContract;
+using static BeamOs.StructuralAnalysis.Contracts.Common.AngleUnit;
+using static BeamOs.StructuralAnalysis.Contracts.Common.LengthUnit;
+using static BeamOs.StructuralAnalysis.Contracts.Common.PressureUnit;
+using static BeamOs.StructuralAnalysis.Contracts.Common.AreaUnit;
+using static BeamOs.StructuralAnalysis.Contracts.Common.AreaMomentOfInertiaUnit;
 
 namespace {namespac};"
         );
@@ -123,9 +210,7 @@ namespace {namespac};"
         sb.AppendLine("{");
         sb.AppendLine($"    public override string Name => nameof({className});");
         sb.AppendLine($"    public override string Description => \"{this.Description}\";");
-        sb.AppendLine(
-            "    public override PhysicalModelSettings Settings => new PhysicalModelSettings"
-        );
+        sb.AppendLine("    public override ModelSettings Settings => new ModelSettings");
         sb.AppendLine("    (");
         sb.AppendLine("        unitSettings: new UnitSettingsContract");
         sb.AppendLine("        {");
@@ -139,7 +224,7 @@ namespace {namespac};"
             $"            AngleUnit = AngleUnitContract.{this.Settings.UnitSettings.AngleUnit}"
         );
         sb.AppendLine("        },");
-        sb.AppendLine("        analysisSettings: new AnalysisSettingsContract");
+        sb.AppendLine("        analysisSettings: new AnalysisSettings");
         sb.AppendLine("        {");
         sb.AppendLine(
             $"            Element1DAnalysisType = Element1dAnalysisType.{this.Settings.AnalysisSettings.Element1DAnalysisType}"
@@ -175,12 +260,9 @@ namespace {namespac};"
             sb.AppendLine($"        yield return new PutMaterialRequest");
             sb.AppendLine($"        {{");
             sb.AppendLine($"            Id = {material.Id},");
-            sb.AppendLine(
-                $"            ModulusOfElasticity = new PressureContract({material.ModulusOfElasticity.Value}, PressureUnitContract.{material.ModulusOfElasticity.Unit}),"
-            );
-            sb.AppendLine(
-                $"            ModulusOfRigidity = new PressureContract({material.ModulusOfRigidity.Value}, PressureUnitContract.{material.ModulusOfRigidity.Unit})"
-            );
+            sb.AppendLine($"            ModulusOfElasticity = {material.ModulusOfElasticity},");
+            sb.AppendLine($"            ModulusOfRigidity = {material.ModulusOfRigidity},");
+            sb.AppendLine($"            PressureUnit = {material.PressureUnit},");
             sb.AppendLine($"        }};");
         }
         sb.AppendLine("    }");
@@ -194,23 +276,23 @@ namespace {namespac};"
             sb.AppendLine($"        yield return new PutSectionProfileRequest");
             sb.AppendLine($"        {{");
             sb.AppendLine($"            Id = {sectionProfile.Id},");
+            sb.AppendLine($"            Area = {sectionProfile.Area},");
             sb.AppendLine(
-                $"            Area = new AreaContract({sectionProfile.Area.Value}, AreaUnitContract.{sectionProfile.Area.Unit}),"
+                $"            StrongAxisMomentOfInertia = {sectionProfile.StrongAxisMomentOfInertia},"
             );
             sb.AppendLine(
-                $"            StrongAxisMomentOfInertia = new AreaMomentOfInertiaContract({sectionProfile.StrongAxisMomentOfInertia.Value}, AreaMomentOfInertiaUnitContract.{sectionProfile.StrongAxisMomentOfInertia.Unit}),"
+                $"            WeakAxisMomentOfInertia = {sectionProfile.WeakAxisMomentOfInertia},"
             );
             sb.AppendLine(
-                $"            WeakAxisMomentOfInertia = new AreaMomentOfInertiaContract({sectionProfile.WeakAxisMomentOfInertia.Value}, AreaMomentOfInertiaUnitContract.{sectionProfile.WeakAxisMomentOfInertia.Unit}),"
+                $"            PolarMomentOfInertia = {sectionProfile.PolarMomentOfInertia},"
             );
             sb.AppendLine(
-                $"            PolarMomentOfInertia = new AreaMomentOfInertiaContract({sectionProfile.PolarMomentOfInertia.Value}, AreaMomentOfInertiaUnitContract.{sectionProfile.PolarMomentOfInertia.Unit}),"
+                $"            StrongAxisShearArea = {sectionProfile.StrongAxisShearArea},"
             );
+            sb.AppendLine($"            WeakAxisShearArea = {sectionProfile.WeakAxisShearArea},");
+            sb.AppendLine($"            AreaUnit = {sectionProfile.AreaUnit},");
             sb.AppendLine(
-                $"            StrongAxisShearArea = new AreaContract({sectionProfile.StrongAxisShearArea.Value}, AreaUnitContract.{sectionProfile.StrongAxisShearArea.Unit}),"
-            );
-            sb.AppendLine(
-                $"            WeakAxisShearArea = new AreaContract({sectionProfile.WeakAxisShearArea.Value}, AreaUnitContract.{sectionProfile.WeakAxisShearArea.Unit})"
+                $"            AreaMomentOfInertiaUnit = {sectionProfile.AreaMomentOfInertiaUnit}"
             );
             sb.AppendLine($"        }};");
         }
@@ -286,5 +368,127 @@ namespace {namespac};"
         sb.AppendLine("}");
 
         File.WriteAllText(Path.Combine(outputDir, className + ".g.cs"), sb.ToString());
+    }
+
+    public void WriteToPyniteFile(string outputDir)
+    {
+        StringBuilder sb = new();
+
+        string className = this.Name.Replace(" ", "");
+
+        sb.AppendLine(
+            @"
+from Pynite import FEModel3D
+import time
+
+model = FEModel3D()"
+        );
+
+        foreach (var node in this.NodeRequests())
+        {
+            sb.AppendLine(
+                $"model.add_node('N{node.Id}', {node.LocationPoint.X.Convert(node.LocationPoint.LengthUnit, this.Settings.UnitSettings.LengthUnit)}, {node.LocationPoint.Y.Convert(node.LocationPoint.LengthUnit, this.Settings.UnitSettings.LengthUnit)}, {node.LocationPoint.Z.Convert(node.LocationPoint.LengthUnit, this.Settings.UnitSettings.LengthUnit)})"
+            );
+            sb.AppendLine(
+                $"model.def_support('N{node.Id}', {(!node.Restraint.CanTranslateAlongX).ToString()}, {(!node.Restraint.CanTranslateAlongY).ToString()}, {(!node.Restraint.CanTranslateAlongZ).ToString()}, {(!node.Restraint.CanRotateAboutX).ToString()}, {(!node.Restraint.CanRotateAboutY).ToString()}, {(!node.Restraint.CanRotateAboutZ).ToString()})"
+            );
+        }
+
+        sb.AppendLine();
+        foreach (var material in this.MaterialRequests())
+        {
+            sb.AppendLine(
+                @$"
+nu = 0.3  # Poisson's ratio
+rho = 0.490/12**3  # Density (kci)
+model.add_material('M{material.Id}', {new PressureContract(material.ModulusOfElasticity, material.PressureUnit).As(this.UnitSettings.PressureUnit)}, {new PressureContract(material.ModulusOfRigidity, material.PressureUnit).As(this.UnitSettings.PressureUnit)}, nu, rho)"
+            );
+        }
+        sb.AppendLine();
+        foreach (var sectionProfile in this.SectionProfileRequests())
+        {
+            sb.AppendLine(
+                $"model.add_section('S{sectionProfile.Id}', {new AreaContract(sectionProfile.Area, sectionProfile.AreaUnit).As(this.Settings.UnitSettings.AreaUnit)}, {new AreaMomentOfInertiaContract(sectionProfile.WeakAxisMomentOfInertia, sectionProfile.AreaMomentOfInertiaUnit).As(this.UnitSettings.AreaMomentOfInertiaUnit)}, {new AreaMomentOfInertiaContract(sectionProfile.StrongAxisMomentOfInertia, sectionProfile.AreaMomentOfInertiaUnit).As(this.UnitSettings.AreaMomentOfInertiaUnit)}, {new AreaMomentOfInertiaContract(sectionProfile.PolarMomentOfInertia, sectionProfile.AreaMomentOfInertiaUnit).As(this.UnitSettings.AreaMomentOfInertiaUnit)})"
+            );
+        }
+        sb.AppendLine();
+        foreach (var element in this.Element1dRequests())
+        {
+            sb.AppendLine(
+                $"model.add_member('El{element.Id}', 'N{element.StartNodeId}', 'N{element.EndNodeId}', 'M{element.MaterialId}', 'S{element.SectionProfileId}')"
+            );
+        }
+        sb.AppendLine();
+
+        foreach (var pointLoad in this.PointLoadRequests())
+        {
+            var (pyniteDir, forceMult) = BeamOsDirectionToPyniteStringAndForceMultiplier(
+                pointLoad.Direction
+            );
+            sb.AppendLine(
+                $"model.add_node_load('N{pointLoad.NodeId}', 'F{pyniteDir}', {forceMult * pointLoad.Force.As(this.UnitSettings.ForceUnit)}, case='D')"
+            );
+        }
+        sb.AppendLine();
+
+        foreach (var momentLoad in this.MomentLoadRequests())
+        {
+            var (pyniteDir, forceMult) = BeamOsDirectionToPyniteStringAndForceMultiplier(
+                momentLoad.AxisDirection
+            );
+            sb.AppendLine(
+                $"model.add_node_load('N{momentLoad.NodeId}', 'M{pyniteDir}', {forceMult * momentLoad.Torque.As(this.UnitSettings.TorqueUnit)}, case='D')"
+            );
+        }
+
+        sb.AppendLine(
+            @"
+model.add_load_combo('1.0D', factors={'D':1.0})
+
+start_time = time.time()
+
+model.analyze()
+
+end_time = time.time()
+
+execution_time = end_time - start_time
+
+print(f""Execution time: {execution_time} seconds"")
+"
+        );
+
+        File.WriteAllText(Path.Combine(outputDir, className + ".g.py"), sb.ToString());
+    }
+
+    private static (string, int) BeamOsDirectionToPyniteStringAndForceMultiplier(Vector3 direction)
+    {
+        if (Math.Abs(direction.X - 1) < .001)
+        {
+            return ("X", 1);
+        }
+        if (Math.Abs(direction.Y - 1) < .001)
+        {
+            return ("Y", 1);
+        }
+        if (Math.Abs(direction.Z - 1) < .001)
+        {
+            return ("Z", 1);
+        }
+        if (Math.Abs(direction.X + 1) < .001)
+        {
+            return ("X", -1);
+        }
+        if (Math.Abs(direction.Y + 1) < .001)
+        {
+            return ("Y", -1);
+        }
+        if (Math.Abs(direction.Z + 1) < .001)
+        {
+            return ("Z", -1);
+        }
+
+        throw new NotImplementedException(
+            $"Translation from {direction} to pynite has not been implemented"
+        );
     }
 }

@@ -51,7 +51,7 @@ public sealed class MomentDiagram : DiagramBase<MomentDiagramId, MomentDiagramCo
         Point endPoint,
         Angle rotation,
         Length elementLength,
-        Vector<double> localMemberTorques,
+        IList<double> localMemberTorques,
         LengthUnit lengthUnit,
         ForceUnit forceUnit,
         TorqueUnit torqueUnit,

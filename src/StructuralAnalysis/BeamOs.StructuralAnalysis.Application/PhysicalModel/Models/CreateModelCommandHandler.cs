@@ -1,9 +1,15 @@
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Common.Contracts;
+using BeamOs.CsSdk.Mappers.UnitValueDtoMappers;
 using BeamOs.StructuralAnalysis.Application.Common;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 using Riok.Mapperly.Abstractions;
+using UnitsNet.Units;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 
@@ -21,7 +27,8 @@ public class CreateModelCommandHandler(
         modelRepository.Add(model);
         await unitOfWork.SaveChangesAsync(ct);
 
-        return model.ToResponse();
+        return ModelToResponseMapper.Create(model.Settings.UnitSettings).Map(model);
+        //return model.ToResponse();
     }
 }
 
@@ -31,6 +38,40 @@ public class CreateModelCommandHandler(
 public static partial class CreateModelCommandMapper
 {
     public static partial Model ToDomainObject(this CreateModelRequest command);
+}
 
-    public static partial ModelResponse ToResponse(this Model entity);
+[Mapper]
+[UseStaticMapper(typeof(BeamOsDomainContractMappers))]
+[UseStaticMapper(typeof(UnitsNetMappersJustEnums))]
+public partial class ModelToResponseMapper : AbstractMapperProvidedUnits<Model, ModelResponse>
+{
+    [Obsolete()]
+    public ModelToResponseMapper()
+        : base(null) { }
+
+    private ModelToResponseMapper(UnitSettings unitSettings)
+        : base(unitSettings) { }
+
+    public static ModelToResponseMapper Create(UnitSettings unitSettings)
+    {
+        return new(unitSettings);
+    }
+
+    public MaterialResponse ToResponse(Material entity) =>
+        this.ToResponse(entity, this.PressureUnit);
+
+    private partial MaterialResponse ToResponse(Material entity, PressureUnit pressureUnit);
+
+    public SectionProfileResponse ToResponse(SectionProfile entity) =>
+        this.ToResponse(entity, this.AreaUnit, this.AreaMomentOfInertiaUnit);
+
+    private partial SectionProfileResponse ToResponse(
+        SectionProfile entity,
+        AreaUnit areaUnit,
+        AreaMomentOfInertiaUnit areaMomentOfInertiaUnit
+    );
+
+    public ModelResponse Map(Model source) => this.ToResponse(source);
+
+    private partial ModelResponse ToResponse(Model source);
 }

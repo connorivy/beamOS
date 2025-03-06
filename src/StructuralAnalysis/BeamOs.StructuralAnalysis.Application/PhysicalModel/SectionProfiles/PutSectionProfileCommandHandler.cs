@@ -2,11 +2,11 @@ using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.Common;
-using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 using Riok.Mapperly.Abstractions;
+using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
 
@@ -24,7 +24,10 @@ public class PutSectionProfileCommandHandler(
         sectionProfileRepository.Add(sectionProfile);
         await unitOfWork.SaveChangesAsync(ct);
 
-        return sectionProfile.ToResponse();
+        return sectionProfile.ToResponse(
+            command.Body.AreaUnit.MapToAreaUnit(),
+            command.Body.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
+        );
     }
 }
 
@@ -59,13 +62,26 @@ public readonly struct PutSectionProfileCommand
     public int Id { get; init; }
     public Guid ModelId { get; init; }
     public SectionProfileRequestData Body { get; init; }
-    public AreaContract Area => this.Body.Area;
-    public AreaMomentOfInertiaContract StrongAxisMomentOfInertia =>
-        this.Body.StrongAxisMomentOfInertia;
-    public AreaMomentOfInertiaContract WeakAxisMomentOfInertia => this.Body.WeakAxisMomentOfInertia;
-    public AreaMomentOfInertiaContract PolarMomentOfInertia => this.Body.PolarMomentOfInertia;
-    public AreaContract StrongAxisShearArea => this.Body.StrongAxisShearArea;
-    public AreaContract WeakAxisShearArea => this.Body.WeakAxisShearArea;
+    public Area Area => new(this.Body.Area, this.Body.AreaUnit.MapToAreaUnit());
+    public AreaMomentOfInertia StrongAxisMomentOfInertia =>
+        new(
+            this.Body.StrongAxisMomentOfInertia,
+            this.Body.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
+        );
+    public AreaMomentOfInertia WeakAxisMomentOfInertia =>
+        new(
+            this.Body.WeakAxisMomentOfInertia,
+            this.Body.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
+        );
+    public AreaMomentOfInertia PolarMomentOfInertia =>
+        new(
+            this.Body.PolarMomentOfInertia,
+            this.Body.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
+        );
+    public Area StrongAxisShearArea =>
+        new(this.Body.StrongAxisShearArea, this.Body.AreaUnit.MapToAreaUnit());
+    public Area WeakAxisShearArea =>
+        new(this.Body.WeakAxisShearArea, this.Body.AreaUnit.MapToAreaUnit());
 
     public PutSectionProfileCommand() { }
 

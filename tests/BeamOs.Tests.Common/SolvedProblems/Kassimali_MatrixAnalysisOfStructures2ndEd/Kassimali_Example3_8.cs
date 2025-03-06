@@ -14,8 +14,8 @@ public class Kassimali_Example3_8 : ModelFixture, IHasExpectedNodeResults
     public override string Name => nameof(Kassimali_Example3_8);
     public override string Description => "Example model";
     public override string GuidString => "0a83df88-656e-47d9-98fe-25fd7d370b06";
-    public override PhysicalModelSettings Settings { get; } =
-        new(UnitSettingsContract.K_IN, new(Element1dAnalysisType.Euler));
+    public override ModelSettings Settings { get; } =
+        new(UnitSettings.K_IN, new(Element1dAnalysisType.Euler));
     public override SourceInfo SourceInfo { get; } =
         new(
             "Matrix Analysis Of Structures 2nd Edition by Kassimali",
@@ -95,8 +95,9 @@ public class Kassimali_Example3_8 : ModelFixture, IHasExpectedNodeResults
     {
         yield return new()
         {
-            ModulusOfElasticity = new(29000, PressureUnitContract.KilopoundForcePerSquareInch),
-            ModulusOfRigidity = new(1, PressureUnitContract.KilopoundForcePerSquareInch),
+            ModulusOfElasticity = 29000,
+            ModulusOfRigidity = 1,
+            PressureUnit = PressureUnitContract.KilopoundForcePerSquareInch,
             Id = 992
         };
     }
@@ -105,23 +106,27 @@ public class Kassimali_Example3_8 : ModelFixture, IHasExpectedNodeResults
     {
         yield return new()
         {
-            Area = new(8, AreaUnitContract.SquareInch),
-            StrongAxisMomentOfInertia = new(1, AreaMomentOfInertiaUnitContract.InchToTheFourth),
-            WeakAxisMomentOfInertia = new(1, AreaMomentOfInertiaUnitContract.InchToTheFourth),
-            PolarMomentOfInertia = new(1, AreaMomentOfInertiaUnitContract.InchToTheFourth),
-            StrongAxisShearArea = new(1, AreaUnitContract.SquareInch),
-            WeakAxisShearArea = new(1, AreaUnitContract.SquareInch),
+            Area = 8,
+            StrongAxisMomentOfInertia = 1,
+            WeakAxisMomentOfInertia = 1,
+            PolarMomentOfInertia = 1,
+            StrongAxisShearArea = 1,
+            WeakAxisShearArea = 1,
+            AreaUnit = AreaUnitContract.SquareInch,
+            AreaMomentOfInertiaUnit = AreaMomentOfInertiaUnitContract.InchToTheFourth,
             Id = 8
         };
 
         yield return new()
         {
-            Area = new(6, AreaUnitContract.SquareInch),
-            StrongAxisMomentOfInertia = new(1, AreaMomentOfInertiaUnitContract.InchToTheFourth),
-            WeakAxisMomentOfInertia = new(1, AreaMomentOfInertiaUnitContract.InchToTheFourth),
-            PolarMomentOfInertia = new(1, AreaMomentOfInertiaUnitContract.InchToTheFourth),
-            StrongAxisShearArea = new(1, AreaUnitContract.SquareInch),
-            WeakAxisShearArea = new(1, AreaUnitContract.SquareInch),
+            Area = 6,
+            StrongAxisMomentOfInertia = 1,
+            WeakAxisMomentOfInertia = 1,
+            PolarMomentOfInertia = 1,
+            StrongAxisShearArea = 1,
+            WeakAxisShearArea = 1,
+            AreaUnit = AreaUnitContract.SquareInch,
+            AreaMomentOfInertiaUnit = AreaMomentOfInertiaUnitContract.InchToTheFourth,
             Id = 6
         };
     }

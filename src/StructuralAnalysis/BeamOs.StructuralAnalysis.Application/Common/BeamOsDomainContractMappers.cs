@@ -1,9 +1,5 @@
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
-using BeamOs.StructuralAnalysis.Contracts.Common;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using Riok.Mapperly.Abstractions;
-using UnitsNet.Units;
 
 namespace BeamOs.StructuralAnalysis.Application.Common;
 
@@ -37,7 +33,9 @@ public static partial class BeamOsDomainContractMappers
         );
     }
 
-    public static partial PhysicalModelSettings ToContract(this ModelSettings source);
+    public static partial Contracts.PhysicalModel.Model.ModelSettings ToContract(
+        this Domain.PhysicalModel.ModelAggregate.ModelSettings source
+    );
 
     public static UnitSettingsContract ToContract(this UnitSettings source)
     {
@@ -48,7 +46,9 @@ public static partial class BeamOsDomainContractMappers
         };
     }
 
-    public static partial AnalysisSettingsContract ToContract(this AnalysisSettings source);
+    public static partial Contracts.PhysicalModel.Model.AnalysisSettings ToContract(
+        this Domain.PhysicalModel.ModelAggregate.AnalysisSettings source
+    );
 
     //public static BeamOs.StructuralAnalysis.Domain.Common.Point ToDomain(
     //    BeamOs.StructuralAnalysis.Contracts.Common.Point source

@@ -9,14 +9,33 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
 
 namespace BeamOs.Tests.Common.SolvedProblems.Udoeyo_StructuralAnalysis;
 
-public sealed class Udoeyo_Example7_7 : ModelFixture
+public sealed class Udoeyo_Example7_7 : ModelFixture, IHasExpectedDiagramResults
 {
-    public override SourceInfo SourceInfo { get; }
+    public override SourceInfo SourceInfo { get; } =
+        new(
+            "Structural Analysis by Felix Udoeyo",
+            FixtureSourceType.Textbook,
+            "Example 7.7",
+            null,
+            "https://temple.manifoldapp.org/read/structural-analysis/section/072c774b-392a-4b99-a65d-f2e9d1fddfbd#sec7-5"
+        );
     public override string Name { get; } = nameof(Udoeyo_Example7_7);
     public override string Description { get; } =
         "Example 7.7 from Udoeyo's Structural Analysis book";
-    public override PhysicalModelSettings Settings { get; } = new(UnitSettingsContract.kN_M);
+    public override ModelSettings Settings { get; } = new(UnitSettings.kN_M);
     public override string GuidString => "e63cca48-5585-4117-8dd9-0d0bf56f3d50";
+
+    public DiagramResultFixture[] ExpectedDiagramResults { get; } =
+
+        [
+            new()
+            {
+                NodeId = 1,
+                ResultSetId = 1,
+                MaxMoment = new(20, UnitsNet.Units.TorqueUnit.KilonewtonMeter),
+                MaxDeflection = new(360, UnitsNet.Units.LengthUnit.Meter)
+            }
+        ];
 
     public override IEnumerable<PutElement1dRequest> Element1dRequests()
     {
@@ -35,8 +54,9 @@ public sealed class Udoeyo_Example7_7 : ModelFixture
         yield return new()
         {
             Id = 1,
-            ModulusOfElasticity = new(1, PressureUnitContract.KilonewtonPerSquareMeter),
-            ModulusOfRigidity = new(1, PressureUnitContract.KilonewtonPerSquareMeter),
+            ModulusOfElasticity = 1,
+            ModulusOfRigidity = 1,
+            PressureUnit = PressureUnitContract.KilonewtonPerSquareMeter
         };
     }
 
@@ -63,13 +83,15 @@ public sealed class Udoeyo_Example7_7 : ModelFixture
     {
         yield return new()
         {
-            Id = 1,
-            Area = new(1, AreaUnitContract.SquareMeter),
-            StrongAxisMomentOfInertia = new(1, AreaMomentOfInertiaUnitContract.MeterToTheFourth),
-            WeakAxisMomentOfInertia = new(1, AreaMomentOfInertiaUnitContract.MeterToTheFourth),
-            PolarMomentOfInertia = new(1, AreaMomentOfInertiaUnitContract.MeterToTheFourth),
-            StrongAxisShearArea = new(1, AreaUnitContract.SquareMeter),
-            WeakAxisShearArea = new(1, AreaUnitContract.SquareMeter),
+            Area = 1,
+            StrongAxisMomentOfInertia = 1,
+            WeakAxisMomentOfInertia = 1,
+            PolarMomentOfInertia = 1,
+            StrongAxisShearArea = 1,
+            WeakAxisShearArea = 1,
+            AreaUnit = AreaUnitContract.SquareMeter,
+            AreaMomentOfInertiaUnit = AreaMomentOfInertiaUnitContract.MeterToTheFourth,
+            Id = 1
         };
     }
 

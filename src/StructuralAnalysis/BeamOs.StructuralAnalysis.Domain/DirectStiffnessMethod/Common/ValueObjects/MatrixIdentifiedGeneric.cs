@@ -4,27 +4,26 @@ using MathNet.Numerics.LinearAlgebra.Double;
 namespace BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod.Common.ValueObjects;
 
 public class MatrixIdentifiedGeneric<TIdentifier>
+    where TIdentifier : notnull
 {
     private readonly Dictionary<TIdentifier, int> rowIdentifierToIndexDict = [];
-    private readonly List<TIdentifier> rowIdentifiers;
-    private readonly List<TIdentifier> columnIdentifiers;
+    private readonly IList<TIdentifier> rowIdentifiers;
     public double[,] Values { get; }
 
-    public MatrixIdentifiedGeneric(List<TIdentifier> identifiers, double[,]? values = null)
+    public MatrixIdentifiedGeneric(IList<TIdentifier> identifiers, double[,]? values = null)
     {
         this.rowIdentifiers = identifiers;
         for (int i = 0; i < identifiers.Count; i++)
         {
             this.rowIdentifierToIndexDict.Add(identifiers[i], i);
         }
-        this.columnIdentifiers = this.rowIdentifiers;
         this.Values = values ?? new double[identifiers.Count, identifiers.Count];
     }
 
     public double? GetValue(TIdentifier rowIdentifier, TIdentifier columnIdentifier)
     {
-        var rowIndex = this.rowIdentifiers.FindIndex(i => i.Equals(rowIdentifier));
-        var columnIndex = this.columnIdentifiers.FindIndex(i => i.Equals(columnIdentifier));
+        var rowIndex = this.rowIdentifierToIndexDict[rowIdentifier];
+        var columnIndex = this.rowIdentifierToIndexDict[columnIdentifier];
 
         if (rowIndex < 0 || columnIndex < 0)
         {
@@ -36,8 +35,8 @@ public class MatrixIdentifiedGeneric<TIdentifier>
 
     public void SetValue(TIdentifier rowIdentifier, TIdentifier columnIdentifier, double value)
     {
-        var rowIndex = this.rowIdentifiers.FindIndex(i => i.Equals(rowIdentifier));
-        var columnIndex = this.columnIdentifiers.FindIndex(i => i.Equals(columnIdentifier));
+        var rowIndex = this.rowIdentifierToIndexDict[rowIdentifier];
+        var columnIndex = this.rowIdentifierToIndexDict[columnIdentifier];
 
         this.Values[rowIndex, columnIndex] = value;
     }

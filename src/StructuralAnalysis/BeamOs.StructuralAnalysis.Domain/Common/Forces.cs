@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using BeamOs.Common.Domain.Models;
 using MathNet.Spatial.Euclidean;
 using UnitsNet;
@@ -80,6 +81,17 @@ public sealed class Forces : BeamOSValueObject
             this.MomentAboutY.As(torqueUnit),
             this.MomentAboutZ.As(torqueUnit),
         ];
+    }
+
+    public void CopyTo(Span<double> span, ForceUnit forceUnit, TorqueUnit torqueUnit)
+    {
+        Debug.Assert(span.Length >= 6);
+        span[0] = this.ForceAlongX.As(forceUnit);
+        span[1] = this.ForceAlongY.As(forceUnit);
+        span[2] = this.ForceAlongZ.As(forceUnit);
+        span[3] = this.MomentAboutX.As(torqueUnit);
+        span[4] = this.MomentAboutY.As(torqueUnit);
+        span[5] = this.MomentAboutZ.As(torqueUnit);
     }
 
     protected override IEnumerable<object> GetEqualityComponents()

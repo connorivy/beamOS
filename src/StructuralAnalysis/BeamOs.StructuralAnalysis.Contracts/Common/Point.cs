@@ -7,12 +7,12 @@ public readonly record struct Point
     public required double X { get; init; }
     public required double Y { get; init; }
     public required double Z { get; init; }
-    public required LengthUnitContract LengthUnit { get; init; }
+    public required LengthUnit LengthUnit { get; init; }
 
     public Point() { }
 
     [SetsRequiredMembers]
-    public Point(double x, double y, double z, LengthUnitContract lengthUnit)
+    public Point(double x, double y, double z, LengthUnit lengthUnit)
     {
         this.X = x;
         this.Y = y;
@@ -21,7 +21,7 @@ public readonly record struct Point
     }
 
     [SetsRequiredMembers]
-    public Point(LengthContract x, LengthContract y, LengthContract z)
+    public Point(Length x, Length y, Length z)
         : this(x.Value, y.Value, z.Value, x.Unit)
     {
         if (x.Unit != y.Unit || x.Unit != z.Unit)
@@ -32,12 +32,12 @@ public readonly record struct Point
 }
 
 [method: SetsRequiredMembers]
-public readonly struct PartialPoint(double? x, double? y, double? z, LengthUnitContract lengthUnit)
+public readonly struct PartialPoint(double? x, double? y, double? z, LengthUnit lengthUnit)
 {
     public double? X { get; init; } = x;
     public double? Y { get; init; } = y;
     public double? Z { get; init; } = z;
-    public required LengthUnitContract LengthUnit { get; init; } = lengthUnit;
+    public required LengthUnit LengthUnit { get; init; } = lengthUnit;
 }
 
 public readonly record struct Vector3

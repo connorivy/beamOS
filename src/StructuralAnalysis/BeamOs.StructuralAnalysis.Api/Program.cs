@@ -5,7 +5,6 @@ using BeamOs.StructuralAnalysis.Api;
 using BeamOs.StructuralAnalysis.Api.Endpoints;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.Tests.Common;
-using FluentAssertions.Common;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,7 +29,12 @@ builder
     );
 
 #if DEBUG
-builder.Services.AddOpenApi();
+builder
+    .Services
+    .AddOpenApi(o =>
+    {
+        //o.AddSchemaTransformer<EnumSchemaTransformer>();
+    });
 
 builder
     .Services

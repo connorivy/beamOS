@@ -14,7 +14,7 @@ public record BeamOsModelBuilderDto
 {
     public string Name { get; init; }
     public string Description { get; init; }
-    public PhysicalModelSettings Settings { get; init; }
+    public ModelSettings Settings { get; init; }
 
     /// <summary>
     /// You can go to this website to generate a random guid string

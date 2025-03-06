@@ -2144,6 +2144,7 @@ export class ModelResponse implements IModelResponse {
     name!: string;
     description!: string;
     settings!: PhysicalModelSettings;
+    lastModified!: Date;
     nodes?: NodeResponse[] | undefined;
     element1ds?: Element1dResponse[] | undefined;
     materials?: MaterialResponse[] | undefined;
@@ -2170,6 +2171,7 @@ export class ModelResponse implements IModelResponse {
             this.name = _data["name"];
             this.description = _data["description"];
             this.settings = _data["settings"] ? PhysicalModelSettings.fromJS(_data["settings"]) : new PhysicalModelSettings();
+            this.lastModified = _data["lastModified"] ? new Date(_data["lastModified"].toString()) : <any>undefined;
             if (Array.isArray(_data["nodes"])) {
                 this.nodes = [] as any;
                 for (let item of _data["nodes"])
@@ -2221,6 +2223,7 @@ export class ModelResponse implements IModelResponse {
         data["name"] = this.name;
         data["description"] = this.description;
         data["settings"] = this.settings ? this.settings.toJSON() : <any>undefined;
+        data["lastModified"] = this.lastModified ? this.lastModified.toISOString() : <any>undefined;
         if (Array.isArray(this.nodes)) {
             data["nodes"] = [];
             for (let item of this.nodes)
@@ -2265,6 +2268,7 @@ export interface IModelResponse {
     name: string;
     description: string;
     settings: PhysicalModelSettings;
+    lastModified: Date;
     nodes?: NodeResponse[] | undefined;
     element1ds?: Element1dResponse[] | undefined;
     materials?: MaterialResponse[] | undefined;

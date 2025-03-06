@@ -21,7 +21,7 @@ public class Kassimali_Example8_4
     public override string Name => nameof(Kassimali_Example8_4);
     public override string Description => "Example model";
     public override string GuidString => "6b04df0f-45d6-4aed-9c04-8272ed23f811";
-    public override PhysicalModelSettings Settings { get; } =
+    public override ModelSettings Settings { get; } =
         new(UnitSettingsContract.K_IN, new(Element1dAnalysisType.Euler));
     public override SourceInfo SourceInfo { get; } =
         new(
@@ -117,8 +117,9 @@ public class Kassimali_Example8_4
     {
         yield return new()
         {
-            ModulusOfElasticity = new(29000, PressureUnitContract.KilopoundForcePerSquareInch),
-            ModulusOfRigidity = new(11500, PressureUnitContract.KilopoundForcePerSquareInch),
+            ModulusOfElasticity = 29000,
+            ModulusOfRigidity = 11500,
+            PressureUnit = PressureUnitContract.KilopoundForcePerSquareInch,
             Id = 1
         };
     }
@@ -127,13 +128,15 @@ public class Kassimali_Example8_4
     {
         yield return new()
         {
-            Area = new(32.9, AreaUnitContract.SquareInch),
-            StrongAxisMomentOfInertia = new(716, AreaMomentOfInertiaUnitContract.InchToTheFourth),
-            WeakAxisMomentOfInertia = new(236, AreaMomentOfInertiaUnitContract.InchToTheFourth),
-            PolarMomentOfInertia = new(15.1, AreaMomentOfInertiaUnitContract.InchToTheFourth),
+            Area = 32.9,
+            StrongAxisMomentOfInertia = 716,
+            WeakAxisMomentOfInertia = 236,
+            PolarMomentOfInertia = 15.1,
             // shear area doesn't matter because we are making Euler Bernoulli assumptions
-            StrongAxisShearArea = new(1, AreaUnitContract.SquareInch),
-            WeakAxisShearArea = new(1, AreaUnitContract.SquareInch),
+            StrongAxisShearArea = 1,
+            WeakAxisShearArea = 1,
+            AreaUnit = AreaUnitContract.SquareInch,
+            AreaMomentOfInertiaUnit = AreaMomentOfInertiaUnitContract.InchToTheFourth,
             Id = 1
         };
     }

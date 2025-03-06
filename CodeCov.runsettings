@@ -19,6 +19,16 @@
                                 <Source>.*.g.cs$</Source>
                             </Exclude>
                         </Sources>
+                        
+                        <Attributes>
+                            <Exclude>
+                                <!-- Don't forget "Attribute" at the end of the name -->
+                                <Attribute>^System\.Diagnostics\.DebuggerHiddenAttribute$</Attribute>
+                                <Attribute>^System\.Diagnostics\.DebuggerNonUserCodeAttribute$</Attribute>
+                                <Attribute>^System\.CodeDom\.Compiler\.GeneratedCodeAttribute$</Attribute>
+                                <Attribute>^System\.Diagnostics\.CodeAnalysis\.ExcludeFromCodeCoverageAttribute$</Attribute>
+                            </Exclude>
+                        </Attributes>
 
                         <CollectFromChildProcesses>True</CollectFromChildProcesses>
                         <!--<UseVerifiableInstrumentation>False</UseVerifiableInstrumentation>-->

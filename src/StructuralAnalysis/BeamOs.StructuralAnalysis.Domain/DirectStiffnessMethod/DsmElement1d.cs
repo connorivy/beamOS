@@ -1,11 +1,8 @@
-using BeamOs.Common.Domain.Models;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.Common.Extensions;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod.Common.ValueObjects;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using UnitsNet;
@@ -26,31 +23,8 @@ public class DsmElement1d(
     Point endPoint,
     NodeId startNodeId,
     NodeId endNodeId
-) : BeamOSValueObject
+) : IHydratedElement1d
 {
-    public DsmElement1d(
-        Element1dId element1dId,
-        Angle sectionProfileRotation,
-        Node startNode,
-        Node endNode,
-        Material material,
-        SectionProfile sectionProfile
-    )
-        : this(
-            element1dId,
-            sectionProfileRotation,
-            material.ModulusOfElasticity,
-            material.ModulusOfRigidity,
-            sectionProfile.Area,
-            sectionProfile.StrongAxisMomentOfInertia,
-            sectionProfile.WeakAxisMomentOfInertia,
-            sectionProfile.PolarMomentOfInertia,
-            startNode.LocationPoint,
-            endNode.LocationPoint,
-            startNode.Id,
-            endNode.Id
-        ) { }
-
     public DsmElement1d(Element1d element1d)
         : this(
             element1d.Id,
@@ -105,6 +79,24 @@ public class DsmElement1d(
             }
         }
     }
+
+    //public void GetUnsupportedStructureDisplacementIds(
+    //    Span<UnsupportedStructureDisplacementId> destinationSpan
+    //)
+    //{
+    //    destinationSpan[0] = new(this.StartNodeId, CoordinateSystemDirection3D.AlongX);
+    //    destinationSpan[1] = new(this.StartNodeId, CoordinateSystemDirection3D.AlongY);
+    //    destinationSpan[2] = new(this.StartNodeId, CoordinateSystemDirection3D.AlongZ);
+    //    destinationSpan[3] = new(this.StartNodeId, CoordinateSystemDirection3D.AboutX);
+    //    destinationSpan[4] = new(this.StartNodeId, CoordinateSystemDirection3D.AboutY);
+    //    destinationSpan[5] = new(this.StartNodeId, CoordinateSystemDirection3D.AboutZ);
+    //    destinationSpan[6] = new(this.EndNodeId, CoordinateSystemDirection3D.AlongX);
+    //    destinationSpan[7] = new(this.EndNodeId, CoordinateSystemDirection3D.AlongY);
+    //    destinationSpan[8] = new(this.EndNodeId, CoordinateSystemDirection3D.AlongZ);
+    //    destinationSpan[9] = new(this.EndNodeId, CoordinateSystemDirection3D.AboutX);
+    //    destinationSpan[10] = new(this.EndNodeId, CoordinateSystemDirection3D.AboutY);
+    //    destinationSpan[11] = new(this.EndNodeId, CoordinateSystemDirection3D.AboutZ);
+    //}
 
     public double[,] GetRotationMatrix() =>
         Element1d.GetRotationMatrix(this.EndPoint, this.StartPoint, this.SectionProfileRotation);
@@ -259,20 +251,5 @@ public class DsmElement1d(
                 torqueUnit
             )
         );
-    }
-
-    protected override IEnumerable<object> GetEqualityComponents()
-    {
-        yield return this.SectionProfileRotation;
-        yield return this.ModulusOfElasticity;
-        yield return this.ModulusOfRigidity;
-        yield return this.Area;
-        yield return this.StrongAxisMomentOfInertia;
-        yield return this.WeakAxisMomentOfInertia;
-        yield return this.PolarMomentOfInertia;
-        yield return this.StartPoint;
-        yield return this.EndPoint;
-        yield return this.StartNodeId;
-        yield return this.EndNodeId;
     }
 }

@@ -2,8 +2,6 @@ using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
-using UnitsNet;
-using UnitsNet.Units;
 
 namespace BeamOs.WebApp.Components.Features.Editor;
 

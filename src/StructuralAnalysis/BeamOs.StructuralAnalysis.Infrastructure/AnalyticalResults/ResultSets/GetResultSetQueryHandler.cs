@@ -22,6 +22,8 @@ public class GetResultSetQueryHandler(StructuralAnalysisDbContext dbContext)
             .ResultSets
             .Where(e => e.ModelId.Equals(query.ModelId) && e.Id.Equals(query.Id))
             .Include(e => e.NodeResults)
+            .Include(e => e.Element1dResults)
+            .AsSplitQuery()
             .Select(el => new { el, el.Model.Settings.UnitSettings })
             .FirstOrDefaultAsync(cancellationToken: ct);
 

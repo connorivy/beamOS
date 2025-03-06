@@ -7,7 +7,7 @@ using UnitsNet.Units;
 namespace BeamOs.Tests.StructuralAnalysis.Integration;
 
 [ParallelGroup("DsmTests")]
-public sealed class DsmTests
+public partial class DsmTests
 {
     [Before(HookType.Class)]
     public static async Task RunDsmAnalysis()
@@ -191,5 +191,68 @@ public sealed class DsmTests
                 nameof(calculated.MomentAboutZ),
             ]
         );
+    }
+
+    [Test]
+    [MethodDataSource(
+        typeof(AllSolvedProblems),
+        nameof(AllSolvedProblems.ModelFixturesWithExpectedDiagramResults)
+    )]
+    public async Task ShearDiagrams_ShouldHaveCorrectMaxAndMinValue(ModelFixture modelFixture)
+    {
+        var resultSet = await AssemblySetup
+            .StructuralAnalysisApiClient
+            .GetResultSetAsync(modelFixture.Id, 1);
+
+        resultSet.ThrowIfError();
+
+        var expectedDiagramResultsDict = ((IHasExpectedDiagramResults)modelFixture)
+            .ExpectedDiagramResults
+            .ToDictionary(x => x.NodeId);
+
+        if (expectedDiagramResultsDict.Count == 0)
+        {
+            throw new Exception("No expected diagram results found");
+        }
+
+        var unitSettings = modelFixture.Settings.UnitSettings.ToDomain();
+        foreach (var element1dResult in resultSet.Value.Element1dResults)
+        {
+            if (
+                !expectedDiagramResultsDict.TryGetValue(
+                    element1dResult.Element1dId,
+                    out var expectedDiagramResult
+                )
+            )
+            {
+                continue;
+            }
+
+            Asserter.AssertEqual(
+                BeamOsObjectType.Element1d,
+                element1dResult.Element1dId.ToString(),
+                "Diagram Results",
+
+                [
+                    expectedDiagramResult.MinShear?.As(unitSettings.ForceUnit),
+                    expectedDiagramResult.MaxShear?.As(unitSettings.ForceUnit),
+                    expectedDiagramResult.MinMoment?.As(unitSettings.TorqueUnit),
+                    expectedDiagramResult.MaxMoment?.As(unitSettings.TorqueUnit),
+                    expectedDiagramResult.MinDeflection?.As(unitSettings.LengthUnit),
+                    expectedDiagramResult.MaxDeflection?.As(unitSettings.LengthUnit),
+                ],
+
+                [
+                    element1dResult.MinShear.Value,
+                    element1dResult.MaxShear.Value,
+                    element1dResult.MinMoment.Value,
+                    element1dResult.MaxMoment.Value,
+                    element1dResult.MinDisplacement.Value,
+                    element1dResult.MaxDisplacement.Value,
+                ],
+                .001,
+                ["MinShear", "MaxShear", "MinMoment", "MaxMoment", "MinDeflection", "MaxDeflection"]
+            );
+        }
     }
 }
