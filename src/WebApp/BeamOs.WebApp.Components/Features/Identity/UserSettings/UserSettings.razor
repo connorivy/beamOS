@@ -18,13 +18,13 @@
                 <div class="w-64">
                     <MudPaper Class="p-4 rounded-lg" Elevation="1">
                         <MudList T="string" SelectedValueChanged="SelectedSectionChanged">
-                            <MudListItem Icon="@Icons.Material.Filled.Person" Value="@("Profile")">Profile</MudListItem>
+                            @* <MudListItem Icon="@Icons.Material.Filled.Person" Value="@("Profile")">Profile</MudListItem> *@
                             <MudListItem Icon="@Icons.Material.Filled.Code" Value="@("Dev")">Developer</MudListItem>
-                            <MudListItem Icon="@Icons.Material.Filled.Code" Value="@("Api")">Api Usage</MudListItem>
-                            <MudListItem Icon="@Icons.Material.Filled.Settings" Value="@("Account")">Account</MudListItem>
+                            <MudListItem Icon="@Icons.Material.Filled.Speed" Value="@("Api")">Api Usage</MudListItem>
+                            @* <MudListItem Icon="@Icons.Material.Filled.Settings" Value="@("Account")">Account</MudListItem>
                             <MudListItem Icon="@Icons.Material.Filled.Notifications" Value="@("Notifications")">Notifications</MudListItem>
                             <MudListItem Icon="@Icons.Material.Filled.Lock" Value="@("Security")">Security</MudListItem>
-                            <MudListItem Icon="@Icons.Material.Filled.Link" Value="@("Integrations")">Integrations</MudListItem>
+                            <MudListItem Icon="@Icons.Material.Filled.Link" Value="@("Integrations")">Integrations</MudListItem> *@
                         </MudList>
                     </MudPaper>
                 </div>
@@ -233,7 +233,7 @@
 </AuthorizeView>
 
 @code {
-    private string ActiveSection = "profile";
+    private string ActiveSection = "Dev";
 
     [Inject]
     private IDialogService DialogService { get; init; }
@@ -247,7 +247,7 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        this.SelectedSectionChanged("Profile");
+        this.SelectedSectionChanged("Dev");
     }
 
     private ApiUsageResponse UsageSummary;
@@ -270,12 +270,6 @@
         var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true };
         var dialog = DialogService.Show<CreateApiTokenDialog>("Create New Token", options);
         var result = await dialog.Result;
-
-        if (!result.Canceled)
-        {
-            var newToken = result.Data as CreateApiTokenRequest;
-            await UserApiTokenService.CreateToken(newToken);
-        }
     }
 
     private async Task DeleteToken(string tokenName)

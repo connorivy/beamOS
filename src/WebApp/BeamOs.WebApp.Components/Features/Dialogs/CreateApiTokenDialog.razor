@@ -1,33 +1,68 @@
+@using BeamOs.Identity
 @using Microsoft.AspNetCore.Components
 @using static BeamOs.WebApp.Components.Features.Identity.UserSettings.UserSettings
 @inject NavigationManager NavigationManager
 
 <MudDialog>
+
     <DialogContent>
-        <!-- Token Name -->
-        <MudTextField @bind-Value="NewToken.Name" Label="Token Name" Required="true" Class="mb-4" />
-
-        <!-- Scopes Selection -->
-        <MudText Typo="Typo.h6" Class="font-semibold mb-2">Select Scopes</MudText>
-        <MudText Typo="Typo.body2" Class="text-gray-600 mb-4">
-            Choose the permissions this token will have.
-        </MudText>
-
-        @foreach (var scope in AvailableScopes)
+        @if (TokenValue is null)
         {
-            <MudCheckBox T="bool" ValueChanged="@(val => OnCheckedChanged(scope, val))"
-                         Label="@scope" 
-                         Class="mb-2" />
+            <!-- Token Name -->
+            <MudTextField @bind-Value="NewToken.Name" Label="Token Name" Required="true" Class="mb-4" />
+
+            <!-- Scopes Selection -->
+            <MudText Typo="Typo.h6" Class="font-semibold mb-2">Select Scopes</MudText>
+            <MudText Typo="Typo.body2" Class="text-gray-600 mb-4">
+                Choose the permissions this token will have.
+            </MudText>
+
+            @foreach (var scope in AvailableScopes)
+            {
+                <MudCheckBox T="bool" ValueChanged="@(val => OnCheckedChanged(scope, val))"
+                Label="@scope" 
+                Class="mb-2" />
+            }
+        }
+        else
+        {
+            <MudText Typo="Typo.body1" Class="mb-4 text-gray-600">
+                Your API token has been generated. Please save it in a secure place. You will not be able to see it again.
+            </MudText>
+            <MudText Typo="Typo.body2" Class="mb-4 text-red-600 font-medium">
+                <strong>Warning:</strong> Treat this token like a password. If lost, you will need to generate a new one.
+            </MudText>
+            <MudTextField @bind-Value="TokenValue" Label="API Token" ReadOnly="true" Variant="Variant.Outlined" Class="mb-4 rounded-lg" />
+            <MudButton OnClick="CopyToken" Color="Color.Primary" Variant="Variant.Filled" FullWidth="true" Class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md">
+                Copy Token
+            </MudButton>
         }
     </DialogContent>
+
     <DialogActions>
-        <MudButton OnClick="Cancel" Color="Color.Secondary">Cancel</MudButton>
-        <MudButton OnClick="Submit" Color="Color.Primary">Create</MudButton>
+        @if (TokenValue is null)
+        {
+            <MudButton OnClick="Close" Color="Color.Secondary">Cancel</MudButton>
+            <MudButton OnClick="GetToken" Color="Color.Primary">Create</MudButton>
+        }
+        else
+        {
+            <MudButton OnClick="Close" Color="Color.Secondary">Close</MudButton>
+        }
     </DialogActions>
 </MudDialog>
 
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Inject]
+    public IUserApiTokenService UserApiTokenService { get; init; }
+
+    [Inject]
+    public IJSRuntime JSRuntime { get; init; }
+
+    [Inject]
+    public ISnackbar Snackbar { get; init; }
 
     private ApiToken NewToken = new ApiToken();
 
@@ -41,6 +76,9 @@
         // "users:write"
     };
 
+    private bool tokenCreated;
+    private string? TokenValue;
+
     private void OnCheckedChanged(string item, bool value)
     {
         if (value)
@@ -53,18 +91,42 @@
         }
     }
 
-    private void Cancel()
+    private void Close()
     {
         MudDialog.Cancel();
     }
 
-    private void Submit()
+    private async Task CopyToken()
     {
-        if (!string.IsNullOrEmpty(NewToken.Name))
+        await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", TokenValue);
+        Snackbar.Add("Token copied to clipboard", Severity.Success);
+    }
+
+    private async Task GetToken()
+    {
+        if (string.IsNullOrEmpty(NewToken.Name))
         {
-            NewToken.Id = 99; // Assign a new ID
-            NewToken.CreatedOn = DateTime.Now;
-            MudDialog.Close(DialogResult.Ok(NewToken));
+            return;
+        }
+
+        NewToken.Id = 99; // Assign a new ID
+        NewToken.CreatedOn = DateTime.Now;
+        // MudDialog.Close(DialogResult.Ok(NewToken));
+
+        var tokenRequest = new CreateApiTokenRequest
+            {
+                Name = NewToken.Name,
+                Scopes = NewToken.Scopes
+            };
+        var tokenResult = await UserApiTokenService.CreateToken(tokenRequest);
+
+        if (tokenResult.IsSuccess)
+        {
+            this.TokenValue = tokenResult.Value.Value;
+        }
+        else
+        {
+            Snackbar.Add(tokenResult.Error.Description, Severity.Error);
         }
     }
 }
