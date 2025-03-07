@@ -60,8 +60,10 @@ public partial class Models : FluxorComponent
         this.RecentlyModifiedModels =
         [
             .. userModels?.Take(4) ?? [],
-            .. ModelPageState.SampleModelResponses.Take(4 - userModels?.Count ?? 0)
+            .. ModelPageState.SampleModelResponses.Take(4 - (userModels?.Count ?? 0))
         ];
+
+        this.Dispatcher.Dispatch(new ModelsDoneLoading());
 
         await base.OnInitializedAsync();
     }
