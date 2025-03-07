@@ -1,5 +1,7 @@
 @page "/user-settings"
 
+<PageTitle>Settings</PageTitle>
+
 @using BeamOs.Identity
 @using BeamOs.WebApp.Components.Features.Dialogs
 @using MudBlazor
@@ -62,7 +64,7 @@
                             </MudButton>
 
                             <!-- Tokens List -->
-                            @if (ApiTokens.Any())
+                            @if (ApiTokens?.Count > 0)
                             {
                                 <MudTable Items="@ApiTokens" Hover="true" Dense="true" Class="mb-6">
                                     <HeaderContent>
@@ -251,7 +253,7 @@
     }
 
     private ApiUsageResponse UsageSummary;
-    private List<ApiTokenResponse> ApiTokens;
+    private List<ApiTokenResponse>? ApiTokens;
 
     protected override async Task OnInitializedAsync()
     {

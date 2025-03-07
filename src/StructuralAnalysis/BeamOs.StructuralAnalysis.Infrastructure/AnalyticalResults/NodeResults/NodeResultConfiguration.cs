@@ -8,12 +8,16 @@ public class NodeResultConfiguration : IEntityTypeConfiguration<NodeResult>
 {
     public void Configure(EntityTypeBuilder<NodeResult> builder)
     {
-#if SQL_SERVER
+        builder
+            .HasOne(e => e.ResultSet)
+            .WithMany()
+            .HasForeignKey(e => e.ResultSetId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         builder
             .HasOne(e => e.Model)
             .WithMany()
             .HasForeignKey(e => e.ModelId)
-            .OnDelete(DeleteBehavior.Restrict);
-#endif
+            .OnDelete(DeleteBehavior.ClientCascade);
     }
 }

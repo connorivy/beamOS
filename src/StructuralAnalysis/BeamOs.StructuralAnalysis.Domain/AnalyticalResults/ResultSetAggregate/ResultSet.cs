@@ -187,7 +187,9 @@ public class ResultSet : BeamOsModelEntity<ResultSetId>
                 unitSettings.AngleUnit
             );
 
-        var localEndDisplacementVector = Vector<double>.Build.Dense(elementDisplacements);
+        var globlEndDisplacementVector = Vector<double>.Build.Dense(elementDisplacements);
+        var localEndDisplacementVector =
+            dsmElement1d.GetTransformationMatrix() * globlEndDisplacementVector;
 
         var elementForces =
             dsmElement1d.GetLocalStiffnessMatrix(
