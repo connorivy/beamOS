@@ -6,6 +6,9 @@
     <TUnitImplicitUsings>false</TUnitImplicitUsings>
     <LangVersion>preview</LangVersion>
     <NpmFolder>.\</NpmFolder>
+
+    <!-- Fix for this bug that fails the app publish https://github.com/dotnet/aspnetcore/issues/59291-->
+    <CompressionEnabled>false</CompressionEnabled>
   </PropertyGroup>
 
 
