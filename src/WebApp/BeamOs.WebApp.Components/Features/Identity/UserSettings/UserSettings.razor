@@ -117,7 +117,7 @@
                                             <MudCard>
                                                 <MudCardContent>
                                                     <MudText Typo="Typo.h6">Total API Calls</MudText>
-                                                    <MudText Typo="Typo.h4" Class="font-bold">@UsageSummary.TotalCalls</MudText>
+                                                    <MudText Typo="Typo.h4" Class="font-bold">@UsageSummary?.TotalCalls ?? 0</MudText>
                                                 </MudCardContent>
                                             </MudCard>
                                         </MudItem>
@@ -125,7 +125,7 @@
                                             <MudCard>
                                                 <MudCardContent>
                                                     <MudText Typo="Typo.h6">Total Duration</MudText>
-                                                    <MudText Typo="Typo.h4" Class="font-bold">@FormatDuration(UsageSummary.TotalDurationMs)</MudText>
+                                                    <MudText Typo="Typo.h4" Class="font-bold">@FormatDuration(UsageSummary?.TotalDurationMs ?? 0)</MudText>
                                                 </MudCardContent>
                                             </MudCard>
                                         </MudItem>
@@ -133,41 +133,44 @@
                                 </div>
 
                                 <!-- Usage Breakdown -->
-                                <div>
-                                    <MudText Typo="Typo.h5" Class="font-semibold mb-4">Usage Breakdown</MudText>
-                                    <MudTable Items="@UsageSummary.Breakdown" Hover="true" Dense="true">
-                                        <HeaderContent>
-                                            <MudTh>Name</MudTh>
-                                            <MudTh>Calls</MudTh>
-                                            <MudTh>Duration</MudTh>
-                                            <MudTh>Share</MudTh>
-                                        </HeaderContent>
-                                        <RowTemplate Context="rowContext">
-                                            <MudTd DataLabel="Name">
-                                                @if (rowContext.IsToken)
-                                                {
-                                                    <MudChip T="string" Text="Token" Color="Color.Primary" Class="mr-2" />
-                                                    @rowContext.ActorName
-                                                }
-                                                else
-                                                {
-                                                    <MudChip T="string" Text="Function" Color="Color.Secondary" Class="mr-2" />
-                                                    @rowContext.ActorName
-                                                }
-                                            </MudTd>
-                                            <MudTd DataLabel="Calls">@rowContext.NumCalls</MudTd>
-                                            <MudTd DataLabel="Duration">@FormatDuration(rowContext.TotalDurationMs)</MudTd>
-                                            <MudTd DataLabel="Share">
-                                                <div class="flex items-center gap-2">
-                                                    <MudProgressLinear Value="@rowContext.SharePercentage(UsageSummary.TotalDurationMs)"
-                                                    Color="Color.Primary" 
-                                                    Class="w-32" />
-                                                    <MudText>@Math.Round(rowContext.SharePercentage(UsageSummary.TotalDurationMs), 1)%</MudText>
-                                                </div>
-                                            </MudTd>
-                                        </RowTemplate>
-                                    </MudTable>
-                                </div>
+                                @if (UsageSummary is not null)
+                                {
+                                    <div>
+                                        <MudText Typo="Typo.h5" Class="font-semibold mb-4">Usage Breakdown</MudText>
+                                        <MudTable Items="@UsageSummary.Breakdown" Hover="true" Dense="true">
+                                            <HeaderContent>
+                                                <MudTh>Name</MudTh>
+                                                <MudTh>Calls</MudTh>
+                                                <MudTh>Duration</MudTh>
+                                                <MudTh>Share</MudTh>
+                                            </HeaderContent>
+                                            <RowTemplate Context="rowContext">
+                                                <MudTd DataLabel="Name">
+                                                    @if (rowContext.IsToken)
+                                                    {
+                                                        <MudChip T="string" Text="Token" Color="Color.Primary" Class="mr-2" />
+                                                        @rowContext.ActorName
+                                                    }
+                                                    else
+                                                    {
+                                                        <MudChip T="string" Text="Function" Color="Color.Secondary" Class="mr-2" />
+                                                        @rowContext.ActorName
+                                                    }
+                                                </MudTd>
+                                                <MudTd DataLabel="Calls">@rowContext.NumCalls</MudTd>
+                                                <MudTd DataLabel="Duration">@FormatDuration(rowContext.TotalDurationMs)</MudTd>
+                                                <MudTd DataLabel="Share">
+                                                    <div class="flex items-center gap-2">
+                                                        <MudProgressLinear Value="@rowContext.SharePercentage(UsageSummary.TotalDurationMs)"
+                                                        Color="Color.Primary" 
+                                                        Class="w-32" />
+                                                        <MudText>@Math.Round(rowContext.SharePercentage(UsageSummary.TotalDurationMs), 1)%</MudText>
+                                                    </div>
+                                                </MudTd>
+                                            </RowTemplate>
+                                        </MudTable>
+                                    </div>
+                                }
                             </div>
                         }
 
@@ -252,7 +255,7 @@
         this.SelectedSectionChanged("Dev");
     }
 
-    private ApiUsageResponse UsageSummary;
+    private ApiUsageResponse? UsageSummary;
     private List<ApiTokenResponse>? ApiTokens;
 
     protected override async Task OnInitializedAsync()
