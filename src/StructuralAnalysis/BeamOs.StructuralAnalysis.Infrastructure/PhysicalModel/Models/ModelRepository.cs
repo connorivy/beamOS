@@ -1,20 +1,21 @@
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
+using BeamOs.StructuralAnalysis.Infrastructure.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Models;
 
-internal class ModelRepository(StructuralAnalysisDbContext dbContext) : IModelRepository
+internal class ModelRepository(StructuralAnalysisDbContext dbContext)
+    : RepositoryBase<ModelId, Model>(dbContext),
+        IModelRepository
 {
-    public void Add(Model entity) => dbContext.Models.Add(entity);
-
     public async Task<Model?> GetSingle(
         ModelId modelId,
         Func<IQueryable<Model>, IQueryable<Model>>? includeNavigationProperties = null,
         CancellationToken ct = default
     )
     {
-        IQueryable<Model> queryable = dbContext.Models;
+        IQueryable<Model> queryable = this.DbContext.Models;
 
         if (includeNavigationProperties is not null)
         {
@@ -33,7 +34,7 @@ internal class ModelRepository(StructuralAnalysisDbContext dbContext) : IModelRe
         params string[] includeNavigationProperties
     )
     {
-        IQueryable<Model> queryable = dbContext.Models;
+        IQueryable<Model> queryable = this.DbContext.Models;
 
         foreach (var prop in includeNavigationProperties)
         {

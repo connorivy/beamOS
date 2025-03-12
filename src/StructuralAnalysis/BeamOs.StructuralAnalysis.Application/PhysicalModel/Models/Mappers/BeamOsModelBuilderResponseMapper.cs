@@ -30,6 +30,8 @@ public partial class BeamOsModelBuilderDomainMapper(Guid modelId)
 
     public partial Model ToDomain(BeamOsModelBuilder builder);
 
+    public DsmAnalysisModel ToDsm(BeamOsModelBuilder builder) => this.ToDsm(builder, out _);
+
     public DsmAnalysisModel ToDsm(BeamOsModelBuilder builder, out Model model)
     {
         model = this.ToDomain(builder);

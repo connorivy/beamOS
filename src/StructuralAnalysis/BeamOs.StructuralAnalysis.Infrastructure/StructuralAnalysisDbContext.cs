@@ -1,8 +1,5 @@
 using BeamOs.Common.Domain.Models;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models.Mappers;
-using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.Common;
-using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.MomentDiagramAggregate;
-using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.ShearForceDiagramAggregate;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.NodeResultAggregate;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
