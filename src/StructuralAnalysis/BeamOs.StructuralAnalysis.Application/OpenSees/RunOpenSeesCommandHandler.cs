@@ -23,8 +23,6 @@ public sealed class RunOpenSeesCommandHandler(
         CancellationToken ct = default
     )
     {
-        string outputDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
         var model = await modelRepository.GetSingle(
             command.ModelId,
             static queryable =>

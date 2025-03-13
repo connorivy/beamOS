@@ -9,7 +9,9 @@
 
   <ItemGroup>
     <!--<PackageReference Include="MathNet.Numerics" />-->
+    <PackageReference Include="CommunityToolkit.HighPerformance" />
     <PackageReference Include="CSparse" />
+    <PackageReference Include="intelmkl.redist.win-x64" />
     <PackageReference Include="MathNet.Numerics.MKL.Win-x64" />
     <PackageReference Include="MathNet.Spatial" />
     <PackageReference Include="MediatR" />
@@ -20,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\external\csparse-interop\CSparse.Interop\CSparse.Interop.csproj" />
     <ProjectReference Include="..\..\Common\BeamOs.Common.Domain\BeamOs.Common.Domain.csproj" />
   </ItemGroup>
 

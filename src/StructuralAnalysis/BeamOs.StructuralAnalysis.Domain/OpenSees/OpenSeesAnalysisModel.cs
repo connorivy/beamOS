@@ -194,8 +194,8 @@ public sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettings
                     this.reactions[indexOffset + 3],
                     this.reactions[indexOffset + 4],
                     this.reactions[indexOffset + 5],
-                    model.Settings.UnitSettings.ForceUnit,
-                    model.Settings.UnitSettings.TorqueUnit
+                    unitSettings.ForceUnit,
+                    unitSettings.TorqueUnit
                 ),
                 new Displacements(
                     this.displacements[indexOffset],
@@ -204,8 +204,8 @@ public sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettings
                     this.displacements[indexOffset + 3],
                     this.displacements[indexOffset + 4],
                     this.displacements[indexOffset + 5],
-                    model.Settings.UnitSettings.LengthUnit,
-                    model.Settings.UnitSettings.AngleUnit
+                    unitSettings.LengthUnit,
+                    unitSettings.AngleUnit
                 )
             );
         }

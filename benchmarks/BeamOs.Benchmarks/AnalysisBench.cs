@@ -36,11 +36,11 @@ public class AnalysisBench : IDisposable
         return analysisModel.RunAnalysis();
     }
 
-    [Benchmark]
-    public async Task<AnalysisResults> RunOpenSees()
-    {
-        return await this.openSeesAnalysisModel.RunAnalysis();
-    }
+    //[Benchmark]
+    //public async Task<AnalysisResults> RunOpenSees()
+    //{
+    //    return await this.openSeesAnalysisModel.RunAnalysis();
+    //}
 
     public void Dispose()
     {

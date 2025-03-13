@@ -196,11 +196,35 @@ public sealed class DsmAnalysisModel(
             var structureStiffnessMatrix = this.BuildStructureStiffnessMatrix();
             var knownReactionVector = this.BuildKnownJointReactionVector();
 
-            var dofDisplacementMathnetVector = structureStiffnessMatrix
-                .Build()
-                .Solve(knownReactionVector.Build());
+            var stiffnessMatrx = CSparse
+                .Double
+                .SparseMatrix
+                .OfArray(structureStiffnessMatrix.Values);
+
+            var dofDisplacementVectorValues = new double[
+                structureStiffnessMatrix.Values.GetLength(0)
+            ];
+            //var solver = CSparse
+            //    .Double
+            //    .Factorization
+            //    .SparseCholesky
+            //    .Create(stiffnessMatrx, CSparse.ColumnOrdering.Natural);
+
+            var solver = new CSparse.Double.Factorization.MKL.Pardiso(stiffnessMatrx);
+            solver.Factorize();
+
+            solver.Solve(knownReactionVector.ToArray(), dofDisplacementVectorValues);
+
             VectorIdentified dofDisplacementVector =
-                new(degreeOfFreedomIds, dofDisplacementMathnetVector.Cast<double>().ToArray());
+                new(degreeOfFreedomIds, dofDisplacementVectorValues);
+
+            //var dofDisplacementMathnetVector = structureStiffnessMatrix
+            //    .Build()
+            //    .Solve(knownReactionVector.Build());
+            //VectorIdentified dofDisplacementVector =
+            //    new(degreeOfFreedomIds, dofDisplacementMathnetVector.Cast<double>().ToArray());
+
+
             this.unknownDisplacementVector = dofDisplacementVector;
         }
 

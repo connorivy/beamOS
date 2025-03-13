@@ -3,8 +3,8 @@ using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
-using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Double;
+using CSparse.Double;
+using CSparse.Storage;
 using UnitsNet;
 using UnitsNet.Units;
 
@@ -51,7 +51,7 @@ public readonly record struct DeflectionDiagrams(
         Point endPoint,
         Angle sectionProfileRotation,
         LengthUnit lengthUnit,
-        Vector<double> localElementDisplacements
+        Span<double> localElementDisplacements
     ) =>
         Create(
             element1DId,
@@ -70,7 +70,7 @@ public readonly record struct DeflectionDiagrams(
         Point endPoint,
         Angle sectionProfileRotation,
         LengthUnit lengthUnit,
-        Vector<double> localElementDisplacements,
+        Span<double> localElementDisplacements,
         out double displacementMin,
         out double displacementMax
     )
@@ -79,7 +79,7 @@ public readonly record struct DeflectionDiagrams(
         double[] offsets = new double[numIntervals * 3];
 
         double beamLength = Line.GetLength(startPoint, endPoint).As(lengthUnit);
-        Matrix<double> rotationMatrixTranspose = DenseMatrix
+        DenseColumnMajorStorage<double> rotationMatrixTranspose = DenseMatrix
             .OfArray(Element1d.GetRotationMatrix(endPoint, startPoint, sectionProfileRotation))
             .Transpose();
 
@@ -89,14 +89,23 @@ public readonly record struct DeflectionDiagrams(
         {
             double step = (double)j / (numIntervals - 1);
 
-            var displacements = DeflectedShapeShapeFunctionCalculator.Solve(
+            //var displacements = DeflectedShapeShapeFunctionCalculator.Solve(
+            //    step * beamLength,
+            //    beamLength,
+            //    localElementDisplacements,
+            //    rotationMatrixTranspose
+            //);
+            //displacements.AsSpan().CopyTo(offsets.AsSpan(j * 3));
+
+            var displacements = offsets.AsSpan(j * 3, 3);
+
+            DeflectedShapeShapeFunctionCalculator.Solve(
                 step * beamLength,
                 beamLength,
                 localElementDisplacements,
-                rotationMatrixTranspose
+                rotationMatrixTranspose,
+                displacements
             );
-
-            displacements.AsSpan().CopyTo(offsets.AsSpan(j * 3));
 
             var displacement = Math.Sqrt(
                 Math.Pow(displacements[0], 2)
