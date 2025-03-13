@@ -10,11 +10,28 @@ using UnitsNet.Units;
 
 namespace BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 
-public class DsmAnalysisModel
+public sealed class DsmAnalysisModel(
+    ModelId modelId,
+    UnitSettings unitSettings,
+    DsmElement1d[] dsmElement1Ds,
+    DsmNodeVo[] dsmNodes
+)
 {
     public DsmAnalysisModel(Model model, UnitSettings? unitSettings = null)
+        : this(
+            model.Id,
+            unitSettings ?? model.Settings.UnitSettings,
+            CreateDsmElement1dsFromModel(model),
+            CreateDsmNodesFromModel(model)
+        ) { }
+
+    public DsmAnalysisModel Clone()
     {
-        this.dsmElement1Ds = model.Settings.AnalysisSettings.Element1DAnalysisType switch
+        return new(modelId, unitSettings, dsmElement1Ds, dsmNodes);
+    }
+
+    private static DsmElement1d[] CreateDsmElement1dsFromModel(Model model) =>
+        model.Settings.AnalysisSettings.Element1DAnalysisType switch
         {
             Element1dAnalysisType.Euler
                 => model.Element1ds.Select(el => new DsmElement1d(el)).ToArray(),
@@ -27,17 +44,8 @@ public class DsmAnalysisModel
                 )
         };
 
-        this.dsmNodes = model.Nodes.Select(el => new DsmNodeVo(el)).ToArray();
-        this.unitSettings = unitSettings ?? model.Settings.UnitSettings;
-        this.modelId = model.Id;
-    }
-
-    private readonly ModelId modelId;
-    private readonly UnitSettings unitSettings;
-
-    private readonly DsmElement1d[] dsmElement1Ds;
-
-    private readonly DsmNodeVo[] dsmNodes;
+    private static DsmNodeVo[] CreateDsmNodesFromModel(Model model) =>
+        model.Nodes.Select(el => new DsmNodeVo(el)).ToArray();
 
     public AnalysisResults RunAnalysis()
     {
@@ -58,11 +66,11 @@ public class DsmAnalysisModel
             knownReactionVector
         );
 
-        ResultSet resultSet = new(this.modelId, resultSetId) { NodeResults = nodeResults };
+        ResultSet resultSet = new(modelId, resultSetId) { NodeResults = nodeResults };
 
         var otherResults = resultSet.ComputeDiagramsAndElement1dResults(
-            this.dsmElement1Ds,
-            this.unitSettings
+            dsmElement1Ds,
+            unitSettings
         );
 
         return new() { ResultSet = resultSet, OtherAnalyticalResults = otherResults };
@@ -79,7 +87,7 @@ public class DsmAnalysisModel
 
         List<UnsupportedStructureDisplacementId> degreeOfFreedomIds = [];
         List<UnsupportedStructureDisplacementId> boundaryConditionIds = [];
-        foreach (var dsmNode in this.dsmNodes)
+        foreach (var dsmNode in dsmNodes)
         {
             foreach (
                 CoordinateSystemDirection3D direction in Enum.GetValues<CoordinateSystemDirection3D>()
@@ -120,12 +128,12 @@ public class DsmAnalysisModel
         var (degreeOfFreedomIds, _) = this.GetSortedUnsupportedStructureIds();
 
         MatrixIdentified sMatrix = new(degreeOfFreedomIds);
-        foreach (var element1D in this.dsmElement1Ds)
+        foreach (var element1D in dsmElement1Ds)
         {
             var globalMatrixWithIdentifiers = element1D.GetGlobalStiffnessMatrixIdentified(
-                this.unitSettings.ForceUnit,
-                this.unitSettings.ForcePerLengthUnit,
-                this.unitSettings.TorqueUnit
+                unitSettings.ForceUnit,
+                unitSettings.ForcePerLengthUnit,
+                unitSettings.TorqueUnit
             );
             sMatrix.AddEntriesWithMatchingIdentifiers(globalMatrixWithIdentifiers);
         }
@@ -163,11 +171,11 @@ public class DsmAnalysisModel
         {
             var (degreeOfFreedomIds, _) = this.GetSortedUnsupportedStructureIds();
             VectorIdentified loadVector = new(degreeOfFreedomIds);
-            foreach (var node in this.dsmNodes)
+            foreach (var node in dsmNodes)
             {
                 var localLoadVector = node.GetForceVectorIdentifiedInGlobalCoordinates(
-                    this.unitSettings.ForceUnit,
-                    this.unitSettings.TorqueUnit
+                    unitSettings.ForceUnit,
+                    unitSettings.TorqueUnit
                 );
                 loadVector.AddEntriesWithMatchingIdentifiers(localLoadVector);
             }
@@ -209,14 +217,14 @@ public class DsmAnalysisModel
             var unknownJointDisplacementVector = this.GetUnknownJointDisplacementVector();
 
             VectorIdentified reactions = new(boundaryConditionIds);
-            foreach (var element1D in this.dsmElement1Ds)
+            foreach (var element1D in dsmElement1Ds)
             {
                 var globalMemberEndForcesVector =
                     element1D.GetGlobalMemberEndForcesVectorIdentified(
                         unknownJointDisplacementVector,
-                        this.unitSettings.ForceUnit,
-                        this.unitSettings.ForcePerLengthUnit,
-                        this.unitSettings.TorqueUnit
+                        unitSettings.ForceUnit,
+                        unitSettings.ForcePerLengthUnit,
+                        unitSettings.TorqueUnit
                     );
                 reactions.AddEntriesWithMatchingIdentifiers(globalMemberEndForcesVector);
             }
@@ -286,13 +294,7 @@ public class DsmAnalysisModel
                 displacementAngles[CoordinateSystemDirection3D.AboutZ]
             );
             analyticalNodes.Add(
-                new NodeResult(
-                    this.modelId,
-                    resultSetId,
-                    nodeId,
-                    forcesResponse,
-                    displacementResponse
-                )
+                new NodeResult(modelId, resultSetId, nodeId, forcesResponse, displacementResponse)
             );
         }
 
@@ -309,17 +311,11 @@ public class DsmAnalysisModel
         {
             if (kvp.Key.Direction.IsLinearDirection())
             {
-                forceForces.Add(
-                    kvp.Key.Direction,
-                    new Force(kvp.Value, this.unitSettings.ForceUnit)
-                );
+                forceForces.Add(kvp.Key.Direction, new Force(kvp.Value, unitSettings.ForceUnit));
             }
             else
             {
-                forceTorques.Add(
-                    kvp.Key.Direction,
-                    new Torque(kvp.Value, this.unitSettings.TorqueUnit)
-                );
+                forceTorques.Add(kvp.Key.Direction, new Torque(kvp.Value, unitSettings.TorqueUnit));
             }
         }
     }
@@ -338,7 +334,7 @@ public class DsmAnalysisModel
             {
                 displacementLengths.Add(
                     kvp.Key.Direction,
-                    new Length(kvp.Value, this.unitSettings.LengthUnit)
+                    new Length(kvp.Value, unitSettings.LengthUnit)
                 );
             }
             else

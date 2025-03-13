@@ -1,6 +1,6 @@
 using System.Net.Sockets;
 
-namespace BeamOs.StructuralAnalysis.Domain.OpenSees.TcpServer;
+namespace BeamOs.StructuralAnalysis.Domain.OpenSees.Tcp;
 
 public class TcpServerCallback
 {

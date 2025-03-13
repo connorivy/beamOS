@@ -2,7 +2,7 @@ using System.Net;
 using System.Net.Sockets;
 using Microsoft.Extensions.Logging;
 
-namespace BeamOs.StructuralAnalysis.Domain.OpenSees.TcpServer;
+namespace BeamOs.StructuralAnalysis.Domain.OpenSees.Tcp;
 
 public sealed class TcpServer : IDisposable
 {
@@ -43,14 +43,9 @@ public sealed class TcpServer : IDisposable
 
         double[]? data = null;
 
-        Console.Write("Waiting for a connection... ");
-
         // Perform a blocking call to accept requests.Hi
         // You could also use server.AcceptSocket() here.
         using TcpClient client = await this.server.AcceptTcpClientAsync();
-        Console.WriteLine("Connected!");
-
-        //data = null;
 
         // Get a stream object for reading and writing
         NetworkStream stream = client.GetStream();
@@ -88,10 +83,6 @@ public sealed class TcpServer : IDisposable
             double value = BitConverter.ToDouble(rawValue, 0);
             data[i - 2] = value;
         }
-
-        Console.WriteLine(
-            $"Received array of length {data.Length} from endpoint {this.server.LocalEndpoint}"
-        );
 
         if (data is not null)
         {

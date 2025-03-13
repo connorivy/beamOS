@@ -1,22 +1,18 @@
+using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 
-public interface IModelRepository
+public interface IModelRepository : IRepository<ModelId, Model>
 {
-    void Add(Model entity);
-
-    //Task<Model> Update(PatchModelCommand patchCommand);
-    //Task<List<Model>> GetAll();
-    Task<Model?> GetSingle(
+    public Task<Model?> GetSingle(
         ModelId modelId,
         Func<IQueryable<Model>, IQueryable<Model>>? includeNavigationProperties = null,
         CancellationToken ct = default
     );
 
-    Task<Model?> GetSingle(
+    public Task<Model?> GetSingle(
         ModelId modelId,
-        //Func<IQueryable<Model>, IQueryable<Model>>? includeNavigationProperties = null,
         CancellationToken ct = default,
         params string[] includeNavigationProperties
     );

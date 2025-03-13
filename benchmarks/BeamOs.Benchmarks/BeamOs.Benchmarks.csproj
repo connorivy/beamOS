@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\StructuralAnalysis\BeamOs.StructuralAnalysis.Application\BeamOs.StructuralAnalysis.Application.csproj" />
+    <ProjectReference Include="..\..\tests\BeamOs.Tests.Common\BeamOs.Tests.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <BinFiles Include="$(OpenSeesDir)bin\**\*.*" />
+    <LibFiles Include="$(OpenSeesDir)lib\**\*.*" />
+  </ItemGroup>
+  <Target Name="CopyOpenSees" AfterTargets="AfterBuild">
+    <Exec Command="echo After Build: $(OpenSeesDir) $(OutDir)" />
+    <Copy SourceFiles="@(BinFiles)" DestinationFolder="$(OutputPath)bin\%(RecursiveDir)" />
+    <Copy SourceFiles="@(LibFiles)" DestinationFolder="$(OutputPath)lib\%(RecursiveDir)" />
+  </Target>
+
+</Project>

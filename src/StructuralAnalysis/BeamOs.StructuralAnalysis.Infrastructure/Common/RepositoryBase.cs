@@ -3,7 +3,6 @@ using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.Common;
@@ -44,7 +43,7 @@ internal abstract class ModelResourceRepositoryBase<TId, TEntity>(
     where TEntity : BeamOsModelEntity<TId>
 {
     public async Task<List<TId>> GetIdsInModel(ModelId modelId, CancellationToken ct = default) =>
-        await dbContext
+        await this.DbContext
             .Set<TEntity>()
             .Where(m => m.ModelId == modelId)
             .Select(m => m.Id)
