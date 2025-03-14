@@ -1,3 +1,0 @@
-[submodule "external/csparse-interop"]
-	path = external/csparse-interop
-	url = https://github.com/connorivy/csparse-interop

@@ -9,6 +9,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- ASP.NET -->
+    <PackageVersion Include="BeamOs.CSparse.Interop" Version="4.2.0" />
     <PackageVersion Include="BenchmarkDotNet" Version="0.14.0" />
     <PackageVersion Include="CommunityToolkit.HighPerformance" Version="8.4.0" />
     <PackageVersion Include="CSparse" Version="4.2.0" />
