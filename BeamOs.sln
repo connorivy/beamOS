@@ -100,10 +100,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "benchmarks", "benchmarks", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamOs.Benchmarks", "benchmarks\BeamOs.Benchmarks\BeamOs.Benchmarks.csproj", "{708BB17D-1149-434A-83F4-E3EE35D0A0ED}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "external", "external", "{F9F5D712-DB09-4B32-A5F1-9FB1B97169CB}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSparse.Interop", "external\csparse-interop\CSparse.Interop\CSparse.Interop.csproj", "{08D6DED1-7C96-EFED-EE78-D5F25E307A20}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -222,10 +218,6 @@ Global
 		{708BB17D-1149-434A-83F4-E3EE35D0A0ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{708BB17D-1149-434A-83F4-E3EE35D0A0ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{708BB17D-1149-434A-83F4-E3EE35D0A0ED}.Release|Any CPU.Build.0 = Release|Any CPU
-		{08D6DED1-7C96-EFED-EE78-D5F25E307A20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{08D6DED1-7C96-EFED-EE78-D5F25E307A20}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{08D6DED1-7C96-EFED-EE78-D5F25E307A20}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{08D6DED1-7C96-EFED-EE78-D5F25E307A20}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -267,7 +259,6 @@ Global
 		{2DB41960-8F1E-494E-A30D-E95256F71332} = {48C54BAE-EA56-4542-92EB-CAFBE1F6288F}
 		{65D1A729-4913-2624-ED4A-71EA362E5C01} = {D0D7F508-C416-4B8C-AD30-4FC707F0D154}
 		{708BB17D-1149-434A-83F4-E3EE35D0A0ED} = {1FDE73A5-EA2E-473B-A73D-6B6921531D8E}
-		{08D6DED1-7C96-EFED-EE78-D5F25E307A20} = {F9F5D712-DB09-4B32-A5F1-9FB1B97169CB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A4E54AF5-719C-45F7-8978-E734B3D3060B}
