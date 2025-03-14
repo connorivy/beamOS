@@ -71,7 +71,7 @@
     <PackageVersion Include="Microsoft.Extensions.Http" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftExtensionsVersion)" />
     <!-- Misc -->
-    <PackageVersion Include="BeamOs.CSparse.Interop" Version="4.2.2" />
+    <PackageVersion Include="BeamOs.CSparse.Interop" Version="4.2.1" />
     <PackageVersion Include="FastEndpoints" Version="$(FastEndpointVersion)" />
     <PackageVersion Include="FastEndpoints.Attributes" Version="$(FastEndpointVersion)" />
     <PackageVersion Include="FastEndpoints.ClientGen" Version="$(FastEndpointVersion)" />
