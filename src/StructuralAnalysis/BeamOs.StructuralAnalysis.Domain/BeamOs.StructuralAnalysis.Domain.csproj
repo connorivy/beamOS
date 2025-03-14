@@ -9,17 +9,23 @@
 
   <ItemGroup>
     <!--<PackageReference Include="MathNet.Numerics" />-->
-    <PackageReference Include="BeamOs.CSparse.Interop" />
     <PackageReference Include="CommunityToolkit.HighPerformance" />
     <PackageReference Include="CSparse" />
-    <PackageReference Include="intelmkl.redist.win-x64" />
     <PackageReference Include="MathNet.Numerics.MKL.Win-x64" />
     <PackageReference Include="MathNet.Spatial" />
     <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
     <PackageReference Include="Riok.Mapperly" />
     <PackageReference Include="UnitsNet" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+    <PackageReference Include="BeamOs.CSparse.Interop" VersionOverride="4.2.0" />
+    <PackageReference Include="intelmkl.redist.win-x64" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$([MSBuild]::IsOSUnixLike())">
+    <PackageReference Include="BeamOs.CSparse.Interop" />
   </ItemGroup>
 
   <ItemGroup>
