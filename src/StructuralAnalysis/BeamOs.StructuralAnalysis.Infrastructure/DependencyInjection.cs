@@ -85,7 +85,7 @@ public static class DependencyInjection
             GetModelsQueryHandler
         >();
 
-        if (!BeamOsEnv.IsCiEnv())
+        if (BeamOsEnv.IsCiEnv())
         {
             services.AddSingleton<ISolverFactory, CholeskySolverFactory>();
         }
