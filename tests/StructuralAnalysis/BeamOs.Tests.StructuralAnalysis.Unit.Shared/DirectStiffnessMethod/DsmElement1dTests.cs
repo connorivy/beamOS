@@ -3,6 +3,7 @@ using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod.Common.ValueObjects;
 using BeamOs.Tests.Common;
+using BeamOs.Tests.StructuralAnalysis.Integration;
 
 namespace BeamOs.Tests.StructuralAnalysis.Unit.DirectStiffnessMethod;
 
@@ -22,7 +23,7 @@ public partial class DsmElement1dTests
         DsmAnalysisModel dsmAnalysisModel = mapper.ToDsm(modelFixture, out var model);
 
         VectorIdentified jointDisplacementVector =
-            dsmAnalysisModel.GetUnknownJointDisplacementVector();
+            dsmAnalysisModel.GetUnknownJointDisplacementVector(UnitTestHelpers.SolverFactory);
 
         foreach (var el in dsmFixture.ExpectedDsmElement1dResults)
         {

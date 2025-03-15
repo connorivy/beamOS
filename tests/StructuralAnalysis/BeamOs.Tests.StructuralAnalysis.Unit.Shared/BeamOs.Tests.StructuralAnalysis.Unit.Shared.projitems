@@ -9,6 +9,7 @@
     <Import_RootNamespace>BeamOs.Tests.StructuralAnalysis.Unit.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)UnitTestHelpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DirectStiffnessMethod\DsmElement1dTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DirectStiffnessMethod\DsmModelTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GlobalUsings.cs" />

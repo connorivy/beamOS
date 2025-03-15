@@ -4,6 +4,7 @@ using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.CsSdk.Mappers;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 using BeamOs.Tests.Common;
+using BeamOs.Tests.StructuralAnalysis.Integration;
 
 namespace BeamOs.Tests.StructuralAnalysis.Unit.DirectStiffnessMethod;
 
@@ -50,7 +51,7 @@ public class DsmModelTests
         DsmAnalysisModel dsmAnalysisModel = mapper.ToDsm(modelFixture, out _);
 
         double[] jointDisplacementVector = dsmAnalysisModel
-            .GetUnknownJointDisplacementVector()
+            .GetUnknownJointDisplacementVector(UnitTestHelpers.SolverFactory)
             .ToArray();
 
         Asserter.AssertEqual(
@@ -76,7 +77,9 @@ public class DsmModelTests
         var dsmFixture = (IHasExpectedReactionVector)modelFixture;
         DsmAnalysisModel dsmAnalysisModel = mapper.ToDsm(modelFixture, out _);
 
-        double[] jointReactionVector = dsmAnalysisModel.GetUnknownJointReactionVector().ToArray();
+        double[] jointReactionVector = dsmAnalysisModel
+            .GetUnknownJointReactionVector(UnitTestHelpers.SolverFactory)
+            .ToArray();
 
         Asserter.AssertEqual(
             BeamOsObjectType.Model,

@@ -3,6 +3,7 @@ using BeamOs.CodeGen.SpeckleConnectorApi;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.CsSdk;
+using BeamOs.StructuralAnalysis.Domain;
 using BeamOs.Tests.Common;
 using BeamOs.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd;
 using BeamOs.Tests.Runtime.TestRunner;

@@ -165,7 +165,7 @@ public class ResultSet : BeamOsModelEntity<ResultSetId>
         };
     }
 
-    private static (Vector<double>, Vector<double>) GetLocalElementDisplacementsAndForces(
+    private static (double[], double[]) GetLocalElementDisplacementsAndForces(
         DsmElement1d dsmElement1d,
         Dictionary<int, NodeResult> nodeResultsDict,
         UnitSettings unitSettings
@@ -198,7 +198,7 @@ public class ResultSet : BeamOsModelEntity<ResultSetId>
                 unitSettings.TorqueUnit
             ) * localEndDisplacementVector;
 
-        return (localEndDisplacementVector, elementForces);
+        return (localEndDisplacementVector.AsArray(), elementForces.AsArray());
     }
 
     [Obsolete("EF Core Constructor", true)]

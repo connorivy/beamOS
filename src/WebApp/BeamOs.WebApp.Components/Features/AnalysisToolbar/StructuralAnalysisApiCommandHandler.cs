@@ -25,7 +25,7 @@ public sealed class RunDsmCommandCommandHandler(
     {
         dispatcher.Dispatch(new AnalysisBegan() { ModelId = command.ModelId });
 
-        var result = await structuralAnalysisApiClientV1.RunOpenSeesAnalysisAsync(
+        var result = await structuralAnalysisApiClientV1.RunDirectStiffnessMethodAsync(
             command.ModelId,
             command.UnitsOverride,
             ct

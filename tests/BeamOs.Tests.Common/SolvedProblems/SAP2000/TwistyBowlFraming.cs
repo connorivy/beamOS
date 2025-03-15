@@ -18,6 +18,38 @@ public partial class TwistyBowlFraming : ModelFixture, IHasExpectedNodeResults
                 DisplacementAlongY = new(.0358, LengthUnit.Inch),
                 DisplacementAlongZ = new(-.1152, LengthUnit.Inch),
             },
+            new()
+            {
+                ResultSetId = 1,
+                NodeId = 2,
+                DisplacementAlongX = new(.968101, LengthUnit.Inch),
+                DisplacementAlongY = new(.043022, LengthUnit.Inch),
+                DisplacementAlongZ = new(-.119193, LengthUnit.Inch),
+            },
+            new()
+            {
+                ResultSetId = 1,
+                NodeId = 3,
+                DisplacementAlongX = new(.39517, LengthUnit.Inch),
+                DisplacementAlongY = new(.02345, LengthUnit.Inch),
+                DisplacementAlongZ = new(-.109077, LengthUnit.Inch),
+            },
+            new()
+            {
+                ResultSetId = 1,
+                NodeId = 4,
+                DisplacementAlongX = new(.027424, LengthUnit.Inch),
+                DisplacementAlongY = new(.009371, LengthUnit.Inch),
+                DisplacementAlongZ = new(-.086405, LengthUnit.Inch),
+            },
+            new()
+            {
+                ResultSetId = 1,
+                NodeId = 5,
+                ForceAlongX = new(.562, ForceUnit.KilopoundForce),
+                ForceAlongY = new(-3.347, ForceUnit.KilopoundForce),
+                ForceAlongZ = new(-1.363, ForceUnit.KilopoundForce)
+            },
             new() {
                 ResultSetId = 1,
                 NodeId = 50,
