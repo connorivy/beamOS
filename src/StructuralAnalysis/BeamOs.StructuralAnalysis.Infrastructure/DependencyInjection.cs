@@ -10,6 +10,7 @@ using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
+using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 using BeamOs.StructuralAnalysis.Infrastructure.AnalyticalResults.NodeResults;
 using BeamOs.StructuralAnalysis.Infrastructure.AnalyticalResults.ResultSets;
 using BeamOs.StructuralAnalysis.Infrastructure.Common;
@@ -20,6 +21,8 @@ using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.MomentLoads;
 using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.SectionProfiles;
+using BeamOs.Tests.Common;
+using MathNet.Numerics.Providers.SparseSolver;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.DependencyInjection;
@@ -81,6 +84,15 @@ public static class DependencyInjection
             IQueryHandler<EmptyRequest, List<ModelInfoResponse>>,
             GetModelsQueryHandler
         >();
+
+        if (!BeamOsEnv.IsCiEnv())
+        {
+            services.AddSingleton<ISolverFactory, CholeskySolverFactory>();
+        }
+        else
+        {
+            services.AddSingleton<ISolverFactory, PardisoSolverFactory>();
+        }
 
         return services;
     }

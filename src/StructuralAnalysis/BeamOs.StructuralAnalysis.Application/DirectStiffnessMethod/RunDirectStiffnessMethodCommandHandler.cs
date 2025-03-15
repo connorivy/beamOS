@@ -17,6 +17,7 @@ public class RunDirectStiffnessMethodCommandHandler(
     IModelRepository modelRepository,
     IResultSetRepository resultSetRepository,
     IStructuralAnalysisUnitOfWork unitOfWork,
+    ISolverFactory solverFactory,
     ILogger<RunDirectStiffnessMethodCommandHandler> logger
 ) : ICommandHandler<RunDsmCommand, AnalyticalResultsResponse>
 {
@@ -46,7 +47,7 @@ public class RunDirectStiffnessMethodCommandHandler(
 
         var dsmModel = new DsmAnalysisModel(model, unitSettings);
 
-        var analysisResults = dsmModel.RunAnalysis();
+        var analysisResults = dsmModel.RunAnalysis(solverFactory);
 
         resultSetRepository.Add(analysisResults.ResultSet);
 

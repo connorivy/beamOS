@@ -47,15 +47,17 @@ public sealed class DsmAnalysisModel(
     private static DsmNodeVo[] CreateDsmNodesFromModel(Model model) =>
         model.Nodes.Select(el => new DsmNodeVo(el)).ToArray();
 
-    public AnalysisResults RunAnalysis()
+    public AnalysisResults RunAnalysis(ISolverFactory solverFactory)
     {
         VectorIdentified knownJointDisplacementVector = this.BuildKnownJointDisplacementVector();
 
         VectorIdentified knownReactionVector = this.BuildKnownJointReactionVector();
 
-        VectorIdentified unknownJointDisplacementVector = this.GetUnknownJointDisplacementVector();
+        VectorIdentified unknownJointDisplacementVector = this.GetUnknownJointDisplacementVector(
+            solverFactory
+        );
 
-        VectorIdentified unknownReactionVector = this.GetUnknownJointReactionVector();
+        VectorIdentified unknownReactionVector = this.GetUnknownJointReactionVector(solverFactory);
 
         ResultSetId resultSetId = new();
         List<NodeResult> nodeResults = this.GetAnalyticalNodes(
@@ -188,7 +190,7 @@ public sealed class DsmAnalysisModel(
 
     private VectorIdentified? unknownDisplacementVector;
 
-    internal VectorIdentified GetUnknownJointDisplacementVector()
+    internal VectorIdentified GetUnknownJointDisplacementVector(ISolverFactory solverFactory)
     {
         if (this.unknownDisplacementVector is null)
         {
@@ -196,22 +198,15 @@ public sealed class DsmAnalysisModel(
             var structureStiffnessMatrix = this.BuildStructureStiffnessMatrix();
             var knownReactionVector = this.BuildKnownJointReactionVector();
 
-            var stiffnessMatrx = CSparse
+            var stiffnessMatrix = CSparse
                 .Double
                 .SparseMatrix
                 .OfArray(structureStiffnessMatrix.Values);
+            var solver = solverFactory.GetSolver(stiffnessMatrix);
 
             var dofDisplacementVectorValues = new double[
                 structureStiffnessMatrix.Values.GetLength(0)
             ];
-            //var solver = CSparse
-            //    .Double
-            //    .Factorization
-            //    .SparseCholesky
-            //    .Create(stiffnessMatrx, CSparse.ColumnOrdering.Natural);
-
-            var solver = new CSparse.Double.Factorization.MKL.Pardiso(stiffnessMatrx);
-            solver.Factorize();
 
             solver.Solve(knownReactionVector.ToArray(), dofDisplacementVectorValues);
 
@@ -233,12 +228,14 @@ public sealed class DsmAnalysisModel(
 
     private VectorIdentified? unknownReactionVector;
 
-    internal VectorIdentified GetUnknownJointReactionVector()
+    internal VectorIdentified GetUnknownJointReactionVector(ISolverFactory solverFactory)
     {
         if (this.unknownReactionVector is null)
         {
             var (_, boundaryConditionIds) = this.GetSortedUnsupportedStructureIds();
-            var unknownJointDisplacementVector = this.GetUnknownJointDisplacementVector();
+            var unknownJointDisplacementVector = this.GetUnknownJointDisplacementVector(
+                solverFactory
+            );
 
             VectorIdentified reactions = new(boundaryConditionIds);
             foreach (var element1D in dsmElement1Ds)

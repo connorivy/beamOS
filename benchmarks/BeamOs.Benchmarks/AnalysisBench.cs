@@ -9,11 +9,11 @@ namespace BeamOs.Benchmarks;
 
 [MemoryDiagnoser]
 [MediumRunJob]
-[JsonExporterAttribute.Brief]
 public class AnalysisBench : IDisposable
 {
     private readonly DsmAnalysisModel dsmAnalysisModel;
     private readonly OpenSeesAnalysisModel openSeesAnalysisModel;
+    private readonly ISolverFactory solverFactory = new PardisoSolverFactory();
 
     public AnalysisBench()
     {
@@ -33,7 +33,7 @@ public class AnalysisBench : IDisposable
         // we need to clone because we are caching some calculated results.
         // those are not copied when we clone the model.
         DsmAnalysisModel analysisModel = this.dsmAnalysisModel.Clone();
-        return analysisModel.RunAnalysis();
+        return analysisModel.RunAnalysis(this.solverFactory);
     }
 
     //[Benchmark]
