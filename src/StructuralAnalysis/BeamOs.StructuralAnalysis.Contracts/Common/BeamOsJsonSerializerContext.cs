@@ -22,6 +22,7 @@ namespace BeamOs.StructuralAnalysis.Contracts.Common;
 [JsonSerializable(typeof(CreatePointLoadRequest))]
 [JsonSerializable(typeof(CreateMomentLoadRequest))]
 [JsonSerializable(typeof(PutNodeRequest))]
+[JsonSerializable(typeof(NodeData))]
 [JsonSerializable(typeof(IEnumerable<PutNodeRequest>))]
 [JsonSerializable(typeof(PutMaterialRequest))]
 [JsonSerializable(typeof(IEnumerable<PutMaterialRequest>))]

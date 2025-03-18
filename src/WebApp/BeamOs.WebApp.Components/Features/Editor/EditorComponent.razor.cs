@@ -9,6 +9,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.WebApp.Components.Features.Common;
+using BeamOs.WebApp.Components.Features.ModelObjectEditor;
 using BeamOs.WebApp.Components.Features.StructuralApi;
 using BeamOs.WebApp.Components.Features.UndoRedo;
 using BeamOs.WebApp.EditorCommands;
@@ -18,6 +19,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 using MudBlazor;
+using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 
 namespace BeamOs.WebApp.Components.Features.Editor;
 
@@ -82,6 +84,36 @@ public partial class EditorComponent(
             {
                 //state.Value.CachedModelResponse.Nodes[command.NodeId] = nodeResponse.Value;
                 dispatcher.Dispatch(new ModelEntityUpdated() { ModelEntity = nodeResponse.Value });
+            }
+        });
+
+        this.SubscribeToAction<PutObjectCommand<NodeResponse>>(async command =>
+        {
+            if (!command.HandledByEditor)
+            {
+                LengthUnit lengthUnit = command.New.LocationPoint.LengthUnit.MapToLengthUnit();
+
+                await state.Value.EditorApi.ReduceMoveNodeCommandAsync(new MoveNodeCommand() {
+                    CanvasId = this.CanvasId,
+                    NewLocation = new()
+                    {
+                        X = new Length(command.New.LocationPoint.X, lengthUnit).Meters,
+                        Y = new Length(command.New.LocationPoint.Y, lengthUnit).Meters,
+                        Z = new Length(command.New.LocationPoint.Z, lengthUnit).Meters
+                    },
+                    PreviousLocation = new()
+                    {
+                        X = new Length(command.Previous.LocationPoint.X, lengthUnit).Meters,
+                        Y = new Length(command.Previous.LocationPoint.Y, lengthUnit).Meters,
+                        Z = new Length(command.Previous.LocationPoint.Z, lengthUnit).Meters
+                    },
+                    NodeId = command.New.Id
+                });
+            }
+
+            if (!command.HandledByServer)
+            {
+                await apiClient.PutNodeAsync(command.New.Id, command.New.ModelId, new(command.New.LocationPoint, command.New.Restraint));
             }
         });
 

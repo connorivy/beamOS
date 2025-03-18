@@ -5,6 +5,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
 using BeamOs.WebApp.Components.Features.Common;
+using BeamOs.WebApp.Components.Features.ModelObjectEditor;
 using BeamOs.WebApp.Components.Features.StructuralApi;
 using BeamOs.WebApp.EditorCommands;
 using Fluxor;
@@ -16,13 +17,14 @@ public record EditorComponentState(
     string? LoadingText,
     bool IsLoading,
     Guid? LoadedModelId,
+    CachedModelResponse? CachedModelResponse,
     IEditorApiAlpha? EditorApi,
     SelectedObject[] SelectedObjects,
     bool HasResults
 )
 {
     public EditorComponentState()
-        : this(null, false, null, null, [], false) { }
+        : this(null, false, null, null, null, [], false) { }
 }
 
 public static class EditorComponentStateReducers
@@ -59,6 +61,7 @@ public static class EditorComponentStateReducers
     {
         return state with
         {
+            CachedModelResponse = action.CachedModelResponse,
             LoadedModelId = action.CachedModelResponse.Id,
             HasResults = (action.CachedModelResponse.NodeResults?.Count ?? 0) > 0
         };
@@ -220,6 +223,31 @@ public static class EditorComponentStateReducers
         {
             throw new Exception($"Type of {action.ModelEntity.GetType()} is not supported");
         }
+
+        return state with
+        {
+            Models = newState
+        };
+    }
+
+    [ReducerMethod]
+    public static CachedModelState Reducer(CachedModelState state, PutObjectCommand<NodeResponse> action)
+    {
+        if (!state.Models.TryGetValue(action.New.ModelId, out var model))
+        {
+            return state;
+        }
+
+        ImmutableDictionary<Guid, CachedModelResponse> newState = state
+            .Models
+            .Remove(action.New.ModelId)
+            .Add(
+                action.New.ModelId,
+                model with
+                {
+                    Nodes = model.Nodes.Remove(action.New.Id).Add(action.New.Id, action.New)
+                }
+            );
 
         return state with
         {

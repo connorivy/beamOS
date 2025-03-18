@@ -33,8 +33,7 @@ public interface IBeamOsClientCommand : IEditorCommand
 
     public bool HandledByEditor { get; init; }
     public bool HandledByBlazor { get; init; }
-
-    //public bool HandledByServer { get; init; }
+    public bool HandledByServer { get; init; }
 
     public IBeamOsClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null);
     public IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null);

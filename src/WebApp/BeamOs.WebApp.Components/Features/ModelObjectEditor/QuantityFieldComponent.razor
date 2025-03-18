@@ -1,0 +1,21 @@
+<MudTextField T="double?" Typo="Typo.input" Value="@Value" ValueChanged="@ValueChanged" Required="@this.IsRequired" Label="@this.Label" OnlyValidateIfDirty="true" @onfocus="OnFocus" Adornment="Adornment.End" AdornmentText="@Unit"/>
+
+@code {
+    [Parameter]
+    public double? Value { get; set; }
+
+    [Parameter]
+    public EventCallback<double?> ValueChanged { get; set; }
+
+    [Parameter]
+    public required bool IsRequired { get; set; }
+
+    [Parameter]
+    public required string Label { get; set; }
+
+    [Parameter]
+    public required EventCallback<FocusEventArgs> OnFocus { get; set; }
+
+    [Parameter]
+    public required string Unit { get; set; }
+}

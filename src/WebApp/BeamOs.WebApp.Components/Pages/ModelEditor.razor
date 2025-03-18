@@ -3,6 +3,7 @@
 @using BeamOs.CodeGen.EditorApi
 @using BeamOs.WebApp.Components.Features.AnalysisToolbar
 @using BeamOs.WebApp.Components.Features.Editor
+@using BeamOs.WebApp.Components.Features.ModelObjectEditor
 @using BeamOs.WebApp.Components.Features.ResultCharts
 @using BeamOs.WebApp.Components.Features.ResultsTable
 @using BeamOs.WebApp.Components.Features.SelectionInfo
@@ -34,7 +35,8 @@
 
         @* <StructuralApiComponent Class="absolute left-0 top-0 w-1/5 p-4" ModelId="@modelId" CanvasId="@editorComponent.CanvasId"></StructuralApiComponent> *@
         <SectionContent SectionId="@MainLayout.Drawer">
-            <SelectionInfoComponent ModelId="@modelId" SelectedObjects="this.State.Value.SelectedObjects" Class="p-4" CanvasId="@editorComponent.CanvasId"></SelectionInfoComponent>
+            @* <SelectionInfoComponent ModelId="@modelId" SelectedObjects="this.State.Value.SelectedObjects" Class="p-4" CanvasId="@editorComponent.CanvasId"></SelectionInfoComponent> *@
+            <ModelObjectEditor UnitSettings="@this.State.Value.CachedModelResponse.Settings.UnitSettings"/>
         </SectionContent>
 
         @* <div class="flex justify-center absolute bottom-0 right-0 left-0 h-2/5">
