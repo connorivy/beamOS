@@ -6,6 +6,7 @@ using BeamOs.WebApp.EditorCommands;
 using Fluxor;
 using Fluxor.Blazor.Web.Components;
 using Microsoft.AspNetCore.Components;
+using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 
 namespace BeamOs.WebApp.Components.Features.ModelObjectEditor;
 
@@ -45,20 +46,22 @@ public partial class NodeObjectEditor(
     {
         base.OnParametersSet();
 
-        if (this.SelectedObject is not null)
+        if (this.SelectedObject is not null && this.SelectedObject.TypeName == "Node")
         {
             var response = editorState.Value.CachedModelResponse.Nodes[this.SelectedObject.Id];
-            UpdateFromNodeResponse(response);
+            this.UpdateFromNodeResponse(response);
         }
     }
 
     private void UpdateFromNodeResponse(NodeResponse response)
     {
+        var thisLengthUnit = UnitSettings.LengthUnit.MapToLengthUnit();
+        var lengthUnit = response.LocationPoint.LengthUnit.MapToLengthUnit();
         node.Id = response.Id;
         node.ModelId = response.ModelId;
-        node.LocationPoint.X = response.LocationPoint.X;
-        node.LocationPoint.Y = response.LocationPoint.Y;
-        node.LocationPoint.Z = response.LocationPoint.Z;
+        node.LocationPoint.X = new Length(response.LocationPoint.X, lengthUnit).As(thisLengthUnit);
+        node.LocationPoint.Y = new Length(response.LocationPoint.Y, lengthUnit).As(thisLengthUnit);
+        node.LocationPoint.Z = new Length(response.LocationPoint.Z, lengthUnit).As(thisLengthUnit);
         node.LocationPoint.LengthUnit = response.LocationPoint.LengthUnit;
         node.Restraint.CanTranslateAlongX = response.Restraint.CanTranslateAlongX;
         node.Restraint.CanTranslateAlongY = response.Restraint.CanTranslateAlongY;

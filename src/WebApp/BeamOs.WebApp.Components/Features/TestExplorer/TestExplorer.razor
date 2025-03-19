@@ -1,5 +1,6 @@
 @page "/test-explorer"
 @inherits FluxorComponent
+@layout PersistantSidebarLayout
 
 @using BeamOs.Tests.Common
 @using BeamOs.WebApp.Components.Features.Editor
@@ -68,7 +69,7 @@
             </div>
         </MudItem>
     </MudGrid> *@
-    <SectionContent SectionId="@MainLayout.Drawer">
+    <SectionContent SectionId="@PersistantSidebarLayout.Drawer">
         @if (state.Value.TestResults is not null)
         {
             <SingleTestSelectorComponent CanvasId="@canvasId" TestResults="@state.Value.TestResults" SelectedObjects="@editorState.Value.SelectedObjects" />

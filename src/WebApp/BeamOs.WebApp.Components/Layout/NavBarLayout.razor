@@ -12,6 +12,8 @@
 
 <NavBar />
 
+<SectionOutlet SectionId="BeforeMainContent" />
+
 <MudMainContent Class="h-full">
     <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="relative h-full">
         @Body
@@ -19,8 +21,6 @@
 </MudMainContent>
 
 @code {
-    // protected MudTheme _baseTheme = new();
-
     [Inject]
     IState<MainLayoutState> State { get; init; }
 
@@ -37,7 +37,7 @@
     // IHttpContextAccessor httpContextAccessor { get; init; }
 
     private string inputValue = "initial";
-    internal static object Drawer = new();
+    internal static object BeforeMainContent = new();
 
     protected override void OnInitialized()
     {

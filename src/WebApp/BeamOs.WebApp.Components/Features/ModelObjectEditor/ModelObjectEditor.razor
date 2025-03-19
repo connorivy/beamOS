@@ -50,7 +50,14 @@
         </div>
     </div>
 }
-else if (state.Value.CurrentViewType == BeamOsObjectType.Node)
+else
 {
-    <NodeObjectEditor UnitSettings="@UnitSettings" SelectedObject="state.Value.SelectedObject" />
+    <MudTooltip Text="Back">
+        <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="GoBack"></MudIconButton>
+    </MudTooltip>
+
+    if (state.Value.CurrentViewType == BeamOsObjectType.Node)
+    {
+        <NodeObjectEditor UnitSettings="@UnitSettings" SelectedObject="state.Value.SelectedObject" />
+    }
 }

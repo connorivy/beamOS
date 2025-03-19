@@ -24,10 +24,7 @@ public partial class OpenSeesTests
                 .StructuralAnalysisApiClient
                 .RunOpenSeesAnalysisAsync(modelBuilder.Id);
 
-            if (resultSetIdResponse.IsError)
-            {
-                throw new Exception(resultSetIdResponse.Error.Description);
-            }
+            resultSetIdResponse.ThrowIfError();
         }
     }
 }

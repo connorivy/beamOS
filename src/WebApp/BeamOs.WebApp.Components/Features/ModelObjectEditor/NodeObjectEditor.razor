@@ -1,11 +1,11 @@
 @inherits FluxorComponent
 
-<MudContainer Gutters="false" Class=@($"rounded h-full pointer-events-none")>
-    <MudPaper Class="p-4 max-h-full overflow-auto pointer-events-auto">
+<MudContainer Gutters="false" Class=@($"rounded pointer-events-none")>
+    <MudPaper Class="px-2 pb-2 max-h-full overflow-auto pointer-events-auto">
         <MudExpansionPanels MultiExpansion="true" Outlined="false" Elevation="0" Dense="true">
             <MudTextField T="int?" Typo="Typo.input" @bind-Value="@node.Id" Required="true" Label="Node Id" OnlyValidateIfDirty="true" />
 
-            <MudTextField T="Guid" Typo="Typo.input" Value="@node.ModelId" Label="ModelId" OnlyValidateIfDirty="true" ReadOnly="true" />
+            @* <MudTextField T="Guid" Typo="Typo.input" Value="@node.ModelId" Label="ModelId" OnlyValidateIfDirty="true" ReadOnly="true" /> *@
 
             <MudExpansionPanel Expanded="true" Text="LocationPoint" Class="text-nowrap text-clip mud-typography mud-typography-subtitle2">
                 <MudGrid Spacing="1">
@@ -45,14 +45,18 @@
                 </MudGrid>
             </MudExpansionPanel>
         </MudExpansionPanels>
-        @if (state.Value.IsLoading)
-        {
-            <MudProgressCircular Color="Color.Default" Indeterminate="true" />
-        }
-        else
-        {
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Submit">Apply</MudButton>
-        }
+
+        <div class="flex flex-row">
+            <div class="flex-1" />
+            @if (state.Value.IsLoading)
+            {
+                <MudProgressCircular Class="flex-none" Color="Color.Default" Indeterminate="true" />
+            }
+            else
+            {
+                <MudButton Class="flex-none" Variant="Variant.Filled" Color="Color.Primary" OnClick="Submit">Apply</MudButton>
+            }
+        </div>
     </MudPaper>
 </MudContainer>
 

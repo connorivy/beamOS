@@ -8,19 +8,17 @@
 @using Fluxor.Blazor.Web.Components
 
 @inherits FluxorLayout
-@layout FullScreenLayout
+@layout NavBarLayout
 
-<NavBar />
+<SectionContent SectionId="NavBarLayout.BeforeMainContent">
+    <MudDrawer Width="300px" ClipMode="DrawerClipMode.Always" Variant="DrawerVariant.Responsive" @bind-Open="@IsDrawerOpen">
+        <SectionOutlet SectionId="Drawer" />
+    </MudDrawer>  
+</SectionContent>
 
-<MudMainContent Class="h-full">
-    <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="relative h-full">
-        @Body
-    </MudContainer>
-</MudMainContent>
+@Body
 
 @code {
-    // protected MudTheme _baseTheme = new();
-
     [Inject]
     IState<MainLayoutState> State { get; init; }
 
