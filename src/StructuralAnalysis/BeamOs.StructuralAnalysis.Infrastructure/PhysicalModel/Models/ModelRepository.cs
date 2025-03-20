@@ -1,3 +1,4 @@
+using BeamOs.Identity;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Infrastructure.Common;
@@ -5,10 +6,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Models;
 
-internal class ModelRepository(StructuralAnalysisDbContext dbContext)
-    : RepositoryBase<ModelId, Model>(dbContext),
-        IModelRepository
+internal sealed class ModelRepository(
+    StructuralAnalysisDbContext dbContext,
+    IUserIdProvider userIdProvider
+) : RepositoryBase<ModelId, Model>(dbContext), IModelRepository
 {
+    public override void Add(Model aggregate)
+    {
+        aggregate.AddEvent(new ModelCreatedEvent(aggregate.Id, userIdProvider.UserId));
+        base.Add(aggregate);
+    }
+
     public async Task<Model?> GetSingle(
         ModelId modelId,
         Func<IQueryable<Model>, IQueryable<Model>>? includeNavigationProperties = null,

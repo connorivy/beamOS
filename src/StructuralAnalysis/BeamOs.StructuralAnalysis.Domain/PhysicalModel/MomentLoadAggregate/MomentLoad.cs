@@ -19,12 +19,12 @@ public class MomentLoad : BeamOsModelEntity<MomentLoadId>
     {
         this.NodeId = nodeId;
         this.Torque = torque;
-        this.AxisDirection = axisDirection.Normalize();
+        this.AxisDirection = new(axisDirection.Normalize());
     }
 
     public NodeId NodeId { get; set; }
     public Torque Torque { get; set; }
-    public UnitVector3D AxisDirection { get; set; }
+    public UnitVector3d AxisDirection { get; set; }
 
     public Torque GetTorqueInDirection(CoordinateSystemDirection3D direction)
     {

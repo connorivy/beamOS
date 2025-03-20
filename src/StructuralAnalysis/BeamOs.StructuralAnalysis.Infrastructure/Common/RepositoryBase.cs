@@ -14,7 +14,7 @@ internal abstract class RepositoryBase<TId, TEntity>(StructuralAnalysisDbContext
 {
     protected StructuralAnalysisDbContext DbContext => dbContext;
 
-    public void Add(TEntity aggregate)
+    public virtual void Add(TEntity aggregate)
     {
         _ = dbContext.Set<TEntity>().Add(aggregate);
     }

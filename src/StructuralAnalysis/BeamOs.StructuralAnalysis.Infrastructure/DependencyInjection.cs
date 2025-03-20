@@ -1,4 +1,5 @@
 using BeamOs.Common.Application;
+using BeamOs.Identity;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.NodeResults;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.ResultSets;
 using BeamOs.StructuralAnalysis.Application.Common;
@@ -79,6 +80,8 @@ public static class DependencyInjection
         }
         //.UseModel(StructuralAnalysisDbContextModel.Instance)
         );
+
+        services.AddScoped<IUserIdProvider, UserIdProvider>();
 
         services.AddScoped<
             IQueryHandler<EmptyRequest, List<ModelInfoResponse>>,
