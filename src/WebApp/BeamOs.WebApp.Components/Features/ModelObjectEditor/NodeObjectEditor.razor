@@ -1,11 +1,15 @@
 @inherits FluxorComponent
 
 <MudContainer Gutters="false" Class=@($"rounded pointer-events-none")>
-    <MudPaper Class="px-2 pb-2 max-h-full overflow-auto pointer-events-auto">
+    <MudPaper Class="px-4 pb-4 max-h-full overflow-auto pointer-events-auto">
         <MudExpansionPanels MultiExpansion="true" Outlined="false" Elevation="0" Dense="true">
-            <MudTextField T="int?" Typo="Typo.input" @bind-Value="@node.Id" Required="true" Label="Node Id" OnlyValidateIfDirty="true" />
-
-            @* <MudTextField T="Guid" Typo="Typo.input" Value="@node.ModelId" Label="ModelId" OnlyValidateIfDirty="true" ReadOnly="true" /> *@
+            <MudAutocomplete InputMode="InputMode.numeric" MaxItems="@ResultLimit" T="int" @bind-Value="nodeId" Text="@nodeIdText" SearchFunc="NodeIds" ToStringFunc="@(id => id == 0 ? "New Node" : id.ToString())" Label="Node Id">
+                <MoreItemsTemplate>
+                    <MudText Align="Align.Center" Class="px-4 py-1">
+                        Only the first @ResultLimit.ToString() items are shown. Type to refine results.
+                    </MudText>
+                </MoreItemsTemplate>
+            </MudAutocomplete>
 
             <MudExpansionPanel Expanded="true" Text="LocationPoint" Class="text-nowrap text-clip mud-typography mud-typography-subtitle2">
                 <MudGrid Spacing="1">
