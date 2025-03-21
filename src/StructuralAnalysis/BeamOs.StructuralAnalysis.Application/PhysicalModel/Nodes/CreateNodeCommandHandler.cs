@@ -34,7 +34,12 @@ public static partial class CreateNodeCommandMapper
 {
     public static partial Node ToDomainObject(this CreateNodeCommand command);
 
+    public static partial CreateNodeRequest ToRequest(this CreateNodeCommand entity);
+
     public static partial NodeResponse ToResponse(this Node entity);
+
+    [MapperIgnoreTarget(nameof(CreateNodeRequest.Id))]
+    public static partial CreateNodeRequest ToRequest(this NodeResponse entity);
 }
 
 public readonly struct CreateNodeCommand : IModelResourceRequest<CreateNodeRequest>

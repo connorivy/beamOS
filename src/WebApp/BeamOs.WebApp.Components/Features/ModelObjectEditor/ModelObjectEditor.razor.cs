@@ -10,6 +10,9 @@ public partial class ModelObjectEditor(IState<ModelObjectEditorState> state, IDi
     [Parameter]
     public required UnitSettingsContract UnitSettings { get; set; }
 
+    [Parameter]
+    public required Guid ModelId { get; set; }
+
     private void ShowView(BeamOsObjectType viewType)
     {
         dispatcher.Dispatch(new ShowView(viewType));

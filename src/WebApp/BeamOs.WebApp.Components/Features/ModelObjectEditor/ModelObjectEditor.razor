@@ -1,6 +1,7 @@
 @inherits FluxorComponent
 
 @using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node
+@using BeamOs.WebApp.Components.Features.ModelObjectEditor.Nodes
 @using StructuralAnalysis.Contracts.Common;
 
 @if (state.Value.CurrentViewType == BeamOsObjectType.Model)
@@ -58,6 +59,6 @@ else
 
     if (state.Value.CurrentViewType == BeamOsObjectType.Node)
     {
-        <NodeObjectEditor UnitSettings="@UnitSettings" SelectedObject="state.Value.SelectedObject" />
+        <NodeObjectEditor ModelId="@ModelId" UnitSettings="@UnitSettings" SelectedObject="state.Value.SelectedObject" />
     }
 }

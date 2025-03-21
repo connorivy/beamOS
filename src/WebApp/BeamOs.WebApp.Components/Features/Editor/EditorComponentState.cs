@@ -231,23 +231,51 @@ public static class EditorComponentStateReducers
     }
 
     [ReducerMethod]
-    public static CachedModelState Reducer(CachedModelState state, PutObjectCommand<NodeResponse> action)
+    public static CachedModelState Reducer(
+        CachedModelState state,
+        PutObjectCommand<NodeResponse> action
+    )
     {
-        if (!state.Models.TryGetValue(action.New.ModelId, out var model))
+        Guid modelId =
+            (action.New?.ModelId ?? action.Previous?.ModelId)
+            ?? throw new InvalidOperationException("ModelId is required");
+
+        if (!state.Models.TryGetValue(modelId, out var model))
         {
             return state;
         }
 
-        ImmutableDictionary<Guid, CachedModelResponse> newState = state
-            .Models
-            .Remove(action.New.ModelId)
-            .Add(
-                action.New.ModelId,
-                model with
-                {
-                    Nodes = model.Nodes.Remove(action.New.Id).Add(action.New.Id, action.New)
-                }
-            );
+        ImmutableDictionary<Guid, CachedModelResponse> newState;
+        if (action.New is null)
+        {
+            newState = state
+                .Models
+                .Remove(modelId)
+                .Add(modelId, model with { Nodes = model.Nodes.Remove(action.Previous.Id) });
+        }
+        else if (action.Previous is null)
+        {
+            newState = state
+                .Models
+                .Remove(modelId)
+                .Add(modelId, model with { Nodes = model.Nodes.Add(action.New.Id, action.New) });
+        }
+        else
+        {
+            newState = state
+                .Models
+                .Remove(modelId)
+                .Add(
+                    modelId,
+                    model with
+                    {
+                        Nodes = model
+                            .Nodes
+                            .Remove(action.Previous.Id)
+                            .Add(action.New.Id, action.New)
+                    }
+                );
+        }
 
         return state with
         {

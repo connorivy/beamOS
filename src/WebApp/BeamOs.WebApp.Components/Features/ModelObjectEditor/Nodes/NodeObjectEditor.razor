@@ -3,7 +3,7 @@
 <MudContainer Gutters="false" Class=@($"rounded pointer-events-none")>
     <MudPaper Class="px-4 pb-4 max-h-full overflow-auto pointer-events-auto">
         <MudExpansionPanels MultiExpansion="true" Outlined="false" Elevation="0" Dense="true">
-            <MudAutocomplete InputMode="InputMode.numeric" MaxItems="@ResultLimit" T="int" @bind-Value="nodeId" Text="@nodeIdText" SearchFunc="NodeIds" ToStringFunc="@(id => id == 0 ? "New Node" : id.ToString())" Label="Node Id">
+            <MudAutocomplete InputMode="InputMode.numeric" MaxItems="@ResultLimit" T="int" @bind-Value="NodeId" Text="@NodeIdText" SearchFunc="NodeIds" ToStringFunc="@(id => id == 0 ? "New Node" : id.ToString())" Label="Node Id">
                 <MoreItemsTemplate>
                     <MudText Align="Align.Center" Class="px-4 py-1">
                         Only the first @ResultLimit.ToString() items are shown. Type to refine results.
@@ -52,6 +52,10 @@
 
         <div class="flex flex-row">
             <div class="flex-1" />
+            @if (node.Id != 0)
+            {
+                <MudButton Class="flex-none mr-2" Variant="Variant.Filled" Color="Color.Error" OnClick="Delete">Delete</MudButton>
+            }
             @if (state.Value.IsLoading)
             {
                 <MudProgressCircular Class="flex-none" Color="Color.Default" Indeterminate="true" />

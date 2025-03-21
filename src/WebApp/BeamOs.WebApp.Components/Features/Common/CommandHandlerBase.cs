@@ -11,6 +11,8 @@ public abstract class CommandHandlerBase<TCommand, TResponse>(ISnackbar snackbar
 {
     protected ISnackbar Snackbar => snackbar;
 
+    public event EventHandler<bool>? IsLoadingChanged;
+
     public async Task<Result<TResponse>> ExecuteAsync(
         TCommand command,
         CancellationToken ct = default
@@ -19,11 +21,16 @@ public abstract class CommandHandlerBase<TCommand, TResponse>(ISnackbar snackbar
         Result<TResponse> response;
         try
         {
+            IsLoadingChanged?.Invoke(this, true);
             response = await this.ExecuteCommandAsync(command, ct);
         }
         catch (Exception ex)
         {
             response = BeamOsError.Failure(description: ex.Message);
+        }
+        finally
+        {
+            IsLoadingChanged?.Invoke(this, false);
         }
 
         this.PostProcess(command, response);
@@ -64,9 +71,57 @@ public abstract class CommandHandlerBase<TCommand, TResponse>(ISnackbar snackbar
 //    protected abstract Result ExecuteCommandSync(TCommand command);
 //}
 
-public interface IClientCommandHandler<TCommand> : IClientCommandHandler { }
+public interface IBeamOsClientCommandHandler<TCommand> : IBeamOsClientCommandHandler { }
 
-public interface IClientCommandHandler
+public interface IBeamOsClientCommandHandler
 {
-    public Task<Result> ExecuteAsync(IClientCommand command, CancellationToken ct = default);
+    public Task<Result> ExecuteAsync(IBeamOsClientCommand command, CancellationToken ct = default);
 }
+
+// public abstract class EditorCommandHandlerBase<TCommand, TResponse, TServerResponse>(ISnackbar snackbar)
+//     : CommandHandlerBase<TCommand, TResponse>(snackbar),
+//         IBeamOsClientCommandHandler<TCommand>
+//     where TCommand : IBeamOsClientCommand
+// {
+//     protected override async Task<Result<TResponse>> ExecuteCommandAsync(
+//         TCommand command,
+//         CancellationToken ct = default
+//     )
+//     {
+//         Result<TServerResponse>? result = null;
+//         if (!command.HandledByServer)
+//         {
+//             result = await this.UpdateServer(command, ct);
+//             if (result.IsError)
+//             {
+//                 return result.Error;
+//             }
+//         }
+
+//         if (!command.HandledByBlazor)
+//         {
+//             await this.UpdateClient(command, result!);
+//         }
+
+//         if (!command.HandledByEditor)
+//         {
+//             await this.UpdateEditor(command, result!);
+//         }
+//     }
+
+//     protected abstract Task<Result<TServerResponse>> UpdateServer(
+//         TCommand command,
+//         CancellationToken ct = default
+//     );
+
+//     protected virtual ValueTask UpdateClient(TCommand command, Result<TServerResponse>? response) =>
+//         ValueTask.CompletedTask;
+
+//     protected virtual ValueTask UpdateEditor(TCommand command, Result<TServerResponse>? response) =>
+//         ValueTask.CompletedTask;
+
+//     public async Task<Result> ExecuteAsync(
+//         IBeamOsClientCommand command,
+//         CancellationToken ct = default
+//     ) => await this.ExecuteAsync((TCommand)command, ct);
+// }

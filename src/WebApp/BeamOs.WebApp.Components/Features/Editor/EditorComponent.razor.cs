@@ -89,7 +89,7 @@ public partial class EditorComponent(
 
         this.SubscribeToAction<PutObjectCommand<NodeResponse>>(async command =>
         {
-            if (!command.HandledByEditor)
+            if (!command.HandledByEditor && command.New is not null && command.Previous is not null)
             {
                 LengthUnit lengthUnit = command.New.LocationPoint.LengthUnit.MapToLengthUnit();
 
