@@ -1,51 +1,105 @@
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
+using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.WebApp.Components.Features.Common;
-using BeamOs.WebApp.EditorCommands;
+using BeamOs.WebApp.Components.Features.Editor;
 using BeamOs.WebApp.EditorCommands.Interfaces;
 using Fluxor;
+using Microsoft.Extensions.Logging;
 using MudBlazor;
 
 namespace BeamOs.WebApp.Components.Features.ModelObjectEditor.Nodes;
 
-public sealed class CreateNodeCommandHandler(
+public sealed class CreateNodeClientCommandHandler(
+    ILogger<CreateNodeClientCommandHandler> logger,
+    ISnackbar snackbar,
     IStructuralAnalysisApiClientV1 structuralAnalysisApiClientV1,
     IDispatcher dispatcher,
-    ISnackbar snackbar
-) : CommandHandlerBase<CreateNodeCommand, NodeResponse>(snackbar)
+    IState<EditorComponentState> editorState
+) : ClientCommandHandlerBase<CreateNodeClientCommand, NodeResponse>(logger, snackbar)
 {
-    protected override async Task<Result<NodeResponse>> ExecuteCommandAsync(
-        CreateNodeCommand command,
+    protected override async ValueTask<Result> UpdateEditor(CreateNodeClientCommand command)
+    {
+        var editorApi =
+            editorState.Value.EditorApi
+            ?? throw new InvalidOperationException("Editor API is not initialized");
+
+        return await editorApi.CreateNodeAsync(
+            new(command.TempNodeId, command.ModelId, command.Data)
+        );
+    }
+
+    protected override async ValueTask<Result<NodeResponse>> UpdateServer(
+        CreateNodeClientCommand command,
         CancellationToken ct = default
     )
     {
-        var request = command.ToRequest();
-        return await structuralAnalysisApiClientV1.CreateNodeAsync(command.ModelId, request, ct);
+        return await structuralAnalysisApiClientV1.CreateNodeAsync(
+            command.ModelId,
+            new(command.Data),
+            ct
+        );
     }
 
-    protected override void PostProcess(CreateNodeCommand command, Result<NodeResponse> response)
+    protected override async ValueTask<Result> UpdateEditorAfterServerResponse(
+        CreateNodeClientCommand command,
+        Result<NodeResponse> serverResponse
+    )
     {
-        if (response.IsSuccess)
+        var editorApi =
+            editorState.Value.EditorApi
+            ?? throw new InvalidOperationException("Editor API is not initialized");
+
+        if (serverResponse.IsSuccess)
         {
-            dispatcher.Dispatch(
-                new CreateNodeClientCommand(response.Value) { HandledByServer = true }
-            );
+            await editorApi.CreateNodeAsync(serverResponse.Value);
         }
+
+        return await editorApi.DeleteNodeAsync(
+            new ModelEntityCommand() { Id = command.TempNodeId, ModelId = command.ModelId }
+        );
+    }
+
+    protected override ValueTask<Result> UpdateClient(
+        CreateNodeClientCommand command,
+        Result<NodeResponse> serverResponse
+    )
+    {
+        if (serverResponse.IsSuccess)
+        {
+            dispatcher.Dispatch(command with { NodeId = serverResponse.Value.Id });
+        }
+
+        return new(Result.Success);
     }
 }
 
-public record CreateNodeClientCommand(NodeResponse New) : IBeamOsClientCommand
+public record CreateNodeClientCommand(NodeData Data) : IBeamOsClientCommand
 {
     public Guid Id { get; } = Guid.NewGuid();
     public bool HandledByEditor { get; init; }
     public bool HandledByBlazor { get; init; }
     public bool HandledByServer { get; init; }
+    public int TempNodeId { get; init; } = GenerateTempId();
+    public required Guid ModelId { get; init; }
+    public int? NodeId { get; init; }
+
+    public static int GenerateTempId()
+    {
+        unchecked
+        {
+            int tempId = (int)DateTime.UtcNow.Ticks;
+            return tempId < 0 ? tempId : -1 * tempId;
+        }
+    }
 
     public IBeamOsClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
-        new DeleteNodeClientCommand(this.New)
+        new DeleteNodeClientCommand
         {
+            ModelId = this.ModelId,
+            NodeId = this.NodeId ?? this.TempNodeId,
+            Data = this.Data,
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
             HandledByEditor = args?.HandledByEditor ?? this.HandledByEditor,
             HandledByServer = args?.HandledByServer ?? this.HandledByServer
@@ -60,16 +114,21 @@ public record CreateNodeClientCommand(NodeResponse New) : IBeamOsClientCommand
         };
 }
 
-public record DeleteNodeClientCommand(NodeResponse Previous) : IBeamOsClientCommand
+public record DeleteNodeClientCommand : IBeamOsClientCommand
 {
     public Guid Id { get; } = Guid.NewGuid();
     public bool HandledByEditor { get; init; }
     public bool HandledByBlazor { get; init; }
     public bool HandledByServer { get; init; }
+    public required Guid ModelId { get; init; }
+    public int NodeId { get; init; }
+    public required NodeData Data { get; init; }
 
     public IBeamOsClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
-        new CreateNodeClientCommand(this.Previous)
+        new CreateNodeClientCommand(this.Data)
         {
+            ModelId = this.ModelId,
+            NodeId = this.NodeId,
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
             HandledByEditor = args?.HandledByEditor ?? this.HandledByEditor,
             HandledByServer = args?.HandledByServer ?? this.HandledByServer

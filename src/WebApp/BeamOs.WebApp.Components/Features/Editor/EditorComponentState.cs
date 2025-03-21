@@ -6,6 +6,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.ModelObjectEditor;
+using BeamOs.WebApp.Components.Features.ModelObjectEditor.Nodes;
 using BeamOs.WebApp.Components.Features.StructuralApi;
 using BeamOs.WebApp.EditorCommands;
 using Fluxor;
@@ -14,6 +15,7 @@ namespace BeamOs.WebApp.Components.Features.Editor;
 
 [FeatureState]
 public record EditorComponentState(
+    string? CanvasId,
     string? LoadingText,
     bool IsLoading,
     Guid? LoadedModelId,
@@ -24,11 +26,20 @@ public record EditorComponentState(
 )
 {
     public EditorComponentState()
-        : this(null, false, null, null, null, [], false) { }
+        : this(null, null, false, null, null, null, [], false) { }
 }
 
 public static class EditorComponentStateReducers
 {
+    [ReducerMethod]
+    public static EditorComponentState EditorCreatedReducer(
+        EditorComponentState state,
+        EditorCreated action
+    )
+    {
+        return state with { CanvasId = action.CanvasId };
+    }
+
     [ReducerMethod]
     public static EditorComponentState EditorCreatedReducer(
         EditorComponentState state,
@@ -86,6 +97,86 @@ public static class EditorComponentStateReducers
     public static EditorComponentState ResultsClearedReducer(EditorComponentState state)
     {
         return state with { HasResults = false };
+    }
+
+    [ReducerMethod]
+    public static EditorComponentState Reducer(
+        EditorComponentState state,
+        PutNodeClientCommand action
+    )
+    {
+        Guid modelId = action.New.ModelId;
+
+        if (!(state.CachedModelResponse?.Id == modelId))
+        {
+            return state;
+        }
+
+        return state with
+        {
+            CachedModelResponse = state.CachedModelResponse with
+            {
+                Nodes = state
+                    .CachedModelResponse
+                    .Nodes
+                    .Remove(action.New.Id)
+                    .Add(action.New.Id, action.New)
+            }
+        };
+    }
+
+    [ReducerMethod]
+    public static EditorComponentState Reducer(
+        EditorComponentState state,
+        DeleteNodeClientCommand action
+    )
+    {
+        Guid modelId = action.ModelId;
+
+        if (!(state.CachedModelResponse?.Id == modelId))
+        {
+            return state;
+        }
+
+        return state with
+        {
+            CachedModelResponse = state.CachedModelResponse with
+            {
+                Nodes = state.CachedModelResponse.Nodes.Remove(action.NodeId)
+            }
+        };
+    }
+
+    [ReducerMethod]
+    public static EditorComponentState Reducer(
+        EditorComponentState state,
+        CreateNodeClientCommand action
+    )
+    {
+        Guid modelId = action.ModelId;
+
+        if (!(state.CachedModelResponse?.Id == modelId))
+        {
+            return state;
+        }
+
+        if (action.NodeId is null)
+        {
+            throw new InvalidOperationException(
+                "CreateNodeClientCommand does not have a valid NodeId"
+            );
+        }
+
+        return state with
+        {
+            CachedModelResponse = state.CachedModelResponse with
+            {
+                Nodes = state
+                    .CachedModelResponse
+                    .Nodes
+                    .Add(action.NodeId.Value, new(action.NodeId.Value, action.ModelId, action.Data))
+            }
+        };
     }
 
     [ReducerMethod]
@@ -222,59 +313,6 @@ public static class EditorComponentStateReducers
         else
         {
             throw new Exception($"Type of {action.ModelEntity.GetType()} is not supported");
-        }
-
-        return state with
-        {
-            Models = newState
-        };
-    }
-
-    [ReducerMethod]
-    public static CachedModelState Reducer(
-        CachedModelState state,
-        PutObjectCommand<NodeResponse> action
-    )
-    {
-        Guid modelId =
-            (action.New?.ModelId ?? action.Previous?.ModelId)
-            ?? throw new InvalidOperationException("ModelId is required");
-
-        if (!state.Models.TryGetValue(modelId, out var model))
-        {
-            return state;
-        }
-
-        ImmutableDictionary<Guid, CachedModelResponse> newState;
-        if (action.New is null)
-        {
-            newState = state
-                .Models
-                .Remove(modelId)
-                .Add(modelId, model with { Nodes = model.Nodes.Remove(action.Previous.Id) });
-        }
-        else if (action.Previous is null)
-        {
-            newState = state
-                .Models
-                .Remove(modelId)
-                .Add(modelId, model with { Nodes = model.Nodes.Add(action.New.Id, action.New) });
-        }
-        else
-        {
-            newState = state
-                .Models
-                .Remove(modelId)
-                .Add(
-                    modelId,
-                    model with
-                    {
-                        Nodes = model
-                            .Nodes
-                            .Remove(action.Previous.Id)
-                            .Add(action.New.Id, action.New)
-                    }
-                );
         }
 
         return state with

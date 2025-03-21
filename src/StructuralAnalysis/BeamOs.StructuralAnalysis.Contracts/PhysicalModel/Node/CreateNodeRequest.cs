@@ -12,12 +12,18 @@ public record CreateNodeRequest : NodeData
         Restraint restraint,
         int? id = null,
         Dictionary<string, string>? metadata = null
-    ) : base(locationPoint, restraint, metadata)
+    )
+        : base(locationPoint, restraint, metadata)
     {
         this.Id = id;
     }
 
+    [SetsRequiredMembers]
+    public CreateNodeRequest(NodeData nodeData)
+        : this(nodeData.LocationPoint, nodeData.Restraint, null, nodeData.Metadata) { }
+
     public CreateNodeRequest() { }
+
     public int? Id { get; init; }
 }
 

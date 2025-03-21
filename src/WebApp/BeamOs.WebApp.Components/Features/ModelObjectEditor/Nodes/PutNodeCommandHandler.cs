@@ -22,12 +22,16 @@ public sealed class PutNodeCommandHandler(
     )
     {
         var cachedModel = editorState.Value.CachedModelResponse;
-        var currentNodeValue = cachedModel?.Nodes.GetValueOrDefault(command.Id) ?? throw new InvalidOperationException("Cannot update node that doesn't exist in current model");
+        var currentNodeValue =
+            cachedModel?.Nodes.GetValueOrDefault(command.Id)
+            ?? throw new InvalidOperationException(
+                "Cannot update node that doesn't exist in current model"
+            );
 
         var newNodeValue = command.ToResponse();
 
         return await putNodeEditorCommandHandler.ExecuteAsync(
-            new PutNodeEditorCommand(currentNodeValue, newNodeValue),
+            new PutNodeClientCommand(currentNodeValue, newNodeValue),
             ct
         );
     }
@@ -38,10 +42,10 @@ public sealed class PutNodeEditorCommandHandler(
     IState<EditorComponentState> editorState,
     IDispatcher dispatcher,
     ISnackbar snackbar
-) : CommandHandlerBase<PutNodeEditorCommand, NodeResponse>(snackbar)
+) : CommandHandlerBase<PutNodeClientCommand, NodeResponse>(snackbar)
 {
     protected override async Task<Result<NodeResponse>> ExecuteCommandAsync(
-        PutNodeEditorCommand command,
+        PutNodeClientCommand command,
         CancellationToken ct = default
     )
     {
@@ -54,17 +58,11 @@ public sealed class PutNodeEditorCommandHandler(
         );
     }
 
-    protected override void PostProcess(PutNodeEditorCommand command, Result<NodeResponse> response)
+    protected override void PostProcess(PutNodeClientCommand command, Result<NodeResponse> response)
     {
         if (response.IsSuccess)
         {
-            dispatcher.Dispatch(
-                command with
-                {
-                    HandledByServer = true,
-                    New = response.Value
-                }
-            );
+            dispatcher.Dispatch(command with { HandledByServer = true, New = response.Value });
         }
     }
 }

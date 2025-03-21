@@ -45,12 +45,12 @@ namespace BeamOs.CodeGen.EditorApi
 
         /// <returns>OK</returns>
         /// <exception cref="EditorEventsApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task DispatchPutNodeCommandAsync(PutNodeEditorCommand body);
+        System.Threading.Tasks.Task DispatchPutNodeCommandAsync(PutNodeClientCommand body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorEventsApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task DispatchPutNodeCommandAsync(PutNodeEditorCommand body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task DispatchPutNodeCommandAsync(PutNodeClientCommand body, System.Threading.CancellationToken cancellationToken);
 
     }
 
@@ -246,7 +246,7 @@ namespace BeamOs.CodeGen.EditorApi
 
         /// <returns>OK</returns>
         /// <exception cref="EditorEventsApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task DispatchPutNodeCommandAsync(PutNodeEditorCommand body)
+        public virtual System.Threading.Tasks.Task DispatchPutNodeCommandAsync(PutNodeClientCommand body)
         {
             return DispatchPutNodeCommandAsync(body, System.Threading.CancellationToken.None);
         }
@@ -254,7 +254,7 @@ namespace BeamOs.CodeGen.EditorApi
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorEventsApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task DispatchPutNodeCommandAsync(PutNodeEditorCommand body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task DispatchPutNodeCommandAsync(PutNodeClientCommand body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");

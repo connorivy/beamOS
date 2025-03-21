@@ -16,8 +16,8 @@ public partial class NodeObjectEditor(
     IState<EditorComponentState> editorState,
     IState<NodeObjectEditorState> state,
     PutNodeCommandHandler putNodeCommandHandler,
-    CreateNodeCommandHandler createNodeCommandHandler,
-    DeleteNodeCommandHandler deleteNodeCommandHandler
+    CreateNodeClientCommandHandler createNodeCommandHandler,
+    DeleteNodeSimpleCommandHandler deleteNodeCommandHandler
 ) : FluxorComponent
 {
     private readonly NodeModel node = new();
@@ -50,12 +50,12 @@ public partial class NodeObjectEditor(
 
     protected override void OnInitialized()
     {
-        putNodeCommandHandler.IsLoadingChanged += this.PutNodeCommandHandler_IsLoadingChanged;
-        createNodeCommandHandler.IsLoadingChanged += this.PutNodeCommandHandler_IsLoadingChanged;
-        deleteNodeCommandHandler.IsLoadingChanged += this.PutNodeCommandHandler_IsLoadingChanged;
+        // putNodeCommandHandler.IsLoadingChanged += this.PutNodeCommandHandler_IsLoadingChanged;
+        // createNodeCommandHandler.IsLoadingChanged += this.PutNodeCommandHandler_IsLoadingChanged;
+        // deleteNodeCommandHandler.IsLoadingChanged += this.PutNodeCommandHandler_IsLoadingChanged;
 
         base.OnInitialized();
-        this.SubscribeToAction<PutNodeEditorCommand>(command =>
+        this.SubscribeToAction<PutNodeClientCommand>(command =>
         {
             if (command.New is null)
             {
@@ -69,7 +69,8 @@ public partial class NodeObjectEditor(
         });
     }
 
-    private void PutNodeCommandHandler_IsLoadingChanged(object? sender, bool e) => dispatcher.Dispatch(new NodeObjectEditorIsLoading(e));
+    // private void PutNodeCommandHandler_IsLoadingChanged(object? sender, bool e) =>
+    //     dispatcher.Dispatch(new NodeObjectEditorIsLoading(e));
 
     protected override void OnParametersSet()
     {
@@ -119,37 +120,33 @@ public partial class NodeObjectEditor(
     private async Task Delete()
     {
         ModelEntityCommand command = new() { ModelId = this.ModelId, Id = this.node.Id };
-
         await deleteNodeCommandHandler.ExecuteAsync(command);
     }
 
     private async Task Submit()
     {
+        NodeData nodeData =
+            new()
+            {
+                LocationPoint = new(
+                    this.node.LocationPoint.X.Value,
+                    this.node.LocationPoint.Y.Value,
+                    this.node.LocationPoint.Z.Value,
+                    this.UnitSettings.LengthUnit
+                ),
+                Restraint = new(
+                    this.node.Restraint.CanTranslateAlongX,
+                    this.node.Restraint.CanTranslateAlongY,
+                    this.node.Restraint.CanTranslateAlongZ,
+                    this.node.Restraint.CanRotateAboutX,
+                    this.node.Restraint.CanRotateAboutY,
+                    this.node.Restraint.CanRotateAboutZ
+                )
+            };
+
         if (this.node.Id == 0)
         {
-            CreateNodeCommand command =
-                new()
-                {
-                    ModelId = this.ModelId,
-                    Body = new CreateNodeRequest()
-                    {
-                        LocationPoint = new(
-                            this.node.LocationPoint.X.Value,
-                            this.node.LocationPoint.Y.Value,
-                            this.node.LocationPoint.Z.Value,
-                            this.UnitSettings.LengthUnit
-                        ),
-                        Restraint = new(
-                            this.node.Restraint.CanTranslateAlongX,
-                            this.node.Restraint.CanTranslateAlongY,
-                            this.node.Restraint.CanTranslateAlongZ,
-                            this.node.Restraint.CanRotateAboutX,
-                            this.node.Restraint.CanRotateAboutY,
-                            this.node.Restraint.CanRotateAboutZ
-                        )
-                    }
-                };
-
+            CreateNodeClientCommand command = new(nodeData) { ModelId = this.ModelId };
             await createNodeCommandHandler.ExecuteAsync(command);
         }
         else
@@ -159,23 +156,7 @@ public partial class NodeObjectEditor(
                 {
                     Id = this.node.Id,
                     ModelId = this.ModelId,
-                    Body = new NodeData()
-                    {
-                        LocationPoint = new(
-                            this.node.LocationPoint.X.Value,
-                            this.node.LocationPoint.Y.Value,
-                            this.node.LocationPoint.Z.Value,
-                            this.UnitSettings.LengthUnit
-                        ),
-                        Restraint = new(
-                            this.node.Restraint.CanTranslateAlongX,
-                            this.node.Restraint.CanTranslateAlongY,
-                            this.node.Restraint.CanTranslateAlongZ,
-                            this.node.Restraint.CanRotateAboutX,
-                            this.node.Restraint.CanRotateAboutY,
-                            this.node.Restraint.CanRotateAboutZ
-                        )
-                    }
+                    Body = nodeData
                 };
 
             await putNodeCommandHandler.ExecuteAsync(command);
@@ -227,13 +208,13 @@ public partial class NodeObjectEditor(
         return number / (int)Math.Pow(10, numberOfDigits - prefixLength);
     }
 
-    protected override ValueTask DisposeAsyncCore(bool disposing)
-    {
-        putNodeCommandHandler.IsLoadingChanged -= this.PutNodeCommandHandler_IsLoadingChanged;
-        createNodeCommandHandler.IsLoadingChanged -= this.PutNodeCommandHandler_IsLoadingChanged;
-        deleteNodeCommandHandler.IsLoadingChanged -= this.PutNodeCommandHandler_IsLoadingChanged;
-        return base.DisposeAsyncCore(disposing);
-    }
+    // protected override ValueTask DisposeAsyncCore(bool disposing)
+    // {
+    //     putNodeCommandHandler.IsLoadingChanged -= this.PutNodeCommandHandler_IsLoadingChanged;
+    //     createNodeCommandHandler.IsLoadingChanged -= this.PutNodeCommandHandler_IsLoadingChanged;
+    //     deleteNodeCommandHandler.IsLoadingChanged -= this.PutNodeCommandHandler_IsLoadingChanged;
+    //     return base.DisposeAsyncCore(disposing);
+    // }
 
     public class NodeModel
     {
