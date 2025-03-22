@@ -42,10 +42,10 @@ public class EditorEventsApi(
     ) => throw new NotImplementedException();
 
     [JSInvokable]
-    public Task DispatchPutNodeCommandAsync(PutNodeClientCommand body) =>
+    public Task DispatchPutNodeClientCommandAsync(PutNodeClientCommand body) =>
         putNodeEditorCommandHandler.ExecuteAsync(body);
 
-    public Task DispatchPutNodeCommandAsync(
+    public Task DispatchPutNodeClientCommandAsync(
         PutNodeClientCommand body,
         CancellationToken cancellationToken
     ) => throw new NotImplementedException();

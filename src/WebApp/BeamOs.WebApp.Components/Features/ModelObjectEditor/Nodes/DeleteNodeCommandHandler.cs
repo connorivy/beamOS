@@ -2,6 +2,7 @@ using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Contracts.Common;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.Editor;
 using BeamOs.WebApp.EditorCommands;
@@ -56,7 +57,7 @@ public sealed class DeleteNodeCommandHandler(
                 editorState.Value.EditorApi
                 ?? throw new InvalidOperationException("Editor API is not initialized");
             return await editorApi.CreateNodeAsync(
-                new(command.NodeId, command.ModelId, command.Data)
+                new NodeResponse(command.NodeId, command.ModelId, command.Data).ToEditorUnits()
             );
         }
 

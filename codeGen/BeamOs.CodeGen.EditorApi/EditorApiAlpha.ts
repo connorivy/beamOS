@@ -48,6 +48,16 @@ export interface IEditorApiAlpha {
     /**
      * @return OK
      */
+    updateNode(body: NodeResponse): Promise<Result>;
+
+    /**
+     * @return OK
+     */
+    updateNodes(body: NodeResponse[]): Promise<Result>;
+
+    /**
+     * @return OK
+     */
     deleteNode(body: IModelEntity): Promise<Result>;
 
     /**
@@ -138,7 +148,7 @@ export interface IEditorApiAlpha {
     /**
      * @return OK
      */
-    reducePutNodeCommand(body: PutNodeCommand): Promise<Result>;
+    reducePutNodeClientCommand(body: PutNodeClientCommand): Promise<Result>;
 }
 
 export class EditorApiAlpha implements IEditorApiAlpha {
@@ -421,6 +431,88 @@ export class EditorApiAlpha implements IEditorApiAlpha {
     }
 
     protected processCreateNodes(response: Response): Promise<Result> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    updateNode(body: NodeResponse): Promise<Result> {
+        let url_ = this.baseUrl + "/EditorApiAlpha/UpdateNode";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUpdateNode(_response);
+        });
+    }
+
+    protected processUpdateNode(response: Response): Promise<Result> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Result.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Result>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    updateNodes(body: NodeResponse[]): Promise<Result> {
+        let url_ = this.baseUrl + "/EditorApiAlpha/UpdateNodes";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUpdateNodes(_response);
+        });
+    }
+
+    protected processUpdateNodes(response: Response): Promise<Result> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -1171,8 +1263,8 @@ export class EditorApiAlpha implements IEditorApiAlpha {
     /**
      * @return OK
      */
-    reducePutNodeCommand(body: PutNodeCommand): Promise<Result> {
-        let url_ = this.baseUrl + "/EditorApiAlpha/ReducePutNodeCommand";
+    reducePutNodeClientCommand(body: PutNodeClientCommand): Promise<Result> {
+        let url_ = this.baseUrl + "/EditorApiAlpha/ReducePutNodeClientCommand";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -1187,11 +1279,11 @@ export class EditorApiAlpha implements IEditorApiAlpha {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processReducePutNodeCommand(_response);
+            return this.processReducePutNodeClientCommand(_response);
         });
     }
 
-    protected processReducePutNodeCommand(response: Response): Promise<Result> {
+    protected processReducePutNodeClientCommand(response: Response): Promise<Result> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -2786,7 +2878,7 @@ export enum PressureUnit {
     _22 = 22,
 }
 
-export class PutNodeCommand implements IPutNodeCommand {
+export class PutNodeClientCommand implements IPutNodeClientCommand {
     previous!: NodeResponse;
     new!: NodeResponse;
     readonly id!: string;
@@ -2794,7 +2886,7 @@ export class PutNodeCommand implements IPutNodeCommand {
     handledByBlazor!: boolean;
     handledByServer!: boolean;
 
-    constructor(data?: IPutNodeCommand) {
+    constructor(data?: IPutNodeClientCommand) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -2818,9 +2910,9 @@ export class PutNodeCommand implements IPutNodeCommand {
         }
     }
 
-    static fromJS(data: any): PutNodeCommand {
+    static fromJS(data: any): PutNodeClientCommand {
         data = typeof data === 'object' ? data : {};
-        let result = new PutNodeCommand();
+        let result = new PutNodeClientCommand();
         result.init(data);
         return result;
     }
@@ -2837,7 +2929,7 @@ export class PutNodeCommand implements IPutNodeCommand {
     }
 }
 
-export interface IPutNodeCommand {
+export interface IPutNodeClientCommand {
     previous: NodeResponse;
     new: NodeResponse;
     id: string;

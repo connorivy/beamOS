@@ -15,7 +15,7 @@ public partial class NodeObjectEditor(
     IDispatcher dispatcher,
     IState<EditorComponentState> editorState,
     IState<NodeObjectEditorState> state,
-    PutNodeCommandHandler putNodeCommandHandler,
+    PutNodeSimpleCommandHandler putNodeCommandHandler,
     CreateNodeClientCommandHandler createNodeCommandHandler,
     DeleteNodeSimpleCommandHandler deleteNodeCommandHandler
 ) : FluxorComponent

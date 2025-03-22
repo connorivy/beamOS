@@ -26,7 +26,7 @@ public sealed class CreateNodeClientCommandHandler(
             ?? throw new InvalidOperationException("Editor API is not initialized");
 
         return await editorApi.CreateNodeAsync(
-            new(command.TempNodeId, command.ModelId, command.Data)
+            new NodeResponse(command.TempNodeId, command.ModelId, command.Data).ToEditorUnits()
         );
     }
 
@@ -53,7 +53,7 @@ public sealed class CreateNodeClientCommandHandler(
 
         if (serverResponse.IsSuccess)
         {
-            await editorApi.CreateNodeAsync(serverResponse.Value);
+            await editorApi.CreateNodeAsync(serverResponse.Value.ToEditorUnits());
         }
 
         return await editorApi.DeleteNodeAsync(

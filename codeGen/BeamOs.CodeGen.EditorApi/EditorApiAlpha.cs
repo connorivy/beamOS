@@ -90,6 +90,24 @@ namespace BeamOs.CodeGen.EditorApi
 
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Result> UpdateNodeAsync(NodeResponse body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Result> UpdateNodeAsync(NodeResponse body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>OK</returns>
+        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Result> UpdateNodesAsync(System.Collections.Generic.IEnumerable<NodeResponse> body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Result> UpdateNodesAsync(System.Collections.Generic.IEnumerable<NodeResponse> body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>OK</returns>
+        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<Result> DeleteNodeAsync(IModelEntity body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -252,12 +270,12 @@ namespace BeamOs.CodeGen.EditorApi
 
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> ReducePutNodeCommandAsync(PutNodeClientCommand body);
+        System.Threading.Tasks.Task<Result> ReducePutNodeClientCommandAsync(PutNodeClientCommand body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> ReducePutNodeCommandAsync(PutNodeClientCommand body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<Result> ReducePutNodeClientCommandAsync(PutNodeClientCommand body, System.Threading.CancellationToken cancellationToken);
 
     }
 
@@ -835,6 +853,176 @@ namespace BeamOs.CodeGen.EditorApi
                 
                     // Operation Path: "EditorApiAlpha/CreateNodes"
                     urlBuilder_.Append("EditorApiAlpha/CreateNodes");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<Result>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new EditorApiAlphaException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new EditorApiAlphaException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <returns>OK</returns>
+        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<Result> UpdateNodeAsync(NodeResponse body)
+        {
+            return UpdateNodeAsync(body, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<Result> UpdateNodeAsync(NodeResponse body, System.Threading.CancellationToken cancellationToken)
+        {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, JsonSerializerSettings);
+                    var content_ = new System.Net.Http.ByteArrayContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "EditorApiAlpha/UpdateNode"
+                    urlBuilder_.Append("EditorApiAlpha/UpdateNode");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<Result>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new EditorApiAlphaException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new EditorApiAlphaException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <returns>OK</returns>
+        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<Result> UpdateNodesAsync(System.Collections.Generic.IEnumerable<NodeResponse> body)
+        {
+            return UpdateNodesAsync(body, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<Result> UpdateNodesAsync(System.Collections.Generic.IEnumerable<NodeResponse> body, System.Threading.CancellationToken cancellationToken)
+        {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, JsonSerializerSettings);
+                    var content_ = new System.Net.Http.ByteArrayContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "EditorApiAlpha/UpdateNodes"
+                    urlBuilder_.Append("EditorApiAlpha/UpdateNodes");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -2408,15 +2596,15 @@ namespace BeamOs.CodeGen.EditorApi
 
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> ReducePutNodeCommandAsync(PutNodeClientCommand body)
+        public virtual System.Threading.Tasks.Task<Result> ReducePutNodeClientCommandAsync(PutNodeClientCommand body)
         {
-            return ReducePutNodeCommandAsync(body, System.Threading.CancellationToken.None);
+            return ReducePutNodeClientCommandAsync(body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> ReducePutNodeCommandAsync(PutNodeClientCommand body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> ReducePutNodeClientCommandAsync(PutNodeClientCommand body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -2436,8 +2624,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/ReducePutNodeCommand"
-                    urlBuilder_.Append("EditorApiAlpha/ReducePutNodeCommand");
+                    // Operation Path: "EditorApiAlpha/ReducePutNodeClientCommand"
+                    urlBuilder_.Append("EditorApiAlpha/ReducePutNodeClientCommand");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 

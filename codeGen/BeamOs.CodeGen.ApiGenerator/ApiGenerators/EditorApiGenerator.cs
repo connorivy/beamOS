@@ -31,6 +31,9 @@ public class EditorApiGenerator : AbstractGenerator
         _ = addMethod("CreateNode").Accepts<NodeResponse>();
         _ = addMethod("CreateNodes").Accepts<ICollection<NodeResponse>>();
 
+        _ = addMethod("UpdateNode").Accepts<NodeResponse>();
+        _ = addMethod("UpdateNodes").Accepts<ICollection<NodeResponse>>();
+
         _ = addMethod("DeleteNode").Accepts<IModelEntity>();
         _ = addMethod("DeleteNodes").Accepts<ICollection<IModelEntity>>();
 

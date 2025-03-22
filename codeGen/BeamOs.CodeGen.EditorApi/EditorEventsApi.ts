@@ -23,7 +23,7 @@ export interface IEditorEventsApi {
     /**
      * @return OK
      */
-    dispatchPutNodeCommand(body: PutNodeCommand): Promise<void>;
+    dispatchPutNodeClientCommand(body: PutNodeClientCommand): Promise<void>;
 }
 
 export class EditorEventsApi implements IEditorEventsApi {
@@ -113,8 +113,8 @@ export class EditorEventsApi implements IEditorEventsApi {
     /**
      * @return OK
      */
-    dispatchPutNodeCommand(body: PutNodeCommand): Promise<void> {
-        let url_ = this.baseUrl + "/EditorEventsApi/DispatchPutNodeCommand";
+    dispatchPutNodeClientCommand(body: PutNodeClientCommand): Promise<void> {
+        let url_ = this.baseUrl + "/EditorEventsApi/DispatchPutNodeClientCommand";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -128,11 +128,11 @@ export class EditorEventsApi implements IEditorEventsApi {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDispatchPutNodeCommand(_response);
+            return this.processDispatchPutNodeClientCommand(_response);
         });
     }
 
-    protected processDispatchPutNodeCommand(response: Response): Promise<void> {
+    protected processDispatchPutNodeClientCommand(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -416,7 +416,7 @@ export interface IPoint {
     lengthUnit: LengthUnit;
 }
 
-export class PutNodeCommand implements IPutNodeCommand {
+export class PutNodeClientCommand implements IPutNodeClientCommand {
     previous!: NodeResponse;
     new!: NodeResponse;
     readonly id!: string;
@@ -424,7 +424,7 @@ export class PutNodeCommand implements IPutNodeCommand {
     handledByBlazor!: boolean;
     handledByServer!: boolean;
 
-    constructor(data?: IPutNodeCommand) {
+    constructor(data?: IPutNodeClientCommand) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -448,9 +448,9 @@ export class PutNodeCommand implements IPutNodeCommand {
         }
     }
 
-    static fromJS(data: any): PutNodeCommand {
+    static fromJS(data: any): PutNodeClientCommand {
         data = typeof data === 'object' ? data : {};
-        let result = new PutNodeCommand();
+        let result = new PutNodeClientCommand();
         result.init(data);
         return result;
     }
@@ -467,7 +467,7 @@ export class PutNodeCommand implements IPutNodeCommand {
     }
 }
 
-export interface IPutNodeCommand {
+export interface IPutNodeClientCommand {
     previous: NodeResponse;
     new: NodeResponse;
     id: string;
