@@ -2,6 +2,7 @@ using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.WebApp.Components.Features.Editor;
 using BeamOs.WebApp.Components.Features.SelectionInfo;
 using BeamOs.WebApp.EditorCommands;
@@ -14,10 +15,10 @@ namespace BeamOs.WebApp.Components.Features.ModelObjectEditor.Members;
 public partial class MemberObjectEditor(
     IDispatcher dispatcher,
     IState<EditorComponentState> editorState,
-    IState<Element1dObjectEditorState> state,
-    PutElement1dSimpleCommandHandler putElement1dCommandHandler,
-    CreateElement1dClientCommandHandler createElement1dCommandHandler,
-    DeleteElement1dSimpleCommandHandler deleteElement1dCommandHandler
+    IState<Element1dObjectEditorState> state
+// PutElement1dSimpleCommandHandler putElement1dCommandHandler,
+// CreateElement1dClientCommandHandler createElement1dCommandHandler,
+// DeleteElement1dSimpleCommandHandler deleteElement1dCommandHandler
 ) : FluxorComponent
 {
     private readonly Element1dModel element1d = new();
@@ -56,18 +57,18 @@ public partial class MemberObjectEditor(
         // deleteElement1dCommandHandler.IsLoadingChanged += this.PutElement1dCommandHandler_IsLoadingChanged;
 
         base.OnInitialized();
-        this.SubscribeToAction<PutElement1dClientCommand>(command =>
-        {
-            if (command.New is null)
-            {
-                return;
-            }
-
-            if (command.New.Id == this.SelectedObject?.Id)
-            {
-                this.UpdateFromElement1dResponse(command.New);
-            }
-        });
+        /*this.SubscribeToAction<PutElement1dClientCommand>(command =>*/
+        /*{*/
+        /*    if (command.New is null)*/
+        /*    {*/
+        /*        return;*/
+        /*    }*/
+        /**/
+        /*    if (command.New.Id == this.SelectedObject?.Id)*/
+        /*    {*/
+        /*        this.UpdateFromElement1dResponse(command.New);*/
+        /*    }*/
+        /*});*/
     }
 
     // private void PutElement1dCommandHandler_IsLoadingChanged(object? sender, bool e) =>
@@ -91,26 +92,14 @@ public partial class MemberObjectEditor(
 
     private void UpdateFromElement1dResponse(Element1dResponse response)
     {
-        var thisLengthUnit = this.UnitSettings.LengthUnit.MapToLengthUnit();
-        var lengthUnit = response.LocationPoint.LengthUnit.MapToLengthUnit();
         this.element1d.Id = response.Id;
         this.element1d.ModelId = response.ModelId;
-        this.element1d.LocationPoint.X = new Length(response.LocationPoint.X, lengthUnit).As(
-            thisLengthUnit
-        );
-        this.element1d.LocationPoint.Y = new Length(response.LocationPoint.Y, lengthUnit).As(
-            thisLengthUnit
-        );
-        this.element1d.LocationPoint.Z = new Length(response.LocationPoint.Z, lengthUnit).As(
-            thisLengthUnit
-        );
-        this.element1d.LocationPoint.LengthUnit = response.LocationPoint.LengthUnit;
-        this.element1d.Restraint.CanTranslateAlongX = response.Restraint.CanTranslateAlongX;
-        this.element1d.Restraint.CanTranslateAlongY = response.Restraint.CanTranslateAlongY;
-        this.element1d.Restraint.CanTranslateAlongZ = response.Restraint.CanTranslateAlongZ;
-        this.element1d.Restraint.CanRotateAboutX = response.Restraint.CanRotateAboutX;
-        this.element1d.Restraint.CanRotateAboutY = response.Restraint.CanRotateAboutY;
-        this.element1d.Restraint.CanRotateAboutZ = response.Restraint.CanRotateAboutZ;
+        this.element1d.StartNodeId = response.StartNodeId;
+        this.element1d.EndNodeId = response.EndNodeId;
+        this.element1d.MaterialId = response.MaterialId;
+        this.element1d.SectionProfileId = response.SectionProfileId;
+        this.element1d.SectionProfileRotation = response.SectionProfileRotation;
+        this.element1d.Metadata = response.Metadata;
     }
 
     private void OnFocus(string fieldName, int fieldNum, Action<object> setValue)
@@ -121,7 +110,7 @@ public partial class MemberObjectEditor(
     private async Task Delete()
     {
         ModelEntityCommand command = new() { ModelId = this.ModelId, Id = this.element1d.Id };
-        await deleteElement1dCommandHandler.ExecuteAsync(command);
+        /*await deleteElement1dCommandHandler.ExecuteAsync(command);*/
     }
 
     private async Task Submit()
@@ -152,7 +141,7 @@ public partial class MemberObjectEditor(
                     },
                     ModelId = this.ModelId
                 };
-            await createElement1dCommandHandler.ExecuteAsync(command);
+            /*await createElement1dCommandHandler.ExecuteAsync(command);*/
         }
         else
         {
@@ -164,7 +153,7 @@ public partial class MemberObjectEditor(
                     Body = nodeData
                 };
 
-            await putElement1dCommandHandler.ExecuteAsync(command);
+            /*await putElement1dCommandHandler.ExecuteAsync(command);*/
         }
     }
 
@@ -172,26 +161,73 @@ public partial class MemberObjectEditor(
 
     private Task<IEnumerable<int>> Element1dIds(string searchText, CancellationToken ct)
     {
-        if (!int.TryParse(searchText, out int subInt))
+        return GetPossibleIdsFromSubstring(
+            searchText,
+            editorState.Value.CachedModelResponse.Element1ds.Keys,
+            true
+        );
+    }
+
+    private Task<IEnumerable<int>> NodeIds(string searchText, CancellationToken ct)
+    {
+        return GetPossibleIdsFromSubstring(
+            searchText,
+            editorState.Value.CachedModelResponse.Nodes.Keys,
+            false
+        );
+    }
+
+    private Task<IEnumerable<int>> MaterialIds(string searchText, CancellationToken ct)
+    {
+        return GetPossibleIdsFromSubstring(
+            searchText,
+            editorState.Value.CachedModelResponse.Materials.Keys,
+            false
+        );
+    }
+
+    private Task<IEnumerable<int>> SectionProfileIds(string searchText, CancellationToken ct)
+    {
+        return GetPossibleIdsFromSubstring(
+            searchText,
+            editorState.Value.CachedModelResponse.SectionProfiles.Keys,
+            false
+        );
+    }
+
+    private static Task<IEnumerable<int>> GetPossibleIdsFromSubstring(
+        string searchText,
+        IEnumerable<int> keys,
+        bool includeNew = false
+    )
+    {
+        IEnumerable<int> result;
+        if (includeNew)
         {
-            return Task.FromResult(
-                NullInt.Concat(editorState.Value.CachedModelResponse.Element1ds.Keys)
-            );
+            result = NullInt.Concat(GetPossibleIdsFromSubstring(searchText, keys));
+        }
+        else
+        {
+            result = GetPossibleIdsFromSubstring(searchText, keys);
+        }
+
+        return Task.FromResult(result);
+    }
+
+    private static IEnumerable<int> GetPossibleIdsFromSubstring(
+        string searchText,
+        IEnumerable<int> keys
+    )
+    {
+        if (!int.TryParse(searchText, out int subInt) || subInt <= 0)
+        {
+            return keys;
         }
 
         // Get the number of digits in the subInt
         int subIntLength = GetNumberOfDigits(subInt);
 
-        return Task.FromResult(
-            NullInt.Concat(
-                editorState
-                    .Value
-                    .CachedModelResponse
-                    .Element1ds
-                    .Keys
-                    .Where(k => GetPrefix(k, subIntLength) == subInt)
-            )
-        );
+        return keys.Where(k => GetPrefix(k, subIntLength) == subInt);
     }
 
     // Helper method to get the number of digits in an integer
@@ -233,6 +269,12 @@ public partial class MemberObjectEditor(
         public Dictionary<string, string>? Metadata { get; set; }
     }
 }
+
+public class DeleteElement1dSimpleCommandHandler { }
+
+public class CreateElement1dClientCommandHandler { }
+
+public class PutElement1dSimpleCommandHandler { }
 
 [FeatureState]
 public record Element1dObjectEditorState(bool IsLoading)

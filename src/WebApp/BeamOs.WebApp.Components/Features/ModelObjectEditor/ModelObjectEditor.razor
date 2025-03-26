@@ -1,6 +1,7 @@
 @inherits FluxorComponent
 
 @using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node
+@using BeamOs.WebApp.Components.Features.ModelObjectEditor.Members
 @using BeamOs.WebApp.Components.Features.ModelObjectEditor.Nodes
 @using StructuralAnalysis.Contracts.Common;
 
@@ -12,8 +13,8 @@
             <MudText Align="Align.Center" Color="Color.Primary">MODEL</MudText>
             <MudDivider Class="mb-5" />
             <div class="grid grid-cols-2 gap-2">
-                <MudButton Variant="Variant.Outlined" OnClick="() => ShowView(BeamOsObjectType.Node)">Nodes</MudButton>
-                <MudButton Variant="Variant.Outlined">Members</MudButton>
+                    <MudButton Variant="Variant.Outlined" OnClick="() => ShowView(BeamOsObjectType.Node)">Nodes</MudButton>
+                <MudButton Variant="Variant.Outlined" OnClick="() => ShowView(BeamOsObjectType.Element1d)">Members</MudButton>
                 @* <MudButton Variant="Variant.Outlined">Plates</MudButton> *@
                 @* <MudButton Variant="Variant.Outlined">Supports</MudButton> *@
                 <MudButton Variant="Variant.Outlined">Materials</MudButton>
@@ -60,5 +61,9 @@ else
     if (state.Value.CurrentViewType == BeamOsObjectType.Node)
     {
         <NodeObjectEditor ModelId="@ModelId" UnitSettings="@UnitSettings" SelectedObject="state.Value.SelectedObject" />
+    }
+    else if (state.Value.CurrentViewType == BeamOsObjectType.Element1d)
+    {
+        <MemberObjectEditor ModelId="@ModelId" UnitSettings="@UnitSettings" SelectedObject="state.Value.SelectedObject" />
     }
 }

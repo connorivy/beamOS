@@ -1,9 +1,12 @@
+@using MudBlazor
 @inherits FluxorComponent
 
 <MudContainer Gutters="false" Class=@($"rounded pointer-events-none")>
     <MudPaper Class="px-4 pb-4 max-h-full overflow-auto pointer-events-auto">
         <MudExpansionPanels MultiExpansion="true" Outlined="false" Elevation="0" Dense="true">
-            <MudAutocomplete InputMode="InputMode.numeric" MaxItems="@ResultLimit" T="int" @bind-Value="NodeId" Text="@NodeIdText" SearchFunc="NodeIds" ToStringFunc="@(id => id == 0 ? "New Node" : id.ToString())" Label="Node Id">
+            <MudAutocomplete InputMode="InputMode.numeric" MaxItems="@ResultLimit" T="int" @bind-Value="Element1dId"
+                Text="@Element1dIdText" SearchFunc="Element1dIds"
+                ToStringFunc="@(id => id == 0 ? "New Element1d" : id.ToString())" Label="Element1d Id">
                 <MoreItemsTemplate>
                     <MudText Align="Align.Center" Class="px-4 py-1">
                         Only the first @ResultLimit.ToString() items are shown. Type to refine results.
@@ -11,50 +14,49 @@
                 </MoreItemsTemplate>
             </MudAutocomplete>
 
-            <MudExpansionPanel Expanded="true" Text="LocationPoint" Class="text-nowrap text-clip mud-typography mud-typography-subtitle2">
-                <MudGrid Spacing="1">
-                    <QuantityFieldComponent IsRequired="true" @bind-Value="@node.LocationPoint.X" Label="X" Unit="@UnitSettings.LengthUnit.ToString()" />
+            <MudAutocomplete InputMode="InputMode.numeric" MaxItems="@ResultLimit" T="int"
+                @bind-Value="this.element1d.StartNodeId" SearchFunc="NodeIds" Label="Start Node Id">
+                <MoreItemsTemplate>
+                    <MudText Align="Align.Center" Class="px-4 py-1">
+                        Only the first @ResultLimit.ToString() items are shown. Type to refine results.
+                    </MudText>
+                </MoreItemsTemplate>
+            </MudAutocomplete>
 
-                    <QuantityFieldComponent IsRequired="true" @bind-Value="@node.LocationPoint.Y" Label="Y" Unit="@UnitSettings.LengthUnit.ToString()" />
+            <MudAutocomplete InputMode="InputMode.numeric" MaxItems="@ResultLimit" T="int"
+                @bind-Value="this.element1d.EndNodeId" SearchFunc="NodeIds" Label="End Node Id">
+                <MoreItemsTemplate>
+                    <MudText Align="Align.Center" Class="px-4 py-1">
+                        Only the first @ResultLimit.ToString() items are shown. Type to refine results.
+                    </MudText>
+                </MoreItemsTemplate>
+            </MudAutocomplete>
 
-                    <QuantityFieldComponent IsRequired="true" @bind-Value="@node.LocationPoint.Z" Label="Z" Unit="@UnitSettings.LengthUnit.ToString()" />
-                </MudGrid>
-            </MudExpansionPanel>
+            <MudAutocomplete InputMode="InputMode.numeric" MaxItems="@ResultLimit" T="int"
+                @bind-Value="this.element1d.MaterialId" SearchFunc="MaterialIds" Label="Material Id">
+                <MoreItemsTemplate>
+                    <MudText Align="Align.Center" Class="px-4 py-1">
+                        Only the first @ResultLimit.ToString() items are shown. Type to refine results.
+                    </MudText>
+                </MoreItemsTemplate>
+            </MudAutocomplete>
 
-            <MudExpansionPanel Expanded="true" Text="Restraint" Class="text-nowrap text-clip mud-typography mud-typography-subtitle2">
-                <MudGrid Spacing="1">
-                    <MudItem xs="6" sm="12">
-                        <MudCheckBox @bind-Value="@node.Restraint.CanTranslateAlongX" Label="CanTranslateAlongX" />
-                    </MudItem>
-
-                    <MudItem xs="6" sm="12">
-                        <MudCheckBox @bind-Value="@node.Restraint.CanTranslateAlongY" Label="CanTranslateAlongY" />
-                    </MudItem>
-
-                    <MudItem xs="6" sm="12">
-                        <MudCheckBox @bind-Value="@node.Restraint.CanTranslateAlongZ" Label="CanTranslateAlongZ" />
-                    </MudItem>
-
-                    <MudItem xs="6" sm="12">
-                        <MudCheckBox @bind-Value="@node.Restraint.CanRotateAboutX" Label="CanRotateAboutX" />
-                    </MudItem>
-
-                    <MudItem xs="6" sm="12">
-                        <MudCheckBox @bind-Value="@node.Restraint.CanRotateAboutY" Label="CanRotateAboutY" />
-                    </MudItem>
-
-                    <MudItem xs="6" sm="12">
-                        <MudCheckBox @bind-Value="@node.Restraint.CanRotateAboutZ" Label="CanRotateAboutZ" />
-                    </MudItem>
-                </MudGrid>
-            </MudExpansionPanel>
+            <MudAutocomplete InputMode="InputMode.numeric" MaxItems="@ResultLimit" T="int"
+                @bind-Value="this.element1d.SectionProfileId" SearchFunc="SectionProfileIds" Label="Secion Profile Id">
+                <MoreItemsTemplate>
+                    <MudText Align="Align.Center" Class="px-4 py-1">
+                        Only the first @ResultLimit.ToString() items are shown. Type to refine results.
+                    </MudText>
+                </MoreItemsTemplate>
+            </MudAutocomplete>
         </MudExpansionPanels>
 
         <div class="flex flex-row">
             <div class="flex-1" />
-            @if (node.Id != 0)
+            @if (element1d.Id != 0)
             {
-                <MudButton Class="flex-none mr-2" Variant="Variant.Filled" Color="Color.Error" OnClick="Delete">Delete</MudButton>
+                <MudButton Class="flex-none mr-2" Variant="Variant.Filled" Color="Color.Error" OnClick="Delete">Delete
+                </MudButton>
             }
             @if (state.Value.IsLoading)
             {
@@ -62,7 +64,8 @@
             }
             else
             {
-                <MudButton Class="flex-none" Variant="Variant.Filled" Color="Color.Primary" OnClick="Submit">Apply</MudButton>
+                <MudButton Class="flex-none" Variant="Variant.Filled" Color="Color.Primary" OnClick="Submit">Apply
+                </MudButton>
             }
         </div>
     </MudPaper>
@@ -85,7 +88,7 @@
         height: fit-content;
     }
 
-    .mud-panel-expanded > .mud-expand-panel-header .mud-expand-panel-text {
+    .mud-panel-expanded>.mud-expand-panel-header .mud-expand-panel-text {
         color: var(--mud-palette-primary-lighten);
     }
 
@@ -103,5 +106,4 @@
     .mud-input-control {
         margin-top: 2px;
     }
-
 </style>
