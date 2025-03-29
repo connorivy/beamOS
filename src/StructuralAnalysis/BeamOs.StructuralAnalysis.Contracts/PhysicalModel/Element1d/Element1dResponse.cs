@@ -12,4 +12,17 @@ public record Element1dResponse(
     int SectionProfileId,
     Angle SectionProfileRotation,
     Dictionary<string, string>? Metadata = null
-) : IModelEntity;
+) : IModelEntity
+{
+    public Element1dData ToElement1dData()
+    {
+        return new Element1dData(
+            this.StartNodeId,
+            this.EndNodeId,
+            this.MaterialId,
+            this.SectionProfileId,
+            this.SectionProfileRotation,
+            this.Metadata
+        );
+    }
+}

@@ -49,6 +49,8 @@ public static class Reducers
         {
             "Node" => BeamOsObjectType.Node,
             "Element1d" => BeamOsObjectType.Element1d,
+            "Material" => BeamOsObjectType.Material,
+            "SectionProfile" => BeamOsObjectType.SectionProfile,
             _ => BeamOsObjectType.Model,
         };
         return state with

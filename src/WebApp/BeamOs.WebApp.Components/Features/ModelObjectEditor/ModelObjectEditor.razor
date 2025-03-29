@@ -1,8 +1,10 @@
 @inherits FluxorComponent
 
 @using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node
+@using BeamOs.WebApp.Components.Features.ModelObjectEditor.Materials
 @using BeamOs.WebApp.Components.Features.ModelObjectEditor.Members
 @using BeamOs.WebApp.Components.Features.ModelObjectEditor.Nodes
+@using BeamOs.WebApp.Components.Features.ModelObjectEditor.SectionProfiles
 @using StructuralAnalysis.Contracts.Common;
 
 @if (state.Value.CurrentViewType == BeamOsObjectType.Model)
@@ -13,12 +15,12 @@
             <MudText Align="Align.Center" Color="Color.Primary">MODEL</MudText>
             <MudDivider Class="mb-5" />
             <div class="grid grid-cols-2 gap-2">
-                    <MudButton Variant="Variant.Outlined" OnClick="() => ShowView(BeamOsObjectType.Node)">Nodes</MudButton>
+                <MudButton Variant="Variant.Outlined" OnClick="() => ShowView(BeamOsObjectType.Node)">Nodes</MudButton>
                 <MudButton Variant="Variant.Outlined" OnClick="() => ShowView(BeamOsObjectType.Element1d)">Members</MudButton>
                 @* <MudButton Variant="Variant.Outlined">Plates</MudButton> *@
                 @* <MudButton Variant="Variant.Outlined">Supports</MudButton> *@
-                <MudButton Variant="Variant.Outlined">Materials</MudButton>
-                <MudButton Variant="Variant.Outlined">Sections</MudButton>
+                <MudButton Variant="Variant.Outlined" OnClick="() => ShowView(BeamOsObjectType.Material)">Materials</MudButton>
+                <MudButton Variant="Variant.Outlined" OnClick="() => ShowView(BeamOsObjectType.SectionProfile)">Sections</MudButton>
             </div>
         </div>
 
@@ -43,13 +45,13 @@
             </div> *@
         </div>
 
-        <div>
+        @* <div>
             <div class="text-sm uppercase text-secondary mb-2">Dynamic Loads</div>
             <div class="grid grid-cols-2 gap-2">
                 <MudButton Variant="Variant.Outlined">Nodal Masses</MudButton>
                 <MudButton Variant="Variant.Outlined">Spectral Loads</MudButton>
             </div>
-        </div>
+        </div> *@
     </div>
 }
 else
@@ -65,5 +67,13 @@ else
     else if (state.Value.CurrentViewType == BeamOsObjectType.Element1d)
     {
         <MemberObjectEditor ModelId="@ModelId" UnitSettings="@UnitSettings" SelectedObject="state.Value.SelectedObject" />
+    }
+    else if (state.Value.CurrentViewType == BeamOsObjectType.Material)
+    {
+        <MaterialObjectEditor ModelId="@ModelId" UnitSettings="@UnitSettings" SelectedObject="state.Value.SelectedObject" />
+    }
+    else if (state.Value.CurrentViewType == BeamOsObjectType.SectionProfile)
+    {
+        <SectionProfileObjectEditor ModelId="@ModelId" UnitSettings="@UnitSettings" SelectedObject="state.Value.SelectedObject" />
     }
 }

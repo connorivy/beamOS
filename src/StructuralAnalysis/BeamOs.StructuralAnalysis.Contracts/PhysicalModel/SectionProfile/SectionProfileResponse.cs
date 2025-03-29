@@ -14,4 +14,18 @@ public record SectionProfileResponse(
     double WeakAxisShearArea,
     AreaUnit AreaUnit,
     AreaMomentOfInertiaUnit AreaMomentOfInertiaUnit
-) : IModelEntity;
+) : IModelEntity
+{
+    public SectionProfileData ToSectionProfileData() =>
+        new()
+        {
+            Area = this.Area,
+            StrongAxisMomentOfInertia = this.StrongAxisMomentOfInertia,
+            WeakAxisMomentOfInertia = this.WeakAxisMomentOfInertia,
+            PolarMomentOfInertia = this.PolarMomentOfInertia,
+            StrongAxisShearArea = this.StrongAxisShearArea,
+            WeakAxisShearArea = this.WeakAxisShearArea,
+            AreaUnit = this.AreaUnit,
+            AreaMomentOfInertiaUnit = this.AreaMomentOfInertiaUnit
+        };
+}

@@ -21,6 +21,9 @@ public class EditorApiGenerator : AbstractGenerator
         _ = addMethod("CreateElement1d").Accepts<Element1dResponse>();
         _ = addMethod("CreateElement1ds").Accepts<ICollection<Element1dResponse>>();
 
+        _ = addMethod("UpdateElement1d").Accepts<Element1dResponse>();
+        _ = addMethod("UpdateElement1ds").Accepts<ICollection<Element1dResponse>>();
+
         _ = addMethod("DeleteElement1d").Accepts<IModelEntity>();
         _ = addMethod("DeleteElement1ds").Accepts<ICollection<IModelEntity>>();
 

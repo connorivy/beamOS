@@ -23,7 +23,12 @@ export interface IStructuralAnalysisApiClientV1 {
     /**
      * @return OK
      */
-    putSectionProfile(id: number, modelId: string, body: SectionProfileRequestData): Promise<ResultOfSectionProfileResponse>;
+    deleteSectionProfile(modelId: string, id: number): Promise<ResultOfModelEntityResponse>;
+
+    /**
+     * @return OK
+     */
+    putSectionProfile(id: number, modelId: string, body: SectionProfileData): Promise<ResultOfSectionProfileResponse>;
 
     /**
      * @return OK
@@ -277,7 +282,50 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     /**
      * @return OK
      */
-    putSectionProfile(id: number, modelId: string, body: SectionProfileRequestData): Promise<ResultOfSectionProfileResponse> {
+    deleteSectionProfile(modelId: string, id: number): Promise<ResultOfModelEntityResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles/{id}";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeleteSectionProfile(_response);
+        });
+    }
+
+    protected processDeleteSectionProfile(response: Response): Promise<ResultOfModelEntityResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfModelEntityResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfModelEntityResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    putSectionProfile(id: number, modelId: string, body: SectionProfileData): Promise<ResultOfSectionProfileResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -2507,12 +2555,12 @@ export interface ICreatePointLoadRequest {
 
 export class CreateSectionProfileRequest implements ICreateSectionProfileRequest {
     id?: number | undefined;
-    area?: number;
-    strongAxisMomentOfInertia?: number;
-    weakAxisMomentOfInertia?: number;
-    polarMomentOfInertia?: number;
-    strongAxisShearArea?: number;
-    weakAxisShearArea?: number;
+    area!: number;
+    strongAxisMomentOfInertia!: number;
+    weakAxisMomentOfInertia!: number;
+    polarMomentOfInertia!: number;
+    strongAxisShearArea!: number;
+    weakAxisShearArea!: number;
     areaUnit?: AreaUnit;
     areaMomentOfInertiaUnit?: AreaMomentOfInertiaUnit;
 
@@ -2573,12 +2621,12 @@ export class CreateSectionProfileRequest implements ICreateSectionProfileRequest
 
 export interface ICreateSectionProfileRequest {
     id?: number | undefined;
-    area?: number;
-    strongAxisMomentOfInertia?: number;
-    weakAxisMomentOfInertia?: number;
-    polarMomentOfInertia?: number;
-    strongAxisShearArea?: number;
-    weakAxisShearArea?: number;
+    area: number;
+    strongAxisMomentOfInertia: number;
+    weakAxisMomentOfInertia: number;
+    polarMomentOfInertia: number;
+    strongAxisShearArea: number;
+    weakAxisShearArea: number;
     areaUnit?: AreaUnit;
     areaMomentOfInertiaUnit?: AreaMomentOfInertiaUnit;
 
@@ -5494,12 +5542,12 @@ export interface IPutPointLoadRequest {
 
 export class PutSectionProfileRequest implements IPutSectionProfileRequest {
     id!: number;
-    area?: number;
-    strongAxisMomentOfInertia?: number;
-    weakAxisMomentOfInertia?: number;
-    polarMomentOfInertia?: number;
-    strongAxisShearArea?: number;
-    weakAxisShearArea?: number;
+    area!: number;
+    strongAxisMomentOfInertia!: number;
+    weakAxisMomentOfInertia!: number;
+    polarMomentOfInertia!: number;
+    strongAxisShearArea!: number;
+    weakAxisShearArea!: number;
     areaUnit?: AreaUnit;
     areaMomentOfInertiaUnit?: AreaMomentOfInertiaUnit;
 
@@ -5560,12 +5608,12 @@ export class PutSectionProfileRequest implements IPutSectionProfileRequest {
 
 export interface IPutSectionProfileRequest {
     id: number;
-    area?: number;
-    strongAxisMomentOfInertia?: number;
-    weakAxisMomentOfInertia?: number;
-    polarMomentOfInertia?: number;
-    strongAxisShearArea?: number;
-    weakAxisShearArea?: number;
+    area: number;
+    strongAxisMomentOfInertia: number;
+    weakAxisMomentOfInertia: number;
+    polarMomentOfInertia: number;
+    strongAxisShearArea: number;
+    weakAxisShearArea: number;
     areaUnit?: AreaUnit;
     areaMomentOfInertiaUnit?: AreaMomentOfInertiaUnit;
 
@@ -6640,19 +6688,19 @@ export interface IResultSetResponse2 {
     [key: string]: any;
 }
 
-export class SectionProfileRequestData implements ISectionProfileRequestData {
-    area?: number;
-    strongAxisMomentOfInertia?: number;
-    weakAxisMomentOfInertia?: number;
-    polarMomentOfInertia?: number;
-    strongAxisShearArea?: number;
-    weakAxisShearArea?: number;
+export class SectionProfileData implements ISectionProfileData {
+    area!: number;
+    strongAxisMomentOfInertia!: number;
+    weakAxisMomentOfInertia!: number;
+    polarMomentOfInertia!: number;
+    strongAxisShearArea!: number;
+    weakAxisShearArea!: number;
     areaUnit?: AreaUnit;
     areaMomentOfInertiaUnit?: AreaMomentOfInertiaUnit;
 
     [key: string]: any;
 
-    constructor(data?: ISectionProfileRequestData) {
+    constructor(data?: ISectionProfileData) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -6678,9 +6726,9 @@ export class SectionProfileRequestData implements ISectionProfileRequestData {
         }
     }
 
-    static fromJS(data: any): SectionProfileRequestData {
+    static fromJS(data: any): SectionProfileData {
         data = typeof data === 'object' ? data : {};
-        let result = new SectionProfileRequestData();
+        let result = new SectionProfileData();
         result.init(data);
         return result;
     }
@@ -6703,13 +6751,13 @@ export class SectionProfileRequestData implements ISectionProfileRequestData {
     }
 }
 
-export interface ISectionProfileRequestData {
-    area?: number;
-    strongAxisMomentOfInertia?: number;
-    weakAxisMomentOfInertia?: number;
-    polarMomentOfInertia?: number;
-    strongAxisShearArea?: number;
-    weakAxisShearArea?: number;
+export interface ISectionProfileData {
+    area: number;
+    strongAxisMomentOfInertia: number;
+    weakAxisMomentOfInertia: number;
+    polarMomentOfInertia: number;
+    strongAxisShearArea: number;
+    weakAxisShearArea: number;
     areaUnit?: AreaUnit;
     areaMomentOfInertiaUnit?: AreaMomentOfInertiaUnit;
 

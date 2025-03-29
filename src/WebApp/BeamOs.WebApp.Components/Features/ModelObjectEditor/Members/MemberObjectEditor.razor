@@ -14,8 +14,12 @@
                 </MoreItemsTemplate>
             </MudAutocomplete>
 
-            <MudAutocomplete InputMode="InputMode.numeric" MaxItems="@ResultLimit" T="int"
-                @bind-Value="this.element1d.StartNodeId" SearchFunc="NodeIds" Label="Start Node Id">
+            <MudNumericField T="int" @bind-Value="this.element1d.StartNodeId" Label="Start Node Id"
+                InputMode="InputMode.numeric" Min="0" Max="99999999" Margin="Margin.None" Required="true"
+                HideSpinButtons="true" />
+
+            <MudAutocomplete MaxItems="@ResultLimit" T="int" @bind-Value="this.element1d.StartNodeId"
+                SearchFunc="NodeIds" Label="Start Node Id">
                 <MoreItemsTemplate>
                     <MudText Align="Align.Center" Class="px-4 py-1">
                         Only the first @ResultLimit.ToString() items are shown. Type to refine results.
@@ -51,7 +55,10 @@
             </MudAutocomplete>
         </MudExpansionPanels>
 
-        <div class="flex flex-row">
+        <QuantityFieldComponent IsRequired="true" @bind-Value="element1d.SectionProfileRotation"
+            Label="Section Profile Rotation" Unit="@UnitSettings.AngleUnit.ToString()" />
+
+        <div class="flex flex-row mt-2">
             <div class="flex-1" />
             @if (element1d.Id != 0)
             {

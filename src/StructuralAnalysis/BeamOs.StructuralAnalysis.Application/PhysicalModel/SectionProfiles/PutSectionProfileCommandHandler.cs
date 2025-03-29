@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
@@ -56,12 +57,11 @@ public static partial class PutSectionProfileCommandMapper
     public static partial SectionProfile ToDomainObject(this PutSectionProfileCommand command);
 }
 
-public readonly struct PutSectionProfileCommand
-    : IModelResourceWithIntIdRequest<SectionProfileRequestData>
+public readonly struct PutSectionProfileCommand : IModelResourceWithIntIdRequest<SectionProfileData>
 {
     public int Id { get; init; }
     public Guid ModelId { get; init; }
-    public SectionProfileRequestData Body { get; init; }
+    public SectionProfileData Body { get; init; }
     public Area Area => new(this.Body.Area, this.Body.AreaUnit.MapToAreaUnit());
     public AreaMomentOfInertia StrongAxisMomentOfInertia =>
         new(
@@ -85,6 +85,7 @@ public readonly struct PutSectionProfileCommand
 
     public PutSectionProfileCommand() { }
 
+    [SetsRequiredMembers]
     public PutSectionProfileCommand(
         ModelId modelId,
         PutSectionProfileRequest putSectionProfileRequest
@@ -93,6 +94,33 @@ public readonly struct PutSectionProfileCommand
         this.Id = putSectionProfileRequest.Id;
         this.ModelId = modelId;
         this.Body = putSectionProfileRequest;
+    }
+
+    public SectionProfileResponse ToResponse()
+    {
+        return new(
+            this.Id,
+            this.ModelId,
+            this.Area.As(this.Body.AreaUnit.MapToAreaUnit()),
+            this.StrongAxisMomentOfInertia.As(
+                this.Body.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
+            ),
+            this.WeakAxisMomentOfInertia.As(
+                this.Body.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
+            ),
+            this.PolarMomentOfInertia.As(
+                this.Body.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
+            ),
+            this.StrongAxisShearArea.As(this.Body.AreaUnit.MapToAreaUnit()),
+            this.WeakAxisShearArea.As(this.Body.AreaUnit.MapToAreaUnit()),
+            this.Body.AreaUnit,
+            this.Body.AreaMomentOfInertiaUnit
+        );
+    }
+
+    public PutSectionProfileRequest ToRequest()
+    {
+        return new(this.Id, this.Body);
     }
 }
 

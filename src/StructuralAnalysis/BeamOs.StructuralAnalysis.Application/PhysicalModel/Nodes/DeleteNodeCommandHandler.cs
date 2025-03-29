@@ -6,10 +6,7 @@ namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 public class DeleteNodeCommandHandler(
     INodeRepository repo,
     IStructuralAnalysisUnitOfWork unitOfWork
-) : DeleteModelEntityCommandHandler<NodeId, Node>(repo, unitOfWork)
-{
-
-}
+) : DeleteModelEntityCommandHandler<NodeId, Node>(repo, unitOfWork) { }
 
 public readonly struct DeleteNodeCommand
 {

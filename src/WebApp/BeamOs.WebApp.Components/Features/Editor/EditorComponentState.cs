@@ -6,6 +6,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.ModelObjectEditor;
+using BeamOs.WebApp.Components.Features.ModelObjectEditor.Members;
 using BeamOs.WebApp.Components.Features.ModelObjectEditor.Nodes;
 using BeamOs.WebApp.Components.Features.StructuralApi;
 using BeamOs.WebApp.EditorCommands;
@@ -175,6 +176,98 @@ public static class EditorComponentStateReducers
                     .CachedModelResponse
                     .Nodes
                     .Add(action.NodeId.Value, new(action.NodeId.Value, action.ModelId, action.Data))
+            }
+        };
+    }
+
+    [ReducerMethod]
+    public static EditorComponentState Reducer(
+        EditorComponentState state,
+        PutElement1dClientCommand action
+    )
+    {
+        Guid modelId = action.New.ModelId;
+
+        if (!(state.CachedModelResponse?.Id == modelId))
+        {
+            return state;
+        }
+
+        return state with
+        {
+            CachedModelResponse = state.CachedModelResponse with
+            {
+                Element1ds = state
+                    .CachedModelResponse
+                    .Element1ds
+                    .Remove(action.New.Id)
+                    .Add(action.New.Id, action.New)
+            }
+        };
+    }
+
+    [ReducerMethod]
+    public static EditorComponentState Reducer(
+        EditorComponentState state,
+        DeleteElement1dClientCommand action
+    )
+    {
+        Guid modelId = action.ModelId;
+
+        if (!(state.CachedModelResponse?.Id == modelId))
+        {
+            return state;
+        }
+
+        return state with
+        {
+            CachedModelResponse = state.CachedModelResponse with
+            {
+                Element1ds = state.CachedModelResponse.Element1ds.Remove(action.Element1dId)
+            }
+        };
+    }
+
+    [ReducerMethod]
+    public static EditorComponentState Reducer(
+        EditorComponentState state,
+        CreateElement1dClientCommand action
+    )
+    {
+        Guid modelId = action.ModelId;
+
+        if (!(state.CachedModelResponse?.Id == modelId))
+        {
+            return state;
+        }
+
+        if (action.Element1dId is null)
+        {
+            throw new InvalidOperationException(
+                "CreateElement1dClientCommand does not have a valid Element1dId"
+            );
+        }
+
+        return state with
+        {
+            CachedModelResponse = state.CachedModelResponse with
+            {
+                Element1ds = state
+                    .CachedModelResponse
+                    .Element1ds
+                    .Add(
+                        action.Element1dId ?? action.TempElement1dId,
+                        new(
+                            action.Element1dId.Value,
+                            action.ModelId,
+                            action.Data.StartNodeId,
+                            action.Data.EndNodeId,
+                            action.Data.MaterialId,
+                            action.Data.SectionProfileId,
+                            action.Data.SectionProfileRotation.Value,
+                            null
+                        )
+                    )
             }
         };
     }

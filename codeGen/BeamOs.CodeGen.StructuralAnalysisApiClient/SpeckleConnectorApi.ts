@@ -900,12 +900,12 @@ export interface IPutPointLoadRequest {
 
 export class PutSectionProfileRequest implements IPutSectionProfileRequest {
     id!: number;
-    area?: number;
-    strongAxisMomentOfInertia?: number;
-    weakAxisMomentOfInertia?: number;
-    polarMomentOfInertia?: number;
-    strongAxisShearArea?: number;
-    weakAxisShearArea?: number;
+    area!: number;
+    strongAxisMomentOfInertia!: number;
+    weakAxisMomentOfInertia!: number;
+    polarMomentOfInertia!: number;
+    strongAxisShearArea!: number;
+    weakAxisShearArea!: number;
     areaUnit?: number;
     areaMomentOfInertiaUnit?: number;
 
@@ -966,12 +966,12 @@ export class PutSectionProfileRequest implements IPutSectionProfileRequest {
 
 export interface IPutSectionProfileRequest {
     id: number;
-    area?: number;
-    strongAxisMomentOfInertia?: number;
-    weakAxisMomentOfInertia?: number;
-    polarMomentOfInertia?: number;
-    strongAxisShearArea?: number;
-    weakAxisShearArea?: number;
+    area: number;
+    strongAxisMomentOfInertia: number;
+    weakAxisMomentOfInertia: number;
+    polarMomentOfInertia: number;
+    strongAxisShearArea: number;
+    weakAxisShearArea: number;
     areaUnit?: number;
     areaMomentOfInertiaUnit?: number;
 

@@ -2,7 +2,6 @@ using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.WebApp.Components.Features.Editor;
 using BeamOs.WebApp.Components.Features.SelectionInfo;
 using BeamOs.WebApp.EditorCommands;
@@ -15,10 +14,10 @@ namespace BeamOs.WebApp.Components.Features.ModelObjectEditor.Members;
 public partial class MemberObjectEditor(
     IDispatcher dispatcher,
     IState<EditorComponentState> editorState,
-    IState<Element1dObjectEditorState> state
-// PutElement1dSimpleCommandHandler putElement1dCommandHandler,
-// CreateElement1dClientCommandHandler createElement1dCommandHandler,
-// DeleteElement1dSimpleCommandHandler deleteElement1dCommandHandler
+    IState<Element1dObjectEditorState> state,
+    PutElement1dSimpleCommandHandler putElement1dCommandHandler,
+    CreateElement1dClientCommandHandler createElement1dCommandHandler,
+    DeleteElement1dSimpleCommandHandler deleteElement1dCommandHandler
 ) : FluxorComponent
 {
     private readonly Element1dModel element1d = new();
@@ -98,7 +97,9 @@ public partial class MemberObjectEditor(
         this.element1d.EndNodeId = response.EndNodeId;
         this.element1d.MaterialId = response.MaterialId;
         this.element1d.SectionProfileId = response.SectionProfileId;
-        this.element1d.SectionProfileRotation = response.SectionProfileRotation;
+        this.element1d.SectionProfileRotation = response
+            .SectionProfileRotation
+            .As(response.SectionProfileRotation.Unit);
         this.element1d.Metadata = response.Metadata;
     }
 
@@ -110,7 +111,7 @@ public partial class MemberObjectEditor(
     private async Task Delete()
     {
         ModelEntityCommand command = new() { ModelId = this.ModelId, Id = this.element1d.Id };
-        /*await deleteElement1dCommandHandler.ExecuteAsync(command);*/
+        await deleteElement1dCommandHandler.ExecuteAsync(command);
     }
 
     private async Task Submit()
@@ -122,26 +123,17 @@ public partial class MemberObjectEditor(
                 EndNodeId = this.element1d.EndNodeId,
                 MaterialId = this.element1d.MaterialId,
                 SectionProfileId = this.element1d.SectionProfileId,
-                SectionProfileRotation = this.element1d.SectionProfileRotation,
+                SectionProfileRotation = new(
+                    this.element1d.SectionProfileRotation ?? 0,
+                    this.UnitSettings.AngleUnit
+                ),
                 Metadata = this.element1d.Metadata
             };
 
         if (this.element1d.Id == 0)
         {
-            CreateElement1dCommand command =
-                new()
-                {
-                    Body = new()
-                    {
-                        StartNodeId = this.element1d.StartNodeId,
-                        EndNodeId = this.element1d.EndNodeId,
-                        MaterialId = this.element1d.MaterialId,
-                        SectionProfileId = this.element1d.SectionProfileId,
-                        SectionProfileRotation = this.element1d.SectionProfileRotation,
-                    },
-                    ModelId = this.ModelId
-                };
-            /*await createElement1dCommandHandler.ExecuteAsync(command);*/
+            CreateElement1dClientCommand command = new(nodeData) { ModelId = this.ModelId };
+            await createElement1dCommandHandler.ExecuteAsync(command);
         }
         else
         {
@@ -153,7 +145,7 @@ public partial class MemberObjectEditor(
                     Body = nodeData
                 };
 
-            /*await putElement1dCommandHandler.ExecuteAsync(command);*/
+            await putElement1dCommandHandler.ExecuteAsync(command);
         }
     }
 
@@ -249,14 +241,6 @@ public partial class MemberObjectEditor(
         return number / (int)Math.Pow(10, numberOfDigits - prefixLength);
     }
 
-    // protected override ValueTask DisposeAsyncCore(bool disposing)
-    // {
-    //     putElement1dCommandHandler.IsLoadingChanged -= this.PutElement1dCommandHandler_IsLoadingChanged;
-    //     createElement1dCommandHandler.IsLoadingChanged -= this.PutElement1dCommandHandler_IsLoadingChanged;
-    //     deleteElement1dCommandHandler.IsLoadingChanged -= this.PutElement1dCommandHandler_IsLoadingChanged;
-    //     return base.DisposeAsyncCore(disposing);
-    // }
-
     public class Element1dModel
     {
         public int Id { get; set; }
@@ -265,16 +249,10 @@ public partial class MemberObjectEditor(
         public int EndNodeId { get; set; }
         public int MaterialId { get; set; }
         public int SectionProfileId { get; set; }
-        public AngleContract SectionProfileRotation { get; set; }
+        public double? SectionProfileRotation { get; set; } = 0;
         public Dictionary<string, string>? Metadata { get; set; }
     }
 }
-
-public class DeleteElement1dSimpleCommandHandler { }
-
-public class CreateElement1dClientCommandHandler { }
-
-public class PutElement1dSimpleCommandHandler { }
 
 [FeatureState]
 public record Element1dObjectEditorState(bool IsLoading)
