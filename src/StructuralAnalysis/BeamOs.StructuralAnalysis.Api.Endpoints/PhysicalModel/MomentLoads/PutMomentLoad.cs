@@ -12,7 +12,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.MomentLoads;
 public class PutMomentLoad(PutMomentLoadCommandHandler putMomentLoadCommandHandler)
     : BeamOsModelResourceWithIntIdBaseEndpoint<
         PutMomentLoadCommand,
-        MomentLoadRequestData,
+        MomentLoadData,
         MomentLoadResponse
     >
 {

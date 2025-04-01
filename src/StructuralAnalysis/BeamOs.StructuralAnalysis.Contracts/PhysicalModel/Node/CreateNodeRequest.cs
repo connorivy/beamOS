@@ -4,7 +4,7 @@ using BeamOs.StructuralAnalysis.Contracts.Common;
 
 namespace BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 
-public record CreateNodeRequest
+public record CreateNodeRequest : NodeData
 {
     [SetsRequiredMembers]
     public CreateNodeRequest(
@@ -13,19 +13,18 @@ public record CreateNodeRequest
         int? id = null,
         Dictionary<string, string>? metadata = null
     )
+        : base(locationPoint, restraint, metadata)
     {
-        this.LocationPoint = locationPoint;
-        this.Restraint = restraint;
         this.Id = id;
-        this.Metadata = metadata;
     }
+
+    [SetsRequiredMembers]
+    public CreateNodeRequest(NodeData nodeData)
+        : this(nodeData.LocationPoint, nodeData.Restraint, null, nodeData.Metadata) { }
 
     public CreateNodeRequest() { }
 
-    public required Point LocationPoint { get; init; }
-    public required Restraint Restraint { get; init; }
     public int? Id { get; init; }
-    public Dictionary<string, string>? Metadata { get; init; }
 }
 
 public record NodeData

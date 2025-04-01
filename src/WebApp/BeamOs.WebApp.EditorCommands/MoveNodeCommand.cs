@@ -17,6 +17,7 @@ public readonly record struct MoveNodeCommand : IBeamOsClientCommand
     //public required ClientActionSource Source { get; init; }
     public bool HandledByEditor { get; init; }
     public bool HandledByBlazor { get; init; }
+    public bool HandledByServer { get; init; }
 
     //public IClientCommandUndoable GetUndoCommand(ClientActionSource clientEventSource) =>
     //    this with

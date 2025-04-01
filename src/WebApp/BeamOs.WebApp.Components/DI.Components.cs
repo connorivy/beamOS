@@ -22,6 +22,21 @@ public static class DI
             typeof(CommandHandlerBase<,>),
             ServiceLifetime.Scoped
         );
+        services.AddObjectThatExtendsBase<IAssemblyMarkerWebAppComponents>(
+            typeof(ClientCommandHandlerBase<,>),
+            ServiceLifetime.Scoped
+        );
+        services.AddObjectThatExtendsBase<IAssemblyMarkerWebAppComponents>(
+            typeof(SimpleCommandHandlerBase<,,>),
+            ServiceLifetime.Scoped
+        );
+
+        services.AddObjectThatImplementInterface<IAssemblyMarkerWebAppComponents>(
+            typeof(IClientCommandHandler<>),
+            ServiceLifetime.Scoped,
+            true
+        );
+
         services.AddFluxor(
             options =>
                 options.ScanAssemblies(typeof(DI).Assembly).AddMiddleware<HistoryMiddleware>()

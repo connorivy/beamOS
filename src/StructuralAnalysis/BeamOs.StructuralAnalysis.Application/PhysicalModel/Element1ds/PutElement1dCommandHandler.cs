@@ -46,6 +46,8 @@ public class BatchPutElement1dCommandHandler(
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
 public static partial class PutElement1dCommandMapper
 {
+    public static partial Element1dResponse ToResponse(this PutElement1dCommand command);
+
     public static partial Element1d ToDomainObject(this PutElement1dCommand command);
 }
 

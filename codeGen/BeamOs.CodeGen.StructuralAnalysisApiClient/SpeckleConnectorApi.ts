@@ -70,12 +70,12 @@ export class SpeckleConnectorApi implements ISpeckleConnectorApi {
     }
 }
 
-export class AnalysisSettingsContract implements IAnalysisSettingsContract {
+export class AnalysisSettings implements IAnalysisSettings {
     element1DAnalysisType?: number;
 
     [key: string]: any;
 
-    constructor(data?: IAnalysisSettingsContract) {
+    constructor(data?: IAnalysisSettings) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -94,9 +94,9 @@ export class AnalysisSettingsContract implements IAnalysisSettingsContract {
         }
     }
 
-    static fromJS(data: any): AnalysisSettingsContract {
+    static fromJS(data: any): AnalysisSettings {
         data = typeof data === 'object' ? data : {};
-        let result = new AnalysisSettingsContract();
+        let result = new AnalysisSettings();
         result.init(data);
         return result;
     }
@@ -112,112 +112,8 @@ export class AnalysisSettingsContract implements IAnalysisSettingsContract {
     }
 }
 
-export interface IAnalysisSettingsContract {
+export interface IAnalysisSettings {
     element1DAnalysisType?: number;
-
-    [key: string]: any;
-}
-
-export class AreaContract implements IAreaContract {
-    value!: number;
-    unit!: number;
-
-    [key: string]: any;
-
-    constructor(data?: IAreaContract) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"];
-            this.unit = _data["unit"];
-        }
-    }
-
-    static fromJS(data: any): AreaContract {
-        data = typeof data === 'object' ? data : {};
-        let result = new AreaContract();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value;
-        data["unit"] = this.unit;
-        return data;
-    }
-}
-
-export interface IAreaContract {
-    value: number;
-    unit: number;
-
-    [key: string]: any;
-}
-
-export class AreaMomentOfInertiaContract implements IAreaMomentOfInertiaContract {
-    value!: number;
-    unit!: number;
-
-    [key: string]: any;
-
-    constructor(data?: IAreaMomentOfInertiaContract) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"];
-            this.unit = _data["unit"];
-        }
-    }
-
-    static fromJS(data: any): AreaMomentOfInertiaContract {
-        data = typeof data === 'object' ? data : {};
-        let result = new AreaMomentOfInertiaContract();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value;
-        data["unit"] = this.unit;
-        return data;
-    }
-}
-
-export interface IAreaMomentOfInertiaContract {
-    value: number;
-    unit: number;
 
     [key: string]: any;
 }
@@ -301,7 +197,7 @@ export interface IBeamOsError {
 export class BeamOsModelBuilderDto implements IBeamOsModelBuilderDto {
     name?: string;
     description?: string;
-    settings?: PhysicalModelSettings;
+    settings?: ModelSettings;
     guidString?: string;
     nodes?: PutNodeRequest[];
     materials?: PutMaterialRequest[];
@@ -329,7 +225,7 @@ export class BeamOsModelBuilderDto implements IBeamOsModelBuilderDto {
             }
             this.name = _data["name"];
             this.description = _data["description"];
-            this.settings = _data["settings"] ? PhysicalModelSettings.fromJS(_data["settings"]) : <any>undefined;
+            this.settings = _data["settings"] ? ModelSettings.fromJS(_data["settings"]) : <any>undefined;
             this.guidString = _data["guidString"];
             if (Array.isArray(_data["nodes"])) {
                 this.nodes = [] as any;
@@ -418,7 +314,7 @@ export class BeamOsModelBuilderDto implements IBeamOsModelBuilderDto {
 export interface IBeamOsModelBuilderDto {
     name?: string;
     description?: string;
-    settings?: PhysicalModelSettings;
+    settings?: ModelSettings;
     guidString?: string;
     nodes?: PutNodeRequest[];
     materials?: PutMaterialRequest[];
@@ -430,13 +326,13 @@ export interface IBeamOsModelBuilderDto {
     [key: string]: any;
 }
 
-export class ForceContract implements IForceContract {
+export class Force implements IForce {
     value!: number;
     unit!: number;
 
     [key: string]: any;
 
-    constructor(data?: IForceContract) {
+    constructor(data?: IForce) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -456,9 +352,9 @@ export class ForceContract implements IForceContract {
         }
     }
 
-    static fromJS(data: any): ForceContract {
+    static fromJS(data: any): Force {
         data = typeof data === 'object' ? data : {};
-        let result = new ForceContract();
+        let result = new Force();
         result.init(data);
         return result;
     }
@@ -475,73 +371,21 @@ export class ForceContract implements IForceContract {
     }
 }
 
-export interface IForceContract {
+export interface IForce {
     value: number;
     unit: number;
 
     [key: string]: any;
 }
 
-export class NullableOfAngleContract implements INullableOfAngleContract {
-    value!: number;
-    unit!: number;
-
-    [key: string]: any;
-
-    constructor(data?: INullableOfAngleContract) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"];
-            this.unit = _data["unit"];
-        }
-    }
-
-    static fromJS(data: any): NullableOfAngleContract {
-        data = typeof data === 'object' ? data : {};
-        let result = new NullableOfAngleContract();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value;
-        data["unit"] = this.unit;
-        return data;
-    }
-}
-
-export interface INullableOfAngleContract {
-    value: number;
-    unit: number;
-
-    [key: string]: any;
-}
-
-export class PhysicalModelSettings implements IPhysicalModelSettings {
-    unitSettings!: UnitSettingsContract;
-    analysisSettings?: AnalysisSettingsContract | undefined;
+export class ModelSettings implements IModelSettings {
+    unitSettings!: UnitSettings;
+    analysisSettings?: AnalysisSettings | undefined;
     yAxisUp?: boolean;
 
     [key: string]: any;
 
-    constructor(data?: IPhysicalModelSettings) {
+    constructor(data?: IModelSettings) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -549,7 +393,7 @@ export class PhysicalModelSettings implements IPhysicalModelSettings {
             }
         }
         if (!data) {
-            this.unitSettings = new UnitSettingsContract();
+            this.unitSettings = new UnitSettings();
             this.yAxisUp = true;
         }
     }
@@ -560,15 +404,15 @@ export class PhysicalModelSettings implements IPhysicalModelSettings {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            this.unitSettings = _data["unitSettings"] ? UnitSettingsContract.fromJS(_data["unitSettings"]) : new UnitSettingsContract();
-            this.analysisSettings = _data["analysisSettings"] ? AnalysisSettingsContract.fromJS(_data["analysisSettings"]) : <any>undefined;
+            this.unitSettings = _data["unitSettings"] ? UnitSettings.fromJS(_data["unitSettings"]) : new UnitSettings();
+            this.analysisSettings = _data["analysisSettings"] ? AnalysisSettings.fromJS(_data["analysisSettings"]) : <any>undefined;
             this.yAxisUp = _data["yAxisUp"] !== undefined ? _data["yAxisUp"] : true;
         }
     }
 
-    static fromJS(data: any): PhysicalModelSettings {
+    static fromJS(data: any): ModelSettings {
         data = typeof data === 'object' ? data : {};
-        let result = new PhysicalModelSettings();
+        let result = new ModelSettings();
         result.init(data);
         return result;
     }
@@ -586,10 +430,62 @@ export class PhysicalModelSettings implements IPhysicalModelSettings {
     }
 }
 
-export interface IPhysicalModelSettings {
-    unitSettings: UnitSettingsContract;
-    analysisSettings?: AnalysisSettingsContract | undefined;
+export interface IModelSettings {
+    unitSettings: UnitSettings;
+    analysisSettings?: AnalysisSettings | undefined;
     yAxisUp?: boolean;
+
+    [key: string]: any;
+}
+
+export class NullableOfAngle implements INullableOfAngle {
+    value!: number;
+    unit!: number;
+
+    [key: string]: any;
+
+    constructor(data?: INullableOfAngle) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.value = _data["value"];
+            this.unit = _data["unit"];
+        }
+    }
+
+    static fromJS(data: any): NullableOfAngle {
+        data = typeof data === 'object' ? data : {};
+        let result = new NullableOfAngle();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["value"] = this.value;
+        data["unit"] = this.unit;
+        return data;
+    }
+}
+
+export interface INullableOfAngle {
+    value: number;
+    unit: number;
 
     [key: string]: any;
 }
@@ -654,65 +550,13 @@ export interface IPoint {
     [key: string]: any;
 }
 
-export class PressureContract implements IPressureContract {
-    value!: number;
-    unit!: number;
-
-    [key: string]: any;
-
-    constructor(data?: IPressureContract) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"];
-            this.unit = _data["unit"];
-        }
-    }
-
-    static fromJS(data: any): PressureContract {
-        data = typeof data === 'object' ? data : {};
-        let result = new PressureContract();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value;
-        data["unit"] = this.unit;
-        return data;
-    }
-}
-
-export interface IPressureContract {
-    value: number;
-    unit: number;
-
-    [key: string]: any;
-}
-
 export class PutElement1dRequest implements IPutElement1dRequest {
     id!: number;
     startNodeId!: number;
     endNodeId!: number;
     materialId!: number;
     sectionProfileId!: number;
-    sectionProfileRotation?: NullableOfAngleContract | undefined;
+    sectionProfileRotation?: NullableOfAngle | undefined;
     metadata?: { [key: string]: string; } | undefined;
 
     [key: string]: any;
@@ -737,7 +581,7 @@ export class PutElement1dRequest implements IPutElement1dRequest {
             this.endNodeId = _data["endNodeId"];
             this.materialId = _data["materialId"];
             this.sectionProfileId = _data["sectionProfileId"];
-            this.sectionProfileRotation = _data["sectionProfileRotation"] ? NullableOfAngleContract.fromJS(_data["sectionProfileRotation"]) : <any>undefined;
+            this.sectionProfileRotation = _data["sectionProfileRotation"] ? NullableOfAngle.fromJS(_data["sectionProfileRotation"]) : <any>undefined;
             if (_data["metadata"]) {
                 this.metadata = {} as any;
                 for (let key in _data["metadata"]) {
@@ -784,7 +628,7 @@ export interface IPutElement1dRequest {
     endNodeId: number;
     materialId: number;
     sectionProfileId: number;
-    sectionProfileRotation?: NullableOfAngleContract | undefined;
+    sectionProfileRotation?: NullableOfAngle | undefined;
     metadata?: { [key: string]: string; } | undefined;
 
     [key: string]: any;
@@ -792,8 +636,9 @@ export interface IPutElement1dRequest {
 
 export class PutMaterialRequest implements IPutMaterialRequest {
     id?: number;
-    modulusOfElasticity!: PressureContract;
-    modulusOfRigidity!: PressureContract;
+    modulusOfElasticity!: number;
+    modulusOfRigidity!: number;
+    pressureUnit!: number;
 
     [key: string]: any;
 
@@ -804,10 +649,6 @@ export class PutMaterialRequest implements IPutMaterialRequest {
                     (<any>this)[property] = (<any>data)[property];
             }
         }
-        if (!data) {
-            this.modulusOfElasticity = new PressureContract();
-            this.modulusOfRigidity = new PressureContract();
-        }
     }
 
     init(_data?: any) {
@@ -817,8 +658,9 @@ export class PutMaterialRequest implements IPutMaterialRequest {
                     this[property] = _data[property];
             }
             this.id = _data["id"];
-            this.modulusOfElasticity = _data["modulusOfElasticity"] ? PressureContract.fromJS(_data["modulusOfElasticity"]) : new PressureContract();
-            this.modulusOfRigidity = _data["modulusOfRigidity"] ? PressureContract.fromJS(_data["modulusOfRigidity"]) : new PressureContract();
+            this.modulusOfElasticity = _data["modulusOfElasticity"];
+            this.modulusOfRigidity = _data["modulusOfRigidity"];
+            this.pressureUnit = _data["pressureUnit"];
         }
     }
 
@@ -836,16 +678,18 @@ export class PutMaterialRequest implements IPutMaterialRequest {
                 data[property] = this[property];
         }
         data["id"] = this.id;
-        data["modulusOfElasticity"] = this.modulusOfElasticity ? this.modulusOfElasticity.toJSON() : <any>undefined;
-        data["modulusOfRigidity"] = this.modulusOfRigidity ? this.modulusOfRigidity.toJSON() : <any>undefined;
+        data["modulusOfElasticity"] = this.modulusOfElasticity;
+        data["modulusOfRigidity"] = this.modulusOfRigidity;
+        data["pressureUnit"] = this.pressureUnit;
         return data;
     }
 }
 
 export interface IPutMaterialRequest {
     id?: number;
-    modulusOfElasticity: PressureContract;
-    modulusOfRigidity: PressureContract;
+    modulusOfElasticity: number;
+    modulusOfRigidity: number;
+    pressureUnit: number;
 
     [key: string]: any;
 }
@@ -853,7 +697,7 @@ export interface IPutMaterialRequest {
 export class PutMomentLoadRequest implements IPutMomentLoadRequest {
     id?: number;
     nodeId!: number;
-    torque!: TorqueContract;
+    torque!: Torque;
     axisDirection!: Vector3;
 
     [key: string]: any;
@@ -866,7 +710,7 @@ export class PutMomentLoadRequest implements IPutMomentLoadRequest {
             }
         }
         if (!data) {
-            this.torque = new TorqueContract();
+            this.torque = new Torque();
             this.axisDirection = new Vector3();
         }
     }
@@ -879,7 +723,7 @@ export class PutMomentLoadRequest implements IPutMomentLoadRequest {
             }
             this.id = _data["id"];
             this.nodeId = _data["nodeId"];
-            this.torque = _data["torque"] ? TorqueContract.fromJS(_data["torque"]) : new TorqueContract();
+            this.torque = _data["torque"] ? Torque.fromJS(_data["torque"]) : new Torque();
             this.axisDirection = _data["axisDirection"] ? Vector3.fromJS(_data["axisDirection"]) : new Vector3();
         }
     }
@@ -908,7 +752,7 @@ export class PutMomentLoadRequest implements IPutMomentLoadRequest {
 export interface IPutMomentLoadRequest {
     id?: number;
     nodeId: number;
-    torque: TorqueContract;
+    torque: Torque;
     axisDirection: Vector3;
 
     [key: string]: any;
@@ -993,7 +837,7 @@ export interface IPutNodeRequest {
 export class PutPointLoadRequest implements IPutPointLoadRequest {
     id!: number;
     nodeId!: number;
-    force!: ForceContract;
+    force!: Force;
     direction!: Vector3;
 
     [key: string]: any;
@@ -1006,7 +850,7 @@ export class PutPointLoadRequest implements IPutPointLoadRequest {
             }
         }
         if (!data) {
-            this.force = new ForceContract();
+            this.force = new Force();
             this.direction = new Vector3();
         }
     }
@@ -1019,7 +863,7 @@ export class PutPointLoadRequest implements IPutPointLoadRequest {
             }
             this.id = _data["id"];
             this.nodeId = _data["nodeId"];
-            this.force = _data["force"] ? ForceContract.fromJS(_data["force"]) : new ForceContract();
+            this.force = _data["force"] ? Force.fromJS(_data["force"]) : new Force();
             this.direction = _data["direction"] ? Vector3.fromJS(_data["direction"]) : new Vector3();
         }
     }
@@ -1048,7 +892,7 @@ export class PutPointLoadRequest implements IPutPointLoadRequest {
 export interface IPutPointLoadRequest {
     id: number;
     nodeId: number;
-    force: ForceContract;
+    force: Force;
     direction: Vector3;
 
     [key: string]: any;
@@ -1056,12 +900,14 @@ export interface IPutPointLoadRequest {
 
 export class PutSectionProfileRequest implements IPutSectionProfileRequest {
     id!: number;
-    area?: AreaContract;
-    strongAxisMomentOfInertia?: AreaMomentOfInertiaContract;
-    weakAxisMomentOfInertia?: AreaMomentOfInertiaContract;
-    polarMomentOfInertia?: AreaMomentOfInertiaContract;
-    strongAxisShearArea?: AreaContract;
-    weakAxisShearArea?: AreaContract;
+    area!: number;
+    strongAxisMomentOfInertia!: number;
+    weakAxisMomentOfInertia!: number;
+    polarMomentOfInertia!: number;
+    strongAxisShearArea!: number;
+    weakAxisShearArea!: number;
+    areaUnit?: number;
+    areaMomentOfInertiaUnit?: number;
 
     [key: string]: any;
 
@@ -1081,12 +927,14 @@ export class PutSectionProfileRequest implements IPutSectionProfileRequest {
                     this[property] = _data[property];
             }
             this.id = _data["id"];
-            this.area = _data["area"] ? AreaContract.fromJS(_data["area"]) : <any>undefined;
-            this.strongAxisMomentOfInertia = _data["strongAxisMomentOfInertia"] ? AreaMomentOfInertiaContract.fromJS(_data["strongAxisMomentOfInertia"]) : <any>undefined;
-            this.weakAxisMomentOfInertia = _data["weakAxisMomentOfInertia"] ? AreaMomentOfInertiaContract.fromJS(_data["weakAxisMomentOfInertia"]) : <any>undefined;
-            this.polarMomentOfInertia = _data["polarMomentOfInertia"] ? AreaMomentOfInertiaContract.fromJS(_data["polarMomentOfInertia"]) : <any>undefined;
-            this.strongAxisShearArea = _data["strongAxisShearArea"] ? AreaContract.fromJS(_data["strongAxisShearArea"]) : <any>undefined;
-            this.weakAxisShearArea = _data["weakAxisShearArea"] ? AreaContract.fromJS(_data["weakAxisShearArea"]) : <any>undefined;
+            this.area = _data["area"];
+            this.strongAxisMomentOfInertia = _data["strongAxisMomentOfInertia"];
+            this.weakAxisMomentOfInertia = _data["weakAxisMomentOfInertia"];
+            this.polarMomentOfInertia = _data["polarMomentOfInertia"];
+            this.strongAxisShearArea = _data["strongAxisShearArea"];
+            this.weakAxisShearArea = _data["weakAxisShearArea"];
+            this.areaUnit = _data["areaUnit"];
+            this.areaMomentOfInertiaUnit = _data["areaMomentOfInertiaUnit"];
         }
     }
 
@@ -1104,24 +952,28 @@ export class PutSectionProfileRequest implements IPutSectionProfileRequest {
                 data[property] = this[property];
         }
         data["id"] = this.id;
-        data["area"] = this.area ? this.area.toJSON() : <any>undefined;
-        data["strongAxisMomentOfInertia"] = this.strongAxisMomentOfInertia ? this.strongAxisMomentOfInertia.toJSON() : <any>undefined;
-        data["weakAxisMomentOfInertia"] = this.weakAxisMomentOfInertia ? this.weakAxisMomentOfInertia.toJSON() : <any>undefined;
-        data["polarMomentOfInertia"] = this.polarMomentOfInertia ? this.polarMomentOfInertia.toJSON() : <any>undefined;
-        data["strongAxisShearArea"] = this.strongAxisShearArea ? this.strongAxisShearArea.toJSON() : <any>undefined;
-        data["weakAxisShearArea"] = this.weakAxisShearArea ? this.weakAxisShearArea.toJSON() : <any>undefined;
+        data["area"] = this.area;
+        data["strongAxisMomentOfInertia"] = this.strongAxisMomentOfInertia;
+        data["weakAxisMomentOfInertia"] = this.weakAxisMomentOfInertia;
+        data["polarMomentOfInertia"] = this.polarMomentOfInertia;
+        data["strongAxisShearArea"] = this.strongAxisShearArea;
+        data["weakAxisShearArea"] = this.weakAxisShearArea;
+        data["areaUnit"] = this.areaUnit;
+        data["areaMomentOfInertiaUnit"] = this.areaMomentOfInertiaUnit;
         return data;
     }
 }
 
 export interface IPutSectionProfileRequest {
     id: number;
-    area?: AreaContract;
-    strongAxisMomentOfInertia?: AreaMomentOfInertiaContract;
-    weakAxisMomentOfInertia?: AreaMomentOfInertiaContract;
-    polarMomentOfInertia?: AreaMomentOfInertiaContract;
-    strongAxisShearArea?: AreaContract;
-    weakAxisShearArea?: AreaContract;
+    area: number;
+    strongAxisMomentOfInertia: number;
+    weakAxisMomentOfInertia: number;
+    polarMomentOfInertia: number;
+    strongAxisShearArea: number;
+    weakAxisShearArea: number;
+    areaUnit?: number;
+    areaMomentOfInertiaUnit?: number;
 
     [key: string]: any;
 }
@@ -1310,13 +1162,13 @@ export interface ISpeckleReceiveParameters {
     [key: string]: any;
 }
 
-export class TorqueContract implements ITorqueContract {
+export class Torque implements ITorque {
     value!: number;
     unit!: number;
 
     [key: string]: any;
 
-    constructor(data?: ITorqueContract) {
+    constructor(data?: ITorque) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1336,9 +1188,9 @@ export class TorqueContract implements ITorqueContract {
         }
     }
 
-    static fromJS(data: any): TorqueContract {
+    static fromJS(data: any): Torque {
         data = typeof data === 'object' ? data : {};
-        let result = new TorqueContract();
+        let result = new Torque();
         result.init(data);
         return result;
     }
@@ -1355,21 +1207,21 @@ export class TorqueContract implements ITorqueContract {
     }
 }
 
-export interface ITorqueContract {
+export interface ITorque {
     value: number;
     unit: number;
 
     [key: string]: any;
 }
 
-export class UnitSettingsContract implements IUnitSettingsContract {
+export class UnitSettings implements IUnitSettings {
     lengthUnit!: number;
     forceUnit!: number;
     angleUnit?: number;
 
     [key: string]: any;
 
-    constructor(data?: IUnitSettingsContract) {
+    constructor(data?: IUnitSettings) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1390,9 +1242,9 @@ export class UnitSettingsContract implements IUnitSettingsContract {
         }
     }
 
-    static fromJS(data: any): UnitSettingsContract {
+    static fromJS(data: any): UnitSettings {
         data = typeof data === 'object' ? data : {};
-        let result = new UnitSettingsContract();
+        let result = new UnitSettings();
         result.init(data);
         return result;
     }
@@ -1410,7 +1262,7 @@ export class UnitSettingsContract implements IUnitSettingsContract {
     }
 }
 
-export interface IUnitSettingsContract {
+export interface IUnitSettings {
     lengthUnit: number;
     forceUnit: number;
     angleUnit?: number;

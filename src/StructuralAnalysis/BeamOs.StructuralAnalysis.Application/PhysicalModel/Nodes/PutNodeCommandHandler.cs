@@ -34,6 +34,8 @@ public class PutNodeCommandHandler(
 public static partial class PutNodeCommandMapper
 {
     public static partial Node ToDomainObject(this PutNodeCommand command);
+    public static partial NodeResponse ToResponse(this PutNodeCommand command);
+    public static partial PutNodeRequest ToRequest(this PutNodeCommand command);
 }
 
 public readonly struct PutNodeCommand : IModelResourceWithIntIdRequest<NodeData>

@@ -1,0 +1,51 @@
+@using BeamOs.WebApp.Components.Features.Common
+@using Fluxor
+@using Microsoft.AspNetCore.Components.Rendering
+@using Microsoft.AspNetCore.Components.Sections
+@using Microsoft.AspNetCore.Http
+@using Microsoft.Extensions.Logging
+@using MudBlazor
+@using Fluxor.Blazor.Web.Components
+
+@inherits FluxorLayout
+@layout NavBarLayout
+
+<SectionContent SectionId="NavBarLayout.BeforeMainContent">
+    <MudBreakpointProvider>
+        <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
+            <MudDrawer ClipMode="DrawerClipMode.Always" Variant="DrawerVariant.Responsive" @bind-Open="@IsDrawerOpen">
+                <SectionOutlet SectionId="Drawer" />
+            </MudDrawer>
+        </MudHidden>
+    </MudBreakpointProvider>
+</SectionContent>
+
+@Body
+
+@code {
+    [Inject]
+    IState<MainLayoutState> State { get; init; }
+
+    [Inject]
+    IDispatcher Dispatcher { get; init; }
+
+    public bool IsDrawerOpen
+    {
+        get;
+        set;
+    }
+
+    // [Inject]
+    // IHttpContextAccessor httpContextAccessor { get; init; }
+
+    private string inputValue = "initial";
+    internal static object Drawer = new();
+
+    protected override void OnInitialized()
+    {
+        // var x = httpContextAccessor.HttpContext;
+        base.OnInitialized();
+        this.SubscribeToAction<OpenDrawer>((_) => this.IsDrawerOpen = true);
+        this.SubscribeToAction<CloseDrawer>((_) => this.IsDrawerOpen = true);
+    }
+}

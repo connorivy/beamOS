@@ -1,3 +1,4 @@
+@using BeamOs.WebApp.Components.Features.Common
 @using Fluxor
 @using Microsoft.AspNetCore.Components.Rendering
 @using Microsoft.AspNetCore.Components.Sections
@@ -10,13 +11,6 @@
 @layout FullScreenLayout
 
 <NavBar />
-
-@if (this.State.Value.HasContent)
-{
-    <MudDrawer Width="400px" ClipMode="DrawerClipMode.Always" Variant="DrawerVariant.Responsive" @bind-Open="@IsDrawerOpen">
-        <SectionOutlet SectionId="Drawer" />
-    </MudDrawer>
-}
 
 <MudMainContent Class="h-full">
     <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="relative h-full">

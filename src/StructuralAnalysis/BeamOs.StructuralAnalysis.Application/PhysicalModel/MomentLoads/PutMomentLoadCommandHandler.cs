@@ -51,13 +51,15 @@ public class BatchPutMomentLoadCommandHandler(
 public static partial class PutMomentLoadCommandMapper
 {
     public static partial MomentLoad ToDomainObject(this PutMomentLoadCommand command);
+
+    public static partial MomentLoadResponse ToResponse(this PutMomentLoadCommand command);
 }
 
-public readonly struct PutMomentLoadCommand : IModelResourceWithIntIdRequest<MomentLoadRequestData>
+public readonly struct PutMomentLoadCommand : IModelResourceWithIntIdRequest<MomentLoadData>
 {
     public int Id { get; init; }
     public Guid ModelId { get; init; }
-    public MomentLoadRequestData Body { get; init; }
+    public MomentLoadData Body { get; init; }
     public int NodeId => this.Body.NodeId;
     public TorqueContract Torque => this.Body.Torque;
     public Contracts.Common.Vector3 AxisDirection => this.Body.AxisDirection;

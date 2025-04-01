@@ -134,7 +134,7 @@ public record struct LoadModelResponseCommand(
 }
 
 public record struct LoadModelResponseHydratedCommand(
-    ModelResponseHydrated EntityResponse,
+    ModelResponse EntityResponse,
     IEditorApiAlpha EditorApi
 ) : ILoadEntityResponseCommand
 {

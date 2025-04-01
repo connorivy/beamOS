@@ -9,7 +9,7 @@ public sealed class UndoRedoFunctionality : IDisposable
 
     public UndoRedoFunctionality(HistoryManager history)
     {
-        this.eventHandler = (s, e) => this.DocumentEvents_OnKeyDown(e);
+        this.eventHandler = async (s, e) => await this.DocumentEvents_OnKeyDown(e);
         DocumentEvents.OnKeyDown += this.eventHandler;
         this.history = history;
     }
@@ -19,7 +19,7 @@ public sealed class UndoRedoFunctionality : IDisposable
         return new UndoRedoFunctionality(historyManager);
     }
 
-    private void DocumentEvents_OnKeyDown(KeyboardEventArgs e)
+    private async Task DocumentEvents_OnKeyDown(KeyboardEventArgs e)
     {
         if (!e.CtrlKey)
         {
@@ -30,12 +30,12 @@ public sealed class UndoRedoFunctionality : IDisposable
         {
             // y
             case "89":
-                this.history.Redo();
+                await this.history.Redo();
                 break;
 
             // z
             case "90":
-                this.history.UndoLast();
+                await this.history.UndoLast();
                 break;
 
             default:

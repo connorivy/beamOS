@@ -17,8 +17,6 @@ public class Model : BeamOsEntity<ModelId>
         this.Name = name;
         this.Description = description;
         this.Settings = settings;
-
-        this.AddEvent(new ModelCreatedEvent(this.Id));
     }
 
     public string Name { get; private set; }

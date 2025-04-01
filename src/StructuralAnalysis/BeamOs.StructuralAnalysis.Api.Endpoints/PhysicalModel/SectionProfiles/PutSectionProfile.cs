@@ -12,7 +12,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.SectionProfiles;
 public class PutSectionProfile(PutSectionProfileCommandHandler putSectionProfileCommandHandler)
     : BeamOsModelResourceWithIntIdBaseEndpoint<
         PutSectionProfileCommand,
-        SectionProfileRequestData,
+        SectionProfileData,
         SectionProfileResponse
     >
 {

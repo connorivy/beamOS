@@ -27,6 +27,18 @@ public record CreateElement1dRequest
 
     public CreateElement1dRequest() { }
 
+    [SetsRequiredMembers]
+    public CreateElement1dRequest(Element1dData element1DData)
+        : this(
+            element1DData.StartNodeId,
+            element1DData.EndNodeId,
+            element1DData.MaterialId,
+            element1DData.SectionProfileId,
+            element1DData.SectionProfileRotation,
+            null,
+            element1DData.Metadata
+        ) { }
+
     public required int StartNodeId { get; init; }
     public required int EndNodeId { get; init; }
     public required int MaterialId { get; init; }

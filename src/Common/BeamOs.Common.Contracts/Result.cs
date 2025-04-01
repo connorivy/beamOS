@@ -110,4 +110,6 @@ public sealed class Result<TValue> : Result
         Func<TValue, TResult> success,
         Func<BeamOsError, TResult> failure
     ) => !this.IsError ? success(this.Value!) : failure(this.Error);
+
+    public static Result<TValue> Success() => new(default(TValue), null, false);
 }

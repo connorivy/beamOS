@@ -9,4 +9,7 @@ public record MomentLoadResponse(
     Guid ModelId,
     Torque Torque,
     Vector3 AxisDirection
-) : IModelEntity;
+) : IModelEntity
+{
+    public MomentLoadData ToData() => new(NodeId, Torque, AxisDirection);
+}

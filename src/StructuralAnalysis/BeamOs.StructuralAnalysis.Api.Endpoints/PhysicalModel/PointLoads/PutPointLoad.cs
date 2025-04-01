@@ -12,7 +12,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.PointLoads;
 public class PutPointLoad(PutPointLoadCommandHandler putPointLoadCommandHandler)
     : BeamOsModelResourceWithIntIdBaseEndpoint<
         PutPointLoadCommand,
-        PointLoadRequestData,
+        PointLoadData,
         PointLoadResponse
     >
 {

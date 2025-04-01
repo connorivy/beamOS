@@ -5,6 +5,9 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
 using BeamOs.WebApp.Components.Features.Common;
+using BeamOs.WebApp.Components.Features.ModelObjectEditor;
+using BeamOs.WebApp.Components.Features.ModelObjectEditor.Members;
+using BeamOs.WebApp.Components.Features.ModelObjectEditor.Nodes;
 using BeamOs.WebApp.Components.Features.StructuralApi;
 using BeamOs.WebApp.EditorCommands;
 using Fluxor;
@@ -13,20 +16,31 @@ namespace BeamOs.WebApp.Components.Features.Editor;
 
 [FeatureState]
 public record EditorComponentState(
+    string? CanvasId,
     string? LoadingText,
     bool IsLoading,
     Guid? LoadedModelId,
+    CachedModelResponse? CachedModelResponse,
     IEditorApiAlpha? EditorApi,
     SelectedObject[] SelectedObjects,
     bool HasResults
 )
 {
     public EditorComponentState()
-        : this(null, false, null, null, [], false) { }
+        : this(null, null, false, null, null, null, [], false) { }
 }
 
 public static class EditorComponentStateReducers
 {
+    [ReducerMethod]
+    public static EditorComponentState EditorCreatedReducer(
+        EditorComponentState state,
+        EditorCreated action
+    )
+    {
+        return state with { CanvasId = action.CanvasId };
+    }
+
     [ReducerMethod]
     public static EditorComponentState EditorCreatedReducer(
         EditorComponentState state,
@@ -59,6 +73,7 @@ public static class EditorComponentStateReducers
     {
         return state with
         {
+            CachedModelResponse = action.CachedModelResponse,
             LoadedModelId = action.CachedModelResponse.Id,
             HasResults = (action.CachedModelResponse.NodeResults?.Count ?? 0) > 0
         };
@@ -83,6 +98,178 @@ public static class EditorComponentStateReducers
     public static EditorComponentState ResultsClearedReducer(EditorComponentState state)
     {
         return state with { HasResults = false };
+    }
+
+    [ReducerMethod]
+    public static EditorComponentState Reducer(
+        EditorComponentState state,
+        PutNodeClientCommand action
+    )
+    {
+        Guid modelId = action.New.ModelId;
+
+        if (!(state.CachedModelResponse?.Id == modelId))
+        {
+            return state;
+        }
+
+        return state with
+        {
+            CachedModelResponse = state.CachedModelResponse with
+            {
+                Nodes = state
+                    .CachedModelResponse
+                    .Nodes
+                    .Remove(action.New.Id)
+                    .Add(action.New.Id, action.New)
+            }
+        };
+    }
+
+    [ReducerMethod]
+    public static EditorComponentState Reducer(
+        EditorComponentState state,
+        DeleteNodeClientCommand action
+    )
+    {
+        Guid modelId = action.ModelId;
+
+        if (!(state.CachedModelResponse?.Id == modelId))
+        {
+            return state;
+        }
+
+        return state with
+        {
+            CachedModelResponse = state.CachedModelResponse with
+            {
+                Nodes = state.CachedModelResponse.Nodes.Remove(action.NodeId)
+            }
+        };
+    }
+
+    [ReducerMethod]
+    public static EditorComponentState Reducer(
+        EditorComponentState state,
+        CreateNodeClientCommand action
+    )
+    {
+        Guid modelId = action.ModelId;
+
+        if (!(state.CachedModelResponse?.Id == modelId))
+        {
+            return state;
+        }
+
+        if (action.NodeId is null)
+        {
+            throw new InvalidOperationException(
+                "CreateNodeClientCommand does not have a valid NodeId"
+            );
+        }
+
+        return state with
+        {
+            CachedModelResponse = state.CachedModelResponse with
+            {
+                Nodes = state
+                    .CachedModelResponse
+                    .Nodes
+                    .Add(action.NodeId.Value, new(action.NodeId.Value, action.ModelId, action.Data))
+            }
+        };
+    }
+
+    [ReducerMethod]
+    public static EditorComponentState Reducer(
+        EditorComponentState state,
+        PutElement1dClientCommand action
+    )
+    {
+        Guid modelId = action.New.ModelId;
+
+        if (!(state.CachedModelResponse?.Id == modelId))
+        {
+            return state;
+        }
+
+        return state with
+        {
+            CachedModelResponse = state.CachedModelResponse with
+            {
+                Element1ds = state
+                    .CachedModelResponse
+                    .Element1ds
+                    .Remove(action.New.Id)
+                    .Add(action.New.Id, action.New)
+            }
+        };
+    }
+
+    [ReducerMethod]
+    public static EditorComponentState Reducer(
+        EditorComponentState state,
+        DeleteElement1dClientCommand action
+    )
+    {
+        Guid modelId = action.ModelId;
+
+        if (!(state.CachedModelResponse?.Id == modelId))
+        {
+            return state;
+        }
+
+        return state with
+        {
+            CachedModelResponse = state.CachedModelResponse with
+            {
+                Element1ds = state.CachedModelResponse.Element1ds.Remove(action.Element1dId)
+            }
+        };
+    }
+
+    [ReducerMethod]
+    public static EditorComponentState Reducer(
+        EditorComponentState state,
+        CreateElement1dClientCommand action
+    )
+    {
+        Guid modelId = action.ModelId;
+
+        if (!(state.CachedModelResponse?.Id == modelId))
+        {
+            return state;
+        }
+
+        if (action.Element1dId is null)
+        {
+            throw new InvalidOperationException(
+                "CreateElement1dClientCommand does not have a valid Element1dId"
+            );
+        }
+
+        return state with
+        {
+            CachedModelResponse = state.CachedModelResponse with
+            {
+                Element1ds = state
+                    .CachedModelResponse
+                    .Element1ds
+                    .Add(
+                        action.Element1dId ?? action.TempElement1dId,
+                        new(
+                            action.Element1dId.Value,
+                            action.ModelId,
+                            action.Data.StartNodeId,
+                            action.Data.EndNodeId,
+                            action.Data.MaterialId,
+                            action.Data.SectionProfileId,
+                            action.Data.SectionProfileRotation.Value,
+                            null
+                        )
+                    )
+            }
+        };
     }
 
     [ReducerMethod]

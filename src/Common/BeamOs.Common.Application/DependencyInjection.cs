@@ -75,7 +75,7 @@ public static class DependencyInjection
         }
 
         return services;
-    }
+    } 
 
     public static Type? GetInterfaceType(Type concreteType, Type interfaceType)
     {

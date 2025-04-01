@@ -1,0 +1,91 @@
+@using BeamOs.StructuralAnalysis.Contracts.Common;
+@inherits FluxorComponent
+
+<MudContainer Gutters="false" Class=@($"rounded pointer-events-none")>
+    <MudPaper Class="px-4 pb-4 max-h-full overflow-auto pointer-events-auto">
+        <MudExpansionPanels MultiExpansion="true" Outlined="false" Elevation="0" Dense="true">
+            <MudAutocomplete InputMode="InputMode.numeric" MaxItems="@ResultLimit" T="int"
+                @bind-Value="SectionProfileId" Text="@SectionProfileIdText" SearchFunc="SectionProfileIds"
+                ToStringFunc="@(id => id == 0 ? "New SectionProfile" : id.ToString())" Label="SectionProfile Id">
+                <MoreItemsTemplate>
+                    <MudText Align="Align.Center" Class="px-4 py-1">
+                        Only the first @ResultLimit.ToString() items are shown. Type to refine results.
+                    </MudText>
+                </MoreItemsTemplate>
+            </MudAutocomplete>
+        </MudExpansionPanels>
+
+        <QuantityFieldComponent IsRequired="true" @bind-Value="@sectionProfile.Area"
+            Unit="@UnitSettings.AreaUnit.ToFriendlyString()" Label="Area" />
+
+        <QuantityFieldComponent IsRequired="true" @bind-Value="@sectionProfile.StrongAxisMomentOfInertia"
+            Unit="@UnitSettings.AreaMomentOfInertiaUnit.ToFriendlyString()" Label="Strong Axis Moment Of Inertia" />
+
+        <QuantityFieldComponent IsRequired="true" @bind-Value="@sectionProfile.WeakAxisMomentOfInertia"
+            Unit="@UnitSettings.AreaMomentOfInertiaUnit.ToFriendlyString()" Label="Weak Axis Moment Of Inertia" />
+
+        <QuantityFieldComponent IsRequired="true" @bind-Value="@sectionProfile.PolarMomentOfInertia"
+            Unit="@UnitSettings.AreaMomentOfInertiaUnit.ToFriendlyString()" Label="Polar Moment Of Inertia" />
+
+        <QuantityFieldComponent IsRequired="true" @bind-Value="@sectionProfile.WeakAxisShearArea"
+            Unit="@UnitSettings.AreaUnit.ToFriendlyString()" Label="Weah Axis Shear Area" />
+
+        <QuantityFieldComponent IsRequired="true" @bind-Value="@sectionProfile.StrongAxisShearArea"
+            Unit="@UnitSettings.AreaUnit.ToFriendlyString()" Label="Strong Axis Shear Area" />
+
+        <div class="flex flex-row mt-2">
+            <div class="flex-1" />
+            @if (sectionProfile.Id != 0)
+            {
+                <MudButton Class="flex-none mr-2" Variant="Variant.Filled" Color="Color.Error" OnClick="Delete">Delete
+                </MudButton>
+            }
+            @if (state.Value.IsLoading)
+            {
+                <MudProgressCircular Class="flex-none" Color="Color.Default" Indeterminate="true" />
+            }
+            else
+            {
+                <MudButton Class="flex-none" Variant="Variant.Filled" Color="Color.Primary" OnClick="Submit">Apply
+                </MudButton>
+            }
+        </div>
+    </MudPaper>
+</MudContainer>
+
+<style>
+    .mud-expand-panel-header {
+        padding-left: 0px !important;
+        padding-right: 0px !important;
+        padding-top: 0px !important;
+        padding-bottom: 8px !important;
+        min-height: 24px !important;
+    }
+
+    .mud-expand-panel-content {
+        padding-left: 12px !important;
+        padding-right: 0px !important;
+        padding-top: 0px !important;
+        border-style: none;
+        height: fit-content;
+    }
+
+    .mud-panel-expanded>.mud-expand-panel-header .mud-expand-panel-text {
+        color: var(--mud-palette-primary-lighten);
+    }
+
+    .mud-expand-panel.mud-panel-expanded {
+        margin-top: 0px;
+        margin-block: 0px;
+    }
+
+    .mud-expand-panel-text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .mud-input-control {
+        margin-top: 2px;
+    }
+</style>

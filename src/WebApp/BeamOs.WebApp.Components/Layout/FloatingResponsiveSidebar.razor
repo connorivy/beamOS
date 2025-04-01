@@ -1,0 +1,27 @@
+@using BeamOs.WebApp.Components.Layout
+
+<MudBreakpointProvider>
+    <MudHidden Breakpoint="Breakpoint.MdAndUp" Invert="true">
+        <div class="absolute left-0 top-0 w-[300px] p-4 flex flex-col h-full pointer-events-none p-4">
+            <MudPaper Class="max-h-full h-fit overflow-auto pointer-events-auto">
+                @ChildContent
+            </MudPaper>
+        </div>
+    </MudHidden>
+    <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
+        <SectionContent SectionId="ResponsiveSidebarLayout.Drawer">
+            @ChildContent
+        </SectionContent>
+    </MudHidden>
+</MudBreakpointProvider>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    public bool IsDrawerOpen
+    {
+        get;
+        set;
+    }
+}

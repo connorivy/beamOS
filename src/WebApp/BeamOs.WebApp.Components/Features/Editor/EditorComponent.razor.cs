@@ -1,9 +1,9 @@
 using System.Collections.Immutable;
 using System.Reflection.Metadata;
+using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.CodeGen.EditorApi;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
@@ -82,6 +82,46 @@ public partial class EditorComponent(
             {
                 //state.Value.CachedModelResponse.Nodes[command.NodeId] = nodeResponse.Value;
                 dispatcher.Dispatch(new ModelEntityUpdated() { ModelEntity = nodeResponse.Value });
+            }
+        });
+
+        this.SubscribeToAction<PutObjectCommand<NodeResponse>>(async command =>
+        {
+            if (!command.HandledByEditor && command.New is not null && command.Previous is not null)
+            {
+                LengthUnit lengthUnit = command.New.LocationPoint.LengthUnit.MapToLengthUnit();
+
+                await state
+                    .Value
+                    .EditorApi
+                    .ReduceMoveNodeCommandAsync(
+                        new MoveNodeCommand()
+                        {
+                            CanvasId = this.CanvasId,
+                            NewLocation = new()
+                            {
+                                X = new Length(command.New.LocationPoint.X, lengthUnit).Meters,
+                                Y = new Length(command.New.LocationPoint.Y, lengthUnit).Meters,
+                                Z = new Length(command.New.LocationPoint.Z, lengthUnit).Meters
+                            },
+                            PreviousLocation = new()
+                            {
+                                X = new Length(command.Previous.LocationPoint.X, lengthUnit).Meters,
+                                Y = new Length(command.Previous.LocationPoint.Y, lengthUnit).Meters,
+                                Z = new Length(command.Previous.LocationPoint.Z, lengthUnit).Meters
+                            },
+                            NodeId = command.New.Id
+                        }
+                    );
+            }
+
+            if (!command.HandledByServer)
+            {
+                await apiClient.PutNodeAsync(
+                    command.New.Id,
+                    command.New.ModelId,
+                    new(command.New.LocationPoint, command.New.Restraint)
+                );
             }
         });
 

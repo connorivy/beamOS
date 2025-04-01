@@ -29,11 +29,11 @@ public class Vector3dConverter : ValueConverter<Vector3D, string>
         : base(x => x.ToString(), x => Vector3D.Parse(x, null), null) { }
 }
 
-public class UnitVector3dConverter : ValueConverter<UnitVector3D, string>
-{
-    public UnitVector3dConverter()
-        : base(x => x.ToString(), x => UnitVector3D.Parse(x, null, .1), null) { }
-}
+//public class UnitVector3dConverter : ValueConverter<UnitVector3D, string>
+//{
+//    public UnitVector3dConverter()
+//        : base(x => x.ToString(), x => UnitVector3D.Parse(x, null, .1), null) { }
+//}
 
 public class PolynomialConverter : ValueConverter<Polynomial, IEnumerable<double>>
 {
