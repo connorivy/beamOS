@@ -22,7 +22,7 @@ public class PutSectionProfileCommandHandler(
     )
     {
         SectionProfile sectionProfile = command.ToDomainObject();
-        sectionProfileRepository.Add(sectionProfile);
+        sectionProfileRepository.Put(sectionProfile);
         await unitOfWork.SaveChangesAsync(ct);
 
         return sectionProfile.ToResponse(

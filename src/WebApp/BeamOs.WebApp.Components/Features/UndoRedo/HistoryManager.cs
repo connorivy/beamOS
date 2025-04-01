@@ -1,29 +1,35 @@
+using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.EditorCommands.Interfaces;
-using Fluxor;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BeamOs.WebApp.Components.Features.UndoRedo;
 
-public sealed class HistoryManager(IDispatcher dispatcher)
+public sealed class HistoryManager(IServiceProvider serviceProvider)
 {
     private readonly LinkedList<IBeamOsClientCommand> undoActions = new();
     private readonly LinkedList<IBeamOsClientCommand> redoActions = new();
     private readonly int itemLimit = 50;
 
-    public void UndoLast()
+    public async Task UndoLast()
     {
         if (this.undoActions.FirstOrDefault() is not IBeamOsClientCommand undoable)
         {
             // no undo history
             return;
         }
+        var command = undoable.GetUndoCommand(BeamOsClientCommandArgs.Unhandled);
+        var commandType = command.GetType();
+        var commandHandlerType = typeof(IClientCommandHandler<>).MakeGenericType(commandType);
+        var commandHandler = (IClientCommandHandler)
+            serviceProvider.GetRequiredService(commandHandlerType);
 
-        dispatcher.Dispatch(undoable.GetUndoCommand(BeamOsClientCommandArgs.Unhandled));
+        await commandHandler.ExecuteAsync(command, CancellationToken.None);
 
         this.undoActions.RemoveFirst();
         this.redoActions.AddFirst(undoable);
     }
 
-    public void Redo()
+    public async Task Redo()
     {
         if (this.redoActions.FirstOrDefault() is not IBeamOsClientCommand undoable)
         {
@@ -31,7 +37,13 @@ public sealed class HistoryManager(IDispatcher dispatcher)
             return;
         }
 
-        dispatcher.Dispatch(undoable.WithArgs(BeamOsClientCommandArgs.Unhandled));
+        var command = undoable.WithArgs(BeamOsClientCommandArgs.Unhandled);
+        var commandType = command.GetType();
+        var commandHandlerType = typeof(IClientCommandHandler<>).MakeGenericType(commandType);
+        var commandHandler = (IClientCommandHandler)
+            serviceProvider.GetRequiredService(commandHandlerType);
+
+        await commandHandler.ExecuteAsync(command, CancellationToken.None);
 
         this.redoActions.RemoveFirst();
         this.undoActions.AddFirst(undoable);

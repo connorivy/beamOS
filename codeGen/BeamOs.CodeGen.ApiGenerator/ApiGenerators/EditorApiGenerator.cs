@@ -43,6 +43,9 @@ public class EditorApiGenerator : AbstractGenerator
         _ = addMethod("CreatePointLoad").Accepts<PointLoadResponse>();
         _ = addMethod("CreatePointLoads").Accepts<ICollection<PointLoadResponse>>();
 
+        _ = addMethod("UpdatePointLoad").Accepts<PointLoadResponse>();
+        _ = addMethod("UpdatePointLoads").Accepts<ICollection<PointLoadResponse>>();
+
         _ = addMethod("DeletePointLoad").Accepts<IModelEntity>();
         _ = addMethod("DeletePointLoads").Accepts<ICollection<IModelEntity>>();
 

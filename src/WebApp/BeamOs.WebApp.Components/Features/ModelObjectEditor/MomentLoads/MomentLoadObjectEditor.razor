@@ -1,25 +1,12 @@
-@using MudBlazor
+@using BeamOs.StructuralAnalysis.Contracts.Common;
 @inherits FluxorComponent
 
 <MudContainer Gutters="false" Class=@($"rounded pointer-events-none")>
     <MudPaper Class="px-4 pb-4 max-h-full overflow-auto pointer-events-auto">
         <MudExpansionPanels MultiExpansion="true" Outlined="false" Elevation="0" Dense="true">
-            <MudAutocomplete InputMode="InputMode.numeric" MaxItems="@ResultLimit" T="int" @bind-Value="Element1dId"
-                Text="@Element1dIdText" SearchFunc="Element1dIds"
-                ToStringFunc="@(id => id == 0 ? "New Element1d" : id.ToString())" Label="Element1d Id">
-                <MoreItemsTemplate>
-                    <MudText Align="Align.Center" Class="px-4 py-1">
-                        Only the first @ResultLimit.ToString() items are shown. Type to refine results.
-                    </MudText>
-                </MoreItemsTemplate>
-            </MudAutocomplete>
-
-            @* <MudNumericField T="int" @bind-Value="this.element1d.StartNodeId" Label="Start Node Id"
-                InputMode="InputMode.numeric" Min="0" Max="99999999" Margin="Margin.None" Required="true"
-                HideSpinButtons="true" /> *@
-
-            <MudAutocomplete MaxItems="@ResultLimit" T="int" @bind-Value="this.element1d.StartNodeId"
-                SearchFunc="NodeIds" Label="Start Node Id">
+            <MudAutocomplete InputMode="InputMode.numeric" MaxItems="@ResultLimit" T="int" @bind-Value="MomentLoadId"
+                Text="@MomentLoadIdText" SearchFunc="MomentLoadIds"
+                ToStringFunc="@(id => id == 0 ? "New Moment Load" : id.ToString())" Label="Moment Load Id">
                 <MoreItemsTemplate>
                     <MudText Align="Align.Center" Class="px-4 py-1">
                         Only the first @ResultLimit.ToString() items are shown. Type to refine results.
@@ -28,7 +15,7 @@
             </MudAutocomplete>
 
             <MudAutocomplete InputMode="InputMode.numeric" MaxItems="@ResultLimit" T="int"
-                @bind-Value="this.element1d.EndNodeId" SearchFunc="NodeIds" Label="End Node Id">
+                @bind-Value="momentLoad.NodeId" SearchFunc="NodeIds" Label="Applied to Node" Required="true">
                 <MoreItemsTemplate>
                     <MudText Align="Align.Center" Class="px-4 py-1">
                         Only the first @ResultLimit.ToString() items are shown. Type to refine results.
@@ -36,31 +23,29 @@
                 </MoreItemsTemplate>
             </MudAutocomplete>
 
-            <MudAutocomplete InputMode="InputMode.numeric" MaxItems="@ResultLimit" T="int"
-                @bind-Value="this.element1d.MaterialId" SearchFunc="MaterialIds" Label="Material Id">
-                <MoreItemsTemplate>
-                    <MudText Align="Align.Center" Class="px-4 py-1">
-                        Only the first @ResultLimit.ToString() items are shown. Type to refine results.
-                    </MudText>
-                </MoreItemsTemplate>
-            </MudAutocomplete>
+            <MudExpansionPanel Expanded="true" Text="Torque"
+                Class="text-nowrap text-clip mud-typography mud-typography-subtitle2">
+                <MudGrid Spacing="1">
+                    <QuantityFieldComponent @bind-Value="@momentLoad.Torque" Label="Value"
+                        Unit="@UnitSettings.TorqueUnit.ToFriendlyString()" />
+                </MudGrid>
+            </MudExpansionPanel>
 
-            <MudAutocomplete InputMode="InputMode.numeric" MaxItems="@ResultLimit" T="int"
-                @bind-Value="this.element1d.SectionProfileId" SearchFunc="SectionProfileIds" Label="Secion Profile Id">
-                <MoreItemsTemplate>
-                    <MudText Align="Align.Center" Class="px-4 py-1">
-                        Only the first @ResultLimit.ToString() items are shown. Type to refine results.
-                    </MudText>
-                </MoreItemsTemplate>
-            </MudAutocomplete>
+            <MudExpansionPanel Expanded="true" Text="Axis Direction"
+                Class="text-nowrap text-clip mud-typography mud-typography-subtitle2">
+                <MudGrid Spacing="1">
+                    <QuantityFieldComponent @bind-Value="@momentLoad.AxisDirection.X" Label="X" />
+
+                    <QuantityFieldComponent @bind-Value="@momentLoad.AxisDirection.Y" Label="Y" />
+
+                    <QuantityFieldComponent @bind-Value="@momentLoad.AxisDirection.Z" Label="Z" />
+                </MudGrid>
+            </MudExpansionPanel>
         </MudExpansionPanels>
 
-        <QuantityFieldComponent IsRequired="true" @bind-Value="element1d.SectionProfileRotation"
-            Label="Section Profile Rotation" Unit="@UnitSettings.AngleUnit.ToString()" />
-
-        <div class="flex flex-row mt-2">
+        <div class="flex flex-row">
             <div class="flex-1" />
-            @if (element1d.Id != 0)
+            @if (momentLoad.Id != 0)
             {
                 <MudButton Class="flex-none mr-2" Variant="Variant.Filled" Color="Color.Error" OnClick="Delete">Delete
                 </MudButton>
@@ -114,3 +99,11 @@
         margin-top: 2px;
     }
 </style>
+               
+               
+               
+               
+                       
+               
+                
+                

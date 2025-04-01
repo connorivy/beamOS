@@ -52,10 +52,21 @@ public abstract class CommandHandlerBase<TCommand, TResponse>(ISnackbar snackbar
     );
 }
 
+public interface IClientCommandHandler
+{
+    public Task ExecuteAsync(IBeamOsClientCommand command, CancellationToken ct = default);
+}
+
+public interface IClientCommandHandler<TCommand> : IClientCommandHandler
+    where TCommand : IBeamOsClientCommand
+{
+    public Task ExecuteAsync(TCommand command, CancellationToken ct = default);
+}
+
 public abstract partial class ClientCommandHandlerBase<TCommand, TServerResponse>(
     ILogger logger,
     ISnackbar snackbar
-)
+) : IClientCommandHandler<TCommand>
     where TCommand : IBeamOsClientCommand
 {
     protected ISnackbar Snackbar => snackbar;
@@ -179,6 +190,9 @@ public abstract partial class ClientCommandHandlerBase<TCommand, TServerResponse
         TCommand command,
         Result<TServerResponse> serverResponse
     ) => ValueTask.FromResult(Result.Success);
+
+    public Task ExecuteAsync(IBeamOsClientCommand command, CancellationToken ct = default) =>
+        this.ExecuteAsync((TCommand)command, ct);
 }
 
 public abstract class SimpleCommandHandlerBase<TSimpleCommand, TCommand, TServerResponse>(

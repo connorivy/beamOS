@@ -5,6 +5,8 @@
 @using BeamOs.WebApp.Components.Features.ModelObjectEditor.Members
 @using BeamOs.WebApp.Components.Features.ModelObjectEditor.Nodes
 @using BeamOs.WebApp.Components.Features.ModelObjectEditor.SectionProfiles
+@using BeamOs.WebApp.Components.Features.ModelObjectEditor.PointLoads
+@using BeamOs.WebApp.Components.Features.ModelObjectEditor.MomentLoads
 @using StructuralAnalysis.Contracts.Common;
 
 @if (state.Value.CurrentViewType == BeamOsObjectType.Model)
@@ -29,8 +31,8 @@
             <MudText Align="Align.Center" Color="Color.Primary">LOADS</MudText>
             <MudDivider Class="mb-5" />
             <div class="grid grid-cols-2 gap-2">
-                <MudButton Variant="Variant.Outlined">Point Loads</MudButton>
-                <MudButton Variant="Variant.Outlined">Moments</MudButton>
+                <MudButton Variant="Variant.Outlined" OnClick="() => ShowView(BeamOsObjectType.PointLoad)">Point Loads</MudButton>
+                <MudButton Variant="Variant.Outlined" OnClick="() => ShowView(BeamOsObjectType.MomentLoad)">Moments</MudButton>
             </div>
     @*         <div class="mt-2">
                 <MudButton Variant="Variant.Outlined" Class="w-full">Distributed Loads</MudButton>
@@ -75,5 +77,13 @@ else
     else if (state.Value.CurrentViewType == BeamOsObjectType.SectionProfile)
     {
         <SectionProfileObjectEditor ModelId="@ModelId" UnitSettings="@UnitSettings" SelectedObject="state.Value.SelectedObject" />
+    }
+    else if (state.Value.CurrentViewType == BeamOsObjectType.PointLoad)
+    {
+        <PointLoadObjectEditor ModelId="@ModelId" UnitSettings="@UnitSettings" SelectedObject="state.Value.SelectedObject" />
+    }
+    else if (state.Value.CurrentViewType == BeamOsObjectType.MomentLoad)
+    {
+        <MomentLoadObjectEditor ModelId="@ModelId" UnitSettings="@UnitSettings" SelectedObject="state.Value.SelectedObject" />
     }
 }

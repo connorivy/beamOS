@@ -23,16 +23,16 @@ public record CreatePointLoadRequest
     }
 }
 
-public record PointLoadRequestData
+public record PointLoadData
 {
     public required int NodeId { get; init; }
     public required Force Force { get; init; }
     public required Vector3 Direction { get; init; }
 
-    public PointLoadRequestData() { }
+    public PointLoadData() { }
 
     [SetsRequiredMembers]
-    public PointLoadRequestData(int nodeId, Force force, Vector3 direction)
+    public PointLoadData(int nodeId, Force force, Vector3 direction)
     {
         this.NodeId = nodeId;
         this.Force = force;
@@ -40,7 +40,7 @@ public record PointLoadRequestData
     }
 }
 
-public record PutPointLoadRequest : PointLoadRequestData, IHasIntId
+public record PutPointLoadRequest : PointLoadData, IHasIntId
 {
     public required int Id { get; init; }
 }

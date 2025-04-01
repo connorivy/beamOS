@@ -31,6 +31,12 @@ public static class DI
             ServiceLifetime.Scoped
         );
 
+        services.AddObjectThatImplementInterface<IAssemblyMarkerWebAppComponents>(
+            typeof(IClientCommandHandler<>),
+            ServiceLifetime.Scoped,
+            true
+        );
+
         services.AddFluxor(
             options =>
                 options.ScanAssemblies(typeof(DI).Assembly).AddMiddleware<HistoryMiddleware>()

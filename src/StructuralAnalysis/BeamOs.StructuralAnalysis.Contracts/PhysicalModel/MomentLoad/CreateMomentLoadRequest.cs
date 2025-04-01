@@ -23,16 +23,16 @@ public record CreateMomentLoadRequest
     }
 }
 
-public record MomentLoadRequestData
+public record MomentLoadData
 {
     public required int NodeId { get; init; }
     public required Torque Torque { get; init; }
     public required Vector3 AxisDirection { get; init; }
 
-    public MomentLoadRequestData() { }
+    public MomentLoadData() { }
 
     [SetsRequiredMembers]
-    public MomentLoadRequestData(int nodeId, Torque torque, Vector3 axisDirection)
+    public MomentLoadData(int nodeId, Torque torque, Vector3 axisDirection)
     {
         this.NodeId = nodeId;
         this.Torque = torque;
@@ -40,7 +40,7 @@ public record MomentLoadRequestData
     }
 }
 
-public record PutMomentLoadRequest : MomentLoadRequestData, IHasIntId
+public record PutMomentLoadRequest : MomentLoadData, IHasIntId
 {
     public int Id { get; init; }
 }

@@ -183,6 +183,47 @@ public static class PressureUnitExtension
             _ => areaMomentOfInertiaUnit.ToString(),
         };
 
+    public static string ToFriendlyString(this LengthUnit lengthUnit) =>
+        lengthUnit switch
+        {
+            LengthUnit.Centimeter => "cm",
+            LengthUnit.Foot => "ft",
+            LengthUnit.Inch => "in",
+            LengthUnit.Meter => "m",
+            LengthUnit.Millimeter => "mm",
+            LengthUnit.Undefined => throw new NotImplementedException(),
+            _ => lengthUnit.ToString(),
+        };
+
+    public static string ToFriendlyString(this VolumeUnit volumeUnit) =>
+        volumeUnit switch
+        {
+            VolumeUnit.CubicCentimeter => "cm³",
+            VolumeUnit.CubicFoot => "ft³",
+            VolumeUnit.CubicInch => "in³",
+            VolumeUnit.CubicMeter => "m³",
+            VolumeUnit.CubicMillimeter => "mm³",
+            VolumeUnit.Undefined => throw new NotImplementedException(),
+            _ => volumeUnit.ToString(),
+        };
+
+    public static string ToFriendlyString(this TorqueUnit torqueUnit) =>
+        torqueUnit switch
+        {
+            TorqueUnit.KilonewtonCentimeter => "kN·cm",
+            TorqueUnit.KilonewtonMeter => "kN·m",
+            TorqueUnit.KilonewtonMillimeter => "kN·mm",
+            TorqueUnit.KilopoundForceFoot => "kip·ft",
+            TorqueUnit.KilopoundForceInch => "kip·in",
+            TorqueUnit.NewtonCentimeter => "N·cm",
+            TorqueUnit.NewtonMeter => "N·m",
+            TorqueUnit.NewtonMillimeter => "N·mm",
+            TorqueUnit.PoundForceFoot => "lb·ft",
+            TorqueUnit.PoundForceInch => "lb·in",
+            TorqueUnit.Undefined => throw new NotImplementedException(),
+            _ => torqueUnit.ToString(),
+        };
+
     public static string ToFriendlyString(this PressureUnit pressureUnit) =>
         pressureUnit switch
         {

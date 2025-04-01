@@ -43,7 +43,12 @@ export interface IStructuralAnalysisApiClientV1 {
     /**
      * @return OK
      */
-    putPointLoad(id: number, modelId: string, body: PointLoadRequestData): Promise<ResultOfPointLoadResponse>;
+    deletePointLoad(modelId: string, id: number): Promise<ResultOfModelEntityResponse>;
+
+    /**
+     * @return OK
+     */
+    putPointLoad(id: number, modelId: string, body: PointLoadData): Promise<ResultOfPointLoadResponse>;
 
     /**
      * @return OK
@@ -79,6 +84,11 @@ export interface IStructuralAnalysisApiClientV1 {
      * @return OK
      */
     batchPutMomentLoad(modelId: string, body: PutMomentLoadRequest[]): Promise<ResultOfBatchResponse>;
+
+    /**
+     * @return OK
+     */
+    deleteMomentLoad(modelId: string, id: number): Promise<ResultOfModelEntityResponse>;
 
     /**
      * @return OK
@@ -460,7 +470,50 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     /**
      * @return OK
      */
-    putPointLoad(id: number, modelId: string, body: PointLoadRequestData): Promise<ResultOfPointLoadResponse> {
+    deletePointLoad(modelId: string, id: number): Promise<ResultOfModelEntityResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/point-loads/{id}";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeletePointLoad(_response);
+        });
+    }
+
+    protected processDeletePointLoad(response: Response): Promise<ResultOfModelEntityResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfModelEntityResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfModelEntityResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    putPointLoad(id: number, modelId: string, body: PointLoadData): Promise<ResultOfPointLoadResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/point-loads/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -812,6 +865,49 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             });
         }
         return Promise.resolve<ResultOfBatchResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    deleteMomentLoad(modelId: string, id: number): Promise<ResultOfModelEntityResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/moment-loads/{id}";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeleteMomentLoad(_response);
+        });
+    }
+
+    protected processDeleteMomentLoad(response: Response): Promise<ResultOfModelEntityResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfModelEntityResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfModelEntityResponse>(null as any);
     }
 
     /**
@@ -4982,14 +5078,14 @@ export interface IPoint {
     [key: string]: any;
 }
 
-export class PointLoadRequestData implements IPointLoadRequestData {
+export class PointLoadData implements IPointLoadData {
     nodeId!: number;
     force!: Force;
     direction!: Vector3;
 
     [key: string]: any;
 
-    constructor(data?: IPointLoadRequestData) {
+    constructor(data?: IPointLoadData) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -5014,9 +5110,9 @@ export class PointLoadRequestData implements IPointLoadRequestData {
         }
     }
 
-    static fromJS(data: any): PointLoadRequestData {
+    static fromJS(data: any): PointLoadData {
         data = typeof data === 'object' ? data : {};
-        let result = new PointLoadRequestData();
+        let result = new PointLoadData();
         result.init(data);
         return result;
     }
@@ -5034,7 +5130,7 @@ export class PointLoadRequestData implements IPointLoadRequestData {
     }
 }
 
-export interface IPointLoadRequestData {
+export interface IPointLoadData {
     nodeId: number;
     force: Force;
     direction: Vector3;

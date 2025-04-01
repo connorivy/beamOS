@@ -49,11 +49,11 @@ public static partial class PutPointLoadCommandMapper
     public static partial PointLoad ToDomainObject(this PutPointLoadCommand command);
 }
 
-public readonly struct PutPointLoadCommand : IModelResourceWithIntIdRequest<PointLoadRequestData>
+public readonly struct PutPointLoadCommand : IModelResourceWithIntIdRequest<PointLoadData>
 {
     public int Id { get; init; }
     public Guid ModelId { get; init; }
-    public PointLoadRequestData Body { get; init; }
+    public PointLoadData Body { get; init; }
     public int NodeId => this.Body.NodeId;
     public ForceContract Force => this.Body.Force;
     public Contracts.Common.Vector3 Direction => this.Body.Direction;
