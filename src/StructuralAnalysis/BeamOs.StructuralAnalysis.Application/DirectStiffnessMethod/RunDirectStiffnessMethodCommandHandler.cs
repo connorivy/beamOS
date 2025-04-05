@@ -1,4 +1,5 @@
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
+using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.ResultSets;
 using BeamOs.StructuralAnalysis.Application.Common;

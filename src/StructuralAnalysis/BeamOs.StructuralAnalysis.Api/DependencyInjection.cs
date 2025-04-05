@@ -74,6 +74,7 @@ public static class EndpointToMinimalApi
             ?? throw new InvalidOperationException(
                 $"Class {typeof(TEndpoint).Name} is missing the route attribute"
             );
+        var tags = typeof(TEndpoint).GetCustomAttributes<BeamOsTagAttribute>();
 
         Func<string, Delegate, IEndpointConventionBuilder> mapFunc = endpointType switch
         {
@@ -108,5 +109,9 @@ public static class EndpointToMinimalApi
         IEndpointConventionBuilder endpointBuilder = mapFunc(route, mapDelegate);
 
         endpointBuilder.WithName(typeof(TEndpoint).Name);
+        foreach (var tag in tags)
+        {
+            endpointBuilder.WithTags(tag.Value);
+        }
     }
 }

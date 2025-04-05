@@ -1,5 +1,4 @@
 using BeamOs.Common.Application;
-using BeamOs.StructuralAnalysis.Application.Common;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BeamOs.StructuralAnalysis.Application;

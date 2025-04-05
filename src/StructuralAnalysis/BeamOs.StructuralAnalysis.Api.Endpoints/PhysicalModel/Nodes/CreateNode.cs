@@ -8,6 +8,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Nodes;
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "nodes")]
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
+[BeamOsTag(BeamOsTags.AI)]
 public class CreateNode(CreateNodeCommandHandler createNodeCommandHandler)
     : BeamOsModelResourceBaseEndpoint<CreateNodeCommand, CreateNodeRequest, NodeResponse>
 {

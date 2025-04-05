@@ -5,6 +5,8 @@ using BeamOs.StructuralAnalysis.Api;
 using BeamOs.StructuralAnalysis.Api.Endpoints;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.Tests.Common;
+using Microsoft.AspNetCore.Http.Metadata;
+using Objects.BuiltElements;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,13 +30,35 @@ builder
         ServiceLifetime.Scoped
     );
 
+builder.Services.AddLogging(b => b.AddConsole().SetMinimumLevel(LogLevel.Trace));
+
 #if DEBUG
 builder
     .Services
     .AddOpenApi(o =>
     {
         //o.AddSchemaTransformer<EnumSchemaTransformer>();
-    });
+    })
+    .AddOpenApi(
+        "ai",
+        options =>
+        {
+            options.ShouldInclude = (description) =>
+            {
+                foreach (var data in description.ActionDescriptor.EndpointMetadata)
+                {
+                    if (data is ITagsMetadata tagsMetadata)
+                    {
+                        if (tagsMetadata.Tags.Contains(BeamOsTags.AI))
+                        {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            };
+        }
+    );
 
 builder
     .Services
@@ -47,10 +71,10 @@ builder
     });
 #endif
 
-if (!BeamOsEnv.IsCiEnv())
-{
-    MathNet.Numerics.Control.UseNativeMKL();
-}
+// if (!BeamOsEnv.IsCiEnv())
+// {
+//     MathNet.Numerics.Control.UseNativeMKL();
+// }
 
 WebApplication app = builder.Build();
 

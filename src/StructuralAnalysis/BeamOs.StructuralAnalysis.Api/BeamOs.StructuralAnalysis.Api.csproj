@@ -27,11 +27,9 @@
     <ProjectReference Include="..\BeamOs.StructuralAnalysis.Infrastructure\BeamOs.StructuralAnalysis.Infrastructure.csproj" />
   </ItemGroup>
 
-  <Target Name="CopyOpenSees" AfterTargets="AfterBuild" Condition="'$(ContinuousIntegrationEnv)' == false">
-    <!-- /y will surpress prompt to override existing files -->
-    <!-- /s will copy subdirectories unless they are empty-->
+  <!-- <Target Name="CopyOpenSees" AfterTargets="AfterBuild" Condition="'$(ContinuousIntegrationEnv)' == false">
     <Exec Condition="Exists('$(OpenSeesDir)bin\')" Command="xcopy /y /s $(OpenSeesDir)bin\** $(OutDir)bin\" />
     <Exec Condition="Exists('$(OpenSeesDir)lib\')" Command="xcopy /y /s $(OpenSeesDir)lib\** $(OutDir)lib\" />
-  </Target>
+  </Target> -->
 
 </Project>

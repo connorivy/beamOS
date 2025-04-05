@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
   <PropertyGroup>
-    <AspnetVersion>9.0.1</AspnetVersion>
-    <MicrosoftExtensionsVersion>9.0.1</MicrosoftExtensionsVersion>
+    <AspnetVersion>9.0.3</AspnetVersion>
+    <MicrosoftExtensionsVersion>9.0.3</MicrosoftExtensionsVersion>
     <EfVersion>9.0.0</EfVersion>
     <FastEndpointVersion>5.30.0</FastEndpointVersion>
     <FluxorVersion>6.5.2</FluxorVersion>
@@ -36,9 +36,15 @@
     <PackageVersion Include="Microsoft.Azure.WebJobs.Core" Version="3.0.41" />
     <PackageVersion Include="Microsoft.Azure.WebJobs.Extensions.Http" Version="3.2.0" />
     <PackageVersion Include="Microsoft.Azure.WebJobs.Script.Abstractions" Version="1.0.4-preview" />
+    <PackageVersion Include="Microsoft.Extensions.AI.Ollama" Version="9.3.0-preview.1.25161.3" />
+    <PackageVersion Include="Microsoft.Extensions.AI.OpenAI" Version="9.3.0-preview.1.25161.3" />
     <PackageVersion Include="Microsoft.Extensions.Caching.Hybrid" Version="9.1.0-preview.1.25064.3" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
     <PackageVersion Include="Microsoft.Kiota.Bundle" Version="1.16.0" />
+    <PackageVersion Include="Microsoft.SemanticKernel.Agents.Core" Version="1.45.0" />
+    <PackageVersion Include="Microsoft.SemanticKernel.Connectors.Ollama" Version="1.45.0-alpha" />
+    <PackageVersion Include="Microsoft.SemanticKernel.Connectors.OpenAI" Version="1.45.0" />
+    <PackageVersion Include="Microsoft.SemanticKernel.Plugins.OpenApi" Version="1.45.0" />
     <PackageVersion Include="Microsoft.TypeScript.MSBuild" Version="5.7.3" />
     <PackageVersion Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
     <PackageVersion Include="Microsoft.Azure.Functions.Worker" Version="2.0.0" />
@@ -67,9 +73,12 @@
     <!--Microsoft Extensions-->
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(MicrosoftExtensionsVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.3" />
     <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Http" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftExtensionsVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="$(MicrosoftExtensionsVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="$(MicrosoftExtensionsVersion)" />
     <!-- Misc -->
     <PackageVersion Include="BeamOs.CSparse.Interop" Version="4.2.2" />
     <PackageVersion Include="FastEndpoints" Version="$(FastEndpointVersion)" />
