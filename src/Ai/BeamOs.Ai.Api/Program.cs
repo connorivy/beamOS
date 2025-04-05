@@ -2,8 +2,6 @@ using BeamOs.Ai;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Api;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.ChatCompletion;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,13 +20,6 @@ builder
 
 // builder.Services.AddLogging(b => b.AddConsole().SetMinimumLevel(LogLevel.Trace));
 builder.Services.AddSingleton<MessageHandler1>();
-
-#pragma warning disable SKEXP0070 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
-builder
-    .Services
-    .AddKernel()
-    .AddOllamaChatCompletion("llama3.2:3b", new Uri("http://localhost:11434"));
-#pragma warning restore SKEXP0070 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 
 builder
     .Services
@@ -54,12 +45,18 @@ app.MapPost(
         AiApiPlugin aiApiPlugin,
         UriProvider uriProvider,
         IHttpClientFactory httpClientFactory,
+        IConfiguration configuration,
         CancellationToken ct = default
     ) =>
     {
         var httpClient = httpClientFactory.CreateClient("llamaClient");
-        var chatCommandHandler = new ChatCommandHandler(aiApiPlugin, uriProvider, httpClient);
-        return chatCommandHandler.ExecuteChatAsync(command, ct);
+        var chatCommandHandler = new ChatCommandHandler(
+            aiApiPlugin,
+            uriProvider,
+            httpClient,
+            configuration
+        );
+        return chatCommandHandler.ExecuteOpenAiChatAsync(command, ct);
     }
 );
 
