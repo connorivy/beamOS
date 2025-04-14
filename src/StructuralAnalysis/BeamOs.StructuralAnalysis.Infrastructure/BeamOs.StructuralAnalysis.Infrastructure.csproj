@@ -21,7 +21,7 @@
   </PropertyGroup>
   
   <ItemGroup Condition="'$(UseSqlServer)' == true">
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
   </ItemGroup>
 
   <!--<ItemGroup Condition="'$(UseSqlServer)' != false">

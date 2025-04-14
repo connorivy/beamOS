@@ -37,22 +37,20 @@ public static class DI
             true
         );
 
-        services.AddFluxor(
-            options =>
-                options.ScanAssemblies(typeof(DI).Assembly).AddMiddleware<HistoryMiddleware>()
+        services.AddFluxor(options =>
+            options.ScanAssemblies(typeof(DI).Assembly).AddMiddleware<HistoryMiddleware>()
         );
         services.AddMudServices();
         services.AddScoped<UndoRedoFunctionality>();
         services.AddScoped<HistoryManager>();
 
 #pragma warning disable EXTEXP0018 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
-        services.AddHybridCache(
-            options =>
-                options.DefaultEntryOptions = new()
-                {
-                    Expiration = TimeSpan.FromMinutes(10),
-                    LocalCacheExpiration = TimeSpan.FromMinutes(10)
-                }
+        services.AddHybridCache(options =>
+            options.DefaultEntryOptions = new()
+            {
+                Expiration = TimeSpan.FromMinutes(10),
+                LocalCacheExpiration = TimeSpan.FromMinutes(10),
+            }
         );
 #pragma warning restore EXTEXP0018 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 
@@ -78,7 +76,7 @@ public static class DI
         {
             if (await modelBuilder.CreateOnly(apiClient))
             {
-                await apiClient.RunOpenSeesAnalysisAsync(modelBuilder.Id);
+                await apiClient.RunDirectStiffnessMethodAsync(modelBuilder.Id);
             }
         }
     }

@@ -35,13 +35,11 @@
     <ProjectReference Include="..\..\BeamOs.Tests.Common\BeamOs.Tests.Common.csproj" />
   </ItemGroup>
 
-  <Target Name="CopyOpenSees" AfterTargets="AfterBuild" Condition="'$(ContinuousIntegrationEnv)' == false">
-    <!-- /y will surpress prompt to override existing files -->
-    <!-- /s will copy subdirectories unless they are empty-->
+  <!-- <Target Name="CopyOpenSees" AfterTargets="AfterBuild" Condition="'$(ContinuousIntegrationEnv)' == false">
     <Exec Command="echo After Build: $(OpenSeesDir) $(OutDir)" />
     <Exec Condition="Exists('$(OpenSeesDir)bin\')" Command="xcopy /y /s $(OpenSeesDir)bin\** $(OutDir)bin\" />
     <Exec Condition="Exists('$(OpenSeesDir)lib\')" Command="xcopy /y /s $(OpenSeesDir)lib\** $(OutDir)lib\" />
-  </Target>
+  </Target> -->
 
   <Import Project="..\BeamOs.Tests.StructuralAnalysis.Integration.Shared\BeamOs.Tests.StructuralAnalysis.Integration.Shared.projitems" Label="Shared" />
 
