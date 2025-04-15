@@ -1,6 +1,7 @@
 using BeamOs.Ai;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Api;
+using BeamOs.Common.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Scalar.AspNetCore;
 
@@ -12,18 +13,18 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddScoped<AiApiPlugin>();
 builder.Services.AddSingleton<UriProvider>();
-builder
-    .Services
-    .AddHttpClient<IStructuralAnalysisApiClientV1, StructuralAnalysisApiClientV1>(
-        client => client.BaseAddress = new("http://localhost:5223")
-    );
+builder.Services.AddHttpClient<IStructuralAnalysisApiClientV1, StructuralAnalysisApiClientV1>(
+    client => client.BaseAddress = new("http://localhost:5223")
+);
 
 // builder.Services.AddLogging(b => b.AddConsole().SetMinimumLevel(LogLevel.Trace));
 builder.Services.AddSingleton<MessageHandler1>();
 
 builder
-    .Services
-    .AddHttpClient("llamaClient", config => config.BaseAddress = new("http://localhost:11434"))
+    .Services.AddHttpClient(
+        "llamaClient",
+        config => config.BaseAddress = new("http://localhost:11434")
+    )
     .AddHttpMessageHandler<MessageHandler1>()
     .SetHandlerLifetime(Timeout.InfiniteTimeSpan)
     .ConfigureHttpClient(client => client.Timeout = TimeSpan.FromMinutes(10));

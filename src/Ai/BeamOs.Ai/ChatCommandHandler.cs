@@ -2,6 +2,7 @@ using System.ClientModel;
 using System.Text;
 using BeamOs.Common.Api;
 using BeamOs.Common.Application;
+using BeamOs.Common.Contracts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Agents;
@@ -15,7 +16,8 @@ public class ChatCommandHandler(
     AiApiPlugin aiApiPlugin,
     UriProvider uriProvider,
     HttpClient httpClient,
-    IConfiguration configuration
+    IConfiguration configuration,
+    OpenAiChatClientFactory openAiChatClientFactory
 ) : IAsyncEnumerableCommandHandler<ChatRequest, string>
 {
     private Kernel? kernel;
@@ -42,16 +44,12 @@ public class ChatCommandHandler(
             Arguments = new KernelArguments(
                 new PromptExecutionSettings
                 {
-                    FunctionChoiceBehavior = FunctionChoiceBehavior.Required()
+                    FunctionChoiceBehavior = FunctionChoiceBehavior.Required(),
                 }
             ),
         };
 
-        ChatHistory chatHistory =
-        [
-            new ChatMessageContent(AuthorRole.User, 
-                           command.Message)
-        ];
+        ChatHistory chatHistory = [new ChatMessageContent(AuthorRole.User, command.Message)];
 
         StringBuilder sb = new();
         await foreach (var response in agent.InvokeAsync(chatHistory, cancellationToken: ct))
@@ -72,21 +70,25 @@ public class ChatCommandHandler(
 
         ChatHistory chatHistory =
         [
-            new ChatMessageContent(AuthorRole.System, """
-                Users are going to ask you to perform tasks related to their structural analysis models. 
-                Your job is to use the provided modelId to make changes to a specific model. You make these changes
-                by invoking functions in the StructuralAnalysisApi.
-                
-                If there is an issue invoking the StructuralAnalysisApi, then please let the user know which endpoint you
-                tried, and what the http response code was.
-            """),
-            new ChatMessageContent(AuthorRole.User,
-                           command.Message)
+            new ChatMessageContent(
+                AuthorRole.System,
+                """
+                    Users are going to ask you to perform tasks related to their structural analysis models. 
+                    Your job is to use the provided modelId to make changes to a specific model. You make these changes
+                    by invoking functions in the StructuralAnalysisApi.
+                    
+                    If there is an issue invoking the StructuralAnalysisApi, then please let the user know which endpoint you
+                    tried, and what the http response code was.
+                """
+            ),
+            new ChatMessageContent(AuthorRole.User, command.Message),
         ];
 
 #pragma warning disable SKEXP0070 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
-        OllamaPromptExecutionSettings settings =
-            new() { FunctionChoiceBehavior = FunctionChoiceBehavior.Auto(), };
+        OllamaPromptExecutionSettings settings = new()
+        {
+            FunctionChoiceBehavior = FunctionChoiceBehavior.Auto(),
+        };
 #pragma warning restore SKEXP0070 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 
         StringBuilder sb = new();
@@ -109,21 +111,25 @@ public class ChatCommandHandler(
 
         ChatHistory chatHistory =
         [
-            new ChatMessageContent(AuthorRole.System, """
-                Users are going to ask you to perform tasks related to their structural analysis models. 
-                Your job is to use the provided modelId to make changes to a specific model. You make these changes
-                by invoking functions in the StructuralAnalysisApi.
-                
-                If there is an issue invoking the StructuralAnalysisApi, then please let the user know which endpoint you
-                tried, and what the http response code was.
-            """),
-            new ChatMessageContent(AuthorRole.User,
-                           command.Message)
+            new ChatMessageContent(
+                AuthorRole.System,
+                """
+                    Users are going to ask you to perform tasks related to their structural analysis models. 
+                    Your job is to use the provided modelId to make changes to a specific model. You make these changes
+                    by invoking functions in the StructuralAnalysisApi.
+                    
+                    If there is an issue invoking the StructuralAnalysisApi, then please let the user know which endpoint you
+                    tried, and what the http response code was.
+                """
+            ),
+            new ChatMessageContent(AuthorRole.User, command.Message),
         ];
 
 #pragma warning disable SKEXP0070 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
-        OllamaPromptExecutionSettings settings =
-            new() { FunctionChoiceBehavior = FunctionChoiceBehavior.Auto(), };
+        OllamaPromptExecutionSettings settings = new()
+        {
+            FunctionChoiceBehavior = FunctionChoiceBehavior.Auto(),
+        };
 #pragma warning restore SKEXP0070 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 
         var assitant = await chatCompletionService.GetChatMessageContentAsync(

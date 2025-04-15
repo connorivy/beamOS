@@ -11,5 +11,5 @@ public static class UserAuthorizationLevel
 
 public record UriProvider
 {
-    public Uri AiUri { get; init; } = new Uri("http://localhost:11434");
+    public Uri AiUri { get; init; } = new Uri("http://localhost:5223");
 }

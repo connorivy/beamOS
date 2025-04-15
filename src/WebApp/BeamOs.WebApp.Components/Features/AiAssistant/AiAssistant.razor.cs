@@ -1,0 +1,109 @@
+using System.Text;
+using System.Text.Json;
+using BeamOs.Common.Api;
+using BeamOs.Common.Contracts;
+using Microsoft.AspNetCore.Components;
+
+namespace BeamOs.WebApp.Components.Features.AiAssistant;
+
+public partial class AiAssistant
+{
+    private readonly HttpClient httpClient;
+    private readonly UriProvider uriProvider;
+
+    public AiAssistant(IHttpClientFactory httpClientFactory, UriProvider uriProvider)
+    {
+        this.httpClient = httpClientFactory.CreateClient("default");
+        this.uriProvider = uriProvider;
+    }
+
+    [Parameter]
+    public Guid ModelId { get; init; }
+
+    private bool expanded = false;
+    private bool apiKeySubmitted = false;
+    private string apiKey = "";
+    private string userMessage = "";
+    private bool isLoading = false;
+    private ElementReference chatContainer;
+
+    private List<ChatMessage> chatMessages = new();
+
+    private string chatContainerClass =>
+        $"flex-1 overflow-y-auto p-4 space-y-4 {(this.shouldScroll ? "force-scroll" : "")}";
+
+    private bool shouldScroll;
+
+    private class ChatMessage
+    {
+        public string Text { get; set; } = "";
+        public bool IsUser { get; set; }
+    }
+
+    private void ToggleChat()
+    {
+        this.expanded = !this.expanded;
+    }
+
+    private async Task SendMessage()
+    {
+        if (string.IsNullOrWhiteSpace(this.userMessage))
+            return;
+
+        // Add user message to chat
+
+        this.chatMessages.Add(new ChatMessage { Text = this.userMessage, IsUser = true });
+        this.isLoading = true;
+        await this.ScrollToBottom();
+
+        await this.GetAiResponse();
+
+        this.userMessage = "";
+        this.isLoading = false;
+        await this.ScrollToBottom();
+    }
+
+    private async Task GetAiResponse()
+    {
+        var aiUri = new UriBuilder(uriProvider.AiUri) { Path = "api/github-models-chat" };
+        var requestBody = new GithubModelsChatRequest()
+        {
+            ApiKey = this.apiKey,
+            Message = this.userMessage,
+            ModelId = this.ModelId,
+        };
+
+        var json = JsonSerializer.Serialize(requestBody);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        using var response = await this.httpClient.PostAsync(aiUri.Uri, content);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception("Failed to get response from AI API");
+        }
+
+        ChatMessage chatMessage = new() { IsUser = false };
+        this.chatMessages.Add(chatMessage);
+
+        using var stream = await response.Content.ReadAsStreamAsync();
+        using var reader = new StreamReader(stream);
+
+        while (!reader.EndOfStream)
+        {
+            var line = await reader.ReadLineAsync();
+            if (line == null)
+                continue;
+
+            chatMessage.Text += line;
+            this.StateHasChanged();
+        }
+    }
+
+    private async Task ScrollToBottom()
+    {
+        this.shouldScroll = true;
+        await Task.Delay(1); // Force a render
+        this.shouldScroll = false;
+        await Task.Delay(1); // Reset
+    }
+}

@@ -17,20 +17,19 @@ namespace BeamOs.SpeckleConnector;
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Authenticated)]
 public class ConvertToBeamOs
-    : BeamOsFromBodyBaseEndpoint<SpeckleReceiveParameters, BeamOsModelBuilderDto>
+    : BeamOsFromBodyResultBaseEndpoint<SpeckleReceiveParameters, BeamOsModelBuilderDto>
 {
     public override async Task<Result<BeamOsModelBuilderDto>> ExecuteRequestAsync(
         SpeckleReceiveParameters req,
         CancellationToken ct = default
     )
     {
-        BeamOsDynamicModelBuilder modelBuilder =
-            new(
-                "doesn't matter",
-                new(UnitSettingsContract.kN_M),
-                "doesn't matter",
-                "doesn't matter"
-            );
+        BeamOsDynamicModelBuilder modelBuilder = new(
+            "doesn't matter",
+            new(UnitSettingsContract.kN_M),
+            "doesn't matter",
+            "doesn't matter"
+        );
 
         modelBuilder.AddSectionProfiles(
             new PutSectionProfileRequest()
@@ -43,7 +42,7 @@ public class ConvertToBeamOs
                 WeakAxisShearArea = 4.6905,
                 AreaUnit = AreaUnitContract.SquareInch,
                 AreaMomentOfInertiaUnit = AreaMomentOfInertiaUnitContract.InchToTheFourth,
-                Id = 1636
+                Id = 1636,
             }
         );
 
@@ -53,7 +52,7 @@ public class ConvertToBeamOs
                 ModulusOfElasticity = 29000,
                 ModulusOfRigidity = 11_153.85,
                 PressureUnit = PressureUnitContract.KilopoundForcePerSquareInch,
-                Id = 992
+                Id = 992,
             }
         );
 
@@ -63,7 +62,7 @@ public class ConvertToBeamOs
                 el with
                 {
                     MaterialId = 992,
-                    SectionProfileId = 1636
+                    SectionProfileId = 1636,
                 },
             NodeRequestModifier = static el =>
                 el with
@@ -73,8 +72,8 @@ public class ConvertToBeamOs
                         el.LocationPoint.Z,
                         -el.LocationPoint.Y,
                         el.LocationPoint.LengthUnit
-                    )
-                }
+                    ),
+                },
         };
 
         await foreach (
@@ -105,10 +104,10 @@ public class ConvertToBeamOs
                             {
                                 X = 0,
                                 Y = -1,
-                                Z = 0
+                                Z = 0,
                             },
                             Force = new(100, ForceUnitContract.Kilonewton),
-                            NodeId = putNodeRequest.Id
+                            NodeId = putNodeRequest.Id,
                         }
                     );
                 }

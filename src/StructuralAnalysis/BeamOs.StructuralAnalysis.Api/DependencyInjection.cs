@@ -14,11 +14,10 @@ public static class DependencyInjection
 
         static MethodInfo mapMethodFactory() => typeof(EndpointToMinimalApi).GetMethod("Map");
         IEnumerable<Type> assemblyTypes = typeof(TAssemblyMarker)
-            .Assembly
-            .GetTypes()
+            .Assembly.GetTypes()
             .Where(t => t.IsClass && !t.IsAbstract);
 
-        var baseType = typeof(BeamOsBaseEndpoint<,>);
+        var baseType = typeof(BeamOsActualBaseEndpoint<,>);
         foreach (var assemblyType in assemblyTypes)
         {
             if (
@@ -62,7 +61,7 @@ public static class DependencyInjection
 public static class EndpointToMinimalApi
 {
     public static void Map<TEndpoint, TRequest, TResponse>(IEndpointRouteBuilder app)
-        where TEndpoint : BeamOsBaseEndpoint<TRequest, TResponse>
+        where TEndpoint : BeamOsActualBaseEndpoint<TRequest, TResponse>
     {
         string route =
             typeof(TEndpoint).GetCustomAttribute<BeamOsRouteAttribute>()?.Value
@@ -83,27 +82,28 @@ public static class EndpointToMinimalApi
             Http.Patch => app.MapPatch,
             Http.Post => app.MapPost,
             Http.Put => app.MapPut,
-            _ => throw new NotImplementedException()
+            _ => throw new NotImplementedException(),
         };
 
         Delegate mapDelegate;
         if (
-            Common
-                .Application
-                .DependencyInjection
-                .ConcreteTypeDerivedFromBase(
-                    typeof(TEndpoint),
-                    typeof(BeamOsFromBodyBaseEndpoint<,>)
-                )
+            Common.Application.DependencyInjection.ConcreteTypeDerivedFromBase(
+                typeof(TEndpoint),
+                typeof(BeamOsFromBodyResultBaseEndpoint<,>)
+            )
+            || Common.Application.DependencyInjection.ConcreteTypeDerivedFromBase(
+                typeof(TEndpoint),
+                typeof(BeamOsFromBodyBaseEndpoint<,>)
+            )
         )
         {
-            mapDelegate = async ([FromBody] TRequest req, IServiceProvider serviceProvider) =>
-                await serviceProvider.GetRequiredService<TEndpoint>().ExecuteRequestAsync(req);
+            mapDelegate = ([FromBody] TRequest req, IServiceProvider serviceProvider) =>
+                serviceProvider.GetRequiredService<TEndpoint>().ExecuteRequestAsync(req);
         }
         else
         {
-            mapDelegate = async ([AsParameters] TRequest req, IServiceProvider serviceProvider) =>
-                await serviceProvider.GetRequiredService<TEndpoint>().ExecuteRequestAsync(req);
+            mapDelegate = ([AsParameters] TRequest req, IServiceProvider serviceProvider) =>
+                serviceProvider.GetRequiredService<TEndpoint>().ExecuteRequestAsync(req);
         }
 
         IEndpointConventionBuilder endpointBuilder = mapFunc(route, mapDelegate);

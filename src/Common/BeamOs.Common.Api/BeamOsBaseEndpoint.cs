@@ -9,14 +9,12 @@ public abstract partial class BeamOsActualBaseEndpoint<TRequest, TResponse>
 }
 
 public abstract partial class BeamOsBaseEndpoint<TRequest, TResponse>
-{
-    public abstract Task<Result<TResponse>> ExecuteRequestAsync(
-        TRequest req,
-        CancellationToken ct = default
-    );
-}
+    : BeamOsActualBaseEndpoint<TRequest, Task<Result<TResponse>>> { }
 
 public abstract partial class BeamOsFromBodyBaseEndpoint<TRequest, TResponse>
+    : BeamOsActualBaseEndpoint<TRequest, TResponse> { }
+
+public abstract partial class BeamOsFromBodyResultBaseEndpoint<TRequest, TResponse>
     : BeamOsBaseEndpoint<TRequest, TResponse> { }
 
 public abstract partial class BeamOsModelResourceBaseEndpoint<TCommand, TBody, TResponse>

@@ -4,7 +4,8 @@
 <div class="fixed bottom-6 right-6 z-50">
     @if (!expanded)
     {
-        <MudButton @onclick="ToggleChat" Variant="Variant.Filled" Color="Color.Primary" Class="rounded-full w-14 h-14 min-w-0 shadow-lg">
+        <MudButton @onclick="ToggleChat" Variant="Variant.Filled" Color="Color.Primary"
+            Class="rounded-full w-14 h-14 min-w-0 shadow-lg">
             <MudIcon Icon="@Icons.Material.Filled.SmartToy" Size="Size.Large" />
         </MudButton>
     }
@@ -13,13 +14,11 @@
         <MudCard class="w-96 h-[500px] flex flex-col">
             <!-- Header -->
             <MudCardHeader Class="p-4">
-                 <MudText Typo="Typo.h6">AI Assistant</MudText>
-                    <MudSpacer />
-                    <MudIconButton Icon="@Icons.Material.Filled.Close" 
-                                 Color="Color.Inherit" 
-                                 OnClick="ToggleChat" />
+                <MudText Typo="Typo.h6">AI Assistant</MudText>
+                <MudSpacer />
+                <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Inherit" OnClick="ToggleChat" />
             </MudCardHeader>
-            
+
             <!-- Chat messages -->
             <MudCardContent Class="p-0" Style="height: calc(100% - 120px); overflow-y: auto;">
                 @foreach (var message in chatMessages)
@@ -28,17 +27,15 @@
                         @* <div class="@($"max-w-xs md:max-w-md rounded-lg px-4 py-2 {(message.IsUser ? "bg-primary text-white" : "bg-gray-100 dark:bg-gray-700")}")">
                             @message.Text
                         </div> *@
-                        <MudPaper Style="@($"{(message.IsUser ? "" : "background-color: var(--mud-palette-primary);")}")" Class="@($"ma-4 pa-4 d-inline-block")"
-                                Elevation="0"
-                                Width="auto"
-                                MaxWidth="80%">
-                            <MudText Color="@(message.IsUser ? Color.Inherit : Color.Default)">
+                        <MudPaper Style="@($"{(message.IsUser ? "" : "background-color: var(--mud-palette-primary);")}")"
+                            Class="@($"ma-4 pa-4 d-inline-block")" Elevation="0" Width="auto" MaxWidth="80%">
+                            <MudText Color="@(message.IsUser? Color.Inherit: Color.Default)">
                                 @message.Text
                             </MudText>
                         </MudPaper>
                     </div>
                 }
-                
+
                 @if (isLoading)
                 {
                     <div class="text-left">
@@ -46,31 +43,21 @@
                             <MudProgressCircular Size="Size.Medium" Indeterminate="true" />
                         </MudPaper>
                     </div>
-                } 
+                }
             </MudCardContent>
-            
+
             <!-- Input area -->
             <div class="p-4 border-t border-gray-200 dark:border-gray-700 space-y-4">
                 <!-- API Key Input - Always visible -->
-                <MudTextField @bind-Value="apiKey" 
-                             Label="API Key" 
-                             Variant="Variant.Outlined" 
-                             InputType="InputType.Password"
-                             Adornment="Adornment.End"
-                             AdornmentIcon="@Icons.Material.Filled.Key"
-                             Class="w-full" />
-                
+                <MudTextField @bind-Value="apiKey" Label="API Key" Variant="Variant.Outlined" InputType="InputType.Password"
+                    Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Key" Class="w-full" />
+
                 <!-- Message Input -->
                 <div class="flex gap-2">
-                    <MudTextField @bind-Value="userMessage" 
-                                 Label="Type your message..." 
-                                 Variant="Variant.Outlined" 
-                                 Class="flex-1"
-                                 OnKeyDown="@(e => { if (e.Key == "Enter") SendMessage(); })" />
-                    <MudButton @onclick="SendMessage" 
-                              Variant="Variant.Filled" 
-                              Color="Color.Primary"
-                              Disabled="@(string.IsNullOrWhiteSpace(userMessage) || string.IsNullOrWhiteSpace(apiKey))">
+                    <MudTextField @bind-Value="userMessage" Label="Type your message..." Variant="Variant.Outlined"
+                        Class="flex-1" OnKeyDown="@(e => { if (e.Key == "Enter") SendMessage(); })" />
+                    <MudButton @onclick="SendMessage" Variant="Variant.Filled" Color="Color.Primary"
+                        Disabled="@(string.IsNullOrWhiteSpace(userMessage) || string.IsNullOrWhiteSpace(apiKey))">
                         Send
                     </MudButton>
                 </div>
@@ -84,69 +71,3 @@
         overflow-anchor: auto;
     }
 </style>
-
-@code {
-    private bool expanded = false;
-    private bool apiKeySubmitted = false;
-    private string apiKey = "";
-    private string userMessage = "";
-    private bool isLoading = false;
-    private ElementReference chatContainer;
-    
-    private List<ChatMessage> chatMessages = new();
-    
-    private string chatContainerClass => $"flex-1 overflow-y-auto p-4 space-y-4 {(shouldScroll ? "force-scroll" : "")}"; 
-    private bool shouldScroll;
-    private class ChatMessage
-    {
-        public string Text { get; set; } = "";
-        public bool IsUser { get; set; }
-    }
-    
-    private void ToggleChat()
-    {
-        expanded = !expanded;
-    }
-    
-    private async Task SendMessage()
-    {
-        if (string.IsNullOrWhiteSpace(userMessage)) return;
-        
-        @* if (!apiKeySubmitted && !string.IsNullOrWhiteSpace(apiKey))
-        {
-            apiKeySubmitted = true;
-            chatMessages.Add(new ChatMessage { Text = "API key saved. How can I help you?", IsUser = false });
-            userMessage = "";
-            await ScrollToBottom();
-            return;
-        }
-        
-        if (!apiKeySubmitted)
-        {
-            return;
-        } *@
-        
-        // Add user message to chat
-        chatMessages.Add(new ChatMessage { Text = userMessage, IsUser = true });
-        isLoading = true;
-        userMessage = "";
-        await ScrollToBottom();
-        
-        // Here you would normally call your AI API
-        // Simulating API call with delay
-        await Task.Delay(1000);
-        
-        // Add AI response
-        chatMessages.Add(new ChatMessage { Text = "This is a simulated response from the AI. In a real implementation, you would call your AI API with the user's message and the API key.", IsUser = false });
-        isLoading = false;
-        await ScrollToBottom();
-    }
-    
-    private async Task ScrollToBottom()
-    {
-        shouldScroll = true;
-        await Task.Delay(1); // Force a render
-        shouldScroll = false;
-        await Task.Delay(1); // Reset
-    }
-}

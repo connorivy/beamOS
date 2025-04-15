@@ -1,25 +1,22 @@
 using System.ComponentModel;
-using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using Microsoft.SemanticKernel;
-using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 
 namespace BeamOs.Ai;
 
-public class AiApiPlugin(IStructuralAnalysisApiClientV1 apiClient)
+public class AiApiPlugin(CreateNodeCommandHandler createNodeCommandHandler)
 {
     [KernelFunction]
     [Description("Create a node in the model with the provided modelId.")]
-    public Task<
-        Result<NodeResponse>
-    > CreateNodeAsync(
+    public Task<Result<NodeResponse>> CreateNodeAsync(
         [Description("Id of the model that the new node with be created in")] Guid modelId,
         [Description("X Coordinate of Node")] double locationPoint_x,
         [Description("Y Coordinate of Node")] double locationPoint_y,
         [Description("Z Coordinate of Node")] double locationPoint_z,
-        string locationPoint_lengthUnit,
+        [Description("Length unit of the node coordinates")] LengthUnit lengthUnit,
         bool restraint_canTranslateAlongX,
         bool restraint_canTranslateAlongY,
         bool restraint_canTranslateAlongZ,
@@ -28,25 +25,22 @@ public class AiApiPlugin(IStructuralAnalysisApiClientV1 apiClient)
         bool restraint_canRotateAboutZ,
         CancellationToken cancellationToken = default
     ) =>
-        apiClient.CreateNodeAsync(
-            modelId,
-            new CreateNodeRequest(
-                new Point(
-                    locationPoint_x,
-                    locationPoint_y,
-                    locationPoint_z,
-
-                    locationPoint_lengthUnit.MapToLengthUnitContract()
+        createNodeCommandHandler.ExecuteAsync(
+            new()
+            {
+                ModelId = modelId,
+                Body = new CreateNodeRequest(
+                    new Point(locationPoint_x, locationPoint_y, locationPoint_z, lengthUnit),
+                    new Restraint(
+                        restraint_canTranslateAlongX,
+                        restraint_canTranslateAlongY,
+                        restraint_canTranslateAlongZ,
+                        restraint_canRotateAboutX,
+                        restraint_canRotateAboutY,
+                        restraint_canRotateAboutZ
+                    )
                 ),
-                new Restraint(
-                    restraint_canTranslateAlongX,
-                    restraint_canTranslateAlongY,
-                    restraint_canTranslateAlongZ,
-                    restraint_canRotateAboutX,
-                    restraint_canRotateAboutY,
-                    restraint_canRotateAboutZ
-                )
-            ),
+            },
             cancellationToken
         );
 }
