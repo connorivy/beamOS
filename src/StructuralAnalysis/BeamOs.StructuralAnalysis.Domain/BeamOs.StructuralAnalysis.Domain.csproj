@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <!--<PackageReference Include="MathNet.Numerics" />-->
+    <PackageReference Include="BeamOs.OpenSees.linux-x64" />
     <PackageReference Include="CommunityToolkit.HighPerformance" />
     <PackageReference Include="CSparse" />
     <PackageReference Include="MathNet.Numerics.MKL.Win-x64" />

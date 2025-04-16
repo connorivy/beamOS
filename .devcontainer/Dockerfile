@@ -22,6 +22,18 @@ ENV LD_LIBRARY_PATH=${DEST_LIB_DIR}:$LD_LIBRARY_PATH
 RUN ls -la ${DEST_LIB_DIR} && \
     ldconfig
 
+# OpenSees dependencies
+RUN apt-get update && apt-get install -y gcc g++ gfortran
+
+# sudo apt install -y cmake
+# sudo apt install -y gcc g++ gfortran
+# sudo apt install -y python3-pip
+# sudo apt install -y liblapack-dev
+# sudo apt install -y libopenmpi-dev
+# sudo apt install -y libmkl-rt
+# sudo apt install -y libmkl-blacs-openmpi-lp64
+# sudo apt install -y libscalapack-openmpi-dev
+
 # Install CUDA for GPU acceleration (optional but recommended for Ollama)
 # RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 #     && apt-get install -y --no-install-recommends \

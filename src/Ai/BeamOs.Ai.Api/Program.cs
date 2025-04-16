@@ -39,27 +39,27 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
-app.MapPost(
-    "/chat",
-    (
-        [FromBody] ChatRequest command,
-        AiApiPlugin aiApiPlugin,
-        UriProvider uriProvider,
-        IHttpClientFactory httpClientFactory,
-        IConfiguration configuration,
-        CancellationToken ct = default
-    ) =>
-    {
-        var httpClient = httpClientFactory.CreateClient("llamaClient");
-        var chatCommandHandler = new ChatCommandHandler(
-            aiApiPlugin,
-            uriProvider,
-            httpClient,
-            configuration
-        );
-        return chatCommandHandler.ExecuteOpenAiChatAsync(command, ct);
-    }
-);
+// app.MapPost(
+//     "/chat",
+//     (
+//         [FromBody] ChatRequest command,
+//         AiApiPlugin aiApiPlugin,
+//         UriProvider uriProvider,
+//         IHttpClientFactory httpClientFactory,
+//         IConfiguration configuration,
+//         CancellationToken ct = default
+//     ) =>
+//     {
+//         var httpClient = httpClientFactory.CreateClient("llamaClient");
+//         var chatCommandHandler = new ChatCommandHandler(
+//             aiApiPlugin,
+//             uriProvider,
+//             httpClient,
+//             configuration
+//         );
+//         return chatCommandHandler.ExecuteOpenAiChatAsync(command, ct);
+//     }
+// );
 
 app.UseHttpsRedirection();
 

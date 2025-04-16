@@ -50,7 +50,7 @@ public sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettings
         return new AnalysisResults()
         {
             ResultSet = resultSet,
-            OtherAnalyticalResults = otherResults
+            OtherAnalyticalResults = otherResults,
         };
     }
 
@@ -62,14 +62,13 @@ public sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettings
         UnitSettings? unitSettingsOverride = null
     )
     {
-        TclWriter tclWriter =
-            new(
-                model.Settings,
-                displacementPort,
-                reactionPort,
-                elementForcesPort,
-                unitSettingsOverride
-            );
+        TclWriter tclWriter = new(
+            model.Settings,
+            displacementPort,
+            reactionPort,
+            elementForcesPort,
+            unitSettingsOverride
+        );
 
         //this.element1dCache = new(model.Element1ds.Count);
         foreach (var element1d in model.Element1ds)
@@ -99,33 +98,24 @@ public sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettings
         Task listenReact = this.reactionServer.Listen(data => this.reactions = data);
         //Task listenElemForces = this.elementForceServer.Listen(data => this.elemForces = data);
 
-        string exeName;
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        var exePath = Path.Combine(outputDir, "runtimes", "linux-x64", "native", "bin", "OpenSees");
+        if (!File.Exists(exePath))
         {
-            exeName = "OpenSees";
-        }
-        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-        {
-            exeName = "OpenSees.exe";
-        }
-        else
-        {
-            throw new Exception("Program running on unsupported platform");
+            throw new Exception($"OpenSees executable not found at {exePath}");
         }
 
-        using Process process =
-            new()
+        using Process process = new()
+        {
+            StartInfo = new ProcessStartInfo(exePath)
             {
-                StartInfo = new ProcessStartInfo(Path.Combine(outputDir, "bin", exeName))
-                {
-                    WorkingDirectory = outputDir,
-                    Arguments = tclFileWithPath,
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true
-                },
-                EnableRaisingEvents = true,
-            };
+                WorkingDirectory = outputDir,
+                Arguments = tclFileWithPath,
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+            },
+            EnableRaisingEvents = true,
+        };
         process.OutputDataReceived += new DataReceivedEventHandler(this.process_OutputDataReceived);
         process.ErrorDataReceived += new DataReceivedEventHandler(this.process_ErrorDataReceived);
 
