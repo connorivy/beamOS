@@ -10,17 +10,23 @@ FROM mcr.microsoft.com/devcontainers/dotnet:1-9.0-bookworm
 
 # Create directory for the libraries in the destination image
 ENV SOURCE_LIB_DIR=/usr/local/lib
-ENV DEST_LIB_DIR=/opt/mkl_libs
-RUN mkdir -p ${DEST_LIB_DIR}
+ENV MKLROOT=/opt/mkl_libs
+RUN mkdir -p ${MKLROOT}/lib/intel64
 
-COPY --from=mkl_builder ${SOURCE_LIB_DIR}/lib* ${DEST_LIB_DIR}/
+COPY --from=mkl_builder ${SOURCE_LIB_DIR}/lib* ${MKLROOT}/lib/intel64
 
 # Add MKL libraries to library path
-ENV LD_LIBRARY_PATH=${DEST_LIB_DIR}:$LD_LIBRARY_PATH
+ENV LD_LIBRARY_PATH=${MKLROOT}/lib/intel64:$LD_LIBRARY_PATH
+ENV LIBRARY_PATH=${MKLROOT}
 
 # Verify the files were copied
-RUN ls -la ${DEST_LIB_DIR} && \
+RUN ls -la ${MKLROOT} && \
     ldconfig
+
+WORKDIR /opt/mkl_libs/lib/intel64
+RUN ln -s libmkl_gf_lp64.so.2 libmkl_gf_lp64.so 
+RUN ln -s libmkl_gnu_thread.so.2 libmkl_gnu_thread.so
+RUN ln -s libmkl_core.so.2 libmkl_core.so
 
 # OpenSees dependencies
 RUN apt-get update && apt-get install -y gcc g++ gfortran
