@@ -9,7 +9,8 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- ASP.NET -->
-    <PackageVersion Include="BeamOs.OpenSees.linux-x64" Version="3.7.0.1" />
+    <PackageVersion Include="BeamOs.OpenSees.linux-x64" Version="3.7.1.0" />
+    <PackageVersion Include="BeamOs.OpenSees.win-x64" Version="3.7.1.0" />
     <PackageVersion Include="BenchmarkDotNet" Version="0.14.0" />
     <PackageVersion Include="CommunityToolkit.HighPerformance" Version="8.4.0" />
     <PackageVersion Include="CSparse" Version="4.2.0" />
@@ -61,7 +62,7 @@
     <PackageVersion Include="Microsoft.Azure.EventHubs" Version="2.1.0" />
     <PackageVersion Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="4.0.5-11874" />
     <PackageVersion Include="Microsoft.Azure.Mobile.Client" Version="4.0.2" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="$(MicrosoftExtensionsVersion)" />
     <!-- EF Core -->
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="$(EfVersion)" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="$(EfVersion)" />

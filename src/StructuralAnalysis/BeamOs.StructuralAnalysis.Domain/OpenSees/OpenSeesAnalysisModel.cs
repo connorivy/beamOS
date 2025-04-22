@@ -98,7 +98,42 @@ public sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettings
         Task listenReact = this.reactionServer.Listen(data => this.reactions = data);
         //Task listenElemForces = this.elementForceServer.Listen(data => this.elemForces = data);
 
-        var exePath = Path.Combine(outputDir, "runtimes", "linux-x64", "native", "bin", "OpenSees");
+        string exePath;
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            exePath = Path.Combine(
+                outputDir,
+                "runtimes",
+                "win-x64",
+                "native",
+                "bin",
+                "OpenSees.exe"
+            );
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        {
+            if (Directory.Exists("/root/OpenSees/build/bin"))
+            {
+                // i don't know why, but the executable is much faster when built in the docker container
+                exePath = "/root/OpenSees/build/bin/OpenSees";
+            }
+            else
+            {
+                exePath = Path.Combine(
+                    outputDir,
+                    "runtimes",
+                    "linux-x64",
+                    "native",
+                    "bin",
+                    "OpenSees"
+                );
+            }
+        }
+        else
+        {
+            throw new NotSupportedException("Unsupported OS platform");
+        }
+
         if (!File.Exists(exePath))
         {
             throw new Exception($"OpenSees executable not found at {exePath}");

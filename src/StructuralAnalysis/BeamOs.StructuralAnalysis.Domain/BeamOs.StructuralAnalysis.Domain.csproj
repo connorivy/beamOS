@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -23,10 +23,12 @@
   <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
     <PackageReference Include="BeamOs.CSparse.Interop" VersionOverride="4.2.0" />
     <PackageReference Include="intelmkl.redist.win-x64" />
+    <PackageReference Include="BeamOs.OpenSees.win-x64" />
   </ItemGroup>
 
   <ItemGroup Condition="$([MSBuild]::IsOSUnixLike())">
     <PackageReference Include="BeamOs.CSparse.Interop" />
+    <PackageReference Include="BeamOs.OpenSees.linux-x64" />
   </ItemGroup>
 
   <ItemGroup>
