@@ -51,6 +51,10 @@
                 <!-- API Key Input - Always visible -->
                 <MudTextField @bind-Value="apiKey" Label="API Key" Variant="Variant.Outlined" InputType="InputType.Password"
                     Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Key" Class="w-full" />
+                <MudTooltip Text="Click here for instructions on creating a GitHub token with model:read permissions">
+                    <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Primary" Target="_blank"
+                        Href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token" />
+                </MudTooltip>
 
                 <!-- Message Input -->
                 <div class="flex gap-2">

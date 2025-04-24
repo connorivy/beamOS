@@ -3,6 +3,7 @@ using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Api;
 using BeamOs.StructuralAnalysis.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.StructuralAnalysis.Api;
 
@@ -52,8 +53,8 @@ public static class DependencyInjection
             using var scope = app.Services.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<StructuralAnalysisDbContext>();
 
-            //await dbContext.Database.EnsureDeletedAsync();
-            await dbContext.Database.EnsureCreatedAsync();
+            // await dbContext.Database.EnsureDeletedAsync();
+            await dbContext.Database.MigrateAsync();
         }
     }
 }
