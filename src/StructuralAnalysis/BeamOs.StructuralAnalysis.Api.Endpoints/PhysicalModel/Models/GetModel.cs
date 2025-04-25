@@ -9,6 +9,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Models;
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash)]
 [BeamOsEndpointType(Http.Get)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Reviewer)]
+[BeamOsTag(BeamOsTags.AI)]
 public class GetModel(GetModelQueryHandler getModelCommandHandler)
     : BeamOsModelIdRequestBaseEndpoint<ModelResponse>
 {

@@ -3,19 +3,17 @@ using System.Text.Json;
 using BeamOs.Common.Api;
 using BeamOs.Common.Contracts;
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 
 namespace BeamOs.WebApp.Components.Features.AiAssistant;
 
-public partial class AiAssistant
+public partial class AiAssistant(
+    IHttpClientFactory httpClientFactory,
+    UriProvider uriProvider,
+    ISnackbar snackbar
+)
 {
-    private readonly HttpClient httpClient;
-    private readonly UriProvider uriProvider;
-
-    public AiAssistant(IHttpClientFactory httpClientFactory, UriProvider uriProvider)
-    {
-        this.httpClient = httpClientFactory.CreateClient("default");
-        this.uriProvider = uriProvider;
-    }
+    private readonly HttpClient httpClient = httpClientFactory.CreateClient("default");
 
     [Parameter]
     public Guid ModelId { get; init; }
@@ -79,7 +77,11 @@ public partial class AiAssistant
 
         if (!response.IsSuccessStatusCode)
         {
-            throw new Exception("Failed to get response from AI API");
+            snackbar.Add(
+                $"Error: {response.StatusCode} - {await response.Content.ReadAsStringAsync()}",
+                Severity.Error
+            );
+            return;
         }
 
         ChatMessage chatMessage = new() { IsUser = false };

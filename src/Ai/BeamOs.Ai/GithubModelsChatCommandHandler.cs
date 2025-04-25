@@ -5,6 +5,7 @@ using BeamOs.Common.Contracts;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Agents;
 using Microsoft.SemanticKernel.ChatCompletion;
+using Microsoft.SemanticKernel.Plugins.OpenApi;
 using OpenAI;
 
 namespace BeamOs.Ai;
@@ -17,17 +18,14 @@ public class GithubModelsChatCommandHandler(AiApiPlugin aiApiPlugin)
         [EnumeratorCancellation] CancellationToken ct = default
     )
     {
-        var kernel = this.BuildOpenAiKernel(command.ApiKey);
+        var kernel = await this.BuildOpenAiKernel(command.ApiKey);
 
         var agent = new ChatCompletionAgent()
         {
             Instructions =
                 $@"
-                Your job is to make changes to structural analysis models based off of user requests. 
+                Your job is to make changes to and answer questions about structural analysis models based off of user requests. 
                 The Id of the model that you can modify is {command.ModelId}. DO NOT MODIFY MODELS WITH OTHER IDS.
-
-                You must ALWAYS either invoke one or more functions in the StructuralAnalysisApi or tell the user
-                that you cannot help them. You must NEVER just answer the user without invoking a function.
                 ",
             Kernel = kernel,
             Arguments = new KernelArguments(
@@ -49,15 +47,10 @@ public class GithubModelsChatCommandHandler(AiApiPlugin aiApiPlugin)
         }
     }
 
-    private Kernel BuildOpenAiKernel(string apiKey)
+    private async Task<Kernel> BuildOpenAiKernel(string apiKey)
     {
         var builder = Kernel.CreateBuilder();
-        var credential = new ApiKeyCredential(
-            apiKey
-                ?? throw new InvalidOperationException(
-                    "Missing configuration: GitHubModels:Token. See the README for details."
-                )
-        );
+        var credential = new ApiKeyCredential(apiKey);
         var openAIOptions = new OpenAIClientOptions()
         {
             Endpoint = new Uri("https://models.inference.ai.azure.com"),
@@ -72,12 +65,12 @@ public class GithubModelsChatCommandHandler(AiApiPlugin aiApiPlugin)
         // #pragma warning disable SKEXP0040 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
         //         await kernel.ImportPluginFromOpenApiAsync(
         //             "StructuralAnalysisApi",
-        //             new Uri("http://localhost:5223/openapi/ai.json"),
+        //             new Uri("http://localhost:5223/openapi/v1.json"),
         //             new OpenApiFunctionExecutionParameters()
         //             {
         //                 // EnableDynamicPayload = false,
         //                 EnablePayloadNamespacing = true,
-        //                 OperationsToExclude =  ["DeleteModel"]
+        //                 OperationsToExclude = ["DeleteModel"],
         //             },
         //             cancellationToken: default
         //         );

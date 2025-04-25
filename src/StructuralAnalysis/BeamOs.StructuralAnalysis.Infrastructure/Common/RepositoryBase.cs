@@ -43,17 +43,17 @@ internal abstract class ModelResourceRepositoryBase<TId, TEntity>(
     where TEntity : BeamOsModelEntity<TId>
 {
     public async Task<List<TId>> GetIdsInModel(ModelId modelId, CancellationToken ct = default) =>
-        await this.DbContext
-            .Set<TEntity>()
+        await this
+            .DbContext.Set<TEntity>()
             .Where(m => m.ModelId == modelId)
             .Select(m => m.Id)
             .ToListAsync(ct);
 
     public async Task<TEntity?> GetSingle(ModelId modelId, TId id) =>
-        await this.DbContext
-            .Set<TEntity>()
+        await this
+            .DbContext.Set<TEntity>()
             .AsNoTracking()
-            .FirstOrDefaultAsync(m => m.ModelId == modelId && m.Id.Equals((TId)id));
+            .FirstOrDefaultAsync(m => m.ModelId == modelId && m.Id.Equals(id));
 
     public async Task RemoveById(ModelId modelId, TId id)
     {
@@ -72,10 +72,10 @@ internal abstract class AnalyticalResultRepositoryBase<TId, TEntity>(
     where TEntity : BeamOsAnalyticalResultEntity<TId>
 {
     public async Task<TEntity?> GetSingle(ModelId modelId, ResultSetId resultSetId, TId id) =>
-        await this.DbContext
-            .Set<TEntity>()
+        await this
+            .DbContext.Set<TEntity>()
             .AsNoTracking()
-            .FirstOrDefaultAsync(
-                m => m.ModelId == modelId && m.ResultSetId == resultSetId && m.Id.Equals(id)
+            .FirstOrDefaultAsync(m =>
+                m.ModelId == modelId && m.ResultSetId == resultSetId && m.Id.Equals(id)
             );
 }
