@@ -7,6 +7,7 @@ using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.TestExplorer;
 using Fluxor;
 using Microsoft.Extensions.Caching.Hybrid;
+using Microsoft.Extensions.Logging;
 using MudBlazor;
 
 namespace BeamOs.WebApp.Components.Features.Editor;
@@ -18,8 +19,9 @@ public class LoadModelCommandHandler(
     IState<EditorComponentState> editorComponentState,
     IDispatcher dispatcher,
     HybridCache cache,
-    LoadBeamOsEntityCommandHandler loadBeamOsEntityCommandHandler
-) : CommandHandlerBase<LoadModelCommand, CachedModelResponse>(snackbar)
+    LoadBeamOsEntityCommandHandler loadBeamOsEntityCommandHandler,
+    ILogger<LoadModelCommandHandler> logger
+) : CommandHandlerBase<LoadModelCommand, CachedModelResponse>(snackbar, logger)
 {
     protected override async Task<Result<CachedModelResponse>> ExecuteCommandAsync(
         LoadModelCommand command,
@@ -147,8 +149,10 @@ public interface ILoadEntityResponseCommand
     public IEditorApiAlpha EditorApi { get; }
 }
 
-public class LoadBeamOsEntityCommandHandler(ISnackbar snackbar)
-    : CommandHandlerBase<ILoadEntityResponseCommand, CachedModelResponse>(snackbar)
+public class LoadBeamOsEntityCommandHandler(
+    ISnackbar snackbar,
+    ILogger<LoadBeamOsEntityCommandHandler> logger
+) : CommandHandlerBase<ILoadEntityResponseCommand, CachedModelResponse>(snackbar, logger)
 {
     protected override async Task<Result<CachedModelResponse>> ExecuteCommandAsync(
         ILoadEntityResponseCommand command,
@@ -161,13 +165,15 @@ public class LoadBeamOsEntityCommandHandler(ISnackbar snackbar)
 
             await command.EditorApi.SetSettingsAsync(modelResponse.Settings, ct);
 
-            await command
-                .EditorApi
-                .CreateNodesAsync(modelResponse.Nodes.Select(e => e.ToEditorUnits()), ct);
+            await command.EditorApi.CreateNodesAsync(
+                modelResponse.Nodes.Select(e => e.ToEditorUnits()),
+                ct
+            );
 
-            await command
-                .EditorApi
-                .CreatePointLoadsAsync(modelResponse.PointLoads.Select(e => e.ToEditorUnits()), ct);
+            await command.EditorApi.CreatePointLoadsAsync(
+                modelResponse.PointLoads.Select(e => e.ToEditorUnits()),
+                ct
+            );
 
             await command.EditorApi.CreateElement1dsAsync(modelResponse.Element1ds, ct);
 
@@ -179,16 +185,15 @@ public class LoadBeamOsEntityCommandHandler(ISnackbar snackbar)
 
             await command.EditorApi.SetSettingsAsync(modelResponseH.Settings, ct);
 
-            await command
-                .EditorApi
-                .CreateNodesAsync(modelResponseH.Nodes.Select(e => e.ToEditorUnits()), ct);
+            await command.EditorApi.CreateNodesAsync(
+                modelResponseH.Nodes.Select(e => e.ToEditorUnits()),
+                ct
+            );
 
-            await command
-                .EditorApi
-                .CreatePointLoadsAsync(
-                    modelResponseH.PointLoads.Select(e => e.ToEditorUnits()),
-                    ct
-                );
+            await command.EditorApi.CreatePointLoadsAsync(
+                modelResponseH.PointLoads.Select(e => e.ToEditorUnits()),
+                ct
+            );
 
             await command.EditorApi.CreateElement1dsAsync(modelResponseH.Element1ds, ct);
 
@@ -206,8 +211,9 @@ public record struct RunTestCommand(IEnumerable<TestInfo> TestInfos);
 public class RunTestCommandHandler(
     ISnackbar snackbar,
     IDispatcher dispatcher,
-    IServiceProvider serviceProvider
-) : CommandHandlerBase<RunTestCommand, bool>(snackbar)
+    IServiceProvider serviceProvider,
+    ILogger<RunTestCommandHandler> logger
+) : CommandHandlerBase<RunTestCommand, bool>(snackbar, logger)
 {
     protected override async Task<Result<bool>> ExecuteCommandAsync(
         RunTestCommand command,
@@ -239,8 +245,9 @@ public record struct RunTestsInFrontEndCommand(params IEnumerable<string> testRe
 public class RunTestsInFrontEndCommandHandler(
     ISnackbar snackbar,
     IDispatcher dispatcher,
-    IState<TestInfoState> testInfoState
-) : CommandHandlerBase<RunTestsInFrontEndCommand, bool>(snackbar)
+    IState<TestInfoState> testInfoState,
+    ILogger<RunTestsInFrontEndCommandHandler> logger
+) : CommandHandlerBase<RunTestsInFrontEndCommand, bool>(snackbar, logger)
 {
     protected override async Task<Result<bool>> ExecuteCommandAsync(
         RunTestsInFrontEndCommand command,
