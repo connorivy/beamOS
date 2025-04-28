@@ -1,6 +1,7 @@
 @page "/models/{ModelId:guid}"
 
 @using BeamOs.CodeGen.EditorApi
+@using BeamOs.WebApp.Components.Features.AiAssistant
 @using BeamOs.WebApp.Components.Features.AnalysisToolbar
 @using BeamOs.WebApp.Components.Features.Common
 @using BeamOs.WebApp.Components.Features.Editor
@@ -32,16 +33,18 @@
     @if (this.editorComponent is not null && this.State.Value.LoadedModelId is Guid modelId)
     {
         <div class="flex absolute left-4 right-4 top-4">
-            <AnalysisToolbar Class="" editorComponent="@editorComponent" ModelId="@modelId" CanvasId="@editorComponent.CanvasId"></AnalysisToolbar>
+            <AnalysisToolbar Class="" editorComponent="@editorComponent" ModelId="@modelId"
+                CanvasId="@editorComponent.CanvasId"></AnalysisToolbar>
         </div>
 
         @* <StructuralApiComponent Class="absolute left-0 top-0 w-1/5 p-4" ModelId="@modelId" CanvasId="@editorComponent.CanvasId"></StructuralApiComponent> *@
         @* <SectionContent SectionId="@MainLayout.Drawer"> *@
-            @* <SelectionInfoComponent ModelId="@modelId" SelectedObjects="this.State.Value.SelectedObjects" Class="p-4" CanvasId="@editorComponent.CanvasId"></SelectionInfoComponent> *@
+        @* <SelectionInfoComponent ModelId="@modelId" SelectedObjects="this.State.Value.SelectedObjects" Class="p-4" CanvasId="@editorComponent.CanvasId"></SelectionInfoComponent> *@
         @* </SectionContent> *@
 
         <FloatingResponsiveSidebar>
-            <ModelObjectEditor ModelId="@modelId" UnitSettings="@this.State.Value.CachedModelResponse.Settings.UnitSettings"/>
+            <ModelObjectEditor ModelId="@modelId"
+                UnitSettings="@this.State.Value.CachedModelResponse.Settings.UnitSettings" />
         </FloatingResponsiveSidebar>
 
         @* <div class="flex justify-center absolute bottom-0 right-0 left-0 h-2/5">
@@ -51,6 +54,7 @@
         <div class="absolute right-0 top-0 min-w-[400px] w-1/4 p-4">
             <ResultChartsComponent ModelId="@modelId" />
         </div>
+        <AiAssistant ModelId="@ModelId" />
     }
 </MudContainer>
 

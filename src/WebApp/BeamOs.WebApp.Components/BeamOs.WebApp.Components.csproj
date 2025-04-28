@@ -42,9 +42,9 @@
     <ProjectReference Include="..\BeamOs.WebApp.EditorCommands\BeamOs.WebApp.EditorCommands.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
+  <!-- <ItemGroup>
     <Folder Include="wwwroot\" />
-  </ItemGroup>
+  </ItemGroup> -->
 
   <Target Name="NpmInstall" Condition="'$(Configuration)' == 'Release'" Inputs="$(NpmFolder)/package.json" Outputs="$(NpmFolder)/node_modules/.install-stamp">
 

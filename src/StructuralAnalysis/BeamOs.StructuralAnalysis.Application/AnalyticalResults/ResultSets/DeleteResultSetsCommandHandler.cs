@@ -1,5 +1,5 @@
+using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.AnalyticalResults.ResultSets;

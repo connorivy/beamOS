@@ -9,6 +9,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Nodes;
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "nodes/{id}")]
 [BeamOsEndpointType(Http.Delete)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
+[BeamOsTag(BeamOsTags.AI)]
 public class DeleteNode(DeleteNodeCommandHandler deleteNodeCommandHandler)
     : BeamOsModelResourceQueryBaseEndpoint<ModelEntityResponse>
 {

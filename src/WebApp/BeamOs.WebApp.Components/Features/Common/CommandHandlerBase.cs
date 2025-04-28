@@ -5,7 +5,10 @@ using MudBlazor;
 
 namespace BeamOs.WebApp.Components.Features.Common;
 
-public abstract class CommandHandlerBase<TCommand, TResponse>(ISnackbar snackbar)
+public abstract partial class CommandHandlerBase<TCommand, TResponse>(
+    ISnackbar snackbar,
+    ILogger logger
+)
 //: ICommandHandler<TCommand, Result>,
 //IClientCommandHandler<TCommand>
 //where TCommand : IClientCommand
@@ -38,11 +41,18 @@ public abstract class CommandHandlerBase<TCommand, TResponse>(ISnackbar snackbar
 
         if (response.IsError)
         {
+            LogCommandFailed(logger, typeof(TCommand), response.Error.Description);
             snackbar.Add(response.Error.Description, Severity.Error);
         }
 
         return response;
     }
+
+    [LoggerMessage(
+        Level = LogLevel.Error,
+        Message = "Command of type {CommandType} failed with error: {Error}"
+    )]
+    private static partial void LogCommandFailed(ILogger logger, Type CommandType, string Error);
 
     protected virtual void PostProcess(TCommand command, Result<TResponse> response) { }
 

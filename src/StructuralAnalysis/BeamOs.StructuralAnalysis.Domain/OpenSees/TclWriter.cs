@@ -226,14 +226,13 @@ public class TclWriter
         //    $"recorder Element -time -file Data/forces.out -eleRange 0 {this.element1dIdsInOrder.Count} localForce"
         //);
 
-        this.document.AppendLine($"system {nameof(SystemType.FullGeneral)}");
+        this.document.AppendLine($"system {nameof(SystemType.BandGeneral)}");
         this.document.AppendLine($"numberer RCM");
         this.document.AppendLine($"constraints Transformation");
         this.document.AppendLine($"integrator LoadControl 1");
         this.document.AppendLine($"algorithm {nameof(AlgorithmType.Newton)}");
         this.document.AppendLine($"analysis Static");
         this.document.AppendLine($"analyze 1");
-        this.document.AppendLine($"printA -file Data/tmp.out");
         //this.document.AppendLine($"database File Data/aaaaaaDB");
         //this.document.AppendLine($"save 32");
     }
@@ -261,13 +260,13 @@ public enum ElementTypes
     elasticBeamColumn,
     ElasticTimoshenkoBeam,
     ModElasticBeam2d,
-    GradientInelasticBeamColumn
+    GradientInelasticBeamColumn,
 }
 
 public enum TimeSeriesType
 {
     Undefined = 0,
-    Constant
+    Constant,
 }
 
 public enum PatternType
@@ -277,28 +276,28 @@ public enum PatternType
     UniformExcitation,
     MultipleSupport,
     DRM,
-    H5DRM
+    H5DRM,
 }
 
 public enum SystemType
 {
     Undefined = 0,
     BandGeneral,
-    FullGeneral
+    FullGeneral,
 }
 
 public enum AlgorithmType
 {
     Undefined = 0,
     Linear,
-    Newton
+    Newton,
 }
 
 public enum OpenseesObjectTypes
 {
     Undefined = 0,
     Element1d,
-    Node
+    Node,
 }
 
 public record TclWriterOptions();

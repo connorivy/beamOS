@@ -63,23 +63,16 @@ public static class DependencyInjection
     )
     {
         services.AddSingleton(TimeProvider.System);
+
         _ = services.AddDbContext<StructuralAnalysisDbContext>(options =>
         {
             options
-                .UseSqlServer(connectionString)
+                .UseNpgsql(connectionString)
                 .AddInterceptors(
                     new ModelEntityIdIncrementingInterceptor(),
                     new ModelLastModifiedUpdater(TimeProvider.System)
                 );
-
-            //var optionsBuilderNoInterceptor =
-            //    options.UseSqlServer(connectionString).Options
-            //    as DbContextOptions<StructuralAnalysisDbContext>;
-
-            //options.AddInterceptors(new IdentityInsertInterceptor(optionsBuilderNoInterceptor));
-        }
-        //.UseModel(StructuralAnalysisDbContextModel.Instance)
-        );
+        });
 
         services.AddScoped<IUserIdProvider, UserIdProvider>();
 
@@ -112,14 +105,12 @@ public static class DependencyInjection
     )
     {
         var valueConverters = typeof(TAssemblyMarker)
-            .Assembly
-            .GetTypes()
-            .Where(
-                t =>
-                    t.IsClass
-                    && t.BaseType is not null
-                    && t.BaseType.IsGenericType
-                    && t.BaseType.GetGenericTypeDefinition() == typeof(ValueConverter<,>)
+            .Assembly.GetTypes()
+            .Where(t =>
+                t.IsClass
+                && t.BaseType is not null
+                && t.BaseType.IsGenericType
+                && t.BaseType.GetGenericTypeDefinition() == typeof(ValueConverter<,>)
             );
 
         foreach (var valueConverterType in valueConverters)

@@ -3,6 +3,7 @@ using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Api;
 using BeamOs.StructuralAnalysis.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.StructuralAnalysis.Api;
 
@@ -14,11 +15,10 @@ public static class DependencyInjection
 
         static MethodInfo mapMethodFactory() => typeof(EndpointToMinimalApi).GetMethod("Map");
         IEnumerable<Type> assemblyTypes = typeof(TAssemblyMarker)
-            .Assembly
-            .GetTypes()
+            .Assembly.GetTypes()
             .Where(t => t.IsClass && !t.IsAbstract);
 
-        var baseType = typeof(BeamOsBaseEndpoint<,>);
+        var baseType = typeof(BeamOsActualBaseEndpoint<,>);
         foreach (var assemblyType in assemblyTypes)
         {
             if (
@@ -53,8 +53,9 @@ public static class DependencyInjection
             using var scope = app.Services.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<StructuralAnalysisDbContext>();
 
-            //await dbContext.Database.EnsureDeletedAsync();
-            await dbContext.Database.EnsureCreatedAsync();
+            // await dbContext.Database.EnsureDeletedAsync();
+            await dbContext.Database.MigrateAsync();
+            // await dbContext.Database.EnsureCreatedAsync();
         }
     }
 }
@@ -62,7 +63,7 @@ public static class DependencyInjection
 public static class EndpointToMinimalApi
 {
     public static void Map<TEndpoint, TRequest, TResponse>(IEndpointRouteBuilder app)
-        where TEndpoint : BeamOsBaseEndpoint<TRequest, TResponse>
+        where TEndpoint : BeamOsActualBaseEndpoint<TRequest, TResponse>
     {
         string route =
             typeof(TEndpoint).GetCustomAttribute<BeamOsRouteAttribute>()?.Value
@@ -74,6 +75,7 @@ public static class EndpointToMinimalApi
             ?? throw new InvalidOperationException(
                 $"Class {typeof(TEndpoint).Name} is missing the route attribute"
             );
+        var tags = typeof(TEndpoint).GetCustomAttributes<BeamOsTagAttribute>();
 
         Func<string, Delegate, IEndpointConventionBuilder> mapFunc = endpointType switch
         {
@@ -82,31 +84,36 @@ public static class EndpointToMinimalApi
             Http.Patch => app.MapPatch,
             Http.Post => app.MapPost,
             Http.Put => app.MapPut,
-            _ => throw new NotImplementedException()
+            _ => throw new NotImplementedException(),
         };
 
         Delegate mapDelegate;
         if (
-            Common
-                .Application
-                .DependencyInjection
-                .ConcreteTypeDerivedFromBase(
-                    typeof(TEndpoint),
-                    typeof(BeamOsFromBodyBaseEndpoint<,>)
-                )
+            Common.Application.DependencyInjection.ConcreteTypeDerivedFromBase(
+                typeof(TEndpoint),
+                typeof(BeamOsFromBodyResultBaseEndpoint<,>)
+            )
+            || Common.Application.DependencyInjection.ConcreteTypeDerivedFromBase(
+                typeof(TEndpoint),
+                typeof(BeamOsFromBodyBaseEndpoint<,>)
+            )
         )
         {
-            mapDelegate = async ([FromBody] TRequest req, IServiceProvider serviceProvider) =>
-                await serviceProvider.GetRequiredService<TEndpoint>().ExecuteRequestAsync(req);
+            mapDelegate = ([FromBody] TRequest req, IServiceProvider serviceProvider) =>
+                serviceProvider.GetRequiredService<TEndpoint>().ExecuteRequestAsync(req);
         }
         else
         {
-            mapDelegate = async ([AsParameters] TRequest req, IServiceProvider serviceProvider) =>
-                await serviceProvider.GetRequiredService<TEndpoint>().ExecuteRequestAsync(req);
+            mapDelegate = ([AsParameters] TRequest req, IServiceProvider serviceProvider) =>
+                serviceProvider.GetRequiredService<TEndpoint>().ExecuteRequestAsync(req);
         }
 
         IEndpointConventionBuilder endpointBuilder = mapFunc(route, mapDelegate);
 
         endpointBuilder.WithName(typeof(TEndpoint).Name);
+        foreach (var tag in tags)
+        {
+            endpointBuilder.WithTags(tag.Value);
+        }
     }
 }

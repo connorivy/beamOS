@@ -1,4 +1,5 @@
 using BeamOs.StructuralAnalysis.Application.Common;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
@@ -8,8 +9,8 @@ public class DeleteNodeCommandHandler(
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : DeleteModelEntityCommandHandler<NodeId, Node>(repo, unitOfWork) { }
 
-public readonly struct DeleteNodeCommand
+public class GetNodeCommandHandler(INodeRepository repo)
+    : GetModelEntityCommandHandler<NodeId, Node, NodeResponse>(repo)
 {
-    public Guid ModelId { get; init; }
-    public int Id { get; init; }
+    protected override NodeResponse MapToResponse(Node entity) => entity.ToResponse();
 }

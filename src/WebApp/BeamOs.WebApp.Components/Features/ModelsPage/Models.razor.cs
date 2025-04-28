@@ -36,10 +36,10 @@ public partial class Models : FluxorComponent
     private List<ModelInfoResponse> RecentlyModifiedModels = new List<ModelInfoResponse>();
 
     private List<ModelInfoResponse> FilteredModels =>
-        this.ModelState
-            .Value
-            .UserModelResponses
-            .Where(model => model.Name.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase))
+        this
+            .ModelState.Value.UserModelResponses.Where(model =>
+                model.Name.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase)
+            )
             .ToList();
 
     protected override async Task OnInitializedAsync()
@@ -60,7 +60,7 @@ public partial class Models : FluxorComponent
         this.RecentlyModifiedModels =
         [
             .. userModels?.Take(4) ?? [],
-            .. ModelPageState.SampleModelResponses.Take(4 - (userModels?.Count ?? 0))
+            .. ModelPageState.SampleModelResponses.Take(4 - (userModels?.Count ?? 0)),
         ];
 
         this.Dispatcher.Dispatch(new ModelsDoneLoading());
@@ -81,7 +81,7 @@ public partial class Models : FluxorComponent
             "Contributor" => Color.Secondary,
             "Reviewer" => Color.Info,
             "Sample" => Color.Warning,
-            _ => Color.Default
+            _ => Color.Default,
         };
     }
 
@@ -89,8 +89,8 @@ public partial class Models : FluxorComponent
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
 
-        var dialog = await this.DialogService
-            .ShowAsync<CreateModelDialog>("Create Model", options)
+        var dialog = await this
+            .DialogService.ShowAsync<CreateModelDialog>("Create Model", options)
             .ConfigureAwait(true);
 
         var result = await dialog.Result;

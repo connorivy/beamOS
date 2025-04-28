@@ -50,7 +50,7 @@ public sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettings
         return new AnalysisResults()
         {
             ResultSet = resultSet,
-            OtherAnalyticalResults = otherResults
+            OtherAnalyticalResults = otherResults,
         };
     }
 
@@ -62,14 +62,13 @@ public sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettings
         UnitSettings? unitSettingsOverride = null
     )
     {
-        TclWriter tclWriter =
-            new(
-                model.Settings,
-                displacementPort,
-                reactionPort,
-                elementForcesPort,
-                unitSettingsOverride
-            );
+        TclWriter tclWriter = new(
+            model.Settings,
+            displacementPort,
+            reactionPort,
+            elementForcesPort,
+            unitSettingsOverride
+        );
 
         //this.element1dCache = new(model.Element1ds.Count);
         foreach (var element1d in model.Element1ds)
@@ -99,33 +98,59 @@ public sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettings
         Task listenReact = this.reactionServer.Listen(data => this.reactions = data);
         //Task listenElemForces = this.elementForceServer.Listen(data => this.elemForces = data);
 
-        string exeName;
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        string exePath;
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            exeName = "OpenSees";
+            exePath = Path.Combine(
+                outputDir,
+                "runtimes",
+                "win-x64",
+                "native",
+                "bin",
+                "OpenSees.exe"
+            );
         }
-        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
         {
-            exeName = "OpenSees.exe";
+            if (Directory.Exists("/root/OpenSees/build/bin"))
+            {
+                // i don't know why, but the executable is much faster when built in the docker container
+                exePath = "/root/OpenSees/build/bin/OpenSees";
+            }
+            else
+            {
+                exePath = Path.Combine(
+                    outputDir,
+                    "runtimes",
+                    "linux-x64",
+                    "native",
+                    "bin",
+                    "OpenSees"
+                );
+            }
         }
         else
         {
-            throw new Exception("Program running on unsupported platform");
+            throw new NotSupportedException("Unsupported OS platform");
         }
 
-        using Process process =
-            new()
+        if (!File.Exists(exePath))
+        {
+            throw new Exception($"OpenSees executable not found at {exePath}");
+        }
+
+        using Process process = new()
+        {
+            StartInfo = new ProcessStartInfo(exePath)
             {
-                StartInfo = new ProcessStartInfo(Path.Combine(outputDir, "bin", exeName))
-                {
-                    WorkingDirectory = outputDir,
-                    Arguments = tclFileWithPath,
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true
-                },
-                EnableRaisingEvents = true,
-            };
+                WorkingDirectory = outputDir,
+                Arguments = tclFileWithPath,
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+            },
+            EnableRaisingEvents = true,
+        };
         process.OutputDataReceived += new DataReceivedEventHandler(this.process_OutputDataReceived);
         process.ErrorDataReceived += new DataReceivedEventHandler(this.process_ErrorDataReceived);
 

@@ -1,3 +1,4 @@
+global using BeamOs.Common.Contracts;
 global using BeamOs.StructuralAnalysis.Contracts.Common;
 global using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
 global using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
@@ -24,3 +25,4 @@ global using ResultOfNodeResultResponse = BeamOs.Common.Contracts.Result<BeamOs.
 global using ResultOfPointLoadResponse = BeamOs.Common.Contracts.Result<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad.PointLoadResponse>;
 global using ResultOfResultSetResponse = BeamOs.Common.Contracts.Result<BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.ResultSetResponse>;
 global using ResultOfSectionProfileResponse = BeamOs.Common.Contracts.Result<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile.SectionProfileResponse>;
+global using ResultOfstring = BeamOs.Common.Contracts.Result<string>;

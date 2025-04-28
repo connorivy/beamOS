@@ -1,4 +1,5 @@
-﻿using BeamOs.Common.Contracts;
+﻿using BeamOs.Common.Application;
+using BeamOs.Common.Contracts;
 using BeamOs.Common.Domain.Models;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Domain.Common;

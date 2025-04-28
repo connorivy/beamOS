@@ -34,13 +34,11 @@ public partial class OpenSeesTests
                 || expectedNodeDisplacementResult.RotationAboutZ.HasValue
             )
             {
-                var result = await AssemblySetup
-                    .StructuralAnalysisApiClient
-                    .GetNodeResultAsync(
-                        modelFixture.Id,
-                        expectedNodeDisplacementResult.ResultSetId,
-                        expectedNodeDisplacementResult.NodeId
-                    );
+                var result = await AssemblySetup.StructuralAnalysisApiClient.GetNodeResultAsync(
+                    modelFixture.Id,
+                    expectedNodeDisplacementResult.ResultSetId,
+                    expectedNodeDisplacementResult.NodeId
+                );
 
                 AssertDisplacementsEqual(
                     BeamOsObjectType.Node,
@@ -62,13 +60,11 @@ public partial class OpenSeesTests
                 || expectedNodeDisplacementResult.TorqueAboutZ.HasValue
             )
             {
-                var result = await AssemblySetup
-                    .StructuralAnalysisApiClient
-                    .GetNodeResultAsync(
-                        modelFixture.Id,
-                        expectedNodeDisplacementResult.ResultSetId,
-                        expectedNodeDisplacementResult.NodeId
-                    );
+                var result = await AssemblySetup.StructuralAnalysisApiClient.GetNodeResultAsync(
+                    modelFixture.Id,
+                    expectedNodeDisplacementResult.ResultSetId,
+                    expectedNodeDisplacementResult.NodeId
+                );
 
                 AssertReactionsEqual(
                     BeamOsObjectType.Node,
@@ -97,26 +93,23 @@ public partial class OpenSeesTests
             beamOsObjectType,
             dbId,
             "Node Displacement",
-
             [
                 expected.DisplacementAlongX?.As(lengthUnit),
                 expected.DisplacementAlongY?.As(lengthUnit),
                 expected.DisplacementAlongZ?.As(lengthUnit),
                 expected.RotationAboutX?.As(angleUnit),
                 expected.RotationAboutY?.As(angleUnit),
-                expected.RotationAboutZ?.As(angleUnit)
+                expected.RotationAboutZ?.As(angleUnit),
             ],
-
             [
                 calculated.DisplacementAlongX.Value,
                 calculated.DisplacementAlongY.Value,
                 calculated.DisplacementAlongZ.Value,
                 calculated.RotationAboutX.Value,
                 calculated.RotationAboutY.Value,
-                calculated.RotationAboutZ.Value
+                calculated.RotationAboutZ.Value,
             ],
             precision,
-
             [
                 nameof(expected.DisplacementAlongX),
                 nameof(expected.DisplacementAlongY),
@@ -142,26 +135,23 @@ public partial class OpenSeesTests
             beamOsObjectType,
             dbId,
             "Node Reactions",
-
             [
                 expected.ForceAlongX?.As(forceUnit),
                 expected.ForceAlongY?.As(forceUnit),
                 expected.ForceAlongZ?.As(forceUnit),
                 expected.TorqueAboutX?.As(torqueUnit),
                 expected.TorqueAboutY?.As(torqueUnit),
-                expected.TorqueAboutZ?.As(torqueUnit)
+                expected.TorqueAboutZ?.As(torqueUnit),
             ],
-
             [
                 calculated.ForceAlongX.Value,
                 calculated.ForceAlongY.Value,
                 calculated.ForceAlongZ.Value,
                 calculated.MomentAboutX.Value,
                 calculated.MomentAboutY.Value,
-                calculated.MomentAboutZ.Value
+                calculated.MomentAboutZ.Value,
             ],
             precision,
-
             [
                 nameof(calculated.ForceAlongX),
                 nameof(calculated.ForceAlongY),

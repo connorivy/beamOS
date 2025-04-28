@@ -6,6 +6,7 @@ using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.Editor;
 using Fluxor;
+using Microsoft.Extensions.Logging;
 using MudBlazor;
 
 namespace BeamOs.WebApp.Components.Features.AnalysisToolbar;
@@ -13,8 +14,9 @@ namespace BeamOs.WebApp.Components.Features.AnalysisToolbar;
 public sealed class RunDsmCommandCommandHandler(
     IStructuralAnalysisApiClientV1 structuralAnalysisApiClientV1,
     IDispatcher dispatcher,
-    ISnackbar snackbar
-) : CommandHandlerBase<RunDsmCommand, AnalyticalResultsResponse>(snackbar)
+    ISnackbar snackbar,
+    ILogger<RunDsmCommandCommandHandler> logger
+) : CommandHandlerBase<RunDsmCommand, AnalyticalResultsResponse>(snackbar, logger)
 {
     protected override async Task<Result<AnalyticalResultsResponse>> ExecuteCommandAsync(
         RunDsmCommand command,

@@ -27,8 +27,7 @@ public class ModelEntityIdIncrementingInterceptor : SaveChangesInterceptor
         }
 
         var addedModelEntities = context
-            .ChangeTracker
-            .Entries()
+            .ChangeTracker.Entries()
             .Where(e => e.State == EntityState.Added && e.Entity is IBeamOsModelEntity)
             .Select(e => (IBeamOsModelEntity)e.Entity)
             .ToList();
@@ -40,34 +39,27 @@ public class ModelEntityIdIncrementingInterceptor : SaveChangesInterceptor
 
         foreach (
             var entityInfoGroup in addedModelEntities
-                .Select(
-                    e =>
-                        new
-                        {
-                            Entity = e,
-                            Id = e.GetIntId(),
-                            Type = e.GetType()
-                        }
-                )
+                .Select(e => new
+                {
+                    Entity = e,
+                    Id = e.GetIntId(),
+                    Type = e.GetType(),
+                })
                 .GroupBy(e => e.Entity.ModelId)
         )
         {
             var idResults = await context
-                .Models
-                .Where(m => m.Id == entityInfoGroup.Key)
-                .Select(
-                    m =>
-                        new
-                        {
-                            MaxNodeId = m.Nodes.Max(el => (int?)el.Id) ?? 0,
-                            MaxElement1dId = m.Element1ds.Max(el => (int?)el.Id) ?? 0,
-                            MaxMaterialId = m.Materials.Max(el => (int?)el.Id) ?? 0,
-                            MaxSectionProfileId = m.SectionProfiles.Max(el => (int?)el.Id) ?? 0,
-                            MaxPointLoadId = m.PointLoads.Max(el => (int?)el.Id) ?? 0,
-                            MaxMomentLoadId = m.MomentLoads.Max(el => (int?)el.Id) ?? 0,
-                            MaxResultSetId = m.ResultSets.Max(el => (int?)el.Id) ?? 0,
-                        }
-                )
+                .Models.Where(m => m.Id == entityInfoGroup.Key)
+                .Select(m => new
+                {
+                    MaxNodeId = m.Nodes.Max(el => (int?)el.Id) ?? 0,
+                    MaxElement1dId = m.Element1ds.Max(el => (int?)el.Id) ?? 0,
+                    MaxMaterialId = m.Materials.Max(el => (int?)el.Id) ?? 0,
+                    MaxSectionProfileId = m.SectionProfiles.Max(el => (int?)el.Id) ?? 0,
+                    MaxPointLoadId = m.PointLoads.Max(el => (int?)el.Id) ?? 0,
+                    MaxMomentLoadId = m.MomentLoads.Max(el => (int?)el.Id) ?? 0,
+                    MaxResultSetId = m.ResultSets.Max(el => (int?)el.Id) ?? 0,
+                })
                 .FirstOrDefaultAsync(cancellationToken);
 
             idResults ??= new
@@ -81,17 +73,16 @@ public class ModelEntityIdIncrementingInterceptor : SaveChangesInterceptor
                 MaxResultSetId = 0,
             };
 
-            Dictionary<Type, int> entityTypeToMaxIdDict =
-                new()
-                {
-                    { typeof(Node), idResults.MaxNodeId },
-                    { typeof(Element1d), idResults.MaxElement1dId },
-                    { typeof(Material), idResults.MaxMaterialId },
-                    { typeof(SectionProfile), idResults.MaxSectionProfileId },
-                    { typeof(PointLoad), idResults.MaxPointLoadId },
-                    { typeof(MomentLoad), idResults.MaxMomentLoadId },
-                    { typeof(ResultSet), idResults.MaxResultSetId },
-                };
+            Dictionary<Type, int> entityTypeToMaxIdDict = new()
+            {
+                { typeof(Node), idResults.MaxNodeId },
+                { typeof(Element1d), idResults.MaxElement1dId },
+                { typeof(Material), idResults.MaxMaterialId },
+                { typeof(SectionProfile), idResults.MaxSectionProfileId },
+                { typeof(PointLoad), idResults.MaxPointLoadId },
+                { typeof(MomentLoad), idResults.MaxMomentLoadId },
+                { typeof(ResultSet), idResults.MaxResultSetId },
+            };
 
             Dictionary<Type, HashSet<int>> entityTypeToTakenIdsDict = entityInfoGroup
                 .GroupBy(i => i.Type)

@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BeamOs.StructuralAnalysis.Infrastructure;
 
 /// <summary>
+/// dotnet ef migrations add Initial --project ..\BeamOs.StructuralAnalysis.Infrastructure\
 /// dotnet ef dbcontext optimize --output-dir ..\BeamOs.StructuralAnalysis.Infrastructure\CompiledModels
 /// </summary>
 public class StructuralAnalysisDbContext : DbContext
