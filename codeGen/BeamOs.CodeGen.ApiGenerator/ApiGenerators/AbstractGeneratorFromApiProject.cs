@@ -27,12 +27,13 @@ public abstract class AbstractGeneratorFromApiProject<TAssemblyMarker> : IApiGen
     public async Task GenerateClients()
     {
         using var appFactory = new WebApplicationFactory<TAssemblyMarker>().WithWebHostBuilder(
-        //builder => builder.UseSolutionRelativeContentRoot(Environment.CurrentDirectory)
-        builder =>
-        {
-            builder.UseSolutionRelativeContentRoot(Environment.CurrentDirectory);
-            builder.UseDefaultServiceProvider(options => options.ValidateScopes = false);
-        });
+            //builder => builder.UseSolutionRelativeContentRoot(Environment.CurrentDirectory)
+            builder =>
+            {
+                builder.UseSolutionRelativeContentRoot(Environment.CurrentDirectory);
+                builder.UseDefaultServiceProvider(options => options.ValidateScopes = false);
+            }
+        );
         HttpClient client = appFactory.CreateClient();
 
         var json = await client.GetStringAsync(this.OpenApiDefinitionPath);

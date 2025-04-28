@@ -7,9 +7,9 @@ namespace BeamOs.Ai;
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Authenticated)]
 public class GithubModelsChat(GithubModelsChatCommandHandler chatCommandHandler)
-    : BeamOsFromBodyBaseEndpoint<GithubModelsChatRequest, IAsyncEnumerable<string>>
+    : BeamOsFromBodyResultBaseEndpoint<GithubModelsChatRequest, string>
 {
-    public override IAsyncEnumerable<string> ExecuteRequestAsync(
+    public override Task<Result<string>> ExecuteRequestAsync(
         GithubModelsChatRequest req,
         CancellationToken ct = default
     ) => chatCommandHandler.ExecuteAsync(req, ct);

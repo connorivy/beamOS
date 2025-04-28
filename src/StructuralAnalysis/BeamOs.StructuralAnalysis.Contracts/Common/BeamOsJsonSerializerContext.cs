@@ -60,7 +60,9 @@ namespace BeamOs.StructuralAnalysis.Contracts.Common;
 [JsonSerializable(typeof(MomentDiagramResponse))]
 [JsonSerializable(typeof(Result<int>))]
 [JsonSerializable(typeof(Result<bool>))]
+[JsonSerializable(typeof(Result<string>))]
 [JsonSerializable(typeof(Result))]
+[JsonSerializable(typeof(GithubModelsChatRequest))]
 internal partial class BeamOsJsonSerializerContext : JsonSerializerContext { }
 
 public static class BeamOsSerializerOptions

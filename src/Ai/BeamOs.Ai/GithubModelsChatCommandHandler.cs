@@ -1,5 +1,6 @@
 using System.ClientModel;
 using System.Runtime.CompilerServices;
+using System.Text;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using Microsoft.SemanticKernel;
@@ -11,14 +12,14 @@ using OpenAI;
 namespace BeamOs.Ai;
 
 public class GithubModelsChatCommandHandler(AiApiPlugin aiApiPlugin)
-    : IAsyncEnumerableCommandHandler<GithubModelsChatRequest, string>
+    : ICommandHandler<GithubModelsChatRequest, string>
 {
-    public async IAsyncEnumerable<string> ExecuteAsync(
+    public async Task<Result<string>> ExecuteAsync(
         GithubModelsChatRequest command,
-        [EnumeratorCancellation] CancellationToken ct = default
+        CancellationToken ct = default
     )
     {
-        var kernel = await this.BuildOpenAiKernel(command.ApiKey);
+        var kernel = this.BuildOpenAiKernel(command.ApiKey);
 
         var agent = new ChatCompletionAgent()
         {
@@ -36,6 +37,7 @@ public class GithubModelsChatCommandHandler(AiApiPlugin aiApiPlugin)
             ),
         };
 
+        StringBuilder stringBuilder = new();
         await foreach (
             var message in agent.InvokeAsync(
                 new ChatMessageContent(AuthorRole.User, command.Message),
@@ -43,11 +45,13 @@ public class GithubModelsChatCommandHandler(AiApiPlugin aiApiPlugin)
             )
         )
         {
-            yield return message.Message.Content;
+            stringBuilder.Append(message.Message.Content);
         }
+
+        return stringBuilder.ToString();
     }
 
-    private async Task<Kernel> BuildOpenAiKernel(string apiKey)
+    private Kernel BuildOpenAiKernel(string apiKey)
     {
         var builder = Kernel.CreateBuilder();
         var credential = new ApiKeyCredential(apiKey);

@@ -17,18 +17,16 @@ public class WebAppFactory(string connectionString, TimeProvider? timeProvider =
     {
         builder.ConfigureServices(services =>
         {
-            var dbContextDescriptor = services.Single(
-                d => d.ServiceType == typeof(DbContextOptions<StructuralAnalysisDbContext>)
+            var dbContextDescriptor = services.Single(d =>
+                d.ServiceType == typeof(DbContextOptions<StructuralAnalysisDbContext>)
             );
 
             services.Remove(dbContextDescriptor);
 
             // remove existing interceptor because it doesn't get the connection string from the container,
             // so it will continue to to go to the old db if we don't remove it
-            var existingInterceptor = services.SingleOrDefault(
-                d =>
-                    d.ServiceType
-                    == typeof(IDbContextOptionsConfiguration<StructuralAnalysisDbContext>)
+            var existingInterceptor = services.SingleOrDefault(d =>
+                d.ServiceType == typeof(IDbContextOptionsConfiguration<StructuralAnalysisDbContext>)
             );
 
             services.Remove(existingInterceptor);
@@ -42,20 +40,20 @@ public class WebAppFactory(string connectionString, TimeProvider? timeProvider =
             //    options.AddInterceptors(new IdentityInsertInterceptor(optionsBuilderNoInterceptor));
             //});
 
-            services.AddDbContext<StructuralAnalysisDbContext>(
-                options =>
-                    options
-                        .UseNpgsql(connectionString)
-                        .AddInterceptors(
-                            new ModelEntityIdIncrementingInterceptor(),
-                            new ModelLastModifiedUpdater(timeProvider ?? TimeProvider.System)
-                        )
+            services.AddDbContext<StructuralAnalysisDbContext>(options =>
+                options
+                    .UseNpgsql(connectionString)
+                    .AddInterceptors(
+                        new ModelEntityIdIncrementingInterceptor(),
+                        new ModelLastModifiedUpdater(timeProvider ?? TimeProvider.System)
+                    )
             //.UseModel(StructuralAnalysisDbContextModel.Instance)
             );
 
             using IServiceScope scope = services.BuildServiceProvider().CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<StructuralAnalysisDbContext>();
-            dbContext.Database.EnsureCreated();
+            // dbContext.Database.EnsureCreated();
+            dbContext.Database.Migrate();
         });
     }
 

@@ -11,7 +11,7 @@ IApiGenerator[] generators =
     new EditorEventsApi(),
     //new StructuralAnalysisContractsTypesApiGenerator(),
     new StructuralAnalysisApi(),
-    new SpeckleConnectorApi()
+    new SpeckleConnectorApi(),
 ];
 
 foreach (var generator in generators.Where(g => g is not AbstractGenerator))
@@ -27,21 +27,19 @@ var abstractGenerators = generators.OfType<AbstractGenerator>().ToArray();
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder
-    .Services
-    .AddSwaggerGen(config =>
-    {
-        config.SchemaFilter<MarkAsRequiredIfNonNullableSchemaProcessor>();
-        config.SupportNonNullableReferenceTypes();
+builder.Services.AddSwaggerGen(config =>
+{
+    config.SchemaFilter<MarkAsRequiredIfNonNullableSchemaProcessor>();
+    config.SupportNonNullableReferenceTypes();
 
-        foreach (AbstractGenerator generator in abstractGenerators)
-        {
-            config.SwaggerDoc(
-                generator.ClientName,
-                new OpenApiInfo { Title = generator.ClientName, Version = "v0" }
-            );
-        }
-    });
+    foreach (AbstractGenerator generator in abstractGenerators)
+    {
+        config.SwaggerDoc(
+            generator.ClientName,
+            new OpenApiInfo { Title = generator.ClientName, Version = "v0" }
+        );
+    }
+});
 
 var app = builder.Build();
 

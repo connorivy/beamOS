@@ -245,7 +245,7 @@ public record struct RunTestsInFrontEndCommand(params IEnumerable<string> testRe
 public class RunTestsInFrontEndCommandHandler(
     ISnackbar snackbar,
     IDispatcher dispatcher,
-    IState<TestInfoState> testInfoState,
+    IState<TestInfoState> testInfoState, 
     ILogger<RunTestsInFrontEndCommandHandler> logger
 ) : CommandHandlerBase<RunTestsInFrontEndCommand, bool>(snackbar, logger)
 {

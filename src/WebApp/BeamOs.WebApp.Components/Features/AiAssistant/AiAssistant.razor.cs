@@ -1,6 +1,6 @@
 using System.Text;
 using System.Text.Json;
-using BeamOs.Common.Api;
+using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -9,7 +9,7 @@ namespace BeamOs.WebApp.Components.Features.AiAssistant;
 
 public partial class AiAssistant(
     IHttpClientFactory httpClientFactory,
-    UriProvider uriProvider,
+    IStructuralAnalysisApiClientV1 structuralAnalysisApiClient,
     ISnackbar snackbar
 )
 {
@@ -63,7 +63,7 @@ public partial class AiAssistant(
 
     private async Task GetAiResponse()
     {
-        var aiUri = new UriBuilder(uriProvider.AiUri) { Path = "api/github-models-chat" };
+        // var aiUri = new UriBuilder(uriProvider.AiUri) { Path = "api/github-models-chat" };
         var requestBody = new GithubModelsChatRequest()
         {
             ApiKey = this.apiKey,
@@ -73,32 +73,20 @@ public partial class AiAssistant(
 
         var json = JsonSerializer.Serialize(requestBody);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
-        using var response = await this.httpClient.PostAsync(aiUri.Uri, content);
+        // using var response = await this.httpClient.PostAsync(aiUri.Uri, content);
+        var response = await structuralAnalysisApiClient.GithubModelsChatAsync(requestBody);
 
-        if (!response.IsSuccessStatusCode)
+        if (response.IsError)
         {
-            snackbar.Add(
-                $"Error: {response.StatusCode} - {await response.Content.ReadAsStringAsync()}",
-                Severity.Error
-            );
+            snackbar.Add($"Error: {response.Error.Description}", Severity.Error);
             return;
         }
 
-        ChatMessage chatMessage = new() { IsUser = false };
+        ChatMessage chatMessage = new() { IsUser = false, Text = response.Value };
         this.chatMessages.Add(chatMessage);
 
-        using var stream = await response.Content.ReadAsStreamAsync();
-        using var reader = new StreamReader(stream);
-
-        while (!reader.EndOfStream)
-        {
-            var line = await reader.ReadLineAsync();
-            if (line == null)
-                continue;
-
-            chatMessage.Text += line;
-            this.StateHasChanged();
-        }
+        this.StateHasChanged();
+        await this.ScrollToBottom();
     }
 
     private async Task ScrollToBottom()
