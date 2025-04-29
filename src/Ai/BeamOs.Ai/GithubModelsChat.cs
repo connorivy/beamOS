@@ -3,14 +3,14 @@ using BeamOs.Common.Contracts;
 
 namespace BeamOs.Ai;
 
-[BeamOsRoute("github-models-chat")]
+[BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "github-models-chat")]
 [BeamOsEndpointType(Http.Post)]
-[BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Authenticated)]
+[BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 public class GithubModelsChat(GithubModelsChatCommandHandler chatCommandHandler)
-    : BeamOsFromBodyResultBaseEndpoint<GithubModelsChatRequest, string>
+    : BeamOsModelResourceBaseEndpoint<GithubModelsChatCommand, GithubModelsChatRequest, string>
 {
     public override Task<Result<string>> ExecuteRequestAsync(
-        GithubModelsChatRequest req,
+        GithubModelsChatCommand req,
         CancellationToken ct = default
     ) => chatCommandHandler.ExecuteAsync(req, ct);
 }

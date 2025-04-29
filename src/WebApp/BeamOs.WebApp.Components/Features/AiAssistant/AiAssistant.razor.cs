@@ -68,13 +68,15 @@ public partial class AiAssistant(
         {
             ApiKey = this.apiKey,
             Message = this.userMessage,
-            ModelId = this.ModelId,
         };
 
         var json = JsonSerializer.Serialize(requestBody);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
         // using var response = await this.httpClient.PostAsync(aiUri.Uri, content);
-        var response = await structuralAnalysisApiClient.GithubModelsChatAsync(requestBody);
+        var response = await structuralAnalysisApiClient.GithubModelsChatAsync(
+            this.ModelId,
+            requestBody
+        );
 
         if (response.IsError)
         {

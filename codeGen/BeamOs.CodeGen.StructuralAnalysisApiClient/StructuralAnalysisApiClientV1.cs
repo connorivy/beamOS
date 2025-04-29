@@ -204,7 +204,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfstring> GithubModelsChatAsync(GithubModelsChatRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ResultOfstring> GithubModelsChatAsync(System.Guid modelId, GithubModelsChatRequest body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
     }
 
@@ -3114,8 +3114,14 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfstring> GithubModelsChatAsync(GithubModelsChatRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ResultOfstring> GithubModelsChatAsync(System.Guid modelId, GithubModelsChatRequest body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
+            if (modelId == null)
+                throw new System.ArgumentNullException("modelId");
+
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
@@ -3131,8 +3137,10 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/github-models-chat"
-                    urlBuilder_.Append("api/github-models-chat");
+                    // Operation Path: "api/models/{modelId}/github-models-chat"
+                    urlBuilder_.Append("api/models/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/github-models-chat");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 

@@ -12,10 +12,10 @@ using OpenAI;
 namespace BeamOs.Ai;
 
 public class GithubModelsChatCommandHandler(AiApiPlugin aiApiPlugin)
-    : ICommandHandler<GithubModelsChatRequest, string>
+    : ICommandHandler<GithubModelsChatCommand, string>
 {
     public async Task<Result<string>> ExecuteAsync(
-        GithubModelsChatRequest command,
+        GithubModelsChatCommand command,
         CancellationToken ct = default
     )
     {

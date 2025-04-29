@@ -1,4 +1,4 @@
-namespace BeamOs.StructuralAnalysis.Api.Endpoints;
+namespace BeamOs.Common.Api;
 
 public class RouteConstants
 {
