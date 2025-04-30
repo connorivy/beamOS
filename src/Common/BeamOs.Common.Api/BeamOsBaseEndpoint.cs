@@ -1,4 +1,3 @@
-using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 
 namespace BeamOs.Common.Api;

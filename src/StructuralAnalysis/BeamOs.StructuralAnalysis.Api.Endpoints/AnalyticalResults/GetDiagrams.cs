@@ -20,7 +20,7 @@ public class GetDiagrams(GetDiagramsCommandHandler getDiagramsCommandHandler)
             {
                 Id = req.Id,
                 ModelId = req.ModelId,
-                UnitsOverride = req.UnitsOverride
+                UnitsOverride = req.UnitsOverride,
             },
             ct
         );

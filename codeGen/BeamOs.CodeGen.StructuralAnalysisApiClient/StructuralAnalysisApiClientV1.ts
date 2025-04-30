@@ -191,10 +191,9 @@ export interface IStructuralAnalysisApiClientV1 {
     convertToBeamOs(body: SpeckleReceiveParameters | undefined): Promise<ResultOfBeamOsModelBuilderDto>;
 
     /**
-     * @param body (optional) 
      * @return OK
      */
-    githubModelsChat(body: GithubModelsChatRequest | undefined): Promise<ResultOfstring>;
+    githubModelsChat(modelId: string, body: GithubModelsChatRequest): Promise<ResultOfstring>;
 }
 
 export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClientV1 {
@@ -1748,11 +1747,13 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     }
 
     /**
-     * @param body (optional) 
      * @return OK
      */
-    githubModelsChat(body: GithubModelsChatRequest | undefined): Promise<ResultOfstring> {
-        let url_ = this.baseUrl + "/api/github-models-chat";
+    githubModelsChat(modelId: string, body: GithubModelsChatRequest): Promise<ResultOfstring> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/github-models-chat";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -3627,9 +3628,7 @@ export enum ForceUnit {
 
 export class GithubModelsChatRequest implements IGithubModelsChatRequest {
     apiKey!: string;
-    conversationId?: string | undefined;
     message!: string;
-    modelId!: string;
 
     [key: string]: any;
 
@@ -3649,9 +3648,7 @@ export class GithubModelsChatRequest implements IGithubModelsChatRequest {
                     this[property] = _data[property];
             }
             this.apiKey = _data["apiKey"];
-            this.conversationId = _data["conversationId"];
             this.message = _data["message"];
-            this.modelId = _data["modelId"];
         }
     }
 
@@ -3669,18 +3666,14 @@ export class GithubModelsChatRequest implements IGithubModelsChatRequest {
                 data[property] = this[property];
         }
         data["apiKey"] = this.apiKey;
-        data["conversationId"] = this.conversationId;
         data["message"] = this.message;
-        data["modelId"] = this.modelId;
         return data;
     }
 }
 
 export interface IGithubModelsChatRequest {
     apiKey: string;
-    conversationId?: string | undefined;
     message: string;
-    modelId: string;
 
     [key: string]: any;
 }
