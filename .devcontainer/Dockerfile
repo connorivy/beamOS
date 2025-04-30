@@ -28,6 +28,13 @@ RUN ln -s libmkl_gf_lp64.so.2 libmkl_gf_lp64.so
 RUN ln -s libmkl_gnu_thread.so.2 libmkl_gnu_thread.so
 RUN ln -s libmkl_core.so.2 libmkl_core.so
 
+# # Install k6
+# RUN gpg -k
+# RUN gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+# RUN "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+# RUN apt-get update
+# RUN apt-get install k6
+
 # OpenSees dependencies
 RUN apt-get update && apt-get install -y gcc g++ gfortran
 

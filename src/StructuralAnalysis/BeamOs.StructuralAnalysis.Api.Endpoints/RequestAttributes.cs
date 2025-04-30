@@ -1,4 +1,4 @@
-namespace BeamOs.Common.Contracts;
+namespace BeamOs.StructuralAnalysis.Api.Endpoints;
 
 /// <summary>
 /// These attributes are only used in debug mode to generate the correct openapi schema.

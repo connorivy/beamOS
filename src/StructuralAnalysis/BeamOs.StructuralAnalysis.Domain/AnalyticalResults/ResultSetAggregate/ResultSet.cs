@@ -3,6 +3,7 @@ using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.ShearForceDiag
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.NodeResultAggregate;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinationAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using MathNet.Numerics.LinearAlgebra;
 
@@ -10,9 +11,17 @@ namespace BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 
 public class ResultSet : BeamOsModelEntity<ResultSetId>
 {
+    // public ResultSet(ModelId modelId, LoadCombinationId loadCombinationId, ResultSetId? id = null)
+    //     : base(id ?? new(), modelId)
+    // {
+    //     this.LoadCombinationId = loadCombinationId;
+    // }
+
     public ResultSet(ModelId modelId, ResultSetId? id = null)
         : base(id ?? new(), modelId) { }
 
+    public LoadCombinationId LoadCombinationId { get; set; }
+    public LoadCombination? LoadCombination { get; set; }
     public IList<NodeResult>? NodeResults { get; set; }
     public IList<Element1dResult>? Element1dResults { get; set; }
 
@@ -144,14 +153,13 @@ public class ResultSet : BeamOsModelEntity<ResultSetId>
             globalMomentMax = Math.Max(globalMomentMax, momentMax);
         }
 
-        Domain.DirectStiffnessMethod.GlobalStresses stresses =
-            new()
-            {
-                MaxMoment = new(globalMomentMax, unitSettings.TorqueUnit),
-                MaxShear = new(globalShearMax, unitSettings.ForceUnit),
-                MinMoment = new(globalMomentMin, unitSettings.TorqueUnit),
-                MinShear = new(globalShearMin, unitSettings.ForceUnit)
-            };
+        Domain.DirectStiffnessMethod.GlobalStresses stresses = new()
+        {
+            MaxMoment = new(globalMomentMax, unitSettings.TorqueUnit),
+            MaxShear = new(globalShearMax, unitSettings.ForceUnit),
+            MinMoment = new(globalMomentMin, unitSettings.TorqueUnit),
+            MinShear = new(globalShearMin, unitSettings.ForceUnit),
+        };
 
         return new()
         {
@@ -173,15 +181,13 @@ public class ResultSet : BeamOsModelEntity<ResultSetId>
     {
         var elementDisplacements = new double[12];
         nodeResultsDict[dsmElement1d.StartNodeId]
-            .Displacements
-            .CopyTo(
+            .Displacements.CopyTo(
                 elementDisplacements.AsSpan(0, 6),
                 unitSettings.LengthUnit,
                 unitSettings.AngleUnit
             );
         nodeResultsDict[dsmElement1d.EndNodeId]
-            .Displacements
-            .CopyTo(
+            .Displacements.CopyTo(
                 elementDisplacements.AsSpan(6, 6),
                 unitSettings.LengthUnit,
                 unitSettings.AngleUnit
@@ -202,5 +208,8 @@ public class ResultSet : BeamOsModelEntity<ResultSetId>
     }
 
     [Obsolete("EF Core Constructor", true)]
-    private ResultSet() { }
+    private ResultSet(LoadCombinationId loadCombinationId)
+    {
+        this.LoadCombinationId = loadCombinationId;
+    }
 }

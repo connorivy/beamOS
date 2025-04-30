@@ -15,7 +15,7 @@ public record GithubModelsChatRequest
 
 public record GithubModelsChatCommand : IModelResourceRequest<GithubModelsChatRequest>
 {
-    [FromRoute]
+    // [FromRoute]
     public Guid ModelId { get; init; }
     public GithubModelsChatRequest Body { get; init; } = null!;
     public string Message => Body.Message;
