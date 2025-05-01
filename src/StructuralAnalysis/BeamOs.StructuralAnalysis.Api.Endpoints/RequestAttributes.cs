@@ -29,3 +29,16 @@ public class FromQueryAttribute
     : Attribute
 #endif
 { }
+
+[AttributeUsage(
+    AttributeTargets.Property | AttributeTargets.Parameter,
+    AllowMultiple = false,
+    Inherited = true
+)]
+public class FromBodyAttribute
+#if DEBUG
+    : Microsoft.AspNetCore.Mvc.FromBodyAttribute
+#else
+    : Attribute
+#endif
+{ }

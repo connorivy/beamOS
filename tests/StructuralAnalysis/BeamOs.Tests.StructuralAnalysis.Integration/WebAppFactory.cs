@@ -52,8 +52,7 @@ public class WebAppFactory(string connectionString, TimeProvider? timeProvider =
 
             using IServiceScope scope = services.BuildServiceProvider().CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<StructuralAnalysisDbContext>();
-            // dbContext.Database.EnsureCreated();
-            dbContext.Database.Migrate();
+            dbContext.Database.EnsureCreated();
         });
     }
 

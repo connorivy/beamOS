@@ -8,6 +8,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCases;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
@@ -50,8 +51,8 @@ public partial class BeamOsModelBuilderDomainMapper(Guid modelId)
 
         foreach (var n in model.Nodes)
         {
-            n.PointLoads =  [];
-            n.MomentLoads =  [];
+            n.PointLoads = [];
+            n.MomentLoads = [];
         }
 
         foreach (var pl in model.PointLoads)
@@ -80,6 +81,12 @@ public partial class BeamOsModelBuilderDomainMapper(Guid modelId)
 
     [MapValue("ModelId", Use = nameof(GetModelId))]
     public partial Element1d ToDomain(PutElement1dRequest request);
+
+    [MapValue("ModelId", Use = nameof(GetModelId))]
+    public partial LoadCase ToDomain(LoadCaseContract request);
+
+    [MapValue("ModelId", Use = nameof(GetModelId))]
+    public partial LoadCombination ToDomain(LoadCombinationContract request);
 
     [MapValue("ModelId", Use = nameof(GetModelId))]
     public partial PointLoad ToDomain(PutPointLoadRequest request);

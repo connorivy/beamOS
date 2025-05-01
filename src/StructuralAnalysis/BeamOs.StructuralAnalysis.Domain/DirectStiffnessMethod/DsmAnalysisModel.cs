@@ -4,7 +4,7 @@ using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.NodeResultAggregate;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod.Common.ValueObjects;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinationAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinations;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using CSparse.Factorization;
 using UnitsNet;

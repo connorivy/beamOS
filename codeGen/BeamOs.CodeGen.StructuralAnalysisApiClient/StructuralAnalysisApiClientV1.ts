@@ -129,6 +129,56 @@ export interface IStructuralAnalysisApiClientV1 {
     /**
      * @return OK
      */
+    batchPutLoadCombination(modelId: string, body: LoadCombination[]): Promise<ResultOfBatchResponse>;
+
+    /**
+     * @return OK
+     */
+    createLoadCombination(modelId: string, body: LoadCombinationData): Promise<ResultOfLoadCombination>;
+
+    /**
+     * @return OK
+     */
+    deleteLoadCombination(modelId: string, id: number): Promise<ResultOfModelEntityResponse>;
+
+    /**
+     * @return OK
+     */
+    getLoadCombination(modelId: string, id: number): Promise<ResultOfLoadCombination>;
+
+    /**
+     * @return OK
+     */
+    putLoadCombination(modelId: string, id: number, body: LoadCombinationData): Promise<ResultOfLoadCombination>;
+
+    /**
+     * @return OK
+     */
+    batchPutLoadCase(modelId: string, body: LoadCase[]): Promise<ResultOfBatchResponse>;
+
+    /**
+     * @return OK
+     */
+    createLoadCase(modelId: string, body: LoadCaseData): Promise<ResultOfLoadCase>;
+
+    /**
+     * @return OK
+     */
+    deleteLoadCase(modelId: string, id: number): Promise<ResultOfModelEntityResponse>;
+
+    /**
+     * @return OK
+     */
+    getLoadCase(modelId: string, id: number): Promise<ResultOfLoadCase>;
+
+    /**
+     * @return OK
+     */
+    putLoadCase(modelId: string, id: number, body: LoadCaseData): Promise<ResultOfLoadCase>;
+
+    /**
+     * @return OK
+     */
     createElement1d(modelId: string, body: CreateElement1dRequest): Promise<ResultOfElement1dResponse>;
 
     /**
@@ -152,16 +202,16 @@ export interface IStructuralAnalysisApiClientV1 {
     putElement1d(id: number, modelId: string, body: Element1dData): Promise<ResultOfElement1dResponse>;
 
     /**
-     * @param unitsOverride (optional) 
+     * @param body (optional) 
      * @return OK
      */
-    runOpenSeesAnalysis(modelId: string, unitsOverride: string | undefined): Promise<ResultOfAnalyticalResultsResponse>;
+    runOpenSeesAnalysis(modelId: string, body: RunDsmRequest | null | undefined): Promise<ResultOfAnalyticalResultsResponse>;
 
     /**
-     * @param unitsOverride (optional) 
+     * @param body (optional) 
      * @return OK
      */
-    runDirectStiffnessMethod(modelId: string, unitsOverride: string | undefined): Promise<ResultOfAnalyticalResultsResponse>;
+    runDirectStiffnessMethod(modelId: string, body: RunDsmRequest | null | undefined): Promise<ResultOfAnalyticalResultsResponse>;
 
     /**
      * @return OK
@@ -1219,6 +1269,448 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     /**
      * @return OK
      */
+    batchPutLoadCombination(modelId: string, body: LoadCombination[]): Promise<ResultOfBatchResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/load-combinations";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBatchPutLoadCombination(_response);
+        });
+    }
+
+    protected processBatchPutLoadCombination(response: Response): Promise<ResultOfBatchResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfBatchResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfBatchResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    createLoadCombination(modelId: string, body: LoadCombinationData): Promise<ResultOfLoadCombination> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/load-combinations";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateLoadCombination(_response);
+        });
+    }
+
+    protected processCreateLoadCombination(response: Response): Promise<ResultOfLoadCombination> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfLoadCombination.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfLoadCombination>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    deleteLoadCombination(modelId: string, id: number): Promise<ResultOfModelEntityResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/load-combinations/{id}";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeleteLoadCombination(_response);
+        });
+    }
+
+    protected processDeleteLoadCombination(response: Response): Promise<ResultOfModelEntityResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfModelEntityResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfModelEntityResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    getLoadCombination(modelId: string, id: number): Promise<ResultOfLoadCombination> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/load-combinations/{id}";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetLoadCombination(_response);
+        });
+    }
+
+    protected processGetLoadCombination(response: Response): Promise<ResultOfLoadCombination> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfLoadCombination.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfLoadCombination>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    putLoadCombination(modelId: string, id: number, body: LoadCombinationData): Promise<ResultOfLoadCombination> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/load-combinations/{id}";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPutLoadCombination(_response);
+        });
+    }
+
+    protected processPutLoadCombination(response: Response): Promise<ResultOfLoadCombination> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfLoadCombination.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfLoadCombination>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    batchPutLoadCase(modelId: string, body: LoadCase[]): Promise<ResultOfBatchResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/load-cases";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBatchPutLoadCase(_response);
+        });
+    }
+
+    protected processBatchPutLoadCase(response: Response): Promise<ResultOfBatchResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfBatchResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfBatchResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    createLoadCase(modelId: string, body: LoadCaseData): Promise<ResultOfLoadCase> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/load-cases";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateLoadCase(_response);
+        });
+    }
+
+    protected processCreateLoadCase(response: Response): Promise<ResultOfLoadCase> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfLoadCase.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfLoadCase>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    deleteLoadCase(modelId: string, id: number): Promise<ResultOfModelEntityResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/load-cases/{id}";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeleteLoadCase(_response);
+        });
+    }
+
+    protected processDeleteLoadCase(response: Response): Promise<ResultOfModelEntityResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfModelEntityResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfModelEntityResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    getLoadCase(modelId: string, id: number): Promise<ResultOfLoadCase> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/load-cases/{id}";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetLoadCase(_response);
+        });
+    }
+
+    protected processGetLoadCase(response: Response): Promise<ResultOfLoadCase> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfLoadCase.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfLoadCase>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    putLoadCase(modelId: string, id: number, body: LoadCaseData): Promise<ResultOfLoadCase> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/load-cases/{id}";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPutLoadCase(_response);
+        });
+    }
+
+    protected processPutLoadCase(response: Response): Promise<ResultOfLoadCase> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfLoadCase.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfLoadCase>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
     createElement1d(modelId: string, body: CreateElement1dRequest): Promise<ResultOfElement1dResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/element1ds";
         if (modelId === undefined || modelId === null)
@@ -1438,23 +1930,23 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     }
 
     /**
-     * @param unitsOverride (optional) 
+     * @param body (optional) 
      * @return OK
      */
-    runOpenSeesAnalysis(modelId: string, unitsOverride: string | undefined): Promise<ResultOfAnalyticalResultsResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/analyze/opensees?";
+    runOpenSeesAnalysis(modelId: string, body: RunDsmRequest | null | undefined): Promise<ResultOfAnalyticalResultsResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/analyze/opensees";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        if (unitsOverride === null)
-            throw new Error("The parameter 'unitsOverride' cannot be null.");
-        else if (unitsOverride !== undefined)
-            url_ += "UnitsOverride=" + encodeURIComponent("" + unitsOverride) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_: RequestInit = {
+            body: content_,
             method: "POST",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -1483,23 +1975,23 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     }
 
     /**
-     * @param unitsOverride (optional) 
+     * @param body (optional) 
      * @return OK
      */
-    runDirectStiffnessMethod(modelId: string, unitsOverride: string | undefined): Promise<ResultOfAnalyticalResultsResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/analyze/dsm?";
+    runDirectStiffnessMethod(modelId: string, body: RunDsmRequest | null | undefined): Promise<ResultOfAnalyticalResultsResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/analyze/dsm";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        if (unitsOverride === null)
-            throw new Error("The parameter 'unitsOverride' cannot be null.");
-        else if (unitsOverride !== undefined)
-            url_ += "UnitsOverride=" + encodeURIComponent("" + unitsOverride) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_: RequestInit = {
+            body: content_,
             method: "POST",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -2496,6 +2988,7 @@ export interface ICreateModelRequest {
 
 export class CreateMomentLoadRequest implements ICreateMomentLoadRequest {
     nodeId!: number;
+    loadCaseId!: number;
     torque!: Torque;
     axisDirection!: Vector3;
     id?: number | undefined;
@@ -2522,6 +3015,7 @@ export class CreateMomentLoadRequest implements ICreateMomentLoadRequest {
                     this[property] = _data[property];
             }
             this.nodeId = _data["nodeId"];
+            this.loadCaseId = _data["loadCaseId"];
             this.torque = _data["torque"] ? Torque.fromJS(_data["torque"]) : new Torque();
             this.axisDirection = _data["axisDirection"] ? Vector3.fromJS(_data["axisDirection"]) : new Vector3();
             this.id = _data["id"];
@@ -2542,6 +3036,7 @@ export class CreateMomentLoadRequest implements ICreateMomentLoadRequest {
                 data[property] = this[property];
         }
         data["nodeId"] = this.nodeId;
+        data["loadCaseId"] = this.loadCaseId;
         data["torque"] = this.torque ? this.torque.toJSON() : <any>undefined;
         data["axisDirection"] = this.axisDirection ? this.axisDirection.toJSON() : <any>undefined;
         data["id"] = this.id;
@@ -2551,6 +3046,7 @@ export class CreateMomentLoadRequest implements ICreateMomentLoadRequest {
 
 export interface ICreateMomentLoadRequest {
     nodeId: number;
+    loadCaseId: number;
     torque: Torque;
     axisDirection: Vector3;
     id?: number | undefined;
@@ -2636,6 +3132,7 @@ export interface ICreateNodeRequest {
 
 export class CreatePointLoadRequest implements ICreatePointLoadRequest {
     nodeId!: number;
+    loadCaseId!: number;
     force!: Force;
     direction!: Vector3;
     id?: number | undefined;
@@ -2662,6 +3159,7 @@ export class CreatePointLoadRequest implements ICreatePointLoadRequest {
                     this[property] = _data[property];
             }
             this.nodeId = _data["nodeId"];
+            this.loadCaseId = _data["loadCaseId"];
             this.force = _data["force"] ? Force.fromJS(_data["force"]) : new Force();
             this.direction = _data["direction"] ? Vector3.fromJS(_data["direction"]) : new Vector3();
             this.id = _data["id"];
@@ -2682,6 +3180,7 @@ export class CreatePointLoadRequest implements ICreatePointLoadRequest {
                 data[property] = this[property];
         }
         data["nodeId"] = this.nodeId;
+        data["loadCaseId"] = this.loadCaseId;
         data["force"] = this.force ? this.force.toJSON() : <any>undefined;
         data["direction"] = this.direction ? this.direction.toJSON() : <any>undefined;
         data["id"] = this.id;
@@ -2691,6 +3190,7 @@ export class CreatePointLoadRequest implements ICreatePointLoadRequest {
 
 export interface ICreatePointLoadRequest {
     nodeId: number;
+    loadCaseId: number;
     force: Force;
     direction: Vector3;
     id?: number | undefined;
@@ -3805,6 +4305,355 @@ export enum LengthUnit {
     Millimeter = "Millimeter",
 }
 
+export class LoadCase implements ILoadCase {
+    id!: number;
+    name!: string;
+
+    [key: string]: any;
+
+    constructor(data?: ILoadCase) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): LoadCase {
+        data = typeof data === 'object' ? data : {};
+        let result = new LoadCase();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["name"] = this.name;
+        return data;
+    }
+}
+
+export interface ILoadCase {
+    id: number;
+    name: string;
+
+    [key: string]: any;
+}
+
+export class LoadCase2 implements ILoadCase2 {
+    id!: number;
+    name!: string;
+
+    [key: string]: any;
+
+    constructor(data?: ILoadCase2) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): LoadCase2 {
+        data = typeof data === 'object' ? data : {};
+        let result = new LoadCase2();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["name"] = this.name;
+        return data;
+    }
+}
+
+export interface ILoadCase2 {
+    id: number;
+    name: string;
+
+    [key: string]: any;
+}
+
+export class LoadCaseData implements ILoadCaseData {
+    name!: string;
+
+    [key: string]: any;
+
+    constructor(data?: ILoadCaseData) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): LoadCaseData {
+        data = typeof data === 'object' ? data : {};
+        let result = new LoadCaseData();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["name"] = this.name;
+        return data;
+    }
+}
+
+export interface ILoadCaseData {
+    name: string;
+
+    [key: string]: any;
+}
+
+export class LoadCombination implements ILoadCombination {
+    id!: number;
+    loadCaseFactors!: { [key: string]: number; };
+
+    [key: string]: any;
+
+    constructor(data?: ILoadCombination) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.loadCaseFactors = {};
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            if (_data["loadCaseFactors"]) {
+                this.loadCaseFactors = {} as any;
+                for (let key in _data["loadCaseFactors"]) {
+                    if (_data["loadCaseFactors"].hasOwnProperty(key))
+                        (<any>this.loadCaseFactors)![key] = _data["loadCaseFactors"][key];
+                }
+            }
+        }
+    }
+
+    static fromJS(data: any): LoadCombination {
+        data = typeof data === 'object' ? data : {};
+        let result = new LoadCombination();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        if (this.loadCaseFactors) {
+            data["loadCaseFactors"] = {};
+            for (let key in this.loadCaseFactors) {
+                if (this.loadCaseFactors.hasOwnProperty(key))
+                    (<any>data["loadCaseFactors"])[key] = (<any>this.loadCaseFactors)[key];
+            }
+        }
+        return data;
+    }
+}
+
+export interface ILoadCombination {
+    id: number;
+    loadCaseFactors: { [key: string]: number; };
+
+    [key: string]: any;
+}
+
+export class LoadCombination2 implements ILoadCombination2 {
+    id!: number;
+    loadCaseFactors!: { [key: string]: number; };
+
+    [key: string]: any;
+
+    constructor(data?: ILoadCombination2) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.loadCaseFactors = {};
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            if (_data["loadCaseFactors"]) {
+                this.loadCaseFactors = {} as any;
+                for (let key in _data["loadCaseFactors"]) {
+                    if (_data["loadCaseFactors"].hasOwnProperty(key))
+                        (<any>this.loadCaseFactors)![key] = _data["loadCaseFactors"][key];
+                }
+            }
+        }
+    }
+
+    static fromJS(data: any): LoadCombination2 {
+        data = typeof data === 'object' ? data : {};
+        let result = new LoadCombination2();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        if (this.loadCaseFactors) {
+            data["loadCaseFactors"] = {};
+            for (let key in this.loadCaseFactors) {
+                if (this.loadCaseFactors.hasOwnProperty(key))
+                    (<any>data["loadCaseFactors"])[key] = (<any>this.loadCaseFactors)[key];
+            }
+        }
+        return data;
+    }
+}
+
+export interface ILoadCombination2 {
+    id: number;
+    loadCaseFactors: { [key: string]: number; };
+
+    [key: string]: any;
+}
+
+export class LoadCombinationData implements ILoadCombinationData {
+    loadCaseFactors!: { [key: string]: number; };
+
+    [key: string]: any;
+
+    constructor(data?: ILoadCombinationData) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.loadCaseFactors = {};
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            if (_data["loadCaseFactors"]) {
+                this.loadCaseFactors = {} as any;
+                for (let key in _data["loadCaseFactors"]) {
+                    if (_data["loadCaseFactors"].hasOwnProperty(key))
+                        (<any>this.loadCaseFactors)![key] = _data["loadCaseFactors"][key];
+                }
+            }
+        }
+    }
+
+    static fromJS(data: any): LoadCombinationData {
+        data = typeof data === 'object' ? data : {};
+        let result = new LoadCombinationData();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        if (this.loadCaseFactors) {
+            data["loadCaseFactors"] = {};
+            for (let key in this.loadCaseFactors) {
+                if (this.loadCaseFactors.hasOwnProperty(key))
+                    (<any>data["loadCaseFactors"])[key] = (<any>this.loadCaseFactors)[key];
+            }
+        }
+        return data;
+    }
+}
+
+export interface ILoadCombinationData {
+    loadCaseFactors: { [key: string]: number; };
+
+    [key: string]: any;
+}
+
 export class MaterialRequestData implements IMaterialRequestData {
     modulusOfElasticity!: number;
     modulusOfRigidity!: number;
@@ -4409,6 +5258,7 @@ export interface IMomentDiagramResponse {
 
 export class MomentLoadData implements IMomentLoadData {
     nodeId!: number;
+    loadCaseId!: number;
     torque!: Torque;
     axisDirection!: Vector3;
 
@@ -4434,6 +5284,7 @@ export class MomentLoadData implements IMomentLoadData {
                     this[property] = _data[property];
             }
             this.nodeId = _data["nodeId"];
+            this.loadCaseId = _data["loadCaseId"];
             this.torque = _data["torque"] ? Torque.fromJS(_data["torque"]) : new Torque();
             this.axisDirection = _data["axisDirection"] ? Vector3.fromJS(_data["axisDirection"]) : new Vector3();
         }
@@ -4453,6 +5304,7 @@ export class MomentLoadData implements IMomentLoadData {
                 data[property] = this[property];
         }
         data["nodeId"] = this.nodeId;
+        data["loadCaseId"] = this.loadCaseId;
         data["torque"] = this.torque ? this.torque.toJSON() : <any>undefined;
         data["axisDirection"] = this.axisDirection ? this.axisDirection.toJSON() : <any>undefined;
         return data;
@@ -4461,6 +5313,7 @@ export class MomentLoadData implements IMomentLoadData {
 
 export interface IMomentLoadData {
     nodeId: number;
+    loadCaseId: number;
     torque: Torque;
     axisDirection: Vector3;
 
@@ -4470,6 +5323,7 @@ export interface IMomentLoadData {
 export class MomentLoadResponse implements IMomentLoadResponse {
     id!: number;
     nodeId!: number;
+    loadCaseId!: number;
     modelId!: string;
     torque!: Torque;
     axisDirection!: Vector3;
@@ -4497,6 +5351,7 @@ export class MomentLoadResponse implements IMomentLoadResponse {
             }
             this.id = _data["id"];
             this.nodeId = _data["nodeId"];
+            this.loadCaseId = _data["loadCaseId"];
             this.modelId = _data["modelId"];
             this.torque = _data["torque"] ? Torque.fromJS(_data["torque"]) : new Torque();
             this.axisDirection = _data["axisDirection"] ? Vector3.fromJS(_data["axisDirection"]) : new Vector3();
@@ -4518,6 +5373,7 @@ export class MomentLoadResponse implements IMomentLoadResponse {
         }
         data["id"] = this.id;
         data["nodeId"] = this.nodeId;
+        data["loadCaseId"] = this.loadCaseId;
         data["modelId"] = this.modelId;
         data["torque"] = this.torque ? this.torque.toJSON() : <any>undefined;
         data["axisDirection"] = this.axisDirection ? this.axisDirection.toJSON() : <any>undefined;
@@ -4528,6 +5384,7 @@ export class MomentLoadResponse implements IMomentLoadResponse {
 export interface IMomentLoadResponse {
     id: number;
     nodeId: number;
+    loadCaseId: number;
     modelId: string;
     torque: Torque;
     axisDirection: Vector3;
@@ -4538,6 +5395,7 @@ export interface IMomentLoadResponse {
 export class MomentLoadResponse2 implements IMomentLoadResponse2 {
     id!: number;
     nodeId!: number;
+    loadCaseId!: number;
     modelId!: string;
     torque!: Torque;
     axisDirection!: Vector3;
@@ -4565,6 +5423,7 @@ export class MomentLoadResponse2 implements IMomentLoadResponse2 {
             }
             this.id = _data["id"];
             this.nodeId = _data["nodeId"];
+            this.loadCaseId = _data["loadCaseId"];
             this.modelId = _data["modelId"];
             this.torque = _data["torque"] ? Torque.fromJS(_data["torque"]) : new Torque();
             this.axisDirection = _data["axisDirection"] ? Vector3.fromJS(_data["axisDirection"]) : new Vector3();
@@ -4586,6 +5445,7 @@ export class MomentLoadResponse2 implements IMomentLoadResponse2 {
         }
         data["id"] = this.id;
         data["nodeId"] = this.nodeId;
+        data["loadCaseId"] = this.loadCaseId;
         data["modelId"] = this.modelId;
         data["torque"] = this.torque ? this.torque.toJSON() : <any>undefined;
         data["axisDirection"] = this.axisDirection ? this.axisDirection.toJSON() : <any>undefined;
@@ -4596,6 +5456,7 @@ export class MomentLoadResponse2 implements IMomentLoadResponse2 {
 export interface IMomentLoadResponse2 {
     id: number;
     nodeId: number;
+    loadCaseId: number;
     modelId: string;
     torque: Torque;
     axisDirection: Vector3;
@@ -5181,6 +6042,7 @@ export interface IPoint {
 
 export class PointLoadData implements IPointLoadData {
     nodeId!: number;
+    loadCaseId!: number;
     force!: Force;
     direction!: Vector3;
 
@@ -5206,6 +6068,7 @@ export class PointLoadData implements IPointLoadData {
                     this[property] = _data[property];
             }
             this.nodeId = _data["nodeId"];
+            this.loadCaseId = _data["loadCaseId"];
             this.force = _data["force"] ? Force.fromJS(_data["force"]) : new Force();
             this.direction = _data["direction"] ? Vector3.fromJS(_data["direction"]) : new Vector3();
         }
@@ -5225,6 +6088,7 @@ export class PointLoadData implements IPointLoadData {
                 data[property] = this[property];
         }
         data["nodeId"] = this.nodeId;
+        data["loadCaseId"] = this.loadCaseId;
         data["force"] = this.force ? this.force.toJSON() : <any>undefined;
         data["direction"] = this.direction ? this.direction.toJSON() : <any>undefined;
         return data;
@@ -5233,6 +6097,7 @@ export class PointLoadData implements IPointLoadData {
 
 export interface IPointLoadData {
     nodeId: number;
+    loadCaseId: number;
     force: Force;
     direction: Vector3;
 
@@ -5240,9 +6105,10 @@ export interface IPointLoadData {
 }
 
 export class PointLoadResponse implements IPointLoadResponse {
+    modelId!: string;
     id!: number;
     nodeId!: number;
-    modelId!: string;
+    loadCaseId!: number;
     force!: Force;
     direction!: Vector3;
 
@@ -5267,9 +6133,10 @@ export class PointLoadResponse implements IPointLoadResponse {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
+            this.modelId = _data["modelId"];
             this.id = _data["id"];
             this.nodeId = _data["nodeId"];
-            this.modelId = _data["modelId"];
+            this.loadCaseId = _data["loadCaseId"];
             this.force = _data["force"] ? Force.fromJS(_data["force"]) : new Force();
             this.direction = _data["direction"] ? Vector3.fromJS(_data["direction"]) : new Vector3();
         }
@@ -5288,9 +6155,10 @@ export class PointLoadResponse implements IPointLoadResponse {
             if (this.hasOwnProperty(property))
                 data[property] = this[property];
         }
+        data["modelId"] = this.modelId;
         data["id"] = this.id;
         data["nodeId"] = this.nodeId;
-        data["modelId"] = this.modelId;
+        data["loadCaseId"] = this.loadCaseId;
         data["force"] = this.force ? this.force.toJSON() : <any>undefined;
         data["direction"] = this.direction ? this.direction.toJSON() : <any>undefined;
         return data;
@@ -5298,9 +6166,10 @@ export class PointLoadResponse implements IPointLoadResponse {
 }
 
 export interface IPointLoadResponse {
+    modelId: string;
     id: number;
     nodeId: number;
-    modelId: string;
+    loadCaseId: number;
     force: Force;
     direction: Vector3;
 
@@ -5308,9 +6177,10 @@ export interface IPointLoadResponse {
 }
 
 export class PointLoadResponse2 implements IPointLoadResponse2 {
+    modelId!: string;
     id!: number;
     nodeId!: number;
-    modelId!: string;
+    loadCaseId!: number;
     force!: Force;
     direction!: Vector3;
 
@@ -5335,9 +6205,10 @@ export class PointLoadResponse2 implements IPointLoadResponse2 {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
+            this.modelId = _data["modelId"];
             this.id = _data["id"];
             this.nodeId = _data["nodeId"];
-            this.modelId = _data["modelId"];
+            this.loadCaseId = _data["loadCaseId"];
             this.force = _data["force"] ? Force.fromJS(_data["force"]) : new Force();
             this.direction = _data["direction"] ? Vector3.fromJS(_data["direction"]) : new Vector3();
         }
@@ -5356,9 +6227,10 @@ export class PointLoadResponse2 implements IPointLoadResponse2 {
             if (this.hasOwnProperty(property))
                 data[property] = this[property];
         }
+        data["modelId"] = this.modelId;
         data["id"] = this.id;
         data["nodeId"] = this.nodeId;
-        data["modelId"] = this.modelId;
+        data["loadCaseId"] = this.loadCaseId;
         data["force"] = this.force ? this.force.toJSON() : <any>undefined;
         data["direction"] = this.direction ? this.direction.toJSON() : <any>undefined;
         return data;
@@ -5366,9 +6238,10 @@ export class PointLoadResponse2 implements IPointLoadResponse2 {
 }
 
 export interface IPointLoadResponse2 {
+    modelId: string;
     id: number;
     nodeId: number;
-    modelId: string;
+    loadCaseId: number;
     force: Force;
     direction: Vector3;
 
@@ -5536,6 +6409,7 @@ export interface IPutMaterialRequest {
 export class PutMomentLoadRequest implements IPutMomentLoadRequest {
     id?: number;
     nodeId!: number;
+    loadCaseId!: number;
     torque!: Torque;
     axisDirection!: Vector3;
 
@@ -5562,6 +6436,7 @@ export class PutMomentLoadRequest implements IPutMomentLoadRequest {
             }
             this.id = _data["id"];
             this.nodeId = _data["nodeId"];
+            this.loadCaseId = _data["loadCaseId"];
             this.torque = _data["torque"] ? Torque.fromJS(_data["torque"]) : new Torque();
             this.axisDirection = _data["axisDirection"] ? Vector3.fromJS(_data["axisDirection"]) : new Vector3();
         }
@@ -5582,6 +6457,7 @@ export class PutMomentLoadRequest implements IPutMomentLoadRequest {
         }
         data["id"] = this.id;
         data["nodeId"] = this.nodeId;
+        data["loadCaseId"] = this.loadCaseId;
         data["torque"] = this.torque ? this.torque.toJSON() : <any>undefined;
         data["axisDirection"] = this.axisDirection ? this.axisDirection.toJSON() : <any>undefined;
         return data;
@@ -5591,6 +6467,7 @@ export class PutMomentLoadRequest implements IPutMomentLoadRequest {
 export interface IPutMomentLoadRequest {
     id?: number;
     nodeId: number;
+    loadCaseId: number;
     torque: Torque;
     axisDirection: Vector3;
 
@@ -5676,6 +6553,7 @@ export interface IPutNodeRequest {
 export class PutPointLoadRequest implements IPutPointLoadRequest {
     id!: number;
     nodeId!: number;
+    loadCaseId!: number;
     force!: Force;
     direction!: Vector3;
 
@@ -5702,6 +6580,7 @@ export class PutPointLoadRequest implements IPutPointLoadRequest {
             }
             this.id = _data["id"];
             this.nodeId = _data["nodeId"];
+            this.loadCaseId = _data["loadCaseId"];
             this.force = _data["force"] ? Force.fromJS(_data["force"]) : new Force();
             this.direction = _data["direction"] ? Vector3.fromJS(_data["direction"]) : new Vector3();
         }
@@ -5722,6 +6601,7 @@ export class PutPointLoadRequest implements IPutPointLoadRequest {
         }
         data["id"] = this.id;
         data["nodeId"] = this.nodeId;
+        data["loadCaseId"] = this.loadCaseId;
         data["force"] = this.force ? this.force.toJSON() : <any>undefined;
         data["direction"] = this.direction ? this.direction.toJSON() : <any>undefined;
         return data;
@@ -5731,6 +6611,7 @@ export class PutPointLoadRequest implements IPutPointLoadRequest {
 export interface IPutPointLoadRequest {
     id: number;
     nodeId: number;
+    loadCaseId: number;
     force: Force;
     direction: Vector3;
 
@@ -6223,6 +7104,118 @@ export class ResultOfListOfModelInfoResponse implements IResultOfListOfModelInfo
 
 export interface IResultOfListOfModelInfoResponse {
     value: ModelInfoResponse[] | undefined;
+    error: BeamOsError | undefined;
+    isError: boolean;
+
+    [key: string]: any;
+}
+
+export class ResultOfLoadCase implements IResultOfLoadCase {
+    value!: LoadCase2 | undefined;
+    error!: BeamOsError | undefined;
+    isError!: boolean;
+
+    [key: string]: any;
+
+    constructor(data?: IResultOfLoadCase) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.value = _data["value"] ? LoadCase2.fromJS(_data["value"]) : <any>undefined;
+            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
+            this.isError = _data["isError"];
+        }
+    }
+
+    static fromJS(data: any): ResultOfLoadCase {
+        data = typeof data === 'object' ? data : {};
+        let result = new ResultOfLoadCase();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
+        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
+        data["isError"] = this.isError;
+        return data;
+    }
+}
+
+export interface IResultOfLoadCase {
+    value: LoadCase2 | undefined;
+    error: BeamOsError | undefined;
+    isError: boolean;
+
+    [key: string]: any;
+}
+
+export class ResultOfLoadCombination implements IResultOfLoadCombination {
+    value!: LoadCombination2 | undefined;
+    error!: BeamOsError | undefined;
+    isError!: boolean;
+
+    [key: string]: any;
+
+    constructor(data?: IResultOfLoadCombination) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.value = _data["value"] ? LoadCombination2.fromJS(_data["value"]) : <any>undefined;
+            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
+            this.isError = _data["isError"];
+        }
+    }
+
+    static fromJS(data: any): ResultOfLoadCombination {
+        data = typeof data === 'object' ? data : {};
+        let result = new ResultOfLoadCombination();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
+        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
+        data["isError"] = this.isError;
+        return data;
+    }
+}
+
+export interface IResultOfLoadCombination {
+    value: LoadCombination2 | undefined;
     error: BeamOsError | undefined;
     isError: boolean;
 
@@ -6937,6 +7930,66 @@ export interface IResultSetResponse2 {
     modelId: string;
     nodeResults?: NodeResultResponse[] | undefined;
     element1dResults?: Element1dResultResponse[] | undefined;
+
+    [key: string]: any;
+}
+
+export class RunDsmRequest implements IRunDsmRequest {
+    unitsOverride?: string | undefined;
+    loadCombinationIds?: number[] | undefined;
+
+    [key: string]: any;
+
+    constructor(data?: IRunDsmRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.unitsOverride = _data["unitsOverride"];
+            if (Array.isArray(_data["loadCombinationIds"])) {
+                this.loadCombinationIds = [] as any;
+                for (let item of _data["loadCombinationIds"])
+                    this.loadCombinationIds!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): RunDsmRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new RunDsmRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["unitsOverride"] = this.unitsOverride;
+        if (Array.isArray(this.loadCombinationIds)) {
+            data["loadCombinationIds"] = [];
+            for (let item of this.loadCombinationIds)
+                data["loadCombinationIds"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IRunDsmRequest {
+    unitsOverride?: string | undefined;
+    loadCombinationIds?: number[] | undefined;
 
     [key: string]: any;
 }

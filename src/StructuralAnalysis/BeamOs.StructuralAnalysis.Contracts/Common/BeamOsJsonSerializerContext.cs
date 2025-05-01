@@ -41,6 +41,7 @@ namespace BeamOs.StructuralAnalysis.Contracts.Common;
 [JsonSerializable(typeof(UpdateNodeRequest))]
 [JsonSerializable(typeof(NodeResponse))]
 [JsonSerializable(typeof(SpeckleReceiveParameters))]
+[JsonSerializable(typeof(RunDsmRequest))]
 [JsonSerializable(typeof(Result<NodeResponse>))]
 [JsonSerializable(typeof(Result<ModelResponse>))]
 [JsonSerializable(typeof(Result<ModelResponseHydrated>))]

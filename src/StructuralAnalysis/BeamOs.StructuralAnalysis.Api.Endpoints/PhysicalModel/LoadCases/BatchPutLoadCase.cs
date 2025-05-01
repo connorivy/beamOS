@@ -5,6 +5,7 @@ using BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCases;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCases;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
+using LoadCase = BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases.LoadCase;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.LoadCases;
 

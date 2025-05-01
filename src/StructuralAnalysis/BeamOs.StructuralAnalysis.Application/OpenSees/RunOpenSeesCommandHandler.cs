@@ -8,7 +8,6 @@ using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 using BeamOs.StructuralAnalysis.Domain.OpenSees;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinationAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 

@@ -2,6 +2,8 @@ using System.Text;
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCombinations;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoad;
@@ -104,6 +106,26 @@ public sealed class BeamOsDynamicModelBuilder(
 
     public override IEnumerable<PutMaterialRequest> MaterialRequests() =>
         this.materials.AsReadOnly();
+
+    private readonly List<LoadCase> loadCases = [];
+
+    public void AddLoadCase(int id, string caseName) =>
+        this.AddLoadCases(new LoadCase() { Id = id, Name = caseName });
+
+    public void AddLoadCases(params Span<LoadCase> loadCases) => this.loadCases.AddRange(loadCases);
+
+    public override IEnumerable<LoadCase> LoadCaseRequests() => this.loadCases.AsReadOnly();
+
+    private readonly List<LoadCombination> loadCombinations = [];
+
+    public void AddLoadCombination(int id, params Span<(int, double)> loadCaseFactor) =>
+        this.AddLoadCombinations(new LoadCombination(id, loadCaseFactor));
+
+    public void AddLoadCombinations(params Span<LoadCombination> loadCombinations) =>
+        this.loadCombinations.AddRange(loadCombinations);
+
+    public override IEnumerable<LoadCombination> LoadCombinationRequests() =>
+        this.loadCombinations.AsReadOnly();
 
     private readonly List<PutPointLoadRequest> pointLoads = [];
 

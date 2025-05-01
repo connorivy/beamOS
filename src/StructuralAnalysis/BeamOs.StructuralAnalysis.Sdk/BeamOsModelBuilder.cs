@@ -1,5 +1,7 @@
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCombinations;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoad;
@@ -39,6 +41,14 @@ public abstract class BeamOsModelBuilder
 
     public virtual IEnumerable<PutMomentLoadRequest> MomentLoadRequests() => [];
 
+    public IEnumerable<LoadCase> LoadCases => this.LoadCaseRequests();
+
+    public abstract IEnumerable<LoadCase> LoadCaseRequests();
+
+    public IEnumerable<LoadCombination> LoadCombinations => this.LoadCombinationRequests();
+
+    public abstract IEnumerable<LoadCombination> LoadCombinationRequests();
+
     private async Task<bool> Build(IStructuralAnalysisApiClientV1 apiClient, bool createOnly)
     {
         if (!Guid.TryParse(this.GuidString, out var modelId))
@@ -70,6 +80,11 @@ public abstract class BeamOsModelBuilder
         foreach (var el in ChunkRequests(this.NodeRequests()))
         {
             (await apiClient.BatchPutNodeAsync(modelId, el)).ThrowIfError();
+        }
+
+        foreach (var el in ChunkRequests(this.LoadCaseRequests()))
+        {
+            // (await apiClient.BatchPutPointLoadAsync(modelId, el)).ThrowIfError();
         }
 
         foreach (var el in ChunkRequests(this.PointLoadRequests()))

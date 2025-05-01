@@ -1,7 +1,7 @@
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models.Mappers;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 using BeamOs.StructuralAnalysis.Domain.OpenSees;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinationAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinations;
 using BeamOs.Tests.Common.SolvedProblems.SAP2000;
 using BenchmarkDotNet.Attributes;
 using Microsoft.Extensions.Logging.Abstractions;

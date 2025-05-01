@@ -1,7 +1,7 @@
 using BeamOs.Common.Domain.Models;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod.Common.Extensions;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod.Common.ValueObjects;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinationAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinations;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using UnitsNet.Units;
 

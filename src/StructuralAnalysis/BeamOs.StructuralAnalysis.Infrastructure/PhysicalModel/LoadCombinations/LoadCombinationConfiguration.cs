@@ -1,4 +1,4 @@
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinationAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

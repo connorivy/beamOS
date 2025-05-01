@@ -3,7 +3,7 @@ using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.ShearForceDiag
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.NodeResultAggregate;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinationAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinations;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using MathNet.Numerics.LinearAlgebra;
 

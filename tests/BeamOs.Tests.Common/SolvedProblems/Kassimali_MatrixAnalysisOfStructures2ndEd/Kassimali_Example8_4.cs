@@ -1,5 +1,7 @@
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCombinations;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoad;
@@ -137,6 +139,16 @@ public class Kassimali_Example8_4
             AreaMomentOfInertiaUnit = AreaMomentOfInertiaUnitContract.InchToTheFourth,
             Id = 1,
         };
+    }
+
+    public override IEnumerable<LoadCase> LoadCaseRequests()
+    {
+        yield return new() { Name = "Load Case 1", Id = 1 };
+    }
+
+    public override IEnumerable<LoadCombination> LoadCombinationRequests()
+    {
+        yield return new LoadCombination(1, (1, 1.0));
     }
 
     public override IEnumerable<PutPointLoadRequest> PointLoadRequests()

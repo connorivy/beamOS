@@ -697,6 +697,7 @@ export interface IPutMaterialRequest {
 export class PutMomentLoadRequest implements IPutMomentLoadRequest {
     id?: number;
     nodeId!: number;
+    loadCaseId!: number;
     torque!: Torque;
     axisDirection!: Vector3;
 
@@ -723,6 +724,7 @@ export class PutMomentLoadRequest implements IPutMomentLoadRequest {
             }
             this.id = _data["id"];
             this.nodeId = _data["nodeId"];
+            this.loadCaseId = _data["loadCaseId"];
             this.torque = _data["torque"] ? Torque.fromJS(_data["torque"]) : new Torque();
             this.axisDirection = _data["axisDirection"] ? Vector3.fromJS(_data["axisDirection"]) : new Vector3();
         }
@@ -743,6 +745,7 @@ export class PutMomentLoadRequest implements IPutMomentLoadRequest {
         }
         data["id"] = this.id;
         data["nodeId"] = this.nodeId;
+        data["loadCaseId"] = this.loadCaseId;
         data["torque"] = this.torque ? this.torque.toJSON() : <any>undefined;
         data["axisDirection"] = this.axisDirection ? this.axisDirection.toJSON() : <any>undefined;
         return data;
@@ -752,6 +755,7 @@ export class PutMomentLoadRequest implements IPutMomentLoadRequest {
 export interface IPutMomentLoadRequest {
     id?: number;
     nodeId: number;
+    loadCaseId: number;
     torque: Torque;
     axisDirection: Vector3;
 
@@ -837,6 +841,7 @@ export interface IPutNodeRequest {
 export class PutPointLoadRequest implements IPutPointLoadRequest {
     id!: number;
     nodeId!: number;
+    loadCaseId!: number;
     force!: Force;
     direction!: Vector3;
 
@@ -863,6 +868,7 @@ export class PutPointLoadRequest implements IPutPointLoadRequest {
             }
             this.id = _data["id"];
             this.nodeId = _data["nodeId"];
+            this.loadCaseId = _data["loadCaseId"];
             this.force = _data["force"] ? Force.fromJS(_data["force"]) : new Force();
             this.direction = _data["direction"] ? Vector3.fromJS(_data["direction"]) : new Vector3();
         }
@@ -883,6 +889,7 @@ export class PutPointLoadRequest implements IPutPointLoadRequest {
         }
         data["id"] = this.id;
         data["nodeId"] = this.nodeId;
+        data["loadCaseId"] = this.loadCaseId;
         data["force"] = this.force ? this.force.toJSON() : <any>undefined;
         data["direction"] = this.direction ? this.direction.toJSON() : <any>undefined;
         return data;
@@ -892,6 +899,7 @@ export class PutPointLoadRequest implements IPutPointLoadRequest {
 export interface IPutPointLoadRequest {
     id: number;
     nodeId: number;
+    loadCaseId: number;
     force: Force;
     direction: Vector3;
 
