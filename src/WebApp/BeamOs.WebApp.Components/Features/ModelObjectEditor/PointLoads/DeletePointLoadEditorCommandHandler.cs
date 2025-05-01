@@ -59,6 +59,7 @@ public sealed class DeletePointLoadEditorCommandHandler(
                 new(
                     command.PointLoadId,
                     command.Data.NodeId,
+                    command.Data.LoadCaseId,
                     command.ModelId,
                     command.Data.Force,
                     command.Data.Direction
@@ -96,7 +97,7 @@ public record DeletePointLoadClientCommand : IBeamOsClientCommand
             PointLoadId = this.PointLoadId,
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
             HandledByEditor = args?.HandledByEditor ?? this.HandledByEditor,
-            HandledByServer = args?.HandledByServer ?? this.HandledByServer
+            HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 
     public IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
@@ -104,7 +105,7 @@ public record DeletePointLoadClientCommand : IBeamOsClientCommand
         {
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
             HandledByEditor = args?.HandledByEditor ?? this.HandledByEditor,
-            HandledByServer = args?.HandledByServer ?? this.HandledByServer
+            HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 }
 
@@ -128,7 +129,7 @@ public sealed class DeletePointLoadSimpleCommandHandler(
         {
             PointLoadId = pointLoad.Id,
             ModelId = simpleCommand.ModelId,
-            Data = pointLoad.ToPointLoadData()
+            Data = pointLoad,
         };
     }
 }

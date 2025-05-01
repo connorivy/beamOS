@@ -11,9 +11,9 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.LoadCases;
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 public class PutLoadCase(PutLoadCaseCommandHandler putLoadCaseCommandHandler)
-    : BeamOsModelResourceWithIntIdBaseEndpoint<PutLoadCaseCommand, LoadCaseData, LoadCaseResponse>
+    : BeamOsModelResourceWithIntIdBaseEndpoint<PutLoadCaseCommand, LoadCaseData, LoadCase>
 {
-    public override async Task<Result<LoadCaseResponse>> ExecuteRequestAsync(
+    public override async Task<Result<LoadCase>> ExecuteRequestAsync(
         PutLoadCaseCommand req,
         CancellationToken ct = default
     ) => await putLoadCaseCommandHandler.ExecuteAsync(req, ct);
@@ -23,15 +23,19 @@ public sealed class PutLoadCaseCommandHandler(
     ILoadCaseRepository repository,
     IStructuralAnalysisUnitOfWork unitOfWork
 )
-    : PutCommandHandlerBase<LoadCaseId, LoadCase, PutLoadCaseCommand, LoadCaseResponse>(
-        repository,
-        unitOfWork
-    )
+    : PutCommandHandlerBase<
+        LoadCaseId,
+        Domain.PhysicalModel.LoadCases.LoadCase,
+        PutLoadCaseCommand,
+        LoadCase
+    >(repository, unitOfWork)
 {
-    protected override LoadCase ToDomainObject(PutLoadCaseCommand putCommand) =>
-        putCommand.ToDomainObject();
+    protected override Domain.PhysicalModel.LoadCases.LoadCase ToDomainObject(
+        PutLoadCaseCommand putCommand
+    ) => putCommand.ToDomainObject();
 
-    protected override LoadCaseResponse ToResponse(LoadCase entity) => entity.ToResponse();
+    protected override LoadCase ToResponse(Domain.PhysicalModel.LoadCases.LoadCase entity) =>
+        entity.ToResponse();
 }
 
 public readonly struct PutLoadCaseCommand : IModelResourceWithIntIdRequest<LoadCaseData>
@@ -43,7 +47,7 @@ public readonly struct PutLoadCaseCommand : IModelResourceWithIntIdRequest<LoadC
 
     public PutLoadCaseCommand() { }
 
-    public PutLoadCaseCommand(ModelId modelId, LoadCaseResponse putElement1DRequest)
+    public PutLoadCaseCommand(ModelId modelId, LoadCase putElement1DRequest)
     {
         this.Id = putElement1DRequest.Id;
         this.ModelId = modelId;

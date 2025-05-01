@@ -97,8 +97,7 @@ public partial class MomentLoadObjectEditor(
         this.momentLoad.ModelId = response.ModelId;
         this.momentLoad.NodeId = response.NodeId;
         this.momentLoad.Torque = response
-            .Torque
-            .MapToTorque()
+            .Torque.MapToTorque()
             .As(this.UnitSettings.TorqueUnit.MapToTorqueUnit());
         this.momentLoad.AxisDirection = new(
             response.AxisDirection.X,
@@ -120,18 +119,17 @@ public partial class MomentLoadObjectEditor(
 
     private async Task Submit()
     {
-        MomentLoadData nodeData =
-            new()
-            {
-                NodeId = this.momentLoad.NodeId,
-                Torque = new(this.momentLoad.Torque.Value, this.UnitSettings.TorqueUnit),
-                AxisDirection = new(
-            this.momentLoad.AxisDirection.X.Value,
-            this.momentLoad.AxisDirection.Y.Value,
-            this.momentLoad.AxisDirection.Z.Value
-        )
-
-            };
+        MomentLoadData nodeData = new()
+        {
+            NodeId = this.momentLoad.NodeId,
+            LoadCaseId = this.momentLoad.Id,
+            Torque = new(this.momentLoad.Torque.Value, this.UnitSettings.TorqueUnit),
+            AxisDirection = new(
+                this.momentLoad.AxisDirection.X.Value,
+                this.momentLoad.AxisDirection.Y.Value,
+                this.momentLoad.AxisDirection.Z.Value
+            ),
+        };
 
         if (this.momentLoad.Id == 0)
         {
@@ -140,13 +138,12 @@ public partial class MomentLoadObjectEditor(
         }
         else
         {
-            PutMomentLoadCommand command =
-                new()
-                {
-                    Id = this.momentLoad.Id,
-                    ModelId = this.ModelId,
-                    Body = nodeData
-                };
+            PutMomentLoadCommand command = new()
+            {
+                Id = this.momentLoad.Id,
+                ModelId = this.ModelId,
+                Body = nodeData,
+            };
 
             await putMomentLoadCommandHandler.ExecuteAsync(command);
         }
@@ -160,7 +157,7 @@ public partial class MomentLoadObjectEditor(
         {
             return Task.FromResult(
                 NullInt.Concat(editorState.Value.CachedModelResponse.MomentLoads.Keys)
-          );
+            );
         }
 
         // Get the number of digits in the subInt
@@ -168,12 +165,9 @@ public partial class MomentLoadObjectEditor(
 
         return Task.FromResult(
             NullInt.Concat(
-                editorState
-                    .Value
-                    .CachedModelResponse
-                    .MomentLoads
-                    .Keys
-                    .Where(k => GetPrefix(k, subIntLength) == subInt)
+                editorState.Value.CachedModelResponse.MomentLoads.Keys.Where(k =>
+                    GetPrefix(k, subIntLength) == subInt
+                )
             )
         );
     }
@@ -254,6 +248,7 @@ public partial class MomentLoadObjectEditor(
         public int Id { get; set; }
         public Guid ModelId { get; set; }
         public int NodeId { get; set; }
+        public int LoadCaseId { get; set; }
         public double? Torque { get; set; }
         public Vector3 AxisDirection { get; set; } = new(0, 0, 1);
     }

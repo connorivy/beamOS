@@ -23,4 +23,8 @@ public class DeleteLoadCase(DeleteLoadCaseCommandHandler deleteLoadCaseCommandHa
 public sealed class DeleteLoadCaseCommandHandler(
     ILoadCaseRepository entityRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
-) : DeleteModelEntityCommandHandler<LoadCaseId, LoadCase>(entityRepository, unitOfWork) { }
+)
+    : DeleteModelEntityCommandHandler<LoadCaseId, Domain.PhysicalModel.LoadCases.LoadCase>(
+        entityRepository,
+        unitOfWork
+    ) { }

@@ -101,7 +101,11 @@ public partial class PointLoadObjectEditor(
 
     private void OnFocus(string fieldName, int fieldNum, Action<object> setValue)
     {
-        dispatcher.Dispatch(new FieldSelected(new(fieldName, fieldNum, setValue))); } private async Task Delete() {
+        dispatcher.Dispatch(new FieldSelected(new(fieldName, fieldNum, setValue)));
+    }
+
+    private async Task Delete()
+    {
         ModelEntityCommand command = new() { ModelId = this.ModelId, Id = this.pointLoad.Id };
         await deletePointLoadCommandHandler.ExecuteAsync(command);
     }
@@ -111,12 +115,13 @@ public partial class PointLoadObjectEditor(
         var pointLoadData = new PointLoadData()
         {
             NodeId = this.pointLoad.NodeId,
+            LoadCaseId = this.pointLoad.LoadCaseId,
             Force = new(this.pointLoad.Force.Value, this.UnitSettings.ForceUnit),
             Direction = new(
                 this.pointLoad.Direction.X.Value,
                 this.pointLoad.Direction.Y.Value,
                 this.pointLoad.Direction.Z.Value
-            )
+            ),
         };
 
         if (this.pointLoad.Id == 0)
@@ -126,13 +131,12 @@ public partial class PointLoadObjectEditor(
         }
         else
         {
-            PutPointLoadCommand command =
-                new()
-                {
-                    Id = this.pointLoad.Id,
-                    ModelId = this.ModelId,
-                    Body = pointLoadData,
-                };
+            PutPointLoadCommand command = new()
+            {
+                Id = this.pointLoad.Id,
+                ModelId = this.ModelId,
+                Body = pointLoadData,
+            };
 
             await putPointLoadCommandHandler.ExecuteAsync(command);
         }
@@ -152,12 +156,9 @@ public partial class PointLoadObjectEditor(
 
         return Task.FromResult(
             NullInt.Concat(
-                editorState
-                    .Value
-                    .CachedModelResponse
-                    .PointLoads
-                    .Keys
-                    .Where(k => GetPrefix(k, subIntLength) == subInt)
+                editorState.Value.CachedModelResponse.PointLoads.Keys.Where(k =>
+                    GetPrefix(k, subIntLength) == subInt
+                )
             )
         );
     }
@@ -173,12 +174,9 @@ public partial class PointLoadObjectEditor(
         int subIntLength = GetNumberOfDigits(subInt);
 
         return Task.FromResult(
-            editorState
-                .Value
-                .CachedModelResponse
-                .Nodes
-                .Keys
-                .Where(k => GetPrefix(k, subIntLength) == subInt)
+            editorState.Value.CachedModelResponse.Nodes.Keys.Where(k =>
+                GetPrefix(k, subIntLength) == subInt
+            )
         );
     }
 
@@ -208,6 +206,7 @@ public partial class PointLoadObjectEditor(
         public int Id { get; set; }
         public Guid ModelId { get; set; }
         public int NodeId { get; set; }
+        public int LoadCaseId { get; set; }
         public double? Force { get; set; }
         public Vector3 Direction { get; set; } = new(0, 0, 0);
     }

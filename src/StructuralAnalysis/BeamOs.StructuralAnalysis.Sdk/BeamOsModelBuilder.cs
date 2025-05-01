@@ -54,7 +54,7 @@ public abstract class BeamOsModelBuilder
                     Name = this.Name,
                     Description = this.Description,
                     Settings = this.Settings,
-                    Id = modelId
+                    Id = modelId,
                 }
             );
             createModelResult.ThrowIfError();

@@ -4,7 +4,9 @@ using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.NodeResultAggregate;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod.Common.ValueObjects;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinationAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
+using CSparse.Factorization;
 using UnitsNet;
 using UnitsNet.Units;
 
@@ -33,42 +35,46 @@ public sealed class DsmAnalysisModel(
     private static DsmElement1d[] CreateDsmElement1dsFromModel(Model model) =>
         model.Settings.AnalysisSettings.Element1DAnalysisType switch
         {
-            Element1dAnalysisType.Euler
-                => model.Element1ds.Select(el => new DsmElement1d(el)).ToArray(),
-            Element1dAnalysisType.Timoshenko
-                => model.Element1ds.Select(el => new TimoshenkoDsmElement1d(el)).ToArray(),
-            Element1dAnalysisType.Undefined
-            or _
-                => throw new Exception(
-                    $"Unsupported Element1DAnalysisType {model.Settings.AnalysisSettings.Element1DAnalysisType}"
-                )
+            Element1dAnalysisType.Euler => model
+                .Element1ds.Select(el => new DsmElement1d(el))
+                .ToArray(),
+            Element1dAnalysisType.Timoshenko => model
+                .Element1ds.Select(el => new TimoshenkoDsmElement1d(el))
+                .ToArray(),
+            Element1dAnalysisType.Undefined or _ => throw new Exception(
+                $"Unsupported Element1DAnalysisType {model.Settings.AnalysisSettings.Element1DAnalysisType}"
+            ),
         };
 
     private static DsmNodeVo[] CreateDsmNodesFromModel(Model model) =>
         model.Nodes.Select(el => new DsmNodeVo(el)).ToArray();
 
-    public AnalysisResults RunAnalysis(ISolverFactory solverFactory)
+    public AnalysisResults RunAnalysis(
+        ISolverFactory solverFactory,
+        LoadCombination loadCombination
+    )
     {
         VectorIdentified knownJointDisplacementVector = this.BuildKnownJointDisplacementVector();
 
-        VectorIdentified knownReactionVector = this.BuildKnownJointReactionVector();
+        VectorIdentified knownReactionVector = this.BuildKnownJointReactionVector(loadCombination);
 
         VectorIdentified unknownJointDisplacementVector = this.GetUnknownJointDisplacementVector(
-            solverFactory
+            solverFactory,
+            loadCombination
         );
 
-        VectorIdentified unknownReactionVector = this.GetUnknownJointReactionVector(solverFactory);
+        VectorIdentified unknownReactionVector = this.GetUnknownJointReactionVector(
+            unknownJointDisplacementVector
+        );
 
-        ResultSetId resultSetId = new();
+        ResultSet resultSet = new(modelId, loadCombination.Id);
         List<NodeResult> nodeResults = this.GetAnalyticalNodes(
-            resultSetId,
+            resultSet.Id,
             unknownJointDisplacementVector,
             knownJointDisplacementVector,
             unknownReactionVector,
             knownReactionVector
         );
-
-        ResultSet resultSet = new(modelId, resultSetId) { NodeResults = nodeResults };
 
         var otherResults = resultSet.ComputeDiagramsAndElement1dResults(
             dsmElement1Ds,
@@ -165,93 +171,75 @@ public sealed class DsmAnalysisModel(
         return this.knownJointDisplacementVector.Value;
     }
 
-    private VectorIdentified? knownJointReactionVector;
-
-    internal VectorIdentified BuildKnownJointReactionVector()
+    internal VectorIdentified BuildKnownJointReactionVector(LoadCombination loadCombination)
     {
-        if (this.knownJointReactionVector is null)
+        var (degreeOfFreedomIds, _) = this.GetSortedUnsupportedStructureIds();
+        VectorIdentified loadVector = new(degreeOfFreedomIds);
+        foreach (var node in dsmNodes)
         {
-            var (degreeOfFreedomIds, _) = this.GetSortedUnsupportedStructureIds();
-            VectorIdentified loadVector = new(degreeOfFreedomIds);
-            foreach (var node in dsmNodes)
-            {
-                var localLoadVector = node.GetForceVectorIdentifiedInGlobalCoordinates(
-                    unitSettings.ForceUnit,
-                    unitSettings.TorqueUnit
-                );
-                loadVector.AddEntriesWithMatchingIdentifiers(localLoadVector);
-            }
-
-            this.knownJointReactionVector = loadVector;
+            var localLoadVector = node.GetForceVectorIdentifiedInGlobalCoordinates(
+                unitSettings.ForceUnit,
+                unitSettings.TorqueUnit,
+                loadCombination
+            );
+            loadVector.AddEntriesWithMatchingIdentifiers(localLoadVector);
         }
 
-        return this.knownJointReactionVector.Value;
+        return loadVector;
     }
 
-    private VectorIdentified? unknownDisplacementVector;
+    private ISolver<double>? solver;
 
-    internal VectorIdentified GetUnknownJointDisplacementVector(ISolverFactory solverFactory)
+    internal VectorIdentified GetUnknownJointDisplacementVector(
+        ISolverFactory solverFactory,
+        LoadCombination loadCombination
+    )
     {
-        if (this.unknownDisplacementVector is null)
+        var (degreeOfFreedomIds, _) = this.GetSortedUnsupportedStructureIds();
+
+        if (this.solver is null)
         {
-            var (degreeOfFreedomIds, _) = this.GetSortedUnsupportedStructureIds();
             var structureStiffnessMatrix = this.BuildStructureStiffnessMatrix();
-            var knownReactionVector = this.BuildKnownJointReactionVector();
 
-            var stiffnessMatrix = CSparse
-                .Double
-                .SparseMatrix
-                .OfArray(structureStiffnessMatrix.Values);
-            var solver = solverFactory.GetSolver(stiffnessMatrix);
-
-            var dofDisplacementVectorValues = new double[
-                structureStiffnessMatrix.Values.GetLength(0)
-            ];
-
-            solver.Solve(knownReactionVector.ToArray(), dofDisplacementVectorValues);
-
-            VectorIdentified dofDisplacementVector =
-                new(degreeOfFreedomIds, dofDisplacementVectorValues);
-
-            //var dofDisplacementMathnetVector = structureStiffnessMatrix
-            //    .Build()
-            //    .Solve(knownReactionVector.Build());
-            //VectorIdentified dofDisplacementVector =
-            //    new(degreeOfFreedomIds, dofDisplacementMathnetVector.Cast<double>().ToArray());
-
-
-            this.unknownDisplacementVector = dofDisplacementVector;
-        }
-
-        return this.unknownDisplacementVector.Value;
-    }
-
-    private VectorIdentified? unknownReactionVector;
-
-    internal VectorIdentified GetUnknownJointReactionVector(ISolverFactory solverFactory)
-    {
-        if (this.unknownReactionVector is null)
-        {
-            var (_, boundaryConditionIds) = this.GetSortedUnsupportedStructureIds();
-            var unknownJointDisplacementVector = this.GetUnknownJointDisplacementVector(
-                solverFactory
+            var stiffnessMatrix = CSparse.Double.SparseMatrix.OfArray(
+                structureStiffnessMatrix.Values
             );
 
-            VectorIdentified reactions = new(boundaryConditionIds);
-            foreach (var element1D in dsmElement1Ds)
-            {
-                var globalMemberEndForcesVector =
-                    element1D.GetGlobalMemberEndForcesVectorIdentified(
-                        unknownJointDisplacementVector,
-                        unitSettings.ForceUnit,
-                        unitSettings.ForcePerLengthUnit,
-                        unitSettings.TorqueUnit
-                    );
-                reactions.AddEntriesWithMatchingIdentifiers(globalMemberEndForcesVector);
-            }
-            this.unknownReactionVector = reactions;
+            // caching the factorization of the stiffness matrix
+            this.solver = solverFactory.GetSolver(stiffnessMatrix);
         }
-        return this.unknownReactionVector.Value;
+
+        var dofDisplacementVectorValues = new double[degreeOfFreedomIds.Count];
+
+        var knownReactionVector = this.BuildKnownJointReactionVector(loadCombination);
+        this.solver.Solve(knownReactionVector.ToArray(), dofDisplacementVectorValues);
+
+        VectorIdentified dofDisplacementVector = new(
+            degreeOfFreedomIds,
+            dofDisplacementVectorValues
+        );
+
+        return dofDisplacementVector;
+    }
+
+    internal VectorIdentified GetUnknownJointReactionVector(
+        VectorIdentified unknownJointDisplacementVector
+    )
+    {
+        var (_, boundaryConditionIds) = this.GetSortedUnsupportedStructureIds();
+
+        VectorIdentified reactions = new(boundaryConditionIds);
+        foreach (var element1D in dsmElement1Ds)
+        {
+            var globalMemberEndForcesVector = element1D.GetGlobalMemberEndForcesVectorIdentified(
+                unknownJointDisplacementVector,
+                unitSettings.ForceUnit,
+                unitSettings.ForcePerLengthUnit,
+                unitSettings.TorqueUnit
+            );
+            reactions.AddEntriesWithMatchingIdentifiers(globalMemberEndForcesVector);
+        }
+        return reactions;
     }
 
     private List<NodeResult> GetAnalyticalNodes(

@@ -27,5 +27,8 @@ public record RunDsmRequest : IHasModelId
     public Guid ModelId { get; init; }
 
     [FromQuery]
-    public string? UnitsOverride { get; init; } = null;
+    public string? UnitsOverride { get; init; }
+
+    [FromQuery]
+    public List<int>? LoadCombinationIds { get; init; }
 }

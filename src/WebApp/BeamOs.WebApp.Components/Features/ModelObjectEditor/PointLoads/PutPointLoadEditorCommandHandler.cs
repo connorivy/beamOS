@@ -41,6 +41,7 @@ public sealed class PutPointLoadEditorCommandHandler(
     {
         var pointLoadData = new PointLoadData(
             command.New.NodeId,
+            command.New.LoadCaseId,
             command.New.Force,
             command.New.Direction
         );
@@ -113,6 +114,7 @@ public static class PutPointLoadCommandExtensions
         return new PointLoadResponse(
             command.Id,
             command.NodeId,
+            command.LoadCaseId,
             command.ModelId,
             command.Force,
             new BeamOs.StructuralAnalysis.Contracts.Common.Vector3(
@@ -130,7 +132,7 @@ public static class PutPointLoadCommandExtensions
             Force = new(
                 response.Force.As(ForceUnitContract.Kilonewton),
                 ForceUnitContract.Kilonewton
-            )
+            ),
         };
     }
 }
@@ -150,7 +152,7 @@ public record PutPointLoadClientCommand(PointLoadResponse Previous, PointLoadRes
             Previous = this.New,
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
             HandledByEditor = args?.HandledByEditor ?? this.HandledByEditor,
-            HandledByServer = args?.HandledByServer ?? this.HandledByServer
+            HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 
     public virtual IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
@@ -158,6 +160,6 @@ public record PutPointLoadClientCommand(PointLoadResponse Previous, PointLoadRes
         {
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
             HandledByEditor = args?.HandledByEditor ?? this.HandledByEditor,
-            HandledByServer = args?.HandledByServer ?? this.HandledByServer
+            HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 }

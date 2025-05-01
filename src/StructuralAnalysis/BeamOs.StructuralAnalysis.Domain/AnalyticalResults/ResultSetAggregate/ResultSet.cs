@@ -17,10 +17,10 @@ public class ResultSet : BeamOsModelEntity<ResultSetId>
     //     this.LoadCombinationId = loadCombinationId;
     // }
 
-    public ResultSet(ModelId modelId, ResultSetId? id = null)
-        : base(id ?? new(), modelId) { }
+    public ResultSet(ModelId modelId, LoadCombinationId id)
+        : base(new(id), modelId) { }
 
-    public LoadCombinationId LoadCombinationId { get; set; }
+    public LoadCombinationId LoadCombinationId => new LoadCombinationId(this.Id);
     public LoadCombination? LoadCombination { get; set; }
     public IList<NodeResult>? NodeResults { get; set; }
     public IList<Element1dResult>? Element1dResults { get; set; }
@@ -208,8 +208,5 @@ public class ResultSet : BeamOsModelEntity<ResultSetId>
     }
 
     [Obsolete("EF Core Constructor", true)]
-    private ResultSet(LoadCombinationId loadCombinationId)
-    {
-        this.LoadCombinationId = loadCombinationId;
-    }
+    private ResultSet() { }
 }

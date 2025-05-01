@@ -51,7 +51,7 @@ public sealed class BeamOsDynamicModelBuilder(
             {
                 Id = id,
                 LocationPoint = new(x, y, z, this.UnitSettings.LengthUnit),
-                Restraint = restraint ?? Restraint.Free
+                Restraint = restraint ?? Restraint.Free,
             }
         );
 
@@ -95,7 +95,7 @@ public sealed class BeamOsDynamicModelBuilder(
                 Id = id,
                 ModulusOfElasticity = modulusOfElasticity,
                 ModulusOfRigidity = modulusOfRigidity,
-                PressureUnit = this.UnitSettings.PressureUnit
+                PressureUnit = this.UnitSettings.PressureUnit,
             }
         );
 
@@ -107,14 +107,15 @@ public sealed class BeamOsDynamicModelBuilder(
 
     private readonly List<PutPointLoadRequest> pointLoads = [];
 
-    public void AddPointLoad(int id, int nodeId, double force, Vector3 direction) =>
+    public void AddPointLoad(int id, int nodeId, int loadCaseId, double force, Vector3 direction) =>
         this.AddPointLoads(
             new PutPointLoadRequest()
             {
                 Id = id,
                 NodeId = nodeId,
+                LoadCaseId = loadCaseId,
                 Force = new(force, this.UnitSettings.ForceUnit),
-                Direction = direction
+                Direction = direction,
             }
         );
 
@@ -126,14 +127,21 @@ public sealed class BeamOsDynamicModelBuilder(
 
     private readonly List<PutMomentLoadRequest> momentLoads = [];
 
-    public void AddMomentLoad(int id, int nodeId, double moment, Vector3 axisDirection) =>
+    public void AddMomentLoad(
+        int id,
+        int nodeId,
+        int loadCaseId,
+        double moment,
+        Vector3 axisDirection
+    ) =>
         this.AddMomentLoads(
             new PutMomentLoadRequest()
             {
                 Id = id,
                 NodeId = nodeId,
+                LoadCaseId = loadCaseId,
                 Torque = new(moment, this.UnitSettings.TorqueUnit),
-                AxisDirection = axisDirection
+                AxisDirection = axisDirection,
             }
         );
 
@@ -165,7 +173,7 @@ public sealed class BeamOsDynamicModelBuilder(
                 StrongAxisShearArea = strongAxisShearArea,
                 WeakAxisShearArea = weakAxisShearArea,
                 AreaUnit = this.UnitSettings.AreaUnit,
-                AreaMomentOfInertiaUnit = this.UnitSettings.AreaMomentOfInertiaUnit
+                AreaMomentOfInertiaUnit = this.UnitSettings.AreaMomentOfInertiaUnit,
             }
         );
 
@@ -331,6 +339,7 @@ namespace {namespac};"
                 sb.Append($"{{");
                 sb.Append($"Id = {pointLoad.Id},");
                 sb.Append($"NodeId = {pointLoad.NodeId},");
+                sb.Append($"LoadCaseId = {pointLoad.LoadCaseId},");
                 sb.Append(
                     $"Force = new({pointLoad.Force.Value}, ForceUnitContract.{pointLoad.Force.Unit}),"
                 );
@@ -355,6 +364,7 @@ namespace {namespac};"
                 sb.AppendLine($"        {{");
                 sb.AppendLine($"            Id = {momentLoad.Id},");
                 sb.AppendLine($"            NodeId = {momentLoad.NodeId},");
+                sb.AppendLine($"            LoadCaseId = {momentLoad.LoadCaseId},");
                 sb.AppendLine(
                     $"            Torque = new TorqueContract({momentLoad.Torque.Value}, TorqueUnitContract.{momentLoad.Torque.Unit}),"
                 );

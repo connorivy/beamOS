@@ -12,7 +12,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.LoadCases;
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 public class BatchPutLoadCase(BatchPutLoadCaseCommandHandler putLoadCaseCommandHandler)
-    : BeamOsModelResourceBaseEndpoint<BatchPutLoadCaseCommand, LoadCaseResponse[], BatchResponse>
+    : BeamOsModelResourceBaseEndpoint<BatchPutLoadCaseCommand, LoadCase[], BatchResponse>
 {
     public override async Task<Result<BatchResponse>> ExecuteRequestAsync(
         BatchPutLoadCaseCommand req,
@@ -24,17 +24,21 @@ public sealed class BatchPutLoadCaseCommandHandler(
     ILoadCaseRepository repository,
     IStructuralAnalysisUnitOfWork unitOfWork
 )
-    : BatchPutCommandHandler<LoadCaseId, LoadCase, BatchPutLoadCaseCommand, LoadCaseResponse>(
-        repository,
-        unitOfWork
-    )
+    : BatchPutCommandHandler<
+        LoadCaseId,
+        Domain.PhysicalModel.LoadCases.LoadCase,
+        BatchPutLoadCaseCommand,
+        LoadCase
+    >(repository, unitOfWork)
 {
-    protected override LoadCase ToDomainObject(ModelId modelId, LoadCaseResponse putRequest) =>
-        new PutLoadCaseCommand(modelId, putRequest).ToDomainObject();
+    protected override Domain.PhysicalModel.LoadCases.LoadCase ToDomainObject(
+        ModelId modelId,
+        LoadCase putRequest
+    ) => new PutLoadCaseCommand(modelId, putRequest).ToDomainObject();
 }
 
-public readonly struct BatchPutLoadCaseCommand : IModelResourceRequest<LoadCaseResponse[]>
+public readonly struct BatchPutLoadCaseCommand : IModelResourceRequest<LoadCase[]>
 {
     public Guid ModelId { get; init; }
-    public LoadCaseResponse[] Body { get; init; }
+    public LoadCase[] Body { get; init; }
 }

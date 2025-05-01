@@ -17,7 +17,12 @@ public class RunOpenSeesAnalysis(RunOpenSeesCommandHandler runOpenSeesCommandHan
         CancellationToken ct = default
     ) =>
         await runOpenSeesCommandHandler.ExecuteAsync(
-            new() { ModelId = req.ModelId, UnitsOverride = req.UnitsOverride },
+            new()
+            {
+                ModelId = req.ModelId,
+                UnitsOverride = req.UnitsOverride,
+                LoadCombinationIds = req.LoadCombinationIds,
+            },
             ct
         );
 }

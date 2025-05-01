@@ -42,6 +42,7 @@ public readonly struct CreateMomentLoadCommand : IModelResourceRequest<CreateMom
     public Guid ModelId { get; init; }
     public CreateMomentLoadRequest Body { get; init; }
     public int NodeId => this.Body.NodeId;
+    public int LoadCaseId => this.Body.LoadCaseId;
     public TorqueContract Torque => this.Body.Torque;
     public Contracts.Common.Vector3 AxisDirection => this.Body.AxisDirection;
     public int? Id => this.Body.Id;

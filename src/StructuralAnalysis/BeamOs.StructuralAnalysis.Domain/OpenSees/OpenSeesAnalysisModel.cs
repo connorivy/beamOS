@@ -6,6 +6,7 @@ using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 using BeamOs.StructuralAnalysis.Domain.OpenSees.Tcp;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinationAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using Microsoft.Extensions.Logging;
 
@@ -18,13 +19,14 @@ public sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettings
     private readonly TcpServer reactionServer = TcpServer.CreateStarted(logger);
     private readonly TcpServer elementForceServer = TcpServer.CreateStarted(logger);
 
-    public async Task<AnalysisResults> RunAnalysis()
+    public async Task<AnalysisResults> RunAnalysis(LoadCombination loadCombination)
     {
         TclWriter tclWriter = CreateWriterFromModel(
             model,
             this.displacementServer.Port,
             this.reactionServer.Port,
             this.elementForceServer.Port,
+            loadCombination,
             unitSettings
         );
 
@@ -38,7 +40,10 @@ public sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettings
         string outputDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         await this.RunTclWithOpenSees(tclWriter.OutputFileWithPath, outputDir);
 
-        var resultSet = new ResultSet(model.Id) { NodeResults = this.GetResults(model, tclWriter) };
+        var resultSet = new ResultSet(model.Id, loadCombination.Id)
+        {
+            NodeResults = this.GetResults(model, tclWriter),
+        };
 
         var dsmElements =
             model.Settings.AnalysisSettings.Element1DAnalysisType == Element1dAnalysisType.Euler
@@ -59,6 +64,7 @@ public sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettings
         int displacementPort,
         int reactionPort,
         int elementForcesPort,
+        LoadCombination loadCombination,
         UnitSettings? unitSettingsOverride = null
     )
     {
@@ -79,7 +85,7 @@ public sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettings
 
         Debug.Assert(model.PointLoads is not null);
         Debug.Assert(model.MomentLoads is not null);
-        tclWriter.AddLoads(model.PointLoads, model.MomentLoads);
+        tclWriter.AddLoads(model.PointLoads, model.MomentLoads, loadCombination);
 
         tclWriter.DefineAnalysis();
         tclWriter.Write();

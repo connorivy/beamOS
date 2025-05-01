@@ -1,4 +1,5 @@
 using BeamOs.StructuralAnalysis.Domain.Common;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinationAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
@@ -112,7 +113,7 @@ public class Node : BeamOsModelEntity<NodeId>
 
     //public NodeResult? NodeResult { get; private set; }
 
-    public Forces GetForcesInGlobalCoordinates()
+    public Forces GetForcesInGlobalCoordinates(LoadCombination loadCombination)
     {
         var forceAlongX = Force.Zero;
         var forceAlongY = Force.Zero;
@@ -123,15 +124,33 @@ public class Node : BeamOsModelEntity<NodeId>
 
         foreach (var linearLoad in this.PointLoads)
         {
-            forceAlongX += linearLoad.Force * linearLoad.Direction.X;
-            forceAlongY += linearLoad.Force * linearLoad.Direction.Y;
-            forceAlongZ += linearLoad.Force * linearLoad.Direction.Z;
+            forceAlongX += linearLoad.GetScaledForce(
+                CoordinateSystemDirection3D.AlongX,
+                loadCombination
+            );
+            forceAlongY += linearLoad.GetScaledForce(
+                CoordinateSystemDirection3D.AlongY,
+                loadCombination
+            );
+            forceAlongZ += linearLoad.GetScaledForce(
+                CoordinateSystemDirection3D.AlongZ,
+                loadCombination
+            );
         }
         foreach (var momentLoad in this.MomentLoads)
         {
-            momentAboutX += momentLoad.Torque * momentLoad.AxisDirection.X;
-            momentAboutY += momentLoad.Torque * momentLoad.AxisDirection.Y;
-            momentAboutZ += momentLoad.Torque * momentLoad.AxisDirection.Z;
+            momentAboutX += momentLoad.GetScaledTorque(
+                CoordinateSystemDirection3D.AboutX,
+                loadCombination
+            );
+            momentAboutY += momentLoad.GetScaledTorque(
+                CoordinateSystemDirection3D.AboutY,
+                loadCombination
+            );
+            momentAboutZ += momentLoad.GetScaledTorque(
+                CoordinateSystemDirection3D.AboutZ,
+                loadCombination
+            );
         }
         return new(forceAlongX, forceAlongY, forceAlongZ, momentAboutX, momentAboutY, momentAboutZ);
     }

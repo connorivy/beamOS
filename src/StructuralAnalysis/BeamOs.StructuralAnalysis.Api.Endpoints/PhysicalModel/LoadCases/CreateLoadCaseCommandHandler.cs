@@ -12,14 +12,14 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.LoadCases;
 public class CreateLoadCaseCommandHandler(
     ILoadCaseRepository element1dRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
-) : ICommandHandler<CreateLoadCaseCommand, LoadCaseResponse>
+) : ICommandHandler<CreateLoadCaseCommand, LoadCase>
 {
-    public async Task<Result<LoadCaseResponse>> ExecuteAsync(
+    public async Task<Result<LoadCase>> ExecuteAsync(
         CreateLoadCaseCommand command,
         CancellationToken ct = default
     )
     {
-        LoadCase element1d = command.ToDomainObject();
+        Domain.PhysicalModel.LoadCases.LoadCase element1d = command.ToDomainObject();
         element1dRepository.Add(element1d);
         await unitOfWork.SaveChangesAsync(ct);
 
@@ -32,9 +32,13 @@ public class CreateLoadCaseCommandHandler(
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
 public static partial class CreateLoadCaseCommandMapper
 {
-    public static partial LoadCase ToDomainObject(this CreateLoadCaseCommand command);
+    public static partial Domain.PhysicalModel.LoadCases.LoadCase ToDomainObject(
+        this CreateLoadCaseCommand command
+    );
 
-    public static partial LoadCaseResponse ToResponse(this LoadCase entity);
+    public static partial LoadCase ToResponse(this Domain.PhysicalModel.LoadCases.LoadCase entity);
 
-    public static partial LoadCase ToDomainObject(this PutLoadCaseCommand entity);
+    public static partial Domain.PhysicalModel.LoadCases.LoadCase ToDomainObject(
+        this PutLoadCaseCommand entity
+    );
 }

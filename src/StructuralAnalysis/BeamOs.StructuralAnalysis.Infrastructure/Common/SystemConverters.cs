@@ -1,3 +1,5 @@
+using System.Text.Json;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCases;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.Common;
@@ -11,6 +13,18 @@ public class DoubleArrayConverter : ValueConverter<double[], string>
         ) { }
 }
 
+public class DictIdToDoubleConverter : ValueConverter<Dictionary<LoadCaseId, double>, string>
+{
+    public DictIdToDoubleConverter()
+        : base(
+            x => JsonSerializer.Serialize(x, default(JsonSerializerOptions)),
+            x =>
+                JsonSerializer.Deserialize<Dictionary<LoadCaseId, double>>(
+                    x,
+                    default(JsonSerializerOptions)
+                )
+        ) { }
+}
 //public class DictStringObjConverter : ValueConverter<Dictionary<string, object?>, string>
 //{
 //    private static JsonSerializerOptions serializerOptions = new() { };

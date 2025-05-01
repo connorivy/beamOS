@@ -55,6 +55,7 @@ public readonly struct PutPointLoadCommand : IModelResourceWithIntIdRequest<Poin
     public Guid ModelId { get; init; }
     public PointLoadData Body { get; init; }
     public int NodeId => this.Body.NodeId;
+    public int LoadCaseId => this.Body.LoadCaseId;
     public ForceContract Force => this.Body.Force;
     public Contracts.Common.Vector3 Direction => this.Body.Direction;
 

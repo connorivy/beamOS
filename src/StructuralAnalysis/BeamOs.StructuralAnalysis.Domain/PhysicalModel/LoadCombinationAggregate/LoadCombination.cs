@@ -14,16 +14,15 @@ public class LoadCombination : BeamOsModelEntity<LoadCombinationId>
     }
 
     public string Name { get; set; }
+    public Dictionary<LoadCaseId, double> LoadCaseFactors { get; set; } = [];
 
-    public List<LoadCaseInfo> LoadCases { get; set; } = [];
+    public double GetFactor(LoadCaseId loadCaseId) =>
+        this.LoadCaseFactors.GetValueOrDefault(loadCaseId);
+
+    public void SetFactor(LoadCaseId loadCaseId, double factor) =>
+        this.LoadCaseFactors[loadCaseId] = factor;
 
     [Obsolete("EF Core Constructor", true)]
     protected LoadCombination()
         : base() { }
-}
-
-public class LoadCaseInfo(LoadCaseId id, double factor)
-{
-    public LoadCaseId Id { get; set; } = id;
-    public double Factor { get; set; } = factor;
 }

@@ -4,6 +4,8 @@ using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.MomentDiagramA
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.ShearForceDiagramAggregate.ValueObjects;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCases;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinationAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
@@ -77,5 +79,17 @@ public class ShearForceDiagramIdConverter : ValueConverter<ShearForceDiagramId, 
 public class MomentDiagramIdConverter : ValueConverter<MomentDiagramId, int>
 {
     public MomentDiagramIdConverter()
+        : base(x => x.Id, x => new(x), null) { }
+}
+
+public class LoadCaseIdConverter : ValueConverter<LoadCaseId, int>
+{
+    public LoadCaseIdConverter()
+        : base(x => x.Id, x => new(x), null) { }
+}
+
+public class LoadCombinationIdConverter : ValueConverter<LoadCombinationId, int>
+{
+    public LoadCombinationIdConverter()
         : base(x => x.Id, x => new(x), null) { }
 }

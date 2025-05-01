@@ -4,7 +4,11 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCases;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.LoadCases;
 
-public class GetLoadCaseCommandHandler(ILoadCaseRepository entityRepository) : GetModelEntityCommandHandler<LoadCaseId, LoadCase, LoadCaseResponse>(entityRepository)
+public class GetLoadCaseCommandHandler(ILoadCaseRepository entityRepository)
+    : GetModelEntityCommandHandler<LoadCaseId, Domain.PhysicalModel.LoadCases.LoadCase, LoadCase>(
+        entityRepository
+    )
 {
-    protected override LoadCaseResponse MapToResponse(LoadCase entity) => entity.ToResponse();
+    protected override LoadCase MapToResponse(Domain.PhysicalModel.LoadCases.LoadCase entity) =>
+        entity.ToResponse();
 }

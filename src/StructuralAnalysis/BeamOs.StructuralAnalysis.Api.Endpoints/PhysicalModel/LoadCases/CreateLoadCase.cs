@@ -8,9 +8,9 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.LoadCases;
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 public class CreateLoadCase(CreateLoadCaseCommandHandler createLoadCaseCommandHandler)
-    : BeamOsModelResourceBaseEndpoint<CreateLoadCaseCommand, LoadCaseData, LoadCaseResponse>
+    : BeamOsModelResourceBaseEndpoint<CreateLoadCaseCommand, LoadCaseData, LoadCase>
 {
-    public override async Task<Result<LoadCaseResponse>> ExecuteRequestAsync(
+    public override async Task<Result<LoadCase>> ExecuteRequestAsync(
         CreateLoadCaseCommand req,
         CancellationToken ct = default
     ) => await createLoadCaseCommandHandler.ExecuteAsync(req, ct);
@@ -36,7 +36,7 @@ public readonly struct CreateLoadCaseCommand : IModelResourceRequest<LoadCaseDat
     public string Name => this.Body.Name;
 }
 
-public record LoadCaseResponse : LoadCaseData, IHasIntId
+public record LoadCase : LoadCaseData, IHasIntId
 {
     public required int Id { get; init; }
 }
