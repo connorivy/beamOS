@@ -29,6 +29,7 @@ public class PointLoad : BeamOsModelEntity<PointLoadId>
 
     public NodeId NodeId { get; private set; }
     public LoadCaseId LoadCaseId { get; private set; }
+    public LoadCase? LoadCase { get; private set; }
     public Force Force { get; private set; }
     public Vector3D Direction { get; private set; }
 

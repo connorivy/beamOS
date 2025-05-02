@@ -14,6 +14,7 @@ public partial class TwistyBowlFraming : ModelFixture, IHasExpectedNodeResults
     public override IEnumerable<LoadCombination> LoadCombinationRequests()
     {
         yield return new LoadCombination(1, (1, 1.0));
+        yield return new LoadCombination(2, (1, 1.0));
     }
 
     public override SourceInfo SourceInfo { get; } =

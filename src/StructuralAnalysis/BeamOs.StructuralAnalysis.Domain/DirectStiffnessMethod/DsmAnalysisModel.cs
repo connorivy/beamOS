@@ -75,6 +75,7 @@ public sealed class DsmAnalysisModel(
             unknownReactionVector,
             knownReactionVector
         );
+        resultSet.NodeResults = nodeResults;
 
         var otherResults = resultSet.ComputeDiagramsAndElement1dResults(
             dsmElement1Ds,
@@ -197,7 +198,8 @@ public sealed class DsmAnalysisModel(
     {
         var (degreeOfFreedomIds, _) = this.GetSortedUnsupportedStructureIds();
 
-        if (this.solver is null)
+        // todo : we could save a lot of time by caching the factorization of the stiffness matrix
+        // if (this.solver is null)
         {
             var structureStiffnessMatrix = this.BuildStructureStiffnessMatrix();
 
@@ -205,7 +207,6 @@ public sealed class DsmAnalysisModel(
                 structureStiffnessMatrix.Values
             );
 
-            // caching the factorization of the stiffness matrix
             this.solver = solverFactory.GetSolver(stiffnessMatrix);
         }
 

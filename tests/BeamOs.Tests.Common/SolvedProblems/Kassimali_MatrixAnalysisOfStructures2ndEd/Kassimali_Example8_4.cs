@@ -149,6 +149,7 @@ public class Kassimali_Example8_4
     public override IEnumerable<LoadCombination> LoadCombinationRequests()
     {
         yield return new LoadCombination(1, (1, 1.0));
+        yield return new LoadCombination(2, (1, 1.0));
     }
 
     public override IEnumerable<PutPointLoadRequest> PointLoadRequests()

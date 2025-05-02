@@ -1,4 +1,5 @@
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -15,6 +16,14 @@ public class ResultSetConfiguration : IEntityTypeConfiguration<ResultSet>
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
+        // _ = builder
+        //     .HasOne<LoadCombination>()
+        //     .WithOne()
+        //     .HasPrincipalKey<LoadCombination>(el => new { el.Id, el.ModelId })
+        //     .HasForeignKey<ResultSet>(el => new { el.LoadCombinationId, el.ModelId })
+        //     .IsRequired()
+        //     .OnDelete(DeleteBehavior.ClientCascade);
+        //
         _ = builder
             .HasMany(el => el.NodeResults)
             .WithOne(el => el.ResultSet)

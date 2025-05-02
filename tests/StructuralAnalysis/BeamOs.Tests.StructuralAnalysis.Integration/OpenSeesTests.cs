@@ -16,13 +16,15 @@ public partial class OpenSeesTests
         {
             await modelBuilder.CreateOnly(AssemblySetup.StructuralAnalysisApiClient);
 
-            await AssemblySetup
-                .StructuralAnalysisApiClient
-                .DeleteAllResultSetsAsync(modelBuilder.Id);
-
-            var resultSetIdResponse = await AssemblySetup
-                .StructuralAnalysisApiClient
-                .RunOpenSeesAnalysisAsync(modelBuilder.Id);
+            // await AssemblySetup.StructuralAnalysisApiClient.DeleteAllResultSetsAsync(
+            //     modelBuilder.Id
+            // );
+            //
+            var resultSetIdResponse =
+                await AssemblySetup.StructuralAnalysisApiClient.RunOpenSeesAnalysisAsync(
+                    modelBuilder.Id,
+                    new() { LoadCombinationIds = [1]}
+                );
 
             resultSetIdResponse.ThrowIfError();
         }

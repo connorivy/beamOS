@@ -1,8 +1,9 @@
 ﻿{
   Value: {
+    ModelId: Guid_1,
     Id: 5,
     NodeId: 5,
-    ModelId: Guid_1,
+    LoadCaseId: 1,
     Force: {
       Value: 10.0,
       Unit: KilopoundForce

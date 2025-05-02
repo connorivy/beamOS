@@ -5,6 +5,7 @@ using BeamOs.StructuralAnalysis.Infrastructure.Common;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -42,17 +43,25 @@ public class WebAppFactory(string connectionString, TimeProvider? timeProvider =
 
             services.AddDbContext<StructuralAnalysisDbContext>(options =>
                 options
-                    .UseNpgsql(connectionString)
+                    .UseNpgsql(
+                        connectionString,
+                        o => o.MigrationsAssembly(typeof(IAssemblyMarkerInfrastructure).Assembly)
+                    )
                     .AddInterceptors(
                         new ModelEntityIdIncrementingInterceptor(),
                         new ModelLastModifiedUpdater(timeProvider ?? TimeProvider.System)
                     )
+                    .ConfigureWarnings(warnings =>
+                    {
+                        warnings.Log(RelationalEventId.PendingModelChangesWarning);
+                    })
             //.UseModel(StructuralAnalysisDbContextModel.Instance)
             );
 
             using IServiceScope scope = services.BuildServiceProvider().CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<StructuralAnalysisDbContext>();
-            dbContext.Database.EnsureCreated();
+            // dbContext.Database.EnsureCreated();
+            dbContext.Database.Migrate();
         });
     }
 

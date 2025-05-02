@@ -49,6 +49,8 @@ public abstract class BeamOsModelBuilder
 
     public abstract IEnumerable<LoadCombination> LoadCombinationRequests();
 
+    private static AsyncGuidLockManager lockManager = new();
+
     private async Task<bool> Build(IStructuralAnalysisApiClientV1 apiClient, bool createOnly)
     {
         if (!Guid.TryParse(this.GuidString, out var modelId))
@@ -56,6 +58,21 @@ public abstract class BeamOsModelBuilder
             throw new Exception("Guid string is not formatted correctly");
         }
 
+        return await lockManager.ExecuteWithLockAsync(
+            modelId,
+            async () =>
+            {
+                return await this.Build(apiClient, createOnly, modelId);
+            }
+        );
+    }
+
+    private async Task<bool> Build(
+        IStructuralAnalysisApiClientV1 apiClient,
+        bool createOnly,
+        Guid modelId
+    )
+    {
         try
         {
             var createModelResult = await apiClient.CreateModelAsync(
@@ -84,7 +101,12 @@ public abstract class BeamOsModelBuilder
 
         foreach (var el in ChunkRequests(this.LoadCaseRequests()))
         {
-            // (await apiClient.BatchPutPointLoadAsync(modelId, el)).ThrowIfError();
+            (await apiClient.BatchPutLoadCaseAsync(modelId, el)).ThrowIfError();
+        }
+
+        foreach (var el in ChunkRequests(this.LoadCombinationRequests()))
+        {
+            (await apiClient.BatchPutLoadCombinationAsync(modelId, el)).ThrowIfError();
         }
 
         foreach (var el in ChunkRequests(this.PointLoadRequests()))

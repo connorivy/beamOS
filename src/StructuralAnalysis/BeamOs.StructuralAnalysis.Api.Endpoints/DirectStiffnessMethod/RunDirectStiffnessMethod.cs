@@ -33,5 +33,5 @@ public record ModelIdAndBody<TBody> : IHasModelId
     public Guid ModelId { get; init; }
 
     [FromBody]
-    public TBody Body { get; init; }
+    public required TBody Body { get; init; }
 }

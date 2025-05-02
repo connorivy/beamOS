@@ -29,6 +29,7 @@ using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.SectionProfiles;
 using BeamOs.Tests.Common;
 using MathNet.Numerics.Providers.SparseSolver;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -73,11 +74,18 @@ public static class DependencyInjection
         _ = services.AddDbContext<StructuralAnalysisDbContext>(options =>
         {
             options
-                .UseNpgsql(connectionString)
+                .UseNpgsql(
+                    connectionString,
+                    o => o.MigrationsAssembly(typeof(IAssemblyMarkerInfrastructure).Assembly)
+                )
                 .AddInterceptors(
                     new ModelEntityIdIncrementingInterceptor(),
                     new ModelLastModifiedUpdater(TimeProvider.System)
-                );
+                )
+                .ConfigureWarnings(warnings =>
+                {
+                    warnings.Log(RelationalEventId.PendingModelChangesWarning);
+                });
         });
 
         services.AddScoped<IUserIdProvider, UserIdProvider>();

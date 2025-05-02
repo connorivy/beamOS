@@ -213,17 +213,17 @@ public class TclWriter
     {
         int nodeId = momentLoad.NodeId;
         var x = momentLoad.GetScaledTorque(
-            CoordinateSystemDirection3D.AlongX,
+            CoordinateSystemDirection3D.AboutX,
             this.unitSettings.TorqueUnit,
             combo
         );
         var y = momentLoad.GetScaledTorque(
-            CoordinateSystemDirection3D.AlongY,
+            CoordinateSystemDirection3D.AboutY,
             this.unitSettings.TorqueUnit,
             combo
         );
         var z = momentLoad.GetScaledTorque(
-            CoordinateSystemDirection3D.AlongZ,
+            CoordinateSystemDirection3D.AboutZ,
             this.unitSettings.TorqueUnit,
             combo
         );

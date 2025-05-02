@@ -1,6 +1,8 @@
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCombinations;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoad;
@@ -57,6 +59,33 @@ public class EndToEndTests
     }
 
     [Test]
+    public async Task CreateLoadCase_ShouldCreateLoadCase()
+    {
+        LoadCaseData data = new() { Name = "Dead" };
+
+        var loadCaseResponse = await AssemblySetup.StructuralAnalysisApiClient.CreateLoadCaseAsync(
+            modelId,
+            data
+        );
+
+        await Verify(loadCaseResponse);
+    }
+
+    [Test]
+    public async Task CreateLoadCombination_ShouldCreateLoadCombination()
+    {
+        LoadCombinationData data = new((1, 1.0));
+
+        var loadCombinationResponse =
+            await AssemblySetup.StructuralAnalysisApiClient.CreateLoadCombinationAsync(
+                modelId,
+                data
+            );
+
+        await Verify(loadCombinationResponse);
+    }
+
+    [Test]
     [DependsOn(nameof(CreateNode_WithNoSpecifiedId_ShouldCreateNode_AndGiveAnId))]
     public async Task CreateAnotherNode_WithDifferentModelId_ShouldAssignNodeIdOf1()
     {
@@ -107,6 +136,7 @@ public class EndToEndTests
 
     [Test]
     [DependsOn(nameof(CreateNode_WithIdOf5_ShouldCreateNode_WithCorrectId))]
+    [DependsOn(nameof(CreateLoadCase_ShouldCreateLoadCase))]
     public async Task CreatePointLoad_ShouldCreatePointLoad()
     {
         CreatePointLoadRequest requestBody = new()
@@ -128,6 +158,7 @@ public class EndToEndTests
 
     [Test]
     [DependsOn(nameof(CreateNode_WithIdOf5_ShouldCreateNode_WithCorrectId))]
+    [DependsOn(nameof(CreateLoadCase_ShouldCreateLoadCase))]
     public async Task CreateMomentLoad_ShouldCreateMomentLoad()
     {
         CreateMomentLoadRequest requestBody = new()

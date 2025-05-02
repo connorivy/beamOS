@@ -29,6 +29,7 @@ public class MomentLoad : BeamOsModelEntity<MomentLoadId>
 
     public NodeId NodeId { get; set; }
     public LoadCaseId LoadCaseId { get; set; }
+    public LoadCase? LoadCase { get; set; }
     public Torque Torque { get; set; }
     public UnitVector3d AxisDirection { get; set; }
 
