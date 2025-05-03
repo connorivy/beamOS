@@ -7,8 +7,7 @@ namespace BeamOs.StructuralAnalysis.Sdk;
 
 public class AsyncGuidLockManager : IDisposable
 {
-    private readonly ConcurrentDictionary<Guid, SemaphoreSlim> _semaphores =
-        new ConcurrentDictionary<Guid, SemaphoreSlim>();
+    private readonly ConcurrentDictionary<Guid, SemaphoreSlim> _semaphores = new();
 
     private readonly Lock _lock = new Lock();
 
