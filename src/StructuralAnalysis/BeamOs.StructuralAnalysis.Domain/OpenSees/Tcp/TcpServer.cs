@@ -63,7 +63,7 @@ public sealed class TcpServer : IDisposable
         //);
         await stream.ReadExactlyAsync(rawSize, 0, rawSize.Length);
         double dataSize = BitConverter.ToDouble(rawSize, 0);
-        Console.WriteLine($"Data Size == {dataSize}");
+        // Console.WriteLine($"Data Size == {dataSize}");
 
         // Loop over each step
         int sizeReceived = 0;

@@ -10,7 +10,7 @@ public class TcpServerCallback
     public static void ServerCallback2(IAsyncResult asyncResult)
     {
         NetworkStream stream = (NetworkStream)asyncResult.AsyncState;
-        Console.WriteLine("Connected!");
+        // Console.WriteLine("Connected!");
 
         //data = null;
 
@@ -18,7 +18,7 @@ public class TcpServerCallback
         byte[] rawSize = new byte[sizeof(double)];
         stream.Read(rawSize, 0, rawSize.Length);
         double dataSize = BitConverter.ToDouble(rawSize, 0);
-        Console.WriteLine($"Data Size == {dataSize}");
+        // Console.WriteLine($"Data Size == {dataSize}");
 
         // Loop over each step
         int sizeReceived = 0;
@@ -34,10 +34,10 @@ public class TcpServerCallback
             if (i > 0)
                 data[i - 1] = value;
         }
-
-        Console.WriteLine("Received data:");
-        foreach (double val in data)
-            Console.WriteLine(val);
+        //
+        // Console.WriteLine("Received data:");
+        // foreach (double val in data)
+        //     Console.WriteLine(val);
 
         tcs.SetResult();
     }
@@ -45,7 +45,7 @@ public class TcpServerCallback
     public static void ServerCallback(IAsyncResult asyncResult)
     {
         using TcpClient client = ((TcpListener)asyncResult.AsyncState).AcceptTcpClient();
-        Console.WriteLine("Connected!");
+        // Console.WriteLine("Connected!");
 
         //data = null;
 
@@ -56,7 +56,7 @@ public class TcpServerCallback
         byte[] rawSize = new byte[sizeof(double)];
         stream.Read(rawSize, 0, rawSize.Length);
         double dataSize = BitConverter.ToDouble(rawSize, 0);
-        Console.WriteLine($"Data Size == {dataSize}");
+        // Console.WriteLine($"Data Size == {dataSize}");
 
         // Loop over each step
         int sizeReceived = 0;
@@ -73,9 +73,9 @@ public class TcpServerCallback
                 data[i - 1] = value;
         }
 
-        Console.WriteLine("Received data:");
-        foreach (double val in data)
-            Console.WriteLine(val);
+        // Console.WriteLine("Received data:");
+        // foreach (double val in data)
+        //     Console.WriteLine(val);
 
         tcs.SetResult();
     }

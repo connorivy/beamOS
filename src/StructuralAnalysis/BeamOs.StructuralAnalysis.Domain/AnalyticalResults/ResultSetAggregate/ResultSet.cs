@@ -18,9 +18,12 @@ public class ResultSet : BeamOsModelEntity<ResultSetId>
     // }
 
     public ResultSet(ModelId modelId, LoadCombinationId id)
-        : base(new(id), modelId) { }
+        : base(new(id), modelId)
+    {
+        this.LoadCombinationId = id;
+    }
 
-    public LoadCombinationId LoadCombinationId => new LoadCombinationId(this.Id);
+    public LoadCombinationId LoadCombinationId { get; private set; }
     public LoadCombination? LoadCombination { get; set; }
     public IList<NodeResult>? NodeResults { get; set; }
     public IList<Element1dResult>? Element1dResults { get; set; }

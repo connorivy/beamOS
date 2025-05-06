@@ -29,7 +29,15 @@ builder.Services.AddObjectThatExtendsBase<IAssemblyMarkerAi>(
     ServiceLifetime.Scoped
 );
 
-builder.Services.AddLogging(b => b.AddConsole().SetMinimumLevel(LogLevel.Trace));
+builder.Services.AddLogging(b =>
+{
+    b.ClearProviders();
+#if DEBUG
+    b.AddConsole().SetMinimumLevel(LogLevel.Trace);
+#else
+    b.AddConsole().SetMinimumLevel(LogLevel.Error);
+#endif
+});
 
 #if DEBUG
 builder

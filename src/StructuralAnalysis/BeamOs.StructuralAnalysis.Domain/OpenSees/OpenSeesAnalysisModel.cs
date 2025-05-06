@@ -162,9 +162,9 @@ public sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettings
 
         try
         {
-            logger.LogInformation("Starting process");
+            // logger.LogInformation("Starting process");
             process.Start();
-            logger.LogInformation("Process started");
+            // logger.LogInformation("Process started");
         }
         catch (System.ComponentModel.Win32Exception ex)
         {
@@ -244,8 +244,23 @@ public sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettings
         return nodeResults;
     }
 
+    private static readonly HashSet<string> ignoredErrorMessages = new()
+    {
+        "         OpenSees -- Open System For Earthquake Engineering Simulation",
+        "                 Pacific Earthquake Engineering Research Center",
+        "                        Version 3.8.0 64-Bit",
+        "      (c) Copyright 1999-2016 The Regents of the University of California",
+        "                              All Rights Reserved",
+        "  (Copyright and Disclaimer @ http://www.berkeley.edu/OpenSees/copyright.html)",
+    };
+
     void process_ErrorDataReceived(object sender, DataReceivedEventArgs e)
     {
+        if (string.IsNullOrEmpty(e.Data) || ignoredErrorMessages.Contains(e.Data))
+        {
+            return;
+        }
+
         logger.LogError("OpenSees process error {data}", e.Data);
     }
 

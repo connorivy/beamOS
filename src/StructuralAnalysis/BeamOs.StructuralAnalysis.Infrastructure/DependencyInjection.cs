@@ -32,6 +32,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure;
 
@@ -79,9 +80,17 @@ public static class DependencyInjection
                     o => o.MigrationsAssembly(typeof(IAssemblyMarkerInfrastructure).Assembly)
                 )
                 .AddInterceptors(
-                    new ModelEntityIdIncrementingInterceptor(),
+                    // new ModelEntityIdIncrementingInterceptor(),
                     new ModelLastModifiedUpdater(TimeProvider.System)
                 )
+#if !DEBUG
+                .UseLoggerFactory(
+                    LoggerFactory.Create(builder =>
+                    {
+                        builder.AddFilter((category, level) => level >= LogLevel.Error);
+                    })
+                )
+#endif
                 .ConfigureWarnings(warnings =>
                 {
                     warnings.Log(RelationalEventId.PendingModelChangesWarning);
