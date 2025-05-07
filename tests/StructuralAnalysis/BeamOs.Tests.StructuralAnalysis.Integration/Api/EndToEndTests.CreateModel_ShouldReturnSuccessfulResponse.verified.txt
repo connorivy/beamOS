@@ -27,7 +27,9 @@
     SectionProfiles: null,
     PointLoads: null,
     MomentLoads: null,
-    ResultSets: null
+    ResultSets: null,
+    LoadCases: null,
+    LoadCombinations: null
   },
   Error: null,
   IsError: false,

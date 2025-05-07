@@ -1,5 +1,7 @@
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCombinations;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoad;
@@ -26,15 +28,14 @@ public sealed class Udoeyo_Example7_7 : ModelFixture, IHasExpectedDiagramResults
     public override string GuidString => "e63cca48-5585-4117-8dd9-0d0bf56f3d50";
 
     public DiagramResultFixture[] ExpectedDiagramResults { get; } =
-
         [
             new()
             {
                 NodeId = 1,
                 ResultSetId = 1,
                 MaxMoment = new(20, UnitsNet.Units.TorqueUnit.KilonewtonMeter),
-                MaxDeflection = new(360, UnitsNet.Units.LengthUnit.Meter)
-            }
+                MaxDeflection = new(360, UnitsNet.Units.LengthUnit.Meter),
+            },
         ];
 
     public override IEnumerable<PutElement1dRequest> Element1dRequests()
@@ -45,7 +46,7 @@ public sealed class Udoeyo_Example7_7 : ModelFixture, IHasExpectedDiagramResults
             StartNodeId = 1,
             EndNodeId = 2,
             MaterialId = 1,
-            SectionProfileId = 1
+            SectionProfileId = 1,
         };
     }
 
@@ -56,7 +57,7 @@ public sealed class Udoeyo_Example7_7 : ModelFixture, IHasExpectedDiagramResults
             Id = 1,
             ModulusOfElasticity = 1,
             ModulusOfRigidity = 1,
-            PressureUnit = PressureUnitContract.KilonewtonPerSquareMeter
+            PressureUnit = PressureUnitContract.KilonewtonPerSquareMeter,
         };
     }
 
@@ -77,6 +78,17 @@ public sealed class Udoeyo_Example7_7 : ModelFixture, IHasExpectedDiagramResults
         };
     }
 
+    public override IEnumerable<LoadCase> LoadCaseRequests()
+    {
+        yield return new() { Name = "Load Case 1", Id = 1 };
+    }
+
+    public override IEnumerable<LoadCombination> LoadCombinationRequests()
+    {
+        yield return new LoadCombination(1, (1, 1.0));
+        yield return new LoadCombination(2, (1, 1.0));
+    }
+
     public override IEnumerable<PutPointLoadRequest> PointLoadRequests() => [];
 
     public override IEnumerable<PutSectionProfileRequest> SectionProfileRequests()
@@ -91,7 +103,7 @@ public sealed class Udoeyo_Example7_7 : ModelFixture, IHasExpectedDiagramResults
             WeakAxisShearArea = 1,
             AreaUnit = AreaUnitContract.SquareMeter,
             AreaMomentOfInertiaUnit = AreaMomentOfInertiaUnitContract.MeterToTheFourth,
-            Id = 1
+            Id = 1,
         };
     }
 
@@ -101,6 +113,7 @@ public sealed class Udoeyo_Example7_7 : ModelFixture, IHasExpectedDiagramResults
         {
             Id = 1,
             NodeId = 1,
+            LoadCaseId = 1,
             Torque = new(-20, TorqueUnitContract.KilonewtonMeter),
             AxisDirection = new(0, 0, 1),
         };

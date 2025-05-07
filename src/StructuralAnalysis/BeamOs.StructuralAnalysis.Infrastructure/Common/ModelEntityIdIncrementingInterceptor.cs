@@ -3,6 +3,8 @@ using System.Runtime.InteropServices;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCases;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinations;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
@@ -49,7 +51,8 @@ public class ModelEntityIdIncrementingInterceptor : SaveChangesInterceptor
         )
         {
             var idResults = await context
-                .Models.Where(m => m.Id == entityInfoGroup.Key)
+                .Models.AsSplitQuery()
+                .Where(m => m.Id == entityInfoGroup.Key)
                 .Select(m => new
                 {
                     MaxNodeId = m.Nodes.Max(el => (int?)el.Id) ?? 0,
@@ -59,6 +62,8 @@ public class ModelEntityIdIncrementingInterceptor : SaveChangesInterceptor
                     MaxPointLoadId = m.PointLoads.Max(el => (int?)el.Id) ?? 0,
                     MaxMomentLoadId = m.MomentLoads.Max(el => (int?)el.Id) ?? 0,
                     MaxResultSetId = m.ResultSets.Max(el => (int?)el.Id) ?? 0,
+                    MaxLoadCaseId = m.LoadCases.Max(el => (int?)el.Id) ?? 0,
+                    MaxLoadCombinationId = m.LoadCombinations.Max(el => (int?)el.Id) ?? 0,
                 })
                 .FirstOrDefaultAsync(cancellationToken);
 
@@ -71,6 +76,8 @@ public class ModelEntityIdIncrementingInterceptor : SaveChangesInterceptor
                 MaxPointLoadId = 0,
                 MaxMomentLoadId = 0,
                 MaxResultSetId = 0,
+                MaxLoadCaseId = 0,
+                MaxLoadCombinationId = 0,
             };
 
             Dictionary<Type, int> entityTypeToMaxIdDict = new()
@@ -82,6 +89,8 @@ public class ModelEntityIdIncrementingInterceptor : SaveChangesInterceptor
                 { typeof(PointLoad), idResults.MaxPointLoadId },
                 { typeof(MomentLoad), idResults.MaxMomentLoadId },
                 { typeof(ResultSet), idResults.MaxResultSetId },
+                { typeof(LoadCase), idResults.MaxLoadCaseId },
+                { typeof(LoadCombination), idResults.MaxLoadCombinationId },
             };
 
             Dictionary<Type, HashSet<int>> entityTypeToTakenIdsDict = entityInfoGroup
@@ -95,7 +104,10 @@ public class ModelEntityIdIncrementingInterceptor : SaveChangesInterceptor
             )
             {
                 var entityType = entityInfoByType.Key;
-                Debug.Assert(entityTypeToMaxIdDict.ContainsKey(entityType));
+                Debug.Assert(
+                    entityTypeToMaxIdDict.ContainsKey(entityType),
+                    $"Could not find next id for entity of type {entityType}"
+                );
 
                 ref int maxId = ref CollectionsMarshal.GetValueRefOrNullRef(
                     entityTypeToMaxIdDict,

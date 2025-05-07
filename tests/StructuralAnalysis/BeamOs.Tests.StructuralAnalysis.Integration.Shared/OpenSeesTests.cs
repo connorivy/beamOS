@@ -6,7 +6,7 @@ using UnitsNet.Units;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration;
 
-[ParallelGroup("OpenSeesTests")]
+// [ParallelGroup("OpenSeesTests")]
 public partial class OpenSeesTests
 {
     [Test]
@@ -36,7 +36,7 @@ public partial class OpenSeesTests
             {
                 var result = await AssemblySetup.StructuralAnalysisApiClient.GetNodeResultAsync(
                     modelFixture.Id,
-                    expectedNodeDisplacementResult.ResultSetId,
+                    1,
                     expectedNodeDisplacementResult.NodeId
                 );
 
@@ -62,7 +62,7 @@ public partial class OpenSeesTests
             {
                 var result = await AssemblySetup.StructuralAnalysisApiClient.GetNodeResultAsync(
                     modelFixture.Id,
-                    expectedNodeDisplacementResult.ResultSetId,
+                    1,
                     expectedNodeDisplacementResult.NodeId
                 );
 

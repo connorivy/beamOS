@@ -1,6 +1,8 @@
 using BeamOs.Common.Domain.Models;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCases;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinations;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
@@ -23,13 +25,14 @@ public class Model : BeamOsEntity<ModelId>
     public string Description { get; private set; }
     public ModelSettings Settings { get; private set; }
     public DateTimeOffset LastModified { get; set; } = DateTimeOffset.UtcNow;
-
     public IList<Node>? Nodes { get; init; }
     public IList<Element1d>? Element1ds { get; init; }
     public IList<Material>? Materials { get; init; }
     public IList<SectionProfile>? SectionProfiles { get; init; }
     public IList<PointLoad>? PointLoads { get; init; }
     public IList<MomentLoad>? MomentLoads { get; init; }
+    public IList<LoadCase>? LoadCases { get; init; }
+    public IList<LoadCombination>? LoadCombinations { get; init; }
     public IList<ResultSet>? ResultSets { get; init; }
 
     //public AnalyticalResults? AnalyticalResults { get; init; }

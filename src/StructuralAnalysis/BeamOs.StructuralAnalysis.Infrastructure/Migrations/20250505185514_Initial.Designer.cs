@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
 {
     [DbContext(typeof(StructuralAnalysisDbContext))]
-    [Migration("20250424012725_Initial")]
+    [Migration("20250505185514_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -133,14 +133,28 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
             modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate.ResultSet", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
                     b.Property<Guid>("ModelId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("LoadCombinationId")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("LoadCombinationModelId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id", "ModelId");
 
                     b.HasIndex("ModelId");
+
+                    b.HasIndex("LoadCombinationId", "LoadCombinationModelId");
+
+                    b.HasIndex("LoadCombinationId", "ModelId")
+                        .IsUnique();
 
                     b.ToTable("ResultSets");
                 });
@@ -148,7 +162,10 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
             modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate.Element1d", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<Guid>("ModelId")
                         .HasColumnType("uuid");
@@ -183,10 +200,57 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                     b.ToTable("Element1ds");
                 });
 
+            modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCases.LoadCase", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("ModelId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id", "ModelId");
+
+                    b.HasIndex("ModelId");
+
+                    b.ToTable("LoadCases");
+                });
+
+            modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinations.LoadCombination", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("ModelId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("LoadCaseFactors")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id", "ModelId");
+
+                    b.HasIndex("ModelId");
+
+                    b.ToTable("LoadCombinations");
+                });
+
             modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate.Material", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<Guid>("ModelId")
                         .HasColumnType("uuid");
@@ -276,10 +340,16 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
             modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate.MomentLoad", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<Guid>("ModelId")
                         .HasColumnType("uuid");
+
+                    b.Property<int>("LoadCaseId")
+                        .HasColumnType("integer");
 
                     b.Property<int>("NodeId")
                         .HasColumnType("integer");
@@ -305,6 +375,8 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
 
                     b.HasIndex("ModelId");
 
+                    b.HasIndex("LoadCaseId", "ModelId");
+
                     b.HasIndex("NodeId", "ModelId");
 
                     b.ToTable("MomentLoads");
@@ -313,7 +385,10 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
             modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate.Node", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<Guid>("ModelId")
                         .HasColumnType("uuid");
@@ -365,7 +440,10 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
             modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate.PointLoad", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<Guid>("ModelId")
                         .HasColumnType("uuid");
@@ -377,12 +455,17 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                     b.Property<double>("Force")
                         .HasColumnType("double precision");
 
+                    b.Property<int>("LoadCaseId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("NodeId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id", "ModelId");
 
                     b.HasIndex("ModelId");
+
+                    b.HasIndex("LoadCaseId", "ModelId");
 
                     b.HasIndex("NodeId", "ModelId");
 
@@ -392,7 +475,10 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
             modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate.SectionProfile", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<Guid>("ModelId")
                         .HasColumnType("uuid");
@@ -427,7 +513,7 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                     b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.Model", "Model")
                         .WithMany()
                         .HasForeignKey("ModelId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate.ResultSet", "ResultSet")
@@ -446,7 +532,7 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                     b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.Model", "Model")
                         .WithMany()
                         .HasForeignKey("ModelId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate.ResultSet", "ResultSet")
@@ -467,6 +553,18 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                         .HasForeignKey("ModelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinations.LoadCombination", "LoadCombination")
+                        .WithMany()
+                        .HasForeignKey("LoadCombinationId", "LoadCombinationModelId");
+
+                    b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinations.LoadCombination", null)
+                        .WithOne()
+                        .HasForeignKey("BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate.ResultSet", "LoadCombinationId", "ModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("LoadCombination");
 
                     b.Navigation("Model");
                 });
@@ -514,6 +612,28 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                     b.Navigation("StartNode");
                 });
 
+            modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCases.LoadCase", b =>
+                {
+                    b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.Model", "Model")
+                        .WithMany("LoadCases")
+                        .HasForeignKey("ModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Model");
+                });
+
+            modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinations.LoadCombination", b =>
+                {
+                    b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.Model", "Model")
+                        .WithMany("LoadCombinations")
+                        .HasForeignKey("ModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Model");
+                });
+
             modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate.Material", b =>
                 {
                     b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.Model", "Model")
@@ -533,11 +653,19 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCases.LoadCase", "LoadCase")
+                        .WithMany()
+                        .HasForeignKey("LoadCaseId", "ModelId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+
                     b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate.Node", null)
                         .WithMany("MomentLoads")
                         .HasForeignKey("NodeId", "ModelId")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
+
+                    b.Navigation("LoadCase");
 
                     b.Navigation("Model");
                 });
@@ -561,11 +689,19 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCases.LoadCase", "LoadCase")
+                        .WithMany()
+                        .HasForeignKey("LoadCaseId", "ModelId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+
                     b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate.Node", null)
                         .WithMany("PointLoads")
                         .HasForeignKey("NodeId", "ModelId")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
+
+                    b.Navigation("LoadCase");
 
                     b.Navigation("Model");
                 });
@@ -591,6 +727,10 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
             modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.Model", b =>
                 {
                     b.Navigation("Element1ds");
+
+                    b.Navigation("LoadCases");
+
+                    b.Navigation("LoadCombinations");
 
                     b.Navigation("Materials");
 

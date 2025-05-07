@@ -78,7 +78,7 @@ public static class DI
         {
             if (await modelBuilder.CreateOnly(apiClient))
             {
-                await apiClient.RunDirectStiffnessMethodAsync(modelBuilder.Id);
+                await apiClient.RunDirectStiffnessMethodAsync(modelBuilder.Id, new());
             }
         }
     }

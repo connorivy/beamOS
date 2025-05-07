@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Text;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinations;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
@@ -167,35 +168,67 @@ public class TclWriter
         this.AddElement(element1d);
     }
 
-    public void AddLoads(IEnumerable<PointLoad> pointLoads, IEnumerable<MomentLoad> momentLoads)
+    public void AddLoads(
+        IEnumerable<PointLoad> pointLoads,
+        IEnumerable<MomentLoad> momentLoads,
+        LoadCombination combo
+    )
     {
         this.document.AppendLine($"timeSeries {nameof(TimeSeriesType.Constant)} 1");
         this.document.AppendLine($"pattern {nameof(PatternType.Plain)} 1 1 {{");
         foreach (var pl in pointLoads)
         {
-            this.AddPointLoad(pl);
+            this.AddPointLoad(pl, combo);
         }
         foreach (var load in momentLoads)
         {
-            this.AddMomentLoad(load);
+            this.AddMomentLoad(load, combo);
         }
         this.document.AppendLine("}");
     }
 
-    public void AddPointLoad(PointLoad pointLoad)
+    public void AddPointLoad(PointLoad pointLoad, LoadCombination combo)
     {
         int nodeId = pointLoad.NodeId;
-
-        this.document.AppendLine(
-            $"load {nodeId} {pointLoad.Force.As(this.unitSettings.ForceUnit) * pointLoad.Direction.X} {pointLoad.Force.As(this.unitSettings.ForceUnit) * pointLoad.Direction.Y} {pointLoad.Force.As(this.unitSettings.ForceUnit) * pointLoad.Direction.Z} 0 0 0"
+        var x = pointLoad.GetScaledForce(
+            CoordinateSystemDirection3D.AlongX,
+            this.unitSettings.ForceUnit,
+            combo
         );
+        var y = pointLoad.GetScaledForce(
+            CoordinateSystemDirection3D.AlongY,
+            this.unitSettings.ForceUnit,
+            combo
+        );
+        var z = pointLoad.GetScaledForce(
+            CoordinateSystemDirection3D.AlongZ,
+            this.unitSettings.ForceUnit,
+            combo
+        );
+
+        this.document.AppendLine($"load {nodeId} {x} {y} {z} 0 0 0");
     }
 
-    public void AddMomentLoad(MomentLoad momentLoad)
+    public void AddMomentLoad(MomentLoad momentLoad, LoadCombination combo)
     {
-        this.document.AppendLine(
-            $"load {momentLoad.NodeId} 0 0 0 {momentLoad.Torque.As(this.unitSettings.TorqueUnit) * momentLoad.AxisDirection.X} {momentLoad.Torque.As(this.unitSettings.TorqueUnit) * momentLoad.AxisDirection.Y} {momentLoad.Torque.As(this.unitSettings.TorqueUnit) * momentLoad.AxisDirection.Z}"
+        int nodeId = momentLoad.NodeId;
+        var x = momentLoad.GetScaledTorque(
+            CoordinateSystemDirection3D.AboutX,
+            this.unitSettings.TorqueUnit,
+            combo
         );
+        var y = momentLoad.GetScaledTorque(
+            CoordinateSystemDirection3D.AboutY,
+            this.unitSettings.TorqueUnit,
+            combo
+        );
+        var z = momentLoad.GetScaledTorque(
+            CoordinateSystemDirection3D.AboutZ,
+            this.unitSettings.TorqueUnit,
+            combo
+        );
+
+        this.document.AppendLine($"load {nodeId} 0 0 0 {x} {y} {z}");
     }
 
     public void DefineAnalysis()

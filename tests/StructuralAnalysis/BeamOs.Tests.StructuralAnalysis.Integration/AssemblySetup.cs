@@ -42,7 +42,7 @@ public static partial class AssemblySetup
 
     [ModuleInitializer]
     public static void Init() =>
-        VerifierSettings.AddExtraSettings(
-            settings => settings.DefaultValueHandling = Argon.DefaultValueHandling.Include
+        VerifierSettings.AddExtraSettings(settings =>
+            settings.DefaultValueHandling = Argon.DefaultValueHandling.Include
         );
 }

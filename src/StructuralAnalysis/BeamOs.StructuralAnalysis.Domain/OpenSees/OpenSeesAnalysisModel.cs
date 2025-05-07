@@ -6,6 +6,7 @@ using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 using BeamOs.StructuralAnalysis.Domain.OpenSees.Tcp;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinations;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using Microsoft.Extensions.Logging;
 
@@ -18,13 +19,14 @@ public sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettings
     private readonly TcpServer reactionServer = TcpServer.CreateStarted(logger);
     private readonly TcpServer elementForceServer = TcpServer.CreateStarted(logger);
 
-    public async Task<AnalysisResults> RunAnalysis()
+    public async Task<AnalysisResults> RunAnalysis(LoadCombination loadCombination)
     {
         TclWriter tclWriter = CreateWriterFromModel(
             model,
             this.displacementServer.Port,
             this.reactionServer.Port,
             this.elementForceServer.Port,
+            loadCombination,
             unitSettings
         );
 
@@ -38,7 +40,10 @@ public sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettings
         string outputDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         await this.RunTclWithOpenSees(tclWriter.OutputFileWithPath, outputDir);
 
-        var resultSet = new ResultSet(model.Id) { NodeResults = this.GetResults(model, tclWriter) };
+        var resultSet = new ResultSet(model.Id, loadCombination.Id)
+        {
+            NodeResults = this.GetResults(model, tclWriter),
+        };
 
         var dsmElements =
             model.Settings.AnalysisSettings.Element1DAnalysisType == Element1dAnalysisType.Euler
@@ -59,6 +64,7 @@ public sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettings
         int displacementPort,
         int reactionPort,
         int elementForcesPort,
+        LoadCombination loadCombination,
         UnitSettings? unitSettingsOverride = null
     )
     {
@@ -79,7 +85,7 @@ public sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettings
 
         Debug.Assert(model.PointLoads is not null);
         Debug.Assert(model.MomentLoads is not null);
-        tclWriter.AddLoads(model.PointLoads, model.MomentLoads);
+        tclWriter.AddLoads(model.PointLoads, model.MomentLoads, loadCombination);
 
         tclWriter.DefineAnalysis();
         tclWriter.Write();
@@ -156,9 +162,9 @@ public sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettings
 
         try
         {
-            logger.LogInformation("Starting process");
+            // logger.LogInformation("Starting process");
             process.Start();
-            logger.LogInformation("Process started");
+            // logger.LogInformation("Process started");
         }
         catch (System.ComponentModel.Win32Exception ex)
         {
@@ -238,8 +244,23 @@ public sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettings
         return nodeResults;
     }
 
+    private static readonly HashSet<string> ignoredErrorMessages = new()
+    {
+        "         OpenSees -- Open System For Earthquake Engineering Simulation",
+        "                 Pacific Earthquake Engineering Research Center",
+        "                        Version 3.8.0 64-Bit",
+        "      (c) Copyright 1999-2016 The Regents of the University of California",
+        "                              All Rights Reserved",
+        "  (Copyright and Disclaimer @ http://www.berkeley.edu/OpenSees/copyright.html)",
+    };
+
     void process_ErrorDataReceived(object sender, DataReceivedEventArgs e)
     {
+        if (string.IsNullOrEmpty(e.Data) || ignoredErrorMessages.Contains(e.Data))
+        {
+            return;
+        }
+
         logger.LogError("OpenSees process error {data}", e.Data);
     }
 

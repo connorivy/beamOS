@@ -1,3 +1,6 @@
+using System.Text.Json;
+using BeamOs.StructuralAnalysis.Contracts.Common;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCases;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.Common;
@@ -11,13 +14,31 @@ public class DoubleArrayConverter : ValueConverter<double[], string>
         ) { }
 }
 
-//public class DictStringObjConverter : ValueConverter<Dictionary<string, object?>, string>
-//{
-//    private static JsonSerializerOptions serializerOptions = new() { };
+// public class DictIdToDoubleConverter : ValueConverter<Dictionary<LoadCaseId, double>, string>
+// {
+//     public DictIdToDoubleConverter()
+//         : base(
+//             x => JsonSerializer.Serialize(x, BeamOsSerializerOptions.Default),
+//             x =>
+//                 JsonSerializer.Deserialize<Dictionary<LoadCaseId, double>>(
+//                     x,
+//                     BeamOsSerializerOptions.Default
+//                 )
+//         ) { }
+// }
 
-//    public DictStringObjConverter()
-//        : base(
-//            x => JsonSerializer.Serialize(x, serializerOptions),
-//            x => JsonSerializer.Deserialize<Dictionary<string, object?>>(x, serializerOptions)
-//        ) { }
-//}
+public class DictIdToDoubleConverter : ValueConverter<Dictionary<LoadCaseId, double>, string>
+{
+    public DictIdToDoubleConverter()
+        : base(
+            x =>
+                JsonSerializer.Serialize(
+                    x.ToDictionary(k => (int)k.Key, v => v.Value),
+                    BeamOsSerializerOptions.Default
+                ),
+            x =>
+                JsonSerializer
+                    .Deserialize<Dictionary<int, double>>(x, BeamOsSerializerOptions.Default)
+                    .ToDictionary(k => new LoadCaseId(k.Key), v => v.Value)
+        ) { }
+}

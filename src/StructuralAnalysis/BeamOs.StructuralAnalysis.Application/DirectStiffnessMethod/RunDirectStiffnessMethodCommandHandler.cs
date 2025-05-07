@@ -43,18 +43,50 @@ public class RunDirectStiffnessMethodCommandHandler(
             $"{nameof(Model.Element1ds)}.{nameof(Element1d.StartNode)}",
             $"{nameof(Model.Element1ds)}.{nameof(Element1d.EndNode)}",
             $"{nameof(Model.Nodes)}.{nameof(Node.PointLoads)}",
-            $"{nameof(Model.Nodes)}.{nameof(Node.MomentLoads)}"
+            $"{nameof(Model.Nodes)}.{nameof(Node.MomentLoads)}",
+            $"{nameof(Model.LoadCombinations)}"
         );
 
+        if (model is null)
+        {
+            return BeamOsError.NotFound(
+                description: $"Could not find model with id {command.ModelId}"
+            );
+        }
+        if (model.LoadCombinations is null || model.LoadCombinations.Count == 0)
+        {
+            return BeamOsError.NotFound(
+                description: $"Model with id {command.ModelId} has no load combinations"
+            );
+        }
+
         var dsmModel = new DsmAnalysisModel(model, unitSettings);
+        AnalysisResults? result = null;
+        foreach (var loadCombination in model.LoadCombinations)
+        {
+            if (
+                command.LoadCombinationIds is not null
+                && !command.LoadCombinationIds.Contains(loadCombination.Id)
+            )
+            {
+                continue;
+            }
 
-        var analysisResults = dsmModel.RunAnalysis(solverFactory);
+            result = dsmModel.RunAnalysis(solverFactory, loadCombination);
+            resultSetRepository.Add(result.ResultSet);
+        }
 
-        resultSetRepository.Add(analysisResults.ResultSet);
+        if (result is null)
+        {
+            return BeamOsError.NotFound(
+                description: $"Could not find any load combinations with provided load combination ids"
+            );
+        }
 
         await unitOfWork.SaveChangesAsync(ct);
 
-        return analysisResults.OtherAnalyticalResults.Map();
+        // todo: aggregate results instead of returning the last one
+        return result.OtherAnalyticalResults.Map();
     }
 
     public static UnitSettings GetUnitSettings(string unitsOverride) =>
@@ -63,11 +95,10 @@ public class RunDirectStiffnessMethodCommandHandler(
             "k_in" or "k-in" => UnitSettings.K_IN,
             "k_ft" or "k-ft" => UnitSettings.K_FT,
             "kn_m" or "kn-m" => UnitSettings.kN_M,
-            _
-                => throw new ArgumentException(
-                    $"Invalid units override, {unitsOverride}",
-                    nameof(unitsOverride)
-                )
+            _ => throw new ArgumentException(
+                $"Invalid units override, {unitsOverride}",
+                nameof(unitsOverride)
+            ),
         };
 }
 
@@ -76,6 +107,7 @@ public readonly struct RunDsmCommand : IHasModelId
     public Guid ModelId { get; init; }
 
     public string? UnitsOverride { get; init; }
+    public List<int>? LoadCombinationIds { get; init; }
 }
 
 [Mapper]

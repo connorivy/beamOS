@@ -36,7 +36,7 @@ internal class TwistyBowlFramingGenerator(string speckleToken)
                 WeakAxisShearArea = 4.6905,
                 AreaUnit = AreaUnitContract.SquareInch,
                 AreaMomentOfInertiaUnit = AreaMomentOfInertiaUnitContract.InchToTheFourth,
-                Id = 1636
+                Id = 1636,
             }
         );
 
@@ -46,7 +46,7 @@ internal class TwistyBowlFramingGenerator(string speckleToken)
                 ModulusOfElasticity = 29000,
                 ModulusOfRigidity = 11_153.85,
                 PressureUnit = PressureUnitContract.KilopoundForcePerSquareInch,
-                Id = 992
+                Id = 992,
             }
         );
 
@@ -56,7 +56,7 @@ internal class TwistyBowlFramingGenerator(string speckleToken)
                 el with
                 {
                     MaterialId = 992,
-                    SectionProfileId = 1636
+                    SectionProfileId = 1636,
                 },
             NodeRequestModifier = static el =>
                 el with
@@ -66,8 +66,8 @@ internal class TwistyBowlFramingGenerator(string speckleToken)
                         el.LocationPoint.Z,
                         -el.LocationPoint.Y,
                         el.LocationPoint.LengthUnit
-                    )
-                }
+                    ),
+                },
         };
 
         await foreach (
@@ -93,14 +93,15 @@ internal class TwistyBowlFramingGenerator(string speckleToken)
                         new PutPointLoadRequest()
                         {
                             Id = putNodeRequest.Id,
+                            LoadCaseId = 1,
                             Direction = new()
                             {
                                 X = 0,
                                 Y = -1,
-                                Z = 0
+                                Z = 0,
                             },
                             Force = new(100, ForceUnitContract.Kilonewton),
-                            NodeId = putNodeRequest.Id
+                            NodeId = putNodeRequest.Id,
                         }
                     );
                 }

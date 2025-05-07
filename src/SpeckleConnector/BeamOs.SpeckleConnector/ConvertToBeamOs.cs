@@ -100,6 +100,7 @@ public class ConvertToBeamOs
                         new PutPointLoadRequest()
                         {
                             Id = putNodeRequest.Id,
+                            LoadCaseId = 1,
                             Direction = new()
                             {
                                 X = 0,

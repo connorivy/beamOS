@@ -1,14 +1,26 @@
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCombinations;
 using UnitsNet.Units;
 
 namespace BeamOs.Tests.Common.SolvedProblems.SAP2000;
 
 public partial class TwistyBowlFraming : ModelFixture, IHasExpectedNodeResults
 {
+    public override IEnumerable<LoadCase> LoadCaseRequests()
+    {
+        yield return new() { Name = "Load Case 1", Id = 1 };
+    }
+
+    public override IEnumerable<LoadCombination> LoadCombinationRequests()
+    {
+        yield return new LoadCombination(1, (1, 1.0));
+        yield return new LoadCombination(2, (1, 1.0));
+    }
+
     public override SourceInfo SourceInfo { get; } =
         new("SAP2000", FixtureSourceType.SAP2000, nameof(TwistyBowlFraming));
 
     public NodeResultFixture[] ExpectedNodeResults { get; } =
-
         [
             new()
             {
@@ -48,21 +60,23 @@ public partial class TwistyBowlFraming : ModelFixture, IHasExpectedNodeResults
                 NodeId = 5,
                 ForceAlongX = new(.562, ForceUnit.KilopoundForce),
                 ForceAlongY = new(-3.347, ForceUnit.KilopoundForce),
-                ForceAlongZ = new(-1.363, ForceUnit.KilopoundForce)
+                ForceAlongZ = new(-1.363, ForceUnit.KilopoundForce),
             },
-            new() {
+            new()
+            {
                 ResultSetId = 1,
                 NodeId = 50,
                 ForceAlongX = new(6.306, ForceUnit.KilopoundForce),
                 ForceAlongY = new(10.784, ForceUnit.KilopoundForce),
-                ForceAlongZ = new(1.566, ForceUnit.KilopoundForce)
+                ForceAlongZ = new(1.566, ForceUnit.KilopoundForce),
             },
-            new() {
+            new()
+            {
                 ResultSetId = 1,
                 NodeId = 100,
                 ForceAlongX = new(-.896, ForceUnit.KilopoundForce),
                 ForceAlongY = new(2.552, ForceUnit.KilopoundForce),
-                ForceAlongZ = new(-9.632, ForceUnit.KilopoundForce)
+                ForceAlongZ = new(-9.632, ForceUnit.KilopoundForce),
             },
             new()
             {
@@ -72,14 +86,16 @@ public partial class TwistyBowlFraming : ModelFixture, IHasExpectedNodeResults
                 DisplacementAlongY = new(.02335, LengthUnit.Inch),
                 DisplacementAlongZ = new(-.4936, LengthUnit.Inch),
             },
-            new() {
+            new()
+            {
                 ResultSetId = 1,
                 NodeId = 200,
                 ForceAlongX = new(-1.071, ForceUnit.KilopoundForce),
                 ForceAlongY = new(12.826, ForceUnit.KilopoundForce),
-                ForceAlongZ = new(-4.702, ForceUnit.KilopoundForce)
+                ForceAlongZ = new(-4.702, ForceUnit.KilopoundForce),
             },
-            new() {
+            new()
+            {
                 ResultSetId = 1,
                 NodeId = 300,
                 DisplacementAlongX = new(-.0436, LengthUnit.Inch),
@@ -95,16 +111,18 @@ public partial class TwistyBowlFraming : ModelFixture, IHasExpectedNodeResults
                 DisplacementAlongZ = new(.57138, LengthUnit.Centimeter),
                 RotationAboutX = new(-3.620e-4, AngleUnit.Radian),
                 RotationAboutY = new(.00158, AngleUnit.Radian),
-                RotationAboutZ = new(1.173e-4, AngleUnit.Radian)
+                RotationAboutZ = new(1.173e-4, AngleUnit.Radian),
             },
-            new() {
+            new()
+            {
                 ResultSetId = 1,
                 NodeId = 400,
                 DisplacementAlongX = new(-.45241, LengthUnit.Inch),
                 DisplacementAlongY = new(-.01802, LengthUnit.Inch),
                 DisplacementAlongZ = new(-.53931, LengthUnit.Inch),
             },
-            new() {
+            new()
+            {
                 ResultSetId = 1,
                 NodeId = 500,
                 DisplacementAlongX = new(.27826, LengthUnit.Inch),

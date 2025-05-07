@@ -5,12 +5,16 @@ using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.NodeResult;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCombinations;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoad;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCases;
+using LoadCase = BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases.LoadCase;
 
 namespace BeamOs.StructuralAnalysis.Contracts.Common;
 
@@ -41,6 +45,12 @@ namespace BeamOs.StructuralAnalysis.Contracts.Common;
 [JsonSerializable(typeof(UpdateNodeRequest))]
 [JsonSerializable(typeof(NodeResponse))]
 [JsonSerializable(typeof(SpeckleReceiveParameters))]
+[JsonSerializable(typeof(RunDsmRequest))]
+[JsonSerializable(typeof(LoadCaseData))]
+[JsonSerializable(typeof(IEnumerable<LoadCase>))]
+[JsonSerializable(typeof(Dictionary<int, double>))]
+[JsonSerializable(typeof(LoadCombinationData))]
+[JsonSerializable(typeof(IEnumerable<LoadCombination>))]
 [JsonSerializable(typeof(Result<NodeResponse>))]
 [JsonSerializable(typeof(Result<ModelResponse>))]
 [JsonSerializable(typeof(Result<ModelResponseHydrated>))]
@@ -56,6 +66,8 @@ namespace BeamOs.StructuralAnalysis.Contracts.Common;
 [JsonSerializable(typeof(Result<AnalyticalResultsResponse>))]
 [JsonSerializable(typeof(Result<BatchResponse>))]
 [JsonSerializable(typeof(Result<BeamOsModelBuilderDto>))]
+[JsonSerializable(typeof(Result<LoadCase>))]
+[JsonSerializable(typeof(Result<LoadCombination>))]
 [JsonSerializable(typeof(DiagramConsistentIntervalResponse))]
 [JsonSerializable(typeof(MomentDiagramResponse))]
 [JsonSerializable(typeof(Result<int>))]

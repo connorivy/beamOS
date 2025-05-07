@@ -6,7 +6,7 @@ using UnitsNet.Units;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration;
 
-[ParallelGroup("DsmTests")]
+// [ParallelGroup("DsmTests")]
 public partial class DsmTests
 {
     [Before(HookType.Class)]
@@ -14,17 +14,17 @@ public partial class DsmTests
     {
         foreach (var modelBuilder in AllSolvedProblems.ModelFixtures())
         {
-            await modelBuilder.InitializeAsync();
-
             await modelBuilder.CreateOnly(AssemblySetup.StructuralAnalysisApiClient);
 
-            await AssemblySetup
-                .StructuralAnalysisApiClient
-                .DeleteAllResultSetsAsync(modelBuilder.Id);
-
-            var resultSetIdResponse = await AssemblySetup
-                .StructuralAnalysisApiClient
-                .RunDirectStiffnessMethodAsync(modelBuilder.Id);
+            // await AssemblySetup.StructuralAnalysisApiClient.DeleteAllResultSetsAsync(
+            //     modelBuilder.Id
+            // );
+            //
+            var resultSetIdResponse =
+                await AssemblySetup.StructuralAnalysisApiClient.RunDirectStiffnessMethodAsync(
+                    modelBuilder.Id,
+                    new() { LoadCombinationIds = [2] }
+                );
 
             resultSetIdResponse.ThrowIfError();
         }
@@ -50,13 +50,11 @@ public partial class DsmTests
                 || expectedNodeDisplacementResult.RotationAboutZ.HasValue
             )
             {
-                var result = await AssemblySetup
-                    .StructuralAnalysisApiClient
-                    .GetNodeResultAsync(
-                        modelFixture.Id,
-                        expectedNodeDisplacementResult.ResultSetId,
-                        expectedNodeDisplacementResult.NodeId
-                    );
+                var result = await AssemblySetup.StructuralAnalysisApiClient.GetNodeResultAsync(
+                    modelFixture.Id,
+                    2,
+                    expectedNodeDisplacementResult.NodeId
+                );
 
                 result.ThrowIfError();
 
@@ -80,13 +78,11 @@ public partial class DsmTests
                 || expectedNodeDisplacementResult.TorqueAboutZ.HasValue
             )
             {
-                var result = await AssemblySetup
-                    .StructuralAnalysisApiClient
-                    .GetNodeResultAsync(
-                        modelFixture.Id,
-                        expectedNodeDisplacementResult.ResultSetId,
-                        expectedNodeDisplacementResult.NodeId
-                    );
+                var result = await AssemblySetup.StructuralAnalysisApiClient.GetNodeResultAsync(
+                    modelFixture.Id,
+                    2,
+                    expectedNodeDisplacementResult.NodeId
+                );
 
                 result.ThrowIfError();
 
@@ -117,26 +113,23 @@ public partial class DsmTests
             beamOsObjectType,
             dbId,
             "Node Displacement",
-
             [
                 expected.DisplacementAlongX?.As(lengthUnit),
                 expected.DisplacementAlongY?.As(lengthUnit),
                 expected.DisplacementAlongZ?.As(lengthUnit),
                 expected.RotationAboutX?.As(angleUnit),
                 expected.RotationAboutY?.As(angleUnit),
-                expected.RotationAboutZ?.As(angleUnit)
+                expected.RotationAboutZ?.As(angleUnit),
             ],
-
             [
                 calculated.DisplacementAlongX.Value,
                 calculated.DisplacementAlongY.Value,
                 calculated.DisplacementAlongZ.Value,
                 calculated.RotationAboutX.Value,
                 calculated.RotationAboutY.Value,
-                calculated.RotationAboutZ.Value
+                calculated.RotationAboutZ.Value,
             ],
             precision,
-
             [
                 nameof(expected.DisplacementAlongX),
                 nameof(expected.DisplacementAlongY),
@@ -162,26 +155,23 @@ public partial class DsmTests
             beamOsObjectType,
             dbId,
             "Node Reactions",
-
             [
                 expected.ForceAlongX?.As(forceUnit),
                 expected.ForceAlongY?.As(forceUnit),
                 expected.ForceAlongZ?.As(forceUnit),
                 expected.TorqueAboutX?.As(torqueUnit),
                 expected.TorqueAboutY?.As(torqueUnit),
-                expected.TorqueAboutZ?.As(torqueUnit)
+                expected.TorqueAboutZ?.As(torqueUnit),
             ],
-
             [
                 calculated.ForceAlongX.Value,
                 calculated.ForceAlongY.Value,
                 calculated.ForceAlongZ.Value,
                 calculated.MomentAboutX.Value,
                 calculated.MomentAboutY.Value,
-                calculated.MomentAboutZ.Value
+                calculated.MomentAboutZ.Value,
             ],
             precision,
-
             [
                 nameof(calculated.ForceAlongX),
                 nameof(calculated.ForceAlongY),
@@ -200,15 +190,16 @@ public partial class DsmTests
     )]
     public async Task ShearDiagrams_ShouldHaveCorrectMaxAndMinValue(ModelFixture modelFixture)
     {
-        var resultSet = await AssemblySetup
-            .StructuralAnalysisApiClient
-            .GetResultSetAsync(modelFixture.Id, 1);
+        var resultSet = await AssemblySetup.StructuralAnalysisApiClient.GetResultSetAsync(
+            modelFixture.Id,
+            2
+        );
 
         resultSet.ThrowIfError();
 
-        var expectedDiagramResultsDict = ((IHasExpectedDiagramResults)modelFixture)
-            .ExpectedDiagramResults
-            .ToDictionary(x => x.NodeId);
+        var expectedDiagramResultsDict = (
+            (IHasExpectedDiagramResults)modelFixture
+        ).ExpectedDiagramResults.ToDictionary(x => x.NodeId);
 
         if (expectedDiagramResultsDict.Count == 0)
         {
@@ -232,7 +223,6 @@ public partial class DsmTests
                 BeamOsObjectType.Element1d,
                 element1dResult.Element1dId.ToString(),
                 "Diagram Results",
-
                 [
                     expectedDiagramResult.MinShear?.As(unitSettings.ForceUnit),
                     expectedDiagramResult.MaxShear?.As(unitSettings.ForceUnit),
@@ -241,7 +231,6 @@ public partial class DsmTests
                     expectedDiagramResult.MinDeflection?.As(unitSettings.LengthUnit),
                     expectedDiagramResult.MaxDeflection?.As(unitSettings.LengthUnit),
                 ],
-
                 [
                     element1dResult.MinShear.Value,
                     element1dResult.MaxShear.Value,

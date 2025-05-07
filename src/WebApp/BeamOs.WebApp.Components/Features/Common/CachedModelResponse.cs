@@ -4,6 +4,8 @@ using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.NodeResult;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCombinations;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoad;
@@ -34,6 +36,8 @@ public record CachedModelResponse
     public ImmutableDictionary<int, ShearDiagramResponse>? ShearDiagrams { get; init; }
     public ImmutableDictionary<int, MomentDiagramResponse>? MomentDiagrams { get; init; }
     public ImmutableDictionary<int, DeflectionDiagramResponse>? DeflectionDiagrams { get; init; }
+    public ImmutableDictionary<int, LoadCase> LoadCases { get; init; }
+    public ImmutableDictionary<int, LoadCombination> LoadCombinations { get; init; }
 
     public CachedModelResponse(ModelResponse modelResponse)
         : this(
@@ -47,33 +51,33 @@ public record CachedModelResponse
             modelResponse.SectionProfiles.ToImmutableDictionary(el => el.Id, el => el),
             modelResponse.PointLoads.ToImmutableDictionary(el => el.Id, el => el),
             modelResponse.MomentLoads.ToImmutableDictionary(el => el.Id, el => el),
-            modelResponse
-                .ResultSets
-                .ToImmutableDictionary(
-                    el => el.Id,
-                    el => el.NodeResults.ToImmutableDictionary(el => el.NodeId)
-                )
+            modelResponse.ResultSets.ToImmutableDictionary(
+                el => el.Id,
+                el => el.NodeResults.ToImmutableDictionary(el => el.NodeId)
+            ),
+            modelResponse.LoadCases.ToImmutableDictionary(el => el.Id, el => el),
+            modelResponse.LoadCombinations.ToImmutableDictionary(el => el.Id, el => el)
         ) { }
 
-    public CachedModelResponse(ModelResponseHydrated modelResponse)
-        : this(
-            modelResponse.Id,
-            modelResponse.Name,
-            modelResponse.Description,
-            modelResponse.Settings,
-            modelResponse.Nodes.ToImmutableDictionary(el => el.Id, el => el),
-            modelResponse.Element1ds.ToImmutableDictionary(el => el.Id, el => el),
-            modelResponse.Materials.ToImmutableDictionary(el => el.Id, el => el),
-            modelResponse.SectionProfiles.ToImmutableDictionary(el => el.Id, el => el),
-            modelResponse.PointLoads.ToImmutableDictionary(el => el.Id, el => el),
-            modelResponse.MomentLoads.ToImmutableDictionary(el => el.Id, el => el),
-            modelResponse
-                .ResultSets
-                .ToImmutableDictionary(
-                    el => el.Id,
-                    el => el.NodeResults.ToImmutableDictionary(el => el.NodeId)
-                )
-        ) { }
+    // public CachedModelResponse(ModelResponseHydrated modelResponse)
+    //     : this(
+    //         modelResponse.Id,
+    //         modelResponse.Name,
+    //         modelResponse.Description,
+    //         modelResponse.Settings,
+    //         modelResponse.Nodes.ToImmutableDictionary(el => el.Id, el => el),
+    //         modelResponse.Element1ds.ToImmutableDictionary(el => el.Id, el => el),
+    //         modelResponse.Materials.ToImmutableDictionary(el => el.Id, el => el),
+    //         modelResponse.SectionProfiles.ToImmutableDictionary(el => el.Id, el => el),
+    //         modelResponse.PointLoads.ToImmutableDictionary(el => el.Id, el => el),
+    //         modelResponse.MomentLoads.ToImmutableDictionary(el => el.Id, el => el),
+    //         modelResponse.ResultSets.ToImmutableDictionary(
+    //             el => el.Id,
+    //             el => el.NodeResults.ToImmutableDictionary(el => el.NodeId)
+    //         ),
+    //         modelResponse.LoadCases.ToImmutableDictionary(el => el.Id, el => el),
+    //         modelResponse.LoadCombinations.ToImmutableDictionary(el => el.Id, el => el)
+    //     ) { }
 
     [JsonConstructor]
     public CachedModelResponse(
@@ -87,7 +91,9 @@ public record CachedModelResponse
         ImmutableDictionary<int, SectionProfileResponse> sectionProfiles,
         ImmutableDictionary<int, PointLoadResponse> pointLoads,
         ImmutableDictionary<int, MomentLoadResponse> momentLoads,
-        ImmutableDictionary<int, ImmutableDictionary<int, NodeResultResponse>> nodeResults
+        ImmutableDictionary<int, ImmutableDictionary<int, NodeResultResponse>> nodeResults,
+        ImmutableDictionary<int, LoadCase> loadCases,
+        ImmutableDictionary<int, LoadCombination> loadCombinations
     )
     {
         this.Id = id;
@@ -101,6 +107,8 @@ public record CachedModelResponse
         this.PointLoads = pointLoads;
         this.MomentLoads = momentLoads;
         this.NodeResults = nodeResults;
+        this.LoadCases = loadCases;
+        this.LoadCombinations = loadCombinations;
     }
 }
 

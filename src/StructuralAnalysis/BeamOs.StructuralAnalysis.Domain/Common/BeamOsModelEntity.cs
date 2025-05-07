@@ -16,7 +16,7 @@ public class BeamOsModelEntity<TId> : BeamOsEntity<TId>, IBeamOsModelEntity
         this.ModelId = modelId;
     }
 
-    [DatabaseGenerated(DatabaseGeneratedOption.None)]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public override TId Id
     {
         get => base.Id;

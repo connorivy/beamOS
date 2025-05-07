@@ -1,3 +1,4 @@
+@using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases
 @inherits FluxorComponent
 
 <MudContainer Gutters="false" Class=@($"rounded pointer-events-none")>
@@ -6,6 +7,15 @@
             <MudAutocomplete InputMode="InputMode.numeric" MaxItems="@ResultLimit" T="int" @bind-Value="PointLoadId"
                 Text="@PointLoadIdText" SearchFunc="PointLoadIds"
                 ToStringFunc="@(id => id == 0 ? "New Point Load" : id.ToString())" Label="Point Load Id">
+                <MoreItemsTemplate>
+                    <MudText Align="Align.Center" Class="px-4 py-1">
+                        Only the first @ResultLimit.ToString() items are shown. Type to refine results.
+                    </MudText>
+                </MoreItemsTemplate>
+            </MudAutocomplete>
+
+            <MudAutocomplete InputMode="InputMode.numeric" MaxItems="@ResultLimit" T="LoadCase" SearchFunc="LoadCases"
+                @bind-Value="LoadCase" ToStringFunc="@(c => c.Name)" Label="Load Case" Required="true">
                 <MoreItemsTemplate>
                     <MudText Align="Align.Center" Class="px-4 py-1">
                         Only the first @ResultLimit.ToString() items are shown. Type to refine results.

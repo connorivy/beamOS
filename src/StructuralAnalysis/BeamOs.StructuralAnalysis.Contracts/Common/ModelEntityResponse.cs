@@ -13,5 +13,9 @@ public enum BeamOsObjectType
     Material,
     SectionProfile,
     PointLoad,
-    MomentLoad
+    MomentLoad,
+    DistributedLoad,
+    DistributedMomentLoad,
+    LoadCase,
+    LoadCombination,
 }

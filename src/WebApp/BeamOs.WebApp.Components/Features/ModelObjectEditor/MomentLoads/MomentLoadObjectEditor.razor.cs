@@ -3,6 +3,7 @@ using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.MomentLoads;
 using BeamOs.StructuralAnalysis.Contracts.Common;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoad;
 using BeamOs.WebApp.Components.Features.Editor;
 using BeamOs.WebApp.Components.Features.SelectionInfo;
@@ -37,10 +38,18 @@ public partial class MomentLoadObjectEditor(
         }
     }
 
+    private LoadCase? LoadCase
+    {
+        get =>
+            editorState.Value.CachedModelResponse.LoadCases.GetValueOrDefault(
+                this.momentLoad.LoadCaseId
+            );
+        set => this.momentLoad.LoadCaseId = value.Id;
+    }
     private const int ResultLimit = 50;
 
     private string MomentLoadIdText =>
-        this.MomentLoadId == 0 ? "New MomentLoad" : this.MomentLoadId.ToString();
+        this.MomentLoadId == 0 ? "New Moment Load" : this.MomentLoadId.ToString();
 
     [Parameter]
     public required UnitSettingsContract UnitSettings { get; set; }
@@ -96,9 +105,9 @@ public partial class MomentLoadObjectEditor(
         this.momentLoad.Id = response.Id;
         this.momentLoad.ModelId = response.ModelId;
         this.momentLoad.NodeId = response.NodeId;
+        this.momentLoad.LoadCaseId = response.LoadCaseId;
         this.momentLoad.Torque = response
-            .Torque
-            .MapToTorque()
+            .Torque.MapToTorque()
             .As(this.UnitSettings.TorqueUnit.MapToTorqueUnit());
         this.momentLoad.AxisDirection = new(
             response.AxisDirection.X,
@@ -120,18 +129,17 @@ public partial class MomentLoadObjectEditor(
 
     private async Task Submit()
     {
-        MomentLoadData nodeData =
-            new()
-            {
-                NodeId = this.momentLoad.NodeId,
-                Torque = new(this.momentLoad.Torque.Value, this.UnitSettings.TorqueUnit),
-                AxisDirection = new(
-            this.momentLoad.AxisDirection.X.Value,
-            this.momentLoad.AxisDirection.Y.Value,
-            this.momentLoad.AxisDirection.Z.Value
-        )
-
-            };
+        MomentLoadData nodeData = new()
+        {
+            NodeId = this.momentLoad.NodeId,
+            LoadCaseId = this.momentLoad.Id,
+            Torque = new(this.momentLoad.Torque.Value, this.UnitSettings.TorqueUnit),
+            AxisDirection = new(
+                this.momentLoad.AxisDirection.X.Value,
+                this.momentLoad.AxisDirection.Y.Value,
+                this.momentLoad.AxisDirection.Z.Value
+            ),
+        };
 
         if (this.momentLoad.Id == 0)
         {
@@ -140,13 +148,12 @@ public partial class MomentLoadObjectEditor(
         }
         else
         {
-            PutMomentLoadCommand command =
-                new()
-                {
-                    Id = this.momentLoad.Id,
-                    ModelId = this.ModelId,
-                    Body = nodeData
-                };
+            PutMomentLoadCommand command = new()
+            {
+                Id = this.momentLoad.Id,
+                ModelId = this.ModelId,
+                Body = nodeData,
+            };
 
             await putMomentLoadCommandHandler.ExecuteAsync(command);
         }
@@ -160,7 +167,7 @@ public partial class MomentLoadObjectEditor(
         {
             return Task.FromResult(
                 NullInt.Concat(editorState.Value.CachedModelResponse.MomentLoads.Keys)
-          );
+            );
         }
 
         // Get the number of digits in the subInt
@@ -168,12 +175,9 @@ public partial class MomentLoadObjectEditor(
 
         return Task.FromResult(
             NullInt.Concat(
-                editorState
-                    .Value
-                    .CachedModelResponse
-                    .MomentLoads
-                    .Keys
-                    .Where(k => GetPrefix(k, subIntLength) == subInt)
+                editorState.Value.CachedModelResponse.MomentLoads.Keys.Where(k =>
+                    GetPrefix(k, subIntLength) == subInt
+                )
             )
         );
     }
@@ -241,6 +245,18 @@ public partial class MomentLoadObjectEditor(
         return number / (int)Math.Pow(10, numberOfDigits - prefixLength);
     }
 
+    private Task<IEnumerable<LoadCase>> LoadCases(string searchText, CancellationToken ct)
+    {
+        IEnumerable<LoadCase> result = editorState.Value.CachedModelResponse.LoadCases.Values;
+        if (!string.IsNullOrWhiteSpace(searchText))
+        {
+            result = result.Where(lc =>
+                lc.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase)
+            );
+        }
+        return Task.FromResult(result.OrderBy(lc => lc.Name).AsEnumerable());
+    }
+
     // protected override ValueTask DisposeAsyncCore(bool disposing)
     // {
     //     putMomentLoadCommandHandler.IsLoadingChanged -= this.PutMomentLoadCommandHandler_IsLoadingChanged;
@@ -254,6 +270,7 @@ public partial class MomentLoadObjectEditor(
         public int Id { get; set; }
         public Guid ModelId { get; set; }
         public int NodeId { get; set; }
+        public int LoadCaseId { get; set; }
         public double? Torque { get; set; }
         public Vector3 AxisDirection { get; set; } = new(0, 0, 1);
     }

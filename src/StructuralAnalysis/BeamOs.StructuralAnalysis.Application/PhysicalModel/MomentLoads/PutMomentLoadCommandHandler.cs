@@ -61,6 +61,7 @@ public readonly struct PutMomentLoadCommand : IModelResourceWithIntIdRequest<Mom
     public Guid ModelId { get; init; }
     public MomentLoadData Body { get; init; }
     public int NodeId => this.Body.NodeId;
+    public int LoadCaseId => this.Body.LoadCaseId;
     public TorqueContract Torque => this.Body.Torque;
     public Contracts.Common.Vector3 AxisDirection => this.Body.AxisDirection;
 

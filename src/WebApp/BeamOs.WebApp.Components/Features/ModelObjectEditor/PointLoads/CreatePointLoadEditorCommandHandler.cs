@@ -28,6 +28,7 @@ public sealed class CreatePointLoadEditorCommandHandler(
             new PointLoadResponse(
                 command.TempPointLoadId,
                 command.Data.NodeId,
+                command.Data.LoadCaseId,
                 command.ModelId,
                 command.Data.Force,
                 command.Data.Direction
@@ -43,6 +44,7 @@ public sealed class CreatePointLoadEditorCommandHandler(
         var request = new CreatePointLoadRequest
         {
             NodeId = command.Data.NodeId,
+            LoadCaseId = command.Data.LoadCaseId,
             Force = command.Data.Force,
             Direction = command.Data.Direction,
         };
@@ -124,7 +126,7 @@ public record CreatePointLoadClientCommand(PointLoadData Data) : IBeamOsClientCo
             Data = this.Data,
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
             HandledByEditor = args?.HandledByEditor ?? this.HandledByEditor,
-            HandledByServer = args?.HandledByServer ?? this.HandledByServer
+            HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 
     public IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
@@ -132,6 +134,6 @@ public record CreatePointLoadClientCommand(PointLoadData Data) : IBeamOsClientCo
         {
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
             HandledByEditor = args?.HandledByEditor ?? this.HandledByEditor,
-            HandledByServer = args?.HandledByServer ?? this.HandledByServer
+            HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 }

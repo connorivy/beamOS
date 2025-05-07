@@ -1,4 +1,4 @@
-namespace BeamOs.Common.Contracts;
+namespace BeamOs.StructuralAnalysis.Api.Endpoints;
 
 /// <summary>
 /// These attributes are only used in debug mode to generate the correct openapi schema.
@@ -25,6 +25,19 @@ public class FromRouteAttribute
 public class FromQueryAttribute
 #if DEBUG
     : Microsoft.AspNetCore.Mvc.FromQueryAttribute
+#else
+    : Attribute
+#endif
+{ }
+
+[AttributeUsage(
+    AttributeTargets.Property | AttributeTargets.Parameter,
+    AllowMultiple = false,
+    Inherited = true
+)]
+public class FromBodyAttribute
+#if DEBUG
+    : Microsoft.AspNetCore.Mvc.FromBodyAttribute
 #else
     : Attribute
 #endif

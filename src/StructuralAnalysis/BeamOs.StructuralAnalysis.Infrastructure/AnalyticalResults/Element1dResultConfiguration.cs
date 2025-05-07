@@ -18,6 +18,6 @@ public class Element1dResultConfiguration : IEntityTypeConfiguration<Element1dRe
             .HasOne(e => e.Model)
             .WithMany()
             .HasForeignKey(e => e.ModelId)
-            .OnDelete(DeleteBehavior.ClientCascade);
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

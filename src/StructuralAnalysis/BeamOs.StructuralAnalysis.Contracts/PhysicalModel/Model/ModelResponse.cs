@@ -4,6 +4,8 @@ using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCombinations;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoad;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
@@ -33,7 +35,9 @@ public record ModelResponse(
     List<SectionProfileResponse>? SectionProfiles = null,
     List<PointLoadResponse>? PointLoads = null,
     List<MomentLoadResponse>? MomentLoads = null,
-    List<ResultSetResponse>? ResultSets = null
+    List<ResultSetResponse>? ResultSets = null,
+    List<LoadCase>? LoadCases = null,
+    List<LoadCombination>? LoadCombinations = null
 ) : IBeamOsEntityResponse;
 
 public record ModelResponseHydrated(
@@ -88,5 +92,5 @@ public enum Element1dAnalysisType
 {
     Undefined = 0,
     Euler = 1,
-    Timoshenko = 2
+    Timoshenko = 2,
 }

@@ -12,19 +12,29 @@ public partial class OpenSeesTests
             return;
         }
 
+        List<Task> analysisTasks = [];
         foreach (var modelBuilder in AllSolvedProblems.ModelFixtures())
         {
-            await modelBuilder.CreateOnly(AssemblySetup.StructuralAnalysisApiClient);
-
-            await AssemblySetup
-                .StructuralAnalysisApiClient
-                .DeleteAllResultSetsAsync(modelBuilder.Id);
-
-            var resultSetIdResponse = await AssemblySetup
-                .StructuralAnalysisApiClient
-                .RunOpenSeesAnalysisAsync(modelBuilder.Id);
-
-            resultSetIdResponse.ThrowIfError();
+            analysisTasks.Add(RunOpenSeesAnalysis(modelBuilder));
         }
+        // var analysisTasks = AllSolvedProblems.ModelFixtures().Select(RunOpenSeesAnalysis).ToList();
+
+        await Task.WhenAll(analysisTasks);
+    }
+
+    private static async Task RunOpenSeesAnalysis(
+        ModelFixture modelBuilder,
+        int loadCombinationId = 1
+    )
+    {
+        await modelBuilder.CreateOnly(AssemblySetup.StructuralAnalysisApiClient);
+
+        var resultSetIdResponse =
+            await AssemblySetup.StructuralAnalysisApiClient.RunOpenSeesAnalysisAsync(
+                modelBuilder.Id,
+                new() { LoadCombinationIds = [loadCombinationId] }
+            );
+
+        resultSetIdResponse.ThrowIfError();
     }
 }

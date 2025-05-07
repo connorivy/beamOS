@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -37,10 +38,51 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "LoadCases",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ModelId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LoadCases", x => new { x.Id, x.ModelId });
+                    table.ForeignKey(
+                        name: "FK_LoadCases_Models_ModelId",
+                        column: x => x.ModelId,
+                        principalTable: "Models",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LoadCombinations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ModelId = table.Column<Guid>(type: "uuid", nullable: false),
+                    LoadCaseFactors = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LoadCombinations", x => new { x.Id, x.ModelId });
+                    table.ForeignKey(
+                        name: "FK_LoadCombinations_Models_ModelId",
+                        column: x => x.ModelId,
+                        principalTable: "Models",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Materials",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ModelId = table.Column<Guid>(type: "uuid", nullable: false),
                     ModulusOfElasticity = table.Column<double>(type: "double precision", nullable: false),
                     ModulusOfRigidity = table.Column<double>(type: "double precision", nullable: false)
@@ -60,7 +102,8 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                 name: "Nodes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ModelId = table.Column<Guid>(type: "uuid", nullable: false),
                     LocationPoint_X = table.Column<double>(type: "double precision", nullable: false),
                     LocationPoint_Y = table.Column<double>(type: "double precision", nullable: false),
@@ -84,28 +127,11 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ResultSets",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false),
-                    ModelId = table.Column<Guid>(type: "uuid", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ResultSets", x => new { x.Id, x.ModelId });
-                    table.ForeignKey(
-                        name: "FK_ResultSets_Models_ModelId",
-                        column: x => x.ModelId,
-                        principalTable: "Models",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "SectionProfiles",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ModelId = table.Column<Guid>(type: "uuid", nullable: false),
                     Area = table.Column<double>(type: "double precision", nullable: false),
                     StrongAxisMomentOfInertia = table.Column<double>(type: "double precision", nullable: false),
@@ -126,12 +152,46 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ResultSets",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ModelId = table.Column<Guid>(type: "uuid", nullable: false),
+                    LoadCombinationId = table.Column<int>(type: "integer", nullable: false),
+                    LoadCombinationModelId = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ResultSets", x => new { x.Id, x.ModelId });
+                    table.ForeignKey(
+                        name: "FK_ResultSets_LoadCombinations_LoadCombinationId_LoadCombinati~",
+                        columns: x => new { x.LoadCombinationId, x.LoadCombinationModelId },
+                        principalTable: "LoadCombinations",
+                        principalColumns: new[] { "Id", "ModelId" });
+                    table.ForeignKey(
+                        name: "FK_ResultSets_LoadCombinations_LoadCombinationId_ModelId",
+                        columns: x => new { x.LoadCombinationId, x.ModelId },
+                        principalTable: "LoadCombinations",
+                        principalColumns: new[] { "Id", "ModelId" },
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ResultSets_Models_ModelId",
+                        column: x => x.ModelId,
+                        principalTable: "Models",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "MomentLoads",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ModelId = table.Column<Guid>(type: "uuid", nullable: false),
                     NodeId = table.Column<int>(type: "integer", nullable: false),
+                    LoadCaseId = table.Column<int>(type: "integer", nullable: false),
                     Torque = table.Column<double>(type: "double precision", nullable: false),
                     AxisDirection_X = table.Column<double>(type: "double precision", nullable: false),
                     AxisDirection_Y = table.Column<double>(type: "double precision", nullable: false),
@@ -140,6 +200,11 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_MomentLoads", x => new { x.Id, x.ModelId });
+                    table.ForeignKey(
+                        name: "FK_MomentLoads_LoadCases_LoadCaseId_ModelId",
+                        columns: x => new { x.LoadCaseId, x.ModelId },
+                        principalTable: "LoadCases",
+                        principalColumns: new[] { "Id", "ModelId" });
                     table.ForeignKey(
                         name: "FK_MomentLoads_Models_ModelId",
                         column: x => x.ModelId,
@@ -157,15 +222,22 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                 name: "PointLoads",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ModelId = table.Column<Guid>(type: "uuid", nullable: false),
                     NodeId = table.Column<int>(type: "integer", nullable: false),
+                    LoadCaseId = table.Column<int>(type: "integer", nullable: false),
                     Force = table.Column<double>(type: "double precision", nullable: false),
                     Direction = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PointLoads", x => new { x.Id, x.ModelId });
+                    table.ForeignKey(
+                        name: "FK_PointLoads_LoadCases_LoadCaseId_ModelId",
+                        columns: x => new { x.LoadCaseId, x.ModelId },
+                        principalTable: "LoadCases",
+                        principalColumns: new[] { "Id", "ModelId" });
                     table.ForeignKey(
                         name: "FK_PointLoads_Models_ModelId",
                         column: x => x.ModelId,
@@ -180,76 +252,11 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Element1dResults",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false),
-                    ModelId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ResultSetId = table.Column<int>(type: "integer", nullable: false),
-                    MaxShear = table.Column<double>(type: "double precision", nullable: false),
-                    MinShear = table.Column<double>(type: "double precision", nullable: false),
-                    MaxMoment = table.Column<double>(type: "double precision", nullable: false),
-                    MinMoment = table.Column<double>(type: "double precision", nullable: false),
-                    MaxDisplacement = table.Column<double>(type: "double precision", nullable: false),
-                    MinDisplacement = table.Column<double>(type: "double precision", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Element1dResults", x => new { x.Id, x.ResultSetId, x.ModelId });
-                    table.ForeignKey(
-                        name: "FK_Element1dResults_Models_ModelId",
-                        column: x => x.ModelId,
-                        principalTable: "Models",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Element1dResults_ResultSets_ResultSetId_ModelId",
-                        columns: x => new { x.ResultSetId, x.ModelId },
-                        principalTable: "ResultSets",
-                        principalColumns: new[] { "Id", "ModelId" },
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "NodeResults",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false),
-                    ModelId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ResultSetId = table.Column<int>(type: "integer", nullable: false),
-                    Displacements_DisplacementAlongX = table.Column<double>(type: "double precision", nullable: false),
-                    Displacements_DisplacementAlongY = table.Column<double>(type: "double precision", nullable: false),
-                    Displacements_DisplacementAlongZ = table.Column<double>(type: "double precision", nullable: false),
-                    Displacements_RotationAboutX = table.Column<double>(type: "double precision", nullable: false),
-                    Displacements_RotationAboutY = table.Column<double>(type: "double precision", nullable: false),
-                    Displacements_RotationAboutZ = table.Column<double>(type: "double precision", nullable: false),
-                    Forces_ForceAlongX = table.Column<double>(type: "double precision", nullable: false),
-                    Forces_ForceAlongY = table.Column<double>(type: "double precision", nullable: false),
-                    Forces_ForceAlongZ = table.Column<double>(type: "double precision", nullable: false),
-                    Forces_MomentAboutX = table.Column<double>(type: "double precision", nullable: false),
-                    Forces_MomentAboutY = table.Column<double>(type: "double precision", nullable: false),
-                    Forces_MomentAboutZ = table.Column<double>(type: "double precision", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_NodeResults", x => new { x.Id, x.ResultSetId, x.ModelId });
-                    table.ForeignKey(
-                        name: "FK_NodeResults_Models_ModelId",
-                        column: x => x.ModelId,
-                        principalTable: "Models",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_NodeResults_ResultSets_ResultSetId_ModelId",
-                        columns: x => new { x.ResultSetId, x.ModelId },
-                        principalTable: "ResultSets",
-                        principalColumns: new[] { "Id", "ModelId" },
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Element1ds",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ModelId = table.Column<Guid>(type: "uuid", nullable: false),
                     StartNodeId = table.Column<int>(type: "integer", nullable: false),
                     EndNodeId = table.Column<int>(type: "integer", nullable: false),
@@ -288,6 +295,74 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                         principalColumns: new[] { "Id", "ModelId" });
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Element1dResults",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false),
+                    ModelId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ResultSetId = table.Column<int>(type: "integer", nullable: false),
+                    MaxShear = table.Column<double>(type: "double precision", nullable: false),
+                    MinShear = table.Column<double>(type: "double precision", nullable: false),
+                    MaxMoment = table.Column<double>(type: "double precision", nullable: false),
+                    MinMoment = table.Column<double>(type: "double precision", nullable: false),
+                    MaxDisplacement = table.Column<double>(type: "double precision", nullable: false),
+                    MinDisplacement = table.Column<double>(type: "double precision", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Element1dResults", x => new { x.Id, x.ResultSetId, x.ModelId });
+                    table.ForeignKey(
+                        name: "FK_Element1dResults_Models_ModelId",
+                        column: x => x.ModelId,
+                        principalTable: "Models",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Element1dResults_ResultSets_ResultSetId_ModelId",
+                        columns: x => new { x.ResultSetId, x.ModelId },
+                        principalTable: "ResultSets",
+                        principalColumns: new[] { "Id", "ModelId" },
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "NodeResults",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false),
+                    ModelId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ResultSetId = table.Column<int>(type: "integer", nullable: false),
+                    Displacements_DisplacementAlongX = table.Column<double>(type: "double precision", nullable: false),
+                    Displacements_DisplacementAlongY = table.Column<double>(type: "double precision", nullable: false),
+                    Displacements_DisplacementAlongZ = table.Column<double>(type: "double precision", nullable: false),
+                    Displacements_RotationAboutX = table.Column<double>(type: "double precision", nullable: false),
+                    Displacements_RotationAboutY = table.Column<double>(type: "double precision", nullable: false),
+                    Displacements_RotationAboutZ = table.Column<double>(type: "double precision", nullable: false),
+                    Forces_ForceAlongX = table.Column<double>(type: "double precision", nullable: false),
+                    Forces_ForceAlongY = table.Column<double>(type: "double precision", nullable: false),
+                    Forces_ForceAlongZ = table.Column<double>(type: "double precision", nullable: false),
+                    Forces_MomentAboutX = table.Column<double>(type: "double precision", nullable: false),
+                    Forces_MomentAboutY = table.Column<double>(type: "double precision", nullable: false),
+                    Forces_MomentAboutZ = table.Column<double>(type: "double precision", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NodeResults", x => new { x.Id, x.ResultSetId, x.ModelId });
+                    table.ForeignKey(
+                        name: "FK_NodeResults_Models_ModelId",
+                        column: x => x.ModelId,
+                        principalTable: "Models",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_NodeResults_ResultSets_ResultSetId_ModelId",
+                        columns: x => new { x.ResultSetId, x.ModelId },
+                        principalTable: "ResultSets",
+                        principalColumns: new[] { "Id", "ModelId" },
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Element1dResults_ModelId",
                 table: "Element1dResults",
@@ -324,9 +399,24 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                 columns: new[] { "StartNodeId", "ModelId" });
 
             migrationBuilder.CreateIndex(
+                name: "IX_LoadCases_ModelId",
+                table: "LoadCases",
+                column: "ModelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LoadCombinations_ModelId",
+                table: "LoadCombinations",
+                column: "ModelId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Materials_ModelId",
                 table: "Materials",
                 column: "ModelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MomentLoads_LoadCaseId_ModelId",
+                table: "MomentLoads",
+                columns: new[] { "LoadCaseId", "ModelId" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_MomentLoads_ModelId",
@@ -354,6 +444,11 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                 column: "ModelId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PointLoads_LoadCaseId_ModelId",
+                table: "PointLoads",
+                columns: new[] { "LoadCaseId", "ModelId" });
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PointLoads_ModelId",
                 table: "PointLoads",
                 column: "ModelId");
@@ -362,6 +457,17 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                 name: "IX_PointLoads_NodeId_ModelId",
                 table: "PointLoads",
                 columns: new[] { "NodeId", "ModelId" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ResultSets_LoadCombinationId_LoadCombinationModelId",
+                table: "ResultSets",
+                columns: new[] { "LoadCombinationId", "LoadCombinationModelId" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ResultSets_LoadCombinationId_ModelId",
+                table: "ResultSets",
+                columns: new[] { "LoadCombinationId", "ModelId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_ResultSets_ModelId",
@@ -402,7 +508,13 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                 name: "ResultSets");
 
             migrationBuilder.DropTable(
+                name: "LoadCases");
+
+            migrationBuilder.DropTable(
                 name: "Nodes");
+
+            migrationBuilder.DropTable(
+                name: "LoadCombinations");
 
             migrationBuilder.DropTable(
                 name: "Models");

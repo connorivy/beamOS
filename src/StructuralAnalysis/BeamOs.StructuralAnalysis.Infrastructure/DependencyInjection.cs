@@ -4,6 +4,8 @@ using BeamOs.StructuralAnalysis.Application.AnalyticalResults.NodeResults;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.ResultSets;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCases;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCombinations;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Materials;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.MomentLoads;
@@ -16,6 +18,8 @@ using BeamOs.StructuralAnalysis.Infrastructure.AnalyticalResults.NodeResults;
 using BeamOs.StructuralAnalysis.Infrastructure.AnalyticalResults.ResultSets;
 using BeamOs.StructuralAnalysis.Infrastructure.Common;
 using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Element1ds;
+using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.LoadCases;
+using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.LoadCombinations;
 using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Materials;
 using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.MomentLoads;
@@ -25,8 +29,10 @@ using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.SectionProfiles;
 using BeamOs.Tests.Common;
 using MathNet.Numerics.Providers.SparseSolver;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure;
 
@@ -43,6 +49,8 @@ public static class DependencyInjection
         _ = services.AddScoped<IElement1dRepository, Element1dRepository>();
         _ = services.AddScoped<IPointLoadRepository, PointLoadRepository>();
         _ = services.AddScoped<IMomentLoadRepository, MomentLoadRepository>();
+        _ = services.AddScoped<ILoadCaseRepository, LoadCaseRepository>();
+        _ = services.AddScoped<ILoadCombinationRepository, LoadCombinationRepository>();
         _ = services.AddScoped<INodeResultRepository, NodeResultRepository>();
         _ = services.AddScoped<IResultSetRepository, ResultSetRepository>();
 
@@ -67,11 +75,26 @@ public static class DependencyInjection
         _ = services.AddDbContext<StructuralAnalysisDbContext>(options =>
         {
             options
-                .UseNpgsql(connectionString)
+                .UseNpgsql(
+                    connectionString,
+                    o => o.MigrationsAssembly(typeof(IAssemblyMarkerInfrastructure).Assembly)
+                )
                 .AddInterceptors(
-                    new ModelEntityIdIncrementingInterceptor(),
+                    // new ModelEntityIdIncrementingInterceptor(),
                     new ModelLastModifiedUpdater(TimeProvider.System)
-                );
+                )
+#if !DEBUG
+                .UseLoggerFactory(
+                    LoggerFactory.Create(builder =>
+                    {
+                        builder.AddFilter((category, level) => level >= LogLevel.Error);
+                    })
+                )
+#endif
+                .ConfigureWarnings(warnings =>
+                {
+                    warnings.Log(RelationalEventId.PendingModelChangesWarning);
+                });
         });
 
         services.AddScoped<IUserIdProvider, UserIdProvider>();

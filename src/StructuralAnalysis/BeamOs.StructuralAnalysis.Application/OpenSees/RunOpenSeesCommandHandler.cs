@@ -6,6 +6,7 @@ using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.DirectStiffnessMethod;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams;
+using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 using BeamOs.StructuralAnalysis.Domain.OpenSees;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -30,6 +31,7 @@ public sealed class RunOpenSeesCommandHandler(
                 queryable
                     .Include(m => m.PointLoads)
                     .Include(m => m.MomentLoads)
+                    .Include(m => m.LoadCombinations)
                     .Include(m => m.Element1ds)
                     .ThenInclude(el => el.StartNode)
                     .Include(m => m.Element1ds)
@@ -47,6 +49,12 @@ public sealed class RunOpenSeesCommandHandler(
                 description: $"Could not find model with id {command.ModelId}"
             );
         }
+        if (model.LoadCombinations is null || model.LoadCombinations.Count == 0)
+        {
+            return BeamOsError.NotFound(
+                description: $"Model with id {command.ModelId} has no load combinations"
+            );
+        }
 
         UnitSettings unitSettings = model.Settings.UnitSettings;
         if (command.UnitsOverride is not null)
@@ -57,12 +65,31 @@ public sealed class RunOpenSeesCommandHandler(
         }
 
         using OpenSeesAnalysisModel analysisMode = new(model, unitSettings, logger);
-        var results = await analysisMode.RunAnalysis();
+        AnalysisResults? result = null;
+        foreach (var loadCombination in model.LoadCombinations)
+        {
+            if (
+                command.LoadCombinationIds is not null
+                && !command.LoadCombinationIds.Contains(loadCombination.Id)
+            )
+            {
+                continue;
+            }
 
-        resultSetRepository.Add(results.ResultSet);
+            result = await analysisMode.RunAnalysis(loadCombination);
+            resultSetRepository.Add(result.ResultSet);
+        }
+
+        if (result is null)
+        {
+            return BeamOsError.NotFound(
+                description: $"Could not find any load combinations with provided load combination ids"
+            );
+        }
 
         await unitOfWork.SaveChangesAsync(ct);
 
-        return results.OtherAnalyticalResults.Map();
+        // todo: aggregate results instead of just taking the last one
+        return result.OtherAnalyticalResults.Map();
     }
 }

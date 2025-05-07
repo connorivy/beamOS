@@ -1548,20 +1548,20 @@ yield return new(1,1,2,992,1636,new(0, Degree));    }
     public override IEnumerable<PutPointLoadRequest> PointLoadRequests()
     {
 
-yield return new PutPointLoadRequest{Id = 392,NodeId = 392,Force = new(100, ForceUnitContract.Kilonewton),Direction = new(0, -1, 0)};
-yield return new PutPointLoadRequest{Id = 388,NodeId = 388,Force = new(100, ForceUnitContract.Kilonewton),Direction = new(0, -1, 0)};
-yield return new PutPointLoadRequest{Id = 384,NodeId = 384,Force = new(100, ForceUnitContract.Kilonewton),Direction = new(0, -1, 0)};
-yield return new PutPointLoadRequest{Id = 380,NodeId = 380,Force = new(100, ForceUnitContract.Kilonewton),Direction = new(0, -1, 0)};
-yield return new PutPointLoadRequest{Id = 376,NodeId = 376,Force = new(100, ForceUnitContract.Kilonewton),Direction = new(0, -1, 0)};
-yield return new PutPointLoadRequest{Id = 372,NodeId = 372,Force = new(100, ForceUnitContract.Kilonewton),Direction = new(0, -1, 0)};
-yield return new PutPointLoadRequest{Id = 368,NodeId = 368,Force = new(100, ForceUnitContract.Kilonewton),Direction = new(0, -1, 0)};
-yield return new PutPointLoadRequest{Id = 364,NodeId = 364,Force = new(100, ForceUnitContract.Kilonewton),Direction = new(0, -1, 0)};
-yield return new PutPointLoadRequest{Id = 360,NodeId = 360,Force = new(100, ForceUnitContract.Kilonewton),Direction = new(0, -1, 0)};
-yield return new PutPointLoadRequest{Id = 356,NodeId = 356,Force = new(100, ForceUnitContract.Kilonewton),Direction = new(0, -1, 0)};
-yield return new PutPointLoadRequest{Id = 352,NodeId = 352,Force = new(100, ForceUnitContract.Kilonewton),Direction = new(0, -1, 0)};
-yield return new PutPointLoadRequest{Id = 314,NodeId = 314,Force = new(100, ForceUnitContract.Kilonewton),Direction = new(0, -1, 0)};
-yield return new PutPointLoadRequest{Id = 310,NodeId = 310,Force = new(100, ForceUnitContract.Kilonewton),Direction = new(0, -1, 0)};
-yield return new PutPointLoadRequest{Id = 306,NodeId = 306,Force = new(100, ForceUnitContract.Kilonewton),Direction = new(0, -1, 0)};
-yield return new PutPointLoadRequest{Id = 302,NodeId = 302,Force = new(100, ForceUnitContract.Kilonewton),Direction = new(0, -1, 0)};    }
+yield return new PutPointLoadRequest{Id = 392,NodeId = 392,LoadCaseId = 1,Force = new(100, ForceUnitContract.Kilonewton),Direction = new(0, -1, 0)};
+yield return new PutPointLoadRequest{Id = 388,NodeId = 388,LoadCaseId = 1,Force = new(100, ForceUnitContract.Kilonewton),Direction = new(0, -1, 0)};
+yield return new PutPointLoadRequest{Id = 384,NodeId = 384,LoadCaseId = 1,Force = new(100, ForceUnitContract.Kilonewton),Direction = new(0, -1, 0)};
+yield return new PutPointLoadRequest{Id = 380,NodeId = 380,LoadCaseId = 1,Force = new(100, ForceUnitContract.Kilonewton),Direction = new(0, -1, 0)};
+yield return new PutPointLoadRequest{Id = 376,NodeId = 376,LoadCaseId = 1,Force = new(100, ForceUnitContract.Kilonewton),Direction = new(0, -1, 0)};
+yield return new PutPointLoadRequest{Id = 372,NodeId = 372,LoadCaseId = 1,Force = new(100, ForceUnitContract.Kilonewton),Direction = new(0, -1, 0)};
+yield return new PutPointLoadRequest{Id = 368,NodeId = 368,LoadCaseId = 1,Force = new(100, ForceUnitContract.Kilonewton),Direction = new(0, -1, 0)};
+yield return new PutPointLoadRequest{Id = 364,NodeId = 364,LoadCaseId = 1,Force = new(100, ForceUnitContract.Kilonewton),Direction = new(0, -1, 0)};
+yield return new PutPointLoadRequest{Id = 360,NodeId = 360,LoadCaseId = 1,Force = new(100, ForceUnitContract.Kilonewton),Direction = new(0, -1, 0)};
+yield return new PutPointLoadRequest{Id = 356,NodeId = 356,LoadCaseId = 1,Force = new(100, ForceUnitContract.Kilonewton),Direction = new(0, -1, 0)};
+yield return new PutPointLoadRequest{Id = 352,NodeId = 352,LoadCaseId = 1,Force = new(100, ForceUnitContract.Kilonewton),Direction = new(0, -1, 0)};
+yield return new PutPointLoadRequest{Id = 314,NodeId = 314,LoadCaseId = 1,Force = new(100, ForceUnitContract.Kilonewton),Direction = new(0, -1, 0)};
+yield return new PutPointLoadRequest{Id = 310,NodeId = 310,LoadCaseId = 1,Force = new(100, ForceUnitContract.Kilonewton),Direction = new(0, -1, 0)};
+yield return new PutPointLoadRequest{Id = 306,NodeId = 306,LoadCaseId = 1,Force = new(100, ForceUnitContract.Kilonewton),Direction = new(0, -1, 0)};
+yield return new PutPointLoadRequest{Id = 302,NodeId = 302,LoadCaseId = 1,Force = new(100, ForceUnitContract.Kilonewton),Direction = new(0, -1, 0)};    }
 
 }
