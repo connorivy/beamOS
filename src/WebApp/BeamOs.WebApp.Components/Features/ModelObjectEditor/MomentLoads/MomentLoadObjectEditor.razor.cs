@@ -3,6 +3,7 @@ using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.MomentLoads;
 using BeamOs.StructuralAnalysis.Contracts.Common;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoad;
 using BeamOs.WebApp.Components.Features.Editor;
 using BeamOs.WebApp.Components.Features.SelectionInfo;
@@ -37,10 +38,18 @@ public partial class MomentLoadObjectEditor(
         }
     }
 
+    private LoadCase? LoadCase
+    {
+        get =>
+            editorState.Value.CachedModelResponse.LoadCases.GetValueOrDefault(
+                this.momentLoad.LoadCaseId
+            );
+        set => this.momentLoad.LoadCaseId = value.Id;
+    }
     private const int ResultLimit = 50;
 
     private string MomentLoadIdText =>
-        this.MomentLoadId == 0 ? "New MomentLoad" : this.MomentLoadId.ToString();
+        this.MomentLoadId == 0 ? "New Moment Load" : this.MomentLoadId.ToString();
 
     [Parameter]
     public required UnitSettingsContract UnitSettings { get; set; }
@@ -96,6 +105,7 @@ public partial class MomentLoadObjectEditor(
         this.momentLoad.Id = response.Id;
         this.momentLoad.ModelId = response.ModelId;
         this.momentLoad.NodeId = response.NodeId;
+        this.momentLoad.LoadCaseId = response.LoadCaseId;
         this.momentLoad.Torque = response
             .Torque.MapToTorque()
             .As(this.UnitSettings.TorqueUnit.MapToTorqueUnit());
@@ -233,6 +243,18 @@ public partial class MomentLoadObjectEditor(
             return number; // The entire number is the prefix
         }
         return number / (int)Math.Pow(10, numberOfDigits - prefixLength);
+    }
+
+    private Task<IEnumerable<LoadCase>> LoadCases(string searchText, CancellationToken ct)
+    {
+        IEnumerable<LoadCase> result = editorState.Value.CachedModelResponse.LoadCases.Values;
+        if (!string.IsNullOrWhiteSpace(searchText))
+        {
+            result = result.Where(lc =>
+                lc.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase)
+            );
+        }
+        return Task.FromResult(result.OrderBy(lc => lc.Name).AsEnumerable());
     }
 
     // protected override ValueTask DisposeAsyncCore(bool disposing)

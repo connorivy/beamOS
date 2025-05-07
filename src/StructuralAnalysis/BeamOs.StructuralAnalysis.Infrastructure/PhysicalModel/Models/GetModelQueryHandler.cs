@@ -15,8 +15,7 @@ public class GetModelQueryHandler(StructuralAnalysisDbContext dbContext)
     )
     {
         var model = await dbContext
-            .Models
-            .AsNoTracking()
+            .Models.AsNoTracking()
             .AsSplitQuery()
             .Where(e => e.Id.Equals(query))
             .Include(m => m.Nodes)
@@ -27,6 +26,8 @@ public class GetModelQueryHandler(StructuralAnalysisDbContext dbContext)
             .Include(el => el.Materials)
             .Include(m => m.ResultSets)
             .ThenInclude(rs => rs.NodeResults)
+            .Include(m => m.LoadCases)
+            .Include(m => m.LoadCombinations)
             .FirstOrDefaultAsync(cancellationToken: ct);
 
         if (model is null)

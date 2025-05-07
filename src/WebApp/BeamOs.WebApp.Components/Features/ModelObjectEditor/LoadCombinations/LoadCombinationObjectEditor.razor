@@ -1,55 +1,39 @@
+@using BeamOs.StructuralAnalysis.Contracts.Common;
 @using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases
 @inherits FluxorComponent
 
 <MudContainer Gutters="false" Class=@($"rounded pointer-events-none")>
     <MudPaper Class="px-4 pb-4 max-h-full overflow-auto pointer-events-auto">
         <MudExpansionPanels MultiExpansion="true" Outlined="false" Elevation="0" Dense="true">
-            <MudAutocomplete InputMode="InputMode.numeric" MaxItems="@ResultLimit" T="int" @bind-Value="PointLoadId"
-                Text="@PointLoadIdText" SearchFunc="PointLoadIds"
-                ToStringFunc="@(id => id == 0 ? "New Point Load" : id.ToString())" Label="Point Load Id">
-                <MoreItemsTemplate>
-                    <MudText Align="Align.Center" Class="px-4 py-1">
-                        Only the first @ResultLimit.ToString() items are shown. Type to refine results.
-                    </MudText>
-                </MoreItemsTemplate>
-            </MudAutocomplete>
-
-            <MudAutocomplete InputMode="InputMode.numeric" MaxItems="@ResultLimit" T="LoadCase" SearchFunc="LoadCases"
-                @bind-Value="LoadCase" ToStringFunc="@(c => c.Name)" Label="Load Case" Required="true">
-                <MoreItemsTemplate>
-                    <MudText Align="Align.Center" Class="px-4 py-1">
-                        Only the first @ResultLimit.ToString() items are shown. Type to refine results.
-                    </MudText>
-                </MoreItemsTemplate>
-            </MudAutocomplete>
-
             <MudAutocomplete InputMode="InputMode.numeric" MaxItems="@ResultLimit" T="int"
-                @bind-Value="pointLoad.NodeId" SearchFunc="NodeIds" Label="Applied to Node" Required="true">
+                @bind-Value="LoadCombinationId" Text="@LoadCombinationIdText" SearchFunc="LoadCombinationIds"
+                ToStringFunc="@(id => id == 0 ? "New LoadCombination" : id.ToString())" Label="LoadCombination Id">
                 <MoreItemsTemplate>
                     <MudText Align="Align.Center" Class="px-4 py-1">
                         Only the first @ResultLimit.ToString() items are shown. Type to refine results.
                     </MudText>
                 </MoreItemsTemplate>
             </MudAutocomplete>
-
-            <QuantityFieldComponent @bind-Value="@pointLoad.Force" Label="X"
-                Unit="@UnitSettings.ForceUnit.ToString()" />
-
-            <MudExpansionPanel Expanded="true" Text="Direction"
-                Class="text-nowrap text-clip mud-typography mud-typography-subtitle2">
-                <MudGrid Spacing="1">
-                    <QuantityFieldComponent @bind-Value="@pointLoad.Direction.X" Label="X" />
-
-                    <QuantityFieldComponent @bind-Value="@pointLoad.Direction.Y" Label="Y" />
-
-                    <QuantityFieldComponent @bind-Value="@pointLoad.Direction.Z" Label="Z" />
-                </MudGrid>
-            </MudExpansionPanel>
         </MudExpansionPanels>
 
-        <div class="flex flex-row">
+        @for (var i = 0; i < loadCombination.LoadCaseFactors.Count; i++)
+        {
+            <MudAutocomplete InputMode="InputMode.numeric" MaxItems="@ResultLimit" T="LoadCase" SearchFunc="LoadCases"
+                Value="@GetLoadCase(this.loadCombination.LoadCaseFactors[i].Item1)" ValueChanged="@(v => LoadCaseChanged(i, v))" ToStringFunc="@(c => c.Name)" Label="Load Case"
+                Required="true">
+                <MoreItemsTemplate>
+                    <MudText Align="Align.Center" Class="px-4 py-1">
+                        Only the first @ResultLimit.ToString() items are shown. Type to refine results.
+                    </MudText>
+                </MoreItemsTemplate>
+            </MudAutocomplete>
+
+            <MudTextField T="double" Typo="Typo.input" Value="@loadCombination.LoadCaseFactors[i].Item2" ValueChanged="@(v => LoadCaseValueChanged(i, v))" OnlyValidateIfDirty="true" />
+        }
+
+        <div class="flex flex-row mt-2">
             <div class="flex-1" />
-            @if (pointLoad.Id != 0)
+            @if (loadCombination.Id != 0)
             {
                 <MudButton Class="flex-none mr-2" Variant="Variant.Filled" Color="Color.Error" OnClick="Delete">Delete
                 </MudButton>

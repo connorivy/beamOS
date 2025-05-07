@@ -1,6 +1,7 @@
 @inherits FluxorComponent
 
 @using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node
+@using BeamOs.WebApp.Components.Features.ModelObjectEditor.LoadCases
 @using BeamOs.WebApp.Components.Features.ModelObjectEditor.Materials
 @using BeamOs.WebApp.Components.Features.ModelObjectEditor.Members
 @using BeamOs.WebApp.Components.Features.ModelObjectEditor.Nodes
@@ -8,6 +9,7 @@
 @using BeamOs.WebApp.Components.Features.ModelObjectEditor.PointLoads
 @using BeamOs.WebApp.Components.Features.ModelObjectEditor.MomentLoads
 @using StructuralAnalysis.Contracts.Common;
+@using BeamOs.WebApp.Components.Features.ModelObjectEditor.LoadCombinations
 
 @if (state.Value.CurrentViewType == BeamOsObjectType.Model)
 {
@@ -30,30 +32,15 @@
         <div class="mb-10">
             <MudText Align="Align.Center" Color="Color.Primary">LOADS</MudText>
             <MudDivider Class="mb-5" />
-            <div class="grid grid-cols-2 gap-2">
+            <div class="grid grid-cols-2 gap-2 mb-2">
                 <MudButton Variant="Variant.Outlined" OnClick="() => ShowView(BeamOsObjectType.PointLoad)">Point Loads</MudButton>
                 <MudButton Variant="Variant.Outlined" OnClick="() => ShowView(BeamOsObjectType.MomentLoad)">Moments</MudButton>
             </div>
-    @*         <div class="mt-2">
-                <MudButton Variant="Variant.Outlined" Class="w-full">Distributed Loads</MudButton>
-            </div>
-            <div class="grid grid-cols-2 gap-2 mt-2">
-                <MudButton Variant="Variant.Outlined">Area Loads</MudButton>
-                <MudButton Variant="Variant.Outlined">Pressures</MudButton>
-            </div>
-            <div class="grid grid-cols-2 gap-2 mt-2">
-                <MudButton Variant="Variant.Outlined">Self Weight</MudButton>
-                <MudButton Variant="Variant.Outlined">Load Combos</MudButton>
-            </div> *@
-        </div>
-
-        @* <div>
-            <div class="text-sm uppercase text-secondary mb-2">Dynamic Loads</div>
             <div class="grid grid-cols-2 gap-2">
-                <MudButton Variant="Variant.Outlined">Nodal Masses</MudButton>
-                <MudButton Variant="Variant.Outlined">Spectral Loads</MudButton>
+                <MudButton Variant="Variant.Outlined" OnClick="() => ShowView(BeamOsObjectType.LoadCase)">Load Cases</MudButton>
+                <MudButton Variant="Variant.Outlined" OnClick="() => ShowView(BeamOsObjectType.LoadCombination)">Load Combinations</MudButton>
             </div>
-        </div> *@
+        </div>
     </div>
 }
 else
@@ -85,5 +72,13 @@ else
     else if (state.Value.CurrentViewType == BeamOsObjectType.MomentLoad)
     {
         <MomentLoadObjectEditor ModelId="@ModelId" UnitSettings="@UnitSettings" SelectedObject="state.Value.SelectedObject" />
+    }
+    else if (state.Value.CurrentViewType == BeamOsObjectType.LoadCase)
+    {
+        <LoadCaseObjectEditor ModelId="@ModelId" SelectedObject="state.Value.SelectedObject" />
+    }
+    else if (state.Value.CurrentViewType == BeamOsObjectType.LoadCombination)
+    {
+        <LoadCombinationObjectEditor ModelId="@ModelId" SelectedObject="state.Value.SelectedObject" />
     }
 }

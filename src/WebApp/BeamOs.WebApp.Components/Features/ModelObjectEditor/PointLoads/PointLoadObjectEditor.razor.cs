@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
 using BeamOs.WebApp.Components.Features.Editor;
@@ -35,6 +36,15 @@ public partial class PointLoadObjectEditor(
             }
             this.pointLoad.Id = value;
         }
+    }
+
+    private LoadCase? LoadCase
+    {
+        get =>
+            editorState.Value.CachedModelResponse.LoadCases.GetValueOrDefault(
+                this.pointLoad.LoadCaseId
+            );
+        set => this.pointLoad.LoadCaseId = value.Id;
     }
 
     private const int ResultLimit = 50;
@@ -91,6 +101,7 @@ public partial class PointLoadObjectEditor(
 
         this.pointLoad.Id = response.Id;
         this.pointLoad.ModelId = response.ModelId;
+        this.pointLoad.LoadCaseId = response.LoadCaseId;
         this.pointLoad.NodeId = response.NodeId;
         this.pointLoad.Direction.X = response.Direction.X;
         this.pointLoad.Direction.Y = response.Direction.Y;
@@ -199,14 +210,26 @@ public partial class PointLoadObjectEditor(
         return number / (int)Math.Pow(10, numberOfDigits - prefixLength);
     }
 
+    private Task<IEnumerable<LoadCase>> LoadCases(string searchText, CancellationToken ct)
+    {
+        IEnumerable<LoadCase> result = editorState.Value.CachedModelResponse.LoadCases.Values;
+        if (!string.IsNullOrWhiteSpace(searchText))
+        {
+            result = result.Where(lc =>
+                lc.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase)
+            );
+        }
+        return Task.FromResult(result.OrderBy(lc => lc.Name).AsEnumerable());
+    }
+
     private static readonly int[] NullInt = [0];
 
     public class PointLoadModel
     {
         public int Id { get; set; }
         public Guid ModelId { get; set; }
-        public int NodeId { get; set; }
         public int LoadCaseId { get; set; }
+        public int NodeId { get; set; }
         public double? Force { get; set; }
         public Vector3 Direction { get; set; } = new(0, 0, 0);
     }

@@ -179,26 +179,26 @@ public class LoadBeamOsEntityCommandHandler(
 
             return new CachedModelResponse(modelResponse);
         }
-        else if (command.EntityResponse is ModelResponseHydrated modelResponseH)
-        {
-            await command.EditorApi.ClearAsync(ct);
+        // else if (command.EntityResponse is ModelResponseHydrated modelResponseH)
+        // {
+        //     await command.EditorApi.ClearAsync(ct);
 
-            await command.EditorApi.SetSettingsAsync(modelResponseH.Settings, ct);
+        //     await command.EditorApi.SetSettingsAsync(modelResponseH.Settings, ct);
 
-            await command.EditorApi.CreateNodesAsync(
-                modelResponseH.Nodes.Select(e => e.ToEditorUnits()),
-                ct
-            );
+        //     await command.EditorApi.CreateNodesAsync(
+        //         modelResponseH.Nodes.Select(e => e.ToEditorUnits()),
+        //         ct
+        //     );
 
-            await command.EditorApi.CreatePointLoadsAsync(
-                modelResponseH.PointLoads.Select(e => e.ToEditorUnits()),
-                ct
-            );
+        //     await command.EditorApi.CreatePointLoadsAsync(
+        //         modelResponseH.PointLoads.Select(e => e.ToEditorUnits()),
+        //         ct
+        //     );
 
-            await command.EditorApi.CreateElement1dsAsync(modelResponseH.Element1ds, ct);
+        //     await command.EditorApi.CreateElement1dsAsync(modelResponseH.Element1ds, ct);
 
-            return new CachedModelResponse(modelResponseH);
-        }
+        //     return new CachedModelResponse(modelResponseH);
+        // }
 
         throw new NotImplementedException(
             $"Type {command.EntityResponse.GetType()} is not supported in '{nameof(LoadBeamOsEntityCommandHandler)}'"
@@ -245,7 +245,7 @@ public record struct RunTestsInFrontEndCommand(params IEnumerable<string> testRe
 public class RunTestsInFrontEndCommandHandler(
     ISnackbar snackbar,
     IDispatcher dispatcher,
-    IState<TestInfoState> testInfoState, 
+    IState<TestInfoState> testInfoState,
     ILogger<RunTestsInFrontEndCommandHandler> logger
 ) : CommandHandlerBase<RunTestsInFrontEndCommand, bool>(snackbar, logger)
 {
