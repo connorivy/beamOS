@@ -10,8 +10,8 @@ public record SectionProfileResponse(
     double StrongAxisMomentOfInertia,
     double WeakAxisMomentOfInertia,
     double PolarMomentOfInertia,
-    double StrongAxisShearArea,
-    double WeakAxisShearArea,
+    double? StrongAxisShearArea,
+    double? WeakAxisShearArea,
     AreaUnit AreaUnit,
     AreaMomentOfInertiaUnit AreaMomentOfInertiaUnit
 ) : IModelEntity
@@ -26,6 +26,6 @@ public record SectionProfileResponse(
             StrongAxisShearArea = this.StrongAxisShearArea,
             WeakAxisShearArea = this.WeakAxisShearArea,
             AreaUnit = this.AreaUnit,
-            AreaMomentOfInertiaUnit = this.AreaMomentOfInertiaUnit
+            AreaMomentOfInertiaUnit = this.AreaMomentOfInertiaUnit,
         };
 }

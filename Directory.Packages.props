@@ -103,6 +103,7 @@
     <PackageVersion Include="Scalar.AspNetCore" Version="1.2.53" />
     <PackageVersion Include="Speckle.Core" Version="2.21.3" />
     <PackageVersion Include="Speckle.Objects" Version="2.21.3" />
+    <PackageVersion Include="StructuralShapes" Version="0.0.5" />
     <PackageVersion Include="System.CodeDom" Version="4.4.0" />
     <PackageVersion Include="Testcontainers.MsSql" Version="4.1.0" />
     <PackageVersion Include="Testcontainers.PostgreSql" Version="4.1.0" />
@@ -135,7 +136,7 @@
     <PackageVersion Include="Swashbuckle.AspNetCore.Filters" Version="8.0.0" />
     <PackageVersion Include="Teronis.MSBuild.Packaging.ProjectBuildInPackage" Version="1.0.0" />
     <PackageVersion Include="Throw" Version="1.4.0" />
-    <PackageVersion Include="UnitsNet" Version="5.36.0" />
+    <PackageVersion Include="UnitsNet" Version="5.74.0" />
     <PackageVersion Include="UnitsNet.Serialization.JsonNet" Version="5.28.0" />
   </ItemGroup>
 </Project>

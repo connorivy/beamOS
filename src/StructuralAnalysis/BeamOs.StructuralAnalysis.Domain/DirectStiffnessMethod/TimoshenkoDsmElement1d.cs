@@ -50,8 +50,14 @@ public class TimoshenkoDsmElement1d(
             Element1d.SectionProfile.StrongAxisMomentOfInertia,
             Element1d.SectionProfile.WeakAxisMomentOfInertia,
             Element1d.SectionProfile.PolarMomentOfInertia,
-            Element1d.SectionProfile.StrongAxisShearArea,
-            Element1d.SectionProfile.WeakAxisShearArea,
+            Element1d.SectionProfile.StrongAxisShearArea
+                ?? throw new InvalidOperationException(
+                    "TimoshenkoDsmElement1d requires strong axis shear area"
+                ),
+            Element1d.SectionProfile.WeakAxisShearArea
+                ?? throw new InvalidOperationException(
+                    "TimoshenkoDsmElement1d requires strong axis shear area"
+                ),
             Element1d.StartNode.LocationPoint,
             Element1d.EndNode.LocationPoint,
             Element1d.StartNode.Id,
@@ -124,7 +130,7 @@ public class TimoshenkoDsmElement1d(
                     0,
                     0,
                     0,
-                    coeff6_s * ExIs_L2
+                    coeff6_s * ExIs_L2,
                 },
                 {
                     0,
@@ -138,7 +144,7 @@ public class TimoshenkoDsmElement1d(
                     -coeff12_w * ExIw_L3,
                     0,
                     -coeff6_w * ExIw_L2,
-                    0
+                    0,
                 },
                 { 0, 0, 0, GxJ_L, 0, 0, 0, 0, 0, -GxJ_L, 0, 0 },
                 {
@@ -153,7 +159,7 @@ public class TimoshenkoDsmElement1d(
                     coeff6_w * ExIw_L2,
                     0,
                     coeff2_w * ExIw_L,
-                    0
+                    0,
                 },
                 {
                     0,
@@ -167,7 +173,7 @@ public class TimoshenkoDsmElement1d(
                     0,
                     0,
                     0,
-                    coeff2_s * ExIs_L
+                    coeff2_s * ExIs_L,
                 },
                 { -ExA_L, 0, 0, 0, 0, 0, ExA_L, 0, 0, 0, 0, 0 },
                 {
@@ -182,7 +188,7 @@ public class TimoshenkoDsmElement1d(
                     0,
                     0,
                     0,
-                    -coeff6_s * ExIs_L2
+                    -coeff6_s * ExIs_L2,
                 },
                 {
                     0,
@@ -196,7 +202,7 @@ public class TimoshenkoDsmElement1d(
                     coeff12_w * ExIw_L3,
                     0,
                     coeff6_w * ExIw_L2,
-                    0
+                    0,
                 },
                 { 0, 0, 0, -GxJ_L, 0, 0, 0, 0, 0, GxJ_L, 0, 0 },
                 {
@@ -211,7 +217,7 @@ public class TimoshenkoDsmElement1d(
                     coeff6_w * ExIw_L2,
                     0,
                     coeff4_w * ExIw_L,
-                    0
+                    0,
                 },
                 {
                     0,
@@ -225,7 +231,7 @@ public class TimoshenkoDsmElement1d(
                     0,
                     0,
                     0,
-                    coeff4_s * ExIs_L
+                    coeff4_s * ExIs_L,
                 },
             }
         );

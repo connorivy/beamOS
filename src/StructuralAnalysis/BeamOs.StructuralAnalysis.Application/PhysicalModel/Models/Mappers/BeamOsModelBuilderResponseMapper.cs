@@ -119,8 +119,12 @@ public partial class BeamOsModelBuilderDomainMapper(Guid modelId)
                 request.PolarMomentOfInertia,
                 request.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
             ),
-            new(request.StrongAxisShearArea, request.AreaUnit.MapToAreaUnit()),
-            new(request.WeakAxisShearArea, request.AreaUnit.MapToAreaUnit()),
+            request.StrongAxisShearArea.HasValue
+                ? new(request.StrongAxisShearArea.Value, request.AreaUnit.MapToAreaUnit())
+                : null,
+            request.WeakAxisShearArea.HasValue
+                ? new(request.WeakAxisShearArea.Value, request.AreaUnit.MapToAreaUnit())
+                : null,
             new(request.Id)
         );
 }

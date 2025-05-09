@@ -78,10 +78,14 @@ public readonly struct PutSectionProfileCommand : IModelResourceWithIntIdRequest
             this.Body.PolarMomentOfInertia,
             this.Body.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
         );
-    public Area StrongAxisShearArea =>
-        new(this.Body.StrongAxisShearArea, this.Body.AreaUnit.MapToAreaUnit());
-    public Area WeakAxisShearArea =>
-        new(this.Body.WeakAxisShearArea, this.Body.AreaUnit.MapToAreaUnit());
+    public Area? StrongAxisShearArea =>
+        this.Body.StrongAxisShearArea.HasValue
+            ? new(this.Body.StrongAxisShearArea.Value, this.Body.AreaUnit.MapToAreaUnit())
+            : null;
+    public Area? WeakAxisShearArea =>
+        this.Body.WeakAxisShearArea.HasValue
+            ? new(this.Body.WeakAxisShearArea.Value, this.Body.AreaUnit.MapToAreaUnit())
+            : null;
 
     public PutSectionProfileCommand() { }
 
@@ -111,8 +115,8 @@ public readonly struct PutSectionProfileCommand : IModelResourceWithIntIdRequest
             this.PolarMomentOfInertia.As(
                 this.Body.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
             ),
-            this.StrongAxisShearArea.As(this.Body.AreaUnit.MapToAreaUnit()),
-            this.WeakAxisShearArea.As(this.Body.AreaUnit.MapToAreaUnit()),
+            this.StrongAxisShearArea?.As(this.Body.AreaUnit.MapToAreaUnit()),
+            this.WeakAxisShearArea?.As(this.Body.AreaUnit.MapToAreaUnit()),
             this.Body.AreaUnit,
             this.Body.AreaMomentOfInertiaUnit
         );

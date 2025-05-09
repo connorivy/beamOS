@@ -17,6 +17,7 @@
     <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
     <PackageReference Include="Riok.Mapperly" />
+    <PackageReference Include="StructuralShapes" />
     <PackageReference Include="UnitsNet" />
   </ItemGroup>
 

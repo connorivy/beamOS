@@ -19,3 +19,16 @@ public static class PressureExtensions
         return Torque.FromNewtonMeters(pressure.NewtonsPerSquareMeter * volume.CubicMeters);
     }
 }
+
+public static class TorqueExtensions
+{
+    public static Volume DivideBy(this Torque torque, Pressure pressure)
+    {
+        return Volume.FromCubicMeters(torque.NewtonMeters / pressure.NewtonsPerSquareMeter);
+    }
+
+    public static Pressure DivideBy(this Torque torque, Length length)
+    {
+        return Pressure.FromNewtonsPerSquareMeter(torque.NewtonMeters / length.Meters);
+    }
+}

@@ -49,8 +49,8 @@ public static partial class CreateSectionProfileCommandMapper
             entity.StrongAxisMomentOfInertia.As(areaMomentOfInertiaUnit),
             entity.WeakAxisMomentOfInertia.As(areaMomentOfInertiaUnit),
             entity.PolarMomentOfInertia.As(areaMomentOfInertiaUnit),
-            entity.StrongAxisShearArea.As(areaUnit),
-            entity.WeakAxisShearArea.As(areaUnit),
+            entity.StrongAxisShearArea?.As(areaUnit),
+            entity.WeakAxisShearArea?.As(areaUnit),
             areaUnit,
             areaMomentOfInertiaUnit
         );
@@ -61,8 +61,8 @@ public static partial class CreateSectionProfileCommandMapper
         double strongAxisMomentOfInertia,
         double weakAxisMomentOfInertia,
         double polarMomentOfInertia,
-        double strongAxisShearArea,
-        double weakAxisShearArea,
+        double? strongAxisShearArea,
+        double? weakAxisShearArea,
         AreaUnit areaUnit,
         AreaMomentOfInertiaUnit areaMomentOfInertiaUnit
     );
@@ -89,9 +89,13 @@ public readonly struct CreateSectionProfileCommand
             this.Body.PolarMomentOfInertia,
             this.Body.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
         );
-    public Area StrongAxisShearArea =>
-        new(this.Body.StrongAxisShearArea, this.Body.AreaUnit.MapToAreaUnit());
-    public Area WeakAxisShearArea =>
-        new(this.Body.WeakAxisShearArea, this.Body.AreaUnit.MapToAreaUnit());
+    public Area? StrongAxisShearArea =>
+        this.Body.StrongAxisShearArea is null
+            ? null
+            : new(this.Body.StrongAxisShearArea.Value, this.Body.AreaUnit.MapToAreaUnit());
+    public Area? WeakAxisShearArea =>
+        this.Body.WeakAxisShearArea is null
+            ? null
+            : new(this.Body.WeakAxisShearArea.Value, this.Body.AreaUnit.MapToAreaUnit());
     public int? Id => this.Body.Id;
 }

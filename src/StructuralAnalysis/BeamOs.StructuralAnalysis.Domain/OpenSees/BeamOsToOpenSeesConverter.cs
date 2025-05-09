@@ -28,18 +28,27 @@ public class BeamOsToOpenSeesConverter(
                 sectionProfile.Area.As(this.UnitSettings.AreaUnit),
                 material.ModulusOfElasticity.As(this.UnitSettings.PressureUnit),
                 material.ModulusOfRigidity.As(this.UnitSettings.PressureUnit),
-                sectionProfile
-                    .StrongAxisMomentOfInertia
-                    .As(this.UnitSettings.AreaMomentOfInertiaUnit),
-                sectionProfile
-                    .WeakAxisMomentOfInertia
-                    .As(this.UnitSettings.AreaMomentOfInertiaUnit),
+                sectionProfile.StrongAxisMomentOfInertia.As(
+                    this.UnitSettings.AreaMomentOfInertiaUnit
+                ),
+                sectionProfile.WeakAxisMomentOfInertia.As(
+                    this.UnitSettings.AreaMomentOfInertiaUnit
+                ),
                 sectionProfile.PolarMomentOfInertia.As(this.UnitSettings.AreaMomentOfInertiaUnit),
                 transformId
             );
         }
         else
         {
+            if (
+                sectionProfile.StrongAxisShearArea is null
+                || sectionProfile.WeakAxisShearArea is null
+            )
+            {
+                throw new InvalidOperationException(
+                    $"Cannot run timoshenko anaylsis because section profile with id {sectionProfile.Id} has null shear areas"
+                );
+            }
             return OpenSeesNetModel.ElasticTimoshenkoBeamColumn(
                 element1d.Id,
                 element1d.StartNodeId,
@@ -47,15 +56,15 @@ public class BeamOsToOpenSeesConverter(
                 sectionProfile.Area.As(this.UnitSettings.AreaUnit),
                 material.ModulusOfElasticity.As(this.UnitSettings.PressureUnit),
                 material.ModulusOfRigidity.As(this.UnitSettings.PressureUnit),
-                sectionProfile
-                    .StrongAxisMomentOfInertia
-                    .As(this.UnitSettings.AreaMomentOfInertiaUnit),
-                sectionProfile
-                    .WeakAxisMomentOfInertia
-                    .As(this.UnitSettings.AreaMomentOfInertiaUnit),
+                sectionProfile.StrongAxisMomentOfInertia.As(
+                    this.UnitSettings.AreaMomentOfInertiaUnit
+                ),
+                sectionProfile.WeakAxisMomentOfInertia.As(
+                    this.UnitSettings.AreaMomentOfInertiaUnit
+                ),
                 sectionProfile.PolarMomentOfInertia.As(this.UnitSettings.AreaMomentOfInertiaUnit),
-                sectionProfile.StrongAxisShearArea.As(this.UnitSettings.AreaUnit),
-                sectionProfile.WeakAxisShearArea.As(this.UnitSettings.AreaUnit),
+                sectionProfile.StrongAxisShearArea.Value.As(this.UnitSettings.AreaUnit),
+                sectionProfile.WeakAxisShearArea.Value.As(this.UnitSettings.AreaUnit),
                 transformId
             );
         }

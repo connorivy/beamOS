@@ -20,4 +20,10 @@
     <ProjectReference Include="..\BeamOs.StructuralAnalysis.Infrastructure\BeamOs.StructuralAnalysis.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DesignCodes\" />
+    <Folder Include="DesignCodes\AISC\" />
+    <Folder Include="DesignCodes\AISC\360-16\" />
+  </ItemGroup>
+
 </Project>

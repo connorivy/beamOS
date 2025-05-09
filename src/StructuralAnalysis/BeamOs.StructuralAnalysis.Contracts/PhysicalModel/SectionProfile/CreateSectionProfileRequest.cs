@@ -21,8 +21,10 @@ public record SectionProfileData
     public required double StrongAxisMomentOfInertia { get; init; }
     public required double WeakAxisMomentOfInertia { get; init; }
     public required double PolarMomentOfInertia { get; init; }
-    public required double StrongAxisShearArea { get; init; }
-    public required double WeakAxisShearArea { get; init; }
+    public required double StrongAxisPlasticSectionModulus { get; init; }
+    public required double WeakAxisPlasticSectionModulus { get; init; }
+    public double? StrongAxisShearArea { get; init; }
+    public double? WeakAxisShearArea { get; init; }
 
     public AreaUnit AreaUnit { get; init; }
     public AreaMomentOfInertiaUnit AreaMomentOfInertiaUnit { get; init; }
@@ -38,6 +40,8 @@ public record SectionProfileData
         this.StrongAxisMomentOfInertia = sectionProfileData.StrongAxisMomentOfInertia;
         this.WeakAxisMomentOfInertia = sectionProfileData.WeakAxisMomentOfInertia;
         this.PolarMomentOfInertia = sectionProfileData.PolarMomentOfInertia;
+        this.StrongAxisPlasticSectionModulus = sectionProfileData.StrongAxisPlasticSectionModulus;
+        this.WeakAxisPlasticSectionModulus = sectionProfileData.WeakAxisPlasticSectionModulus;
         this.StrongAxisShearArea = sectionProfileData.StrongAxisShearArea;
         this.WeakAxisShearArea = sectionProfileData.WeakAxisShearArea;
     }

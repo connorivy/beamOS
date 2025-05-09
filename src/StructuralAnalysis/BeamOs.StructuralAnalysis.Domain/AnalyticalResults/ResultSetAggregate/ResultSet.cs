@@ -5,6 +5,7 @@ using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinations;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
