@@ -3,44 +3,13 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinations;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
+using Microsoft.EntityFrameworkCore;
 using UnitsNet;
-using UnitsNet.Units;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 public class Node : BeamOsModelEntity<NodeId>
 {
-    private Point locationPoint;
-    public Point LocationPoint
-    {
-        get => this.locationPoint;
-        set
-        {
-            //if (this.locationPoint != null)
-            //{
-            //    this.AddEvent(
-            //        new NodeMovedEvent
-            //        {
-            //            ModelId = this.ModelId,
-            //            NodeId = this.Id.Id,
-            //            PreviousLocation = new(
-            //                this.locationPoint.XCoordinate.Meters,
-            //                this.locationPoint.YCoordinate.Meters,
-            //                this.locationPoint.ZCoordinate.Meters
-            //            ),
-            //            NewLocation = new(
-            //                value.XCoordinate.Meters,
-            //                value.YCoordinate.Meters,
-            //                value.ZCoordinate.Meters
-            //            ),
-            //        }
-            //    );
-            //}
-            this.locationPoint = value;
-        }
-    }
-
-    //[MapperConstructor]
     public Node(
         ModelId modelId,
         Point locationPoint,
@@ -53,59 +22,8 @@ public class Node : BeamOsModelEntity<NodeId>
         this.Restraint = restraint ?? Restraint.Free;
     }
 
-    //public Node(
-    //    ModelId modelId,
-    //    double xCoordinate,
-    //    double yCoordinate,
-    //    double zCoordinate,
-    //    LengthUnit lengthUnit,
-    //    Restraint? restraint = null,
-    //    NodeId? id = null
-    //)
-    //    : this(
-    //        modelId,
-    //        new(xCoordinate, yCoordinate, zCoordinate, lengthUnit),
-    //        restraint: restraint,
-    //        id
-    //    ) { }
-
-    //public Node(
-    //    ModelId modelId,
-    //    Length xCoordinate,
-    //    Length yCoordinate,
-    //    Length zCoordinate,
-    //    Restraint? restraint = null,
-    //    NodeId? id = null
-    //)
-    //    : this(modelId, new(xCoordinate, yCoordinate, zCoordinate), restraint: restraint, id) { }
-
-    //public List<PointLoadId> PointLoadIds { get; private set; } = [];
-    //public List<MomentLoad> MomentLoads { get; } = [];
-    private Restraint restraint;
-    public Restraint Restraint
-    {
-        get => this.restraint;
-        set
-        {
-            //this.AddEvent(
-            //    new NodeMovedEvent
-            //    {
-            //        NodeId = this.Id.Id,
-            //        PreviousLocation = new(
-            //            this.locationPoint.XCoordinate.Meters,
-            //            this.locationPoint.XCoordinate.Meters,
-            //            this.locationPoint.XCoordinate.Meters
-            //        ),
-            //        NewLocation = new(
-            //            value.XCoordinate.Meters,
-            //            value.YCoordinate.Meters,
-            //            value.ZCoordinate.Meters
-            //        )
-            //    }
-            //);
-            this.restraint = value;
-        }
-    }
+    public Point LocationPoint { get; set; }
+    public Restraint Restraint { get; set; }
 
     public ICollection<PointLoad>? PointLoads { get; set; }
 
@@ -157,6 +75,35 @@ public class Node : BeamOsModelEntity<NodeId>
 
     [Obsolete("EF Core Constructor", true)]
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-    private Node() { }
+    protected Node() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+}
+
+[PrimaryKey(nameof(Id), [nameof(ModelId), nameof(ModelChangeRequestId)])]
+public sealed class NodeChangeRequest : Node
+{
+    public NodeChangeRequest(
+        NodeId id,
+        ModelId modelId,
+        ModelChangeRequestId modelChangeRequestId,
+        Point locationPoint,
+        Restraint restraint
+    )
+        : base(modelId, locationPoint, restraint, id)
+    {
+        this.ModelChangeRequestId = modelChangeRequestId;
+    }
+
+    public ModelChangeRequestId ModelChangeRequestId { get; }
+
+    public static NodeChangeRequest FromNode(ModelChangeRequestId modelChangeRequestId, Node node)
+    {
+        return new(node.Id, node.ModelId, modelChangeRequestId, node.LocationPoint, node.Restraint);
+    }
+
+    [Obsolete("EF Core Constructor")]
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    private NodeChangeRequest()
+        : base() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }

@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\StructuralAnalysis\BeamOs.StructuralAnalysis.Api.Endpoints\BeamOs.StructuralAnalysis.Api.Endpoints.csproj" />
     <ProjectReference Include="..\..\src\StructuralAnalysis\BeamOs.StructuralAnalysis.Application\BeamOs.StructuralAnalysis.Application.csproj" />
     <ProjectReference Include="..\..\tests\BeamOs.Tests.Common\BeamOs.Tests.Common.csproj" />
   </ItemGroup>

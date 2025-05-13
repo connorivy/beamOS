@@ -8,7 +8,6 @@ public abstract class SectionProfileInfoBase : BeamOsModelEntity<SectionProfileI
     public SectionProfileInfoBase(ModelId modelId, string name, SectionProfileId? id = null)
         : base(id ?? new(), modelId)
     {
-        this.ModelId = modelId;
         this.Name = name;
     }
 

@@ -46,7 +46,7 @@ public partial class BeamOsModelBuilderDomainMapper(Guid modelId)
             el.StartNode = nodeDict[el.StartNodeId];
             el.EndNode = nodeDict[el.EndNodeId];
             el.Material = materialDict[el.MaterialId];
-            el.SectionProfile = sectionProfileDict[el.SectionProfileId];
+            el.SectionProfile = sectionProfileDict[el.SectionProfileId].GetSectionProfile();
         }
 
         foreach (var n in model.Nodes)
@@ -94,6 +94,11 @@ public partial class BeamOsModelBuilderDomainMapper(Guid modelId)
     [MapValue("ModelId", Use = nameof(GetModelId))]
     public partial MomentLoad ToDomain(PutMomentLoadRequest request);
 
+    [MapValue("ModelId", Use = nameof(GetModelId))]
+    public partial Domain.PhysicalModel.SectionProfileAggregate.SectionProfileFromLibrary ToDomain(
+        Contracts.PhysicalModel.SectionProfile.SectionProfileFromLibrary request
+    );
+
     public Material ToDomain(PutMaterialRequest request) =>
         new Material(
             modelId,
@@ -102,10 +107,10 @@ public partial class BeamOsModelBuilderDomainMapper(Guid modelId)
             new(request.Id)
         );
 
-    //[MapValue("ModelId", Use = nameof(GetModelId))]
     public SectionProfile ToDomain(PutSectionProfileRequest request) =>
         new(
             modelId,
+            request.Name,
             new(request.Area, request.AreaUnit.MapToAreaUnit()),
             new(
                 request.StrongAxisMomentOfInertia,
@@ -119,6 +124,8 @@ public partial class BeamOsModelBuilderDomainMapper(Guid modelId)
                 request.PolarMomentOfInertia,
                 request.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
             ),
+            new(request.StrongAxisPlasticSectionModulus, request.VolumeUnit.MapToVolumeUnit()),
+            new(request.WeakAxisPlasticSectionModulus, request.VolumeUnit.MapToVolumeUnit()),
             request.StrongAxisShearArea.HasValue
                 ? new(request.StrongAxisShearArea.Value, request.AreaUnit.MapToAreaUnit())
                 : null,

@@ -33,6 +33,7 @@ public record ModelResponse(
     List<Element1dResponse>? Element1ds = null,
     List<MaterialResponse>? Materials = null,
     List<SectionProfileResponse>? SectionProfiles = null,
+    List<SectionProfileFromLibrary>? SectionProfilesFromLibrary = null,
     List<PointLoadResponse>? PointLoads = null,
     List<MomentLoadResponse>? MomentLoads = null,
     List<ResultSetResponse>? ResultSets = null,

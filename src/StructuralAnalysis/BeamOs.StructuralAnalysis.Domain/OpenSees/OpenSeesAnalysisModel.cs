@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.EnvelopeResultSets;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.NodeResultAggregate;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.Common;
@@ -44,13 +45,18 @@ public sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettings
         {
             NodeResults = this.GetResults(model, tclWriter),
         };
+        var envelopeResultSet = new EnvelopeResultSet(model.Id);
 
         var dsmElements =
             model.Settings.AnalysisSettings.Element1DAnalysisType == Element1dAnalysisType.Euler
                 ? model.Element1ds.Select(el => new DsmElement1d(el)).ToArray()
                 : model.Element1ds.Select(el => new TimoshenkoDsmElement1d(el)).ToArray();
 
-        var otherResults = resultSet.ComputeDiagramsAndElement1dResults(dsmElements, unitSettings);
+        var otherResults = resultSet.ComputeDiagramsAndElement1dResults(
+            dsmElements,
+            unitSettings,
+            envelopeResultSet
+        );
 
         return new AnalysisResults()
         {

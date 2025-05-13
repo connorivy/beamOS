@@ -1,5 +1,6 @@
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.MomentDiagramAggregate;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.ShearForceDiagramAggregate;
+using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.EnvelopeResultSets;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.NodeResultAggregate;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
@@ -33,17 +34,27 @@ public class ResultSet : BeamOsModelEntity<ResultSetId>
     //public ICollection<MomentDiagram>? MomentDiagrams { get; set; }
     public OtherAnalyticalResults ComputeDiagramsAndElement1dResults(
         IList<DsmElement1d> dsmElement1Ds,
-        UnitSettings unitSettings
-    ) => this.ComputeDiagrams(dsmElement1Ds, unitSettings, true);
+        UnitSettings unitSettings,
+        EnvelopeResultSet envelopeResultSet
+    ) => this.ComputeDiagrams(dsmElement1Ds, unitSettings, envelopeResultSet, true);
 
     public OtherAnalyticalResults ComputeDiagramsFromExistingResults(
         IList<DsmElement1d> dsmElement1Ds,
         UnitSettings unitSettings
-    ) => this.ComputeDiagrams(dsmElement1Ds, unitSettings, false);
+    ) => this.ComputeDiagrams(dsmElement1Ds, unitSettings, new(Guid.NewGuid()), false);
 
+    /// <summary>
+    /// todo: refactor this method because it is doing too much work and sometimes takes meaningless parameters
+    /// </summary>
+    /// <param name="dsmElement1Ds"></param>
+    /// <param name="unitSettings"></param>
+    /// <param name="envelopeResultSet"></param>
+    /// <param name="createElementResults"></param>
+    /// <returns></returns>
     private OtherAnalyticalResults ComputeDiagrams(
         IList<DsmElement1d> dsmElement1Ds,
         UnitSettings unitSettings,
+        EnvelopeResultSet envelopeResultSet,
         bool createElementResults = false
     )
     {
@@ -131,17 +142,18 @@ public class ResultSet : BeamOsModelEntity<ResultSetId>
             {
                 sfd.MinMax(ref shearMin, ref shearMax);
                 momentDiagrams[i].MinMax(ref momentMin, ref momentMax);
-                this.Element1dResults.Add(
-                    new(this.ModelId, this.Id, element.Element1dId)
-                    {
-                        MaxMoment = new(momentMax, unitSettings.TorqueUnit),
-                        MinMoment = new(momentMin, unitSettings.TorqueUnit),
-                        MaxShear = new(shearMax, unitSettings.ForceUnit),
-                        MinShear = new(shearMin, unitSettings.ForceUnit),
-                        MaxDisplacement = new(displacementMax, unitSettings.LengthUnit),
-                        MinDisplacement = new(displacementMin, unitSettings.LengthUnit),
-                    }
-                );
+                Element1dResult elementResult = new(this.ModelId, this.Id, element.Element1dId)
+                {
+                    MaxMoment = new(momentMax, unitSettings.TorqueUnit),
+                    MinMoment = new(momentMin, unitSettings.TorqueUnit),
+                    MaxShear = new(shearMax, unitSettings.ForceUnit),
+                    MinShear = new(shearMin, unitSettings.ForceUnit),
+                    MaxDisplacement = new(displacementMax, unitSettings.LengthUnit),
+                    MinDisplacement = new(displacementMin, unitSettings.LengthUnit),
+                };
+
+                this.Element1dResults.Add(elementResult);
+                envelopeResultSet.AddElement1dResult(elementResult);
             }
             else
             {

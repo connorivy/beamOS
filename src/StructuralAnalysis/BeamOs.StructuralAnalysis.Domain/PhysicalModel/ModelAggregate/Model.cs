@@ -1,4 +1,5 @@
 using BeamOs.Common.Domain.Models;
+using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.EnvelopeResultSets;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCases;
@@ -29,11 +30,13 @@ public class Model : BeamOsEntity<ModelId>
     public IList<Element1d>? Element1ds { get; init; }
     public IList<Material>? Materials { get; init; }
     public IList<SectionProfile>? SectionProfiles { get; init; }
+    public IList<SectionProfileFromLibrary>? SectionProfilesFromLibrary { get; init; }
     public IList<PointLoad>? PointLoads { get; init; }
     public IList<MomentLoad>? MomentLoads { get; init; }
     public IList<LoadCase>? LoadCases { get; init; }
     public IList<LoadCombination>? LoadCombinations { get; init; }
     public IList<ResultSet>? ResultSets { get; init; }
+    public IList<EnvelopeResultSet>? EnvelopeResultSets { get; init; }
 
     //public AnalyticalResults? AnalyticalResults { get; init; }
 

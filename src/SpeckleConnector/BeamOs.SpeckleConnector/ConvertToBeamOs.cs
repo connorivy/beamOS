@@ -31,18 +31,12 @@ public class ConvertToBeamOs
             "doesn't matter"
         );
 
-        modelBuilder.AddSectionProfiles(
-            new PutSectionProfileRequest()
+        modelBuilder.AddSectionProfilesFromLibrary(
+            new SectionProfileFromLibrary()
             {
-                Area = 10.6,
-                StrongAxisMomentOfInertia = 448,
-                WeakAxisMomentOfInertia = 24.5,
-                PolarMomentOfInertia = .55,
-                StrongAxisShearArea = 5.0095,
-                WeakAxisShearArea = 4.6905,
-                AreaUnit = AreaUnitContract.SquareInch,
-                AreaMomentOfInertiaUnit = AreaMomentOfInertiaUnitContract.InchToTheFourth,
                 Id = 1636,
+                Name = "w16x36",
+                Library = StructuralCode.AISC_360_16,
             }
         );
 

@@ -24,10 +24,7 @@ public class CreateSectionProfileCommandHandler(
         sectionProfileRepository.Add(sectionProfile);
         await unitOfWork.SaveChangesAsync(ct);
 
-        return sectionProfile.ToResponse(
-            command.Body.AreaUnit.MapToAreaUnit(),
-            command.Body.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
-        );
+        return sectionProfile.ToResponse(command.Body.LengthUnit.MapToLengthUnit());
     }
 }
 
@@ -40,20 +37,25 @@ public static partial class CreateSectionProfileCommandMapper
 
     public static SectionProfileResponse ToResponse(
         this SectionProfile entity,
-        AreaUnit areaUnit,
-        AreaMomentOfInertiaUnit areaMomentOfInertiaUnit
-    ) =>
-        ToResponse(
+        LengthUnit lengthUnit
+    )
+    {
+        var areaUnit = lengthUnit.ToArea();
+        var areaMomentOfInertiaUnit = lengthUnit.ToAreaMomentOfInertiaUnit();
+        var volumeUnit = lengthUnit.ToVolume();
+        return ToResponse(
             entity,
             entity.Area.As(areaUnit),
             entity.StrongAxisMomentOfInertia.As(areaMomentOfInertiaUnit),
             entity.WeakAxisMomentOfInertia.As(areaMomentOfInertiaUnit),
             entity.PolarMomentOfInertia.As(areaMomentOfInertiaUnit),
+            entity.StrongAxisPlasticSectionModulus.As(volumeUnit),
+            entity.WeakAxisPlasticSectionModulus.As(volumeUnit),
             entity.StrongAxisShearArea?.As(areaUnit),
             entity.WeakAxisShearArea?.As(areaUnit),
-            areaUnit,
-            areaMomentOfInertiaUnit
+            lengthUnit
         );
+    }
 
     private static partial SectionProfileResponse ToResponse(
         this SectionProfile entity,
@@ -61,10 +63,11 @@ public static partial class CreateSectionProfileCommandMapper
         double strongAxisMomentOfInertia,
         double weakAxisMomentOfInertia,
         double polarMomentOfInertia,
+        double strongAxisPlasticSectionModulus,
+        double weakAxisPlasticSectionModulus,
         double? strongAxisShearArea,
         double? weakAxisShearArea,
-        AreaUnit areaUnit,
-        AreaMomentOfInertiaUnit areaMomentOfInertiaUnit
+        LengthUnit lengthUnit
     );
 }
 
@@ -73,6 +76,7 @@ public readonly struct CreateSectionProfileCommand
 {
     public Guid ModelId { get; init; }
     public CreateSectionProfileRequest Body { get; init; }
+    public string Name => this.Body.Name;
     public Area Area => new(this.Body.Area, this.Body.AreaUnit.MapToAreaUnit());
     public AreaMomentOfInertia StrongAxisMomentOfInertia =>
         new(
@@ -89,6 +93,10 @@ public readonly struct CreateSectionProfileCommand
             this.Body.PolarMomentOfInertia,
             this.Body.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
         );
+    public Volume StrongAxisPlasticSectionModulus =>
+        new(this.Body.StrongAxisPlasticSectionModulus, this.Body.VolumeUnit.MapToVolumeUnit());
+    public Volume WeakAxisPlasticSectionModulus =>
+        new(this.Body.WeakAxisPlasticSectionModulus, this.Body.VolumeUnit.MapToVolumeUnit());
     public Area? StrongAxisShearArea =>
         this.Body.StrongAxisShearArea is null
             ? null

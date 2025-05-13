@@ -30,7 +30,15 @@ public abstract class BeamOsModelBuilder
     public IEnumerable<PutMaterialRequest> Materials => this.MaterialRequests();
     public abstract IEnumerable<PutMaterialRequest> MaterialRequests();
     public IEnumerable<PutSectionProfileRequest> SectionProfiles => this.SectionProfileRequests();
-    public abstract IEnumerable<PutSectionProfileRequest> SectionProfileRequests();
+
+    public virtual IEnumerable<PutSectionProfileRequest> SectionProfileRequests() => [];
+
+    public IEnumerable<SectionProfileFromLibrary> SectionProfilesFromLibrary =>
+        this.SectionProfilesFromLibraryRequests();
+
+    public virtual IEnumerable<SectionProfileFromLibrary> SectionProfilesFromLibraryRequests() =>
+        [];
+
     public IEnumerable<PutElement1dRequest> Element1ds => this.Element1dRequests();
     public abstract IEnumerable<PutElement1dRequest> Element1dRequests();
     public IEnumerable<PutPointLoadRequest> PointLoads => this.PointLoadRequests();
@@ -124,9 +132,34 @@ public abstract class BeamOsModelBuilder
             (await apiClient.BatchPutMaterialAsync(modelId, el)).ThrowIfError();
         }
 
-        foreach (var el in ChunkRequests(this.SectionProfileRequests()))
+        foreach (var el in this.SectionProfileRequests().GroupBy(r => r.GetType()))
         {
-            (await apiClient.BatchPutSectionProfileAsync(modelId, el)).ThrowIfError();
+            if (el.Key == typeof(PutSectionProfileRequest))
+            {
+                foreach (
+                    var typedProfileRequest in ChunkRequests(el.Cast<PutSectionProfileRequest>())
+                )
+                {
+                    (
+                        await apiClient.BatchPutSectionProfileAsync(modelId, typedProfileRequest)
+                    ).ThrowIfError();
+                }
+            }
+            // else if (el.Key == typeof(StructuralCodeSectionProfile))
+            // {
+            //     foreach (
+            //         var typedProfileRequest in ChunkRequests(el.Cast<PutSectionProfileRequest>())
+            //     )
+            //     {
+            //         (
+            //             await apiClient.BatchPutSectionProfileAsync(modelId, typedProfileRequest)
+            //         ).ThrowIfError();
+            //     }
+            // }
+            else
+            {
+                throw new NotImplementedException($"Section profile type {el.Key} not implemented");
+            }
         }
 
         foreach (var el in ChunkRequests(this.Element1dRequests()))

@@ -1,25 +1,26 @@
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 
-public class StructuralCodeSectionProfileInfo : SectionProfileInfoBase
+public class SectionProfileFromLibrary : SectionProfileInfoBase
 {
-    public StructuralCodeSectionProfileInfo(
+    public SectionProfileFromLibrary(
         ModelId modelId,
         string name,
-        StructuralCode structuralCode,
+        StructuralCode library,
         SectionProfileId? id = null
     )
         : base(modelId, name, id)
     {
-        this.StructuralCode = structuralCode;
+        this.Library = library;
     }
 
-    public StructuralCode StructuralCode { get; set; }
+    public StructuralCode Library { get; set; }
 
     public override SectionProfile GetSectionProfile()
     {
-        return this.StructuralCode switch
+        return this.Library switch
         {
             // todo: add logic for different beam shapes
             StructuralCode.AISC_360_16 => SectionProfile.FromStructuralShapeData(
@@ -27,21 +28,15 @@ public class StructuralCodeSectionProfileInfo : SectionProfileInfoBase
                 StructuralShapes.Lib.AISC.v16_0.WShapes.GetShapeByName(this.Name)
             ),
             _ => throw new NotImplementedException(
-                $"Structural code {this.StructuralCode} not implemented."
+                $"Structural code {this.Library} not implemented."
             ),
         };
     }
 
     [Obsolete("EF Core Constructor", true)]
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-    private StructuralCodeSectionProfileInfo()
+    private SectionProfileFromLibrary()
         : base() { }
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-}
-
-public enum StructuralCode
-{
-    Undefined = 0,
-    AISC_360_16,
 }

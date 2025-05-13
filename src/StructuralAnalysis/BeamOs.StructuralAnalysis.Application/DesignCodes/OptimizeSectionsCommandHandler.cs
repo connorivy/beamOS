@@ -1,5 +1,6 @@
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis.Application.AnalyticalResults.EnvelopeResultSets;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.ResultSets;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
@@ -12,7 +13,7 @@ namespace BeamOs.StructuralAnalysis.Application.DesignCodes;
 
 public sealed class OptimizeSectionsCommandHandler(
     IModelRepository modelRepository,
-    IResultSetRepository resultSetRepository,
+    IEnvelopeResultSetRepository resultSetRepository,
     IStructuralAnalysisUnitOfWork unitOfWork,
     ILogger<OptimizeSectionsCommandHandler> logger
 ) : ICommandHandler<Guid, string>
@@ -29,25 +30,21 @@ public sealed class OptimizeSectionsCommandHandler(
             $"{nameof(Model.Element1ds)}.{nameof(Element1d.StartNode)}",
             $"{nameof(Model.Element1ds)}.{nameof(Element1d.EndNode)}",
             $"{nameof(Model.Nodes)}.{nameof(Node.PointLoads)}",
-            $"{nameof(Model.Nodes)}.{nameof(Node.MomentLoads)}",
+            $"{nameof(Model.Nodes)}.{nameof(Node.MomentLoads)}"
         );
 
         if (model is null)
         {
-            return BeamOsError.NotFound(
-                description: $"Could not find model with id {command.ModelId}"
-            );
+            return BeamOsError.NotFound(description: $"Could not find model with id {command}");
         }
 
-        var envelopeResultSet = await resultSetRepository.GetSingle(
-            command.ModelId,
-            ct
-        );
+        // var envelopeResultSet = await resultSetRepository.GetSingle(command);
         if (model.LoadCombinations is null || model.LoadCombinations.Count == 0)
         {
             return BeamOsError.NotFound(
-                description: $"Model with id {command.ModelId} has no load combinations"
+                description: $"Model with id {command} has no load combinations"
             );
         }
+        return string.Empty;
     }
 }

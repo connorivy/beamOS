@@ -177,10 +177,13 @@ public sealed class BeamOsDynamicModelBuilder(
 
     public void AddSectionProfile(
         int id,
+        string name,
         double area,
         double strongAxisMomentOfInertia,
         double weakAxisMomentOfInertia,
         double polarMomentOfInertia,
+        double strongAxisPlasticSectionModulus,
+        double weakAxisPlasticSectionModulus,
         double strongAxisShearArea,
         double weakAxisShearArea
     ) =>
@@ -188,14 +191,16 @@ public sealed class BeamOsDynamicModelBuilder(
             new PutSectionProfileRequest()
             {
                 Id = id,
+                Name = name,
                 Area = area,
                 StrongAxisMomentOfInertia = strongAxisMomentOfInertia,
                 WeakAxisMomentOfInertia = weakAxisMomentOfInertia,
                 PolarMomentOfInertia = polarMomentOfInertia,
+                StrongAxisPlasticSectionModulus = strongAxisPlasticSectionModulus,
+                WeakAxisPlasticSectionModulus = weakAxisPlasticSectionModulus,
                 StrongAxisShearArea = strongAxisShearArea,
                 WeakAxisShearArea = weakAxisShearArea,
-                AreaUnit = this.UnitSettings.AreaUnit,
-                AreaMomentOfInertiaUnit = this.UnitSettings.AreaMomentOfInertiaUnit,
+                LengthUnit = this.UnitSettings.LengthUnit,
             }
         );
 
@@ -204,6 +209,25 @@ public sealed class BeamOsDynamicModelBuilder(
 
     public override IEnumerable<PutSectionProfileRequest> SectionProfileRequests() =>
         this.sectionProfiles.AsReadOnly();
+
+    private readonly List<SectionProfileFromLibrary> sectionProfilesFromLibrary = [];
+
+    public void AddSectionProfileFromLibrary(int id, string name, StructuralCode library) =>
+        this.AddSectionProfilesFromLibrary(
+            new SectionProfileFromLibrary()
+            {
+                Id = id,
+                Name = name,
+                Library = library,
+            }
+        );
+
+    public void AddSectionProfilesFromLibrary(
+        params Span<SectionProfileFromLibrary> sectionProfilesFromLibrary
+    ) => this.sectionProfilesFromLibrary.AddRange(sectionProfilesFromLibrary);
+
+    public override IEnumerable<SectionProfileFromLibrary> SectionProfilesFromLibraryRequests() =>
+        this.sectionProfilesFromLibrary.AsReadOnly();
 
     public void GenerateStaticModelClass(string outputDir, string? baseClass = null)
     {
@@ -297,37 +321,65 @@ namespace {namespac};"
         }
         sb.AppendLine("    }");
         sb.AppendLine();
-        sb.AppendLine(
-            "    public override IEnumerable<PutSectionProfileRequest> SectionProfileRequests()"
-        );
-        sb.AppendLine("    {");
-        foreach (var sectionProfile in this.SectionProfileRequests())
+
+        if (this.SectionProfileRequests().Any())
         {
-            sb.AppendLine($"        yield return new PutSectionProfileRequest");
-            sb.AppendLine($"        {{");
-            sb.AppendLine($"            Id = {sectionProfile.Id},");
-            sb.AppendLine($"            Area = {sectionProfile.Area},");
             sb.AppendLine(
-                $"            StrongAxisMomentOfInertia = {sectionProfile.StrongAxisMomentOfInertia},"
+                "    public override IEnumerable<PutSectionProfileRequest> SectionProfileRequests()"
             );
-            sb.AppendLine(
-                $"            WeakAxisMomentOfInertia = {sectionProfile.WeakAxisMomentOfInertia},"
-            );
-            sb.AppendLine(
-                $"            PolarMomentOfInertia = {sectionProfile.PolarMomentOfInertia},"
-            );
-            sb.AppendLine(
-                $"            StrongAxisShearArea = {sectionProfile.StrongAxisShearArea},"
-            );
-            sb.AppendLine($"            WeakAxisShearArea = {sectionProfile.WeakAxisShearArea},");
-            sb.AppendLine($"            AreaUnit = {sectionProfile.AreaUnit},");
-            sb.AppendLine(
-                $"            AreaMomentOfInertiaUnit = {sectionProfile.AreaMomentOfInertiaUnit}"
-            );
-            sb.AppendLine($"        }};");
+            sb.AppendLine("    {");
+            foreach (var sectionProfile in this.SectionProfileRequests())
+            {
+                sb.AppendLine($"        yield return new PutSectionProfileRequest");
+                sb.AppendLine($"        {{");
+                sb.AppendLine($"            Id = {sectionProfile.Id},");
+                sb.AppendLine($"            Name = {sectionProfile.Name},");
+                sb.AppendLine($"            Area = {sectionProfile.Area},");
+                sb.AppendLine(
+                    $"            StrongAxisMomentOfInertia = {sectionProfile.StrongAxisMomentOfInertia},"
+                );
+                sb.AppendLine(
+                    $"            WeakAxisMomentOfInertia = {sectionProfile.WeakAxisMomentOfInertia},"
+                );
+                sb.AppendLine(
+                    $"            PolarMomentOfInertia = {sectionProfile.PolarMomentOfInertia},"
+                );
+                sb.AppendLine(
+                    $"            StrongAxisShearArea = {sectionProfile.StrongAxisShearArea},"
+                );
+                sb.AppendLine(
+                    $"            WeakAxisShearArea = {sectionProfile.WeakAxisShearArea},"
+                );
+                sb.AppendLine($"            LengthUnit = {sectionProfile.LengthUnit},");
+                sb.AppendLine($"        }};");
+            }
+
+            sb.AppendLine("    }");
+            sb.AppendLine();
         }
-        sb.AppendLine("    }");
-        sb.AppendLine();
+
+        if (this.SectionProfilesFromLibraryRequests().Any())
+        {
+            sb.AppendLine(
+                "    public override IEnumerable<SectionProfileFromLibrary> SectionProfilesFromLibraryRequests()"
+            );
+            sb.AppendLine("    {");
+            foreach (var sectionProfile in this.SectionProfilesFromLibraryRequests())
+            {
+                {
+                    sb.AppendLine($"        yield return new SectionProfileFromLibrary");
+                    sb.AppendLine($"        {{");
+                    sb.AppendLine($"            Id = {sectionProfile.Id},");
+                    sb.AppendLine($"            Name = \"{sectionProfile.Name}\",");
+                    sb.AppendLine(
+                        $"            Library = BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile.StructuralCode.{sectionProfile.Library},"
+                    );
+                    sb.AppendLine($"        }};");
+                }
+            }
+            sb.AppendLine("    }");
+            sb.AppendLine();
+        }
         sb.AppendLine("    public override IEnumerable<PutElement1dRequest> Element1dRequests()");
         sb.AppendLine("    {");
         foreach (var element in this.Element1dRequests())
@@ -437,7 +489,9 @@ model.add_material('M{material.Id}', {new PressureContract(material.ModulusOfEla
             );
         }
         sb.AppendLine();
-        foreach (var sectionProfile in this.SectionProfileRequests())
+        foreach (
+            var sectionProfile in this.SectionProfileRequests().OfType<PutSectionProfileRequest>()
+        )
         {
             sb.AppendLine(
                 $"model.add_section('S{sectionProfile.Id}', {new AreaContract(sectionProfile.Area, sectionProfile.AreaUnit).As(this.Settings.UnitSettings.AreaUnit)}, {new AreaMomentOfInertiaContract(sectionProfile.WeakAxisMomentOfInertia, sectionProfile.AreaMomentOfInertiaUnit).As(this.UnitSettings.AreaMomentOfInertiaUnit)}, {new AreaMomentOfInertiaContract(sectionProfile.StrongAxisMomentOfInertia, sectionProfile.AreaMomentOfInertiaUnit).As(this.UnitSettings.AreaMomentOfInertiaUnit)}, {new AreaMomentOfInertiaContract(sectionProfile.PolarMomentOfInertia, sectionProfile.AreaMomentOfInertiaUnit).As(this.UnitSettings.AreaMomentOfInertiaUnit)})"

@@ -49,15 +49,22 @@ internal abstract class ModelResourceRepositoryBase<TId, TEntity>(
             .Select(m => m.Id)
             .ToListAsync(ct);
 
-    public async Task<TEntity?> GetSingle(ModelId modelId, TId id) =>
+    public async Task<TEntity?> GetSingle(
+        ModelId modelId,
+        TId id,
+        CancellationToken ct = default
+    ) =>
         await this
             .DbContext.Set<TEntity>()
             .AsNoTracking()
-            .FirstOrDefaultAsync(m => m.ModelId == modelId && m.Id.Equals(id));
+            .FirstOrDefaultAsync(
+                m => m.ModelId == modelId && m.Id.Equals(id),
+                cancellationToken: ct
+            );
 
-    public async Task RemoveById(ModelId modelId, TId id)
+    public async Task RemoveById(ModelId modelId, TId id, CancellationToken ct = default)
     {
-        var entity = await this.DbContext.Set<TEntity>().FindAsync([id, modelId]);
+        var entity = await this.DbContext.Set<TEntity>().FindAsync([id, modelId], ct);
         if (entity is not null)
         {
             this.DbContext.Set<TEntity>().Remove(entity);

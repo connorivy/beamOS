@@ -1,0 +1,26 @@
+﻿using BeamOs.Common.Api;
+using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
+
+namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.SectionProfiles;
+
+[BeamOsRoute(
+    RouteConstants.ModelRoutePrefixWithTrailingSlash + "section-profiles/{id}/from-library"
+)]
+[BeamOsEndpointType(Http.Put)]
+[BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
+public class PutSectionProfileFromLibrary(
+    PutSectionProfileFromLibraryCommandHandler putSectionProfileCommandHandler
+)
+    : BeamOsModelResourceWithIntIdBaseEndpoint<
+        PutSectionProfileFromLibraryCommand,
+        StructuralCodeSectionProfileData,
+        SectionProfileFromLibrary
+    >
+{
+    public override async Task<Result<SectionProfileFromLibrary>> ExecuteRequestAsync(
+        PutSectionProfileFromLibraryCommand req,
+        CancellationToken ct = default
+    ) => await putSectionProfileCommandHandler.ExecuteAsync(req, ct);
+}

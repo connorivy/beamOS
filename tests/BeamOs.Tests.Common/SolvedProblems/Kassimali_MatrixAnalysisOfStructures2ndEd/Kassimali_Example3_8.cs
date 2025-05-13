@@ -105,30 +105,34 @@ public class Kassimali_Example3_8 : ModelFixture, IHasExpectedNodeResults
 
     public override IEnumerable<PutSectionProfileRequest> SectionProfileRequests()
     {
-        yield return new()
+        yield return new PutSectionProfileRequest
         {
+            Name = "8",
+            LengthUnit = LengthUnitContract.Inch,
             Area = 8,
             StrongAxisMomentOfInertia = 1,
             WeakAxisMomentOfInertia = 1,
             PolarMomentOfInertia = 1,
             StrongAxisShearArea = 1,
             WeakAxisShearArea = 1,
-            AreaUnit = AreaUnitContract.SquareInch,
-            AreaMomentOfInertiaUnit = AreaMomentOfInertiaUnitContract.InchToTheFourth,
             Id = 8,
+            StrongAxisPlasticSectionModulus = 1,
+            WeakAxisPlasticSectionModulus = 1,
         };
 
-        yield return new()
+        yield return new PutSectionProfileRequest()
         {
+            Name = "6",
+            LengthUnit = LengthUnitContract.Inch,
             Area = 6,
             StrongAxisMomentOfInertia = 1,
             WeakAxisMomentOfInertia = 1,
             PolarMomentOfInertia = 1,
             StrongAxisShearArea = 1,
             WeakAxisShearArea = 1,
-            AreaUnit = AreaUnitContract.SquareInch,
-            AreaMomentOfInertiaUnit = AreaMomentOfInertiaUnitContract.InchToTheFourth,
             Id = 6,
+            StrongAxisPlasticSectionModulus = 1,
+            WeakAxisPlasticSectionModulus = 1,
         };
     }
 

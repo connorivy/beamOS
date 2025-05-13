@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 
@@ -15,7 +16,7 @@ public record CreateSectionProfileRequest : SectionProfileData
     public CreateSectionProfileRequest() { }
 }
 
-public record SectionProfileData
+public record SectionProfileData : SectionProfileDataBase
 {
     public required double Area { get; init; }
     public required double StrongAxisMomentOfInertia { get; init; }
@@ -26,16 +27,25 @@ public record SectionProfileData
     public double? StrongAxisShearArea { get; init; }
     public double? WeakAxisShearArea { get; init; }
 
-    public AreaUnit AreaUnit { get; init; }
-    public AreaMomentOfInertiaUnit AreaMomentOfInertiaUnit { get; init; }
+    public required LengthUnit LengthUnit { get; init; }
+
+    [JsonIgnore]
+    public VolumeUnit VolumeUnit => this.LengthUnit.ToVolume();
+
+    [JsonIgnore]
+    public AreaUnit AreaUnit => this.LengthUnit.ToArea();
+
+    [JsonIgnore]
+    public AreaMomentOfInertiaUnit AreaMomentOfInertiaUnit =>
+        this.LengthUnit.ToAreaMomentOfInertia();
 
     public SectionProfileData() { }
 
     [SetsRequiredMembers]
     public SectionProfileData(SectionProfileData sectionProfileData)
+        : base(sectionProfileData)
     {
-        this.AreaUnit = sectionProfileData.AreaUnit;
-        this.AreaMomentOfInertiaUnit = sectionProfileData.AreaMomentOfInertiaUnit;
+        this.LengthUnit = sectionProfileData.LengthUnit;
         this.Area = sectionProfileData.Area;
         this.StrongAxisMomentOfInertia = sectionProfileData.StrongAxisMomentOfInertia;
         this.WeakAxisMomentOfInertia = sectionProfileData.WeakAxisMomentOfInertia;
@@ -59,4 +69,57 @@ public record PutSectionProfileRequest : SectionProfileData, IHasIntId
     }
 
     public PutSectionProfileRequest() { }
+}
+
+public abstract record SectionProfileDataBase
+{
+    public required string Name { get; init; }
+
+    public SectionProfileDataBase() { }
+
+    [SetsRequiredMembers]
+    public SectionProfileDataBase(string name)
+    {
+        this.Name = name;
+    }
+
+    [SetsRequiredMembers]
+    public SectionProfileDataBase(SectionProfileDataBase sectionProfileDataBase)
+    {
+        this.Name = sectionProfileDataBase.Name;
+    }
+}
+
+public record StructuralCodeSectionProfileData : SectionProfileDataBase
+{
+    public required StructuralCode Library { get; init; }
+
+    [SetsRequiredMembers]
+    public StructuralCodeSectionProfileData(StructuralCode library, string name)
+        : base(name)
+    {
+        this.Library = library;
+    }
+
+    public StructuralCodeSectionProfileData() { }
+}
+
+public enum StructuralCode
+{
+    Undefined = 0,
+    AISC_360_16,
+}
+
+public record SectionProfileFromLibrary : StructuralCodeSectionProfileData
+{
+    public required int Id { get; init; }
+
+    [SetsRequiredMembers]
+    public SectionProfileFromLibrary(int id, StructuralCode library, string name)
+        : base(library, name)
+    {
+        this.Id = id;
+    }
+
+    public SectionProfileFromLibrary() { }
 }

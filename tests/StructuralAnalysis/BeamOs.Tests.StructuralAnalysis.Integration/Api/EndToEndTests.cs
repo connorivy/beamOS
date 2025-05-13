@@ -183,14 +183,16 @@ public class EndToEndTests
     {
         CreateSectionProfileRequest w16x36Request = new()
         {
+            Name = "W16x36",
             Area = 10.6,
             StrongAxisMomentOfInertia = 448,
             WeakAxisMomentOfInertia = 24.5,
             PolarMomentOfInertia = .55,
             StrongAxisShearArea = 5.0095,
             WeakAxisShearArea = 4.6905,
-            AreaUnit = AreaUnitContract.SquareInch,
-            AreaMomentOfInertiaUnit = AreaMomentOfInertiaUnitContract.InchToTheFourth,
+            StrongAxisPlasticSectionModulus = 56.4,
+            WeakAxisPlasticSectionModulus = 3.4,
+            LengthUnit = LengthUnitContract.Inch,
             Id = 1636,
         };
         var sectionProfileResponseResult =

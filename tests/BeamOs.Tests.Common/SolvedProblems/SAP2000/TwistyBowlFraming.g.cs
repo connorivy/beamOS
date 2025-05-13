@@ -584,19 +584,13 @@ yield return new(5,new(-6989.299597312555, 0, 20194.23866023988,Millimeter),new(
         };
     }
 
-    public override IEnumerable<PutSectionProfileRequest> SectionProfileRequests()
+    public override IEnumerable<SectionProfileFromLibrary> SectionProfilesFromLibraryRequests()
     {
-        yield return new PutSectionProfileRequest
+        yield return new SectionProfileFromLibrary
         {
             Id = 1636,
-            Area = 10.6,
-            StrongAxisMomentOfInertia = 448,
-            WeakAxisMomentOfInertia = 24.5,
-            PolarMomentOfInertia = 0.55,
-            StrongAxisShearArea = 5.0095,
-            WeakAxisShearArea = 4.6905,
-            AreaUnit = SquareInch,
-            AreaMomentOfInertiaUnit = InchToTheFourth
+            Name = "w16x36",
+            Library = BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile.StructuralCode.AISC_360_16,
         };
     }
 

@@ -92,13 +92,15 @@ public partial class SectionProfileObjectEditor(
     private void UpdateFromSectionProfileResponse(SectionProfileResponse response)
     {
         var areaUnit = response.AreaUnit.MapToAreaUnit();
+        var volumeUnit = response.VolumeUnit.MapToVolumeUnit();
         var momentOfInertiaUnit = response.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit();
         var thisAreaUnit = this.UnitSettings.AreaUnit.MapToAreaUnit();
-        var thisMomentOfInertiaUnit = this.UnitSettings
-            .AreaMomentOfInertiaUnit
-            .MapToAreaMomentOfInertiaUnit();
+        var thisVolumeUnit = this.UnitSettings.VolumeUnit.MapToVolumeUnit();
+        var thisMomentOfInertiaUnit =
+            this.UnitSettings.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit();
 
         this.sectionProfile.Id = response.Id;
+        this.sectionProfile.Name = response.Name;
         this.sectionProfile.ModelId = response.ModelId;
         this.sectionProfile.Area = new Area(response.Area, areaUnit).As(thisAreaUnit);
         this.sectionProfile.StrongAxisMomentOfInertia = new AreaMomentOfInertia(
@@ -113,13 +115,20 @@ public partial class SectionProfileObjectEditor(
             response.PolarMomentOfInertia,
             momentOfInertiaUnit
         ).As(thisMomentOfInertiaUnit);
-        this.sectionProfile.StrongAxisShearArea = new Area(
-            response.StrongAxisShearArea,
-            areaUnit
-        ).As(thisAreaUnit);
-        this.sectionProfile.WeakAxisShearArea = new Area(response.WeakAxisShearArea, areaUnit).As(
-            thisAreaUnit
-        );
+        this.sectionProfile.StrongAxisPlasticSectionModulus = new Volume(
+            response.StrongAxisPlasticSectionModulus,
+            volumeUnit
+        ).As(thisVolumeUnit);
+        this.sectionProfile.WeakAxisPlasticSectionModulus = new Volume(
+            response.WeakAxisPlasticSectionModulus,
+            volumeUnit
+        ).As(thisVolumeUnit);
+        this.sectionProfile.StrongAxisShearArea = response.StrongAxisShearArea.HasValue
+            ? new Area(response.StrongAxisShearArea.Value, areaUnit).As(thisAreaUnit)
+            : null;
+        this.sectionProfile.WeakAxisShearArea = response.WeakAxisShearArea.HasValue
+            ? new Area(response.WeakAxisShearArea.Value, areaUnit).As(thisAreaUnit)
+            : null;
     }
 
     private void OnFocus(string fieldName, int fieldNum, Action<object> setValue)
@@ -135,34 +144,38 @@ public partial class SectionProfileObjectEditor(
 
     private async Task Submit()
     {
-        SectionProfileData sectionProfileData =
-            new()
-            {
-                AreaUnit = this.UnitSettings.AreaUnit,
-                AreaMomentOfInertiaUnit = this.UnitSettings.AreaMomentOfInertiaUnit,
-                Area = this.sectionProfile.Area.Value,
-                StrongAxisMomentOfInertia = this.sectionProfile.StrongAxisMomentOfInertia.Value,
-                WeakAxisMomentOfInertia = this.sectionProfile.WeakAxisMomentOfInertia.Value,
-                PolarMomentOfInertia = this.sectionProfile.PolarMomentOfInertia.Value,
-                StrongAxisShearArea = this.sectionProfile.StrongAxisShearArea.Value,
-                WeakAxisShearArea = this.sectionProfile.WeakAxisShearArea.Value
-            };
+        SectionProfileData sectionProfileData = new()
+        {
+            Name = this.sectionProfile.Name,
+            LengthUnit = this.UnitSettings.LengthUnit,
+            Area = this.sectionProfile.Area.Value,
+            StrongAxisMomentOfInertia = this.sectionProfile.StrongAxisMomentOfInertia.Value,
+            WeakAxisMomentOfInertia = this.sectionProfile.WeakAxisMomentOfInertia.Value,
+            PolarMomentOfInertia = this.sectionProfile.PolarMomentOfInertia.Value,
+            StrongAxisPlasticSectionModulus = this.sectionProfile
+                .StrongAxisPlasticSectionModulus
+                .Value,
+            WeakAxisPlasticSectionModulus = this.sectionProfile.WeakAxisPlasticSectionModulus.Value,
+            StrongAxisShearArea = this.sectionProfile.StrongAxisShearArea.Value,
+            WeakAxisShearArea = this.sectionProfile.WeakAxisShearArea.Value,
+        };
 
         if (this.sectionProfile.Id == 0)
         {
-            CreateSectionProfileClientCommand command =
-                new(sectionProfileData) { ModelId = this.ModelId };
+            CreateSectionProfileClientCommand command = new(sectionProfileData)
+            {
+                ModelId = this.ModelId,
+            };
             await createSectionProfileCommandHandler.ExecuteAsync(command);
         }
         else
         {
-            PutSectionProfileCommand command =
-                new()
-                {
-                    Id = this.sectionProfile.Id,
-                    ModelId = this.ModelId,
-                    Body = sectionProfileData
-                };
+            PutSectionProfileCommand command = new()
+            {
+                Id = this.sectionProfile.Id,
+                ModelId = this.ModelId,
+                Body = sectionProfileData,
+            };
 
             await putSectionProfileCommandHandler.ExecuteAsync(command);
         }
@@ -184,12 +197,9 @@ public partial class SectionProfileObjectEditor(
 
         return Task.FromResult(
             NullInt.Concat(
-                editorState
-                    .Value
-                    .CachedModelResponse
-                    .SectionProfiles
-                    .Keys
-                    .Where(k => GetPrefix(k, subIntLength) == subInt)
+                editorState.Value.CachedModelResponse.SectionProfiles.Keys.Where(k =>
+                    GetPrefix(k, subIntLength) == subInt
+                )
             )
         );
     }
@@ -216,12 +226,15 @@ public partial class SectionProfileObjectEditor(
     public class SectionProfileModel
     {
         public int Id { get; set; }
+        public string Name { get; set; }
         public Guid ModelId { get; set; }
         public double? Area { get; set; }
         public double? StrongAxisMomentOfInertia { get; set; }
         public double? WeakAxisMomentOfInertia { get; set; }
         public double? PolarMomentOfInertia { get; set; }
         public double? StrongAxisShearArea { get; set; }
+        public double? StrongAxisPlasticSectionModulus { get; set; }
+        public double? WeakAxisPlasticSectionModulus { get; set; }
         public double? WeakAxisShearArea { get; set; }
         public AreaUnit AreaUnit { get; set; }
         public AreaMomentOfInertiaUnit AreaMomentOfInertiaUnit { get; set; }

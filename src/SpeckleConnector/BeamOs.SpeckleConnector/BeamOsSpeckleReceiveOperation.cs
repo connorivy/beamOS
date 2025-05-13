@@ -53,10 +53,7 @@ public class BeamOsSpeckleReceiveOperation
 
         using ServerTransport transport = new(account, projectId);
         Base commitObject = await Speckle
-            .Core
-            .Api
-            .Operations
-            .Receive(
+            .Core.Api.Operations.Receive(
                 objectId,
                 transport,
                 //localTransport: new DummyLocalTransport(),
@@ -94,7 +91,7 @@ public class BeamOsSpeckleReceiveOperation
             StartNodeId = this.nodeUniqueIdToBeamOsId[el.end1Node.id],
             EndNodeId = this.nodeUniqueIdToBeamOsId[el.end2Node.id],
             MaterialId = 0, // todo
-            SectionProfileId = 0 // todo
+            SectionProfileId = 0, // todo
         };
 
         if (this.Element1dRequestModifier is not null)
@@ -123,7 +120,7 @@ public class BeamOsSpeckleReceiveOperation
                 node.basePoint.z,
                 SpeckleUnitsToUnitsNet(node.basePoint.units)
             ),
-            Restraint = ParseRestraintCode(node.restraint.code)
+            Restraint = ParseRestraintCode(node.restraint.code),
         };
 
         if (this.NodeRequestModifier is not null)
@@ -157,7 +154,7 @@ public class BeamOsSpeckleReceiveOperation
         {
             "mm" => LengthUnitContract.Millimeter,
             "meter" => LengthUnitContract.Meter,
-            _ => throw new NotSupportedException()
+            _ => throw new NotSupportedException(),
         };
     }
 }

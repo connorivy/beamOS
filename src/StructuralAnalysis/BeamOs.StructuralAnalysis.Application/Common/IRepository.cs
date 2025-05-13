@@ -26,8 +26,8 @@ public interface IModelResourceRepository<TId, T> : IRepository<TId, T>
 {
     public Task<List<TId>> GetIdsInModel(ModelId modelId, CancellationToken ct = default);
 
-    public Task<T?> GetSingle(ModelId modelId, TId id);
-    public Task RemoveById(ModelId modelId, TId id);
+    public Task<T?> GetSingle(ModelId modelId, TId id, CancellationToken ct = default);
+    public Task RemoveById(ModelId modelId, TId id, CancellationToken ct = default);
 }
 
 public interface IAnalyticalResultRepository<TId, T> : IRepository<TId, T>

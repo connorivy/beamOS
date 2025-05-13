@@ -95,14 +95,16 @@ public sealed class Udoeyo_Example7_7 : ModelFixture, IHasExpectedDiagramResults
     {
         yield return new()
         {
+            Name = "Default",
             Area = 1,
             StrongAxisMomentOfInertia = 1,
             WeakAxisMomentOfInertia = 1,
             PolarMomentOfInertia = 1,
             StrongAxisShearArea = 1,
             WeakAxisShearArea = 1,
-            AreaUnit = AreaUnitContract.SquareMeter,
-            AreaMomentOfInertiaUnit = AreaMomentOfInertiaUnitContract.MeterToTheFourth,
+            StrongAxisPlasticSectionModulus = 1,
+            WeakAxisPlasticSectionModulus = 1,
+            LengthUnit = LengthUnitContract.Meter,
             Id = 1,
         };
     }

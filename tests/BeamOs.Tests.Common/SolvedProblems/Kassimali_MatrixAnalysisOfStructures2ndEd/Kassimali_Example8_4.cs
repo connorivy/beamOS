@@ -128,6 +128,8 @@ public class Kassimali_Example8_4
     {
         yield return new()
         {
+            Name = "Default",
+            LengthUnit = LengthUnitContract.Inch,
             Area = 32.9,
             StrongAxisMomentOfInertia = 716,
             WeakAxisMomentOfInertia = 236,
@@ -135,8 +137,9 @@ public class Kassimali_Example8_4
             // shear area doesn't matter because we are making Euler Bernoulli assumptions
             StrongAxisShearArea = 1,
             WeakAxisShearArea = 1,
-            AreaUnit = AreaUnitContract.SquareInch,
-            AreaMomentOfInertiaUnit = AreaMomentOfInertiaUnitContract.InchToTheFourth,
+            // plastic section modulus doesn't matter because we are not doing plastic analysis
+            StrongAxisPlasticSectionModulus = 0,
+            WeakAxisPlasticSectionModulus = 0,
             Id = 1,
         };
     }

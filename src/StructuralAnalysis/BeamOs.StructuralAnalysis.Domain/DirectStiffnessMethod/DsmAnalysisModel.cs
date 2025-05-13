@@ -1,5 +1,6 @@
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.MomentDiagramAggregate;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.ShearForceDiagramAggregate;
+using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.EnvelopeResultSets;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.NodeResultAggregate;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.Common;
@@ -76,10 +77,12 @@ public sealed class DsmAnalysisModel(
             knownReactionVector
         );
         resultSet.NodeResults = nodeResults;
+        EnvelopeResultSet envelopeResultSet = new(modelId);
 
         var otherResults = resultSet.ComputeDiagramsAndElement1dResults(
             dsmElement1Ds,
-            unitSettings
+            unitSettings,
+            envelopeResultSet
         );
 
         return new() { ResultSet = resultSet, OtherAnalyticalResults = otherResults };

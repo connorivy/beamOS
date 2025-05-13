@@ -64,13 +64,9 @@ public partial class ModelToResponseMapper : AbstractMapperProvidedUnits<Model, 
     private partial MaterialResponse ToResponse(Material entity, PressureUnit pressureUnit);
 
     public SectionProfileResponse ToResponse(SectionProfile entity) =>
-        this.ToResponse(entity, this.AreaUnit, this.AreaMomentOfInertiaUnit);
+        this.ToResponse(entity, this.LengthUnit);
 
-    private partial SectionProfileResponse ToResponse(
-        SectionProfile entity,
-        AreaUnit areaUnit,
-        AreaMomentOfInertiaUnit areaMomentOfInertiaUnit
-    );
+    private partial SectionProfileResponse ToResponse(SectionProfile entity, LengthUnit lengthUnit);
 
     public ModelResponse Map(Model source) => this.ToResponse(source);
 

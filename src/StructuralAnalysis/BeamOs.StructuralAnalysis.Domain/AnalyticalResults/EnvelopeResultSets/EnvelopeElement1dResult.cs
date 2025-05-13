@@ -11,6 +11,7 @@ public sealed class EnvelopeElement1dResult : BeamOsModelEntity<EnvelopeElement1
 {
     public EnvelopeElement1dResult(
         ModelId modelId,
+        EnvelopeResultSetId envelopeResultSetId,
         Element1dId element1dId,
         ResultSetAndQuantity<Force> maxShear,
         ResultSetAndQuantity<Force> minShear,
@@ -22,6 +23,7 @@ public sealed class EnvelopeElement1dResult : BeamOsModelEntity<EnvelopeElement1
         : base(new(), modelId)
     {
         this.Element1dId = element1dId;
+        this.EnvelopeResultSetId = envelopeResultSetId;
         this.MaxShear = maxShear;
         this.MinShear = minShear;
         this.MaxMoment = maxMoment;
@@ -31,12 +33,15 @@ public sealed class EnvelopeElement1dResult : BeamOsModelEntity<EnvelopeElement1
     }
 
     public Element1dId Element1dId { get; set; }
+    public EnvelopeResultSetId EnvelopeResultSetId { get; set; }
     public ResultSetAndQuantity<Force> MaxShear { get; set; }
     public ResultSetAndQuantity<Force> MinShear { get; set; }
     public ResultSetAndQuantity<Torque> MaxMoment { get; set; }
     public ResultSetAndQuantity<Torque> MinMoment { get; set; }
     public ResultSetAndQuantity<Length> MaxDisplacement { get; set; }
     public ResultSetAndQuantity<Length> MinDisplacement { get; set; }
+
+    public EnvelopeResultSet? EnvelopeResultSet { get; private set; }
 
     public void MergeInResult(Element1dResult element1DResult)
     {
@@ -88,32 +93,8 @@ public sealed class EnvelopeElement1dResult : BeamOsModelEntity<EnvelopeElement1
         }
     }
 
-    public static EnvelopeElement1dResult Create(Element1dResult element1DResult)
-    {
-        return new(
-            element1DResult.ModelId,
-            element1DResult.Element1dId,
-            new ResultSetAndQuantity<Force>(element1DResult.ResultSetId, element1DResult.MaxShear),
-            new ResultSetAndQuantity<Force>(element1DResult.ResultSetId, element1DResult.MinShear),
-            new ResultSetAndQuantity<Torque>(
-                element1DResult.ResultSetId,
-                element1DResult.MaxMoment
-            ),
-            new ResultSetAndQuantity<Torque>(
-                element1DResult.ResultSetId,
-                element1DResult.MinMoment
-            ),
-            new ResultSetAndQuantity<Length>(
-                element1DResult.ResultSetId,
-                element1DResult.MaxDisplacement
-            ),
-            new ResultSetAndQuantity<Length>(
-                element1DResult.ResultSetId,
-                element1DResult.MinDisplacement
-            )
-        );
-    }
-
     [Obsolete("EF Core Constructor", true)]
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     private EnvelopeElement1dResult() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 }
