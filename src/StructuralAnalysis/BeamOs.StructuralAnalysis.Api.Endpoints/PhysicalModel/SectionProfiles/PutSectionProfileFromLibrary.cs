@@ -1,6 +1,7 @@
 ﻿using BeamOs.Common.Api;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.SectionProfiles;
@@ -15,7 +16,7 @@ public class PutSectionProfileFromLibrary(
 )
     : BeamOsModelResourceWithIntIdBaseEndpoint<
         PutSectionProfileFromLibraryCommand,
-        StructuralCodeSectionProfileData,
+        SectionProfileFromLibraryData,
         SectionProfileFromLibrary
     >
 {
@@ -23,4 +24,22 @@ public class PutSectionProfileFromLibrary(
         PutSectionProfileFromLibraryCommand req,
         CancellationToken ct = default
     ) => await putSectionProfileCommandHandler.ExecuteAsync(req, ct);
+}
+
+[BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "section-profiles/from-library")]
+[BeamOsEndpointType(Http.Put)]
+[BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
+public class BatchPutSectionProfileFromLibrary(
+    BatchPutSectionProfileFromLibraryCommandHandler putSectionProfileFromLibraryCommandHandler
+)
+    : BeamOsModelResourceBaseEndpoint<
+        BatchPutSectionProfileFromLibraryCommand,
+        SectionProfileFromLibrary[],
+        BatchResponse
+    >
+{
+    public override async Task<Result<BatchResponse>> ExecuteRequestAsync(
+        BatchPutSectionProfileFromLibraryCommand req,
+        CancellationToken ct = default
+    ) => await putSectionProfileFromLibraryCommandHandler.ExecuteAsync(req, ct);
 }

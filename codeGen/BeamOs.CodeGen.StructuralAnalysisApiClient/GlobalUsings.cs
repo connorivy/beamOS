@@ -28,5 +28,7 @@ global using ResultOfNodeResponse = BeamOs.Common.Contracts.Result<BeamOs.Struct
 global using ResultOfNodeResultResponse = BeamOs.Common.Contracts.Result<BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.NodeResult.NodeResultResponse>;
 global using ResultOfPointLoadResponse = BeamOs.Common.Contracts.Result<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad.PointLoadResponse>;
 global using ResultOfResultSetResponse = BeamOs.Common.Contracts.Result<BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.ResultSetResponse>;
+global using ResultOfSectionProfileFromLibrary = BeamOs.Common.Contracts.Result<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile.SectionProfileFromLibrary>;
 global using ResultOfSectionProfileResponse = BeamOs.Common.Contracts.Result<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile.SectionProfileResponse>;
 global using ResultOfstring = BeamOs.Common.Contracts.Result<string>;
+global using SectionProfileFromLibraryData2 = BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile.SectionProfileFromLibraryData;

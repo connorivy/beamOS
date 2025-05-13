@@ -25,6 +25,7 @@
     Element1ds: null,
     Materials: null,
     SectionProfiles: null,
+    SectionProfilesFromLibrary: null,
     PointLoads: null,
     MomentLoads: null,
     ResultSets: null,

@@ -1,24 +1,28 @@
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
+using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 
-public class SectionProfileFromLibrary : SectionProfileInfoBase
+public class SectionProfileFromLibrary : BeamOsModelEntity<SectionProfileFromLibraryId>
 {
     public SectionProfileFromLibrary(
         ModelId modelId,
         string name,
         StructuralCode library,
-        SectionProfileId? id = null
+        SectionProfileFromLibraryId? id = null
     )
-        : base(modelId, name, id)
+        : base(id ?? new(), modelId)
     {
+        this.Name = name;
         this.Library = library;
     }
 
+    public string Name { get; set; }
+
     public StructuralCode Library { get; set; }
 
-    public override SectionProfile GetSectionProfile()
+    public SectionProfile GetSectionProfile()
     {
         return this.Library switch
         {

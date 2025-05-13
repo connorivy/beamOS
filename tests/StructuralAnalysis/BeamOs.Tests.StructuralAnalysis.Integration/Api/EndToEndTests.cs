@@ -205,6 +205,23 @@ public class EndToEndTests
     }
 
     [Test]
+    public async Task CreateSectionProfile_FromAiscLibrary_ShouldCreateSectionProfile()
+    {
+        SectionProfileFromLibraryData w14x22 = new()
+        {
+            Name = "W14x22",
+            Library = StructuralCode.AISC_360_16,
+        };
+        var sectionProfileResponseResult =
+            await AssemblySetup.StructuralAnalysisApiClient.CreateSectionProfileFromLibraryAsync(
+                modelId,
+                w14x22
+            );
+
+        await Verify(sectionProfileResponseResult);
+    }
+
+    [Test]
     public async Task CreateMaterial_WithSpecifiedId_ShouldCreateMaterial_WithCorrectId()
     {
         CreateMaterialRequest a992Request = new()

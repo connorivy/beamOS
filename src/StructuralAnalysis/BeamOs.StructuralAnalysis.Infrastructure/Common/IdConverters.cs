@@ -2,6 +2,7 @@ using BeamOs.Common.Domain.Models;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.Common.ValueObjects;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.MomentDiagramAggregate.ValueObjects;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.ShearForceDiagramAggregate.ValueObjects;
+using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.EnvelopeResultSets;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCases;
@@ -58,6 +59,12 @@ public class SectionProfileIdConverter : ValueConverter<SectionProfileId, int>
         : base(x => x.Id, x => new(x), null) { }
 }
 
+public class SectionProfileFromLibraryIdConverter : ValueConverter<SectionProfileFromLibraryId, int>
+{
+    public SectionProfileFromLibraryIdConverter()
+        : base(x => x.Id, x => new(x), null) { }
+}
+
 public class ResultSetIdConverter : ValueConverter<ResultSetId, int>
 {
     public ResultSetIdConverter()
@@ -91,5 +98,17 @@ public class LoadCaseIdConverter : ValueConverter<LoadCaseId, int>
 public class LoadCombinationIdConverter : ValueConverter<LoadCombinationId, int>
 {
     public LoadCombinationIdConverter()
+        : base(x => x.Id, x => new(x), null) { }
+}
+
+public class EnvelopeElement1dResultIdConverter : ValueConverter<EnvelopeElement1dResultId, int>
+{
+    public EnvelopeElement1dResultIdConverter()
+        : base(x => x.Id, x => new(x), null) { }
+}
+
+public class EnvelopeResultSetIdConverter : ValueConverter<EnvelopeResultSetId, int>
+{
+    public EnvelopeResultSetIdConverter()
         : base(x => x.Id, x => new(x), null) { }
 }

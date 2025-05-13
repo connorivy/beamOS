@@ -11,25 +11,22 @@ namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
 public class PutSectionProfileFromLibraryCommandHandler(
     ISectionProfileRepository sectionProfileRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
-)
-    : ICommandHandler<
-        PutSectionProfileFromLibraryCommand,
-        Contracts.PhysicalModel.SectionProfile.SectionProfileFromLibrary
-    >
+) : ICommandHandler<PutSectionProfileFromLibraryCommand, SectionProfileFromLibraryContract>
 {
-    public async Task<
-        Result<Contracts.PhysicalModel.SectionProfile.SectionProfileFromLibrary>
-    > ExecuteAsync(PutSectionProfileFromLibraryCommand command, CancellationToken ct = default)
+    public async Task<Result<SectionProfileFromLibraryContract>> ExecuteAsync(
+        PutSectionProfileFromLibraryCommand command,
+        CancellationToken ct = default
+    )
     {
         SectionProfile? sectionProfile = SectionProfile.FromLibraryValue(
             command.ModelId,
-            command.StructuralCode,
+            command.Library,
             command.Name
         );
         if (sectionProfile is null)
         {
             return BeamOsError.NotFound(
-                description: $"Section profile with code {command.StructuralCode} not found."
+                description: $"Section profile with code {command.Library} not found."
             );
         }
         sectionProfileRepository.Put(sectionProfile);
@@ -39,18 +36,18 @@ public class PutSectionProfileFromLibraryCommandHandler(
         {
             Id = sectionProfile.Id,
             Name = command.Name,
-            Library = command.StructuralCode,
+            Library = command.Library,
         };
     }
 }
 
 public readonly struct PutSectionProfileFromLibraryCommand
-    : IModelResourceWithIntIdRequest<StructuralCodeSectionProfileData>
+    : IModelResourceWithIntIdRequest<SectionProfileFromLibraryData>
 {
     public int Id { get; init; }
     public Guid ModelId { get; init; }
-    public StructuralCodeSectionProfileData Body { get; init; }
-    public StructuralCode StructuralCode => this.Body.Library;
+    public SectionProfileFromLibraryData Body { get; init; }
+    public StructuralCode Library => this.Body.Library;
     public string Name => this.Body.Name;
 
     public PutSectionProfileFromLibraryCommand() { }
@@ -65,4 +62,28 @@ public readonly struct PutSectionProfileFromLibraryCommand
         this.ModelId = modelId;
         this.Body = putSectionProfileFromLibraryRequest;
     }
+}
+
+public class BatchPutSectionProfileFromLibraryCommandHandler(
+    ISectionProfileFromLibraryRepository sectionProfileFromLibraryRepository,
+    IStructuralAnalysisUnitOfWork unitOfWork
+)
+    : BatchPutCommandHandler<
+        SectionProfileFromLibraryId,
+        SectionProfileFromLibrary,
+        BatchPutSectionProfileFromLibraryCommand,
+        SectionProfileFromLibraryContract
+    >(sectionProfileFromLibraryRepository, unitOfWork)
+{
+    protected override SectionProfileFromLibrary ToDomainObject(
+        ModelId modelId,
+        SectionProfileFromLibraryContract putRequest
+    ) => new PutSectionProfileFromLibraryCommand(modelId, putRequest).ToDomainObject();
+}
+
+public readonly struct BatchPutSectionProfileFromLibraryCommand
+    : IModelResourceRequest<SectionProfileFromLibraryContract[]>
+{
+    public Guid ModelId { get; init; }
+    public SectionProfileFromLibraryContract[] Body { get; init; }
 }

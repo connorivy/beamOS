@@ -90,18 +90,18 @@ public abstract record SectionProfileDataBase
     }
 }
 
-public record StructuralCodeSectionProfileData : SectionProfileDataBase
+public record SectionProfileFromLibraryData : SectionProfileDataBase
 {
     public required StructuralCode Library { get; init; }
 
     [SetsRequiredMembers]
-    public StructuralCodeSectionProfileData(StructuralCode library, string name)
+    public SectionProfileFromLibraryData(StructuralCode library, string name)
         : base(name)
     {
         this.Library = library;
     }
 
-    public StructuralCodeSectionProfileData() { }
+    public SectionProfileFromLibraryData() { }
 }
 
 public enum StructuralCode
@@ -110,7 +110,7 @@ public enum StructuralCode
     AISC_360_16,
 }
 
-public record SectionProfileFromLibrary : StructuralCodeSectionProfileData
+public record SectionProfileFromLibrary : SectionProfileFromLibraryData, IHasIntId
 {
     public required int Id { get; init; }
 

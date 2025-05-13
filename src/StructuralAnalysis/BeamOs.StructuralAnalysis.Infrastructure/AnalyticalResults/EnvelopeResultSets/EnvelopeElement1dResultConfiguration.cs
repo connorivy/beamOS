@@ -16,11 +16,11 @@ public class EnvelopeElement1dResultConfiguration
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
-        _ = builder
+        builder
             .HasOne(e => e.EnvelopeResultSet)
             .WithMany(e => e.Element1dResults)
-            .HasForeignKey(e => e.EnvelopeResultSetId)
-            .IsRequired()
+            .HasPrincipalKey(el => new { el.Id, el.ModelId })
+            .HasForeignKey(el => new { el.EnvelopeResultSetId, el.ModelId })
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

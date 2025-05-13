@@ -52,6 +52,10 @@ public class BatchPutSectionProfileCommandHandler(
 public static partial class PutSectionProfileCommandMapper
 {
     public static partial SectionProfile ToDomainObject(this PutSectionProfileCommand command);
+
+    public static partial SectionProfileFromLibrary ToDomainObject(
+        this PutSectionProfileFromLibraryCommand command
+    );
 }
 
 public readonly struct PutSectionProfileCommand : IModelResourceWithIntIdRequest<SectionProfileData>

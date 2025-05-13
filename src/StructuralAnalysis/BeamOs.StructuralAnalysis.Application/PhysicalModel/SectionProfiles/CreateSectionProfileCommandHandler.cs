@@ -35,6 +35,11 @@ public static partial class CreateSectionProfileCommandMapper
 {
     public static partial SectionProfile ToDomainObject(this CreateSectionProfileCommand command);
 
+    [MapNestedProperties(nameof(ModelResourceRequest<>.Body))]
+    public static partial SectionProfileFromLibrary ToDomainObject(
+        this ModelResourceRequest<SectionProfileFromLibraryData> command
+    );
+
     public static SectionProfileResponse ToResponse(
         this SectionProfile entity,
         LengthUnit lengthUnit

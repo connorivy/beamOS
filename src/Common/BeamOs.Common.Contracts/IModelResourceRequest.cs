@@ -10,3 +10,15 @@ public interface IModelResourceWithIntIdRequest<TBody> : IModelResourceRequest<T
 {
     public int Id { get; init; }
 }
+
+public struct ModelResourceRequest<TBody> : IModelResourceRequest<TBody>
+{
+    public Guid ModelId { get; init; }
+    public TBody Body { get; init; }
+
+    public ModelResourceRequest(Guid modelId, TBody body)
+    {
+        this.ModelId = modelId;
+        this.Body = body;
+    }
+}

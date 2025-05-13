@@ -1,5 +1,6 @@
 using BeamOs.Common.Application;
 using BeamOs.Identity;
+using BeamOs.StructuralAnalysis.Application.AnalyticalResults.EnvelopeResultSets;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.NodeResults;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.ResultSets;
 using BeamOs.StructuralAnalysis.Application.Common;
@@ -14,6 +15,7 @@ using BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
+using BeamOs.StructuralAnalysis.Infrastructure.AnalyticalResults.EnvelopeResultSets;
 using BeamOs.StructuralAnalysis.Infrastructure.AnalyticalResults.NodeResults;
 using BeamOs.StructuralAnalysis.Infrastructure.AnalyticalResults.ResultSets;
 using BeamOs.StructuralAnalysis.Infrastructure.Common;
@@ -46,6 +48,10 @@ public static class DependencyInjection
         _ = services.AddScoped<IModelRepository, ModelRepository>();
         _ = services.AddScoped<IMaterialRepository, MaterialRepository>();
         _ = services.AddScoped<ISectionProfileRepository, SectionProfileRepository>();
+        _ = services.AddScoped<
+            ISectionProfileFromLibraryRepository,
+            SectionProfileFromLibraryRepository
+        >();
         _ = services.AddScoped<IElement1dRepository, Element1dRepository>();
         _ = services.AddScoped<IPointLoadRepository, PointLoadRepository>();
         _ = services.AddScoped<IMomentLoadRepository, MomentLoadRepository>();
@@ -53,6 +59,7 @@ public static class DependencyInjection
         _ = services.AddScoped<ILoadCombinationRepository, LoadCombinationRepository>();
         _ = services.AddScoped<INodeResultRepository, NodeResultRepository>();
         _ = services.AddScoped<IResultSetRepository, ResultSetRepository>();
+        _ = services.AddScoped<IEnvelopeResultSetRepository, EnvelopeResultSetRepository>();
 
         _ = services.AddScoped<IStructuralAnalysisUnitOfWork, UnitOfWork>();
 

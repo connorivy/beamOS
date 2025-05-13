@@ -11,7 +11,8 @@ public class Element1dResultConfiguration : IEntityTypeConfiguration<Element1dRe
         builder
             .HasOne(e => e.ResultSet)
             .WithMany()
-            .HasForeignKey(e => e.ResultSetId)
+            .HasPrincipalKey(el => new { el.Id, el.ModelId })
+            .HasForeignKey(el => new { el.ResultSetId, el.ModelId })
             .OnDelete(DeleteBehavior.Cascade);
 
         builder
