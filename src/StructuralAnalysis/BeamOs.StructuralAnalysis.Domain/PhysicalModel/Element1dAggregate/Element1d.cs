@@ -8,7 +8,7 @@ using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 
-public class Element1d : BeamOsModelEntity<Element1dId>, IHydratedElement1d
+public class Element1d : BeamOsModelEntity<Element1dId>
 {
     public Element1d(
         ModelId modelId,
@@ -34,7 +34,7 @@ public class Element1d : BeamOsModelEntity<Element1dId>, IHydratedElement1d
     public MaterialId MaterialId { get; private set; }
     public Material? Material { get; set; }
     public SectionProfileId SectionProfileId { get; private set; }
-    public SectionProfile? SectionProfile { get; set; }
+    public SectionProfileInfoBase? SectionProfile { get; set; }
 
     //public ICollection<ShearForceDiagram>? ShearForceDiagrams { get; init; }
     //public ICollection<MomentDiagram>? MomentDiagrams { get; init; }
@@ -47,26 +47,6 @@ public class Element1d : BeamOsModelEntity<Element1dId>, IHydratedElement1d
     /// counter-clockwise rotation in radians when looking in the negative (local) x direction
     /// </summary>
     public Angle SectionProfileRotation { get; set; }
-
-    Area IHydratedElement1d.Area => this.SectionProfile.Area;
-    Element1dId IHydratedElement1d.Element1dId => this.Id;
-    Point IHydratedElement1d.StartPoint => this.StartNode.LocationPoint;
-    Point IHydratedElement1d.EndPoint => this.EndNode.LocationPoint;
-    Pressure IHydratedElement1d.ModulusOfElasticity => this.Material.ModulusOfElasticity;
-    Pressure IHydratedElement1d.ModulusOfRigidity => this.Material.ModulusOfRigidity;
-    AreaMomentOfInertia IHydratedElement1d.PolarMomentOfInertia =>
-        this.SectionProfile.PolarMomentOfInertia;
-    AreaMomentOfInertia IHydratedElement1d.StrongAxisMomentOfInertia =>
-        this.SectionProfile.StrongAxisMomentOfInertia;
-    AreaMomentOfInertia IHydratedElement1d.WeakAxisMomentOfInertia =>
-        this.SectionProfile.WeakAxisMomentOfInertia;
-
-    //private readonly SortedList<double, PointLoad> loads = new();
-    //public IReadOnlyDictionary<double, PointLoad> Loads => this.loads.AsReadOnly();
-
-    //public Line BaseLine { get; }
-    //public Length Length => this.BaseLine.Length;
-    //public Dictionary<Ratio, PointLoad> PointLoads { get; private set; } = [];
 
     public static Line GetBaseLine(Point startPoint, Point endPoint)
     {

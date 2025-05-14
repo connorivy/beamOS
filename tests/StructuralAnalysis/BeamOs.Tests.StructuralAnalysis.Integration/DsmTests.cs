@@ -2,42 +2,39 @@ using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.NodeResult;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.Tests.Common;
+using TUnit.Core.Exceptions;
 using UnitsNet.Units;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration;
 
-// [ParallelGroup("DsmTests")]
-public partial class DsmTests
+[MethodDataSource(typeof(AllSolvedProblems), nameof(AllSolvedProblems.ModelFixtures))]
+public partial class DsmTests(ModelFixture modelFixture)
 {
-    [Before(HookType.Class)]
-    public static async Task RunDsmAnalysis()
+    [Test, SkipInFrontEnd]
+    public async Task RunDsmAnalysis_ShouldReturnSuccessfulStatusCode()
     {
-        foreach (var modelBuilder in AllSolvedProblems.ModelFixtures())
-        {
-            await modelBuilder.CreateOnly(AssemblySetup.StructuralAnalysisApiClient);
+        await modelFixture.CreateOnly(AssemblySetup.StructuralAnalysisApiClient);
 
-            // await AssemblySetup.StructuralAnalysisApiClient.DeleteAllResultSetsAsync(
-            //     modelBuilder.Id
-            // );
-            //
-            var resultSetIdResponse =
-                await AssemblySetup.StructuralAnalysisApiClient.RunDirectStiffnessMethodAsync(
-                    modelBuilder.Id,
-                    new() { LoadCombinationIds = [2] }
-                );
+        var resultSetIdResponse =
+            await AssemblySetup.StructuralAnalysisApiClient.RunDirectStiffnessMethodAsync(
+                modelFixture.Id,
+                new() { LoadCombinationIds = [2] }
+            );
 
-            resultSetIdResponse.ThrowIfError();
-        }
+        resultSetIdResponse.ThrowIfError();
     }
 
     [Test]
-    [MethodDataSource(
-        typeof(AllSolvedProblems),
-        nameof(AllSolvedProblems.ModelFixturesWithExpectedNodeResults)
-    )]
-    public async Task AssertNodeResults_AreApproxEqualToExpectedValues(ModelFixture modelFixture)
+    [DependsOn(typeof(DsmTests), nameof(RunDsmAnalysis_ShouldReturnSuccessfulStatusCode))]
+    public async Task AssertNodeResults_AreApproxEqualToExpectedValues()
     {
-        var nodeResultsFixture = (IHasExpectedNodeResults)modelFixture;
+        if (modelFixture is not IHasExpectedNodeResults nodeResultsFixture)
+        {
+            throw new SkipTestException(
+                "Model fixture does not implement IHasExpectedDiagramResults"
+            );
+        }
+
         var strongUnits = modelFixture.Settings.UnitSettings.ToDomain();
         foreach (var expectedNodeDisplacementResult in nodeResultsFixture.ExpectedNodeResults)
         {
@@ -184,12 +181,16 @@ public partial class DsmTests
     }
 
     [Test]
-    [MethodDataSource(
-        typeof(AllSolvedProblems),
-        nameof(AllSolvedProblems.ModelFixturesWithExpectedDiagramResults)
-    )]
-    public async Task ShearDiagrams_ShouldHaveCorrectMaxAndMinValue(ModelFixture modelFixture)
+    [DependsOn(typeof(DsmTests), nameof(RunDsmAnalysis_ShouldReturnSuccessfulStatusCode))]
+    public async Task ShearDiagrams_ShouldHaveCorrectMaxAndMinValue()
     {
+        if (modelFixture is not IHasExpectedDiagramResults expectedDiagramResults)
+        {
+            throw new SkipTestException(
+                "Model fixture does not implement IHasExpectedDiagramResults"
+            );
+        }
+
         var resultSet = await AssemblySetup.StructuralAnalysisApiClient.GetResultSetAsync(
             modelFixture.Id,
             2
@@ -197,9 +198,9 @@ public partial class DsmTests
 
         resultSet.ThrowIfError();
 
-        var expectedDiagramResultsDict = (
-            (IHasExpectedDiagramResults)modelFixture
-        ).ExpectedDiagramResults.ToDictionary(x => x.NodeId);
+        var expectedDiagramResultsDict = expectedDiagramResults.ExpectedDiagramResults.ToDictionary(
+            x => x.NodeId
+        );
 
         if (expectedDiagramResultsDict.Count == 0)
         {

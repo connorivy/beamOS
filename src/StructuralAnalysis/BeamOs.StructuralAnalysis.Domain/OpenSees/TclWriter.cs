@@ -132,7 +132,7 @@ public class TclWriter
             this.beamOsToOpenSeesConverter.Element1d(
                 element1d,
                 element1d.Material,
-                element1d.SectionProfile,
+                element1d.SectionProfile.GetSectionProfile(),
                 transformId
             )
         );
@@ -164,7 +164,7 @@ public class TclWriter
 
         this.AddNode(element1d.StartNode);
         this.AddNode(element1d.EndNode);
-        this.AddSection(element1d.SectionProfile, element1d.Material);
+        this.AddSection(element1d.SectionProfile.GetSectionProfile(), element1d.Material);
         this.AddElement(element1d);
     }
 

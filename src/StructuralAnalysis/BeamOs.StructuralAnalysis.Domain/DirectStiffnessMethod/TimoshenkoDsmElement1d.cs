@@ -2,6 +2,7 @@ using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.Common.Extensions;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using UnitsNet;
@@ -40,28 +41,29 @@ public class TimoshenkoDsmElement1d(
         endNodeId
     )
 {
-    public TimoshenkoDsmElement1d(Element1d Element1d)
+    // todo: maybe create specific timoshenkoSectionProfile class to not have to throw runtime exceptions
+    public TimoshenkoDsmElement1d(Element1d element1d, SectionProfile sectionProfile)
         : this(
-            Element1d.Id,
-            Element1d.SectionProfileRotation,
-            Element1d.Material.ModulusOfElasticity,
-            Element1d.Material.ModulusOfRigidity,
-            Element1d.SectionProfile.Area,
-            Element1d.SectionProfile.StrongAxisMomentOfInertia,
-            Element1d.SectionProfile.WeakAxisMomentOfInertia,
-            Element1d.SectionProfile.PolarMomentOfInertia,
-            Element1d.SectionProfile.StrongAxisShearArea
+            element1d.Id,
+            element1d.SectionProfileRotation,
+            element1d.Material.ModulusOfElasticity,
+            element1d.Material.ModulusOfRigidity,
+            sectionProfile.Area,
+            sectionProfile.StrongAxisMomentOfInertia,
+            sectionProfile.WeakAxisMomentOfInertia,
+            sectionProfile.PolarMomentOfInertia,
+            sectionProfile.StrongAxisShearArea
                 ?? throw new InvalidOperationException(
                     "TimoshenkoDsmElement1d requires strong axis shear area"
                 ),
-            Element1d.SectionProfile.WeakAxisShearArea
+            sectionProfile.WeakAxisShearArea
                 ?? throw new InvalidOperationException(
                     "TimoshenkoDsmElement1d requires strong axis shear area"
                 ),
-            Element1d.StartNode.LocationPoint,
-            Element1d.EndNode.LocationPoint,
-            Element1d.StartNode.Id,
-            Element1d.EndNode.Id
+            element1d.StartNode.LocationPoint,
+            element1d.EndNode.LocationPoint,
+            element1d.StartNode.Id,
+            element1d.EndNode.Id
         ) { }
 
     // https://people.duke.edu/~hpgavin/cee421/frame-finite-def.pdf

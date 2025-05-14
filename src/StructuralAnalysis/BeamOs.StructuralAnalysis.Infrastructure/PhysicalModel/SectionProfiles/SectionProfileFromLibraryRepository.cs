@@ -5,7 +5,5 @@ using BeamOs.StructuralAnalysis.Infrastructure.Common;
 namespace BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.SectionProfiles;
 
 internal class SectionProfileFromLibraryRepository(StructuralAnalysisDbContext dbContext)
-    : ModelResourceRepositoryBase<SectionProfileFromLibraryId, SectionProfileFromLibrary>(
-        dbContext
-    ),
+    : ModelResourceRepositoryBase<SectionProfileId, SectionProfileFromLibrary>(dbContext),
         ISectionProfileFromLibraryRepository { }

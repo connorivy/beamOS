@@ -6,21 +6,30 @@ using UnitsNet.Units;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration;
 
-// [ParallelGroup("OpenSeesTests")]
-public partial class OpenSeesTests
+[MethodDataSource(
+    typeof(AllSolvedProblems),
+    nameof(AllSolvedProblems.ModelFixturesWithExpectedNodeResults)
+)]
+public class OpenSeesTests(ModelFixture modelFixture)
 {
-    [Test]
-    [MethodDataSource(
-        typeof(AllSolvedProblems),
-        nameof(AllSolvedProblems.ModelFixturesWithExpectedNodeResults)
-    )]
-    public async Task AssertNodeResults_AreApproxEqualToExpectedValues(ModelFixture modelFixture)
+    [Test, SkipInFrontEnd]
+    public async Task RunOpenSeesAnalysis_ShouldReturnSuccessfulStatusCode()
     {
-        if (AssemblySetup.SkipOpenSeesTests)
-        {
-            return;
-        }
+        await modelFixture.CreateOnly(AssemblySetup.StructuralAnalysisApiClient);
 
+        var resultSetIdResponse =
+            await AssemblySetup.StructuralAnalysisApiClient.RunOpenSeesAnalysisAsync(
+                modelFixture.Id,
+                new() { LoadCombinationIds = [1] }
+            );
+
+        resultSetIdResponse.ThrowIfError();
+    }
+
+    [Test]
+    [DependsOn(typeof(OpenSeesTests), nameof(RunOpenSeesAnalysis_ShouldReturnSuccessfulStatusCode))]
+    public async Task AssertNodeResults_AreApproxEqualToExpectedValues()
+    {
         var nodeResultsFixture = (IHasExpectedNodeResults)modelFixture;
         var strongUnits = modelFixture.Settings.UnitSettings.ToDomain();
         foreach (var expectedNodeDisplacementResult in nodeResultsFixture.ExpectedNodeResults)

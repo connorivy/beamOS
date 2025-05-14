@@ -49,8 +49,18 @@ public sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettings
 
         var dsmElements =
             model.Settings.AnalysisSettings.Element1DAnalysisType == Element1dAnalysisType.Euler
-                ? model.Element1ds.Select(el => new DsmElement1d(el)).ToArray()
-                : model.Element1ds.Select(el => new TimoshenkoDsmElement1d(el)).ToArray();
+                ? model
+                    .Element1ds.Select(el => new DsmElement1d(
+                        el,
+                        el.SectionProfile.GetSectionProfile()
+                    ))
+                    .ToArray()
+                : model
+                    .Element1ds.Select(el => new TimoshenkoDsmElement1d(
+                        el,
+                        el.SectionProfile.GetSectionProfile()
+                    ))
+                    .ToArray();
 
         var otherResults = resultSet.ComputeDiagramsAndElement1dResults(
             dsmElements,

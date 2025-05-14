@@ -4,4 +4,4 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
 
 public interface ISectionProfileFromLibraryRepository
-    : IModelResourceRepository<SectionProfileFromLibraryId, SectionProfileFromLibrary> { }
+    : IModelResourceRepository<SectionProfileId, SectionProfileFromLibrary> { }

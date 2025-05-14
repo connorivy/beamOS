@@ -108,7 +108,7 @@
     <PackageVersion Include="Testcontainers.MsSql" Version="4.1.0" />
     <PackageVersion Include="Testcontainers.PostgreSql" Version="4.1.0" />
     <PackageVersion Include="TngTech.ArchUnitNET" Version="0.11.3" />
-    <PackageVersion Include="TUnit" Version="0.19.112" />
+    <PackageVersion Include="TUnit" Version="0.19.148" />
     <PackageVersion Include="Verify.TUnit" Version="30.0.0" />
     <!-- Testing -->
     <PackageVersion Include="xunit" Version="2.9.2" />

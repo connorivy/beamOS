@@ -37,10 +37,16 @@ public sealed class DsmAnalysisModel(
         model.Settings.AnalysisSettings.Element1DAnalysisType switch
         {
             Element1dAnalysisType.Euler => model
-                .Element1ds.Select(el => new DsmElement1d(el))
+                .Element1ds.Select(el => new DsmElement1d(
+                    el,
+                    el.SectionProfile.GetSectionProfile()
+                ))
                 .ToArray(),
             Element1dAnalysisType.Timoshenko => model
-                .Element1ds.Select(el => new TimoshenkoDsmElement1d(el))
+                .Element1ds.Select(el => new TimoshenkoDsmElement1d(
+                    el,
+                    el.SectionProfile.GetSectionProfile()
+                ))
                 .ToArray(),
             Element1dAnalysisType.Undefined or _ => throw new Exception(
                 $"Unsupported Element1DAnalysisType {model.Settings.AnalysisSettings.Element1DAnalysisType}"

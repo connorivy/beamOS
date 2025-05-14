@@ -1,5 +1,4 @@
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
-using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
@@ -18,8 +17,6 @@ public class SectionProfileFromLibrary : SectionProfileInfoBase
         this.Library = library;
     }
 
-    public string Name { get; set; }
-
     public StructuralCode Library { get; set; }
 
     public override SectionProfile GetSectionProfile()
@@ -29,7 +26,8 @@ public class SectionProfileFromLibrary : SectionProfileInfoBase
             // todo: add logic for different beam shapes
             StructuralCode.AISC_360_16 => SectionProfile.FromStructuralShapeData(
                 this.ModelId,
-                StructuralShapes.Lib.AISC.v16_0.WShapes.GetShapeByName(this.Name)
+                StructuralShapes.Lib.AISC.v16_0.WShapes.GetShapeByName(this.Name),
+                this.Id
             ),
             _ => throw new NotImplementedException(
                 $"Structural code {this.Library} not implemented."

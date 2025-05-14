@@ -59,8 +59,12 @@ public class SectionProfile : SectionProfileInfoBase, IHasStrongAxisPlasticSecti
             aiscWShapeData.J,
             aiscWShapeData.Zx,
             aiscWShapeData.Zy,
-            null,
-            null,
+            // todo: these are the values that sap2000 uses for shear area, but they don't seem to be consistent
+            // with ETABS and those two are not consistent with FEM versions of the effective shear area
+            // https://github.com/robbievanleeuwen/section-properties/issues/526
+            // https://www.eng-tips.com/threads/shear-area-sap2000-vs-etabs.493951/
+            5.0 / 6 * 2 * aiscWShapeData.tf * aiscWShapeData.bf,
+            aiscWShapeData.tw * aiscWShapeData.d,
             id
         );
     }

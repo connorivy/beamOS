@@ -3,6 +3,7 @@ using BeamOs.StructuralAnalysis.Domain.Common.Extensions;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod.Common.ValueObjects;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using UnitsNet;
@@ -25,16 +26,16 @@ public class DsmElement1d(
     NodeId endNodeId
 ) : IHydratedElement1d
 {
-    public DsmElement1d(Element1d element1d)
+    public DsmElement1d(Element1d element1d, SectionProfile sectionProfile)
         : this(
             element1d.Id,
             element1d.SectionProfileRotation,
             element1d.Material.ModulusOfElasticity,
             element1d.Material.ModulusOfRigidity,
-            element1d.SectionProfile.Area,
-            element1d.SectionProfile.StrongAxisMomentOfInertia,
-            element1d.SectionProfile.WeakAxisMomentOfInertia,
-            element1d.SectionProfile.PolarMomentOfInertia,
+            sectionProfile.Area,
+            sectionProfile.StrongAxisMomentOfInertia,
+            sectionProfile.WeakAxisMomentOfInertia,
+            sectionProfile.PolarMomentOfInertia,
             element1d.StartNode.LocationPoint,
             element1d.EndNode.LocationPoint,
             element1d.StartNode.Id,
@@ -197,8 +198,9 @@ public class DsmElement1d(
 
     public Vector<double> GetGlobalEndDisplacementVector(VectorIdentified jointDisplacementVector)
     {
-        VectorIdentified globalEndDisplacementVector =
-            new(this.GetUnsupportedStructureDisplacementIds().ToList());
+        VectorIdentified globalEndDisplacementVector = new(
+            this.GetUnsupportedStructureDisplacementIds().ToList()
+        );
         globalEndDisplacementVector.AddEntriesWithMatchingIdentifiers(jointDisplacementVector);
         return globalEndDisplacementVector.Build();
     }

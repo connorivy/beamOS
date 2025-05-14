@@ -69,7 +69,7 @@ public class BatchPutSectionProfileFromLibraryCommandHandler(
     IStructuralAnalysisUnitOfWork unitOfWork
 )
     : BatchPutCommandHandler<
-        SectionProfileFromLibraryId,
+        SectionProfileId,
         SectionProfileFromLibrary,
         BatchPutSectionProfileFromLibraryCommand,
         SectionProfileFromLibraryContract

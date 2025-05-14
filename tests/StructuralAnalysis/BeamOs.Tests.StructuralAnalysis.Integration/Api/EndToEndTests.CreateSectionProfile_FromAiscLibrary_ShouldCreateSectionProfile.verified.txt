@@ -9,8 +9,8 @@
     PolarMomentOfInertia: 1.0030864197530859E-05,
     StrongAxisPlasticSectionModulus: 0.019212962962962963,
     WeakAxisPlasticSectionModulus: 0.002540509259259259,
-    StrongAxisShearArea: null,
-    WeakAxisShearArea: null,
+    StrongAxisShearArea: 0.019386574074074073,
+    WeakAxisShearArea: 0.02188194444444444,
     LengthUnit: Foot
   },
   Error: null,

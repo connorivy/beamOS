@@ -37,7 +37,10 @@ public class TestInfoCollector
 
     public static IEnumerable<TestInfo> GetTestInfoFromMethod(MethodInfo methodInfo, Type classType)
     {
-        if (methodInfo.GetCustomAttribute<TestAttribute>() is null)
+        if (
+            methodInfo.GetCustomAttribute<TestAttribute>() is null
+            || methodInfo.GetCustomAttribute<SkipInFrontEndAttribute>() is not null
+        )
         {
             yield break;
         }
@@ -48,12 +51,10 @@ public class TestInfoCollector
         {
             foreach (var dataAttribute in dataAttributes)
             {
-                MethodInfo? dataMethod = dataAttribute
-                    .ClassProvidingDataSource
-                    .GetMethod(
-                        dataAttribute.MethodNameProvidingDataSource,
-                        BindingFlags.Public | BindingFlags.Static
-                    );
+                MethodInfo? dataMethod = dataAttribute.ClassProvidingDataSource.GetMethod(
+                    dataAttribute.MethodNameProvidingDataSource,
+                    BindingFlags.Public | BindingFlags.Static
+                );
 
                 object? data = dataMethod.Invoke(null, []);
 
@@ -67,7 +68,7 @@ public class TestInfoCollector
                     yield return new TestInfo()
                     {
                         TestClassType = classType,
-                        TestData =  [dataItem],
+                        TestData = [dataItem],
                         MethodInfo = methodInfo,
                     };
                     //    classType,

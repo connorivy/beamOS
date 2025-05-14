@@ -39,7 +39,9 @@ public partial class BeamOsModelBuilderDomainMapper(Guid modelId)
 
         var nodeDict = model.Nodes.ToDictionary(x => x.Id);
         var materialDict = model.Materials.ToDictionary(x => x.Id);
-        var sectionProfileDict = model.SectionProfiles.ToDictionary(x => x.Id);
+        var sectionProfileDict = (model.SectionProfiles ?? [])
+            .Concat<SectionProfileInfoBase>(model.SectionProfilesFromLibrary ?? [])
+            .ToDictionary(x => x.Id);
 
         foreach (var el in model.Element1ds)
         {
