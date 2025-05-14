@@ -1,3 +1,4 @@
+using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.Common;
@@ -35,12 +36,15 @@ public record SectionProfileResponse(
         };
 
     [JsonIgnore]
+    [IgnoreDataMember]
     public VolumeUnit VolumeUnit => this.LengthUnit.ToVolume();
 
     [JsonIgnore]
+    [IgnoreDataMember]
     public AreaUnit AreaUnit => this.LengthUnit.ToArea();
 
     [JsonIgnore]
+    [IgnoreDataMember]
     public AreaMomentOfInertiaUnit AreaMomentOfInertiaUnit =>
         this.LengthUnit.ToAreaMomentOfInertia();
 }

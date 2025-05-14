@@ -19,7 +19,15 @@ public partial class OpenSeesTests
         }
         // var analysisTasks = AllSolvedProblems.ModelFixtures().Select(RunOpenSeesAnalysis).ToList();
 
-        await Task.WhenAll(analysisTasks);
+        try
+        {
+            await Task.WhenAll(analysisTasks);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
     private static async Task RunOpenSeesAnalysis(

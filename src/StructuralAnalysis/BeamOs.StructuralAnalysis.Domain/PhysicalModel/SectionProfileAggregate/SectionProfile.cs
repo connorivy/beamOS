@@ -46,7 +46,8 @@ public class SectionProfile : SectionProfileInfoBase, IHasStrongAxisPlasticSecti
 
     public static SectionProfile FromStructuralShapeData(
         ModelId modelId,
-        StructuralShapes.Contracts.AiscWShapeData aiscWShapeData
+        StructuralShapes.Contracts.AiscWShapeData aiscWShapeData,
+        SectionProfileId? id = null
     )
     {
         return new(
@@ -59,14 +60,16 @@ public class SectionProfile : SectionProfileInfoBase, IHasStrongAxisPlasticSecti
             aiscWShapeData.Zx,
             aiscWShapeData.Zy,
             null,
-            null
+            null,
+            id
         );
     }
 
     public static SectionProfile? FromLibraryValue(
         ModelId modelId,
         StructuralCode structuralCode,
-        string sectionProfileName
+        string sectionProfileName,
+        SectionProfileId? id = null
     )
     {
         string lowerSectionProfileName = sectionProfileName.ToLowerInvariant();
@@ -84,7 +87,8 @@ public class SectionProfile : SectionProfileInfoBase, IHasStrongAxisPlasticSecti
                 {
                     return FromStructuralShapeData(
                         modelId,
-                        StructuralShapes.Lib.AISC.v16_0.WShapes.GetShapeByName(sectionProfileName)
+                        StructuralShapes.Lib.AISC.v16_0.WShapes.GetShapeByName(sectionProfileName),
+                        id
                     );
                 }
                 // else if (lowerSectionProfileName.StartsWith("s", StringComparison.OrdinalIgnoreCase))
@@ -115,6 +119,23 @@ public class SectionProfile : SectionProfileInfoBase, IHasStrongAxisPlasticSecti
                     $"Structural code {structuralCode} not implemented."
                 );
         }
+    }
+
+    public SectionProfile Copy(SectionProfileId id)
+    {
+        return new(
+            this.ModelId,
+            this.Name,
+            this.Area,
+            this.StrongAxisMomentOfInertia,
+            this.WeakAxisMomentOfInertia,
+            this.PolarMomentOfInertia,
+            this.StrongAxisPlasticSectionModulus,
+            this.WeakAxisPlasticSectionModulus,
+            this.StrongAxisShearArea,
+            this.WeakAxisShearArea,
+            id
+        );
     }
 
     [Obsolete("EF Core Constructor", true)]

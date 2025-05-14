@@ -48,7 +48,6 @@ public class WebAppFactory(string connectionString, TimeProvider? timeProvider =
                         o => o.MigrationsAssembly(typeof(IAssemblyMarkerInfrastructure).Assembly)
                     )
                     .AddInterceptors(
-                        new ModelEntityIdIncrementingInterceptor(),
                         new ModelLastModifiedUpdater(timeProvider ?? TimeProvider.System)
                     )
                     .ConfigureWarnings(warnings =>

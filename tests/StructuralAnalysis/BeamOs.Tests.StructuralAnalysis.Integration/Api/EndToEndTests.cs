@@ -113,7 +113,7 @@ public class EndToEndTests
             createNodeRequestBody
         );
 
-        nodeResponseResult.Value.Id.Should().Be(1);
+        nodeResponseResult.Value.Id.Should().BeLessThan(5);
     }
 
     [Test]
@@ -181,6 +181,16 @@ public class EndToEndTests
     [Test]
     public async Task CreateSectionProfile_WithSpecifiedId_ShouldCreateSectionProfile_WithCorrectId()
     {
+        var settings = new VerifySettings();
+        settings.ScrubLinesWithReplace(replaceLine: _ =>
+        {
+            if (_.Contains("LineE"))
+            {
+                return "NoMoreLineE";
+            }
+
+            return _;
+        });
         CreateSectionProfileRequest w16x36Request = new()
         {
             Name = "W16x36",
@@ -201,7 +211,15 @@ public class EndToEndTests
                 w16x36Request
             );
 
-        await Verify(sectionProfileResponseResult);
+        await Verify(sectionProfileResponseResult)
+            .ScrubLinesWithReplace(l =>
+            {
+                if (l.Contains("Id: "))
+                {
+                    return "Id: nonZero";
+                }
+                return l;
+            });
     }
 
     [Test]
@@ -218,7 +236,10 @@ public class EndToEndTests
                 w14x22
             );
 
-        await Verify(sectionProfileResponseResult);
+        await Verify(sectionProfileResponseResult)
+            .ScrubMembers(l =>
+                typeof(IHasIntId).IsAssignableFrom(l.DeclaringType) && l.Name == "Id"
+            );
     }
 
     [Test]

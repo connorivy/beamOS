@@ -41,6 +41,8 @@ public class CreateSectionProfileFromLibraryCommandHandler(
         sectionProfileFromLibraryRepository.Add(sectionProfileFromLibrary);
         await unitOfWork.SaveChangesAsync(ct);
 
-        return sectionProfile.ToResponse(model.Settings.UnitSettings.LengthUnit);
+        return sectionProfile
+            .Copy(sectionProfileFromLibrary.Id.Id)
+            .ToResponse(model.Settings.UnitSettings.LengthUnit);
     }
 }

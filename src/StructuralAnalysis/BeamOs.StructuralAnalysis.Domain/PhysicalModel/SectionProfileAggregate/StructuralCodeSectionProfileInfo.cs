@@ -4,15 +4,15 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 
-public class SectionProfileFromLibrary : BeamOsModelEntity<SectionProfileFromLibraryId>
+public class SectionProfileFromLibrary : SectionProfileInfoBase
 {
     public SectionProfileFromLibrary(
         ModelId modelId,
         string name,
         StructuralCode library,
-        SectionProfileFromLibraryId? id = null
+        SectionProfileId? id = null
     )
-        : base(id ?? new(), modelId)
+        : base(modelId, name, id)
     {
         this.Name = name;
         this.Library = library;
@@ -22,7 +22,7 @@ public class SectionProfileFromLibrary : BeamOsModelEntity<SectionProfileFromLib
 
     public StructuralCode Library { get; set; }
 
-    public SectionProfile GetSectionProfile()
+    public override SectionProfile GetSectionProfile()
     {
         return this.Library switch
         {

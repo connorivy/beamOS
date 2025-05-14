@@ -162,6 +162,11 @@ public abstract class BeamOsModelBuilder
             }
         }
 
+        foreach (var el in ChunkRequests(this.SectionProfilesFromLibraryRequests()))
+        {
+            (await apiClient.BatchPutSectionProfileFromLibraryAsync(modelId, el)).ThrowIfError();
+        }
+
         foreach (var el in ChunkRequests(this.Element1dRequests()))
         {
             (await apiClient.BatchPutElement1dAsync(modelId, el)).ThrowIfError();
