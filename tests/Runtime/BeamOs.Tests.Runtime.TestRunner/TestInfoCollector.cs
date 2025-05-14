@@ -18,11 +18,38 @@ public class TestInfoCollector
                     .Where(t => !t.IsInterface && !t.IsAbstract)
             )
             {
-                foreach (var methodInfo in exportedType.GetMethods())
+                if (typeof(IModelFixtureTestsClass).IsAssignableFrom(exportedType))
                 {
-                    foreach (var test in GetTestInfoFromMethod(methodInfo, exportedType))
+                    foreach (var methodInfo in exportedType.GetMethods())
                     {
-                        yield return test;
+                        if (
+                            methodInfo.GetCustomAttribute<TestAttribute>() is null
+                            || methodInfo.GetCustomAttribute<SkipInFrontEndAttribute>() is not null
+                        )
+                        {
+                            continue;
+                        }
+
+                        foreach (var modelFixture in AllSolvedProblems.ModelFixtures())
+                        {
+                            var testInfo = new ClassWithModelFixtureTestInfo(
+                                methodInfo,
+                                exportedType,
+                                modelFixture
+                            );
+
+                            yield return testInfo;
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var methodInfo in exportedType.GetMethods())
+                    {
+                        foreach (var test in GetTestInfoFromMethod(methodInfo, exportedType))
+                        {
+                            yield return test;
+                        }
                     }
                 }
             }

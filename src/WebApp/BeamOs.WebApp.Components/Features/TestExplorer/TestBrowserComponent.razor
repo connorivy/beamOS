@@ -17,12 +17,12 @@
                 {
                     <MudListItem Icon="@Icons.Material.Outlined.Build" Text="@testInfoGroupBySourceName.Key">
                         <NestedList>
-                            @foreach (var testInfoByModelName in testInfoGroup.GroupBy(t => t.SourceInfo?.ModelName))
-                        {
-                            <MudListItem Icon="@Icons.Material.Outlined.Abc" Text="@testInfoByModelName.Key" Value="@testInfoByModelName.ToList()"></MudListItem>
-                        }
-                    </NestedList>
-                </MudListItem>
+                            @foreach (var testInfoByModelName in testInfoGroupBySourceName.GroupBy(t => t.SourceInfo?.ModelName))
+                            {
+                                <MudListItem Icon="@Icons.Material.Outlined.Abc" Text="@testInfoByModelName.Key" Value="@testInfoByModelName.ToList()"></MudListItem>
+                            }
+                        </NestedList>
+                    </MudListItem>
                 }
             </NestedList>
         </MudListItem>

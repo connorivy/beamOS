@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,13 +8,18 @@ namespace BeamOs.Tests.Common;
 public class TestInfo
 {
     public object[]? TestData { get; init; }
-    public MethodInfo MethodInfo { get; init; }
-    public Type TestClassType { get; init; }
+    public required MethodInfo MethodInfo { get; init; }
+    public required Type TestClassType { get; init; }
 
-    public ITestFixture? GetTestFixture() => this.TestData?.FirstOrDefault() as ITestFixture;
+    public virtual object CreateTestClass(IServiceProvider serviceProvider)
+    {
+        return serviceProvider.GetRequiredService(this.TestClassType);
+    }
 
-    public SourceInfo? SourceInfo =>
-        (this.TestData?.FirstOrDefault() as IHasSourceInfo)?.SourceInfo;
+    public virtual ITestFixture? GetTestFixture() =>
+        this.TestData?.FirstOrDefault() as ITestFixture;
+
+    public SourceInfo? SourceInfo => this.GetTestFixture()?.SourceInfo;
 
     public event EventHandler<TestResult>? OnTestResult;
 
@@ -38,23 +44,11 @@ public class TestInfo
             );
 
         Asserter.AssertedEqual2 += OnAssertedEqual;
-        //Asserter.DoublesAssertedEqual += OnAssertedEqual;
-        //Asserter.DoubleArrayAssertedEqual += OnAssertedEqual;
-        //Asserter.Double2dArrayAssertedEqual += OnAssertedEqual;
 
         try
         {
             await this.RunAndThrow(serviceProvider);
         }
-        //catch (TargetInvocationException ex) when (ex.InnerException is Xunit.SkipException skipEx)
-        //{
-        //    tcs.SetResult(new TestResultBase(TestResultBaseStatus.Skipped, skipEx.Message));
-        //}
-        //catch (TargetInvocationException ex)
-        //    when (ex.InnerException is Xunit.Sdk.XunitException xEx)
-        //{
-        //    tcs.SetResult(new TestResultBase(TestResultBaseStatus.Failure, xEx.Message));
-        //}
         catch (Exception ex)
         {
             ;
@@ -62,16 +56,13 @@ public class TestInfo
         finally
         {
             Asserter.AssertedEqual2 -= OnAssertedEqual;
-            //Asserter.DoublesAssertedEqual -= OnAssertedEqual;
-            //Asserter.DoubleArrayAssertedEqual -= OnAssertedEqual;
-            //Asserter.Double2dArrayAssertedEqual -= OnAssertedEqual;
         }
     }
 
     private async Task RunAndThrow(IServiceProvider serviceProvider)
     {
         using var testScope = serviceProvider.CreateScope();
-        object? testClass = testScope.ServiceProvider.GetRequiredService(this.TestClassType);
+        object? testClass = this.CreateTestClass(testScope.ServiceProvider);
         //if (testClass is IAsyncLifetime asyncLifetime)
         //{
         //    await asyncLifetime.InitializeAsync();
@@ -83,6 +74,30 @@ public class TestInfo
             await t.ConfigureAwait(false);
         }
     }
+}
+
+public class ClassWithModelFixtureTestInfo : TestInfo
+{
+    [SetsRequiredMembers]
+    public ClassWithModelFixtureTestInfo(
+        MethodInfo methodInfo,
+        Type testClassType,
+        ModelFixture modelFixture
+    )
+    {
+        this.ModelFixture = modelFixture;
+        this.MethodInfo = methodInfo;
+        this.TestClassType = testClassType;
+    }
+
+    public ModelFixture ModelFixture { get; set; }
+
+    public override object CreateTestClass(IServiceProvider serviceProvider)
+    {
+        return Activator.CreateInstance(TestClassType, [this.ModelFixture]);
+    }
+
+    public override ITestFixture? GetTestFixture() => this.ModelFixture;
 }
 
 public enum TestResultStatus
@@ -98,7 +113,7 @@ public enum TestProgressStatus
     Undefined = 0,
     Finished,
     InProgress,
-    NotStarted
+    NotStarted,
 }
 
 public record TestResultBase(TestResultStatus Status, string? ResultMessage);

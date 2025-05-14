@@ -10,7 +10,7 @@ namespace BeamOs.Tests.StructuralAnalysis.Integration;
     typeof(AllSolvedProblems),
     nameof(AllSolvedProblems.ModelFixturesWithExpectedNodeResults)
 )]
-public class OpenSeesTests(ModelFixture modelFixture)
+public class OpenSeesTests(ModelFixture modelFixture) : IModelFixtureTestsClass
 {
     [Test, SkipInFrontEnd]
     public async Task RunOpenSeesAnalysis_ShouldReturnSuccessfulStatusCode()
@@ -171,4 +171,11 @@ public class OpenSeesTests(ModelFixture modelFixture)
             ]
         );
     }
+
+    public static object Create(ModelFixture modelFixture) => new OpenSeesTests(modelFixture);
+}
+
+public interface IModelFixtureTestsClass
+{
+    public static abstract object Create(BeamOs.Tests.Common.ModelFixture modelFixture);
 }

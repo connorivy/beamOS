@@ -8,7 +8,7 @@ public static class DI
 {
     public static IServiceCollection AddTestServices(this IServiceCollection services)
     {
-        services.AddScoped<OpenSeesTests>();
+        // services.AddScoped<OpenSeesTests>();
         services.AddScoped<DsmElement1dTests>();
         services.AddScoped<DsmModelTests>();
 
