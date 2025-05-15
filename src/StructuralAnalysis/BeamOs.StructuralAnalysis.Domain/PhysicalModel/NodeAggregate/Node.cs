@@ -79,31 +79,28 @@ public class Node : BeamOsModelEntity<NodeId>
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }
 
-[PrimaryKey(nameof(Id), [nameof(ModelId), nameof(ModelChangeRequestId)])]
-public sealed class NodeChangeRequest : Node
+public sealed class NodeProposal : BeamOsModelProposalEntity<NodeProposalId, Node, NodeId>
 {
-    public NodeChangeRequest(
-        NodeId id,
+    public NodeProposal(
         ModelId modelId,
-        ModelChangeRequestId modelChangeRequestId,
+        ModelProposalId modelProposalId,
         Point locationPoint,
-        Restraint restraint
+        Restraint restraint,
+        NodeId? existingId = null,
+        NodeProposalId? id = null
     )
-        : base(modelId, locationPoint, restraint, id)
+        : base(id ?? new(), modelProposalId, modelId, existingId)
     {
-        this.ModelChangeRequestId = modelChangeRequestId;
+        this.LocationPoint = locationPoint;
+        this.Restraint = restraint;
     }
 
-    public ModelChangeRequestId ModelChangeRequestId { get; }
-
-    public static NodeChangeRequest FromNode(ModelChangeRequestId modelChangeRequestId, Node node)
-    {
-        return new(node.Id, node.ModelId, modelChangeRequestId, node.LocationPoint, node.Restraint);
-    }
+    public Point LocationPoint { get; set; }
+    public Restraint Restraint { get; set; }
 
     [Obsolete("EF Core Constructor")]
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-    private NodeChangeRequest()
+    private NodeProposal()
         : base() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }

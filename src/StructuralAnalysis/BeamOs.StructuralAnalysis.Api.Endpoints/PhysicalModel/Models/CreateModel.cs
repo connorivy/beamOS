@@ -2,6 +2,7 @@ using BeamOs.Common.Api;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
+using ModelContract = BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model.Model;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Models;
 

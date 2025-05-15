@@ -1,6 +1,7 @@
 using BeamOs.Common.Domain.Models;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.EnvelopeResultSets;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
+using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCases;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinations;
@@ -43,6 +44,37 @@ public class Model : BeamOsEntity<ModelId>
     [Obsolete("EF Core Constructor", true)]
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private Model() { }
+
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+}
+
+public class ModelProposal : BeamOsModelEntity<ModelProposalId>
+{
+    public ModelProposal(
+        ModelId modelId,
+        string name,
+        string description,
+        ModelSettings settings,
+        ModelProposalId? id = null
+    )
+        : base(id ?? new(), modelId)
+    {
+        this.Name = name;
+        this.Description = description;
+        this.Settings = settings;
+    }
+
+    public ModelProposalId ModelChangeRequestId { get; set; }
+    public string Name { get; private set; }
+    public string Description { get; private set; }
+    public ModelSettings Settings { get; private set; }
+
+    public List<NodeProposal>? NodeProposals { get; set; }
+    public List<Element1dProposal>? Element1dProposals { get; set; }
+
+    [Obsolete("EF Core Constructor", true)]
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    protected ModelProposal() { }
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }

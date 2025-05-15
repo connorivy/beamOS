@@ -1,3 +1,6 @@
+using System.Globalization;
+using BeamOs.Common.Domain.Models;
+
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 public readonly record struct ModelId
@@ -17,19 +20,18 @@ public readonly record struct ModelId
     public static implicit operator ModelId(Guid id) => new(id);
 }
 
-public readonly record struct ModelChangeRequestId
+public readonly record struct ModelProposalId : IIntBasedId
 {
-    public Guid Id { get; }
+    public int Id { get; init; }
 
-    public ModelChangeRequestId()
-        : this(null) { }
-
-    public ModelChangeRequestId(Guid? id = null)
+    public ModelProposalId(int id)
     {
-        this.Id = id ?? Guid.NewGuid();
+        this.Id = id;
     }
 
-    public static implicit operator Guid(ModelChangeRequestId id) => id.Id;
+    public static implicit operator int(ModelProposalId id) => id.Id;
 
-    public static implicit operator ModelChangeRequestId(Guid id) => new(id);
+    public static implicit operator ModelProposalId(int id) => new(id);
+
+    public override string ToString() => this.Id.ToString(CultureInfo.InvariantCulture);
 }

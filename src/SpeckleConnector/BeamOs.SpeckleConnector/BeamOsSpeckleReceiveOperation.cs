@@ -75,6 +75,10 @@ public class BeamOsSpeckleReceiveOperation
                 }
                 yield return this.ToBeamOs(element1d);
             }
+            if (item is Objects.BuiltElements.Revit.RevitBeam revitBeam)
+            {
+
+            }
         }
     }
 

@@ -68,3 +68,42 @@ public class BeamOsAnalyticalResultEntity<TId> : BeamOsEntity<TId>
     [Obsolete("EF Ctor")]
     public BeamOsAnalyticalResultEntity() { }
 }
+
+[PrimaryKey(nameof(Id), nameof(ModelProposalId), nameof(ModelId))]
+public abstract class BeamOsModelProposalEntity<TId, TModelEntity, TModelEntityId>
+    : BeamOsEntity<TId>
+    where TId : struct
+    where TModelEntityId : struct
+{
+    public BeamOsModelProposalEntity(
+        TId id,
+        ModelProposalId modelProposalId,
+        ModelId modelId,
+        TModelEntityId? existingId = null
+    )
+        : base(id)
+    {
+        this.ModelId = modelId;
+        this.ModelProposalId = modelProposalId;
+        this.ExistingId = existingId;
+    }
+
+    public override TId Id
+    {
+        get => base.Id;
+        protected set => base.Id = value;
+    }
+
+    public ModelId ModelId { get; protected set; }
+    public Model? Model { get; private set; }
+
+    public ModelProposalId ModelProposalId { get; protected set; }
+    public ModelProposal? ModelProposal { get; private set; }
+
+    public TModelEntityId? ExistingId { get; set; }
+    public TModelEntity? Existing { get; set; }
+    public bool IsExisting => this.ExistingId != null;
+
+    [Obsolete("EF Ctor", true)]
+    protected BeamOsModelProposalEntity() { }
+}

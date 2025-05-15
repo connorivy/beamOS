@@ -1,10 +1,8 @@
 using BeamOs.StructuralAnalysis.Domain.Common;
-using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
-using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 
@@ -153,4 +151,37 @@ public class Element1d : BeamOsModelEntity<Element1dId>
     [Obsolete("EF Core Constructor", true)]
     protected Element1d()
         : base() { }
+}
+
+public sealed class Element1dProposal
+    : BeamOsModelProposalEntity<Element1dProposalId, Element1d, Element1dId>
+{
+    public Element1dProposal(
+        ModelId modelId,
+        ModelProposalId modelProposalId,
+        ExistingOrProposedNodeId startNodeId,
+        ExistingOrProposedNodeId endNodeId,
+        ExistingOrProposedMaterialId materialId,
+        ExistingOrProposedSectionProfileId sectionProfileId,
+        Element1dId? existingId = null,
+        Element1dProposalId? id = null
+    )
+        : base(id ?? new(), modelProposalId, modelId, existingId)
+    {
+        this.StartNodeId = startNodeId;
+        this.EndNodeId = endNodeId;
+        this.MaterialId = materialId;
+        this.SectionProfileId = sectionProfileId;
+    }
+
+    public ExistingOrProposedNodeId StartNodeId { get; private set; }
+    public ExistingOrProposedNodeId EndNodeId { get; private set; }
+    public ExistingOrProposedMaterialId MaterialId { get; private set; }
+    public ExistingOrProposedSectionProfileId SectionProfileId { get; private set; }
+
+    [Obsolete("EF Core Constructor")]
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    private Element1dProposal()
+        : base() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }
