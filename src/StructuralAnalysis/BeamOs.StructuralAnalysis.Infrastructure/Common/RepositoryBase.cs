@@ -34,6 +34,11 @@ internal abstract class RepositoryBase<TId, TEntity>(StructuralAnalysisDbContext
     {
         _ = dbContext.Set<TEntity>().Update(aggregate);
     }
+
+    public void ClearChangeTracker()
+    {
+        dbContext.ChangeTracker.Clear();
+    }
 }
 
 internal abstract class ModelResourceRepositoryBase<TId, TEntity>(
@@ -69,6 +74,14 @@ internal abstract class ModelResourceRepositoryBase<TId, TEntity>(
         {
             this.DbContext.Set<TEntity>().Remove(entity);
         }
+    }
+
+    public async Task ReloadEntity(
+        TEntity entity,
+        CancellationToken ct = default
+    )
+    {
+        await this.DbContext.Entry(entity).ReloadAsync(ct);
     }
 }
 

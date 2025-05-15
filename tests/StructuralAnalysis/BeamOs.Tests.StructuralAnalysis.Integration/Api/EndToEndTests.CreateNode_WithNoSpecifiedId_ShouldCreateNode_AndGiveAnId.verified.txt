@@ -1,6 +1,6 @@
 ﻿{
   Value: {
-    Id: 1,
+    Id: {Scrubbed},
     ModelId: Guid_1,
     LocationPoint: {
       X: 1.0,

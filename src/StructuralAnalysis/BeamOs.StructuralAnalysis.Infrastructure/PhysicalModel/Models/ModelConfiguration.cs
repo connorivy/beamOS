@@ -9,13 +9,6 @@ internal class ModelConfiguration : IEntityTypeConfiguration<Model>
     public void Configure(EntityTypeBuilder<Model> builder)
     {
         _ = builder
-            .HasMany(m => m.Nodes)
-            .WithOne(n => n.Model)
-            .HasForeignKey(node => node.ModelId)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);
-
-        _ = builder
             .HasMany(m => m.Element1ds)
             .WithOne(el => el.Model)
             .HasForeignKey(el => el.ModelId)

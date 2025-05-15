@@ -18,6 +18,8 @@ public interface IRepository<TId, T>
     //void Update(T aggregate);
 
     void Remove(T aggregate);
+
+    void ClearChangeTracker();
 }
 
 public interface IModelResourceRepository<TId, T> : IRepository<TId, T>
@@ -28,6 +30,7 @@ public interface IModelResourceRepository<TId, T> : IRepository<TId, T>
 
     public Task<T?> GetSingle(ModelId modelId, TId id, CancellationToken ct = default);
     public Task RemoveById(ModelId modelId, TId id, CancellationToken ct = default);
+    public Task ReloadEntity(T entity, CancellationToken ct = default);
 }
 
 public interface IAnalyticalResultRepository<TId, T> : IRepository<TId, T>

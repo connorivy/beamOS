@@ -55,7 +55,10 @@ public class EndToEndTests
             createNodeRequestBody
         );
 
-        await Verify(nodeResponseResult);
+        await Verify(nodeResponseResult)
+            .ScrubMembers(l =>
+                typeof(IHasIntId).IsAssignableFrom(l.DeclaringType) && l.Name == "Id"
+            );
     }
 
     [Test]
@@ -211,15 +214,7 @@ public class EndToEndTests
                 w16x36Request
             );
 
-        await Verify(sectionProfileResponseResult)
-            .ScrubLinesWithReplace(l =>
-            {
-                if (l.Contains("Id: "))
-                {
-                    return "Id: nonZero";
-                }
-                return l;
-            });
+        await Verify(sectionProfileResponseResult);
     }
 
     [Test]

@@ -11,7 +11,7 @@ public interface IModelResourceWithIntIdRequest<TBody> : IModelResourceRequest<T
     public int Id { get; init; }
 }
 
-public struct ModelResourceRequest<TBody> : IModelResourceRequest<TBody>
+public readonly struct ModelResourceRequest<TBody> : IModelResourceRequest<TBody>
 {
     public Guid ModelId { get; init; }
     public TBody Body { get; init; }

@@ -9,13 +9,12 @@ public class NodeConfiguration : IEntityTypeConfiguration<Node>
 {
     public void Configure(EntityTypeBuilder<Node> builder)
     {
-        //builder.HasMany<PointLoad>().WithOne().HasForeignKey(el => el.NodeId).IsRequired();
-        //builder.HasMany<MomentLoad>().WithOne().HasForeignKey(el => el.NodeId).IsRequired();
-        //builder
-        //    .HasOne<NodeResult>()
-        //    .WithOne()
-        //    .HasForeignKey<NodeResult>(el => el.NodeId)
-        //    .IsRequired();
+        builder
+            .HasOne(el => el.Model)
+            .WithMany(el => el.Nodes)
+            .HasForeignKey(el => el.ModelId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder
             .HasMany<Element1d>()

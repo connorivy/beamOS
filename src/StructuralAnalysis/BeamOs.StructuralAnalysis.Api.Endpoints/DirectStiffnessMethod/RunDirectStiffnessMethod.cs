@@ -10,10 +10,14 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.DirectStiffnessMethod;
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 public class RunDirectStiffnessMethod(RunDirectStiffnessMethodCommandHandler dsmCommandHandler)
-    : BeamOsBaseEndpoint<ModelIdAndBody<RunDsmRequest>, AnalyticalResultsResponse>
+    : BeamOsModelResourceBaseEndpoint<
+        ModelResourceRequest<RunDsmRequest>,
+        RunDsmRequest,
+        AnalyticalResultsResponse
+    >
 {
     public override async Task<Result<AnalyticalResultsResponse>> ExecuteRequestAsync(
-        ModelIdAndBody<RunDsmRequest> req,
+        ModelResourceRequest<RunDsmRequest> req,
         CancellationToken ct = default
     ) =>
         await dsmCommandHandler.ExecuteAsync(

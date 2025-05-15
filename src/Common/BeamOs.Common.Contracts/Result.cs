@@ -51,6 +51,7 @@ Result is in error state.
 Message: {this.Error.Description}
 ErrorCode: {this.Error.Code}
 ErrorType: {this.Error.Type}
+StackTrace: {this.Error.Metadata?.GetValueOrDefault("StackTrace")}
 Metadata: {this.Error.Metadata}
 "
             );

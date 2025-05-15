@@ -80,18 +80,22 @@ internal partial class BeamOsJsonSerializerContext : JsonSerializerContext { }
 
 public static class BeamOsSerializerOptions
 {
-    private static JsonSerializerOptions? options;
+    private static readonly Lock OptionsLock = new();
+
     public static JsonSerializerOptions Default
     {
         get
         {
-            if (options is null)
+            lock (OptionsLock)
             {
-                options = new() { PropertyNameCaseInsensitive = true };
-                options.TypeInfoResolverChain.Insert(0, BeamOsJsonSerializerContext.Default);
-                options.Converters.Add(new JsonStringEnumConverter());
+                if (field is null)
+                {
+                    field = new() { PropertyNameCaseInsensitive = true };
+                    field.TypeInfoResolverChain.Insert(0, BeamOsJsonSerializerContext.Default);
+                    field.Converters.Add(new JsonStringEnumConverter());
+                }
             }
-            return options;
+            return field;
         }
     }
 
