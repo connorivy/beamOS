@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Agents;
 using Microsoft.SemanticKernel.ChatCompletion;
@@ -11,22 +12,23 @@ using OpenAI;
 
 namespace BeamOs.Ai;
 
-public class GithubModelsChatCommandHandler(AiApiPlugin aiApiPlugin)
-    : ICommandHandler<GithubModelsChatCommand, string>
+public class GithubModelsChatCommandHandler(
+    CreateProposalCommandHandler createModelProposalCommandHandler
+) : ICommandHandler<GithubModelsChatCommand, string>
 {
     public async Task<Result<string>> ExecuteAsync(
         GithubModelsChatCommand command,
         CancellationToken ct = default
     )
     {
-        var kernel = this.BuildOpenAiKernel(command.ApiKey);
+        var aiApiPlugin = new AiApiPlugin();
+        var kernel = this.BuildOpenAiKernel(command.ApiKey, aiApiPlugin);
 
         var agent = new ChatCompletionAgent()
         {
             Instructions =
                 $@"
-                Your job is to make changes to and answer questions about structural analysis models based off of user requests. 
-                The Id of the model that you can modify is {command.ModelId}. DO NOT MODIFY MODELS WITH OTHER IDS.
+                Your job is to make changes to and answer questions about structural analysis models based off of user requests.
                 ",
             Kernel = kernel,
             Arguments = new KernelArguments(
@@ -48,10 +50,20 @@ public class GithubModelsChatCommandHandler(AiApiPlugin aiApiPlugin)
             stringBuilder.Append(message.Message.Content);
         }
 
+        var proposalResult = await createModelProposalCommandHandler.ExecuteAsync(
+            new() { ModelId = command.ModelId, Body = aiApiPlugin.ModelProposalData },
+            ct
+        );
+
+        if (proposalResult.IsError)
+        {
+            return proposalResult.Error;
+        }
+
         return stringBuilder.ToString();
     }
 
-    private Kernel BuildOpenAiKernel(string apiKey)
+    private Kernel BuildOpenAiKernel(string apiKey, AiApiPlugin aiApiPlugin)
     {
         var builder = Kernel.CreateBuilder();
         var credential = new ApiKeyCredential(apiKey);
