@@ -2,7 +2,7 @@ using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.Editor;
 using BeamOs.WebApp.EditorCommands.Interfaces;

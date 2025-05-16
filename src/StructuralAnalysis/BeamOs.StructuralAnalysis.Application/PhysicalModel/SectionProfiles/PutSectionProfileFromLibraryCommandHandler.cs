@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.Common;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 
@@ -32,7 +32,7 @@ public class PutSectionProfileFromLibraryCommandHandler(
         sectionProfileRepository.Put(sectionProfile);
         await unitOfWork.SaveChangesAsync(ct);
 
-        return new Contracts.PhysicalModel.SectionProfile.SectionProfileFromLibrary()
+        return new SectionProfileFromLibraryContract()
         {
             Id = sectionProfile.Id,
             Name = command.Name,
@@ -55,7 +55,7 @@ public readonly struct PutSectionProfileFromLibraryCommand
     [SetsRequiredMembers]
     public PutSectionProfileFromLibraryCommand(
         ModelId modelId,
-        Contracts.PhysicalModel.SectionProfile.SectionProfileFromLibrary putSectionProfileFromLibraryRequest
+        SectionProfileFromLibraryContract putSectionProfileFromLibraryRequest
     )
     {
         this.Id = putSectionProfileFromLibraryRequest.Id;

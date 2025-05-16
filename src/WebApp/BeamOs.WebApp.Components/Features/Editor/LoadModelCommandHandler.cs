@@ -1,7 +1,7 @@
 using BeamOs.CodeGen.EditorApi;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.Tests.Common;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.TestExplorer;

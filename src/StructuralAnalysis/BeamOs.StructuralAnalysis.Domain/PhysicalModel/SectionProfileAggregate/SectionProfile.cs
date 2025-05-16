@@ -1,4 +1,4 @@
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.DesignCodes.AISC._360_16;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;

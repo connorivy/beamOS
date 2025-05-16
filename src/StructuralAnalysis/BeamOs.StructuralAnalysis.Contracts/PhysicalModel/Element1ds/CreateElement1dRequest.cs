@@ -1,18 +1,18 @@
 using System.Diagnostics.CodeAnalysis;
-using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 
-namespace BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
+namespace BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
 
-public record Element1dData
+public record CreateElement1dRequest
 {
     [SetsRequiredMembers]
-    public Element1dData(
+    public CreateElement1dRequest(
         int startNodeId,
         int endNodeId,
         int materialId,
         int sectionProfileId,
         Angle? sectionProfileRotation,
+        int? id,
         Dictionary<string, string>? metadata
     )
     {
@@ -21,44 +21,29 @@ public record Element1dData
         this.MaterialId = materialId;
         this.SectionProfileId = sectionProfileId;
         this.SectionProfileRotation = sectionProfileRotation ?? new(0, AngleUnit.Degree);
+        this.Id = id;
         this.Metadata = metadata;
     }
 
-    public Element1dData() { }
+    public CreateElement1dRequest() { }
+
+    [SetsRequiredMembers]
+    public CreateElement1dRequest(Element1dData element1DData)
+        : this(
+            element1DData.StartNodeId,
+            element1DData.EndNodeId,
+            element1DData.MaterialId,
+            element1DData.SectionProfileId,
+            element1DData.SectionProfileRotation,
+            null,
+            element1DData.Metadata
+        ) { }
 
     public required int StartNodeId { get; init; }
     public required int EndNodeId { get; init; }
     public required int MaterialId { get; init; }
     public required int SectionProfileId { get; init; }
     public Angle? SectionProfileRotation { get; init; } = new(0, AngleUnit.Degree);
+    public int? Id { get; init; }
     public Dictionary<string, string>? Metadata { get; init; }
-}
-
-public record PutElement1dRequest : Element1dData, IHasIntId, IBeamOsEntityRequest
-{
-    [SetsRequiredMembers]
-    public PutElement1dRequest(
-        int id,
-        int startNodeId,
-        int endNodeId,
-        int materialId,
-        int sectionProfileId,
-        Angle? sectionProfileRotation,
-        Dictionary<string, string>? metadata = null
-    )
-        : base(
-            startNodeId,
-            endNodeId,
-            materialId,
-            sectionProfileId,
-            sectionProfileRotation,
-            metadata
-        )
-    {
-        this.Id = id;
-    }
-
-    public PutElement1dRequest() { }
-
-    public required int Id { get; init; }
 }

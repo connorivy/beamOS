@@ -1,4 +1,4 @@
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using Fluxor;
 
 namespace BeamOs.WebApp.Components.Features.ModelsPage;
@@ -19,6 +19,6 @@ public static class ModelPageStateReducers
     public static ModelPageState DoneLoadingReducer(ModelPageState state) =>
         state with
         {
-            IsLoading = false
+            IsLoading = false,
         };
 }

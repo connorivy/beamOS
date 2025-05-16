@@ -1,7 +1,7 @@
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.Editor;
 using BeamOs.WebApp.EditorCommands;
@@ -65,11 +65,9 @@ public sealed class PutSectionProfileSimpleCommandHandler(
     {
         var sectionProfile =
             (
-                editorState
-                    .Value
-                    .CachedModelResponse
-                    ?.SectionProfiles
-                    .GetValueOrDefault(simpleCommand.Id)
+                editorState.Value.CachedModelResponse?.SectionProfiles.GetValueOrDefault(
+                    simpleCommand.Id
+                )
             ) ?? throw new InvalidOperationException("Section profile not found in editor state");
 
         return new(sectionProfile, simpleCommand.ToResponse());

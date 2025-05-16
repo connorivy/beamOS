@@ -1,6 +1,6 @@
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.WebApp.Components.Features.Dialogs;
 using BeamOs.WebApp.Components.Pages;
 using Fluxor;

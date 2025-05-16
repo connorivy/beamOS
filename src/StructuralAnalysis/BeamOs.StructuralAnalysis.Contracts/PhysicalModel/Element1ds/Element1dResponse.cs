@@ -1,7 +1,7 @@
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 
-namespace BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
+namespace BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
 
 public record Element1dResponse(
     int Id,

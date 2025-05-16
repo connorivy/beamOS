@@ -1,4 +1,4 @@
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 using BeamOs.WebApp.EditorCommands.Interfaces;
 
 namespace BeamOs.WebApp.EditorCommands;
@@ -18,7 +18,7 @@ public abstract record PutObjectCommand<TObject>(TObject? Previous, TObject? New
             Previous = this.New,
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
             HandledByEditor = args?.HandledByEditor ?? this.HandledByEditor,
-            HandledByServer = args?.HandledByServer ?? this.HandledByServer
+            HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 
     public virtual IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
@@ -26,7 +26,7 @@ public abstract record PutObjectCommand<TObject>(TObject? Previous, TObject? New
         {
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
             HandledByEditor = args?.HandledByEditor ?? this.HandledByEditor,
-            HandledByServer = args?.HandledByServer ?? this.HandledByServer
+            HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 }
 
@@ -44,7 +44,7 @@ public record PutNodeClientCommand(NodeResponse Previous, NodeResponse New) : IB
             Previous = this.New,
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
             HandledByEditor = args?.HandledByEditor ?? this.HandledByEditor,
-            HandledByServer = args?.HandledByServer ?? this.HandledByServer
+            HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 
     public virtual IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
@@ -52,6 +52,6 @@ public record PutNodeClientCommand(NodeResponse Previous, NodeResponse New) : IB
         {
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
             HandledByEditor = args?.HandledByEditor ?? this.HandledByEditor,
-            HandledByServer = args?.HandledByServer ?? this.HandledByServer
+            HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 }

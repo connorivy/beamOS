@@ -13,7 +13,7 @@ using BeamOs.StructuralAnalysis.Application.PhysicalModel.MomentLoads;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 using BeamOs.StructuralAnalysis.Infrastructure.AnalyticalResults.EnvelopeResultSets;
 using BeamOs.StructuralAnalysis.Infrastructure.AnalyticalResults.NodeResults;

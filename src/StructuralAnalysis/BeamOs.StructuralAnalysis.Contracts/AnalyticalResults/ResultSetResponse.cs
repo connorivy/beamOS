@@ -9,3 +9,10 @@ public record ResultSetResponse(
     List<NodeResultResponse>? NodeResults = null,
     List<Element1dResultResponse>? Element1dResults = null
 ) : IModelEntity;
+
+public record ResultSet(
+    int Id,
+    Guid ModelId,
+    List<NodeResultResponse>? NodeResults = null,
+    List<Element1dResultResponse>? Element1dResults = null
+) : IModelEntity;

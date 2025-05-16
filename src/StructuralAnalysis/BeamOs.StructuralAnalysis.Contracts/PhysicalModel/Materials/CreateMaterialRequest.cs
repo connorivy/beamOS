@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 
-namespace BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
+namespace BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Materials;
 
 public record MaterialRequestData
 {

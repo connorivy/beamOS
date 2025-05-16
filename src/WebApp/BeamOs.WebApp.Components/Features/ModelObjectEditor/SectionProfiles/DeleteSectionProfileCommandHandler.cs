@@ -2,7 +2,6 @@ using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Contracts.Common;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.Editor;
 using BeamOs.WebApp.EditorCommands;
@@ -66,18 +65,16 @@ public sealed class DeleteSectionProfileSimpleCommandHandler(
     {
         var sectionProfile =
             (
-                editorState
-                    .Value
-                    .CachedModelResponse
-                    ?.SectionProfiles
-                    .GetValueOrDefault(simpleCommand.Id)
+                editorState.Value.CachedModelResponse?.SectionProfiles.GetValueOrDefault(
+                    simpleCommand.Id
+                )
             ) ?? throw new InvalidOperationException("Section profile not found in editor state");
 
         return new()
         {
             ModelId = simpleCommand.ModelId,
             SectionProfileId = simpleCommand.Id,
-            Data = sectionProfile.ToSectionProfileData()
+            Data = sectionProfile.ToSectionProfileData(),
         };
     }
 }

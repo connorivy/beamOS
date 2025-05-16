@@ -1,9 +1,9 @@
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
 using BeamOs.WebApp.EditorCommands;
 using BeamOs.WebApp.EditorCommands.Interfaces;
 
@@ -70,12 +70,9 @@ public class EditorApiGenerator : AbstractGenerator
         //_ = addMethod("ClearFilters").Accepts<ClearFilters>();
 
         foreach (
-            Type contractType in typeof(IAssemblyMarkerClientCommands)
-                .Assembly
-                .ExportedTypes
-                .Where(
-                    t => !t.IsInterface && !t.IsAbstract && t.IsAssignableTo(typeof(IEditorCommand))
-                )
+            Type contractType in typeof(IAssemblyMarkerClientCommands).Assembly.ExportedTypes.Where(
+                t => !t.IsInterface && !t.IsAbstract && t.IsAssignableTo(typeof(IEditorCommand))
+            )
         )
         {
             _ = addMethod($"Reduce{contractType.Name}").Accepts(contractType);

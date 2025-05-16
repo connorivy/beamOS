@@ -1,7 +1,7 @@
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Materials;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Materials;
 using BeamOs.WebApp.Components.Features.Editor;
 using BeamOs.WebApp.Components.Features.SelectionInfo;
 using BeamOs.WebApp.EditorCommands;
@@ -117,13 +117,12 @@ public partial class MaterialObjectEditor(
 
     private async Task Submit()
     {
-        MaterialRequestData data =
-            new()
-            {
-                PressureUnit = this.UnitSettings.PressureUnit,
-                ModulusOfElasticity = this.material.ModulusOfElasticity.Value,
-                ModulusOfRigidity = this.material.ModulusOfRigidity.Value
-            };
+        MaterialRequestData data = new()
+        {
+            PressureUnit = this.UnitSettings.PressureUnit,
+            ModulusOfElasticity = this.material.ModulusOfElasticity.Value,
+            ModulusOfRigidity = this.material.ModulusOfRigidity.Value,
+        };
 
         if (this.material.Id == 0)
         {
@@ -132,13 +131,12 @@ public partial class MaterialObjectEditor(
         }
         else
         {
-            PutMaterialCommand command =
-                new()
-                {
-                    Id = this.material.Id,
-                    ModelId = this.ModelId,
-                    Body = data
-                };
+            PutMaterialCommand command = new()
+            {
+                Id = this.material.Id,
+                ModelId = this.ModelId,
+                Body = data,
+            };
 
             // await putMaterialCommandHandler.ExecuteAsync(command);
         }
@@ -160,12 +158,9 @@ public partial class MaterialObjectEditor(
 
         return Task.FromResult(
             NullInt.Concat(
-                editorState
-                    .Value
-                    .CachedModelResponse
-                    .Materials
-                    .Keys
-                    .Where(k => GetPrefix(k, subIntLength) == subInt)
+                editorState.Value.CachedModelResponse.Materials.Keys.Where(k =>
+                    GetPrefix(k, subIntLength) == subInt
+                )
             )
         );
     }

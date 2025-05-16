@@ -1,4 +1,5 @@
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.StructuralAnalysis.Application.Common;
@@ -33,7 +34,7 @@ public static partial class BeamOsDomainContractMappers
         );
     }
 
-    public static partial Contracts.PhysicalModel.Model.ModelSettings ToContract(
+    public static partial ModelSettings ToContract(
         this Domain.PhysicalModel.ModelAggregate.ModelSettings source
     );
 
@@ -42,11 +43,11 @@ public static partial class BeamOsDomainContractMappers
         return new()
         {
             LengthUnit = source.LengthUnit.MapToContract(),
-            ForceUnit = source.ForceUnit.MapToContract()
+            ForceUnit = source.ForceUnit.MapToContract(),
         };
     }
 
-    public static partial Contracts.PhysicalModel.Model.AnalysisSettings ToContract(
+    public static partial AnalysisSettings ToContract(
         this Domain.PhysicalModel.ModelAggregate.AnalysisSettings source
     );
 

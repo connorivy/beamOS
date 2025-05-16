@@ -1,7 +1,7 @@
 using System.Runtime.CompilerServices;
 using BeamOs.StructuralAnalysis.Contracts.Common;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 using Speckle.Core.Api.GraphQL.Models;
 using Speckle.Core.Credentials;
 using Speckle.Core.Logging;
@@ -75,10 +75,7 @@ public class BeamOsSpeckleReceiveOperation
                 }
                 yield return this.ToBeamOs(element1d);
             }
-            if (item is Objects.BuiltElements.Revit.RevitBeam revitBeam)
-            {
-
-            }
+            if (item is Objects.BuiltElements.Revit.RevitBeam revitBeam) { }
         }
     }
 

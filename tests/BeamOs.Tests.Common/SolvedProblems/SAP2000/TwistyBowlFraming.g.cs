@@ -1,12 +1,11 @@
 
 using BeamOs.StructuralAnalysis.Contracts.Common;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoad;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Materials;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.CsSdk;
 using static BeamOs.StructuralAnalysis.Contracts.Common.AngleUnit;
 using static BeamOs.StructuralAnalysis.Contracts.Common.LengthUnit;
@@ -590,7 +589,7 @@ yield return new(5,new(-6989.299597312555, 0, 20194.23866023988,Millimeter),new(
         {
             Id = 1636,
             Name = "w16x36",
-            Library = BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile.StructuralCode.AISC_360_16,
+            Library = StructuralCode.AISC_360_16,
         };
     }
 

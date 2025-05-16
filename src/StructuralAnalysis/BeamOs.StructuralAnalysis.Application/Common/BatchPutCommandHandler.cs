@@ -1,7 +1,7 @@
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.Common.Domain.Models;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 

@@ -1,6 +1,6 @@
 using BeamOs.StructuralAnalysis.Contracts.Common;
 
-namespace BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
+namespace BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 
 public record UpdateNodeRequest(
     int Id,

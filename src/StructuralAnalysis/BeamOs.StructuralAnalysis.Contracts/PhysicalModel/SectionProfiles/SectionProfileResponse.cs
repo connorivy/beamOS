@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 
-namespace BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
+namespace BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 
 public record SectionProfileResponse(
     int Id,

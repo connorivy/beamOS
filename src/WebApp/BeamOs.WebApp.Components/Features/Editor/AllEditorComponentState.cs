@@ -1,7 +1,4 @@
 using System.Collections.Immutable;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.StructuralApi;
 using BeamOs.WebApp.EditorCommands;

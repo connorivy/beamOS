@@ -1,5 +1,4 @@
 using BeamOs.StructuralAnalysis.Contracts.Common;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
 using Riok.Mapperly.Abstractions;
 using UnitsNet;
 

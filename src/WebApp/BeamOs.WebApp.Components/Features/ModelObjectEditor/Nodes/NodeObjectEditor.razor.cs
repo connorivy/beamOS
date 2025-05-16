@@ -1,7 +1,7 @@
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 using BeamOs.WebApp.Components.Features.Editor;
 using BeamOs.WebApp.Components.Features.SelectionInfo;
 using BeamOs.WebApp.EditorCommands;
@@ -125,24 +125,23 @@ public partial class NodeObjectEditor(
 
     private async Task Submit()
     {
-        NodeData nodeData =
-            new()
-            {
-                LocationPoint = new(
-                    this.node.LocationPoint.X.Value,
-                    this.node.LocationPoint.Y.Value,
-                    this.node.LocationPoint.Z.Value,
-                    this.UnitSettings.LengthUnit
-                ),
-                Restraint = new(
-                    this.node.Restraint.CanTranslateAlongX,
-                    this.node.Restraint.CanTranslateAlongY,
-                    this.node.Restraint.CanTranslateAlongZ,
-                    this.node.Restraint.CanRotateAboutX,
-                    this.node.Restraint.CanRotateAboutY,
-                    this.node.Restraint.CanRotateAboutZ
-                )
-            };
+        NodeData nodeData = new()
+        {
+            LocationPoint = new(
+                this.node.LocationPoint.X.Value,
+                this.node.LocationPoint.Y.Value,
+                this.node.LocationPoint.Z.Value,
+                this.UnitSettings.LengthUnit
+            ),
+            Restraint = new(
+                this.node.Restraint.CanTranslateAlongX,
+                this.node.Restraint.CanTranslateAlongY,
+                this.node.Restraint.CanTranslateAlongZ,
+                this.node.Restraint.CanRotateAboutX,
+                this.node.Restraint.CanRotateAboutY,
+                this.node.Restraint.CanRotateAboutZ
+            ),
+        };
 
         if (this.node.Id == 0)
         {
@@ -151,13 +150,12 @@ public partial class NodeObjectEditor(
         }
         else
         {
-            PutNodeCommand command =
-                new()
-                {
-                    Id = this.node.Id,
-                    ModelId = this.ModelId,
-                    Body = nodeData
-                };
+            PutNodeCommand command = new()
+            {
+                Id = this.node.Id,
+                ModelId = this.ModelId,
+                Body = nodeData,
+            };
 
             await putNodeCommandHandler.ExecuteAsync(command);
         }
@@ -179,12 +177,9 @@ public partial class NodeObjectEditor(
 
         return Task.FromResult(
             NullInt.Concat(
-                editorState
-                    .Value
-                    .CachedModelResponse
-                    .Nodes
-                    .Keys
-                    .Where(k => GetPrefix(k, subIntLength) == subInt)
+                editorState.Value.CachedModelResponse.Nodes.Keys.Where(k =>
+                    GetPrefix(k, subIntLength) == subInt
+                )
             )
         );
     }

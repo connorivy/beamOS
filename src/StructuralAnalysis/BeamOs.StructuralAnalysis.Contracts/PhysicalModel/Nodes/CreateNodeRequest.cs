@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 
-namespace BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
+namespace BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 
 public record CreateNodeRequest : NodeData
 {

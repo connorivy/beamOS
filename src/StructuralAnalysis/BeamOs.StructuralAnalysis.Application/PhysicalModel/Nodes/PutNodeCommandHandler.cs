@@ -4,7 +4,7 @@ using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Contracts.Common;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using Riok.Mapperly.Abstractions;
 
@@ -34,7 +34,9 @@ public class PutNodeCommandHandler(
 public static partial class PutNodeCommandMapper
 {
     public static partial Node ToDomainObject(this PutNodeCommand command);
+
     public static partial NodeResponse ToResponse(this PutNodeCommand command);
+
     public static partial PutNodeRequest ToRequest(this PutNodeCommand command);
 }
 

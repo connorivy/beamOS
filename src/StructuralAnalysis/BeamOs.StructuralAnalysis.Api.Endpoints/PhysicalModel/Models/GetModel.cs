@@ -1,7 +1,7 @@
 using BeamOs.Common.Api;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Api.Endpoints.OpenSees;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Models;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Models;

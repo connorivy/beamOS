@@ -1,7 +1,7 @@
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.MomentLoads;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoad;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoads;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.Editor;
 using BeamOs.WebApp.EditorCommands;
@@ -113,7 +113,7 @@ public record PutMomentLoadClientCommand(MomentLoadResponse Previous, MomentLoad
             Previous = this.New,
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
             HandledByEditor = args?.HandledByEditor ?? this.HandledByEditor,
-            HandledByServer = args?.HandledByServer ?? this.HandledByServer
+            HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 
     public virtual IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
@@ -121,6 +121,6 @@ public record PutMomentLoadClientCommand(MomentLoadResponse Previous, MomentLoad
         {
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
             HandledByEditor = args?.HandledByEditor ?? this.HandledByEditor,
-            HandledByServer = args?.HandledByServer ?? this.HandledByServer
+            HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 }

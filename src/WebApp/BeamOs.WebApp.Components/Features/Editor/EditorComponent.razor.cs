@@ -4,8 +4,8 @@ using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.CodeGen.EditorApi;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.WebApp.Components.Features.Common;
@@ -73,7 +73,7 @@ public partial class EditorComponent(
                         LengthUnit = LengthUnitContract.Meter,
                         X = command.NewLocation.X,
                         Y = command.NewLocation.Y,
-                        Z = command.NewLocation.Z
+                        Z = command.NewLocation.Z,
                     }
                 )
             );
@@ -91,28 +91,25 @@ public partial class EditorComponent(
             {
                 LengthUnit lengthUnit = command.New.LocationPoint.LengthUnit.MapToLengthUnit();
 
-                await state
-                    .Value
-                    .EditorApi
-                    .ReduceMoveNodeCommandAsync(
-                        new MoveNodeCommand()
+                await state.Value.EditorApi.ReduceMoveNodeCommandAsync(
+                    new MoveNodeCommand()
+                    {
+                        CanvasId = this.CanvasId,
+                        NewLocation = new()
                         {
-                            CanvasId = this.CanvasId,
-                            NewLocation = new()
-                            {
-                                X = new Length(command.New.LocationPoint.X, lengthUnit).Meters,
-                                Y = new Length(command.New.LocationPoint.Y, lengthUnit).Meters,
-                                Z = new Length(command.New.LocationPoint.Z, lengthUnit).Meters
-                            },
-                            PreviousLocation = new()
-                            {
-                                X = new Length(command.Previous.LocationPoint.X, lengthUnit).Meters,
-                                Y = new Length(command.Previous.LocationPoint.Y, lengthUnit).Meters,
-                                Z = new Length(command.Previous.LocationPoint.Z, lengthUnit).Meters
-                            },
-                            NodeId = command.New.Id
-                        }
-                    );
+                            X = new Length(command.New.LocationPoint.X, lengthUnit).Meters,
+                            Y = new Length(command.New.LocationPoint.Y, lengthUnit).Meters,
+                            Z = new Length(command.New.LocationPoint.Z, lengthUnit).Meters,
+                        },
+                        PreviousLocation = new()
+                        {
+                            X = new Length(command.Previous.LocationPoint.X, lengthUnit).Meters,
+                            Y = new Length(command.Previous.LocationPoint.Y, lengthUnit).Meters,
+                            Z = new Length(command.Previous.LocationPoint.Z, lengthUnit).Meters,
+                        },
+                        NodeId = command.New.Id,
+                    }
+                );
             }
 
             if (!command.HandledByServer)
@@ -184,9 +181,9 @@ public partial class EditorComponent(
                 return;
             }
 
-            await stateSnapshot
-                .EditorApi
-                .SetGlobalStressesAsync(command.AnalyticalResults.GlobalStresses);
+            await stateSnapshot.EditorApi.SetGlobalStressesAsync(
+                command.AnalyticalResults.GlobalStresses
+            );
         });
 
         dispatcher.Dispatch(new EditorCreated(this.CanvasId));
@@ -335,7 +332,7 @@ public record CachedModelState(ImmutableDictionary<Guid, CachedModelResponse> Mo
             "Node" => model.Nodes.GetValueOrDefault(modelCacheKey.Id),
             "Element1d" => model.Element1ds.GetValueOrDefault(modelCacheKey.Id),
             "PointLoad" => model.PointLoads.GetValueOrDefault(modelCacheKey.Id),
-            _ => null
+            _ => null,
         };
     }
 
@@ -351,14 +348,12 @@ public record CachedModelState(ImmutableDictionary<Guid, CachedModelResponse> Mo
 
         return modelCacheKey.TypeName switch
         {
-            "Node"
-                => model
-                    .NodeResults
-                    ?.GetValueOrDefault(resultSetId)
-                    ?.GetValueOrDefault(modelCacheKey.Id),
+            "Node" => model
+                .NodeResults?.GetValueOrDefault(resultSetId)
+                ?.GetValueOrDefault(modelCacheKey.Id),
             "Element1d" => null,
             "PointLoad" => null,
-            _ => null
+            _ => null,
         };
     }
 }

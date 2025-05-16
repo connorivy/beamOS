@@ -1,17 +1,17 @@
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.Common;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 
 public class PutModelCommandHandler(
     IModelRepository modelRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
-) : ICommandHandler<ModelResourceRequest<ModelData>, ModelResponse>
+) : ICommandHandler<ModelResourceRequest<ModelInfoData>, ModelResponse>
 {
     public async Task<Result<ModelResponse>> ExecuteAsync(
-        ModelResourceRequest<ModelData> command,
+        ModelResourceRequest<ModelInfoData> command,
         CancellationToken ct = default
     )
     {

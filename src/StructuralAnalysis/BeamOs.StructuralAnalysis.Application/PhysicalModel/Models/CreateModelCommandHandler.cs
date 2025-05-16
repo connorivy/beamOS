@@ -3,9 +3,9 @@ using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.CsSdk.Mappers.UnitValueDtoMappers;
 using BeamOs.StructuralAnalysis.Application.Common;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Materials;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 using Riok.Mapperly.Abstractions;
@@ -39,7 +39,7 @@ public static partial class CreateModelCommandMapper
     public static partial Model ToDomainObject(this CreateModelRequest command);
 
     [MapNestedProperties(nameof(ModelResourceRequest<>.Body))]
-    public static partial Model ToDomainObject(this ModelResourceRequest<ModelData> command);
+    public static partial Model ToDomainObject(this ModelResourceRequest<ModelInfoData> command);
 }
 
 [Mapper]

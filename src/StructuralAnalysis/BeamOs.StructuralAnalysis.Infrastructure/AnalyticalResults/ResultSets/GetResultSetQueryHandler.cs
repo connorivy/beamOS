@@ -19,8 +19,7 @@ public class GetResultSetQueryHandler(StructuralAnalysisDbContext dbContext)
     )
     {
         var elementAndModelUnits = await dbContext
-            .ResultSets
-            .Where(e => e.ModelId.Equals(query.ModelId) && e.Id.Equals(query.Id))
+            .ResultSets.Where(e => e.ModelId.Equals(query.ModelId) && e.Id.Equals(query.Id))
             .Include(e => e.NodeResults)
             .Include(e => e.Element1dResults)
             .AsSplitQuery()

@@ -1,7 +1,7 @@
 using BeamOs.Common.Api;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.MomentLoads;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoad;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoads;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.MomentLoads;
 
