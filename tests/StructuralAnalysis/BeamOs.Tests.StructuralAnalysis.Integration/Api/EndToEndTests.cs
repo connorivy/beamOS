@@ -226,7 +226,7 @@ public class EndToEndTests
             Library = StructuralCode.AISC_360_16,
         };
         var sectionProfileResponseResult =
-            await AssemblySetup.StructuralAnalysisApiClient.CreateSectionProfileFromLibraryAsync(
+            await AssemblySetup.StructuralAnalysisApiClient.AddSectionProfileFromLibraryAsync(
                 modelId,
                 w14x22
             );
@@ -324,5 +324,36 @@ public class EndToEndTests
         );
 
         await Verify(nodeResponseResult);
+    }
+
+    [Test]
+    [DependsOn(nameof(GetElement1d_ShouldResultInExpectedResponse))]
+    public async Task CreateModelProposal_ShouldCreateModelProposal()
+    {
+        var modelProposalRequest = new ModelProposalData
+        {
+            Name = "a new name!!!",
+            Description = "a new description!!!",
+            NodeProposals = [new(1, new(2, 2, 2, LengthUnitContract.Foot), Restraint.Fixed)],
+            Element1dProposals =
+            [
+                Element1dProposal.Create(
+                    ProposedID.Existing(5),
+                    ProposedID.Proposed(1),
+                    ProposedID.Existing(992),
+                    ProposedID.Existing(1636),
+                    id: 1
+                ),
+                Element1dProposal.Modify(99, endNodeId: ProposedID.Proposed(1)),
+            ],
+        };
+
+        var modelProposalResponseResult =
+            await AssemblySetup.StructuralAnalysisApiClient.CreateModelProposalAsync(
+                modelId,
+                modelProposalRequest
+            );
+
+        await Verify(modelProposalResponseResult);
     }
 }

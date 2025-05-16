@@ -1,7 +1,14 @@
 global using BeamOs.Common.Contracts;
 global using BeamOs.StructuralAnalysis.Contracts.Common;
+global using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
 global using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
 global using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCombinations;
+global using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Materials;
+global using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
+global using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoads;
+global using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
+global using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
+global using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 global using ResultOfAnalyticalResultsResponse = BeamOs.Common.Contracts.Result<BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams.AnalyticalResultsResponse>;
 global using ResultOfBatchResponse = BeamOs.Common.Contracts.Result<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes.BatchResponse>;
 global using ResultOfBeamOsModelBuilderDto = BeamOs.Common.Contracts.Result<BeamOs.StructuralAnalysis.Contracts.Common.BeamOsModelBuilderDto>;
@@ -14,6 +21,7 @@ global using ResultOfLoadCase = BeamOs.Common.Contracts.Result<BeamOs.Structural
 global using ResultOfLoadCombination = BeamOs.Common.Contracts.Result<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCombinations.LoadCombination>;
 global using ResultOfMaterialResponse = BeamOs.Common.Contracts.Result<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Materials.MaterialResponse>;
 global using ResultOfModelEntityResponse = BeamOs.Common.Contracts.Result<BeamOs.StructuralAnalysis.Contracts.Common.ModelEntityResponse>;
+global using ResultOfModelProposal = BeamOs.Common.Contracts.Result<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models.ModelProposal>;
 global using ResultOfModelResponse = BeamOs.Common.Contracts.Result<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models.ModelResponse>;
 global using ResultOfModelResponseHydrated = BeamOs.Common.Contracts.Result<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models.ModelResponseHydrated>;
 global using ResultOfMomentLoadResponse = BeamOs.Common.Contracts.Result<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoads.MomentLoadResponse>;

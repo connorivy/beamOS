@@ -8,3 +8,5 @@ public interface INodeRepository : IModelResourceRepository<NodeId, Node>
     public Task<Node> Update(PatchNodeCommand patchCommand);
     public Task<List<Node>> GetAll();
 }
+
+public interface INodeProposalRepository : IProposalRepository<NodeProposalId, NodeProposal> { }

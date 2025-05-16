@@ -23,9 +23,21 @@ public class ModelIdConverter : ValueConverter<ModelId, Guid>
         : base(x => x.Id, x => new(x), null) { }
 }
 
+public class ModelIdProposalConverter : ValueConverter<ModelProposalId, int>
+{
+    public ModelIdProposalConverter()
+        : base(x => x.Id, x => new(x), null) { }
+}
+
 public class NodeIdConverter : ValueConverter<NodeId, int>
 {
     public NodeIdConverter()
+        : base(x => x.Id, x => new(x), null) { }
+}
+
+public class NodeProposalIdConverter : ValueConverter<NodeProposalId, int>
+{
+    public NodeProposalIdConverter()
         : base(x => x.Id, x => new(x), null) { }
 }
 
@@ -47,15 +59,33 @@ public class Element1dIdConverter : ValueConverter<Element1dId, int>
         : base(x => x.Id, x => new(x), null) { }
 }
 
+public class Element1dProposalIdConverter : ValueConverter<Element1dProposalId, int>
+{
+    public Element1dProposalIdConverter()
+        : base(x => x.Id, x => new(x), null) { }
+}
+
 public class MaterialIdConverter : ValueConverter<MaterialId, int>
 {
     public MaterialIdConverter()
         : base(x => x.Id, x => new(x), null) { }
 }
 
+public class MaterialProposalIdConverter : ValueConverter<MaterialProposalId, int>
+{
+    public MaterialProposalIdConverter()
+        : base(x => x.Id, x => new(x), null) { }
+}
+
 public class SectionProfileIdConverter : ValueConverter<SectionProfileId, int>
 {
     public SectionProfileIdConverter()
+        : base(x => x.Id, x => new(x), null) { }
+}
+
+public class SectionProfileProposalIdConverter : ValueConverter<SectionProfileProposalId, int>
+{
+    public SectionProfileProposalIdConverter()
         : base(x => x.Id, x => new(x), null) { }
 }
 

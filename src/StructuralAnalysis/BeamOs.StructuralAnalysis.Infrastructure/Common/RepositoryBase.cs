@@ -76,12 +76,21 @@ internal abstract class ModelResourceRepositoryBase<TId, TEntity>(
         }
     }
 
-    public async Task ReloadEntity(
-        TEntity entity,
+    public async Task ReloadEntity(TEntity entity, CancellationToken ct = default)
+    {
+        await this.DbContext.Entry(entity).ReloadAsync(ct);
+    }
+
+    public Task<List<TEntity>> GetMany(
+        ModelId modelId,
+        IList<TId> ids,
         CancellationToken ct = default
     )
     {
-        await this.DbContext.Entry(entity).ReloadAsync(ct);
+        return this
+            .DbContext.Set<TEntity>()
+            .Where(m => m.ModelId == modelId && ids.Contains(m.Id))
+            .ToListAsync(ct);
     }
 }
 

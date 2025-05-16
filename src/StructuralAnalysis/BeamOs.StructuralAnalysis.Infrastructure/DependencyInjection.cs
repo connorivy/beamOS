@@ -60,6 +60,7 @@ public static class DependencyInjection
         _ = services.AddScoped<INodeResultRepository, NodeResultRepository>();
         _ = services.AddScoped<IResultSetRepository, ResultSetRepository>();
         _ = services.AddScoped<IEnvelopeResultSetRepository, EnvelopeResultSetRepository>();
+        _ = services.AddScoped<IModelProposalRepository, ModelProposalRepository>();
 
         _ = services.AddScoped<IStructuralAnalysisUnitOfWork, UnitOfWork>();
 

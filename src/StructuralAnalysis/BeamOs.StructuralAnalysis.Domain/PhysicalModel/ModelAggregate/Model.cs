@@ -38,6 +38,7 @@ public class Model : BeamOsEntity<ModelId>
     public IList<LoadCombination>? LoadCombinations { get; init; }
     public IList<ResultSet>? ResultSets { get; init; }
     public IList<EnvelopeResultSet>? EnvelopeResultSets { get; init; }
+    public IList<ModelProposal>? ModelProposals { get; init; }
 
     //public AnalyticalResults? AnalyticalResults { get; init; }
 
@@ -63,6 +64,21 @@ public class ModelProposal : BeamOsModelEntity<ModelProposalId>
         this.Description = description;
         this.Settings = settings;
     }
+
+    public ModelProposal(
+        Model model,
+        string? name,
+        string? description,
+        ModelSettings? settings,
+        ModelProposalId? id = null
+    )
+        : this(
+            model.Id,
+            name ?? model.Name,
+            description ?? model.Description,
+            settings ?? model.Settings,
+            id
+        ) { }
 
     public ModelProposalId ModelChangeRequestId { get; set; }
     public string Name { get; private set; }

@@ -1,0 +1,97 @@
+﻿{
+  Value: {
+    Id: 1,
+    Name: a new name!!!,
+    Description: a new description!!!,
+    Settings: {
+      UnitSettings: {
+        LengthUnit: Foot,
+        ForceUnit: KilopoundForce,
+        AngleUnit: Radian,
+        AreaUnit: SquareFoot,
+        VolumeUnit: CubicFoot,
+        AreaMomentOfInertiaUnit: FootToTheFourth,
+        TorqueUnit: KilopoundForceFoot,
+        ForcePerLengthUnit: KilopoundForcePerFoot,
+        PressureUnit: KilopoundForcePerSquareFoot
+      },
+      AnalysisSettings: {
+        Element1DAnalysisType: Timoshenko
+      },
+      YAxisUp: true
+    },
+    NodeProposals: [
+      {
+        Id: 1,
+        LocationPoint: {
+          X: 2.0,
+          Y: 2.0,
+          Z: 2.0,
+          LengthUnit: Foot
+        },
+        Restraint: {
+          CanTranslateAlongX: false,
+          CanTranslateAlongY: false,
+          CanTranslateAlongZ: false,
+          CanRotateAboutX: false,
+          CanRotateAboutY: false,
+          CanRotateAboutZ: false
+        },
+        Metadata: null
+      }
+    ],
+    Element1dProposals: [
+      {
+        Id: null,
+        StartNodeId: {
+          ExistingId: 5,
+          ProposedId: null,
+          IsDefault: false
+        },
+        EndNodeId: {
+          ExistingId: null,
+          ProposedId: 1,
+          IsDefault: false
+        },
+        MaterialId: {
+          ExistingId: 992,
+          ProposedId: null,
+          IsDefault: false
+        },
+        SectionProfileId: {
+          ExistingId: 1636,
+          ProposedId: null,
+          IsDefault: false
+        },
+        SectionProfileRotation: {
+          Value: 0.0,
+          Unit: Degree
+        },
+        Metadata: null
+      },
+      {
+        ExistingElement1dId: 99,
+        StartNodeId: null,
+        EndNodeId: null,
+        MaterialId: null,
+        SectionProfileId: null,
+        SectionProfileRotation: {
+          Value: 0.0,
+          Unit: Degree
+        },
+        Metadata: null
+      }
+    ],
+    MaterialProposals: null,
+    SectionProfileProposals: null,
+    SectionProfileFromLibraryProposals: null,
+    PointLoadProposals: null,
+    MomentLoadProposals: null,
+    ResultSetProposals: null,
+    LoadCaseProposals: null,
+    LoadCombinationProposals: null
+  },
+  Error: null,
+  IsError: false,
+  IsSuccess: true
+}

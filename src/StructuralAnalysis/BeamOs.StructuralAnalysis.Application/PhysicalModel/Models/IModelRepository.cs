@@ -17,3 +17,6 @@ public interface IModelRepository : IRepository<ModelId, Model>
         params string[] includeNavigationProperties
     );
 }
+
+public interface IModelProposalRepository
+    : IModelResourceRepository<ModelProposalId, ModelProposal> { }

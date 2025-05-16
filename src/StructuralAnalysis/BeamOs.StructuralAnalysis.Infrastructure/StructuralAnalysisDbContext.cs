@@ -38,6 +38,7 @@ public class StructuralAnalysisDbContext : DbContext
     public DbSet<MomentLoad> MomentLoads { get; set; }
     public DbSet<LoadCase> LoadCases { get; set; }
     public DbSet<LoadCombination> LoadCombinations { get; set; }
+    public DbSet<ModelProposal> ModelProposals { get; set; }
 
     public DbSet<ResultSet> ResultSets { get; set; }
     public DbSet<NodeResult> NodeResults { get; set; }

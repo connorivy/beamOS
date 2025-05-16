@@ -6,9 +6,11 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 namespace BeamOs.StructuralAnalysis.Domain.Common;
 
 public class ExistingOrProposedId<TId, TProposedId> : BeamOSValueObject
+    where TId : struct, IIntBasedId
+    where TProposedId : struct, IIntBasedId
 {
-    public TId? ExistingId { get; }
-    public TProposedId? ProposedId { get; }
+    public TId? ExistingId { get; init; }
+    public TProposedId? ProposedId { get; init; }
 
     protected ExistingOrProposedId(TId existingId)
     {
@@ -20,10 +22,13 @@ public class ExistingOrProposedId<TId, TProposedId> : BeamOSValueObject
         this.ProposedId = proposedId;
     }
 
-    public static implicit operator ExistingOrProposedId<TId, TProposedId>(TId id) => new(id);
-
-    public static implicit operator ExistingOrProposedId<TId, TProposedId>(TProposedId id) =>
-        new(id);
+    [Obsolete("EF Core Constructor", true)]
+    protected ExistingOrProposedId(TId? existingId, TProposedId? proposedId)
+        : base()
+    {
+        this.ExistingId = existingId;
+        this.ProposedId = proposedId;
+    }
 
     protected override IEnumerable<object> GetEqualityComponents()
     {
@@ -34,29 +39,53 @@ public class ExistingOrProposedId<TId, TProposedId> : BeamOSValueObject
 
 public sealed class ExistingOrProposedNodeId : ExistingOrProposedId<NodeId, NodeProposalId>
 {
-    private ExistingOrProposedNodeId(NodeId existingId)
+    public static implicit operator ExistingOrProposedNodeId(NodeId id) => new(id);
+
+    public static implicit operator ExistingOrProposedNodeId(NodeProposalId id) => new(id);
+
+    public ExistingOrProposedNodeId(NodeId existingId)
         : base(existingId) { }
 
-    private ExistingOrProposedNodeId(NodeProposalId proposedId)
+    public ExistingOrProposedNodeId(NodeProposalId proposedId)
         : base(proposedId) { }
+
+    [Obsolete("EF Core Constructor", true)]
+    private ExistingOrProposedNodeId(NodeId? existingId, NodeProposalId? proposedId)
+        : base(existingId, proposedId) { }
 }
 
 public sealed class ExistingOrProposedMaterialId
     : ExistingOrProposedId<MaterialId, MaterialProposalId>
 {
-    private ExistingOrProposedMaterialId(MaterialId existingId)
+    public ExistingOrProposedMaterialId(MaterialId existingId)
         : base(existingId) { }
 
-    private ExistingOrProposedMaterialId(MaterialProposalId proposedId)
+    public ExistingOrProposedMaterialId(MaterialProposalId proposedId)
         : base(proposedId) { }
+
+    [Obsolete("EF Core Constructor", true)]
+    private ExistingOrProposedMaterialId(MaterialId? existingId, MaterialProposalId? proposedId)
+        : base(existingId, proposedId) { }
 }
 
 public sealed class ExistingOrProposedSectionProfileId
     : ExistingOrProposedId<SectionProfileId, SectionProfileProposalId>
 {
-    private ExistingOrProposedSectionProfileId(SectionProfileId existingId)
+    public ExistingOrProposedSectionProfileId(SectionProfileId existingId)
         : base(existingId) { }
 
-    private ExistingOrProposedSectionProfileId(SectionProfileProposalId proposedId)
+    public ExistingOrProposedSectionProfileId(SectionProfileProposalId proposedId)
         : base(proposedId) { }
+
+    [Obsolete("EF Core Constructor", true)]
+    private ExistingOrProposedSectionProfileId(
+        SectionProfileId? existingId,
+        SectionProfileProposalId? proposedId
+    )
+        : base(existingId, proposedId) { }
+}
+
+public interface IFromId<out TSelf, TId>
+{
+    public TSelf FromId(TId id);
 }

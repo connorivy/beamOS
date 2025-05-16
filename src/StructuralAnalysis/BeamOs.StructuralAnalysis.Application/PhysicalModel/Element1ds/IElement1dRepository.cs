@@ -10,3 +10,6 @@ public interface IElement1dRepository : IModelResourceRepository<Element1dId, El
     //    CancellationToken ct = default
     //);
 }
+
+public interface IElement1dProposalRepository
+    : IProposalRepository<Element1dProposalId, Element1dProposal> { }

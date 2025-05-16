@@ -1,3 +1,4 @@
+using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
@@ -22,25 +23,30 @@ public record ModelInfoData
     public required ModelSettings Settings { get; init; }
 }
 
-public record ModelData
-{
-    public required string Name { get; init; }
-    public required string Description { get; init; }
-    public required ModelSettings Settings { get; init; }
-    public List<PutNodeRequest>? Nodes { get; init; }
-    public List<PutElement1dRequest>? Element1ds { get; init; }
-    public List<PutMaterialRequest>? Materials { get; init; }
-    public List<PutSectionProfileRequest>? SectionProfiles { get; init; }
-    public List<SectionProfileFromLibrary>? SectionProfilesFromLibrary { get; init; }
-    public List<PointLoad>? PointLoads { get; init; }
-    public List<MomentLoad>? MomentLoads { get; init; }
-    public List<ResultSet>? ResultSets { get; init; }
-    public List<LoadCase>? LoadCases { get; init; }
-    public List<LoadCombination>? LoadCombinations { get; init; }
-}
-
 public record ModelInfo : ModelInfoData
 {
     public required Guid Id { get; init; }
     public required DateTimeOffset LastModified { get; init; }
+}
+
+public record ModelProposalData
+{
+    public string? Name { get; init; }
+    public string? Description { get; init; }
+    public ModelSettings? Settings { get; init; }
+    public List<PutNodeRequest>? NodeProposals { get; init; }
+    public List<Element1dProposal>? Element1dProposals { get; init; }
+    public List<PutMaterialRequest>? MaterialProposals { get; init; }
+    public List<PutSectionProfileRequest>? SectionProfileProposals { get; init; }
+    public List<SectionProfileFromLibrary>? SectionProfileFromLibraryProposals { get; init; }
+    public List<PointLoad>? PointLoadProposals { get; init; }
+    public List<MomentLoad>? MomentLoadProposals { get; init; }
+    public List<ResultSet>? ResultSetProposals { get; init; }
+    public List<LoadCase>? LoadCaseProposals { get; init; }
+    public List<LoadCombination>? LoadCombinationProposals { get; init; }
+}
+
+public record ModelProposal : ModelProposalData, IHasIntId
+{
+    public required int Id { get; init; }
 }

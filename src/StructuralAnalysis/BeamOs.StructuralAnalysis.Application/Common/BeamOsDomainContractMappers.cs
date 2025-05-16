@@ -1,5 +1,11 @@
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
+using BeamOs.Common.Domain.Models;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
+using BeamOs.StructuralAnalysis.Domain.Common;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.StructuralAnalysis.Application.Common;
@@ -51,6 +57,10 @@ public static partial class BeamOsDomainContractMappers
         this Domain.PhysicalModel.ModelAggregate.AnalysisSettings source
     );
 
+    public static partial Domain.PhysicalModel.ModelAggregate.ModelSettings ToDomain(
+        this ModelSettings source
+    );
+
     //public static BeamOs.StructuralAnalysis.Domain.Common.Point ToDomain(
     //    BeamOs.StructuralAnalysis.Contracts.Common.Point source
     //)
@@ -67,5 +77,86 @@ public static partial class BeamOsDomainContractMappers
     )
     {
         return new(source.X, source.Y, source.Z);
+    }
+
+    public static ExistingOrProposedNodeId ToNodeDomain(this ProposedID contract) =>
+        ToNodeDomainOrNull(contract)
+        ?? throw new ArgumentNullException(
+            nameof(contract),
+            "Either ExistingId or ProposedId must be provided."
+        );
+
+    public static ProposedID ToProposedIdContract<TId, TProposalId>(
+        this ExistingOrProposedId<TId, TProposalId> proposedId
+    )
+        where TId : struct, IIntBasedId
+        where TProposalId : struct, IIntBasedId
+    {
+        if (proposedId.ExistingId is not null)
+        {
+            return ProposedID.Existing(proposedId.ExistingId.Value.Id);
+        }
+        else if (proposedId.ProposedId is not null)
+        {
+            return ProposedID.Proposed(proposedId.ProposedId.Value.Id);
+        }
+        return ProposedID.Default;
+    }
+
+    public static ExistingOrProposedNodeId? ToNodeDomainOrNull(this ProposedID contract)
+    {
+        if (contract.ExistingId is not null)
+        {
+            return new((NodeId)contract.ExistingId);
+        }
+        else if (contract.ProposedId is not null)
+        {
+            return new((NodeProposalId)contract.ProposedId);
+        }
+        return null;
+    }
+
+    public static ExistingOrProposedMaterialId ToMaterialDomain(this ProposedID contract) =>
+        ToMaterialDomainOrNull(contract)
+        ?? throw new ArgumentNullException(
+            nameof(contract),
+            "Either ExistingId or ProposedId must be provided."
+        );
+
+    public static ExistingOrProposedMaterialId? ToMaterialDomainOrNull(this ProposedID contract)
+    {
+        if (contract.ExistingId is not null)
+        {
+            return new((MaterialId)contract.ExistingId);
+        }
+        else if (contract.ProposedId is not null)
+        {
+            return new((MaterialProposalId)contract.ProposedId);
+        }
+        return null;
+    }
+
+    public static ExistingOrProposedSectionProfileId ToSectionProfileDomain(
+        this ProposedID contract
+    ) =>
+        ToSectionProfileDomainOrNull(contract)
+        ?? throw new ArgumentNullException(
+            nameof(contract),
+            "Either ExistingId or ProposedId must be provided."
+        );
+
+    public static ExistingOrProposedSectionProfileId? ToSectionProfileDomainOrNull(
+        this ProposedID contract
+    )
+    {
+        if (contract.ExistingId is not null)
+        {
+            return new((SectionProfileId)contract.ExistingId);
+        }
+        else if (contract.ProposedId is not null)
+        {
+            return new((SectionProfileProposalId)contract.ProposedId);
+        }
+        return null;
     }
 }

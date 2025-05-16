@@ -174,6 +174,26 @@ public sealed class Element1dProposal
         this.SectionProfileId = sectionProfileId;
     }
 
+    public Element1dProposal(
+        Element1d element1d,
+        ModelProposalId modelProposalId,
+        ExistingOrProposedNodeId? startNodeId,
+        ExistingOrProposedNodeId? endNodeId,
+        ExistingOrProposedMaterialId? materialId,
+        ExistingOrProposedSectionProfileId? sectionProfileId,
+        Element1dProposalId? id = null
+    )
+        : this(
+            element1d.ModelId,
+            modelProposalId,
+            startNodeId ?? new(element1d.StartNodeId),
+            endNodeId ?? new(element1d.EndNodeId),
+            materialId ?? new(element1d.MaterialId),
+            sectionProfileId ?? new(element1d.SectionProfileId),
+            element1d.Id,
+            id
+        ) { }
+
     public ExistingOrProposedNodeId StartNodeId { get; private set; }
     public ExistingOrProposedNodeId EndNodeId { get; private set; }
     public ExistingOrProposedMaterialId MaterialId { get; private set; }
