@@ -84,6 +84,7 @@ public class ModelProposal : BeamOsModelEntity<ModelProposalId>
     public string Name { get; private set; }
     public string Description { get; private set; }
     public ModelSettings Settings { get; private set; }
+    public DateTimeOffset LastModified { get; set; } = DateTimeOffset.UtcNow;
 
     public List<NodeProposal>? NodeProposals { get; set; }
     public List<Element1dProposal>? Element1dProposals { get; set; }

@@ -66,3 +66,32 @@ public record PutNodeRequest : NodeData, IHasIntId, IBeamOsEntityRequest
 
     public required int Id { get; init; }
 }
+
+// public record Node : NodeData, IHasIntId, IBeamOsEntityRequest
+// {
+//     public Node() { }
+
+//     [SetsRequiredMembers]
+//     public Node(
+//         int id,
+//         Point locationPoint,
+//         Restraint restraint,
+//         Dictionary<string, string>? metadata = null
+//     )
+//         : base(locationPoint, restraint, metadata)
+//     {
+//         this.Id = id;
+//     }
+
+//     public required int Id { get; init; }
+// }
+
+public record CreateNodeProposalResponse : NodeData
+{
+    public required int Id { get; init; }
+}
+
+public record ModifyNodeProposalResponse : CreateNodeProposalResponse
+{
+    public required int ExistingNodeId { get; init; }
+}

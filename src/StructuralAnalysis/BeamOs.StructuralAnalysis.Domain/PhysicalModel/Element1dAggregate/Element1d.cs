@@ -199,6 +199,37 @@ public sealed class Element1dProposal
     public ExistingOrProposedMaterialId MaterialId { get; private set; }
     public ExistingOrProposedSectionProfileId SectionProfileId { get; private set; }
 
+    public Element1d ToDomain(Dictionary<NodeProposalId, NodeId> nodeProposalIdToNewIdDict)
+    {
+        NodeId startNodeId;
+        NodeId endNodeId;
+        if (this.StartNodeId.ProposedId is not null)
+        {
+            startNodeId = nodeProposalIdToNewIdDict[this.StartNodeId.ProposedId.Value];
+        }
+        else
+        {
+            startNodeId = this.StartNodeId.ExistingId.Value;
+        }
+
+        if (this.EndNodeId.ProposedId is not null)
+        {
+            endNodeId = nodeProposalIdToNewIdDict[this.EndNodeId.ProposedId.Value];
+        }
+        else
+        {
+            endNodeId = this.EndNodeId.ExistingId.Value;
+        }
+        return new(
+            this.ModelId,
+            startNodeId,
+            endNodeId,
+            this.MaterialId.ExistingId.Value,
+            this.SectionProfileId.ExistingId.Value,
+            this.ExistingId
+        );
+    }
+
     [Obsolete("EF Core Constructor")]
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private Element1dProposal()

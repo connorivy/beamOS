@@ -13,6 +13,12 @@ public record GithubModelsChatRequest
     public required string Message { get; init; }
 }
 
+public record GithubModelsChatResponse
+{
+    public required int ProposalId { get; init; }
+    public required string Message { get; init; }
+}
+
 public record GithubModelsChatCommand : IModelResourceRequest<GithubModelsChatRequest>
 {
     // [FromRoute]

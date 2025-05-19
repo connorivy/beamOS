@@ -1,6 +1,7 @@
 @using BeamOs.CodeGen.SpeckleConnectorApi
 @using BeamOs.CodeGen.StructuralAnalysisApiClient
 @using BeamOs.StructuralAnalysis.Contracts.Common
+@using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models
 @using BeamOs.StructuralAnalysis.CsSdk
 @using BeamOs.WebApp.Components.Features.Common
 @using BeamOs.WebApp.Components.Features.Dialogs
@@ -11,28 +12,54 @@
 
 <MudPaper Class="@Class">
     <MudToolBar>
-            @if (this.state.Value.IsCalculating)
-            {
-                <MudProgressCircular Color="Color.Default" Indeterminate="true" />
-            }
-            else if (this.editorState.Value.HasResults)
-            {
-                <MudTooltip Text="Unlock Model">
-                    <MudIconButton OnClick="UnlockModel" Icon="@Icons.Material.Outlined.Lock" Color="Color.Inherit" Class="">Unlock Model</MudIconButton>
-                </MudTooltip>
-            }
-            else
-            {
-                <MudTooltip Text="Run Analysis">
-                    <MudIconButton OnClick="RunAnalysis" Icon="@Icons.Material.Outlined.Calculate" Color="Color.Inherit" Class="">Run Analysis</MudIconButton>
-                </MudTooltip>
-            }
+        @if (this.state.Value.IsCalculating)
+        {
+            <MudProgressCircular Color="Color.Default" Indeterminate="true" />
+        }
+        else if (this.editorState.Value.HasResults)
+        {
+            <MudTooltip Text="Unlock Model">
+                <MudIconButton OnClick="UnlockModel" Icon="@Icons.Material.Outlined.Lock" Color="Color.Inherit" Class="">
+                    Unlock Model</MudIconButton>
+            </MudTooltip>
+        }
+        else
+        {
+            <MudTooltip Text="Run Analysis">
+                <MudIconButton OnClick="RunAnalysis" Icon="@Icons.Material.Outlined.Calculate" Color="Color.Inherit"
+                    Class="">Run Analysis</MudIconButton>
+            </MudTooltip>
+        }
         <MudTooltip Text="Show Diagrams">
             <MudMenu Icon="@Icons.Material.Outlined.AreaChart">
                 <MudMenuItem OnClick="@editorComponent.ShowShear">Shear Diagrams</MudMenuItem>
                 <MudMenuItem OnClick="@editorComponent.ShowMoment">Moment Diagrams</MudMenuItem>
                 <MudMenuItem OnClick="@editorComponent.ShowDeflection">Deflection Diagrams</MudMenuItem>
             </MudMenu>
+        </MudTooltip>
+        <MudTooltip Text="Get Model Proposals">
+            <MudIconButton OnClick="GetModelProposals" Icon="@Icons.Material.Outlined.Refresh" Color="Color.Inherit"
+                Class="">Get Model Proposals</MudIconButton>
+        </MudTooltip>
+
+        <MudTooltip Text="Show Model Proposal">
+            <MudSelect T="int" Label="Model Proposals" Color="Color.Inherit" Value="this.selectedModelProposalId"
+                ValueChanged="DisplayModelProposal">
+                <MudSelectItem Value="0">0</MudSelectItem>
+                @foreach (var proposal in modelProposals)
+                {
+                    <MudSelectItem Value="@proposal.Id">@proposal.Id</MudSelectItem>
+                }
+            </MudSelect>
+        </MudTooltip>
+
+        <MudTooltip Text="Accept Model Proposal">
+            <MudIconButton OnClick="AcceptModelProposal" Icon="@Icons.Material.Outlined.Check" Color="Color.Inherit"
+                Class="">Accept Model Proposal</MudIconButton>
+        </MudTooltip>
+        <MudTooltip Text="Reject Model Proposal">
+            <MudIconButton OnClick="RejectModelProposal" Icon="@Icons.Material.Outlined.Close" Color="Color.Inherit"
+                Class="">Reject Model Proposal</MudIconButton>
         </MudTooltip>
         @* <MudTooltip Text="Recieve Date From Speckle"> *@
         @*     <MudIconButton OnClick="ReceiveFromSpeckle" Icon="@Icons.Material.Filled.CallReceived" /> *@
@@ -64,15 +91,15 @@
     private IDispatcher dispatcher;
 
     public AnalysisToolbar(
-        RunDsmCommandCommandHandler runDsmCommandCommandHandler,
-        ReceiveFromSpeckleCommandHandler receiveFromSpeckleCommandHandler,
-        IState<AnalysisToolbarState> state,
-        IStructuralAnalysisApiClientV1 structuralAnalysisApiClientV1,
-        IDialogService dialogService,
-        ISpeckleConnectorApi speckleConnectorApi,
-        IState<EditorComponentState> editorState,
-        ISnackbar snackbar,
-        IDispatcher dispatcher)
+    RunDsmCommandCommandHandler runDsmCommandCommandHandler,
+    ReceiveFromSpeckleCommandHandler receiveFromSpeckleCommandHandler,
+    IState<AnalysisToolbarState> state,
+    IStructuralAnalysisApiClientV1 structuralAnalysisApiClientV1,
+    IDialogService dialogService,
+    ISpeckleConnectorApi speckleConnectorApi,
+    IState<EditorComponentState> editorState,
+    ISnackbar snackbar,
+    IDispatcher dispatcher)
     {
         this.runDsmCommandCommandHandler = runDsmCommandCommandHandler;
         this.ReceiveFromSpeckleCommandHandler = receiveFromSpeckleCommandHandler;
@@ -120,14 +147,81 @@
         {
             var newToken = (SpeckleReceiveInfo)result.Data;
             var speckleToken = new SpeckleReceiveParameters
-                (
-                    newToken.ApiToken,
-                    newToken.ProjectId,
-                    newToken.ObjectId,
-                    newToken.ServerUrl
-                );
+            (
+            newToken.ApiToken,
+            newToken.ProjectId,
+            newToken.ObjectId,
+            newToken.ServerUrl
+            );
 
-            await this.ReceiveFromSpeckleCommandHandler.ExecuteAsync(new ReceiveFromSpeckleCommand(this.CanvasId, this.ModelId, speckleToken));
+            await this.ReceiveFromSpeckleCommandHandler.ExecuteAsync(new ReceiveFromSpeckleCommand(this.CanvasId, this.ModelId,
+            speckleToken));
+        }
+    }
+    private List<ModelProposalInfo> modelProposals = new();
+    private int selectedModelProposalId;
+    private async Task GetModelProposals()
+    {
+        var result = await structuralAnalysisApiClientV1.GetModelProposalsAsync(this.ModelId, CancellationToken.None);
+
+        if (result.IsSuccess)
+        {
+            modelProposals = result.Value;
+        }
+        else
+        {
+            snackbar.Add(result.Error.Description, Severity.Error);
+        }
+    }
+
+    private async Task DisplayModelProposal(int selectedModelProposalId)
+    {
+        this.selectedModelProposalId = selectedModelProposalId;
+        if (selectedModelProposalId == 0)
+        {
+            await editorState.Value.EditorApi.ClearModelProposalsAsync();
+            return;
+        }
+
+        var modelProposal = await structuralAnalysisApiClientV1.GetModelProposalAsync(this.ModelId,
+        selectedModelProposalId, CancellationToken.None);
+        if (modelProposal.IsError)
+        {
+            throw new Exception(modelProposal.Error.Description);
+        }
+
+        await editorState.Value.EditorApi.ClearModelProposalsAsync();
+        await editorState.Value.EditorApi.DisplayModelProposalAsync(modelProposal.Value);
+    }
+
+    private async Task AcceptModelProposal()
+    {
+        var result = await structuralAnalysisApiClientV1.AcceptModelProposalAsync(this.ModelId, this.selectedModelProposalId,
+        CancellationToken.None);
+
+        if (result.IsSuccess)
+        {
+            await editorState.Value.EditorApi.ClearCurrentOverlayAsync();
+            this.selectedModelProposalId = 0;
+        }
+        else
+        {
+            snackbar.Add(result.Error.Description, Severity.Error);
+        }
+    }
+    private async Task RejectModelProposal()
+    {
+        var result = await structuralAnalysisApiClientV1.RejectModelProposalAsync(this.ModelId, this.selectedModelProposalId,
+        CancellationToken.None);
+
+        if (result.IsSuccess)
+        {
+            await editorState.Value.EditorApi.ClearCurrentOverlayAsync();
+            this.selectedModelProposalId = 0;
+        }
+        else
+        {
+            snackbar.Add(result.Error.Description, Severity.Error);
         }
     }
 

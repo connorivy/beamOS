@@ -32,7 +32,7 @@
     <EditorComponent Class="h-full" @ref="editorComponent" ModelId="@ModelId" IsReadOnly="false"></EditorComponent>
     @if (this.editorComponent is not null && this.State.Value.LoadedModelId is Guid modelId)
     {
-        <div class="flex absolute left-4 right-4 top-4">
+        <div class="flex items-center justify-center absolute left-4 right-4 top-4">
             <AnalysisToolbar Class="" editorComponent="@editorComponent" ModelId="@modelId"
                 CanvasId="@editorComponent.CanvasId"></AnalysisToolbar>
         </div>

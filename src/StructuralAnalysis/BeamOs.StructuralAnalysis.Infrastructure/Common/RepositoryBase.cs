@@ -54,7 +54,7 @@ internal abstract class ModelResourceRepositoryBase<TId, TEntity>(
             .Select(m => m.Id)
             .ToListAsync(ct);
 
-    public async Task<TEntity?> GetSingle(
+    public async virtual Task<TEntity?> GetSingle(
         ModelId modelId,
         TId id,
         CancellationToken ct = default
@@ -81,12 +81,16 @@ internal abstract class ModelResourceRepositoryBase<TId, TEntity>(
         await this.DbContext.Entry(entity).ReloadAsync(ct);
     }
 
-    public Task<List<TEntity>> GetMany(
+    public virtual Task<List<TEntity>> GetMany(
         ModelId modelId,
-        IList<TId> ids,
+        IList<TId>? ids,
         CancellationToken ct = default
     )
     {
+        if (ids is null)
+        {
+            return this.DbContext.Set<TEntity>().Where(m => m.ModelId == modelId).ToListAsync(ct);
+        }
         return this
             .DbContext.Set<TEntity>()
             .Where(m => m.ModelId == modelId && ids.Contains(m.Id))

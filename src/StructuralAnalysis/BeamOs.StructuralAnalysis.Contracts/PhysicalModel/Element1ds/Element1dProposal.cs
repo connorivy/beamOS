@@ -1,21 +1,18 @@
 using System.Text.Json.Serialization;
+using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 
 namespace BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
 
-[JsonPolymorphic]
-[JsonDerivedType(typeof(CreateElement1dProposal), typeDiscriminator: "Create")]
-[JsonDerivedType(typeof(ModifyElement1dProposal), typeDiscriminator: "Modify")]
-public abstract record Element1dProposal
+// [JsonPolymorphic]
+// [JsonDerivedType(typeof(CreateElement1dProposal), typeDiscriminator: "Create")]
+// [JsonDerivedType(typeof(ModifyElement1dProposal), typeDiscriminator: "Modify")]
+public abstract record Element1dProposalBase
 {
-    public ProposedID? StartNodeId { get; protected init; }
-    public ProposedID? EndNodeId { get; protected init; }
-    public ProposedID? MaterialId { get; protected init; }
-    public ProposedID? SectionProfileId { get; protected init; }
     public Angle? SectionProfileRotation { get; protected init; } = new(0, AngleUnit.Degree);
     public Dictionary<string, string>? Metadata { get; protected init; }
 
-    public static Element1dProposal Create(
+    public static CreateElement1dProposal Create(
         ProposedID startNodeId,
         ProposedID endNodeId,
         ProposedID materialId,
@@ -37,7 +34,7 @@ public abstract record Element1dProposal
         };
     }
 
-    public static Element1dProposal Modify(
+    public static ModifyElement1dProposal Modify(
         int existingId,
         ProposedID? startNodeId = null,
         ProposedID? endNodeId = null,
@@ -84,32 +81,39 @@ public record ProposedID
     private ProposedID() { }
 }
 
-public record CreateElement1dProposal : Element1dProposal
+public record CreateElement1dProposal : Element1dProposalBase
 {
     public int? Id { get; init; }
-    public new required ProposedID StartNodeId
-    {
-        get => base.StartNodeId;
-        init => base.StartNodeId = value;
-    }
-    public new required ProposedID EndNodeId
-    {
-        get => base.EndNodeId;
-        init => base.EndNodeId = value;
-    }
-    public new required ProposedID MaterialId
-    {
-        get => base.MaterialId;
-        init => base.MaterialId = value;
-    }
-    public new required ProposedID SectionProfileId
-    {
-        get => base.SectionProfileId;
-        init => base.SectionProfileId = value;
-    }
+    public required ProposedID StartNodeId { get; init; }
+    public required ProposedID EndNodeId { get; init; }
+    public required ProposedID MaterialId { get; init; }
+    public required ProposedID SectionProfileId { get; init; }
 }
 
-public record ModifyElement1dProposal : Element1dProposal
+public record ModifyElement1dProposal : Element1dProposalBase
 {
     public required int ExistingElement1dId { get; init; }
+    public ProposedID? StartNodeId { get; init; }
+    public ProposedID? EndNodeId { get; init; }
+    public ProposedID? MaterialId { get; init; }
+    public ProposedID? SectionProfileId { get; init; }
+}
+
+public record CreateElement1dProposalResponse : Element1dProposalBase, IHasIntId
+{
+    public int Id { get; init; }
+    public required ProposedID StartNodeId { get; init; }
+    public required ProposedID EndNodeId { get; init; }
+    public required ProposedID MaterialId { get; init; }
+    public required ProposedID SectionProfileId { get; init; }
+}
+
+public record ModifyElement1dProposalResponse : Element1dProposalBase, IHasIntId
+{
+    public int Id { get; init; }
+    public required int ExistingElement1dId { get; init; }
+    public required ProposedID StartNodeId { get; init; }
+    public required ProposedID EndNodeId { get; init; }
+    public required ProposedID MaterialId { get; init; }
+    public required ProposedID SectionProfileId { get; init; }
 }

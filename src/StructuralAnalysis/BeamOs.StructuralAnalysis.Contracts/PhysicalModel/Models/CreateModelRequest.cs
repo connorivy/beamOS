@@ -29,13 +29,26 @@ public record ModelInfo : ModelInfoData
     public required DateTimeOffset LastModified { get; init; }
 }
 
-public record ModelProposalData
+public record ModelProposalInfoData
+{
+    public string? Description { get; init; }
+}
+
+public record ModelProposalInfo : ModelProposalInfoData, IHasIntId
+{
+    public required int Id { get; init; }
+    public required DateTimeOffset LastModified { get; init; }
+}
+
+public record ModelProposalData : ModelProposalInfoData
 {
     public string? Name { get; init; }
     public string? Description { get; init; }
     public ModelSettings? Settings { get; init; }
-    public List<PutNodeRequest>? NodeProposals { get; init; }
-    public List<Element1dProposal>? Element1dProposals { get; init; }
+    public List<CreateNodeRequest>? CreateNodeProposals { get; init; }
+    public List<PutNodeRequest>? ModifyNodeProposals { get; init; }
+    public List<CreateElement1dProposal>? CreateElement1dProposals { get; init; }
+    public List<ModifyElement1dProposal>? ModifyElement1dProposals { get; init; }
     public List<PutMaterialRequest>? MaterialProposals { get; init; }
     public List<PutSectionProfileRequest>? SectionProfileProposals { get; init; }
     public List<SectionProfileFromLibrary>? SectionProfileFromLibraryProposals { get; init; }
@@ -49,4 +62,24 @@ public record ModelProposalData
 public record ModelProposal : ModelProposalData, IHasIntId
 {
     public required int Id { get; init; }
+    public required DateTimeOffset LastModified { get; init; }
+}
+
+public record ModelProposalResponse : IHasIntId
+{
+    public required int Id { get; init; }
+    public required DateTimeOffset LastModified { get; init; }
+    public ModelProposalInfo? ModelProposal { get; init; }
+    public List<CreateNodeProposalResponse>? CreateNodeProposals { get; init; }
+    public List<ModifyNodeProposalResponse>? ModifyNodeProposals { get; init; }
+    public List<CreateElement1dProposalResponse>? CreateElement1dProposals { get; init; }
+    public List<ModifyElement1dProposalResponse>? ModifyElement1dProposals { get; init; }
+    public List<PutMaterialRequest>? MaterialProposals { get; init; }
+    public List<PutSectionProfileRequest>? SectionProfileProposals { get; init; }
+    public List<SectionProfileFromLibrary>? SectionProfileFromLibraryProposals { get; init; }
+    public List<PointLoad>? PointLoadProposals { get; init; }
+    public List<MomentLoad>? MomentLoadProposals { get; init; }
+    public List<ResultSet>? ResultSetProposals { get; init; }
+    public List<LoadCase>? LoadCaseProposals { get; init; }
+    public List<LoadCombination>? LoadCombinationProposals { get; init; }
 }

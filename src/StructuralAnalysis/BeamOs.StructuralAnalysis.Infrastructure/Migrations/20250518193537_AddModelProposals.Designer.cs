@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
 {
     [DbContext(typeof(StructuralAnalysisDbContext))]
-    [Migration("20250516171336_AddModelProposals")]
+    [Migration("20250518193537_AddModelProposals")]
     partial class AddModelProposals
     {
         /// <inheritdoc />
@@ -533,6 +533,9 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("LastModified")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("ModelChangeRequestId")
                         .HasColumnType("integer");

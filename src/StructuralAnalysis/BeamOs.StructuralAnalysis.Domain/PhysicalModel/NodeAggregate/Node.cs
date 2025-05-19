@@ -95,8 +95,26 @@ public sealed class NodeProposal : BeamOsModelProposalEntity<NodeProposalId, Nod
         this.Restraint = restraint;
     }
 
+    public NodeProposal(
+        Node existingNode,
+        ModelProposalId modelProposalId,
+        Point? locationPoint = null,
+        Restraint? restraint = null,
+        NodeProposalId? id = null
+    )
+        : base(id ?? new(), modelProposalId, existingNode.ModelId, existingNode.Id)
+    {
+        this.LocationPoint = locationPoint ?? existingNode.LocationPoint;
+        this.Restraint = restraint ?? existingNode.Restraint;
+    }
+
     public Point LocationPoint { get; set; }
     public Restraint Restraint { get; set; }
+
+    public Node ToDomain()
+    {
+        return new(this.ModelId, this.LocationPoint, this.Restraint, this.ExistingId);
+    }
 
     [Obsolete("EF Core Constructor")]
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

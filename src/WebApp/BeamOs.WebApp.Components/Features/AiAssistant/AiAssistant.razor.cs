@@ -84,7 +84,7 @@ public partial class AiAssistant(
             return;
         }
 
-        ChatMessage chatMessage = new() { IsUser = false, Text = response.Value };
+        ChatMessage chatMessage = new() { IsUser = false, Text = response.Value.Message };
         this.chatMessages.Add(chatMessage);
 
         this.StateHasChanged();

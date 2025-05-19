@@ -13,23 +13,59 @@ public class CreateModelProposal(CreateProposalCommandHandler putModelCommandHan
     : BeamOsModelResourceBaseEndpoint<
         ModelResourceRequest<ModelProposalData>,
         ModelProposalData,
-        ModelProposal
+        ModelProposalResponse
     >
 {
-    public override async Task<Result<ModelProposal>> ExecuteRequestAsync(
+    public override async Task<Result<ModelProposalResponse>> ExecuteRequestAsync(
         ModelResourceRequest<ModelProposalData> req,
         CancellationToken ct = default
     ) => await putModelCommandHandler.ExecuteAsync(req, ct);
+}
+
+[BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "proposals")]
+[BeamOsEndpointType(Http.Get)]
+[BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Reviewer)]
+public class GetModelProposals(GetModelProposalsQueryHandler getModelProposalQueryHandler)
+    : BeamOsModelIdRequestBaseEndpoint<List<ModelProposalInfo>>
+{
+    public override async Task<Result<List<ModelProposalInfo>>> ExecuteRequestAsync(
+        ModelIdRequest req,
+        CancellationToken ct = default
+    ) => await getModelProposalQueryHandler.ExecuteAsync(req.ModelId, ct);
 }
 
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "proposals/{id:int}")]
 [BeamOsEndpointType(Http.Get)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Reviewer)]
 public class GetModelProposal(GetModelProposalQueryHandler getModelProposalQueryHandler)
-    : BeamOsModelResourceQueryBaseEndpoint<ModelProposal>
+    : BeamOsModelResourceQueryBaseEndpoint<ModelProposalResponse>
 {
-    public override async Task<Result<ModelProposal>> ExecuteRequestAsync(
+    public override async Task<Result<ModelProposalResponse>> ExecuteRequestAsync(
         ModelEntityRequest req,
         CancellationToken ct = default
     ) => await getModelProposalQueryHandler.ExecuteAsync(req, ct);
+}
+
+[BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "proposals/{id:int}/accept")]
+[BeamOsEndpointType(Http.Post)]
+[BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
+public class AcceptModelProposal(AcceptProposalCommandHandler acceptModelProposalCommandHandler)
+    : BeamOsModelResourceQueryBaseEndpoint<ModelResponse>
+{
+    public override async Task<Result<ModelResponse>> ExecuteRequestAsync(
+        ModelEntityRequest req,
+        CancellationToken ct = default
+    ) => await acceptModelProposalCommandHandler.ExecuteAsync(req, ct);
+}
+
+[BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "proposals/{id:int}/reject")]
+[BeamOsEndpointType(Http.Post)]
+[BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
+public class RejectModelProposal(RejectProposalCommandHandler rejectProposalCommandHandler)
+    : BeamOsModelResourceQueryBaseEndpoint<bool>
+{
+    public override async Task<Result<bool>> ExecuteRequestAsync(
+        ModelEntityRequest req,
+        CancellationToken ct = default
+    ) => await rejectProposalCommandHandler.ExecuteAsync(req, ct);
 }

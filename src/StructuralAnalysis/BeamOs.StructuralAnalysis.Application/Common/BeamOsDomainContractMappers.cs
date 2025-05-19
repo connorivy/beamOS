@@ -87,21 +87,56 @@ public static partial class BeamOsDomainContractMappers
         );
 
     public static ProposedID ToProposedIdContract<TId, TProposalId>(
-        this ExistingOrProposedId<TId, TProposalId> proposedId
+        this ExistingOrProposedId<TId, TProposalId>? proposedId
     )
         where TId : struct, IIntBasedId
         where TProposalId : struct, IIntBasedId
     {
-        if (proposedId.ExistingId is not null)
+        if (proposedId?.ExistingId is not null)
         {
             return ProposedID.Existing(proposedId.ExistingId.Value.Id);
         }
-        else if (proposedId.ProposedId is not null)
+        else if (proposedId?.ProposedId is not null)
         {
             return ProposedID.Proposed(proposedId.ProposedId.Value.Id);
         }
         return ProposedID.Default;
     }
+
+    public static ProposedID? ToProposedIdContractOrNull<TId, TProposalId>(
+        this ExistingOrProposedId<TId, TProposalId>? proposedId
+    )
+        where TId : struct, IIntBasedId
+        where TProposalId : struct, IIntBasedId
+    {
+        if (proposedId?.ExistingId is not null)
+        {
+            return ProposedID.Existing(proposedId.ExistingId.Value.Id);
+        }
+        else if (proposedId?.ProposedId is not null)
+        {
+            return ProposedID.Proposed(proposedId.ProposedId.Value.Id);
+        }
+        return null;
+    }
+
+    public static ProposedID ToProposedIdContract(this ExistingOrProposedNodeId proposedId) =>
+        ToProposedIdContract<NodeId, NodeProposalId>(proposedId);
+
+    public static ProposedID? ToProposedIdContractWithNullable(
+        this ExistingOrProposedNodeId? proposedId
+    ) => ToProposedIdContractOrNull(proposedId);
+
+    public static ProposedID ToProposedIdContract(this ExistingOrProposedMaterialId proposedId) =>
+        ToProposedIdContract<MaterialId, MaterialProposalId>(proposedId);
+
+    public static ProposedID? ToProposedIdContractWithNullable(
+        this ExistingOrProposedMaterialId? proposedId
+    ) => ToProposedIdContractOrNull(proposedId);
+
+    public static ProposedID ToProposedIdContract(
+        this ExistingOrProposedSectionProfileId proposedId
+    ) => ToProposedIdContract<SectionProfileId, SectionProfileProposalId>(proposedId);
 
     public static ExistingOrProposedNodeId? ToNodeDomainOrNull(this ProposedID contract)
     {

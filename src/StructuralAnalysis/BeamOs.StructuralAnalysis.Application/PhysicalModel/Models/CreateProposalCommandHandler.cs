@@ -22,9 +22,9 @@ public class CreateProposalCommandHandler(
     INodeRepository nodeRepository,
     IElement1dRepository element1dRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
-) : ICommandHandler<ModelResourceRequest<ModelProposalData>, ModelProposalContract>
+) : ICommandHandler<ModelResourceRequest<ModelProposalData>, ModelProposalResponse>
 {
-    public async Task<Result<ModelProposalContract>> ExecuteAsync(
+    public async Task<Result<ModelProposalResponse>> ExecuteAsync(
         ModelResourceRequest<ModelProposalData> command,
         CancellationToken ct = default
     )
@@ -42,49 +42,40 @@ public class CreateProposalCommandHandler(
         var existingNodesToBeModified = await GetExistingEntities(
             nodeRepository,
             command.ModelId,
-            command.Body.NodeProposals?.Select(n => new NodeId(n.Id)).ToList(),
+            command.Body.ModifyNodeProposals?.Select(n => new NodeId(n.Id)).ToList(),
             ct
         );
         var existingElementsToBeModified = await GetExistingEntities(
             element1dRepository,
             command.ModelId,
             command
-                .Body.Element1dProposals?.OfType<ModifyElement1dProposal>()
+                .Body.ModifyElement1dProposals?.OfType<ModifyElement1dProposal>()
                 .Select(e => new Element1dId(e.ExistingElement1dId))
                 .ToList(),
             ct
         );
 
-        foreach (var node in command.Body.NodeProposals ?? [])
+        foreach (var node in command.Body.CreateNodeProposals ?? [])
         {
             var nodeProposal = node.ToProposalDomain(command.ModelId, modelProposal.Id);
             modelProposal.NodeProposals.Add(nodeProposal);
         }
-        foreach (var element1d in command.Body.Element1dProposals ?? [])
+        foreach (var node in command.Body.ModifyNodeProposals ?? [])
         {
-            if (element1d is CreateElement1dProposal createElement1dProposal)
-            {
-                modelProposal.Element1dProposals.Add(
-                    createElement1dProposal.ToProposalDomain(command.ModelId, modelProposal.Id)
-                );
-            }
-            else if (element1d is ModifyElement1dProposal modifyElement1dProposal)
-            {
-                var existingElement = existingElementsToBeModified[
-                    modifyElement1dProposal.ExistingElement1dId
-                ];
-                var element1dProposal = modifyElement1dProposal.ToProposalDomain(
-                    existingElement,
-                    modelProposal.Id
-                );
-                modelProposal.Element1dProposals.Add(element1dProposal);
-            }
-            else
-            {
-                throw new NotSupportedException(
-                    $"Element1d proposal type {element1d.GetType()} is not supported"
-                );
-            }
+            var existingNode = existingNodesToBeModified[node.Id];
+            var nodeProposal = node.ToProposalDomain(existingNode, modelProposal.Id);
+            modelProposal.NodeProposals.Add(nodeProposal);
+        }
+        foreach (var element1d in command.Body.CreateElement1dProposals ?? [])
+        {
+            var element1dProposal = element1d.ToProposalDomain(command.ModelId, modelProposal.Id);
+            modelProposal.Element1dProposals.Add(element1dProposal);
+        }
+        foreach (var element1d in command.Body.ModifyElement1dProposals ?? [])
+        {
+            var existingElement = existingElementsToBeModified[element1d.ExistingElement1dId];
+            var element1dProposal = element1d.ToProposalDomain(existingElement, modelProposal.Id);
+            modelProposal.Element1dProposals.Add(element1dProposal);
         }
 
         await unitOfWork.SaveChangesAsync(ct);
@@ -119,11 +110,17 @@ public static partial class ProposalStaticMappers
     public static ModelProposal ToProposalDomain(this ModelProposalData command, Model model) =>
         new(model, command.Name, command.Description, command.Settings?.ToDomain());
 
-    public static partial ModelProposalContract ToContract(this ModelProposal modelProposal);
+    public static partial ModelProposalInfo ToInfoContract(this ModelProposal modelProposal);
+
+    public static partial NodeProposal ToProposalDomain(
+        this CreateNodeRequest command,
+        ModelId modelId,
+        ModelProposalId modelProposalId
+    );
 
     public static partial NodeProposal ToProposalDomain(
         this PutNodeRequest command,
-        ModelId modelId,
+        Node existingNode,
         ModelProposalId modelProposalId
     );
 
@@ -139,30 +136,76 @@ public static partial class ProposalStaticMappers
         ModelProposalId modelProposalId
     );
 
-    public static Element1dProposalContract ToContract(this Element1dProposal element1dProposal)
+    public static partial CreateNodeProposalResponse ToCreateProposalContract(
+        this NodeProposal command
+    );
+
+    [MapProperty(
+        nameof(NodeProposal.ExistingId),
+        nameof(ModifyNodeProposalResponse.ExistingNodeId)
+    )]
+    public static partial ModifyNodeProposalResponse ToModifyProposalContract(
+        this NodeProposal command
+    );
+
+    public static partial CreateElement1dProposalResponse ToCreateProposalContract(
+        this Element1dProposal command
+    );
+
+    [MapProperty(
+        nameof(Element1dProposal.ExistingId),
+        nameof(ModifyElement1dProposal.ExistingElement1dId)
+    )]
+    public static partial ModifyElement1dProposalResponse ToModifyProposalContract(
+        this Element1dProposal command
+    );
+
+    public static ModelProposalResponse ToContract(this ModelProposal modelProposal)
     {
-        if (element1dProposal.IsExisting)
+        var response = new ModelProposalResponse
         {
-            return Element1dProposalContract.Modify(
-                element1dProposal.ExistingId!.Value,
-                element1dProposal.StartNodeId.ToProposedIdContract(),
-                element1dProposal.EndNodeId.ToProposedIdContract(),
-                element1dProposal.MaterialId.ToProposedIdContract(),
-                element1dProposal.SectionProfileId.ToProposedIdContract()
-            // element1dProposal.SectionProfileRotation.ToContract(),
-            // element1dProposal.Metadata
-            );
-        }
-        else
+            Id = modelProposal.Id,
+            LastModified = modelProposal.LastModified,
+            ModelProposal = modelProposal.ToInfoContract(),
+            CreateNodeProposals = [],
+            ModifyNodeProposals = [],
+            CreateElement1dProposals = [],
+            ModifyElement1dProposals = [],
+        };
+        // var response = modelProposal.ToContract();
+        // foreach (var nodeProposal in modelProposal.NodeProposals)
+        // {
+        //     if (nodeProposal.IsExisting)
+        //     {
+        //         (response.ModifyNodeProposals ?? []).Add(nodeProposal());
+        //     }
+        //     else
+        //     {
+        //         (response.CreateNodeProposals ?? []).Add(nodeProposal.ToInfoContract());
+        //     }
+        // }
+        foreach (var nodeProposal in modelProposal.NodeProposals ?? [])
         {
-            return Element1dProposalContract.Create(
-                element1dProposal.StartNodeId.ToProposedIdContract(),
-                element1dProposal.EndNodeId.ToProposedIdContract(),
-                element1dProposal.MaterialId.ToProposedIdContract(),
-                element1dProposal.SectionProfileId.ToProposedIdContract()
-            // element1dProposal.SectionProfileRotation.ToContract(),
-            // element1dProposal.Metadata
-            );
+            if (nodeProposal.IsExisting)
+            {
+                response.ModifyNodeProposals.Add(nodeProposal.ToModifyProposalContract());
+            }
+            else
+            {
+                response.CreateNodeProposals.Add(nodeProposal.ToCreateProposalContract());
+            }
         }
+        foreach (var element1dProposal in modelProposal.Element1dProposals ?? [])
+        {
+            if (element1dProposal.IsExisting)
+            {
+                response.ModifyElement1dProposals.Add(element1dProposal.ToModifyProposalContract());
+            }
+            else
+            {
+                response.CreateElement1dProposals.Add(element1dProposal.ToCreateProposalContract());
+            }
+        }
+        return response;
     }
 }

@@ -112,6 +112,8 @@ public static class DependencyInjection
             GetModelsQueryHandler
         >();
 
+        services.AddScoped<IQueryHandler<Guid, ModelInfoResponse>, GetModelInfoQueryHandler>();
+
         if (BeamOsEnv.IsCiEnv())
         {
             services.AddSingleton<ISolverFactory, CholeskySolverFactory>();

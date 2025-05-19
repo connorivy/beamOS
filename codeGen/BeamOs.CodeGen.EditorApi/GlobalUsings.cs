@@ -1,5 +1,9 @@
 global using BeamOs.Common.Contracts;
 global using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams;
 global using BeamOs.StructuralAnalysis.Contracts.Common;
+global using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
+global using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
+global using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
+global using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
 // editor events
 global using BeamOs.WebApp.EditorCommands;

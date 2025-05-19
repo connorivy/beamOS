@@ -334,17 +334,32 @@ public class EndToEndTests
         {
             Name = "a new name!!!",
             Description = "a new description!!!",
-            NodeProposals = [new(1, new(2, 2, 2, LengthUnitContract.Foot), Restraint.Fixed)],
-            Element1dProposals =
+            CreateNodeProposals =
             [
-                Element1dProposal.Create(
+                new()
+                {
+                    Id = 1,
+                    LocationPoint = new(2, 2, 2, LengthUnitContract.Foot),
+                    Restraint = Restraint.Fixed,
+                },
+            ],
+            CreateElement1dProposals =
+            [
+                Element1dProposalBase.Create(
                     ProposedID.Existing(5),
                     ProposedID.Proposed(1),
                     ProposedID.Existing(992),
                     ProposedID.Existing(1636),
                     id: 1
                 ),
-                Element1dProposal.Modify(99, endNodeId: ProposedID.Proposed(1)),
+            ],
+            ModifyElement1dProposals =
+            [
+                new ModifyElement1dProposal()
+                {
+                    ExistingElement1dId = 99,
+                    EndNodeId = ProposedID.Proposed(1),
+                },
             ],
         };
 

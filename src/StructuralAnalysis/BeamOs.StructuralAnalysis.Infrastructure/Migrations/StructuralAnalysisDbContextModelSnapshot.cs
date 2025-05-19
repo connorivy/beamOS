@@ -531,6 +531,9 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTimeOffset>("LastModified")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<int>("ModelChangeRequestId")
                         .HasColumnType("integer");
 

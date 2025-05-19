@@ -123,6 +123,32 @@ export interface IStructuralAnalysisApiClientV1 {
     getModels(): Promise<ResultOfListOfModelInfoResponse>;
 
     /**
+     * @param body (optional) 
+     * @return OK
+     */
+    createModelProposal(modelId: string, body: ModelProposalData | null | undefined): Promise<ResultOfModelProposalResponse>;
+
+    /**
+     * @return OK
+     */
+    getModelProposals(modelId: string): Promise<ResultOfListOfModelProposalInfo>;
+
+    /**
+     * @return OK
+     */
+    getModelProposal(modelId: string, id: number): Promise<ResultOfModelProposalResponse>;
+
+    /**
+     * @return OK
+     */
+    acceptModelProposal(modelId: string, id: number): Promise<ResultOfModelResponse>;
+
+    /**
+     * @return OK
+     */
+    rejectModelProposal(modelId: string, id: number): Promise<ResultOfboolean>;
+
+    /**
      * @return OK
      */
     getModel(modelId: string): Promise<ResultOfModelResponse>;
@@ -132,12 +158,6 @@ export interface IStructuralAnalysisApiClientV1 {
      * @return OK
      */
     putModel(modelId: string, body: ModelInfoData | null | undefined): Promise<ResultOfModelResponse>;
-
-    /**
-     * @param body (optional) 
-     * @return OK
-     */
-    createModelProposal(modelId: string, body: ModelProposalData | null | undefined): Promise<ResultOfModelProposal>;
 
     /**
      * @return OK
@@ -271,7 +291,7 @@ export interface IStructuralAnalysisApiClientV1 {
     /**
      * @return OK
      */
-    githubModelsChat(modelId: string, body: GithubModelsChatRequest): Promise<ResultOfstring>;
+    githubModelsChat(modelId: string, body: GithubModelsChatRequest): Promise<ResultOfGithubModelsChatResponse>;
 }
 
 export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClientV1 {
@@ -281,7 +301,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
 
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         this.http = http ? http : window as any;
-        this.baseUrl = baseUrl ?? "http://localhost:5079";
+        this.baseUrl = baseUrl ?? "https://localhost:7060";
     }
 
     /**
@@ -1256,6 +1276,220 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     }
 
     /**
+     * @param body (optional) 
+     * @return OK
+     */
+    createModelProposal(modelId: string, body: ModelProposalData | null | undefined): Promise<ResultOfModelProposalResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/proposals";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateModelProposal(_response);
+        });
+    }
+
+    protected processCreateModelProposal(response: Response): Promise<ResultOfModelProposalResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfModelProposalResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfModelProposalResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    getModelProposals(modelId: string): Promise<ResultOfListOfModelProposalInfo> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/proposals";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetModelProposals(_response);
+        });
+    }
+
+    protected processGetModelProposals(response: Response): Promise<ResultOfListOfModelProposalInfo> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfListOfModelProposalInfo.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfListOfModelProposalInfo>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    getModelProposal(modelId: string, id: number): Promise<ResultOfModelProposalResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/proposals/{id}";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetModelProposal(_response);
+        });
+    }
+
+    protected processGetModelProposal(response: Response): Promise<ResultOfModelProposalResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfModelProposalResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfModelProposalResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    acceptModelProposal(modelId: string, id: number): Promise<ResultOfModelResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/proposals/{id}/accept";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAcceptModelProposal(_response);
+        });
+    }
+
+    protected processAcceptModelProposal(response: Response): Promise<ResultOfModelResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfModelResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfModelResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    rejectModelProposal(modelId: string, id: number): Promise<ResultOfboolean> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/proposals/{id}/reject";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processRejectModelProposal(_response);
+        });
+    }
+
+    protected processRejectModelProposal(response: Response): Promise<ResultOfboolean> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfboolean.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfboolean>(null as any);
+    }
+
+    /**
      * @return OK
      */
     getModel(modelId: string): Promise<ResultOfModelResponse> {
@@ -1338,51 +1572,6 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             });
         }
         return Promise.resolve<ResultOfModelResponse>(null as any);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return OK
-     */
-    createModelProposal(modelId: string, body: ModelProposalData | null | undefined): Promise<ResultOfModelProposal> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/proposal";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateModelProposal(_response);
-        });
-    }
-
-    protected processCreateModelProposal(response: Response): Promise<ResultOfModelProposal> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfModelProposal.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<ResultOfModelProposal>(null as any);
     }
 
     /**
@@ -2495,7 +2684,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     /**
      * @return OK
      */
-    githubModelsChat(modelId: string, body: GithubModelsChatRequest): Promise<ResultOfstring> {
+    githubModelsChat(modelId: string, body: GithubModelsChatRequest): Promise<ResultOfGithubModelsChatResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/github-models-chat";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -2518,14 +2707,14 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processGithubModelsChat(response: Response): Promise<ResultOfstring> {
+    protected processGithubModelsChat(response: Response): Promise<ResultOfGithubModelsChatResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfstring.fromJS(resultData200);
+            result200 = ResultOfGithubModelsChatResponse.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2533,7 +2722,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfstring>(null as any);
+        return Promise.resolve<ResultOfGithubModelsChatResponse>(null as any);
     }
 }
 
@@ -3027,6 +3216,186 @@ export interface IBeamOsModelBuilderDto {
     [key: string]: any;
 }
 
+export class CreateElement1dProposal implements ICreateElement1dProposal {
+    id?: number | undefined;
+    startNodeId!: ProposedID;
+    endNodeId!: ProposedID;
+    materialId!: ProposedID;
+    sectionProfileId!: ProposedID;
+    sectionProfileRotation?: NullableOfAngle | undefined;
+    metadata?: { [key: string]: string; } | undefined;
+
+    [key: string]: any;
+
+    constructor(data?: ICreateElement1dProposal) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.startNodeId = new ProposedID();
+            this.endNodeId = new ProposedID();
+            this.materialId = new ProposedID();
+            this.sectionProfileId = new ProposedID();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.startNodeId = _data["startNodeId"] ? ProposedID.fromJS(_data["startNodeId"]) : new ProposedID();
+            this.endNodeId = _data["endNodeId"] ? ProposedID.fromJS(_data["endNodeId"]) : new ProposedID();
+            this.materialId = _data["materialId"] ? ProposedID.fromJS(_data["materialId"]) : new ProposedID();
+            this.sectionProfileId = _data["sectionProfileId"] ? ProposedID.fromJS(_data["sectionProfileId"]) : new ProposedID();
+            this.sectionProfileRotation = _data["sectionProfileRotation"] ? NullableOfAngle.fromJS(_data["sectionProfileRotation"]) : <any>undefined;
+            if (_data["metadata"]) {
+                this.metadata = {} as any;
+                for (let key in _data["metadata"]) {
+                    if (_data["metadata"].hasOwnProperty(key))
+                        (<any>this.metadata)![key] = _data["metadata"][key];
+                }
+            }
+        }
+    }
+
+    static fromJS(data: any): CreateElement1dProposal {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateElement1dProposal();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["startNodeId"] = this.startNodeId ? this.startNodeId.toJSON() : <any>undefined;
+        data["endNodeId"] = this.endNodeId ? this.endNodeId.toJSON() : <any>undefined;
+        data["materialId"] = this.materialId ? this.materialId.toJSON() : <any>undefined;
+        data["sectionProfileId"] = this.sectionProfileId ? this.sectionProfileId.toJSON() : <any>undefined;
+        data["sectionProfileRotation"] = this.sectionProfileRotation ? this.sectionProfileRotation.toJSON() : <any>undefined;
+        if (this.metadata) {
+            data["metadata"] = {};
+            for (let key in this.metadata) {
+                if (this.metadata.hasOwnProperty(key))
+                    (<any>data["metadata"])[key] = (<any>this.metadata)[key];
+            }
+        }
+        return data;
+    }
+}
+
+export interface ICreateElement1dProposal {
+    id?: number | undefined;
+    startNodeId: ProposedID;
+    endNodeId: ProposedID;
+    materialId: ProposedID;
+    sectionProfileId: ProposedID;
+    sectionProfileRotation?: NullableOfAngle | undefined;
+    metadata?: { [key: string]: string; } | undefined;
+
+    [key: string]: any;
+}
+
+export class CreateElement1dProposalResponse implements ICreateElement1dProposalResponse {
+    id?: number;
+    startNodeId!: ProposedID;
+    endNodeId!: ProposedID;
+    materialId!: ProposedID;
+    sectionProfileId!: ProposedID;
+    sectionProfileRotation?: NullableOfAngle | undefined;
+    metadata?: { [key: string]: string; } | undefined;
+
+    [key: string]: any;
+
+    constructor(data?: ICreateElement1dProposalResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.startNodeId = new ProposedID();
+            this.endNodeId = new ProposedID();
+            this.materialId = new ProposedID();
+            this.sectionProfileId = new ProposedID();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.startNodeId = _data["startNodeId"] ? ProposedID.fromJS(_data["startNodeId"]) : new ProposedID();
+            this.endNodeId = _data["endNodeId"] ? ProposedID.fromJS(_data["endNodeId"]) : new ProposedID();
+            this.materialId = _data["materialId"] ? ProposedID.fromJS(_data["materialId"]) : new ProposedID();
+            this.sectionProfileId = _data["sectionProfileId"] ? ProposedID.fromJS(_data["sectionProfileId"]) : new ProposedID();
+            this.sectionProfileRotation = _data["sectionProfileRotation"] ? NullableOfAngle.fromJS(_data["sectionProfileRotation"]) : <any>undefined;
+            if (_data["metadata"]) {
+                this.metadata = {} as any;
+                for (let key in _data["metadata"]) {
+                    if (_data["metadata"].hasOwnProperty(key))
+                        (<any>this.metadata)![key] = _data["metadata"][key];
+                }
+            }
+        }
+    }
+
+    static fromJS(data: any): CreateElement1dProposalResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateElement1dProposalResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["startNodeId"] = this.startNodeId ? this.startNodeId.toJSON() : <any>undefined;
+        data["endNodeId"] = this.endNodeId ? this.endNodeId.toJSON() : <any>undefined;
+        data["materialId"] = this.materialId ? this.materialId.toJSON() : <any>undefined;
+        data["sectionProfileId"] = this.sectionProfileId ? this.sectionProfileId.toJSON() : <any>undefined;
+        data["sectionProfileRotation"] = this.sectionProfileRotation ? this.sectionProfileRotation.toJSON() : <any>undefined;
+        if (this.metadata) {
+            data["metadata"] = {};
+            for (let key in this.metadata) {
+                if (this.metadata.hasOwnProperty(key))
+                    (<any>data["metadata"])[key] = (<any>this.metadata)[key];
+            }
+        }
+        return data;
+    }
+}
+
+export interface ICreateElement1dProposalResponse {
+    id?: number;
+    startNodeId: ProposedID;
+    endNodeId: ProposedID;
+    materialId: ProposedID;
+    sectionProfileId: ProposedID;
+    sectionProfileRotation?: NullableOfAngle | undefined;
+    metadata?: { [key: string]: string; } | undefined;
+
+    [key: string]: any;
+}
+
 export class CreateElement1dRequest implements ICreateElement1dRequest {
     startNodeId!: number;
     endNodeId!: number;
@@ -3298,6 +3667,82 @@ export interface ICreateMomentLoadRequest {
     torque: Torque;
     axisDirection: Vector3;
     id?: number | undefined;
+
+    [key: string]: any;
+}
+
+export class CreateNodeProposalResponse implements ICreateNodeProposalResponse {
+    id!: number;
+    locationPoint!: Point;
+    restraint!: Restraint;
+    metadata?: { [key: string]: string; } | undefined;
+
+    [key: string]: any;
+
+    constructor(data?: ICreateNodeProposalResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.locationPoint = new Point();
+            this.restraint = new Restraint();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.locationPoint = _data["locationPoint"] ? Point.fromJS(_data["locationPoint"]) : new Point();
+            this.restraint = _data["restraint"] ? Restraint.fromJS(_data["restraint"]) : new Restraint();
+            if (_data["metadata"]) {
+                this.metadata = {} as any;
+                for (let key in _data["metadata"]) {
+                    if (_data["metadata"].hasOwnProperty(key))
+                        (<any>this.metadata)![key] = _data["metadata"][key];
+                }
+            }
+        }
+    }
+
+    static fromJS(data: any): CreateNodeProposalResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateNodeProposalResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["locationPoint"] = this.locationPoint ? this.locationPoint.toJSON() : <any>undefined;
+        data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
+        if (this.metadata) {
+            data["metadata"] = {};
+            for (let key in this.metadata) {
+                if (this.metadata.hasOwnProperty(key))
+                    (<any>data["metadata"])[key] = (<any>this.metadata)[key];
+            }
+        }
+        return data;
+    }
+}
+
+export interface ICreateNodeProposalResponse {
+    id: number;
+    locationPoint: Point;
+    restraint: Restraint;
+    metadata?: { [key: string]: string; } | undefined;
 
     [key: string]: any;
 }
@@ -4246,58 +4691,6 @@ export enum ErrorType {
     Forbidden = "Forbidden",
 }
 
-export class ExistingOrProposedId implements IExistingOrProposedId {
-    existingId?: number | undefined;
-    proposedId?: number | undefined;
-
-    [key: string]: any;
-
-    constructor(data?: IExistingOrProposedId) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.existingId = _data["existingId"];
-            this.proposedId = _data["proposedId"];
-        }
-    }
-
-    static fromJS(data: any): ExistingOrProposedId {
-        data = typeof data === 'object' ? data : {};
-        let result = new ExistingOrProposedId();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["existingId"] = this.existingId;
-        data["proposedId"] = this.proposedId;
-        return data;
-    }
-}
-
-export interface IExistingOrProposedId {
-    existingId?: number | undefined;
-    proposedId?: number | undefined;
-
-    [key: string]: any;
-}
-
 export class Force implements IForce {
     value!: number;
     unit!: ForceUnit;
@@ -4481,6 +4874,58 @@ export class GithubModelsChatRequest implements IGithubModelsChatRequest {
 
 export interface IGithubModelsChatRequest {
     apiKey: string;
+    message: string;
+
+    [key: string]: any;
+}
+
+export class GithubModelsChatResponse implements IGithubModelsChatResponse {
+    proposalId!: number;
+    message!: string;
+
+    [key: string]: any;
+
+    constructor(data?: IGithubModelsChatResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.proposalId = _data["proposalId"];
+            this.message = _data["message"];
+        }
+    }
+
+    static fromJS(data: any): GithubModelsChatResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new GithubModelsChatResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["proposalId"] = this.proposalId;
+        data["message"] = this.message;
+        return data;
+    }
+}
+
+export interface IGithubModelsChatResponse {
+    proposalId: number;
     message: string;
 
     [key: string]: any;
@@ -5328,205 +5773,14 @@ export interface IModelInfoResponse {
     [key: string]: any;
 }
 
-export class ModelProposal implements IModelProposal {
-    id!: number;
-    nodeProposals?: PutNodeRequest[] | undefined;
-    newElement1dProposals?: NewElement1dProposal[] | undefined;
-    modifiedElement1dProposals?: ModifyElement1dProposal[] | undefined;
-    materialProposals?: PutMaterialRequest[] | undefined;
-    sectionProfileProposals?: PutSectionProfileRequest[] | undefined;
-    sectionProfileFromLibraryProposals?: SectionProfileFromLibrary[] | undefined;
-    pointLoadProposals?: PointLoad[] | undefined;
-    momentLoadProposals?: MomentLoad[] | undefined;
-    resultSetProposals?: ResultSet[] | undefined;
-    loadCaseProposals?: LoadCase[] | undefined;
-    loadCombinationProposals?: LoadCombination[] | undefined;
-    name!: string;
-    description!: string;
-    settings!: ModelSettings;
-
-    [key: string]: any;
-
-    constructor(data?: IModelProposal) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.settings = new ModelSettings();
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            if (Array.isArray(_data["nodeProposals"])) {
-                this.nodeProposals = [] as any;
-                for (let item of _data["nodeProposals"])
-                    this.nodeProposals!.push(PutNodeRequest.fromJS(item));
-            }
-            if (Array.isArray(_data["newElement1dProposals"])) {
-                this.newElement1dProposals = [] as any;
-                for (let item of _data["newElement1dProposals"])
-                    this.newElement1dProposals!.push(NewElement1dProposal.fromJS(item));
-            }
-            if (Array.isArray(_data["modifiedElement1dProposals"])) {
-                this.modifiedElement1dProposals = [] as any;
-                for (let item of _data["modifiedElement1dProposals"])
-                    this.modifiedElement1dProposals!.push(ModifyElement1dProposal.fromJS(item));
-            }
-            if (Array.isArray(_data["materialProposals"])) {
-                this.materialProposals = [] as any;
-                for (let item of _data["materialProposals"])
-                    this.materialProposals!.push(PutMaterialRequest.fromJS(item));
-            }
-            if (Array.isArray(_data["sectionProfileProposals"])) {
-                this.sectionProfileProposals = [] as any;
-                for (let item of _data["sectionProfileProposals"])
-                    this.sectionProfileProposals!.push(PutSectionProfileRequest.fromJS(item));
-            }
-            if (Array.isArray(_data["sectionProfileFromLibraryProposals"])) {
-                this.sectionProfileFromLibraryProposals = [] as any;
-                for (let item of _data["sectionProfileFromLibraryProposals"])
-                    this.sectionProfileFromLibraryProposals!.push(SectionProfileFromLibrary.fromJS(item));
-            }
-            if (Array.isArray(_data["pointLoadProposals"])) {
-                this.pointLoadProposals = [] as any;
-                for (let item of _data["pointLoadProposals"])
-                    this.pointLoadProposals!.push(PointLoad.fromJS(item));
-            }
-            if (Array.isArray(_data["momentLoadProposals"])) {
-                this.momentLoadProposals = [] as any;
-                for (let item of _data["momentLoadProposals"])
-                    this.momentLoadProposals!.push(MomentLoad.fromJS(item));
-            }
-            if (Array.isArray(_data["resultSetProposals"])) {
-                this.resultSetProposals = [] as any;
-                for (let item of _data["resultSetProposals"])
-                    this.resultSetProposals!.push(ResultSet.fromJS(item));
-            }
-            if (Array.isArray(_data["loadCaseProposals"])) {
-                this.loadCaseProposals = [] as any;
-                for (let item of _data["loadCaseProposals"])
-                    this.loadCaseProposals!.push(LoadCase.fromJS(item));
-            }
-            if (Array.isArray(_data["loadCombinationProposals"])) {
-                this.loadCombinationProposals = [] as any;
-                for (let item of _data["loadCombinationProposals"])
-                    this.loadCombinationProposals!.push(LoadCombination.fromJS(item));
-            }
-            this.name = _data["name"];
-            this.description = _data["description"];
-            this.settings = _data["settings"] ? ModelSettings.fromJS(_data["settings"]) : new ModelSettings();
-        }
-    }
-
-    static fromJS(data: any): ModelProposal {
-        data = typeof data === 'object' ? data : {};
-        let result = new ModelProposal();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        if (Array.isArray(this.nodeProposals)) {
-            data["nodeProposals"] = [];
-            for (let item of this.nodeProposals)
-                data["nodeProposals"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.newElement1dProposals)) {
-            data["newElement1dProposals"] = [];
-            for (let item of this.newElement1dProposals)
-                data["newElement1dProposals"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.modifiedElement1dProposals)) {
-            data["modifiedElement1dProposals"] = [];
-            for (let item of this.modifiedElement1dProposals)
-                data["modifiedElement1dProposals"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.materialProposals)) {
-            data["materialProposals"] = [];
-            for (let item of this.materialProposals)
-                data["materialProposals"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.sectionProfileProposals)) {
-            data["sectionProfileProposals"] = [];
-            for (let item of this.sectionProfileProposals)
-                data["sectionProfileProposals"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.sectionProfileFromLibraryProposals)) {
-            data["sectionProfileFromLibraryProposals"] = [];
-            for (let item of this.sectionProfileFromLibraryProposals)
-                data["sectionProfileFromLibraryProposals"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.pointLoadProposals)) {
-            data["pointLoadProposals"] = [];
-            for (let item of this.pointLoadProposals)
-                data["pointLoadProposals"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.momentLoadProposals)) {
-            data["momentLoadProposals"] = [];
-            for (let item of this.momentLoadProposals)
-                data["momentLoadProposals"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.resultSetProposals)) {
-            data["resultSetProposals"] = [];
-            for (let item of this.resultSetProposals)
-                data["resultSetProposals"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.loadCaseProposals)) {
-            data["loadCaseProposals"] = [];
-            for (let item of this.loadCaseProposals)
-                data["loadCaseProposals"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.loadCombinationProposals)) {
-            data["loadCombinationProposals"] = [];
-            for (let item of this.loadCombinationProposals)
-                data["loadCombinationProposals"].push(item ? item.toJSON() : <any>undefined);
-        }
-        data["name"] = this.name;
-        data["description"] = this.description;
-        data["settings"] = this.settings ? this.settings.toJSON() : <any>undefined;
-        return data;
-    }
-}
-
-export interface IModelProposal {
-    id: number;
-    nodeProposals?: PutNodeRequest[] | undefined;
-    newElement1dProposals?: NewElement1dProposal[] | undefined;
-    modifiedElement1dProposals?: ModifyElement1dProposal[] | undefined;
-    materialProposals?: PutMaterialRequest[] | undefined;
-    sectionProfileProposals?: PutSectionProfileRequest[] | undefined;
-    sectionProfileFromLibraryProposals?: SectionProfileFromLibrary[] | undefined;
-    pointLoadProposals?: PointLoad[] | undefined;
-    momentLoadProposals?: MomentLoad[] | undefined;
-    resultSetProposals?: ResultSet[] | undefined;
-    loadCaseProposals?: LoadCase[] | undefined;
-    loadCombinationProposals?: LoadCombination[] | undefined;
-    name: string;
-    description: string;
-    settings: ModelSettings;
-
-    [key: string]: any;
-}
-
 export class ModelProposalData implements IModelProposalData {
-    nodeProposals?: PutNodeRequest[] | undefined;
-    newElement1dProposals?: NewElement1dProposal[] | undefined;
-    modifiedElement1dProposals?: ModifyElement1dProposal[] | undefined;
+    name?: string | undefined;
+    description?: string | undefined;
+    settings?: ModelSettings2 | undefined;
+    createNodeProposals?: CreateNodeRequest[] | undefined;
+    modifyNodeProposals?: PutNodeRequest[] | undefined;
+    createElement1dProposals?: CreateElement1dProposal[] | undefined;
+    modifyElement1dProposals?: ModifyElement1dProposal[] | undefined;
     materialProposals?: PutMaterialRequest[] | undefined;
     sectionProfileProposals?: PutSectionProfileRequest[] | undefined;
     sectionProfileFromLibraryProposals?: SectionProfileFromLibrary[] | undefined;
@@ -5535,9 +5789,6 @@ export class ModelProposalData implements IModelProposalData {
     resultSetProposals?: ResultSet[] | undefined;
     loadCaseProposals?: LoadCase[] | undefined;
     loadCombinationProposals?: LoadCombination[] | undefined;
-    name!: string;
-    description!: string;
-    settings!: ModelSettings;
 
     [key: string]: any;
 
@@ -5548,9 +5799,6 @@ export class ModelProposalData implements IModelProposalData {
                     (<any>this)[property] = (<any>data)[property];
             }
         }
-        if (!data) {
-            this.settings = new ModelSettings();
-        }
     }
 
     init(_data?: any) {
@@ -5559,20 +5807,28 @@ export class ModelProposalData implements IModelProposalData {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            if (Array.isArray(_data["nodeProposals"])) {
-                this.nodeProposals = [] as any;
-                for (let item of _data["nodeProposals"])
-                    this.nodeProposals!.push(PutNodeRequest.fromJS(item));
+            this.name = _data["name"];
+            this.description = _data["description"];
+            this.settings = _data["settings"] ? ModelSettings2.fromJS(_data["settings"]) : <any>undefined;
+            if (Array.isArray(_data["createNodeProposals"])) {
+                this.createNodeProposals = [] as any;
+                for (let item of _data["createNodeProposals"])
+                    this.createNodeProposals!.push(CreateNodeRequest.fromJS(item));
             }
-            if (Array.isArray(_data["newElement1dProposals"])) {
-                this.newElement1dProposals = [] as any;
-                for (let item of _data["newElement1dProposals"])
-                    this.newElement1dProposals!.push(NewElement1dProposal.fromJS(item));
+            if (Array.isArray(_data["modifyNodeProposals"])) {
+                this.modifyNodeProposals = [] as any;
+                for (let item of _data["modifyNodeProposals"])
+                    this.modifyNodeProposals!.push(PutNodeRequest.fromJS(item));
             }
-            if (Array.isArray(_data["modifiedElement1dProposals"])) {
-                this.modifiedElement1dProposals = [] as any;
-                for (let item of _data["modifiedElement1dProposals"])
-                    this.modifiedElement1dProposals!.push(ModifyElement1dProposal.fromJS(item));
+            if (Array.isArray(_data["createElement1dProposals"])) {
+                this.createElement1dProposals = [] as any;
+                for (let item of _data["createElement1dProposals"])
+                    this.createElement1dProposals!.push(CreateElement1dProposal.fromJS(item));
+            }
+            if (Array.isArray(_data["modifyElement1dProposals"])) {
+                this.modifyElement1dProposals = [] as any;
+                for (let item of _data["modifyElement1dProposals"])
+                    this.modifyElement1dProposals!.push(ModifyElement1dProposal.fromJS(item));
             }
             if (Array.isArray(_data["materialProposals"])) {
                 this.materialProposals = [] as any;
@@ -5614,9 +5870,6 @@ export class ModelProposalData implements IModelProposalData {
                 for (let item of _data["loadCombinationProposals"])
                     this.loadCombinationProposals!.push(LoadCombination.fromJS(item));
             }
-            this.name = _data["name"];
-            this.description = _data["description"];
-            this.settings = _data["settings"] ? ModelSettings.fromJS(_data["settings"]) : new ModelSettings();
         }
     }
 
@@ -5633,20 +5886,28 @@ export class ModelProposalData implements IModelProposalData {
             if (this.hasOwnProperty(property))
                 data[property] = this[property];
         }
-        if (Array.isArray(this.nodeProposals)) {
-            data["nodeProposals"] = [];
-            for (let item of this.nodeProposals)
-                data["nodeProposals"].push(item ? item.toJSON() : <any>undefined);
+        data["name"] = this.name;
+        data["description"] = this.description;
+        data["settings"] = this.settings ? this.settings.toJSON() : <any>undefined;
+        if (Array.isArray(this.createNodeProposals)) {
+            data["createNodeProposals"] = [];
+            for (let item of this.createNodeProposals)
+                data["createNodeProposals"].push(item ? item.toJSON() : <any>undefined);
         }
-        if (Array.isArray(this.newElement1dProposals)) {
-            data["newElement1dProposals"] = [];
-            for (let item of this.newElement1dProposals)
-                data["newElement1dProposals"].push(item ? item.toJSON() : <any>undefined);
+        if (Array.isArray(this.modifyNodeProposals)) {
+            data["modifyNodeProposals"] = [];
+            for (let item of this.modifyNodeProposals)
+                data["modifyNodeProposals"].push(item ? item.toJSON() : <any>undefined);
         }
-        if (Array.isArray(this.modifiedElement1dProposals)) {
-            data["modifiedElement1dProposals"] = [];
-            for (let item of this.modifiedElement1dProposals)
-                data["modifiedElement1dProposals"].push(item ? item.toJSON() : <any>undefined);
+        if (Array.isArray(this.createElement1dProposals)) {
+            data["createElement1dProposals"] = [];
+            for (let item of this.createElement1dProposals)
+                data["createElement1dProposals"].push(item ? item.toJSON() : <any>undefined);
+        }
+        if (Array.isArray(this.modifyElement1dProposals)) {
+            data["modifyElement1dProposals"] = [];
+            for (let item of this.modifyElement1dProposals)
+                data["modifyElement1dProposals"].push(item ? item.toJSON() : <any>undefined);
         }
         if (Array.isArray(this.materialProposals)) {
             data["materialProposals"] = [];
@@ -5688,17 +5949,18 @@ export class ModelProposalData implements IModelProposalData {
             for (let item of this.loadCombinationProposals)
                 data["loadCombinationProposals"].push(item ? item.toJSON() : <any>undefined);
         }
-        data["name"] = this.name;
-        data["description"] = this.description;
-        data["settings"] = this.settings ? this.settings.toJSON() : <any>undefined;
         return data;
     }
 }
 
 export interface IModelProposalData {
-    nodeProposals?: PutNodeRequest[] | undefined;
-    newElement1dProposals?: NewElement1dProposal[] | undefined;
-    modifiedElement1dProposals?: ModifyElement1dProposal[] | undefined;
+    name?: string | undefined;
+    description?: string | undefined;
+    settings?: ModelSettings2 | undefined;
+    createNodeProposals?: CreateNodeRequest[] | undefined;
+    modifyNodeProposals?: PutNodeRequest[] | undefined;
+    createElement1dProposals?: CreateElement1dProposal[] | undefined;
+    modifyElement1dProposals?: ModifyElement1dProposal[] | undefined;
     materialProposals?: PutMaterialRequest[] | undefined;
     sectionProfileProposals?: PutSectionProfileRequest[] | undefined;
     sectionProfileFromLibraryProposals?: SectionProfileFromLibrary[] | undefined;
@@ -5707,9 +5969,318 @@ export interface IModelProposalData {
     resultSetProposals?: ResultSet[] | undefined;
     loadCaseProposals?: LoadCase[] | undefined;
     loadCombinationProposals?: LoadCombination[] | undefined;
-    name: string;
-    description: string;
-    settings: ModelSettings;
+
+    [key: string]: any;
+}
+
+export class ModelProposalInfo implements IModelProposalInfo {
+    id!: number;
+    lastModified!: Date;
+    description?: string | undefined;
+
+    [key: string]: any;
+
+    constructor(data?: IModelProposalInfo) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.lastModified = _data["lastModified"] ? new Date(_data["lastModified"].toString()) : <any>undefined;
+            this.description = _data["description"];
+        }
+    }
+
+    static fromJS(data: any): ModelProposalInfo {
+        data = typeof data === 'object' ? data : {};
+        let result = new ModelProposalInfo();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["lastModified"] = this.lastModified ? this.lastModified.toISOString() : <any>undefined;
+        data["description"] = this.description;
+        return data;
+    }
+}
+
+export interface IModelProposalInfo {
+    id: number;
+    lastModified: Date;
+    description?: string | undefined;
+
+    [key: string]: any;
+}
+
+export class ModelProposalInfo2 implements IModelProposalInfo2 {
+    id!: number;
+    lastModified!: Date;
+    description?: string | undefined;
+
+    [key: string]: any;
+
+    constructor(data?: IModelProposalInfo2) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.lastModified = _data["lastModified"] ? new Date(_data["lastModified"].toString()) : <any>undefined;
+            this.description = _data["description"];
+        }
+    }
+
+    static fromJS(data: any): ModelProposalInfo2 {
+        data = typeof data === 'object' ? data : {};
+        let result = new ModelProposalInfo2();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["lastModified"] = this.lastModified ? this.lastModified.toISOString() : <any>undefined;
+        data["description"] = this.description;
+        return data;
+    }
+}
+
+export interface IModelProposalInfo2 {
+    id: number;
+    lastModified: Date;
+    description?: string | undefined;
+
+    [key: string]: any;
+}
+
+export class ModelProposalResponse implements IModelProposalResponse {
+    id!: number;
+    lastModified!: Date;
+    modelProposal?: ModelProposalInfo | undefined;
+    createNodeProposals?: CreateNodeProposalResponse[] | undefined;
+    modifyNodeProposals?: ModifyNodeProposalResponse[] | undefined;
+    createElement1dProposals?: CreateElement1dProposalResponse[] | undefined;
+    modifyElement1dProposals?: ModifyElement1dProposalResponse[] | undefined;
+    materialProposals?: PutMaterialRequest[] | undefined;
+    sectionProfileProposals?: PutSectionProfileRequest[] | undefined;
+    sectionProfileFromLibraryProposals?: SectionProfileFromLibrary[] | undefined;
+    pointLoadProposals?: PointLoad[] | undefined;
+    momentLoadProposals?: MomentLoad[] | undefined;
+    resultSetProposals?: ResultSet[] | undefined;
+    loadCaseProposals?: LoadCase[] | undefined;
+    loadCombinationProposals?: LoadCombination[] | undefined;
+
+    [key: string]: any;
+
+    constructor(data?: IModelProposalResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.lastModified = _data["lastModified"] ? new Date(_data["lastModified"].toString()) : <any>undefined;
+            this.modelProposal = _data["modelProposal"] ? ModelProposalInfo.fromJS(_data["modelProposal"]) : <any>undefined;
+            if (Array.isArray(_data["createNodeProposals"])) {
+                this.createNodeProposals = [] as any;
+                for (let item of _data["createNodeProposals"])
+                    this.createNodeProposals!.push(CreateNodeProposalResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["modifyNodeProposals"])) {
+                this.modifyNodeProposals = [] as any;
+                for (let item of _data["modifyNodeProposals"])
+                    this.modifyNodeProposals!.push(ModifyNodeProposalResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["createElement1dProposals"])) {
+                this.createElement1dProposals = [] as any;
+                for (let item of _data["createElement1dProposals"])
+                    this.createElement1dProposals!.push(CreateElement1dProposalResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["modifyElement1dProposals"])) {
+                this.modifyElement1dProposals = [] as any;
+                for (let item of _data["modifyElement1dProposals"])
+                    this.modifyElement1dProposals!.push(ModifyElement1dProposalResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["materialProposals"])) {
+                this.materialProposals = [] as any;
+                for (let item of _data["materialProposals"])
+                    this.materialProposals!.push(PutMaterialRequest.fromJS(item));
+            }
+            if (Array.isArray(_data["sectionProfileProposals"])) {
+                this.sectionProfileProposals = [] as any;
+                for (let item of _data["sectionProfileProposals"])
+                    this.sectionProfileProposals!.push(PutSectionProfileRequest.fromJS(item));
+            }
+            if (Array.isArray(_data["sectionProfileFromLibraryProposals"])) {
+                this.sectionProfileFromLibraryProposals = [] as any;
+                for (let item of _data["sectionProfileFromLibraryProposals"])
+                    this.sectionProfileFromLibraryProposals!.push(SectionProfileFromLibrary.fromJS(item));
+            }
+            if (Array.isArray(_data["pointLoadProposals"])) {
+                this.pointLoadProposals = [] as any;
+                for (let item of _data["pointLoadProposals"])
+                    this.pointLoadProposals!.push(PointLoad.fromJS(item));
+            }
+            if (Array.isArray(_data["momentLoadProposals"])) {
+                this.momentLoadProposals = [] as any;
+                for (let item of _data["momentLoadProposals"])
+                    this.momentLoadProposals!.push(MomentLoad.fromJS(item));
+            }
+            if (Array.isArray(_data["resultSetProposals"])) {
+                this.resultSetProposals = [] as any;
+                for (let item of _data["resultSetProposals"])
+                    this.resultSetProposals!.push(ResultSet.fromJS(item));
+            }
+            if (Array.isArray(_data["loadCaseProposals"])) {
+                this.loadCaseProposals = [] as any;
+                for (let item of _data["loadCaseProposals"])
+                    this.loadCaseProposals!.push(LoadCase.fromJS(item));
+            }
+            if (Array.isArray(_data["loadCombinationProposals"])) {
+                this.loadCombinationProposals = [] as any;
+                for (let item of _data["loadCombinationProposals"])
+                    this.loadCombinationProposals!.push(LoadCombination.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ModelProposalResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ModelProposalResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["lastModified"] = this.lastModified ? this.lastModified.toISOString() : <any>undefined;
+        data["modelProposal"] = this.modelProposal ? this.modelProposal.toJSON() : <any>undefined;
+        if (Array.isArray(this.createNodeProposals)) {
+            data["createNodeProposals"] = [];
+            for (let item of this.createNodeProposals)
+                data["createNodeProposals"].push(item ? item.toJSON() : <any>undefined);
+        }
+        if (Array.isArray(this.modifyNodeProposals)) {
+            data["modifyNodeProposals"] = [];
+            for (let item of this.modifyNodeProposals)
+                data["modifyNodeProposals"].push(item ? item.toJSON() : <any>undefined);
+        }
+        if (Array.isArray(this.createElement1dProposals)) {
+            data["createElement1dProposals"] = [];
+            for (let item of this.createElement1dProposals)
+                data["createElement1dProposals"].push(item ? item.toJSON() : <any>undefined);
+        }
+        if (Array.isArray(this.modifyElement1dProposals)) {
+            data["modifyElement1dProposals"] = [];
+            for (let item of this.modifyElement1dProposals)
+                data["modifyElement1dProposals"].push(item ? item.toJSON() : <any>undefined);
+        }
+        if (Array.isArray(this.materialProposals)) {
+            data["materialProposals"] = [];
+            for (let item of this.materialProposals)
+                data["materialProposals"].push(item ? item.toJSON() : <any>undefined);
+        }
+        if (Array.isArray(this.sectionProfileProposals)) {
+            data["sectionProfileProposals"] = [];
+            for (let item of this.sectionProfileProposals)
+                data["sectionProfileProposals"].push(item ? item.toJSON() : <any>undefined);
+        }
+        if (Array.isArray(this.sectionProfileFromLibraryProposals)) {
+            data["sectionProfileFromLibraryProposals"] = [];
+            for (let item of this.sectionProfileFromLibraryProposals)
+                data["sectionProfileFromLibraryProposals"].push(item ? item.toJSON() : <any>undefined);
+        }
+        if (Array.isArray(this.pointLoadProposals)) {
+            data["pointLoadProposals"] = [];
+            for (let item of this.pointLoadProposals)
+                data["pointLoadProposals"].push(item ? item.toJSON() : <any>undefined);
+        }
+        if (Array.isArray(this.momentLoadProposals)) {
+            data["momentLoadProposals"] = [];
+            for (let item of this.momentLoadProposals)
+                data["momentLoadProposals"].push(item ? item.toJSON() : <any>undefined);
+        }
+        if (Array.isArray(this.resultSetProposals)) {
+            data["resultSetProposals"] = [];
+            for (let item of this.resultSetProposals)
+                data["resultSetProposals"].push(item ? item.toJSON() : <any>undefined);
+        }
+        if (Array.isArray(this.loadCaseProposals)) {
+            data["loadCaseProposals"] = [];
+            for (let item of this.loadCaseProposals)
+                data["loadCaseProposals"].push(item ? item.toJSON() : <any>undefined);
+        }
+        if (Array.isArray(this.loadCombinationProposals)) {
+            data["loadCombinationProposals"] = [];
+            for (let item of this.loadCombinationProposals)
+                data["loadCombinationProposals"].push(item ? item.toJSON() : <any>undefined);
+        }
+        return data;
+    }
+}
+
+export interface IModelProposalResponse {
+    id: number;
+    lastModified: Date;
+    modelProposal?: ModelProposalInfo | undefined;
+    createNodeProposals?: CreateNodeProposalResponse[] | undefined;
+    modifyNodeProposals?: ModifyNodeProposalResponse[] | undefined;
+    createElement1dProposals?: CreateElement1dProposalResponse[] | undefined;
+    modifyElement1dProposals?: ModifyElement1dProposalResponse[] | undefined;
+    materialProposals?: PutMaterialRequest[] | undefined;
+    sectionProfileProposals?: PutSectionProfileRequest[] | undefined;
+    sectionProfileFromLibraryProposals?: SectionProfileFromLibrary[] | undefined;
+    pointLoadProposals?: PointLoad[] | undefined;
+    momentLoadProposals?: MomentLoad[] | undefined;
+    resultSetProposals?: ResultSet[] | undefined;
+    loadCaseProposals?: LoadCase[] | undefined;
+    loadCombinationProposals?: LoadCombination[] | undefined;
 
     [key: string]: any;
 }
@@ -5961,12 +6532,72 @@ export interface IModelSettings {
     [key: string]: any;
 }
 
+export class ModelSettings2 implements IModelSettings2 {
+    unitSettings!: UnitSettings;
+    analysisSettings?: AnalysisSettings | undefined;
+    yAxisUp?: boolean;
+
+    [key: string]: any;
+
+    constructor(data?: IModelSettings2) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.unitSettings = new UnitSettings();
+            this.yAxisUp = true;
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.unitSettings = _data["unitSettings"] ? UnitSettings.fromJS(_data["unitSettings"]) : new UnitSettings();
+            this.analysisSettings = _data["analysisSettings"] ? AnalysisSettings.fromJS(_data["analysisSettings"]) : <any>undefined;
+            this.yAxisUp = _data["yAxisUp"] !== undefined ? _data["yAxisUp"] : true;
+        }
+    }
+
+    static fromJS(data: any): ModelSettings2 {
+        data = typeof data === 'object' ? data : {};
+        let result = new ModelSettings2();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["unitSettings"] = this.unitSettings ? this.unitSettings.toJSON() : <any>undefined;
+        data["analysisSettings"] = this.analysisSettings ? this.analysisSettings.toJSON() : <any>undefined;
+        data["yAxisUp"] = this.yAxisUp;
+        return data;
+    }
+}
+
+export interface IModelSettings2 {
+    unitSettings: UnitSettings;
+    analysisSettings?: AnalysisSettings | undefined;
+    yAxisUp?: boolean;
+
+    [key: string]: any;
+}
+
 export class ModifyElement1dProposal implements IModifyElement1dProposal {
-    id?: number;
-    startNodeId!: ExistingOrProposedId | undefined;
-    endNodeId!: ExistingOrProposedId | undefined;
-    materialId!: ExistingOrProposedId | undefined;
-    sectionProfileId!: ExistingOrProposedId | undefined;
+    existingElement1dId!: number;
+    startNodeId?: ProposedID2 | undefined;
+    endNodeId?: ProposedID2 | undefined;
+    materialId?: ProposedID2 | undefined;
+    sectionProfileId?: ProposedID2 | undefined;
     sectionProfileRotation?: NullableOfAngle | undefined;
     metadata?: { [key: string]: string; } | undefined;
 
@@ -5987,11 +6618,11 @@ export class ModifyElement1dProposal implements IModifyElement1dProposal {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            this.id = _data["id"];
-            this.startNodeId = _data["startNodeId"] ? ExistingOrProposedId.fromJS(_data["startNodeId"]) : <any>undefined;
-            this.endNodeId = _data["endNodeId"] ? ExistingOrProposedId.fromJS(_data["endNodeId"]) : <any>undefined;
-            this.materialId = _data["materialId"] ? ExistingOrProposedId.fromJS(_data["materialId"]) : <any>undefined;
-            this.sectionProfileId = _data["sectionProfileId"] ? ExistingOrProposedId.fromJS(_data["sectionProfileId"]) : <any>undefined;
+            this.existingElement1dId = _data["existingElement1dId"];
+            this.startNodeId = _data["startNodeId"] ? ProposedID2.fromJS(_data["startNodeId"]) : <any>undefined;
+            this.endNodeId = _data["endNodeId"] ? ProposedID2.fromJS(_data["endNodeId"]) : <any>undefined;
+            this.materialId = _data["materialId"] ? ProposedID2.fromJS(_data["materialId"]) : <any>undefined;
+            this.sectionProfileId = _data["sectionProfileId"] ? ProposedID2.fromJS(_data["sectionProfileId"]) : <any>undefined;
             this.sectionProfileRotation = _data["sectionProfileRotation"] ? NullableOfAngle.fromJS(_data["sectionProfileRotation"]) : <any>undefined;
             if (_data["metadata"]) {
                 this.metadata = {} as any;
@@ -6016,7 +6647,7 @@ export class ModifyElement1dProposal implements IModifyElement1dProposal {
             if (this.hasOwnProperty(property))
                 data[property] = this[property];
         }
-        data["id"] = this.id;
+        data["existingElement1dId"] = this.existingElement1dId;
         data["startNodeId"] = this.startNodeId ? this.startNodeId.toJSON() : <any>undefined;
         data["endNodeId"] = this.endNodeId ? this.endNodeId.toJSON() : <any>undefined;
         data["materialId"] = this.materialId ? this.materialId.toJSON() : <any>undefined;
@@ -6034,12 +6665,186 @@ export class ModifyElement1dProposal implements IModifyElement1dProposal {
 }
 
 export interface IModifyElement1dProposal {
-    id?: number;
-    startNodeId: ExistingOrProposedId | undefined;
-    endNodeId: ExistingOrProposedId | undefined;
-    materialId: ExistingOrProposedId | undefined;
-    sectionProfileId: ExistingOrProposedId | undefined;
+    existingElement1dId: number;
+    startNodeId?: ProposedID2 | undefined;
+    endNodeId?: ProposedID2 | undefined;
+    materialId?: ProposedID2 | undefined;
+    sectionProfileId?: ProposedID2 | undefined;
     sectionProfileRotation?: NullableOfAngle | undefined;
+    metadata?: { [key: string]: string; } | undefined;
+
+    [key: string]: any;
+}
+
+export class ModifyElement1dProposalResponse implements IModifyElement1dProposalResponse {
+    id?: number;
+    existingElement1dId!: number;
+    startNodeId!: ProposedID;
+    endNodeId!: ProposedID;
+    materialId!: ProposedID;
+    sectionProfileId!: ProposedID;
+    sectionProfileRotation?: NullableOfAngle | undefined;
+    metadata?: { [key: string]: string; } | undefined;
+
+    [key: string]: any;
+
+    constructor(data?: IModifyElement1dProposalResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.startNodeId = new ProposedID();
+            this.endNodeId = new ProposedID();
+            this.materialId = new ProposedID();
+            this.sectionProfileId = new ProposedID();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.existingElement1dId = _data["existingElement1dId"];
+            this.startNodeId = _data["startNodeId"] ? ProposedID.fromJS(_data["startNodeId"]) : new ProposedID();
+            this.endNodeId = _data["endNodeId"] ? ProposedID.fromJS(_data["endNodeId"]) : new ProposedID();
+            this.materialId = _data["materialId"] ? ProposedID.fromJS(_data["materialId"]) : new ProposedID();
+            this.sectionProfileId = _data["sectionProfileId"] ? ProposedID.fromJS(_data["sectionProfileId"]) : new ProposedID();
+            this.sectionProfileRotation = _data["sectionProfileRotation"] ? NullableOfAngle.fromJS(_data["sectionProfileRotation"]) : <any>undefined;
+            if (_data["metadata"]) {
+                this.metadata = {} as any;
+                for (let key in _data["metadata"]) {
+                    if (_data["metadata"].hasOwnProperty(key))
+                        (<any>this.metadata)![key] = _data["metadata"][key];
+                }
+            }
+        }
+    }
+
+    static fromJS(data: any): ModifyElement1dProposalResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ModifyElement1dProposalResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["existingElement1dId"] = this.existingElement1dId;
+        data["startNodeId"] = this.startNodeId ? this.startNodeId.toJSON() : <any>undefined;
+        data["endNodeId"] = this.endNodeId ? this.endNodeId.toJSON() : <any>undefined;
+        data["materialId"] = this.materialId ? this.materialId.toJSON() : <any>undefined;
+        data["sectionProfileId"] = this.sectionProfileId ? this.sectionProfileId.toJSON() : <any>undefined;
+        data["sectionProfileRotation"] = this.sectionProfileRotation ? this.sectionProfileRotation.toJSON() : <any>undefined;
+        if (this.metadata) {
+            data["metadata"] = {};
+            for (let key in this.metadata) {
+                if (this.metadata.hasOwnProperty(key))
+                    (<any>data["metadata"])[key] = (<any>this.metadata)[key];
+            }
+        }
+        return data;
+    }
+}
+
+export interface IModifyElement1dProposalResponse {
+    id?: number;
+    existingElement1dId: number;
+    startNodeId: ProposedID;
+    endNodeId: ProposedID;
+    materialId: ProposedID;
+    sectionProfileId: ProposedID;
+    sectionProfileRotation?: NullableOfAngle | undefined;
+    metadata?: { [key: string]: string; } | undefined;
+
+    [key: string]: any;
+}
+
+export class ModifyNodeProposalResponse implements IModifyNodeProposalResponse {
+    existingNodeId!: number;
+    id!: number;
+    locationPoint!: Point;
+    restraint!: Restraint;
+    metadata?: { [key: string]: string; } | undefined;
+
+    [key: string]: any;
+
+    constructor(data?: IModifyNodeProposalResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.locationPoint = new Point();
+            this.restraint = new Restraint();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.existingNodeId = _data["existingNodeId"];
+            this.id = _data["id"];
+            this.locationPoint = _data["locationPoint"] ? Point.fromJS(_data["locationPoint"]) : new Point();
+            this.restraint = _data["restraint"] ? Restraint.fromJS(_data["restraint"]) : new Restraint();
+            if (_data["metadata"]) {
+                this.metadata = {} as any;
+                for (let key in _data["metadata"]) {
+                    if (_data["metadata"].hasOwnProperty(key))
+                        (<any>this.metadata)![key] = _data["metadata"][key];
+                }
+            }
+        }
+    }
+
+    static fromJS(data: any): ModifyNodeProposalResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ModifyNodeProposalResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["existingNodeId"] = this.existingNodeId;
+        data["id"] = this.id;
+        data["locationPoint"] = this.locationPoint ? this.locationPoint.toJSON() : <any>undefined;
+        data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
+        if (this.metadata) {
+            data["metadata"] = {};
+            for (let key in this.metadata) {
+                if (this.metadata.hasOwnProperty(key))
+                    (<any>data["metadata"])[key] = (<any>this.metadata)[key];
+            }
+        }
+        return data;
+    }
+}
+
+export interface IModifyNodeProposalResponse {
+    existingNodeId: number;
+    id: number;
+    locationPoint: Point;
+    restraint: Restraint;
     metadata?: { [key: string]: string; } | undefined;
 
     [key: string]: any;
@@ -6401,90 +7206,6 @@ export interface IMomentLoadResponse2 {
     modelId: string;
     torque: Torque;
     axisDirection: Vector3;
-
-    [key: string]: any;
-}
-
-export class NewElement1dProposal implements INewElement1dProposal {
-    id?: number;
-    startNodeId!: ExistingOrProposedId | undefined;
-    endNodeId!: ExistingOrProposedId | undefined;
-    materialId!: ExistingOrProposedId | undefined;
-    sectionProfileId!: ExistingOrProposedId | undefined;
-    sectionProfileRotation?: NullableOfAngle | undefined;
-    metadata?: { [key: string]: string; } | undefined;
-
-    [key: string]: any;
-
-    constructor(data?: INewElement1dProposal) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.startNodeId = _data["startNodeId"] ? ExistingOrProposedId.fromJS(_data["startNodeId"]) : <any>undefined;
-            this.endNodeId = _data["endNodeId"] ? ExistingOrProposedId.fromJS(_data["endNodeId"]) : <any>undefined;
-            this.materialId = _data["materialId"] ? ExistingOrProposedId.fromJS(_data["materialId"]) : <any>undefined;
-            this.sectionProfileId = _data["sectionProfileId"] ? ExistingOrProposedId.fromJS(_data["sectionProfileId"]) : <any>undefined;
-            this.sectionProfileRotation = _data["sectionProfileRotation"] ? NullableOfAngle.fromJS(_data["sectionProfileRotation"]) : <any>undefined;
-            if (_data["metadata"]) {
-                this.metadata = {} as any;
-                for (let key in _data["metadata"]) {
-                    if (_data["metadata"].hasOwnProperty(key))
-                        (<any>this.metadata)![key] = _data["metadata"][key];
-                }
-            }
-        }
-    }
-
-    static fromJS(data: any): NewElement1dProposal {
-        data = typeof data === 'object' ? data : {};
-        let result = new NewElement1dProposal();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["startNodeId"] = this.startNodeId ? this.startNodeId.toJSON() : <any>undefined;
-        data["endNodeId"] = this.endNodeId ? this.endNodeId.toJSON() : <any>undefined;
-        data["materialId"] = this.materialId ? this.materialId.toJSON() : <any>undefined;
-        data["sectionProfileId"] = this.sectionProfileId ? this.sectionProfileId.toJSON() : <any>undefined;
-        data["sectionProfileRotation"] = this.sectionProfileRotation ? this.sectionProfileRotation.toJSON() : <any>undefined;
-        if (this.metadata) {
-            data["metadata"] = {};
-            for (let key in this.metadata) {
-                if (this.metadata.hasOwnProperty(key))
-                    (<any>data["metadata"])[key] = (<any>this.metadata)[key];
-            }
-        }
-        return data;
-    }
-}
-
-export interface INewElement1dProposal {
-    id?: number;
-    startNodeId: ExistingOrProposedId | undefined;
-    endNodeId: ExistingOrProposedId | undefined;
-    materialId: ExistingOrProposedId | undefined;
-    sectionProfileId: ExistingOrProposedId | undefined;
-    sectionProfileRotation?: NullableOfAngle | undefined;
-    metadata?: { [key: string]: string; } | undefined;
 
     [key: string]: any;
 }
@@ -7355,6 +8076,110 @@ export enum PressureUnit {
     PoundForcePerSquareInch = "PoundForcePerSquareInch",
 }
 
+export class ProposedID implements IProposedID {
+    existingId!: number | undefined;
+    proposedId!: number | undefined;
+
+    [key: string]: any;
+
+    constructor(data?: IProposedID) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.existingId = _data["existingId"];
+            this.proposedId = _data["proposedId"];
+        }
+    }
+
+    static fromJS(data: any): ProposedID {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProposedID();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["existingId"] = this.existingId;
+        data["proposedId"] = this.proposedId;
+        return data;
+    }
+}
+
+export interface IProposedID {
+    existingId: number | undefined;
+    proposedId: number | undefined;
+
+    [key: string]: any;
+}
+
+export class ProposedID2 implements IProposedID2 {
+    existingId!: number | undefined;
+    proposedId!: number | undefined;
+
+    [key: string]: any;
+
+    constructor(data?: IProposedID2) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.existingId = _data["existingId"];
+            this.proposedId = _data["proposedId"];
+        }
+    }
+
+    static fromJS(data: any): ProposedID2 {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProposedID2();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["existingId"] = this.existingId;
+        data["proposedId"] = this.proposedId;
+        return data;
+    }
+}
+
+export interface IProposedID2 {
+    existingId: number | undefined;
+    proposedId: number | undefined;
+
+    [key: string]: any;
+}
+
 export class PutElement1dRequest implements IPutElement1dRequest {
     id!: number;
     startNodeId!: number;
@@ -8035,6 +8860,62 @@ export interface IResultOfBeamOsModelBuilderDto {
     [key: string]: any;
 }
 
+export class ResultOfboolean implements IResultOfboolean {
+    value!: boolean;
+    error!: BeamOsError | undefined;
+    isError!: boolean;
+
+    [key: string]: any;
+
+    constructor(data?: IResultOfboolean) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.value = _data["value"];
+            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
+            this.isError = _data["isError"];
+        }
+    }
+
+    static fromJS(data: any): ResultOfboolean {
+        data = typeof data === 'object' ? data : {};
+        let result = new ResultOfboolean();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["value"] = this.value;
+        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
+        data["isError"] = this.isError;
+        return data;
+    }
+}
+
+export interface IResultOfboolean {
+    value: boolean;
+    error: BeamOsError | undefined;
+    isError: boolean;
+
+    [key: string]: any;
+}
+
 export class ResultOfElement1dResponse implements IResultOfElement1dResponse {
     value!: Element1dResponse2 | undefined;
     error!: BeamOsError | undefined;
@@ -8085,6 +8966,62 @@ export class ResultOfElement1dResponse implements IResultOfElement1dResponse {
 
 export interface IResultOfElement1dResponse {
     value: Element1dResponse2 | undefined;
+    error: BeamOsError | undefined;
+    isError: boolean;
+
+    [key: string]: any;
+}
+
+export class ResultOfGithubModelsChatResponse implements IResultOfGithubModelsChatResponse {
+    value!: GithubModelsChatResponse | undefined;
+    error!: BeamOsError | undefined;
+    isError!: boolean;
+
+    [key: string]: any;
+
+    constructor(data?: IResultOfGithubModelsChatResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.value = _data["value"] ? GithubModelsChatResponse.fromJS(_data["value"]) : <any>undefined;
+            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
+            this.isError = _data["isError"];
+        }
+    }
+
+    static fromJS(data: any): ResultOfGithubModelsChatResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ResultOfGithubModelsChatResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
+        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
+        data["isError"] = this.isError;
+        return data;
+    }
+}
+
+export interface IResultOfGithubModelsChatResponse {
+    value: GithubModelsChatResponse | undefined;
     error: BeamOsError | undefined;
     isError: boolean;
 
@@ -8205,6 +9142,70 @@ export class ResultOfListOfModelInfoResponse implements IResultOfListOfModelInfo
 
 export interface IResultOfListOfModelInfoResponse {
     value: ModelInfoResponse[] | undefined;
+    error: BeamOsError | undefined;
+    isError: boolean;
+
+    [key: string]: any;
+}
+
+export class ResultOfListOfModelProposalInfo implements IResultOfListOfModelProposalInfo {
+    value!: ModelProposalInfo2[] | undefined;
+    error!: BeamOsError | undefined;
+    isError!: boolean;
+
+    [key: string]: any;
+
+    constructor(data?: IResultOfListOfModelProposalInfo) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            if (Array.isArray(_data["value"])) {
+                this.value = [] as any;
+                for (let item of _data["value"])
+                    this.value!.push(ModelProposalInfo2.fromJS(item));
+            }
+            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
+            this.isError = _data["isError"];
+        }
+    }
+
+    static fromJS(data: any): ResultOfListOfModelProposalInfo {
+        data = typeof data === 'object' ? data : {};
+        let result = new ResultOfListOfModelProposalInfo();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        if (Array.isArray(this.value)) {
+            data["value"] = [];
+            for (let item of this.value)
+                data["value"].push(item ? item.toJSON() : <any>undefined);
+        }
+        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
+        data["isError"] = this.isError;
+        return data;
+    }
+}
+
+export interface IResultOfListOfModelProposalInfo {
+    value: ModelProposalInfo2[] | undefined;
     error: BeamOsError | undefined;
     isError: boolean;
 
@@ -8435,14 +9436,14 @@ export interface IResultOfModelEntityResponse {
     [key: string]: any;
 }
 
-export class ResultOfModelProposal implements IResultOfModelProposal {
-    value!: ModelProposal | undefined;
+export class ResultOfModelProposalResponse implements IResultOfModelProposalResponse {
+    value!: ModelProposalResponse | undefined;
     error!: BeamOsError | undefined;
     isError!: boolean;
 
     [key: string]: any;
 
-    constructor(data?: IResultOfModelProposal) {
+    constructor(data?: IResultOfModelProposalResponse) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -8457,15 +9458,15 @@ export class ResultOfModelProposal implements IResultOfModelProposal {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            this.value = _data["value"] ? ModelProposal.fromJS(_data["value"]) : <any>undefined;
+            this.value = _data["value"] ? ModelProposalResponse.fromJS(_data["value"]) : <any>undefined;
             this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
             this.isError = _data["isError"];
         }
     }
 
-    static fromJS(data: any): ResultOfModelProposal {
+    static fromJS(data: any): ResultOfModelProposalResponse {
         data = typeof data === 'object' ? data : {};
-        let result = new ResultOfModelProposal();
+        let result = new ResultOfModelProposalResponse();
         result.init(data);
         return result;
     }
@@ -8483,8 +9484,8 @@ export class ResultOfModelProposal implements IResultOfModelProposal {
     }
 }
 
-export interface IResultOfModelProposal {
-    value: ModelProposal | undefined;
+export interface IResultOfModelProposalResponse {
+    value: ModelProposalResponse | undefined;
     error: BeamOsError | undefined;
     isError: boolean;
 
@@ -8933,62 +9934,6 @@ export class ResultOfSectionProfileResponse implements IResultOfSectionProfileRe
 
 export interface IResultOfSectionProfileResponse {
     value: SectionProfileResponse | undefined;
-    error: BeamOsError | undefined;
-    isError: boolean;
-
-    [key: string]: any;
-}
-
-export class ResultOfstring implements IResultOfstring {
-    value!: string | undefined;
-    error!: BeamOsError | undefined;
-    isError!: boolean;
-
-    [key: string]: any;
-
-    constructor(data?: IResultOfstring) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"];
-            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
-            this.isError = _data["isError"];
-        }
-    }
-
-    static fromJS(data: any): ResultOfstring {
-        data = typeof data === 'object' ? data : {};
-        let result = new ResultOfstring();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value;
-        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
-        data["isError"] = this.isError;
-        return data;
-    }
-}
-
-export interface IResultOfstring {
-    value: string | undefined;
     error: BeamOsError | undefined;
     isError: boolean;
 

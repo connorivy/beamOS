@@ -13,10 +13,11 @@ namespace BeamOs.Ai;
 
 public class AiApiPlugin
 {
-    public ModelProposalData ModelProposalData { get; } = new() { NodeProposals = [] };
+    private readonly List<CreateNodeRequest> createNodeProposals = new();
+    private readonly List<PutNodeRequest> modifyNodeProposals = new();
 
     [KernelFunction]
-    [Description("Create a node in the model with the provided modelId.")]
+    [Description("Create a node in the model.")]
     public void CreateNodeAsync(
         [Description("Id that you can use to reference the node later")] int nodeId,
         [Description("X Coordinate of Node")] double locationPoint_x,
@@ -30,7 +31,37 @@ public class AiApiPlugin
         bool restraint_canRotateAboutY,
         bool restraint_canRotateAboutZ
     ) =>
-        this.ModelProposalData.NodeProposals.Add(
+        this.createNodeProposals.Add(
+            new CreateNodeRequest(
+                new Point(locationPoint_x, locationPoint_y, locationPoint_z, lengthUnit),
+                new Restraint(
+                    restraint_canTranslateAlongX,
+                    restraint_canTranslateAlongY,
+                    restraint_canTranslateAlongZ,
+                    restraint_canRotateAboutX,
+                    restraint_canRotateAboutY,
+                    restraint_canRotateAboutZ
+                ),
+                nodeId
+            )
+        );
+
+    [KernelFunction]
+    [Description("Modify a node in the model")]
+    public void ModifyNodeAsync(
+        [Description("Id of the node to be modified")] int nodeId,
+        [Description("X Coordinate of Node")] double locationPoint_x,
+        [Description("Y Coordinate of Node")] double locationPoint_y,
+        [Description("Z Coordinate of Node")] double locationPoint_z,
+        [Description("Length unit of the node coordinates")] LengthUnit lengthUnit,
+        bool restraint_canTranslateAlongX,
+        bool restraint_canTranslateAlongY,
+        bool restraint_canTranslateAlongZ,
+        bool restraint_canRotateAboutX,
+        bool restraint_canRotateAboutY,
+        bool restraint_canRotateAboutZ
+    ) =>
+        this.modifyNodeProposals.Add(
             new PutNodeRequest(
                 nodeId,
                 new Point(locationPoint_x, locationPoint_y, locationPoint_z, lengthUnit),
@@ -64,4 +95,13 @@ public class AiApiPlugin
     //     getNodeCommandHandler.ExecuteAsync(
     //         new ModelEntityCommand() { ModelId = modelId, Id = nodeId }
     //     );
+
+    public ModelProposalData GetModelProposalData()
+    {
+        return new()
+        {
+            CreateNodeProposals = this.createNodeProposals,
+            ModifyNodeProposals = this.modifyNodeProposals,
+        };
+    }
 }
