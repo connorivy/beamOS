@@ -534,9 +534,6 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                     b.Property<DateTimeOffset>("LastModified")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("ModelChangeRequestId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -594,6 +591,46 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                     b.HasIndex("ModelId");
 
                     b.ToTable("ModelProposals");
+                });
+
+            modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.ProposalIssue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ModelProposalId")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("ModelId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int?>("ExistingId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ObjectType")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("ProposedId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Severity")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id", "ModelProposalId", "ModelId");
+
+                    b.HasIndex("ModelProposalId", "ModelId");
+
+                    b.HasIndex("ModelId", "ModelProposalId", "ExistingId", "ProposedId")
+                        .IsUnique();
+
+                    b.ToTable("ProposalIssue");
                 });
 
             modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate.MomentLoad", b =>
@@ -1076,6 +1113,25 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                     b.Navigation("Model");
                 });
 
+            modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.ProposalIssue", b =>
+                {
+                    b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.Model", "Model")
+                        .WithMany()
+                        .HasForeignKey("ModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.ModelProposal", "ModelProposal")
+                        .WithMany("ProposalIssues")
+                        .HasForeignKey("ModelProposalId", "ModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Model");
+
+                    b.Navigation("ModelProposal");
+                });
+
             modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate.MomentLoad", b =>
                 {
                     b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.Model", "Model")
@@ -1226,6 +1282,8 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                     b.Navigation("Element1dProposals");
 
                     b.Navigation("NodeProposals");
+
+                    b.Navigation("ProposalIssues");
                 });
 
             modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate.Node", b =>

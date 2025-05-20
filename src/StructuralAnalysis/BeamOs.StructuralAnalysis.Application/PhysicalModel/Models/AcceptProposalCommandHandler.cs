@@ -33,6 +33,13 @@ public class AcceptProposalCommandHandler(
             );
         }
 
+        if (modelProposal.ProposalIssues.Any(p => p.Severity == ProposalIssueSeverity.Critical))
+        {
+            return BeamOsError.InvalidOperation(
+                description: "Model proposal cannot be accepted because it has critical issues"
+            );
+        }
+
         Dictionary<NodeProposalId, NodeId> nodeProposalIdToNewIdDict = [];
         List<Node> nodes = [];
         foreach (var nodeProposal in modelProposal.NodeProposals ?? [])

@@ -1,3 +1,3 @@
 namespace BeamOs.SpeckleConnector;
 
-public interface IAssemblyMarkerSpeckleConnectorApi { }
+public interface IAssemblyMarkerSpeckleConnector { }

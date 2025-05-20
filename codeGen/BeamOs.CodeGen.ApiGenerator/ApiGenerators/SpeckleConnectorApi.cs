@@ -2,8 +2,7 @@ using BeamOs.SpeckleConnector;
 
 namespace BeamOs.CodeGen.ApiGenerator.ApiGenerators;
 
-public class SpeckleConnectorApi
-    : AbstractGeneratorFromEndpoints<IAssemblyMarkerSpeckleConnectorApi>
+public class SpeckleConnectorApi : AbstractGeneratorFromEndpoints<IAssemblyMarkerSpeckleConnector>
 {
     public override string ClientName => "SpeckleConnectorApi";
     protected override string ClientNamespace => "BeamOs.CodeGen.SpeckleConnectorApi";

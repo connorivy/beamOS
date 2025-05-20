@@ -9,7 +9,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Models;
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "proposals")]
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Proposer)]
-public class CreateModelProposal(CreateProposalCommandHandler putModelCommandHandler)
+public class CreateModelProposal(CreateProposalCommandHandler createProposalCommandHandler)
     : BeamOsModelResourceBaseEndpoint<
         ModelResourceRequest<ModelProposalData>,
         ModelProposalData,
@@ -19,7 +19,7 @@ public class CreateModelProposal(CreateProposalCommandHandler putModelCommandHan
     public override async Task<Result<ModelProposalResponse>> ExecuteRequestAsync(
         ModelResourceRequest<ModelProposalData> req,
         CancellationToken ct = default
-    ) => await putModelCommandHandler.ExecuteAsync(req, ct);
+    ) => await createProposalCommandHandler.ExecuteAsync(req, ct);
 }
 
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "proposals")]

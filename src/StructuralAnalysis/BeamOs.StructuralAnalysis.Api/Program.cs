@@ -19,11 +19,6 @@ builder
     .Services.AddStructuralAnalysisRequired()
     .AddStructuralAnalysisConfigurable(builder.Configuration.GetConnectionString("BeamOsDb"));
 
-builder.Services.AddObjectThatExtendsBase<IAssemblyMarkerSpeckleConnectorApi>(
-    typeof(BeamOsBaseEndpoint<,>),
-    ServiceLifetime.Scoped
-);
-
 builder.Services.AddObjectThatExtendsBase<IAssemblyMarkerAi>(
     typeof(BeamOsActualBaseEndpoint<,>),
     ServiceLifetime.Scoped
@@ -89,7 +84,7 @@ await app.InitializeBeamOsDb();
 #endif
 
 app.MapEndpoints<IAssemblyMarkerStructuralAnalysisApiEndpoints>();
-app.MapEndpoints<IAssemblyMarkerSpeckleConnectorApi>();
+app.MapEndpoints<IAssemblyMarkerSpeckleConnector>();
 app.MapEndpoints<IAssemblyMarkerAi>();
 
 #if DEBUG

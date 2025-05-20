@@ -37,6 +37,7 @@ public class CreateProposalCommandHandler(
         ModelProposal modelProposal = command.Body.ToProposalDomain(model);
         modelProposal.NodeProposals = [];
         modelProposal.Element1dProposals = [];
+        modelProposal.ProposalIssues = [];
         modelProposalRepository.Add(modelProposal);
 
         var existingNodesToBeModified = await GetExistingEntities(
@@ -76,6 +77,11 @@ public class CreateProposalCommandHandler(
             var existingElement = existingElementsToBeModified[element1d.ExistingElement1dId];
             var element1dProposal = element1d.ToProposalDomain(existingElement, modelProposal.Id);
             modelProposal.Element1dProposals.Add(element1dProposal);
+        }
+        foreach (var proposalIssueContract in command.Body.ProposalIssues ?? [])
+        {
+            var proposalIssue = proposalIssueContract.ToDomain(command.ModelId, modelProposal.Id);
+            modelProposal.ProposalIssues.Add(proposalIssue);
         }
 
         await unitOfWork.SaveChangesAsync(ct);
@@ -160,6 +166,40 @@ public static partial class ProposalStaticMappers
         this Element1dProposal command
     );
 
+    public static ProposalIssueContract ToProposalContract(this ProposalIssue command)
+    {
+        ProposedID proposedId;
+        if (command.ProposedId is not null)
+        {
+            proposedId = ProposedID.Proposed(command.ProposedId.Value);
+        }
+        else if (command.ExistingId is not null)
+        {
+            proposedId = ProposedID.Existing(command.ExistingId.Value);
+        }
+        else
+        {
+            throw new ArgumentNullException(
+                nameof(command),
+                "Either ExistingId or ProposedId must be provided."
+            );
+        }
+        return new ProposalIssueContract
+        {
+            Id = command.Id,
+            ProposedId = proposedId,
+            ObjectType = command.ObjectType,
+            Message = command.Message,
+            Severity = command.Severity,
+        };
+    }
+
+    public static partial ProposalIssue ToDomain(
+        this ProposalIssueData command,
+        ModelId modelId,
+        ModelProposalId modelProposalId
+    );
+
     public static ModelProposalResponse ToContract(this ModelProposal modelProposal)
     {
         var response = new ModelProposalResponse
@@ -171,6 +211,7 @@ public static partial class ProposalStaticMappers
             ModifyNodeProposals = [],
             CreateElement1dProposals = [],
             ModifyElement1dProposals = [],
+            ProposalIssues = [],
         };
         // var response = modelProposal.ToContract();
         // foreach (var nodeProposal in modelProposal.NodeProposals)
@@ -205,6 +246,10 @@ public static partial class ProposalStaticMappers
             {
                 response.CreateElement1dProposals.Add(element1dProposal.ToCreateProposalContract());
             }
+        }
+        foreach (var proposalIssue in modelProposal.ProposalIssues ?? [])
+        {
+            response.ProposalIssues.Add(proposalIssue.ToProposalContract());
         }
         return response;
     }

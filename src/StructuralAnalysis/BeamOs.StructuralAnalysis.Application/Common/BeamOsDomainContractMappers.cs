@@ -79,6 +79,38 @@ public static partial class BeamOsDomainContractMappers
         return new(source.X, source.Y, source.Z);
     }
 
+    public static ExisitingOrProposedGenericId ToGenericIdDomain(this ProposedID contract)
+    {
+        if (contract.ExistingId is not null)
+        {
+            return ExisitingOrProposedGenericId.FromExistingId(contract.ExistingId.Value);
+        }
+        else if (contract.ProposedId is not null)
+        {
+            return ExisitingOrProposedGenericId.FromProposedId(contract.ProposedId.Value);
+        }
+        throw new ArgumentNullException(
+            nameof(contract),
+            "Either ExistingId or ProposedId must be provided."
+        );
+    }
+
+    public static ProposedID ToContract(this ExisitingOrProposedGenericId contract)
+    {
+        if (contract.ExistingId is not null)
+        {
+            return ProposedID.Existing(contract.ExistingId.Value);
+        }
+        else if (contract.ProposedId is not null)
+        {
+            return ProposedID.Proposed(contract.ProposedId.Value);
+        }
+        throw new ArgumentNullException(
+            nameof(contract),
+            "Either ExistingId or ProposedId must be provided."
+        );
+    }
+
     public static ExistingOrProposedNodeId ToNodeDomain(this ProposedID contract) =>
         ToNodeDomainOrNull(contract)
         ?? throw new ArgumentNullException(

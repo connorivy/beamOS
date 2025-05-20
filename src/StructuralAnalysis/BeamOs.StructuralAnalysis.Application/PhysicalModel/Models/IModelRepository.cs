@@ -20,3 +20,6 @@ public interface IModelRepository : IRepository<ModelId, Model>
 
 public interface IModelProposalRepository
     : IModelResourceRepository<ModelProposalId, ModelProposal> { }
+
+public interface IProposalIssueRepository
+    : IModelResourceRepository<ProposalIssueId, ProposalIssue> { }

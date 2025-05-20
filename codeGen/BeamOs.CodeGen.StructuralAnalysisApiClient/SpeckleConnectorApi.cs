@@ -31,7 +31,7 @@ namespace BeamOs.CodeGen.SpeckleConnectorApi
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="SpeckleConnectorApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfBeamOsModelBuilderDto> ConvertToBeamOsAsync(SpeckleReceiveParameters body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ResultOfModelProposalResponse> SpeckleRecieveOperationAsync(System.Guid modelId, SpeckleReceiveParameters body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
     }
 
@@ -70,8 +70,11 @@ namespace BeamOs.CodeGen.SpeckleConnectorApi
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="SpeckleConnectorApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfBeamOsModelBuilderDto> ConvertToBeamOsAsync(SpeckleReceiveParameters body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ResultOfModelProposalResponse> SpeckleRecieveOperationAsync(System.Guid modelId, SpeckleReceiveParameters body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
+            if (modelId == null)
+                throw new System.ArgumentNullException("modelId");
+
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
@@ -89,6 +92,9 @@ namespace BeamOs.CodeGen.SpeckleConnectorApi
                 
                     // Operation Path: "api/speckle-receive"
                     urlBuilder_.Append("api/speckle-receive");
+                    urlBuilder_.Append('?');
+                    urlBuilder_.Append(System.Uri.EscapeDataString("ModelId")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    urlBuilder_.Length--;
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -115,7 +121,7 @@ namespace BeamOs.CodeGen.SpeckleConnectorApi
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfBeamOsModelBuilderDto>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfModelProposalResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new SpeckleConnectorApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);

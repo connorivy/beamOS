@@ -286,7 +286,7 @@ export interface IStructuralAnalysisApiClientV1 {
      * @param body (optional) 
      * @return OK
      */
-    convertToBeamOs(body: SpeckleReceiveParameters | undefined): Promise<ResultOfBeamOsModelBuilderDto>;
+    speckleRecieveOperation(modelId: string, body: SpeckleReceiveParameters | null | undefined): Promise<ResultOfModelProposalResponse>;
 
     /**
      * @return OK
@@ -2643,8 +2643,12 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @param body (optional) 
      * @return OK
      */
-    convertToBeamOs(body: SpeckleReceiveParameters | undefined): Promise<ResultOfBeamOsModelBuilderDto> {
-        let url_ = this.baseUrl + "/api/speckle-receive";
+    speckleRecieveOperation(modelId: string, body: SpeckleReceiveParameters | null | undefined): Promise<ResultOfModelProposalResponse> {
+        let url_ = this.baseUrl + "/api/speckle-receive?";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined and cannot be null.");
+        else
+            url_ += "ModelId=" + encodeURIComponent("" + modelId) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -2659,18 +2663,18 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processConvertToBeamOs(_response);
+            return this.processSpeckleRecieveOperation(_response);
         });
     }
 
-    protected processConvertToBeamOs(response: Response): Promise<ResultOfBeamOsModelBuilderDto> {
+    protected processSpeckleRecieveOperation(response: Response): Promise<ResultOfModelProposalResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfBeamOsModelBuilderDto.fromJS(resultData200);
+            result200 = ResultOfModelProposalResponse.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2678,7 +2682,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfBeamOsModelBuilderDto>(null as any);
+        return Promise.resolve<ResultOfModelProposalResponse>(null as any);
     }
 
     /**
@@ -3072,148 +3076,19 @@ export interface IBeamOsError {
     [key: string]: any;
 }
 
-export class BeamOsModelBuilderDto implements IBeamOsModelBuilderDto {
-    name?: string;
-    description?: string;
-    settings?: ModelSettings;
-    guidString?: string;
-    nodes?: PutNodeRequest[];
-    materials?: PutMaterialRequest[];
-    sectionProfiles?: PutSectionProfileRequest[];
-    sectionProfilesFromLibrary?: SectionProfileFromLibrary[];
-    element1ds?: PutElement1dRequest[];
-    pointLoads?: PutPointLoadRequest[];
-    momentLoads?: PutMomentLoadRequest[];
-
-    [key: string]: any;
-
-    constructor(data?: IBeamOsModelBuilderDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.name = _data["name"];
-            this.description = _data["description"];
-            this.settings = _data["settings"] ? ModelSettings.fromJS(_data["settings"]) : <any>undefined;
-            this.guidString = _data["guidString"];
-            if (Array.isArray(_data["nodes"])) {
-                this.nodes = [] as any;
-                for (let item of _data["nodes"])
-                    this.nodes!.push(PutNodeRequest.fromJS(item));
-            }
-            if (Array.isArray(_data["materials"])) {
-                this.materials = [] as any;
-                for (let item of _data["materials"])
-                    this.materials!.push(PutMaterialRequest.fromJS(item));
-            }
-            if (Array.isArray(_data["sectionProfiles"])) {
-                this.sectionProfiles = [] as any;
-                for (let item of _data["sectionProfiles"])
-                    this.sectionProfiles!.push(PutSectionProfileRequest.fromJS(item));
-            }
-            if (Array.isArray(_data["sectionProfilesFromLibrary"])) {
-                this.sectionProfilesFromLibrary = [] as any;
-                for (let item of _data["sectionProfilesFromLibrary"])
-                    this.sectionProfilesFromLibrary!.push(SectionProfileFromLibrary.fromJS(item));
-            }
-            if (Array.isArray(_data["element1ds"])) {
-                this.element1ds = [] as any;
-                for (let item of _data["element1ds"])
-                    this.element1ds!.push(PutElement1dRequest.fromJS(item));
-            }
-            if (Array.isArray(_data["pointLoads"])) {
-                this.pointLoads = [] as any;
-                for (let item of _data["pointLoads"])
-                    this.pointLoads!.push(PutPointLoadRequest.fromJS(item));
-            }
-            if (Array.isArray(_data["momentLoads"])) {
-                this.momentLoads = [] as any;
-                for (let item of _data["momentLoads"])
-                    this.momentLoads!.push(PutMomentLoadRequest.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): BeamOsModelBuilderDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new BeamOsModelBuilderDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["name"] = this.name;
-        data["description"] = this.description;
-        data["settings"] = this.settings ? this.settings.toJSON() : <any>undefined;
-        data["guidString"] = this.guidString;
-        if (Array.isArray(this.nodes)) {
-            data["nodes"] = [];
-            for (let item of this.nodes)
-                data["nodes"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.materials)) {
-            data["materials"] = [];
-            for (let item of this.materials)
-                data["materials"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.sectionProfiles)) {
-            data["sectionProfiles"] = [];
-            for (let item of this.sectionProfiles)
-                data["sectionProfiles"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.sectionProfilesFromLibrary)) {
-            data["sectionProfilesFromLibrary"] = [];
-            for (let item of this.sectionProfilesFromLibrary)
-                data["sectionProfilesFromLibrary"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.element1ds)) {
-            data["element1ds"] = [];
-            for (let item of this.element1ds)
-                data["element1ds"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.pointLoads)) {
-            data["pointLoads"] = [];
-            for (let item of this.pointLoads)
-                data["pointLoads"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.momentLoads)) {
-            data["momentLoads"] = [];
-            for (let item of this.momentLoads)
-                data["momentLoads"].push(item ? item.toJSON() : <any>undefined);
-        }
-        return data;
-    }
-}
-
-export interface IBeamOsModelBuilderDto {
-    name?: string;
-    description?: string;
-    settings?: ModelSettings;
-    guidString?: string;
-    nodes?: PutNodeRequest[];
-    materials?: PutMaterialRequest[];
-    sectionProfiles?: PutSectionProfileRequest[];
-    sectionProfilesFromLibrary?: SectionProfileFromLibrary[];
-    element1ds?: PutElement1dRequest[];
-    pointLoads?: PutPointLoadRequest[];
-    momentLoads?: PutMomentLoadRequest[];
-
-    [key: string]: any;
+export enum BeamOsObjectType {
+    Undefined = "Undefined",
+    Model = "Model",
+    Node = "Node",
+    Element1d = "Element1d",
+    Material = "Material",
+    SectionProfile = "SectionProfile",
+    PointLoad = "PointLoad",
+    MomentLoad = "MomentLoad",
+    DistributedLoad = "DistributedLoad",
+    DistributedMomentLoad = "DistributedMomentLoad",
+    LoadCase = "LoadCase",
+    LoadCombination = "LoadCombination",
 }
 
 export class CreateElement1dProposal implements ICreateElement1dProposal {
@@ -4689,6 +4564,7 @@ export enum ErrorType {
     NotFound = "NotFound",
     Unauthorized = "Unauthorized",
     Forbidden = "Forbidden",
+    InvalidOperation = "InvalidOperation",
 }
 
 export class Force implements IForce {
@@ -5789,6 +5665,7 @@ export class ModelProposalData implements IModelProposalData {
     resultSetProposals?: ResultSet[] | undefined;
     loadCaseProposals?: LoadCase[] | undefined;
     loadCombinationProposals?: LoadCombination[] | undefined;
+    proposalIssues?: ProposalIssueData[] | undefined;
 
     [key: string]: any;
 
@@ -5870,6 +5747,11 @@ export class ModelProposalData implements IModelProposalData {
                 for (let item of _data["loadCombinationProposals"])
                     this.loadCombinationProposals!.push(LoadCombination.fromJS(item));
             }
+            if (Array.isArray(_data["proposalIssues"])) {
+                this.proposalIssues = [] as any;
+                for (let item of _data["proposalIssues"])
+                    this.proposalIssues!.push(ProposalIssueData.fromJS(item));
+            }
         }
     }
 
@@ -5949,6 +5831,11 @@ export class ModelProposalData implements IModelProposalData {
             for (let item of this.loadCombinationProposals)
                 data["loadCombinationProposals"].push(item ? item.toJSON() : <any>undefined);
         }
+        if (Array.isArray(this.proposalIssues)) {
+            data["proposalIssues"] = [];
+            for (let item of this.proposalIssues)
+                data["proposalIssues"].push(item ? item.toJSON() : <any>undefined);
+        }
         return data;
     }
 }
@@ -5969,6 +5856,7 @@ export interface IModelProposalData {
     resultSetProposals?: ResultSet[] | undefined;
     loadCaseProposals?: LoadCase[] | undefined;
     loadCombinationProposals?: LoadCombination[] | undefined;
+    proposalIssues?: ProposalIssueData[] | undefined;
 
     [key: string]: any;
 }
@@ -6101,6 +5989,7 @@ export class ModelProposalResponse implements IModelProposalResponse {
     resultSetProposals?: ResultSet[] | undefined;
     loadCaseProposals?: LoadCase[] | undefined;
     loadCombinationProposals?: LoadCombination[] | undefined;
+    proposalIssues?: ProposalIssue[] | undefined;
 
     [key: string]: any;
 
@@ -6182,6 +6071,11 @@ export class ModelProposalResponse implements IModelProposalResponse {
                 for (let item of _data["loadCombinationProposals"])
                     this.loadCombinationProposals!.push(LoadCombination.fromJS(item));
             }
+            if (Array.isArray(_data["proposalIssues"])) {
+                this.proposalIssues = [] as any;
+                for (let item of _data["proposalIssues"])
+                    this.proposalIssues!.push(ProposalIssue.fromJS(item));
+            }
         }
     }
 
@@ -6261,6 +6155,11 @@ export class ModelProposalResponse implements IModelProposalResponse {
             for (let item of this.loadCombinationProposals)
                 data["loadCombinationProposals"].push(item ? item.toJSON() : <any>undefined);
         }
+        if (Array.isArray(this.proposalIssues)) {
+            data["proposalIssues"] = [];
+            for (let item of this.proposalIssues)
+                data["proposalIssues"].push(item ? item.toJSON() : <any>undefined);
+        }
         return data;
     }
 }
@@ -6281,6 +6180,7 @@ export interface IModelProposalResponse {
     resultSetProposals?: ResultSet[] | undefined;
     loadCaseProposals?: LoadCase[] | undefined;
     loadCombinationProposals?: LoadCombination[] | undefined;
+    proposalIssues?: ProposalIssue[] | undefined;
 
     [key: string]: any;
 }
@@ -8076,6 +7976,144 @@ export enum PressureUnit {
     PoundForcePerSquareInch = "PoundForcePerSquareInch",
 }
 
+export class ProposalIssue implements IProposalIssue {
+    id!: number;
+    proposedId!: ProposedID;
+    objectType!: BeamOsObjectType;
+    message!: string;
+    severity!: ProposalIssueSeverity;
+
+    [key: string]: any;
+
+    constructor(data?: IProposalIssue) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.proposedId = new ProposedID();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.proposedId = _data["proposedId"] ? ProposedID.fromJS(_data["proposedId"]) : new ProposedID();
+            this.objectType = _data["objectType"];
+            this.message = _data["message"];
+            this.severity = _data["severity"];
+        }
+    }
+
+    static fromJS(data: any): ProposalIssue {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProposalIssue();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["proposedId"] = this.proposedId ? this.proposedId.toJSON() : <any>undefined;
+        data["objectType"] = this.objectType;
+        data["message"] = this.message;
+        data["severity"] = this.severity;
+        return data;
+    }
+}
+
+export interface IProposalIssue {
+    id: number;
+    proposedId: ProposedID;
+    objectType: BeamOsObjectType;
+    message: string;
+    severity: ProposalIssueSeverity;
+
+    [key: string]: any;
+}
+
+export class ProposalIssueData implements IProposalIssueData {
+    proposedId!: ProposedID;
+    objectType!: BeamOsObjectType;
+    message!: string;
+    severity!: ProposalIssueSeverity;
+
+    [key: string]: any;
+
+    constructor(data?: IProposalIssueData) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.proposedId = new ProposedID();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.proposedId = _data["proposedId"] ? ProposedID.fromJS(_data["proposedId"]) : new ProposedID();
+            this.objectType = _data["objectType"];
+            this.message = _data["message"];
+            this.severity = _data["severity"];
+        }
+    }
+
+    static fromJS(data: any): ProposalIssueData {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProposalIssueData();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["proposedId"] = this.proposedId ? this.proposedId.toJSON() : <any>undefined;
+        data["objectType"] = this.objectType;
+        data["message"] = this.message;
+        data["severity"] = this.severity;
+        return data;
+    }
+}
+
+export interface IProposalIssueData {
+    proposedId: ProposedID;
+    objectType: BeamOsObjectType;
+    message: string;
+    severity: ProposalIssueSeverity;
+
+    [key: string]: any;
+}
+
+export enum ProposalIssueSeverity {
+    Undefined = "Undefined",
+    Critical = "Critical",
+    Error = "Error",
+    Warning = "Warning",
+    Information = "information",
+}
+
 export class ProposedID implements IProposedID {
     existingId!: number | undefined;
     proposedId!: number | undefined;
@@ -8798,62 +8836,6 @@ export class ResultOfBatchResponse implements IResultOfBatchResponse {
 
 export interface IResultOfBatchResponse {
     value: BatchResponse | undefined;
-    error: BeamOsError | undefined;
-    isError: boolean;
-
-    [key: string]: any;
-}
-
-export class ResultOfBeamOsModelBuilderDto implements IResultOfBeamOsModelBuilderDto {
-    value!: BeamOsModelBuilderDto | undefined;
-    error!: BeamOsError | undefined;
-    isError!: boolean;
-
-    [key: string]: any;
-
-    constructor(data?: IResultOfBeamOsModelBuilderDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"] ? BeamOsModelBuilderDto.fromJS(_data["value"]) : <any>undefined;
-            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
-            this.isError = _data["isError"];
-        }
-    }
-
-    static fromJS(data: any): ResultOfBeamOsModelBuilderDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new ResultOfBeamOsModelBuilderDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
-        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
-        data["isError"] = this.isError;
-        return data;
-    }
-}
-
-export interface IResultOfBeamOsModelBuilderDto {
-    value: BeamOsModelBuilderDto | undefined;
     error: BeamOsError | undefined;
     isError: boolean;
 

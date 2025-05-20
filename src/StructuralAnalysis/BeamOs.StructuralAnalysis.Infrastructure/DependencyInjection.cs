@@ -61,6 +61,7 @@ public static class DependencyInjection
         _ = services.AddScoped<IResultSetRepository, ResultSetRepository>();
         _ = services.AddScoped<IEnvelopeResultSetRepository, EnvelopeResultSetRepository>();
         _ = services.AddScoped<IModelProposalRepository, ModelProposalRepository>();
+        _ = services.AddScoped<IProposalIssueRepository, ProposalIssueRepository>();
 
         _ = services.AddScoped<IStructuralAnalysisUnitOfWork, UnitOfWork>();
 

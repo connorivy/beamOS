@@ -1,4 +1,5 @@
 using BeamOs.Common.Domain.Models;
+using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
@@ -6,8 +7,8 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 namespace BeamOs.StructuralAnalysis.Domain.Common;
 
 public class ExistingOrProposedId<TId, TProposedId> : BeamOSValueObject
-    where TId : struct, IIntBasedId
-    where TProposedId : struct, IIntBasedId
+    where TId : struct
+    where TProposedId : struct
 {
     public TId? ExistingId { get; init; }
     public TProposedId? ProposedId { get; init; }
@@ -22,7 +23,6 @@ public class ExistingOrProposedId<TId, TProposedId> : BeamOSValueObject
         this.ProposedId = proposedId;
     }
 
-    [Obsolete("EF Core Constructor", true)]
     protected ExistingOrProposedId(TId? existingId, TProposedId? proposedId)
         : base()
     {
@@ -35,6 +35,22 @@ public class ExistingOrProposedId<TId, TProposedId> : BeamOSValueObject
         yield return this.ExistingId;
         yield return this.ProposedId;
     }
+}
+
+public sealed class ExisitingOrProposedGenericId : ExistingOrProposedId<int, int>
+{
+    public static ExisitingOrProposedGenericId FromExistingId(int existingId) =>
+        new() { ExistingId = existingId };
+
+    public static ExisitingOrProposedGenericId FromProposedId(int proposedId) =>
+        new() { ProposedId = proposedId };
+
+    public ExisitingOrProposedGenericId()
+        : base(null, null) { }
+
+    [Obsolete("EF Core Constructor", true)]
+    private ExisitingOrProposedGenericId(int? existingId, int? proposedId)
+        : base(existingId, proposedId) { }
 }
 
 public sealed class ExistingOrProposedNodeId : ExistingOrProposedId<NodeId, NodeProposalId>

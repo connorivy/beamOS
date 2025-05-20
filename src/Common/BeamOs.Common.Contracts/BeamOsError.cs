@@ -130,6 +130,12 @@ public sealed class BeamOsError
         Dictionary<string, string>? metadata = null
     ) => new(code, description, ErrorType.Forbidden, metadata);
 
+    public static BeamOsError InvalidOperation(
+        string code = "General.InvalidOperation",
+        string description = "An 'Invalid Operation' error has occurred.",
+        Dictionary<string, string>? metadata = null
+    ) => new(code, description, ErrorType.InvalidOperation, metadata);
+
     /// <summary>
     /// Creates an <see cref="BeamOsError"/> with the given numeric <paramref name="type"/>,
     /// <paramref name="code"/>, and <paramref name="description"/>.

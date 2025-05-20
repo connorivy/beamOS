@@ -142,3 +142,9 @@ public class EnvelopeResultSetIdConverter : ValueConverter<EnvelopeResultSetId, 
     public EnvelopeResultSetIdConverter()
         : base(x => x.Id, x => new(x), null) { }
 }
+
+public class ProposalIssueIdConverter : ValueConverter<ProposalIssueId, int>
+{
+    public ProposalIssueIdConverter()
+        : base(x => x.Id, x => new(x), null) { }
+}

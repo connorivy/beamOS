@@ -1,5 +1,6 @@
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults;
+using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCombinations;
@@ -57,6 +58,7 @@ public record ModelProposalData : ModelProposalInfoData
     public List<ResultSet>? ResultSetProposals { get; init; }
     public List<LoadCase>? LoadCaseProposals { get; init; }
     public List<LoadCombination>? LoadCombinationProposals { get; init; }
+    public List<ProposalIssueData>? ProposalIssues { get; init; }
 }
 
 public record ModelProposal : ModelProposalData, IHasIntId
@@ -82,4 +84,43 @@ public record ModelProposalResponse : IHasIntId
     public List<ResultSet>? ResultSetProposals { get; init; }
     public List<LoadCase>? LoadCaseProposals { get; init; }
     public List<LoadCombination>? LoadCombinationProposals { get; init; }
+    public List<ProposalIssue>? ProposalIssues { get; init; }
+}
+
+public enum ProposalIssueSeverity
+{
+    Undefined = 0,
+
+    /// <summary>
+    /// The entire proposal will fail to be applied
+    /// </summary>
+    Critical,
+
+    /// <summary>
+    /// The proposed object will fail to be created
+    /// </summary>
+    Error,
+
+    /// <summary>
+    /// The proposed object will be created, but some data may have been inferred due to missing information
+    /// </summary>
+    Warning,
+
+    /// <summary>
+    /// The proposed object will be created, but there is some information that the user should be aware of
+    /// </summary>
+    information,
+}
+
+public record ProposalIssueData
+{
+    public required ProposedID ProposedId { get; init; }
+    public required BeamOsObjectType ObjectType { get; init; }
+    public required string Message { get; init; }
+    public required ProposalIssueSeverity Severity { get; init; }
+}
+
+public record ProposalIssue : ProposalIssueData, IHasIntId
+{
+    public required int Id { get; init; }
 }

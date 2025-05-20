@@ -2,6 +2,7 @@ using System.Runtime.CompilerServices;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
+using Objects.BuiltElements.Revit;
 using Speckle.Core.Api.GraphQL.Models;
 using Speckle.Core.Credentials;
 using Speckle.Core.Logging;
@@ -75,7 +76,7 @@ public class BeamOsSpeckleReceiveOperation
                 }
                 yield return this.ToBeamOs(element1d);
             }
-            if (item is Objects.BuiltElements.Revit.RevitBeam revitBeam) { }
+            if (item is RevitBeam revitBeam) { }
         }
     }
 
@@ -153,9 +154,12 @@ public class BeamOsSpeckleReceiveOperation
     {
         return speckleUnit switch
         {
-            "mm" => LengthUnitContract.Millimeter,
-            "meter" => LengthUnitContract.Meter,
-            _ => throw new NotSupportedException(),
+            "mm" or "millimeter" => LengthUnitContract.Millimeter,
+            "cm" or "centimeter" => LengthUnitContract.Centimeter,
+            "m" or "meter" => LengthUnitContract.Meter,
+            "ft" or "feet" or "foot" => LengthUnitContract.Foot,
+            "in" or "inch" => LengthUnitContract.Inch,
+            _ => throw new NotSupportedException("Unsupported unit: " + speckleUnit),
         };
     }
 }

@@ -1,6 +1,10 @@
 using BeamOs.Common.Api;
 using BeamOs.Common.Application;
+using BeamOs.Common.Contracts;
+using BeamOs.SpeckleConnector;
 using BeamOs.StructuralAnalysis.Application;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,7 +18,8 @@ public static class DependencyInjection
         services
             .AddStructuralAnalysisApplication()
             .AddStructuralAnalysisInfrastructureRequired()
-            .AddStructuralAnalysisApi();
+            .AddStructuralAnalysisApi()
+            .AddSpeckleRequired();
 
     public static IServiceCollection AddStructuralAnalysisConfigurable(
         this IServiceCollection services,
@@ -37,6 +42,13 @@ public static class DependencyInjection
             ServiceLifetime.Scoped,
             false
         );
+
+        // required for the speckle connector
+        services.AddScoped<
+            ICommandHandler<ModelResourceRequest<ModelProposalData>, ModelProposalResponse>,
+            CreateProposalCommandHandler
+        >();
+
         return services;
     }
 }
