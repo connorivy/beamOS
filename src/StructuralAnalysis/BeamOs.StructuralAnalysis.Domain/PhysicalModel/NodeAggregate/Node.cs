@@ -1,10 +1,5 @@
 using BeamOs.StructuralAnalysis.Domain.Common;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinations;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
-using Microsoft.EntityFrameworkCore;
-using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
