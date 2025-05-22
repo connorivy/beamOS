@@ -10,14 +10,14 @@ public class Element1dConfiguration : IEntityTypeConfiguration<Element1d>
     {
         _ = builder
             .HasOne(el => el.StartNode)
-            .WithMany(el => el.Elements)
+            .WithMany(el => el.StartNodeElements)
             .HasForeignKey(el => new { el.StartNodeId, el.ModelId })
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
         _ = builder
             .HasOne(el => el.EndNode)
-            .WithMany(el => el.Elements)
+            .WithMany(el => el.EndNodeElements)
             .HasForeignKey(el => new { el.EndNodeId, el.ModelId })
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);

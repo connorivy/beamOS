@@ -24,7 +24,15 @@ public class Node : BeamOsModelEntity<NodeId>
     public ICollection<PointLoad>? PointLoads { get; set; }
 
     public ICollection<MomentLoad>? MomentLoads { get; set; }
-    public ICollection<Element1d>? Elements { get; set; }
+    public IEnumerable<Element1d>? Elements =>
+        this.StartNodeElements?.Union(
+            this.EndNodeElements
+                ?? throw new InvalidOperationException(
+                    "StartNodeElements is not null but EndNodeElements is null."
+                )
+        );
+    public ICollection<Element1d>? StartNodeElements { get; set; }
+    public ICollection<Element1d>? EndNodeElements { get; set; }
 
     //public NodeResult? NodeResult { get; private set; }
 

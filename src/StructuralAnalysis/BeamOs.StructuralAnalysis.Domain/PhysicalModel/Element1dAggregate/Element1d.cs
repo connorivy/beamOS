@@ -25,13 +25,13 @@ public class Element1d : BeamOsModelEntity<Element1dId>
         this.SectionProfileId = sectionProfileId;
     }
 
-    public NodeId StartNodeId { get; private set; }
+    public NodeId StartNodeId { get; set; }
     public Node? StartNode { get; set; }
-    public NodeId EndNodeId { get; private set; }
+    public NodeId EndNodeId { get; set; }
     public Node? EndNode { get; set; }
-    public MaterialId MaterialId { get; private set; }
+    public MaterialId MaterialId { get; set; }
     public Material? Material { get; set; }
-    public SectionProfileId SectionProfileId { get; private set; }
+    public SectionProfileId SectionProfileId { get; set; }
     public SectionProfileInfoBase? SectionProfile { get; set; }
 
     //public ICollection<ShearForceDiagram>? ShearForceDiagrams { get; init; }
