@@ -98,9 +98,9 @@ internal sealed class NodeRepository(StructuralAnalysisDbContext dbContext)
 
     public async Task<Node> Update(PatchNodeCommand patchCommand)
     {
-        Node node = await this.DbContext
-            .Nodes
-            .FirstAsync(n => n.ModelId.Equals(patchCommand.ModelId) && n.Id == patchCommand.Id);
+        Node node = await this.DbContext.Nodes.FirstAsync(n =>
+            n.ModelId.Equals(patchCommand.ModelId) && n.Id == patchCommand.Id
+        );
 
         if (patchCommand.LocationPoint is not null)
         {

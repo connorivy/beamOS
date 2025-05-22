@@ -160,6 +160,12 @@ export interface IStructuralAnalysisApiClientV1 {
     putModel(modelId: string, body: ModelInfoData | null | undefined): Promise<ResultOfModelResponse>;
 
     /**
+     * @param body (optional) 
+     * @return OK
+     */
+    repairModel(modelId: string, body: string | undefined): Promise<ResultOfModelProposalResponse>;
+
+    /**
      * @return OK
      */
     createMaterial(modelId: string, body: CreateMaterialRequest): Promise<ResultOfMaterialResponse>;
@@ -1572,6 +1578,51 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             });
         }
         return Promise.resolve<ResultOfModelResponse>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    repairModel(modelId: string, body: string | undefined): Promise<ResultOfModelProposalResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/repair?";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (body === null)
+            throw new Error("The parameter 'body' cannot be null.");
+        else if (body !== undefined)
+            url_ += "Body=" + encodeURIComponent("" + body) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processRepairModel(_response);
+        });
+    }
+
+    protected processRepairModel(response: Response): Promise<ResultOfModelProposalResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfModelProposalResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfModelProposalResponse>(null as any);
     }
 
     /**

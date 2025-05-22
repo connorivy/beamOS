@@ -172,12 +172,13 @@ public class OctreeNode : BeamOsEntity<OctreeNodeId>
 
 public class Octree : BeamOsModelEntity<OctreeId>
 {
+    private const double DefaultStartNodeSize = 1.0;
     public OctreeNode Root { get; private set; }
 
-    public Octree(ModelId modelId, Point center, double length, OctreeId? id = null)
+    public Octree(ModelId modelId, Point point, double startNodeSize, OctreeId? id = null)
         : base(id ?? new(), modelId)
     {
-        this.Root = new OctreeNode(center, length);
+        this.Root = new OctreeNode(point, startNodeSize);
     }
 
     // For EF Core
@@ -204,7 +205,7 @@ public class Octree : BeamOsModelEntity<OctreeId>
 
         while (!this.IsPointWithinRoot(position))
         {
-            this.ExpandRootToFit(position);
+            this.Root = ExpandRootToFit(this.Root, position);
         }
         this.Root.Insert(node, position);
     }
@@ -220,11 +221,11 @@ public class Octree : BeamOsModelEntity<OctreeId>
             && point.Z.Meters <= this.Root.Center.Z.Meters + half;
     }
 
-    private void ExpandRootToFit(Point point)
+    private static OctreeNode ExpandRootToFit(OctreeNode originalRoot, Point point)
     {
-        double oldLength = this.Root.Length;
+        double oldLength = originalRoot.Length;
         double newLength = oldLength * 2.0;
-        Point oldCenter = this.Root.Center;
+        Point oldCenter = originalRoot.Center;
         // Determine in which direction to expand
         double dx = (point.X.Meters < oldCenter.X.Meters) ? -1 : 1;
         double dy = (point.Y.Meters < oldCenter.Y.Meters) ? -1 : 1;
@@ -251,8 +252,9 @@ public class Octree : BeamOsModelEntity<OctreeId>
         {
             childIndex |= 4;
         }
-        newRoot.Children![childIndex] = this.Root;
-        this.Root = newRoot;
+        newRoot.Children![childIndex] = originalRoot;
+
+        return newRoot;
     }
 
     public List<Node> FindNodesWithin(Point searchPoint, double toleranceMeters)

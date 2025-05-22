@@ -1,7 +1,6 @@
 using BeamOs.Common.Domain.Models;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.EnvelopeResultSets;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
-using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
@@ -23,14 +22,16 @@ public class Model : BeamOsEntity<ModelId>
     public string Description { get; private set; }
     public ModelSettings Settings { get; private set; }
     public DateTimeOffset LastModified { get; set; } = DateTimeOffset.UtcNow;
-    private Octree? nodeOctree;
 
-    public double MinX { get; set; } = double.MaxValue;
-    public double MinY { get; set; } = double.MaxValue;
-    public double MinZ { get; set; } = double.MaxValue;
-    public double MaxX { get; set; } = double.MinValue;
-    public double MaxY { get; set; } = double.MinValue;
-    public double MaxZ { get; set; } = double.MinValue;
+    // public Octree? NodeOctree { get; private set; }
+    // public OctreeId? NodeOctreeId { get; set; }
+
+    // public double MinX { get; set; } = double.MaxValue;
+    // public double MinY { get; set; } = double.MaxValue;
+    // public double MinZ { get; set; } = double.MaxValue;
+    // public double MaxX { get; set; } = double.MinValue;
+    // public double MaxY { get; set; } = double.MinValue;
+    // public double MaxZ { get; set; } = double.MinValue;
 
     public IList<Node>? Nodes { get; set; }
     public IList<Element1d>? Element1ds { get; init; }
@@ -45,34 +46,28 @@ public class Model : BeamOsEntity<ModelId>
     public IList<EnvelopeResultSet>? EnvelopeResultSets { get; init; }
     public IList<ModelProposal>? ModelProposals { get; init; }
 
-    public void AddNode(Node node)
-    {
-        this.Nodes ??= [];
-        this.Nodes.Add(node);
-        double x = node.LocationPoint.X.Meters;
-        double y = node.LocationPoint.Y.Meters;
-        double z = node.LocationPoint.Z.Meters;
+    // public void AddNode(Node node)
+    // {
+    //     this.Nodes ??= [];
+    //     this.Nodes.Add(node);
+    //     double x = node.LocationPoint.X.Meters;
+    //     double y = node.LocationPoint.Y.Meters;
+    //     double z = node.LocationPoint.Z.Meters;
 
-        if (this.nodeOctree is null)
-        {
-            this.MinX = this.MaxX = x;
-            this.MinY = this.MaxY = y;
-            this.MinZ = this.MaxZ = z;
-            Point center = new(x, y, z, node.LocationPoint.X.Unit);
-            double halfSize = 1.0;
-            this.nodeOctree = new Octree(this.Id, center, halfSize);
-        }
-        else
-        {
-            this.MinX = Math.Min(this.MinX, x);
-            this.MinY = Math.Min(this.MinY, y);
-            this.MinZ = Math.Min(this.MinZ, z);
-            this.MaxX = Math.Max(this.MaxX, x);
-            this.MaxY = Math.Max(this.MaxY, y);
-            this.MaxZ = Math.Max(this.MaxZ, z);
-        }
-        this.nodeOctree.Add(node);
-    }
+    //     if (this.NodeOctree is null)
+    //     {
+    //         throw new InvalidOperationException("NodeOctree is not loaded.");
+    //     }
+
+    //     this.MinX = Math.Min(this.MinX, x);
+    //     this.MinY = Math.Min(this.MinY, y);
+    //     this.MinZ = Math.Min(this.MinZ, z);
+    //     this.MaxX = Math.Max(this.MaxX, x);
+    //     this.MaxY = Math.Max(this.MaxY, y);
+    //     this.MaxZ = Math.Max(this.MaxZ, z);
+
+    //     this.NodeOctree.Add(node);
+    // }
 
     [Obsolete("EF Core Constructor", true)]
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

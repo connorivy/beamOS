@@ -54,7 +54,7 @@ internal abstract class ModelResourceRepositoryBase<TId, TEntity>(
             .Select(m => m.Id)
             .ToListAsync(ct);
 
-    public async virtual Task<TEntity?> GetSingle(
+    public virtual async Task<TEntity?> GetSingle(
         ModelId modelId,
         TId id,
         CancellationToken ct = default

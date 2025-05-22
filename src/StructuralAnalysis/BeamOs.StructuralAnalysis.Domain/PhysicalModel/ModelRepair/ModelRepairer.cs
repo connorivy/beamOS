@@ -1,31 +1,8 @@
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
-namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
-
-public interface IModelRepairRule
-{
-    public void Apply(
-        IList<Node> nearbyStartNodes,
-        IList<Element1d> element1DsCloseToStart,
-        IList<Node> nearbyEndNodes,
-        IList<Element1d> element1DsCloseToEnd,
-        ModelProposal modelProposal,
-        double tolerance
-    );
-}
-
-public class NodeMergeRule : IModelRepairRule
-{
-    public void Apply(
-        IList<Node> nearbyStartNodes,
-        IList<Element1d> element1DsCloseToStart,
-        IList<Node> nearbyEndNodes,
-        IList<Element1d> element1DsCloseToEnd,
-        ModelProposal modelProposal,
-        double tolerance
-    ) { }
-}
+namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
 public class ElementEndpointRule : IModelRepairRule
 {
@@ -34,7 +11,7 @@ public class ElementEndpointRule : IModelRepairRule
         IList<Element1d> element1DsCloseToStart,
         IList<Node> nearbyEndNodes,
         IList<Element1d> element1DsCloseToEnd,
-        ModelProposal modelProposal,
+        ModelProposalBuilder modelProposal,
         double tolerance
     ) { }
 }
@@ -63,10 +40,8 @@ public class ModelRepairer
 
     public ModelProposal ProposeRepairs(Model model)
     {
-        List<NodeProposal> nodeProposals = [];
-        List<Element1dProposal> element1dProposals = [];
-        ModelProposal modelProposal = new(
-            model,
+        ModelProposalBuilder modelProposal = new(
+            model.Id,
             "Repair Proposal",
             "Proposed repairs for model connectivity",
             model.Settings
@@ -107,6 +82,6 @@ public class ModelRepairer
                 );
             }
         }
-        return modelProposal;
+        return modelProposal.Build();
     }
 }
