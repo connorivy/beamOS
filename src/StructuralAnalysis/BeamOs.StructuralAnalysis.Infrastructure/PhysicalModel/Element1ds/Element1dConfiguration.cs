@@ -9,6 +9,20 @@ public class Element1dConfiguration : IEntityTypeConfiguration<Element1d>
     public void Configure(EntityTypeBuilder<Element1d> builder)
     {
         _ = builder
+            .HasOne(el => el.StartNode)
+            .WithMany(el => el.Elements)
+            .HasForeignKey(el => new { el.StartNodeId, el.ModelId })
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+
+        _ = builder
+            .HasOne(el => el.EndNode)
+            .WithMany(el => el.Elements)
+            .HasForeignKey(el => new { el.EndNodeId, el.ModelId })
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+
+        _ = builder
             .HasOne(el => el.Material)
             .WithMany()
             .HasForeignKey(el => new { el.MaterialId, el.ModelId })

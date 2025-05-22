@@ -1,4 +1,7 @@
 using BeamOs.Common.Domain.Models;
+using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.EnvelopeResultSets;
+using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
+using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
@@ -35,20 +38,27 @@ public class Model : BeamOsEntity<ModelId>
     public IList<SectionProfile>? SectionProfiles { get; init; }
     public IList<SectionProfileFromLibrary>? SectionProfilesFromLibrary { get; init; }
     public IList<PointLoad>? PointLoads { get; init; }
+    public IList<MomentLoad>? MomentLoads { get; init; }
+    public IList<LoadCase>? LoadCases { get; init; }
+    public IList<LoadCombination>? LoadCombinations { get; init; }
+    public IList<ResultSet>? ResultSets { get; init; }
+    public IList<EnvelopeResultSet>? EnvelopeResultSets { get; init; }
+    public IList<ModelProposal>? ModelProposals { get; init; }
 
     public void AddNode(Node node)
     {
-        this.Nodes ??= [node];
+        this.Nodes ??= [];
+        this.Nodes.Add(node);
         double x = node.LocationPoint.X.Meters;
         double y = node.LocationPoint.Y.Meters;
         double z = node.LocationPoint.Z.Meters;
 
-        if (this.nodeOctree == null)
+        if (this.nodeOctree is null)
         {
             this.MinX = this.MaxX = x;
             this.MinY = this.MaxY = y;
             this.MinZ = this.MaxZ = z;
-            Point3D center = new(x, y, z);
+            Point center = new(x, y, z, node.LocationPoint.X.Unit);
             double halfSize = 1.0;
             this.nodeOctree = new Octree(this.Id, center, halfSize);
         }

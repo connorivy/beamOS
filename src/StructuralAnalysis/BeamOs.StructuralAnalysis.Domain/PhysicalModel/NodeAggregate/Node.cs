@@ -1,4 +1,5 @@
 using BeamOs.StructuralAnalysis.Domain.Common;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
@@ -23,6 +24,7 @@ public class Node : BeamOsModelEntity<NodeId>
     public ICollection<PointLoad>? PointLoads { get; set; }
 
     public ICollection<MomentLoad>? MomentLoads { get; set; }
+    public ICollection<Element1d>? Elements { get; set; }
 
     //public NodeResult? NodeResult { get; private set; }
 

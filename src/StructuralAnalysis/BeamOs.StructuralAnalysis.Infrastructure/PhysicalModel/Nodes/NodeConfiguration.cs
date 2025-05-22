@@ -1,4 +1,3 @@
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -15,20 +14,6 @@ public class NodeConfiguration : IEntityTypeConfiguration<Node>
             .HasForeignKey(el => el.ModelId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
-
-        builder
-            .HasMany<Element1d>()
-            .WithOne(el => el.StartNode)
-            .HasForeignKey(el => new { el.StartNodeId, el.ModelId })
-            .IsRequired()
-            .OnDelete(DeleteBehavior.ClientCascade);
-
-        builder
-            .HasMany<Element1d>()
-            .WithOne(el => el.EndNode)
-            .HasForeignKey(el => new { el.EndNodeId, el.ModelId })
-            .IsRequired()
-            .OnDelete(DeleteBehavior.ClientCascade);
 
         builder
             .HasMany(n => n.PointLoads)
