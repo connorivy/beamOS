@@ -1,0 +1,195 @@
+@using BeamOs.CodeGen.EditorApi
+@using BeamOs.CodeGen.StructuralAnalysisApiClient
+@using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models
+@using MudBlazor
+
+@if (proposalInfos is null)
+{
+    <MudPaper Class="flex flex-col items-center justify-center h-32 w-full">
+        <MudProgressCircular Indeterminate Color="Color.Primary" Size="Size.Large" />
+        <MudText Class="mt-2" Typo="Typo.h6">Loading proposals...</MudText>
+    </MudPaper>
+}
+else
+{
+    @if (selectedProposal is null)
+    {
+        <MudPaper Class="p-3 w-full max-w-xs mx-auto mt-4">
+            <MudText Typo="Typo.h6" Class="mb-2">Proposals</MudText>
+            <MudList T="ModelProposalInfo" Class="w-full">
+                @foreach (var proposal in proposalInfos)
+                {
+                    <MudListItem Value="@proposal">
+                        <div class="flex flex-row">
+                            <div class="flex-1 flex flex-col">
+                                <MudText Class="font-semibold">@proposal.Description</MudText>
+                                <MudText Class="text-xs text-gray-500">@GetRelativeTime(proposal.LastModified)</MudText>
+                            </div>
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small"
+                                    OnClick="() => LoadProposal(proposal.Id)">View</MudButton>
+                        </div>
+                    </MudListItem>
+                }
+            </MudList>
+        </MudPaper>
+    }
+    else
+    {
+        <MudPaper Class="p-3 w-full max-w-xs mx-auto mt-4 flex flex-col gap-4">
+            <MudText Typo="Typo.h6">Proposal Details</MudText>
+            <MudText Class="truncate"><span class="font-semibold">ID:</span> @selectedProposal.Id</MudText>
+            <MudText Class="truncate"><span class="font-semibold">Last Modified:</span> @selectedProposal.LastModified</MudText>
+            <MudText Class="truncate"><span class="font-semibold">Description:</span>
+                @selectedProposal.ModelProposal?.Description</MudText>
+            <div class="flex gap-2 mt-2">
+                <MudButton Variant="Variant.Filled" Color="Color.Success" Size="Size.Small"
+                    OnClick="() => AcceptProposal(selectedProposal.Id)">Accept</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Error" Size="Size.Small"
+                    OnClick="() => RejectProposal(selectedProposal.Id)">Reject</MudButton>
+                <MudButton Variant="Variant.Outlined" Color="Color.Default" Size="Size.Small"
+                    OnClick="() => selectedProposal = null">Back</MudButton>
+            </div>
+            <MudDivider />
+            <MudText Typo="Typo.subtitle2" Class="mb-1">Proposal Issues</MudText>
+            <MudSelect @bind-Value="minSeverity" Label="Minimum Severity" Dense="true" Class="mb-2 w-full">
+                @foreach (var sev in availableSeverities)
+                {
+                    <MudSelectItem Value="@sev">@sev</MudSelectItem>
+                }
+            </MudSelect>
+            @if (selectedProposal.ProposalIssues is not null && selectedProposal.ProposalIssues.Count > 0)
+            {
+                if (this.FilteredIssues.Any())
+                {
+                    <MudList T="ProposalIssue" Class="divide-y divide-gray-200">
+                        @foreach (var issue in this.FilteredIssues)
+                        {
+                            <MudListItem Value="@issue" Class="flex flex-col gap-1 py-1">
+                                <div class="flex flex-col">
+                                    <MudText Class="truncate"><span class="font-semibold">ID:</span> @issue.ProposedId.ProposedId</MudText>
+                                    <MudText Class="truncate"><span class="font-semibold">Object Type:</span> @issue.ObjectType</MudText>
+                                    <MudText ><span class="font-semibold">Message:</span> @issue.Message</MudText>
+                                    <MudText Class="truncate"><span class="font-semibold">Severity:</span> @issue.Severity</MudText>
+                                    @* <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small"
+                                        OnClick="() => ResolveIssue(issue)" Class="self-end mt-1">Resolve</MudButton> *@
+                                </div>
+                            </MudListItem>
+                        }
+                    </MudList>
+                }
+                else
+                {
+                    <MudText>No issues found for this severity.</MudText>
+                }
+            }
+            else
+            {
+                <MudText>No issues found for this proposal.</MudText>
+            }
+        </MudPaper>
+    }
+}
+
+@code {
+    [Parameter]
+    public Guid ModelId { get; set; }
+
+    [Parameter]
+    public IEditorApiAlpha EditorApi { get; set; } = default!;
+
+    [Inject]
+    private IStructuralAnalysisApiClientV1 StructuralAnalysisApiClient { get; set; } = default!;
+
+    [Inject]
+    private ISnackbar Snackbar { get; set; } = default!;
+
+    private List<ModelProposalInfo>? proposalInfos;
+    private ModelProposalResponse? selectedProposal;
+    private ProposalIssueSeverity minSeverity = ProposalIssueSeverity.Information;
+
+    private ProposalIssueSeverity[] availableSeverities = Enum.GetValues<ProposalIssueSeverity>().Where(s => s !=
+    ProposalIssueSeverity.Undefined).ToArray();
+
+    private IEnumerable<ProposalIssue> FilteredIssues =>
+    selectedProposal?.ProposalIssues == null
+    ? Enumerable.Empty<ProposalIssue>()
+    : selectedProposal.ProposalIssues.Where(i => i.Severity >= minSeverity);
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        var response = await StructuralAnalysisApiClient.GetModelProposalsAsync(this.ModelId);
+        if (response.IsSuccess)
+        {
+            proposalInfos = response.Value;
+        }
+        else
+        {
+            Snackbar.Add(response.Error.Description, Severity.Error);
+            proposalInfos = [];
+        }
+    }
+
+    private async Task LoadProposal(int proposalId)
+    {
+        var response = await StructuralAnalysisApiClient.GetModelProposalAsync(this.ModelId, proposalId);
+        if (response.IsSuccess)
+        {
+            selectedProposal = response.Value;
+            await this.EditorApi.DisplayModelProposalAsync(response.Value);
+        }
+        else
+        {
+            Snackbar.Add("Failed to load selected proposal", Severity.Error);
+        }
+    }
+
+    private async Task AcceptProposal(int proposalId)
+    {
+        var response = await StructuralAnalysisApiClient.AcceptModelProposalAsync(this.ModelId, proposalId);
+        if (response.IsSuccess)
+        {
+            Snackbar.Add("Proposal accepted", Severity.Success);
+            selectedProposal = null;
+            await this.EditorApi.ClearModelProposalsAsync();
+        }
+        else
+        {
+            Snackbar.Add(response.Error.Description, Severity.Error);
+        }
+    }
+
+    private async Task RejectProposal(int proposalId)
+    {
+        var response = await StructuralAnalysisApiClient.RejectModelProposalAsync(this.ModelId, proposalId);
+        if (response.IsSuccess)
+        {
+            Snackbar.Add("Proposal rejected", Severity.Success);
+            selectedProposal = null;
+            await this.EditorApi.ClearModelProposalsAsync();
+        }
+        else
+        {
+            Snackbar.Add("Failed to reject proposal", Severity.Error);
+        }
+    }
+
+    private void ResolveIssue(object issue)
+    {
+        Snackbar.Add("Resolve action not yet implemented.", Severity.Info);
+    }
+
+    private string GetRelativeTime(DateTimeOffset lastModified)
+    {
+        var span = DateTime.UtcNow - lastModified.ToUniversalTime();
+        if (span.TotalSeconds < 60)
+            return $"{(int)span.TotalSeconds} seconds ago";
+        if (span.TotalMinutes < 60)
+            return $"{(int)span.TotalMinutes} minutes ago";
+        if (span.TotalHours < 24)
+            return $"{(int)span.TotalHours} hours ago";
+        if (span.TotalDays < 7)
+            return $"{(int)span.TotalDays} days ago";
+        return lastModified.ToString();
+    }
+}

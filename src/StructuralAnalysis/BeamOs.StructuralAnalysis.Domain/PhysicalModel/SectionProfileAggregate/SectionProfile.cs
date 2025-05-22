@@ -2,7 +2,6 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.DesignCodes.AISC._360_16;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
-using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 
@@ -147,4 +146,145 @@ public class SectionProfile : SectionProfileInfoBase, IHasStrongAxisPlasticSecti
     private SectionProfile() { }
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+}
+
+public abstract class SectionProfileProposalInfoBase
+    : BeamOsModelProposalEntity<SectionProfileProposalId, SectionProfileInfoBase, SectionProfileId>
+{
+    public SectionProfileProposalInfoBase(
+        ModelId modelId,
+        ModelProposalId modelProposalId,
+        string name,
+        SectionProfileProposalId? id = null
+    )
+        : base(id ?? new(), modelProposalId, modelId)
+    {
+        this.Name = name;
+    }
+
+    public string Name { get; set; }
+
+    public abstract SectionProfileInfoBase ToDomain();
+
+    [Obsolete("EF Core Constructor", true)]
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    protected SectionProfileProposalInfoBase() { }
+
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+}
+
+public sealed class SectionProfileProposal : SectionProfileProposalInfoBase
+{
+    public SectionProfileProposal(
+        ModelId modelId,
+        ModelProposalId modelProposalId,
+        string name,
+        Area area,
+        AreaMomentOfInertia strongAxisMomentOfInertia,
+        AreaMomentOfInertia weakAxisMomentOfInertia,
+        AreaMomentOfInertia polarMomentOfInertia,
+        Volume strongAxisPlasticSectionModulus,
+        Volume weakAxisPlasticSectionModulus,
+        Area? strongAxisShearArea,
+        Area? weakAxisShearArea,
+        SectionProfileProposalId? id = null
+    )
+        : base(modelId, modelProposalId, name, id)
+    {
+        this.Area = area;
+        this.StrongAxisMomentOfInertia = strongAxisMomentOfInertia;
+        this.WeakAxisMomentOfInertia = weakAxisMomentOfInertia;
+        this.PolarMomentOfInertia = polarMomentOfInertia;
+        this.StrongAxisPlasticSectionModulus = strongAxisPlasticSectionModulus;
+        this.WeakAxisPlasticSectionModulus = weakAxisPlasticSectionModulus;
+        this.StrongAxisShearArea = strongAxisShearArea;
+        this.WeakAxisShearArea = weakAxisShearArea;
+    }
+
+    public SectionProfileProposal(
+        SectionProfile sectionProfile,
+        ModelProposalId modelProposalId,
+        string? name = null,
+        Area? area = null,
+        AreaMomentOfInertia? strongAxisMomentOfInertia = null,
+        AreaMomentOfInertia? weakAxisMomentOfInertia = null,
+        AreaMomentOfInertia? polarMomentOfInertia = null,
+        Volume? strongAxisPlasticSectionModulus = null,
+        Volume? weakAxisPlasticSectionModulus = null,
+        Area? strongAxisShearArea = null,
+        Area? weakAxisShearArea = null,
+        SectionProfileProposalId? id = null
+    )
+        : this(
+            sectionProfile.ModelId,
+            modelProposalId,
+            name ?? sectionProfile.Name,
+            area ?? sectionProfile.Area,
+            strongAxisMomentOfInertia ?? sectionProfile.StrongAxisMomentOfInertia,
+            weakAxisMomentOfInertia ?? sectionProfile.WeakAxisMomentOfInertia,
+            polarMomentOfInertia ?? sectionProfile.PolarMomentOfInertia,
+            strongAxisPlasticSectionModulus ?? sectionProfile.StrongAxisPlasticSectionModulus,
+            weakAxisPlasticSectionModulus ?? sectionProfile.WeakAxisPlasticSectionModulus,
+            strongAxisShearArea ?? sectionProfile.StrongAxisShearArea,
+            weakAxisShearArea ?? sectionProfile.WeakAxisShearArea,
+            id
+        ) { }
+
+    public Area Area { get; set; }
+    public AreaMomentOfInertia StrongAxisMomentOfInertia { get; set; }
+    public AreaMomentOfInertia WeakAxisMomentOfInertia { get; set; }
+    public AreaMomentOfInertia PolarMomentOfInertia { get; set; }
+    public Volume StrongAxisPlasticSectionModulus { get; set; }
+    public Volume WeakAxisPlasticSectionModulus { get; set; }
+    public Area? StrongAxisShearArea { get; set; }
+    public Area? WeakAxisShearArea { get; set; }
+
+    public override SectionProfile ToDomain()
+    {
+        return new SectionProfile(
+            this.ModelId,
+            this.Name,
+            this.Area,
+            this.StrongAxisMomentOfInertia,
+            this.WeakAxisMomentOfInertia,
+            this.PolarMomentOfInertia,
+            this.StrongAxisPlasticSectionModulus,
+            this.WeakAxisPlasticSectionModulus,
+            this.StrongAxisShearArea,
+            this.WeakAxisShearArea
+        );
+    }
+
+    [Obsolete("EF Core Constructor", true)]
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    private SectionProfileProposal() { }
+
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+}
+
+public sealed class SectionProfileProposalFromLibrary : SectionProfileProposalInfoBase
+{
+    public SectionProfileProposalFromLibrary(
+        ModelId modelId,
+        ModelProposalId modelProposalId,
+        string name,
+        StructuralCode library,
+        SectionProfileProposalId? id = null
+    )
+        : base(modelId, modelProposalId, name, id)
+    {
+        this.Library = library;
+    }
+
+    public StructuralCode Library { get; set; }
+
+    public override SectionProfileFromLibrary ToDomain()
+    {
+        return new SectionProfileFromLibrary(this.ModelId, this.Name, this.Library);
+    }
+
+    [Obsolete("EF Core Constructor", true)]
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+    private SectionProfileProposalFromLibrary() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 }

@@ -1720,6 +1720,22 @@ export interface IBeamOsError {
     metadata?: { [key: string]: string; } | undefined;
 }
 
+export enum BeamOsObjectType {
+    _0 = 0,
+    _1 = 1,
+    _2 = 2,
+    _3 = 3,
+    _4 = 4,
+    _5 = 5,
+    _6 = 6,
+    _7 = 7,
+    _8 = 8,
+    _9 = 9,
+    _10 = 10,
+    _11 = 11,
+    _12 = 12,
+}
+
 export class ChangeSelectionCommand implements IChangeSelectionCommand {
     canvasId!: string;
     selectedObjects!: SelectedObject[];
@@ -2361,6 +2377,7 @@ export enum ErrorType {
     _5 = 5,
     _6 = 6,
     _7 = 7,
+    _8 = 8,
 }
 
 export class Force implements IForce {
@@ -2825,6 +2842,7 @@ export class ModelProposalResponse implements IModelProposalResponse {
     resultSetProposals?: ResultSet[] | undefined;
     loadCaseProposals?: LoadCase[] | undefined;
     loadCombinationProposals?: LoadCombination[] | undefined;
+    proposalIssues?: ProposalIssue[] | undefined;
 
     constructor(data?: IModelProposalResponse) {
         if (data) {
@@ -2903,6 +2921,11 @@ export class ModelProposalResponse implements IModelProposalResponse {
                 for (let item of _data["loadCombinationProposals"])
                     this.loadCombinationProposals!.push(LoadCombination.fromJS(item));
             }
+            if (Array.isArray(_data["proposalIssues"])) {
+                this.proposalIssues = [] as any;
+                for (let item of _data["proposalIssues"])
+                    this.proposalIssues!.push(ProposalIssue.fromJS(item));
+            }
         }
     }
 
@@ -2978,6 +3001,11 @@ export class ModelProposalResponse implements IModelProposalResponse {
             for (let item of this.loadCombinationProposals)
                 data["loadCombinationProposals"].push(item ? item.toJSON() : <any>undefined);
         }
+        if (Array.isArray(this.proposalIssues)) {
+            data["proposalIssues"] = [];
+            for (let item of this.proposalIssues)
+                data["proposalIssues"].push(item ? item.toJSON() : <any>undefined);
+        }
         return data;
     }
 }
@@ -2998,6 +3026,7 @@ export interface IModelProposalResponse {
     resultSetProposals?: ResultSet[] | undefined;
     loadCaseProposals?: LoadCase[] | undefined;
     loadCombinationProposals?: LoadCombination[] | undefined;
+    proposalIssues?: ProposalIssue[] | undefined;
 }
 
 export class ModelResponse implements IModelResponse {
@@ -3910,6 +3939,81 @@ export enum PressureUnit {
     _19 = 19,
     _21 = 21,
     _22 = 22,
+}
+
+export class ProposalIssue implements IProposalIssue {
+    proposedId!: ProposedID;
+    objectType!: BeamOsObjectType;
+    message!: string;
+    severity!: ProposalIssueSeverity;
+    code!: ProposalIssueCode;
+    id!: number;
+
+    constructor(data?: IProposalIssue) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.proposedId = new ProposedID();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.proposedId = _data["proposedId"] ? ProposedID.fromJS(_data["proposedId"]) : new ProposedID();
+            this.objectType = _data["objectType"];
+            this.message = _data["message"];
+            this.severity = _data["severity"];
+            this.code = _data["code"];
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): ProposalIssue {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProposalIssue();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["proposedId"] = this.proposedId ? this.proposedId.toJSON() : <any>undefined;
+        data["objectType"] = this.objectType;
+        data["message"] = this.message;
+        data["severity"] = this.severity;
+        data["code"] = this.code;
+        data["id"] = this.id;
+        return data;
+    }
+}
+
+export interface IProposalIssue {
+    proposedId: ProposedID;
+    objectType: BeamOsObjectType;
+    message: string;
+    severity: ProposalIssueSeverity;
+    code: ProposalIssueCode;
+    id: number;
+}
+
+export enum ProposalIssueCode {
+    _0 = 0,
+    _1 = 1,
+    _2 = 2,
+    _3 = 3,
+    _4 = 4,
+}
+
+export enum ProposalIssueSeverity {
+    _0 = 0,
+    _10 = 10,
+    _20 = 20,
+    _30 = 30,
+    _40 = 40,
 }
 
 export class ProposedID implements IProposedID {

@@ -4,9 +4,10 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.SectionProfiles;
 
-public class SectionProfileProposalConfiguration : IEntityTypeConfiguration<SectionProfileProposal>
+public class SectionProfileProposalFromLibraryConfiguration
+    : IEntityTypeConfiguration<SectionProfileProposalFromLibrary>
 {
-    public void Configure(EntityTypeBuilder<SectionProfileProposal> builder)
+    public void Configure(EntityTypeBuilder<SectionProfileProposalFromLibrary> builder)
     {
         builder
             .HasOne(el => el.Model)
@@ -17,7 +18,7 @@ public class SectionProfileProposalConfiguration : IEntityTypeConfiguration<Sect
 
         builder
             .HasOne(el => el.ModelProposal)
-            .WithMany(el => el.SectionProfileProposals)
+            .WithMany(el => el.SectionProfileProposalsFromLibrary)
             .HasPrincipalKey(el => new { el.Id, el.ModelId })
             .HasForeignKey(el => new { el.ModelProposalId, el.ModelId })
             .IsRequired()

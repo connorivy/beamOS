@@ -199,35 +199,35 @@ public sealed class Element1dProposal
     public ExistingOrProposedMaterialId MaterialId { get; private set; }
     public ExistingOrProposedSectionProfileId SectionProfileId { get; private set; }
 
-    public Element1d ToDomain(Dictionary<NodeProposalId, NodeId> nodeProposalIdToNewIdDict)
+    public Element1d ToDomain(
+        Dictionary<NodeProposalId, Node> nodeProposalIdToNewIdDict,
+        Dictionary<MaterialProposalId, Material> materialProposalIdToNewIdDict,
+        Dictionary<
+            SectionProfileProposalId,
+            SectionProfileInfoBase
+        > sectionProfileProposalIdToNewIdDict
+    )
     {
-        NodeId startNodeId;
-        NodeId endNodeId;
-        if (this.StartNodeId.ProposedId is not null)
-        {
-            startNodeId = nodeProposalIdToNewIdDict[this.StartNodeId.ProposedId.Value];
-        }
-        else
-        {
-            startNodeId = this.StartNodeId.ExistingId.Value;
-        }
-
-        if (this.EndNodeId.ProposedId is not null)
-        {
-            endNodeId = nodeProposalIdToNewIdDict[this.EndNodeId.ProposedId.Value];
-        }
-        else
-        {
-            endNodeId = this.EndNodeId.ExistingId.Value;
-        }
+        var (startNodeId, startNode) = this.StartNodeId.ToIdAndEntity(nodeProposalIdToNewIdDict);
+        var (endNodeId, endNode) = this.EndNodeId.ToIdAndEntity(nodeProposalIdToNewIdDict);
+        var (materialId, material) = this.MaterialId.ToIdAndEntity(materialProposalIdToNewIdDict);
+        var (sectionProfileId, sectionProfile) = this.SectionProfileId.ToIdAndEntity(
+            sectionProfileProposalIdToNewIdDict
+        );
         return new(
             this.ModelId,
             startNodeId,
             endNodeId,
-            this.MaterialId.ExistingId.Value,
-            this.SectionProfileId.ExistingId.Value,
+            materialId,
+            sectionProfileId,
             this.ExistingId
-        );
+        )
+        {
+            StartNode = startNode,
+            EndNode = endNode,
+            Material = material,
+            SectionProfile = sectionProfile,
+        };
     }
 
     [Obsolete("EF Core Constructor")]

@@ -1,4 +1,5 @@
 using BeamOs.StructuralAnalysis.Contracts.Common;
+using BeamOs.WebApp.Components.Features.Editor;
 using BeamOs.WebApp.EditorCommands;
 using Fluxor;
 using Fluxor.Blazor.Web.Components;
@@ -6,8 +7,11 @@ using Microsoft.AspNetCore.Components;
 
 namespace BeamOs.WebApp.Components.Features.ModelObjectEditor;
 
-public partial class ModelObjectEditor(IState<ModelObjectEditorState> state, IDispatcher dispatcher)
-    : FluxorComponent
+public partial class ModelObjectEditor(
+    IState<ModelObjectEditorState> state,
+    IDispatcher dispatcher,
+    IState<EditorComponentState> editorState
+) : FluxorComponent
 {
     [Parameter]
     public required UnitSettingsContract UnitSettings { get; set; }
@@ -57,7 +61,7 @@ public static class Reducers
         return state with
         {
             CurrentViewType = objectType,
-            SelectedObject = action.SelectedObjects?.FirstOrDefault()
+            SelectedObject = action.SelectedObjects?.FirstOrDefault(),
         };
     }
 
@@ -65,7 +69,7 @@ public static class Reducers
     public static ModelObjectEditorState Reducer(ModelObjectEditorState state, ShowView action) =>
         state with
         {
-            CurrentViewType = action.BeamOsObjectType
+            CurrentViewType = action.BeamOsObjectType,
         };
 }
 

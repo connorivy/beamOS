@@ -50,9 +50,11 @@ public record ModelProposalData : ModelProposalInfoData
     public List<PutNodeRequest>? ModifyNodeProposals { get; init; }
     public List<CreateElement1dProposal>? CreateElement1dProposals { get; init; }
     public List<ModifyElement1dProposal>? ModifyElement1dProposals { get; init; }
-    public List<PutMaterialRequest>? MaterialProposals { get; init; }
-    public List<PutSectionProfileRequest>? SectionProfileProposals { get; init; }
-    public List<SectionProfileFromLibrary>? SectionProfileFromLibraryProposals { get; init; }
+    public List<CreateMaterialRequest>? CreateMaterialProposals { get; init; }
+    public List<PutMaterialRequest>? ModifyMaterialProposals { get; init; }
+    public List<CreateSectionProfileRequest>? CreateSectionProfileProposals { get; init; }
+    public List<PutSectionProfileRequest>? ModifySectionProfileProposals { get; init; }
+    public List<CreateSectionProfileFromLibraryRequest>? CreateSectionProfileFromLibraryProposals { get; init; }
     public List<PointLoad>? PointLoadProposals { get; init; }
     public List<MomentLoad>? MomentLoadProposals { get; init; }
     public List<ResultSet>? ResultSetProposals { get; init; }
@@ -92,24 +94,24 @@ public enum ProposalIssueSeverity
     Undefined = 0,
 
     /// <summary>
-    /// The entire proposal will fail to be applied
+    /// The proposed object will be created, but there is some information that the user should be aware of
     /// </summary>
-    Critical,
-
-    /// <summary>
-    /// The proposed object will fail to be created
-    /// </summary>
-    Error,
+    Information = 10,
 
     /// <summary>
     /// The proposed object will be created, but some data may have been inferred due to missing information
     /// </summary>
-    Warning,
+    Warning = 20,
 
     /// <summary>
-    /// The proposed object will be created, but there is some information that the user should be aware of
+    /// The proposed object will fail to be created
     /// </summary>
-    information,
+    Error = 30,
+
+    /// <summary>
+    /// The entire proposal will fail to be applied
+    /// </summary>
+    Critical = 40,
 }
 
 public record ProposalIssueData
@@ -118,9 +120,19 @@ public record ProposalIssueData
     public required BeamOsObjectType ObjectType { get; init; }
     public required string Message { get; init; }
     public required ProposalIssueSeverity Severity { get; init; }
+    public required ProposalIssueCode Code { get; init; }
 }
 
 public record ProposalIssue : ProposalIssueData, IHasIntId
 {
     public required int Id { get; init; }
+}
+
+public enum ProposalIssueCode
+{
+    Undefined = 0,
+    Other,
+    CouldNotCreateProposedObject,
+    SomeInfoInferred,
+    SwappedInPlaceholder,
 }

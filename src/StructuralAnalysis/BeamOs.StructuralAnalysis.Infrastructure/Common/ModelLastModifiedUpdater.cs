@@ -1,4 +1,4 @@
-﻿using BeamOs.StructuralAnalysis.Domain.Common;
+using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -19,13 +19,11 @@ public class ModelLastModifiedUpdater(TimeProvider timeProvider) : SaveChangesIn
         }
 
         var modifiedModelIds = context
-            .ChangeTracker
-            .Entries()
-            .Where(
-                e =>
-                    e.State != EntityState.Detached
-                    && e.State != EntityState.Unchanged
-                    && e.Entity is IBeamOsModelEntity
+            .ChangeTracker.Entries()
+            .Where(e =>
+                e.State != EntityState.Detached
+                && e.State != EntityState.Unchanged
+                && e.Entity is IBeamOsModelEntity
             )
             .Select(e => ((IBeamOsModelEntity)e.Entity).ModelId)
             .Distinct()

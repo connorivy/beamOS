@@ -40,6 +40,10 @@ public static partial class CreateSectionProfileCommandMapper
         this ModelResourceRequest<SectionProfileFromLibraryData> command
     );
 
+    public static partial SectionProfileFromLibraryContract ToResponse(
+        this SectionProfileFromLibrary command
+    );
+
     public static SectionProfileResponse ToResponse(
         this SectionProfile entity,
         LengthUnit lengthUnit

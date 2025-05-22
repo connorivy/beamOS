@@ -38,6 +38,7 @@ public class SpeckleReceiveOperationContext
         BeamOsObjectType type,
         string identifier,
         int id,
+        ProposalIssueCode code,
         ProposalIssueSeverity? severity = null,
         string? message = null
     )
@@ -49,8 +50,16 @@ public class SpeckleReceiveOperationContext
                 ObjectType = type,
                 Message = message ?? "The object with identifier " + identifier + " was not found.",
                 Severity = severity ?? ProposalIssueSeverity.Critical,
+                Code = code,
             }
         );
+    }
+
+    public int GetNextSectionProfileId()
+    {
+        return this.ProposalBuilder.CreateSectionProfileFromLibraryProposals.Count
+            + this.ProposalBuilder.CreateSectionProfileProposals.Count
+            + 1;
     }
 
     public static LengthUnitContract SpeckleUnitsToUnitsNet(string speckleUnit)
@@ -83,6 +92,7 @@ public class RevitBeamConverter(
                 BeamOsObjectType.Element1d,
                 item.id,
                 id,
+                ProposalIssueCode.CouldNotCreateProposedObject,
                 ProposalIssueSeverity.Error,
                 "Unsupported baseLine type: " + item.baseLine.GetType()
             );
@@ -129,6 +139,7 @@ public class RevitColumnConverter(
                 BeamOsObjectType.Element1d,
                 item.id,
                 id,
+                ProposalIssueCode.CouldNotCreateProposedObject,
                 ProposalIssueSeverity.Error,
                 "Unsupported baseLine type: " + item.baseLine.GetType()
             );
@@ -178,6 +189,7 @@ public class RevitNodeConverter(SpeckleReceiveOperationContext context)
             BeamOsObjectType.Node,
             item.id,
             id,
+            ProposalIssueCode.SomeInfoInferred,
             ProposalIssueSeverity.Warning,
             "Node restraints were inferred"
         );
@@ -188,39 +200,80 @@ public class RevitNodeConverter(SpeckleReceiveOperationContext context)
 }
 
 public class RevitSectionProfileConverter(SpeckleReceiveOperationContext context)
-    : ToProposalConverter<string>(context)
+    : ToProposalConverter<SectionProfileName>(context)
 {
-    protected override int AddToProposalBuilder(string item)
+    protected override int AddToProposalBuilder(SectionProfileName item)
     {
-        var id = this.Context.ProposalBuilder.SectionProfileFromLibraryProposals.Count + 1;
-        this.Context.ProposalBuilder.SectionProfileFromLibraryProposals.Add(
-            new()
-            {
-                Id = id,
-                Name = item,
-                Library = StructuralCode.Undefined,
-            }
-        );
-        this.Context.AddIssue(
-            BeamOsObjectType.SectionProfile,
-            item,
-            id,
-            ProposalIssueSeverity.Critical,
-            "missing section profile information"
-        );
+        var id = this.Context.GetNextSectionProfileId();
+
+        if (StructuralShapes.Lib.AISC.v16_0.WShapes.GetShapeByName(item) is not null)
+        {
+            this.Context.ProposalBuilder.CreateSectionProfileFromLibraryProposals.Add(
+                new()
+                {
+                    Id = id,
+                    Name = item,
+                    Library = StructuralCode.AISC_360_16,
+                }
+            );
+        }
+        else
+        {
+            this.Context.ProposalBuilder.CreateSectionProfileProposals.Add(
+                new()
+                {
+                    Id = id,
+                    Name = item + "_placeholder",
+                    Area = 0,
+                    StrongAxisMomentOfInertia = 0,
+                    WeakAxisMomentOfInertia = 0,
+                    PolarMomentOfInertia = 0,
+                    StrongAxisPlasticSectionModulus = 0,
+                    WeakAxisPlasticSectionModulus = 0,
+                    StrongAxisShearArea = 0,
+                    WeakAxisShearArea = 0,
+                    LengthUnit = LengthUnitContract.Meter,
+                }
+            );
+
+            this.Context.AddIssue(
+                BeamOsObjectType.SectionProfile,
+                item,
+                id,
+                ProposalIssueCode.SwappedInPlaceholder,
+                ProposalIssueSeverity.Error,
+                $"missing section profile information for type name {item}"
+            );
+        }
+
         return id;
     }
 
-    protected override string GetIdentifier(string item) => item;
+    protected override string GetIdentifier(SectionProfileName item) => item;
+}
+
+public readonly record struct SectionProfileName(string Name)
+{
+    public static implicit operator SectionProfileName(string name) => new(name);
+
+    public static implicit operator string(SectionProfileName sectionProfile) =>
+        sectionProfile.Name;
+}
+
+public readonly record struct MaterialName(string Name)
+{
+    public static implicit operator MaterialName(string name) => new(name);
+
+    public static implicit operator string(MaterialName sectionProfile) => sectionProfile.Name;
 }
 
 public class RevitMaterialConverter(SpeckleReceiveOperationContext context)
-    : ToProposalConverter<string>(context)
+    : ToProposalConverter<MaterialName>(context)
 {
-    protected override int AddToProposalBuilder(string item)
+    protected override int AddToProposalBuilder(MaterialName item)
     {
-        var id = this.Context.ProposalBuilder.MaterialProposals.Count + 1;
-        this.Context.ProposalBuilder.MaterialProposals.Add(
+        var id = this.Context.ProposalBuilder.CreateMaterialProposals.Count + 1;
+        this.Context.ProposalBuilder.CreateMaterialProposals.Add(
             new()
             {
                 Id = id,
@@ -233,13 +286,14 @@ public class RevitMaterialConverter(SpeckleReceiveOperationContext context)
             BeamOsObjectType.Material,
             item,
             id,
+            ProposalIssueCode.SwappedInPlaceholder,
             ProposalIssueSeverity.Error,
             "missing section profile information"
         );
         return id;
     }
 
-    protected override string GetIdentifier(string item) => item;
+    protected override string GetIdentifier(MaterialName item) => item;
 }
 
 public interface ITopLevelProposalConverter<T> : ITopLevelProposalConverter

@@ -18,4 +18,5 @@ public enum BeamOsObjectType
     DistributedMomentLoad,
     LoadCase,
     LoadCombination,
+    ModelProposal,
 }

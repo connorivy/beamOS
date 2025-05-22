@@ -7,8 +7,8 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 namespace BeamOs.StructuralAnalysis.Domain.Common;
 
 public class ExistingOrProposedId<TId, TProposedId> : BeamOSValueObject
-    where TId : struct
-    where TProposedId : struct
+    where TId : struct, IIntBasedId
+    where TProposedId : struct, IIntBasedId
 {
     public TId? ExistingId { get; init; }
     public TProposedId? ProposedId { get; init; }
@@ -23,6 +23,48 @@ public class ExistingOrProposedId<TId, TProposedId> : BeamOSValueObject
         this.ProposedId = proposedId;
     }
 
+    public TId ToDomain(Dictionary<TProposedId, TId> proposedIdToDomainIdDict)
+    {
+        if (this.ExistingId is not null)
+        {
+            return this.ExistingId.Value;
+        }
+        if (this.ProposedId is null)
+        {
+            throw new InvalidOperationException("Both ExistingId and ProposedId are null.");
+        }
+        if (!proposedIdToDomainIdDict.TryGetValue(this.ProposedId.Value, out var domainId))
+        {
+            throw new InvalidOperationException(
+                $"ProposedId {this.ProposedId} not found in dictionary."
+            );
+        }
+        return domainId;
+    }
+
+    public (TId id, TEntity? entity) ToIdAndEntity<TEntity>(
+        Dictionary<TProposedId, TEntity> proposedIdToEntityDict
+    )
+        where TEntity : class
+    {
+        if (this.ExistingId is not null)
+        {
+            return (this.ExistingId.Value, null);
+        }
+        if (this.ProposedId is null)
+        {
+            throw new InvalidOperationException("Both ExistingId and ProposedId are null.");
+        }
+        if (!proposedIdToEntityDict.TryGetValue(this.ProposedId.Value, out var entity))
+        {
+            throw new InvalidOperationException(
+                $"ProposedId {this.ProposedId} not found in dictionary."
+            );
+        }
+        return (default, entity);
+    }
+
+    [Obsolete("EF Core Constructor", true)]
     protected ExistingOrProposedId(TId? existingId, TProposedId? proposedId)
         : base()
     {
@@ -37,20 +79,21 @@ public class ExistingOrProposedId<TId, TProposedId> : BeamOSValueObject
     }
 }
 
-public sealed class ExisitingOrProposedGenericId : ExistingOrProposedId<int, int>
+public sealed class ExisitingOrProposedGenericId
 {
+    public int? ExistingId { get; init; }
+    public int? ProposedId { get; init; }
+
     public static ExisitingOrProposedGenericId FromExistingId(int existingId) =>
         new() { ExistingId = existingId };
 
     public static ExisitingOrProposedGenericId FromProposedId(int proposedId) =>
         new() { ProposedId = proposedId };
 
-    public ExisitingOrProposedGenericId()
-        : base(null, null) { }
+    private ExisitingOrProposedGenericId() { }
 
     [Obsolete("EF Core Constructor", true)]
-    private ExisitingOrProposedGenericId(int? existingId, int? proposedId)
-        : base(existingId, proposedId) { }
+    private ExisitingOrProposedGenericId(int? existingId, int? proposedId) { }
 }
 
 public sealed class ExistingOrProposedNodeId : ExistingOrProposedId<NodeId, NodeProposalId>

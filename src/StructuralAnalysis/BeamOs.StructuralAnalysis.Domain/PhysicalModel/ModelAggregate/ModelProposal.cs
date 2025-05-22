@@ -1,8 +1,11 @@
+using System.Net.WebSockets;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
@@ -44,6 +47,9 @@ public class ModelProposal : BeamOsModelEntity<ModelProposalId>
 
     public List<NodeProposal>? NodeProposals { get; set; }
     public List<Element1dProposal>? Element1dProposals { get; set; }
+    public List<MaterialProposal>? MaterialProposals { get; set; }
+    public List<SectionProfileProposal>? SectionProfileProposals { get; set; }
+    public List<SectionProfileProposalFromLibrary>? SectionProfileProposalsFromLibrary { get; set; }
     public List<ProposalIssue>? ProposalIssues { get; set; }
 
     [Obsolete("EF Core Constructor", true)]
@@ -62,6 +68,7 @@ public sealed class ProposalIssue : BeamOsModelEntity<ProposalIssueId>
         BeamOsObjectType objectType,
         string message,
         ProposalIssueSeverity severity,
+        ProposalIssueCode code,
         ProposalIssueId? id = null
     )
         : base(id ?? new(), modelId)
@@ -72,6 +79,7 @@ public sealed class ProposalIssue : BeamOsModelEntity<ProposalIssueId>
         this.ModelProposalId = modelProposalId;
         this.Message = message;
         this.Severity = severity;
+        this.Code = code;
     }
 
     public int? ExistingId { get; private set; }
@@ -81,6 +89,7 @@ public sealed class ProposalIssue : BeamOsModelEntity<ProposalIssueId>
     public ModelProposal? ModelProposal { get; private set; }
     public string Message { get; private set; }
     public ProposalIssueSeverity Severity { get; private set; }
+    public ProposalIssueCode Code { get; private set; }
 
     [Obsolete("EF Core Constructor", true)]
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

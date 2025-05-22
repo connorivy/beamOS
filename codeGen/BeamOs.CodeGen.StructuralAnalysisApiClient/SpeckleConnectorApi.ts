@@ -1595,6 +1595,7 @@ export class ProposalIssue implements IProposalIssue {
     objectType!: number;
     message!: string;
     severity!: number;
+    code!: number;
 
     [key: string]: any;
 
@@ -1621,6 +1622,7 @@ export class ProposalIssue implements IProposalIssue {
             this.objectType = _data["objectType"];
             this.message = _data["message"];
             this.severity = _data["severity"];
+            this.code = _data["code"];
         }
     }
 
@@ -1642,6 +1644,7 @@ export class ProposalIssue implements IProposalIssue {
         data["objectType"] = this.objectType;
         data["message"] = this.message;
         data["severity"] = this.severity;
+        data["code"] = this.code;
         return data;
     }
 }
@@ -1652,6 +1655,7 @@ export interface IProposalIssue {
     objectType: number;
     message: string;
     severity: number;
+    code: number;
 
     [key: string]: any;
 }

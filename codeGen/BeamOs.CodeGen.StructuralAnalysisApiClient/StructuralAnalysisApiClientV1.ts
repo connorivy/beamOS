@@ -3089,6 +3089,7 @@ export enum BeamOsObjectType {
     DistributedMomentLoad = "DistributedMomentLoad",
     LoadCase = "LoadCase",
     LoadCombination = "LoadCombination",
+    ModelProposal = "ModelProposal",
 }
 
 export class CreateElement1dProposal implements ICreateElement1dProposal {
@@ -3762,6 +3763,62 @@ export interface ICreatePointLoadRequest {
     force: Force;
     direction: Vector3;
     id?: number | undefined;
+
+    [key: string]: any;
+}
+
+export class CreateSectionProfileFromLibraryRequest implements ICreateSectionProfileFromLibraryRequest {
+    id!: number;
+    library!: StructuralCode;
+    name!: string;
+
+    [key: string]: any;
+
+    constructor(data?: ICreateSectionProfileFromLibraryRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.library = _data["library"];
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): CreateSectionProfileFromLibraryRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateSectionProfileFromLibraryRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["library"] = this.library;
+        data["name"] = this.name;
+        return data;
+    }
+}
+
+export interface ICreateSectionProfileFromLibraryRequest {
+    id: number;
+    library: StructuralCode;
+    name: string;
 
     [key: string]: any;
 }
@@ -5657,9 +5714,11 @@ export class ModelProposalData implements IModelProposalData {
     modifyNodeProposals?: PutNodeRequest[] | undefined;
     createElement1dProposals?: CreateElement1dProposal[] | undefined;
     modifyElement1dProposals?: ModifyElement1dProposal[] | undefined;
-    materialProposals?: PutMaterialRequest[] | undefined;
-    sectionProfileProposals?: PutSectionProfileRequest[] | undefined;
-    sectionProfileFromLibraryProposals?: SectionProfileFromLibrary[] | undefined;
+    createMaterialProposals?: CreateMaterialRequest[] | undefined;
+    modifyMaterialProposals?: PutMaterialRequest[] | undefined;
+    createSectionProfileProposals?: CreateSectionProfileRequest[] | undefined;
+    modifySectionProfileProposals?: PutSectionProfileRequest[] | undefined;
+    createSectionProfileFromLibraryProposals?: CreateSectionProfileFromLibraryRequest[] | undefined;
     pointLoadProposals?: PointLoad[] | undefined;
     momentLoadProposals?: MomentLoad[] | undefined;
     resultSetProposals?: ResultSet[] | undefined;
@@ -5707,20 +5766,30 @@ export class ModelProposalData implements IModelProposalData {
                 for (let item of _data["modifyElement1dProposals"])
                     this.modifyElement1dProposals!.push(ModifyElement1dProposal.fromJS(item));
             }
-            if (Array.isArray(_data["materialProposals"])) {
-                this.materialProposals = [] as any;
-                for (let item of _data["materialProposals"])
-                    this.materialProposals!.push(PutMaterialRequest.fromJS(item));
+            if (Array.isArray(_data["createMaterialProposals"])) {
+                this.createMaterialProposals = [] as any;
+                for (let item of _data["createMaterialProposals"])
+                    this.createMaterialProposals!.push(CreateMaterialRequest.fromJS(item));
             }
-            if (Array.isArray(_data["sectionProfileProposals"])) {
-                this.sectionProfileProposals = [] as any;
-                for (let item of _data["sectionProfileProposals"])
-                    this.sectionProfileProposals!.push(PutSectionProfileRequest.fromJS(item));
+            if (Array.isArray(_data["modifyMaterialProposals"])) {
+                this.modifyMaterialProposals = [] as any;
+                for (let item of _data["modifyMaterialProposals"])
+                    this.modifyMaterialProposals!.push(PutMaterialRequest.fromJS(item));
             }
-            if (Array.isArray(_data["sectionProfileFromLibraryProposals"])) {
-                this.sectionProfileFromLibraryProposals = [] as any;
-                for (let item of _data["sectionProfileFromLibraryProposals"])
-                    this.sectionProfileFromLibraryProposals!.push(SectionProfileFromLibrary.fromJS(item));
+            if (Array.isArray(_data["createSectionProfileProposals"])) {
+                this.createSectionProfileProposals = [] as any;
+                for (let item of _data["createSectionProfileProposals"])
+                    this.createSectionProfileProposals!.push(CreateSectionProfileRequest.fromJS(item));
+            }
+            if (Array.isArray(_data["modifySectionProfileProposals"])) {
+                this.modifySectionProfileProposals = [] as any;
+                for (let item of _data["modifySectionProfileProposals"])
+                    this.modifySectionProfileProposals!.push(PutSectionProfileRequest.fromJS(item));
+            }
+            if (Array.isArray(_data["createSectionProfileFromLibraryProposals"])) {
+                this.createSectionProfileFromLibraryProposals = [] as any;
+                for (let item of _data["createSectionProfileFromLibraryProposals"])
+                    this.createSectionProfileFromLibraryProposals!.push(CreateSectionProfileFromLibraryRequest.fromJS(item));
             }
             if (Array.isArray(_data["pointLoadProposals"])) {
                 this.pointLoadProposals = [] as any;
@@ -5791,20 +5860,30 @@ export class ModelProposalData implements IModelProposalData {
             for (let item of this.modifyElement1dProposals)
                 data["modifyElement1dProposals"].push(item ? item.toJSON() : <any>undefined);
         }
-        if (Array.isArray(this.materialProposals)) {
-            data["materialProposals"] = [];
-            for (let item of this.materialProposals)
-                data["materialProposals"].push(item ? item.toJSON() : <any>undefined);
+        if (Array.isArray(this.createMaterialProposals)) {
+            data["createMaterialProposals"] = [];
+            for (let item of this.createMaterialProposals)
+                data["createMaterialProposals"].push(item ? item.toJSON() : <any>undefined);
         }
-        if (Array.isArray(this.sectionProfileProposals)) {
-            data["sectionProfileProposals"] = [];
-            for (let item of this.sectionProfileProposals)
-                data["sectionProfileProposals"].push(item ? item.toJSON() : <any>undefined);
+        if (Array.isArray(this.modifyMaterialProposals)) {
+            data["modifyMaterialProposals"] = [];
+            for (let item of this.modifyMaterialProposals)
+                data["modifyMaterialProposals"].push(item ? item.toJSON() : <any>undefined);
         }
-        if (Array.isArray(this.sectionProfileFromLibraryProposals)) {
-            data["sectionProfileFromLibraryProposals"] = [];
-            for (let item of this.sectionProfileFromLibraryProposals)
-                data["sectionProfileFromLibraryProposals"].push(item ? item.toJSON() : <any>undefined);
+        if (Array.isArray(this.createSectionProfileProposals)) {
+            data["createSectionProfileProposals"] = [];
+            for (let item of this.createSectionProfileProposals)
+                data["createSectionProfileProposals"].push(item ? item.toJSON() : <any>undefined);
+        }
+        if (Array.isArray(this.modifySectionProfileProposals)) {
+            data["modifySectionProfileProposals"] = [];
+            for (let item of this.modifySectionProfileProposals)
+                data["modifySectionProfileProposals"].push(item ? item.toJSON() : <any>undefined);
+        }
+        if (Array.isArray(this.createSectionProfileFromLibraryProposals)) {
+            data["createSectionProfileFromLibraryProposals"] = [];
+            for (let item of this.createSectionProfileFromLibraryProposals)
+                data["createSectionProfileFromLibraryProposals"].push(item ? item.toJSON() : <any>undefined);
         }
         if (Array.isArray(this.pointLoadProposals)) {
             data["pointLoadProposals"] = [];
@@ -5848,9 +5927,11 @@ export interface IModelProposalData {
     modifyNodeProposals?: PutNodeRequest[] | undefined;
     createElement1dProposals?: CreateElement1dProposal[] | undefined;
     modifyElement1dProposals?: ModifyElement1dProposal[] | undefined;
-    materialProposals?: PutMaterialRequest[] | undefined;
-    sectionProfileProposals?: PutSectionProfileRequest[] | undefined;
-    sectionProfileFromLibraryProposals?: SectionProfileFromLibrary[] | undefined;
+    createMaterialProposals?: CreateMaterialRequest[] | undefined;
+    modifyMaterialProposals?: PutMaterialRequest[] | undefined;
+    createSectionProfileProposals?: CreateSectionProfileRequest[] | undefined;
+    modifySectionProfileProposals?: PutSectionProfileRequest[] | undefined;
+    createSectionProfileFromLibraryProposals?: CreateSectionProfileFromLibraryRequest[] | undefined;
     pointLoadProposals?: PointLoad[] | undefined;
     momentLoadProposals?: MomentLoad[] | undefined;
     resultSetProposals?: ResultSet[] | undefined;
@@ -7982,6 +8063,7 @@ export class ProposalIssue implements IProposalIssue {
     objectType!: BeamOsObjectType;
     message!: string;
     severity!: ProposalIssueSeverity;
+    code!: ProposalIssueCode;
 
     [key: string]: any;
 
@@ -8008,6 +8090,7 @@ export class ProposalIssue implements IProposalIssue {
             this.objectType = _data["objectType"];
             this.message = _data["message"];
             this.severity = _data["severity"];
+            this.code = _data["code"];
         }
     }
 
@@ -8029,6 +8112,7 @@ export class ProposalIssue implements IProposalIssue {
         data["objectType"] = this.objectType;
         data["message"] = this.message;
         data["severity"] = this.severity;
+        data["code"] = this.code;
         return data;
     }
 }
@@ -8039,8 +8123,17 @@ export interface IProposalIssue {
     objectType: BeamOsObjectType;
     message: string;
     severity: ProposalIssueSeverity;
+    code: ProposalIssueCode;
 
     [key: string]: any;
+}
+
+export enum ProposalIssueCode {
+    Undefined = "Undefined",
+    Other = "Other",
+    CouldNotCreateProposedObject = "CouldNotCreateProposedObject",
+    SomeInfoInferred = "SomeInfoInferred",
+    SwappedInPlaceholder = "SwappedInPlaceholder",
 }
 
 export class ProposalIssueData implements IProposalIssueData {
@@ -8048,6 +8141,7 @@ export class ProposalIssueData implements IProposalIssueData {
     objectType!: BeamOsObjectType;
     message!: string;
     severity!: ProposalIssueSeverity;
+    code!: ProposalIssueCode;
 
     [key: string]: any;
 
@@ -8073,6 +8167,7 @@ export class ProposalIssueData implements IProposalIssueData {
             this.objectType = _data["objectType"];
             this.message = _data["message"];
             this.severity = _data["severity"];
+            this.code = _data["code"];
         }
     }
 
@@ -8093,6 +8188,7 @@ export class ProposalIssueData implements IProposalIssueData {
         data["objectType"] = this.objectType;
         data["message"] = this.message;
         data["severity"] = this.severity;
+        data["code"] = this.code;
         return data;
     }
 }
@@ -8102,16 +8198,17 @@ export interface IProposalIssueData {
     objectType: BeamOsObjectType;
     message: string;
     severity: ProposalIssueSeverity;
+    code: ProposalIssueCode;
 
     [key: string]: any;
 }
 
 export enum ProposalIssueSeverity {
     Undefined = "Undefined",
-    Critical = "Critical",
-    Error = "Error",
+    Information = "Information",
     Warning = "Warning",
-    Information = "information",
+    Error = "Error",
+    Critical = "Critical",
 }
 
 export class ProposedID implements IProposedID {

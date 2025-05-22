@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using BeamOs.StructuralAnalysis.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
 {
     [DbContext(typeof(StructuralAnalysisDbContext))]
-    partial class StructuralAnalysisDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250521153950_AddProposalIssueCode")]
+    partial class AddProposalIssueCode
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -447,40 +450,6 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                     b.ToTable("Materials");
                 });
 
-            modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate.MaterialProposal", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ModelProposalId")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("ModelId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int?>("ExistingId")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid?>("ExistingModelId")
-                        .HasColumnType("uuid");
-
-                    b.Property<double>("ModulusOfElasticity")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("ModulusOfRigidity")
-                        .HasColumnType("double precision");
-
-                    b.HasKey("Id", "ModelProposalId", "ModelId");
-
-                    b.HasIndex("ModelId");
-
-                    b.HasIndex("ExistingId", "ExistingModelId");
-
-                    b.HasIndex("ModelProposalId", "ModelId");
-
-                    b.ToTable("MaterialProposal");
-                });
-
             modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.Model", b =>
                 {
                     b.Property<Guid>("Id")
@@ -899,97 +868,6 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                     b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate.SectionProfileProposal", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ModelProposalId")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("ModelId")
-                        .HasColumnType("uuid");
-
-                    b.Property<double>("Area")
-                        .HasColumnType("double precision");
-
-                    b.Property<int?>("ExistingId")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid?>("ExistingModelId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<double>("PolarMomentOfInertia")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("StrongAxisMomentOfInertia")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("StrongAxisPlasticSectionModulus")
-                        .HasColumnType("double precision");
-
-                    b.Property<double?>("StrongAxisShearArea")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("WeakAxisMomentOfInertia")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("WeakAxisPlasticSectionModulus")
-                        .HasColumnType("double precision");
-
-                    b.Property<double?>("WeakAxisShearArea")
-                        .HasColumnType("double precision");
-
-                    b.HasKey("Id", "ModelProposalId", "ModelId");
-
-                    b.HasIndex("ModelId");
-
-                    b.HasIndex("ExistingId", "ExistingModelId");
-
-                    b.HasIndex("ModelProposalId", "ModelId");
-
-                    b.ToTable("SectionProfileProposal");
-                });
-
-            modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate.SectionProfileProposalFromLibrary", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ModelProposalId")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("ModelId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int?>("ExistingId")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid?>("ExistingModelId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("Library")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id", "ModelProposalId", "ModelId");
-
-                    b.HasIndex("ModelId");
-
-                    b.HasIndex("ExistingId", "ExistingModelId");
-
-                    b.HasIndex("ModelProposalId", "ModelId");
-
-                    b.ToTable("SectionProfileProposalFromLibrary");
-                });
-
             modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate.SectionProfile", b =>
                 {
                     b.HasBaseType("BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate.SectionProfileInfoBase");
@@ -1230,31 +1108,6 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                     b.Navigation("Model");
                 });
 
-            modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate.MaterialProposal", b =>
-                {
-                    b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.Model", "Model")
-                        .WithMany()
-                        .HasForeignKey("ModelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate.Material", "Existing")
-                        .WithMany()
-                        .HasForeignKey("ExistingId", "ExistingModelId");
-
-                    b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.ModelProposal", "ModelProposal")
-                        .WithMany("MaterialProposals")
-                        .HasForeignKey("ModelProposalId", "ModelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Existing");
-
-                    b.Navigation("Model");
-
-                    b.Navigation("ModelProposal");
-                });
-
             modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.ModelProposal", b =>
                 {
                     b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.Model", "Model")
@@ -1371,56 +1224,6 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                     b.Navigation("Model");
                 });
 
-            modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate.SectionProfileProposal", b =>
-                {
-                    b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.Model", "Model")
-                        .WithMany()
-                        .HasForeignKey("ModelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate.SectionProfileInfoBase", "Existing")
-                        .WithMany()
-                        .HasForeignKey("ExistingId", "ExistingModelId");
-
-                    b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.ModelProposal", "ModelProposal")
-                        .WithMany("SectionProfileProposals")
-                        .HasForeignKey("ModelProposalId", "ModelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Existing");
-
-                    b.Navigation("Model");
-
-                    b.Navigation("ModelProposal");
-                });
-
-            modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate.SectionProfileProposalFromLibrary", b =>
-                {
-                    b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.Model", "Model")
-                        .WithMany()
-                        .HasForeignKey("ModelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate.SectionProfileInfoBase", "Existing")
-                        .WithMany()
-                        .HasForeignKey("ExistingId", "ExistingModelId");
-
-                    b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.ModelProposal", "ModelProposal")
-                        .WithMany("SectionProfileProposalsFromLibrary")
-                        .HasForeignKey("ModelProposalId", "ModelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Existing");
-
-                    b.Navigation("Model");
-
-                    b.Navigation("ModelProposal");
-                });
-
             modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate.SectionProfile", b =>
                 {
                     b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.Model", "Model")
@@ -1484,15 +1287,9 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                 {
                     b.Navigation("Element1dProposals");
 
-                    b.Navigation("MaterialProposals");
-
                     b.Navigation("NodeProposals");
 
                     b.Navigation("ProposalIssues");
-
-                    b.Navigation("SectionProfileProposals");
-
-                    b.Navigation("SectionProfileProposalsFromLibrary");
                 });
 
             modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate.Node", b =>

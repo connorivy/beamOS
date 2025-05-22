@@ -11,44 +11,87 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 
 namespace BeamOs.StructuralAnalysis.Sdk;
 
-public class BeamOsModelProposalBuilder
+public record BeamOsModelProposalBuilder : ModelProposalData
 {
-    public string? Description { get; set; }
-    public ModelSettings? Settings { get; set; }
-
-    public List<CreateNodeRequest> CreateNodeProposals { get; } = [];
-    public List<PutNodeRequest> ModifyNodeProposals { get; } = [];
-    public List<CreateElement1dProposal> CreateElement1dProposals { get; } = [];
-    public List<ModifyElement1dProposal> ModifyElement1dProposals { get; } = [];
-    public List<PutMaterialRequest> MaterialProposals { get; } = [];
-    public List<PutSectionProfileRequest> SectionProfileProposals { get; } = [];
-    public List<SectionProfileFromLibrary> SectionProfileFromLibraryProposals { get; } = [];
-    public List<PointLoad> PointLoadProposals { get; } = [];
-    public List<MomentLoad> MomentLoadProposals { get; } = [];
-    public List<ResultSet> ResultSetProposals { get; } = [];
-    public List<LoadCase> LoadCaseProposals { get; } = [];
-    public List<LoadCombination> LoadCombinationProposals { get; } = [];
-    public List<ProposalIssueData> ProposalIssues { get; } = [];
-
-    public ModelProposalData Build()
+    public new List<CreateNodeRequest> CreateNodeProposals
     {
-        return new ModelProposalData
-        {
-            Description = this.Description,
-            Settings = this.Settings,
-            CreateNodeProposals = this.CreateNodeProposals,
-            ModifyNodeProposals = this.ModifyNodeProposals,
-            CreateElement1dProposals = this.CreateElement1dProposals,
-            ModifyElement1dProposals = this.ModifyElement1dProposals,
-            MaterialProposals = this.MaterialProposals,
-            SectionProfileProposals = this.SectionProfileProposals,
-            SectionProfileFromLibraryProposals = this.SectionProfileFromLibraryProposals,
-            PointLoadProposals = this.PointLoadProposals,
-            MomentLoadProposals = this.MomentLoadProposals,
-            ResultSetProposals = this.ResultSetProposals,
-            LoadCaseProposals = this.LoadCaseProposals,
-            LoadCombinationProposals = this.LoadCombinationProposals,
-            ProposalIssues = this.ProposalIssues,
-        };
+        get => base.CreateNodeProposals;
     }
+    public new List<PutNodeRequest> ModifyNodeProposals
+    {
+        get => base.ModifyNodeProposals;
+    }
+    public new List<CreateElement1dProposal> CreateElement1dProposals
+    {
+        get => base.CreateElement1dProposals;
+    }
+    public new List<ModifyElement1dProposal> ModifyElement1dProposals
+    {
+        get => base.ModifyElement1dProposals;
+    }
+    public new List<CreateMaterialRequest> CreateMaterialProposals
+    {
+        get => base.CreateMaterialProposals;
+    }
+    public new List<PutMaterialRequest> ModifyMaterialProposals
+    {
+        get => base.ModifyMaterialProposals;
+    }
+    public new List<CreateSectionProfileRequest> CreateSectionProfileProposals
+    {
+        get => base.CreateSectionProfileProposals;
+    }
+    public new List<PutSectionProfileRequest> ModifySectionProfileProposals
+    {
+        get => base.ModifySectionProfileProposals;
+    }
+    public new List<CreateSectionProfileFromLibraryRequest> CreateSectionProfileFromLibraryProposals
+    {
+        get => base.CreateSectionProfileFromLibraryProposals;
+    }
+    public new List<PointLoad> PointLoadProposals
+    {
+        get => base.PointLoadProposals;
+    }
+    public new List<MomentLoad> MomentLoadProposals
+    {
+        get => base.MomentLoadProposals;
+    }
+    public new List<ResultSet> ResultSetProposals
+    {
+        get => base.ResultSetProposals;
+    }
+    public new List<LoadCase> LoadCaseProposals
+    {
+        get => base.LoadCaseProposals;
+    }
+    public new List<LoadCombination> LoadCombinationProposals
+    {
+        get => base.LoadCombinationProposals;
+    }
+    public new List<ProposalIssueData> ProposalIssues
+    {
+        get => base.ProposalIssues;
+    }
+
+    public BeamOsModelProposalBuilder()
+    {
+        base.CreateNodeProposals = [];
+        base.ModifyNodeProposals = [];
+        base.CreateElement1dProposals = [];
+        base.ModifyElement1dProposals = [];
+        base.CreateMaterialProposals = [];
+        base.ModifyMaterialProposals = [];
+        base.CreateSectionProfileProposals = [];
+        base.ModifySectionProfileProposals = [];
+        base.CreateSectionProfileFromLibraryProposals = [];
+        base.PointLoadProposals = [];
+        base.MomentLoadProposals = [];
+        base.ResultSetProposals = [];
+        base.LoadCaseProposals = [];
+        base.LoadCombinationProposals = [];
+        base.ProposalIssues = [];
+    }
+
+    public ModelProposalData Build() => this;
 }

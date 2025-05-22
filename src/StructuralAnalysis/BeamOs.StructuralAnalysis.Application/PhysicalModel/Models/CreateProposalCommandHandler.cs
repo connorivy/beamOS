@@ -1,17 +1,24 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.Common.Domain.Models;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.Materials;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Materials;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
@@ -21,6 +28,8 @@ public class CreateProposalCommandHandler(
     IModelProposalRepository modelProposalRepository,
     INodeRepository nodeRepository,
     IElement1dRepository element1dRepository,
+    IMaterialRepository materialRepository,
+    ISectionProfileRepository sectionProfileRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<ModelResourceRequest<ModelProposalData>, ModelProposalResponse>
 {
@@ -37,6 +46,9 @@ public class CreateProposalCommandHandler(
         ModelProposal modelProposal = command.Body.ToProposalDomain(model);
         modelProposal.NodeProposals = [];
         modelProposal.Element1dProposals = [];
+        modelProposal.MaterialProposals = [];
+        modelProposal.SectionProfileProposals = [];
+        modelProposal.SectionProfileProposalsFromLibrary = [];
         modelProposal.ProposalIssues = [];
         modelProposalRepository.Add(modelProposal);
 
@@ -50,8 +62,21 @@ public class CreateProposalCommandHandler(
             element1dRepository,
             command.ModelId,
             command
-                .Body.ModifyElement1dProposals?.OfType<ModifyElement1dProposal>()
-                .Select(e => new Element1dId(e.ExistingElement1dId))
+                .Body.ModifyElement1dProposals?.Select(e => new Element1dId(e.ExistingElement1dId))
+                .ToList(),
+            ct
+        );
+        var existingMaterialsToBeModified = await GetExistingEntities(
+            materialRepository,
+            command.ModelId,
+            command.Body.ModifyMaterialProposals?.Select(m => new MaterialId(m.Id)).ToList(),
+            ct
+        );
+        var existingSectionProfilesToBeModified = await GetExistingEntities(
+            sectionProfileRepository,
+            command.ModelId,
+            command
+                .Body.ModifySectionProfileProposals?.Select(s => new SectionProfileId(s.Id))
                 .ToList(),
             ct
         );
@@ -77,6 +102,42 @@ public class CreateProposalCommandHandler(
             var existingElement = existingElementsToBeModified[element1d.ExistingElement1dId];
             var element1dProposal = element1d.ToProposalDomain(existingElement, modelProposal.Id);
             modelProposal.Element1dProposals.Add(element1dProposal);
+        }
+        foreach (var material in command.Body.CreateMaterialProposals ?? [])
+        {
+            var materialProposal = material.ToProposalDomain(command.ModelId, modelProposal.Id);
+            modelProposal.MaterialProposals.Add(materialProposal);
+        }
+        foreach (var material in command.Body.ModifyMaterialProposals ?? [])
+        {
+            var existingMaterial = existingMaterialsToBeModified[material.Id];
+            var materialProposal = material.ToProposalDomain(existingMaterial, modelProposal.Id);
+            modelProposal.MaterialProposals.Add(materialProposal);
+        }
+        foreach (var sectionProfile in command.Body.CreateSectionProfileProposals ?? [])
+        {
+            var sectionProfileProposal = sectionProfile.ToProposalDomain(
+                command.ModelId,
+                modelProposal.Id
+            );
+            modelProposal.SectionProfileProposals.Add(sectionProfileProposal);
+        }
+        foreach (var sectionProfile in command.Body.ModifySectionProfileProposals ?? [])
+        {
+            var existingSectionProfile = existingSectionProfilesToBeModified[sectionProfile.Id];
+            var sectionProfileProposal = sectionProfile.ToProposalDomain(
+                existingSectionProfile,
+                modelProposal.Id
+            );
+            modelProposal.SectionProfileProposals.Add(sectionProfileProposal);
+        }
+        foreach (var sectionProfile in command.Body.CreateSectionProfileFromLibraryProposals ?? [])
+        {
+            var sectionProfileProposal = sectionProfile.ToProposalDomain(
+                command.ModelId,
+                modelProposal.Id
+            );
+            modelProposal.SectionProfileProposalsFromLibrary.Add(sectionProfileProposal);
         }
         foreach (var proposalIssueContract in command.Body.ProposalIssues ?? [])
         {
@@ -142,6 +203,36 @@ public static partial class ProposalStaticMappers
         ModelProposalId modelProposalId
     );
 
+    public static partial MaterialProposal ToProposalDomain(
+        this CreateMaterialRequest command,
+        ModelId modelId,
+        ModelProposalId modelProposalId
+    );
+
+    public static partial MaterialProposal ToProposalDomain(
+        this PutMaterialRequest command,
+        Material material,
+        ModelProposalId modelProposalId
+    );
+
+    public static partial SectionProfileProposal ToProposalDomain(
+        this CreateSectionProfileRequest command,
+        ModelId modelId,
+        ModelProposalId modelProposalId
+    );
+
+    public static partial SectionProfileProposalFromLibrary ToProposalDomain(
+        this CreateSectionProfileFromLibraryRequest command,
+        ModelId modelId,
+        ModelProposalId modelProposalId
+    );
+
+    public static partial SectionProfileProposal ToProposalDomain(
+        this PutSectionProfileRequest command,
+        SectionProfile sectionProfile,
+        ModelProposalId modelProposalId
+    );
+
     public static partial CreateNodeProposalResponse ToCreateProposalContract(
         this NodeProposal command
     );
@@ -191,6 +282,7 @@ public static partial class ProposalStaticMappers
             ObjectType = command.ObjectType,
             Message = command.Message,
             Severity = command.Severity,
+            Code = command.Code,
         };
     }
 

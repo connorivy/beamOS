@@ -21,6 +21,9 @@ internal sealed class ModelProposalRepository(StructuralAnalysisDbContext dbCont
             .Include(m => m.NodeProposals)
             .Include(m => m.Element1dProposals)
             .Include(m => m.ProposalIssues)
+            .Include(m => m.MaterialProposals)
+            .Include(m => m.SectionProfileProposals)
+            .Include(m => m.SectionProfileProposalsFromLibrary)
             .FirstOrDefaultAsync(ct);
     }
 }

@@ -1,12 +1,12 @@
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.SectionProfiles;
+namespace BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Materials;
 
-public class SectionProfileProposalConfiguration : IEntityTypeConfiguration<SectionProfileProposal>
+public class MaterialProposalConfiguration : IEntityTypeConfiguration<MaterialProposal>
 {
-    public void Configure(EntityTypeBuilder<SectionProfileProposal> builder)
+    public void Configure(EntityTypeBuilder<MaterialProposal> builder)
     {
         builder
             .HasOne(el => el.Model)
@@ -17,7 +17,7 @@ public class SectionProfileProposalConfiguration : IEntityTypeConfiguration<Sect
 
         builder
             .HasOne(el => el.ModelProposal)
-            .WithMany(el => el.SectionProfileProposals)
+            .WithMany(el => el.MaterialProposals)
             .HasPrincipalKey(el => new { el.Id, el.ModelId })
             .HasForeignKey(el => new { el.ModelProposalId, el.ModelId })
             .IsRequired()

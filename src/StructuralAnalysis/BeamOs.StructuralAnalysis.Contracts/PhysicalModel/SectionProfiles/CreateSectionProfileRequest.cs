@@ -110,6 +110,20 @@ public enum StructuralCode
     AISC_360_16,
 }
 
+public record CreateSectionProfileFromLibraryRequest : SectionProfileFromLibraryData, IHasIntId
+{
+    public required int Id { get; init; }
+
+    [SetsRequiredMembers]
+    public CreateSectionProfileFromLibraryRequest(int id, StructuralCode library, string name)
+        : base(library, name)
+    {
+        this.Id = id;
+    }
+
+    public CreateSectionProfileFromLibraryRequest() { }
+}
+
 public record SectionProfileFromLibrary : SectionProfileFromLibraryData, IHasIntId
 {
     public required int Id { get; init; }
