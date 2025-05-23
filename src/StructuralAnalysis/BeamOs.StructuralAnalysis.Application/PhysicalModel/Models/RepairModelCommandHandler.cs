@@ -24,9 +24,7 @@ public class RepairModelCommandHandler(
             command.ModelId,
             ct,
             nameof(Model.Nodes),
-            nameof(Model.Element1ds),
-            $"{nameof(Model.Element1ds)}.{nameof(Element1d.StartNode)}",
-            $"{nameof(Model.Element1ds)}.{nameof(Element1d.EndNode)}"
+            nameof(Model.Element1ds)
         );
 
         if (model is null)

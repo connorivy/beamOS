@@ -177,10 +177,10 @@ public sealed class Element1dProposal
     public Element1dProposal(
         Element1d element1d,
         ModelProposalId modelProposalId,
-        ExistingOrProposedNodeId? startNodeId,
-        ExistingOrProposedNodeId? endNodeId,
-        ExistingOrProposedMaterialId? materialId,
-        ExistingOrProposedSectionProfileId? sectionProfileId,
+        ExistingOrProposedNodeId? startNodeId = null,
+        ExistingOrProposedNodeId? endNodeId = null,
+        ExistingOrProposedMaterialId? materialId = null,
+        ExistingOrProposedSectionProfileId? sectionProfileId = null,
         Element1dProposalId? id = null
     )
         : this(
@@ -200,12 +200,12 @@ public sealed class Element1dProposal
     public ExistingOrProposedSectionProfileId SectionProfileId { get; private set; }
 
     public Element1d ToDomain(
-        Dictionary<NodeProposalId, Node> nodeProposalIdToNewIdDict,
-        Dictionary<MaterialProposalId, Material> materialProposalIdToNewIdDict,
+        Dictionary<NodeProposalId, Node>? nodeProposalIdToNewIdDict,
+        Dictionary<MaterialProposalId, Material>? materialProposalIdToNewIdDict,
         Dictionary<
             SectionProfileProposalId,
             SectionProfileInfoBase
-        > sectionProfileProposalIdToNewIdDict
+        >? sectionProfileProposalIdToNewIdDict
     )
     {
         var (startNodeId, startNode) = this.StartNodeId.ToIdAndEntity(nodeProposalIdToNewIdDict);

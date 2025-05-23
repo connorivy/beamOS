@@ -1,6 +1,7 @@
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Sdk;
+using BeamOs.Tests.Common;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration;
 
@@ -43,6 +44,8 @@ public class ModelRepairerTests
             modelId,
             "this doesn't do anything yet"
         );
+        
+        await Asserter.Verify
 
         await Verify(proposal);
     }

@@ -126,7 +126,12 @@ public class OctreeNode : BeamOsEntity<OctreeNodeId>
         }
     }
 
-    public void FindNodesWithin(Point search, double tolerance, List<Node> result)
+    public void FindNodesWithin(
+        Point search,
+        double tolerance,
+        List<Node> result,
+        params Span<NodeId> nodeIdsToIgnore
+    )
     {
         if (!this.IntersectsSphere(search, tolerance))
         {
@@ -135,6 +140,11 @@ public class OctreeNode : BeamOsEntity<OctreeNodeId>
 
         foreach (Node node in this.Objects)
         {
+            if (nodeIdsToIgnore.Contains(node.Id))
+            {
+                continue;
+            }
+
             Point loc = node.LocationPoint;
             double dist = Math.Sqrt(
                 Math.Pow(loc.X.Meters - search.X.Meters, 2)
@@ -150,7 +160,7 @@ public class OctreeNode : BeamOsEntity<OctreeNodeId>
         {
             foreach (OctreeNode child in this.Children)
             {
-                child.FindNodesWithin(search, tolerance, result);
+                child.FindNodesWithin(search, tolerance, result, nodeIdsToIgnore);
             }
         }
     }
@@ -257,10 +267,14 @@ public class Octree : BeamOsModelEntity<OctreeId>
         return newRoot;
     }
 
-    public List<Node> FindNodesWithin(Point searchPoint, double toleranceMeters)
+    public List<Node> FindNodesWithin(
+        Point searchPoint,
+        double toleranceMeters,
+        params Span<NodeId> nodeIdsToIgnore
+    )
     {
         List<Node> result = [];
-        this.Root.FindNodesWithin(searchPoint, toleranceMeters, result);
+        this.Root.FindNodesWithin(searchPoint, toleranceMeters, result, nodeIdsToIgnore);
         return result;
     }
 }

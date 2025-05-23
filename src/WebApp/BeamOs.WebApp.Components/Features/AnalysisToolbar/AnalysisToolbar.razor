@@ -64,6 +64,10 @@
         <MudTooltip Text="Recieve Date From Speckle">
             <MudIconButton OnClick="ReceiveFromSpeckle" Icon="@Icons.Material.Filled.CallReceived" />
         </MudTooltip>
+        <MudTooltip Text="Repair Model">
+            <MudIconButton OnClick="RepairModel" Icon="@Icons.Material.Outlined.Build" Color="Color.Inherit" Class="">
+                Repair Model</MudIconButton>
+        </MudTooltip>
     </MudToolBar>
 </MudPaper>
 
@@ -82,6 +86,7 @@
 
     private RunDsmCommandCommandHandler runDsmCommandCommandHandler;
     private ReceiveFromSpeckleCommandHandler ReceiveFromSpeckleCommandHandler;
+    private readonly ModelRepairClientCommandHandler modelRepairClientCommandHandler;
     private IState<AnalysisToolbarState> state;
     private IState<EditorComponentState> editorState;
     private IStructuralAnalysisApiClientV1 structuralAnalysisApiClientV1;
@@ -99,7 +104,9 @@
     ISpeckleConnectorApi speckleConnectorApi,
     IState<EditorComponentState> editorState,
     ISnackbar snackbar,
-    IDispatcher dispatcher)
+    IDispatcher dispatcher,
+    ModelRepairClientCommandHandler modelRepairClientCommandHandler
+    )
     {
         this.runDsmCommandCommandHandler = runDsmCommandCommandHandler;
         this.ReceiveFromSpeckleCommandHandler = receiveFromSpeckleCommandHandler;
@@ -110,6 +117,7 @@
         this.editorState = editorState;
         this.snackbar = snackbar;
         this.dispatcher = dispatcher;
+        this.modelRepairClientCommandHandler = modelRepairClientCommandHandler;
     }
 
     private async Task RunAnalysis()
@@ -218,6 +226,23 @@
         {
             await editorState.Value.EditorApi.ClearCurrentOverlayAsync();
             this.selectedModelProposalId = 0;
+        }
+        else
+        {
+            snackbar.Add(result.Error.Description, Severity.Error);
+        }
+    }
+
+    private async Task RepairModel()
+    {
+        var result = await modelRepairClientCommandHandler.ExecuteAsync(new()
+        {
+            ModelId = this.ModelId,
+            CanvasId = this.CanvasId
+        }, CancellationToken.None);
+
+        if (result.IsSuccess)
+        {
         }
         else
         {

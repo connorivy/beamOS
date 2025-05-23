@@ -114,18 +114,24 @@ public class TestInfoCollector
                 }
             }
         }
-        //else
-        //{
-        //    yield return new TestInfo(
-        //        classType,
-        //        null,
-        //        methodInfo,
-        //        methodInfo
-        //            .GetCustomAttributes<TestBaseAttribute>()
-        //            .Concat(classType.GetCustomAttributes<TestBaseAttribute>())
-        //            .GroupBy(attr => attr.TraitName)
-        //            .ToDictionary(g => g.Key, g => g.Select(attr => attr.TraitValue).First())
-        //    );
-        //}
+        else
+        {
+            yield return new TestInfo()
+            {
+                TestClassType = classType,
+                TestData = [],
+                MethodInfo = methodInfo,
+            };
+            //    yield return new TestInfo(
+            //        classType,
+            //        null,
+            //        methodInfo,
+            //        methodInfo
+            //            .GetCustomAttributes<TestBaseAttribute>()
+            //            .Concat(classType.GetCustomAttributes<TestBaseAttribute>())
+            //            .GroupBy(attr => attr.TraitName)
+            //            .ToDictionary(g => g.Key, g => g.Select(attr => attr.TraitValue).First())
+            //    );
+        }
     }
 }

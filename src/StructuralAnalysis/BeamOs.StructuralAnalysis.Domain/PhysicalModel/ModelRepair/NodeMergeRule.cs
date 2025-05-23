@@ -7,6 +7,9 @@ namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 public class NodeMergeRule : IModelRepairRule
 {
     public void Apply(
+        Element1d element1D,
+        Node startNode,
+        Node endNode,
         IList<Node> nearbyStartNodes,
         IList<Element1d> element1DsCloseToStart,
         IList<Node> nearbyEndNodes,
@@ -21,11 +24,6 @@ public class NodeMergeRule : IModelRepairRule
             for (int j = i + 1; j < nearbyStartNodes.Count; j++)
             {
                 Node nodeA = nearbyStartNodes[i];
-                if (modelProposal.IsNodeProposalCached(nodeA.Id))
-                {
-                    continue;
-                }
-
                 Node nodeB = nearbyStartNodes[j];
                 double distance = nodeA.LocationPoint.CalculateDistance(
                     nodeB.LocationPoint.X,
@@ -41,7 +39,7 @@ public class NodeMergeRule : IModelRepairRule
                         nodeB.LocationPoint,
                         nodeB.Restraint
                     );
-                    modelProposal.AddNodeProposals(proposal);
+                    modelProposal.AddNodeProposal(proposal);
                 }
             }
         }
@@ -51,11 +49,6 @@ public class NodeMergeRule : IModelRepairRule
             for (int j = i + 1; j < nearbyEndNodes.Count; j++)
             {
                 Node nodeA = nearbyEndNodes[i];
-                if (modelProposal.IsNodeProposalCached(nodeA.Id))
-                {
-                    continue;
-                }
-
                 Node nodeB = nearbyEndNodes[j];
                 double distance = nodeA.LocationPoint.CalculateDistance(
                     nodeB.LocationPoint.X,
@@ -71,7 +64,7 @@ public class NodeMergeRule : IModelRepairRule
                         nodeB.LocationPoint,
                         nodeB.Restraint
                     );
-                    modelProposal.AddNodeProposals(proposal);
+                    modelProposal.AddNodeProposal(proposal);
                 }
             }
         }

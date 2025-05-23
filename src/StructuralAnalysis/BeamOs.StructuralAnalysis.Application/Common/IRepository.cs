@@ -11,15 +11,15 @@ public interface IRepository<TId, T>
 {
     //Task<T?> GetById(TId id, CancellationToken ct = default);
 
-    void Add(T aggregate);
+    public void Add(T aggregate);
 
-    void Put(T aggregate);
+    public void Put(T aggregate);
 
     //void Update(T aggregate);
 
-    void Remove(T aggregate);
+    public void Remove(T aggregate);
 
-    void ClearChangeTracker();
+    public void ClearChangeTracker();
 }
 
 public interface IModelResourceRepository<TId, T> : IRepository<TId, T>

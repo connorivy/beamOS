@@ -1,5 +1,7 @@
 using BeamOs.CodeGen.SpeckleConnectorApi;
+using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.WebApp.Components.Features.Common;
@@ -47,3 +49,31 @@ public readonly record struct ReceiveFromSpeckleCommand(
     Guid ModelId,
     SpeckleReceiveParameters SpeckleReceiveParameters
 );
+
+public readonly record struct ModelRepairRequest(string CanvasId, Guid ModelId);
+
+public sealed class ModelRepairClientCommandHandler(
+    IStructuralAnalysisApiClientV1 structuralAnalysisApiClient,
+    IDispatcher dispatcher,
+    ISnackbar snackbar,
+    ILogger<ModelRepairClientCommandHandler> logger
+) : CommandHandlerBase<ModelRepairRequest, ModelProposalResponse>(snackbar, logger)
+{
+    protected override async Task<Result<ModelProposalResponse>> ExecuteCommandAsync(
+        ModelRepairRequest command,
+        CancellationToken ct = default
+    )
+    {
+        dispatcher.Dispatch(new EditorLoadingBegin(command.CanvasId, "Repairing Model"));
+
+        return await structuralAnalysisApiClient.RepairModelAsync(command.ModelId, "", ct);
+    }
+
+    protected override void PostProcess(
+        ModelRepairRequest command,
+        Result<ModelProposalResponse> result
+    )
+    {
+        dispatcher.Dispatch(new EditorLoadingEnd() { CanvasId = command.CanvasId });
+    }
+}

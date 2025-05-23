@@ -92,6 +92,11 @@ public static class DependencyInjection
                     // new ModelEntityIdIncrementingInterceptor(),
                     new ModelLastModifiedUpdater(TimeProvider.System)
                 )
+#if DEBUG
+                .EnableSensitiveDataLogging()
+                .EnableDetailedErrors()
+                .LogTo(Console.WriteLine, LogLevel.Information)
+#endif
 #if !DEBUG
                 .UseLoggerFactory(
                     LoggerFactory.Create(builder =>

@@ -43,7 +43,7 @@ public class ExistingOrProposedId<TId, TProposedId> : BeamOSValueObject
     }
 
     public (TId id, TEntity? entity) ToIdAndEntity<TEntity>(
-        Dictionary<TProposedId, TEntity> proposedIdToEntityDict
+        Dictionary<TProposedId, TEntity>? proposedIdToEntityDict
     )
         where TEntity : class
     {
@@ -54,6 +54,12 @@ public class ExistingOrProposedId<TId, TProposedId> : BeamOSValueObject
         if (this.ProposedId is null)
         {
             throw new InvalidOperationException("Both ExistingId and ProposedId are null.");
+        }
+        if (proposedIdToEntityDict is null)
+        {
+            throw new InvalidOperationException(
+                "ProposedId to entity dictionary is null, but the proposedId is not null"
+            );
         }
         if (!proposedIdToEntityDict.TryGetValue(this.ProposedId.Value, out var entity))
         {

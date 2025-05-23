@@ -9,33 +9,81 @@ namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 public sealed class ModelProposalBuilder
 {
     private readonly ModelProposal modelProposal;
+    private readonly Dictionary<int, Node> nodeIdToNodeDict;
 
     public ModelProposalBuilder(
         ModelId modelId,
         string name,
         string description,
         ModelSettings settings,
+        Dictionary<int, Node> nodeIdToNodeDict,
         ModelProposalId? id = null
     )
     {
         this.modelProposal = new(modelId, name, description, settings, id);
+        this.nodeIdToNodeDict = nodeIdToNodeDict;
     }
 
-    private HashSet<int> nodeProposalCache = [];
+    public ModelProposalId Id => this.modelProposal.Id;
 
-    public bool IsNodeProposalCached(int nodeId) => this.nodeProposalCache.Contains(nodeId);
+    private readonly Dictionary<int, NodeProposal> modifyNodeProposalCache = [];
 
-    public void AddNodeProposals(NodeProposal proposal)
+    public void AddNodeProposal(NodeProposal proposal)
     {
         (this.modelProposal.NodeProposals ??= []).Add(proposal);
         if (proposal.ExistingId is not null)
         {
-            this.nodeProposalCache.Add(proposal.ExistingId.Value);
+            this.modifyNodeProposalCache[proposal.ExistingId.Value] = proposal;
         }
     }
 
-    public void AddElement1dProposals(Element1dProposal proposal) =>
+    public Node ApplyExistingProposal(Node node, out bool isModifiedInProposal)
+    {
+        if (this.modifyNodeProposalCache.TryGetValue(node.Id, out var proposal))
+        {
+            isModifiedInProposal = true;
+            return proposal.ToDomain();
+        }
+
+        isModifiedInProposal = false;
+        return node;
+    }
+
+    private readonly Dictionary<int, Element1dProposal> modifyElement1dProposalCache = [];
+
+    public void AddElement1dProposals(Element1dProposal proposal)
+    {
         (this.modelProposal.Element1dProposals ??= []).Add(proposal);
+        if (proposal.ExistingId is not null)
+        {
+            this.modifyElement1dProposalCache[proposal.ExistingId.Value] = proposal;
+        }
+    }
+
+    public Element1d ApplyExistingProposal(Element1d element1d, out bool isModifiedInProposal)
+    {
+        if (this.modifyElement1dProposalCache.TryGetValue(element1d.Id, out var proposal))
+        {
+            isModifiedInProposal = true;
+            return proposal.ToDomain(null, null, null);
+        }
+
+        isModifiedInProposal = false;
+        return element1d;
+    }
+
+    public (Node startNode, Node endNode) GetStartAndEndNodes(
+        Element1d element1d,
+        out bool isModifiedInProposal
+    )
+    {
+        var modifiedElement1d = this.ApplyExistingProposal(element1d, out isModifiedInProposal);
+
+        return (
+            this.nodeIdToNodeDict[modifiedElement1d.StartNodeId],
+            this.nodeIdToNodeDict[modifiedElement1d.EndNodeId]
+        );
+    }
 
     public void AddMaterialProposals(MaterialProposal proposal) =>
         (this.modelProposal.MaterialProposals ??= []).Add(proposal);

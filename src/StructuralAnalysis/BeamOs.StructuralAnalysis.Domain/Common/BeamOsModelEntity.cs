@@ -88,6 +88,7 @@ public abstract class BeamOsModelProposalEntity<TId, TModelEntity, TModelEntityI
         this.ExistingId = existingId;
     }
 
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public override TId Id
     {
         get => base.Id;
