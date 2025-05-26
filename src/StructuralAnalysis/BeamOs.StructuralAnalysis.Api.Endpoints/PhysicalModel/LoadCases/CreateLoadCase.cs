@@ -15,10 +15,3 @@ public class CreateLoadCase(CreateLoadCaseCommandHandler createLoadCaseCommandHa
         CancellationToken ct = default
     ) => await createLoadCaseCommandHandler.ExecuteAsync(req, ct);
 }
-
-public readonly struct CreateLoadCaseCommand : IModelResourceRequest<LoadCaseData>
-{
-    public Guid ModelId { get; init; }
-    public LoadCaseData Body { get; init; }
-    public string Name => this.Body.Name;
-}

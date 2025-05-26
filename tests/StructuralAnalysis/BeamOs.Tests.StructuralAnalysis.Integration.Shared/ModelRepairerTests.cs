@@ -1,12 +1,29 @@
+using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Sdk;
 using BeamOs.Tests.Common;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration;
 
-public class ModelRepairerTests
+// [TestType(TestType.ModelRepair)]
+public class ModelRepairerTests : IModelResponseEmitter
 {
+    public event EventHandler<ModelResponse>? ModelCreated;
+
+    // public ModelRepairerTests()
+    // {
+    //     BeamOsModelBuilder.ModelCreated += async (_, modelId) =>
+    //     {
+    //         var modelResponse = await AssemblySetup.StructuralAnalysisApiClient.GetModelAsync(
+    //             modelId
+    //         );
+    //         modelResponse.ThrowIfError();
+    //         this.ModelCreated?.Invoke(this, modelResponse.Value);
+    //     };
+    // }
+
     private static ModelSettings CreateDefaultModelSettings()
     {
         var unitSettings = new UnitSettingsContract
@@ -44,10 +61,8 @@ public class ModelRepairerTests
             modelId,
             "this doesn't do anything yet"
         );
-        
-        await Asserter.Verify
 
-        await Verify(proposal);
+        await Asserter.VerifyModelProposal(proposal);
     }
 
     [Test]
@@ -68,4 +83,9 @@ public class ModelRepairerTests
 
         await Verify(proposal);
     }
+}
+
+public interface IModelResponseEmitter
+{
+    public event EventHandler<ModelResponse>? ModelCreated;
 }

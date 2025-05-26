@@ -20,26 +20,3 @@ public class BatchPutLoadCase(BatchPutLoadCaseCommandHandler putLoadCaseCommandH
         CancellationToken ct = default
     ) => await putLoadCaseCommandHandler.ExecuteAsync(req, ct);
 }
-
-public sealed class BatchPutLoadCaseCommandHandler(
-    ILoadCaseRepository repository,
-    IStructuralAnalysisUnitOfWork unitOfWork
-)
-    : BatchPutCommandHandler<
-        LoadCaseId,
-        Domain.PhysicalModel.LoadCases.LoadCase,
-        BatchPutLoadCaseCommand,
-        LoadCase
-    >(repository, unitOfWork)
-{
-    protected override Domain.PhysicalModel.LoadCases.LoadCase ToDomainObject(
-        ModelId modelId,
-        LoadCase putRequest
-    ) => new PutLoadCaseCommand(modelId, putRequest).ToDomainObject();
-}
-
-public readonly struct BatchPutLoadCaseCommand : IModelResourceRequest<LoadCase[]>
-{
-    public Guid ModelId { get; init; }
-    public LoadCase[] Body { get; init; }
-}

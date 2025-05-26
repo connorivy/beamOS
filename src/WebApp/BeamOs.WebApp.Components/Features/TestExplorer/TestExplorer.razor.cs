@@ -34,6 +34,8 @@ public partial class TestExplorer(
             }
 
             var testFixture = command.SelectedProblemTests.First().GetTestFixture();
+            var entity = testFixture?.MapToResponse();
+            // dispatcher.Dispatch(new ChangeDisplayedObject(new(entity.GetType(), entity.IdString)));
 
             await this.editorComponent.LoadBeamOsEntity(testFixture.MapToResponse());
             //if (editorComponent.State.Value.LoadedModelId.HasValue)
@@ -68,6 +70,10 @@ public readonly record struct ChangeShowTestResults(bool Value);
 
 public readonly record struct ChangeSelectedSourceInfo(SourceInfo? SourceInfo);
 
+public readonly record struct ChangeDisplayedObject(DisplayedObject? DisplayedObject);
+
+public readonly record struct DisplayedObject(Type Type, string Id);
+
 [FeatureState]
 public record TestExplorerState(
     string? CanvasId,
@@ -84,11 +90,12 @@ public record TestExplorerState(
     >? TestResults,
     //Dictionary<string, List<TestResult2>>? TestResults,
     //List<TestResult2>? SelectedTestResults,
-    SourceInfo? SelectedSourceInfo
+    SourceInfo? SelectedSourceInfo,
+    DisplayedObject? DisplayedObject
 )
 {
     private TestExplorerState()
-        : this(null, null, null, null, null, true, true, true, null, null) { }
+        : this(null, null, null, null, null, true, true, true, null, null, null) { }
 }
 
 public static class TestExplorerStateReducers
@@ -110,7 +117,7 @@ public static class TestExplorerStateReducers
         return state with
         {
             SelectedProblemTests = action.SelectedProblemTests,
-            TestResults = newTestResults
+            TestResults = newTestResults,
         };
     }
 
@@ -118,9 +125,10 @@ public static class TestExplorerStateReducers
     public static TestExplorerState Reducer(TestExplorerState state, TestResultComputed action)
     {
         if (
-            !state
-                .TestResults
-                .TryGetValue(action.TestResult.BeamOsObjectType, out var resultsForType)
+            !state.TestResults.TryGetValue(
+                action.TestResult.BeamOsObjectType,
+                out var resultsForType
+            )
         )
         {
             resultsForType = ImmutableDictionary<string, List<TestResult>>.Empty;
@@ -128,7 +136,7 @@ public static class TestExplorerStateReducers
         }
         if (!resultsForType.TryGetValue(action.TestResult.BeamOsObjectId, out var resultsList))
         {
-            resultsList =  [];
+            resultsList = [];
             //resultsForType.Add(action.TestResult.BeamOsObjectId, resultsList);
         }
         resultsList.Add(action.TestResult);
@@ -136,14 +144,13 @@ public static class TestExplorerStateReducers
         return state with
         {
             TestResults = state
-                .TestResults
-                .Remove(action.TestResult.BeamOsObjectType)
+                .TestResults.Remove(action.TestResult.BeamOsObjectType)
                 .Add(
                     action.TestResult.BeamOsObjectType,
                     resultsForType
                         .Remove(action.TestResult.BeamOsObjectId)
                         .Add(action.TestResult.BeamOsObjectId, resultsList)
-                )
+                ),
         };
     }
 }

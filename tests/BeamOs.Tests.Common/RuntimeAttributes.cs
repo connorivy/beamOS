@@ -23,3 +23,8 @@ public class ParallelGroupAttribute(string group) : Attribute
 public class DependsOnAttribute(Type classType, string testName) : Attribute { }
 
 public class SkipInFrontEndAttribute : Attribute { }
+
+public class TestTypeAttribute(TestType testType) : Attribute
+{
+    public TestType TestType { get; } = testType;
+}

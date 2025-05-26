@@ -9,4 +9,5 @@ public interface INodeRepository : IModelResourceRepository<NodeId, Node>
     public Task<List<Node>> GetAll();
 }
 
+
 public interface INodeProposalRepository : IProposalRepository<NodeProposalId, NodeProposal> { }

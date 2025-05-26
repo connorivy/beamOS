@@ -11,6 +11,7 @@
     <ProjectReference Include="..\BeamOs.StructuralAnalysis.Contracts\BeamOs.StructuralAnalysis.Contracts.csproj" />
     <ProjectReference Include="..\BeamOs.StructuralAnalysis.Sdk\BeamOs.StructuralAnalysis.Sdk.csproj" />
     <ProjectReference Include="..\BeamOs.StructuralAnalysis.Domain\BeamOs.StructuralAnalysis.Domain.csproj" />
+    <ProjectReference Include="..\BeamOs.StructuralAnalysis.SourceGenerator\BeamOs.StructuralAnalysis.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <ItemGroup>

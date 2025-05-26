@@ -1,4 +1,6 @@
+using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.Common;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using FluentAssertions;
 
 namespace BeamOs.Tests.Common;
@@ -11,30 +13,6 @@ public static class Asserter
     public static event EventHandler<
         ComparedObjectEventArgs<double[,]>
     >? Double2dArrayAssertedEqual;
-
-    //public static void AssertEqual(
-    //    string beamOsObjectId,
-    //    string comparedValueName,
-    //    double expected,
-    //    double actual,
-    //    double precision = .001,
-    //    ICollection<string>? comparedValueNameCollection = null
-    //)
-    //{
-    //    AssertedEqual2?.Invoke(
-    //        typeof(Asserter),
-    //        new()
-    //        {
-    //            BeamOsObjectId = beamOsObjectId,
-    //            ComparedObjectPropertyName = comparedValueName,
-    //            ExpectedValue = expected,
-    //            CalculatedValue = actual,
-    //            ComparedValueNameCollection = comparedValueNameCollection
-    //        }
-    //    );
-
-    //    actual.Should().BeApproximately(expected, precision);
-    //}
 
     public static void AssertEqual(
         BeamOsObjectType beamOsObjectType,
@@ -55,7 +33,7 @@ public static class Asserter
                 ComparedObjectPropertyName = comparedValueName,
                 ExpectedValue = expected,
                 CalculatedValue = actual,
-                ComparedValueNameCollection = comparedValueNameCollection
+                ComparedValueNameCollection = comparedValueNameCollection,
             }
         );
 
@@ -94,7 +72,7 @@ public static class Asserter
                 ComparedObjectPropertyName = comparedValueName,
                 ExpectedValue = expected,
                 CalculatedValue = actual,
-                ComparedValueNameCollection = comparedValueNameCollection
+                ComparedValueNameCollection = comparedValueNameCollection,
             }
         );
 
@@ -141,7 +119,7 @@ public static class Asserter
                 ComparedObjectPropertyName = comparedValueName,
                 ExpectedValue = expected,
                 CalculatedValue = actual,
-                ComparedValueNameCollection = comparedValueNameCollection
+                ComparedValueNameCollection = comparedValueNameCollection,
             }
         );
 
@@ -166,61 +144,17 @@ public static class Asserter
         }
     }
 
-    public static void AssertEqual(
-        BeamOsObjectType beamOsObjectType,
-        string beamOsObjectId,
-        string comparedValueName,
-        double?[,] expected,
-        double?[,] actual,
-        double precision = .001,
-        ICollection<string>? comparedValueNameCollection = null
+    public static event EventHandler<ModelProposalResponse>? ModelProposalVerified;
+
+    public static async Task VerifyModelProposal(
+        Result<ModelProposalResponse> modelProposalResponse
     )
     {
-        AssertedEqual2?.Invoke(
-            typeof(Asserter),
-            new()
-            {
-                BeamOsObjectType = beamOsObjectType,
-                BeamOsObjectId = beamOsObjectId,
-                ComparedObjectPropertyName = comparedValueName,
-                ExpectedValue = expected,
-                CalculatedValue = actual,
-                ComparedValueNameCollection = comparedValueNameCollection
-            }
-        );
-
-        int numRows = actual.GetLength(0);
-        int numCols = actual.GetLength(1);
-        if (numRows != expected.GetLength(0) || numCols != expected.GetLength(1))
-        {
-            throw new Exception("Calculated and expected values have different lengths");
-        }
-
-        if (numRows == 0 || numCols == 0)
-        {
-            return;
-        }
-
-        for (int row = 0; row < numRows; row++)
-        {
-            for (int col = 0; col < numCols; col++)
-            {
-                double? actualValue = actual[row, col];
-                double? expectedValue = expected[row, col];
-                if (expectedValue is null)
-                {
-                    continue;
-                }
-                if (actualValue is null)
-                {
-                    throw new Exception(
-                        $"Expected value is {expectedValue} and the actual value is null"
-                    );
-                }
-
-                actualValue.Value.Should().BeApproximately(expectedValue.Value, precision);
-            }
-        }
+#if RUNTIME
+        ModelProposalVerified?.Invoke(typeof(Asserter), modelProposalResponse);
+#else
+        await Verify(modelProposalResponse);
+#endif
     }
 }
 

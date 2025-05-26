@@ -172,8 +172,12 @@ public abstract class BeamOsModelBuilder
             (await apiClient.BatchPutElement1dAsync(modelId, el)).ThrowIfError();
         }
 
+        ModelCreated?.Invoke(this, modelId);
+
         return true;
     }
+
+    public static event EventHandler<Guid>? ModelCreated;
 
     private static IEnumerable<List<TRequest>> ChunkRequests<TRequest>(
         IEnumerable<TRequest> requests

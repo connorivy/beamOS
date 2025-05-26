@@ -11,7 +11,12 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(RUNTIME)' != 'true'">
+    <PackageReference Include="Verify.TUnit" />
+  </ItemGroup>
+
   <ItemGroup>
+    <ProjectReference Include="..\..\codeGen\BeamOs.CodeGen.EditorApi\BeamOs.CodeGen.EditorApi.csproj" />
     <ProjectReference Include="..\..\src\StructuralAnalysis\BeamOs.StructuralAnalysis.Contracts\BeamOs.StructuralAnalysis.Contracts.csproj" />
     <ProjectReference Include="..\..\src\StructuralAnalysis\BeamOs.StructuralAnalysis.Sdk\BeamOs.StructuralAnalysis.Sdk.csproj" />
   </ItemGroup>

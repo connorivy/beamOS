@@ -116,11 +116,14 @@ public class TestInfoCollector
         }
         else
         {
+            TestTypeAttribute? testTypeAttribute =
+                classType.GetCustomAttribute<TestTypeAttribute>();
             yield return new TestInfo()
             {
                 TestClassType = classType,
-                TestData = [],
+                TestData = null,
                 MethodInfo = methodInfo,
+                TestType = testTypeAttribute?.TestType ?? TestType.StructuralAnalysis,
             };
             //    yield return new TestInfo(
             //        classType,

@@ -18,7 +18,8 @@ public abstract class GetModelEntityCommandHandler<TId, TEntity, TResponse>(
     {
         var entity = await entityRepository.GetSingle(
             command.ModelId,
-            new TId() { Id = command.Id }
+            new TId() { Id = command.Id },
+            ct
         );
 
         if (entity is null)

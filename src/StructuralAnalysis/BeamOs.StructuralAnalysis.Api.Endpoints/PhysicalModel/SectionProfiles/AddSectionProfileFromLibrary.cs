@@ -9,7 +9,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.SectionProfiles;
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 public class AddSectionProfileFromLibrary(
-    CreateSectionProfileFromLibraryCommandHandler createSectionProfileFromLibraryCommandHandler
+    AddSectionProfileFromLibraryCommandHandler createSectionProfileFromLibraryCommandHandler
 )
     : BeamOsModelResourceBaseEndpoint<
         ModelResourceRequest<SectionProfileFromLibraryData>,

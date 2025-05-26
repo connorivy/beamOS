@@ -1,6 +1,7 @@
 using BeamOs.Common.Api;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Api.Endpoints.OpenSees;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCombinations;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCombinations;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.LoadCombinations;
