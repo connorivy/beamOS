@@ -105,7 +105,6 @@ public class RunDirectStiffnessMethodCommandHandler(
 public readonly struct RunDsmCommand : IHasModelId
 {
     public Guid ModelId { get; init; }
-
     public string? UnitsOverride { get; init; }
     public List<int>? LoadCombinationIds { get; init; }
 }

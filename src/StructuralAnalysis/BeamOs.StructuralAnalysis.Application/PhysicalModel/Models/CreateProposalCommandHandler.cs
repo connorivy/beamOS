@@ -23,7 +23,7 @@ using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 
-public class CreateProposalCommandHandler(
+public class CreateModelProposalCommandHandler(
     IModelRepository modelRepository,
     IModelProposalRepository modelProposalRepository,
     INodeRepository nodeRepository,

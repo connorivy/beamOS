@@ -1,8 +1,8 @@
 using BeamOs.Common.Api;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Api.Endpoints.OpenSees;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
-using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Models;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Models;
 
@@ -10,7 +10,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Models;
 [BeamOsEndpointType(Http.Get)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Reviewer)]
 [BeamOsTag(BeamOsTags.AI)]
-public class GetModel(GetModelQueryHandler getModelCommandHandler)
+public class GetModel(GetModelCommandHandler getModelCommandHandler)
     : BeamOsModelIdRequestBaseEndpoint<ModelResponse>
 {
     public override async Task<Result<ModelResponse>> ExecuteRequestAsync(

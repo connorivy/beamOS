@@ -8,7 +8,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.AnalyticalResults;
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "result-sets")]
 [BeamOsEndpointType(Http.Delete)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-public class DeleteAllResultSets(DeleteResultSetsCommandHandler deleteResultSetsCommandHandler)
+public class DeleteAllResultSets(DeleteAllResultSetsCommandHandler deleteResultSetsCommandHandler)
     : BeamOsModelIdRequestBaseEndpoint<int>
 {
     public override async Task<Result<int>> ExecuteRequestAsync(

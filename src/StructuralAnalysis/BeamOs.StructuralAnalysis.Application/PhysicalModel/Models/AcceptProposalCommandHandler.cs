@@ -13,7 +13,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 
-public class AcceptProposalCommandHandler(
+public class AcceptModelProposalCommandHandler(
     IModelProposalRepository modelProposalRepository,
     INodeRepository nodeRepository,
     IMaterialRepository materialRepository,
@@ -171,7 +171,7 @@ public class AcceptProposalCommandHandler(
     }
 }
 
-public class RejectProposalCommandHandler(
+public class RejectModelProposalCommandHandler(
     IModelProposalRepository modelProposalRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<IModelEntity, bool>

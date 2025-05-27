@@ -74,7 +74,7 @@ export interface IStructuralAnalysisApiClientV1 {
     /**
      * @return OK
      */
-    updateNode(modelId: string, body: UpdateNodeRequest): Promise<ResultOfNodeResponse>;
+    patchNode(modelId: string, body: UpdateNodeRequest): Promise<ResultOfNodeResponse>;
 
     /**
      * @return OK
@@ -287,17 +287,6 @@ export interface IStructuralAnalysisApiClientV1 {
      * @return OK
      */
     getResultSet(modelId: string, id: number): Promise<ResultOfResultSetResponse>;
-
-    /**
-     * @param body (optional) 
-     * @return OK
-     */
-    speckleRecieveOperation(modelId: string, body: SpeckleReceiveParameters | null | undefined): Promise<ResultOfModelProposalResponse>;
-
-    /**
-     * @return OK
-     */
-    githubModelsChat(modelId: string, body: GithubModelsChatRequest): Promise<ResultOfGithubModelsChatResponse>;
 }
 
 export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClientV1 {
@@ -849,7 +838,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     /**
      * @return OK
      */
-    updateNode(modelId: string, body: UpdateNodeRequest): Promise<ResultOfNodeResponse> {
+    patchNode(modelId: string, body: UpdateNodeRequest): Promise<ResultOfNodeResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/nodes";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -868,11 +857,11 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processUpdateNode(_response);
+            return this.processPatchNode(_response);
         });
     }
 
-    protected processUpdateNode(response: Response): Promise<ResultOfNodeResponse> {
+    protected processPatchNode(response: Response): Promise<ResultOfNodeResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -2689,100 +2678,10 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         }
         return Promise.resolve<ResultOfResultSetResponse>(null as any);
     }
-
-    /**
-     * @param body (optional) 
-     * @return OK
-     */
-    speckleRecieveOperation(modelId: string, body: SpeckleReceiveParameters | null | undefined): Promise<ResultOfModelProposalResponse> {
-        let url_ = this.baseUrl + "/api/speckle-receive?";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined and cannot be null.");
-        else
-            url_ += "ModelId=" + encodeURIComponent("" + modelId) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processSpeckleRecieveOperation(_response);
-        });
-    }
-
-    protected processSpeckleRecieveOperation(response: Response): Promise<ResultOfModelProposalResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfModelProposalResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<ResultOfModelProposalResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    githubModelsChat(modelId: string, body: GithubModelsChatRequest): Promise<ResultOfGithubModelsChatResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/github-models-chat";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGithubModelsChat(_response);
-        });
-    }
-
-    protected processGithubModelsChat(response: Response): Promise<ResultOfGithubModelsChatResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfGithubModelsChatResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<ResultOfGithubModelsChatResponse>(null as any);
-    }
 }
 
 export class AnalysisSettings implements IAnalysisSettings {
-    element1DAnalysisType?: Element1dAnalysisType;
+    element1DAnalysisType?: number;
 
     [key: string]: any;
 
@@ -2824,7 +2723,7 @@ export class AnalysisSettings implements IAnalysisSettings {
 }
 
 export interface IAnalysisSettings {
-    element1DAnalysisType?: Element1dAnalysisType;
+    element1DAnalysisType?: number;
 
     [key: string]: any;
 }
@@ -2923,7 +2822,7 @@ export interface IAnalyticalResultsResponse {
 
 export class Angle implements IAngle {
     value!: number;
-    unit!: AngleUnit;
+    unit!: number;
 
     [key: string]: any;
 
@@ -2968,15 +2867,9 @@ export class Angle implements IAngle {
 
 export interface IAngle {
     value: number;
-    unit: AngleUnit;
+    unit: number;
 
     [key: string]: any;
-}
-
-export enum AngleUnit {
-    Undefined = "Undefined",
-    Degree = "Degree",
-    Radian = "Radian",
 }
 
 export class BatchResponse implements IBatchResponse {
@@ -3054,7 +2947,7 @@ export interface IBatchResponse {
 export class BeamOsError implements IBeamOsError {
     code!: string;
     description!: string;
-    type!: ErrorType;
+    type!: number;
     numericType?: number;
     metadata!: { [key: string]: string; } | undefined;
 
@@ -3120,27 +3013,11 @@ export class BeamOsError implements IBeamOsError {
 export interface IBeamOsError {
     code: string;
     description: string;
-    type: ErrorType;
+    type: number;
     numericType?: number;
     metadata: { [key: string]: string; } | undefined;
 
     [key: string]: any;
-}
-
-export enum BeamOsObjectType {
-    Undefined = "Undefined",
-    Model = "Model",
-    Node = "Node",
-    Element1d = "Element1d",
-    Material = "Material",
-    SectionProfile = "SectionProfile",
-    PointLoad = "PointLoad",
-    MomentLoad = "MomentLoad",
-    DistributedLoad = "DistributedLoad",
-    DistributedMomentLoad = "DistributedMomentLoad",
-    LoadCase = "LoadCase",
-    LoadCombination = "LoadCombination",
-    ModelProposal = "ModelProposal",
 }
 
 export class CreateElement1dProposal implements ICreateElement1dProposal {
@@ -3411,7 +3288,7 @@ export class CreateMaterialRequest implements ICreateMaterialRequest {
     id?: number | undefined;
     modulusOfElasticity!: number;
     modulusOfRigidity!: number;
-    pressureUnit!: PressureUnit;
+    pressureUnit!: number;
 
     [key: string]: any;
 
@@ -3462,7 +3339,7 @@ export interface ICreateMaterialRequest {
     id?: number | undefined;
     modulusOfElasticity: number;
     modulusOfRigidity: number;
-    pressureUnit: PressureUnit;
+    pressureUnit: number;
 
     [key: string]: any;
 }
@@ -3820,7 +3697,7 @@ export interface ICreatePointLoadRequest {
 
 export class CreateSectionProfileFromLibraryRequest implements ICreateSectionProfileFromLibraryRequest {
     id!: number;
-    library!: StructuralCode;
+    library!: number;
     name!: string;
 
     [key: string]: any;
@@ -3868,7 +3745,7 @@ export class CreateSectionProfileFromLibraryRequest implements ICreateSectionPro
 
 export interface ICreateSectionProfileFromLibraryRequest {
     id: number;
-    library: StructuralCode;
+    library: number;
     name: string;
 
     [key: string]: any;
@@ -3884,7 +3761,7 @@ export class CreateSectionProfileRequest implements ICreateSectionProfileRequest
     weakAxisPlasticSectionModulus!: number;
     strongAxisShearArea?: number | undefined;
     weakAxisShearArea?: number | undefined;
-    lengthUnit!: LengthUnit;
+    lengthUnit!: number;
     name!: string;
 
     [key: string]: any;
@@ -3956,7 +3833,7 @@ export interface ICreateSectionProfileRequest {
     weakAxisPlasticSectionModulus: number;
     strongAxisShearArea?: number | undefined;
     weakAxisShearArea?: number | undefined;
-    lengthUnit: LengthUnit;
+    lengthUnit: number;
     name: string;
 
     [key: string]: any;
@@ -4241,12 +4118,6 @@ export interface IDisplacementsResponse {
     rotationAboutZ: Angle;
 
     [key: string]: any;
-}
-
-export enum Element1dAnalysisType {
-    Undefined = "Undefined",
-    Euler = "Euler",
-    Timoshenko = "Timoshenko",
 }
 
 export class Element1dData implements IElement1dData {
@@ -4599,17 +4470,9 @@ export interface IElement1dResultResponse {
     [key: string]: any;
 }
 
-export enum EntityOperationStatus {
-    Undefined = "Undefined",
-    Created = "Created",
-    Updated = "Updated",
-    Deleted = "Deleted",
-    Error = "Error",
-}
-
 export class EntityStatus implements IEntityStatus {
     id!: number;
-    entityOperationStatus!: EntityOperationStatus;
+    entityOperationStatus!: number;
     errorMessage?: string;
 
     [key: string]: any;
@@ -4657,27 +4520,15 @@ export class EntityStatus implements IEntityStatus {
 
 export interface IEntityStatus {
     id: number;
-    entityOperationStatus: EntityOperationStatus;
+    entityOperationStatus: number;
     errorMessage?: string;
 
     [key: string]: any;
 }
 
-export enum ErrorType {
-    None = "None",
-    Failure = "Failure",
-    Unexpected = "Unexpected",
-    Validation = "Validation",
-    Conflict = "Conflict",
-    NotFound = "NotFound",
-    Unauthorized = "Unauthorized",
-    Forbidden = "Forbidden",
-    InvalidOperation = "InvalidOperation",
-}
-
 export class Force implements IForce {
     value!: number;
-    unit!: ForceUnit;
+    unit!: number;
 
     [key: string]: any;
 
@@ -4722,7 +4573,7 @@ export class Force implements IForce {
 
 export interface IForce {
     value: number;
-    unit: ForceUnit;
+    unit: number;
 
     [key: string]: any;
 }
@@ -4803,118 +4654,6 @@ export interface IForcesResponse {
     [key: string]: any;
 }
 
-export enum ForceUnit {
-    Undefined = "Undefined",
-    Kilonewton = "Kilonewton",
-    KilopoundForce = "KilopoundForce",
-    Newton = "Newton",
-    PoundForce = "PoundForce",
-}
-
-export class GithubModelsChatRequest implements IGithubModelsChatRequest {
-    apiKey!: string;
-    message!: string;
-
-    [key: string]: any;
-
-    constructor(data?: IGithubModelsChatRequest) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.apiKey = _data["apiKey"];
-            this.message = _data["message"];
-        }
-    }
-
-    static fromJS(data: any): GithubModelsChatRequest {
-        data = typeof data === 'object' ? data : {};
-        let result = new GithubModelsChatRequest();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["apiKey"] = this.apiKey;
-        data["message"] = this.message;
-        return data;
-    }
-}
-
-export interface IGithubModelsChatRequest {
-    apiKey: string;
-    message: string;
-
-    [key: string]: any;
-}
-
-export class GithubModelsChatResponse implements IGithubModelsChatResponse {
-    proposalId!: number;
-    message!: string;
-
-    [key: string]: any;
-
-    constructor(data?: IGithubModelsChatResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.proposalId = _data["proposalId"];
-            this.message = _data["message"];
-        }
-    }
-
-    static fromJS(data: any): GithubModelsChatResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new GithubModelsChatResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["proposalId"] = this.proposalId;
-        data["message"] = this.message;
-        return data;
-    }
-}
-
-export interface IGithubModelsChatResponse {
-    proposalId: number;
-    message: string;
-
-    [key: string]: any;
-}
-
 export class GlobalStresses implements IGlobalStresses {
     maxShear!: Force;
     minShear!: Force;
@@ -4983,7 +4722,7 @@ export interface IGlobalStresses {
 
 export class Length implements ILength {
     value!: number;
-    unit!: LengthUnit;
+    unit!: number;
 
     [key: string]: any;
 
@@ -5028,18 +4767,9 @@ export class Length implements ILength {
 
 export interface ILength {
     value: number;
-    unit: LengthUnit;
+    unit: number;
 
     [key: string]: any;
-}
-
-export enum LengthUnit {
-    Undefined = "Undefined",
-    Centimeter = "Centimeter",
-    Foot = "Foot",
-    Inch = "Inch",
-    Meter = "Meter",
-    Millimeter = "Millimeter",
 }
 
 export class LoadCase implements ILoadCase {
@@ -5394,7 +5124,7 @@ export interface ILoadCombinationData {
 export class MaterialRequestData implements IMaterialRequestData {
     modulusOfElasticity!: number;
     modulusOfRigidity!: number;
-    pressureUnit!: PressureUnit;
+    pressureUnit!: number;
 
     [key: string]: any;
 
@@ -5442,7 +5172,7 @@ export class MaterialRequestData implements IMaterialRequestData {
 export interface IMaterialRequestData {
     modulusOfElasticity: number;
     modulusOfRigidity: number;
-    pressureUnit: PressureUnit;
+    pressureUnit: number;
 
     [key: string]: any;
 }
@@ -5452,7 +5182,7 @@ export class MaterialResponse implements IMaterialResponse {
     modelId!: string;
     modulusOfElasticity!: number;
     modulusOfRigidity!: number;
-    pressureUnit!: PressureUnit;
+    pressureUnit!: number;
 
     [key: string]: any;
 
@@ -5506,7 +5236,7 @@ export interface IMaterialResponse {
     modelId: string;
     modulusOfElasticity: number;
     modulusOfRigidity: number;
-    pressureUnit: PressureUnit;
+    pressureUnit: number;
 
     [key: string]: any;
 }
@@ -5516,7 +5246,7 @@ export class MaterialResponse2 implements IMaterialResponse2 {
     modelId!: string;
     modulusOfElasticity!: number;
     modulusOfRigidity!: number;
-    pressureUnit!: PressureUnit;
+    pressureUnit!: number;
 
     [key: string]: any;
 
@@ -5570,7 +5300,7 @@ export interface IMaterialResponse2 {
     modelId: string;
     modulusOfElasticity: number;
     modulusOfRigidity: number;
-    pressureUnit: PressureUnit;
+    pressureUnit: number;
 
     [key: string]: any;
 }
@@ -6886,8 +6616,8 @@ export class MomentDiagramResponse implements IMomentDiagramResponse {
     modelId!: string;
     resultSetId!: number;
     element1dId!: number;
-    lengthUnit!: LengthUnit;
-    torqueUnit!: TorqueUnit;
+    lengthUnit!: number;
+    torqueUnit!: number;
     elementLength!: Length;
     intervals!: DiagramConsistentIntervalResponse2[];
 
@@ -6958,8 +6688,8 @@ export interface IMomentDiagramResponse {
     modelId: string;
     resultSetId: number;
     element1dId: number;
-    lengthUnit: LengthUnit;
-    torqueUnit: TorqueUnit;
+    lengthUnit: number;
+    torqueUnit: number;
     elementLength: Length;
     intervals: DiagramConsistentIntervalResponse2[];
 
@@ -7580,7 +7310,7 @@ export interface INodeResultResponse2 {
 
 export class NullableOfAngle implements INullableOfAngle {
     value!: number;
-    unit!: AngleUnit;
+    unit!: number;
 
     [key: string]: any;
 
@@ -7625,7 +7355,7 @@ export class NullableOfAngle implements INullableOfAngle {
 
 export interface INullableOfAngle {
     value: number;
-    unit: AngleUnit;
+    unit: number;
 
     [key: string]: any;
 }
@@ -7634,7 +7364,7 @@ export class NullableOfPartialPoint implements INullableOfPartialPoint {
     x?: number | undefined;
     y?: number | undefined;
     z?: number | undefined;
-    lengthUnit!: LengthUnit;
+    lengthUnit!: number;
 
     [key: string]: any;
 
@@ -7685,7 +7415,7 @@ export interface INullableOfPartialPoint {
     x?: number | undefined;
     y?: number | undefined;
     z?: number | undefined;
-    lengthUnit: LengthUnit;
+    lengthUnit: number;
 
     [key: string]: any;
 }
@@ -7762,7 +7492,7 @@ export class Point implements IPoint {
     x!: number;
     y!: number;
     z!: number;
-    lengthUnit!: LengthUnit;
+    lengthUnit!: number;
 
     [key: string]: any;
 
@@ -7813,7 +7543,7 @@ export interface IPoint {
     x: number;
     y: number;
     z: number;
-    lengthUnit: LengthUnit;
+    lengthUnit: number;
 
     [key: string]: any;
 }
@@ -8094,27 +7824,13 @@ export interface IPointLoadResponse2 {
     [key: string]: any;
 }
 
-export enum PressureUnit {
-    Undefined = "Undefined",
-    KilonewtonPerSquareCentimeter = "KilonewtonPerSquareCentimeter",
-    KilonewtonPerSquareMeter = "KilonewtonPerSquareMeter",
-    KilonewtonPerSquareMillimeter = "KilonewtonPerSquareMillimeter",
-    KilopoundForcePerSquareFoot = "KilopoundForcePerSquareFoot",
-    KilopoundForcePerSquareInch = "KilopoundForcePerSquareInch",
-    NewtonPerSquareCentimeter = "NewtonPerSquareCentimeter",
-    NewtonPerSquareMeter = "NewtonPerSquareMeter",
-    NewtonPerSquareMillimeter = "NewtonPerSquareMillimeter",
-    PoundForcePerSquareFoot = "PoundForcePerSquareFoot",
-    PoundForcePerSquareInch = "PoundForcePerSquareInch",
-}
-
 export class ProposalIssue implements IProposalIssue {
     id!: number;
     proposedId!: ProposedID;
-    objectType!: BeamOsObjectType;
+    objectType!: number;
     message!: string;
-    severity!: ProposalIssueSeverity;
-    code!: ProposalIssueCode;
+    severity!: number;
+    code!: number;
 
     [key: string]: any;
 
@@ -8171,28 +7887,20 @@ export class ProposalIssue implements IProposalIssue {
 export interface IProposalIssue {
     id: number;
     proposedId: ProposedID;
-    objectType: BeamOsObjectType;
+    objectType: number;
     message: string;
-    severity: ProposalIssueSeverity;
-    code: ProposalIssueCode;
+    severity: number;
+    code: number;
 
     [key: string]: any;
 }
 
-export enum ProposalIssueCode {
-    Undefined = "Undefined",
-    Other = "Other",
-    CouldNotCreateProposedObject = "CouldNotCreateProposedObject",
-    SomeInfoInferred = "SomeInfoInferred",
-    SwappedInPlaceholder = "SwappedInPlaceholder",
-}
-
 export class ProposalIssueData implements IProposalIssueData {
     proposedId!: ProposedID;
-    objectType!: BeamOsObjectType;
+    objectType!: number;
     message!: string;
-    severity!: ProposalIssueSeverity;
-    code!: ProposalIssueCode;
+    severity!: number;
+    code!: number;
 
     [key: string]: any;
 
@@ -8246,20 +7954,12 @@ export class ProposalIssueData implements IProposalIssueData {
 
 export interface IProposalIssueData {
     proposedId: ProposedID;
-    objectType: BeamOsObjectType;
+    objectType: number;
     message: string;
-    severity: ProposalIssueSeverity;
-    code: ProposalIssueCode;
+    severity: number;
+    code: number;
 
     [key: string]: any;
-}
-
-export enum ProposalIssueSeverity {
-    Undefined = "Undefined",
-    Information = "Information",
-    Warning = "Warning",
-    Error = "Error",
-    Critical = "Critical",
 }
 
 export class ProposedID implements IProposedID {
@@ -8454,7 +8154,7 @@ export class PutMaterialRequest implements IPutMaterialRequest {
     id?: number;
     modulusOfElasticity!: number;
     modulusOfRigidity!: number;
-    pressureUnit!: PressureUnit;
+    pressureUnit!: number;
 
     [key: string]: any;
 
@@ -8505,7 +8205,7 @@ export interface IPutMaterialRequest {
     id?: number;
     modulusOfElasticity: number;
     modulusOfRigidity: number;
-    pressureUnit: PressureUnit;
+    pressureUnit: number;
 
     [key: string]: any;
 }
@@ -8732,7 +8432,7 @@ export class PutSectionProfileRequest implements IPutSectionProfileRequest {
     weakAxisPlasticSectionModulus!: number;
     strongAxisShearArea?: number | undefined;
     weakAxisShearArea?: number | undefined;
-    lengthUnit!: LengthUnit;
+    lengthUnit!: number;
     name!: string;
 
     [key: string]: any;
@@ -8804,7 +8504,7 @@ export interface IPutSectionProfileRequest {
     weakAxisPlasticSectionModulus: number;
     strongAxisShearArea?: number | undefined;
     weakAxisShearArea?: number | undefined;
-    lengthUnit: LengthUnit;
+    lengthUnit: number;
     name: string;
 
     [key: string]: any;
@@ -9096,62 +8796,6 @@ export class ResultOfElement1dResponse implements IResultOfElement1dResponse {
 
 export interface IResultOfElement1dResponse {
     value: Element1dResponse2 | undefined;
-    error: BeamOsError | undefined;
-    isError: boolean;
-
-    [key: string]: any;
-}
-
-export class ResultOfGithubModelsChatResponse implements IResultOfGithubModelsChatResponse {
-    value!: GithubModelsChatResponse | undefined;
-    error!: BeamOsError | undefined;
-    isError!: boolean;
-
-    [key: string]: any;
-
-    constructor(data?: IResultOfGithubModelsChatResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"] ? GithubModelsChatResponse.fromJS(_data["value"]) : <any>undefined;
-            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
-            this.isError = _data["isError"];
-        }
-    }
-
-    static fromJS(data: any): ResultOfGithubModelsChatResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new ResultOfGithubModelsChatResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
-        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
-        data["isError"] = this.isError;
-        return data;
-    }
-}
-
-export interface IResultOfGithubModelsChatResponse {
-    value: GithubModelsChatResponse | undefined;
     error: BeamOsError | undefined;
     isError: boolean;
 
@@ -10367,7 +10011,7 @@ export class SectionProfileData implements ISectionProfileData {
     weakAxisPlasticSectionModulus!: number;
     strongAxisShearArea?: number | undefined;
     weakAxisShearArea?: number | undefined;
-    lengthUnit!: LengthUnit;
+    lengthUnit!: number;
     name!: string;
 
     [key: string]: any;
@@ -10436,7 +10080,7 @@ export interface ISectionProfileData {
     weakAxisPlasticSectionModulus: number;
     strongAxisShearArea?: number | undefined;
     weakAxisShearArea?: number | undefined;
-    lengthUnit: LengthUnit;
+    lengthUnit: number;
     name: string;
 
     [key: string]: any;
@@ -10444,7 +10088,7 @@ export interface ISectionProfileData {
 
 export class SectionProfileFromLibrary implements ISectionProfileFromLibrary {
     id!: number;
-    library!: StructuralCode;
+    library!: number;
     name!: string;
 
     [key: string]: any;
@@ -10492,7 +10136,7 @@ export class SectionProfileFromLibrary implements ISectionProfileFromLibrary {
 
 export interface ISectionProfileFromLibrary {
     id: number;
-    library: StructuralCode;
+    library: number;
     name: string;
 
     [key: string]: any;
@@ -10500,7 +10144,7 @@ export interface ISectionProfileFromLibrary {
 
 export class SectionProfileFromLibrary2 implements ISectionProfileFromLibrary2 {
     id!: number;
-    library!: StructuralCode;
+    library!: number;
     name!: string;
 
     [key: string]: any;
@@ -10548,14 +10192,14 @@ export class SectionProfileFromLibrary2 implements ISectionProfileFromLibrary2 {
 
 export interface ISectionProfileFromLibrary2 {
     id: number;
-    library: StructuralCode;
+    library: number;
     name: string;
 
     [key: string]: any;
 }
 
 export class SectionProfileFromLibraryData implements ISectionProfileFromLibraryData {
-    library!: StructuralCode;
+    library!: number;
     name!: string;
 
     [key: string]: any;
@@ -10600,14 +10244,14 @@ export class SectionProfileFromLibraryData implements ISectionProfileFromLibrary
 }
 
 export interface ISectionProfileFromLibraryData {
-    library: StructuralCode;
+    library: number;
     name: string;
 
     [key: string]: any;
 }
 
 export class SectionProfileFromLibraryData2 implements ISectionProfileFromLibraryData2 {
-    library!: StructuralCode;
+    library!: number;
     name!: string;
 
     [key: string]: any;
@@ -10652,7 +10296,7 @@ export class SectionProfileFromLibraryData2 implements ISectionProfileFromLibrar
 }
 
 export interface ISectionProfileFromLibraryData2 {
-    library: StructuralCode;
+    library: number;
     name: string;
 
     [key: string]: any;
@@ -10670,7 +10314,7 @@ export class SectionProfileResponse implements ISectionProfileResponse {
     weakAxisPlasticSectionModulus!: number;
     strongAxisShearArea!: number | undefined;
     weakAxisShearArea!: number | undefined;
-    lengthUnit!: LengthUnit;
+    lengthUnit!: number;
 
     [key: string]: any;
 
@@ -10745,7 +10389,7 @@ export interface ISectionProfileResponse {
     weakAxisPlasticSectionModulus: number;
     strongAxisShearArea: number | undefined;
     weakAxisShearArea: number | undefined;
-    lengthUnit: LengthUnit;
+    lengthUnit: number;
 
     [key: string]: any;
 }
@@ -10762,7 +10406,7 @@ export class SectionProfileResponse2 implements ISectionProfileResponse2 {
     weakAxisPlasticSectionModulus!: number;
     strongAxisShearArea!: number | undefined;
     weakAxisShearArea!: number | undefined;
-    lengthUnit!: LengthUnit;
+    lengthUnit!: number;
 
     [key: string]: any;
 
@@ -10837,15 +10481,15 @@ export interface ISectionProfileResponse2 {
     weakAxisPlasticSectionModulus: number;
     strongAxisShearArea: number | undefined;
     weakAxisShearArea: number | undefined;
-    lengthUnit: LengthUnit;
+    lengthUnit: number;
 
     [key: string]: any;
 }
 
 export class ShearDiagramResponse implements IShearDiagramResponse {
     globalShearDirection!: Vector3;
-    lengthUnit!: LengthUnit;
-    forceUnit!: ForceUnit;
+    lengthUnit!: number;
+    forceUnit!: number;
     elementLength!: Length;
     modelId!: string;
     resultSetId!: number;
@@ -10920,8 +10564,8 @@ export class ShearDiagramResponse implements IShearDiagramResponse {
 
 export interface IShearDiagramResponse {
     globalShearDirection: Vector3;
-    lengthUnit: LengthUnit;
-    forceUnit: ForceUnit;
+    lengthUnit: number;
+    forceUnit: number;
     elementLength: Length;
     modelId: string;
     resultSetId: number;
@@ -10931,74 +10575,9 @@ export interface IShearDiagramResponse {
     [key: string]: any;
 }
 
-export class SpeckleReceiveParameters implements ISpeckleReceiveParameters {
-    apiToken!: string;
-    projectId!: string;
-    objectId!: string;
-    serverUrl!: string;
-
-    [key: string]: any;
-
-    constructor(data?: ISpeckleReceiveParameters) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.apiToken = _data["apiToken"];
-            this.projectId = _data["projectId"];
-            this.objectId = _data["objectId"];
-            this.serverUrl = _data["serverUrl"];
-        }
-    }
-
-    static fromJS(data: any): SpeckleReceiveParameters {
-        data = typeof data === 'object' ? data : {};
-        let result = new SpeckleReceiveParameters();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["apiToken"] = this.apiToken;
-        data["projectId"] = this.projectId;
-        data["objectId"] = this.objectId;
-        data["serverUrl"] = this.serverUrl;
-        return data;
-    }
-}
-
-export interface ISpeckleReceiveParameters {
-    apiToken: string;
-    projectId: string;
-    objectId: string;
-    serverUrl: string;
-
-    [key: string]: any;
-}
-
-export enum StructuralCode {
-    Undefined = "Undefined",
-    AISC_360_16 = "AISC_360_16",
-}
-
 export class Torque implements ITorque {
     value!: number;
-    unit!: TorqueUnit;
+    unit!: number;
 
     [key: string]: any;
 
@@ -11043,29 +10622,15 @@ export class Torque implements ITorque {
 
 export interface ITorque {
     value: number;
-    unit: TorqueUnit;
+    unit: number;
 
     [key: string]: any;
 }
 
-export enum TorqueUnit {
-    Undefined = "Undefined",
-    KilonewtonCentimeter = "KilonewtonCentimeter",
-    KilonewtonMeter = "KilonewtonMeter",
-    KilonewtonMillimeter = "KilonewtonMillimeter",
-    KilopoundForceFoot = "KilopoundForceFoot",
-    KilopoundForceInch = "KilopoundForceInch",
-    NewtonCentimeter = "NewtonCentimeter",
-    NewtonMeter = "NewtonMeter",
-    NewtonMillimeter = "NewtonMillimeter",
-    PoundForceFoot = "PoundForceFoot",
-    PoundForceInch = "PoundForceInch",
-}
-
 export class UnitSettings implements IUnitSettings {
-    lengthUnit!: LengthUnit;
-    forceUnit!: ForceUnit;
-    angleUnit?: AngleUnit;
+    lengthUnit!: number;
+    forceUnit!: number;
+    angleUnit?: number;
 
     [key: string]: any;
 
@@ -11111,9 +10676,9 @@ export class UnitSettings implements IUnitSettings {
 }
 
 export interface IUnitSettings {
-    lengthUnit: LengthUnit;
-    forceUnit: ForceUnit;
-    angleUnit?: AngleUnit;
+    lengthUnit: number;
+    forceUnit: number;
+    angleUnit?: number;
 
     [key: string]: any;
 }

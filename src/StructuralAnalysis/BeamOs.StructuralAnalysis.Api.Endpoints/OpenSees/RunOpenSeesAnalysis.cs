@@ -9,7 +9,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.OpenSees;
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "analyze/opensees")]
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-public class RunOpenSeesAnalysis(RunOpenSeesCommandHandler runOpenSeesCommandHandler)
+public class RunOpenSeesAnalysis(RunOpenSeesAnalysisCommandHandler runOpenSeesCommandHandler)
     : BeamOsModelResourceBaseEndpoint<
         ModelResourceRequest<RunDsmRequest>,
         RunDsmRequest,

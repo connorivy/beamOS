@@ -2,12 +2,12 @@ using System.Diagnostics.CodeAnalysis;
 using BeamOs.CodeGen.EditorApi;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Sdk;
-using BeamOs.Tests.Runtime.TestRunner;
+using BeamOs.Tests.Common;
 using BeamOs.Tests.StructuralAnalysis.Integration;
+using TestResult = BeamOs.Tests.Common.TestResult;
 
-namespace BeamOs.Tests.Common;
+namespace BeamOs.Tests.Runtime.TestRunner;
 
 public enum TestType
 {

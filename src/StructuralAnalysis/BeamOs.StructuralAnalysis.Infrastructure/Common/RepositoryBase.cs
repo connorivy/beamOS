@@ -67,6 +67,27 @@ internal abstract class ModelResourceRepositoryBase<TId, TEntity>(
                 cancellationToken: ct
             );
 
+    public async Task<ModelSettingsAndEntity<TEntity>?> GetSingleWithModelSettings(
+        ModelId modelId,
+        TId id,
+        CancellationToken ct = default
+    )
+    {
+        var settingAndEntity = await this
+            .DbContext.Set<TEntity>()
+            .AsNoTracking()
+            .Where(m => m.ModelId == modelId && m.Id.Equals(id))
+            .Select(m => new { ModelSettings = m.Model.Settings, Entity = m })
+            .FirstOrDefaultAsync(ct);
+
+        return settingAndEntity is null
+            ? null
+            : new ModelSettingsAndEntity<TEntity>(
+                settingAndEntity.ModelSettings,
+                settingAndEntity.Entity
+            );
+    }
+
     public async Task RemoveById(ModelId modelId, TId id, CancellationToken ct = default)
     {
         var entity = await this.DbContext.Set<TEntity>().FindAsync([id, modelId], ct);
@@ -111,4 +132,25 @@ internal abstract class AnalyticalResultRepositoryBase<TId, TEntity>(
             .FirstOrDefaultAsync(m =>
                 m.ModelId == modelId && m.ResultSetId == resultSetId && m.Id.Equals(id)
             );
+
+    public async Task<ModelSettingsAndEntity<TEntity>?> GetSingleWithModelSettings(
+        ModelId modelId,
+        TId id,
+        CancellationToken ct = default
+    )
+    {
+        var settingAndEntity = await this
+            .DbContext.Set<TEntity>()
+            .AsNoTracking()
+            .Where(m => m.ModelId == modelId && m.Id.Equals(id))
+            .Select(m => new { ModelSettings = m.Model.Settings, Entity = m })
+            .FirstOrDefaultAsync(ct);
+
+        return settingAndEntity is null
+            ? null
+            : new ModelSettingsAndEntity<TEntity>(
+                settingAndEntity.ModelSettings,
+                settingAndEntity.Entity
+            );
+    }
 }

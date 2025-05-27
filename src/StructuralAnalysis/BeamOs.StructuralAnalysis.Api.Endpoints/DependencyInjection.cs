@@ -46,7 +46,7 @@ public static class DependencyInjection
         // required for the speckle connector
         services.AddScoped<
             ICommandHandler<ModelResourceRequest<ModelProposalData>, ModelProposalResponse>,
-            CreateProposalCommandHandler
+            CreateModelProposalCommandHandler
         >();
 
         return services;

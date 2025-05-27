@@ -8,7 +8,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Nodes;
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "nodes")]
 [BeamOsEndpointType(Http.Patch)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-public class UpdateNode(PatchNodeCommandHandler patchNodeCommandHandler)
+public class PatchNode(PatchNodeCommandHandler patchNodeCommandHandler)
     : BeamOsModelResourceBaseEndpoint<PatchNodeCommand, UpdateNodeRequest, NodeResponse>
 {
     public override async Task<Result<NodeResponse>> ExecuteRequestAsync(

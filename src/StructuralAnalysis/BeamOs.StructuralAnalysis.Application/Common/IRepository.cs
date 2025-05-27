@@ -29,6 +29,11 @@ public interface IModelResourceRepository<TId, T> : IRepository<TId, T>
     public Task<List<TId>> GetIdsInModel(ModelId modelId, CancellationToken ct = default);
     public Task<List<T>> GetMany(ModelId modelId, IList<TId>? ids, CancellationToken ct = default);
     public Task<T?> GetSingle(ModelId modelId, TId id, CancellationToken ct = default);
+    public Task<ModelSettingsAndEntity<T>?> GetSingleWithModelSettings(
+        ModelId modelId,
+        TId id,
+        CancellationToken ct = default
+    );
     public Task RemoveById(ModelId modelId, TId id, CancellationToken ct = default);
     public Task ReloadEntity(T entity, CancellationToken ct = default);
 }
@@ -37,7 +42,12 @@ public interface IAnalyticalResultRepository<TId, T> : IRepository<TId, T>
     where TId : struct
     where T : BeamOsEntity<TId>
 {
-    Task<T?> GetSingle(ModelId modelId, ResultSetId resultSetId, TId id);
+    public Task<T?> GetSingle(ModelId modelId, ResultSetId resultSetId, TId id);
+    public Task<ModelSettingsAndEntity<T>?> GetSingleWithModelSettings(
+        ModelId modelId,
+        TId id,
+        CancellationToken ct = default
+    );
 }
 
 public interface IProposalRepository<TId, T> : IRepository<TId, T>
@@ -46,3 +56,5 @@ public interface IProposalRepository<TId, T> : IRepository<TId, T>
 {
     public Task<T?> GetSingle(ModelId modelId, ModelProposalId modelProposalId, TId id);
 }
+
+public readonly record struct ModelSettingsAndEntity<T>(ModelSettings ModelSettings, T Entity);

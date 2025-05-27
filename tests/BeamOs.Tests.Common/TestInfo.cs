@@ -10,7 +10,6 @@ public class TestInfo
     public object[]? TestData { get; init; }
     public required MethodInfo MethodInfo { get; init; }
     public required Type TestClassType { get; init; }
-    public TestType TestType { get; init; } = TestType.StructuralAnalysis;
 
     public virtual object CreateTestClass(IServiceProvider serviceProvider)
     {

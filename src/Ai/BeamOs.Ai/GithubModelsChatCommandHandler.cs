@@ -12,7 +12,7 @@ using OpenAI;
 namespace BeamOs.Ai;
 
 public class GithubModelsChatCommandHandler(
-    CreateProposalCommandHandler createModelProposalCommandHandler,
+    CreateModelProposalCommandHandler createModelProposalCommandHandler,
     IQueryHandler<Guid, ModelInfoResponse> modelInfoQueryHandler
 ) : ICommandHandler<GithubModelsChatCommand, GithubModelsChatResponse>
 {

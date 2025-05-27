@@ -1,3 +1,4 @@
+using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Api;
 using BeamOs.StructuralAnalysis.Api.Endpoints.OpenSees;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
@@ -15,3 +16,11 @@ public abstract partial class BeamOsModelResourceQueryBaseEndpoint<TResponse>
 
 public abstract partial class BeamOsAnalyticalResultResourceQueryBaseEndpoint<TResponse>
     : BeamOsBaseEndpoint<GetAnalyticalResultResourceQuery, TResponse> { }
+
+public static class hi
+{
+    public static InMemoryApiClient Create()
+    {
+        return default;
+    }
+}

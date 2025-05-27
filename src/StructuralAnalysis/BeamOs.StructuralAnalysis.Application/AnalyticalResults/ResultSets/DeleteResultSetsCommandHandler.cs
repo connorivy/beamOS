@@ -4,7 +4,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.AnalyticalResults.ResultSets;
 
-public class DeleteResultSetsCommandHandler(IResultSetRepository resultSetRepository)
+public class DeleteAllResultSetsCommandHandler(IResultSetRepository resultSetRepository)
     : ICommandHandler<ModelId, int>
 {
     public async Task<Result<int>> ExecuteAsync(ModelId query, CancellationToken ct = default) =>

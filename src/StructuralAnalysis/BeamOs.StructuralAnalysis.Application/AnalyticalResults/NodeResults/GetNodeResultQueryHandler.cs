@@ -5,13 +5,11 @@ using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.NodeResult;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.NodeResultAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
-using Microsoft.EntityFrameworkCore;
 using Riok.Mapperly.Abstractions;
 
-namespace BeamOs.StructuralAnalysis.Infrastructure.AnalyticalResults.NodeResults;
+namespace BeamOs.StructuralAnalysis.Application.AnalyticalResults.NodeResults;
 
-public class GetNodeResultQueryHandler(StructuralAnalysisDbContext dbContext)
+public class GetNodeResultQueryHandler(INodeResultRepository nodeResultRepository)
     : IQueryHandler<GetAnalyticalResultResourceQuery, NodeResultResponse>
 {
     public async Task<Result<NodeResultResponse>> ExecuteAsync(
@@ -19,16 +17,11 @@ public class GetNodeResultQueryHandler(StructuralAnalysisDbContext dbContext)
         CancellationToken ct = default
     )
     {
-        var elementAndModelUnits = await dbContext
-            .NodeResults
-            .Where(
-                e =>
-                    e.ModelId.Equals(query.ModelId)
-                    && e.ResultSetId == query.ResultSetId
-                    && e.Id.Equals(query.Id)
-            )
-            .Select(el => new { el, el.Model.Settings.UnitSettings })
-            .FirstOrDefaultAsync(cancellationToken: ct);
+        var elementAndModelUnits = await nodeResultRepository.GetSingleWithModelSettings(
+            query.ModelId,
+            query.Id,
+            ct
+        );
 
         if (elementAndModelUnits is null)
         {
@@ -37,8 +30,10 @@ public class GetNodeResultQueryHandler(StructuralAnalysisDbContext dbContext)
             );
         }
 
-        var mapper = NodeResultToResponseMapper.Create(elementAndModelUnits.UnitSettings);
-        return mapper.Map(elementAndModelUnits.el);
+        var mapper = NodeResultToResponseMapper.Create(
+            elementAndModelUnits.Value.ModelSettings.UnitSettings
+        );
+        return mapper.Map(elementAndModelUnits.Value.Entity);
     }
 }
 

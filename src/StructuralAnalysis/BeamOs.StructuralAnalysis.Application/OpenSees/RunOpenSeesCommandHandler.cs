@@ -12,11 +12,11 @@ using Microsoft.Extensions.Logging;
 
 namespace BeamOs.StructuralAnalysis.Application.OpenSees;
 
-public sealed class RunOpenSeesCommandHandler(
+public sealed class RunOpenSeesAnalysisCommandHandler(
     IModelRepository modelRepository,
     IResultSetRepository resultSetRepository,
     IStructuralAnalysisUnitOfWork unitOfWork,
-    ILogger<RunOpenSeesCommandHandler> logger
+    ILogger<RunOpenSeesAnalysisCommandHandler> logger
 ) : ICommandHandler<RunDsmCommand, AnalyticalResultsResponse>
 {
     public async Task<Result<AnalyticalResultsResponse>> ExecuteAsync(

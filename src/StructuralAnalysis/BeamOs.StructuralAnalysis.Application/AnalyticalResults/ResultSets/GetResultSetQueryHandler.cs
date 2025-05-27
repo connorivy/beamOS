@@ -1,16 +1,14 @@
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.CsSdk.Mappers.UnitValueDtoMappers;
+using BeamOs.StructuralAnalysis.Application.AnalyticalResults.ResultSets;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults;
-using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
-using Microsoft.EntityFrameworkCore;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.AnalyticalResults.ResultSets;
 
-public class GetResultSetQueryHandler(StructuralAnalysisDbContext dbContext)
+public class GetResultSetQueryHandler(IResultSetRepository resultSetRepository)
     : IQueryHandler<IModelEntity, ResultSetResponse>
 {
     public async Task<Result<ResultSetResponse>> ExecuteAsync(
@@ -18,21 +16,21 @@ public class GetResultSetQueryHandler(StructuralAnalysisDbContext dbContext)
         CancellationToken ct = default
     )
     {
-        var elementAndModelUnits = await dbContext
-            .ResultSets.Where(e => e.ModelId.Equals(query.ModelId) && e.Id.Equals(query.Id))
-            .Include(e => e.NodeResults)
-            .Include(e => e.Element1dResults)
-            .AsSplitQuery()
-            .Select(el => new { el, el.Model.Settings.UnitSettings })
-            .FirstOrDefaultAsync(cancellationToken: ct);
+        var elementAndModelUnits = await resultSetRepository.GetSingleWithModelSettings(
+            query.ModelId,
+            query.Id,
+            ct
+        );
 
         if (elementAndModelUnits is null)
         {
             return BeamOsError.NotFound();
         }
 
-        var mapper = ResultSetToResponseMapper.Create(elementAndModelUnits.UnitSettings);
-        return mapper.Map(elementAndModelUnits.el);
+        var mapper = ResultSetToResponseMapper.Create(
+            elementAndModelUnits.Value.ModelSettings.UnitSettings
+        );
+        return mapper.Map(elementAndModelUnits.Value.Entity);
     }
 }
 
