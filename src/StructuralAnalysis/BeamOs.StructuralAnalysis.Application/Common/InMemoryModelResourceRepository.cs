@@ -1,0 +1,223 @@
+using BeamOs.Common.Domain.Models;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
+using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
+using BeamOs.StructuralAnalysis.Domain.Common;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace BeamOs.StructuralAnalysis.Application.Common;
+
+public class InMemoryRepository<TId, T> : IRepository<TId, T>
+    where TId : struct
+    where T : BeamOsEntity<TId>
+{
+    protected Dictionary<TId, T> Entities { get; } = [];
+
+    public event EventHandler<TId>? EntityCreated;
+
+    public void Add(T aggregate)
+    {
+        this.Entities.Add(aggregate.Id, aggregate);
+        this.EntityCreated?.Invoke(this, aggregate.Id);
+    }
+
+    public void Put(T aggregate)
+    {
+        this.Entities[aggregate.Id] = aggregate;
+    }
+
+    public void Remove(T aggregate)
+    {
+        this.Entities.Remove(aggregate.Id);
+    }
+
+    public void ClearChangeTracker()
+    {
+        // No-op for in-memory repository
+    }
+}
+
+public class InMemoryModelResourceRepository<TId, T>(
+    InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage
+) : IModelResourceRepository<TId, T>
+    where TId : struct, IIntBasedId
+    where T : BeamOsModelEntity<TId>
+{
+    protected Dictionary<ModelId, Dictionary<TId, T>> ModelResources { get; } = [];
+
+    public void Add(T aggregate)
+    {
+        if (!this.ModelResources.TryGetValue(aggregate.ModelId, out var resources))
+        {
+            resources = new Dictionary<TId, T>();
+            this.ModelResources[aggregate.ModelId] = resources;
+        }
+        resources[aggregate.Id] = aggregate;
+    }
+
+    public void ClearChangeTracker()
+    {
+        // No-op for in-memory repository
+    }
+
+    public Task<List<TId>> GetIdsInModel(ModelId modelId, CancellationToken ct = default)
+    {
+        if (this.ModelResources.TryGetValue(modelId, out var resources))
+        {
+            return Task.FromResult(new List<TId>(resources.Keys));
+        }
+        return Task.FromResult(new List<TId>());
+    }
+
+    public Task<List<T>> GetMany(ModelId modelId, IList<TId>? ids, CancellationToken ct = default)
+    {
+        if (!this.ModelResources.TryGetValue(modelId, out var resources))
+        {
+            return Task.FromResult(new List<T>());
+        }
+
+        if (ids is null)
+        {
+            return Task.FromResult(new List<T>(resources.Values));
+        }
+
+        var result = new List<T>();
+        foreach (var id in ids)
+        {
+            if (resources.TryGetValue(id, out var entity))
+            {
+                result.Add(entity);
+            }
+        }
+        return Task.FromResult(result);
+    }
+
+    public Task<T?> GetSingle(ModelId modelId, TId id, CancellationToken ct = default)
+    {
+        if (
+            this.ModelResources.TryGetValue(modelId, out var resources)
+            && resources.TryGetValue(id, out var entity)
+        )
+        {
+            return Task.FromResult(entity);
+        }
+        return Task.FromResult<T?>(null);
+    }
+
+    public Task<ModelSettingsAndEntity<T>?> GetSingleWithModelSettings(
+        ModelId modelId,
+        TId id,
+        CancellationToken ct = default
+    )
+    {
+        var model = inMemoryModelRepositoryStorage.Models.GetValueOrDefault(modelId);
+        if (model is null)
+        {
+            return Task.FromResult(default(ModelSettingsAndEntity<T>?)); // Model not found
+        }
+
+        if (
+            this.ModelResources.TryGetValue(modelId, out var resources)
+            && resources.TryGetValue(id, out var entity)
+        )
+        {
+            return Task.FromResult<ModelSettingsAndEntity<T>?>(
+                new ModelSettingsAndEntity<T>(model.Settings, entity)
+            );
+        }
+
+        return Task.FromResult(default(ModelSettingsAndEntity<T>?)); // Entity not found
+    }
+
+    public void Put(T aggregate)
+    {
+        if (this.ModelResources.TryGetValue(aggregate.ModelId, out var resources))
+        {
+            resources[aggregate.Id] = aggregate;
+        }
+        else
+        {
+            throw new KeyNotFoundException($"Model {aggregate.ModelId} not found.");
+        }
+    }
+
+    public Task ReloadEntity(T entity, CancellationToken ct = default)
+    {
+        // This method is not implemented for in-memory repository
+        return Task.CompletedTask;
+    }
+
+    public void Remove(T aggregate)
+    {
+        if (this.ModelResources.TryGetValue(aggregate.ModelId, out var resources))
+        {
+            resources.Remove(aggregate.Id);
+            if (resources.Count == 0)
+            {
+                this.ModelResources.Remove(aggregate.ModelId);
+            }
+        }
+    }
+
+    public Task RemoveById(ModelId modelId, TId id, CancellationToken ct = default)
+    {
+        if (this.ModelResources.TryGetValue(modelId, out var resources))
+        {
+            resources.Remove(id);
+            if (resources.Count == 0)
+            {
+                this.ModelResources.Remove(modelId);
+            }
+        }
+        return Task.CompletedTask;
+    }
+}
+
+public class InMemoryAnalyticalResultRepository<TId, T>(
+    InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage
+) : InMemoryRepository<TId, T>, IAnalyticalResultRepository<TId, T>
+    where TId : struct
+    where T : BeamOsEntity<TId>
+{
+    public Task<T?> GetSingle(ModelId modelId, ResultSetId resultSetId, TId id)
+    {
+        return Task.FromResult(this.Entities.TryGetValue(id, out var entity) ? entity : null);
+    }
+
+    public Task<ModelSettingsAndEntity<T>?> GetSingleWithModelSettings(
+        ModelId modelId,
+        TId id,
+        CancellationToken ct = default
+    )
+    {
+        var model = inMemoryModelRepositoryStorage.Models.GetValueOrDefault(modelId);
+        if (model is null)
+        {
+            return Task.FromResult<ModelSettingsAndEntity<T>?>(null); // Model not found
+        }
+
+        if (this.Entities.TryGetValue(id, out var entity))
+        {
+            return Task.FromResult<ModelSettingsAndEntity<T>?>(new(model.Settings, entity));
+        }
+
+        return Task.FromResult<ModelSettingsAndEntity<T>?>(null); // Entity not found
+    }
+}
+
+public class InMemoryProposalRepository<TId, T>
+    : InMemoryRepository<TId, T>,
+        IProposalRepository<TId, T>
+    where TId : struct
+    where T : BeamOsEntity<TId>
+{
+    public Task<T?> GetSingle(ModelId modelId, ModelProposalId modelProposalId, TId id)
+    {
+        return Task.FromResult(this.Entities.TryGetValue(id, out var entity) ? entity : null);
+    }
+}
+
+public record InMemoryModelRepositoryStorage
+{
+    public Dictionary<ModelId, Model> Models { get; } = [];
+}

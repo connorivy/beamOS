@@ -1,14 +1,19 @@
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
+using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
-namespace BeamOs.Tests.Runtime.TestRunner;
+namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 
-public class InMemoryNodeRepository : InMemoryModelResourceRepository<NodeId, Node>, INodeRepository
+public class InMemoryNodeRepository(InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage)
+    : InMemoryModelResourceRepository<NodeId, Node>(inMemoryModelRepositoryStorage),
+        INodeRepository
 {
     public Task<Node> Update(PatchNodeCommand patchCommand)
     {
-        if (this.Entities.TryGetValue(patchCommand.Id, out var node))
+        if (
+            this.ModelResources.TryGetValue(patchCommand.ModelId, out var nodeCache)
+            && nodeCache.TryGetValue(patchCommand.Id, out var node)
+        )
         {
             if (patchCommand.LocationPoint is not null)
             {
@@ -42,6 +47,8 @@ public class InMemoryNodeRepository : InMemoryModelResourceRepository<NodeId, No
 
     public Task<List<Node>> GetAll()
     {
-        return Task.FromResult(this.Entities.Values.ToList());
+        return Task.FromResult(
+            this.ModelResources.SelectMany(m => m.Value).Select(kvp => kvp.Value).ToList()
+        );
     }
 }

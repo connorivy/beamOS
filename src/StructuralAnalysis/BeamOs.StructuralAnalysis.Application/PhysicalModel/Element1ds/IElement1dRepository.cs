@@ -13,3 +13,9 @@ public interface IElement1dRepository : IModelResourceRepository<Element1dId, El
 
 public interface IElement1dProposalRepository
     : IProposalRepository<Element1dProposalId, Element1dProposal> { }
+
+public sealed class InMemoryElement1dRepository(
+    InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage
+)
+    : InMemoryModelResourceRepository<Element1dId, Element1d>(inMemoryModelRepositoryStorage),
+        IElement1dRepository { }

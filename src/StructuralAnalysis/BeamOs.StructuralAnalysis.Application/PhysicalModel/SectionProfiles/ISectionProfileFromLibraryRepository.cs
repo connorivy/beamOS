@@ -5,3 +5,11 @@ namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
 
 public interface ISectionProfileFromLibraryRepository
     : IModelResourceRepository<SectionProfileId, SectionProfileFromLibrary> { }
+
+public class InMemorySectionProfileFromLibraryRepository(
+    InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage
+)
+    : InMemoryModelResourceRepository<SectionProfileId, SectionProfileFromLibrary>(
+        inMemoryModelRepositoryStorage
+    ),
+        ISectionProfileFromLibraryRepository { }

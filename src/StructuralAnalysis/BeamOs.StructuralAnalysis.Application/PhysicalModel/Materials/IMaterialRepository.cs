@@ -10,3 +10,9 @@ public interface IMaterialRepository : IModelResourceRepository<MaterialId, Mate
     //    CancellationToken ct = default
     //);
 }
+
+public class InMemoryMaterialRepository(
+    InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage
+)
+    : InMemoryModelResourceRepository<MaterialId, Material>(inMemoryModelRepositoryStorage),
+        IMaterialRepository { }

@@ -5,3 +5,11 @@ namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCombinations;
 
 public interface ILoadCombinationRepository
     : IModelResourceRepository<LoadCombinationId, LoadCombination> { }
+
+public sealed class InMemoryLoadCombinationRepository(
+    InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage
+)
+    : InMemoryModelResourceRepository<LoadCombinationId, LoadCombination>(
+        inMemoryModelRepositoryStorage
+    ),
+        ILoadCombinationRepository { }
