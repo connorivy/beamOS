@@ -10,6 +10,9 @@ public class VerifyAsserter : Asserter
         Result<ModelProposalResponse> modelProposalResponse
     )
     {
-        await Verify(modelProposalResponse);
+        await Verify(modelProposalResponse)
+            .ScrubMembers(l =>
+                typeof(IHasIntId).IsAssignableFrom(l.DeclaringType) && l.Name == "Id"
+            );
     }
 }

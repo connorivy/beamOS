@@ -13,6 +13,7 @@ public class ModelRepairer
     [
         new NodeMergeRule(),
         new Element1dExtendOrShortenRule(),
+        new NodeSnapToElement1dRule(),
     ];
     private readonly Octree octree;
 
@@ -52,8 +53,10 @@ public class ModelRepairer
                 );
                 List<Element1d> nearbyStartElements = Element1dSpatialHelper.FindElement1dsWithin(
                     this.element1ds,
+                    modelProposal,
                     startNode.LocationPoint,
-                    this.tolerance
+                    this.tolerance,
+                    startNode.Id
                 );
                 List<Node> nearbyEndNodes = this.octree.FindNodesWithin(
                     endNode.LocationPoint,
@@ -62,8 +65,10 @@ public class ModelRepairer
                 );
                 List<Element1d> nearbyEndElements = Element1dSpatialHelper.FindElement1dsWithin(
                     this.element1ds,
+                    modelProposal,
                     endNode.LocationPoint,
-                    this.tolerance
+                    this.tolerance,
+                    endNode.Id
                 );
 
                 rule.Apply(

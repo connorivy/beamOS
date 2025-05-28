@@ -1,5 +1,7 @@
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
@@ -7,20 +9,31 @@ public static class Element1dSpatialHelper
 {
     public static List<Element1d> FindElement1dsWithin(
         IEnumerable<Element1d> element1ds,
+        ModelProposalBuilder modelProposalBuilder,
         Point searchPoint,
-        double toleranceMeters
+        double toleranceMeters,
+        params Span<NodeId> nodeIdsToIgnore
     )
     {
         Point p = searchPoint;
         List<Element1d> result = [];
         foreach (Element1d element in element1ds)
         {
-            if (element.StartNode is null || element.EndNode is null)
+            if (
+                nodeIdsToIgnore.Contains(element.StartNodeId)
+                || nodeIdsToIgnore.Contains(element.EndNodeId)
+            )
             {
                 continue;
             }
-            Point a = element.StartNode.LocationPoint;
-            Point b = element.EndNode.LocationPoint;
+            var (startNode, endNode) = modelProposalBuilder.GetStartAndEndNodes(element, out _);
+            if (nodeIdsToIgnore.Contains(startNode.Id) || nodeIdsToIgnore.Contains(endNode.Id))
+            {
+                continue;
+            }
+
+            Point a = startNode.LocationPoint;
+            Point b = endNode.LocationPoint;
             if (DistancePointToSegment(p, a, b) <= toleranceMeters)
             {
                 result.Add(element);

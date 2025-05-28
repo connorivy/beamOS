@@ -1,9 +1,9 @@
 ﻿{
   Value: {
-    Id: 1,
+    Id: {Scrubbed},
     LastModified: DateTimeOffset_1,
     ModelProposal: {
-      Id: 1,
+      Id: {Scrubbed},
       LastModified: DateTimeOffset_1,
       Description: Proposed repairs for model connectivity
     },
@@ -12,7 +12,7 @@
     CreateElement1dProposals: null,
     ModifyElement1dProposals: [
       {
-        Id: 1,
+        Id: {Scrubbed},
         ExistingElement1dId: 1,
         StartNodeId: {
           ExistingId: 4,
