@@ -106,7 +106,7 @@ public partial class DsmTests(ModelFixture modelFixture)
         double precision = .001
     )
     {
-        Asserter.AssertEqual(
+        TestUtils.Asserter.AssertEqual(
             beamOsObjectType,
             dbId,
             "Node Displacement",
@@ -148,7 +148,7 @@ public partial class DsmTests(ModelFixture modelFixture)
         double precision = .001
     )
     {
-        Asserter.AssertEqual(
+        TestUtils.Asserter.AssertEqual(
             beamOsObjectType,
             dbId,
             "Node Reactions",
@@ -220,7 +220,7 @@ public partial class DsmTests(ModelFixture modelFixture)
                 continue;
             }
 
-            Asserter.AssertEqual(
+            TestUtils.Asserter.AssertEqual(
                 BeamOsObjectType.Element1d,
                 element1dResult.Element1dId.ToString(),
                 "Diagram Results",

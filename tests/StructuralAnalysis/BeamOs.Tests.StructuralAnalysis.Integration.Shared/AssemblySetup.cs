@@ -5,4 +5,7 @@ namespace BeamOs.Tests.StructuralAnalysis.Integration;
 public static partial class AssemblySetup
 {
     public static IStructuralAnalysisApiClientV1 StructuralAnalysisApiClient { get; set; }
+
+    public static IStructuralAnalysisApiClientV1 GetStructuralAnalysisApiClientV1() =>
+        StructuralAnalysisApiClient;
 }

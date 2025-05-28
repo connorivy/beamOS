@@ -1,27 +1,10 @@
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
-using BeamOs.Common.Application;
-using BeamOs.StructuralAnalysis.Api.Endpoints;
-using BeamOs.StructuralAnalysis.Application.AnalyticalResults.EnvelopeResultSets;
-using BeamOs.StructuralAnalysis.Application.AnalyticalResults.NodeResults;
-using BeamOs.StructuralAnalysis.Application.AnalyticalResults.ResultSets;
-using BeamOs.StructuralAnalysis.Application.Common;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCases;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCombinations;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.Materials;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.MomentLoads;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
-using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
-using BeamOs.Tests.StructuralAnalysis.Unit.DirectStiffnessMethod;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BeamOs.Tests.Runtime.TestRunner;
+namespace BeamOs.Tests.StructuralAnalysis.Integration;
 
-public static class DI
+public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddTestServices(this IServiceCollection services)
     {

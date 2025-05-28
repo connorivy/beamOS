@@ -2,7 +2,7 @@ using BeamOs.StructuralAnalysis.Contracts.Common;
 
 namespace BeamOs.CodeGen.StructuralAnalysisApiClient;
 
-public partial class InMemoryApiClient
+public partial class InMemoryApiClient : IStructuralAnalysisApiClientV1
 {
     private partial BeamOs.Common.Contracts.ModelResourceRequest<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles.SectionProfileFromLibraryData> CreateCommand1(
         System.Guid modelId,

@@ -318,7 +318,7 @@ public class EndToEndTests
             Restraint.Free
         );
 
-        var nodeResponseResult = await AssemblySetup.StructuralAnalysisApiClient.UpdateNodeAsync(
+        var nodeResponseResult = await AssemblySetup.StructuralAnalysisApiClient.PatchNodeAsync(
             modelId,
             updateNodeRequest
         );

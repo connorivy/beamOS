@@ -34,17 +34,17 @@ public class Model : BeamOsEntity<ModelId>
     // public double MaxZ { get; set; } = double.MinValue;
 
     public IList<Node>? Nodes { get; set; }
-    public IList<Element1d>? Element1ds { get; init; }
-    public IList<Material>? Materials { get; init; }
-    public IList<SectionProfile>? SectionProfiles { get; init; }
-    public IList<SectionProfileFromLibrary>? SectionProfilesFromLibrary { get; init; }
-    public IList<PointLoad>? PointLoads { get; init; }
-    public IList<MomentLoad>? MomentLoads { get; init; }
-    public IList<LoadCase>? LoadCases { get; init; }
-    public IList<LoadCombination>? LoadCombinations { get; init; }
-    public IList<ResultSet>? ResultSets { get; init; }
-    public IList<EnvelopeResultSet>? EnvelopeResultSets { get; init; }
-    public IList<ModelProposal>? ModelProposals { get; init; }
+    public IList<Element1d>? Element1ds { get; set; }
+    public IList<Material>? Materials { get; set; }
+    public IList<SectionProfile>? SectionProfiles { get; set; }
+    public IList<SectionProfileFromLibrary>? SectionProfilesFromLibrary { get; set; }
+    public IList<PointLoad>? PointLoads { get; set; }
+    public IList<MomentLoad>? MomentLoads { get; set; }
+    public IList<LoadCase>? LoadCases { get; set; }
+    public IList<LoadCombination>? LoadCombinations { get; set; }
+    public IList<ResultSet>? ResultSets { get; set; }
+    public IList<EnvelopeResultSet>? EnvelopeResultSets { get; set; }
+    public IList<ModelProposal>? ModelProposals { get; set; }
 
     // public void AddNode(Node node)
     // {

@@ -98,7 +98,7 @@ public class OpenSeesTests(ModelFixture modelFixture) : IModelFixtureTestsClass
         double precision = .001
     )
     {
-        Asserter.AssertEqual(
+        TestUtils.Asserter.AssertEqual(
             beamOsObjectType,
             dbId,
             "Node Displacement",
@@ -140,7 +140,7 @@ public class OpenSeesTests(ModelFixture modelFixture) : IModelFixtureTestsClass
         double precision = .001
     )
     {
-        Asserter.AssertEqual(
+        TestUtils.Asserter.AssertEqual(
             beamOsObjectType,
             dbId,
             "Node Reactions",

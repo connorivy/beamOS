@@ -1,3 +1,4 @@
+using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd;
 using BeamOs.Tests.Common.SolvedProblems.SAP2000;
 using BeamOs.Tests.Common.SolvedProblems.Udoeyo_StructuralAnalysis;
@@ -42,13 +43,5 @@ public static class AllSolvedProblems
     public static IEnumerable<ModelFixture> ModelFixturesWithExpectedDiagramResults()
     {
         return ModelFixtures().Where(x => x is IHasExpectedDiagramResults);
-    }
-}
-
-public static class AllSolvedProblemsFilter<T>
-{
-    public static IEnumerable<T> ModelFixtures()
-    {
-        return AllSolvedProblems.ModelFixtures().OfType<T>();
     }
 }

@@ -43,7 +43,7 @@ public class TestInfo
                 )
             );
 
-        Asserter.AssertedEqual2 += OnAssertedEqual;
+        // Asserter.AssertedEqual2 += OnAssertedEqual;
 
         try
         {
@@ -55,7 +55,7 @@ public class TestInfo
         }
         finally
         {
-            Asserter.AssertedEqual2 -= OnAssertedEqual;
+            // Asserter.AssertedEqual2 -= OnAssertedEqual;
         }
     }
 

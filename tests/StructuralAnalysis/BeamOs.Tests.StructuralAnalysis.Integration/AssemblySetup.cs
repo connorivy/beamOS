@@ -24,6 +24,8 @@ public static partial class AssemblySetup
 
         await DbContainer.StartAsync();
 
+        TestUtils.Asserter = new VerifyAsserter();
+
         var webAppFactory = new WebAppFactory(DbContainer.GetConnectionString());
 
         StructuralAnalysisApiClient = new StructuralAnalysisApiClientV1(

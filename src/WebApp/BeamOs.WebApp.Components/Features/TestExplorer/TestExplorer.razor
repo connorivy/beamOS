@@ -72,11 +72,12 @@
     <SectionContent SectionId="@PersistantSidebarLayout.Drawer">
         @if (state.Value.TestResults is not null)
         {
-            <SingleTestSelectorComponent CanvasId="@canvasId" TestResults="@state.Value.TestResults" SelectedObjects="@editorState.Value.SelectedObjects" />
+            <SingleTestSelectorComponent CanvasId="@canvasId" TestResults="@state.Value.TestResults"
+                SelectedObjects="@editorState.Value.SelectedObjects" />
         }
         else
         {
-            <TestBrowserComponent CanvasId="@canvasId"/>
+            <TestBrowserComponent CanvasId="@canvasId" EditorApi="@editorState.Value.EditorApi" />
         }
         @* @if (this.TestExplorerState.Value.SelectedProblemTests is null)
         {
@@ -102,7 +103,8 @@
         <EditorComponent @ref="editorComponent" Class="min-h-[600px] h-full w-full z-0" IsReadOnly="true" />
         @if (this.editorComponent is not null && editorState.Value.LoadedModelId is Guid modelId)
         {
-            <SelectionInfoComponent ModelId="@modelId" SelectedObjects="editorState.Value.SelectedObjects" Class="absolute right-0 top-0 w-1/4 p-4" CanvasId="@editorComponent.CanvasId"></SelectionInfoComponent>
+            <SelectionInfoComponent ModelId="@modelId" SelectedObjects="editorState.Value.SelectedObjects"
+                Class="absolute right-0 top-0 w-1/4 p-4" CanvasId="@editorComponent.CanvasId"></SelectionInfoComponent>
         }
         <TestResultDisplayComponent />
     </div>

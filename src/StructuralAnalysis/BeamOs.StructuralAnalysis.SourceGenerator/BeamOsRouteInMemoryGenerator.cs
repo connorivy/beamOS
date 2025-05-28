@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -28,6 +29,18 @@ public class BeamOsRouteInMemoryGenerator : IIncrementalGenerator
                 // System.Diagnostics.Debugger.Launch();
                 Compilation compilation = source.compilation;
                 ImmutableArray<ClassDeclarationSyntax> classes = source.classes;
+
+                StringBuilder di = new();
+                di.AppendLine("using Microsoft.Extensions.DependencyInjection;");
+                di.AppendLine("using BeamOs.StructuralAnalysis.Application.InMemory;");
+                di.AppendLine($"namespace BeamOs.StructuralAnalysis.Api.Endpoints;");
+                di.AppendLine();
+                di.AppendLine($"public static class InMemoryCommandHandlerRegistration");
+                di.AppendLine("{");
+                di.AppendLine(
+                    $"    public static IServiceCollection AddInMemoryCommandHandlers(this IServiceCollection services)"
+                );
+                di.AppendLine("    {");
 
                 foreach (ClassDeclarationSyntax classDecl in classes)
                 {
@@ -103,7 +116,8 @@ public class BeamOsRouteInMemoryGenerator : IIncrementalGenerator
                         var inMemoryType =
                             InMemoryCommandHandlerGenerator.CreateInMemoryHandlerDecorator(
                                 spc,
-                                ctorParamTypeSymbol
+                                ctorParamTypeSymbol,
+                                di
                             );
                         if (inMemoryType is not null)
                         {
@@ -111,6 +125,11 @@ public class BeamOsRouteInMemoryGenerator : IIncrementalGenerator
                         }
                     }
                 }
+
+                di.AppendLine("        return services; ");
+                di.AppendLine("    }");
+                di.AppendLine("}");
+                spc.AddSource("InMemoryCommandHandlerRegistration.g.cs", di.ToString());
             }
         );
 

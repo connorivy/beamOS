@@ -6,72 +6,12 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace BeamOs.StructuralAnalysis.SourceGenerator;
 
-// [Generator]
 public class InMemoryCommandHandlerGenerator
 {
-    public void Initialize(IncrementalGeneratorInitializationContext context)
-    {
-        IncrementalValuesProvider<ClassDeclarationSyntax> classDeclarations =
-            context.SyntaxProvider.CreateSyntaxProvider(
-                static (s, _) => IsClassDeclaration(s),
-                static (ctx, _) => (ClassDeclarationSyntax)ctx.Node
-            );
-
-        IncrementalValueProvider<(
-            Compilation compilation,
-            ImmutableArray<ClassDeclarationSyntax> classes
-        )> compilationAndClasses = context.CompilationProvider.Combine(classDeclarations.Collect());
-        Dictionary<string, InMemoryHandlerInfo> apiMethodNameToParameterTypeName = new();
-
-        context.RegisterSourceOutput(
-            compilationAndClasses,
-            (spc, source) =>
-            {
-                Compilation compilation = source.compilation;
-                ImmutableArray<ClassDeclarationSyntax> classes = source.classes;
-
-                foreach (ClassDeclarationSyntax classDecl in classes)
-                {
-                    SemanticModel model = compilation.GetSemanticModel(classDecl.SyntaxTree);
-                    if (model.GetDeclaredSymbol(classDecl) is not INamedTypeSymbol symbol)
-                    {
-                        continue;
-                    }
-
-                    CreateInMemoryHandlerDecorator(spc, symbol);
-                }
-            }
-        );
-
-        IncrementalValuesProvider<InterfaceDeclarationSyntax> interfaceDeclarations =
-            context.SyntaxProvider.CreateSyntaxProvider(
-                static (s, _) =>
-                    s is InterfaceDeclarationSyntax ids
-                    && ids.Identifier.Text == "IStructuralAnalysisApiClientV1",
-                static (ctx, _) => (InterfaceDeclarationSyntax)ctx.Node
-            );
-        IncrementalValueProvider<(
-            Compilation compilation,
-            ImmutableArray<InterfaceDeclarationSyntax> interfaces
-        )> compilationAndInterfaces = context.CompilationProvider.Combine(
-            interfaceDeclarations.Collect()
-        );
-        context.RegisterSourceOutput(
-            compilationAndInterfaces,
-            (spc, source) =>
-            {
-                InMemoryApiClientGenerator.CreateInMemoryApiClient(
-                    spc,
-                    source,
-                    apiMethodNameToParameterTypeName
-                );
-            }
-        );
-    }
-
     public static InMemoryHandlerInfo? CreateInMemoryHandlerDecorator(
         SourceProductionContext spc,
-        INamedTypeSymbol symbol
+        INamedTypeSymbol symbol,
+        StringBuilder diRegistrationBuilder
     )
     {
         // Skip abstract classes
@@ -125,7 +65,14 @@ public class InMemoryCommandHandlerGenerator
             {
                 string paramTypeName = param.Type.ToDisplayString();
                 string paramName = param.Name;
-                if (param.Type.TypeKind == TypeKind.Interface)
+                if (
+                    paramTypeName is not null
+                    && (
+                        paramTypeName.StartsWith("IQueryHandler")
+                        || paramTypeName.EndsWith("Repository")
+                        || paramTypeName.EndsWith("UnitOfWork")
+                    )
+                )
                 {
                     ctorParams.Add(
                         $"[FromKeyedServices(\"InMemory\")] {paramTypeName} {paramName}"
@@ -142,14 +89,15 @@ public class InMemoryCommandHandlerGenerator
             "System.Threading.Tasks.Task<BeamOs.Common.Contracts.Result<"
             + typeArgs[1].ToDisplayString()
             + ">>";
+        var newNamespace = "BeamOs.StructuralAnalysis.Application.InMemory";
 
         StringBuilder sb = new();
         sb.AppendLine("using Microsoft.Extensions.DependencyInjection;");
         sb.AppendLine("using BeamOs.Common.Application;");
         sb.AppendLine($"using {namespaceName};");
-        sb.AppendLine("namespace BeamOs.StructuralAnalysis.Application.InMemory");
+        sb.AppendLine($"namespace {newNamespace}");
         sb.AppendLine("{");
-        sb.AppendLine($"    public class {newClassName}");
+        sb.AppendLine($"    public sealed class {newClassName}");
         sb.AppendLine("    {");
         sb.AppendLine($"        private readonly {symbol.Name} _inner;");
         sb.AppendLine($"        public {newClassName}({string.Join(", ", ctorParams)})");
@@ -168,11 +116,12 @@ public class InMemoryCommandHandlerGenerator
         sb.AppendLine("}");
 
         spc.AddSource($"{newClassName}.g.cs", SourceText.From(sb.ToString(), Encoding.UTF8));
-        //return "global::BeamOs.StructuralAnalysis.Application.InMemory." + newClassName;
+
+        diRegistrationBuilder.AppendLine($"services.AddScoped<{newNamespace}.{newClassName}>();");
 
         return new InMemoryHandlerInfo(
             symbol.TypeKind,
-            "global::BeamOs.StructuralAnalysis.Application.InMemory." + newClassName,
+            $"{newNamespace}.{newClassName}",
             typeArgs[0].ToDisplayString(),
             returnType
         );

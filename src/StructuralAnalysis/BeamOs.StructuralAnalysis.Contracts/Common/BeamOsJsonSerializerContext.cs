@@ -85,6 +85,7 @@ internal partial class BeamOsJsonSerializerContext : JsonSerializerContext { }
 public static class BeamOsSerializerOptions
 {
     private static readonly Lock OptionsLock = new();
+    private static readonly Lock PrettyOptionsLock = new();
 
     public static JsonSerializerOptions Default
     {
@@ -95,6 +96,22 @@ public static class BeamOsSerializerOptions
                 if (field is null)
                 {
                     field = new() { PropertyNameCaseInsensitive = true };
+                    field.TypeInfoResolverChain.Insert(0, BeamOsJsonSerializerContext.Default);
+                    field.Converters.Add(new JsonStringEnumConverter());
+                }
+            }
+            return field;
+        }
+    }
+    public static JsonSerializerOptions Pretty
+    {
+        get
+        {
+            lock (PrettyOptionsLock)
+            {
+                if (field is null)
+                {
+                    field = new() { PropertyNameCaseInsensitive = true, WriteIndented = true };
                     field.TypeInfoResolverChain.Insert(0, BeamOsJsonSerializerContext.Default);
                     field.Converters.Add(new JsonStringEnumConverter());
                 }

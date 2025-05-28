@@ -26,15 +26,33 @@ public interface IModelRepository : IRepository<ModelId, Model>
 public interface IModelProposalRepository
     : IModelResourceRepository<ModelProposalId, ModelProposal> { }
 
+public sealed class InMemoryModelProposalRepository(
+    InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage
+)
+    : InMemoryModelResourceRepository<ModelProposalId, ModelProposal>(
+        inMemoryModelRepositoryStorage
+    ),
+        IModelProposalRepository { }
+
 public interface IProposalIssueRepository
     : IModelResourceRepository<ProposalIssueId, ProposalIssue> { }
+
+public sealed class InMemoryProposalIssueRepository(
+    InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage
+)
+    : InMemoryModelResourceRepository<ProposalIssueId, ProposalIssue>(
+        inMemoryModelRepositoryStorage
+    ),
+        IProposalIssueRepository { }
 
 public sealed class InMemoryModelRepository(
     InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage,
     [FromKeyedServices("InMemory")] INodeRepository nodeRepository,
     [FromKeyedServices("InMemory")] IElement1dRepository element1dRepository,
     [FromKeyedServices("InMemory")] IMaterialRepository materialRepository,
-    [FromKeyedServices("InMemory")] ISectionProfileRepository sectionProfileRepository
+    [FromKeyedServices("InMemory")] ISectionProfileRepository sectionProfileRepository,
+    [FromKeyedServices("InMemory")]
+        ISectionProfileFromLibraryRepository sectionProfileFromLibraryRepository
 ) : IModelRepository
 {
     public void Add(Model aggregate)
@@ -60,18 +78,14 @@ public sealed class InMemoryModelRepository(
         }
 
         model.Nodes = await nodeRepository.GetMany(modelId, null, ct);
-        foreach (var el in await element1dRepository.GetMany(modelId, null, ct))
-        {
-            model.Element1ds.Add(el);
-        }
-        foreach (var el in await materialRepository.GetMany(modelId, null, ct))
-        {
-            model.Materials.Add(el);
-        }
-        foreach (var el in await sectionProfileRepository.GetMany(modelId, null, ct))
-        {
-            model.SectionProfiles.Add(el);
-        }
+        model.Element1ds = await element1dRepository.GetMany(modelId, null, ct);
+        model.Materials = await materialRepository.GetMany(modelId, null, ct);
+        model.SectionProfiles = await sectionProfileRepository.GetMany(modelId, null, ct);
+        model.SectionProfilesFromLibrary = await sectionProfileFromLibraryRepository.GetMany(
+            modelId,
+            null,
+            ct
+        );
 
         return model;
     }

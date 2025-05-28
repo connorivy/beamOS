@@ -124,16 +124,18 @@ public static class TestExplorerStateReducers
     [ReducerMethod]
     public static TestExplorerState Reducer(TestExplorerState state, TestResultComputed action)
     {
-        if (
-            !state.TestResults.TryGetValue(
-                action.TestResult.BeamOsObjectType,
-                out var resultsForType
-            )
+        ImmutableDictionary<string, List<TestResult>>? resultsForType;
+        if (state.TestResults is null)
+        {
+            resultsForType = ImmutableDictionary<string, List<TestResult>>.Empty;
+        }
+        else if (
+            !state.TestResults.TryGetValue(action.TestResult.BeamOsObjectType, out resultsForType)
         )
         {
             resultsForType = ImmutableDictionary<string, List<TestResult>>.Empty;
-            //newDict = newDict.Add(action.TestResult.BeamOsObjectType, resultsForType);
         }
+
         if (!resultsForType.TryGetValue(action.TestResult.BeamOsObjectId, out var resultsList))
         {
             resultsList = [];
@@ -143,14 +145,18 @@ public static class TestExplorerStateReducers
 
         return state with
         {
-            TestResults = state
-                .TestResults.Remove(action.TestResult.BeamOsObjectType)
-                .Add(
-                    action.TestResult.BeamOsObjectType,
-                    resultsForType
-                        .Remove(action.TestResult.BeamOsObjectId)
-                        .Add(action.TestResult.BeamOsObjectId, resultsList)
-                ),
+            TestResults = (
+                state.TestResults?.Remove(action.TestResult.BeamOsObjectType)
+                ?? ImmutableDictionary<
+                    BeamOsObjectType,
+                    ImmutableDictionary<string, List<TestResult>>
+                >.Empty
+            ).Add(
+                action.TestResult.BeamOsObjectType,
+                resultsForType
+                    .Remove(action.TestResult.BeamOsObjectId)
+                    .Add(action.TestResult.BeamOsObjectId, resultsList)
+            ),
         };
     }
 }

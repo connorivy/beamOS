@@ -5,3 +5,11 @@ namespace BeamOs.StructuralAnalysis.Application.AnalyticalResults.EnvelopeResult
 
 public interface IEnvelopeResultSetRepository
     : IModelResourceRepository<EnvelopeResultSetId, EnvelopeResultSet> { }
+
+public sealed class InMemoryEnvelopeResultSetRepository(
+    InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage
+)
+    : InMemoryModelResourceRepository<EnvelopeResultSetId, EnvelopeResultSet>(
+        inMemoryModelRepositoryStorage
+    ),
+        IEnvelopeResultSetRepository { }

@@ -5,7 +5,7 @@ using FluentAssertions;
 
 namespace BeamOs.Tests.Common;
 
-public static class Asserter
+public class Asserter
 {
     public static event EventHandler<ComparedObjectEventArgs<double>>? DoublesAssertedEqual;
     public static event EventHandler<ComparedObjectEventArgs>? AssertedEqual2;
@@ -14,7 +14,7 @@ public static class Asserter
         ComparedObjectEventArgs<double[,]>
     >? Double2dArrayAssertedEqual;
 
-    public static void AssertEqual(
+    public void AssertEqual(
         BeamOsObjectType beamOsObjectType,
         string beamOsObjectId,
         string comparedValueName,
@@ -53,7 +53,7 @@ public static class Asserter
         }
     }
 
-    public static void AssertEqual(
+    public void AssertEqual(
         BeamOsObjectType beamOsObjectType,
         string beamOsObjectId,
         string comparedValueName,
@@ -100,7 +100,7 @@ public static class Asserter
         }
     }
 
-    public static void AssertEqual(
+    public void AssertEqual(
         BeamOsObjectType beamOsObjectType,
         string beamOsObjectId,
         string comparedValueName,
@@ -144,34 +144,14 @@ public static class Asserter
         }
     }
 
-    public static event EventHandler<ModelProposalResponse>? ModelProposalVerified;
+    public event EventHandler<ModelProposalResponse>? ModelProposalVerified;
 
-    public static async Task VerifyModelProposal(
-        Result<ModelProposalResponse> modelProposalResponse
-    )
+    public virtual Task VerifyModelProposal(Result<ModelProposalResponse> modelProposalResponse)
     {
-#if RUNTIME
-        ModelProposalVerified?.Invoke(typeof(Asserter), modelProposalResponse);
-#else
-        await Verify(modelProposalResponse);
-#endif
+        if (modelProposalResponse.IsSuccess)
+        {
+            ModelProposalVerified?.Invoke(typeof(Asserter), modelProposalResponse.Value);
+        }
+        return Task.CompletedTask;
     }
-}
-
-public class ComparedObjectEventArgs<T>(T expected, T calculated, string comparedObjectName)
-    : EventArgs
-{
-    public T Expected { get; } = expected;
-    public T Calculated { get; } = calculated;
-    public string ComparedObjectName { get; } = comparedObjectName;
-}
-
-public record ComparedObjectEventArgs
-{
-    public required BeamOsObjectType BeamOsObjectType { get; init; }
-    public required string BeamOsObjectId { get; init; }
-    public required string ComparedObjectPropertyName { get; init; }
-    public required object ExpectedValue { get; init; }
-    public required object CalculatedValue { get; init; }
-    public ICollection<string>? ComparedValueNameCollection { get; init; }
 }

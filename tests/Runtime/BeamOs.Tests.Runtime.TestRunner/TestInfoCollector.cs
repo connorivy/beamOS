@@ -114,5 +114,27 @@ public class TestInfoCollector
                 }
             }
         }
+        else
+        {
+            // TestTypeAttribute? testTypeAttribute =
+            //     classType.GetCustomAttribute<TestTypeAttribute>();
+            yield return new TestInfo()
+            {
+                TestClassType = classType,
+                TestData = null,
+                MethodInfo = methodInfo,
+                // TestType = testTypeAttribute?.TestType ?? TestType.StructuralAnalysis,
+            };
+            //    yield return new TestInfo(
+            //        classType,
+            //        null,
+            //        methodInfo,
+            //        methodInfo
+            //            .GetCustomAttributes<TestBaseAttribute>()
+            //            .Concat(classType.GetCustomAttributes<TestBaseAttribute>())
+            //            .GroupBy(attr => attr.TraitName)
+            //            .ToDictionary(g => g.Key, g => g.Select(attr => attr.TraitValue).First())
+            //    );
+        }
     }
 }

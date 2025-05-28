@@ -1,4 +1,5 @@
 using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.CsSdk.Mappers;
 using BeamOs.StructuralAnalysis.Sdk;
 using UnitsNet;
@@ -9,7 +10,7 @@ public abstract class ModelFixture : BeamOsModelBuilder, IModelFixture
 {
     public abstract SourceInfo SourceInfo { get; }
 
-    public virtual IBeamOsEntityResponse MapToResponse()
+    public virtual ModelResponse MapToResponse()
     {
         BeamOsModelBuilderResponseMapper responseMapper = new(this.Id);
         return responseMapper.ToReponse(this);

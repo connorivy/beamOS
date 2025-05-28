@@ -1,3 +1,4 @@
+@using BeamOs.CodeGen.EditorApi
 @using BeamOs.CodeGen.StructuralAnalysisApiClient
 @using BeamOs.StructuralAnalysis.Contracts.Common
 @using BeamOs.Tests.Common
@@ -8,7 +9,7 @@
     <MudText Typo="Typo.h6">Select an Example Problem</MudText>
 </MudDrawerHeader>
 
-<MudList T="List<TestInfo>" SelectedValueChanged="OnSelectedExampleProblemChanged">
+@* <MudList T="List<TestInfo>" SelectedValueChanged="OnSelectedExampleProblemChanged">
     @foreach (var testInfoGroup in TestInfoCollector.GetAllTestInfo().GroupBy(t => t.SourceInfo?.SourceType ?? FixtureSourceType.Standalone))
     {
         <MudListItem Icon="@Icons.Material.Filled.Book" Text="@testInfoGroup.Key.ToString()">
@@ -27,14 +28,41 @@
             </NestedList>
         </MudListItem>
     }
+</MudList> *@
+<MudList T="TestInfoBase" SelectedValueChanged="OnSelectedExampleProblemChanged">
+    @foreach (var testInfoGroup in this.TestInfoRetriever.GetTestInfos().GroupBy(i => i.TestType))
+    {
+        <MudListItem Icon="@Icons.Material.Filled.Book" Text="@testInfoGroup.Key.ToString()">
+            <NestedList>
+                @foreach (var testInfo in testInfoGroup)
+                {
+                    <MudListItem Icon="@Icons.Material.Outlined.Build" Text="@testInfo.TestName" Value="@testInfo" >
+                        @* <NestedList>
+                            @foreach (var result in this.TestResults ?? [])
+                            {
+                                <MudListItem Icon="@Icons.Material.Outlined.CheckCircle" Text="@result.Id"
+                                    Value="@result"></MudListItem>
+                            }
+                        </NestedList> *@
+                    </MudListItem>
+                }
+            </NestedList>
+        </MudListItem>
+    }
 </MudList>
 
 @code {
     [Parameter]
     public required string CanvasId { get; init; }
 
+    [Parameter]
+    public required IEditorApiAlpha EditorApi { get; init; }
+
     [Inject]
     public IStructuralAnalysisApiClientV1 StructuralAnalysisApiClient { get; init; }
+
+    [Inject]
+    public TestInfoRetriever TestInfoRetriever { get; init; }
 
     [Inject]
     public IDispatcher Dispatcher { get; init; }
@@ -45,10 +73,16 @@
     [Inject]
     public IServiceProvider ServiceProvider { get; init; }
 
+    private IList<TestResult>? TestResults { get; set; }
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
         BeamOs.Tests.StructuralAnalysis.Integration.AssemblySetup.StructuralAnalysisApiClient ??= StructuralAnalysisApiClient;
+    }
+    private void OnAssertedEqual2(object? _, TestResult args)
+    {
+        this.Dispatcher.Dispatch(new TestResultComputed(args));
     }
 
     private async Task OnSelectedExampleProblemChanged(List<TestInfo>? testInfos)
@@ -57,10 +91,6 @@
 
         this.Dispatcher.Dispatch(new ChangeSelectedProblemTests(testInfos));
 
-        void OnAssertedEqual2(object? _, TestResult args)
-        {
-            this.Dispatcher.Dispatch(new TestResultComputed(args));
-        }
         foreach (var test in testInfos ?? [])
         {
             test.OnTestResult += OnAssertedEqual2;
@@ -73,5 +103,33 @@
                 test.OnTestResult -= OnAssertedEqual2;
             }
         }
+    }
+
+    private async Task OnSelectedExampleProblemChanged(TestInfoBase test)
+    {
+        @* this.Dispatcher.Dispatch(new ChangeSelectedSourceInfo(testInfos?.FirstOrDefault()?.SourceInfo));
+
+        this.Dispatcher.Dispatch(new ChangeSelectedProblemTests(testInfos));
+
+        void OnAssertedEqual2(object? _, TestResult args)
+        {
+            this.Dispatcher.Dispatch(new TestResultComputed(args));
+        } *@
+        @* foreach (var test in testInfos ?? [])
+        { *@
+        @* test.OnTestResult += OnAssertedEqual2; *@
+        try
+        {
+            test.OnTestResult += OnAssertedEqual2;
+            await test.RunTest();
+            await test.DisplayAndReturnId(this.EditorApi, null);
+            this.TestResults = await test.GetTestResultsAsync();
+            this.StateHasChanged();
+        }
+        finally
+        {
+            test.OnTestResult -= OnAssertedEqual2;
+        }
+        @* } *@
     }
 }

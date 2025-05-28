@@ -1,10 +1,11 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
 using BeamOs.CodeGen.EditorApi;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
+using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Sdk;
 using BeamOs.Tests.Common;
-using BeamOs.Tests.StructuralAnalysis.Integration;
 using TestResult = BeamOs.Tests.Common.TestResult;
 
 namespace BeamOs.Tests.Runtime.TestRunner;
@@ -23,20 +24,19 @@ public abstract class TestInfoBase
     public required TestType TestType { get; init; }
     public required string TestName { get; init; }
 
-    public Task Display(
+    public async Task<string> DisplayAndReturnId(
         IEditorApiAlpha editorApi,
-        string? currentlyDisplayedTestId,
-        out string newTestId
+        string? currentlyDisplayedTestId
     )
     {
         var thisTestId = this.GetTestId();
-        newTestId = thisTestId;
-        if (currentlyDisplayedTestId == thisTestId)
+        if (currentlyDisplayedTestId != thisTestId)
         {
-            return Task.CompletedTask;
+            await editorApi.ClearAsync();
+            await this.DisplayNewModel(editorApi);
         }
 
-        return this.DisplayNewModel(editorApi);
+        return thisTestId;
     }
 
     protected abstract Task DisplayNewModel(IEditorApiAlpha editorApi);
@@ -44,6 +44,11 @@ public abstract class TestInfoBase
     protected virtual ValueTask BeforeTest() => ValueTask.CompletedTask;
 
     protected virtual ValueTask AfterTest() => ValueTask.CompletedTask;
+
+    public virtual ValueTask<IList<TestResult>> GetTestResultsAsync()
+    {
+        return ValueTask.FromResult<IList<TestResult>>([]);
+    }
 
     public abstract string GetTestId();
 
@@ -87,7 +92,6 @@ public abstract class TestInfoBase
 }
 
 public class ModelRepairTestInfo<TTestClass> : TestInfoBase
-    where TTestClass : IModelResponseEmitter, new()
 {
     [SetsRequiredMembers]
     public ModelRepairTestInfo(
@@ -113,7 +117,7 @@ public class ModelRepairTestInfo<TTestClass> : TestInfoBase
     protected override ValueTask BeforeTest()
     {
         BeamOsModelBuilder.ModelCreated += this.OnModelCreated;
-        Asserter.ModelProposalVerified += this.OnProposalVerified;
+        TestUtils.Asserter.ModelProposalVerified += this.OnProposalVerified;
         return ValueTask.CompletedTask;
     }
 
@@ -130,7 +134,7 @@ public class ModelRepairTestInfo<TTestClass> : TestInfoBase
     protected override async ValueTask AfterTest()
     {
         BeamOsModelBuilder.ModelCreated -= this.OnModelCreated;
-        Asserter.ModelProposalVerified -= this.OnProposalVerified;
+        TestUtils.Asserter.ModelProposalVerified -= this.OnProposalVerified;
 
         if (this.ModelId is null)
         {
@@ -157,26 +161,77 @@ public class ModelRepairTestInfo<TTestClass> : TestInfoBase
     {
         return $"{this.TestType}_{this.TestName}";
     }
+
+    public override ValueTask<IList<TestResult>> GetTestResultsAsync()
+    {
+        TestResult testResult = new(
+            BeamOsObjectType.Model,
+            this.ModelId?.ToString() ?? string.Empty,
+            this.TestName,
+            "Model Repair",
+            JsonSerializer.Serialize(this.ModelProposalResponse, BeamOsSerializerOptions.Pretty),
+            null,
+            TestResultStatus.Success,
+            null,
+            []
+        );
+        IList<TestResult> result = [testResult];
+        return ValueTask.FromResult(result);
+    }
 }
 
-public static class TestInfoRetriever
+public class StructuralAnalysisTestInfo<TTestClass> : TestInfoBase
 {
-    public static IEnumerable<TestInfoBase> GetTestInfos()
+    [SetsRequiredMembers]
+    public StructuralAnalysisTestInfo(
+        Func<TTestClass, Task> executeTest,
+        string testName,
+        TTestClass testClass,
+        ModelResponse modelResponse
+    )
     {
-        var tests = new ModelRepairerTests();
-        yield return new ModelRepairTestInfo<ModelRepairerTests>(
-            static async (testClass) =>
-                await testClass.ProposeRepairs_MergesCloseNodes_AddsNodeProposal(),
-            nameof(ModelRepairerTests.ProposeRepairs_MergesCloseNodes_AddsNodeProposal),
-            tests,
-            AssemblySetup.StructuralAnalysisApiClient
-        );
-        yield return new ModelRepairTestInfo<ModelRepairerTests>(
-            static async (testClass) =>
-                await testClass.ProposeRepairs_NoCloseNodes_NoNodeProposals(),
-            nameof(ModelRepairerTests.ProposeRepairs_NoCloseNodes_NoNodeProposals),
-            tests,
-            AssemblySetup.StructuralAnalysisApiClient
-        );
+        this.TestName = testName;
+        this.TestType = TestType.StructuralAnalysis;
+        this.TestClass = testClass;
+        this.ExecuteTest = async () => await executeTest(testClass);
+        this.ModelResponse = modelResponse;
+    }
+
+    public ModelResponse ModelResponse { get; set; }
+    public TTestClass TestClass { get; set; }
+    private List<TestResult> TestResults { get; } = [];
+
+    private void OnTestResult2(object? sender, TestResult testResult)
+    {
+        this.TestResults.Add(testResult);
+    }
+
+    protected override ValueTask BeforeTest()
+    {
+        this.OnTestResult += this.OnTestResult2;
+        return ValueTask.CompletedTask;
+    }
+
+    protected override ValueTask AfterTest()
+    {
+        this.OnTestResult -= this.OnTestResult2;
+        return ValueTask.CompletedTask;
+    }
+
+    public virtual ITestFixture? GetTestFixture() =>
+        this.TestData?.FirstOrDefault() as ITestFixture;
+
+    protected override async Task DisplayNewModel(IEditorApiAlpha editorApi)
+    {
+        await editorApi.CreateModelAsync(this.ModelResponse);
+    }
+
+    public override string GetTestId() => this.ModelResponse.Id.ToString();
+
+    public SourceInfo? SourceInfo => this.GetTestFixture()?.SourceInfo;
+
+    public override ValueTask<IList<TestResult>> GetTestResultsAsync()
+    {
+        return ValueTask.FromResult<IList<TestResult>>(this.TestResults);
     }
 }
