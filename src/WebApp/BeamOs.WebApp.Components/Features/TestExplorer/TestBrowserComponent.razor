@@ -36,7 +36,7 @@
             <NestedList>
                 @foreach (var testInfo in testInfoGroup)
                 {
-                    <MudListItem Icon="@Icons.Material.Outlined.Build" Text="@testInfo.TestName" Value="@testInfo" >
+                    <MudListItem Icon="@Icons.Material.Outlined.Build" Text="@testInfo.TestName" Value="@testInfo">
                         @* <NestedList>
                             @foreach (var result in this.TestResults ?? [])
                             {
@@ -57,6 +57,9 @@
 
     [Parameter]
     public required IEditorApiAlpha EditorApi { get; init; }
+
+    [Inject]
+    public LoadBeamOsEntityCommandHandler2 LoadBeamOsEntityCommandHandler2 { get; init; }
 
     [Inject]
     public IStructuralAnalysisApiClientV1 StructuralAnalysisApiClient { get; init; }
@@ -122,7 +125,11 @@
         {
             test.OnTestResult += OnAssertedEqual2;
             await test.RunTest();
-            await test.DisplayAndReturnId(this.EditorApi, null);
+            foreach (var entity in test.GetDisplayableEntities())
+            {
+                await this.LoadBeamOsEntityCommandHandler2.ExecuteAsync(new LoadBeamOsEntityCommand(entity, this.EditorApi));
+            }
+            @* await test.DisplayAndReturnId(this.EditorApi, null); *@
             this.TestResults = await test.GetTestResultsAsync();
             this.StateHasChanged();
         }

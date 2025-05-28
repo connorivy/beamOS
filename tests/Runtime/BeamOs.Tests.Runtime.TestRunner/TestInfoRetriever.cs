@@ -19,6 +19,12 @@ public class TestInfoRetriever(
             tests,
             inMemoryApiClient
         );
+        yield return new ModelRepairTestInfo<ModelRepairerTests>(
+            static async (testClass) => await testClass.NodesVeryCloseToColumn_ShouldSnapToColumn(),
+            nameof(ModelRepairerTests.NodesVeryCloseToColumn_ShouldSnapToColumn),
+            tests,
+            inMemoryApiClient
+        );
         // yield return new ModelRepairTestInfo<ModelRepairerTests>(
         //     static async (testClass) =>
         //         await testClass.ProposeRepairs_NoCloseNodes_NoNodeProposals(),

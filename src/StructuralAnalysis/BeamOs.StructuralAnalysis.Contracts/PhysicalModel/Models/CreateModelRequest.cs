@@ -69,7 +69,7 @@ public record ModelProposal : ModelProposalData, IHasIntId
     public required DateTimeOffset LastModified { get; init; }
 }
 
-public record ModelProposalResponse : IHasIntId
+public record ModelProposalResponse : IHasIntId, IBeamOsEntityResponse
 {
     public required int Id { get; init; }
     public required DateTimeOffset LastModified { get; init; }

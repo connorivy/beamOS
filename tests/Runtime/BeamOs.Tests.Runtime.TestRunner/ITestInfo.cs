@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using BeamOs.CodeGen.EditorApi;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
+using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Sdk;
@@ -38,6 +39,8 @@ public abstract class TestInfoBase
 
         return thisTestId;
     }
+
+    public abstract IEnumerable<IBeamOsEntityResponse> GetDisplayableEntities();
 
     protected abstract Task DisplayNewModel(IEditorApiAlpha editorApi);
 
@@ -157,6 +160,14 @@ public class ModelRepairTestInfo<TTestClass> : TestInfoBase
         await editorApi.DisplayModelProposalAsync(this.ModelProposalResponse);
     }
 
+    public override IEnumerable<IBeamOsEntityResponse> GetDisplayableEntities()
+    {
+        yield return this.ModelResponse
+            ?? throw new InvalidOperationException("ModelResponse is null");
+        yield return this.ModelProposalResponse
+            ?? throw new InvalidOperationException("ModelProposalResponse is null");
+    }
+
     public override string GetTestId()
     {
         return $"{this.TestType}_{this.TestName}";
@@ -224,6 +235,12 @@ public class StructuralAnalysisTestInfo<TTestClass> : TestInfoBase
     protected override async Task DisplayNewModel(IEditorApiAlpha editorApi)
     {
         await editorApi.CreateModelAsync(this.ModelResponse);
+    }
+
+    public override IEnumerable<IBeamOsEntityResponse> GetDisplayableEntities()
+    {
+        yield return this.ModelResponse
+            ?? throw new InvalidOperationException("ModelResponse is null");
     }
 
     public override string GetTestId() => this.ModelResponse.Id.ToString();
