@@ -1,4 +1,5 @@
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.ResultSets;
+using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Infrastructure.Common;
@@ -20,9 +21,8 @@ internal sealed class ResultSetRepository(StructuralAnalysisDbContext dbContext)
         params string[] resultSetMembersToLoad
     )
     {
-        var query = this.DbContext
-            .ResultSets
-            .AsNoTracking()
+        var query = this
+            .DbContext.ResultSets.AsNoTracking()
             .AsSplitQuery()
             .Where(s => s.ModelId == modelId && s.Id == resultSetId);
 
@@ -32,5 +32,27 @@ internal sealed class ResultSetRepository(StructuralAnalysisDbContext dbContext)
         }
 
         return await query.FirstOrDefaultAsync(ct);
+    }
+
+    public override async Task<ModelSettingsAndEntity<ResultSet>?> GetSingleWithModelSettings(
+        ModelId modelId,
+        ResultSetId id,
+        CancellationToken ct = default
+    )
+    {
+        var settingAndEntity = await this
+            .DbContext.ResultSets.AsNoTracking()
+            .Include(el => el.NodeResults)
+            .Include(el => el.Element1dResults)
+            .Where(m => m.ModelId == modelId && m.Id.Equals(id))
+            .Select(m => new { ModelSettings = m.Model.Settings, Entity = m })
+            .FirstOrDefaultAsync(ct);
+
+        return settingAndEntity is null
+            ? null
+            : new ModelSettingsAndEntity<ResultSet>(
+                settingAndEntity.ModelSettings,
+                settingAndEntity.Entity
+            );
     }
 }

@@ -67,7 +67,7 @@ internal abstract class ModelResourceRepositoryBase<TId, TEntity>(
                 cancellationToken: ct
             );
 
-    public async Task<ModelSettingsAndEntity<TEntity>?> GetSingleWithModelSettings(
+    public virtual async Task<ModelSettingsAndEntity<TEntity>?> GetSingleWithModelSettings(
         ModelId modelId,
         TId id,
         CancellationToken ct = default

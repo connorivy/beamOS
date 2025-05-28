@@ -23,3 +23,11 @@ public class ParallelGroupAttribute(string group) : Attribute
 public class DependsOnAttribute(Type classType, string testName) : Attribute { }
 
 public class SkipInFrontEndAttribute : Attribute { }
+
+public class BeforeAttribute(HookType hookType) : Attribute { }
+
+public enum HookType
+{
+    Test,
+    Class,
+}

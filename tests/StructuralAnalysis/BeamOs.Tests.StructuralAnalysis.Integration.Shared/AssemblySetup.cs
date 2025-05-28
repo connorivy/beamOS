@@ -6,6 +6,9 @@ public static partial class AssemblySetup
 {
     public static IStructuralAnalysisApiClientV1 StructuralAnalysisApiClient { get; set; }
 
-    public static IStructuralAnalysisApiClientV1 GetStructuralAnalysisApiClientV1() =>
-        StructuralAnalysisApiClient;
+    public static Func<IStructuralAnalysisApiClientV1> GetStructuralAnalysisApiClientV1() =>
+        () =>
+        {
+            return StructuralAnalysisApiClient;
+        };
 }

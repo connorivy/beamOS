@@ -369,6 +369,9 @@ public class EndToEndTests
                 modelProposalRequest
             );
 
-        await Verify(modelProposalResponseResult);
+        await Verify(modelProposalResponseResult)
+            .ScrubMembers(l =>
+                typeof(IHasIntId).IsAssignableFrom(l.DeclaringType) && l.Name == "Id"
+            );
     }
 }

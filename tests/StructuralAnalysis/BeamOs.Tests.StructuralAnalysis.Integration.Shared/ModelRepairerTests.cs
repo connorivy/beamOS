@@ -10,6 +10,13 @@ namespace BeamOs.Tests.StructuralAnalysis.Integration;
 [MethodDataSource(typeof(AssemblySetup), nameof(AssemblySetup.GetStructuralAnalysisApiClientV1))]
 public class ModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient)
 {
+    [Before(HookType.Test)]
+    public void BeforeClass()
+    {
+        // This is a workaround to ensure that the API client is initialized before any tests run.
+        apiClient ??= AssemblySetup.StructuralAnalysisApiClient;
+    }
+
     private static ModelSettings CreateDefaultModelSettings()
     {
         var unitSettings = new UnitSettingsContract
