@@ -11,8 +11,9 @@ public class ModelRepairer
     private readonly Length tolerance;
     private static readonly List<IModelRepairRule> rules =
     [
+        new AlignBeamsIntoPlaneOfColumns(),
+        new ExtendColumnToMeetBeamRule(),
         new Element1dExtendOrShortenRule(),
-        // new Element1dAlignWithColumnRule(),
         new NodeMergeRule(),
         new NodeSnapToElement1dRule(),
     ];

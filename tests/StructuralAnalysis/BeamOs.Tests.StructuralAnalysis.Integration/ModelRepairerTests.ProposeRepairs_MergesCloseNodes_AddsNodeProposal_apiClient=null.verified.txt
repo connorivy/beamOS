@@ -13,14 +13,14 @@
     ModifyElement1dProposals: [
       {
         Id: {Scrubbed},
-        ExistingElement1dId: 1,
+        ExistingElement1dId: 3,
         StartNodeId: {
-          ExistingId: 4,
+          ExistingId: 3,
           ProposedId: null,
           IsDefault: false
         },
         EndNodeId: {
-          ExistingId: 2,
+          ExistingId: 1,
           ProposedId: null,
           IsDefault: false
         },

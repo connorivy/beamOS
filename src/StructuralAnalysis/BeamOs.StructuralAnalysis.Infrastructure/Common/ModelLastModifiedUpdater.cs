@@ -37,7 +37,7 @@ public class ModelLastModifiedUpdater(TimeProvider timeProvider) : SaveChangesIn
 
             if (model is null)
             {
-                model = new("", "", new(UnitSettings.kN_M), modelId);
+                model = new("", "", new(UnitSettings.kN_M, false), modelId);
                 context.Models.Attach(model);
             }
 

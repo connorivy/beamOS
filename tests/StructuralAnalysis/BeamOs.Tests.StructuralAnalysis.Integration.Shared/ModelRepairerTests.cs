@@ -18,7 +18,7 @@ public class ModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient)
         apiClient ??= AssemblySetup.StructuralAnalysisApiClient;
     }
 
-    private static ModelSettings CreateDefaultModelSettings()
+    private static ModelSettings CreateDefaultModelSettings(bool yAxisUp = true)
     {
         var unitSettings = new UnitSettingsContract
         {
@@ -27,7 +27,7 @@ public class ModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient)
             AngleUnit = AngleUnitContract.Radian,
         };
         var analysisSettings = new AnalysisSettings();
-        var modelSettings = new ModelSettings(unitSettings, analysisSettings, true);
+        var modelSettings = new ModelSettings(unitSettings, analysisSettings, yAxisUp);
         return modelSettings;
     }
 
@@ -65,7 +65,7 @@ public class ModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient)
     public async Task NodesVeryCloseToColumn_ShouldSnapToColumn()
     {
         Guid modelId = Guid.NewGuid();
-        var settings = CreateDefaultModelSettings();
+        var settings = CreateDefaultModelSettings(false);
         var builder = new BeamOsDynamicModelBuilder(modelId.ToString(), settings, "Test", "Test");
 
         builder.AddSectionProfileFromLibrary(1, "w12x26", StructuralCode.AISC_360_16);
@@ -141,7 +141,7 @@ public class ModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient)
     public async Task ColumnWithNearbyBeam_ShouldSnapBeamNodeToColumn()
     {
         Guid modelId = Guid.NewGuid();
-        var settings = CreateDefaultModelSettings();
+        var settings = CreateDefaultModelSettings(false);
         var builder = new BeamOsDynamicModelBuilder(modelId.ToString(), settings, "Test", "Test");
 
         builder.AddSectionProfileFromLibrary(1, "w12x26", StructuralCode.AISC_360_16);
@@ -149,7 +149,7 @@ public class ModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient)
 
         // Add a column
         builder.AddNode(1, 0, 0, 0);
-        builder.AddNode(2, 0, 0, 10);
+        builder.AddNode(2, 0, 0, 9.9);
         builder.AddElement1d(1, 1, 2, 1, 1);
 
         // Add a beam with a node very close to the column

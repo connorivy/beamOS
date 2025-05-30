@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
@@ -105,7 +104,7 @@ public class Element1dExtendOrShortenRule : IndividualNodeVisitingRule
         double normDirY = dirY / dirLen;
         double normDirZ = dirZ / dirLen;
 
-        var rotationalTolerance = tolerance.Meters * 0.01; // 1% of the tolerance for direction matching
+        var rotationalTolerance = tolerance.Meters * 0.0001;
 
         foreach (Node candidate in nearbyNodes)
         {
