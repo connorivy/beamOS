@@ -5,52 +5,22 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
-public class Element1dExtendOrShortenRule : IModelRepairRule
+public class Element1dExtendOrShortenRule : IndividualNodeVisitingRule
 {
-    public void ApplyToBothElementNodes(
-        Element1d element1D,
-        Node startNode,
-        Node endNode,
-        IList<Node> nearbyStartNodes,
-        IList<Element1d> element1DsCloseToStart,
-        IList<Node> nearbyEndNodes,
-        IList<Element1d> element1DsCloseToEnd,
-        ModelProposalBuilder modelProposalBuilder,
-        Length tolerance
-    )
-    {
-        this.ApplyToSingleElementNode(
-            element1D,
-            startNode,
-            nearbyStartNodes,
-            element1DsCloseToStart,
-            modelProposalBuilder,
-            tolerance
-        );
-        this.ApplyToSingleElementNode(
-            element1D,
-            endNode,
-            nearbyEndNodes,
-            element1DsCloseToEnd,
-            modelProposalBuilder,
-            tolerance
-        );
-    }
-
-    public void ApplyToSingleElementNode(
-        Element1d element1D,
+    protected override void ApplyToSingleNode(
+        Element1d element,
         Node node,
         IList<Node> nearbyNodes,
-        IList<Element1d> element1DsCloseToNode,
+        IList<Element1d> nearbyElement1ds,
         ModelProposalBuilder modelProposalBuilder,
         Length tolerance
     )
     {
-        if (SnapToNearbyNode(element1D, node, nearbyNodes, modelProposalBuilder, tolerance))
+        if (SnapToNearbyNode(element, node, nearbyNodes, modelProposalBuilder, tolerance))
         {
             return;
         }
-        _ = SnapToNearbyElement1d(node, element1DsCloseToNode, modelProposalBuilder, tolerance);
+        _ = SnapToNearbyElement1d(node, nearbyElement1ds, modelProposalBuilder, tolerance);
     }
 
     private static bool SnapToNearbyElement1d(
@@ -108,7 +78,7 @@ public class Element1dExtendOrShortenRule : IModelRepairRule
     }
 
     private static bool SnapToNearbyNode(
-        Element1d element1D,
+        Element1d element,
         Node node,
         IList<Node> nearbyNodes,
         ModelProposalBuilder modelProposalBuilder,
@@ -116,7 +86,7 @@ public class Element1dExtendOrShortenRule : IModelRepairRule
     )
     {
         // Get the start and end nodes of the element
-        (Node startNode, Node endNode) = modelProposalBuilder.GetStartAndEndNodes(element1D);
+        (Node startNode, Node endNode) = modelProposalBuilder.GetStartAndEndNodes(element);
         // Determine which node is fixed and which is being considered for snapping
         Node fixedNode = node == startNode ? endNode : startNode;
         Point fixedPoint = fixedNode.LocationPoint;

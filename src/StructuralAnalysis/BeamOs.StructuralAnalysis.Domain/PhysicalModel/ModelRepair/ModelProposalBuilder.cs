@@ -11,7 +11,6 @@ public sealed class ModelProposalBuilder
 {
     private readonly ModelProposal modelProposal;
     private readonly Dictionary<int, Node> nodeIdToNodeDict;
-    private readonly IList<Element1d> element1ds;
 
     public ModelProposalBuilder(
         ModelId modelId,
@@ -20,15 +19,20 @@ public sealed class ModelProposalBuilder
         ModelSettings settings,
         Dictionary<int, Node> nodeIdToNodeDict,
         IList<Element1d> element1ds,
+        Octree octree,
         ModelProposalId? id = null
     )
     {
         this.modelProposal = new(modelId, name, description, settings, id);
         this.nodeIdToNodeDict = nodeIdToNodeDict;
-        this.element1ds = element1ds;
+        this.Element1ds = element1ds;
+        this.Octree = octree;
     }
 
     public ModelProposalId Id => this.modelProposal.Id;
+    public ModelSettings Settings => this.modelProposal.Settings;
+    public IList<Element1d> Element1ds { get; }
+    public Octree Octree { get; }
 
     private readonly Dictionary<int, NodeProposal> modifyNodeProposalCache = [];
     private readonly Dictionary<int, int> mergedNodeToReplacedNodeIdDict = [];
@@ -41,7 +45,7 @@ public sealed class ModelProposalBuilder
             "Original and target nodes should not be the same"
         );
 
-        foreach (var element1d in this.element1ds)
+        foreach (var element1d in this.Element1ds)
         {
             var (startNode, endNode) = this.GetStartAndEndNodes(element1d, out _);
             if (startNode.Id == originalNode.Id)

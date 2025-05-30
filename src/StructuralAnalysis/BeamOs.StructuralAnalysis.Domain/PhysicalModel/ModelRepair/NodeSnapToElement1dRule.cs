@@ -3,7 +3,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
-public class NodeSnapToElement1dRule : IModelRepairRule
+public class NodeSnapToElement1dRule : IndividualNodeVisitingRule
 {
     private static void SnapNodesToElements(
         Node node,
@@ -60,45 +60,15 @@ public class NodeSnapToElement1dRule : IModelRepairRule
         }
     }
 
-    public void ApplyToBothElementNodes(
-        Element1d element1D,
-        Node startNode,
-        Node endNode,
-        IList<Node> nearbyStartNodes,
-        IList<Element1d> element1DsCloseToStart,
-        IList<Node> nearbyEndNodes,
-        IList<Element1d> element1DsCloseToEnd,
-        ModelProposalBuilder modelProposal,
-        Length tolerance
-    )
-    {
-        this.ApplyToSingleElementNode(
-            element1D,
-            startNode,
-            nearbyStartNodes,
-            element1DsCloseToStart,
-            modelProposal,
-            tolerance
-        );
-        this.ApplyToSingleElementNode(
-            element1D,
-            endNode,
-            nearbyEndNodes,
-            element1DsCloseToEnd,
-            modelProposal,
-            tolerance
-        );
-    }
-
-    public void ApplyToSingleElementNode(
-        Element1d element1D,
+    protected override void ApplyToSingleNode(
+        Element1d element,
         Node node,
-        IList<Node> nearbyStartNodes,
-        IList<Element1d> element1DsCloseToStart,
-        ModelProposalBuilder modelProposal,
+        IList<Node> nearbyNodes,
+        IList<Element1d> nearbyElement1ds,
+        ModelProposalBuilder modelProposalBuilder,
         Length tolerance
     )
     {
-        SnapNodesToElements(node, element1DsCloseToStart, modelProposal, tolerance.Meters);
+        SnapNodesToElements(node, nearbyElement1ds, modelProposalBuilder, tolerance.Meters);
     }
 }
