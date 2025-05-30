@@ -1,12 +1,13 @@
+using System.Diagnostics;
+using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
 public class NodeMergeRule : IModelRepairRule
 {
-    public void Apply(
+    public void ApplyToBothElementNodes(
         Element1d element1D,
         Node startNode,
         Node endNode,
@@ -15,93 +16,53 @@ public class NodeMergeRule : IModelRepairRule
         IList<Node> nearbyEndNodes,
         IList<Element1d> element1DsCloseToEnd,
         ModelProposalBuilder modelProposal,
-        double tolerance
+        Length tolerance
     )
     {
-        // Merge close nodes in start region
-        for (int i = 0; i < nearbyStartNodes.Count; i++)
-        {
-            for (int j = i + 1; j < nearbyStartNodes.Count; j++)
-            {
-                Node nodeA = nearbyStartNodes[i];
-                Node nodeB = nearbyStartNodes[j];
-                double distance = nodeA.LocationPoint.CalculateDistance(
-                    nodeB.LocationPoint.X,
-                    nodeB.LocationPoint.Y,
-                    nodeB.LocationPoint.Z
-                );
-                if (distance < tolerance)
-                {
-                    double confidence = 1.0 - distance / tolerance;
-                    NodeProposal proposal = new(
-                        nodeA,
-                        default,
-                        nodeB.LocationPoint,
-                        nodeB.Restraint
-                    );
-                    modelProposal.AddNodeProposal(proposal);
-                }
-            }
-        }
-        // Merge close nodes in end region
-        for (int i = 0; i < nearbyEndNodes.Count; i++)
-        {
-            for (int j = i + 1; j < nearbyEndNodes.Count; j++)
-            {
-                Node nodeA = nearbyEndNodes[i];
-                Node nodeB = nearbyEndNodes[j];
-                double distance = nodeA.LocationPoint.CalculateDistance(
-                    nodeB.LocationPoint.X,
-                    nodeB.LocationPoint.Y,
-                    nodeB.LocationPoint.Z
-                );
-                if (distance < tolerance)
-                {
-                    double confidence = 1.0 - distance / tolerance;
-                    NodeProposal proposal = new(
-                        nodeA,
-                        default,
-                        nodeB.LocationPoint,
-                        nodeB.Restraint
-                    );
-                    modelProposal.AddNodeProposal(proposal);
-                }
-            }
-        }
+        this.ApplyToSingleElementNode(
+            element1D,
+            startNode,
+            nearbyStartNodes,
+            element1DsCloseToStart,
+            modelProposal,
+            tolerance
+        );
+        this.ApplyToSingleElementNode(
+            element1D,
+            endNode,
+            nearbyEndNodes,
+            element1DsCloseToEnd,
+            modelProposal,
+            tolerance
+        );
     }
 
-    private static void NewMethod(
+    public void ApplyToSingleElementNode(
+        Element1d element1d,
+        Node node,
         IList<Node> nearbyNodes,
-        ModelProposal modelProposal,
-        double tolerance
+        IList<Element1d> nearbyElement1ds,
+        ModelProposalBuilder modelProposalBuilder,
+        Length tolerance
     )
     {
-        for (int i = 0; i < nearbyNodes.Count; i++)
+        foreach (Node nearbyNode in nearbyNodes)
         {
-            for (int j = i + 1; j < nearbyNodes.Count; j++)
+            Debug.Assert(
+                nearbyNode.Id != node.Id,
+                "Candidate node should not be the same as base node"
+            );
+
+            // Calculate distance between nodes in meters
+            Point p1 = node.LocationPoint;
+            Point p2 = nearbyNode.LocationPoint;
+            double dx = p1.X.Meters - p2.X.Meters;
+            double dy = p1.Y.Meters - p2.Y.Meters;
+            double dz = p1.Z.Meters - p2.Z.Meters;
+            double distance = Math.Sqrt((dx * dx) + (dy * dy) + (dz * dz));
+            if (distance <= tolerance.Meters)
             {
-                Node nodeA = nearbyNodes[i];
-                Node nodeB = nearbyNodes[j];
-                double distance = nodeA.LocationPoint.CalculateDistance(
-                    nodeB.LocationPoint.X,
-                    nodeB.LocationPoint.Y,
-                    nodeB.LocationPoint.Z
-                );
-                if (distance < tolerance)
-                {
-                    double confidence = 1.0 - distance / tolerance;
-                    NodeProposal proposal = new(
-                        nodeA,
-                        default,
-                        nodeB.LocationPoint,
-                        nodeB.Restraint
-                    );
-                    if (modelProposal.NodeProposals is null)
-                    {
-                        modelProposal.NodeProposals = [];
-                    }
-                    modelProposal.NodeProposals.Add(proposal);
-                }
+                modelProposalBuilder.MergeNodes(node, nearbyNode);
             }
         }
     }

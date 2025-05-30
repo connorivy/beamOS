@@ -5,22 +5,6 @@ namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
 public class NodeSnapToElement1dRule : IModelRepairRule
 {
-    public void Apply(
-        Element1d element1D,
-        Node startNode,
-        Node endNode,
-        IList<Node> nearbyStartNodes,
-        IList<Element1d> element1DsCloseToStart,
-        IList<Node> nearbyEndNodes,
-        IList<Element1d> element1DsCloseToEnd,
-        ModelProposalBuilder modelProposalBuilder,
-        double tolerance
-    )
-    {
-        SnapNodesToElements(startNode, element1DsCloseToStart, modelProposalBuilder, tolerance);
-        SnapNodesToElements(endNode, element1DsCloseToEnd, modelProposalBuilder, tolerance);
-    }
-
     private static void SnapNodesToElements(
         Node node,
         IList<Element1d> elements,
@@ -74,5 +58,47 @@ public class NodeSnapToElement1dRule : IModelRepairRule
                 );
             }
         }
+    }
+
+    public void ApplyToBothElementNodes(
+        Element1d element1D,
+        Node startNode,
+        Node endNode,
+        IList<Node> nearbyStartNodes,
+        IList<Element1d> element1DsCloseToStart,
+        IList<Node> nearbyEndNodes,
+        IList<Element1d> element1DsCloseToEnd,
+        ModelProposalBuilder modelProposal,
+        Length tolerance
+    )
+    {
+        this.ApplyToSingleElementNode(
+            element1D,
+            startNode,
+            nearbyStartNodes,
+            element1DsCloseToStart,
+            modelProposal,
+            tolerance
+        );
+        this.ApplyToSingleElementNode(
+            element1D,
+            endNode,
+            nearbyEndNodes,
+            element1DsCloseToEnd,
+            modelProposal,
+            tolerance
+        );
+    }
+
+    public void ApplyToSingleElementNode(
+        Element1d element1D,
+        Node node,
+        IList<Node> nearbyStartNodes,
+        IList<Element1d> element1DsCloseToStart,
+        ModelProposalBuilder modelProposal,
+        Length tolerance
+    )
+    {
+        SnapNodesToElements(node, element1DsCloseToStart, modelProposal, tolerance.Meters);
     }
 }

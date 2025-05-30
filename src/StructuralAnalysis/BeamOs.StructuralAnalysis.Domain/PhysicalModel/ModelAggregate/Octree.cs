@@ -63,21 +63,36 @@ public class OctreeNode : BeamOsEntity<OctreeNodeId>
         this.Children = new OctreeNode[8];
         double childLength = this.Length / 2.0;
         double offset = childLength / 2.0;
-        int i = 0;
         for (int dx = -1; dx <= 1; dx += 2)
         {
             for (int dy = -1; dy <= 1; dy += 2)
             {
                 for (int dz = -1; dz <= 1; dz += 2)
                 {
-                    // Use object initializer for Point
                     Point childCenter = new(
                         this.Center.X.Meters + (dx * offset),
                         this.Center.Y.Meters + (dy * offset),
                         this.Center.Z.Meters + (dz * offset),
                         this.Center.X.Unit
                     );
-                    this.Children[i++] = new OctreeNode(childCenter, childLength, this.Depth + 1);
+                    int childIndex = 0;
+                    if (dx > 0)
+                    {
+                        childIndex |= 1;
+                    }
+                    if (dy > 0)
+                    {
+                        childIndex |= 2;
+                    }
+                    if (dz > 0)
+                    {
+                        childIndex |= 4;
+                    }
+                    this.Children[childIndex] = new OctreeNode(
+                        childCenter,
+                        childLength,
+                        this.Depth + 1
+                    );
                 }
             }
         }
@@ -86,15 +101,15 @@ public class OctreeNode : BeamOsEntity<OctreeNodeId>
     private int GetChildIndex(Point pos)
     {
         int index = 0;
-        if (pos.X.Meters >= this.Center.X.Meters)
+        if (pos.X.Meters > this.Center.X.Meters)
         {
             index |= 1;
         }
-        if (pos.Y.Meters >= this.Center.Y.Meters)
+        if (pos.Y.Meters > this.Center.Y.Meters)
         {
             index |= 2;
         }
-        if (pos.Z.Meters >= this.Center.Z.Meters)
+        if (pos.Z.Meters > this.Center.Z.Meters)
         {
             index |= 4;
         }
@@ -236,15 +251,18 @@ public class Octree : BeamOsModelEntity<OctreeId>
         double oldLength = originalRoot.Length;
         double newLength = oldLength * 2.0;
         Point oldCenter = originalRoot.Center;
-        // Determine in which direction to expand
-        double dx = (point.X.Meters < oldCenter.X.Meters) ? -1 : 1;
-        double dy = (point.Y.Meters < oldCenter.Y.Meters) ? -1 : 1;
-        double dz = (point.Z.Meters < oldCenter.Z.Meters) ? -1 : 1;
-        double offset = oldLength / 2.0;
+        // For each axis, offset by +oldLength/2 if point >= oldCenter, else -oldLength/2
+        double offsetX =
+            (point.X.Meters >= oldCenter.X.Meters) ? oldLength / 2.0 : -oldLength / 2.0;
+        double offsetY =
+            (point.Y.Meters >= oldCenter.Y.Meters) ? oldLength / 2.0 : -oldLength / 2.0;
+        double offsetZ =
+            (point.Z.Meters >= oldCenter.Z.Meters) ? oldLength / 2.0 : -oldLength / 2.0;
+
         Point newCenter = new(
-            oldCenter.X.Meters + (dx * offset),
-            oldCenter.Y.Meters + (dy * offset),
-            oldCenter.Z.Meters + (dz * offset),
+            oldCenter.X.Meters + offsetX,
+            oldCenter.Y.Meters + offsetY,
+            oldCenter.Z.Meters + offsetZ,
             oldCenter.X.Unit
         );
         OctreeNode newRoot = new(newCenter, newLength);

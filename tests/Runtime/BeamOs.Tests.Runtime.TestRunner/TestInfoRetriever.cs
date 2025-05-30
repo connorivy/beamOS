@@ -25,13 +25,20 @@ public class TestInfoRetriever(
             tests,
             inMemoryApiClient
         );
-        // yield return new ModelRepairTestInfo<ModelRepairerTests>(
-        //     static async (testClass) =>
-        //         await testClass.ProposeRepairs_NoCloseNodes_NoNodeProposals(),
-        //     nameof(ModelRepairerTests.ProposeRepairs_NoCloseNodes_NoNodeProposals),
-        //     tests,
-        //     apiClient
-        // );
+        yield return new ModelRepairTestInfo<ModelRepairerTests>(
+            static async (testClass) =>
+                await testClass.NearlyConvergingNodesInXYPlane_ShouldMergeOrSnapNodes(),
+            nameof(ModelRepairerTests.NearlyConvergingNodesInXYPlane_ShouldMergeOrSnapNodes),
+            tests,
+            inMemoryApiClient
+        );
+        yield return new ModelRepairTestInfo<ModelRepairerTests>(
+            static async (testClass) =>
+                await testClass.ColumnWithNearbyBeam_ShouldSnapBeamNodeToColumn(),
+            nameof(ModelRepairerTests.ColumnWithNearbyBeam_ShouldSnapBeamNodeToColumn),
+            tests,
+            inMemoryApiClient
+        );
         foreach (var modelFixture in AllSolvedProblems.ModelFixturesWithExpectedNodeResults())
         {
             var openSeesTest = new OpenSeesTests(modelFixture);

@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
@@ -24,6 +25,8 @@ public class Node : BeamOsModelEntity<NodeId>
     public ICollection<PointLoad>? PointLoads { get; set; }
 
     public ICollection<MomentLoad>? MomentLoads { get; set; }
+
+    [NotMapped]
     public IEnumerable<Element1d>? Elements =>
         this.StartNodeElements?.Union(
             this.EndNodeElements

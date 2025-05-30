@@ -3,6 +3,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Sdk;
 using BeamOs.Tests.Common;
+using FluentAssertions;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration;
 
@@ -52,6 +53,11 @@ public class ModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient)
 
         var proposal = await apiClient.RepairModelAsync(modelId, "this doesn't do anything yet");
 
+        await ModelRepairerTestUtil.EnsureGlobalGeometricContraints(
+            apiClient,
+            modelId,
+            proposal.Value?.Id ?? throw new InvalidOperationException("Proposal is null")
+        );
         await TestUtils.Asserter.VerifyModelProposal(proposal);
     }
 
@@ -79,21 +85,155 @@ public class ModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient)
 
         var proposal = await apiClient.RepairModelAsync(modelId, "this doesn't do anything yet");
 
+        await ModelRepairerTestUtil.EnsureGlobalGeometricContraints(
+            apiClient,
+            modelId,
+            proposal.Value?.Id ?? throw new InvalidOperationException("Proposal is null")
+        );
         await TestUtils.Asserter.VerifyModelProposal(proposal);
     }
-    // [Test]
-    // public async Task ProposeRepairs_NoCloseNodes_NoNodeProposals()
-    // {
-    //     var modelId = Guid.NewGuid();
-    //     var settings = CreateDefaultModelSettings();
-    //     var builder = new BeamOsDynamicModelBuilder(modelId.ToString(), settings, "Test", "Test");
-    //     builder.AddNode(1, 0, 0, 0);
-    //     builder.AddNode(2, 10, 0, 0);
 
-    //     await builder.CreateOnly(apiClient);
+    [Test]
+    public async Task NearlyConvergingNodesInXYPlane_ShouldMergeOrSnapNodes()
+    {
+        Guid modelId = Guid.NewGuid();
+        var settings = CreateDefaultModelSettings();
+        var builder = new BeamOsDynamicModelBuilder(modelId.ToString(), settings, "Test", "Test");
 
-    //     var proposal = await apiClient.RepairModelAsync(modelId, "this doesn't do anything yet");
+        builder.AddSectionProfileFromLibrary(1, "w12x26", StructuralCode.AISC_360_16);
+        builder.AddMaterial(1, 345e6, 200e9);
 
-    //     await TestUtils.Asserter.VerifyModelProposal(proposal);
-    // }
+        // Central node (almost convergence point)
+        builder.AddNode(1, 5, 5, 0);
+        // Nodes very close to the central node
+        builder.AddNode(2, 5.1, 5, 0);
+        builder.AddNode(3, 5, 5.1, 0);
+        builder.AddNode(4, 4.9, 5, 0);
+        builder.AddNode(5, 5, 4.9, 0);
+        // Outer nodes
+        builder.AddNode(6, 10, 5, 0);
+        builder.AddNode(7, 5, 10, 0);
+        builder.AddNode(8, 0, 5, 0);
+        builder.AddNode(9, 5, 0, 0);
+
+        // Elements radiating from near the center
+        builder.AddElement1d(1, 2, 6, 1, 1);
+        builder.AddElement1d(2, 3, 7, 1, 1);
+        builder.AddElement1d(3, 4, 8, 1, 1);
+        builder.AddElement1d(4, 5, 9, 1, 1);
+
+        await builder.CreateOnly(apiClient);
+
+        var proposal = await apiClient.RepairModelAsync(
+            modelId,
+            "test nearly converging nodes in xy plane"
+        );
+
+        await ModelRepairerTestUtil.EnsureGlobalGeometricContraints(
+            apiClient,
+            modelId,
+            proposal.Value?.Id ?? throw new InvalidOperationException("Proposal is null")
+        );
+        await TestUtils.Asserter.VerifyModelProposal(proposal);
+    }
+
+    [Test]
+    public async Task ColumnWithNearbyBeam_ShouldSnapBeamNodeToColumn()
+    {
+        Guid modelId = Guid.NewGuid();
+        var settings = CreateDefaultModelSettings();
+        var builder = new BeamOsDynamicModelBuilder(modelId.ToString(), settings, "Test", "Test");
+
+        builder.AddSectionProfileFromLibrary(1, "w12x26", StructuralCode.AISC_360_16);
+        builder.AddMaterial(1, 345e6, 200e9);
+
+        // Add a column
+        builder.AddNode(1, 0, 0, 0);
+        builder.AddNode(2, 0, 0, 10);
+        builder.AddElement1d(1, 1, 2, 1, 1);
+
+        // Add a beam with a node very close to the column
+        builder.AddNode(3, -0.1, 0, 10); // Close to the column
+        builder.AddNode(4, -5, 0, 10);
+        builder.AddElement1d(2, 3, 4, 1, 1);
+
+        // second beam on the other side
+        builder.AddNode(5, 0.1, 0, 10); // Close to the column
+        builder.AddNode(6, 5, 0, 10);
+        builder.AddElement1d(3, 5, 6, 1, 1);
+
+        await builder.CreateOnly(apiClient);
+
+        var proposal = await apiClient.RepairModelAsync(modelId, "snap beam node to column");
+
+        await ModelRepairerTestUtil.EnsureGlobalGeometricContraints(
+            apiClient,
+            modelId,
+            proposal.Value?.Id ?? throw new InvalidOperationException("Proposal is null")
+        );
+        await TestUtils.Asserter.VerifyModelProposal(proposal);
+    }
+}
+
+public static class ModelRepairerTestUtil
+{
+    public static async Task EnsureGlobalGeometricContraints(
+        IStructuralAnalysisApiClientV1 apiClient,
+        Guid modelId,
+        int modelProposalId
+    )
+    {
+#if RUNTIME
+        return;
+#endif
+        var originalModel = await apiClient.GetModelAsync(modelId);
+        await apiClient.AcceptModelProposalAsync(modelId, modelProposalId);
+        var repairedModel = await apiClient.GetModelAsync(modelId);
+        // Ensure that the repaired model maintains global geometric constraints
+        EnsureGlobalGeometricContraints(
+            originalModel.Value ?? throw new InvalidOperationException("Original model is null"),
+            repairedModel.Value ?? throw new InvalidOperationException("Repaired model is null")
+        );
+    }
+
+    public static void EnsureGlobalGeometricContraints(
+        ModelResponse originalModel,
+        ModelResponse repairedModel
+    )
+    {
+        // elements whose start and end nodes have nearly the same x, y, or z coordinates should
+        // still have the same x, y, or z coordinates after repair
+        foreach (var element in originalModel.Element1ds)
+        {
+            var repairedElement = repairedModel.Element1ds.FirstOrDefault(e => e.Id == element.Id);
+            if (repairedElement == null)
+                continue;
+
+            var startNode = originalModel.Nodes.First(n => n.Id == element.StartNodeId);
+            var endNode = originalModel.Nodes.First(n => n.Id == element.EndNodeId);
+            var repairedStartNode = repairedModel.Nodes.First(n =>
+                n.Id == repairedElement.StartNodeId
+            );
+            var repairedEndNode = repairedModel.Nodes.First(n => n.Id == repairedElement.EndNodeId);
+
+            if (Math.Abs(startNode.LocationPoint.X - endNode.LocationPoint.X) < 1e-6)
+            {
+                repairedEndNode
+                    .LocationPoint.X.Should()
+                    .BeApproximately(repairedStartNode.LocationPoint.X, 1e-6);
+            }
+            if (Math.Abs(startNode.LocationPoint.Y - endNode.LocationPoint.Y) < 1e-6)
+            {
+                repairedEndNode
+                    .LocationPoint.Y.Should()
+                    .BeApproximately(repairedStartNode.LocationPoint.Y, 1e-6);
+            }
+            if (Math.Abs(startNode.LocationPoint.Z - endNode.LocationPoint.Z) < 1e-6)
+            {
+                repairedEndNode
+                    .LocationPoint.Z.Should()
+                    .BeApproximately(repairedStartNode.LocationPoint.Z, 1e-6);
+            }
+        }
+    }
 }

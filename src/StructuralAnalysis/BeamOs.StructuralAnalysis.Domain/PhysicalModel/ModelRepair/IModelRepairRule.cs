@@ -5,7 +5,7 @@ namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
 public interface IModelRepairRule
 {
-    public void Apply(
+    public void ApplyToBothElementNodes(
         Element1d element1D,
         Node startNode,
         Node endNode,
@@ -14,6 +14,15 @@ public interface IModelRepairRule
         IList<Node> nearbyEndNodes,
         IList<Element1d> element1DsCloseToEnd,
         ModelProposalBuilder modelProposal,
-        double tolerance
+        Length tolerance
+    );
+
+    public void ApplyToSingleElementNode(
+        Element1d element1D,
+        Node node,
+        IList<Node> nearbyStartNodes,
+        IList<Element1d> element1DsCloseToStart,
+        ModelProposalBuilder modelProposal,
+        Length tolerance
     );
 }

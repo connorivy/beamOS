@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
@@ -10,6 +11,7 @@ public sealed class ModelProposalBuilder
 {
     private readonly ModelProposal modelProposal;
     private readonly Dictionary<int, Node> nodeIdToNodeDict;
+    private readonly IList<Element1d> element1ds;
 
     public ModelProposalBuilder(
         ModelId modelId,
@@ -17,46 +19,94 @@ public sealed class ModelProposalBuilder
         string description,
         ModelSettings settings,
         Dictionary<int, Node> nodeIdToNodeDict,
+        IList<Element1d> element1ds,
         ModelProposalId? id = null
     )
     {
         this.modelProposal = new(modelId, name, description, settings, id);
         this.nodeIdToNodeDict = nodeIdToNodeDict;
+        this.element1ds = element1ds;
     }
 
     public ModelProposalId Id => this.modelProposal.Id;
 
     private readonly Dictionary<int, NodeProposal> modifyNodeProposalCache = [];
+    private readonly Dictionary<int, int> mergedNodeToReplacedNodeIdDict = [];
+    private readonly List<NodeProposal> newNodeProposals = [];
+
+    public void MergeNodes(Node originalNode, Node targetNode)
+    {
+        Debug.Assert(
+            originalNode.Id != targetNode.Id,
+            "Original and target nodes should not be the same"
+        );
+
+        foreach (var element1d in this.element1ds)
+        {
+            var (startNode, endNode) = this.GetStartAndEndNodes(element1d, out _);
+            if (startNode.Id == originalNode.Id)
+            {
+                this.AddElement1dProposals(
+                    new Element1dProposal(element1d, this.Id, startNodeId: targetNode.Id)
+                );
+            }
+            else if (endNode.Id == originalNode.Id)
+            {
+                this.AddElement1dProposals(
+                    new Element1dProposal(element1d, this.Id, endNodeId: targetNode.Id)
+                );
+            }
+        }
+
+        this.mergedNodeToReplacedNodeIdDict[originalNode.Id] = targetNode.Id;
+    }
 
     public void AddNodeProposal(NodeProposal proposal)
     {
-        (this.modelProposal.NodeProposals ??= []).Add(proposal);
         if (proposal.ExistingId is not null)
         {
             this.modifyNodeProposalCache[proposal.ExistingId.Value] = proposal;
         }
+        else
+        {
+            this.newNodeProposals.Add(proposal);
+        }
     }
 
-    public Node ApplyExistingProposal(Node node, out bool isModifiedInProposal)
+    public Node ApplyExistingProposal(Node node, out bool isModifiedInProposal) =>
+        this.ApplyExistingProposal(node.Id, out isModifiedInProposal);
+
+    public Node ApplyExistingProposal(Node node) => this.ApplyExistingProposal(node.Id, out _);
+
+    public Node ApplyExistingProposal(NodeId nodeId, out bool isModifiedInProposal)
     {
-        if (this.modifyNodeProposalCache.TryGetValue(node.Id, out var proposal))
+        if (this.mergedNodeToReplacedNodeIdDict.TryGetValue(nodeId.Id, out var replacedNodeId))
+        {
+            nodeId = replacedNodeId;
+        }
+
+        if (this.modifyNodeProposalCache.TryGetValue(nodeId, out var proposal))
         {
             isModifiedInProposal = true;
             return proposal.ToDomain();
         }
 
         isModifiedInProposal = false;
-        return node;
+        return this.nodeIdToNodeDict[nodeId];
     }
 
     private readonly Dictionary<int, Element1dProposal> modifyElement1dProposalCache = [];
+    private readonly List<Element1dProposal> newElement1dProposals = [];
 
     public void AddElement1dProposals(Element1dProposal proposal)
     {
-        (this.modelProposal.Element1dProposals ??= []).Add(proposal);
         if (proposal.ExistingId is not null)
         {
             this.modifyElement1dProposalCache[proposal.ExistingId.Value] = proposal;
+        }
+        else
+        {
+            this.newElement1dProposals.Add(proposal);
         }
     }
 
@@ -80,10 +130,13 @@ public sealed class ModelProposalBuilder
         var modifiedElement1d = this.ApplyExistingProposal(element1d, out isModifiedInProposal);
 
         return (
-            this.nodeIdToNodeDict[modifiedElement1d.StartNodeId],
-            this.nodeIdToNodeDict[modifiedElement1d.EndNodeId]
+            this.ApplyExistingProposal(modifiedElement1d.StartNodeId, out _),
+            this.ApplyExistingProposal(modifiedElement1d.EndNodeId, out _)
         );
     }
+
+    public (Node startNode, Node endNode) GetStartAndEndNodes(Element1d element1d) =>
+        this.GetStartAndEndNodes(element1d, out _);
 
     public void AddMaterialProposals(MaterialProposal proposal) =>
         (this.modelProposal.MaterialProposals ??= []).Add(proposal);
@@ -97,5 +150,19 @@ public sealed class ModelProposalBuilder
     public void AddProposalIssues(ProposalIssue proposal) =>
         (this.modelProposal.ProposalIssues ??= []).Add(proposal);
 
-    public ModelProposal Build() => this.modelProposal;
+    public ModelProposal Build()
+    {
+        this.modelProposal.NodeProposals =
+        [
+            .. this.modifyNodeProposalCache.Values,
+            .. this.newNodeProposals,
+        ];
+        this.modelProposal.Element1dProposals =
+        [
+            .. this.modifyElement1dProposalCache.Values,
+            .. this.newElement1dProposals,
+        ];
+
+        return this.modelProposal;
+    }
 }

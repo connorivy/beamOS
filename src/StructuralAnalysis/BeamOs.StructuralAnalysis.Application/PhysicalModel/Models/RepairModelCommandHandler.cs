@@ -50,7 +50,7 @@ public class RepairModelCommandHandler(
         ModelRepairer repairer = new(
             model.Nodes,
             model.Element1ds,
-            0.15, // hard code 6 inches
+            new(1, LengthUnit.Foot), // hard code 12 inches
             nodeOctree
         );
 

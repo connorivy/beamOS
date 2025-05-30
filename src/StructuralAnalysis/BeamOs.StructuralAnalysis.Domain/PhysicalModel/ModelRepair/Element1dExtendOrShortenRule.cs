@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
@@ -6,7 +7,7 @@ namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
 public class Element1dExtendOrShortenRule : IModelRepairRule
 {
-    public void Apply(
+    public void ApplyToBothElementNodes(
         Element1d element1D,
         Node startNode,
         Node endNode,
@@ -15,91 +16,164 @@ public class Element1dExtendOrShortenRule : IModelRepairRule
         IList<Node> nearbyEndNodes,
         IList<Element1d> element1DsCloseToEnd,
         ModelProposalBuilder modelProposalBuilder,
-        double tolerance
+        Length tolerance
     )
     {
-        var start = startNode.LocationPoint;
-        var end = endNode.LocationPoint;
-        double sx = start.X.Meters;
-        double sy = start.Y.Meters;
-        double sz = start.Z.Meters;
-        double ex = end.X.Meters;
-        double ey = end.Y.Meters;
-        double ez = end.Z.Meters;
-        double dx = ex - sx;
-        double dy = ey - sy;
-        double dz = ez - sz;
-        double length = Math.Sqrt(dx * dx + dy * dy + dz * dz);
-        if (length < 1e-8)
+        this.ApplyToSingleElementNode(
+            element1D,
+            startNode,
+            nearbyStartNodes,
+            element1DsCloseToStart,
+            modelProposalBuilder,
+            tolerance
+        );
+        this.ApplyToSingleElementNode(
+            element1D,
+            endNode,
+            nearbyEndNodes,
+            element1DsCloseToEnd,
+            modelProposalBuilder,
+            tolerance
+        );
+    }
+
+    public void ApplyToSingleElementNode(
+        Element1d element1D,
+        Node node,
+        IList<Node> nearbyNodes,
+        IList<Element1d> element1DsCloseToNode,
+        ModelProposalBuilder modelProposalBuilder,
+        Length tolerance
+    )
+    {
+        if (SnapToNearbyNode(element1D, node, nearbyNodes, modelProposalBuilder, tolerance))
         {
             return;
         }
-        double dirX = dx / length;
-        double dirY = dy / length;
-        double dirZ = dz / length;
+        _ = SnapToNearbyElement1d(node, element1DsCloseToNode, modelProposalBuilder, tolerance);
+    }
 
-        foreach (Node originalNode in nearbyStartNodes)
+    private static bool SnapToNearbyElement1d(
+        Node node,
+        IList<Element1d> element1DsCloseToNode,
+        ModelProposalBuilder modelProposalBuilder,
+        Length tolerance
+    )
+    {
+        foreach (Element1d elem in element1DsCloseToNode)
         {
-            Debug.Assert(
-                originalNode.Id != startNode.Id,
-                "Node ID should not be the same as start node ID"
-            );
+            var (startNode, endNode) = modelProposalBuilder.GetStartAndEndNodes(elem);
 
-            var node = modelProposalBuilder.ApplyExistingProposal(originalNode, out _);
-
-            double nx = node.LocationPoint.X.Meters;
-            double ny = node.LocationPoint.Y.Meters;
-            double nz = node.LocationPoint.Z.Meters;
-            double t = (nx - ex) * dirX + (ny - ey) * dirY + (nz - ez) * dirZ;
-            double projX = ex + t * dirX;
-            double projY = ey + t * dirY;
-            double projZ = ez + t * dirZ;
-            double distToLine = Math.Sqrt(
-                Math.Pow(nx - projX, 2) + Math.Pow(ny - projY, 2) + Math.Pow(nz - projZ, 2)
-            );
-
-            if (distToLine < tolerance && t <= 0)
+            Point p = node.LocationPoint;
+            Point a = startNode.LocationPoint;
+            Point b = endNode.LocationPoint;
+            // Vector AB
+            double abX = b.X.Meters - a.X.Meters;
+            double abY = b.Y.Meters - a.Y.Meters;
+            double abZ = b.Z.Meters - a.Z.Meters;
+            // Vector AP
+            double apX = p.X.Meters - a.X.Meters;
+            double apY = p.Y.Meters - a.Y.Meters;
+            double apZ = p.Z.Meters - a.Z.Meters;
+            double abLen2 = (abX * abX) + (abY * abY) + (abZ * abZ);
+            if (abLen2 == 0)
             {
-                var proposal = new Element1dProposal(
-                    element1D,
-                    modelProposalBuilder.Id,
-                    startNodeId: node.Id
-                );
+                continue;
+            }
+            double t = ((abX * apX) + (abY * apY) + (abZ * apZ)) / abLen2;
+            // Clamp t to [0,1] to stay within segment
+            if (t is <= 0 or >= 1)
+            {
+                continue; // skip endpoints, already handled
+            }
+            // Projected point
+            double projX = a.X.Meters + (t * abX);
+            double projY = a.Y.Meters + (t * abY);
+            double projZ = a.Z.Meters + (t * abZ);
+            double distToLine = Math.Sqrt(
+                Math.Pow(p.X.Meters - projX, 2)
+                    + Math.Pow(p.Y.Meters - projY, 2)
+                    + Math.Pow(p.Z.Meters - projZ, 2)
+            );
+            if (distToLine < tolerance.Meters)
+            {
+                Point projectedPoint = new(projX, projY, projZ, LengthUnit.Meter);
+                NodeProposal proposal = new(node, modelProposalBuilder.Id, projectedPoint);
+                modelProposalBuilder.AddNodeProposal(proposal);
 
-                modelProposalBuilder.AddElement1dProposals(proposal);
+                return true;
             }
         }
+        return false;
+    }
 
-        foreach (Node originalNode in nearbyEndNodes)
+    private static bool SnapToNearbyNode(
+        Element1d element1D,
+        Node node,
+        IList<Node> nearbyNodes,
+        ModelProposalBuilder modelProposalBuilder,
+        Length tolerance
+    )
+    {
+        // Get the start and end nodes of the element
+        (Node startNode, Node endNode) = modelProposalBuilder.GetStartAndEndNodes(element1D);
+        // Determine which node is fixed and which is being considered for snapping
+        Node fixedNode = node == startNode ? endNode : startNode;
+        Point fixedPoint = fixedNode.LocationPoint;
+        Point nodePoint = node.LocationPoint;
+        // Direction vector of the element (from fixedNode to node)
+        double dirX = nodePoint.X.Meters - fixedPoint.X.Meters;
+        double dirY = nodePoint.Y.Meters - fixedPoint.Y.Meters;
+        double dirZ = nodePoint.Z.Meters - fixedPoint.Z.Meters;
+        double dirLen = Math.Sqrt((dirX * dirX) + (dirY * dirY) + (dirZ * dirZ));
+        if (dirLen == 0)
         {
-            Debug.Assert(
-                originalNode.Id != endNode.Id,
-                "Node ID should not be the same as end node ID"
-            );
+            return false;
+        }
+        // Normalize direction
+        double normDirX = dirX / dirLen;
+        double normDirY = dirY / dirLen;
+        double normDirZ = dirZ / dirLen;
 
-            var node = modelProposalBuilder.ApplyExistingProposal(originalNode, out _);
+        var rotationalTolerance = tolerance.Meters * 0.01; // 1% of the tolerance for direction matching
 
-            double nx = node.LocationPoint.X.Meters;
-            double ny = node.LocationPoint.Y.Meters;
-            double nz = node.LocationPoint.Z.Meters;
-            double t = (nx - sx) * dirX + (ny - sy) * dirY + (nz - sz) * dirZ;
-            double projX = sx + t * dirX;
-            double projY = sy + t * dirY;
-            double projZ = sz + t * dirZ;
-            double distToLine = Math.Sqrt(
-                Math.Pow(nx - projX, 2) + Math.Pow(ny - projY, 2) + Math.Pow(nz - projZ, 2)
-            );
-
-            if (distToLine < tolerance && t <= 0)
+        foreach (Node candidate in nearbyNodes)
+        {
+            if (candidate == node)
             {
-                var proposal = new Element1dProposal(
-                    element1D,
-                    modelProposalBuilder.Id,
-                    endNodeId: node.Id
-                );
-
-                modelProposalBuilder.AddElement1dProposals(proposal);
+                continue;
+            }
+            Point candidatePoint = candidate.LocationPoint;
+            // Vector from fixedNode to candidate
+            double candX = candidatePoint.X.Meters - fixedPoint.X.Meters;
+            double candY = candidatePoint.Y.Meters - fixedPoint.Y.Meters;
+            double candZ = candidatePoint.Z.Meters - fixedPoint.Z.Meters;
+            double candLen = Math.Sqrt((candX * candX) + (candY * candY) + (candZ * candZ));
+            if (candLen == 0)
+            {
+                continue;
+            }
+            // Normalize
+            double normCandX = candX / candLen;
+            double normCandY = candY / candLen;
+            double normCandZ = candZ / candLen;
+            // Check if direction matches (dot product close to 1 or -1)
+            double dot = (normDirX * normCandX) + (normDirY * normCandY) + (normDirZ * normCandZ);
+            if (Math.Abs(dot - 1.0) < rotationalTolerance) // same direction
+            {
+                // Check if candidate is within tolerance of the line extended from fixedNode
+                double dist = Math.Abs(candLen - dirLen);
+                if (dist < tolerance.Meters)
+                {
+                    modelProposalBuilder.MergeNodes(node, candidate);
+                    return true;
+                }
+            }
+            else if (Math.Abs(dot + 1.0) < rotationalTolerance) // opposite direction (should not happen for 1d element)
+            {
+                continue;
             }
         }
+        return false;
     }
 }
