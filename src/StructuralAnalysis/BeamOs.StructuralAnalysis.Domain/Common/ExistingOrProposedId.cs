@@ -85,7 +85,7 @@ public class ExistingOrProposedId<TId, TProposedId> : BeamOSValueObject
     }
 }
 
-public sealed class ExisitingOrProposedGenericId
+public sealed class ExisitingOrProposedGenericId : BeamOSValueObject
 {
     public int? ExistingId { get; init; }
     public int? ProposedId { get; init; }
@@ -100,6 +100,12 @@ public sealed class ExisitingOrProposedGenericId
 
     [Obsolete("EF Core Constructor", true)]
     private ExisitingOrProposedGenericId(int? existingId, int? proposedId) { }
+
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return this.ExistingId;
+        yield return this.ProposedId;
+    }
 }
 
 public sealed class ExistingOrProposedNodeId : ExistingOrProposedId<NodeId, NodeProposalId>
@@ -150,7 +156,23 @@ public sealed class ExistingOrProposedSectionProfileId
         : base(existingId, proposedId) { }
 }
 
-public interface IFromId<out TSelf, TId>
+public sealed class BeamOsModelEntityId : BeamOSValueObject
 {
-    public TSelf FromId(TId id);
+    public int Id { get; private set; }
+    public BeamOsObjectType BeamOsObjectType { get; private set; }
+
+    public BeamOsModelEntityId(int id, BeamOsObjectType beamOsObjectType)
+    {
+        this.Id = id;
+        this.BeamOsObjectType = beamOsObjectType;
+    }
+
+    [Obsolete("EF Core Constructor", true)]
+    private BeamOsModelEntityId() { }
+
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return this.Id;
+        yield return this.BeamOsObjectType;
+    }
 }

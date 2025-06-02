@@ -16,7 +16,8 @@ internal sealed class ModelProposalRepository(StructuralAnalysisDbContext dbCont
     )
     {
         return this
-            .DbContext.ModelProposals.AsSplitQuery()
+            .DbContext.ModelProposals.AsNoTracking()
+            .AsSplitQuery()
             .Where(m => m.ModelId == modelId && m.Id == id)
             .Include(m => m.NodeProposals)
             .Include(m => m.Element1dProposals)
@@ -24,6 +25,7 @@ internal sealed class ModelProposalRepository(StructuralAnalysisDbContext dbCont
             .Include(m => m.MaterialProposals)
             .Include(m => m.SectionProfileProposals)
             .Include(m => m.SectionProfileProposalsFromLibrary)
+            .Include(m => m.DeleteModelEntityProposals)
             .FirstOrDefaultAsync(ct);
     }
 }

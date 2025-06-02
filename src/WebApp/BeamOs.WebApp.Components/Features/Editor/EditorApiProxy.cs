@@ -63,8 +63,8 @@ public class EditorApiProxy : DispatchProxy, IAsyncDisposable
             throw new Exception("Must use factory method to Create EditorApiProxy");
         }
 
-        return this.editorReference
-            .InvokeAsync<Result>(
+        return this
+            .editorReference.InvokeAsync<Result>(
                 $"api.{GetTsMethodName(targetMethod?.Name ?? throw new ArgumentNullException())}",
                 args
             )

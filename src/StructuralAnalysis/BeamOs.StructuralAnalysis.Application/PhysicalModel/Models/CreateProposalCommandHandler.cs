@@ -249,6 +249,10 @@ public static partial class ProposalStaticMappers
         this Element1dProposal command
     );
 
+    public static partial DeleteModelEntityProposalContract ToProposalContract(
+        this DeleteModelEntityProposal command
+    );
+
     [MapProperty(
         nameof(Element1dProposal.ExistingId),
         nameof(ModifyElement1dProposal.ExistingElement1dId)
@@ -304,6 +308,7 @@ public static partial class ProposalStaticMappers
             CreateElement1dProposals = [],
             ModifyElement1dProposals = [],
             ProposalIssues = [],
+            DeleteModelEntityProposals = [],
         };
         // var response = modelProposal.ToContract();
         // foreach (var nodeProposal in modelProposal.NodeProposals)
@@ -342,6 +347,10 @@ public static partial class ProposalStaticMappers
         foreach (var proposalIssue in modelProposal.ProposalIssues ?? [])
         {
             response.ProposalIssues.Add(proposalIssue.ToProposalContract());
+        }
+        foreach (var deleteModelEntityProp in modelProposal.DeleteModelEntityProposals ?? [])
+        {
+            response.DeleteModelEntityProposals.Add(deleteModelEntityProp.ToProposalContract());
         }
         return response;
     }

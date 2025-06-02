@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using BeamOs.StructuralAnalysis.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
 {
     [DbContext(typeof(StructuralAnalysisDbContext))]
-    partial class StructuralAnalysisDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250602190630_CorrectModelEntityDeleteProposalId")]
+    partial class CorrectModelEntityDeleteProposalId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -487,35 +490,6 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                     b.ToTable("MaterialProposal");
                 });
 
-            modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.DeleteModelEntityProposal", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ModelProposalId")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("ModelId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("ModelEntityId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ObjectType")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id", "ModelProposalId", "ModelId");
-
-                    b.HasIndex("ModelId");
-
-                    b.HasIndex("ModelProposalId", "ModelId");
-
-                    b.ToTable("DeleteModelEntityProposal");
-                });
-
             modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.Model", b =>
                 {
                     b.Property<Guid>("Id")
@@ -583,6 +557,35 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Models");
+                });
+
+            modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.ModelEntityDeleteProposal", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ModelProposalId")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("ModelId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("ModelEntityId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ObjectType")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id", "ModelProposalId", "ModelId");
+
+                    b.HasIndex("ModelId");
+
+                    b.HasIndex("ModelProposalId", "ModelId");
+
+                    b.ToTable("ModelEntityDeleteProposal");
                 });
 
             modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.ModelProposal", b =>
@@ -1299,7 +1302,7 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                     b.Navigation("ModelProposal");
                 });
 
-            modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.DeleteModelEntityProposal", b =>
+            modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.ModelEntityDeleteProposal", b =>
                 {
                     b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.Model", "Model")
                         .WithMany()
@@ -1308,7 +1311,7 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.ModelProposal", "ModelProposal")
-                        .WithMany("DeleteModelEntityProposals")
+                        .WithMany("ModelEntityDeleteProposals")
                         .HasForeignKey("ModelProposalId", "ModelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1545,11 +1548,11 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
 
             modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.ModelProposal", b =>
                 {
-                    b.Navigation("DeleteModelEntityProposals");
-
                     b.Navigation("Element1dProposals");
 
                     b.Navigation("MaterialProposals");
+
+                    b.Navigation("ModelEntityDeleteProposals");
 
                     b.Navigation("NodeProposals");
 

@@ -148,3 +148,9 @@ public class ProposalIssueIdConverter : ValueConverter<ProposalIssueId, int>
     public ProposalIssueIdConverter()
         : base(x => x.Id, x => new(x), null) { }
 }
+
+public class ModelEntityDeleteProposalIdConverter : ValueConverter<ModelEntityDeleteProposalId, int>
+{
+    public ModelEntityDeleteProposalIdConverter()
+        : base(x => x.Id, x => new(x), null) { }
+}

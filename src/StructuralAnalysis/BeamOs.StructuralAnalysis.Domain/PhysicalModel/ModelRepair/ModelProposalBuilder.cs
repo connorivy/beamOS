@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
@@ -29,6 +30,7 @@ public sealed class ModelProposalBuilder
         this.Octree = octree;
     }
 
+    private ModelId ModelId => this.modelProposal.ModelId;
     public ModelProposalId Id => this.modelProposal.Id;
     public ModelSettings Settings => this.modelProposal.Settings;
     public IList<Element1d> Element1ds { get; }
@@ -61,6 +63,15 @@ public sealed class ModelProposalBuilder
                 );
             }
         }
+        this.modelProposal.DeleteModelEntityProposals ??= [];
+        this.modelProposal.DeleteModelEntityProposals.Add(
+            new DeleteModelEntityProposal(
+                this.ModelId,
+                this.Id,
+                originalNode.Id,
+                BeamOsObjectType.Node
+            )
+        );
 
         this.mergedNodeToReplacedNodeIdDict[originalNode.Id] = targetNode.Id;
     }

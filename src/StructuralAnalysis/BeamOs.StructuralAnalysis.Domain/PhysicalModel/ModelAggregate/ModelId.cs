@@ -51,3 +51,19 @@ public readonly record struct ProposalIssueId : IIntBasedId
 
     public override string ToString() => this.Id.ToString(CultureInfo.InvariantCulture);
 }
+
+public readonly record struct ModelEntityDeleteProposalId : IIntBasedId
+{
+    public int Id { get; init; }
+
+    public ModelEntityDeleteProposalId(int id)
+    {
+        this.Id = id;
+    }
+
+    public static implicit operator int(ModelEntityDeleteProposalId id) => id.Id;
+
+    public static implicit operator ModelEntityDeleteProposalId(int id) => new(id);
+
+    public override string ToString() => this.Id.ToString(CultureInfo.InvariantCulture);
+}
