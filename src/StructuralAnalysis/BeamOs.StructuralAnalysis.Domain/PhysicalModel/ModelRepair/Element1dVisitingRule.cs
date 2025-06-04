@@ -57,6 +57,8 @@ public abstract class Element1dVisitingRule : IModelRepairRule
         }
     }
 
+    public abstract ModelRepairRuleType RuleType { get; }
+
     protected abstract void ApplyRule(
         Element1d element1D,
         Node startNode,

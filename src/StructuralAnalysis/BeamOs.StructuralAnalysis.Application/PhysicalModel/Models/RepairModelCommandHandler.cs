@@ -49,8 +49,13 @@ public class RepairModelCommandHandler(
         ModelRepairer repairer = new(
             model.Nodes,
             model.Element1ds,
-            new(1, LengthUnit.Foot), // hard code 12 inches
-            nodeOctree
+            nodeOctree,
+            new ModelRepairOperationParameters
+            {
+                FavorableOperationTolerance = Length.FromFeet(2),
+                StandardOperationTolerance = Length.FromFeet(1),
+                UnfavorableOperationTolerance = Length.FromFeet(0.5),
+            }
         );
 
         ModelProposal proposal = repairer.ProposeRepairs(model);

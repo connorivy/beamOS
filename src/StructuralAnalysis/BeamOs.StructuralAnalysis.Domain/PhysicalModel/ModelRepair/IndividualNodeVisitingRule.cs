@@ -6,6 +6,8 @@ namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
 public abstract class IndividualNodeVisitingRule : IModelRepairRule
 {
+    public abstract ModelRepairRuleType RuleType { get; }
+
     public void Apply(ModelProposalBuilder modelProposalBuilder, Length tolerance)
     {
         HashSet<NodeId> visitedNodeIds = [];

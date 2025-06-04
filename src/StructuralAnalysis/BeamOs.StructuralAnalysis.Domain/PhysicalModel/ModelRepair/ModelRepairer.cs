@@ -1,5 +1,6 @@
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair.Rules;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
@@ -8,28 +9,29 @@ public class ModelRepairer
 {
     private readonly IList<Node> nodes;
     private readonly IList<Element1d> element1ds;
-    private readonly Length tolerance;
     private static readonly List<IModelRepairRule> rules =
     [
         new AlignBeamsIntoPlaneOfColumns(),
+        new ExtendElement1dsInPlaneToNodeRule(),
         new ExtendColumnToMeetBeamRule(),
-        new Element1dExtendOrShortenRule(),
+        // new Element1dExtendOrShortenRule(),
         new NodeMergeRule(),
         new NodeSnapToElement1dRule(),
     ];
     private readonly Octree octree;
+    private readonly ModelRepairOperationParameters modelRepairOperationParameters;
 
     public ModelRepairer(
         IList<Node> nodes,
         IList<Element1d> element1ds,
-        Length tolerance,
-        Octree octree
+        Octree octree,
+        ModelRepairOperationParameters modelRepairOperationParameters
     )
     {
         this.nodes = nodes;
         this.element1ds = element1ds;
-        this.tolerance = tolerance;
         this.octree = octree;
+        this.modelRepairOperationParameters = modelRepairOperationParameters;
     }
 
     public ModelProposal ProposeRepairs(Model model)
@@ -46,12 +48,44 @@ public class ModelRepairer
 
         for (int i = 0; i < 3; i++)
         {
-            var tolerance = this.tolerance * (i + 1) / 3.0;
-            foreach (IModelRepairRule rule in rules)
+            foreach (
+                IModelRepairRule rule in rules.Where(r =>
+                    r.RuleType == ModelRepairRuleType.Favorable
+                )
+            )
             {
-                rule.Apply(modelProposal, tolerance);
+                rule.Apply(
+                    modelProposal,
+                    this.modelRepairOperationParameters.FavorableOperationTolerance * (i + 1) / 3.0
+                );
+            }
+            foreach (
+                IModelRepairRule rule in rules.Where(r =>
+                    r.RuleType == ModelRepairRuleType.Standard
+                )
+            )
+            {
+                rule.Apply(
+                    modelProposal,
+                    this.modelRepairOperationParameters.StandardOperationTolerance * (i + 1) / 3.0
+                );
+            }
+            foreach (
+                IModelRepairRule rule in rules.Where(r =>
+                    r.RuleType == ModelRepairRuleType.Unfavorable
+                )
+            )
+            {
+                rule.Apply(
+                    modelProposal,
+                    this.modelRepairOperationParameters.UnfavorableOperationTolerance
+                        * (i + 1)
+                        / 3.0
+                );
             }
         }
+        // NodeMergeRule nodeMergeRule = new();
+        // nodeMergeRule.Apply(modelProposal, this.tolerance);
         return modelProposal.Build();
     }
 }

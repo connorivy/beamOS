@@ -6,6 +6,8 @@ namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
 public class Element1dExtendOrShortenRule : IndividualNodeVisitingRule
 {
+    public override ModelRepairRuleType RuleType => ModelRepairRuleType.Standard;
+
     protected override void ApplyToSingleNode(
         Element1d element,
         Node node,

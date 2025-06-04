@@ -39,6 +39,33 @@ public class TestInfoRetriever(
             tests,
             inMemoryApiClient
         );
+        yield return new ModelRepairTestInfo<ModelRepairerTests>(
+            static async (testClass) =>
+                await testClass.BraceBetweenTwoColumns_ButSlightlyOutOfPlane_ShouldSnapIntoPlane(),
+            nameof(
+                ModelRepairerTests.BraceBetweenTwoColumns_ButSlightlyOutOfPlane_ShouldSnapIntoPlane
+            ),
+            tests,
+            inMemoryApiClient
+        );
+        yield return new ModelRepairTestInfo<ModelRepairerTests>(
+            static async (testClass) =>
+                await testClass.BraceBetweenTwoColumns_ButSlightlyOutOfPlane_ShouldSnapIntoPlane2(),
+            nameof(
+                ModelRepairerTests.BraceBetweenTwoColumns_ButSlightlyOutOfPlane_ShouldSnapIntoPlane
+            ),
+            tests,
+            inMemoryApiClient
+        );
+        yield return new ModelRepairTestInfo<ModelRepairerTests>(
+            static async (testClass) =>
+                await testClass.ExtendElement1dToNodeRule_ShouldMergeNodes_WhenCoplanarAndCollinear(),
+            nameof(
+                ModelRepairerTests.ExtendElement1dToNodeRule_ShouldMergeNodes_WhenCoplanarAndCollinear
+            ),
+            tests,
+            inMemoryApiClient
+        );
         foreach (var modelFixture in AllSolvedProblems.ModelFixturesWithExpectedNodeResults())
         {
             var openSeesTest = new OpenSeesTests(modelFixture);

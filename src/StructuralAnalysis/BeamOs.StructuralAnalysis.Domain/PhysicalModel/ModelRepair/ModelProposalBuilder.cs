@@ -12,6 +12,13 @@ public sealed class ModelProposalBuilder
 {
     private readonly ModelProposal modelProposal;
     private readonly Dictionary<int, Node> nodeIdToNodeDict;
+    public ModelRepairOperationParameters ModelRepairOperationParameters { get; init; } =
+        new()
+        {
+            FavorableOperationTolerance = new(2.5, LengthUnit.Foot),
+            StandardOperationTolerance = new(1, LengthUnit.Foot),
+            UnfavorableOperationTolerance = new(.33, LengthUnit.Foot),
+        };
 
     public ModelProposalBuilder(
         ModelId modelId,
@@ -180,4 +187,14 @@ public sealed class ModelProposalBuilder
 
         return this.modelProposal;
     }
+}
+
+public record ModelRepairOperationParameters
+{
+    public required Length FavorableOperationTolerance { get; init; }
+    public required Length StandardOperationTolerance { get; init; }
+    public required Length UnfavorableOperationTolerance { get; init; }
+    public Angle FavorableOperationAngleTolerance { get; init; } = new(10, AngleUnit.Degree);
+    public Angle StandardOperationAngleTolerance { get; init; } = new(5, AngleUnit.Degree);
+    public Angle UnfavorableOperationAngleTolerance { get; init; } = new(2, AngleUnit.Degree);
 }

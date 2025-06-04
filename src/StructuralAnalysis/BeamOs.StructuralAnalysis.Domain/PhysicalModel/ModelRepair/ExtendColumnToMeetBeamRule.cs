@@ -6,6 +6,8 @@ namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
 public class ExtendColumnToMeetBeamRule : ColumnVisitingRule
 {
+    public override ModelRepairRuleType RuleType => ModelRepairRuleType.Standard;
+
     protected override void ApplyRuleForColumn(
         Element1d column,
         Node startNode,

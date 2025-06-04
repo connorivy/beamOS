@@ -5,6 +5,8 @@ namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
 public class NodeSnapToElement1dRule : IndividualNodeVisitingRule
 {
+    public override ModelRepairRuleType RuleType => ModelRepairRuleType.Standard;
+
     private static void SnapNodesToElements(
         Node node,
         IList<Element1d> elements,

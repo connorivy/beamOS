@@ -6,6 +6,8 @@ namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
 public class AlignBeamsIntoPlaneOfColumns : BeamOrBraceVisitingRule
 {
+    public override ModelRepairRuleType RuleType => ModelRepairRuleType.Standard;
+
     protected override void ApplyRuleForBeamOrBrace(
         Element1d element1D,
         Node startNode,

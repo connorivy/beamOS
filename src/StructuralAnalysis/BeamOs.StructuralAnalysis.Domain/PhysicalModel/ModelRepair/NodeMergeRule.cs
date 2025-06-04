@@ -7,6 +7,8 @@ namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
 public class NodeMergeRule : IndividualNodeVisitingRule
 {
+    public override ModelRepairRuleType RuleType => ModelRepairRuleType.Unfavorable;
+
     protected override void ApplyToSingleNode(
         Element1d element,
         Node node,

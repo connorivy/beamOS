@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults;
 using BeamOs.StructuralAnalysis.Contracts.Common;
@@ -130,4 +131,11 @@ public record DeleteModelEntityProposalData
 public record DeleteModelEntityProposal : DeleteModelEntityProposalData, IHasIntId
 {
     public required int Id { get; init; }
+}
+
+public record ModelRepairOperationParameters
+{
+    public required Length FavorableOperationTolerance { get; init; }
+    public required Length StandardOperationTolerance { get; init; }
+    public required Length UnfavorableOperationTolerance { get; init; }
 }
