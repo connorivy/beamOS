@@ -3,8 +3,10 @@ using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair.Rules;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
+using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
@@ -12,13 +14,7 @@ public sealed class ModelProposalBuilder
 {
     private readonly ModelProposal modelProposal;
     private readonly Dictionary<int, Node> nodeIdToNodeDict;
-    public ModelRepairOperationParameters ModelRepairOperationParameters { get; init; } =
-        new()
-        {
-            FavorableOperationTolerance = new(2.5, LengthUnit.Foot),
-            StandardOperationTolerance = new(1, LengthUnit.Foot),
-            UnfavorableOperationTolerance = new(.33, LengthUnit.Foot),
-        };
+    public ModelRepairOperationParameters ModelRepairOperationParameters { get; init; }
 
     public ModelProposalBuilder(
         ModelId modelId,
@@ -28,6 +24,7 @@ public sealed class ModelProposalBuilder
         Dictionary<int, Node> nodeIdToNodeDict,
         IList<Element1d> element1ds,
         Octree octree,
+        ModelRepairOperationParameters modelRepairOperationParameters,
         ModelProposalId? id = null
     )
     {
@@ -35,6 +32,7 @@ public sealed class ModelProposalBuilder
         this.nodeIdToNodeDict = nodeIdToNodeDict;
         this.Element1ds = element1ds;
         this.Octree = octree;
+        this.ModelRepairOperationParameters = modelRepairOperationParameters;
     }
 
     private ModelId ModelId => this.modelProposal.ModelId;
@@ -191,10 +189,121 @@ public sealed class ModelProposalBuilder
 
 public record ModelRepairOperationParameters
 {
-    public required Length FavorableOperationTolerance { get; init; }
-    public required Length StandardOperationTolerance { get; init; }
-    public required Length UnfavorableOperationTolerance { get; init; }
-    public Angle FavorableOperationAngleTolerance { get; init; } = new(10, AngleUnit.Degree);
-    public Angle StandardOperationAngleTolerance { get; init; } = new(5, AngleUnit.Degree);
-    public Angle UnfavorableOperationAngleTolerance { get; init; } = new(2, AngleUnit.Degree);
+    public required Length VeryRelaxedTolerance { get; init; }
+    public required Length RelaxedTolerance { get; init; }
+    public required Length StandardTolerance { get; init; }
+    public required Length StrictTolerance { get; init; }
+    public required Length VeryStrictTolerance { get; init; }
+    public Angle VeryRelaxedAngleTolerance { get; init; } = new(10, AngleUnit.Degree);
+    public Angle RelaxedAngleTolerance { get; init; } = new(10, AngleUnit.Degree);
+    public Angle StandardAngleTolerance { get; init; } = new(5, AngleUnit.Degree);
+    public Angle StrictAngleTolerance { get; init; } = new(2, AngleUnit.Degree);
+    public Angle VeryStrictAngleTolerance { get; init; } = new(2, AngleUnit.Degree);
+
+    public AxisAlignmentToleranceLevel GetAxisAlignmentToleranceLevel(Length length)
+    {
+        length = length.Abs();
+        if (length < this.VeryStrictTolerance)
+        {
+            return AxisAlignmentToleranceLevel.VeryStrict;
+        }
+        if (length < this.StrictTolerance)
+        {
+            return AxisAlignmentToleranceLevel.Strict;
+        }
+        if (length < this.StandardTolerance)
+        {
+            return AxisAlignmentToleranceLevel.Standard;
+        }
+        if (length < this.RelaxedTolerance)
+        {
+            return AxisAlignmentToleranceLevel.Relaxed;
+        }
+        return AxisAlignmentToleranceLevel.VeryRelaxed;
+    }
+
+    public AxisAlignmentToleranceLevel GetAxisAlignmentToleranceLevel(Angle angle)
+    {
+        angle = angle.Abs();
+        if (angle < this.VeryStrictAngleTolerance)
+        {
+            return AxisAlignmentToleranceLevel.VeryStrict;
+        }
+        if (angle < this.StrictAngleTolerance)
+        {
+            return AxisAlignmentToleranceLevel.Strict;
+        }
+        if (angle < this.StandardAngleTolerance)
+        {
+            return AxisAlignmentToleranceLevel.Standard;
+        }
+        if (angle < this.RelaxedAngleTolerance)
+        {
+            return AxisAlignmentToleranceLevel.Relaxed;
+        }
+        return AxisAlignmentToleranceLevel.VeryRelaxed;
+    }
+
+    public Length GetLengthTolerance(AxisAlignmentToleranceLevel level)
+    {
+        return level switch
+        {
+            AxisAlignmentToleranceLevel.VeryRelaxed => this.VeryRelaxedTolerance,
+            AxisAlignmentToleranceLevel.Relaxed => this.RelaxedTolerance,
+            AxisAlignmentToleranceLevel.Standard => this.StandardTolerance,
+            AxisAlignmentToleranceLevel.Strict => this.StrictTolerance,
+            AxisAlignmentToleranceLevel.VeryStrict => this.VeryStrictTolerance,
+            AxisAlignmentToleranceLevel.Undefined or _ => throw new ArgumentOutOfRangeException(
+                nameof(level),
+                level,
+                null
+            ),
+        };
+    }
+
+    public Angle GetAngleTolerance(AxisAlignmentToleranceLevel level)
+    {
+        return level switch
+        {
+            AxisAlignmentToleranceLevel.VeryRelaxed => this.VeryRelaxedAngleTolerance,
+            AxisAlignmentToleranceLevel.Relaxed => this.RelaxedAngleTolerance,
+            AxisAlignmentToleranceLevel.Standard => this.StandardAngleTolerance,
+            AxisAlignmentToleranceLevel.Strict => this.StrictAngleTolerance,
+            AxisAlignmentToleranceLevel.VeryStrict => this.VeryStrictAngleTolerance,
+            AxisAlignmentToleranceLevel.Undefined or _ => throw new ArgumentOutOfRangeException(
+                nameof(level),
+                level,
+                null
+            ),
+        };
+    }
+
+    public AxisAlignmentTolerance GetAxisAlignmentTolerance(Node startNode, Node endNode)
+    {
+        return new(
+            this.GetAxisAlignmentToleranceLevel(
+                startNode.LocationPoint.X - endNode.LocationPoint.X
+            ),
+            this.GetAxisAlignmentToleranceLevel(
+                startNode.LocationPoint.Y - endNode.LocationPoint.Y
+            ),
+            this.GetAxisAlignmentToleranceLevel(startNode.LocationPoint.Z - endNode.LocationPoint.Z)
+        );
+    }
+}
+
+public readonly record struct AxisAlignmentTolerance(
+    AxisAlignmentToleranceLevel X,
+    AxisAlignmentToleranceLevel Y,
+    AxisAlignmentToleranceLevel Z
+);
+
+public enum AxisAlignmentToleranceLevel
+{
+    Undefined = 0,
+    VeryStrict,
+    Strict,
+    Standard,
+    Relaxed,
+    VeryRelaxed,
 }

@@ -43,7 +43,8 @@ public class ModelRepairer
             model.Settings,
             this.nodes.ToDictionary(node => node.Id.Id),
             this.element1ds,
-            this.octree
+            this.octree,
+            this.modelRepairOperationParameters
         );
 
         for (int i = 0; i < 3; i++)
@@ -56,7 +57,7 @@ public class ModelRepairer
             {
                 rule.Apply(
                     modelProposal,
-                    this.modelRepairOperationParameters.FavorableOperationTolerance * (i + 1) / 3.0
+                    this.modelRepairOperationParameters.RelaxedTolerance * (i + 1) / 3.0
                 );
             }
             foreach (
@@ -67,7 +68,7 @@ public class ModelRepairer
             {
                 rule.Apply(
                     modelProposal,
-                    this.modelRepairOperationParameters.StandardOperationTolerance * (i + 1) / 3.0
+                    this.modelRepairOperationParameters.StandardTolerance * (i + 1) / 3.0
                 );
             }
             foreach (
@@ -78,9 +79,7 @@ public class ModelRepairer
             {
                 rule.Apply(
                     modelProposal,
-                    this.modelRepairOperationParameters.UnfavorableOperationTolerance
-                        * (i + 1)
-                        / 3.0
+                    this.modelRepairOperationParameters.StrictTolerance * (i + 1) / 3.0
                 );
             }
         }

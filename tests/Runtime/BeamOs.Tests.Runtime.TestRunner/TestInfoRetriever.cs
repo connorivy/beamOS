@@ -1,6 +1,7 @@
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Tests.Common;
 using BeamOs.Tests.StructuralAnalysis.Integration;
+using BeamOs.Tests.StructuralAnalysis.Integration.ModelRepairerTests;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BeamOs.Tests.Runtime.TestRunner;
@@ -11,61 +12,70 @@ public class TestInfoRetriever(
 {
     public IEnumerable<TestInfoBase> GetTestInfos()
     {
-        var tests = new ModelRepairerTests(inMemoryApiClient);
-        yield return new ModelRepairTestInfo<ModelRepairerTests>(
+        var tests = new EnvelopeModelRepairerTests(inMemoryApiClient);
+        yield return new ModelRepairTestInfo<EnvelopeModelRepairerTests>(
             static async (testClass) =>
                 await testClass.ProposeRepairs_MergesCloseNodes_AddsNodeProposal(),
-            nameof(ModelRepairerTests.ProposeRepairs_MergesCloseNodes_AddsNodeProposal),
+            nameof(EnvelopeModelRepairerTests.ProposeRepairs_MergesCloseNodes_AddsNodeProposal),
             tests,
             inMemoryApiClient
         );
-        yield return new ModelRepairTestInfo<ModelRepairerTests>(
+        yield return new ModelRepairTestInfo<EnvelopeModelRepairerTests>(
             static async (testClass) => await testClass.NodesVeryCloseToColumn_ShouldSnapToColumn(),
-            nameof(ModelRepairerTests.NodesVeryCloseToColumn_ShouldSnapToColumn),
+            nameof(EnvelopeModelRepairerTests.NodesVeryCloseToColumn_ShouldSnapToColumn),
             tests,
             inMemoryApiClient
         );
-        yield return new ModelRepairTestInfo<ModelRepairerTests>(
+        yield return new ModelRepairTestInfo<EnvelopeModelRepairerTests>(
             static async (testClass) =>
                 await testClass.NearlyConvergingNodesInXYPlane_ShouldMergeOrSnapNodes(),
-            nameof(ModelRepairerTests.NearlyConvergingNodesInXYPlane_ShouldMergeOrSnapNodes),
+            nameof(
+                EnvelopeModelRepairerTests.NearlyConvergingNodesInXYPlane_ShouldMergeOrSnapNodes
+            ),
             tests,
             inMemoryApiClient
         );
-        yield return new ModelRepairTestInfo<ModelRepairerTests>(
+        yield return new ModelRepairTestInfo<EnvelopeModelRepairerTests>(
             static async (testClass) =>
                 await testClass.ColumnWithNearbyBeam_ShouldSnapBeamNodeToColumn(),
-            nameof(ModelRepairerTests.ColumnWithNearbyBeam_ShouldSnapBeamNodeToColumn),
+            nameof(EnvelopeModelRepairerTests.ColumnWithNearbyBeam_ShouldSnapBeamNodeToColumn),
             tests,
             inMemoryApiClient
         );
-        yield return new ModelRepairTestInfo<ModelRepairerTests>(
+        yield return new ModelRepairTestInfo<EnvelopeModelRepairerTests>(
             static async (testClass) =>
                 await testClass.BraceBetweenTwoColumns_ButSlightlyOutOfPlane_ShouldSnapIntoPlane(),
             nameof(
-                ModelRepairerTests.BraceBetweenTwoColumns_ButSlightlyOutOfPlane_ShouldSnapIntoPlane
+                EnvelopeModelRepairerTests.BraceBetweenTwoColumns_ButSlightlyOutOfPlane_ShouldSnapIntoPlane
             ),
             tests,
             inMemoryApiClient
         );
-        yield return new ModelRepairTestInfo<ModelRepairerTests>(
+        yield return new ModelRepairTestInfo<EnvelopeModelRepairerTests>(
             static async (testClass) =>
                 await testClass.BraceBetweenTwoColumns_ButSlightlyOutOfPlane_ShouldSnapIntoPlane2(),
             nameof(
-                ModelRepairerTests.BraceBetweenTwoColumns_ButSlightlyOutOfPlane_ShouldSnapIntoPlane
+                EnvelopeModelRepairerTests.BraceBetweenTwoColumns_ButSlightlyOutOfPlane_ShouldSnapIntoPlane
             ),
             tests,
             inMemoryApiClient
         );
-        yield return new ModelRepairTestInfo<ModelRepairerTests>(
+
+        var extendElement1dToNodeRuleTest = new ExtendElement1dToNodeRuleTests(inMemoryApiClient);
+        yield return new ModelRepairTestInfo<ExtendElement1dToNodeRuleTests>(
+            static async (testClass) => await testClass.PerpendicularBeams_ShouldExtendToMeet(),
+            nameof(ExtendElement1dToNodeRuleTests.PerpendicularBeams_ShouldExtendToMeet),
+            extendElement1dToNodeRuleTest,
+            inMemoryApiClient
+        );
+        yield return new ModelRepairTestInfo<ExtendElement1dToNodeRuleTests>(
             static async (testClass) =>
-                await testClass.ExtendElement1dToNodeRule_ShouldMergeNodes_WhenCoplanarAndCollinear(),
-            nameof(
-                ModelRepairerTests.ExtendElement1dToNodeRule_ShouldMergeNodes_WhenCoplanarAndCollinear
-            ),
-            tests,
+                await testClass.BeamAtAngleFromOther_ShouldExtendToMeetOtherNode(),
+            nameof(ExtendElement1dToNodeRuleTests.BeamAtAngleFromOther_ShouldExtendToMeetOtherNode),
+            extendElement1dToNodeRuleTest,
             inMemoryApiClient
         );
+
         foreach (var modelFixture in AllSolvedProblems.ModelFixturesWithExpectedNodeResults())
         {
             var openSeesTest = new OpenSeesTests(modelFixture);

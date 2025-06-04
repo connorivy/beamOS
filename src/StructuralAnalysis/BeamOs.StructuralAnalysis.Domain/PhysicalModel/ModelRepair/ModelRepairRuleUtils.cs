@@ -1,5 +1,4 @@
 using BeamOs.StructuralAnalysis.Domain.Common;
-using Microsoft.VisualBasic;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
@@ -105,40 +104,147 @@ public static class ModelRepairRuleUtils
         return new Point(intersection.X, intersection.Y, intersection.Z, LengthUnit.Meter);
     }
 
-    public static bool ArePointsRoughlyCollinear(
-        Point locationPoint1,
-        Point locationPoint2,
-        Point locationPoint3,
-        double angleTolerance
+    // public static bool ArePointsRoughlyCollinear(
+    //     Point locationPoint1,
+    //     Point locationPoint2,
+    //     Point locationPoint3,
+    //     Angle xAxisAngleTolerance,
+    //     Angle yAxisAngleTolerance,
+    //     Angle zAxisAngleTolerance,
+    //     Angle overallAngleTolerance
+    // )
+    // {
+    //     // Convert points to vectors
+    //     var v1 = new System.Numerics.Vector3(
+    //         (float)locationPoint1.X.Meters,
+    //         (float)locationPoint1.Y.Meters,
+    //         (float)locationPoint1.Z.Meters
+    //     );
+    //     var v2 = new System.Numerics.Vector3(
+    //         (float)locationPoint2.X.Meters,
+    //         (float)locationPoint2.Y.Meters,
+    //         (float)locationPoint2.Z.Meters
+    //     );
+    //     var v3 = new System.Numerics.Vector3(
+    //         (float)locationPoint3.X.Meters,
+    //         (float)locationPoint3.Y.Meters,
+    //         (float)locationPoint3.Z.Meters
+    //     );
+
+    //     // Direction vectors
+    //     System.Numerics.Vector3 dir1 = v2 - v1;
+    //     System.Numerics.Vector3 dir2 = v3 - v2;
+
+    //     // Project onto each axis and check angle tolerances
+    //     // X axis
+    //     System.Numerics.Vector2 dir1X = new System.Numerics.Vector2(dir1.Y, dir1.Z);
+    //     System.Numerics.Vector2 dir2X = new System.Numerics.Vector2(dir2.Y, dir2.Z);
+    //     float angleX = MathF.Acos(
+    //         System.Numerics.Vector2.Dot(dir1X, dir2X) / (dir1X.Length() * dir2X.Length())
+    //     );
+    //     // Y axis
+    //     System.Numerics.Vector2 dir1Y = new System.Numerics.Vector2(dir1.X, dir1.Z);
+    //     System.Numerics.Vector2 dir2Y = new System.Numerics.Vector2(dir2.X, dir2.Z);
+    //     float angleY = MathF.Acos(
+    //         System.Numerics.Vector2.Dot(dir1Y, dir2Y) / (dir1Y.Length() * dir2Y.Length())
+    //     );
+    //     // Z axis
+    //     System.Numerics.Vector2 dir1Z = new System.Numerics.Vector2(dir1.X, dir1.Y);
+    //     System.Numerics.Vector2 dir2Z = new System.Numerics.Vector2(dir2.X, dir2.Y);
+    //     float angleZ = MathF.Acos(
+    //         System.Numerics.Vector2.Dot(dir1Z, dir2Z) / (dir1Z.Length() * dir2Z.Length())
+    //     );
+
+    //     // Compute the overall 3D angle between the two direction vectors
+    //     float overallAngle = MathF.Acos(
+    //         System.Numerics.Vector3.Dot(dir1, dir2) / (dir1.Length() * dir2.Length())
+    //     );
+
+    //     // Check if all angles are within their respective tolerances
+    //     return angleX < xAxisAngleTolerance.Radians
+    //         && angleY < yAxisAngleTolerance.Radians
+    //         && angleZ < zAxisAngleTolerance.Radians
+    //         && overallAngle < overallAngleTolerance.Radians;
+    // }
+
+
+    /// <summary>
+    /// Checks if the endpoint of a line can be extended to a given point within specified tolerances.
+    /// </summary>
+    /// <param name="line"></param>
+    /// <param name="point"></param>
+    /// <param name="xAxisLengthTolerance"></param>
+    /// <param name="yAxisLengthTolerance"></param>
+    /// <param name="zAxisLengthTolerance"></param>
+    /// <param name="overallLengthTolerance"></param>
+    /// <returns></returns>
+    public static bool CanLineEndpointBeExtendedToPointWithinTolerance(
+        Point lineStartPoint,
+        Point lineEndPoint,
+        Point point,
+        Length xAxisLengthTolerance,
+        Length yAxisLengthTolerance,
+        Length zAxisLengthTolerance,
+        Length overallLengthTolerance
     )
     {
-        // Convert points to vectors
-        System.Numerics.Vector3 vector1 = new(
-            (float)locationPoint1.X.Meters,
-            (float)locationPoint1.Y.Meters,
-            (float)locationPoint1.Z.Meters
+        System.Numerics.Vector3 start = new System.Numerics.Vector3(
+            (float)lineStartPoint.X.Meters,
+            (float)lineStartPoint.Y.Meters,
+            (float)lineStartPoint.Z.Meters
         );
-        System.Numerics.Vector3 vector2 = new(
-            (float)locationPoint2.X.Meters,
-            (float)locationPoint2.Y.Meters,
-            (float)locationPoint2.Z.Meters
+        System.Numerics.Vector3 end = new System.Numerics.Vector3(
+            (float)lineEndPoint.X.Meters,
+            (float)lineEndPoint.Y.Meters,
+            (float)lineEndPoint.Z.Meters
         );
-        System.Numerics.Vector3 vector3 = new(
-            (float)locationPoint3.X.Meters,
-            (float)locationPoint3.Y.Meters,
-            (float)locationPoint3.Z.Meters
-        );
-
-        // Calculate direction vectors
-        System.Numerics.Vector3 dir1 = vector2 - vector1;
-        System.Numerics.Vector3 dir2 = vector3 - vector2;
-
-        // Calculate the angle between the two direction vectors
-        float angle = MathF.Acos(
-            System.Numerics.Vector3.Dot(dir1, dir2) / (dir1.Length() * dir2.Length())
+        System.Numerics.Vector3 target = new System.Numerics.Vector3(
+            (float)point.X.Meters,
+            (float)point.Y.Meters,
+            (float)point.Z.Meters
         );
 
-        // Check if the angle is within the tolerance
-        return angle < angleTolerance;
+        System.Numerics.Vector3 lineDir = end - start;
+        System.Numerics.Vector3 toTarget = target - end;
+
+        // If the target is at the endpoint, it's trivially extendable
+        if (toTarget.Length() < 1e-8f)
+        {
+            return true;
+        }
+
+        // Check if the direction to the target is collinear with the line direction (within a small angle)
+        float dot = System.Numerics.Vector3.Dot(lineDir, toTarget);
+        if (dot <= 0)
+        {
+            // Only allow extension, not retraction
+            return false;
+        }
+
+        // Check per-axis tolerances
+        float dx = MathF.Abs(target.X - end.X);
+        float dy = MathF.Abs(target.Y - end.Y);
+        float dz = MathF.Abs(target.Z - end.Z);
+        if (dx > (float)xAxisLengthTolerance.Meters)
+        {
+            return false;
+        }
+        if (dy > (float)yAxisLengthTolerance.Meters)
+        {
+            return false;
+        }
+        if (dz > (float)zAxisLengthTolerance.Meters)
+        {
+            return false;
+        }
+
+        // Check overall tolerance
+        float dist = toTarget.Length();
+        if (dist > (float)overallLengthTolerance.Meters)
+        {
+            return false;
+        }
+
+        return true;
     }
 }

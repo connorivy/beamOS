@@ -12,7 +12,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)AssemblySetup.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GlobalUsings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IAssemblyMarkerStructuralIntegrationTests.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ModelRepairerTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ModelRepairerTests\EnvelopeModelRepairerTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ModelRepairerTests\ExtendElement1dToNodeRuleTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OpenSeesTests.cs" />
   </ItemGroup>
 </Project>

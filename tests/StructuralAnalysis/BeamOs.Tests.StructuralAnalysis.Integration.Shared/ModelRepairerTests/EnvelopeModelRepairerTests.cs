@@ -1,15 +1,15 @@
-using BeamOs.CodeGen.StructuralAnalysisApiClient;
+﻿using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Sdk;
 using BeamOs.Tests.Common;
 using FluentAssertions;
 
-namespace BeamOs.Tests.StructuralAnalysis.Integration;
+namespace BeamOs.Tests.StructuralAnalysis.Integration.ModelRepairerTests;
 
 // [TestType(TestType.ModelRepair)]
 [MethodDataSource(typeof(AssemblySetup), nameof(AssemblySetup.GetStructuralAnalysisApiClientV1))]
-public class ModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient)
+public class EnvelopeModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient)
 {
     [Before(HookType.Test)]
     public void BeforeClass()
@@ -18,24 +18,11 @@ public class ModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient)
         apiClient ??= AssemblySetup.StructuralAnalysisApiClient;
     }
 
-    private static ModelSettings CreateDefaultModelSettings(bool yAxisUp = true)
-    {
-        var unitSettings = new UnitSettingsContract
-        {
-            LengthUnit = LengthUnitContract.Meter,
-            ForceUnit = ForceUnitContract.Newton,
-            AngleUnit = AngleUnitContract.Radian,
-        };
-        var analysisSettings = new AnalysisSettings();
-        var modelSettings = new ModelSettings(unitSettings, analysisSettings, yAxisUp);
-        return modelSettings;
-    }
-
     [Test]
     public async Task ProposeRepairs_MergesCloseNodes_AddsNodeProposal()
     {
         Guid modelId = Guid.NewGuid();
-        var settings = CreateDefaultModelSettings();
+        var settings = ModelRepairerTestUtil.CreateDefaultModelSettings();
         var builder = new BeamOsDynamicModelBuilder(modelId.ToString(), settings, "Test", "Test");
         builder.AddNode(1, 0, 0, 0);
         builder.AddNode(2, 5, 5, 0);
@@ -65,7 +52,7 @@ public class ModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient)
     public async Task NodesVeryCloseToColumn_ShouldSnapToColumn()
     {
         Guid modelId = Guid.NewGuid();
-        var settings = CreateDefaultModelSettings(false);
+        var settings = ModelRepairerTestUtil.CreateDefaultModelSettings(false);
         var builder = new BeamOsDynamicModelBuilder(modelId.ToString(), settings, "Test", "Test");
 
         builder.AddSectionProfileFromLibrary(1, "w12x26", StructuralCode.AISC_360_16);
@@ -97,7 +84,7 @@ public class ModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient)
     public async Task NearlyConvergingNodesInXYPlane_ShouldMergeOrSnapNodes()
     {
         Guid modelId = Guid.NewGuid();
-        var settings = CreateDefaultModelSettings();
+        var settings = ModelRepairerTestUtil.CreateDefaultModelSettings();
         var builder = new BeamOsDynamicModelBuilder(modelId.ToString(), settings, "Test", "Test");
 
         builder.AddSectionProfileFromLibrary(1, "w12x26", StructuralCode.AISC_360_16);
@@ -141,7 +128,7 @@ public class ModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient)
     public async Task ColumnWithNearbyBeam_ShouldSnapBeamNodeToColumn()
     {
         Guid modelId = Guid.NewGuid();
-        var settings = CreateDefaultModelSettings(false);
+        var settings = ModelRepairerTestUtil.CreateDefaultModelSettings(false);
         var builder = new BeamOsDynamicModelBuilder(modelId.ToString(), settings, "Test", "Test");
 
         builder.AddSectionProfileFromLibrary(1, "w12x26", StructuralCode.AISC_360_16);
@@ -178,7 +165,7 @@ public class ModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient)
     public async Task BraceBetweenTwoColumns_ButSlightlyOutOfPlane_ShouldSnapIntoPlane()
     {
         Guid modelId = Guid.NewGuid();
-        var settings = CreateDefaultModelSettings(false);
+        var settings = ModelRepairerTestUtil.CreateDefaultModelSettings(false);
         var builder = new BeamOsDynamicModelBuilder(modelId.ToString(), settings, "Test", "Test");
 
         builder.AddSectionProfileFromLibrary(1, "w12x26", StructuralCode.AISC_360_16);
@@ -215,7 +202,7 @@ public class ModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient)
     public async Task BraceBetweenTwoColumns_ButSlightlyOutOfPlane_ShouldSnapIntoPlane2()
     {
         Guid modelId = Guid.NewGuid();
-        var settings = CreateDefaultModelSettings(false);
+        var settings = ModelRepairerTestUtil.CreateDefaultModelSettings(false);
         var builder = new BeamOsDynamicModelBuilder(modelId.ToString(), settings, "Test", "Test");
 
         builder.AddSectionProfileFromLibrary(1, "w12x26", StructuralCode.AISC_360_16);
@@ -247,48 +234,23 @@ public class ModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient)
         );
         await TestUtils.Asserter.VerifyModelProposal(proposal);
     }
-
-    [Test]
-    public async Task ExtendElement1dToNodeRule_ShouldMergeNodes_WhenCoplanarAndCollinear()
-    {
-        // Arrange: Element1d A is horizontal, Element1d B is diagonal and nearly collinear/coplanar with A
-        Guid modelId = Guid.NewGuid();
-        ModelSettings settings = CreateDefaultModelSettings(false);
-        BeamOsDynamicModelBuilder builder = new(
-            modelId.ToString(),
-            settings,
-            "ExtendElement1dToNodeRule",
-            "Test"
-        );
-
-        builder.AddSectionProfileFromLibrary(1, "w12x26", StructuralCode.AISC_360_16);
-        builder.AddMaterial(1, 345e6, 200e9);
-
-        // Element1d A: horizontal
-        builder.AddNode(1, 0, 0, 0);
-        builder.AddNode(2, 5, 0, 0);
-        builder.AddElement1d(1, 1, 2, 1, 1);
-
-        // Element1d B: diagonal, endpoint nearly collinear/coplanar with A's end
-        builder.AddNode(3, 4.9, 0, 0); // Should merge with node 2 after repair
-        builder.AddNode(4, 7, 2, 0);
-        builder.AddElement1d(2, 3, 4, 1, 1);
-
-        await builder.CreateOnly(apiClient);
-
-        var proposal = await apiClient.RepairModelAsync(modelId, "snap beam node to column");
-
-        await ModelRepairerTestUtil.EnsureGlobalGeometricContraints(
-            apiClient,
-            modelId,
-            proposal.Value?.Id ?? throw new InvalidOperationException("Proposal is null")
-        );
-        await TestUtils.Asserter.VerifyModelProposal(proposal);
-    }
 }
 
 public static class ModelRepairerTestUtil
 {
+    public static ModelSettings CreateDefaultModelSettings(bool yAxisUp = true)
+    {
+        var unitSettings = new UnitSettingsContract
+        {
+            LengthUnit = LengthUnitContract.Meter,
+            ForceUnit = ForceUnitContract.Newton,
+            AngleUnit = AngleUnitContract.Radian,
+        };
+        var analysisSettings = new AnalysisSettings();
+        var modelSettings = new ModelSettings(unitSettings, analysisSettings, yAxisUp);
+        return modelSettings;
+    }
+
     public static async Task EnsureGlobalGeometricContraints(
         IStructuralAnalysisApiClientV1 apiClient,
         Guid modelId,

@@ -50,11 +50,18 @@ public class RepairModelCommandHandler(
             model.Nodes,
             model.Element1ds,
             nodeOctree,
-            new ModelRepairOperationParameters
+            new()
             {
-                FavorableOperationTolerance = Length.FromFeet(2),
-                StandardOperationTolerance = Length.FromFeet(1),
-                UnfavorableOperationTolerance = Length.FromFeet(0.5),
+                VeryRelaxedTolerance = new(5, LengthUnit.Foot),
+                RelaxedTolerance = new(2.5, LengthUnit.Foot),
+                StandardTolerance = new(1, LengthUnit.Foot),
+                StrictTolerance = new(.33, LengthUnit.Foot),
+                VeryStrictTolerance = new(.1, LengthUnit.Foot),
+                VeryRelaxedAngleTolerance = new(15, AngleUnit.Degree),
+                RelaxedAngleTolerance = new(10, AngleUnit.Degree),
+                StandardAngleTolerance = new(5, AngleUnit.Degree),
+                StrictAngleTolerance = new(2, AngleUnit.Degree),
+                VeryStrictAngleTolerance = new(1, AngleUnit.Degree),
             }
         );
 

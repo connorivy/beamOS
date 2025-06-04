@@ -38,16 +38,11 @@ public sealed class ExtendElement1dsInPlaneToNodeRule : BeamOrBraceVisitingRule
         Length tolerance
     )
     {
-        bool isAxisAligned = IsAxisAligned(startNode, endNode);
-        var angleTolerance = isAxisAligned
-            ? modelProposalBuilder
-                .ModelRepairOperationParameters
-                .UnfavorableOperationAngleTolerance
-                .Radians
-            : modelProposalBuilder
-                .ModelRepairOperationParameters
-                .StandardOperationAngleTolerance
-                .Radians;
+        var axisAlignmentTolerance =
+            modelProposalBuilder.ModelRepairOperationParameters.GetAxisAlignmentTolerance(
+                startNode,
+                endNode
+            );
 
         ExtendElementToNode(
             startNode,
@@ -55,7 +50,7 @@ public sealed class ExtendElement1dsInPlaneToNodeRule : BeamOrBraceVisitingRule
             beamsAndBracesCloseToStart,
             modelProposalBuilder,
             tolerance,
-            angleTolerance
+            axisAlignmentTolerance
         );
         ExtendElementToNode(
             endNode,
@@ -63,7 +58,7 @@ public sealed class ExtendElement1dsInPlaneToNodeRule : BeamOrBraceVisitingRule
             beamsAndBracesCloseToEnd,
             modelProposalBuilder,
             tolerance,
-            angleTolerance
+            axisAlignmentTolerance
         );
     }
 
@@ -73,7 +68,7 @@ public sealed class ExtendElement1dsInPlaneToNodeRule : BeamOrBraceVisitingRule
         IEnumerable<Element1d> beamsAndBracesCloseToStart,
         ModelProposalBuilder modelProposalBuilder,
         Length tolerance,
-        double angleTolerance
+        AxisAlignmentTolerance axisAlignmentTolerance
     )
     {
         var elementsAndDistance = beamsAndBracesCloseToStart
@@ -101,33 +96,73 @@ public sealed class ExtendElement1dsInPlaneToNodeRule : BeamOrBraceVisitingRule
             }
 
             // check if the current startNode, endNode, and candidateStartNode are roughly collinear
-            if (
-                !ModelRepairRuleUtils.ArePointsRoughlyCollinear(
+            var xAxisLengthTolerance =
+                modelProposalBuilder.ModelRepairOperationParameters.GetLengthTolerance(
+                    axisAlignmentTolerance.X
+                );
+            var yAxisLengthTolerance =
+                modelProposalBuilder.ModelRepairOperationParameters.GetLengthTolerance(
+                    axisAlignmentTolerance.Y
+                );
+            var zAxisLengthTolerance =
+                modelProposalBuilder.ModelRepairOperationParameters.GetLengthTolerance(
+                    axisAlignmentTolerance.Z
+                );
+
+            bool mergeWithCandidateStartNode =
+                ModelRepairRuleUtils.CanLineEndpointBeExtendedToPointWithinTolerance(
                     startNode.LocationPoint,
                     endNode.LocationPoint,
                     candidateStartNode.LocationPoint,
-                    angleTolerance
+                    xAxisLengthTolerance,
+                    yAxisLengthTolerance,
+                    zAxisLengthTolerance,
+                    modelProposalBuilder.ModelRepairOperationParameters.VeryRelaxedTolerance
                 )
-            )
+                || ModelRepairRuleUtils.CanLineEndpointBeExtendedToPointWithinTolerance(
+                    endNode.LocationPoint,
+                    startNode.LocationPoint,
+                    candidateStartNode.LocationPoint,
+                    xAxisLengthTolerance,
+                    yAxisLengthTolerance,
+                    zAxisLengthTolerance,
+                    modelProposalBuilder.ModelRepairOperationParameters.VeryRelaxedTolerance
+                );
+            bool mergeWithCandidateEndNode =
+                ModelRepairRuleUtils.CanLineEndpointBeExtendedToPointWithinTolerance(
+                    startNode.LocationPoint,
+                    endNode.LocationPoint,
+                    candidateEndNode.LocationPoint,
+                    xAxisLengthTolerance,
+                    yAxisLengthTolerance,
+                    zAxisLengthTolerance,
+                    modelProposalBuilder.ModelRepairOperationParameters.VeryRelaxedTolerance
+                )
+                || ModelRepairRuleUtils.CanLineEndpointBeExtendedToPointWithinTolerance(
+                    endNode.LocationPoint,
+                    startNode.LocationPoint,
+                    candidateEndNode.LocationPoint,
+                    xAxisLengthTolerance,
+                    yAxisLengthTolerance,
+                    zAxisLengthTolerance,
+                    modelProposalBuilder.ModelRepairOperationParameters.VeryRelaxedTolerance
+                );
+
+            if (!mergeWithCandidateStartNode && !mergeWithCandidateEndNode)
             {
-                continue;
+                continue; // neither end is collinear, skip this candidate
             }
 
-            modelProposalBuilder.MergeNodes(startNode, candidateStartNode);
+            if (mergeWithCandidateStartNode)
+            {
+                modelProposalBuilder.MergeNodes(startNode, candidateStartNode);
+            }
+            if (mergeWithCandidateEndNode)
+            {
+                modelProposalBuilder.MergeNodes(startNode, candidateEndNode);
+            }
             break;
         }
-    }
-
-    // Returns true if the element is axis-aligned (X, Y, or Z constant)
-    private static bool IsAxisAligned(Node startNode, Node endNode)
-    {
-        double x0 = startNode.LocationPoint.X.Meters;
-        double y0 = startNode.LocationPoint.Y.Meters;
-        double z0 = startNode.LocationPoint.Z.Meters;
-        double x1 = endNode.LocationPoint.X.Meters;
-        double y1 = endNode.LocationPoint.Y.Meters;
-        double z1 = endNode.LocationPoint.Z.Meters;
-        return x0 == x1 || y0 == y1 || z0 == z1;
     }
 
     private static Length ShortestDistanceTo(
