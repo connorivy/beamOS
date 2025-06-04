@@ -13,8 +13,9 @@ public class ModelRepairer
     [
         new AlignBeamsIntoPlaneOfColumns(),
         new ExtendElement1dsInPlaneToNodeRule(),
+        new ExtendCoplanarElement1dsToJoinNodes(),
         new ExtendColumnToMeetBeamRule(),
-        // new Element1dExtendOrShortenRule(),
+        new Element1dExtendOrShortenRule(),
         new NodeMergeRule(),
         new NodeSnapToElement1dRule(),
     ];
@@ -49,42 +50,14 @@ public class ModelRepairer
 
         for (int i = 0; i < 3; i++)
         {
-            foreach (
-                IModelRepairRule rule in rules.Where(r =>
-                    r.RuleType == ModelRepairRuleType.Favorable
-                )
-            )
+            foreach (var rule in rules)
             {
                 rule.Apply(
                     modelProposal,
-                    this.modelRepairOperationParameters.RelaxedTolerance * (i + 1) / 3.0
-                );
-            }
-            foreach (
-                IModelRepairRule rule in rules.Where(r =>
-                    r.RuleType == ModelRepairRuleType.Standard
-                )
-            )
-            {
-                rule.Apply(
-                    modelProposal,
-                    this.modelRepairOperationParameters.StandardTolerance * (i + 1) / 3.0
-                );
-            }
-            foreach (
-                IModelRepairRule rule in rules.Where(r =>
-                    r.RuleType == ModelRepairRuleType.Unfavorable
-                )
-            )
-            {
-                rule.Apply(
-                    modelProposal,
-                    this.modelRepairOperationParameters.StrictTolerance * (i + 1) / 3.0
+                    this.modelRepairOperationParameters.GetToleranceForRule(rule) * (i + 1) / 3.0
                 );
             }
         }
-        // NodeMergeRule nodeMergeRule = new();
-        // nodeMergeRule.Apply(modelProposal, this.tolerance);
         return modelProposal.Build();
     }
 }

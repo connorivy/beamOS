@@ -28,12 +28,15 @@ public class Point : BeamOSValueObject
     public static Point operator -(Point lhs, Point rhs) =>
         new(lhs.X - rhs.X, lhs.Y - rhs.Y, rhs.Z - rhs.Z);
 
-    public double CalculateDistance(Length x1, Length y1, Length z1)
+    public Length CalculateDistance(Length x1, Length y1, Length z1)
     {
-        return Math.Sqrt(
-            Math.Pow(this.X.Meters - x1.Meters, 2)
-                + Math.Pow(this.Y.Meters - y1.Meters, 2)
-                + Math.Pow(this.Z.Meters - z1.Meters, 2)
+        return new(
+            Math.Sqrt(
+                Math.Pow(this.X.Meters - x1.Meters, 2)
+                    + Math.Pow(this.Y.Meters - y1.Meters, 2)
+                    + Math.Pow(this.Z.Meters - z1.Meters, 2)
+            ),
+            LengthUnit.Meter
         );
     }
 
@@ -56,12 +59,10 @@ public class Point : BeamOSValueObject
         return new Length(numerator / denominator, LengthUnit.Meter);
     }
 
-    public static implicit operator Vector3(Point point)
-    {
-        return new Vector3((float)point.X.Meters, (float)point.Y.Meters, (float)point.Z.Meters);
-    }
+    public Vector3 ToVector3InMeters() =>
+        new((float)this.X.Meters, (float)this.Y.Meters, (float)this.Z.Meters);
 
-    public static implicit operator Point(Vector3 vector)
+    public static Point FromVector3InMeters(Vector3 vector)
     {
         return new Point(
             new Length(vector.X, LengthUnit.Meter),

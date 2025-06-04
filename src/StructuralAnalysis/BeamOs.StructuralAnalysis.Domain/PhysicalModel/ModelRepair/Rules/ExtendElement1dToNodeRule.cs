@@ -85,10 +85,10 @@ public sealed class ExtendElement1dsInPlaneToNodeRule : BeamOrBraceVisitingRule
             // Check if the candidate element is coplanar with the current element1D
             if (
                 !ModelRepairRuleUtils.ArePointsRoughlyCoplanar(
-                    startNode.LocationPoint,
-                    endNode.LocationPoint,
-                    candidateStartNode.LocationPoint,
-                    candidateEndNode.LocationPoint
+                    startNode.LocationPoint.ToVector3InMeters(),
+                    endNode.LocationPoint.ToVector3InMeters(),
+                    candidateStartNode.LocationPoint.ToVector3InMeters(),
+                    candidateEndNode.LocationPoint.ToVector3InMeters()
                 )
             )
             {

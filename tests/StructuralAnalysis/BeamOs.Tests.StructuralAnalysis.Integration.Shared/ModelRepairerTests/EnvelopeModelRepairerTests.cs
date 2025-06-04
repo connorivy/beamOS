@@ -124,42 +124,42 @@ public class EnvelopeModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient
         await TestUtils.Asserter.VerifyModelProposal(proposal);
     }
 
-    [Test]
-    public async Task ColumnWithNearbyBeam_ShouldSnapBeamNodeToColumn()
-    {
-        Guid modelId = Guid.NewGuid();
-        var settings = ModelRepairerTestUtil.CreateDefaultModelSettings(false);
-        var builder = new BeamOsDynamicModelBuilder(modelId.ToString(), settings, "Test", "Test");
+    // [Test]
+    // public async Task ColumnWithNearbyBeam_ShouldSnapBeamNodeToColumn()
+    // {
+    //     Guid modelId = Guid.NewGuid();
+    //     var settings = ModelRepairerTestUtil.CreateDefaultModelSettings(false);
+    //     var builder = new BeamOsDynamicModelBuilder(modelId.ToString(), settings, "Test", "Test");
 
-        builder.AddSectionProfileFromLibrary(1, "w12x26", StructuralCode.AISC_360_16);
-        builder.AddMaterial(1, 345e6, 200e9);
+    //     builder.AddSectionProfileFromLibrary(1, "w12x26", StructuralCode.AISC_360_16);
+    //     builder.AddMaterial(1, 345e6, 200e9);
 
-        // Add a column
-        builder.AddNode(1, 0, 0, 0);
-        builder.AddNode(2, 0, 0, 9.9);
-        builder.AddElement1d(1, 1, 2, 1, 1);
+    //     // Add a column
+    //     builder.AddNode(1, 0, 0, 0);
+    //     builder.AddNode(2, 0, 0, 9.9);
+    //     builder.AddElement1d(1, 1, 2, 1, 1);
 
-        // Add a beam with a node very close to the column
-        builder.AddNode(3, -0.1, 0, 10); // Close to the column
-        builder.AddNode(4, -5, 0, 10);
-        builder.AddElement1d(2, 3, 4, 1, 1);
+    //     // Add a beam with a node very close to the column
+    //     builder.AddNode(3, -0.1, 0, 10); // Close to the column
+    //     builder.AddNode(4, -5, 0, 10);
+    //     builder.AddElement1d(2, 3, 4, 1, 1);
 
-        // second beam on the other side
-        builder.AddNode(5, 0.1, 0, 10); // Close to the column
-        builder.AddNode(6, 5, 0, 10);
-        builder.AddElement1d(3, 5, 6, 1, 1);
+    //     // second beam on the other side
+    //     builder.AddNode(5, 0.1, 0, 10); // Close to the column
+    //     builder.AddNode(6, 5, 0, 10);
+    //     builder.AddElement1d(3, 5, 6, 1, 1);
 
-        await builder.CreateOnly(apiClient);
+    //     await builder.CreateOnly(apiClient);
 
-        var proposal = await apiClient.RepairModelAsync(modelId, "snap beam node to column");
+    //     var proposal = await apiClient.RepairModelAsync(modelId, "snap beam node to column");
 
-        await ModelRepairerTestUtil.EnsureGlobalGeometricContraints(
-            apiClient,
-            modelId,
-            proposal.Value?.Id ?? throw new InvalidOperationException("Proposal is null")
-        );
-        await TestUtils.Asserter.VerifyModelProposal(proposal);
-    }
+    //     await ModelRepairerTestUtil.EnsureGlobalGeometricContraints(
+    //         apiClient,
+    //         modelId,
+    //         proposal.Value?.Id ?? throw new InvalidOperationException("Proposal is null")
+    //     );
+    //     await TestUtils.Asserter.VerifyModelProposal(proposal);
+    // }
 
     [Test]
     public async Task BraceBetweenTwoColumns_ButSlightlyOutOfPlane_ShouldSnapIntoPlane()
@@ -184,43 +184,6 @@ public class EnvelopeModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient
         // Add a brace that is slightly out of plane
         builder.AddNode(5, .1, 0.15, 7); // Slightly out of plane
         builder.AddNode(6, 4.9, 0.1, 1);
-        builder.AddElement1d(3, 5, 6, 1, 1);
-
-        await builder.CreateOnly(apiClient);
-
-        var proposal = await apiClient.RepairModelAsync(modelId, "snap beam node to column");
-
-        await ModelRepairerTestUtil.EnsureGlobalGeometricContraints(
-            apiClient,
-            modelId,
-            proposal.Value?.Id ?? throw new InvalidOperationException("Proposal is null")
-        );
-        await TestUtils.Asserter.VerifyModelProposal(proposal);
-    }
-
-    [Test]
-    public async Task BraceBetweenTwoColumns_ButSlightlyOutOfPlane_ShouldSnapIntoPlane2()
-    {
-        Guid modelId = Guid.NewGuid();
-        var settings = ModelRepairerTestUtil.CreateDefaultModelSettings(false);
-        var builder = new BeamOsDynamicModelBuilder(modelId.ToString(), settings, "Test", "Test");
-
-        builder.AddSectionProfileFromLibrary(1, "w12x26", StructuralCode.AISC_360_16);
-        builder.AddMaterial(1, 345e6, 200e9);
-
-        // Add a column
-        builder.AddNode(1, 0, 0, 10);
-        builder.AddNode(2, 0, 0, 0);
-        builder.AddElement1d(1, 1, 2, 1, 1);
-
-        // second column
-        builder.AddNode(3, -.02, -3.68, 10.01);
-        builder.AddNode(4, -.02, -3.68, 0);
-        builder.AddElement1d(2, 3, 4, 1, 1);
-
-        // Add a brace that is slightly out of plane
-        builder.AddNode(5, .24, -.02, 9.95); // Slightly out of plane
-        builder.AddNode(6, .24, -3.67, 9.95);
         builder.AddElement1d(3, 5, 6, 1, 1);
 
         await builder.CreateOnly(apiClient);

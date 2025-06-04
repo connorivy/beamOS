@@ -9,7 +9,7 @@
     },
     CreateNodeProposals: [
       {
-        Id: 1,
+        Id: {Scrubbed},
         LocationPoint: {
           X: 2.0,
           Y: 2.0,
@@ -97,7 +97,8 @@
     ResultSetProposals: null,
     LoadCaseProposals: null,
     LoadCombinationProposals: null,
-    ProposalIssues: null
+    ProposalIssues: null,
+    DeleteModelEntityProposals: null
   },
   Error: null,
   IsError: false,

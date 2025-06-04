@@ -350,7 +350,7 @@ public class EndToEndTests
                     ProposedID.Proposed(1),
                     ProposedID.Existing(992),
                     ProposedID.Existing(1636),
-                    id: 1
+                    id: 2
                 ),
             ],
             ModifyElement1dProposals =

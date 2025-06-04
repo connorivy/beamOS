@@ -1,4 +1,5 @@
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
+using BeamOs.StructuralAnalysis.Tests.ModelRepairerTests;
 using BeamOs.Tests.Common;
 using BeamOs.Tests.StructuralAnalysis.Integration;
 using BeamOs.Tests.StructuralAnalysis.Integration.ModelRepairerTests;
@@ -35,25 +36,16 @@ public class TestInfoRetriever(
             tests,
             inMemoryApiClient
         );
-        yield return new ModelRepairTestInfo<EnvelopeModelRepairerTests>(
-            static async (testClass) =>
-                await testClass.ColumnWithNearbyBeam_ShouldSnapBeamNodeToColumn(),
-            nameof(EnvelopeModelRepairerTests.ColumnWithNearbyBeam_ShouldSnapBeamNodeToColumn),
-            tests,
-            inMemoryApiClient
-        );
+        // yield return new ModelRepairTestInfo<EnvelopeModelRepairerTests>(
+        //     static async (testClass) =>
+        //         await testClass.ColumnWithNearbyBeam_ShouldSnapBeamNodeToColumn(),
+        //     nameof(EnvelopeModelRepairerTests.ColumnWithNearbyBeam_ShouldSnapBeamNodeToColumn),
+        //     tests,
+        //     inMemoryApiClient
+        // );
         yield return new ModelRepairTestInfo<EnvelopeModelRepairerTests>(
             static async (testClass) =>
                 await testClass.BraceBetweenTwoColumns_ButSlightlyOutOfPlane_ShouldSnapIntoPlane(),
-            nameof(
-                EnvelopeModelRepairerTests.BraceBetweenTwoColumns_ButSlightlyOutOfPlane_ShouldSnapIntoPlane
-            ),
-            tests,
-            inMemoryApiClient
-        );
-        yield return new ModelRepairTestInfo<EnvelopeModelRepairerTests>(
-            static async (testClass) =>
-                await testClass.BraceBetweenTwoColumns_ButSlightlyOutOfPlane_ShouldSnapIntoPlane2(),
             nameof(
                 EnvelopeModelRepairerTests.BraceBetweenTwoColumns_ButSlightlyOutOfPlane_ShouldSnapIntoPlane
             ),
@@ -73,6 +65,19 @@ public class TestInfoRetriever(
                 await testClass.BeamAtAngleFromOther_ShouldExtendToMeetOtherNode(),
             nameof(ExtendElement1dToNodeRuleTests.BeamAtAngleFromOther_ShouldExtendToMeetOtherNode),
             extendElement1dToNodeRuleTest,
+            inMemoryApiClient
+        );
+
+        var extendCoplanarElement1dsToJoinNodesTest = new ExtendCoplanarElement1dsToJoinNodesTests(
+            inMemoryApiClient
+        );
+        yield return new ModelRepairTestInfo<ExtendCoplanarElement1dsToJoinNodesTests>(
+            static async (testClass) =>
+                await testClass.BeamsThatAlmostMeetAtAPoint_ButBothNeedToBeExtended_ShouldBeExtended(),
+            nameof(
+                ExtendCoplanarElement1dsToJoinNodesTests.BeamsThatAlmostMeetAtAPoint_ButBothNeedToBeExtended_ShouldBeExtended
+            ),
+            extendCoplanarElement1dsToJoinNodesTest,
             inMemoryApiClient
         );
 

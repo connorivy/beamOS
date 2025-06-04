@@ -290,6 +290,19 @@ public record ModelRepairOperationParameters
             this.GetAxisAlignmentToleranceLevel(startNode.LocationPoint.Z - endNode.LocationPoint.Z)
         );
     }
+
+    internal Length GetToleranceForRule(IModelRepairRule rule) =>
+        rule.RuleType switch
+        {
+            ModelRepairRuleType.Favorable => this.RelaxedTolerance,
+            ModelRepairRuleType.Standard => this.StandardTolerance,
+            ModelRepairRuleType.Unfavorable => this.StrictTolerance,
+            ModelRepairRuleType.Undefined or _ => throw new ArgumentOutOfRangeException(
+                nameof(rule),
+                rule,
+                null
+            ),
+        };
 }
 
 public readonly record struct AxisAlignmentTolerance(

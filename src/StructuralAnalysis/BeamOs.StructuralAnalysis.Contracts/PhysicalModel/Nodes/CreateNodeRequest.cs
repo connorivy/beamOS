@@ -86,7 +86,7 @@ public record PutNodeRequest : NodeData, IHasIntId, IBeamOsEntityRequest
 //     public required int Id { get; init; }
 // }
 
-public record CreateNodeProposalResponse : NodeData
+public record CreateNodeProposalResponse : NodeData, IHasIntId
 {
     public required int Id { get; init; }
 }

@@ -1,3 +1,4 @@
+using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
@@ -81,10 +82,10 @@ public sealed class ExtendCoplanarElement1dsToJoinNodes : BeamOrBraceVisitingRul
             // Check if the candidate element is coplanar with the current element1D
             if (
                 !ModelRepairRuleUtils.ArePointsRoughlyCoplanar(
-                    startNode.LocationPoint,
-                    endNode.LocationPoint,
-                    candidateStartNode.LocationPoint,
-                    candidateEndNode.LocationPoint
+                    startNode.LocationPoint.ToVector3InMeters(),
+                    endNode.LocationPoint.ToVector3InMeters(),
+                    candidateStartNode.LocationPoint.ToVector3InMeters(),
+                    candidateEndNode.LocationPoint.ToVector3InMeters()
                 )
             )
             {
@@ -93,6 +94,99 @@ public sealed class ExtendCoplanarElement1dsToJoinNodes : BeamOrBraceVisitingRul
 
             // check if the current element and the candidate element can be extended to meet
             // each other within the specified tolerances
+            var xAxisLengthTolerance =
+                modelProposalBuilder.ModelRepairOperationParameters.GetLengthTolerance(
+                    axisAlignmentTolerance.X
+                );
+            var yAxisLengthTolerance =
+                modelProposalBuilder.ModelRepairOperationParameters.GetLengthTolerance(
+                    axisAlignmentTolerance.Y
+                );
+            var zAxisLengthTolerance =
+                modelProposalBuilder.ModelRepairOperationParameters.GetLengthTolerance(
+                    axisAlignmentTolerance.Z
+                );
+
+            if (
+                ModelRepairRuleUtils.TryFindApproximateIntersection(
+                    startNode.LocationPoint,
+                    endNode.LocationPoint,
+                    candidateStartNode.LocationPoint,
+                    candidateEndNode.LocationPoint,
+                    out var intersection
+                )
+            )
+            {
+                var intersectionPoint = new Point(
+                    new(intersection.X, LengthUnit.Meter),
+                    new(intersection.Y, LengthUnit.Meter),
+                    new(intersection.Z, LengthUnit.Meter)
+                );
+                var startNodeDist = startNode.LocationPoint.CalculateDistance(
+                    intersectionPoint.X,
+                    intersectionPoint.Y,
+                    intersectionPoint.Z
+                );
+                var endNodeDist = endNode.LocationPoint.CalculateDistance(
+                    intersectionPoint.X,
+                    intersectionPoint.Y,
+                    intersectionPoint.Z
+                );
+                var candidateStartNodeDist = candidateStartNode.LocationPoint.CalculateDistance(
+                    intersectionPoint.X,
+                    intersectionPoint.Y,
+                    intersectionPoint.Z
+                );
+                var candidateEndNodeDist = candidateEndNode.LocationPoint.CalculateDistance(
+                    intersectionPoint.X,
+                    intersectionPoint.Y,
+                    intersectionPoint.Z
+                );
+
+                var originalNodeToKeep = startNodeDist < endNodeDist ? startNode : endNode;
+                var candidateNodeToKeep =
+                    candidateStartNodeDist < candidateEndNodeDist
+                        ? candidateStartNode
+                        : candidateEndNode;
+
+                var candidateAxisAlignmentTolerance =
+                    modelProposalBuilder.ModelRepairOperationParameters.GetAxisAlignmentTolerance(
+                        candidateStartNode,
+                        candidateEndNode
+                    );
+
+                if (
+                    ModelRepairRuleUtils.PointWithinTolerances(
+                        originalNodeToKeep.LocationPoint,
+                        intersection,
+                        xAxisLengthTolerance,
+                        yAxisLengthTolerance,
+                        zAxisLengthTolerance,
+                        modelProposalBuilder.ModelRepairOperationParameters.VeryRelaxedTolerance
+                    )
+                    && ModelRepairRuleUtils.PointWithinTolerances(
+                        candidateNodeToKeep.LocationPoint,
+                        intersection,
+                        modelProposalBuilder.ModelRepairOperationParameters.GetLengthTolerance(
+                            candidateAxisAlignmentTolerance.X
+                        ),
+                        modelProposalBuilder.ModelRepairOperationParameters.GetLengthTolerance(
+                            candidateAxisAlignmentTolerance.Y
+                        ),
+                        modelProposalBuilder.ModelRepairOperationParameters.GetLengthTolerance(
+                            candidateAxisAlignmentTolerance.Z
+                        ),
+                        modelProposalBuilder.ModelRepairOperationParameters.VeryRelaxedTolerance
+                    )
+                )
+                {
+                    modelProposalBuilder.AddNodeProposal(
+                        new(originalNodeToKeep, modelProposalBuilder.Id, intersectionPoint)
+                    );
+                    modelProposalBuilder.MergeNodes(candidateNodeToKeep, originalNodeToKeep);
+                }
+                break;
+            }
         }
     }
 

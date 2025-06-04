@@ -1,3 +1,4 @@
+using System.Numerics;
 using BeamOs.StructuralAnalysis.Domain.Common;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
@@ -14,18 +15,18 @@ public static class ModelRepairRuleUtils
     /// <param name="tolerance"></param>
     /// <returns></returns>
     public static bool ArePointsRoughlyCoplanar(
-        System.Numerics.Vector3 startA,
-        System.Numerics.Vector3 endA,
-        System.Numerics.Vector3 startB,
-        System.Numerics.Vector3 endB
+        Vector3 startA,
+        Vector3 endA,
+        Vector3 startB,
+        Vector3 endB
     )
     {
         // Compute direction vectors for each segment
-        System.Numerics.Vector3 dirA = endA - startA;
-        // System.Numerics.Vector3 dirB = endB - startB;
+        Vector3 dirA = endA - startA;
+        // Vector3 dirB = endB - startB;
 
         // Compute the normal vector to the plane defined by segment A
-        System.Numerics.Vector3 normalA = System.Numerics.Vector3.Cross(dirA, startB - startA);
+        Vector3 normalA = Vector3.Cross(dirA, startB - startA);
         // If the normal is close to zero, the points are colinear, treat as coplanar
         if (normalA.Length() < 1e-6f)
         {
@@ -33,8 +34,8 @@ public static class ModelRepairRuleUtils
         }
 
         // Compute the distance from endB to the plane defined by segment A
-        System.Numerics.Vector3 toEndB = endB - startA;
-        float dist = MathF.Abs(System.Numerics.Vector3.Dot(normalA, toEndB)) / normalA.Length();
+        Vector3 toEndB = endB - startA;
+        float dist = MathF.Abs(Vector3.Dot(normalA, toEndB)) / normalA.Length();
 
         // Use a reasonable tolerance for coplanarity (e.g., 1e-4)
         const float tolerance = 1e-4f;
@@ -50,42 +51,42 @@ public static class ModelRepairRuleUtils
         out double t
     )
     {
-        System.Numerics.Vector3 startA = new(
+        Vector3 startA = new(
             (float)startPointA.X.Meters,
             (float)startPointA.Y.Meters,
             (float)startPointA.Z.Meters
         );
-        System.Numerics.Vector3 endA = new(
+        Vector3 endA = new(
             (float)endPointA.X.Meters,
             (float)startPointA.Y.Meters,
             (float)startPointA.Z.Meters
         );
-        System.Numerics.Vector3 planeA = new(
+        Vector3 planeA = new(
             (float)planePointA.X.Meters,
             (float)startPointA.Y.Meters,
             (float)startPointA.Z.Meters
         );
-        System.Numerics.Vector3 planeB = new(
+        Vector3 planeB = new(
             (float)planePointB.X.Meters,
             (float)startPointA.Y.Meters,
             (float)startPointA.Z.Meters
         );
-        System.Numerics.Vector3 planeC = new(
+        Vector3 planeC = new(
             (float)planePointC.X.Meters,
             (float)startPointA.Y.Meters,
             (float)startPointA.Z.Meters
         );
 
         // Compute the plane normal
-        System.Numerics.Vector3 v1 = planeB - planeA;
-        System.Numerics.Vector3 v2 = planeC - planeA;
-        System.Numerics.Vector3 normal = System.Numerics.Vector3.Cross(v1, v2);
+        Vector3 v1 = planeB - planeA;
+        Vector3 v2 = planeC - planeA;
+        Vector3 normal = Vector3.Cross(v1, v2);
 
         // Line direction
-        System.Numerics.Vector3 dir = endA - startA;
+        Vector3 dir = endA - startA;
 
         // Compute denominator (dot product of normal and line direction)
-        float denom = System.Numerics.Vector3.Dot(normal, dir);
+        float denom = Vector3.Dot(normal, dir);
         if (MathF.Abs(denom) < 1e-8f)
         {
             // Line is parallel to the plane
@@ -94,11 +95,11 @@ public static class ModelRepairRuleUtils
         }
 
         // Compute t for the intersection point
-        float num = System.Numerics.Vector3.Dot(normal, planeA - startA);
+        float num = Vector3.Dot(normal, planeA - startA);
         t = num / denom;
 
         // Intersection point
-        System.Numerics.Vector3 intersection = startA + (dir * (float)t);
+        Vector3 intersection = startA + (dir * (float)t);
 
         // Use meters as the default LengthUnit for the result
         return new Point(intersection.X, intersection.Y, intersection.Z, LengthUnit.Meter);
@@ -115,49 +116,49 @@ public static class ModelRepairRuleUtils
     // )
     // {
     //     // Convert points to vectors
-    //     var v1 = new System.Numerics.Vector3(
+    //     var v1 = new Vector3(
     //         (float)locationPoint1.X.Meters,
     //         (float)locationPoint1.Y.Meters,
     //         (float)locationPoint1.Z.Meters
     //     );
-    //     var v2 = new System.Numerics.Vector3(
+    //     var v2 = new Vector3(
     //         (float)locationPoint2.X.Meters,
     //         (float)locationPoint2.Y.Meters,
     //         (float)locationPoint2.Z.Meters
     //     );
-    //     var v3 = new System.Numerics.Vector3(
+    //     var v3 = new Vector3(
     //         (float)locationPoint3.X.Meters,
     //         (float)locationPoint3.Y.Meters,
     //         (float)locationPoint3.Z.Meters
     //     );
 
     //     // Direction vectors
-    //     System.Numerics.Vector3 dir1 = v2 - v1;
-    //     System.Numerics.Vector3 dir2 = v3 - v2;
+    //     Vector3 dir1 = v2 - v1;
+    //     Vector3 dir2 = v3 - v2;
 
     //     // Project onto each axis and check angle tolerances
     //     // X axis
-    //     System.Numerics.Vector2 dir1X = new System.Numerics.Vector2(dir1.Y, dir1.Z);
-    //     System.Numerics.Vector2 dir2X = new System.Numerics.Vector2(dir2.Y, dir2.Z);
+    //     Vector2 dir1X = new Vector2(dir1.Y, dir1.Z);
+    //     Vector2 dir2X = new Vector2(dir2.Y, dir2.Z);
     //     float angleX = MathF.Acos(
-    //         System.Numerics.Vector2.Dot(dir1X, dir2X) / (dir1X.Length() * dir2X.Length())
+    //         Vector2.Dot(dir1X, dir2X) / (dir1X.Length() * dir2X.Length())
     //     );
     //     // Y axis
-    //     System.Numerics.Vector2 dir1Y = new System.Numerics.Vector2(dir1.X, dir1.Z);
-    //     System.Numerics.Vector2 dir2Y = new System.Numerics.Vector2(dir2.X, dir2.Z);
+    //     Vector2 dir1Y = new Vector2(dir1.X, dir1.Z);
+    //     Vector2 dir2Y = new Vector2(dir2.X, dir2.Z);
     //     float angleY = MathF.Acos(
-    //         System.Numerics.Vector2.Dot(dir1Y, dir2Y) / (dir1Y.Length() * dir2Y.Length())
+    //         Vector2.Dot(dir1Y, dir2Y) / (dir1Y.Length() * dir2Y.Length())
     //     );
     //     // Z axis
-    //     System.Numerics.Vector2 dir1Z = new System.Numerics.Vector2(dir1.X, dir1.Y);
-    //     System.Numerics.Vector2 dir2Z = new System.Numerics.Vector2(dir2.X, dir2.Y);
+    //     Vector2 dir1Z = new Vector2(dir1.X, dir1.Y);
+    //     Vector2 dir2Z = new Vector2(dir2.X, dir2.Y);
     //     float angleZ = MathF.Acos(
-    //         System.Numerics.Vector2.Dot(dir1Z, dir2Z) / (dir1Z.Length() * dir2Z.Length())
+    //         Vector2.Dot(dir1Z, dir2Z) / (dir1Z.Length() * dir2Z.Length())
     //     );
 
     //     // Compute the overall 3D angle between the two direction vectors
     //     float overallAngle = MathF.Acos(
-    //         System.Numerics.Vector3.Dot(dir1, dir2) / (dir1.Length() * dir2.Length())
+    //         Vector3.Dot(dir1, dir2) / (dir1.Length() * dir2.Length())
     //     );
 
     //     // Check if all angles are within their respective tolerances
@@ -188,24 +189,24 @@ public static class ModelRepairRuleUtils
         Length overallLengthTolerance
     )
     {
-        System.Numerics.Vector3 start = new System.Numerics.Vector3(
+        Vector3 start = new Vector3(
             (float)lineStartPoint.X.Meters,
             (float)lineStartPoint.Y.Meters,
             (float)lineStartPoint.Z.Meters
         );
-        System.Numerics.Vector3 end = new System.Numerics.Vector3(
+        Vector3 end = new Vector3(
             (float)lineEndPoint.X.Meters,
             (float)lineEndPoint.Y.Meters,
             (float)lineEndPoint.Z.Meters
         );
-        System.Numerics.Vector3 target = new System.Numerics.Vector3(
+        Vector3 target = new Vector3(
             (float)point.X.Meters,
             (float)point.Y.Meters,
             (float)point.Z.Meters
         );
 
-        System.Numerics.Vector3 lineDir = end - start;
-        System.Numerics.Vector3 toTarget = target - end;
+        Vector3 lineDir = end - start;
+        Vector3 toTarget = target - end;
 
         // If the target is at the endpoint, it's trivially extendable
         if (toTarget.Length() < 1e-8f)
@@ -214,7 +215,7 @@ public static class ModelRepairRuleUtils
         }
 
         // Check if the direction to the target is collinear with the line direction (within a small angle)
-        float dot = System.Numerics.Vector3.Dot(lineDir, toTarget);
+        float dot = Vector3.Dot(lineDir, toTarget);
         if (dot <= 0)
         {
             // Only allow extension, not retraction
@@ -245,6 +246,95 @@ public static class ModelRepairRuleUtils
             return false;
         }
 
+        return true;
+    }
+
+    public static bool TryFindApproximateIntersection(
+        Point start1,
+        Point end1,
+        Point start2,
+        Point end2,
+        out Vector3 intersection
+    )
+    {
+        Vector3 a1 = new Vector3(
+            (float)start1.X.Meters,
+            (float)start1.Y.Meters,
+            (float)start1.Z.Meters
+        );
+        Vector3 a2 = new Vector3((float)end1.X.Meters, (float)end1.Y.Meters, (float)end1.Z.Meters);
+        Vector3 b1 = new Vector3(
+            (float)start2.X.Meters,
+            (float)start2.Y.Meters,
+            (float)start2.Z.Meters
+        );
+        Vector3 b2 = new Vector3((float)end2.X.Meters, (float)end2.Y.Meters, (float)end2.Z.Meters);
+
+        Vector3 d1 = a2 - a1;
+        Vector3 d2 = b2 - b1;
+        Vector3 r = a1 - b1;
+
+        var a = Vector3.Dot(d1, d1);
+        var b = Vector3.Dot(d1, d2);
+        var c = Vector3.Dot(d2, d2);
+        var d = Vector3.Dot(d1, r);
+        var e = Vector3.Dot(d2, r);
+
+        float denom = a * c - b * b;
+        float s,
+            t;
+
+        if (Math.Abs(denom) < 1e-6f)
+        {
+            intersection = Vector3.Zero;
+            return false; // Lines are parallel or nearly parallel
+        }
+        else
+        {
+            s = (b * e - c * d) / denom;
+            t = (a * e - b * d) / denom;
+        }
+
+        Vector3 closestPointLine1 = a1 + s * d1;
+        Vector3 closestPointLine2 = b1 + t * d2;
+        intersection = (closestPointLine1 + closestPointLine2) / 2;
+
+        return true;
+    }
+
+    public static bool PointWithinTolerances(
+        Point point,
+        Vector3 target,
+        Length xAxisLengthTolerance,
+        Length yAxisLengthTolerance,
+        Length zAxisLengthTolerance,
+        Length overallLengthTolerance
+    )
+    {
+        var pointVector = point.ToVector3InMeters();
+        // Check per-axis tolerances
+        float dx = MathF.Abs(target.X - pointVector.X);
+        float dy = MathF.Abs(target.Y - pointVector.Y);
+        float dz = MathF.Abs(target.Z - pointVector.Z);
+        if (dx > (float)xAxisLengthTolerance.Meters)
+        {
+            return false;
+        }
+        if (dy > (float)yAxisLengthTolerance.Meters)
+        {
+            return false;
+        }
+        if (dz > (float)zAxisLengthTolerance.Meters)
+        {
+            return false;
+        }
+
+        // Check overall tolerance
+        float dist = (target - pointVector).Length();
+        if (dist > (float)overallLengthTolerance.Meters)
+        {
+            return false;
+        }
         return true;
     }
 }

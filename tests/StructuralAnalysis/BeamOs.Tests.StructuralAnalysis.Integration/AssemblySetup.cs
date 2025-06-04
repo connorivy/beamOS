@@ -1,6 +1,7 @@
 using System.Runtime.CompilerServices;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Tests.Common;
+using DiffEngine;
 using Testcontainers.PostgreSql;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration;
@@ -26,7 +27,9 @@ public static partial class AssemblySetup
 
         TestUtils.Asserter = new VerifyAsserter();
 
-        var webAppFactory = new WebAppFactory(DbContainer.GetConnectionString());
+        var webAppFactory = new WebAppFactory(
+            $"{DbContainer.GetConnectionString()};Include Error Detail=True"
+        );
 
         StructuralAnalysisApiClient = new StructuralAnalysisApiClientV1(
             webAppFactory.CreateClient()
@@ -43,8 +46,17 @@ public static partial class AssemblySetup
     }
 
     [ModuleInitializer]
-    public static void Init() =>
+    public static void Init()
+    {
         VerifierSettings.AddExtraSettings(settings =>
             settings.DefaultValueHandling = Argon.DefaultValueHandling.Include
         );
+
+        DiffTools.UseOrder(
+            DiffTool.VisualStudioCode,
+            DiffTool.Neovim,
+            DiffTool.VisualStudio,
+            DiffTool.Rider
+        );
+    }
 }

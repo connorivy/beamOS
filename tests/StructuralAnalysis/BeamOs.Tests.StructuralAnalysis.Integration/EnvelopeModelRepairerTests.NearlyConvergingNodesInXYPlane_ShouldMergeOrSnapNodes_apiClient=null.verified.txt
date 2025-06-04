@@ -1,0 +1,166 @@
+﻿{
+  Value: {
+    Id: {Scrubbed},
+    LastModified: DateTimeOffset_1,
+    ModelProposal: {
+      Id: {Scrubbed},
+      LastModified: DateTimeOffset_1,
+      Description: Proposed repairs for model connectivity
+    },
+    CreateNodeProposals: null,
+    ModifyNodeProposals: null,
+    CreateElement1dProposals: null,
+    ModifyElement1dProposals: [
+      {
+        Id: {Scrubbed},
+        ExistingElement1dId: 1,
+        StartNodeId: {
+          ExistingId: 1,
+          ProposedId: null,
+          IsDefault: false
+        },
+        EndNodeId: {
+          ExistingId: 6,
+          ProposedId: null,
+          IsDefault: false
+        },
+        MaterialId: {
+          ExistingId: 1,
+          ProposedId: null,
+          IsDefault: false
+        },
+        SectionProfileId: {
+          ExistingId: 1,
+          ProposedId: null,
+          IsDefault: false
+        },
+        SectionProfileRotation: {
+          Value: 0.0,
+          Unit: Degree
+        },
+        Metadata: null
+      },
+      {
+        Id: {Scrubbed},
+        ExistingElement1dId: 2,
+        StartNodeId: {
+          ExistingId: 1,
+          ProposedId: null,
+          IsDefault: false
+        },
+        EndNodeId: {
+          ExistingId: 7,
+          ProposedId: null,
+          IsDefault: false
+        },
+        MaterialId: {
+          ExistingId: 1,
+          ProposedId: null,
+          IsDefault: false
+        },
+        SectionProfileId: {
+          ExistingId: 1,
+          ProposedId: null,
+          IsDefault: false
+        },
+        SectionProfileRotation: {
+          Value: 0.0,
+          Unit: Degree
+        },
+        Metadata: null
+      },
+      {
+        Id: {Scrubbed},
+        ExistingElement1dId: 3,
+        StartNodeId: {
+          ExistingId: 1,
+          ProposedId: null,
+          IsDefault: false
+        },
+        EndNodeId: {
+          ExistingId: 8,
+          ProposedId: null,
+          IsDefault: false
+        },
+        MaterialId: {
+          ExistingId: 1,
+          ProposedId: null,
+          IsDefault: false
+        },
+        SectionProfileId: {
+          ExistingId: 1,
+          ProposedId: null,
+          IsDefault: false
+        },
+        SectionProfileRotation: {
+          Value: 0.0,
+          Unit: Degree
+        },
+        Metadata: null
+      },
+      {
+        Id: {Scrubbed},
+        ExistingElement1dId: 4,
+        StartNodeId: {
+          ExistingId: 1,
+          ProposedId: null,
+          IsDefault: false
+        },
+        EndNodeId: {
+          ExistingId: 9,
+          ProposedId: null,
+          IsDefault: false
+        },
+        MaterialId: {
+          ExistingId: 1,
+          ProposedId: null,
+          IsDefault: false
+        },
+        SectionProfileId: {
+          ExistingId: 1,
+          ProposedId: null,
+          IsDefault: false
+        },
+        SectionProfileRotation: {
+          Value: 0.0,
+          Unit: Degree
+        },
+        Metadata: null
+      }
+    ],
+    MaterialProposals: null,
+    SectionProfileProposals: null,
+    SectionProfileFromLibraryProposals: null,
+    PointLoadProposals: null,
+    MomentLoadProposals: null,
+    ResultSetProposals: null,
+    LoadCaseProposals: null,
+    LoadCombinationProposals: null,
+    ProposalIssues: null,
+    DeleteModelEntityProposals: [
+      {
+        Id: {Scrubbed},
+        ModelEntityId: 2,
+        ObjectType: Node
+      },
+      {
+        Id: {Scrubbed},
+        ModelEntityId: 3,
+        ObjectType: Node
+      },
+      {
+        Id: {Scrubbed},
+        ModelEntityId: 4,
+        ObjectType: Node
+      },
+      {
+        Id: {Scrubbed},
+        ModelEntityId: 5,
+        ObjectType: Node
+      }
+    ]
+  },
+  Error: null,
+  IsError: false,
+  IsSuccess: true
+}

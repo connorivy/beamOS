@@ -9,6 +9,13 @@ namespace BeamOs.Tests.StructuralAnalysis.Integration.ModelRepairerTests;
 [MethodDataSource(typeof(AssemblySetup), nameof(AssemblySetup.GetStructuralAnalysisApiClientV1))]
 public class ExtendElement1dToNodeRuleTests(IStructuralAnalysisApiClientV1 apiClient)
 {
+    [Before(HookType.Test)]
+    public void BeforeClass()
+    {
+        // This is a workaround to ensure that the API client is initialized before any tests run.
+        apiClient ??= AssemblySetup.StructuralAnalysisApiClient;
+    }
+
     [Test]
     public async Task PerpendicularBeams_ShouldExtendToMeet()
     {

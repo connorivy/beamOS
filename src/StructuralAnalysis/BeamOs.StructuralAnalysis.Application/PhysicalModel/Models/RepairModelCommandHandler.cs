@@ -52,8 +52,8 @@ public class RepairModelCommandHandler(
             nodeOctree,
             new()
             {
-                VeryRelaxedTolerance = new(5, LengthUnit.Foot),
-                RelaxedTolerance = new(2.5, LengthUnit.Foot),
+                VeryRelaxedTolerance = new(3, LengthUnit.Foot),
+                RelaxedTolerance = new(1.5, LengthUnit.Foot),
                 StandardTolerance = new(1, LengthUnit.Foot),
                 StrictTolerance = new(.33, LengthUnit.Foot),
                 VeryStrictTolerance = new(.1, LengthUnit.Foot),
