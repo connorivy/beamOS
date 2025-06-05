@@ -135,7 +135,15 @@ public class InMemoryApiClientGenerator
             string signatureKey = handlerCommandType + "|" + partialMethodParams;
             if (!partialMethodSignatures.TryGetValue(signatureKey, out string? partialMethodName))
             {
-                partialMethodName = "CreateCommand" + partialMethodIndex++;
+                partialMethodName =
+                    "Create"
+                    + inMemoryTypeInfo
+                        .HandlerParameterTypeName.Split('.')
+                        .Last()
+                        .Replace("[]", "Array")
+                        .Replace('<', '_')
+                        .Replace('>', '_')
+                    + "Command";
                 partialMethodSignatures[signatureKey] = partialMethodName;
                 partialMethods.AppendLine(
                     $"        private partial {handlerCommandType} {partialMethodName}({partialMethodParams});"

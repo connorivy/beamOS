@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Nodes;
 
-public class NodeConfiguration : IEntityTypeConfiguration<Node>
+public class InternalNodeConfiguration : IEntityTypeConfiguration<InternalNode>
 {
-    public void Configure(EntityTypeBuilder<Node> builder)
+    public void Configure(EntityTypeBuilder<InternalNode> builder)
     {
         builder
             .HasOne(el => el.Model)
-            .WithMany(el => el.Nodes)
+            .WithMany()
             .HasForeignKey(el => el.ModelId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
@@ -18,15 +18,17 @@ public class NodeConfiguration : IEntityTypeConfiguration<Node>
         builder
             .HasMany(n => n.PointLoads)
             .WithOne()
+            .HasPrincipalKey(el => new { el.Id, el.ModelId })
             .HasForeignKey(el => new { el.NodeId, el.ModelId })
             .IsRequired()
-            .OnDelete(DeleteBehavior.ClientCascade);
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder
             .HasMany(n => n.MomentLoads)
             .WithOne()
+            .HasPrincipalKey(el => new { el.Id, el.ModelId })
             .HasForeignKey(el => new { el.NodeId, el.ModelId })
             .IsRequired()
-            .OnDelete(DeleteBehavior.ClientCascade);
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -36,6 +36,9 @@ public static class DI
         services.AddScoped<InMemoryModelRepositoryStorage>();
         services.AddKeyedScoped<IStructuralAnalysisUnitOfWork, InMemoryUnitOfWork>("InMemory");
         services.AddKeyedScoped<INodeRepository, InMemoryNodeRepository>("InMemory");
+        services.AddKeyedScoped<IInternalNodeRepository, InMemoryInternalNodeRepository>(
+            "InMemory"
+        );
         services.AddKeyedScoped<IModelRepository, InMemoryModelRepository>("InMemory");
         services.AddKeyedScoped<IMaterialRepository, InMemoryMaterialRepository>("InMemory");
         services.AddKeyedScoped<ISectionProfileRepository, InMemorySectionProfileRepository>(

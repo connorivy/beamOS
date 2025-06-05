@@ -75,6 +75,14 @@ public static partial class UnitsNetMappersJustEnums
 
     public static partial PressureUnitContract MapEnumToContract(this PressureUnit unit);
 
+    public static partial RatioUnit MapEnumToRatioUnit(this string unit);
+
+    public static partial RatioUnit MapEnumToRatioUnit(this RatioUnitContract unit);
+
+    public static partial string MapEnumToString(this RatioUnit unit);
+
+    public static partial RatioUnitContract MapEnumToContract(this RatioUnit unit);
+
     public static partial TorqueUnit MapEnumToTorqueUnit(this string unit);
 
     public static partial TorqueUnit MapEnumToTorqueUnit(this TorqueUnitContract unit);

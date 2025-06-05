@@ -1,6 +1,7 @@
 using System.Reflection;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Api;
+using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -80,7 +81,7 @@ public static class EndpointToMinimalApi
             );
         var tags = typeof(TEndpoint).GetCustomAttributes<BeamOsTagAttribute>();
 
-        Func<string, Delegate, IEndpointConventionBuilder> mapFunc = endpointType switch
+        Func<string, Delegate, RouteHandlerBuilder> mapFunc = endpointType switch
         {
             Http.Delete => app.MapDelete,
             Http.Get => app.MapGet,
@@ -111,9 +112,10 @@ public static class EndpointToMinimalApi
                 serviceProvider.GetRequiredService<TEndpoint>().ExecuteRequestAsync(req);
         }
 
-        IEndpointConventionBuilder endpointBuilder = mapFunc(route, mapDelegate);
+        var endpointBuilder = mapFunc(route, mapDelegate);
 
         endpointBuilder.WithName(typeof(TEndpoint).Name);
+        endpointBuilder.Produces<BeamOsError>(500);
         foreach (var tag in tags)
         {
             endpointBuilder.WithTags(tag.Value);

@@ -32,6 +32,35 @@ public readonly record struct Area
     }
 }
 
+public readonly record struct Ratio
+{
+    public required double Value { get; init; }
+    public required RatioUnit Unit { get; init; }
+
+    public Ratio() { }
+
+    [SetsRequiredMembers]
+    public Ratio(double value, RatioUnit unit)
+    {
+        this.Value = value;
+        this.Unit = unit;
+    }
+
+    public double As(RatioUnit targetUnit)
+    {
+        return this.Unit switch
+        {
+            RatioUnit.DecimalFraction when targetUnit == RatioUnit.DecimalFraction => this.Value,
+            RatioUnit.DecimalFraction when targetUnit == RatioUnit.Percent => this.Value * 100,
+            RatioUnit.Percent when targetUnit == RatioUnit.DecimalFraction => this.Value,
+            RatioUnit.Percent when targetUnit == RatioUnit.DecimalFraction => this.Value / 100,
+            RatioUnit.Undefined or _ => throw new NotSupportedException(
+                $"Conversion from {this.Unit} to {targetUnit} is not supported."
+            ),
+        };
+    }
+}
+
 public readonly record struct Volume
 {
     public required double Value { get; init; }

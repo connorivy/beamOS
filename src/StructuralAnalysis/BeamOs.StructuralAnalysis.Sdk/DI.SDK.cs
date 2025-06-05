@@ -15,14 +15,14 @@ public static class DI
         services.AddSingleton(authMessageHandler);
 
         services
-            .AddHttpClient<IStructuralAnalysisApiClientV1, StructuralAnalysisApiClientV1>(
-                client => client.BaseAddress = new("https://api.beamos.net/")
+            .AddHttpClient<IStructuralAnalysisApiClientV1, StructuralAnalysisApiClientV1>(client =>
+                client.BaseAddress = new("https://api.beamos.net/")
             )
             .AddHttpMessageHandler<AuthMessageHandler>();
 
         services
-            .AddHttpClient<ISpeckleConnectorApi, SpeckleConnectorApi>(
-                client => client.BaseAddress = new("https://api.beamos.net/")
+            .AddHttpClient<ISpeckleConnectorApi, SpeckleConnectorApi>(client =>
+                client.BaseAddress = new("https://api.beamos.net/")
             )
             .AddHttpMessageHandler<AuthMessageHandler>();
 

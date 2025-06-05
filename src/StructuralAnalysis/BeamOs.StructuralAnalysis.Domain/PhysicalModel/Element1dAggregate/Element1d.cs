@@ -148,6 +148,31 @@ public class Element1d : BeamOsModelEntity<Element1dId>
         return transformationMatrix;
     }
 
+    internal Point GetPointAtRatio(UnitsNet.Ratio ratioAlongElement1d)
+    {
+        var decimalFraction = ratioAlongElement1d.As(UnitsNet.Units.RatioUnit.DecimalFraction);
+        if (decimalFraction < 0 || decimalFraction > 1)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(ratioAlongElement1d),
+                "Ratio along element must be between 0 and 1."
+            );
+        }
+        var x =
+            this.StartNode.LocationPoint.X
+            + (this.EndNode.LocationPoint.X - this.StartNode.LocationPoint.X) * decimalFraction;
+
+        var y =
+            this.StartNode.LocationPoint.Y
+            + (this.EndNode.LocationPoint.Y - this.StartNode.LocationPoint.Y) * decimalFraction;
+
+        var z =
+            this.StartNode.LocationPoint.Z
+            + (this.EndNode.LocationPoint.Z - this.StartNode.LocationPoint.Z) * decimalFraction;
+
+        return new Point(x, y, z);
+    }
+
     [Obsolete("EF Core Constructor", true)]
     protected Element1d()
         : base() { }

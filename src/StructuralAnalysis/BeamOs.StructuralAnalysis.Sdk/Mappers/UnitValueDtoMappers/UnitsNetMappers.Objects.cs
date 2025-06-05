@@ -1,6 +1,4 @@
-using BeamOs.StructuralAnalysis.Contracts.Common;
 using Riok.Mapperly.Abstractions;
-using UnitsNet;
 
 namespace BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 
@@ -53,6 +51,13 @@ public static partial class UnitsNetMappers
         unit.MapToPressure().As(unitContract.MapToPressureUnit());
 
     public static partial PressureContract MapToContract(this Pressure unit);
+
+    public static partial Ratio MapToRatio(this RatioContract unit);
+
+    public static double As(this RatioContract unit, RatioUnitContract unitContract) =>
+        unit.MapToRatio().As(unitContract.MapToRatioUnit());
+
+    public static partial RatioContract MapToContract(this Ratio unit);
 
     public static partial Torque MapToTorque(this TorqueContract unit);
 

@@ -139,3 +139,7 @@ public static partial class CreateNodeCommandMapper
 
     public static partial Domain.Common.Restraint ToDomainObject(this PartialRestraint command);
 }
+
+internal sealed class InternalNodeRepository(StructuralAnalysisDbContext dbContext)
+    : ModelResourceRepositoryBase<NodeId, InternalNode>(dbContext),
+        IInternalNodeRepository { }

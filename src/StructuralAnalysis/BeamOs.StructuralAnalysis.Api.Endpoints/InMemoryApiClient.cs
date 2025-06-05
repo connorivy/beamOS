@@ -1,511 +1,355 @@
+using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis.Application.AnalyticalResults;
+using BeamOs.StructuralAnalysis.Application.Common;
+using BeamOs.StructuralAnalysis.Application.DirectStiffnessMethod;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCases;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCombinations;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.Materials;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.MomentLoads;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Contracts.Common;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCombinations;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Materials;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoads;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.CodeGen.StructuralAnalysisApiClient;
 
 public partial class InMemoryApiClient : IStructuralAnalysisApiClientV1
 {
-    private partial BeamOs.Common.Contracts.ModelResourceRequest<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles.SectionProfileFromLibraryData> CreateCommand1(
-        System.Guid modelId,
-        BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles.SectionProfileFromLibraryData body,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.Common.Contracts.ModelResourceRequest<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles.SectionProfileFromLibraryData>
-        {
-            ModelId = modelId,
-            Body = body,
-        };
-    }
+    private partial ModelResourceRequest<SectionProfileFromLibraryData> CreateSectionProfileFromLibraryData_Command(
+        Guid modelId,
+        SectionProfileFromLibraryData body,
+        CancellationToken cancellationToken
+    ) => new(modelId, body);
 
-    private partial BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles.BatchPutSectionProfileFromLibraryCommand CreateCommand2(
-        System.Guid modelId,
-        System.Collections.Generic.IEnumerable<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles.SectionProfileFromLibrary> body,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles.BatchPutSectionProfileFromLibraryCommand
-        {
-            ModelId = modelId,
-            Body = body.ToArray(),
-        };
-    }
+    private partial BatchPutSectionProfileFromLibraryCommand CreateBatchPutSectionProfileFromLibraryCommandCommand(
+        Guid modelId,
+        IEnumerable<SectionProfileFromLibrary> body,
+        CancellationToken cancellationToken
+    ) => new() { ModelId = modelId, Body = body.ToArray() };
 
-    private partial BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles.CreateSectionProfileCommand CreateCommand3(
-        System.Guid modelId,
-        BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles.CreateSectionProfileRequest body,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles.CreateSectionProfileCommand
-        {
-            ModelId = modelId,
-            Body = body,
-        };
-    }
+    private partial CreateSectionProfileCommand CreateCreateSectionProfileCommandCommand(
+        Guid modelId,
+        CreateSectionProfileRequest body,
+        CancellationToken cancellationToken
+    ) => new() { ModelId = modelId, Body = body };
 
-    private partial BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles.BatchPutSectionProfileCommand CreateCommand4(
-        System.Guid modelId,
-        System.Collections.Generic.IEnumerable<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles.PutSectionProfileRequest> body,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles.BatchPutSectionProfileCommand
-        {
-            ModelId = modelId,
-            Body = body.ToArray(),
-        };
-    }
+    private partial BatchPutSectionProfileCommand CreateBatchPutSectionProfileCommandCommand(
+        Guid modelId,
+        IEnumerable<PutSectionProfileRequest> body,
+        CancellationToken cancellationToken
+    ) => new() { ModelId = modelId, Body = body.ToArray() };
 
-    private partial BeamOs.Common.Contracts.IModelEntity CreateCommand5(
-        System.Guid modelId,
+    private partial IModelEntity CreateIModelEntityCommand(
+        Guid modelId,
         int id,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new ModelEntityResponse(id, modelId);
-    }
+        CancellationToken cancellationToken
+    ) => new ModelEntityCommand { ModelId = modelId, Id = id };
 
-    private partial BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles.PutSectionProfileCommand CreateCommand6(
+    private partial PutSectionProfileCommand CreatePutSectionProfileCommandCommand(
         int id,
-        System.Guid modelId,
-        BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles.SectionProfileData body,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles.PutSectionProfileCommand
+        Guid modelId,
+        SectionProfileData body,
+        CancellationToken cancellationToken
+    ) =>
+        new()
         {
             Id = id,
             ModelId = modelId,
             Body = body,
         };
-    }
 
-    private partial BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles.PutSectionProfileFromLibraryCommand CreateCommand7(
+    private partial PutSectionProfileFromLibraryCommand CreatePutSectionProfileFromLibraryCommandCommand(
         int id,
-        System.Guid modelId,
-        BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles.SectionProfileFromLibraryData body,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles.PutSectionProfileFromLibraryCommand
+        Guid modelId,
+        SectionProfileFromLibraryData body,
+        CancellationToken cancellationToken
+    ) =>
+        new()
         {
             Id = id,
             ModelId = modelId,
             Body = body,
         };
-    }
 
-    private partial BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads.CreatePointLoadCommand CreateCommand8(
-        System.Guid modelId,
-        BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads.CreatePointLoadRequest body,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads.CreatePointLoadCommand
-        {
-            ModelId = modelId,
-            Body = body,
-        };
-    }
+    private partial CreatePointLoadCommand CreateCreatePointLoadCommandCommand(
+        Guid modelId,
+        CreatePointLoadRequest body,
+        CancellationToken cancellationToken
+    ) => new() { ModelId = modelId, Body = body };
 
-    private partial BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads.BatchPutPointLoadCommand CreateCommand9(
-        System.Guid modelId,
-        System.Collections.Generic.IEnumerable<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads.PutPointLoadRequest> body,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads.BatchPutPointLoadCommand
-        {
-            ModelId = modelId,
-            Body = body.ToArray(),
-        };
-    }
+    private partial BatchPutPointLoadCommand CreateBatchPutPointLoadCommandCommand(
+        Guid modelId,
+        IEnumerable<PutPointLoadRequest> body,
+        CancellationToken cancellationToken
+    ) => new() { ModelId = modelId, Body = body.ToArray() };
 
-    private partial BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads.PutPointLoadCommand CreateCommand10(
+    private partial PutPointLoadCommand CreatePutPointLoadCommandCommand(
         int id,
-        System.Guid modelId,
-        BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads.PointLoadData body,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads.PutPointLoadCommand
+        Guid modelId,
+        PointLoadData body,
+        CancellationToken cancellationToken
+    ) =>
+        new()
         {
             Id = id,
             ModelId = modelId,
             Body = body,
         };
-    }
 
-    private partial BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes.CreateNodeCommand CreateCommand11(
-        System.Guid modelId,
-        BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes.CreateNodeRequest body,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes.CreateNodeCommand
-        {
-            ModelId = modelId,
-            Body = body,
-        };
-    }
+    private partial CreateNodeCommand CreateCreateNodeCommandCommand(
+        Guid modelId,
+        CreateNodeRequest body,
+        CancellationToken cancellationToken
+    ) => new() { ModelId = modelId, Body = body };
 
-    private partial BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes.PatchNodeCommand CreateCommand12(
-        System.Guid modelId,
-        BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes.UpdateNodeRequest body,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes.PatchNodeCommand
-        {
-            ModelId = modelId,
-            Body = body,
-        };
-    }
+    private partial PatchNodeCommand CreatePatchNodeCommandCommand(
+        Guid modelId,
+        UpdateNodeRequest body,
+        CancellationToken cancellationToken
+    ) => new() { ModelId = modelId, Body = body };
 
-    private partial BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes.BatchPutNodeCommand CreateCommand13(
-        System.Guid modelId,
-        System.Collections.Generic.IEnumerable<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes.PutNodeRequest> body,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes.BatchPutNodeCommand
-        {
-            ModelId = modelId,
-            Body = body.ToArray(),
-        };
-    }
+    private partial BatchPutNodeCommand CreateBatchPutNodeCommandCommand(
+        Guid modelId,
+        IEnumerable<PutNodeRequest> body,
+        CancellationToken cancellationToken
+    ) => new() { ModelId = modelId, Body = body.ToArray() };
 
-    private partial BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes.PutNodeCommand CreateCommand14(
+    private partial ModelResourceRequest<CreateInternalNodeRequest> CreateCreateInternalNodeRequest_Command(
+        Guid modelId,
+        CreateInternalNodeRequest body,
+        CancellationToken cancellationToken
+    ) => new() { ModelId = modelId, Body = body };
+
+    private partial ModelResourceRequest<InternalNode[]> CreateInternalNodeArray_Command(
+        Guid modelId,
+        IEnumerable<InternalNode> body,
+        CancellationToken cancellationToken
+    ) => new() { ModelId = modelId, Body = body.ToArray() };
+
+    private partial ModelResourceRequest<InternalNodeData> CreateInternalNodeData_Command(
+        Guid modelId,
+        InternalNodeData body,
+        CancellationToken cancellationToken
+    ) => new() { ModelId = modelId, Body = body };
+
+    private partial PutNodeCommand CreatePutNodeCommandCommand(
         int id,
-        System.Guid modelId,
-        BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes.NodeData body,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes.PutNodeCommand
+        Guid modelId,
+        NodeData body,
+        CancellationToken cancellationToken
+    ) =>
+        new()
         {
             Id = id,
             ModelId = modelId,
             Body = body,
         };
-    }
 
-    private partial BeamOs.StructuralAnalysis.Application.PhysicalModel.MomentLoads.CreateMomentLoadCommand CreateCommand15(
-        System.Guid modelId,
-        BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoads.CreateMomentLoadRequest body,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.StructuralAnalysis.Application.PhysicalModel.MomentLoads.CreateMomentLoadCommand
-        {
-            ModelId = modelId,
-            Body = body,
-        };
-    }
+    private partial CreateMomentLoadCommand CreateCreateMomentLoadCommandCommand(
+        Guid modelId,
+        CreateMomentLoadRequest body,
+        CancellationToken cancellationToken
+    ) => new() { ModelId = modelId, Body = body };
 
-    private partial BeamOs.StructuralAnalysis.Application.PhysicalModel.MomentLoads.BatchPutMomentLoadCommand CreateCommand16(
-        System.Guid modelId,
-        System.Collections.Generic.IEnumerable<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoads.PutMomentLoadRequest> body,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.StructuralAnalysis.Application.PhysicalModel.MomentLoads.BatchPutMomentLoadCommand
-        {
-            ModelId = modelId,
-            Body = body.ToArray(),
-        };
-    }
+    private partial BatchPutMomentLoadCommand CreateBatchPutMomentLoadCommandCommand(
+        Guid modelId,
+        IEnumerable<PutMomentLoadRequest> body,
+        CancellationToken cancellationToken
+    ) => new() { ModelId = modelId, Body = body.ToArray() };
 
-    private partial BeamOs.StructuralAnalysis.Application.PhysicalModel.MomentLoads.PutMomentLoadCommand CreateCommand17(
+    private partial PutMomentLoadCommand CreatePutMomentLoadCommandCommand(
         int id,
-        System.Guid modelId,
-        BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoads.MomentLoadData body,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.StructuralAnalysis.Application.PhysicalModel.MomentLoads.PutMomentLoadCommand
+        Guid modelId,
+        MomentLoadData body,
+        CancellationToken cancellationToken
+    ) =>
+        new()
         {
             Id = id,
             ModelId = modelId,
             Body = body,
         };
-    }
 
-    private partial BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models.CreateModelRequest CreateCommand18(
-        BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models.CreateModelRequest body,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return body;
-    }
+    private partial CreateModelRequest CreateCreateModelRequestCommand(
+        CreateModelRequest body,
+        CancellationToken cancellationToken
+    ) => body;
 
-    private partial BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds.EmptyRequest CreateCommand19(
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds.EmptyRequest { };
-    }
+    private partial EmptyRequest CreateEmptyRequestCommand(CancellationToken cancellationToken) =>
+        new();
 
-    private partial BeamOs.Common.Contracts.ModelResourceRequest<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models.ModelProposalData> CreateCommand20(
-        System.Guid modelId,
-        BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models.ModelProposalData body,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.Common.Contracts.ModelResourceRequest<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models.ModelProposalData>
-        {
-            ModelId = modelId,
-            Body = body,
-        };
-    }
+    private partial ModelResourceRequest<ModelProposalData> CreateModelProposalData_Command(
+        Guid modelId,
+        ModelProposalData body,
+        CancellationToken cancellationToken
+    ) => new() { ModelId = modelId, Body = body };
 
-    private partial System.Guid CreateCommand21(
-        System.Guid modelId,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return modelId;
-    }
+    private partial Guid CreateGuidCommand(Guid modelId, CancellationToken cancellationToken) =>
+        modelId;
 
-    private partial BeamOs.Common.Contracts.ModelResourceRequest<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models.ModelInfoData> CreateCommand22(
-        System.Guid modelId,
-        BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models.ModelInfoData body,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.Common.Contracts.ModelResourceRequest<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models.ModelInfoData>
-        {
-            ModelId = modelId,
-            Body = body,
-        };
-    }
+    private partial ModelResourceRequest<ModelInfoData> CreateModelInfoData_Command(
+        Guid modelId,
+        ModelInfoData body,
+        CancellationToken cancellationToken
+    ) => new() { ModelId = modelId, Body = body };
 
-    private partial BeamOs.Common.Contracts.ModelResourceRequest<string> CreateCommand23(
-        System.Guid modelId,
+    private partial ModelResourceRequest<string> CreateModelResourceRequest_string_Command(
+        Guid modelId,
         string body,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.Common.Contracts.ModelResourceRequest<string>
-        {
-            ModelId = modelId,
-            Body = body,
-        };
-    }
+        CancellationToken cancellationToken
+    ) => new() { ModelId = modelId, Body = body };
 
-    private partial BeamOs.StructuralAnalysis.Application.PhysicalModel.Materials.CreateMaterialCommand CreateCommand24(
-        System.Guid modelId,
-        BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Materials.CreateMaterialRequest body,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.StructuralAnalysis.Application.PhysicalModel.Materials.CreateMaterialCommand
-        {
-            ModelId = modelId,
-            Body = body,
-        };
-    }
+    private partial CreateMaterialCommand CreateCreateMaterialCommandCommand(
+        Guid modelId,
+        CreateMaterialRequest body,
+        CancellationToken cancellationToken
+    ) => new() { ModelId = modelId, Body = body };
 
-    private partial BeamOs.StructuralAnalysis.Application.PhysicalModel.Materials.BatchPutMaterialCommand CreateCommand25(
-        System.Guid modelId,
-        System.Collections.Generic.IEnumerable<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Materials.PutMaterialRequest> body,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.StructuralAnalysis.Application.PhysicalModel.Materials.BatchPutMaterialCommand
-        {
-            ModelId = modelId,
-            Body = body.ToArray(),
-        };
-    }
+    private partial BatchPutMaterialCommand CreateBatchPutMaterialCommandCommand(
+        Guid modelId,
+        IEnumerable<PutMaterialRequest> body,
+        CancellationToken cancellationToken
+    ) => new() { ModelId = modelId, Body = body.ToArray() };
 
-    private partial BeamOs.StructuralAnalysis.Application.PhysicalModel.Materials.PutMaterialCommand CreateCommand26(
+    private partial PutMaterialCommand CreatePutMaterialCommandCommand(
         int id,
-        System.Guid modelId,
-        BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Materials.MaterialRequestData body,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.StructuralAnalysis.Application.PhysicalModel.Materials.PutMaterialCommand
+        Guid modelId,
+        MaterialRequestData body,
+        CancellationToken cancellationToken
+    ) =>
+        new()
         {
             Id = id,
             ModelId = modelId,
             Body = body,
         };
-    }
 
-    private partial BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCombinations.BatchPutLoadCombinationCommand CreateCommand27(
-        System.Guid modelId,
-        System.Collections.Generic.IEnumerable<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCombinations.LoadCombination> body,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCombinations.BatchPutLoadCombinationCommand
-        {
-            ModelId = modelId,
-            Body = body.ToArray(),
-        };
-    }
+    private partial BatchPutLoadCombinationCommand CreateBatchPutLoadCombinationCommandCommand(
+        Guid modelId,
+        IEnumerable<LoadCombination> body,
+        CancellationToken cancellationToken
+    ) => new() { ModelId = modelId, Body = body.ToArray() };
 
-    private partial BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCombinations.CreateLoadCombinationCommand CreateCommand28(
-        System.Guid modelId,
-        BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCombinations.LoadCombinationData body,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCombinations.CreateLoadCombinationCommand
-        {
-            ModelId = modelId,
-            Body = body,
-        };
-    }
+    private partial CreateLoadCombinationCommand CreateCreateLoadCombinationCommandCommand(
+        Guid modelId,
+        LoadCombinationData body,
+        CancellationToken cancellationToken
+    ) => new() { ModelId = modelId, Body = body };
 
-    private partial BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCombinations.PutLoadCombinationCommand CreateCommand29(
-        System.Guid modelId,
+    private partial PutLoadCombinationCommand CreatePutLoadCombinationCommandCommand(
+        Guid modelId,
         int id,
-        BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCombinations.LoadCombinationData body,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCombinations.PutLoadCombinationCommand
+        LoadCombinationData body,
+        CancellationToken cancellationToken
+    ) =>
+        new()
         {
             Id = id,
             ModelId = modelId,
             Body = body,
         };
-    }
 
-    private partial BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCases.BatchPutLoadCaseCommand CreateCommand30(
-        System.Guid modelId,
-        System.Collections.Generic.IEnumerable<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases.LoadCase> body,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCases.BatchPutLoadCaseCommand
-        {
-            ModelId = modelId,
-            Body = body.ToArray(),
-        };
-    }
+    private partial BatchPutLoadCaseCommand CreateBatchPutLoadCaseCommandCommand(
+        Guid modelId,
+        IEnumerable<LoadCase> body,
+        CancellationToken cancellationToken
+    ) => new() { ModelId = modelId, Body = body.ToArray() };
 
-    private partial BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCases.CreateLoadCaseCommand CreateCommand31(
-        System.Guid modelId,
-        BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases.LoadCaseData body,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCases.CreateLoadCaseCommand
-        {
-            ModelId = modelId,
-            Body = body,
-        };
-    }
+    private partial CreateLoadCaseCommand CreateCreateLoadCaseCommandCommand(
+        Guid modelId,
+        LoadCaseData body,
+        CancellationToken cancellationToken
+    ) => new() { ModelId = modelId, Body = body };
 
-    private partial BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCases.PutLoadCaseCommand CreateCommand32(
-        System.Guid modelId,
+    private partial PutLoadCaseCommand CreatePutLoadCaseCommandCommand(
+        Guid modelId,
         int id,
-        BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases.LoadCaseData body,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCases.PutLoadCaseCommand
+        LoadCaseData body,
+        CancellationToken cancellationToken
+    ) =>
+        new()
         {
             Id = id,
             ModelId = modelId,
             Body = body,
         };
-    }
 
-    private partial BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds.CreateElement1dCommand CreateCommand33(
-        System.Guid modelId,
-        BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds.CreateElement1dRequest body,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds.CreateElement1dCommand
-        {
-            ModelId = modelId,
-            Body = body,
-        };
-    }
+    private partial CreateElement1dCommand CreateCreateElement1dCommandCommand(
+        Guid modelId,
+        CreateElement1dRequest body,
+        CancellationToken cancellationToken
+    ) => new() { ModelId = modelId, Body = body };
 
-    private partial BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds.BatchPutElement1dCommand CreateCommand34(
-        System.Guid modelId,
-        System.Collections.Generic.IEnumerable<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds.PutElement1dRequest> body,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds.BatchPutElement1dCommand
-        {
-            ModelId = modelId,
-            Body = body.ToArray(),
-        };
-    }
+    private partial BatchPutElement1dCommand CreateBatchPutElement1dCommandCommand(
+        Guid modelId,
+        IEnumerable<PutElement1dRequest> body,
+        CancellationToken cancellationToken
+    ) => new() { ModelId = modelId, Body = body.ToArray() };
 
-    private partial BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds.PutElement1dCommand CreateCommand35(
+    private partial PutElement1dCommand CreatePutElement1dCommandCommand(
         int id,
-        System.Guid modelId,
-        BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds.Element1dData body,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds.PutElement1dCommand
+        Guid modelId,
+        Element1dData body,
+        CancellationToken cancellationToken
+    ) =>
+        new()
         {
             Id = id,
             ModelId = modelId,
             Body = body,
         };
-    }
 
-    private partial BeamOs.StructuralAnalysis.Application.DirectStiffnessMethod.RunDsmCommand CreateCommand36(
-        System.Guid modelId,
-        BeamOs.StructuralAnalysis.Contracts.Common.RunDsmRequest body,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.StructuralAnalysis.Application.DirectStiffnessMethod.RunDsmCommand
+    private partial RunDsmCommand CreateRunDsmCommandCommand(
+        Guid modelId,
+        RunDsmRequest body,
+        CancellationToken cancellationToken
+    ) =>
+        new()
         {
             ModelId = modelId,
-            UnitsOverride = body.UnitsOverride,
             LoadCombinationIds = body.LoadCombinationIds,
+            UnitsOverride = body.UnitsOverride,
         };
-    }
 
-    private partial BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.ModelId CreateCommand37(
-        System.Guid modelId,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return modelId;
-    }
+    private partial ModelId CreateModelIdCommand(
+        Guid modelId,
+        CancellationToken cancellationToken
+    ) => new(modelId);
 
-    private partial BeamOs.StructuralAnalysis.Application.AnalyticalResults.GetDiagramsCommand CreateCommand38(
-        System.Guid modelId,
+    private partial GetDiagramsCommand CreateGetDiagramsCommandCommand(
+        Guid modelId,
         int id,
         string unitsOverride,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.StructuralAnalysis.Application.AnalyticalResults.GetDiagramsCommand
+        CancellationToken cancellationToken
+    ) =>
+        new()
         {
             ModelId = modelId,
             Id = id,
             UnitsOverride = unitsOverride,
         };
-    }
 
-    private partial BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds.GetAnalyticalResultResourceQuery CreateCommand39(
-        System.Guid modelId,
+    private partial GetAnalyticalResultResourceQuery CreateGetAnalyticalResultResourceQueryCommand(
+        Guid modelId,
         int resultSetId,
         int id,
-        System.Threading.CancellationToken cancellationToken
-    )
-    {
-        return new BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds.GetAnalyticalResultResourceQuery
+        CancellationToken cancellationToken
+    ) =>
+        new()
         {
             ModelId = modelId,
             ResultSetId = resultSetId,
             Id = id,
         };
-    }
 }

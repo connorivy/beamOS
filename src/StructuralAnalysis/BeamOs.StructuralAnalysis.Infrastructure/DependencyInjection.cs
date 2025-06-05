@@ -29,7 +29,6 @@ using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.SectionProfiles;
 using BeamOs.Tests.Common;
-using MathNet.Numerics.Providers.SparseSolver;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
@@ -62,6 +61,7 @@ public static class DependencyInjection
         _ = services.AddScoped<IEnvelopeResultSetRepository, EnvelopeResultSetRepository>();
         _ = services.AddScoped<IModelProposalRepository, ModelProposalRepository>();
         _ = services.AddScoped<IProposalIssueRepository, ProposalIssueRepository>();
+        _ = services.AddScoped<IInternalNodeRepository, InternalNodeRepository>();
 
         _ = services.AddScoped<IStructuralAnalysisUnitOfWork, UnitOfWork>();
 

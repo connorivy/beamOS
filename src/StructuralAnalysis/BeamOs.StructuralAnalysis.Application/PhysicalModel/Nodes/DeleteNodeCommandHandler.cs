@@ -14,3 +14,15 @@ public class GetNodeCommandHandler(INodeRepository repo)
 {
     protected override NodeResponse MapToResponse(Node entity) => entity.ToResponse();
 }
+
+public class DeleteInternalNodeCommandHandler(
+    IInternalNodeRepository repo,
+    IStructuralAnalysisUnitOfWork unitOfWork
+) : DeleteModelEntityCommandHandler<NodeId, InternalNode>(repo, unitOfWork) { }
+
+public class GetInternalNodeCommandHandler(IInternalNodeRepository repo)
+    : GetModelEntityCommandHandler<NodeId, InternalNode, InternalNodeContract>(repo)
+{
+    protected override InternalNodeContract MapToResponse(InternalNode entity) =>
+        entity.ToResponse();
+}

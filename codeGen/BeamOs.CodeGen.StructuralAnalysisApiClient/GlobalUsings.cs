@@ -9,6 +9,7 @@ global using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoads;
 global using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 global using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
 global using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
+global using InternalNode2 = BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes.InternalNode;
 global using ResultOfAnalyticalResultsResponse = BeamOs.Common.Contracts.Result<BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams.AnalyticalResultsResponse>;
 global using ResultOfBatchResponse = BeamOs.Common.Contracts.Result<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes.BatchResponse>;
 global using ResultOfBeamOsModelBuilderDto = BeamOs.Common.Contracts.Result<BeamOs.StructuralAnalysis.Contracts.Common.BeamOsModelBuilderDto>;
@@ -17,6 +18,7 @@ global using ResultOfDiagramResponse = BeamOs.Common.Contracts.Result<BeamOs.Str
 global using ResultOfElement1dResponse = BeamOs.Common.Contracts.Result<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds.Element1dResponse>;
 global using ResultOfGithubModelsChatResponse = BeamOs.Common.Contracts.Result<BeamOs.Common.Contracts.GithubModelsChatResponse>;
 global using ResultOfint = BeamOs.Common.Contracts.Result<int>;
+global using ResultOfInternalNode = BeamOs.Common.Contracts.Result<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes.InternalNode>;
 global using ResultOfListOfModelInfoResponse = BeamOs.Common.Contracts.Result<System.Collections.Generic.List<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models.ModelInfoResponse>>;
 global using ResultOfListOfModelProposalInfo = BeamOs.Common.Contracts.Result<System.Collections.Generic.List<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models.ModelProposalInfo>>;
 global using ResultOfLoadCase = BeamOs.Common.Contracts.Result<BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases.LoadCase>;

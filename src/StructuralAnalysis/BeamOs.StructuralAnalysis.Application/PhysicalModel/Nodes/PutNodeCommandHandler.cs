@@ -28,6 +28,24 @@ public class PutNodeCommandHandler(
     }
 }
 
+public sealed class PutInternalNodeCommandHandler(
+    IInternalNodeRepository nodeRepository,
+    IStructuralAnalysisUnitOfWork unitOfWork
+)
+    : PutCommandHandlerBase<
+        NodeId,
+        InternalNode,
+        ModelResourceRequest<InternalNodeData>,
+        InternalNodeContract
+    >(nodeRepository, unitOfWork)
+{
+    protected override InternalNode ToDomainObject(
+        ModelResourceRequest<InternalNodeData> putCommand
+    ) => putCommand.ToDomainObject();
+
+    protected override InternalNodeContract ToResponse(InternalNode entity) => entity.ToResponse();
+}
+
 [Mapper]
 [UseStaticMapper(typeof(UnitsNetMappers))]
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
@@ -38,6 +56,16 @@ public static partial class PutNodeCommandMapper
     public static partial NodeResponse ToResponse(this PutNodeCommand command);
 
     public static partial PutNodeRequest ToRequest(this PutNodeCommand command);
+
+    [MapNestedProperties(nameof(ModelResourceRequest<>.Body))]
+    public static partial InternalNode ToDomainObject(
+        this ModelResourceRequest<InternalNodeData> command
+    );
+
+    [MapNestedProperties(nameof(ModelResourceRequest<>.Body))]
+    public static partial InternalNode ToDomainObject(
+        this ModelResourceRequest<InternalNodeContract> command
+    );
 }
 
 public readonly struct PutNodeCommand : IModelResourceWithIntIdRequest<NodeData>

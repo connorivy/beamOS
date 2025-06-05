@@ -24,3 +24,20 @@ public readonly struct BatchPutNodeCommand : IModelResourceRequest<PutNodeReques
     public Guid ModelId { get; init; }
     public PutNodeRequest[] Body { get; init; }
 }
+
+public class BatchPutInternalNodeCommandHandler(
+    IInternalNodeRepository repository,
+    IStructuralAnalysisUnitOfWork unitOfWork
+)
+    : BatchPutCommandHandler<
+        NodeId,
+        InternalNode,
+        ModelResourceRequest<InternalNodeContract[]>,
+        InternalNodeContract
+    >(repository, unitOfWork)
+{
+    protected override InternalNode ToDomainObject(
+        ModelId modelId,
+        InternalNodeContract putRequest
+    ) => new ModelResourceRequest<InternalNodeContract>(modelId, putRequest).ToDomainObject();
+}

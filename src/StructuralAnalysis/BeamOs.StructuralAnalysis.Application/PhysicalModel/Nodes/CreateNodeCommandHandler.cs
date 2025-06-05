@@ -27,6 +27,24 @@ public class CreateNodeCommandHandler(
     }
 }
 
+public class CreateInternalNodeCommandHandler(
+    IInternalNodeRepository nodeRepository,
+    IStructuralAnalysisUnitOfWork unitOfWork
+)
+    : CreateCommandHandlerBase<
+        NodeId,
+        InternalNode,
+        ModelResourceRequest<CreateInternalNodeRequest>,
+        InternalNodeContract
+    >(nodeRepository, unitOfWork)
+{
+    protected override InternalNode ToDomainObject(
+        ModelResourceRequest<CreateInternalNodeRequest> putCommand
+    ) => putCommand.ToDomainObject();
+
+    protected override InternalNodeContract ToResponse(InternalNode entity) => entity.ToResponse();
+}
+
 [Mapper]
 [UseStaticMapper(typeof(UnitsNetMappers))]
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
@@ -40,6 +58,13 @@ public static partial class CreateNodeCommandMapper
 
     [MapperIgnoreTarget(nameof(CreateNodeRequest.Id))]
     public static partial CreateNodeRequest ToRequest(this NodeResponse entity);
+
+    [MapNestedProperties(nameof(ModelResourceRequest<>.Body))]
+    public static partial InternalNode ToDomainObject(
+        this ModelResourceRequest<CreateInternalNodeRequest> command
+    );
+
+    public static partial InternalNodeContract ToResponse(this InternalNode entity);
 }
 
 public readonly struct CreateNodeCommand : IModelResourceRequest<CreateNodeRequest>
