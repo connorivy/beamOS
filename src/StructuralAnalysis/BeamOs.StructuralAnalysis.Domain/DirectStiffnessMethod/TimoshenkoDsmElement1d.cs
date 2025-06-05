@@ -60,8 +60,8 @@ public class TimoshenkoDsmElement1d(
                 ?? throw new InvalidOperationException(
                     "TimoshenkoDsmElement1d requires strong axis shear area"
                 ),
-            element1d.StartNode.LocationPoint,
-            element1d.EndNode.LocationPoint,
+            element1d.StartNode.GetLocationPoint(),
+            element1d.EndNode.GetLocationPoint(),
             element1d.StartNode.Id,
             element1d.EndNode.Id
         ) { }

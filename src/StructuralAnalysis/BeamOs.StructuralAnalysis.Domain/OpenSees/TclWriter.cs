@@ -161,11 +161,19 @@ public class TclWriter
         Debug.Assert(element1d.SectionProfile is not null);
         Debug.Assert(element1d.StartNode is not null);
         Debug.Assert(element1d.EndNode is not null);
+        Debug.Assert(element1d.InternalNodes is not null);
 
-        this.AddNode(element1d.StartNode);
-        this.AddNode(element1d.EndNode);
-        this.AddSection(element1d.SectionProfile.GetSectionProfile(), element1d.Material);
-        this.AddElement(element1d);
+        foreach (
+            var element in element1d.BreakBetweenInternalNodes(
+                (_, _) => this.element1dIdsInOrder.Count * -1
+            )
+        )
+        {
+            this.AddNode(element1d.StartNode.ToNode());
+            this.AddNode(element1d.EndNode.ToNode());
+            this.AddSection(element1d.SectionProfile.GetSectionProfile(), element1d.Material);
+            this.AddElement(element1d);
+        }
     }
 
     public void AddLoads(

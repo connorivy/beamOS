@@ -34,6 +34,7 @@ public class Model : BeamOsEntity<ModelId>
     // public double MaxZ { get; set; } = double.MinValue;
 
     public IList<Node>? Nodes { get; set; }
+    public IList<InternalNode>? InternalNodes { get; set; }
     public IList<Element1d>? Element1ds { get; set; }
     public IList<Material>? Materials { get; set; }
     public IList<SectionProfile>? SectionProfiles { get; set; }

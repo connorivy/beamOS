@@ -52,7 +52,7 @@ public readonly record struct Ratio
         {
             RatioUnit.DecimalFraction when targetUnit == RatioUnit.DecimalFraction => this.Value,
             RatioUnit.DecimalFraction when targetUnit == RatioUnit.Percent => this.Value * 100,
-            RatioUnit.Percent when targetUnit == RatioUnit.DecimalFraction => this.Value,
+            RatioUnit.Percent when targetUnit == RatioUnit.Percent => this.Value,
             RatioUnit.Percent when targetUnit == RatioUnit.DecimalFraction => this.Value / 100,
             RatioUnit.Undefined or _ => throw new NotSupportedException(
                 $"Conversion from {this.Unit} to {targetUnit} is not supported."

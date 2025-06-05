@@ -1,0 +1,14 @@
+﻿{
+  Value: {
+    Id: {Scrubbed},
+    Element1dId: 99,
+    RatioAlongElement1d: {
+      Value: 50.0,
+      Unit: Percent
+    },
+    Metadata: null
+  },
+  Error: null,
+  IsError: false,
+  IsSuccess: true
+}

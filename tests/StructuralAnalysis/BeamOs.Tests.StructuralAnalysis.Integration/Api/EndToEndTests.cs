@@ -9,6 +9,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoads;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
+using BeamOs.Tests.Common;
 using FluentAssertions;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration.Api;
@@ -294,6 +295,24 @@ public class EndToEndTests
         );
 
         await Verify(elResponseResult);
+    }
+
+    [Test]
+    [DependsOn(nameof(CreateElement1d_ShouldCreateElement1d))]
+    public async Task CreateInternalNode_ShouldCreateInternalNode()
+    {
+        CreateInternalNodeRequest requestBody = new(99, new(50, RatioUnit.Percent));
+
+        var internalNodeResponseResult =
+            await AssemblySetup.StructuralAnalysisApiClient.CreateInternalNodeAsync(
+                modelId,
+                requestBody
+            );
+
+        await Verify(internalNodeResponseResult)
+            .ScrubMembers(l =>
+                typeof(IHasIntId).IsAssignableFrom(l.DeclaringType) && l.Name == "Id"
+            );
     }
 
     [Test]

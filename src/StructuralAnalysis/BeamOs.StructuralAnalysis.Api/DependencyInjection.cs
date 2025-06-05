@@ -115,7 +115,6 @@ public static class EndpointToMinimalApi
         var endpointBuilder = mapFunc(route, mapDelegate);
 
         endpointBuilder.WithName(typeof(TEndpoint).Name);
-        endpointBuilder.Produces<BeamOsError>(500);
         foreach (var tag in tags)
         {
             endpointBuilder.WithTags(tag.Value);

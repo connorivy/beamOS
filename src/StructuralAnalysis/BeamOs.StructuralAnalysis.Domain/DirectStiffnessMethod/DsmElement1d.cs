@@ -36,8 +36,8 @@ public class DsmElement1d(
             sectionProfile.StrongAxisMomentOfInertia,
             sectionProfile.WeakAxisMomentOfInertia,
             sectionProfile.PolarMomentOfInertia,
-            element1d.StartNode.LocationPoint,
-            element1d.EndNode.LocationPoint,
+            element1d.StartNode.GetLocationPoint(),
+            element1d.EndNode.GetLocationPoint(),
             element1d.StartNode.Id,
             element1d.EndNode.Id
         ) { }

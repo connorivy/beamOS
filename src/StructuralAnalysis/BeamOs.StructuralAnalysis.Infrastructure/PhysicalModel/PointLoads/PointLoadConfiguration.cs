@@ -1,5 +1,4 @@
-﻿using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCases;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
+﻿using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -9,6 +8,20 @@ public class PointLoadConfiguration : IEntityTypeConfiguration<PointLoad>
 {
     public void Configure(EntityTypeBuilder<PointLoad> builder)
     {
+        builder
+            .HasOne(el => el.Model)
+            .WithMany(el => el.PointLoads)
+            .HasForeignKey(el => el.ModelId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder
+            .HasOne<NodeBase>()
+            .WithMany(el => el.PointLoads)
+            .HasForeignKey(el => new { el.NodeId, el.ModelId })
+            .IsRequired()
+            .OnDelete(DeleteBehavior.ClientCascade);
+
         builder
             .HasOne<LoadCase>(el => el.LoadCase)
             .WithMany()

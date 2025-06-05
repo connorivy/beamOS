@@ -1,5 +1,4 @@
-﻿using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCases;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
+﻿using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -9,6 +8,13 @@ public class MomentLoadConfiguration : IEntityTypeConfiguration<MomentLoad>
 {
     public void Configure(EntityTypeBuilder<MomentLoad> builder)
     {
+        builder
+            .HasOne<NodeBase>()
+            .WithMany(el => el.MomentLoads)
+            .HasForeignKey(el => new { el.NodeId, el.ModelId })
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+
         builder
             .HasOne<LoadCase>(el => el.LoadCase)
             .WithMany()

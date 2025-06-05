@@ -10,25 +10,25 @@ public class InternalNodeConfiguration : IEntityTypeConfiguration<InternalNode>
     {
         builder
             .HasOne(el => el.Model)
-            .WithMany()
+            .WithMany(el => el.InternalNodes)
             .HasForeignKey(el => el.ModelId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder
-            .HasMany(n => n.PointLoads)
-            .WithOne()
-            .HasPrincipalKey(el => new { el.Id, el.ModelId })
-            .HasForeignKey(el => new { el.NodeId, el.ModelId })
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);
+        // builder
+        //     .HasMany(n => n.PointLoads)
+        //     .WithOne()
+        //     .HasPrincipalKey(el => new { el.Id, el.ModelId })
+        //     .HasForeignKey(el => new { el.NodeId, el.ModelId })
+        //     .IsRequired()
+        //     .OnDelete(DeleteBehavior.Cascade);
 
-        builder
-            .HasMany(n => n.MomentLoads)
-            .WithOne()
-            .HasPrincipalKey(el => new { el.Id, el.ModelId })
-            .HasForeignKey(el => new { el.NodeId, el.ModelId })
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);
+        // builder
+        //     .HasMany(n => n.MomentLoads)
+        //     .WithOne()
+        //     .HasPrincipalKey(el => new { el.Id, el.ModelId })
+        //     .HasForeignKey(el => new { el.NodeId, el.ModelId })
+        //     .IsRequired()
+        //     .OnDelete(DeleteBehavior.Cascade);
     }
 }

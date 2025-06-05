@@ -26,20 +26,28 @@ public class Element1d : BeamOsModelEntity<Element1dId>
     }
 
     public NodeId StartNodeId { get; set; }
-    public Node? StartNode { get; set; }
+    public NodeBase? StartNode { get; set; }
     public NodeId EndNodeId { get; set; }
-    public Node? EndNode { get; set; }
+    public NodeBase? EndNode { get; set; }
     public MaterialId MaterialId { get; set; }
     public Material? Material { get; set; }
     public SectionProfileId SectionProfileId { get; set; }
     public SectionProfileInfoBase? SectionProfile { get; set; }
+    public IList<InternalNode>? InternalNodes { get; set; }
 
     //public ICollection<ShearForceDiagram>? ShearForceDiagrams { get; init; }
     //public ICollection<MomentDiagram>? MomentDiagrams { get; init; }
 
     public Length Length => this.BaseLine.Length;
 
-    public Line BaseLine => new(this.StartNode.LocationPoint, this.EndNode.LocationPoint);
+    public Line BaseLine
+    {
+        get
+        {
+            var (startNode, endNode) = this.GetNodesOrThrow();
+            return new(startNode.GetLocationPoint(), endNode.GetLocationPoint());
+        }
+    }
 
     /// <summary>
     /// counter-clockwise rotation in radians when looking in the negative (local) x direction
@@ -51,22 +59,109 @@ public class Element1d : BeamOsModelEntity<Element1dId>
         return new(startPoint, endPoint);
     }
 
-    //public void AddPointLoad(Ratio locationAlongBeam, ImmutablePointLoad pointLoad)
-    //{
-    //    if (locationAlongBeam.As(UnitsNet.Units.RatioUnit.DecimalFraction) is < 0 or > 1)
-    //    {
-    //        throw new ArgumentException("Provided location along beam must be between 0 and 1");
-    //    }
+    public IEnumerable<Element1d> BreakBetweenInternalNodes(Func<Element1dId, int, int> idGenerator)
+    {
+        _ =
+            this.InternalNodes
+            ?? throw new InvalidOperationException(
+                "InternalNodeIds must be set before breaking the element."
+            );
 
-    //    this.PointLoads.Add(locationAlongBeam, new(new(), pointLoad));
-    //}
+        if (this.InternalNodes.Count == 0)
+        {
+            yield return this;
+            yield break;
+        }
 
-    public double[,] GetRotationMatrix() =>
-        GetRotationMatrix(
-            this.EndNode.LocationPoint,
-            this.StartNode.LocationPoint,
+        if (
+            this.StartNode is null
+            || this.EndNode is null
+            || this.Material is null
+            || this.SectionProfile is null
+        )
+        {
+            throw new InvalidOperationException(
+                "StartNode, EndNode, Material, and SectionProfile must be set before breaking the element."
+            );
+        }
+
+        var startNode = this.StartNode.ToNode();
+        var endNode = this.EndNode.ToNode();
+        for (int i = 0; i < this.InternalNodes.Count; i++)
+        {
+            var internalNode = this.InternalNodes[i].ToNode();
+
+            yield return CreateHydated(
+                this.ModelId,
+                startNode,
+                internalNode,
+                this.Material,
+                this.SectionProfile,
+                this.SectionProfileRotation,
+                new Element1dId(idGenerator(this.Id, i))
+            );
+            startNode = internalNode;
+        }
+
+        yield return CreateHydated(
+            this.ModelId,
+            startNode,
+            endNode,
+            this.Material,
+            this.SectionProfile,
+            this.SectionProfileRotation,
+            new Element1dId(idGenerator(this.Id, this.InternalNodes.Count))
+        );
+    }
+
+    public static Element1d CreateHydated(
+        ModelId modelId,
+        NodeBase startNode,
+        NodeBase endNode,
+        Material material,
+        SectionProfileInfoBase sectionProfile,
+        Angle sectionProfileRotation,
+        Element1dId id
+    )
+    {
+        if (startNode is null || endNode is null)
+        {
+            throw new ArgumentNullException(
+                "StartNode and EndNode must be set before creating an Element1d."
+            );
+        }
+
+        return new Element1d(modelId, startNode.Id, endNode.Id, material.Id, sectionProfile.Id)
+        {
+            StartNode = startNode,
+            EndNode = endNode,
+            Material = material,
+            SectionProfile = sectionProfile,
+            SectionProfileRotation = sectionProfileRotation,
+            Id = id,
+        };
+    }
+
+    private (NodeBase StartNode, NodeBase EndNode) GetNodesOrThrow()
+    {
+        if (this.StartNode is null || this.EndNode is null)
+        {
+            throw new InvalidOperationException(
+                "StartNode and EndNode must be set before accessing the nodes."
+            );
+        }
+        return (this.StartNode, this.EndNode);
+    }
+
+    public double[,] GetRotationMatrix()
+    {
+        var (startNode, endNode) = this.GetNodesOrThrow();
+        return GetRotationMatrix(
+            endNode.GetLocationPoint(),
+            startNode.GetLocationPoint(),
             this.SectionProfileRotation
         );
+    }
 
     public static double[,] GetRotationMatrix(
         Point endLocation,
@@ -118,12 +213,15 @@ public class Element1d : BeamOsModelEntity<Element1dId>
         };
     }
 
-    public double[,] GetTransformationMatrix() =>
-        GetTransformationMatrix(
-            this.EndNode.LocationPoint,
-            this.StartNode.LocationPoint,
+    public double[,] GetTransformationMatrix()
+    {
+        var (startNode, endNode) = this.GetNodesOrThrow();
+        return GetTransformationMatrix(
+            endNode.GetLocationPoint(),
+            startNode.GetLocationPoint(),
             this.SectionProfileRotation
         );
+    }
 
     public static double[,] GetTransformationMatrix(
         Point endLocation,
@@ -151,24 +249,23 @@ public class Element1d : BeamOsModelEntity<Element1dId>
     internal Point GetPointAtRatio(UnitsNet.Ratio ratioAlongElement1d)
     {
         var decimalFraction = ratioAlongElement1d.As(UnitsNet.Units.RatioUnit.DecimalFraction);
-        if (decimalFraction < 0 || decimalFraction > 1)
+        if (decimalFraction is < 0 or > 1)
         {
             throw new ArgumentOutOfRangeException(
                 nameof(ratioAlongElement1d),
                 "Ratio along element must be between 0 and 1."
             );
         }
-        var x =
-            this.StartNode.LocationPoint.X
-            + (this.EndNode.LocationPoint.X - this.StartNode.LocationPoint.X) * decimalFraction;
 
-        var y =
-            this.StartNode.LocationPoint.Y
-            + (this.EndNode.LocationPoint.Y - this.StartNode.LocationPoint.Y) * decimalFraction;
+        var (startNode, endNode) = this.GetNodesOrThrow();
+        var startLocation = startNode.GetLocationPoint();
+        var endLocation = endNode.GetLocationPoint();
 
-        var z =
-            this.StartNode.LocationPoint.Z
-            + (this.EndNode.LocationPoint.Z - this.StartNode.LocationPoint.Z) * decimalFraction;
+        var x = startLocation.X + (endLocation.X - startLocation.X) * decimalFraction;
+
+        var y = startLocation.Y + (endLocation.Y - startLocation.Y) * decimalFraction;
+
+        var z = startLocation.Z + (endLocation.Z - startLocation.Z) * decimalFraction;
 
         return new Point(x, y, z);
     }
@@ -176,88 +273,4 @@ public class Element1d : BeamOsModelEntity<Element1dId>
     [Obsolete("EF Core Constructor", true)]
     protected Element1d()
         : base() { }
-}
-
-public sealed class Element1dProposal
-    : BeamOsModelProposalEntity<Element1dProposalId, Element1d, Element1dId>
-{
-    public Element1dProposal(
-        ModelId modelId,
-        ModelProposalId modelProposalId,
-        ExistingOrProposedNodeId startNodeId,
-        ExistingOrProposedNodeId endNodeId,
-        ExistingOrProposedMaterialId materialId,
-        ExistingOrProposedSectionProfileId sectionProfileId,
-        Element1dId? existingId = null,
-        Element1dProposalId? id = null
-    )
-        : base(id ?? new(), modelProposalId, modelId, existingId)
-    {
-        this.StartNodeId = startNodeId;
-        this.EndNodeId = endNodeId;
-        this.MaterialId = materialId;
-        this.SectionProfileId = sectionProfileId;
-    }
-
-    public Element1dProposal(
-        Element1d element1d,
-        ModelProposalId modelProposalId,
-        ExistingOrProposedNodeId? startNodeId = null,
-        ExistingOrProposedNodeId? endNodeId = null,
-        ExistingOrProposedMaterialId? materialId = null,
-        ExistingOrProposedSectionProfileId? sectionProfileId = null,
-        Element1dProposalId? id = null
-    )
-        : this(
-            element1d.ModelId,
-            modelProposalId,
-            startNodeId ?? new(element1d.StartNodeId),
-            endNodeId ?? new(element1d.EndNodeId),
-            materialId ?? new(element1d.MaterialId),
-            sectionProfileId ?? new(element1d.SectionProfileId),
-            element1d.Id,
-            id
-        ) { }
-
-    public ExistingOrProposedNodeId StartNodeId { get; private set; }
-    public ExistingOrProposedNodeId EndNodeId { get; private set; }
-    public ExistingOrProposedMaterialId MaterialId { get; private set; }
-    public ExistingOrProposedSectionProfileId SectionProfileId { get; private set; }
-
-    public Element1d ToDomain(
-        Dictionary<NodeProposalId, Node>? nodeProposalIdToNewIdDict,
-        Dictionary<MaterialProposalId, Material>? materialProposalIdToNewIdDict,
-        Dictionary<
-            SectionProfileProposalId,
-            SectionProfileInfoBase
-        >? sectionProfileProposalIdToNewIdDict
-    )
-    {
-        var (startNodeId, startNode) = this.StartNodeId.ToIdAndEntity(nodeProposalIdToNewIdDict);
-        var (endNodeId, endNode) = this.EndNodeId.ToIdAndEntity(nodeProposalIdToNewIdDict);
-        var (materialId, material) = this.MaterialId.ToIdAndEntity(materialProposalIdToNewIdDict);
-        var (sectionProfileId, sectionProfile) = this.SectionProfileId.ToIdAndEntity(
-            sectionProfileProposalIdToNewIdDict
-        );
-        return new(
-            this.ModelId,
-            startNodeId,
-            endNodeId,
-            materialId,
-            sectionProfileId,
-            this.ExistingId
-        )
-        {
-            StartNode = startNode,
-            EndNode = endNode,
-            Material = material,
-            SectionProfile = sectionProfile,
-        };
-    }
-
-    [Obsolete("EF Core Constructor")]
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-    private Element1dProposal()
-        : base() { }
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }

@@ -38,7 +38,9 @@ public sealed class RunOpenSeesAnalysisCommandHandler(
                     .Include(m => m.Element1ds)
                     .ThenInclude(el => el.SectionProfile)
                     .Include(m => m.Element1ds)
-                    .ThenInclude(el => el.Material),
+                    .ThenInclude(el => el.Material)
+                    .Include(m => m.Element1ds)
+                    .ThenInclude(el => el.InternalNodes),
             ct
         );
 

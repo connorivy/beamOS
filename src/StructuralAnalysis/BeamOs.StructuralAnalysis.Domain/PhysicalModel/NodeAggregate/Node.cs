@@ -5,7 +5,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
-public class Node : BeamOsModelEntity<NodeId>
+public class Node : NodeBase
 {
     public Node(
         ModelId modelId,
@@ -22,22 +22,9 @@ public class Node : BeamOsModelEntity<NodeId>
     public Point LocationPoint { get; set; }
     public Restraint Restraint { get; set; }
 
-    public ICollection<PointLoad>? PointLoads { get; set; }
+    public override Point GetLocationPoint() => this.LocationPoint;
 
-    public ICollection<MomentLoad>? MomentLoads { get; set; }
-
-    [NotMapped]
-    public IEnumerable<Element1d>? Elements =>
-        this.StartNodeElements?.Union(
-            this.EndNodeElements
-                ?? throw new InvalidOperationException(
-                    "StartNodeElements is not null but EndNodeElements is null."
-                )
-        );
-    public ICollection<Element1d>? StartNodeElements { get; set; }
-    public ICollection<Element1d>? EndNodeElements { get; set; }
-
-    //public NodeResult? NodeResult { get; private set; }
+    public override Node ToNode() => this;
 
     public Forces GetForcesInGlobalCoordinates(LoadCombination loadCombination)
     {
@@ -84,5 +71,39 @@ public class Node : BeamOsModelEntity<NodeId>
     [Obsolete("EF Core Constructor", true)]
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     protected Node() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+}
+
+public abstract class NodeBase : BeamOsModelEntity<NodeId>
+{
+    protected NodeBase(NodeId id, ModelId modelId)
+        : base(id, modelId)
+    {
+        this.StartNodeElements = new HashSet<Element1d>();
+        this.EndNodeElements = new HashSet<Element1d>();
+        this.PointLoads = new HashSet<PointLoad>();
+        this.MomentLoads = new HashSet<MomentLoad>();
+    }
+
+    public ICollection<PointLoad> PointLoads { get; set; }
+    public ICollection<MomentLoad> MomentLoads { get; set; }
+    public ICollection<Element1d> StartNodeElements { get; set; }
+    public ICollection<Element1d> EndNodeElements { get; set; }
+
+    public abstract Point GetLocationPoint();
+    public abstract Node ToNode();
+
+    [NotMapped]
+    public IEnumerable<Element1d>? Elements =>
+        this.StartNodeElements?.Union(
+            this.EndNodeElements
+                ?? throw new InvalidOperationException(
+                    "StartNodeElements is not null but EndNodeElements is null."
+                )
+        );
+
+    [Obsolete("EF Core Constructor", true)]
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    protected NodeBase() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }

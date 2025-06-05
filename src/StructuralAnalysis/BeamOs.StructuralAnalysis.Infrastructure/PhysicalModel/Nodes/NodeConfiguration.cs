@@ -15,18 +15,18 @@ public class NodeConfiguration : IEntityTypeConfiguration<Node>
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder
-            .HasMany(n => n.PointLoads)
-            .WithOne()
-            .HasForeignKey(el => new { el.NodeId, el.ModelId })
-            .IsRequired()
-            .OnDelete(DeleteBehavior.ClientCascade);
+        // builder
+        //     .HasMany(n => n.PointLoads)
+        //     .WithOne()
+        //     .HasForeignKey(el => new { el.NodeId, el.ModelId })
+        //     .IsRequired()
+        //     .OnDelete(DeleteBehavior.ClientCascade);
 
-        builder
-            .HasMany(n => n.MomentLoads)
-            .WithOne()
-            .HasForeignKey(el => new { el.NodeId, el.ModelId })
-            .IsRequired()
-            .OnDelete(DeleteBehavior.ClientCascade);
+        // builder
+        //     .HasMany(n => n.MomentLoads)
+        //     .WithOne()
+        //     .HasForeignKey(el => new { el.NodeId, el.ModelId })
+        //     .IsRequired()
+        //     .OnDelete(DeleteBehavior.ClientCascade);
     }
 }

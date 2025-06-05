@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
@@ -6,7 +5,7 @@ using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
-public class InternalNode : BeamOsModelEntity<NodeId>
+public class InternalNode : NodeBase
 {
     public InternalNode(
         ModelId modelId,
@@ -24,36 +23,21 @@ public class InternalNode : BeamOsModelEntity<NodeId>
     public Element1dId Element1dId { get; set; }
     public Element1d? Element1d { get; set; }
 
-    [NotMapped]
-    public IEnumerable<Element1d>? Elements =>
-        this.StartNodeElements?.Union(
-            this.EndNodeElements
-                ?? throw new InvalidOperationException(
-                    "StartNodeElements is not null but EndNodeElements is null."
-                )
-        );
-    public ICollection<Element1d>? StartNodeElements { get; set; }
-    public ICollection<Element1d>? EndNodeElements { get; set; }
-    public ICollection<PointLoad>? PointLoads { get; set; }
-    public ICollection<MomentLoad>? MomentLoads { get; set; }
-
-    public Point GetLocationPoint(Element1d element1d)
+    public override Point GetLocationPoint()
     {
-        if (this.Element1dId != element1d.Id)
+        if (this.Element1d is null)
         {
             throw new InvalidOperationException(
-                "The Element1dId of the InternalNode does not match the provided Element1d."
+                "Element1d must be set before calculating the location point."
             );
         }
 
-        if (element1d.StartNode is null || element1d.EndNode is null)
-        {
-            throw new InvalidOperationException(
-                "Element1d must have both StartNode and EndNode defined to calculate the location point."
-            );
-        }
+        return this.Element1d.GetPointAtRatio(this.RatioAlongElement1d);
+    }
 
-        return element1d.GetPointAtRatio(this.RatioAlongElement1d);
+    public override Node ToNode()
+    {
+        return new(this.ModelId, this.GetLocationPoint(), Restraint.Free, this.Id);
     }
 
     public Forces GetForcesInGlobalCoordinates(LoadCombination loadCombination)

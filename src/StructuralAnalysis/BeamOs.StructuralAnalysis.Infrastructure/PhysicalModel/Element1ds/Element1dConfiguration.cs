@@ -36,6 +36,14 @@ public class Element1dConfiguration : IEntityTypeConfiguration<Element1d>
             .IsRequired()
             .OnDelete(DeleteBehavior.ClientCascade);
 
+        _ = builder
+            .HasMany(el => el.InternalNodes)
+            .WithOne(el => el.Element1d)
+            .HasPrincipalKey(el => new { el.Id, el.ModelId })
+            .HasForeignKey(el => new { el.Element1dId, el.ModelId })
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+
         //_ = builder
         //    .HasMany(el => el.ShearForceDiagrams)
         //    .WithOne(el => el.Element1d)
