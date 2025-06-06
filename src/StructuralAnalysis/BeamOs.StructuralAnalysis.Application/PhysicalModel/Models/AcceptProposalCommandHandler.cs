@@ -15,7 +15,7 @@ namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 
 public class AcceptModelProposalCommandHandler(
     IModelProposalRepository modelProposalRepository,
-    INodeRepository nodeRepository,
+    INodeDefinitionRepository nodeRepository,
     IMaterialRepository materialRepository,
     ISectionProfileRepository sectionProfileRepository,
     ISectionProfileFromLibraryRepository sectionProfileFromLibraryRepository,

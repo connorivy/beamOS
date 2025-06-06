@@ -6,7 +6,7 @@ using BeamOs.StructuralAnalysis.Domain.Common;
 namespace BeamOs.StructuralAnalysis.Application.Common;
 
 public abstract class PutCommandHandlerBase<TId, TEntity, TPutCommand, TResponse>(
-    IModelResourceRepository<TId, TEntity> repository,
+    IModelResourceRepositoryIn<TId, TEntity> repository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<TPutCommand, TResponse>
     where TId : struct, IIntBasedId

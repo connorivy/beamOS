@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using BeamOs.StructuralAnalysis.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
 {
     [DbContext(typeof(StructuralAnalysisDbContext))]
-    partial class StructuralAnalysisDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250606191325_AddNodeDefinition")]
+    partial class AddNodeDefinition
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -781,11 +784,11 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                                 .HasColumnType("double precision");
                         });
 
-                    b.ComplexProperty<Dictionary<string, object>>("SpatialNodeDefinition", "BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate.NodeDefinition.SpatialNodeDefinition#SpatialNodeDefinition", b1 =>
+                    b.ComplexProperty<Dictionary<string, object>>("SpacialNodeDefinition", "BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate.NodeDefinition.SpacialNodeDefinition#SpacialNodeDefinition", b1 =>
                         {
                             b1.IsRequired();
 
-                            b1.ComplexProperty<Dictionary<string, object>>("LocationPoint", "BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate.NodeDefinition.SpatialNodeDefinition#SpatialNodeDefinition.LocationPoint#Point", b2 =>
+                            b1.ComplexProperty<Dictionary<string, object>>("LocationPoint", "BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate.NodeDefinition.SpacialNodeDefinition#SpacialNodeDefinition.LocationPoint#Point", b2 =>
                                 {
                                     b2.IsRequired();
 
@@ -799,7 +802,7 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                                         .HasColumnType("double precision");
                                 });
 
-                            b1.ComplexProperty<Dictionary<string, object>>("Restraint", "BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate.NodeDefinition.SpatialNodeDefinition#SpatialNodeDefinition.Restraint#Restraint", b2 =>
+                            b1.ComplexProperty<Dictionary<string, object>>("Restraint", "BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate.NodeDefinition.SpacialNodeDefinition#SpacialNodeDefinition.Restraint#Restraint", b2 =>
                                 {
                                     b2.IsRequired();
 

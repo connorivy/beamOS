@@ -47,7 +47,7 @@ public sealed class InMemoryProposalIssueRepository(
 
 public sealed class InMemoryModelRepository(
     InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage,
-    [FromKeyedServices("InMemory")] INodeRepository nodeRepository,
+    [FromKeyedServices("InMemory")] INodeDefinitionRepository nodeRepository,
     [FromKeyedServices("InMemory")] IElement1dRepository element1dRepository,
     [FromKeyedServices("InMemory")] IMaterialRepository materialRepository,
     [FromKeyedServices("InMemory")] ISectionProfileRepository sectionProfileRepository,
@@ -77,7 +77,7 @@ public sealed class InMemoryModelRepository(
             return null;
         }
 
-        model.Nodes = await nodeRepository.GetMany(modelId, null, ct);
+        // model.Nodes = await nodeRepository.GetMany(modelId, null, ct);
         model.Element1ds = await element1dRepository.GetMany(modelId, null, ct);
         model.Materials = await materialRepository.GetMany(modelId, null, ct);
         model.SectionProfiles = await sectionProfileRepository.GetMany(modelId, null, ct);

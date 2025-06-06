@@ -9,7 +9,7 @@ public class MomentLoadConfiguration : IEntityTypeConfiguration<MomentLoad>
     public void Configure(EntityTypeBuilder<MomentLoad> builder)
     {
         builder
-            .HasOne<NodeBase>()
+            .HasOne<NodeDefinition>()
             .WithMany(el => el.MomentLoads)
             .HasForeignKey(el => new { el.NodeId, el.ModelId })
             .IsRequired()

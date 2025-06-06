@@ -5,7 +5,7 @@ using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
-public class InternalNode : NodeBase
+public class InternalNode : NodeDefinition
 {
     public InternalNode(
         ModelId modelId,
@@ -13,7 +13,7 @@ public class InternalNode : NodeBase
         Element1dId element1DId,
         NodeId? id = null
     )
-        : base(id ?? new(), modelId)
+        : base(modelId, element1DId, ratioAlongElement1d, id)
     {
         this.RatioAlongElement1d = ratioAlongElement1d;
         this.Element1dId = element1DId;
@@ -23,22 +23,22 @@ public class InternalNode : NodeBase
     public Element1dId Element1dId { get; set; }
     public Element1d? Element1d { get; set; }
 
-    public override Point GetLocationPoint()
-    {
-        if (this.Element1d is null)
-        {
-            throw new InvalidOperationException(
-                "Element1d must be set before calculating the location point."
-            );
-        }
+    // public override Point GetLocationPoint()
+    // {
+    //     if (this.Element1d is null)
+    //     {
+    //         throw new InvalidOperationException(
+    //             "Element1d must be set before calculating the location point."
+    //         );
+    //     }
 
-        return this.Element1d.GetPointAtRatio(this.RatioAlongElement1d);
-    }
+    //     return this.Element1d.GetPointAtRatio(this.RatioAlongElement1d);
+    // }
 
-    public override Node ToNode()
-    {
-        return new(this.ModelId, this.GetLocationPoint(), Restraint.Free, this.Id);
-    }
+    // public override Node ToNode()
+    // {
+    //     return new(this.ModelId, this.GetLocationPoint(), Restraint.Free, this.Id);
+    // }
 
     public Forces GetForcesInGlobalCoordinates(LoadCombination loadCombination)
     {

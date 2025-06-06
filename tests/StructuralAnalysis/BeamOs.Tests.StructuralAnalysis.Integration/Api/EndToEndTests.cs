@@ -301,7 +301,7 @@ public class EndToEndTests
     [DependsOn(nameof(CreateElement1d_ShouldCreateElement1d))]
     public async Task CreateInternalNode_ShouldCreateInternalNode()
     {
-        CreateInternalNodeRequest requestBody = new(99, new(50, RatioUnit.Percent));
+        CreateInternalNodeRequest requestBody = new(99, new(50, RatioUnit.Percent), 10);
 
         var internalNodeResponseResult =
             await AssemblySetup.StructuralAnalysisApiClient.CreateInternalNodeAsync(
@@ -310,6 +310,26 @@ public class EndToEndTests
             );
 
         await Verify(internalNodeResponseResult)
+            .ScrubMembers(l =>
+                typeof(IHasIntId).IsAssignableFrom(l.DeclaringType) && l.Name == "Id"
+            );
+    }
+
+    [Test]
+    [DependsOn(nameof(CreateInternalNode_ShouldCreateInternalNode))]
+    public async Task ChangeInternalNodeToSpatial_ShouldChangeNode()
+    {
+        var x = await AssemblySetup.StructuralAnalysisApiClient.PutNodeAsync(
+            10,
+            modelId,
+            new NodeData()
+            {
+                LocationPoint = new(50, 50, 50, LengthUnitContract.Meter),
+                Restraint = Restraint.PinnedXyPlane,
+            }
+        );
+
+        await Verify(x)
             .ScrubMembers(l =>
                 typeof(IHasIntId).IsAssignableFrom(l.DeclaringType) && l.Name == "Id"
             );
@@ -343,6 +363,24 @@ public class EndToEndTests
         );
 
         await Verify(nodeResponseResult);
+    }
+
+    [Test]
+    [DependsOn(nameof(UpdateNode_WithPartialLocation_ShouldPartiallyUpdate))]
+    [DependsOn(nameof(CreateElement1d_ShouldCreateElement1d))]
+    public async Task ChangeSpatialNodeToInternal_ShouldChangeNode()
+    {
+        var changeToInternal = await AssemblySetup.StructuralAnalysisApiClient.PutInternalNodeAsync(
+            modelId,
+            5,
+            new InternalNodeData(99, new(50, RatioUnit.Percent))
+        );
+        changeToInternal.ThrowIfError();
+
+        var internalNodeResponseResult =
+            await AssemblySetup.StructuralAnalysisApiClient.GetInternalNodeAsync(modelId, 5);
+
+        await Verify(internalNodeResponseResult);
     }
 
     [Test]

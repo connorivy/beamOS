@@ -35,11 +35,10 @@ public static class DI
         services.AddKeyedScoped<IStructuralAnalysisApiClientV1, InMemoryApiClient>("InMemory");
         services.AddScoped<InMemoryModelRepositoryStorage>();
         services.AddKeyedScoped<IStructuralAnalysisUnitOfWork, InMemoryUnitOfWork>("InMemory");
-        services.AddKeyedScoped<INodeRepository, InMemoryNodeRepository>("InMemory");
-        services.AddKeyedScoped<IInternalNodeRepository, InMemoryInternalNodeRepository>(
+        services.AddKeyedScoped<IModelRepository, InMemoryModelRepository>("InMemory");
+        services.AddKeyedScoped<INodeDefinitionRepository, InMemoryNodeDefinitionRepository>(
             "InMemory"
         );
-        services.AddKeyedScoped<IModelRepository, InMemoryModelRepository>("InMemory");
         services.AddKeyedScoped<IMaterialRepository, InMemoryMaterialRepository>("InMemory");
         services.AddKeyedScoped<ISectionProfileRepository, InMemorySectionProfileRepository>(
             "InMemory"

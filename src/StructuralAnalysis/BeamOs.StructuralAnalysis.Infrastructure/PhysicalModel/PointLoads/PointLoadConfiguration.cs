@@ -16,7 +16,7 @@ public class PointLoadConfiguration : IEntityTypeConfiguration<PointLoad>
             .OnDelete(DeleteBehavior.Cascade);
 
         builder
-            .HasOne<NodeBase>()
+            .HasOne<NodeDefinition>()
             .WithMany(el => el.PointLoads)
             .HasForeignKey(el => new { el.NodeId, el.ModelId })
             .IsRequired()

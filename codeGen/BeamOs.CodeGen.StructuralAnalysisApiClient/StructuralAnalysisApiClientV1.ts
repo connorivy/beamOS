@@ -82,6 +82,17 @@ export interface IStructuralAnalysisApiClientV1 {
     batchPutNode(modelId: string, body: PutNodeRequest[]): Promise<ResultOfBatchResponse>;
 
     /**
+     * @return OK
+     */
+    getInternalNode(modelId: string, id: number): Promise<ResultOfInternalNode>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    putInternalNode(modelId: string, id: number, body: InternalNodeData | null | undefined): Promise<ResultOfInternalNode>;
+
+    /**
      * @param body (optional) 
      * @return OK
      */
@@ -92,17 +103,6 @@ export interface IStructuralAnalysisApiClientV1 {
      * @return OK
      */
     batchPutInternalNode(modelId: string, body: InternalNode2[] | null | undefined): Promise<ResultOfBatchResponse>;
-
-    /**
-     * @param body (optional) 
-     * @return OK
-     */
-    putInternalNode(modelId: string, body: InternalNodeData | null | undefined): Promise<ResultOfInternalNode>;
-
-    /**
-     * @return OK
-     */
-    deleteInternalNode(modelId: string, id: number): Promise<ResultOfModelEntityResponse>;
 
     /**
      * @return OK
@@ -947,6 +947,97 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     }
 
     /**
+     * @return OK
+     */
+    getInternalNode(modelId: string, id: number): Promise<ResultOfInternalNode> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/nodes/{id}/internal";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetInternalNode(_response);
+        });
+    }
+
+    protected processGetInternalNode(response: Response): Promise<ResultOfInternalNode> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfInternalNode.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfInternalNode>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    putInternalNode(modelId: string, id: number, body: InternalNodeData | null | undefined): Promise<ResultOfInternalNode> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/nodes/{id}/internal";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPutInternalNode(_response);
+        });
+    }
+
+    protected processPutInternalNode(response: Response): Promise<ResultOfInternalNode> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfInternalNode.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfInternalNode>(null as any);
+    }
+
+    /**
      * @param body (optional) 
      * @return OK
      */
@@ -1034,94 +1125,6 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             });
         }
         return Promise.resolve<ResultOfBatchResponse>(null as any);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return OK
-     */
-    putInternalNode(modelId: string, body: InternalNodeData | null | undefined): Promise<ResultOfInternalNode> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/nodes/internal/{id}";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processPutInternalNode(_response);
-        });
-    }
-
-    protected processPutInternalNode(response: Response): Promise<ResultOfInternalNode> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfInternalNode.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<ResultOfInternalNode>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    deleteInternalNode(modelId: string, id: number): Promise<ResultOfModelEntityResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/nodes/internal/{id}";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "DELETE",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDeleteInternalNode(_response);
-        });
-    }
-
-    protected processDeleteInternalNode(response: Response): Promise<ResultOfModelEntityResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfModelEntityResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<ResultOfModelEntityResponse>(null as any);
     }
 
     /**

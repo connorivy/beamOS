@@ -5,7 +5,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.Common;
 
-public interface IRepository<TId, T>
+public interface IRepository<TId, in T>
     where TId : struct
     where T : BeamOsEntity<TId>
 {
@@ -22,11 +22,19 @@ public interface IRepository<TId, T>
     public void ClearChangeTracker();
 }
 
-public interface IModelResourceRepository<TId, T> : IRepository<TId, T>
+public interface IModelResourceRepositoryIn<TId, in T> : IRepository<TId, T>
     where TId : struct, IIntBasedId
     where T : BeamOsModelEntity<TId>
 {
     public Task<List<TId>> GetIdsInModel(ModelId modelId, CancellationToken ct = default);
+    public Task RemoveById(ModelId modelId, TId id, CancellationToken ct = default);
+    public Task ReloadEntity(T entity, CancellationToken ct = default);
+}
+
+public interface IModelResourceRepository<TId, T> : IModelResourceRepositoryIn<TId, T>
+    where TId : struct, IIntBasedId
+    where T : BeamOsModelEntity<TId>
+{
     public Task<List<T>> GetMany(ModelId modelId, IList<TId>? ids, CancellationToken ct = default);
     public Task<T?> GetSingle(ModelId modelId, TId id, CancellationToken ct = default);
     public Task<ModelSettingsAndEntity<T>?> GetSingleWithModelSettings(
@@ -34,8 +42,6 @@ public interface IModelResourceRepository<TId, T> : IRepository<TId, T>
         TId id,
         CancellationToken ct = default
     );
-    public Task RemoveById(ModelId modelId, TId id, CancellationToken ct = default);
-    public Task ReloadEntity(T entity, CancellationToken ct = default);
 }
 
 public interface IAnalyticalResultRepository<TId, T> : IRepository<TId, T>

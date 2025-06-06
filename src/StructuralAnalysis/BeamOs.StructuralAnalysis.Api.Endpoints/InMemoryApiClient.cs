@@ -137,11 +137,18 @@ public partial class InMemoryApiClient : IStructuralAnalysisApiClientV1
         CancellationToken cancellationToken
     ) => new() { ModelId = modelId, Body = body.ToArray() };
 
-    private partial ModelResourceRequest<InternalNodeData> CreateInternalNodeData_Command(
+    private partial ModelResourceWithIntIdRequest<InternalNodeData> CreateInternalNodeData_Command(
         Guid modelId,
+        int id,
         InternalNodeData body,
         CancellationToken cancellationToken
-    ) => new() { ModelId = modelId, Body = body };
+    ) =>
+        new()
+        {
+            Id = id,
+            ModelId = modelId,
+            Body = body,
+        };
 
     private partial PutNodeCommand CreatePutNodeCommandCommand(
         int id,

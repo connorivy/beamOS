@@ -43,7 +43,9 @@ public static class DependencyInjection
         this IServiceCollection services
     )
     {
-        _ = services.AddScoped<INodeRepository, NodeRepository>();
+        // _ = services.AddScoped<INodeRepository, NodeRepository>();
+        // _ = services.AddScoped<IInternalNodeRepository, InternalNodeRepository>();
+        _ = services.AddScoped<INodeDefinitionRepository, NodeDefinitionRepository>();
         _ = services.AddScoped<IModelRepository, ModelRepository>();
         _ = services.AddScoped<IMaterialRepository, MaterialRepository>();
         _ = services.AddScoped<ISectionProfileRepository, SectionProfileRepository>();
@@ -61,7 +63,6 @@ public static class DependencyInjection
         _ = services.AddScoped<IEnvelopeResultSetRepository, EnvelopeResultSetRepository>();
         _ = services.AddScoped<IModelProposalRepository, ModelProposalRepository>();
         _ = services.AddScoped<IProposalIssueRepository, ProposalIssueRepository>();
-        _ = services.AddScoped<IInternalNodeRepository, InternalNodeRepository>();
 
         _ = services.AddScoped<IStructuralAnalysisUnitOfWork, UnitOfWork>();
 

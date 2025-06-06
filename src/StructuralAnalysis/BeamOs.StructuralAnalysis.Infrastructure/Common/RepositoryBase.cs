@@ -41,9 +41,9 @@ internal abstract class RepositoryBase<TId, TEntity>(StructuralAnalysisDbContext
     }
 }
 
-internal abstract class ModelResourceRepositoryBase<TId, TEntity>(
+internal abstract class ModelResourceRepositoryInBase<TId, TEntity>(
     StructuralAnalysisDbContext dbContext
-) : RepositoryBase<TId, TEntity>(dbContext), IModelResourceRepository<TId, TEntity>
+) : RepositoryBase<TId, TEntity>(dbContext), IModelResourceRepositoryIn<TId, TEntity>
     where TId : struct, IEquatable<TId>, IIntBasedId
     where TEntity : BeamOsModelEntity<TId>
 {
@@ -54,6 +54,27 @@ internal abstract class ModelResourceRepositoryBase<TId, TEntity>(
             .Select(m => m.Id)
             .ToListAsync(ct);
 
+    public async Task RemoveById(ModelId modelId, TId id, CancellationToken ct = default)
+    {
+        var entity = await this.DbContext.Set<TEntity>().FindAsync([id, modelId], ct);
+        if (entity is not null)
+        {
+            this.DbContext.Set<TEntity>().Remove(entity);
+        }
+    }
+
+    public async Task ReloadEntity(TEntity entity, CancellationToken ct = default)
+    {
+        await this.DbContext.Entry(entity).ReloadAsync(ct);
+    }
+}
+
+internal abstract class ModelResourceRepositoryBase<TId, TEntity>(
+    StructuralAnalysisDbContext dbContext
+) : ModelResourceRepositoryInBase<TId, TEntity>(dbContext), IModelResourceRepository<TId, TEntity>
+    where TId : struct, IEquatable<TId>, IIntBasedId
+    where TEntity : BeamOsModelEntity<TId>
+{
     public virtual async Task<TEntity?> GetSingle(
         ModelId modelId,
         TId id,
@@ -86,20 +107,6 @@ internal abstract class ModelResourceRepositoryBase<TId, TEntity>(
                 settingAndEntity.ModelSettings,
                 settingAndEntity.Entity
             );
-    }
-
-    public async Task RemoveById(ModelId modelId, TId id, CancellationToken ct = default)
-    {
-        var entity = await this.DbContext.Set<TEntity>().FindAsync([id, modelId], ct);
-        if (entity is not null)
-        {
-            this.DbContext.Set<TEntity>().Remove(entity);
-        }
-    }
-
-    public async Task ReloadEntity(TEntity entity, CancellationToken ct = default)
-    {
-        await this.DbContext.Entry(entity).ReloadAsync(ct);
     }
 
     public virtual Task<List<TEntity>> GetMany(

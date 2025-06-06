@@ -1,0 +1,14 @@
+﻿{
+  Value: {
+    Id: 5,
+    Element1dId: 99,
+    RatioAlongElement1d: {
+      Value: 0.5,
+      Unit: DecimalFraction
+    },
+    Metadata: null
+  },
+  Error: null,
+  IsError: false,
+  IsSuccess: true
+}

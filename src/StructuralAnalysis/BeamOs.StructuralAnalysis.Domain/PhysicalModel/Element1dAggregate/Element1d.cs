@@ -26,9 +26,9 @@ public class Element1d : BeamOsModelEntity<Element1dId>
     }
 
     public NodeId StartNodeId { get; set; }
-    public NodeBase? StartNode { get; set; }
+    public NodeDefinition? StartNode { get; set; }
     public NodeId EndNodeId { get; set; }
-    public NodeBase? EndNode { get; set; }
+    public NodeDefinition? EndNode { get; set; }
     public MaterialId MaterialId { get; set; }
     public Material? Material { get; set; }
     public SectionProfileId SectionProfileId { get; set; }
@@ -116,8 +116,8 @@ public class Element1d : BeamOsModelEntity<Element1dId>
 
     public static Element1d CreateHydated(
         ModelId modelId,
-        NodeBase startNode,
-        NodeBase endNode,
+        NodeDefinition startNode,
+        NodeDefinition endNode,
         Material material,
         SectionProfileInfoBase sectionProfile,
         Angle sectionProfileRotation,
@@ -142,7 +142,7 @@ public class Element1d : BeamOsModelEntity<Element1dId>
         };
     }
 
-    private (NodeBase StartNode, NodeBase EndNode) GetNodesOrThrow()
+    private (NodeDefinition StartNode, NodeDefinition EndNode) GetNodesOrThrow()
     {
         if (this.StartNode is null || this.EndNode is null)
         {

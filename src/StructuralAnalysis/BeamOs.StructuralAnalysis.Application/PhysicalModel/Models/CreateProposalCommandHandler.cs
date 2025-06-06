@@ -26,7 +26,7 @@ namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 public class CreateModelProposalCommandHandler(
     IModelRepository modelRepository,
     IModelProposalRepository modelProposalRepository,
-    INodeRepository nodeRepository,
+    INodeDefinitionRepository nodeRepository,
     IElement1dRepository element1dRepository,
     IMaterialRepository materialRepository,
     ISectionProfileRepository sectionProfileRepository,
@@ -58,6 +58,16 @@ public class CreateModelProposalCommandHandler(
             command.Body.ModifyNodeProposals?.Select(n => new NodeId(n.Id)).ToList(),
             ct
         );
+        var existingNodes = await nodeRepository.GetMany(
+            command.ModelId,
+            command.Body.ModifyNodeProposals?.Select(n => new NodeId(n.Id)).ToList(),
+            ct
+        );
+        var existingSpatialNodes = existingNodes
+            .Select(n => n.CastToNodeIfApplicable())
+            .OfType<Node>()
+            .ToDictionary(n => n.Id.Id, n => n);
+
         var existingElementsToBeModified = await GetExistingEntities(
             element1dRepository,
             command.ModelId,
@@ -88,7 +98,7 @@ public class CreateModelProposalCommandHandler(
         }
         foreach (var node in command.Body.ModifyNodeProposals ?? [])
         {
-            var existingNode = existingNodesToBeModified[node.Id];
+            var existingNode = existingSpatialNodes[node.Id];
             var nodeProposal = node.ToProposalDomain(existingNode, modelProposal.Id);
             modelProposal.NodeProposals.Add(nodeProposal);
         }

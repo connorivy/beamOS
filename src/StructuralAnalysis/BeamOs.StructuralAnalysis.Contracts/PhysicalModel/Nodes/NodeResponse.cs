@@ -4,6 +4,8 @@ using BeamOs.StructuralAnalysis.Contracts.Common;
 
 namespace BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 
+public record NodeDefinition(int Id);
+
 public record NodeResponse : IModelEntity
 {
     public NodeResponse() { }

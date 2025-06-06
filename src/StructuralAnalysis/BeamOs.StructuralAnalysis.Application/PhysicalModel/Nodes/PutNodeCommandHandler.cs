@@ -11,7 +11,7 @@ using Riok.Mapperly.Abstractions;
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 
 public class PutNodeCommandHandler(
-    INodeRepository nodeRepository,
+    INodeDefinitionRepository nodeRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<PutNodeCommand, NodeResponse>
 {
@@ -29,18 +29,18 @@ public class PutNodeCommandHandler(
 }
 
 public sealed class PutInternalNodeCommandHandler(
-    IInternalNodeRepository nodeRepository,
+    INodeDefinitionRepository nodeRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 )
     : PutCommandHandlerBase<
         NodeId,
         InternalNode,
-        ModelResourceRequest<InternalNodeData>,
+        ModelResourceWithIntIdRequest<InternalNodeData>,
         InternalNodeContract
     >(nodeRepository, unitOfWork)
 {
     protected override InternalNode ToDomainObject(
-        ModelResourceRequest<InternalNodeData> putCommand
+        ModelResourceWithIntIdRequest<InternalNodeData> putCommand
     ) => putCommand.ToDomainObject();
 
     protected override InternalNodeContract ToResponse(InternalNode entity) => entity.ToResponse();
@@ -59,7 +59,7 @@ public static partial class PutNodeCommandMapper
 
     [MapNestedProperties(nameof(ModelResourceRequest<>.Body))]
     public static partial InternalNode ToDomainObject(
-        this ModelResourceRequest<InternalNodeData> command
+        this ModelResourceWithIntIdRequest<InternalNodeData> command
     );
 
     [MapNestedProperties(nameof(ModelResourceRequest<>.Body))]
