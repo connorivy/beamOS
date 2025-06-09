@@ -11,6 +11,7 @@ public class MomentLoadConfiguration : IEntityTypeConfiguration<MomentLoad>
         builder
             .HasOne<NodeDefinition>()
             .WithMany(el => el.MomentLoads)
+            .HasPrincipalKey(el => new { el.Id, el.ModelId })
             .HasForeignKey(el => new { el.NodeId, el.ModelId })
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);

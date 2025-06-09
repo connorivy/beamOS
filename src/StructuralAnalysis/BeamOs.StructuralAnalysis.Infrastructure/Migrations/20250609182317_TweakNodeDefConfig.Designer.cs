@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using BeamOs.StructuralAnalysis.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
 {
     [DbContext(typeof(StructuralAnalysisDbContext))]
-    partial class StructuralAnalysisDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250609182317_TweakNodeDefConfig")]
+    partial class TweakNodeDefConfig
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

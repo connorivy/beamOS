@@ -27,6 +27,10 @@ public abstract class BeamOsModelBuilder
 
     public IEnumerable<PutNodeRequest> Nodes => this.NodeRequests();
     public abstract IEnumerable<PutNodeRequest> NodeRequests();
+    public IEnumerable<InternalNode> InternalNodes => this.InternalNodeRequests();
+
+    public virtual IEnumerable<InternalNode> InternalNodeRequests() => [];
+
     public IEnumerable<PutMaterialRequest> Materials => this.MaterialRequests();
     public abstract IEnumerable<PutMaterialRequest> MaterialRequests();
     public IEnumerable<PutSectionProfileRequest> SectionProfiles => this.SectionProfileRequests();
@@ -57,7 +61,7 @@ public abstract class BeamOsModelBuilder
 
     public abstract IEnumerable<LoadCombination> LoadCombinationRequests();
 
-    private static AsyncGuidLockManager lockManager = new();
+    private static readonly AsyncGuidLockManager LockManager = new();
 
     private async Task<bool> Build(IStructuralAnalysisApiClientV1 apiClient, bool createOnly)
     {
@@ -66,7 +70,7 @@ public abstract class BeamOsModelBuilder
             throw new Exception("Guid string is not formatted correctly");
         }
 
-        return await lockManager.ExecuteWithLockAsync(
+        return await LockManager.ExecuteWithLockAsync(
             modelId,
             async () =>
             {

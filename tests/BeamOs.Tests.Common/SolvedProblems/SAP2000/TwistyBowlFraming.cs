@@ -1,6 +1,5 @@
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCombinations;
-using UnitsNet.Units;
 
 namespace BeamOs.Tests.Common.SolvedProblems.SAP2000;
 

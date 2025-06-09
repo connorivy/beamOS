@@ -11,14 +11,17 @@ public class InternalNode : NodeDefinition
         ModelId modelId,
         Ratio ratioAlongElement1d,
         Element1dId element1DId,
+        Restraint? restraint = null,
         NodeId? id = null
     )
-        : base(modelId, element1DId, ratioAlongElement1d, id)
+        : base(modelId, element1DId, ratioAlongElement1d, restraint, id)
     {
         this.RatioAlongElement1d = ratioAlongElement1d;
         this.Element1dId = element1DId;
+        this.Restraint = restraint ?? Restraint.Free;
     }
 
+    public Restraint Restraint { get; set; }
     public Ratio RatioAlongElement1d { get; set; }
     public Element1dId Element1dId { get; set; }
     public Element1d? Element1d { get; set; }

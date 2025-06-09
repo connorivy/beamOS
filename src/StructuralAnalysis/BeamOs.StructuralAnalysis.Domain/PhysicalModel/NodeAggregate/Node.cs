@@ -98,6 +98,7 @@ public class NodeDefinition : BeamOsModelEntity<NodeId>
         ModelId modelId,
         Element1dId element1dId,
         Ratio ratioAlongElement1d,
+        Restraint? restraint = null,
         NodeId? id = null
     )
         : base(id ?? new(), modelId)
@@ -107,6 +108,7 @@ public class NodeDefinition : BeamOsModelEntity<NodeId>
         {
             RatioAlongElement1d = ratioAlongElement1d,
             Element1dId = element1dId,
+            Restraint = restraint ?? Restraint.Free,
         };
         this.SpatialNodeDefinition = SpatialNodeDefinition.Default;
     }
@@ -155,6 +157,7 @@ public class NodeDefinition : BeamOsModelEntity<NodeId>
             this.ModelId,
             this.InternalNodeDefinition.RatioAlongElement1d,
             this.InternalNodeDefinition.Element1dId,
+            this.InternalNodeDefinition.Restraint,
             this.Id
         )
         {
@@ -274,6 +277,7 @@ public sealed class InternalNodeDefinition : BeamOSValueObject
 {
     public required Ratio RatioAlongElement1d { get; set; }
     public required Element1dId Element1dId { get; set; }
+    public required Restraint Restraint { get; set; }
 
     protected override IEnumerable<object> GetEqualityComponents()
     {
@@ -282,7 +286,12 @@ public sealed class InternalNodeDefinition : BeamOSValueObject
     }
 
     public static InternalNodeDefinition Default { get; } =
-        new InternalNodeDefinition { RatioAlongElement1d = Ratio.Zero, Element1dId = 0 };
+        new InternalNodeDefinition
+        {
+            RatioAlongElement1d = Ratio.Zero,
+            Element1dId = 0,
+            Restraint = Restraint.Free,
+        };
 }
 
 public sealed class SpatialNodeDefinition : BeamOSValueObject

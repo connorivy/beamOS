@@ -1,4 +1,3 @@
-using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd;
 using BeamOs.Tests.Common.SolvedProblems.SAP2000;
 using BeamOs.Tests.Common.SolvedProblems.Udoeyo_StructuralAnalysis;
@@ -13,6 +12,7 @@ public static class AllSolvedProblems
         yield return new Kassimali_Example8_4();
         yield return new Udoeyo_Example7_7();
         yield return new TwistyBowlFraming();
+        yield return new Udoeyo_Example11_2();
     }
 
     public static IEnumerable<ModelFixture> ModelFixturesWithStructuralStiffnessMatrix()

@@ -18,9 +18,10 @@ public class PointLoadConfiguration : IEntityTypeConfiguration<PointLoad>
         builder
             .HasOne<NodeDefinition>()
             .WithMany(el => el.PointLoads)
+            .HasPrincipalKey(el => new { el.Id, el.ModelId })
             .HasForeignKey(el => new { el.NodeId, el.ModelId })
             .IsRequired()
-            .OnDelete(DeleteBehavior.ClientCascade);
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder
             .HasOne<LoadCase>(el => el.LoadCase)
@@ -28,6 +29,6 @@ public class PointLoadConfiguration : IEntityTypeConfiguration<PointLoad>
             .HasPrincipalKey(el => new { el.Id, el.ModelId })
             .HasForeignKey(el => new { el.LoadCaseId, el.ModelId })
             .IsRequired()
-            .OnDelete(DeleteBehavior.ClientCascade);
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

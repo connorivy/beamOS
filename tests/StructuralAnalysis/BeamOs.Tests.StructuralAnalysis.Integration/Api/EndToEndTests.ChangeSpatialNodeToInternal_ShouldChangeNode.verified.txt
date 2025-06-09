@@ -6,6 +6,14 @@
       Value: 0.5,
       Unit: DecimalFraction
     },
+    Restraint: {
+      CanTranslateAlongX: true,
+      CanTranslateAlongY: true,
+      CanTranslateAlongZ: true,
+      CanRotateAboutX: true,
+      CanRotateAboutY: true,
+      CanRotateAboutZ: true
+    },
     Metadata: null
   },
   Error: null,

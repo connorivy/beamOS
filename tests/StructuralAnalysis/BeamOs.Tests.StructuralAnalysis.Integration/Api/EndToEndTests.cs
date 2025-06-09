@@ -301,7 +301,7 @@ public class EndToEndTests
     [DependsOn(nameof(CreateElement1d_ShouldCreateElement1d))]
     public async Task CreateInternalNode_ShouldCreateInternalNode()
     {
-        CreateInternalNodeRequest requestBody = new(99, new(50, RatioUnit.Percent), 10);
+        CreateInternalNodeRequest requestBody = new(99, new(50, RatioUnit.Percent), null, 10);
 
         var internalNodeResponseResult =
             await AssemblySetup.StructuralAnalysisApiClient.CreateInternalNodeAsync(

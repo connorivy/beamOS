@@ -82,6 +82,9 @@ public partial class BeamOsModelBuilderDomainMapper(Guid modelId)
     public partial Node ToDomain(PutNodeRequest request);
 
     [MapValue("ModelId", Use = nameof(GetModelId))]
+    public partial InternalNode ToDomain(InternalNodeContract request);
+
+    [MapValue("ModelId", Use = nameof(GetModelId))]
     public partial Element1d ToDomain(PutElement1dRequest request);
 
     [MapValue("ModelId", Use = nameof(GetModelId))]

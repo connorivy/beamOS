@@ -10,6 +10,7 @@ public record InternalNodeData
     public InternalNodeData(
         int element1dId,
         Ratio ratioAlongElement1d,
+        Restraint? restraint = null,
         Dictionary<string, string>? metadata = null
     )
     {
@@ -21,10 +22,12 @@ public record InternalNodeData
 
         this.RatioAlongElement1d = ratioAlongElement1d;
         this.Metadata = metadata;
+        this.Restraint = restraint;
     }
 
     public required int Element1dId { get; init; }
     public required Ratio RatioAlongElement1d { get; init; }
+    public Restraint? Restraint { get; init; }
 
     // public InternalNodeData() { }
 
@@ -37,10 +40,11 @@ public record CreateInternalNodeRequest : InternalNodeData
     public CreateInternalNodeRequest(
         int element1dId,
         Ratio ratioAlongElement1d,
+        Restraint? restraint = null,
         int? id = null,
         Dictionary<string, string>? metadata = null
     )
-        : base(element1dId, ratioAlongElement1d, metadata)
+        : base(element1dId, ratioAlongElement1d, restraint, metadata)
     {
         this.Id = id;
     }
@@ -55,9 +59,10 @@ public record InternalNode : InternalNodeData, IHasIntId
         int id,
         int element1dId,
         Ratio ratioAlongElement1d,
+        Restraint? restraint = null,
         Dictionary<string, string>? metadata = null
     )
-        : base(element1dId, ratioAlongElement1d, metadata)
+        : base(element1dId, ratioAlongElement1d, restraint, metadata)
     {
         this.Id = id;
     }
