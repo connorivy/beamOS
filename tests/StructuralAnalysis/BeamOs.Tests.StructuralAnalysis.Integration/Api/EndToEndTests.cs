@@ -9,7 +9,6 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoads;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
-using BeamOs.Tests.Common;
 using FluentAssertions;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration.Api;
@@ -440,6 +439,10 @@ public class EndToEndTests
     }
 
     [Test]
+    [DependsOn(nameof(CreateMaterial_WithSpecifiedId_ShouldCreateMaterial_WithCorrectId))]
+    [DependsOn(
+        nameof(CreateSectionProfile_WithSpecifiedId_ShouldCreateSectionProfile_WithCorrectId)
+    )]
     public async Task DeleteNode_ShouldAlsoDeleteDependentElement1ds()
     {
         var newNode1Id = 456;

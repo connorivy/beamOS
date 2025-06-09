@@ -23,8 +23,6 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.HasSequence("NodeDefinitionSequence");
-
             modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.AnalyticalResults.EnvelopeResultSets.EnvelopeElement1dResult", b =>
                 {
                     b.Property<int>("Id")
@@ -756,19 +754,18 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValueSql("nextval('\"NodeDefinitionSequence\"')");
+                        .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseSequence(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<Guid>("ModelId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id", "ModelId");
 
-                    b.ToTable((string)null);
+                    b.ToTable("NodeDefinition");
 
-                    b.UseTpcMappingStrategy();
+                    b.UseTptMappingStrategy();
                 });
 
             modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate.NodeProposal", b =>
@@ -1539,6 +1536,12 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate.NodeDefinition", null)
+                        .WithOne()
+                        .HasForeignKey("BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate.InternalNode", "Id", "ModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Element1d");
 
                     b.Navigation("Model");
@@ -1549,6 +1552,12 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                     b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.Model", "Model")
                         .WithMany("Nodes")
                         .HasForeignKey("ModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate.NodeDefinition", null)
+                        .WithOne()
+                        .HasForeignKey("BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate.Node", "Id", "ModelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

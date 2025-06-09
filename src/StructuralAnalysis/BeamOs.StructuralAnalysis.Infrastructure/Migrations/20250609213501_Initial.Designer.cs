@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
 {
     [DbContext(typeof(StructuralAnalysisDbContext))]
-    [Migration("20250609185942_UseTpc2")]
-    partial class UseTpc2
+    [Migration("20250609213501_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,8 +25,6 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.HasSequence("NodeDefinitionSequence");
 
             modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.AnalyticalResults.EnvelopeResultSets.EnvelopeElement1dResult", b =>
                 {
@@ -759,101 +757,18 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValueSql("nextval('\"NodeDefinitionSequence\"')");
+                        .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseSequence(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<Guid>("ModelId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("TypeDiscriminator")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.ComplexProperty<Dictionary<string, object>>("InternalNodeDefinition", "BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate.NodeDefinition.InternalNodeDefinition#InternalNodeDefinition", b1 =>
-                        {
-                            b1.IsRequired();
-
-                            b1.Property<int>("Element1dId")
-                                .HasColumnType("integer");
-
-                            b1.Property<double>("RatioAlongElement1d")
-                                .HasColumnType("double precision");
-
-                            b1.ComplexProperty<Dictionary<string, object>>("Restraint", "BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate.NodeDefinition.InternalNodeDefinition#InternalNodeDefinition.Restraint#Restraint", b2 =>
-                                {
-                                    b2.IsRequired();
-
-                                    b2.Property<bool>("CanRotateAboutX")
-                                        .HasColumnType("boolean");
-
-                                    b2.Property<bool>("CanRotateAboutY")
-                                        .HasColumnType("boolean");
-
-                                    b2.Property<bool>("CanRotateAboutZ")
-                                        .HasColumnType("boolean");
-
-                                    b2.Property<bool>("CanTranslateAlongX")
-                                        .HasColumnType("boolean");
-
-                                    b2.Property<bool>("CanTranslateAlongY")
-                                        .HasColumnType("boolean");
-
-                                    b2.Property<bool>("CanTranslateAlongZ")
-                                        .HasColumnType("boolean");
-                                });
-                        });
-
-                    b.ComplexProperty<Dictionary<string, object>>("SpatialNodeDefinition", "BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate.NodeDefinition.SpatialNodeDefinition#SpatialNodeDefinition", b1 =>
-                        {
-                            b1.IsRequired();
-
-                            b1.ComplexProperty<Dictionary<string, object>>("LocationPoint", "BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate.NodeDefinition.SpatialNodeDefinition#SpatialNodeDefinition.LocationPoint#Point", b2 =>
-                                {
-                                    b2.IsRequired();
-
-                                    b2.Property<double>("X")
-                                        .HasColumnType("double precision");
-
-                                    b2.Property<double>("Y")
-                                        .HasColumnType("double precision");
-
-                                    b2.Property<double>("Z")
-                                        .HasColumnType("double precision");
-                                });
-
-                            b1.ComplexProperty<Dictionary<string, object>>("Restraint", "BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate.NodeDefinition.SpatialNodeDefinition#SpatialNodeDefinition.Restraint#Restraint", b2 =>
-                                {
-                                    b2.IsRequired();
-
-                                    b2.Property<bool>("CanRotateAboutX")
-                                        .HasColumnType("boolean");
-
-                                    b2.Property<bool>("CanRotateAboutY")
-                                        .HasColumnType("boolean");
-
-                                    b2.Property<bool>("CanRotateAboutZ")
-                                        .HasColumnType("boolean");
-
-                                    b2.Property<bool>("CanTranslateAlongX")
-                                        .HasColumnType("boolean");
-
-                                    b2.Property<bool>("CanTranslateAlongY")
-                                        .HasColumnType("boolean");
-
-                                    b2.Property<bool>("CanTranslateAlongZ")
-                                        .HasColumnType("boolean");
-                                });
-                        });
-
                     b.HasKey("Id", "ModelId");
 
-                    b.HasIndex("ModelId");
+                    b.ToTable("NodeDefinition");
 
-                    b.ToTable((string)null);
-
-                    b.UseTpcMappingStrategy();
+                    b.UseTptMappingStrategy();
                 });
 
             modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate.NodeProposal", b =>
@@ -1092,9 +1007,6 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                     b.Property<int>("Element1dId")
                         .HasColumnType("integer");
 
-                    b.Property<Guid?>("ModelId1")
-                        .HasColumnType("uuid");
-
                     b.Property<double>("RatioAlongElement1d")
                         .HasColumnType("double precision");
 
@@ -1121,7 +1033,7 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                                 .HasColumnType("boolean");
                         });
 
-                    b.HasIndex("ModelId1");
+                    b.HasIndex("ModelId");
 
                     b.HasIndex("Element1dId", "ModelId");
 
@@ -1131,9 +1043,6 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
             modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate.Node", b =>
                 {
                     b.HasBaseType("BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate.NodeDefinition");
-
-                    b.Property<Guid?>("ModelId1")
-                        .HasColumnType("uuid");
 
                     b.ComplexProperty<Dictionary<string, object>>("LocationPoint", "BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate.Node.LocationPoint#Point", b1 =>
                         {
@@ -1172,7 +1081,7 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                                 .HasColumnType("boolean");
                         });
 
-                    b.HasIndex("ModelId1");
+                    b.HasIndex("ModelId");
 
                     b.ToTable("Nodes");
                 });
@@ -1516,17 +1425,6 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                     b.Navigation("Model");
                 });
 
-            modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate.NodeDefinition", b =>
-                {
-                    b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.Model", "Model")
-                        .WithMany("NodeDefinitions")
-                        .HasForeignKey("ModelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Model");
-                });
-
             modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate.NodeProposal", b =>
                 {
                     b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.Model", "Model")
@@ -1629,9 +1527,11 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
 
             modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate.InternalNode", b =>
                 {
-                    b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.Model", null)
+                    b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.Model", "Model")
                         .WithMany("InternalNodes")
-                        .HasForeignKey("ModelId1");
+                        .HasForeignKey("ModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate.Element1d", "Element1d")
                         .WithMany("InternalNodes")
@@ -1639,14 +1539,32 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate.NodeDefinition", null)
+                        .WithOne()
+                        .HasForeignKey("BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate.InternalNode", "Id", "ModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Element1d");
+
+                    b.Navigation("Model");
                 });
 
             modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate.Node", b =>
                 {
-                    b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.Model", null)
+                    b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate.Model", "Model")
                         .WithMany("Nodes")
-                        .HasForeignKey("ModelId1");
+                        .HasForeignKey("ModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate.NodeDefinition", null)
+                        .WithOne()
+                        .HasForeignKey("BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate.Node", "Id", "ModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Model");
                 });
 
             modelBuilder.Entity("BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate.SectionProfile", b =>
@@ -1703,8 +1621,6 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                     b.Navigation("ModelProposals");
 
                     b.Navigation("MomentLoads");
-
-                    b.Navigation("NodeDefinitions");
 
                     b.Navigation("Nodes");
 

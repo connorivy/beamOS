@@ -1,1 +1,12 @@
-﻿
+﻿{
+  Value: null,
+  Error: {
+    Code: General.NotFound,
+    Description: Element1d with id 1234 not found on model with id d723e511-f6ad-4871-8725-9d95b845df15.,
+    Type: NotFound,
+    NumericType: 5,
+    Metadata: null
+  },
+  IsError: true,
+  IsSuccess: false
+}

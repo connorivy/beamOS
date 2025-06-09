@@ -3,7 +3,6 @@ using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.NodeResult;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.Tests.Common;
 using TUnit.Core.Exceptions;
-using UnitsNet.Units;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration;
 

@@ -37,7 +37,7 @@ public class NodeDefinitionConfiguration : IEntityTypeConfiguration<NodeDefiniti
 {
     public void Configure(EntityTypeBuilder<NodeDefinition> builder)
     {
-        builder.UseTpcMappingStrategy();
+        builder.UseTptMappingStrategy();
 
         // builder
         //     .HasOne(el => el.Model)

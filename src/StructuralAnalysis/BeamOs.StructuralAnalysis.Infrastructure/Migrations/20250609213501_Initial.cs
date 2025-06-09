@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AddProposalIssues : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -151,27 +151,18 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Nodes",
+                name: "NodeDefinition",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ModelId = table.Column<Guid>(type: "uuid", nullable: false),
-                    LocationPoint_X = table.Column<double>(type: "double precision", nullable: false),
-                    LocationPoint_Y = table.Column<double>(type: "double precision", nullable: false),
-                    LocationPoint_Z = table.Column<double>(type: "double precision", nullable: false),
-                    Restraint_CanRotateAboutX = table.Column<bool>(type: "boolean", nullable: false),
-                    Restraint_CanRotateAboutY = table.Column<bool>(type: "boolean", nullable: false),
-                    Restraint_CanRotateAboutZ = table.Column<bool>(type: "boolean", nullable: false),
-                    Restraint_CanTranslateAlongX = table.Column<bool>(type: "boolean", nullable: false),
-                    Restraint_CanTranslateAlongY = table.Column<bool>(type: "boolean", nullable: false),
-                    Restraint_CanTranslateAlongZ = table.Column<bool>(type: "boolean", nullable: false)
+                    ModelId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Nodes", x => new { x.Id, x.ModelId });
+                    table.PrimaryKey("PK_NodeDefinition", x => new { x.Id, x.ModelId });
                     table.ForeignKey(
-                        name: "FK_Nodes_Models_ModelId",
+                        name: "FK_NodeDefinition_Models_ModelId",
                         column: x => x.ModelId,
                         principalTable: "Models",
                         principalColumn: "Id",
@@ -286,6 +277,69 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DeleteModelEntityProposal",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ModelId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ModelProposalId = table.Column<int>(type: "integer", nullable: false),
+                    ModelEntityId = table.Column<int>(type: "integer", nullable: false),
+                    ObjectType = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DeleteModelEntityProposal", x => new { x.Id, x.ModelProposalId, x.ModelId });
+                    table.ForeignKey(
+                        name: "FK_DeleteModelEntityProposal_ModelProposals_ModelProposalId_Mo~",
+                        columns: x => new { x.ModelProposalId, x.ModelId },
+                        principalTable: "ModelProposals",
+                        principalColumns: new[] { "Id", "ModelId" },
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DeleteModelEntityProposal_Models_ModelId",
+                        column: x => x.ModelId,
+                        principalTable: "Models",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MaterialProposal",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ModelId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ModelProposalId = table.Column<int>(type: "integer", nullable: false),
+                    ModulusOfElasticity = table.Column<double>(type: "double precision", nullable: false),
+                    ModulusOfRigidity = table.Column<double>(type: "double precision", nullable: false),
+                    ExistingId = table.Column<int>(type: "integer", nullable: true),
+                    ExistingModelId = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MaterialProposal", x => new { x.Id, x.ModelProposalId, x.ModelId });
+                    table.ForeignKey(
+                        name: "FK_MaterialProposal_Materials_ExistingId_ExistingModelId",
+                        columns: x => new { x.ExistingId, x.ExistingModelId },
+                        principalTable: "Materials",
+                        principalColumns: new[] { "Id", "ModelId" });
+                    table.ForeignKey(
+                        name: "FK_MaterialProposal_ModelProposals_ModelProposalId_ModelId",
+                        columns: x => new { x.ModelProposalId, x.ModelId },
+                        principalTable: "ModelProposals",
+                        principalColumns: new[] { "Id", "ModelId" },
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MaterialProposal_Models_ModelId",
+                        column: x => x.ModelId,
+                        principalTable: "Models",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ProposalIssue",
                 columns: table => new
                 {
@@ -297,7 +351,8 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                     ProposedId = table.Column<int>(type: "integer", nullable: true),
                     ObjectType = table.Column<int>(type: "integer", nullable: false),
                     Message = table.Column<string>(type: "text", nullable: false),
-                    Severity = table.Column<int>(type: "integer", nullable: false)
+                    Severity = table.Column<int>(type: "integer", nullable: false),
+                    Code = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -345,19 +400,19 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_MomentLoads_Nodes_NodeId_ModelId",
+                        name: "FK_MomentLoads_NodeDefinition_NodeId_ModelId",
                         columns: x => new { x.NodeId, x.ModelId },
-                        principalTable: "Nodes",
-                        principalColumns: new[] { "Id", "ModelId" });
+                        principalTable: "NodeDefinition",
+                        principalColumns: new[] { "Id", "ModelId" },
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "NodeProposal",
+                name: "Nodes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false),
                     ModelId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ModelProposalId = table.Column<int>(type: "integer", nullable: false),
                     LocationPoint_X = table.Column<double>(type: "double precision", nullable: false),
                     LocationPoint_Y = table.Column<double>(type: "double precision", nullable: false),
                     LocationPoint_Z = table.Column<double>(type: "double precision", nullable: false),
@@ -366,30 +421,23 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                     Restraint_CanRotateAboutZ = table.Column<bool>(type: "boolean", nullable: false),
                     Restraint_CanTranslateAlongX = table.Column<bool>(type: "boolean", nullable: false),
                     Restraint_CanTranslateAlongY = table.Column<bool>(type: "boolean", nullable: false),
-                    Restraint_CanTranslateAlongZ = table.Column<bool>(type: "boolean", nullable: false),
-                    ExistingId = table.Column<int>(type: "integer", nullable: true),
-                    ExistingModelId = table.Column<Guid>(type: "uuid", nullable: true)
+                    Restraint_CanTranslateAlongZ = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_NodeProposal", x => new { x.Id, x.ModelProposalId, x.ModelId });
+                    table.PrimaryKey("PK_Nodes", x => new { x.Id, x.ModelId });
                     table.ForeignKey(
-                        name: "FK_NodeProposal_ModelProposals_ModelProposalId_ModelId",
-                        columns: x => new { x.ModelProposalId, x.ModelId },
-                        principalTable: "ModelProposals",
-                        principalColumns: new[] { "Id", "ModelId" },
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_NodeProposal_Models_ModelId",
+                        name: "FK_Nodes_Models_ModelId",
                         column: x => x.ModelId,
                         principalTable: "Models",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_NodeProposal_Nodes_ExistingId_ExistingModelId",
-                        columns: x => new { x.ExistingId, x.ExistingModelId },
-                        principalTable: "Nodes",
-                        principalColumns: new[] { "Id", "ModelId" });
+                        name: "FK_Nodes_NodeDefinition_Id_ModelId",
+                        columns: x => new { x.Id, x.ModelId },
+                        principalTable: "NodeDefinition",
+                        principalColumns: new[] { "Id", "ModelId" },
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -411,7 +459,8 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                         name: "FK_PointLoads_LoadCases_LoadCaseId_ModelId",
                         columns: x => new { x.LoadCaseId, x.ModelId },
                         principalTable: "LoadCases",
-                        principalColumns: new[] { "Id", "ModelId" });
+                        principalColumns: new[] { "Id", "ModelId" },
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PointLoads_Models_ModelId",
                         column: x => x.ModelId,
@@ -419,10 +468,11 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PointLoads_Nodes_NodeId_ModelId",
+                        name: "FK_PointLoads_NodeDefinition_NodeId_ModelId",
                         columns: x => new { x.NodeId, x.ModelId },
-                        principalTable: "Nodes",
-                        principalColumns: new[] { "Id", "ModelId" });
+                        principalTable: "NodeDefinition",
+                        principalColumns: new[] { "Id", "ModelId" },
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -453,18 +503,97 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Element1ds_Nodes_EndNodeId_ModelId",
+                        name: "FK_Element1ds_NodeDefinition_EndNodeId_ModelId",
                         columns: x => new { x.EndNodeId, x.ModelId },
-                        principalTable: "Nodes",
-                        principalColumns: new[] { "Id", "ModelId" });
+                        principalTable: "NodeDefinition",
+                        principalColumns: new[] { "Id", "ModelId" },
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Element1ds_Nodes_StartNodeId_ModelId",
+                        name: "FK_Element1ds_NodeDefinition_StartNodeId_ModelId",
                         columns: x => new { x.StartNodeId, x.ModelId },
-                        principalTable: "Nodes",
-                        principalColumns: new[] { "Id", "ModelId" });
+                        principalTable: "NodeDefinition",
+                        principalColumns: new[] { "Id", "ModelId" },
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Element1ds_SectionProfileInfoBase_SectionProfileId_ModelId",
                         columns: x => new { x.SectionProfileId, x.ModelId },
+                        principalTable: "SectionProfileInfoBase",
+                        principalColumns: new[] { "Id", "ModelId" });
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SectionProfileProposal",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ModelId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ModelProposalId = table.Column<int>(type: "integer", nullable: false),
+                    Area = table.Column<double>(type: "double precision", nullable: false),
+                    StrongAxisMomentOfInertia = table.Column<double>(type: "double precision", nullable: false),
+                    WeakAxisMomentOfInertia = table.Column<double>(type: "double precision", nullable: false),
+                    PolarMomentOfInertia = table.Column<double>(type: "double precision", nullable: false),
+                    StrongAxisPlasticSectionModulus = table.Column<double>(type: "double precision", nullable: false),
+                    WeakAxisPlasticSectionModulus = table.Column<double>(type: "double precision", nullable: false),
+                    StrongAxisShearArea = table.Column<double>(type: "double precision", nullable: true),
+                    WeakAxisShearArea = table.Column<double>(type: "double precision", nullable: true),
+                    ExistingId = table.Column<int>(type: "integer", nullable: true),
+                    ExistingModelId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Name = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SectionProfileProposal", x => new { x.Id, x.ModelProposalId, x.ModelId });
+                    table.ForeignKey(
+                        name: "FK_SectionProfileProposal_ModelProposals_ModelProposalId_Model~",
+                        columns: x => new { x.ModelProposalId, x.ModelId },
+                        principalTable: "ModelProposals",
+                        principalColumns: new[] { "Id", "ModelId" },
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SectionProfileProposal_Models_ModelId",
+                        column: x => x.ModelId,
+                        principalTable: "Models",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SectionProfileProposal_SectionProfileInfoBase_ExistingId_Ex~",
+                        columns: x => new { x.ExistingId, x.ExistingModelId },
+                        principalTable: "SectionProfileInfoBase",
+                        principalColumns: new[] { "Id", "ModelId" });
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SectionProfileProposalFromLibrary",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ModelId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ModelProposalId = table.Column<int>(type: "integer", nullable: false),
+                    Library = table.Column<int>(type: "integer", nullable: false),
+                    ExistingId = table.Column<int>(type: "integer", nullable: true),
+                    ExistingModelId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Name = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SectionProfileProposalFromLibrary", x => new { x.Id, x.ModelProposalId, x.ModelId });
+                    table.ForeignKey(
+                        name: "FK_SectionProfileProposalFromLibrary_ModelProposals_ModelPropo~",
+                        columns: x => new { x.ModelProposalId, x.ModelId },
+                        principalTable: "ModelProposals",
+                        principalColumns: new[] { "Id", "ModelId" },
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SectionProfileProposalFromLibrary_Models_ModelId",
+                        column: x => x.ModelId,
+                        principalTable: "Models",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SectionProfileProposalFromLibrary_SectionProfileInfoBase_Ex~",
+                        columns: x => new { x.ExistingId, x.ExistingModelId },
                         principalTable: "SectionProfileInfoBase",
                         principalColumns: new[] { "Id", "ModelId" });
                 });
@@ -538,10 +667,53 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "NodeProposal",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ModelId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ModelProposalId = table.Column<int>(type: "integer", nullable: false),
+                    LocationPoint_X = table.Column<double>(type: "double precision", nullable: false),
+                    LocationPoint_Y = table.Column<double>(type: "double precision", nullable: false),
+                    LocationPoint_Z = table.Column<double>(type: "double precision", nullable: false),
+                    Restraint_CanRotateAboutX = table.Column<bool>(type: "boolean", nullable: false),
+                    Restraint_CanRotateAboutY = table.Column<bool>(type: "boolean", nullable: false),
+                    Restraint_CanRotateAboutZ = table.Column<bool>(type: "boolean", nullable: false),
+                    Restraint_CanTranslateAlongX = table.Column<bool>(type: "boolean", nullable: false),
+                    Restraint_CanTranslateAlongY = table.Column<bool>(type: "boolean", nullable: false),
+                    Restraint_CanTranslateAlongZ = table.Column<bool>(type: "boolean", nullable: false),
+                    ExistingId = table.Column<int>(type: "integer", nullable: true),
+                    ExistingModelId = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NodeProposal", x => new { x.Id, x.ModelProposalId, x.ModelId });
+                    table.ForeignKey(
+                        name: "FK_NodeProposal_ModelProposals_ModelProposalId_ModelId",
+                        columns: x => new { x.ModelProposalId, x.ModelId },
+                        principalTable: "ModelProposals",
+                        principalColumns: new[] { "Id", "ModelId" },
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_NodeProposal_Models_ModelId",
+                        column: x => x.ModelId,
+                        principalTable: "Models",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_NodeProposal_Nodes_ExistingId_ExistingModelId",
+                        columns: x => new { x.ExistingId, x.ExistingModelId },
+                        principalTable: "Nodes",
+                        principalColumns: new[] { "Id", "ModelId" });
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Element1dProposal",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ModelId = table.Column<Guid>(type: "uuid", nullable: false),
                     ModelProposalId = table.Column<int>(type: "integer", nullable: false),
                     EndNodeId_ExistingId = table.Column<int>(type: "integer", nullable: true),
@@ -576,6 +748,54 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "InternalNodes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false),
+                    ModelId = table.Column<Guid>(type: "uuid", nullable: false),
+                    RatioAlongElement1d = table.Column<double>(type: "double precision", nullable: false),
+                    Element1dId = table.Column<int>(type: "integer", nullable: false),
+                    Restraint_CanRotateAboutX = table.Column<bool>(type: "boolean", nullable: false),
+                    Restraint_CanRotateAboutY = table.Column<bool>(type: "boolean", nullable: false),
+                    Restraint_CanRotateAboutZ = table.Column<bool>(type: "boolean", nullable: false),
+                    Restraint_CanTranslateAlongX = table.Column<bool>(type: "boolean", nullable: false),
+                    Restraint_CanTranslateAlongY = table.Column<bool>(type: "boolean", nullable: false),
+                    Restraint_CanTranslateAlongZ = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InternalNodes", x => new { x.Id, x.ModelId });
+                    table.ForeignKey(
+                        name: "FK_InternalNodes_Element1ds_Element1dId_ModelId",
+                        columns: x => new { x.Element1dId, x.ModelId },
+                        principalTable: "Element1ds",
+                        principalColumns: new[] { "Id", "ModelId" },
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_InternalNodes_Models_ModelId",
+                        column: x => x.ModelId,
+                        principalTable: "Models",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_InternalNodes_NodeDefinition_Id_ModelId",
+                        columns: x => new { x.Id, x.ModelId },
+                        principalTable: "NodeDefinition",
+                        principalColumns: new[] { "Id", "ModelId" },
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DeleteModelEntityProposal_ModelId",
+                table: "DeleteModelEntityProposal",
+                column: "ModelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DeleteModelEntityProposal_ModelProposalId_ModelId",
+                table: "DeleteModelEntityProposal",
+                columns: new[] { "ModelProposalId", "ModelId" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Element1dProposal_ExistingId_ExistingModelId",
@@ -643,6 +863,16 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                 column: "ModelId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_InternalNodes_Element1dId_ModelId",
+                table: "InternalNodes",
+                columns: new[] { "Element1dId", "ModelId" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InternalNodes_ModelId",
+                table: "InternalNodes",
+                column: "ModelId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_LoadCases_ModelId",
                 table: "LoadCases",
                 column: "ModelId");
@@ -651,6 +881,21 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                 name: "IX_LoadCombinations_ModelId",
                 table: "LoadCombinations",
                 column: "ModelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MaterialProposal_ExistingId_ExistingModelId",
+                table: "MaterialProposal",
+                columns: new[] { "ExistingId", "ExistingModelId" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MaterialProposal_ModelId",
+                table: "MaterialProposal",
+                column: "ModelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MaterialProposal_ModelProposalId_ModelId",
+                table: "MaterialProposal",
+                columns: new[] { "ModelProposalId", "ModelId" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Materials_ModelId",
@@ -676,6 +921,11 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                 name: "IX_MomentLoads_NodeId_ModelId",
                 table: "MomentLoads",
                 columns: new[] { "NodeId", "ModelId" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NodeDefinition_ModelId",
+                table: "NodeDefinition",
+                column: "ModelId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_NodeProposal_ExistingId_ExistingModelId",
@@ -758,11 +1008,44 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                 name: "IX_SectionProfileInfoBase_ModelId1",
                 table: "SectionProfileInfoBase",
                 column: "ModelId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SectionProfileProposal_ExistingId_ExistingModelId",
+                table: "SectionProfileProposal",
+                columns: new[] { "ExistingId", "ExistingModelId" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SectionProfileProposal_ModelId",
+                table: "SectionProfileProposal",
+                column: "ModelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SectionProfileProposal_ModelProposalId_ModelId",
+                table: "SectionProfileProposal",
+                columns: new[] { "ModelProposalId", "ModelId" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SectionProfileProposalFromLibrary_ExistingId_ExistingModelId",
+                table: "SectionProfileProposalFromLibrary",
+                columns: new[] { "ExistingId", "ExistingModelId" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SectionProfileProposalFromLibrary_ModelId",
+                table: "SectionProfileProposalFromLibrary",
+                column: "ModelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SectionProfileProposalFromLibrary_ModelProposalId_ModelId",
+                table: "SectionProfileProposalFromLibrary",
+                columns: new[] { "ModelProposalId", "ModelId" });
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "DeleteModelEntityProposal");
+
             migrationBuilder.DropTable(
                 name: "Element1dProposal");
 
@@ -771,6 +1054,12 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "EnvelopeElement1dResults");
+
+            migrationBuilder.DropTable(
+                name: "InternalNodes");
+
+            migrationBuilder.DropTable(
+                name: "MaterialProposal");
 
             migrationBuilder.DropTable(
                 name: "MomentLoads");
@@ -788,10 +1077,19 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                 name: "ProposalIssue");
 
             migrationBuilder.DropTable(
-                name: "Element1ds");
+                name: "SectionProfileProposal");
+
+            migrationBuilder.DropTable(
+                name: "SectionProfileProposalFromLibrary");
 
             migrationBuilder.DropTable(
                 name: "EnvelopeResultSets");
+
+            migrationBuilder.DropTable(
+                name: "Element1ds");
+
+            migrationBuilder.DropTable(
+                name: "Nodes");
 
             migrationBuilder.DropTable(
                 name: "ResultSets");
@@ -806,10 +1104,10 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                 name: "Materials");
 
             migrationBuilder.DropTable(
-                name: "Nodes");
+                name: "SectionProfileInfoBase");
 
             migrationBuilder.DropTable(
-                name: "SectionProfileInfoBase");
+                name: "NodeDefinition");
 
             migrationBuilder.DropTable(
                 name: "LoadCombinations");
