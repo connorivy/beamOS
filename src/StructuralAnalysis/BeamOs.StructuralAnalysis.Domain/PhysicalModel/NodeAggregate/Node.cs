@@ -15,7 +15,8 @@ public class Node : NodeDefinition
         Restraint? restraint = null,
         NodeId? id = null
     )
-        : base(modelId, locationPoint, restraint, id)
+        : base(id ?? new(), modelId)
+    // : base(modelId, locationPoint, restraint, id)
     {
         this.LocationPoint = locationPoint;
         this.Restraint = restraint ?? Restraint.Free;
@@ -24,9 +25,9 @@ public class Node : NodeDefinition
     public Point LocationPoint { get; set; }
     public Restraint Restraint { get; set; }
 
-    // public override Point GetLocationPoint() => this.LocationPoint;
+    public override Point GetLocationPoint() => this.LocationPoint;
 
-    // public override Node ToNode() => this;
+    public override Node ToNode() => this;
 
     public Forces GetForcesInGlobalCoordinates(LoadCombination loadCombination)
     {
@@ -76,187 +77,145 @@ public class Node : NodeDefinition
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }
 
-public class NodeDefinition : BeamOsModelEntity<NodeId>
+public abstract class NodeDefinition : BeamOsModelEntity<NodeId>
 {
-    public NodeDefinition(
-        ModelId modelId,
-        Point locationPoint,
-        Restraint? restraint = null,
-        NodeId? id = null
-    )
-        : base(id ?? new(), modelId)
-    {
-        this.TypeDiscriminator = nameof(Node);
-        this.SpatialNodeDefinition = new SpatialNodeDefinition(
-            locationPoint,
-            restraint ?? Restraint.Free
-        );
-        this.InternalNodeDefinition = InternalNodeDefinition.Default;
-    }
+    public NodeDefinition(NodeId id, ModelId modelId)
+        : base(id, modelId) { }
 
-    public NodeDefinition(
-        ModelId modelId,
-        Element1dId element1dId,
-        Ratio ratioAlongElement1d,
-        Restraint? restraint = null,
-        NodeId? id = null
-    )
-        : base(id ?? new(), modelId)
-    {
-        this.TypeDiscriminator = nameof(InternalNode);
-        this.InternalNodeDefinition = new()
-        {
-            RatioAlongElement1d = ratioAlongElement1d,
-            Element1dId = element1dId,
-            Restraint = restraint ?? Restraint.Free,
-        };
-        this.SpatialNodeDefinition = SpatialNodeDefinition.Default;
-    }
+    // public NodeDefinition(
+    //     ModelId modelId,
+    //     Point locationPoint,
+    //     Restraint? restraint = null,
+    //     NodeId? id = null
+    // )
+    //     : base(id ?? new(), modelId)
+    // {
+    //     this.TypeDiscriminator = nameof(Node);
+    //     this.SpatialNodeDefinition = new SpatialNodeDefinition(
+    //         locationPoint,
+    //         restraint ?? Restraint.Free
+    //     );
+    //     this.InternalNodeDefinition = InternalNodeDefinition.Default;
+    // }
+
+    // public NodeDefinition(
+    //     ModelId modelId,
+    //     Element1dId element1dId,
+    //     Ratio ratioAlongElement1d,
+    //     Restraint? restraint = null,
+    //     NodeId? id = null
+    // )
+    //     : base(id ?? new(), modelId)
+    // {
+    //     this.TypeDiscriminator = nameof(InternalNode);
+    //     this.InternalNodeDefinition = new()
+    //     {
+    //         RatioAlongElement1d = ratioAlongElement1d,
+    //         Element1dId = element1dId,
+    //         Restraint = restraint ?? Restraint.Free,
+    //     };
+    //     this.SpatialNodeDefinition = SpatialNodeDefinition.Default;
+    // }
 
     public Node? CastToNodeIfApplicable()
     {
-        if (this.TypeDiscriminator != nameof(Node))
-        {
-            return null;
-        }
-
-        if (this.SpatialNodeDefinition is null)
-        {
-            throw new InvalidOperationException("SpacialNodeDefinition must be set for Node.");
-        }
-
-        return new Node(
-            this.ModelId,
-            this.SpatialNodeDefinition.LocationPoint,
-            this.SpatialNodeDefinition.Restraint,
-            this.Id
-        )
-        {
-            SpatialNodeDefinition = this.SpatialNodeDefinition,
-            TypeDiscriminator = nameof(Node),
-            StartNodeElements = this.StartNodeElements,
-            EndNodeElements = this.EndNodeElements,
-            PointLoads = this.PointLoads,
-            MomentLoads = this.MomentLoads,
-        };
+        return this as Node;
     }
 
     public InternalNode? CastToInternalNodeIfApplicable()
     {
-        if (this.TypeDiscriminator != nameof(InternalNode))
-        {
-            return null;
-        }
-
-        if (this.InternalNodeDefinition is null)
-        {
-            throw new InvalidOperationException("SpacialNodeDefinition must be set for Node.");
-        }
-
-        return new InternalNode(
-            this.ModelId,
-            this.InternalNodeDefinition.RatioAlongElement1d,
-            this.InternalNodeDefinition.Element1dId,
-            this.InternalNodeDefinition.Restraint,
-            this.Id
-        )
-        {
-            SpatialNodeDefinition = this.SpatialNodeDefinition,
-            TypeDiscriminator = nameof(Node),
-            StartNodeElements = this.StartNodeElements,
-            EndNodeElements = this.EndNodeElements,
-            PointLoads = this.PointLoads,
-            MomentLoads = this.MomentLoads,
-        };
+        return this as InternalNode;
     }
 
-    public InternalNodeDefinition InternalNodeDefinition { get; private set; }
-    public SpatialNodeDefinition SpatialNodeDefinition { get; private set; }
-    public string TypeDiscriminator { get; private set; }
+    // public InternalNodeDefinition InternalNodeDefinition { get; private set; }
+    // public SpatialNodeDefinition SpatialNodeDefinition { get; private set; }
+    // public string TypeDiscriminator { get; private set; }
 
     // Navigation properties
-    public Element1d? Element1d { get; set; }
-    public ICollection<PointLoad> PointLoads { get; set; }
-    public ICollection<MomentLoad> MomentLoads { get; set; }
-    public ICollection<Element1d> StartNodeElements { get; set; }
-    public ICollection<Element1d> EndNodeElements { get; set; }
+    // public Element1d? Element1d { get; set; }
+    public ICollection<PointLoad>? PointLoads { get; set; }
+    public ICollection<MomentLoad>? MomentLoads { get; set; }
+    public ICollection<Element1d>? StartNodeElements { get; set; }
+    public ICollection<Element1d>? EndNodeElements { get; set; }
 
-    public Point GetLocationPoint()
-    {
-        if (this.TypeDiscriminator == nameof(InternalNode))
-        {
-            if (this.InternalNodeDefinition is null)
-            {
-                throw new InvalidOperationException(
-                    "InternalNodeDefinition must be set for InternalNode."
-                );
-            }
-            if (this.Element1d is null)
-            {
-                throw new InvalidOperationException(
-                    "Element1d must be set before calculating the location point."
-                );
-            }
-            return this.Element1d.GetPointAtRatio(this.InternalNodeDefinition.RatioAlongElement1d);
-        }
-        else if (this.TypeDiscriminator == nameof(Node))
-        {
-            if (this.SpatialNodeDefinition is null)
-            {
-                throw new InvalidOperationException(
-                    "SpacialNodeDefinition must be set for SpacialNode."
-                );
-            }
-            return this.SpatialNodeDefinition.LocationPoint;
-        }
-        throw new InvalidOperationException($"Unknown Node type: {this.TypeDiscriminator}.");
-    }
+    public abstract Point GetLocationPoint();
 
-    public Node ToNode()
-    {
-        if (this.TypeDiscriminator == nameof(InternalNode))
-        {
-            if (this.InternalNodeDefinition is null)
-            {
-                throw new InvalidOperationException(
-                    "InternalNodeDefinition must be set for InternalNode."
-                );
-            }
-            return new Node(this.ModelId, this.GetLocationPoint(), Restraint.Free, this.Id)
-            {
-                InternalNodeDefinition = this.InternalNodeDefinition,
-                TypeDiscriminator = nameof(InternalNode),
-                StartNodeElements = this.StartNodeElements,
-                EndNodeElements = this.EndNodeElements,
-                PointLoads = this.PointLoads,
-                MomentLoads = this.MomentLoads,
-            };
-        }
-        else if (this.TypeDiscriminator == nameof(Node))
-        {
-            if (this.SpatialNodeDefinition is null)
-            {
-                throw new InvalidOperationException(
-                    "SpacialNodeDefinition must be set for SpacialNode."
-                );
-            }
-            return new Node(
-                this.ModelId,
-                this.GetLocationPoint(),
-                this.SpatialNodeDefinition.Restraint,
-                this.Id
-            )
-            {
-                SpatialNodeDefinition = this.SpatialNodeDefinition,
-                TypeDiscriminator = nameof(Node),
-                StartNodeElements = this.StartNodeElements,
-                EndNodeElements = this.EndNodeElements,
-                PointLoads = this.PointLoads,
-                MomentLoads = this.MomentLoads,
-            };
-        }
-        throw new InvalidOperationException($"Unknown Node type: {this.TypeDiscriminator}.");
-    }
+    // {
+    //     if (this.TypeDiscriminator == nameof(InternalNode))
+    //     {
+    //         if (this.InternalNodeDefinition is null)
+    //         {
+    //             throw new InvalidOperationException(
+    //                 "InternalNodeDefinition must be set for InternalNode."
+    //             );
+    //         }
+    //         if (this.Element1d is null)
+    //         {
+    //             throw new InvalidOperationException(
+    //                 "Element1d must be set before calculating the location point."
+    //             );
+    //         }
+    //         return this.Element1d.GetPointAtRatio(this.InternalNodeDefinition.RatioAlongElement1d);
+    //     }
+    //     else if (this.TypeDiscriminator == nameof(Node))
+    //     {
+    //         if (this.SpatialNodeDefinition is null)
+    //         {
+    //             throw new InvalidOperationException(
+    //                 "SpacialNodeDefinition must be set for SpacialNode."
+    //             );
+    //         }
+    //         return this.SpatialNodeDefinition.LocationPoint;
+    //     }
+    //     throw new InvalidOperationException($"Unknown Node type: {this.TypeDiscriminator}.");
+    // }
+
+    public abstract Node ToNode();
+
+    // {
+    //     if (this.TypeDiscriminator == nameof(InternalNode))
+    //     {
+    //         if (this.InternalNodeDefinition is null)
+    //         {
+    //             throw new InvalidOperationException(
+    //                 "InternalNodeDefinition must be set for InternalNode."
+    //             );
+    //         }
+    //         return new Node(this.ModelId, this.GetLocationPoint(), Restraint.Free, this.Id)
+    //         {
+    //             InternalNodeDefinition = this.InternalNodeDefinition,
+    //             TypeDiscriminator = nameof(InternalNode),
+    //             StartNodeElements = this.StartNodeElements,
+    //             EndNodeElements = this.EndNodeElements,
+    //             PointLoads = this.PointLoads,
+    //             MomentLoads = this.MomentLoads,
+    //         };
+    //     }
+    //     else if (this.TypeDiscriminator == nameof(Node))
+    //     {
+    //         if (this.SpatialNodeDefinition is null)
+    //         {
+    //             throw new InvalidOperationException(
+    //                 "SpacialNodeDefinition must be set for SpacialNode."
+    //             );
+    //         }
+    //         return new Node(
+    //             this.ModelId,
+    //             this.GetLocationPoint(),
+    //             this.SpatialNodeDefinition.Restraint,
+    //             this.Id
+    //         )
+    //         {
+    //             SpatialNodeDefinition = this.SpatialNodeDefinition,
+    //             TypeDiscriminator = nameof(Node),
+    //             StartNodeElements = this.StartNodeElements,
+    //             EndNodeElements = this.EndNodeElements,
+    //             PointLoads = this.PointLoads,
+    //             MomentLoads = this.MomentLoads,
+    //         };
+    //     }
+    //     throw new InvalidOperationException($"Unknown Node type: {this.TypeDiscriminator}.");
+    // }
 
     [NotMapped]
     public IEnumerable<Element1d>? Elements =>

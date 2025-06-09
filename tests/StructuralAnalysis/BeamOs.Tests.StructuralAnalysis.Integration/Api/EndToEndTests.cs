@@ -377,6 +377,13 @@ public class EndToEndTests
         );
         changeToInternal.ThrowIfError();
 
+        // element with id 99 has start node with id 5
+        // changing the node type should not affect the element
+        var existingElement = await AssemblySetup.StructuralAnalysisApiClient.GetElement1dAsync(
+            modelId,
+            99
+        );
+
         var internalNodeResponseResult =
             await AssemblySetup.StructuralAnalysisApiClient.GetInternalNodeAsync(modelId, 5);
 
@@ -427,6 +434,71 @@ public class EndToEndTests
             );
 
         await Verify(modelProposalResponseResult)
+            .ScrubMembers(l =>
+                typeof(IHasIntId).IsAssignableFrom(l.DeclaringType) && l.Name == "Id"
+            );
+    }
+
+    [Test]
+    public async Task DeleteNode_ShouldAlsoDeleteDependentElement1ds()
+    {
+        var newNode1Id = 456;
+        var newNode2Id = 789;
+        var newElement1dId = 1234;
+        var newNode1Response = await AssemblySetup.StructuralAnalysisApiClient.CreateNodeAsync(
+            modelId,
+            new CreateNodeRequest(
+                new(7, 7, 7, LengthUnitContract.Foot),
+                Restraint.Fixed,
+                newNode1Id
+            )
+        );
+        var newNode2Response = await AssemblySetup.StructuralAnalysisApiClient.CreateNodeAsync(
+            modelId,
+            new CreateNodeRequest(
+                new(17, 17, 17, LengthUnitContract.Foot),
+                Restraint.Fixed,
+                newNode2Id
+            )
+        );
+        newNode1Response.ThrowIfError();
+        newNode2Response.ThrowIfError();
+
+        var newElement1dResponse =
+            await AssemblySetup.StructuralAnalysisApiClient.CreateElement1dAsync(
+                modelId,
+                new CreateElement1dRequest()
+                {
+                    Id = newElement1dId,
+                    StartNodeId = newNode1Id,
+                    EndNodeId = newNode2Id,
+                    MaterialId = 992,
+                    SectionProfileId = 1636,
+                }
+            );
+        newElement1dResponse.ThrowIfError();
+
+        if (
+            newElement1dResponse.Value.StartNodeId != newNode1Id
+            || newElement1dResponse.Value.EndNodeId != newNode2Id
+        )
+        {
+            throw new InvalidOperationException(
+                "The newly created element1d does not have the expected start and end node IDs."
+            );
+        }
+
+        var deleteNodeResponse = await AssemblySetup.StructuralAnalysisApiClient.DeleteNodeAsync(
+            modelId,
+            newNode1Id
+        );
+        deleteNodeResponse.ThrowIfError();
+
+        // Verify that the element1d with id 1234 has been deleted
+        var getElement1dResponse =
+            await AssemblySetup.StructuralAnalysisApiClient.GetElement1dAsync(modelId, 1234);
+
+        await Verify(getElement1dResponse)
             .ScrubMembers(l =>
                 typeof(IHasIntId).IsAssignableFrom(l.DeclaringType) && l.Name == "Id"
             );

@@ -18,7 +18,47 @@ public static partial class CreateNodeCommandMapper
 
 internal sealed class NodeDefinitionRepository(StructuralAnalysisDbContext dbContext)
     : ModelResourceRepositoryBase<NodeId, NodeDefinition>(dbContext),
-        INodeDefinitionRepository { }
+        INodeDefinitionRepository
+{
+    public override void Put(NodeDefinition aggregate)
+    {
+        if (aggregate is InternalNode internalNode)
+        {
+            var node = new Node(
+                aggregate.ModelId,
+                new(0, 0, 0, LengthUnit.Meter),
+                null,
+                internalNode.Id
+            );
+            this.DbContext.Nodes.Remove(node);
+            this.DbContext.InternalNodes.Add(internalNode);
+        }
+        else if (aggregate is Node node)
+        {
+            var internalNode2 = new InternalNode(
+                aggregate.ModelId,
+                new(0, UnitsNet.Units.RatioUnit.DecimalFraction),
+                0,
+                null,
+                aggregate.Id
+            );
+            this.DbContext.InternalNodes.Remove(internalNode2);
+            this.DbContext.Nodes.Add(node);
+        }
+        else
+        {
+            base.Put(aggregate);
+        }
+    }
+}
+
+internal sealed class NodeRepository(StructuralAnalysisDbContext dbContext)
+    : ModelResourceRepositoryBase<NodeId, Node>(dbContext),
+        INodeRepository { }
+
+internal sealed class InternalNodeRepository(StructuralAnalysisDbContext dbContext)
+    : ModelResourceRepositoryBase<NodeId, InternalNode>(dbContext),
+        IInternalNodeRepository { }
 
 // internal sealed class InternalNodeRepository(StructuralAnalysisDbContext dbContext)
 //     : ModelResourceRepositoryInBase<NodeId, NodeDefinition>(dbContext),

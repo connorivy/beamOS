@@ -43,8 +43,8 @@ public static class DependencyInjection
         this IServiceCollection services
     )
     {
-        // _ = services.AddScoped<INodeRepository, NodeRepository>();
-        // _ = services.AddScoped<IInternalNodeRepository, InternalNodeRepository>();
+        _ = services.AddScoped<INodeRepository, NodeRepository>();
+        _ = services.AddScoped<IInternalNodeRepository, InternalNodeRepository>();
         _ = services.AddScoped<INodeDefinitionRepository, NodeDefinitionRepository>();
         _ = services.AddScoped<IModelRepository, ModelRepository>();
         _ = services.AddScoped<IMaterialRepository, MaterialRepository>();

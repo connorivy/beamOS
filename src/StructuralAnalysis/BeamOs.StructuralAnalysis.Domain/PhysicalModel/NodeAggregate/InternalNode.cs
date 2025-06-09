@@ -14,7 +14,8 @@ public class InternalNode : NodeDefinition
         Restraint? restraint = null,
         NodeId? id = null
     )
-        : base(modelId, element1DId, ratioAlongElement1d, restraint, id)
+        : base(id ?? new(), modelId)
+    // : base(modelId, element1DId, ratioAlongElement1d, restraint, id)
     {
         this.RatioAlongElement1d = ratioAlongElement1d;
         this.Element1dId = element1DId;
@@ -26,22 +27,22 @@ public class InternalNode : NodeDefinition
     public Element1dId Element1dId { get; set; }
     public Element1d? Element1d { get; set; }
 
-    // public override Point GetLocationPoint()
-    // {
-    //     if (this.Element1d is null)
-    //     {
-    //         throw new InvalidOperationException(
-    //             "Element1d must be set before calculating the location point."
-    //         );
-    //     }
+    public override Point GetLocationPoint()
+    {
+        if (this.Element1d is null)
+        {
+            throw new InvalidOperationException(
+                "Element1d must be set before calculating the location point."
+            );
+        }
 
-    //     return this.Element1d.GetPointAtRatio(this.RatioAlongElement1d);
-    // }
+        return this.Element1d.GetPointAtRatio(this.RatioAlongElement1d);
+    }
 
-    // public override Node ToNode()
-    // {
-    //     return new(this.ModelId, this.GetLocationPoint(), Restraint.Free, this.Id);
-    // }
+    public override Node ToNode()
+    {
+        return new(this.ModelId, this.GetLocationPoint(), Restraint.Free, this.Id);
+    }
 
     public Forces GetForcesInGlobalCoordinates(LoadCombination loadCombination)
     {

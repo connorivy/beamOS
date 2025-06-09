@@ -30,7 +30,10 @@ public class StructuralAnalysisDbContext : DbContext
         : base(options) { }
 
     public DbSet<Model> Models { get; set; }
-    public DbSet<NodeDefinition> Nodes { get; set; }
+
+    // public DbSet<NodeDefinition> NodeDefinitions { get; set; }
+    public DbSet<Node> Nodes { get; set; }
+    public DbSet<InternalNode> InternalNodes { get; set; }
     public DbSet<Material> Materials { get; set; }
     public DbSet<SectionProfile> SectionProfiles { get; set; }
     public DbSet<Element1d> Element1ds { get; set; }

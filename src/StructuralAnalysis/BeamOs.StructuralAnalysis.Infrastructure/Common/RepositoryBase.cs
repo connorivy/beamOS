@@ -19,7 +19,7 @@ internal abstract class RepositoryBase<TId, TEntity>(StructuralAnalysisDbContext
         _ = dbContext.Set<TEntity>().Add(aggregate);
     }
 
-    public void Put(TEntity aggregate)
+    public virtual void Put(TEntity aggregate)
     {
         _ = dbContext.Set<TEntity>().Update(aggregate);
     }
@@ -79,14 +79,16 @@ internal abstract class ModelResourceRepositoryBase<TId, TEntity>(
         ModelId modelId,
         TId id,
         CancellationToken ct = default
-    ) =>
-        await this
-            .DbContext.Set<TEntity>()
+    )
+    {
+        var entity = this.DbContext.Set<TEntity>();
+        return await entity
             .AsNoTracking()
             .FirstOrDefaultAsync(
                 m => m.ModelId == modelId && m.Id.Equals(id),
                 cancellationToken: ct
             );
+    }
 
     public virtual async Task<ModelSettingsAndEntity<TEntity>?> GetSingleWithModelSettings(
         ModelId modelId,

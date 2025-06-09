@@ -9,7 +9,8 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 
 public class PatchNodeCommandHandler(
-    INodeDefinitionRepository nodeRepository,
+    INodeRepository nodeRepository,
+    // INodeDefinitionRepository nodeRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<PatchNodeCommand, NodeResponse>
 {
@@ -18,16 +19,12 @@ public class PatchNodeCommandHandler(
         CancellationToken ct = default
     )
     {
-        var nodeDefinition = await nodeRepository.GetSingle(command.ModelId, command.Id, ct);
-        if (nodeDefinition is null)
+        var node = await nodeRepository.GetSingle(command.ModelId, command.Id, ct);
+        if (node is null)
         {
             return BeamOsError.NotFound(
                 description: $"Node with ID {command.Id} not found in model {command.ModelId}."
             );
-        }
-        if (nodeDefinition.CastToNodeIfApplicable() is not Node node)
-        {
-            return BeamOsError.InvalidOperation(description: "Cannot patch a non-node entity.");
         }
 
         if (command.LocationPoint is not null)

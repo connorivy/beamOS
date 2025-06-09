@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis.Application.AnalyticalResults.NodeResults;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
@@ -11,7 +12,8 @@ using Riok.Mapperly.Abstractions;
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 
 public class PutNodeCommandHandler(
-    INodeDefinitionRepository nodeRepository,
+    // INodeRepository nodeRepository,
+    INodeDefinitionRepository nodeDefinitionRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<PutNodeCommand, NodeResponse>
 {
@@ -21,7 +23,7 @@ public class PutNodeCommandHandler(
     )
     {
         Node node = command.ToDomainObject();
-        nodeRepository.Put(node);
+        nodeDefinitionRepository.Put(node);
         await unitOfWork.SaveChangesAsync(ct);
 
         return node.ToResponse();

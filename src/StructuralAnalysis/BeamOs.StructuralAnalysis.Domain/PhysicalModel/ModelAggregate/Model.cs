@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using BeamOs.Common.Domain.Models;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.EnvelopeResultSets;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
@@ -35,6 +36,8 @@ public class Model : BeamOsEntity<ModelId>
 
     public IList<Node>? Nodes { get; set; }
     public IList<InternalNode>? InternalNodes { get; set; }
+
+    [NotMapped]
     public IList<NodeDefinition>? NodeDefinitions { get; set; }
     public IList<Element1d>? Element1ds { get; set; }
     public IList<Material>? Materials { get; set; }

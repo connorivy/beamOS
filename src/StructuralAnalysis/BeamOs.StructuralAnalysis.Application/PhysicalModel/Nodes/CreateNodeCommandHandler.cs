@@ -10,7 +10,8 @@ using Riok.Mapperly.Abstractions;
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 
 public class CreateNodeCommandHandler(
-    INodeDefinitionRepository nodeRepository,
+    // INodeDefinitionRepository nodeRepository,
+    INodeRepository nodeRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<CreateNodeCommand, NodeResponse>
 {
