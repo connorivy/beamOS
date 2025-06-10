@@ -13,7 +13,7 @@ public interface IRepository<TId, in T>
 
     public void Add(T aggregate);
 
-    public void Put(T aggregate);
+    public ValueTask Put(T aggregate);
 
     //void Update(T aggregate);
 

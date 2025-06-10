@@ -21,9 +21,10 @@ public class InMemoryRepository<TId, T> : IRepository<TId, T>
         this.EntityCreated?.Invoke(this, aggregate.Id);
     }
 
-    public void Put(T aggregate)
+    public ValueTask Put(T aggregate)
     {
         this.Entities[aggregate.Id] = aggregate;
+        return ValueTask.CompletedTask;
     }
 
     public void Remove(T aggregate)
@@ -129,7 +130,7 @@ public class InMemoryModelResourceRepository<TId, T>(
         return Task.FromResult(default(ModelSettingsAndEntity<T>?)); // Entity not found
     }
 
-    public void Put(T aggregate)
+    public ValueTask Put(T aggregate)
     {
         if (this.ModelResources.TryGetValue(aggregate.ModelId, out var resources))
         {
@@ -139,6 +140,7 @@ public class InMemoryModelResourceRepository<TId, T>(
         {
             throw new KeyNotFoundException($"Model {aggregate.ModelId} not found.");
         }
+        return ValueTask.CompletedTask;
     }
 
     public Task ReloadEntity(T entity, CancellationToken ct = default)

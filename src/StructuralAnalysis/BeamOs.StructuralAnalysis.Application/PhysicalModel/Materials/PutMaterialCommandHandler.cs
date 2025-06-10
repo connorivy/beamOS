@@ -6,7 +6,6 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Materials;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using Riok.Mapperly.Abstractions;
-using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Materials;
 
@@ -21,7 +20,7 @@ public class PutMaterialCommandHandler(
     )
     {
         Material material = command.ToDomainObject();
-        materialRepository.Put(material);
+        await materialRepository.Put(material);
         await unitOfWork.SaveChangesAsync(ct);
 
         return material.ToResponse(command.Body.PressureUnit.MapToPressureUnit());

@@ -47,7 +47,8 @@ public sealed class InMemoryProposalIssueRepository(
 
 public sealed class InMemoryModelRepository(
     InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage,
-    [FromKeyedServices("InMemory")] INodeDefinitionRepository nodeRepository,
+    [FromKeyedServices("InMemory")] INodeRepository nodeRepository,
+    [FromKeyedServices("InMemory")] IInternalNodeRepository internalNodeRepository,
     [FromKeyedServices("InMemory")] IElement1dRepository element1dRepository,
     [FromKeyedServices("InMemory")] IMaterialRepository materialRepository,
     [FromKeyedServices("InMemory")] ISectionProfileRepository sectionProfileRepository,
@@ -77,7 +78,8 @@ public sealed class InMemoryModelRepository(
             return null;
         }
 
-        // model.Nodes = await nodeRepository.GetMany(modelId, null, ct);
+        model.Nodes = await nodeRepository.GetMany(modelId, null, ct);
+        model.InternalNodes = await internalNodeRepository.GetMany(modelId, null, ct);
         model.Element1ds = await element1dRepository.GetMany(modelId, null, ct);
         model.Materials = await materialRepository.GetMany(modelId, null, ct);
         model.SectionProfiles = await sectionProfileRepository.GetMany(modelId, null, ct);
@@ -96,11 +98,12 @@ public sealed class InMemoryModelRepository(
         params string[] includeNavigationProperties
     ) => this.GetSingle(modelId, null, ct);
 
-    public void Put(Model aggregate)
+    public ValueTask Put(Model aggregate)
     {
         if (inMemoryModelRepositoryStorage.Models.ContainsKey(aggregate.Id))
         {
             inMemoryModelRepositoryStorage.Models[aggregate.Id] = aggregate;
+            return ValueTask.CompletedTask;
         }
         else
         {

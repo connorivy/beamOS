@@ -19,9 +19,10 @@ internal abstract class RepositoryBase<TId, TEntity>(StructuralAnalysisDbContext
         _ = dbContext.Set<TEntity>().Add(aggregate);
     }
 
-    public virtual void Put(TEntity aggregate)
+    public virtual ValueTask Put(TEntity aggregate)
     {
         _ = dbContext.Set<TEntity>().Update(aggregate);
+        return ValueTask.CompletedTask;
     }
 
     public void Remove(TEntity aggregate)

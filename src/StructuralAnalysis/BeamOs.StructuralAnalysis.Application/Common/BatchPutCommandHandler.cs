@@ -37,7 +37,7 @@ public abstract class BatchPutCommandHandler<TId, TEntity, TBatchPutCommand, TPu
 
             if (existingIds.Contains(putRequest.Id))
             {
-                repository.Put(entity);
+                await repository.Put(entity);
                 updated++;
                 statuses[i] = new(putRequest.Id, EntityOperationStatus.Updated);
             }

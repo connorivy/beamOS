@@ -16,7 +16,7 @@ public class PutModelCommandHandler(
     )
     {
         Model model = command.ToDomainObject();
-        modelRepository.Put(model);
+        await modelRepository.Put(model);
         await unitOfWork.SaveChangesAsync(ct);
 
         return ModelToResponseMapper.Create(model.Settings.UnitSettings).Map(model);

@@ -55,7 +55,7 @@ public class AcceptModelProposalCommandHandler(
             nodes.Add(node);
             if (nodeProposal.IsExisting)
             {
-                nodeRepository.Put(node);
+                await nodeRepository.Put(node);
             }
             else
             {
@@ -72,7 +72,7 @@ public class AcceptModelProposalCommandHandler(
             materials.Add(material);
             if (materialProposal.IsExisting)
             {
-                materialRepository.Put(material);
+                await materialRepository.Put(material);
             }
             else
             {
@@ -93,7 +93,7 @@ public class AcceptModelProposalCommandHandler(
             sectionProfiles.Add(sectionProfile);
             if (sectionProfileProposal.IsExisting)
             {
-                sectionProfileRepository.Put(sectionProfile);
+                await sectionProfileRepository.Put(sectionProfile);
             }
             else
             {
@@ -107,7 +107,7 @@ public class AcceptModelProposalCommandHandler(
             sectionProfilesFromLibrary.Add(sectionProfile);
             if (sectionProfileProposal.IsExisting)
             {
-                sectionProfileFromLibraryRepository.Put(sectionProfile);
+                await sectionProfileFromLibraryRepository.Put(sectionProfile);
             }
             else
             {
@@ -127,7 +127,7 @@ public class AcceptModelProposalCommandHandler(
             element1ds.Add(element1d);
             if (element1dProposal.IsExisting)
             {
-                element1dRepository.Put(element1d);
+                await element1dRepository.Put(element1d);
             }
             else
             {

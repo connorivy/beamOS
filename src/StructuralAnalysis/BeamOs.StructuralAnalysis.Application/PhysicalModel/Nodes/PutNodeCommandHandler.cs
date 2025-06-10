@@ -23,7 +23,7 @@ public class PutNodeCommandHandler(
     )
     {
         Node node = command.ToDomainObject();
-        nodeDefinitionRepository.Put(node);
+        await nodeDefinitionRepository.Put(node);
         await unitOfWork.SaveChangesAsync(ct);
 
         return node.ToResponse();

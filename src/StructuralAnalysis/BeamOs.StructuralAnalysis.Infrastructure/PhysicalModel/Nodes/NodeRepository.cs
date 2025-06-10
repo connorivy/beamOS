@@ -20,34 +20,42 @@ internal sealed class NodeDefinitionRepository(StructuralAnalysisDbContext dbCon
     : ModelResourceRepositoryBase<NodeId, NodeDefinition>(dbContext),
         INodeDefinitionRepository
 {
-    public override void Put(NodeDefinition aggregate)
+    public override async ValueTask Put(NodeDefinition aggregate)
     {
+        // todo: less db calls
         if (aggregate is InternalNode internalNode)
         {
-            var node = new Node(
-                aggregate.ModelId,
-                new(0, 0, 0, LengthUnit.Meter),
-                null,
-                internalNode.Id
-            );
-            this.DbContext.Nodes.Remove(node);
-            this.DbContext.InternalNodes.Add(internalNode);
+            var node = await this.DbContext.Nodes.FindAsync([internalNode.Id, aggregate.ModelId]);
+            if (node is not null)
+            {
+                this.DbContext.Nodes.Remove(node);
+                this.DbContext.InternalNodes.Add(internalNode);
+            }
+            else
+            {
+                this.DbContext.InternalNodes.Update(internalNode);
+            }
         }
         else if (aggregate is Node node)
         {
-            var internalNode2 = new InternalNode(
-                aggregate.ModelId,
-                new(0, UnitsNet.Units.RatioUnit.DecimalFraction),
-                0,
-                null,
-                aggregate.Id
+            var internalNode2 = await this.DbContext.InternalNodes.FindAsync(
+                [aggregate.Id, aggregate.ModelId]
             );
-            this.DbContext.InternalNodes.Remove(internalNode2);
-            this.DbContext.Nodes.Add(node);
+            if (internalNode2 is not null)
+            {
+                this.DbContext.InternalNodes.Remove(internalNode2);
+                this.DbContext.Nodes.Add(node);
+            }
+            else
+            {
+                this.DbContext.Nodes.Update(node);
+            }
         }
         else
         {
-            base.Put(aggregate);
+            throw new InvalidOperationException(
+                $"Unsupported NodeDefinition type: {aggregate.GetType().Name}"
+            );
         }
     }
 }

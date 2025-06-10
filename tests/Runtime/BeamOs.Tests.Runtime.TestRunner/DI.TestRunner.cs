@@ -39,6 +39,10 @@ public static class DI
         services.AddKeyedScoped<INodeDefinitionRepository, InMemoryNodeDefinitionRepository>(
             "InMemory"
         );
+        services.AddKeyedScoped<INodeRepository, InMemoryNodeRepository>("InMemory");
+        services.AddKeyedScoped<IInternalNodeRepository, InMemoryInternalNodeRepository>(
+            "InMemory"
+        );
         services.AddKeyedScoped<IMaterialRepository, InMemoryMaterialRepository>("InMemory");
         services.AddKeyedScoped<ISectionProfileRepository, InMemorySectionProfileRepository>(
             "InMemory"

@@ -11,7 +11,7 @@ public interface INodeRepository : IModelResourceRepository<NodeId, Node>
 
 // public interface INodeRepository : IModelResourceRepositoryIn<NodeId, Node> { }
 
-public interface IInternalNodeRepository : IModelResourceRepositoryIn<NodeId, InternalNode> { }
+public interface IInternalNodeRepository : IModelResourceRepository<NodeId, InternalNode> { }
 
 public interface INodeProposalRepository : IProposalRepository<NodeProposalId, NodeProposal> { }
 

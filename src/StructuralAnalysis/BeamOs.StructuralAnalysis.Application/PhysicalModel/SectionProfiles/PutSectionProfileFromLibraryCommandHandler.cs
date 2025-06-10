@@ -29,7 +29,7 @@ public class PutSectionProfileFromLibraryCommandHandler(
                 description: $"Section profile with code {command.Library} not found."
             );
         }
-        sectionProfileRepository.Put(sectionProfile);
+        await sectionProfileRepository.Put(sectionProfile);
         await unitOfWork.SaveChangesAsync(ct);
 
         return new SectionProfileFromLibraryContract()

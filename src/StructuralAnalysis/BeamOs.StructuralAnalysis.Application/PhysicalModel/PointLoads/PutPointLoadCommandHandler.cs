@@ -21,7 +21,7 @@ public class PutPointLoadCommandHandler(
     )
     {
         PointLoad pointLoad = command.ToDomainObject();
-        pointLoadRepository.Put(pointLoad);
+        await pointLoadRepository.Put(pointLoad);
         await unitOfWork.SaveChangesAsync(ct);
 
         return pointLoad.ToResponse();

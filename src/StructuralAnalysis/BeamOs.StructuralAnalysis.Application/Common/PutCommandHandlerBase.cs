@@ -18,7 +18,7 @@ public abstract class PutCommandHandlerBase<TId, TEntity, TPutCommand, TResponse
     )
     {
         TEntity entity = this.ToDomainObject(command);
-        repository.Put(entity);
+        await repository.Put(entity);
         await unitOfWork.SaveChangesAsync(ct);
 
         return this.ToResponse(entity);

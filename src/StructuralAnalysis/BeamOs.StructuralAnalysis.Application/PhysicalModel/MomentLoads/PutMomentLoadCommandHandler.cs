@@ -21,7 +21,7 @@ public class PutMomentLoadCommandHandler(
     )
     {
         MomentLoad momentLoad = command.ToDomainObject();
-        momentLoadRepository.Put(momentLoad);
+        await momentLoadRepository.Put(momentLoad);
         await unitOfWork.SaveChangesAsync(ct);
 
         return momentLoad.ToResponse();
