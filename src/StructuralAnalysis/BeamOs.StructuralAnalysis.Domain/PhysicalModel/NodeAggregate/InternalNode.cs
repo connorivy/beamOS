@@ -41,7 +41,7 @@ public class InternalNode : NodeDefinition
 
     public override Node ToNode()
     {
-        return new(this.ModelId, this.GetLocationPoint(), Restraint.Free, this.Id);
+        return new(this.ModelId, this.GetLocationPoint(), this.Restraint, this.Id);
     }
 
     public Forces GetForcesInGlobalCoordinates(LoadCombination loadCombination)

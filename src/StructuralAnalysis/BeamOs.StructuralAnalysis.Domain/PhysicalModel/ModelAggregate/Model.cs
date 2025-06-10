@@ -36,9 +36,6 @@ public class Model : BeamOsEntity<ModelId>
 
     public IList<Node>? Nodes { get; set; }
     public IList<InternalNode>? InternalNodes { get; set; }
-
-    [NotMapped]
-    public IList<NodeDefinition>? NodeDefinitions { get; set; }
     public IList<Element1d>? Element1ds { get; set; }
     public IList<Material>? Materials { get; set; }
     public IList<SectionProfile>? SectionProfiles { get; set; }

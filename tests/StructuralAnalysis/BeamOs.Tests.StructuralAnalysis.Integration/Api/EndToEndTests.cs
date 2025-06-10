@@ -502,6 +502,7 @@ public class EndToEndTests
             await AssemblySetup.StructuralAnalysisApiClient.GetElement1dAsync(modelId, 1234);
 
         await Verify(getElement1dResponse)
+            .ScrubInlineGuids()
             .ScrubMembers(l =>
                 typeof(IHasIntId).IsAssignableFrom(l.DeclaringType) && l.Name == "Id"
             );

@@ -30,6 +30,7 @@ namespace BeamOs.StructuralAnalysis.Contracts.Common;
 [JsonSerializable(typeof(CreateInternalNodeRequest))]
 [JsonSerializable(typeof(InternalNodeData))]
 [JsonSerializable(typeof(IEnumerable<InternalNodeData>))]
+[JsonSerializable(typeof(IEnumerable<InternalNode>))]
 [JsonSerializable(typeof(Result<InternalNode>))]
 [JsonSerializable(typeof(PutMaterialRequest))]
 [JsonSerializable(typeof(IEnumerable<PutMaterialRequest>))]

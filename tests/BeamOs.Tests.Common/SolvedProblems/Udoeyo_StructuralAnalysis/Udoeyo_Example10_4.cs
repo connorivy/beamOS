@@ -11,21 +11,22 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 
 namespace BeamOs.Tests.Common.SolvedProblems.Udoeyo_StructuralAnalysis;
 
-public class Udoeyo_Example11_2 : ModelFixture, IHasExpectedNodeResults
+public class Udoeyo_Example10_4 : ModelFixture, IHasExpectedNodeResults
 {
-    public override SourceInfo SourceInfo => SourceInfos.Udoeyo with { ModelName = "Example 11.2" };
+    public override SourceInfo SourceInfo => SourceInfos.Udoeyo with { ModelName = "Example 10.4" };
 
-    public override string Name => nameof(Udoeyo_Example11_2);
+    public override string Name => nameof(Udoeyo_Example10_4);
 
-    public override string Description => "Example 11.2 from Udoeyo's Structural Analysis book";
+    public override string Description => "Example 10.4 from Udoeyo's Structural Analysis book";
 
     public override ModelSettings Settings { get; } =
-        new(UnitSettings.K_FT)
+        new(UnitSettings.kN_M)
         {
             AnalysisSettings = new() { Element1DAnalysisType = Element1dAnalysisType.Euler },
+            YAxisUp = true,
         };
 
-    public override string GuidString => "97fd5585-d80c-4680-836c-4d4c5c9c3c61";
+    public override string GuidString => "ab081a4f-89ac-4a45-a4db-bd253703df7d";
 
     public NodeResultFixture[] ExpectedNodeResults { get; } =
         [
@@ -33,29 +34,22 @@ public class Udoeyo_Example11_2 : ModelFixture, IHasExpectedNodeResults
             {
                 NodeId = 1,
                 ResultSetId = 1,
-                ForceAlongY = new(15.46, ForceUnit.KilopoundForce),
-                TorqueAboutZ = new(-23.4, TorqueUnit.KilopoundForceFoot),
+                ForceAlongY = new(37.5, ForceUnit.Kilonewton),
+                TorqueAboutZ = new(0, TorqueUnit.KilonewtonMeter),
             },
             new NodeResultFixture()
             {
-                NodeId = 4,
+                NodeId = 3,
                 ResultSetId = 1,
-                ForceAlongY = new(8.54 + 14.5, ForceUnit.KilopoundForce),
-                // TorqueAboutZ = new(0, TorqueUnit.KilopoundForceFoot),
-                TorqueAboutZ = new(-29.9, TorqueUnit.KilopoundForceFoot),
-            },
-            new NodeResultFixture()
-            {
-                NodeId = 5,
-                ResultSetId = 1,
-                TorqueAboutZ = new(57.1, TorqueUnit.KilopoundForceFoot),
+                ForceAlongY = new(125, ForceUnit.Kilonewton),
+                TorqueAboutZ = new(0, TorqueUnit.KilonewtonMeter),
             },
             new NodeResultFixture()
             {
                 NodeId = 2,
                 ResultSetId = 1,
-                ForceAlongY = new(9.5, ForceUnit.KilopoundForce),
-                TorqueAboutZ = new(0, TorqueUnit.KilopoundForceFoot),
+                ForceAlongY = new(37.5, ForceUnit.Kilonewton),
+                TorqueAboutZ = new(0, TorqueUnit.KilonewtonMeter),
             },
         ];
 
@@ -83,6 +77,27 @@ public class Udoeyo_Example11_2 : ModelFixture, IHasExpectedNodeResults
             Id = 1,
             LoadCaseFactors = new Dictionary<int, double> { { 1, 1.0 } },
         };
+        yield return new LoadCombination()
+        {
+            Id = 2,
+            LoadCaseFactors = new Dictionary<int, double> { { 1, 1.0 } },
+        };
+    }
+
+    public override IEnumerable<PutSectionProfileRequest> SectionProfileRequests()
+    {
+        yield return new PutSectionProfileRequest()
+        {
+            Id = 1,
+            Name = "Constant",
+            Area = 1,
+            PolarMomentOfInertia = 1,
+            StrongAxisMomentOfInertia = 1,
+            StrongAxisPlasticSectionModulus = 1,
+            WeakAxisMomentOfInertia = 1,
+            WeakAxisPlasticSectionModulus = 1,
+            LengthUnit = LengthUnitContract.Meter,
+        };
     }
 
     public override IEnumerable<PutMaterialRequest> MaterialRequests()
@@ -92,17 +107,7 @@ public class Udoeyo_Example11_2 : ModelFixture, IHasExpectedNodeResults
             Id = 1,
             ModulusOfElasticity = 1,
             ModulusOfRigidity = 1,
-            PressureUnit = PressureUnitContract.KilopoundForcePerSquareFoot,
-        };
-    }
-
-    public override IEnumerable<SectionProfileFromLibrary> SectionProfilesFromLibraryRequests()
-    {
-        yield return new SectionProfileFromLibrary()
-        {
-            Id = 1,
-            Name = "W12x40",
-            Library = StructuralCode.AISC_360_16,
+            PressureUnit = PressureUnitContract.KilonewtonPerSquareMeter,
         };
     }
 
@@ -111,14 +116,22 @@ public class Udoeyo_Example11_2 : ModelFixture, IHasExpectedNodeResults
         yield return new PutNodeRequest()
         {
             Id = 1,
-            LocationPoint = new Point(0, 0, 0, LengthUnitContract.Foot),
-            Restraint = Restraint.Fixed,
+            LocationPoint = new Point(0, 0, 0, LengthUnitContract.Meter),
+            Restraint = Restraint.PinnedXyPlane,
         };
         yield return new PutNodeRequest()
         {
             Id = 2,
-            LocationPoint = new Point(24, 0, 0, LengthUnitContract.Foot),
-            Restraint = Restraint.PinnedXyPlane,
+            LocationPoint = new Point(10, 0, 0, LengthUnitContract.Meter),
+            Restraint = new()
+            {
+                CanTranslateAlongX = true,
+                CanTranslateAlongY = false,
+                CanTranslateAlongZ = false,
+                CanRotateAboutX = false,
+                CanRotateAboutY = false,
+                CanRotateAboutZ = true,
+            },
         };
     }
 
@@ -127,13 +140,7 @@ public class Udoeyo_Example11_2 : ModelFixture, IHasExpectedNodeResults
         yield return new InternalNode(
             3,
             1,
-            new(12.0 / 3.0 / 24.0, RatioUnit.DecimalFraction),
-            Restraint.FreeXyPlane
-        );
-        yield return new InternalNode(
-            4,
-            1,
-            new(0.5, RatioUnit.DecimalFraction),
+            new(.5, RatioUnit.DecimalFraction),
             new()
             {
                 CanTranslateAlongX = true,
@@ -144,7 +151,6 @@ public class Udoeyo_Example11_2 : ModelFixture, IHasExpectedNodeResults
                 CanRotateAboutZ = true,
             }
         );
-        yield return new InternalNode(5, 1, new(0.75, RatioUnit.DecimalFraction));
     }
 
     public override IEnumerable<PutPointLoadRequest> PointLoadRequests()
@@ -152,17 +158,25 @@ public class Udoeyo_Example11_2 : ModelFixture, IHasExpectedNodeResults
         yield return new PutPointLoadRequest()
         {
             Id = 1,
-            NodeId = 3,
+            NodeId = 1,
             LoadCaseId = 1,
-            Force = new(4 * 12 / 2.0, ForceUnitContract.KilopoundForce),
+            Force = new(20 * 5 / 2.0, ForceUnitContract.Kilonewton),
             Direction = new(0, -1, 0),
         };
         yield return new PutPointLoadRequest()
         {
             Id = 2,
-            NodeId = 5,
+            NodeId = 2,
             LoadCaseId = 1,
-            Force = new(24, ForceUnitContract.KilopoundForce),
+            Force = new(20 * 5 / 2.0, ForceUnitContract.Kilonewton),
+            Direction = new(0, -1, 0),
+        };
+        yield return new PutPointLoadRequest()
+        {
+            Id = 3,
+            NodeId = 3,
+            LoadCaseId = 1,
+            Force = new(20 * 5, ForceUnitContract.Kilonewton),
             Direction = new(0, -1, 0),
         };
     }
@@ -174,15 +188,15 @@ public class Udoeyo_Example11_2 : ModelFixture, IHasExpectedNodeResults
             Id = 1,
             NodeId = 1,
             LoadCaseId = 1,
-            Torque = new(4 * 12 * 12 / 20.0, TorqueUnitContract.KilopoundForceFoot),
+            Torque = new(-20 * 5 * 5 / 12.0, TorqueUnitContract.KilonewtonMeter),
             AxisDirection = new(0, 0, 1),
         };
         yield return new PutMomentLoadRequest()
         {
             Id = 2,
-            NodeId = 4,
+            NodeId = 2,
             LoadCaseId = 1,
-            Torque = new(-4 * 12 * 12 / 30.0, TorqueUnitContract.KilopoundForceFoot),
+            Torque = new(20 * 5 * 5 / 12.0, TorqueUnitContract.KilonewtonMeter),
             AxisDirection = new(0, 0, 1),
         };
     }

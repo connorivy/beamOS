@@ -121,49 +121,14 @@ public abstract class BeamOsModelBuilder
             (await apiClient.BatchPutLoadCombinationAsync(modelId, el)).ThrowIfError();
         }
 
-        foreach (var el in ChunkRequests(this.PointLoadRequests()))
-        {
-            (await apiClient.BatchPutPointLoadAsync(modelId, el)).ThrowIfError();
-        }
-
-        foreach (var el in ChunkRequests(this.MomentLoadRequests()))
-        {
-            (await apiClient.BatchPutMomentLoadAsync(modelId, el)).ThrowIfError();
-        }
-
         foreach (var el in ChunkRequests(this.MaterialRequests()))
         {
             (await apiClient.BatchPutMaterialAsync(modelId, el)).ThrowIfError();
         }
 
-        foreach (var el in this.SectionProfileRequests().GroupBy(r => r.GetType()))
+        foreach (var el in ChunkRequests(this.SectionProfileRequests()))
         {
-            if (el.Key == typeof(PutSectionProfileRequest))
-            {
-                foreach (
-                    var typedProfileRequest in ChunkRequests(el.Cast<PutSectionProfileRequest>())
-                )
-                {
-                    (
-                        await apiClient.BatchPutSectionProfileAsync(modelId, typedProfileRequest)
-                    ).ThrowIfError();
-                }
-            }
-            // else if (el.Key == typeof(StructuralCodeSectionProfile))
-            // {
-            //     foreach (
-            //         var typedProfileRequest in ChunkRequests(el.Cast<PutSectionProfileRequest>())
-            //     )
-            //     {
-            //         (
-            //             await apiClient.BatchPutSectionProfileAsync(modelId, typedProfileRequest)
-            //         ).ThrowIfError();
-            //     }
-            // }
-            else
-            {
-                throw new NotImplementedException($"Section profile type {el.Key} not implemented");
-            }
+            (await apiClient.BatchPutSectionProfileAsync(modelId, el)).ThrowIfError();
         }
 
         foreach (var el in ChunkRequests(this.SectionProfilesFromLibraryRequests()))
@@ -174,6 +139,21 @@ public abstract class BeamOsModelBuilder
         foreach (var el in ChunkRequests(this.Element1dRequests()))
         {
             (await apiClient.BatchPutElement1dAsync(modelId, el)).ThrowIfError();
+        }
+
+        foreach (var el in ChunkRequests(this.InternalNodeRequests()))
+        {
+            (await apiClient.BatchPutInternalNodeAsync(modelId, el)).ThrowIfError();
+        }
+
+        foreach (var el in ChunkRequests(this.PointLoadRequests()))
+        {
+            (await apiClient.BatchPutPointLoadAsync(modelId, el)).ThrowIfError();
+        }
+
+        foreach (var el in ChunkRequests(this.MomentLoadRequests()))
+        {
+            (await apiClient.BatchPutMomentLoadAsync(modelId, el)).ThrowIfError();
         }
 
         ModelCreated?.Invoke(this, modelId);

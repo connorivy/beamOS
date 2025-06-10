@@ -12,7 +12,7 @@ public static class AllSolvedProblems
         yield return new Kassimali_Example8_4();
         yield return new Udoeyo_Example7_7();
         yield return new TwistyBowlFraming();
-        yield return new Udoeyo_Example11_2();
+        yield return new Udoeyo_Example10_4();
     }
 
     public static IEnumerable<ModelFixture> ModelFixturesWithStructuralStiffnessMatrix()

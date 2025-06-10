@@ -1,18 +1,11 @@
 using BeamOs.Common.Domain.Models;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models.Mappers;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.EnvelopeResultSets;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.NodeResultAggregate;
-using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCases;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinations;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
-using BeamOs.Tests.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure;
@@ -31,7 +24,6 @@ public class StructuralAnalysisDbContext : DbContext
 
     public DbSet<Model> Models { get; set; }
 
-    // public DbSet<NodeDefinition> NodeDefinitions { get; set; }
     public DbSet<Node> Nodes { get; set; }
     public DbSet<InternalNode> InternalNodes { get; set; }
     public DbSet<Material> Materials { get; set; }
