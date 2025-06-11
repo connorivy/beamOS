@@ -4,12 +4,12 @@ using BeamOs.StructuralAnalysis.Contracts.Common;
 
 namespace BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Materials;
 
-public record MaterialRequestData
+public record MaterialData
 {
-    public MaterialRequestData() { }
+    public MaterialData() { }
 
     [SetsRequiredMembers]
-    public MaterialRequestData(
+    public MaterialData(
         double modulusOfElasticity,
         double modulusOfRigidity,
         PressureUnit pressureUnit
@@ -25,12 +25,12 @@ public record MaterialRequestData
     public required PressureUnit PressureUnit { get; init; }
 }
 
-public record CreateMaterialRequest : MaterialRequestData
+public record CreateMaterialRequest : MaterialData
 {
     public int? Id { get; init; }
 }
 
-public record PutMaterialRequest : MaterialRequestData, IHasIntId
+public record PutMaterialRequest : MaterialData, IHasIntId
 {
     public int Id { get; init; }
 }

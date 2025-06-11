@@ -9,4 +9,8 @@ public record MaterialResponse(
     double ModulusOfElasticity,
     double ModulusOfRigidity,
     PressureUnit PressureUnit
-) : IModelEntity;
+) : IModelEntity
+{
+    public MaterialData ToMaterialData() =>
+        new(this.ModulusOfElasticity, this.ModulusOfRigidity, this.PressureUnit);
+}

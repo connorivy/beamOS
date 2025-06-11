@@ -26,7 +26,7 @@ else
                                 <MudText Class="text-xs text-gray-500">@GetRelativeTime(proposal.LastModified)</MudText>
                             </div>
                             <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small"
-                                    OnClick="() => LoadProposal(proposal.Id)">View</MudButton>
+                                OnClick="() => LoadProposal(proposal.Id)">View</MudButton>
                         </div>
                     </MudListItem>
                 }
@@ -51,14 +51,15 @@ else
             </div>
             <MudDivider />
             <MudText Typo="Typo.subtitle2" Class="mb-1">Proposal Issues</MudText>
-            <MudSelect @bind-Value="minSeverity" Label="Minimum Severity" Dense="true" Class="mb-2 w-full">
-                @foreach (var sev in availableSeverities)
-                {
-                    <MudSelectItem Value="@sev">@sev</MudSelectItem>
-                }
-            </MudSelect>
             @if (selectedProposal.ProposalIssues is not null && selectedProposal.ProposalIssues.Count > 0)
             {
+                <MudSelect @bind-Value="minSeverity" Label="Minimum Severity" Dense="true" Class="mb-2 w-full">
+                    @foreach (var sev in availableSeverities)
+                    {
+                        <MudSelectItem Value="@sev">@sev</MudSelectItem>
+                    }
+                </MudSelect>
+
                 if (this.FilteredIssues.Any())
                 {
                     <MudList T="ProposalIssue" Class="divide-y divide-gray-200">
@@ -68,7 +69,7 @@ else
                                 <div class="flex flex-col">
                                     <MudText Class="truncate"><span class="font-semibold">ID:</span> @issue.ProposedId.ProposedId</MudText>
                                     <MudText Class="truncate"><span class="font-semibold">Object Type:</span> @issue.ObjectType</MudText>
-                                    <MudText ><span class="font-semibold">Message:</span> @issue.Message</MudText>
+                                    <MudText><span class="font-semibold">Message:</span> @issue.Message</MudText>
                                     <MudText Class="truncate"><span class="font-semibold">Severity:</span> @issue.Severity</MudText>
                                     @* <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small"
                                         OnClick="() => ResolveIssue(issue)" Class="self-end mt-1">Resolve</MudButton> *@

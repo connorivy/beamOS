@@ -15,6 +15,9 @@
             </MudAutocomplete>
         </MudExpansionPanels>
 
+        <MudTextField T="string?" Typo="Typo.input" @bind-Value="sectionProfile.Name" Required="true" Label="Name"
+            OnlyValidateIfDirty="true" />
+
         <QuantityFieldComponent IsRequired="true" @bind-Value="@sectionProfile.Area"
             Unit="@UnitSettings.AreaUnit.ToFriendlyString()" Label="Area" />
 
@@ -26,6 +29,13 @@
 
         <QuantityFieldComponent IsRequired="true" @bind-Value="@sectionProfile.PolarMomentOfInertia"
             Unit="@UnitSettings.AreaMomentOfInertiaUnit.ToFriendlyString()" Label="Polar Moment Of Inertia" />
+
+        <QuantityFieldComponent IsRequired="true" @bind-Value="@sectionProfile.StrongAxisPlasticSectionModulus"
+            Unit="@UnitSettings.AreaMomentOfInertiaUnit.ToFriendlyString()"
+            Label="Strong Axis Plastic Section Modulus" />
+
+        <QuantityFieldComponent IsRequired="true" @bind-Value="@sectionProfile.WeakAxisPlasticSectionModulus"
+            Unit="@UnitSettings.AreaMomentOfInertiaUnit.ToFriendlyString()" Label="Weak Axis Plastic Section Modulus" />
 
         <QuantityFieldComponent IsRequired="true" @bind-Value="@sectionProfile.WeakAxisShearArea"
             Unit="@UnitSettings.AreaUnit.ToFriendlyString()" Label="Weah Axis Shear Area" />

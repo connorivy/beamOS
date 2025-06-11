@@ -14,10 +14,10 @@ namespace BeamOs.WebApp.Components.Features.ModelObjectEditor.Materials;
 public partial class MaterialObjectEditor(
     IDispatcher dispatcher,
     IState<EditorComponentState> editorState,
-    IState<MaterialObjectEditorState> state
-// PutMaterialSimpleCommandHandler putMaterialCommandHandler,
-// CreateMaterialClientCommandHandler createMaterialCommandHandler,
-// DeleteMaterialSimpleCommandHandler deleteMaterialCommandHandler
+    IState<MaterialObjectEditorState> state,
+    PutMaterialSimpleCommandHandler putMaterialCommandHandler,
+    CreateMaterialClientCommandHandler createMaterialCommandHandler,
+    DeleteMaterialSimpleCommandHandler deleteMaterialCommandHandler
 ) : FluxorComponent
 {
     private readonly MaterialModel material = new();
@@ -112,12 +112,12 @@ public partial class MaterialObjectEditor(
     private async Task Delete()
     {
         ModelEntityCommand command = new() { ModelId = this.ModelId, Id = this.material.Id };
-        // await deleteMaterialCommandHandler.ExecuteAsync(command);
+        await deleteMaterialCommandHandler.ExecuteAsync(command);
     }
 
     private async Task Submit()
     {
-        MaterialRequestData data = new()
+        MaterialData data = new()
         {
             PressureUnit = this.UnitSettings.PressureUnit,
             ModulusOfElasticity = this.material.ModulusOfElasticity.Value,
@@ -126,8 +126,7 @@ public partial class MaterialObjectEditor(
 
         if (this.material.Id == 0)
         {
-            // CreateMaterialRequest command = new(materialData) { ModelId = this.ModelId };
-            // await createMaterialCommandHandler.ExecuteAsync(command);
+            await createMaterialCommandHandler.ExecuteAsync(new(data) { ModelId = this.ModelId });
         }
         else
         {
@@ -138,7 +137,7 @@ public partial class MaterialObjectEditor(
                 Body = data,
             };
 
-            // await putMaterialCommandHandler.ExecuteAsync(command);
+            await putMaterialCommandHandler.ExecuteAsync(command);
         }
     }
 
@@ -200,12 +199,6 @@ public partial class MaterialObjectEditor(
         public double? ModulusOfRigidity { get; set; }
     }
 }
-
-public class DeleteMaterialSimpleCommandHandler { }
-
-public class CreateMaterialClientCommandHandler { }
-
-public class PutMaterialSimpleCommandHandler { }
 
 [FeatureState]
 public record MaterialObjectEditorState(bool IsLoading)

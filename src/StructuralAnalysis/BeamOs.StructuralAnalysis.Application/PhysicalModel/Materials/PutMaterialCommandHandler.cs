@@ -48,11 +48,11 @@ public static partial class PutMaterialCommandMapper
     public static partial Material ToDomainObject(this PutMaterialCommand command);
 }
 
-public readonly struct PutMaterialCommand : IModelResourceWithIntIdRequest<MaterialRequestData>
+public readonly struct PutMaterialCommand : IModelResourceWithIntIdRequest<MaterialData>
 {
     public int Id { get; init; }
     public Guid ModelId { get; init; }
-    public MaterialRequestData Body { get; init; }
+    public MaterialData Body { get; init; }
     public Pressure ModulusOfElasticity =>
         new(this.Body.ModulusOfElasticity, this.Body.PressureUnit.MapToPressureUnit());
     public Pressure ModulusOfRigidity =>
@@ -65,6 +65,17 @@ public readonly struct PutMaterialCommand : IModelResourceWithIntIdRequest<Mater
         this.Id = putMaterialRequest.Id;
         this.ModelId = modelId;
         this.Body = putMaterialRequest;
+    }
+
+    public MaterialResponse ToResponse()
+    {
+        return new MaterialResponse(
+            this.Id,
+            this.ModelId,
+            this.ModulusOfElasticity.Value,
+            this.ModulusOfRigidity.Value,
+            this.Body.PressureUnit
+        );
     }
 }
 

@@ -226,7 +226,7 @@ public partial class SectionProfileObjectEditor(
     public class SectionProfileModel
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public Guid ModelId { get; set; }
         public double? Area { get; set; }
         public double? StrongAxisMomentOfInertia { get; set; }

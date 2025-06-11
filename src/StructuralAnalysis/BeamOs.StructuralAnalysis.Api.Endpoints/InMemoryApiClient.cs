@@ -232,7 +232,7 @@ public partial class InMemoryApiClient : IStructuralAnalysisApiClientV1
     private partial PutMaterialCommand CreatePutMaterialCommandCommand(
         int id,
         Guid modelId,
-        MaterialRequestData body,
+        MaterialData body,
         CancellationToken cancellationToken
     ) =>
         new()

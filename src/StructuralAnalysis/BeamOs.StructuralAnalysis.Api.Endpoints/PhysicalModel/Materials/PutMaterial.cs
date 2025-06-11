@@ -10,11 +10,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Materials;
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 public class PutMaterial(PutMaterialCommandHandler putMaterialCommandHandler)
-    : BeamOsModelResourceWithIntIdBaseEndpoint<
-        PutMaterialCommand,
-        MaterialRequestData,
-        MaterialResponse
-    >
+    : BeamOsModelResourceWithIntIdBaseEndpoint<PutMaterialCommand, MaterialData, MaterialResponse>
 {
     public override async Task<Result<MaterialResponse>> ExecuteRequestAsync(
         PutMaterialCommand req,
