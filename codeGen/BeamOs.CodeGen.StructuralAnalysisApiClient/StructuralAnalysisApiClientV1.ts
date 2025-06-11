@@ -3492,6 +3492,7 @@ export class CreateInternalNodeRequest implements ICreateInternalNodeRequest {
     id?: number | undefined;
     element1dId!: number;
     ratioAlongElement1d!: Ratio;
+    restraint?: NullableOfRestraint | undefined;
     metadata?: { [key: string]: string; } | undefined;
 
     [key: string]: any;
@@ -3517,6 +3518,7 @@ export class CreateInternalNodeRequest implements ICreateInternalNodeRequest {
             this.id = _data["id"];
             this.element1dId = _data["element1dId"];
             this.ratioAlongElement1d = _data["ratioAlongElement1d"] ? Ratio.fromJS(_data["ratioAlongElement1d"]) : new Ratio();
+            this.restraint = _data["restraint"] ? NullableOfRestraint.fromJS(_data["restraint"]) : <any>undefined;
             if (_data["metadata"]) {
                 this.metadata = {} as any;
                 for (let key in _data["metadata"]) {
@@ -3543,6 +3545,7 @@ export class CreateInternalNodeRequest implements ICreateInternalNodeRequest {
         data["id"] = this.id;
         data["element1dId"] = this.element1dId;
         data["ratioAlongElement1d"] = this.ratioAlongElement1d ? this.ratioAlongElement1d.toJSON() : <any>undefined;
+        data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
         if (this.metadata) {
             data["metadata"] = {};
             for (let key in this.metadata) {
@@ -3558,6 +3561,7 @@ export interface ICreateInternalNodeRequest {
     id?: number | undefined;
     element1dId: number;
     ratioAlongElement1d: Ratio;
+    restraint?: NullableOfRestraint | undefined;
     metadata?: { [key: string]: string; } | undefined;
 
     [key: string]: any;
@@ -5111,6 +5115,7 @@ export class InternalNode implements IInternalNode {
     id!: number;
     element1dId!: number;
     ratioAlongElement1d!: Ratio;
+    restraint?: NullableOfRestraint | undefined;
     metadata?: { [key: string]: string; } | undefined;
 
     [key: string]: any;
@@ -5136,6 +5141,7 @@ export class InternalNode implements IInternalNode {
             this.id = _data["id"];
             this.element1dId = _data["element1dId"];
             this.ratioAlongElement1d = _data["ratioAlongElement1d"] ? Ratio.fromJS(_data["ratioAlongElement1d"]) : new Ratio();
+            this.restraint = _data["restraint"] ? NullableOfRestraint.fromJS(_data["restraint"]) : <any>undefined;
             if (_data["metadata"]) {
                 this.metadata = {} as any;
                 for (let key in _data["metadata"]) {
@@ -5162,6 +5168,7 @@ export class InternalNode implements IInternalNode {
         data["id"] = this.id;
         data["element1dId"] = this.element1dId;
         data["ratioAlongElement1d"] = this.ratioAlongElement1d ? this.ratioAlongElement1d.toJSON() : <any>undefined;
+        data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
         if (this.metadata) {
             data["metadata"] = {};
             for (let key in this.metadata) {
@@ -5177,6 +5184,7 @@ export interface IInternalNode {
     id: number;
     element1dId: number;
     ratioAlongElement1d: Ratio;
+    restraint?: NullableOfRestraint | undefined;
     metadata?: { [key: string]: string; } | undefined;
 
     [key: string]: any;
@@ -5186,6 +5194,7 @@ export class InternalNode2 implements IInternalNode2 {
     id!: number;
     element1dId!: number;
     ratioAlongElement1d!: Ratio;
+    restraint?: NullableOfRestraint | undefined;
     metadata?: { [key: string]: string; } | undefined;
 
     [key: string]: any;
@@ -5211,6 +5220,7 @@ export class InternalNode2 implements IInternalNode2 {
             this.id = _data["id"];
             this.element1dId = _data["element1dId"];
             this.ratioAlongElement1d = _data["ratioAlongElement1d"] ? Ratio.fromJS(_data["ratioAlongElement1d"]) : new Ratio();
+            this.restraint = _data["restraint"] ? NullableOfRestraint.fromJS(_data["restraint"]) : <any>undefined;
             if (_data["metadata"]) {
                 this.metadata = {} as any;
                 for (let key in _data["metadata"]) {
@@ -5237,6 +5247,7 @@ export class InternalNode2 implements IInternalNode2 {
         data["id"] = this.id;
         data["element1dId"] = this.element1dId;
         data["ratioAlongElement1d"] = this.ratioAlongElement1d ? this.ratioAlongElement1d.toJSON() : <any>undefined;
+        data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
         if (this.metadata) {
             data["metadata"] = {};
             for (let key in this.metadata) {
@@ -5252,6 +5263,7 @@ export interface IInternalNode2 {
     id: number;
     element1dId: number;
     ratioAlongElement1d: Ratio;
+    restraint?: NullableOfRestraint | undefined;
     metadata?: { [key: string]: string; } | undefined;
 
     [key: string]: any;
@@ -5260,6 +5272,7 @@ export interface IInternalNode2 {
 export class InternalNodeData implements IInternalNodeData {
     element1dId!: number;
     ratioAlongElement1d!: Ratio;
+    restraint?: NullableOfRestraint | undefined;
     metadata?: { [key: string]: string; } | undefined;
 
     [key: string]: any;
@@ -5284,6 +5297,7 @@ export class InternalNodeData implements IInternalNodeData {
             }
             this.element1dId = _data["element1dId"];
             this.ratioAlongElement1d = _data["ratioAlongElement1d"] ? Ratio.fromJS(_data["ratioAlongElement1d"]) : new Ratio();
+            this.restraint = _data["restraint"] ? NullableOfRestraint.fromJS(_data["restraint"]) : <any>undefined;
             if (_data["metadata"]) {
                 this.metadata = {} as any;
                 for (let key in _data["metadata"]) {
@@ -5309,6 +5323,7 @@ export class InternalNodeData implements IInternalNodeData {
         }
         data["element1dId"] = this.element1dId;
         data["ratioAlongElement1d"] = this.ratioAlongElement1d ? this.ratioAlongElement1d.toJSON() : <any>undefined;
+        data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
         if (this.metadata) {
             data["metadata"] = {};
             for (let key in this.metadata) {
@@ -5323,6 +5338,7 @@ export class InternalNodeData implements IInternalNodeData {
 export interface IInternalNodeData {
     element1dId: number;
     ratioAlongElement1d: Ratio;
+    restraint?: NullableOfRestraint | undefined;
     metadata?: { [key: string]: string; } | undefined;
 
     [key: string]: any;
@@ -6463,6 +6479,7 @@ export class ModelProposalResponse implements IModelProposalResponse {
     modifyNodeProposals?: ModifyNodeProposalResponse[] | undefined;
     createElement1dProposals?: CreateElement1dProposalResponse[] | undefined;
     modifyElement1dProposals?: ModifyElement1dProposalResponse[] | undefined;
+    element1dsModifiedBecauseOfNodeChange?: number[] | undefined;
     materialProposals?: PutMaterialRequest[] | undefined;
     sectionProfileProposals?: PutSectionProfileRequest[] | undefined;
     sectionProfileFromLibraryProposals?: SectionProfileFromLibrary[] | undefined;
@@ -6513,6 +6530,11 @@ export class ModelProposalResponse implements IModelProposalResponse {
                 this.modifyElement1dProposals = [] as any;
                 for (let item of _data["modifyElement1dProposals"])
                     this.modifyElement1dProposals!.push(ModifyElement1dProposalResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["element1dsModifiedBecauseOfNodeChange"])) {
+                this.element1dsModifiedBecauseOfNodeChange = [] as any;
+                for (let item of _data["element1dsModifiedBecauseOfNodeChange"])
+                    this.element1dsModifiedBecauseOfNodeChange!.push(item);
             }
             if (Array.isArray(_data["materialProposals"])) {
                 this.materialProposals = [] as any;
@@ -6603,6 +6625,11 @@ export class ModelProposalResponse implements IModelProposalResponse {
             for (let item of this.modifyElement1dProposals)
                 data["modifyElement1dProposals"].push(item ? item.toJSON() : <any>undefined);
         }
+        if (Array.isArray(this.element1dsModifiedBecauseOfNodeChange)) {
+            data["element1dsModifiedBecauseOfNodeChange"] = [];
+            for (let item of this.element1dsModifiedBecauseOfNodeChange)
+                data["element1dsModifiedBecauseOfNodeChange"].push(item);
+        }
         if (Array.isArray(this.materialProposals)) {
             data["materialProposals"] = [];
             for (let item of this.materialProposals)
@@ -6665,6 +6692,7 @@ export interface IModelProposalResponse {
     modifyNodeProposals?: ModifyNodeProposalResponse[] | undefined;
     createElement1dProposals?: CreateElement1dProposalResponse[] | undefined;
     modifyElement1dProposals?: ModifyElement1dProposalResponse[] | undefined;
+    element1dsModifiedBecauseOfNodeChange?: number[] | undefined;
     materialProposals?: PutMaterialRequest[] | undefined;
     sectionProfileProposals?: PutSectionProfileRequest[] | undefined;
     sectionProfileFromLibraryProposals?: SectionProfileFromLibrary[] | undefined;
@@ -8116,6 +8144,74 @@ export interface INullableOfPartialRestraint {
     canRotateAboutX?: boolean | undefined;
     canRotateAboutY?: boolean | undefined;
     canRotateAboutZ?: boolean | undefined;
+
+    [key: string]: any;
+}
+
+export class NullableOfRestraint implements INullableOfRestraint {
+    canTranslateAlongX!: boolean;
+    canTranslateAlongY!: boolean;
+    canTranslateAlongZ!: boolean;
+    canRotateAboutX!: boolean;
+    canRotateAboutY!: boolean;
+    canRotateAboutZ!: boolean;
+
+    [key: string]: any;
+
+    constructor(data?: INullableOfRestraint) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.canTranslateAlongX = _data["canTranslateAlongX"];
+            this.canTranslateAlongY = _data["canTranslateAlongY"];
+            this.canTranslateAlongZ = _data["canTranslateAlongZ"];
+            this.canRotateAboutX = _data["canRotateAboutX"];
+            this.canRotateAboutY = _data["canRotateAboutY"];
+            this.canRotateAboutZ = _data["canRotateAboutZ"];
+        }
+    }
+
+    static fromJS(data: any): NullableOfRestraint {
+        data = typeof data === 'object' ? data : {};
+        let result = new NullableOfRestraint();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["canTranslateAlongX"] = this.canTranslateAlongX;
+        data["canTranslateAlongY"] = this.canTranslateAlongY;
+        data["canTranslateAlongZ"] = this.canTranslateAlongZ;
+        data["canRotateAboutX"] = this.canRotateAboutX;
+        data["canRotateAboutY"] = this.canRotateAboutY;
+        data["canRotateAboutZ"] = this.canRotateAboutZ;
+        return data;
+    }
+}
+
+export interface INullableOfRestraint {
+    canTranslateAlongX: boolean;
+    canTranslateAlongY: boolean;
+    canTranslateAlongZ: boolean;
+    canRotateAboutX: boolean;
+    canRotateAboutY: boolean;
+    canRotateAboutZ: boolean;
 
     [key: string]: any;
 }

@@ -951,6 +951,7 @@ export class ModelProposalResponse implements IModelProposalResponse {
     modifyNodeProposals?: ModifyNodeProposalResponse[] | undefined;
     createElement1dProposals?: CreateElement1dProposalResponse[] | undefined;
     modifyElement1dProposals?: ModifyElement1dProposalResponse[] | undefined;
+    element1dsModifiedBecauseOfNodeChange?: number[] | undefined;
     materialProposals?: PutMaterialRequest[] | undefined;
     sectionProfileProposals?: PutSectionProfileRequest[] | undefined;
     sectionProfileFromLibraryProposals?: SectionProfileFromLibrary[] | undefined;
@@ -1001,6 +1002,11 @@ export class ModelProposalResponse implements IModelProposalResponse {
                 this.modifyElement1dProposals = [] as any;
                 for (let item of _data["modifyElement1dProposals"])
                     this.modifyElement1dProposals!.push(ModifyElement1dProposalResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["element1dsModifiedBecauseOfNodeChange"])) {
+                this.element1dsModifiedBecauseOfNodeChange = [] as any;
+                for (let item of _data["element1dsModifiedBecauseOfNodeChange"])
+                    this.element1dsModifiedBecauseOfNodeChange!.push(item);
             }
             if (Array.isArray(_data["materialProposals"])) {
                 this.materialProposals = [] as any;
@@ -1091,6 +1097,11 @@ export class ModelProposalResponse implements IModelProposalResponse {
             for (let item of this.modifyElement1dProposals)
                 data["modifyElement1dProposals"].push(item ? item.toJSON() : <any>undefined);
         }
+        if (Array.isArray(this.element1dsModifiedBecauseOfNodeChange)) {
+            data["element1dsModifiedBecauseOfNodeChange"] = [];
+            for (let item of this.element1dsModifiedBecauseOfNodeChange)
+                data["element1dsModifiedBecauseOfNodeChange"].push(item);
+        }
         if (Array.isArray(this.materialProposals)) {
             data["materialProposals"] = [];
             for (let item of this.materialProposals)
@@ -1153,6 +1164,7 @@ export interface IModelProposalResponse {
     modifyNodeProposals?: ModifyNodeProposalResponse[] | undefined;
     createElement1dProposals?: CreateElement1dProposalResponse[] | undefined;
     modifyElement1dProposals?: ModifyElement1dProposalResponse[] | undefined;
+    element1dsModifiedBecauseOfNodeChange?: number[] | undefined;
     materialProposals?: PutMaterialRequest[] | undefined;
     sectionProfileProposals?: PutSectionProfileRequest[] | undefined;
     sectionProfileFromLibraryProposals?: SectionProfileFromLibrary[] | undefined;

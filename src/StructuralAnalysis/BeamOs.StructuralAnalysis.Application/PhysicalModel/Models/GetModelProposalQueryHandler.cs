@@ -1,11 +1,15 @@
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 
-public sealed class GetModelProposalQueryHandler(IModelProposalRepository modelProposalRepository)
-    : IQueryHandler<IModelEntity, ModelProposalResponse>
+public sealed class GetModelProposalQueryHandler(
+    IModelProposalRepository modelProposalRepository,
+    IElement1dRepository element1DRepository
+) : IQueryHandler<IModelEntity, ModelProposalResponse>
 {
     public async Task<Result<ModelProposalResponse>> ExecuteAsync(
         IModelEntity command,
@@ -19,8 +23,26 @@ public sealed class GetModelProposalQueryHandler(IModelProposalRepository modelP
                 description: $"Model proposal with id {command.Id} not found"
             );
         }
+        var changedNodes = proposal
+            .NodeProposals.Select(p => p.ExistingId)
+            .OfType<NodeId>()
+            .ToList();
 
-        return proposal.ToContract();
+        var element1dsModifiedBecauseOfNodeChange = await element1DRepository.GetMany(
+            command.ModelId,
+            changedNodes,
+            ct
+        );
+
+        var proposalResponse = proposal.ToContract();
+
+        return proposalResponse with
+        {
+            Element1dsModifiedBecauseOfNodeChange =
+            [
+                .. element1dsModifiedBecauseOfNodeChange.Select(e => e.Id.Id),
+            ],
+        };
     }
 }
 

@@ -62,6 +62,7 @@ public record ModelProposalResponse : IHasIntId, IBeamOsEntityResponse
     public List<ModifyNodeProposalResponse>? ModifyNodeProposals { get; init; }
     public List<CreateElement1dProposalResponse>? CreateElement1dProposals { get; init; }
     public List<ModifyElement1dProposalResponse>? ModifyElement1dProposals { get; init; }
+    public List<int>? Element1dsModifiedBecauseOfNodeChange { get; init; }
     public List<PutMaterialRequest>? MaterialProposals { get; init; }
     public List<PutSectionProfileRequest>? SectionProfileProposals { get; init; }
     public List<SectionProfileFromLibrary>? SectionProfileFromLibraryProposals { get; init; }
