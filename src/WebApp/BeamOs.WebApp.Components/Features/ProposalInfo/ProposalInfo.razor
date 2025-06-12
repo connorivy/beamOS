@@ -3,6 +3,8 @@
 @using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models
 @using MudBlazor
 
+@inherits FluxorComponent
+
 @if (proposalInfos is null)
 {
     <MudPaper Class="flex flex-col items-center justify-center h-32 w-full">
@@ -14,7 +16,7 @@ else
 {
     @if (selectedProposal is null)
     {
-        <MudPaper Class="p-3 w-full max-w-xs mx-auto mt-4">
+        <MudPaper Class="p-3 w-full max-w-xs">
             <MudText Typo="Typo.h6" Class="mb-2">Proposals</MudText>
             <MudList T="ModelProposalInfo" Class="w-full">
                 @foreach (var proposal in proposalInfos)
@@ -35,7 +37,10 @@ else
     }
     else
     {
-        <MudPaper Class="p-3 w-full max-w-xs mx-auto mt-4 flex flex-col gap-4">
+        <MudPaper Class="p-3 w-full max-w-xs flex flex-col gap-4">
+            <MudTooltip Text="Back">
+                <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="() => selectedProposal = null"></MudIconButton>
+            </MudTooltip>
             <MudText Typo="Typo.h6">Proposal Details</MudText>
             <MudText Class="truncate"><span class="font-semibold">ID:</span> @selectedProposal.Id</MudText>
             <MudText Class="truncate"><span class="font-semibold">Last Modified:</span> @selectedProposal.LastModified</MudText>
@@ -50,7 +55,26 @@ else
                     OnClick="() => selectedProposal = null">Back</MudButton>
             </div>
             <MudDivider />
-            <MudText Typo="Typo.subtitle2" Class="mb-1">Proposal Issues</MudText>
+            <div class="flex items-center mb-2">
+                <MudCheckBox Value="true" Color="Color.Primary" />
+                <MudText Class="ml-2">Select All</MudText>
+            </div>
+            <MudList T="ProposalIssue" Class="divide-y divide-gray-200">
+                @foreach (var proposalObject in this.ProposalObjects)
+                {
+                    <MudListItem Value="@proposalObject">
+                        <div class="flex flex-row items-center gap-2 py-1">
+                        <MudCheckBox Value="@selectedProposalObjectIds.Contains(proposalObject.Id.ToString())"
+                                     Color="Color.Primary"
+                                     ValueChanged="(bool checkedVal) => ToggleProposalObjectSelection(proposalObject.Id.ToString(), checkedVal)" />
+                        <div class="flex flex-col gap-1">
+                            <MudText Class="truncate"><span class="font-semibold">Object Type:</span> @proposalObject.ObjectType</MudText>
+                            <MudText Class="truncate"><span class="font-semibold">Modification Type:</span> @proposalObject.ProposalType</MudText>
+                        </div>
+                        </div>
+                    </MudListItem>
+                }
+            </MudList>
             @if (selectedProposal.ProposalIssues is not null && selectedProposal.ProposalIssues.Count > 0)
             {
                 <MudSelect @bind-Value="minSeverity" Label="Minimum Severity" Dense="true" Class="mb-2 w-full">
@@ -92,105 +116,28 @@ else
 }
 
 @code {
-    [Parameter]
-    public Guid ModelId { get; set; }
-
-    [Parameter]
-    public IEditorApiAlpha EditorApi { get; set; } = default!;
-
-    [Inject]
-    private IStructuralAnalysisApiClientV1 StructuralAnalysisApiClient { get; set; } = default!;
-
-    [Inject]
-    private ISnackbar Snackbar { get; set; } = default!;
-
-    private List<ModelProposalInfo>? proposalInfos;
-    private ModelProposalResponse? selectedProposal;
-    private ProposalIssueSeverity minSeverity = ProposalIssueSeverity.Information;
-
-    private ProposalIssueSeverity[] availableSeverities = Enum.GetValues<ProposalIssueSeverity>().Where(s => s !=
-    ProposalIssueSeverity.Undefined).ToArray();
-
-    private IEnumerable<ProposalIssue> FilteredIssues =>
-    selectedProposal?.ProposalIssues == null
-    ? Enumerable.Empty<ProposalIssue>()
-    : selectedProposal.ProposalIssues.Where(i => i.Severity >= minSeverity);
-
-    protected override async Task OnInitializedAsync()
+    // ...existing code...
+    // For checkbox selection
+    private HashSet<string> selectedProposalObjectIds = new();
+    private bool selectAllProposalObjects
     {
-        await base.OnInitializedAsync();
-        var response = await StructuralAnalysisApiClient.GetModelProposalsAsync(this.ModelId);
-        if (response.IsSuccess)
+        get => ProposalObjects != null && ProposalObjects.Count > 0 && selectedProposalObjectIds.Count == ProposalObjects.Count;
+        set
         {
-            proposalInfos = response.Value;
+            if (ProposalObjects == null) return;
+            if (value)
+                selectedProposalObjectIds = ProposalObjects.Select(x => x.Id.ToString()).ToHashSet();
+            else
+                selectedProposalObjectIds.Clear();
         }
+    }
+    private void ToggleProposalObjectSelection(string id, bool isChecked)
+    {
+        if (isChecked == true)
+            selectedProposalObjectIds.Add(id);
         else
-        {
-            Snackbar.Add(response.Error.Description, Severity.Error);
-            proposalInfos = [];
-        }
-    }
-
-    private async Task LoadProposal(int proposalId)
-    {
-        var response = await StructuralAnalysisApiClient.GetModelProposalAsync(this.ModelId, proposalId);
-        if (response.IsSuccess)
-        {
-            selectedProposal = response.Value;
-            await this.EditorApi.DisplayModelProposalAsync(response.Value);
-        }
-        else
-        {
-            Snackbar.Add("Failed to load selected proposal", Severity.Error);
-        }
-    }
-
-    private async Task AcceptProposal(int proposalId)
-    {
-        var response = await StructuralAnalysisApiClient.AcceptModelProposalAsync(this.ModelId, proposalId);
-        if (response.IsSuccess)
-        {
-            Snackbar.Add("Proposal accepted", Severity.Success);
-            selectedProposal = null;
-            await this.EditorApi.ClearModelProposalsAsync();
-        }
-        else
-        {
-            Snackbar.Add(response.Error.Description, Severity.Error);
-        }
-    }
-
-    private async Task RejectProposal(int proposalId)
-    {
-        var response = await StructuralAnalysisApiClient.RejectModelProposalAsync(this.ModelId, proposalId);
-        if (response.IsSuccess)
-        {
-            Snackbar.Add("Proposal rejected", Severity.Success);
-            selectedProposal = null;
-            await this.EditorApi.ClearModelProposalsAsync();
-        }
-        else
-        {
-            Snackbar.Add("Failed to reject proposal", Severity.Error);
-        }
-    }
-
-    private void ResolveIssue(object issue)
-    {
-        Snackbar.Add("Resolve action not yet implemented.", Severity.Info);
-    }
-
-    private string GetRelativeTime(DateTimeOffset lastModified)
-    {
-        var span = DateTime.UtcNow - lastModified.ToUniversalTime();
-        if (span.TotalSeconds < 60)
-            return $"{(int)span.TotalSeconds} seconds ago";
-        if (span.TotalMinutes < 60)
-            return $"{(int)span.TotalMinutes} minutes ago";
-        if (span.TotalHours < 24)
-            return $"{(int)span.TotalHours} hours ago";
-        if (span.TotalDays < 7)
-            return $"{(int)span.TotalDays} days ago";
-        return lastModified.ToString();
+            selectedProposalObjectIds.Remove(id);
     }
 }
+
+

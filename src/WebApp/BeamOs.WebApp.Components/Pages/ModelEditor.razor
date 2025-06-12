@@ -6,6 +6,7 @@
 @using BeamOs.WebApp.Components.Features.Common
 @using BeamOs.WebApp.Components.Features.Editor
 @using BeamOs.WebApp.Components.Features.ModelObjectEditor
+@using BeamOs.WebApp.Components.Features.ProposalInfo
 @using BeamOs.WebApp.Components.Features.ResultCharts
 @using BeamOs.WebApp.Components.Features.ResultsTable
 @using BeamOs.WebApp.Components.Features.SelectionInfo
@@ -54,6 +55,12 @@
         <div class="absolute right-0 top-0 min-w-[400px] w-1/4 p-4">
             <ResultChartsComponent ModelId="@modelId" />
         </div>
+        @if (this.State.Value.EditorApi is IEditorApiAlpha editorApi)
+        {
+            <FloatingResponsivePanel>
+                <ProposalInfo ModelId="@modelId" EditorApi="@editorApi" />
+            </FloatingResponsivePanel>
+        }
         <AiAssistant ModelId="@ModelId" />
     }
 </MudContainer>

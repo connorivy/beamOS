@@ -1,4 +1,6 @@
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 
@@ -86,12 +88,50 @@ public record PutNodeRequest : NodeData, IHasIntId, IBeamOsEntityRequest
 //     public required int Id { get; init; }
 // }
 
-public record CreateNodeProposalResponse : NodeData, IHasIntId
+public record CreateNodeProposalResponse : NodeData, IEntityProposal
 {
     public required int Id { get; init; }
+
+    [JsonIgnore]
+    public BeamOsObjectType ObjectType { get; } = BeamOsObjectType.Node;
+
+    [JsonIgnore]
+    public ProposalType ProposalType { get; protected init; } = ProposalType.Create;
 }
 
-public record ModifyNodeProposalResponse : CreateNodeProposalResponse
+public record ModifyNodeProposalResponse : CreateNodeProposalResponse, IEntityModificationProposal
 {
     public required int ExistingNodeId { get; init; }
+
+    [JsonIgnore]
+    public int ExistingId => this.ExistingNodeId;
+
+    public ModifyNodeProposalResponse()
+    {
+        //this.ProposalType = ProposalType.Modify;
+    }
+}
+
+public interface IEntityProposal : IHasIntId
+{
+    public BeamOsObjectType ObjectType { get; }
+    public ProposalType ProposalType { get; }
+}
+
+public interface IEntityModificationProposal : IEntityProposal
+{
+    /// <summary>
+    /// The ID of the existing object that this proposal modifies.
+    /// </summary>
+    public int ExistingId { get; }
+
+    ProposalType IEntityProposal.ProposalType => ProposalType.Modify;
+}
+
+public enum ProposalType
+{
+    Undefined = 0,
+    Create,
+    Modify,
+    Delete,
 }
