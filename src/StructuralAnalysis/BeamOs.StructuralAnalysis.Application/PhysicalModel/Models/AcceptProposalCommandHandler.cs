@@ -6,6 +6,7 @@ using BeamOs.StructuralAnalysis.Application.PhysicalModel.Materials;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
@@ -21,16 +22,17 @@ public class AcceptModelProposalCommandHandler(
     ISectionProfileFromLibraryRepository sectionProfileFromLibraryRepository,
     IElement1dRepository element1dRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
-) : ICommandHandler<IModelEntity, ModelResponse>
+) : ICommandHandler<ModelResourceWithIntIdRequest<List<EntityProposal>?>, ModelResponse>
 {
     public async Task<Result<ModelResponse>> ExecuteAsync(
-        IModelEntity command,
+        ModelResourceWithIntIdRequest<List<EntityProposal>?> command,
         CancellationToken ct = default
     )
     {
         ModelProposal? modelProposal = await modelProposalRepository.GetSingle(
             command.ModelId,
             command.Id,
+            command.Body,
             ct
         );
         if (modelProposal is null)

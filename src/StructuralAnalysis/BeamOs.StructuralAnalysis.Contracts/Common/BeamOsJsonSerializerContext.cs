@@ -56,6 +56,8 @@ namespace BeamOs.StructuralAnalysis.Contracts.Common;
 [JsonSerializable(typeof(Dictionary<int, double>))]
 [JsonSerializable(typeof(LoadCombinationData))]
 [JsonSerializable(typeof(ModelProposalData))]
+[JsonSerializable(typeof(IEnumerable<IEntityProposal>))]
+[JsonSerializable(typeof(IEnumerable<EntityProposal>))]
 [JsonSerializable(typeof(Result<ModelProposalResponse>))]
 [JsonSerializable(typeof(Result<List<ModelProposalInfo>>))]
 [JsonSerializable(typeof(IEnumerable<LoadCombination>))]

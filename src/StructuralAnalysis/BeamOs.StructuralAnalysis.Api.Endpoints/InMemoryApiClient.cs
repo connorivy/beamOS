@@ -359,4 +359,17 @@ public partial class InMemoryApiClient : IStructuralAnalysisApiClientV1
             ResultSetId = resultSetId,
             Id = id,
         };
+
+    private partial ModelResourceWithIntIdRequest<List<EntityProposal>?> CreateEntityProposal_Nullable_Command(
+        Guid modelId,
+        int id,
+        IEnumerable<EntityProposal>? body,
+        CancellationToken cancellationToken
+    ) =>
+        new()
+        {
+            ModelId = modelId,
+            Id = id,
+            Body = body?.ToList(),
+        };
 }

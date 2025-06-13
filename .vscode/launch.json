@@ -29,7 +29,8 @@
                 "linux": {
                     "command": "xdg-open"
                 }
-            }
+            },
+            "requireExactSource": false
         },
         {
             "name": "Launch WebApp",
@@ -41,7 +42,8 @@
             "env": {},
             "justMyCode": true,
             "console": "internalConsole",
-            "stopAtEntry": false
+            "stopAtEntry": false,
+            "requireExactSource": false
         }
     ],
     "compounds": [

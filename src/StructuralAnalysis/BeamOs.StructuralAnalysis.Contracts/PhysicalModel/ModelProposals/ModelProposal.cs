@@ -129,9 +129,10 @@ public record DeleteModelEntityProposalData
     public required BeamOsObjectType ObjectType { get; init; }
 }
 
-public record DeleteModelEntityProposal : DeleteModelEntityProposalData, IHasIntId
+public record DeleteModelEntityProposal : DeleteModelEntityProposalData, IHasIntId, IEntityProposal
 {
     public required int Id { get; init; }
+    public ProposalType ProposalType => ProposalType.Delete;
 }
 
 public record ModelRepairOperationParameters
@@ -139,4 +140,12 @@ public record ModelRepairOperationParameters
     public required Length FavorableOperationTolerance { get; init; }
     public required Length StandardOperationTolerance { get; init; }
     public required Length UnfavorableOperationTolerance { get; init; }
+}
+
+public record AcceptModelProposalRequest : IModelEntity, IBeamOsEntityRequest
+{
+    public Guid ModelId { get; }
+
+    public int Id { get; }
+    public List<ModelEntityId>? ModelEntityIdsToIgnore { get; init; }
 }

@@ -162,9 +162,10 @@ export interface IStructuralAnalysisApiClientV1 {
     getModelProposal(modelId: string, id: number): Promise<ResultOfModelProposalResponse>;
 
     /**
+     * @param body (optional) 
      * @return OK
      */
-    acceptModelProposal(modelId: string, id: number): Promise<ResultOfModelResponse>;
+    acceptModelProposal(modelId: string, id: number, body: EntityProposal[] | null | undefined): Promise<ResultOfModelResponse>;
 
     /**
      * @return OK
@@ -1603,9 +1604,10 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     }
 
     /**
+     * @param body (optional) 
      * @return OK
      */
-    acceptModelProposal(modelId: string, id: number): Promise<ResultOfModelResponse> {
+    acceptModelProposal(modelId: string, id: number, body: EntityProposal[] | null | undefined): Promise<ResultOfModelResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/proposals/{id}/accept";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -1615,9 +1617,13 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_: RequestInit = {
+            body: content_,
             method: "POST",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -3320,6 +3326,8 @@ export class CreateElement1dProposalResponse implements ICreateElement1dProposal
     endNodeId!: ProposedID;
     materialId!: ProposedID;
     sectionProfileId!: ProposedID;
+    objectType?: number;
+    proposalType?: number;
     sectionProfileRotation?: NullableOfAngle | undefined;
     metadata?: { [key: string]: string; } | undefined;
 
@@ -3351,6 +3359,8 @@ export class CreateElement1dProposalResponse implements ICreateElement1dProposal
             this.endNodeId = _data["endNodeId"] ? ProposedID.fromJS(_data["endNodeId"]) : new ProposedID();
             this.materialId = _data["materialId"] ? ProposedID.fromJS(_data["materialId"]) : new ProposedID();
             this.sectionProfileId = _data["sectionProfileId"] ? ProposedID.fromJS(_data["sectionProfileId"]) : new ProposedID();
+            this.objectType = _data["objectType"];
+            this.proposalType = _data["proposalType"];
             this.sectionProfileRotation = _data["sectionProfileRotation"] ? NullableOfAngle.fromJS(_data["sectionProfileRotation"]) : <any>undefined;
             if (_data["metadata"]) {
                 this.metadata = {} as any;
@@ -3380,6 +3390,8 @@ export class CreateElement1dProposalResponse implements ICreateElement1dProposal
         data["endNodeId"] = this.endNodeId ? this.endNodeId.toJSON() : <any>undefined;
         data["materialId"] = this.materialId ? this.materialId.toJSON() : <any>undefined;
         data["sectionProfileId"] = this.sectionProfileId ? this.sectionProfileId.toJSON() : <any>undefined;
+        data["objectType"] = this.objectType;
+        data["proposalType"] = this.proposalType;
         data["sectionProfileRotation"] = this.sectionProfileRotation ? this.sectionProfileRotation.toJSON() : <any>undefined;
         if (this.metadata) {
             data["metadata"] = {};
@@ -3398,6 +3410,8 @@ export interface ICreateElement1dProposalResponse {
     endNodeId: ProposedID;
     materialId: ProposedID;
     sectionProfileId: ProposedID;
+    objectType?: number;
+    proposalType?: number;
     sectionProfileRotation?: NullableOfAngle | undefined;
     metadata?: { [key: string]: string; } | undefined;
 
@@ -4191,6 +4205,7 @@ export interface IDeflectionDiagramResponse {
 
 export class DeleteModelEntityProposal implements IDeleteModelEntityProposal {
     id!: number;
+    proposalType?: number;
     modelEntityId!: number;
     objectType!: number;
 
@@ -4212,6 +4227,7 @@ export class DeleteModelEntityProposal implements IDeleteModelEntityProposal {
                     this[property] = _data[property];
             }
             this.id = _data["id"];
+            this.proposalType = _data["proposalType"];
             this.modelEntityId = _data["modelEntityId"];
             this.objectType = _data["objectType"];
         }
@@ -4231,6 +4247,7 @@ export class DeleteModelEntityProposal implements IDeleteModelEntityProposal {
                 data[property] = this[property];
         }
         data["id"] = this.id;
+        data["proposalType"] = this.proposalType;
         data["modelEntityId"] = this.modelEntityId;
         data["objectType"] = this.objectType;
         return data;
@@ -4239,6 +4256,7 @@ export class DeleteModelEntityProposal implements IDeleteModelEntityProposal {
 
 export interface IDeleteModelEntityProposal {
     id: number;
+    proposalType?: number;
     modelEntityId: number;
     objectType: number;
 
@@ -4857,6 +4875,62 @@ export interface IElement1dResultResponse {
     maxMoment: Torque;
     minDisplacement: Length;
     maxDisplacement: Length;
+
+    [key: string]: any;
+}
+
+export class EntityProposal implements IEntityProposal {
+    objectType!: number;
+    id!: number;
+    proposalType!: number;
+
+    [key: string]: any;
+
+    constructor(data?: IEntityProposal) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.objectType = _data["objectType"];
+            this.id = _data["id"];
+            this.proposalType = _data["proposalType"];
+        }
+    }
+
+    static fromJS(data: any): EntityProposal {
+        data = typeof data === 'object' ? data : {};
+        let result = new EntityProposal();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["objectType"] = this.objectType;
+        data["id"] = this.id;
+        data["proposalType"] = this.proposalType;
+        return data;
+    }
+}
+
+export interface IEntityProposal {
+    objectType: number;
+    id: number;
+    proposalType: number;
 
     [key: string]: any;
 }
@@ -7105,6 +7179,8 @@ export class ModifyElement1dProposalResponse implements IModifyElement1dProposal
     endNodeId!: ProposedID;
     materialId!: ProposedID;
     sectionProfileId!: ProposedID;
+    existingId?: number;
+    objectType?: number;
     sectionProfileRotation?: NullableOfAngle | undefined;
     metadata?: { [key: string]: string; } | undefined;
 
@@ -7137,6 +7213,8 @@ export class ModifyElement1dProposalResponse implements IModifyElement1dProposal
             this.endNodeId = _data["endNodeId"] ? ProposedID.fromJS(_data["endNodeId"]) : new ProposedID();
             this.materialId = _data["materialId"] ? ProposedID.fromJS(_data["materialId"]) : new ProposedID();
             this.sectionProfileId = _data["sectionProfileId"] ? ProposedID.fromJS(_data["sectionProfileId"]) : new ProposedID();
+            this.existingId = _data["existingId"];
+            this.objectType = _data["objectType"];
             this.sectionProfileRotation = _data["sectionProfileRotation"] ? NullableOfAngle.fromJS(_data["sectionProfileRotation"]) : <any>undefined;
             if (_data["metadata"]) {
                 this.metadata = {} as any;
@@ -7167,6 +7245,8 @@ export class ModifyElement1dProposalResponse implements IModifyElement1dProposal
         data["endNodeId"] = this.endNodeId ? this.endNodeId.toJSON() : <any>undefined;
         data["materialId"] = this.materialId ? this.materialId.toJSON() : <any>undefined;
         data["sectionProfileId"] = this.sectionProfileId ? this.sectionProfileId.toJSON() : <any>undefined;
+        data["existingId"] = this.existingId;
+        data["objectType"] = this.objectType;
         data["sectionProfileRotation"] = this.sectionProfileRotation ? this.sectionProfileRotation.toJSON() : <any>undefined;
         if (this.metadata) {
             data["metadata"] = {};
@@ -7186,6 +7266,8 @@ export interface IModifyElement1dProposalResponse {
     endNodeId: ProposedID;
     materialId: ProposedID;
     sectionProfileId: ProposedID;
+    existingId?: number;
+    objectType?: number;
     sectionProfileRotation?: NullableOfAngle | undefined;
     metadata?: { [key: string]: string; } | undefined;
 

@@ -143,6 +143,7 @@ public class InMemoryApiClientGenerator
                         .Replace("[]", "Array")
                         .Replace('<', '_')
                         .Replace('>', '_')
+                        .Replace("?", "Nullable")
                     + "Command";
                 partialMethodSignatures[signatureKey] = partialMethodName;
                 partialMethods.AppendLine(

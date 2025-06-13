@@ -1,6 +1,10 @@
+using System.Collections.Immutable;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using BeamOs.CodeGen.EditorApi;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 using BeamOs.WebApp.Components.Features.Editor;
@@ -8,6 +12,7 @@ using BeamOs.WebApp.EditorCommands;
 using Fluxor;
 using Fluxor.Blazor.Web.Components;
 using Microsoft.AspNetCore.Components;
+using Microsoft.EntityFrameworkCore.Metadata;
 using MudBlazor;
 
 namespace BeamOs.WebApp.Components.Features.ProposalInfo;
@@ -81,7 +86,13 @@ public partial class ProposalInfo(
     {
         var response = await this.StructuralAnalysisApiClient.AcceptModelProposalAsync(
             this.ModelId,
-            proposalId
+            proposalId,
+            this.unselectedProposalObjectIds.Select(o => new EntityProposal(
+                    o.ObjectType,
+                    o.Id,
+                    o.ProposalType
+                ))
+                .ToList()
         );
         if (response.IsSuccess)
         {
@@ -149,17 +160,66 @@ public partial class ProposalInfo(
         return lastModified.ToString();
     }
 
-    private HashSet<string> selectedProposalObjectIds = new();
+    private HashSet<IEntityProposal> unselectedProposalObjectIds = new();
 
-    private void ToggleProposalObjectSelection(string id, bool isChecked)
+    private void ToggleProposalObjectSelection(IEntityProposal entityProposal, bool isChecked)
     {
-        if (isChecked == true)
+        if (isChecked == false)
         {
-            selectedProposalObjectIds.Add(id);
+            unselectedProposalObjectIds.Add(entityProposal);
         }
         else
         {
-            selectedProposalObjectIds.Remove(id);
+            unselectedProposalObjectIds.Remove(entityProposal);
+        }
+    }
+
+    private bool? selectAllChecked
+    {
+        get
+        {
+            var visibleProposals = state.Value.FilteredProposals;
+
+            if (visibleProposals is null || visibleProposals.Count == 0)
+            {
+                return false;
+            }
+
+            var checkedCount = visibleProposals.Count(this.unselectedProposalObjectIds.Contains);
+            if (checkedCount == 0)
+            {
+                return true;
+            }
+
+            if (checkedCount == visibleProposals.Count)
+            {
+                return false;
+            }
+
+            return null;
+        }
+        set
+        {
+            if (value.HasValue)
+            {
+                var visibleIds = state.Value.FilteredProposals;
+
+                if (!value.Value)
+                {
+                    foreach (var id in visibleIds)
+                    {
+                        this.unselectedProposalObjectIds.Add(id);
+                    }
+                }
+                else
+                {
+                    foreach (var id in visibleIds)
+                    {
+                        this.unselectedProposalObjectIds.Remove(id);
+                    }
+                }
+                this.StateHasChanged();
+            }
         }
     }
 }
@@ -167,20 +227,18 @@ public partial class ProposalInfo(
 [FeatureState]
 public record ProposalInfoState(
     ModelProposalResponse? SelectedProposal,
-    IReadOnlyDictionary<ModelEntityId, IEntityProposal>? EntityProposals,
+    IReadOnlyList<IEntityProposal>? EntityProposals,
+    IReadOnlyDictionary<
+        DeleteModelEntityProposalData,
+        DeleteModelEntityProposalContract
+    >? DeleteEntityProposals,
     IReadOnlyList<IEntityProposal>? FilteredProposals
 )
 {
     public ProposalInfoState()
-        : this(null, null, null) { }
+        : this(null, null, null, null) { }
 
     public record struct ModelProposalResponseChanged(ModelProposalResponse? SelectedProposal);
-
-    public record struct EntityProposalsLoaded(
-        IReadOnlyDictionary<ModelEntityId, IEntityProposal> EntityProposals
-    );
-
-    public record struct FilteredProposalsChanged(IReadOnlyList<IEntityProposal> FilteredProposals);
 }
 
 public static class ProposalInfoReducers
@@ -191,12 +249,42 @@ public static class ProposalInfoReducers
         ChangeSelectionCommand action
     )
     {
-        var selectedObjectsHashSet = new HashSet<ModelEntityId>(
-            action.SelectedObjects.Select(o => new ModelEntityId(o.ObjectType, o.Id))
-        );
+        if (action.SelectedObjects.Length == 0 || state.EntityProposals is null)
+        {
+            return state with { FilteredProposals = state.EntityProposals };
+        }
+        Debug.Assert(state.DeleteEntityProposals is not null);
+
+        var deleteProposalCandidates = action
+            .SelectedObjects.Where(o => !o.ObjectType.IsProposalType())
+            .Select(o =>
+                state.DeleteEntityProposals.GetValueOrDefault(
+                    new DeleteModelEntityProposalData()
+                    {
+                        ModelEntityId = o.Id,
+                        ObjectType = o.ObjectType,
+                    }
+                )
+            )
+            .OfType<DeleteModelEntityProposalContract>();
+
+        // the selected objects are coming from the editor and are going to have the type of 'proposal'
+        // whereas the proposals 'objectType' is the actual type that the proposal is going to modify (e.g. Node, Element1d, etc.)
+        // so we need to translate the incoming proposal types into the actual proposal types
+        var createOrModifyProposals = action.SelectedObjects.Select(p => new EntityProposal(
+            p.ObjectType.ToAffectedType(),
+            p.Id,
+            ProposalType.Create // todo: this value is only used in the backend to determine
+        // if the proposal type is delete. So it doesn't matter if this is correct currently.
+        ));
+
+        var selectedObjectsHashSet = deleteProposalCandidates
+            .Concat<IEntityProposal>(createOrModifyProposals)
+            .ToHashSet();
+
         var newFilteredProposalObjects = state
-            .EntityProposals?.Values.Where(p =>
-                selectedObjectsHashSet.Contains(new ModelEntityId(p.ObjectType, p.Id))
+            .EntityProposals.Where(o =>
+                selectedObjectsHashSet.Contains(o, GenericEntityProposalComparer.Instance)
             )
             .ToList();
 
@@ -214,45 +302,61 @@ public static class ProposalInfoReducers
     {
         if (action.SelectedProposal == null)
         {
-            return state with { SelectedProposal = null, EntityProposals = null };
+            return state with
+            {
+                SelectedProposal = null,
+                EntityProposals = null,
+                FilteredProposals = null,
+                DeleteEntityProposals = null,
+            };
         }
 
-        IEnumerable<IEntityProposal> proposals =
+        List<IEntityProposal> entityProposals =
         [
             .. action.SelectedProposal.CreateNodeProposals ?? [],
             .. action.SelectedProposal.ModifyNodeProposals ?? [],
-            // .. action.SelectedProposal.CreateElement1dProposals ?? [],
+            .. action.SelectedProposal.CreateElement1dProposals ?? [],
             // .. action.SelectedProposal.ModifyElement1dProposals ?? [],
             // .. action.SelectedProposal.MaterialProposals ?? [],
             // .. action.SelectedProposal.SectionProfileProposals ?? [],
             // .. action.SelectedProposal.SectionProfileFromLibraryProposals ?? [],
             // .. action.SelectedProposal.PointLoadProposals ?? [],
             // .. action.SelectedProposal.MomentLoadProposals ?? [],
-            // .. action.SelectedProposal.DeleteModelEntityProposals ?? [],
+            .. action.SelectedProposal.DeleteModelEntityProposals ?? [],
         ];
-        var entityProposals = proposals.ToDictionary(p => new ModelEntityId(p.ObjectType, p.Id));
         return state with
         {
             SelectedProposal = action.SelectedProposal,
             EntityProposals = entityProposals,
+            DeleteEntityProposals =
+                action.SelectedProposal.DeleteModelEntityProposals?.ToImmutableDictionary(p =>
+                    p as DeleteModelEntityProposalData
+                ),
+            FilteredProposals = entityProposals,
         };
     }
+}
 
-    [ReducerMethod]
-    public static ProposalInfoState OnEntityProposalsLoaded(
-        ProposalInfoState state,
-        ProposalInfoState.EntityProposalsLoaded action
-    )
+public class GenericEntityProposalComparer : IEqualityComparer<IEntityProposal>
+{
+    public static GenericEntityProposalComparer Instance { get; } = new();
+
+    public bool Equals(IEntityProposal? x, IEntityProposal? y)
     {
-        return state with { EntityProposals = action.EntityProposals };
+        if (x is null && y is null)
+        {
+            return true;
+        }
+        if (x is null || y is null)
+        {
+            return false;
+        }
+
+        return x.ObjectType == y.ObjectType && x.Id == y.Id;
     }
 
-    [ReducerMethod]
-    public static ProposalInfoState OnFilteredProposalsChanged(
-        ProposalInfoState state,
-        ProposalInfoState.FilteredProposalsChanged action
-    )
+    public int GetHashCode([DisallowNull] IEntityProposal obj)
     {
-        return state with { FilteredProposals = action.FilteredProposals };
+        return HashCode.Combine(obj.ObjectType, obj.Id);
     }
 }

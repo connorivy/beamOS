@@ -53,14 +53,6 @@
             </MudSelect>
         </MudTooltip>
 
-        <MudTooltip Text="Accept Model Proposal">
-            <MudIconButton OnClick="AcceptModelProposal" Icon="@Icons.Material.Outlined.Check" Color="Color.Inherit"
-                Class="">Accept Model Proposal</MudIconButton>
-        </MudTooltip>
-        <MudTooltip Text="Reject Model Proposal">
-            <MudIconButton OnClick="RejectModelProposal" Icon="@Icons.Material.Outlined.Close" Color="Color.Inherit"
-                Class="">Reject Model Proposal</MudIconButton>
-        </MudTooltip>
         <MudTooltip Text="Recieve Date From Speckle">
             <MudIconButton OnClick="ReceiveFromSpeckle" Icon="@Icons.Material.Filled.CallReceived" />
         </MudTooltip>
@@ -200,37 +192,6 @@
 
         await editorState.Value.EditorApi.ClearModelProposalsAsync();
         await editorState.Value.EditorApi.DisplayModelProposalAsync(modelProposal.Value);
-    }
-
-    private async Task AcceptModelProposal()
-    {
-        var result = await structuralAnalysisApiClientV1.AcceptModelProposalAsync(this.ModelId, this.selectedModelProposalId,
-        CancellationToken.None);
-
-        if (result.IsSuccess)
-        {
-            await editorState.Value.EditorApi.ClearCurrentOverlayAsync();
-            this.selectedModelProposalId = 0;
-        }
-        else
-        {
-            snackbar.Add(result.Error.Description, Severity.Error);
-        }
-    }
-    private async Task RejectModelProposal()
-    {
-        var result = await structuralAnalysisApiClientV1.RejectModelProposalAsync(this.ModelId, this.selectedModelProposalId,
-        CancellationToken.None);
-
-        if (result.IsSuccess)
-        {
-            await editorState.Value.EditorApi.ClearCurrentOverlayAsync();
-            this.selectedModelProposalId = 0;
-        }
-        else
-        {
-            snackbar.Add(result.Error.Description, Severity.Error);
-        }
     }
 
     private async Task RepairModel()

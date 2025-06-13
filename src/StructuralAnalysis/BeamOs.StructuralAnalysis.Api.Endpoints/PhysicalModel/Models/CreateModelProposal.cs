@@ -3,6 +3,7 @@ using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Api.Endpoints.OpenSees;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Models;
 
@@ -51,10 +52,10 @@ public class GetModelProposal(GetModelProposalQueryHandler getModelProposalQuery
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 public class AcceptModelProposal(
     AcceptModelProposalCommandHandler acceptModelProposalCommandHandler
-) : BeamOsModelResourceQueryBaseEndpoint<ModelResponse>
+) : BeamOsModelResourceWithIntIdBaseEndpoint<List<EntityProposal>?, ModelResponse>
 {
     public override async Task<Result<ModelResponse>> ExecuteRequestAsync(
-        ModelEntityRequest req,
+        ModelResourceWithIntIdRequest<List<EntityProposal>?> req,
         CancellationToken ct = default
     ) => await acceptModelProposalCommandHandler.ExecuteAsync(req, ct);
 }

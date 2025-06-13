@@ -1844,6 +1844,8 @@ export class CreateElement1dProposalResponse implements ICreateElement1dProposal
     endNodeId!: ProposedID;
     materialId!: ProposedID;
     sectionProfileId!: ProposedID;
+    objectType!: BeamOsObjectType;
+    proposalType!: ProposalType;
 
     constructor(data?: ICreateElement1dProposalResponse) {
         if (data) {
@@ -1876,6 +1878,8 @@ export class CreateElement1dProposalResponse implements ICreateElement1dProposal
             this.endNodeId = _data["endNodeId"] ? ProposedID.fromJS(_data["endNodeId"]) : new ProposedID();
             this.materialId = _data["materialId"] ? ProposedID.fromJS(_data["materialId"]) : new ProposedID();
             this.sectionProfileId = _data["sectionProfileId"] ? ProposedID.fromJS(_data["sectionProfileId"]) : new ProposedID();
+            this.objectType = _data["objectType"];
+            this.proposalType = _data["proposalType"];
         }
     }
 
@@ -1901,6 +1905,8 @@ export class CreateElement1dProposalResponse implements ICreateElement1dProposal
         data["endNodeId"] = this.endNodeId ? this.endNodeId.toJSON() : <any>undefined;
         data["materialId"] = this.materialId ? this.materialId.toJSON() : <any>undefined;
         data["sectionProfileId"] = this.sectionProfileId ? this.sectionProfileId.toJSON() : <any>undefined;
+        data["objectType"] = this.objectType;
+        data["proposalType"] = this.proposalType;
         return data;
     }
 }
@@ -1913,6 +1919,8 @@ export interface ICreateElement1dProposalResponse {
     endNodeId: ProposedID;
     materialId: ProposedID;
     sectionProfileId: ProposedID;
+    objectType: BeamOsObjectType;
+    proposalType: ProposalType;
 }
 
 export class CreateNodeProposalResponse implements ICreateNodeProposalResponse {
@@ -2038,6 +2046,7 @@ export class DeleteModelEntityProposal implements IDeleteModelEntityProposal {
     modelEntityId!: number;
     objectType!: BeamOsObjectType;
     id!: number;
+    proposalType!: ProposalType;
 
     constructor(data?: IDeleteModelEntityProposal) {
         if (data) {
@@ -2053,6 +2062,7 @@ export class DeleteModelEntityProposal implements IDeleteModelEntityProposal {
             this.modelEntityId = _data["modelEntityId"];
             this.objectType = _data["objectType"];
             this.id = _data["id"];
+            this.proposalType = _data["proposalType"];
         }
     }
 
@@ -2068,6 +2078,7 @@ export class DeleteModelEntityProposal implements IDeleteModelEntityProposal {
         data["modelEntityId"] = this.modelEntityId;
         data["objectType"] = this.objectType;
         data["id"] = this.id;
+        data["proposalType"] = this.proposalType;
         return data;
     }
 }
@@ -2076,6 +2087,7 @@ export interface IDeleteModelEntityProposal {
     modelEntityId: number;
     objectType: BeamOsObjectType;
     id: number;
+    proposalType: ProposalType;
 }
 
 export class DiagramConsistentIntervalResponse implements IDiagramConsistentIntervalResponse {
@@ -3334,6 +3346,8 @@ export class ModifyElement1dProposalResponse implements IModifyElement1dProposal
     endNodeId!: ProposedID;
     materialId!: ProposedID;
     sectionProfileId!: ProposedID;
+    readonly existingId!: number;
+    objectType!: BeamOsObjectType;
 
     constructor(data?: IModifyElement1dProposalResponse) {
         if (data) {
@@ -3367,6 +3381,8 @@ export class ModifyElement1dProposalResponse implements IModifyElement1dProposal
             this.endNodeId = _data["endNodeId"] ? ProposedID.fromJS(_data["endNodeId"]) : new ProposedID();
             this.materialId = _data["materialId"] ? ProposedID.fromJS(_data["materialId"]) : new ProposedID();
             this.sectionProfileId = _data["sectionProfileId"] ? ProposedID.fromJS(_data["sectionProfileId"]) : new ProposedID();
+            (<any>this).existingId = _data["existingId"];
+            this.objectType = _data["objectType"];
         }
     }
 
@@ -3393,6 +3409,8 @@ export class ModifyElement1dProposalResponse implements IModifyElement1dProposal
         data["endNodeId"] = this.endNodeId ? this.endNodeId.toJSON() : <any>undefined;
         data["materialId"] = this.materialId ? this.materialId.toJSON() : <any>undefined;
         data["sectionProfileId"] = this.sectionProfileId ? this.sectionProfileId.toJSON() : <any>undefined;
+        data["existingId"] = this.existingId;
+        data["objectType"] = this.objectType;
         return data;
     }
 }
@@ -3406,6 +3424,8 @@ export interface IModifyElement1dProposalResponse {
     endNodeId: ProposedID;
     materialId: ProposedID;
     sectionProfileId: ProposedID;
+    existingId: number;
+    objectType: BeamOsObjectType;
 }
 
 export class ModifyNodeProposalResponse implements IModifyNodeProposalResponse {
@@ -4087,6 +4107,13 @@ export enum ProposalIssueSeverity {
     _20 = 20,
     _30 = 30,
     _40 = 40,
+}
+
+export enum ProposalType {
+    _0 = 0,
+    _1 = 1,
+    _2 = 2,
+    _3 = 3,
 }
 
 export class ProposedID implements IProposedID {

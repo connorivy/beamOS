@@ -59,4 +59,49 @@ public static class BeamOsObjectTypeExtensions
         beamOsObjectType = FromString(type);
         return beamOsObjectType != BeamOsObjectType.Undefined;
     }
+
+    public static BeamOsObjectType ToProposalType(this BeamOsObjectType beamOsObjectType)
+    {
+        return beamOsObjectType switch
+        {
+            BeamOsObjectType.Model => BeamOsObjectType.ModelProposal,
+            BeamOsObjectType.Node => BeamOsObjectType.NodeProposal,
+            BeamOsObjectType.Element1d => BeamOsObjectType.Element1dProposal,
+            BeamOsObjectType.Material => BeamOsObjectType.MaterialProposal,
+            BeamOsObjectType.SectionProfile => BeamOsObjectType.SectionProfileProposal,
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(beamOsObjectType),
+                $"The object type {beamOsObjectType} does not have a corresponding proposal type."
+            ),
+        };
+    }
+
+    public static BeamOsObjectType ToAffectedType(this BeamOsObjectType beamOsObjectType)
+    {
+        return beamOsObjectType switch
+        {
+            BeamOsObjectType.ModelProposal => BeamOsObjectType.Model,
+            BeamOsObjectType.NodeProposal => BeamOsObjectType.Node,
+            BeamOsObjectType.Element1dProposal => BeamOsObjectType.Element1d,
+            BeamOsObjectType.MaterialProposal => BeamOsObjectType.Material,
+            BeamOsObjectType.SectionProfileProposal => BeamOsObjectType.SectionProfile,
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(beamOsObjectType),
+                $"The object type {beamOsObjectType} does not have a corresponding affected type."
+            ),
+        };
+    }
+
+    public static bool IsProposalType(this BeamOsObjectType beamOsObjectType)
+    {
+        return beamOsObjectType switch
+        {
+            BeamOsObjectType.ModelProposal => true,
+            BeamOsObjectType.NodeProposal => true,
+            BeamOsObjectType.Element1dProposal => true,
+            BeamOsObjectType.MaterialProposal => true,
+            BeamOsObjectType.SectionProfileProposal => true,
+            _ => false,
+        };
+    }
 }

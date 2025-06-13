@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.Common;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 
 namespace BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
 
@@ -99,16 +100,23 @@ public record ModifyElement1dProposal : Element1dProposalBase
     public ProposedID? SectionProfileId { get; init; }
 }
 
-public record CreateElement1dProposalResponse : Element1dProposalBase, IHasIntId
+public record CreateElement1dProposalResponse : Element1dProposalBase, IHasIntId, IEntityProposal
 {
     public int Id { get; init; }
     public required ProposedID StartNodeId { get; init; }
     public required ProposedID EndNodeId { get; init; }
     public required ProposedID MaterialId { get; init; }
     public required ProposedID SectionProfileId { get; init; }
+
+    public BeamOsObjectType ObjectType => BeamOsObjectType.Element1d;
+
+    public ProposalType ProposalType => ProposalType.Create;
 }
 
-public record ModifyElement1dProposalResponse : Element1dProposalBase, IHasIntId
+public record ModifyElement1dProposalResponse
+    : Element1dProposalBase,
+        IHasIntId,
+        IEntityModificationProposal
 {
     public int Id { get; init; }
     public required int ExistingElement1dId { get; init; }
@@ -116,4 +124,8 @@ public record ModifyElement1dProposalResponse : Element1dProposalBase, IHasIntId
     public required ProposedID EndNodeId { get; init; }
     public required ProposedID MaterialId { get; init; }
     public required ProposedID SectionProfileId { get; init; }
+
+    public int ExistingId => this.ExistingElement1dId;
+
+    public BeamOsObjectType ObjectType => BeamOsObjectType.Element1d;
 }

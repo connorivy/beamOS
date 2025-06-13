@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.Common;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
 
 namespace BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 
@@ -114,9 +115,16 @@ public record ModifyNodeProposalResponse : CreateNodeProposalResponse, IEntityMo
 
 public interface IEntityProposal : IHasIntId
 {
+    [JsonIgnore]
     public BeamOsObjectType ObjectType { get; }
+
+    [JsonIgnore]
     public ProposalType ProposalType { get; }
+    public ModelEntityId ToModelEntityId() => new(this.ObjectType, this.Id);
 }
+
+public record EntityProposal(BeamOsObjectType ObjectType, int Id, ProposalType ProposalType)
+    : IEntityProposal { }
 
 public interface IEntityModificationProposal : IEntityProposal
 {
@@ -137,3 +145,8 @@ public enum ProposalType
 }
 
 public readonly record struct ModelEntityId(BeamOsObjectType ObjectType, int Id);
+
+public readonly record struct DeleteEntityProposalId(
+    BeamOsObjectType EntityType,
+    int ExistingEntityId
+) { }
