@@ -88,7 +88,10 @@ public partial class MomentLoadObjectEditor(
     {
         base.OnParametersSet();
 
-        if (this.SelectedObject is not null && this.SelectedObject.TypeName == "MomentLoad")
+        if (
+            this.SelectedObject is not null
+            && this.SelectedObject.ObjectType == BeamOsObjectType.MomentLoad
+        )
         {
             this.UpdateFromMomentLoadId(this.SelectedObject.Id);
         }

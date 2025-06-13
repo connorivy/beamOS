@@ -201,7 +201,7 @@ export interface IStructuralAnalysisApiClientV1 {
     /**
      * @return OK
      */
-    putMaterial(id: number, modelId: string, body: MaterialRequestData): Promise<ResultOfMaterialResponse>;
+    putMaterial(id: number, modelId: string, body: MaterialData): Promise<ResultOfMaterialResponse>;
 
     /**
      * @return OK
@@ -1909,7 +1909,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     /**
      * @return OK
      */
-    putMaterial(id: number, modelId: string, body: MaterialRequestData): Promise<ResultOfMaterialResponse> {
+    putMaterial(id: number, modelId: string, body: MaterialData): Promise<ResultOfMaterialResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/materials/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -5745,14 +5745,14 @@ export interface ILoadCombinationData {
     [key: string]: any;
 }
 
-export class MaterialRequestData implements IMaterialRequestData {
+export class MaterialData implements IMaterialData {
     modulusOfElasticity!: number;
     modulusOfRigidity!: number;
     pressureUnit!: number;
 
     [key: string]: any;
 
-    constructor(data?: IMaterialRequestData) {
+    constructor(data?: IMaterialData) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -5773,9 +5773,9 @@ export class MaterialRequestData implements IMaterialRequestData {
         }
     }
 
-    static fromJS(data: any): MaterialRequestData {
+    static fromJS(data: any): MaterialData {
         data = typeof data === 'object' ? data : {};
-        let result = new MaterialRequestData();
+        let result = new MaterialData();
         result.init(data);
         return result;
     }
@@ -5793,7 +5793,7 @@ export class MaterialRequestData implements IMaterialRequestData {
     }
 }
 
-export interface IMaterialRequestData {
+export interface IMaterialData {
     modulusOfElasticity: number;
     modulusOfRigidity: number;
     pressureUnit: number;

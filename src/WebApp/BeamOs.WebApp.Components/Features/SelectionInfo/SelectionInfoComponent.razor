@@ -8,10 +8,11 @@
         <MudExpansionPanels MultiExpansion="true" Outlined="false" Elevation="0" Dense="true">
             @foreach (var selectedObjectInfo in this.SelectedObjects)
             {
-                var objectToDisplay = GetBeamOsObjectByIdAndTypeName(selectedObjectInfo.Id, selectedObjectInfo.TypeName);
+                var objectToDisplay = GetBeamOsObjectByIdAndType(selectedObjectInfo.Id, selectedObjectInfo.ObjectType);
                 if (objectToDisplay is not null)
                 {
-                    <SelectionInfoSingleItemComponent CanvasId="@CanvasId" ObjectToDisplay="@objectToDisplay"></SelectionInfoSingleItemComponent>
+                    <SelectionInfoSingleItemComponent CanvasId="@CanvasId" ObjectToDisplay="@objectToDisplay">
+                    </SelectionInfoSingleItemComponent>
                 }
             }
         </MudExpansionPanels>
@@ -35,7 +36,7 @@
         height: fit-content;
     }
 
-    .mud-panel-expanded > .mud-expand-panel-header .mud-expand-panel-text {
+    .mud-panel-expanded>.mud-expand-panel-header .mud-expand-panel-text {
         color: var(--mud-palette-primary-lighten);
     }
 
@@ -53,7 +54,6 @@
     .mud-input-control {
         margin-top: 0px;
     }
-
 </style>
 
 @* @code { *@

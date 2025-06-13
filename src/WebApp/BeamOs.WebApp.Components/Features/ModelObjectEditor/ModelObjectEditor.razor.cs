@@ -48,19 +48,10 @@ public static class Reducers
         ChangeSelectionCommand action
     )
     {
-        var selectedObject = action.SelectedObjects?.FirstOrDefault();
-        var objectType = selectedObject?.TypeName switch
-        {
-            "Node" => BeamOsObjectType.Node,
-            "Element1d" => BeamOsObjectType.Element1d,
-            "Material" => BeamOsObjectType.Material,
-            "SectionProfile" => BeamOsObjectType.SectionProfile,
-            "PointLoad" => BeamOsObjectType.PointLoad,
-            _ => BeamOsObjectType.Model,
-        };
         return state with
         {
-            CurrentViewType = objectType,
+            CurrentViewType =
+                action.SelectedObjects?.FirstOrDefault()?.ObjectType ?? BeamOsObjectType.Model,
             SelectedObject = action.SelectedObjects?.FirstOrDefault(),
         };
     }

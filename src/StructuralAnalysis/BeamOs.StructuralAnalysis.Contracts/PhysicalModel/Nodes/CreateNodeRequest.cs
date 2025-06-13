@@ -108,7 +108,7 @@ public record ModifyNodeProposalResponse : CreateNodeProposalResponse, IEntityMo
 
     public ModifyNodeProposalResponse()
     {
-        //this.ProposalType = ProposalType.Modify;
+        this.ProposalType = ProposalType.Modify;
     }
 }
 
@@ -135,3 +135,5 @@ public enum ProposalType
     Modify,
     Delete,
 }
+
+public readonly record struct ModelEntityId(BeamOsObjectType ObjectType, int Id);

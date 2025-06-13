@@ -1,6 +1,7 @@
 @using BeamOs.CodeGen.EditorApi
 @using BeamOs.CodeGen.StructuralAnalysisApiClient
 @using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models
+@using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes
 @using MudBlazor
 
 @inherits FluxorComponent
@@ -14,7 +15,7 @@
 }
 else
 {
-    @if (selectedProposal is null)
+    @if (state.Value.SelectedProposal is not ModelProposalResponse selectedProposal)
     {
         <MudPaper Class="p-3 w-full max-w-xs">
             <MudText Typo="Typo.h6" Class="mb-2">Proposals</MudText>
@@ -39,7 +40,7 @@ else
     {
         <MudPaper Class="p-3 w-full max-w-xs flex flex-col gap-4">
             <MudTooltip Text="Back">
-                <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="() => selectedProposal = null"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="GoBack"></MudIconButton>
             </MudTooltip>
             <MudText Typo="Typo.h6">Proposal Details</MudText>
             <MudText Class="truncate"><span class="font-semibold">ID:</span> @selectedProposal.Id</MudText>
@@ -48,28 +49,31 @@ else
                 @selectedProposal.ModelProposal?.Description</MudText>
             <div class="flex gap-2 mt-2">
                 <MudButton Variant="Variant.Filled" Color="Color.Success" Size="Size.Small"
-                    OnClick="() => AcceptProposal(selectedProposal.Id)">Accept</MudButton>
+                    OnClick="() => AcceptProposal(selectedProposal.Id)">Accept Selected</MudButton>
                 <MudButton Variant="Variant.Filled" Color="Color.Error" Size="Size.Small"
                     OnClick="() => RejectProposal(selectedProposal.Id)">Reject</MudButton>
-                <MudButton Variant="Variant.Outlined" Color="Color.Default" Size="Size.Small"
-                    OnClick="() => selectedProposal = null">Back</MudButton>
             </div>
             <MudDivider />
             <div class="flex items-center mb-2">
                 <MudCheckBox Value="true" Color="Color.Primary" />
                 <MudText Class="ml-2">Select All</MudText>
             </div>
-            <MudList T="ProposalIssue" Class="divide-y divide-gray-200">
-                @foreach (var proposalObject in this.ProposalObjects)
+            <MudList T="ProposalIssue" Class="divide-y divide-gray-200 p-0">
+                @foreach (var proposalObject in state.Value.FilteredProposals ?? state.Value.EntityProposals?.Values ?? Enumerable.Empty<IEntityProposal>())
                 {
-                    <MudListItem Value="@proposalObject">
+                    <MudListItem Value="@proposalObject" Class="p-1">
                         <div class="flex flex-row items-center gap-2 py-1">
-                        <MudCheckBox Value="@selectedProposalObjectIds.Contains(proposalObject.Id.ToString())"
-                                     Color="Color.Primary"
-                                     ValueChanged="(bool checkedVal) => ToggleProposalObjectSelection(proposalObject.Id.ToString(), checkedVal)" />
+                        <MudCheckBox
+                            Value="@selectedProposalObjectIds.Contains(proposalObject.Id.ToString())"
+                            Color="Color.Primary"
+                            ValueChanged="(bool checkedVal) => ToggleProposalObjectSelection(proposalObject.Id.ToString(), checkedVal)" />
                         <div class="flex flex-col gap-1">
-                            <MudText Class="truncate"><span class="font-semibold">Object Type:</span> @proposalObject.ObjectType</MudText>
-                            <MudText Class="truncate"><span class="font-semibold">Modification Type:</span> @proposalObject.ProposalType</MudText>
+                            @if (proposalObject is IEntityModificationProposal entityModificationProposal)
+                            {
+                                <MudText Class="truncate"><span class="font-semibold">Existing Id:</span> @entityModificationProposal.ExistingId</MudText>
+                            }
+                            <MudText Class="truncate"><span class="font-semibold">Object:</span> @proposalObject.ObjectType</MudText>
+                            <MudText Class="truncate"><span class="font-semibold">Type:</span> @proposalObject.ProposalType</MudText>
                         </div>
                         </div>
                     </MudListItem>
@@ -114,30 +118,3 @@ else
         </MudPaper>
     }
 }
-
-@code {
-    // ...existing code...
-    // For checkbox selection
-    private HashSet<string> selectedProposalObjectIds = new();
-    private bool selectAllProposalObjects
-    {
-        get => ProposalObjects != null && ProposalObjects.Count > 0 && selectedProposalObjectIds.Count == ProposalObjects.Count;
-        set
-        {
-            if (ProposalObjects == null) return;
-            if (value)
-                selectedProposalObjectIds = ProposalObjects.Select(x => x.Id.ToString()).ToHashSet();
-            else
-                selectedProposalObjectIds.Clear();
-        }
-    }
-    private void ToggleProposalObjectSelection(string id, bool isChecked)
-    {
-        if (isChecked == true)
-            selectedProposalObjectIds.Add(id);
-        else
-            selectedProposalObjectIds.Remove(id);
-    }
-}
-
-
