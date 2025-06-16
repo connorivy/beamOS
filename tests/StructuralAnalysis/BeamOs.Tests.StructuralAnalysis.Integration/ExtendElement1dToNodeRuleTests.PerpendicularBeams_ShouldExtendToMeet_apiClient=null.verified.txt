@@ -8,7 +8,30 @@
       Description: Proposed repairs for model connectivity
     },
     CreateNodeProposals: null,
-    ModifyNodeProposals: null,
+    ModifyNodeProposals: [
+      {
+        ExistingNodeId: 1,
+        ExistingId: 1,
+        Id: {Scrubbed},
+        ObjectType: Node,
+        ProposalType: Modify,
+        LocationPoint: {
+          X: 0.0,
+          Y: 0.0,
+          Z: 0.0,
+          LengthUnit: Meter
+        },
+        Restraint: {
+          CanTranslateAlongX: true,
+          CanTranslateAlongY: true,
+          CanTranslateAlongZ: true,
+          CanRotateAboutX: true,
+          CanRotateAboutY: true,
+          CanRotateAboutZ: true
+        },
+        Metadata: null
+      }
+    ],
     CreateElement1dProposals: null,
     ModifyElement1dProposals: [
       {
@@ -34,6 +57,8 @@
           ProposedId: null,
           IsDefault: false
         },
+        ExistingId: 2,
+        ObjectType: Element1d,
         SectionProfileRotation: {
           Value: 0.0,
           Unit: Degree
@@ -41,6 +66,7 @@
         Metadata: null
       }
     ],
+    Element1dsModifiedBecauseOfNodeChange: null,
     MaterialProposals: null,
     SectionProfileProposals: null,
     SectionProfileFromLibraryProposals: null,
@@ -53,6 +79,7 @@
     DeleteModelEntityProposals: [
       {
         Id: {Scrubbed},
+        ProposalType: Delete,
         ModelEntityId: 3,
         ObjectType: Node
       }

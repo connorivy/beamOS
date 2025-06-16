@@ -108,8 +108,10 @@ public record CreateElement1dProposalResponse : Element1dProposalBase, IHasIntId
     public required ProposedID MaterialId { get; init; }
     public required ProposedID SectionProfileId { get; init; }
 
+    [JsonIgnore]
     public BeamOsObjectType ObjectType => BeamOsObjectType.Element1d;
 
+    [JsonIgnore]
     public ProposalType ProposalType => ProposalType.Create;
 }
 

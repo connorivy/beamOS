@@ -286,17 +286,36 @@ public static class ModelRepairRuleUtils
 
         if (Math.Abs(denom) < 1e-6f)
         {
+            // Lines are nearly parallel. Check if they are collinear by direction alignment
+            float d1Len = d1.Length();
+            float d2Len = d2.Length();
+            if (d1Len < 1e-12f || d2Len < 1e-12f)
+            {
+                intersection = Vector3.Zero;
+                return false; // Degenerate segment
+            }
+            float alignment = Math.Abs(Vector3.Dot(Vector3.Normalize(d1), Vector3.Normalize(d2)));
+            if (alignment > 1.0f - 1e-6f) // directions are aligned (collinear)
+            {
+                // Return midpoint of closest endpoints as intersection
+                float tCol = Vector3.Dot(a1 - b1, d2) / (d2Len * d2Len);
+                Vector3 closestOnB = b1 + (tCol * d2);
+                float sCol = Vector3.Dot(b1 - a1, d1) / (d1Len * d1Len);
+                Vector3 closestOnA = a1 + (sCol * d1);
+                intersection = (closestOnA + closestOnB) / 2;
+                return true;
+            }
             intersection = Vector3.Zero;
-            return false; // Lines are parallel or nearly parallel
+            return false; // Parallel but not collinear
         }
         else
         {
-            s = (b * e - c * d) / denom;
-            t = (a * e - b * d) / denom;
+            s = ((b * e) - (c * d)) / denom;
+            t = ((a * e) - (b * d)) / denom;
         }
 
-        Vector3 closestPointLine1 = a1 + s * d1;
-        Vector3 closestPointLine2 = b1 + t * d2;
+        Vector3 closestPointLine1 = a1 + (s * d1);
+        Vector3 closestPointLine2 = b1 + (t * d2);
         intersection = (closestPointLine1 + closestPointLine2) / 2;
 
         return true;

@@ -11,7 +11,10 @@
     ModifyNodeProposals: [
       {
         ExistingNodeId: 2,
+        ExistingId: 2,
         Id: {Scrubbed},
+        ObjectType: Node,
+        ProposalType: Modify,
         LocationPoint: {
           X: 5.0,
           Y: -1.4901161193847656E-08,
@@ -54,6 +57,8 @@
           ProposedId: null,
           IsDefault: false
         },
+        ExistingId: 2,
+        ObjectType: Element1d,
         SectionProfileRotation: {
           Value: 0.0,
           Unit: Degree
@@ -61,6 +66,7 @@
         Metadata: null
       }
     ],
+    Element1dsModifiedBecauseOfNodeChange: null,
     MaterialProposals: null,
     SectionProfileProposals: null,
     SectionProfileFromLibraryProposals: null,
@@ -73,6 +79,7 @@
     DeleteModelEntityProposals: [
       {
         Id: {Scrubbed},
+        ProposalType: Delete,
         ModelEntityId: 3,
         ObjectType: Node
       }

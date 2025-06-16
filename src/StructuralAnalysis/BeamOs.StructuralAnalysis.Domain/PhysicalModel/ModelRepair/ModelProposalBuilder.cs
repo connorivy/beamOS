@@ -81,6 +81,7 @@ public sealed class ModelProposalBuilder
     public void RemoveNode(Node node)
     {
         this.Octree.Remove(node.Id, node.LocationPoint);
+        this.modifyNodeProposalCache.Remove(node.Id);
         this.modelProposal.DeleteModelEntityProposals ??= [];
         this.modelProposal.DeleteModelEntityProposals.Add(
             new DeleteModelEntityProposal(this.ModelId, this.Id, node.Id, BeamOsObjectType.Node)

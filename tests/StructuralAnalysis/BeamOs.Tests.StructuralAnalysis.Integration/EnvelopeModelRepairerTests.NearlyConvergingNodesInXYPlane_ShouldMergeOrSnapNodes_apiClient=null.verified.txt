@@ -8,72 +8,37 @@
       Description: Proposed repairs for model connectivity
     },
     CreateNodeProposals: null,
-    ModifyNodeProposals: null,
+    ModifyNodeProposals: [
+      {
+        ExistingNodeId: 2,
+        ExistingId: 2,
+        Id: {Scrubbed},
+        ObjectType: Node,
+        ProposalType: Modify,
+        LocationPoint: {
+          X: 5.0,
+          Y: 5.0,
+          Z: 0.0,
+          LengthUnit: Meter
+        },
+        Restraint: {
+          CanTranslateAlongX: true,
+          CanTranslateAlongY: true,
+          CanTranslateAlongZ: true,
+          CanRotateAboutX: true,
+          CanRotateAboutY: true,
+          CanRotateAboutZ: true
+        },
+        Metadata: null
+      }
+    ],
     CreateElement1dProposals: null,
     ModifyElement1dProposals: [
       {
         Id: {Scrubbed},
-        ExistingElement1dId: 1,
-        StartNodeId: {
-          ExistingId: 1,
-          ProposedId: null,
-          IsDefault: false
-        },
-        EndNodeId: {
-          ExistingId: 6,
-          ProposedId: null,
-          IsDefault: false
-        },
-        MaterialId: {
-          ExistingId: 1,
-          ProposedId: null,
-          IsDefault: false
-        },
-        SectionProfileId: {
-          ExistingId: 1,
-          ProposedId: null,
-          IsDefault: false
-        },
-        SectionProfileRotation: {
-          Value: 0.0,
-          Unit: Degree
-        },
-        Metadata: null
-      },
-      {
-        Id: {Scrubbed},
-        ExistingElement1dId: 2,
-        StartNodeId: {
-          ExistingId: 1,
-          ProposedId: null,
-          IsDefault: false
-        },
-        EndNodeId: {
-          ExistingId: 7,
-          ProposedId: null,
-          IsDefault: false
-        },
-        MaterialId: {
-          ExistingId: 1,
-          ProposedId: null,
-          IsDefault: false
-        },
-        SectionProfileId: {
-          ExistingId: 1,
-          ProposedId: null,
-          IsDefault: false
-        },
-        SectionProfileRotation: {
-          Value: 0.0,
-          Unit: Degree
-        },
-        Metadata: null
-      },
-      {
-        Id: {Scrubbed},
         ExistingElement1dId: 3,
         StartNodeId: {
-          ExistingId: 1,
+          ExistingId: 2,
           ProposedId: null,
           IsDefault: false
         },
@@ -92,6 +57,39 @@
           ProposedId: null,
           IsDefault: false
         },
+        ExistingId: 3,
+        ObjectType: Element1d,
+        SectionProfileRotation: {
+          Value: 0.0,
+          Unit: Degree
+        },
+        Metadata: null
+      },
+      {
+        Id: {Scrubbed},
+        ExistingElement1dId: 2,
+        StartNodeId: {
+          ExistingId: 2,
+          ProposedId: null,
+          IsDefault: false
+        },
+        EndNodeId: {
+          ExistingId: 7,
+          ProposedId: null,
+          IsDefault: false
+        },
+        MaterialId: {
+          ExistingId: 1,
+          ProposedId: null,
+          IsDefault: false
+        },
+        SectionProfileId: {
+          ExistingId: 1,
+          ProposedId: null,
+          IsDefault: false
+        },
+        ExistingId: 2,
+        ObjectType: Element1d,
         SectionProfileRotation: {
           Value: 0.0,
           Unit: Degree
@@ -102,7 +100,7 @@
         Id: {Scrubbed},
         ExistingElement1dId: 4,
         StartNodeId: {
-          ExistingId: 1,
+          ExistingId: 2,
           ProposedId: null,
           IsDefault: false
         },
@@ -121,6 +119,8 @@
           ProposedId: null,
           IsDefault: false
         },
+        ExistingId: 4,
+        ObjectType: Element1d,
         SectionProfileRotation: {
           Value: 0.0,
           Unit: Degree
@@ -128,6 +128,7 @@
         Metadata: null
       }
     ],
+    Element1dsModifiedBecauseOfNodeChange: null,
     MaterialProposals: null,
     SectionProfileProposals: null,
     SectionProfileFromLibraryProposals: null,
@@ -140,21 +141,25 @@
     DeleteModelEntityProposals: [
       {
         Id: {Scrubbed},
-        ModelEntityId: 2,
+        ProposalType: Delete,
+        ModelEntityId: 1,
         ObjectType: Node
       },
       {
         Id: {Scrubbed},
-        ModelEntityId: 3,
-        ObjectType: Node
-      },
-      {
-        Id: {Scrubbed},
+        ProposalType: Delete,
         ModelEntityId: 4,
         ObjectType: Node
       },
       {
         Id: {Scrubbed},
+        ProposalType: Delete,
+        ModelEntityId: 3,
+        ObjectType: Node
+      },
+      {
+        Id: {Scrubbed},
+        ProposalType: Delete,
         ModelEntityId: 5,
         ObjectType: Node
       }

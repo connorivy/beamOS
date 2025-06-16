@@ -12,10 +12,9 @@ public class ModelRepairer
     private static readonly List<IModelRepairRule> rules =
     [
         new AlignBeamsIntoPlaneOfColumns(),
-        new ExtendElement1dsInPlaneToNodeRule(),
         new ExtendCoplanarElement1dsToJoinNodes(),
-        new ExtendColumnToMeetBeamRule(),
         new Element1dExtendOrShortenRule(),
+        new ExtendElement1dsInPlaneToNodeRule(),
         new NodeMergeRule(),
         new NodeSnapToElement1dRule(),
     ];

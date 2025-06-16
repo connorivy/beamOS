@@ -5,6 +5,7 @@ using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -148,7 +149,11 @@ public sealed class InMemoryModelRepository(
 
         model.Nodes = await nodeRepository.GetMany(modelId, null, ct);
         model.InternalNodes = await internalNodeRepository.GetMany(modelId, null, ct);
-        model.Element1ds = await element1dRepository.GetMany(modelId, null, ct);
+        model.Element1ds = await element1dRepository.GetMany(
+            modelId,
+            default(IList<Element1dId>),
+            ct
+        );
         model.Materials = await materialRepository.GetMany(modelId, null, ct);
         model.SectionProfiles = await sectionProfileRepository.GetMany(modelId, null, ct);
         model.SectionProfilesFromLibrary = await sectionProfileFromLibraryRepository.GetMany(
