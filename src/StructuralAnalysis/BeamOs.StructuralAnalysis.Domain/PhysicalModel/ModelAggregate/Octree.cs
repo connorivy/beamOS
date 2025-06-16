@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Globalization;
 using BeamOs.Common.Domain.Models;
 using BeamOs.StructuralAnalysis.Domain.Common;
@@ -116,30 +117,20 @@ public class OctreeNode : BeamOsEntity<OctreeNodeId>
         return index;
     }
 
-    private Point Min
-    {
-        get
-        {
-            return new Point(
-                this.Center.X.Meters - (this.Length / 2.0),
-                this.Center.Y.Meters - (this.Length / 2.0),
-                this.Center.Z.Meters - (this.Length / 2.0),
-                this.Center.X.Unit
-            );
-        }
-    }
-    private Point Max
-    {
-        get
-        {
-            return new Point(
-                this.Center.X.Meters + (this.Length / 2.0),
-                this.Center.Y.Meters + (this.Length / 2.0),
-                this.Center.Z.Meters + (this.Length / 2.0),
-                this.Center.X.Unit
-            );
-        }
-    }
+    private Point Min =>
+        new Point(
+            this.Center.X.Meters - (this.Length / 2.0),
+            this.Center.Y.Meters - (this.Length / 2.0),
+            this.Center.Z.Meters - (this.Length / 2.0),
+            this.Center.X.Unit
+        );
+    private Point Max =>
+        new Point(
+            this.Center.X.Meters + (this.Length / 2.0),
+            this.Center.Y.Meters + (this.Length / 2.0),
+            this.Center.Z.Meters + (this.Length / 2.0),
+            this.Center.X.Unit
+        );
 
     public void FindNodesWithin(
         Point search,
@@ -193,6 +184,43 @@ public class OctreeNode : BeamOsEntity<OctreeNodeId>
         double distSq = (dx * dx) + (dy * dy) + (dz * dz);
         return distSq <= (radius * radius);
     }
+
+    /// <summary>
+    /// Removes a node with the given NodeId from the octree.
+    /// </summary>
+    /// <param name="nodeId"></param>
+    /// <param name="location">This is a marker that helps the octree locate the given node.
+    /// It does not have to be the exact location of the node, but it should be within the bounds of the same octree node.
+    /// </param>
+    /// <returns></returns>
+    public bool Remove(NodeId nodeId, Point? location = null)
+    {
+        // If this is a leaf node
+        if (this.Children == null)
+        {
+            int removed = this.Objects.RemoveAll(n => n.Id == nodeId);
+            Debug.Assert(
+                removed <= 1,
+                "Octree node should not contain more than one node with the same NodeId."
+            );
+            return removed > 0;
+        }
+        // If not a leaf, search children
+        bool removedAny = false;
+        if (location != null)
+        {
+            int childIdx = this.GetChildIndex(location);
+            removedAny = this.Children[childIdx].Remove(nodeId, location);
+        }
+        else
+        {
+            foreach (var child in this.Children)
+            {
+                removedAny |= child.Remove(nodeId, null);
+            }
+        }
+        return removedAny;
+    }
 }
 
 public class Octree : BeamOsModelEntity<OctreeId>
@@ -233,6 +261,11 @@ public class Octree : BeamOsModelEntity<OctreeId>
             this.Root = ExpandRootToFit(this.Root, position);
         }
         this.Root.Insert(node, position);
+    }
+
+    public void Remove(NodeId nodeId, Point? location)
+    {
+        this.Root.Remove(nodeId, location);
     }
 
     private bool IsPointWithinRoot(Point point)

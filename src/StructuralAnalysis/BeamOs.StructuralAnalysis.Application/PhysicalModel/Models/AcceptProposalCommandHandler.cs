@@ -5,6 +5,7 @@ using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Materials;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
+using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
@@ -134,6 +135,44 @@ public class AcceptModelProposalCommandHandler(
             else
             {
                 element1dRepository.Add(element1d);
+            }
+        }
+        foreach (var deleteModelEntityProposal in modelProposal.DeleteModelEntityProposals)
+        {
+            switch (deleteModelEntityProposal.ObjectType)
+            {
+                case BeamOsObjectType.Node:
+                    await nodeRepository.RemoveById(
+                        command.ModelId,
+                        new(deleteModelEntityProposal.ModelEntityId),
+                        ct
+                    );
+                    break;
+                case BeamOsObjectType.Element1d:
+                    await element1dRepository.RemoveById(
+                        command.ModelId,
+                        new(deleteModelEntityProposal.ModelEntityId),
+                        ct
+                    );
+                    break;
+                case BeamOsObjectType.Material:
+                    await materialRepository.RemoveById(
+                        command.ModelId,
+                        new(deleteModelEntityProposal.ModelEntityId),
+                        ct
+                    );
+                    break;
+                case BeamOsObjectType.SectionProfile:
+                    await sectionProfileRepository.RemoveById(
+                        command.ModelId,
+                        new(deleteModelEntityProposal.ModelEntityId),
+                        ct
+                    );
+                    break;
+                default:
+                    return BeamOsError.InvalidOperation(
+                        description: $"Unable to delete object with type {deleteModelEntityProposal.ObjectType}"
+                    );
             }
         }
         modelProposalRepository.Remove(modelProposal);

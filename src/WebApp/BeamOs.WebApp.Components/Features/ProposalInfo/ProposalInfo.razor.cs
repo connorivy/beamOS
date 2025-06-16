@@ -313,8 +313,8 @@ public static class ProposalInfoReducers
 
         List<IEntityProposal> entityProposals =
         [
-            .. action.SelectedProposal.CreateNodeProposals ?? [],
-            .. action.SelectedProposal.ModifyNodeProposals ?? [],
+            // .. action.SelectedProposal.CreateNodeProposals ?? [],
+            // .. action.SelectedProposal.ModifyNodeProposals ?? [],
             .. action.SelectedProposal.CreateElement1dProposals ?? [],
             // .. action.SelectedProposal.ModifyElement1dProposals ?? [],
             // .. action.SelectedProposal.MaterialProposals ?? [],

@@ -1,5 +1,7 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using BeamOs.StructuralAnalysis.Contracts.Common;
+using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
@@ -15,6 +17,7 @@ public sealed class ModelProposalBuilder
     private readonly ModelProposal modelProposal;
     private readonly Dictionary<int, Node> nodeIdToNodeDict;
     public ModelRepairOperationParameters ModelRepairOperationParameters { get; init; }
+    public List<NodeId> RemovedNodeIds { get; } = [];
 
     public ModelProposalBuilder(
         ModelId modelId,
@@ -40,6 +43,7 @@ public sealed class ModelProposalBuilder
     public ModelSettings Settings => this.modelProposal.Settings;
     public IList<Element1d> Element1ds { get; }
     public Octree Octree { get; }
+    public IEnumerable<Node> Nodes => this.nodeIdToNodeDict.Values;
 
     private readonly Dictionary<int, NodeProposal> modifyNodeProposalCache = [];
     private readonly Dictionary<int, int> mergedNodeToReplacedNodeIdDict = [];
@@ -51,34 +55,36 @@ public sealed class ModelProposalBuilder
             originalNode.Id != targetNode.Id,
             "Original and target nodes should not be the same"
         );
-
-        foreach (var element1d in this.Element1ds)
+        foreach (var originalElement1d in this.Element1ds)
         {
+            var element1d = this.ApplyExistingProposal(originalElement1d, out _);
+
             var (startNode, endNode) = this.GetStartAndEndNodes(element1d, out _);
             if (startNode.Id == originalNode.Id)
             {
                 this.AddElement1dProposals(
-                    new Element1dProposal(element1d, this.Id, startNodeId: targetNode.Id)
+                    this.CreateModifyElement1dProposal(element1d, startNodeId: targetNode.Id)
                 );
             }
             else if (endNode.Id == originalNode.Id)
             {
                 this.AddElement1dProposals(
-                    new Element1dProposal(element1d, this.Id, endNodeId: targetNode.Id)
+                    this.CreateModifyElement1dProposal(element1d, endNodeId: targetNode.Id)
                 );
             }
         }
-        this.modelProposal.DeleteModelEntityProposals ??= [];
-        this.modelProposal.DeleteModelEntityProposals.Add(
-            new DeleteModelEntityProposal(
-                this.ModelId,
-                this.Id,
-                originalNode.Id,
-                BeamOsObjectType.Node
-            )
-        );
+        this.RemoveNode(originalNode);
 
         this.mergedNodeToReplacedNodeIdDict[originalNode.Id] = targetNode.Id;
+    }
+
+    public void RemoveNode(Node node)
+    {
+        this.Octree.Remove(node.Id, node.LocationPoint);
+        this.modelProposal.DeleteModelEntityProposals ??= [];
+        this.modelProposal.DeleteModelEntityProposals.Add(
+            new DeleteModelEntityProposal(this.ModelId, this.Id, node.Id, BeamOsObjectType.Node)
+        );
     }
 
     public void AddNodeProposal(NodeProposal proposal)
@@ -100,7 +106,7 @@ public sealed class ModelProposalBuilder
 
     public Node ApplyExistingProposal(NodeId nodeId, out bool isModifiedInProposal)
     {
-        if (this.mergedNodeToReplacedNodeIdDict.TryGetValue(nodeId.Id, out var replacedNodeId))
+        while (this.mergedNodeToReplacedNodeIdDict.TryGetValue(nodeId.Id, out var replacedNodeId))
         {
             nodeId = replacedNodeId;
         }
@@ -140,6 +146,34 @@ public sealed class ModelProposalBuilder
 
         isModifiedInProposal = false;
         return element1d;
+    }
+
+    private Element1dProposal CreateModifyElement1dProposal(
+        Element1d element1d,
+        ExistingOrProposedNodeId? startNodeId = null,
+        ExistingOrProposedNodeId? endNodeId = null,
+        ExistingOrProposedMaterialId? materialId = null,
+        ExistingOrProposedSectionProfileId? sectionProfileId = null
+    )
+    {
+        if (this.modifyElement1dProposalCache.TryGetValue(element1d.Id, out var existingProposal))
+        {
+            return new Element1dProposal(
+                existingProposal,
+                startNodeId,
+                endNodeId,
+                materialId,
+                sectionProfileId
+            );
+        }
+        return new Element1dProposal(
+            element1d,
+            this.Id,
+            startNodeId,
+            endNodeId,
+            materialId,
+            sectionProfileId
+        );
     }
 
     public (Node startNode, Node endNode) GetStartAndEndNodes(

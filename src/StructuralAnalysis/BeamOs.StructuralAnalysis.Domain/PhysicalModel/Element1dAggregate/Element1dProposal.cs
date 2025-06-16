@@ -47,6 +47,25 @@ public sealed class Element1dProposal
             id
         ) { }
 
+    public Element1dProposal(
+        Element1dProposal element1dProposal,
+        ExistingOrProposedNodeId? startNodeId = null,
+        ExistingOrProposedNodeId? endNodeId = null,
+        ExistingOrProposedMaterialId? materialId = null,
+        ExistingOrProposedSectionProfileId? sectionProfileId = null,
+        Element1dProposalId? id = null
+    )
+        : this(
+            element1dProposal.ModelId,
+            element1dProposal.ModelProposalId,
+            startNodeId ?? element1dProposal.StartNodeId,
+            endNodeId ?? element1dProposal.EndNodeId,
+            materialId ?? element1dProposal.MaterialId,
+            sectionProfileId ?? element1dProposal.SectionProfileId,
+            element1dProposal.ExistingId,
+            id
+        ) { }
+
     public ExistingOrProposedNodeId StartNodeId { get; private set; }
     public ExistingOrProposedNodeId EndNodeId { get; private set; }
     public ExistingOrProposedMaterialId MaterialId { get; private set; }

@@ -48,6 +48,8 @@ public class ModelRepairer
             this.modelRepairOperationParameters
         );
 
+        new RemoveOrphanedNodeRule().Apply(modelProposal, Length.Zero);
+
         for (int i = 0; i < 3; i++)
         {
             foreach (var rule in rules)
