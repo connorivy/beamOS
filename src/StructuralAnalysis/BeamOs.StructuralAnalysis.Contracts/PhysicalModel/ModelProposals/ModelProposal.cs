@@ -60,6 +60,8 @@ public record ModelProposalResponse : IHasIntId, IBeamOsEntityResponse
     public ModelProposalInfo? ModelProposal { get; init; }
     public List<CreateNodeProposalResponse>? CreateNodeProposals { get; init; }
     public List<ModifyNodeProposalResponse>? ModifyNodeProposals { get; init; }
+    public List<CreateInternalNodeProposalResponse>? CreateInternalNodeProposals { get; init; }
+    public List<ModifyInternalNodeProposalResponse>? ModifyInternalNodeProposals { get; init; }
     public List<CreateElement1dProposalResponse>? CreateElement1dProposals { get; init; }
     public List<ModifyElement1dProposalResponse>? ModifyElement1dProposals { get; init; }
     public List<int>? Element1dsModifiedBecauseOfNodeChange { get; init; }

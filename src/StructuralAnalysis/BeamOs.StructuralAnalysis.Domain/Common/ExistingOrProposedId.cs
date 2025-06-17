@@ -1,5 +1,7 @@
+using System.Diagnostics.CodeAnalysis;
 using BeamOs.Common.Domain.Models;
 using BeamOs.StructuralAnalysis.Contracts.Common;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
@@ -122,6 +124,25 @@ public sealed class ExistingOrProposedNodeId : ExistingOrProposedId<NodeId, Node
 
     [Obsolete("EF Core Constructor", true)]
     private ExistingOrProposedNodeId(NodeId? existingId, NodeProposalId? proposedId)
+        : base(existingId, proposedId) { }
+}
+
+public sealed class ExistingOrProposedElement1dId
+    : ExistingOrProposedId<Element1dId, Element1dProposalId>
+{
+    public static implicit operator ExistingOrProposedElement1dId(Element1dId id) => new(id);
+
+    public static implicit operator ExistingOrProposedElement1dId(Element1dProposalId id) =>
+        new(id);
+
+    public ExistingOrProposedElement1dId(Element1dId existingId)
+        : base(existingId) { }
+
+    public ExistingOrProposedElement1dId(Element1dProposalId proposedId)
+        : base(proposedId) { }
+
+    [Obsolete("EF Core Constructor", true)]
+    private ExistingOrProposedElement1dId(Element1dId? existingId, Element1dProposalId? proposedId)
         : base(existingId, proposedId) { }
 }
 

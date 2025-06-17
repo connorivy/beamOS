@@ -15,7 +15,9 @@ public abstract class NodeProposalBase : BeamOsModelProposalEntity<NodeProposalI
     )
         : base(id, modelProposalId, modelId, existingId) { }
 
-    public abstract NodeDefinition ToDomain();
+    public abstract NodeDefinition ToDomain(
+        Dictionary<Element1dProposalId, Element1d>? element1dProposalIdToNewIdDict = null
+    );
 
     [Obsolete("EF Core Constructor")]
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -56,7 +58,9 @@ public sealed class NodeProposal : NodeProposalBase
     public Point LocationPoint { get; set; }
     public Restraint Restraint { get; set; }
 
-    public override Node ToDomain()
+    public override Node ToDomain(
+        Dictionary<Element1dProposalId, Element1d>? element1dProposalIdToNewIdDict = null
+    )
     {
         return new(this.ModelId, this.LocationPoint, this.Restraint, this.ExistingId);
     }
@@ -74,7 +78,7 @@ public sealed class InternalNodeProposal : NodeProposalBase
         ModelId modelId,
         ModelProposalId modelProposalId,
         Ratio ratioAlongElement1d,
-        Element1dId element1dId,
+        ExistingOrProposedElement1dId element1dId,
         Restraint restraint,
         NodeId? existingId = null,
         NodeProposalId? id = null
@@ -90,7 +94,7 @@ public sealed class InternalNodeProposal : NodeProposalBase
         InternalNode existingNode,
         ModelProposalId modelProposalId,
         Ratio? ratioAlongElement1d,
-        Element1dId? element1dId,
+        ExistingOrProposedElement1dId? element1dId,
         Restraint? restraint = null,
         NodeProposalId? id = null
     )
@@ -98,7 +102,7 @@ public sealed class InternalNodeProposal : NodeProposalBase
             existingNode.ModelId,
             modelProposalId,
             ratioAlongElement1d ?? existingNode.RatioAlongElement1d,
-            element1dId ?? existingNode.Element1dId,
+            element1dId ?? new(existingId: existingNode.Element1dId.Id),
             restraint ?? existingNode.Restraint,
             existingNode.Id,
             id ?? new()
@@ -106,18 +110,26 @@ public sealed class InternalNodeProposal : NodeProposalBase
 
     public Restraint Restraint { get; set; }
     public Ratio RatioAlongElement1d { get; set; }
-    public Element1dId Element1dId { get; set; }
+    public ExistingOrProposedElement1dId Element1dId { get; set; }
     public Element1d? Element1d { get; set; }
 
-    public override NodeDefinition ToDomain()
+    public override InternalNode ToDomain(
+        Dictionary<Element1dProposalId, Element1d>? element1dProposalIdToNewIdDict = null
+    )
     {
+        var (element1dId, element1d) = this.Element1dId.ToIdAndEntity(
+            element1dProposalIdToNewIdDict
+        );
         return new InternalNode(
             this.ModelId,
             this.RatioAlongElement1d,
-            this.Element1dId,
+            element1dId,
             this.Restraint,
             this.ExistingId
-        );
+        )
+        {
+            Element1d = element1d,
+        };
     }
 
     [Obsolete("EF Core Constructor")]

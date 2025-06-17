@@ -71,7 +71,7 @@ public sealed class Element1dProposal : BeamOsModelProposalEntity<Element1dPropo
     public ExistingOrProposedSectionProfileId SectionProfileId { get; private set; }
 
     public Element1d ToDomain(
-        Dictionary<NodeProposalId, Node>? nodeProposalIdToNewIdDict,
+        Dictionary<NodeProposalId, NodeDefinition>? nodeProposalIdToNewIdDict,
         Dictionary<MaterialProposalId, Material>? materialProposalIdToNewIdDict,
         Dictionary<
             SectionProfileProposalId,

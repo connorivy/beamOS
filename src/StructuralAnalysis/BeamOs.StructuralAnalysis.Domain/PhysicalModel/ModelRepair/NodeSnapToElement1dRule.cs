@@ -1,6 +1,7 @@
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
+using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
@@ -50,6 +51,11 @@ public class NodeSnapToElement1dRule : IndividualNodeVisitingRule
             double dirZ = dz / length;
             // Project node onto element line
             double t = (nx - sx) * dirX + (ny - sy) * dirY + (nz - sz) * dirZ;
+            // Clamp t to [0,1] to stay within segment
+            if (t is <= 0 or >= 1)
+            {
+                continue; // skip endpoints, already handled
+            }
             double projX = sx + t * dirX;
             double projY = sy + t * dirY;
             double projZ = sz + t * dirZ;
@@ -58,14 +64,17 @@ public class NodeSnapToElement1dRule : IndividualNodeVisitingRule
             );
             if (distToLine < tolerance)
             {
-                // Propose to move node to (projX, projY, projZ)
-                modelProposalBuilder.NodeStore.AddNodeProposal(
-                    new NodeProposal(
-                        node,
+                modelProposalBuilder.NodeStore.AddInternalNodeProposal(
+                    new InternalNodeProposal(
+                        node.ModelId,
                         modelProposalBuilder.Id,
-                        new Common.Point(projX, projY, projZ, LengthUnit.Meter)
+                        Ratio.FromDecimalFractions(t), // Ratio along the element
+                        elem.Id, // Element1dId
+                        node.Restraint, // Use the node's restraint
+                        node.Id
                     )
                 );
+                return;
             }
         }
     }

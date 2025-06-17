@@ -22,6 +22,7 @@ internal sealed class ModelProposalRepository(StructuralAnalysisDbContext dbCont
             .AsSplitQuery()
             .Where(m => m.ModelId == modelId && m.Id == id)
             .Include(m => m.NodeProposals)
+            .Include(m => m.InternalNodeProposals)
             .Include(m => m.Element1dProposals)
             .Include(m => m.ProposalIssues)
             .Include(m => m.MaterialProposals)

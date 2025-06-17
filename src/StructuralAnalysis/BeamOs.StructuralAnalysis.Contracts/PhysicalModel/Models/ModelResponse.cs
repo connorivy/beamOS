@@ -30,6 +30,7 @@ public record ModelResponse(
     ModelSettings Settings,
     DateTimeOffset LastModified,
     List<NodeResponse>? Nodes = null,
+    List<InternalNode>? InternalNodes = null,
     List<Element1dResponse>? Element1ds = null,
     List<MaterialResponse>? Materials = null,
     List<SectionProfileResponse>? SectionProfiles = null,

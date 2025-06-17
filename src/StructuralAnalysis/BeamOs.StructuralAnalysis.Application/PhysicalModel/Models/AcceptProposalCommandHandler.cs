@@ -50,12 +50,52 @@ public class AcceptModelProposalCommandHandler(
             );
         }
 
-        Dictionary<NodeProposalId, Node> nodeProposalIdToNodeDict = [];
+        Dictionary<NodeProposalId, NodeDefinition> nodeProposalIdToNodeDict = [];
         List<Node> nodes = [];
         foreach (var nodeProposal in modelProposal.NodeProposals)
         {
             var node = nodeProposal.ToDomain();
             nodes.Add(node);
+            if (nodeProposal.IsExisting)
+            {
+                await nodeRepository.Put(node);
+            }
+            else
+            {
+                nodeRepository.Add(node);
+                nodeProposalIdToNodeDict.Add(nodeProposal.Id, node);
+            }
+        }
+        List<InternalNode> internalNodes = [];
+        Dictionary<
+            Element1dProposalId,
+            List<InternalNodeProposal>
+        > element1dProposalIdToInternalNodesDict = [];
+        foreach (var nodeProposal in modelProposal.InternalNodeProposals)
+        {
+            if (!nodeProposal.Element1dId.ExistingId.HasValue)
+            {
+                if (
+                    !element1dProposalIdToInternalNodesDict.TryGetValue(
+                        nodeProposal.Element1dId.ProposedId.Value,
+                        out var internalNodesForElement
+                    )
+                )
+                {
+                    element1dProposalIdToInternalNodesDict.Add(
+                        nodeProposal.Element1dId.ProposedId.Value,
+                        internalNodesForElement = [nodeProposal]
+                    );
+                }
+                else
+                {
+                    internalNodesForElement.Add(nodeProposal);
+                }
+                continue;
+            }
+
+            var node = nodeProposal.ToDomain();
+            internalNodes.Add(node);
             if (nodeProposal.IsExisting)
             {
                 await nodeRepository.Put(node);
@@ -120,6 +160,7 @@ public class AcceptModelProposalCommandHandler(
         }
 
         List<Element1d> element1ds = [];
+        Dictionary<Element1dProposalId, Element1d> element1dProposalIdToElementDict = [];
         foreach (var element1dProposal in modelProposal.Element1dProposals)
         {
             var element1d = element1dProposal.ToDomain(
@@ -135,8 +176,39 @@ public class AcceptModelProposalCommandHandler(
             else
             {
                 element1dRepository.Add(element1d);
+                element1dProposalIdToElementDict.Add(element1dProposal.Id, element1d);
+            }
+
+            // todo : more resilient internal node creation
+            // we are waiting to create the internal node until we have the element1d,
+            // but there is still a risk that the element1ds are not in the correct order and we may need to skip
+            // one until a different one is created
+            if (
+                element1dProposalIdToInternalNodesDict.TryGetValue(
+                    element1dProposal.Id,
+                    out var internalNodesForElement
+                )
+            )
+            {
+                foreach (var internalNodeProposal in internalNodesForElement)
+                {
+                    var internalNode = internalNodeProposal.ToDomain(
+                        element1dProposalIdToElementDict
+                    );
+                    internalNodes.Add(internalNode);
+                    if (internalNodeProposal.IsExisting)
+                    {
+                        await nodeRepository.Put(internalNode);
+                    }
+                    else
+                    {
+                        nodeRepository.Add(internalNode);
+                        nodeProposalIdToNodeDict.Add(internalNodeProposal.Id, internalNode);
+                    }
+                }
             }
         }
+
         foreach (var deleteModelEntityProposal in modelProposal.DeleteModelEntityProposals)
         {
             switch (deleteModelEntityProposal.ObjectType)
@@ -189,6 +261,7 @@ public class AcceptModelProposalCommandHandler(
             modelProposal.Settings.ToContract(),
             DateTimeOffset.UtcNow,
             [.. nodes.Select(n => n.ToResponse())],
+            [.. internalNodes.Select(n => n.ToResponse())],
             [.. element1ds.Select(e => e.ToResponse())],
             [
                 .. materials.Select(m =>

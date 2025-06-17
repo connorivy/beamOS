@@ -1,6 +1,7 @@
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
+using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
@@ -70,21 +71,28 @@ public class Element1dExtendOrShortenRule : IndividualNodeVisitingRule
             {
                 continue; // skip endpoints, already handled
             }
-            // Projected point
-            double projX = a.X.Meters + (t * abX);
-            double projY = a.Y.Meters + (t * abY);
-            double projZ = a.Z.Meters + (t * abZ);
+            // Calculate the percentage distance (t) from the start node to the projected point
+            // t is already calculated above and clamped to (0,1)
             double distToLine = Math.Sqrt(
-                Math.Pow(p.X.Meters - projX, 2)
-                    + Math.Pow(p.Y.Meters - projY, 2)
-                    + Math.Pow(p.Z.Meters - projZ, 2)
+                Math.Pow(p.X.Meters - (a.X.Meters + (t * abX)), 2)
+                    + Math.Pow(p.Y.Meters - (a.Y.Meters + (t * abY)), 2)
+                    + Math.Pow(p.Z.Meters - (a.Z.Meters + (t * abZ)), 2)
             );
             if (distToLine < tolerance.Meters)
             {
-                Point projectedPoint = new(projX, projY, projZ, LengthUnit.Meter);
-                NodeProposal proposal = new(node, modelProposalBuilder.Id, projectedPoint);
-                modelProposalBuilder.NodeStore.AddNodeProposal(proposal);
-
+                // Calculate the percentage distance (t) from the start node to the projected point
+                // t is already calculated above and clamped to (0,1)
+                // Create an InternalNodeProposal using the correct constructor
+                modelProposalBuilder.NodeStore.AddInternalNodeProposal(
+                    new InternalNodeProposal(
+                        node.ModelId,
+                        modelProposalBuilder.Id,
+                        Ratio.FromDecimalFractions(t), // Ratio along the element
+                        elem.Id, // Element1dId
+                        node.Restraint, // Use the node's restraint
+                        node.Id
+                    )
+                );
                 return true;
             }
         }

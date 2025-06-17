@@ -123,6 +123,7 @@ public sealed class ModelProposalBuilder
     public ModelProposal Build()
     {
         this.modelProposal.NodeProposals = [.. this.NodeStore.GetNodeProposals()];
+        this.modelProposal.InternalNodeProposals = [.. this.NodeStore.GetInternalNodeProposals()];
         this.modelProposal.Element1dProposals = [.. this.Element1dStore.GetElement1dProposals()];
 
         return this.modelProposal;

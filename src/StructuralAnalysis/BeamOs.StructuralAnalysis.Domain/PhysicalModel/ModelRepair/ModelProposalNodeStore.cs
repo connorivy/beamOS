@@ -122,4 +122,9 @@ public sealed class ModelProposalNodeStore : IReadOnlyDictionary<NodeId, NodeDef
 
     public IEnumerable<NodeProposal> GetNodeProposals() =>
         this.newNodeProposals.Concat(this.modifyNodeProposalCache.Values).OfType<NodeProposal>();
+
+    public IEnumerable<InternalNodeProposal> GetInternalNodeProposals() =>
+        this
+            .newNodeProposals.Concat(this.modifyNodeProposalCache.Values)
+            .OfType<InternalNodeProposal>();
 }

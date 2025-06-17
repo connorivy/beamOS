@@ -100,6 +100,44 @@ public record CreateNodeProposalResponse : NodeData, IEntityProposal
     public ProposalType ProposalType { get; protected init; } = ProposalType.Create;
 }
 
+public record CreateInternalNodeProposalResponse : IEntityProposal
+{
+    [SetsRequiredMembers]
+    public CreateInternalNodeProposalResponse(
+        ProposedID element1dId,
+        Ratio ratioAlongElement1d,
+        Restraint? restraint = null,
+        Dictionary<string, string>? metadata = null
+    )
+    {
+        this.Element1dId = element1dId;
+        if (ratioAlongElement1d.As(RatioUnit.DecimalFraction) is < 0 or > 1)
+        {
+            throw new ArgumentException("Ratio along element must be between 0 and 1");
+        }
+
+        this.RatioAlongElement1d = ratioAlongElement1d;
+        this.Metadata = metadata;
+        this.Restraint = restraint;
+    }
+
+    public required ProposedID Element1dId { get; init; }
+    public required Ratio RatioAlongElement1d { get; init; }
+    public Restraint? Restraint { get; init; }
+
+    // public InternalNodeData() { }
+
+    public Dictionary<string, string>? Metadata { get; init; }
+
+    [JsonIgnore]
+    public BeamOsObjectType ObjectType => BeamOsObjectType.InternalNode;
+
+    [JsonIgnore]
+    public ProposalType ProposalType { get; protected init; } = ProposalType.Create;
+
+    public required int Id { get; init; }
+}
+
 public record ModifyNodeProposalResponse : CreateNodeProposalResponse, IEntityModificationProposal
 {
     public required int ExistingNodeId { get; init; }
@@ -111,6 +149,32 @@ public record ModifyNodeProposalResponse : CreateNodeProposalResponse, IEntityMo
     {
         this.ProposalType = ProposalType.Modify;
     }
+}
+
+public record ModifyInternalNodeProposalResponse
+    : CreateInternalNodeProposalResponse,
+        IEntityModificationProposal
+{
+    [SetsRequiredMembers]
+    public ModifyInternalNodeProposalResponse(
+        int id,
+        int existingInternalNodeId,
+        ProposedID element1dId,
+        Ratio ratioAlongElement1d,
+        Restraint? restraint = null,
+        Dictionary<string, string>? metadata = null
+    )
+        : base(element1dId, ratioAlongElement1d, restraint, metadata)
+    {
+        this.Id = id;
+        this.ExistingInternalNodeId = existingInternalNodeId;
+        this.ProposalType = ProposalType.Modify;
+    }
+
+    public required int ExistingInternalNodeId { get; init; }
+
+    [JsonIgnore]
+    public int ExistingId => this.ExistingInternalNodeId;
 }
 
 public interface IEntityProposal : IHasIntId

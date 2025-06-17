@@ -255,6 +255,18 @@ public static partial class ProposalStaticMappers
         this NodeProposal command
     );
 
+    public static partial CreateInternalNodeProposalResponse ToCreateProposalContract(
+        this InternalNodeProposal command
+    );
+
+    [MapProperty(
+        nameof(InternalNodeProposal.ExistingId),
+        nameof(ModifyInternalNodeProposalResponse.ExistingInternalNodeId)
+    )]
+    public static partial ModifyInternalNodeProposalResponse ToModifyProposalContract(
+        this InternalNodeProposal command
+    );
+
     public static partial CreateElement1dProposalResponse ToCreateProposalContract(
         this Element1dProposal command
     );
@@ -315,6 +327,8 @@ public static partial class ProposalStaticMappers
             ModelProposal = modelProposal.ToInfoContract(),
             CreateNodeProposals = [],
             ModifyNodeProposals = [],
+            CreateInternalNodeProposals = [],
+            ModifyInternalNodeProposals = [],
             CreateElement1dProposals = [],
             ModifyElement1dProposals = [],
             ProposalIssues = [],
@@ -341,6 +355,17 @@ public static partial class ProposalStaticMappers
             else
             {
                 response.CreateNodeProposals.Add(nodeProposal.ToCreateProposalContract());
+            }
+        }
+        foreach (var proposal in modelProposal.InternalNodeProposals ?? [])
+        {
+            if (proposal.IsExisting)
+            {
+                response.ModifyInternalNodeProposals.Add(proposal.ToModifyProposalContract());
+            }
+            else
+            {
+                response.CreateInternalNodeProposals.Add(proposal.ToCreateProposalContract());
             }
         }
         foreach (var element1dProposal in modelProposal.Element1dProposals ?? [])
