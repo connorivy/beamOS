@@ -10,18 +10,25 @@ public class Element1dExtendOrShortenRule : IndividualNodeVisitingRule
 
     protected override void ApplyToSingleNode(
         Element1d element,
-        Node node,
+        NodeDefinition node,
+        Point nodeLocation,
         IList<Node> nearbyNodes,
+        IList<InternalNode> nearbyInternalNodes,
         IList<Element1d> nearbyElement1ds,
         ModelProposalBuilder modelProposalBuilder,
         Length tolerance
     )
     {
-        if (SnapToNearbyNode(element, node, nearbyNodes, modelProposalBuilder, tolerance))
+        if (node is not Node nodeAsNode)
+        {
+            return; // Only apply to Node
+        }
+
+        if (SnapToNearbyNode(element, nodeAsNode, nearbyNodes, modelProposalBuilder, tolerance))
         {
             return;
         }
-        _ = SnapToNearbyElement1d(node, nearbyElement1ds, modelProposalBuilder, tolerance);
+        _ = SnapToNearbyElement1d(nodeAsNode, nearbyElement1ds, modelProposalBuilder, tolerance);
     }
 
     private static bool SnapToNearbyElement1d(
@@ -36,8 +43,14 @@ public class Element1dExtendOrShortenRule : IndividualNodeVisitingRule
             var (startNode, endNode) = modelProposalBuilder.GetStartAndEndNodes(elem);
 
             Point p = node.LocationPoint;
-            Point a = startNode.LocationPoint;
-            Point b = endNode.LocationPoint;
+            Point a = startNode.GetLocationPoint(
+                modelProposalBuilder.Element1dStore,
+                modelProposalBuilder.NodeStore
+            );
+            Point b = endNode.GetLocationPoint(
+                modelProposalBuilder.Element1dStore,
+                modelProposalBuilder.NodeStore
+            );
             // Vector AB
             double abX = b.X.Meters - a.X.Meters;
             double abY = b.Y.Meters - a.Y.Meters;
@@ -70,7 +83,7 @@ public class Element1dExtendOrShortenRule : IndividualNodeVisitingRule
             {
                 Point projectedPoint = new(projX, projY, projZ, LengthUnit.Meter);
                 NodeProposal proposal = new(node, modelProposalBuilder.Id, projectedPoint);
-                modelProposalBuilder.AddNodeProposal(proposal);
+                modelProposalBuilder.NodeStore.AddNodeProposal(proposal);
 
                 return true;
             }
@@ -87,11 +100,17 @@ public class Element1dExtendOrShortenRule : IndividualNodeVisitingRule
     )
     {
         // Get the start and end nodes of the element
-        (Node startNode, Node endNode) = modelProposalBuilder.GetStartAndEndNodes(element);
+        var (startNode, endNode) = modelProposalBuilder.GetStartAndEndNodes(element);
         // Determine which node is fixed and which is being considered for snapping
-        Node fixedNode = node == startNode ? endNode : startNode;
-        Point fixedPoint = fixedNode.LocationPoint;
-        Point nodePoint = node.LocationPoint;
+        var fixedNode = node == startNode ? endNode : startNode;
+        Point fixedPoint = fixedNode.GetLocationPoint(
+            modelProposalBuilder.Element1dStore,
+            modelProposalBuilder.NodeStore
+        );
+        Point nodePoint = node.GetLocationPoint(
+            modelProposalBuilder.Element1dStore,
+            modelProposalBuilder.NodeStore
+        );
         // Direction vector of the element (from fixedNode to node)
         double dirX = nodePoint.X.Meters - fixedPoint.X.Meters;
         double dirY = nodePoint.Y.Meters - fixedPoint.Y.Meters;

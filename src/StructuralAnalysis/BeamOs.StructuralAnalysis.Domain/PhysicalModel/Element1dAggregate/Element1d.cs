@@ -142,15 +142,19 @@ public class Element1d : BeamOsModelEntity<Element1dId>
         };
     }
 
-    private (NodeDefinition StartNode, NodeDefinition EndNode) GetNodesOrThrow()
+    private (NodeDefinition StartNode, NodeDefinition EndNode) GetNodesOrThrow(
+        IReadOnlyDictionary<NodeId, NodeDefinition>? nodeStore = null
+    )
     {
-        if (this.StartNode is null || this.EndNode is null)
+        var startNode = this.StartNode ?? nodeStore?.GetValueOrDefault(this.StartNodeId);
+        var endNode = this.EndNode ?? nodeStore?.GetValueOrDefault(this.EndNodeId);
+        if (startNode is null || endNode is null)
         {
             throw new InvalidOperationException(
                 "StartNode and EndNode must be set before accessing the nodes."
             );
         }
-        return (this.StartNode, this.EndNode);
+        return (startNode, endNode);
     }
 
     public double[,] GetRotationMatrix()
@@ -246,7 +250,11 @@ public class Element1d : BeamOsModelEntity<Element1dId>
         return transformationMatrix;
     }
 
-    internal Point GetPointAtRatio(UnitsNet.Ratio ratioAlongElement1d)
+    internal Point GetPointAtRatio(
+        UnitsNet.Ratio ratioAlongElement1d,
+        IReadOnlyDictionary<Element1dId, Element1d>? elementStore = null,
+        IReadOnlyDictionary<NodeId, NodeDefinition>? nodeStore = null
+    )
     {
         var decimalFraction = ratioAlongElement1d.As(UnitsNet.Units.RatioUnit.DecimalFraction);
         if (decimalFraction is < 0 or > 1)
@@ -257,9 +265,9 @@ public class Element1d : BeamOsModelEntity<Element1dId>
             );
         }
 
-        var (startNode, endNode) = this.GetNodesOrThrow();
-        var startLocation = startNode.GetLocationPoint();
-        var endLocation = endNode.GetLocationPoint();
+        var (startNode, endNode) = this.GetNodesOrThrow(nodeStore);
+        var startLocation = startNode.GetLocationPoint(elementStore, nodeStore);
+        var endLocation = endNode.GetLocationPoint(elementStore, nodeStore);
 
         var x = startLocation.X + (endLocation.X - startLocation.X) * decimalFraction;
 

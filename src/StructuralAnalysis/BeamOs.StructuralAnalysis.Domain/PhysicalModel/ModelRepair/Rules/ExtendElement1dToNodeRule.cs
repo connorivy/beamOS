@@ -1,3 +1,4 @@
+using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
@@ -26,12 +27,16 @@ public sealed class ExtendElement1dsInPlaneToNodeRule : BeamOrBraceVisitingRule
 
     protected override void ApplyRuleForBeamOrBrace(
         Element1d element1D,
-        Node startNode,
-        Node endNode,
+        NodeDefinition startNode,
+        NodeDefinition endNode,
+        Point startNodeLocation,
+        Point endNodeLocation,
         IList<Node> nearbyStartNodes,
+        IList<InternalNode> nearbyStartInternalNodes,
         IEnumerable<Element1d> beamsAndBracesCloseToStart,
         IEnumerable<Element1d> columnsCloseToStart,
         IList<Node> nearbyEndNodes,
+        IList<InternalNode> nearbyEndInternalNodes,
         IEnumerable<Element1d> beamsAndBracesCloseToEnd,
         IEnumerable<Element1d> columnsCloseToEnd,
         ModelProposalBuilder modelProposalBuilder,
@@ -40,13 +45,15 @@ public sealed class ExtendElement1dsInPlaneToNodeRule : BeamOrBraceVisitingRule
     {
         var axisAlignmentTolerance =
             modelProposalBuilder.ModelRepairOperationParameters.GetAxisAlignmentTolerance(
-                startNode,
-                endNode
+                startNodeLocation,
+                endNodeLocation
             );
 
         ExtendElementToNode(
             startNode,
             endNode,
+            startNodeLocation,
+            endNodeLocation,
             beamsAndBracesCloseToStart,
             modelProposalBuilder,
             tolerance,
@@ -55,6 +62,8 @@ public sealed class ExtendElement1dsInPlaneToNodeRule : BeamOrBraceVisitingRule
         ExtendElementToNode(
             endNode,
             startNode,
+            endNodeLocation,
+            startNodeLocation,
             beamsAndBracesCloseToEnd,
             modelProposalBuilder,
             tolerance,
@@ -63,8 +72,10 @@ public sealed class ExtendElement1dsInPlaneToNodeRule : BeamOrBraceVisitingRule
     }
 
     private static void ExtendElementToNode(
-        Node startNode,
-        Node endNode,
+        NodeDefinition startNode,
+        NodeDefinition endNode,
+        Point startNodeLocation,
+        Point endNodeLocation,
         IEnumerable<Element1d> beamsAndBracesCloseToStart,
         ModelProposalBuilder modelProposalBuilder,
         Length tolerance,
@@ -72,7 +83,7 @@ public sealed class ExtendElement1dsInPlaneToNodeRule : BeamOrBraceVisitingRule
     )
     {
         var elementsAndDistance = beamsAndBracesCloseToStart
-            .Select(e => (e, ShortestDistanceTo(startNode, e, modelProposalBuilder)))
+            .Select(e => (e, ShortestDistanceTo(startNodeLocation, e, modelProposalBuilder)))
             .Where(tuple => tuple.Item2 < tolerance)
             .OrderBy(tuple => tuple.Item2)
             .ToList();
@@ -82,13 +93,21 @@ public sealed class ExtendElement1dsInPlaneToNodeRule : BeamOrBraceVisitingRule
             var (candidateStartNode, candidateEndNode) = modelProposalBuilder.GetStartAndEndNodes(
                 candidateElement
             );
+            var candidateStartNodeLocation = candidateStartNode.GetLocationPoint(
+                modelProposalBuilder.Element1dStore,
+                modelProposalBuilder.NodeStore
+            );
+            var candidateEndNodeLocation = candidateEndNode.GetLocationPoint(
+                modelProposalBuilder.Element1dStore,
+                modelProposalBuilder.NodeStore
+            );
             // Check if the candidate element is coplanar with the current element1D
             if (
                 !ModelRepairRuleUtils.ArePointsRoughlyCoplanar(
-                    startNode.LocationPoint.ToVector3InMeters(),
-                    endNode.LocationPoint.ToVector3InMeters(),
-                    candidateStartNode.LocationPoint.ToVector3InMeters(),
-                    candidateEndNode.LocationPoint.ToVector3InMeters()
+                    startNodeLocation.ToVector3InMeters(),
+                    endNodeLocation.ToVector3InMeters(),
+                    candidateStartNodeLocation.ToVector3InMeters(),
+                    candidateEndNodeLocation.ToVector3InMeters()
                 )
             )
             {
@@ -111,18 +130,18 @@ public sealed class ExtendElement1dsInPlaneToNodeRule : BeamOrBraceVisitingRule
 
             bool mergeWithCandidateStartNode =
                 ModelRepairRuleUtils.CanLineEndpointBeExtendedToPointWithinTolerance(
-                    startNode.LocationPoint,
-                    endNode.LocationPoint,
-                    candidateStartNode.LocationPoint,
+                    startNodeLocation,
+                    endNodeLocation,
+                    candidateStartNodeLocation,
                     xAxisLengthTolerance,
                     yAxisLengthTolerance,
                     zAxisLengthTolerance,
                     modelProposalBuilder.ModelRepairOperationParameters.VeryRelaxedTolerance
                 )
                 || ModelRepairRuleUtils.CanLineEndpointBeExtendedToPointWithinTolerance(
-                    endNode.LocationPoint,
-                    startNode.LocationPoint,
-                    candidateStartNode.LocationPoint,
+                    endNodeLocation,
+                    startNodeLocation,
+                    candidateStartNodeLocation,
                     xAxisLengthTolerance,
                     yAxisLengthTolerance,
                     zAxisLengthTolerance,
@@ -130,18 +149,18 @@ public sealed class ExtendElement1dsInPlaneToNodeRule : BeamOrBraceVisitingRule
                 );
             bool mergeWithCandidateEndNode =
                 ModelRepairRuleUtils.CanLineEndpointBeExtendedToPointWithinTolerance(
-                    startNode.LocationPoint,
-                    endNode.LocationPoint,
-                    candidateEndNode.LocationPoint,
+                    startNodeLocation,
+                    endNodeLocation,
+                    candidateEndNodeLocation,
                     xAxisLengthTolerance,
                     yAxisLengthTolerance,
                     zAxisLengthTolerance,
                     modelProposalBuilder.ModelRepairOperationParameters.VeryRelaxedTolerance
                 )
                 || ModelRepairRuleUtils.CanLineEndpointBeExtendedToPointWithinTolerance(
-                    endNode.LocationPoint,
-                    startNode.LocationPoint,
-                    candidateEndNode.LocationPoint,
+                    endNodeLocation,
+                    startNodeLocation,
+                    candidateEndNodeLocation,
                     xAxisLengthTolerance,
                     yAxisLengthTolerance,
                     zAxisLengthTolerance,
@@ -166,15 +185,21 @@ public sealed class ExtendElement1dsInPlaneToNodeRule : BeamOrBraceVisitingRule
     }
 
     private static Length ShortestDistanceTo(
-        Node node,
+        Point nodeLocation,
         Element1d element1d,
         ModelProposalBuilder modelProposalBuilder
     )
     {
         var (startNode, endNode) = modelProposalBuilder.GetStartAndEndNodes(element1d);
-        return node.LocationPoint.ShortestDistanceToLine(
-            startNode.LocationPoint,
-            endNode.LocationPoint
+        return nodeLocation.ShortestDistanceToLine(
+            startNode.GetLocationPoint(
+                modelProposalBuilder.Element1dStore,
+                modelProposalBuilder.NodeStore
+            ),
+            endNode.GetLocationPoint(
+                modelProposalBuilder.Element1dStore,
+                modelProposalBuilder.NodeStore
+            )
         );
     }
 }

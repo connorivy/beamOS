@@ -149,7 +149,7 @@ public class SectionProfile : SectionProfileInfoBase, IHasStrongAxisPlasticSecti
 }
 
 public abstract class SectionProfileProposalInfoBase
-    : BeamOsModelProposalEntity<SectionProfileProposalId, SectionProfileInfoBase, SectionProfileId>
+    : BeamOsModelProposalEntity<SectionProfileProposalId, SectionProfileId>
 {
     public SectionProfileProposalInfoBase(
         ModelId modelId,

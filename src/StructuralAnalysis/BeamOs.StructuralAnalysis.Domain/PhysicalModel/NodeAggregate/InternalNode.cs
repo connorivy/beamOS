@@ -27,16 +27,18 @@ public class InternalNode : NodeDefinition
     public Element1dId Element1dId { get; set; }
     public Element1d? Element1d { get; set; }
 
-    public override Point GetLocationPoint()
+    public override Point GetLocationPoint(
+        IReadOnlyDictionary<Element1dId, Element1d>? elementStore = null,
+        IReadOnlyDictionary<NodeId, NodeDefinition>? nodeStore = null
+    )
     {
-        if (this.Element1d is null)
-        {
-            throw new InvalidOperationException(
+        var element1d =
+            (this.Element1d ?? elementStore?.GetValueOrDefault(this.Element1dId))
+            ?? throw new InvalidOperationException(
                 "Element1d must be set before calculating the location point."
             );
-        }
 
-        return this.Element1d.GetPointAtRatio(this.RatioAlongElement1d);
+        return element1d.GetPointAtRatio(this.RatioAlongElement1d, elementStore, nodeStore);
     }
 
     public override Node ToNode()

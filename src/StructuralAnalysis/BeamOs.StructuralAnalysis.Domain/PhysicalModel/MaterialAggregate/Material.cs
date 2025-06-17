@@ -27,8 +27,7 @@ public class Material : BeamOsModelEntity<MaterialId>
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }
 
-public sealed class MaterialProposal
-    : BeamOsModelProposalEntity<MaterialProposalId, Material, MaterialId>
+public sealed class MaterialProposal : BeamOsModelProposalEntity<MaterialProposalId, MaterialId>
 {
     public MaterialProposal(
         ModelId modelId,

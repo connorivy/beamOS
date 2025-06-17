@@ -25,7 +25,10 @@ public class Node : NodeDefinition
     public Point LocationPoint { get; set; }
     public Restraint Restraint { get; set; }
 
-    public override Point GetLocationPoint() => this.LocationPoint;
+    public override Point GetLocationPoint(
+        IReadOnlyDictionary<Element1dId, Element1d>? elementStore = null,
+        IReadOnlyDictionary<NodeId, NodeDefinition>? nodeStore = null
+    ) => this.LocationPoint;
 
     public override Node ToNode() => this;
 
@@ -138,7 +141,10 @@ public abstract class NodeDefinition : BeamOsModelEntity<NodeId>
     public ICollection<Element1d>? StartNodeElements { get; set; }
     public ICollection<Element1d>? EndNodeElements { get; set; }
 
-    public abstract Point GetLocationPoint();
+    public abstract Point GetLocationPoint(
+        IReadOnlyDictionary<Element1dId, Element1d>? elementStore = null,
+        IReadOnlyDictionary<NodeId, NodeDefinition>? nodeStore = null
+    );
 
     // {
     //     if (this.TypeDiscriminator == nameof(InternalNode))
@@ -232,53 +238,4 @@ public abstract class NodeDefinition : BeamOsModelEntity<NodeId>
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }
 
-public sealed class InternalNodeDefinition : BeamOSValueObject
-{
-    public required Ratio RatioAlongElement1d { get; set; }
-    public required Element1dId Element1dId { get; set; }
-    public required Restraint Restraint { get; set; }
-
-    protected override IEnumerable<object> GetEqualityComponents()
-    {
-        yield return this.RatioAlongElement1d;
-        yield return this.Element1dId;
-    }
-
-    public static InternalNodeDefinition Default { get; } =
-        new InternalNodeDefinition
-        {
-            RatioAlongElement1d = Ratio.Zero,
-            Element1dId = 0,
-            Restraint = Restraint.Free,
-        };
-}
-
-public sealed class SpatialNodeDefinition : BeamOSValueObject
-{
-    public Point LocationPoint { get; set; }
-    public Restraint Restraint { get; set; }
-
-    public SpatialNodeDefinition(Point locationPoint, Restraint restraint)
-    {
-        this.LocationPoint = locationPoint;
-        this.Restraint = restraint;
-    }
-
-    [Obsolete("EF Core Constructor", true)]
-    public SpatialNodeDefinition() { }
-
-    protected override IEnumerable<object> GetEqualityComponents()
-    {
-        yield return this.LocationPoint;
-        yield return this.Restraint;
-    }
-
-    /// <summary>
-    /// This is the default that is needed because EF Core does not currently support complex types being null
-    /// </summary>
-    public static SpatialNodeDefinition Default { get; } =
-        new SpatialNodeDefinition(
-            new(-852586.0, -454545, -123456, LengthUnit.Meter),
-            Restraint.Free
-        );
-}
+public readonly record struct NodeIdAndLocation(NodeId NodeId, Point LocationPoint);

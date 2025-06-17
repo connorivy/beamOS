@@ -45,6 +45,7 @@ public class ModelProposal : BeamOsModelEntity<ModelProposalId>
     public DateTimeOffset LastModified { get; set; } = DateTimeOffset.UtcNow;
 
     public List<NodeProposal>? NodeProposals { get; set; }
+    public List<InternalNodeProposal>? InternalNodeProposals { get; set; }
     public List<Element1dProposal>? Element1dProposals { get; set; }
     public List<MaterialProposal>? MaterialProposals { get; set; }
     public List<SectionProfileProposal>? SectionProfileProposals { get; set; }

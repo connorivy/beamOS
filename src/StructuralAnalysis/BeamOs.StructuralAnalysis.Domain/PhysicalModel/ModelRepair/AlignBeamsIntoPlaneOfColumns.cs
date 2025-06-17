@@ -10,13 +10,43 @@ public class AlignBeamsIntoPlaneOfColumns : BeamOrBraceVisitingRule
 
     protected override void ApplyRuleForBeamOrBrace(
         Element1d element1D,
-        Node startNode,
-        Node endNode,
+        NodeDefinition startNode,
+        NodeDefinition endNode,
+        Point startNodeLocation,
+        Point endNodeLocation,
         IList<Node> nearbyStartNodes,
+        IList<InternalNode> nearbyStartInternalNodes,
         IEnumerable<Element1d> beamsAndBracesCloseToStart,
         IEnumerable<Element1d> columnsCloseToStart,
         IList<Node> nearbyEndNodes,
+        IList<InternalNode> nearbyEndInternalNodes,
         IEnumerable<Element1d> beamsAndBracesCloseToEnd,
+        IEnumerable<Element1d> columnsCloseToEnd,
+        ModelProposalBuilder modelProposalBuilder,
+        Length tolerance
+    )
+    {
+        if (startNode is not Node startNodeAsNode || endNode is not Node endNodeAsNode)
+        {
+            // If either start or end node is not a Node, skip this element
+            return;
+        }
+        this.ApplyRuleForBeamOrBrace(
+            element1D,
+            startNodeAsNode,
+            endNodeAsNode,
+            columnsCloseToStart,
+            columnsCloseToEnd,
+            modelProposalBuilder,
+            tolerance
+        );
+    }
+
+    protected void ApplyRuleForBeamOrBrace(
+        Element1d element1D,
+        Node startNode,
+        Node endNode,
+        IEnumerable<Element1d> columnsCloseToStart,
         IEnumerable<Element1d> columnsCloseToEnd,
         ModelProposalBuilder modelProposalBuilder,
         Length tolerance
@@ -27,19 +57,31 @@ public class AlignBeamsIntoPlaneOfColumns : BeamOrBraceVisitingRule
         {
             foreach (Element1d colEnd in columnsCloseToEnd)
             {
-                (Node startNodeA, Node endNodeA) = modelProposalBuilder.GetStartAndEndNodes(
+                var (startNodeA, endNodeA) = modelProposalBuilder.GetStartAndEndNodes(
                     element1D,
                     out _
                 );
-                (Node startNodeB, Node endNodeB) = modelProposalBuilder.GetStartAndEndNodes(
+                var (startNodeB, endNodeB) = modelProposalBuilder.GetStartAndEndNodes(
                     element1D,
                     out _
                 );
 
-                Point colStartA = startNodeA.LocationPoint;
-                Point colStartB = startNodeB.LocationPoint;
-                Point colEndA = endNodeA.LocationPoint;
-                Point colEndB = endNodeB.LocationPoint;
+                Point colStartA = startNodeA.GetLocationPoint(
+                    modelProposalBuilder.Element1dStore,
+                    modelProposalBuilder.NodeStore
+                );
+                Point colStartB = startNodeB.GetLocationPoint(
+                    modelProposalBuilder.Element1dStore,
+                    modelProposalBuilder.NodeStore
+                );
+                Point colEndA = endNodeA.GetLocationPoint(
+                    modelProposalBuilder.Element1dStore,
+                    modelProposalBuilder.NodeStore
+                );
+                Point colEndB = endNodeB.GetLocationPoint(
+                    modelProposalBuilder.Element1dStore,
+                    modelProposalBuilder.NodeStore
+                );
 
                 if (
                     !IsPlaneOfElement1dParallelToPlaneOfColumns(
@@ -123,8 +165,8 @@ public class AlignBeamsIntoPlaneOfColumns : BeamOrBraceVisitingRule
                     projectedEnd,
                     endNode.Restraint
                 );
-                modelProposalBuilder.AddNodeProposal(startNodeProposal);
-                modelProposalBuilder.AddNodeProposal(endNodeProposal);
+                modelProposalBuilder.NodeStore.AddNodeProposal(startNodeProposal);
+                modelProposalBuilder.NodeStore.AddNodeProposal(endNodeProposal);
             }
         }
     }

@@ -11,14 +11,16 @@ public class NodeMergeRule : IndividualNodeVisitingRule
 
     protected override void ApplyToSingleNode(
         Element1d element,
-        Node node,
+        NodeDefinition node,
+        Point nodeLocation,
         IList<Node> nearbyNodes,
+        IList<InternalNode> nearbyInternalNodes,
         IList<Element1d> nearbyElement1ds,
         ModelProposalBuilder modelProposalBuilder,
         Length tolerance
     )
     {
-        foreach (Node nearbyNode in nearbyNodes)
+        foreach (var nearbyNode in nearbyNodes.Concat<NodeDefinition>(nearbyInternalNodes))
         {
             Debug.Assert(
                 nearbyNode.Id != node.Id,
@@ -26,8 +28,14 @@ public class NodeMergeRule : IndividualNodeVisitingRule
             );
 
             // Calculate distance between nodes in meters
-            Point p1 = node.LocationPoint;
-            Point p2 = nearbyNode.LocationPoint;
+            Point p1 = node.GetLocationPoint(
+                modelProposalBuilder.Element1dStore,
+                modelProposalBuilder.NodeStore
+            );
+            Point p2 = nearbyNode.GetLocationPoint(
+                modelProposalBuilder.Element1dStore,
+                modelProposalBuilder.NodeStore
+            );
             double dx = p1.X.Meters - p2.X.Meters;
             double dy = p1.Y.Meters - p2.Y.Meters;
             double dz = p1.Z.Meters - p2.Z.Meters;

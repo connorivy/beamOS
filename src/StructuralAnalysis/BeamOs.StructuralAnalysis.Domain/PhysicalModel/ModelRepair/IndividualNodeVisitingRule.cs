@@ -1,3 +1,4 @@
+using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
@@ -17,11 +18,31 @@ public abstract class IndividualNodeVisitingRule : IModelRepairRule
 
             if (visitedNodeIds.Add(startNode.Id))
             {
-                this.ApplyToSingleNode(modelProposalBuilder, tolerance, element, startNode);
+                var startNodeLocation = startNode.GetLocationPoint(
+                    modelProposalBuilder.Element1dStore,
+                    modelProposalBuilder.NodeStore
+                );
+                this.ApplyToSingleNode(
+                    modelProposalBuilder,
+                    tolerance,
+                    element,
+                    startNode,
+                    startNodeLocation
+                );
             }
             if (visitedNodeIds.Add(endNode.Id))
             {
-                this.ApplyToSingleNode(modelProposalBuilder, tolerance, element, endNode);
+                var endNodeLocation = endNode.GetLocationPoint(
+                    modelProposalBuilder.Element1dStore,
+                    modelProposalBuilder.NodeStore
+                );
+                this.ApplyToSingleNode(
+                    modelProposalBuilder,
+                    tolerance,
+                    element,
+                    endNode,
+                    endNodeLocation
+                );
             }
         }
     }
@@ -30,12 +51,13 @@ public abstract class IndividualNodeVisitingRule : IModelRepairRule
         ModelProposalBuilder modelProposalBuilder,
         Length tolerance,
         Element1d element,
-        Node node
+        NodeDefinition node,
+        Point nodeLocation
     )
     {
-        List<Node> nearbyNodes = modelProposalBuilder
-            .Octree.FindNodesWithin(node.LocationPoint, tolerance.Meters, node.Id)
-            .Select(modelProposalBuilder.ApplyExistingProposal)
+        var nearbyNodes = modelProposalBuilder
+            .Octree.FindNodeIdsWithin(nodeLocation, tolerance.Meters, node.Id)
+            .Select(modelProposalBuilder.NodeStore.ApplyExistingProposal)
             .Distinct()
             .Where(n => n.Id != node.Id)
             .ToList();
@@ -43,7 +65,7 @@ public abstract class IndividualNodeVisitingRule : IModelRepairRule
         List<Element1d> nearbyElement1ds = Element1dSpatialHelper.FindElement1dsWithin(
             modelProposalBuilder.Element1ds,
             modelProposalBuilder,
-            node.LocationPoint,
+            nodeLocation,
             tolerance.Meters,
             node.Id
         );
@@ -51,7 +73,9 @@ public abstract class IndividualNodeVisitingRule : IModelRepairRule
         this.ApplyToSingleNode(
             element,
             node,
-            nearbyNodes,
+            nodeLocation,
+            nearbyNodes.OfType<Node>().ToList(),
+            nearbyNodes.OfType<InternalNode>().ToList(),
             nearbyElement1ds,
             modelProposalBuilder,
             tolerance
@@ -60,8 +84,10 @@ public abstract class IndividualNodeVisitingRule : IModelRepairRule
 
     protected abstract void ApplyToSingleNode(
         Element1d element,
-        Node node,
+        NodeDefinition node,
+        Point nodeLocation,
         IList<Node> nearbyNodes,
+        IList<InternalNode> nearbyInternalNodes,
         IList<Element1d> nearbyElement1ds,
         ModelProposalBuilder modelProposalBuilder,
         Length tolerance

@@ -70,8 +70,7 @@ public class BeamOsAnalyticalResultEntity<TId> : BeamOsEntity<TId>
 }
 
 [PrimaryKey(nameof(Id), nameof(ModelProposalId), nameof(ModelId))]
-public abstract class BeamOsModelProposalEntity<TId, TModelEntity, TModelEntityId>
-    : BeamOsEntity<TId>
+public abstract class BeamOsModelProposalEntity<TId, TModelEntityId> : BeamOsEntity<TId>
     where TId : struct
     where TModelEntityId : struct
 {
@@ -102,7 +101,6 @@ public abstract class BeamOsModelProposalEntity<TId, TModelEntity, TModelEntityI
     public ModelProposal? ModelProposal { get; private set; }
 
     public TModelEntityId? ExistingId { get; set; }
-    public TModelEntity? Existing { get; set; }
     public bool IsExisting => this.ExistingId != null;
 
     [Obsolete("EF Ctor", true)]

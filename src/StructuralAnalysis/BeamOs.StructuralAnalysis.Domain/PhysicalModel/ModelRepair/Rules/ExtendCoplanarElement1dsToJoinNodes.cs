@@ -23,12 +23,16 @@ public sealed class ExtendCoplanarElement1dsToJoinNodes : BeamOrBraceVisitingRul
 
     protected override void ApplyRuleForBeamOrBrace(
         Element1d element1D,
-        Node startNode,
-        Node endNode,
+        NodeDefinition startNode,
+        NodeDefinition endNode,
+        Point startNodeLocation,
+        Point endNodeLocation,
         IList<Node> nearbyStartNodes,
+        IList<InternalNode> nearbyStartInternalNodes,
         IEnumerable<Element1d> beamsAndBracesCloseToStart,
         IEnumerable<Element1d> columnsCloseToStart,
         IList<Node> nearbyEndNodes,
+        IList<InternalNode> nearbyEndInternalNodes,
         IEnumerable<Element1d> beamsAndBracesCloseToEnd,
         IEnumerable<Element1d> columnsCloseToEnd,
         ModelProposalBuilder modelProposalBuilder,
@@ -37,31 +41,40 @@ public sealed class ExtendCoplanarElement1dsToJoinNodes : BeamOrBraceVisitingRul
     {
         var axisAlignmentTolerance =
             modelProposalBuilder.ModelRepairOperationParameters.GetAxisAlignmentTolerance(
-                startNode,
-                endNode
+                startNodeLocation,
+                endNodeLocation
             );
 
-        ExtendElementsToJoinNodes(
-            startNode,
-            endNode,
-            beamsAndBracesCloseToStart,
-            modelProposalBuilder,
-            tolerance,
-            axisAlignmentTolerance
-        );
-        ExtendElementsToJoinNodes(
-            endNode,
-            startNode,
-            beamsAndBracesCloseToEnd,
-            modelProposalBuilder,
-            tolerance,
-            axisAlignmentTolerance
-        );
+        if (startNode is Node startNodeAsNode)
+        {
+            ExtendElementsToJoinNodes(
+                startNodeAsNode,
+                startNodeLocation,
+                endNodeLocation,
+                beamsAndBracesCloseToStart,
+                modelProposalBuilder,
+                tolerance,
+                axisAlignmentTolerance
+            );
+        }
+        if (endNode is Node endNodeAsNode)
+        {
+            ExtendElementsToJoinNodes(
+                endNodeAsNode,
+                endNodeLocation,
+                startNodeLocation,
+                beamsAndBracesCloseToEnd,
+                modelProposalBuilder,
+                tolerance,
+                axisAlignmentTolerance
+            );
+        }
     }
 
     private static void ExtendElementsToJoinNodes(
         Node startNode,
-        Node endNode,
+        Point startNodeLocation,
+        Point endNodeLocation,
         IEnumerable<Element1d> beamsAndBracesCloseToStart,
         ModelProposalBuilder modelProposalBuilder,
         Length tolerance,
@@ -69,7 +82,7 @@ public sealed class ExtendCoplanarElement1dsToJoinNodes : BeamOrBraceVisitingRul
     )
     {
         var elementsAndDistance = beamsAndBracesCloseToStart
-            .Select(e => (e, ShortestDistanceTo(startNode, e, modelProposalBuilder)))
+            .Select(e => (e, ShortestDistanceTo(startNodeLocation, e, modelProposalBuilder)))
             .Where(tuple => tuple.Item2 < tolerance)
             .OrderBy(tuple => tuple.Item2)
             .ToList();
@@ -79,13 +92,21 @@ public sealed class ExtendCoplanarElement1dsToJoinNodes : BeamOrBraceVisitingRul
             var (candidateStartNode, candidateEndNode) = modelProposalBuilder.GetStartAndEndNodes(
                 candidateElement
             );
+            var candidateStartNodeLocation = candidateStartNode.GetLocationPoint(
+                modelProposalBuilder.Element1dStore,
+                modelProposalBuilder.NodeStore
+            );
+            var candidateEndNodeLocation = candidateEndNode.GetLocationPoint(
+                modelProposalBuilder.Element1dStore,
+                modelProposalBuilder.NodeStore
+            );
             // Check if the candidate element is coplanar with the current element1D
             if (
                 !ModelRepairRuleUtils.ArePointsRoughlyCoplanar(
-                    startNode.LocationPoint.ToVector3InMeters(),
-                    endNode.LocationPoint.ToVector3InMeters(),
-                    candidateStartNode.LocationPoint.ToVector3InMeters(),
-                    candidateEndNode.LocationPoint.ToVector3InMeters()
+                    startNodeLocation.ToVector3InMeters(),
+                    endNodeLocation.ToVector3InMeters(),
+                    candidateStartNodeLocation.ToVector3InMeters(),
+                    candidateEndNodeLocation.ToVector3InMeters()
                 )
             )
             {
@@ -109,10 +130,16 @@ public sealed class ExtendCoplanarElement1dsToJoinNodes : BeamOrBraceVisitingRul
 
             if (
                 ModelRepairRuleUtils.TryFindApproximateIntersection(
-                    startNode.LocationPoint,
-                    endNode.LocationPoint,
-                    candidateStartNode.LocationPoint,
-                    candidateEndNode.LocationPoint,
+                    startNodeLocation,
+                    endNodeLocation,
+                    candidateStartNode.GetLocationPoint(
+                        modelProposalBuilder.Element1dStore,
+                        modelProposalBuilder.NodeStore
+                    ),
+                    candidateEndNode.GetLocationPoint(
+                        modelProposalBuilder.Element1dStore,
+                        modelProposalBuilder.NodeStore
+                    ),
                     out var intersection
                 )
             )
@@ -122,42 +149,36 @@ public sealed class ExtendCoplanarElement1dsToJoinNodes : BeamOrBraceVisitingRul
                     new(intersection.Y, LengthUnit.Meter),
                     new(intersection.Z, LengthUnit.Meter)
                 );
-                var startNodeDist = startNode.LocationPoint.CalculateDistance(
+                var startNodeDist = startNodeLocation.CalculateDistance(
                     intersectionPoint.X,
                     intersectionPoint.Y,
                     intersectionPoint.Z
                 );
-                var endNodeDist = endNode.LocationPoint.CalculateDistance(
+                var candidateStartNodeDist = candidateStartNodeLocation.CalculateDistance(
                     intersectionPoint.X,
                     intersectionPoint.Y,
                     intersectionPoint.Z
                 );
-                var candidateStartNodeDist = candidateStartNode.LocationPoint.CalculateDistance(
-                    intersectionPoint.X,
-                    intersectionPoint.Y,
-                    intersectionPoint.Z
-                );
-                var candidateEndNodeDist = candidateEndNode.LocationPoint.CalculateDistance(
+                var candidateEndNodeDist = candidateEndNodeLocation.CalculateDistance(
                     intersectionPoint.X,
                     intersectionPoint.Y,
                     intersectionPoint.Z
                 );
 
-                var originalNodeToKeep = startNodeDist < endNodeDist ? startNode : endNode;
-                var candidateNodeToKeep =
+                var (candidateNodeToKeep, candidateNodeToKeepLocation) =
                     candidateStartNodeDist < candidateEndNodeDist
-                        ? candidateStartNode
-                        : candidateEndNode;
+                        ? (candidateStartNode, candidateStartNodeLocation)
+                        : (candidateEndNode, candidateEndNodeLocation);
 
                 var candidateAxisAlignmentTolerance =
                     modelProposalBuilder.ModelRepairOperationParameters.GetAxisAlignmentTolerance(
-                        candidateStartNode,
-                        candidateEndNode
+                        candidateStartNodeLocation,
+                        candidateEndNodeLocation
                     );
 
                 if (
                     ModelRepairRuleUtils.PointWithinTolerances(
-                        originalNodeToKeep.LocationPoint,
+                        startNodeLocation,
                         intersection,
                         xAxisLengthTolerance,
                         yAxisLengthTolerance,
@@ -165,7 +186,7 @@ public sealed class ExtendCoplanarElement1dsToJoinNodes : BeamOrBraceVisitingRul
                         modelProposalBuilder.ModelRepairOperationParameters.VeryRelaxedTolerance
                     )
                     && ModelRepairRuleUtils.PointWithinTolerances(
-                        candidateNodeToKeep.LocationPoint,
+                        candidateNodeToKeepLocation,
                         intersection,
                         modelProposalBuilder.ModelRepairOperationParameters.GetLengthTolerance(
                             candidateAxisAlignmentTolerance.X
@@ -180,10 +201,10 @@ public sealed class ExtendCoplanarElement1dsToJoinNodes : BeamOrBraceVisitingRul
                     )
                 )
                 {
-                    modelProposalBuilder.AddNodeProposal(
-                        new(originalNodeToKeep, modelProposalBuilder.Id, intersectionPoint)
+                    modelProposalBuilder.NodeStore.AddNodeProposal(
+                        new NodeProposal(startNode, modelProposalBuilder.Id, intersectionPoint)
                     );
-                    modelProposalBuilder.MergeNodes(candidateNodeToKeep, originalNodeToKeep);
+                    modelProposalBuilder.MergeNodes(candidateNodeToKeep, startNode);
                 }
                 break;
             }
@@ -191,15 +212,21 @@ public sealed class ExtendCoplanarElement1dsToJoinNodes : BeamOrBraceVisitingRul
     }
 
     private static Length ShortestDistanceTo(
-        Node node,
+        Point nodeLocation,
         Element1d element1d,
         ModelProposalBuilder modelProposalBuilder
     )
     {
         var (startNode, endNode) = modelProposalBuilder.GetStartAndEndNodes(element1d);
-        return node.LocationPoint.ShortestDistanceToLine(
-            startNode.LocationPoint,
-            endNode.LocationPoint
+        return nodeLocation.ShortestDistanceToLine(
+            startNode.GetLocationPoint(
+                modelProposalBuilder.Element1dStore,
+                modelProposalBuilder.NodeStore
+            ),
+            endNode.GetLocationPoint(
+                modelProposalBuilder.Element1dStore,
+                modelProposalBuilder.NodeStore
+            )
         );
     }
 }

@@ -1,9 +1,30 @@
 using BeamOs.StructuralAnalysis.Domain.Common;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
+using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
-public sealed class NodeProposal : BeamOsModelProposalEntity<NodeProposalId, Node, NodeId>
+public abstract class NodeProposalBase : BeamOsModelProposalEntity<NodeProposalId, NodeId>
+{
+    protected NodeProposalBase(
+        NodeProposalId id,
+        ModelProposalId modelProposalId,
+        ModelId modelId,
+        NodeId? existingId = null
+    )
+        : base(id, modelProposalId, modelId, existingId) { }
+
+    public abstract NodeDefinition ToDomain();
+
+    [Obsolete("EF Core Constructor")]
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    protected NodeProposalBase()
+        : base() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+}
+
+public sealed class NodeProposal : NodeProposalBase
 {
     public NodeProposal(
         ModelId modelId,
@@ -35,7 +56,7 @@ public sealed class NodeProposal : BeamOsModelProposalEntity<NodeProposalId, Nod
     public Point LocationPoint { get; set; }
     public Restraint Restraint { get; set; }
 
-    public Node ToDomain()
+    public override Node ToDomain()
     {
         return new(this.ModelId, this.LocationPoint, this.Restraint, this.ExistingId);
     }
@@ -43,6 +64,65 @@ public sealed class NodeProposal : BeamOsModelProposalEntity<NodeProposalId, Nod
     [Obsolete("EF Core Constructor")]
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private NodeProposal()
+        : base() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+}
+
+public sealed class InternalNodeProposal : NodeProposalBase
+{
+    public InternalNodeProposal(
+        ModelId modelId,
+        ModelProposalId modelProposalId,
+        Ratio ratioAlongElement1d,
+        Element1dId element1dId,
+        Restraint restraint,
+        NodeId? existingId = null,
+        NodeProposalId? id = null
+    )
+        : base(id ?? new(), modelProposalId, modelId, existingId)
+    {
+        this.RatioAlongElement1d = ratioAlongElement1d;
+        this.Element1dId = element1dId;
+        this.Restraint = restraint;
+    }
+
+    public InternalNodeProposal(
+        InternalNode existingNode,
+        ModelProposalId modelProposalId,
+        Ratio? ratioAlongElement1d,
+        Element1dId? element1dId,
+        Restraint? restraint = null,
+        NodeProposalId? id = null
+    )
+        : this(
+            existingNode.ModelId,
+            modelProposalId,
+            ratioAlongElement1d ?? existingNode.RatioAlongElement1d,
+            element1dId ?? existingNode.Element1dId,
+            restraint ?? existingNode.Restraint,
+            existingNode.Id,
+            id ?? new()
+        ) { }
+
+    public Restraint Restraint { get; set; }
+    public Ratio RatioAlongElement1d { get; set; }
+    public Element1dId Element1dId { get; set; }
+    public Element1d? Element1d { get; set; }
+
+    public override NodeDefinition ToDomain()
+    {
+        return new InternalNode(
+            this.ModelId,
+            this.RatioAlongElement1d,
+            this.Element1dId,
+            this.Restraint,
+            this.ExistingId
+        );
+    }
+
+    [Obsolete("EF Core Constructor")]
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    private InternalNodeProposal()
         : base() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }

@@ -12,16 +12,24 @@ public abstract class Element1dVisitingRule : IModelRepairRule
         foreach (Element1d element in modelProposal.Element1ds)
         {
             var (startNode, endNode) = modelProposal.GetStartAndEndNodes(element, out _);
+            var startNodeLocation = startNode.GetLocationPoint(
+                modelProposal.Element1dStore,
+                modelProposal.NodeStore
+            );
+            var endNodeLocation = endNode.GetLocationPoint(
+                modelProposal.Element1dStore,
+                modelProposal.NodeStore
+            );
 
             var nearbyStartNodes = modelProposal
-                .Octree.FindNodesWithin(startNode.LocationPoint, tolerance.Meters, startNode.Id)
-                .Select(modelProposal.ApplyExistingProposal)
+                .Octree.FindNodeIdsWithin(startNodeLocation, tolerance.Meters, startNode.Id)
+                .Select(modelProposal.NodeStore.ApplyExistingProposal)
                 .Distinct()
                 .Where(node => node.Id != startNode.Id)
                 .ToList();
             var nearbyEndNodes = modelProposal
-                .Octree.FindNodesWithin(endNode.LocationPoint, tolerance.Meters, endNode.Id)
-                .Select(modelProposal.ApplyExistingProposal)
+                .Octree.FindNodeIdsWithin(endNodeLocation, tolerance.Meters, endNode.Id)
+                .Select(modelProposal.NodeStore.ApplyExistingProposal)
                 .Distinct()
                 .Where(node => node.Id != endNode.Id)
                 .ToList();
@@ -29,14 +37,14 @@ public abstract class Element1dVisitingRule : IModelRepairRule
             var nearbyElement1dsAtStart = Element1dSpatialHelper.FindElement1dsWithin(
                 modelProposal.Element1ds,
                 modelProposal,
-                startNode.LocationPoint,
+                startNodeLocation,
                 tolerance.Meters,
                 startNode.Id
             );
             var nearbyElement1dsAtEnd = Element1dSpatialHelper.FindElement1dsWithin(
                 modelProposal.Element1ds,
                 modelProposal,
-                endNode.LocationPoint,
+                endNodeLocation,
                 tolerance.Meters,
                 endNode.Id
             );
@@ -45,10 +53,14 @@ public abstract class Element1dVisitingRule : IModelRepairRule
                 element,
                 startNode,
                 endNode,
-                nearbyStartNodes,
+                startNodeLocation,
+                endNodeLocation,
+                nearbyStartNodes.OfType<Node>().ToList(),
+                nearbyStartNodes.OfType<InternalNode>().ToList(),
                 nearbyElement1dsAtStart.Where(e => !IsColumn(e, modelProposal)),
                 nearbyElement1dsAtStart.Where(e => IsColumn(e, modelProposal)),
-                nearbyEndNodes,
+                nearbyEndNodes.OfType<Node>().ToList(),
+                nearbyEndNodes.OfType<InternalNode>().ToList(),
                 nearbyElement1dsAtEnd.Where(e => !IsColumn(e, modelProposal)),
                 nearbyElement1dsAtEnd.Where(e => IsColumn(e, modelProposal)),
                 modelProposal,
@@ -61,12 +73,16 @@ public abstract class Element1dVisitingRule : IModelRepairRule
 
     protected abstract void ApplyRule(
         Element1d element1D,
-        Node startNode,
-        Node endNode,
+        NodeDefinition startNode,
+        NodeDefinition endNode,
+        Point startNodeLocation,
+        Point endNodeLocation,
         IList<Node> nearbyStartNodes,
+        IList<InternalNode> nearbyStartInternalNodes,
         IEnumerable<Element1d> beamsAndBracesCloseToStart,
         IEnumerable<Element1d> columnsCloseToStart,
         IList<Node> nearbyEndNodes,
+        IList<InternalNode> nearbyEndInternalNodes,
         IEnumerable<Element1d> beamsAndBracesCloseToEnd,
         IEnumerable<Element1d> columnsCloseToEnd,
         ModelProposalBuilder modelProposalBuilder,
@@ -76,7 +92,15 @@ public abstract class Element1dVisitingRule : IModelRepairRule
     protected static bool IsColumn(Element1d element, ModelProposalBuilder modelProposalBuilder)
     {
         var (startNode, endNode) = modelProposalBuilder.GetStartAndEndNodes(element);
-        return IsColumn(startNode.LocationPoint, endNode.LocationPoint, modelProposalBuilder);
+        var startNodeLocation = startNode.GetLocationPoint(
+            modelProposalBuilder.Element1dStore,
+            modelProposalBuilder.NodeStore
+        );
+        var endNodeLocation = endNode.GetLocationPoint(
+            modelProposalBuilder.Element1dStore,
+            modelProposalBuilder.NodeStore
+        );
+        return IsColumn(startNodeLocation, endNodeLocation, modelProposalBuilder);
     }
 
     protected static bool IsColumn(
@@ -119,19 +143,23 @@ public abstract class BeamOrBraceVisitingRule : Element1dVisitingRule
 {
     protected override void ApplyRule(
         Element1d element1D,
-        Node startNode,
-        Node endNode,
+        NodeDefinition startNode,
+        NodeDefinition endNode,
+        Point startNodeLocation,
+        Point endNodeLocation,
         IList<Node> nearbyStartNodes,
+        IList<InternalNode> nearbyStartInternalNodes,
         IEnumerable<Element1d> beamsAndBracesCloseToStart,
         IEnumerable<Element1d> columnsCloseToStart,
         IList<Node> nearbyEndNodes,
+        IList<InternalNode> nearbyEndInternalNodes,
         IEnumerable<Element1d> beamsAndBracesCloseToEnd,
         IEnumerable<Element1d> columnsCloseToEnd,
         ModelProposalBuilder modelProposalBuilder,
         Length tolerance
     )
     {
-        if (IsColumn(startNode, endNode, modelProposalBuilder))
+        if (IsColumn(startNodeLocation, endNodeLocation, modelProposalBuilder))
         {
             // If the element is a column, skip this rule
             return;
@@ -140,10 +168,14 @@ public abstract class BeamOrBraceVisitingRule : Element1dVisitingRule
             element1D,
             startNode,
             endNode,
+            startNodeLocation,
+            endNodeLocation,
             nearbyStartNodes,
+            nearbyStartInternalNodes,
             beamsAndBracesCloseToStart,
             columnsCloseToStart,
             nearbyEndNodes,
+            nearbyEndInternalNodes,
             beamsAndBracesCloseToEnd,
             columnsCloseToEnd,
             modelProposalBuilder,
@@ -153,12 +185,16 @@ public abstract class BeamOrBraceVisitingRule : Element1dVisitingRule
 
     protected abstract void ApplyRuleForBeamOrBrace(
         Element1d element1D,
-        Node startNode,
-        Node endNode,
+        NodeDefinition startNode,
+        NodeDefinition endNode,
+        Point startNodeLocation,
+        Point endNodeLocation,
         IList<Node> nearbyStartNodes,
+        IList<InternalNode> nearbyStartInternalNodes,
         IEnumerable<Element1d> beamsAndBracesCloseToStart,
         IEnumerable<Element1d> columnsCloseToStart,
         IList<Node> nearbyEndNodes,
+        IList<InternalNode> nearbyEndInternalNodes,
         IEnumerable<Element1d> beamsAndBracesCloseToEnd,
         IEnumerable<Element1d> columnsCloseToEnd,
         ModelProposalBuilder modelProposalBuilder,
@@ -170,19 +206,23 @@ public abstract class ColumnVisitingRule : Element1dVisitingRule
 {
     protected override void ApplyRule(
         Element1d element1D,
-        Node startNode,
-        Node endNode,
+        NodeDefinition startNode,
+        NodeDefinition endNode,
+        Point startNodeLocation,
+        Point endNodeLocation,
         IList<Node> nearbyStartNodes,
+        IList<InternalNode> nearbyStartInternalNodes,
         IEnumerable<Element1d> beamsAndBracesCloseToStart,
         IEnumerable<Element1d> columnsCloseToStart,
         IList<Node> nearbyEndNodes,
+        IList<InternalNode> nearbyEndInternalNodes,
         IEnumerable<Element1d> beamsAndBracesCloseToEnd,
         IEnumerable<Element1d> columnsCloseToEnd,
         ModelProposalBuilder modelProposalBuilder,
         Length tolerance
     )
     {
-        if (!IsColumn(startNode, endNode, modelProposalBuilder))
+        if (!IsColumn(startNodeLocation, endNodeLocation, modelProposalBuilder))
         {
             // If the element is a not a column, skip this rule
             return;
@@ -191,10 +231,14 @@ public abstract class ColumnVisitingRule : Element1dVisitingRule
             element1D,
             startNode,
             endNode,
+            startNodeLocation,
+            endNodeLocation,
             nearbyStartNodes,
+            nearbyStartInternalNodes,
             beamsAndBracesCloseToStart,
             columnsCloseToStart,
             nearbyEndNodes,
+            nearbyEndInternalNodes,
             beamsAndBracesCloseToEnd,
             columnsCloseToEnd,
             modelProposalBuilder,
@@ -204,12 +248,16 @@ public abstract class ColumnVisitingRule : Element1dVisitingRule
 
     protected abstract void ApplyRuleForColumn(
         Element1d element1D,
-        Node startNode,
-        Node endNode,
+        NodeDefinition startNode,
+        NodeDefinition endNode,
+        Point startNodeLocation,
+        Point endNodeLocation,
         IList<Node> nearbyStartNodes,
+        IList<InternalNode> nearbyStartInternalNodes,
         IEnumerable<Element1d> beamsAndBracesCloseToStart,
         IEnumerable<Element1d> columnsCloseToStart,
         IList<Node> nearbyEndNodes,
+        IList<InternalNode> nearbyEndInternalNodes,
         IEnumerable<Element1d> beamsAndBracesCloseToEnd,
         IEnumerable<Element1d> columnsCloseToEnd,
         ModelProposalBuilder modelProposalBuilder,

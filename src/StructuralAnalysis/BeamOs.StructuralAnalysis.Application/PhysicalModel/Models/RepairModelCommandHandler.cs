@@ -23,6 +23,7 @@ public class RepairModelCommandHandler(
             command.ModelId,
             ct,
             nameof(Model.Nodes),
+            nameof(Model.InternalNodes),
             nameof(Model.Element1ds)
         );
 
@@ -47,9 +48,6 @@ public class RepairModelCommandHandler(
         }
 
         ModelRepairer repairer = new(
-            model.Nodes,
-            model.Element1ds,
-            nodeOctree,
             new()
             {
                 VeryRelaxedTolerance = new(3, LengthUnit.Foot),

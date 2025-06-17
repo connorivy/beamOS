@@ -1,3 +1,4 @@
+using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
@@ -9,12 +10,13 @@ public class NodeSnapToElement1dRule : IndividualNodeVisitingRule
 
     private static void SnapNodesToElements(
         Node node,
+        Point nodeLocation,
         IList<Element1d> elements,
         ModelProposalBuilder modelProposalBuilder,
         double tolerance
     )
     {
-        var nodePt = node.LocationPoint;
+        var nodePt = nodeLocation;
         double nx = nodePt.X.Meters;
         double ny = nodePt.Y.Meters;
         double nz = nodePt.Z.Meters;
@@ -22,8 +24,14 @@ public class NodeSnapToElement1dRule : IndividualNodeVisitingRule
         foreach (var elem in elements)
         {
             var (startNode, endNode) = modelProposalBuilder.GetStartAndEndNodes(elem, out _);
-            var start = startNode.LocationPoint;
-            var end = endNode.LocationPoint;
+            var start = startNode.GetLocationPoint(
+                modelProposalBuilder.Element1dStore,
+                modelProposalBuilder.NodeStore
+            );
+            var end = endNode.GetLocationPoint(
+                modelProposalBuilder.Element1dStore,
+                modelProposalBuilder.NodeStore
+            );
 
             double sx = start.X.Meters;
             double sy = start.Y.Meters;
@@ -51,11 +59,11 @@ public class NodeSnapToElement1dRule : IndividualNodeVisitingRule
             if (distToLine < tolerance)
             {
                 // Propose to move node to (projX, projY, projZ)
-                modelProposalBuilder.AddNodeProposal(
+                modelProposalBuilder.NodeStore.AddNodeProposal(
                     new NodeProposal(
                         node,
                         modelProposalBuilder.Id,
-                        new Common.Point(projX, projY, projZ, UnitsNet.Units.LengthUnit.Meter)
+                        new Common.Point(projX, projY, projZ, LengthUnit.Meter)
                     )
                 );
             }
@@ -64,13 +72,26 @@ public class NodeSnapToElement1dRule : IndividualNodeVisitingRule
 
     protected override void ApplyToSingleNode(
         Element1d element,
-        Node node,
+        NodeDefinition node,
+        Point nodeLocation,
         IList<Node> nearbyNodes,
+        IList<InternalNode> nearbyInternalNodes,
         IList<Element1d> nearbyElement1ds,
         ModelProposalBuilder modelProposalBuilder,
         Length tolerance
     )
     {
-        SnapNodesToElements(node, nearbyElement1ds, modelProposalBuilder, tolerance.Meters);
+        if (node is not Node nodeAsNode)
+        {
+            return; // Only apply to Node types, not InternalNode
+        }
+
+        SnapNodesToElements(
+            nodeAsNode,
+            nodeLocation,
+            nearbyElement1ds,
+            modelProposalBuilder,
+            tolerance.Meters
+        );
     }
 }

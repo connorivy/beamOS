@@ -32,8 +32,14 @@ public static class Element1dSpatialHelper
                 continue;
             }
 
-            Point a = startNode.LocationPoint;
-            Point b = endNode.LocationPoint;
+            var a = startNode.GetLocationPoint(
+                modelProposalBuilder.Element1dStore,
+                modelProposalBuilder.NodeStore
+            );
+            var b = endNode.GetLocationPoint(
+                modelProposalBuilder.Element1dStore,
+                modelProposalBuilder.NodeStore
+            );
             if (DistancePointToSegment(p, a, b) <= toleranceMeters)
             {
                 result.Add(element);

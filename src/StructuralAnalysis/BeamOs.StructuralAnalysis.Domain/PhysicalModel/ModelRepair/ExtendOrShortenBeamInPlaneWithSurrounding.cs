@@ -10,14 +10,42 @@ public class ExtendOrShortenBeamInPlaneWithSurrounding : BeamOrBraceVisitingRule
 
     protected override void ApplyRuleForBeamOrBrace(
         Element1d element1D,
-        Node startNode,
-        Node endNode,
+        NodeDefinition startNode,
+        NodeDefinition endNode,
+        Point startNodeLocation,
+        Point endNodeLocation,
         IList<Node> nearbyStartNodes,
+        IList<InternalNode> nearbyStartInternalNodes,
         IEnumerable<Element1d> beamsAndBracesCloseToStart,
         IEnumerable<Element1d> columnsCloseToStart,
         IList<Node> nearbyEndNodes,
+        IList<InternalNode> nearbyEndInternalNodes,
         IEnumerable<Element1d> beamsAndBracesCloseToEnd,
         IEnumerable<Element1d> columnsCloseToEnd,
+        ModelProposalBuilder modelProposalBuilder,
+        Length tolerance
+    )
+    {
+        if (startNode is not Node startNodeAsNode || endNode is not Node endNodeAsNode)
+        {
+            return; // This rule only applies to actual nodes, not node definitions.
+        }
+
+        this.ApplyRuleForBeamOrBrace(
+            startNodeAsNode,
+            endNodeAsNode,
+            beamsAndBracesCloseToStart,
+            beamsAndBracesCloseToEnd,
+            modelProposalBuilder,
+            tolerance
+        );
+    }
+
+    protected void ApplyRuleForBeamOrBrace(
+        Node startNode,
+        Node endNode,
+        IEnumerable<Element1d> beamsAndBracesCloseToStart,
+        IEnumerable<Element1d> beamsAndBracesCloseToEnd,
         ModelProposalBuilder modelProposalBuilder,
         Length tolerance
     )
@@ -25,7 +53,6 @@ public class ExtendOrShortenBeamInPlaneWithSurrounding : BeamOrBraceVisitingRule
         ExtendOrShortenIfCoplanar(
             startNode,
             endNode,
-            nearbyStartNodes,
             beamsAndBracesCloseToStart,
             modelProposalBuilder,
             tolerance
@@ -33,7 +60,6 @@ public class ExtendOrShortenBeamInPlaneWithSurrounding : BeamOrBraceVisitingRule
         ExtendOrShortenIfCoplanar(
             endNode,
             startNode,
-            nearbyEndNodes,
             beamsAndBracesCloseToEnd,
             modelProposalBuilder,
             tolerance
@@ -43,26 +69,33 @@ public class ExtendOrShortenBeamInPlaneWithSurrounding : BeamOrBraceVisitingRule
     private static void ExtendOrShortenIfCoplanar(
         Node thisEnd,
         Node otherEnd,
-        IList<Node> nearbyNodes,
         IEnumerable<Element1d> nearbyElements,
         ModelProposalBuilder modelProposalBuilder,
         Length tolerance
     )
     {
         var elementsAndDistances = nearbyElements
-            .Select(elem => (elem, ShortestDistanceTo(thisEnd, elem, modelProposalBuilder)))
+            .Select(elem =>
+                (elem, ShortestDistanceTo(thisEnd.LocationPoint, elem, modelProposalBuilder))
+            )
             .Where(pair => pair.Item2 < tolerance)
             .ToList();
 
         foreach (Element1d elem in elementsAndDistances.OrderBy(e => e.Item2).Select(e => e.elem))
         {
-            (Node n1, Node n2) = modelProposalBuilder.GetStartAndEndNodes(elem);
+            var (n1, n2) = modelProposalBuilder.GetStartAndEndNodes(elem);
             if (
                 ArePointsRoughlyCoplanar(
                     thisEnd.LocationPoint,
                     otherEnd.LocationPoint,
-                    n1.LocationPoint,
-                    n2.LocationPoint,
+                    n1.GetLocationPoint(
+                        modelProposalBuilder.Element1dStore,
+                        modelProposalBuilder.NodeStore
+                    ),
+                    n2.GetLocationPoint(
+                        modelProposalBuilder.Element1dStore,
+                        modelProposalBuilder.NodeStore
+                    ),
                     tolerance
                 )
             )
@@ -73,15 +106,21 @@ public class ExtendOrShortenBeamInPlaneWithSurrounding : BeamOrBraceVisitingRule
     }
 
     private static Length ShortestDistanceTo(
-        Node node,
+        Point nodeLocation,
         Element1d element1d,
         ModelProposalBuilder modelProposalBuilder
     )
     {
         var (startNode, endNode) = modelProposalBuilder.GetStartAndEndNodes(element1d);
-        return node.LocationPoint.ShortestDistanceToLine(
-            startNode.LocationPoint,
-            endNode.LocationPoint
+        return nodeLocation.ShortestDistanceToLine(
+            startNode.GetLocationPoint(
+                modelProposalBuilder.Element1dStore,
+                modelProposalBuilder.NodeStore
+            ),
+            endNode.GetLocationPoint(
+                modelProposalBuilder.Element1dStore,
+                modelProposalBuilder.NodeStore
+            )
         );
     }
 
