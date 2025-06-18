@@ -20,30 +20,61 @@ public class NodeMergeRule : IndividualNodeVisitingRule
         Length tolerance
     )
     {
-        foreach (var nearbyNode in nearbyNodes.Concat<NodeDefinition>(nearbyInternalNodes))
-        {
-            Debug.Assert(
-                nearbyNode.Id != node.Id,
-                "Candidate node should not be the same as base node"
-            );
+        var nearestNodeWithinTolerance = nearbyNodes
+            .Concat<NodeDefinition>(nearbyInternalNodes)
+            .Select(definition =>
+                (definition, ShortestDistanceTo(nodeLocation, definition, modelProposalBuilder))
+            )
+            .Where(tuple => tuple.Item2 < tolerance)
+            .OrderBy(tuple => tuple.Item2)
+            .Select(tuple => tuple.definition)
+            .FirstOrDefault();
 
-            // Calculate distance between nodes in meters
-            Point p1 = node.GetLocationPoint(
-                modelProposalBuilder.Element1dStore,
-                modelProposalBuilder.NodeStore
-            );
-            Point p2 = nearbyNode.GetLocationPoint(
-                modelProposalBuilder.Element1dStore,
-                modelProposalBuilder.NodeStore
-            );
-            double dx = p1.X.Meters - p2.X.Meters;
-            double dy = p1.Y.Meters - p2.Y.Meters;
-            double dz = p1.Z.Meters - p2.Z.Meters;
-            double distance = Math.Sqrt((dx * dx) + (dy * dy) + (dz * dz));
-            if (distance <= tolerance.Meters)
-            {
-                modelProposalBuilder.MergeNodes(node, nearbyNode);
-            }
+        if (nearestNodeWithinTolerance is null)
+        {
+            // No nearby node found within tolerance, nothing to merge
+            return;
         }
+
+        Debug.Assert(
+            nearestNodeWithinTolerance.Id != node.Id,
+            "Candidate node should not be the same as base node"
+        );
+
+        if (
+            !nearestNodeWithinTolerance.DependsOnNode(
+                node.Id,
+                modelProposalBuilder.Element1dStore,
+                modelProposalBuilder.NodeStore
+            )
+        )
+        {
+            // If the nearest node does not depend on the current node, merge them
+            modelProposalBuilder.MergeNodes(node, nearestNodeWithinTolerance);
+        }
+        else if (
+            !node.DependsOnNode(
+                nearestNodeWithinTolerance.Id,
+                modelProposalBuilder.Element1dStore,
+                modelProposalBuilder.NodeStore
+            )
+        )
+        {
+            modelProposalBuilder.MergeNodes(nearestNodeWithinTolerance, node);
+        }
+    }
+
+    private static Length ShortestDistanceTo(
+        Point nodeLocation,
+        NodeDefinition nodeDefinition,
+        ModelProposalBuilder modelProposalBuilder
+    )
+    {
+        return nodeLocation.CalculateDistance(
+            nodeDefinition.GetLocationPoint(
+                modelProposalBuilder.Element1dStore,
+                modelProposalBuilder.NodeStore
+            )
+        );
     }
 }

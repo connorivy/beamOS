@@ -48,6 +48,10 @@ public sealed class ModelProposalBuilder
             originalNode.Id != targetNode.Id,
             "Original and target nodes should not be the same"
         );
+        Debug.Assert(
+            !targetNode.DependsOnNode(originalNode.Id, this.Element1dStore, this.NodeStore),
+            "Target node should not depend on original node"
+        );
         foreach (var originalElement1d in this.Element1ds)
         {
             var element1d = this.Element1dStore.ApplyExistingProposal(originalElement1d, out _);

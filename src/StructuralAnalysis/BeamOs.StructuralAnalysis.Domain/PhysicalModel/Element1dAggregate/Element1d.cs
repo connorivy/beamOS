@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
@@ -266,6 +267,24 @@ public class Element1d : BeamOsModelEntity<Element1dId>
         }
 
         var (startNode, endNode) = this.GetNodesOrThrow(nodeStore);
+
+#if DEBUG
+        if (startNode is InternalNode startInternalNode)
+        {
+            Debug.Assert(
+                startInternalNode.Element1dId != this.Id,
+                "Start node should not be an internal node of this element."
+            );
+        }
+        if (endNode is InternalNode endInternalNode)
+        {
+            Debug.Assert(
+                endInternalNode.Element1dId != this.Id,
+                "End node should not be an internal node of this element."
+            );
+        }
+#endif
+
         var startLocation = startNode.GetLocationPoint(elementStore, nodeStore);
         var endLocation = endNode.GetLocationPoint(elementStore, nodeStore);
 

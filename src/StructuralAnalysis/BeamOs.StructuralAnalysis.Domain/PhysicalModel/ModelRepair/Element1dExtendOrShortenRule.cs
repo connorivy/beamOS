@@ -42,6 +42,22 @@ public class Element1dExtendOrShortenRule : IndividualNodeVisitingRule
         foreach (Element1d elem in element1DsCloseToNode)
         {
             var (startNode, endNode) = modelProposalBuilder.GetStartAndEndNodes(elem);
+            if (
+                startNode.DependsOnNode(
+                    node.Id,
+                    modelProposalBuilder.Element1dStore,
+                    modelProposalBuilder.NodeStore
+                )
+                || endNode.DependsOnNode(
+                    node.Id,
+                    modelProposalBuilder.Element1dStore,
+                    modelProposalBuilder.NodeStore
+                )
+            )
+            {
+                // skip elements that depend on the current node to avoid cycles
+                continue;
+            }
 
             Point p = node.LocationPoint;
             Point a = startNode.GetLocationPoint(
@@ -80,9 +96,7 @@ public class Element1dExtendOrShortenRule : IndividualNodeVisitingRule
             );
             if (distToLine < tolerance.Meters)
             {
-                // Calculate the percentage distance (t) from the start node to the projected point
-                // t is already calculated above and clamped to (0,1)
-                // Create an InternalNodeProposal using the correct constructor
+                // todo: i'm getting t values of like 0.99999, which should be handled by the node snapping
                 modelProposalBuilder.NodeStore.AddInternalNodeProposal(
                     new InternalNodeProposal(
                         node.ModelId,

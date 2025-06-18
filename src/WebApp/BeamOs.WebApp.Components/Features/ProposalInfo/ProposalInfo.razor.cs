@@ -1,6 +1,7 @@
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Net.Security;
 using BeamOs.CodeGen.EditorApi;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
@@ -12,6 +13,7 @@ using BeamOs.WebApp.EditorCommands;
 using Fluxor;
 using Fluxor.Blazor.Web.Components;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore.Metadata;
 using MudBlazor;
 
@@ -35,7 +37,6 @@ public partial class ProposalInfo(
 
     private ISnackbar Snackbar { get; set; } = snackbar;
 
-    private List<ModelProposalInfo>? proposalInfos;
     private ProposalIssueSeverity minSeverity = ProposalIssueSeverity.Information;
 
     private ProposalIssueSeverity[] availableSeverities = Enum.GetValues<ProposalIssueSeverity>()
@@ -55,12 +56,14 @@ public partial class ProposalInfo(
         var response = await this.StructuralAnalysisApiClient.GetModelProposalsAsync(this.ModelId);
         if (response.IsSuccess)
         {
-            this.proposalInfos = response.Value;
+            dispatcher.Dispatch(
+                new ProposalInfoState.ModelProposalInfosLoaded(response.Value.ToImmutableArray())
+            );
         }
         else
         {
             this.Snackbar.Add(response.Error.Description, Severity.Error);
-            this.proposalInfos = [];
+            dispatcher.Dispatch(new ProposalInfoState.ModelProposalInfosLoaded([]));
         }
     }
 
@@ -98,6 +101,7 @@ public partial class ProposalInfo(
         {
             this.Snackbar.Add("Proposal accepted", Severity.Success);
             dispatcher.Dispatch(new ProposalInfoState.ModelProposalResponseChanged(null));
+            dispatcher.Dispatch(new ProposalInfoState.ModelProposalDeleted(proposalId));
             await this.EditorApi.ClearModelProposalsAsync();
         }
         else
@@ -116,6 +120,7 @@ public partial class ProposalInfo(
         {
             this.Snackbar.Add("Proposal rejected", Severity.Success);
             dispatcher.Dispatch(new ProposalInfoState.ModelProposalResponseChanged(null));
+            dispatcher.Dispatch(new ProposalInfoState.ModelProposalDeleted(proposalId));
             await this.EditorApi.ClearModelProposalsAsync();
         }
         else
@@ -226,6 +231,7 @@ public partial class ProposalInfo(
 
 [FeatureState]
 public record ProposalInfoState(
+    ImmutableArray<ModelProposalInfo>? ProposalInfos,
     ModelProposalResponse? SelectedProposal,
     IReadOnlyList<IEntityProposal>? EntityProposals,
     IReadOnlyDictionary<
@@ -236,13 +242,57 @@ public record ProposalInfoState(
 )
 {
     public ProposalInfoState()
-        : this(null, null, null, null) { }
+        : this(null, null, null, null, null) { }
 
     public record struct ModelProposalResponseChanged(ModelProposalResponse? SelectedProposal);
+
+    public record struct ModelProposalInfoLoaded(ModelProposalInfo ModelProposalInfo);
+
+    public record struct ModelProposalInfosLoaded(ImmutableArray<ModelProposalInfo> ProposalInfos);
+
+    public record struct ModelProposalDeleted(int ProposalId);
 }
 
 public static class ProposalInfoReducers
 {
+    [ReducerMethod]
+    public static ProposalInfoState OnModelProposalInfoLoaded(
+        ProposalInfoState state,
+        ProposalInfoState.ModelProposalInfoLoaded action
+    )
+    {
+        var newProposalInfos = state.ProposalInfos ?? [];
+        return state with { ProposalInfos = newProposalInfos.Add(action.ModelProposalInfo) };
+    }
+
+    [ReducerMethod]
+    public static ProposalInfoState OnModelProposalInfosLoaded(
+        ProposalInfoState state,
+        ProposalInfoState.ModelProposalInfosLoaded action
+    )
+    {
+        return state with { ProposalInfos = action.ProposalInfos };
+    }
+
+    [ReducerMethod]
+    public static ProposalInfoState OnModelProposalDeleted(
+        ProposalInfoState state,
+        ProposalInfoState.ModelProposalDeleted action
+    )
+    {
+        if (state.ProposalInfos is null)
+        {
+            return state;
+        }
+
+        var newProposalInfos = state.ProposalInfos?.RemoveAll(p => p.Id == action.ProposalId);
+
+        return state with
+        {
+            ProposalInfos = newProposalInfos,
+        };
+    }
+
     [ReducerMethod]
     public static ProposalInfoState OnEntityProposalsLoading(
         ProposalInfoState state,

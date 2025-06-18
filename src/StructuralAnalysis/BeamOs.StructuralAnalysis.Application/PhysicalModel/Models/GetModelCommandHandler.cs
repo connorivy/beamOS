@@ -16,6 +16,7 @@ public sealed class GetModelCommandHandler(IModelRepository modelRepository)
             command,
             ct,
             nameof(Model.Nodes),
+            nameof(Model.InternalNodes),
             nameof(Model.PointLoads),
             nameof(Model.MomentLoads),
             nameof(Model.Element1ds),

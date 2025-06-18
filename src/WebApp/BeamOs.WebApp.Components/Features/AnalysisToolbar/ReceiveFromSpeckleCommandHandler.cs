@@ -6,6 +6,7 @@ using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.Editor;
+using BeamOs.WebApp.Components.Features.ProposalInfo;
 using Fluxor;
 using Microsoft.Extensions.Logging;
 using MudBlazor;
@@ -41,6 +42,12 @@ public sealed class ReceiveFromSpeckleCommandHandler(
     )
     {
         dispatcher.Dispatch(new EditorLoadingEnd() { CanvasId = command.CanvasId });
+        if (result.IsSuccess && result.Value.ModelProposal is not null)
+        {
+            dispatcher.Dispatch(
+                new ProposalInfoState.ModelProposalInfoLoaded(result.Value.ModelProposal)
+            );
+        }
     }
 }
 
@@ -75,5 +82,11 @@ public sealed class ModelRepairClientCommandHandler(
     )
     {
         dispatcher.Dispatch(new EditorLoadingEnd() { CanvasId = command.CanvasId });
+        if (result.IsSuccess && result.Value.ModelProposal is not null)
+        {
+            dispatcher.Dispatch(
+                new ProposalInfoState.ModelProposalInfoLoaded(result.Value.ModelProposal)
+            );
+        }
     }
 }

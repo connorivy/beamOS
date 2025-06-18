@@ -45,17 +45,19 @@ public class LoadBeamOsEntityCommandHandler2(
 
         await editorApi.SetSettingsAsync(modelResponse.Settings, ct);
 
-        await editorApi.CreateNodesAsync(
-            modelResponse.Nodes?.Select(e => e.ToEditorUnits()) ?? [],
-            ct
-        );
+        await editorApi.CreateModelAsync(modelResponse, ct);
 
-        await editorApi.CreatePointLoadsAsync(
-            modelResponse.PointLoads?.Select(e => e.ToEditorUnits()) ?? [],
-            ct
-        );
+        // await editorApi.CreateNodesAsync(
+        //     modelResponse.Nodes?.Select(e => e.ToEditorUnits()) ?? [],
+        //     ct
+        // );
 
-        await editorApi.CreateElement1dsAsync(modelResponse.Element1ds, ct);
+        // await editorApi.CreatePointLoadsAsync(
+        //     modelResponse.PointLoads?.Select(e => e.ToEditorUnits()) ?? [],
+        //     ct
+        // );
+
+        // await editorApi.CreateElement1dsAsync(modelResponse.Element1ds, ct);
 
         return Result.Success;
     }

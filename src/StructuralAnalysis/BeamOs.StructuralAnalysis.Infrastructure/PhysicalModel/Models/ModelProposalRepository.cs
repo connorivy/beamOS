@@ -51,6 +51,14 @@ internal sealed class ModelProposalRepository(StructuralAnalysisDbContext dbCont
             .Select(p => p.Id)
             .ToList();
 
+        var internalNodeProposalsToIgnore = proposalsToIgnore
+            .Where(p =>
+                p.ObjectType == BeamOsObjectType.InternalNode
+                && p.ProposalType != ProposalType.Delete
+            )
+            .Select(p => p.Id)
+            .ToList();
+
         var element1dProposalsToIgnore = proposalsToIgnore
             .Where(p =>
                 p.ObjectType == BeamOsObjectType.Element1d && p.ProposalType != ProposalType.Delete
@@ -80,6 +88,11 @@ internal sealed class ModelProposalRepository(StructuralAnalysisDbContext dbCont
             .AsSplitQuery()
             .Where(m => m.ModelId == modelId && m.Id == id)
             .Include(m => m.NodeProposals.Where(np => !nodeProposalsToIgnore.Contains(np.Id)))
+            .Include(m =>
+                m.InternalNodeProposals.Where(inp =>
+                    !internalNodeProposalsToIgnore.Contains(inp.Id)
+                )
+            )
             .Include(m =>
                 m.Element1dProposals.Where(ep => !element1dProposalsToIgnore.Contains(ep.Id))
             )

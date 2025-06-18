@@ -172,11 +172,25 @@ public sealed class ExtendElement1dsInPlaneToNodeRule : BeamOrBraceVisitingRule
                 continue; // neither end is collinear, skip this candidate
             }
 
-            if (mergeWithCandidateStartNode)
+            if (
+                mergeWithCandidateStartNode
+                && !candidateStartNode.DependsOnNode(
+                    startNode.Id,
+                    modelProposalBuilder.Element1dStore,
+                    modelProposalBuilder.NodeStore
+                )
+            )
             {
                 modelProposalBuilder.MergeNodes(startNode, candidateStartNode);
             }
-            if (mergeWithCandidateEndNode)
+            if (
+                mergeWithCandidateEndNode
+                && !candidateEndNode.DependsOnNode(
+                    startNode.Id,
+                    modelProposalBuilder.Element1dStore,
+                    modelProposalBuilder.NodeStore
+                )
+            )
             {
                 modelProposalBuilder.MergeNodes(startNode, candidateEndNode);
             }

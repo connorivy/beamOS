@@ -40,6 +40,8 @@ public class Point : BeamOSValueObject
         );
     }
 
+    public Length CalculateDistance(Point p) => this.CalculateDistance(p.X, p.Y, p.Z);
+
     public Length ShortestDistanceToLine(Line line) =>
         this.ShortestDistanceToLine(line.StartPoint, line.EndPoint);
 

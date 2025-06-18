@@ -1,9 +1,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using BeamOs.Common.Domain.Models;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
-using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
@@ -29,6 +27,18 @@ public class Node : NodeDefinition
         IReadOnlyDictionary<Element1dId, Element1d>? elementStore = null,
         IReadOnlyDictionary<NodeId, NodeDefinition>? nodeStore = null
     ) => this.LocationPoint;
+
+    public override bool DependsOnElement1d(
+        Element1dId element1dId,
+        IReadOnlyDictionary<Element1dId, Element1d>? elementStore = null,
+        IReadOnlyDictionary<NodeId, NodeDefinition>? nodeStore = null
+    ) => false;
+
+    public override bool DependsOnNode(
+        NodeId nodeId,
+        IReadOnlyDictionary<Element1dId, Element1d>? elementStore = null,
+        IReadOnlyDictionary<NodeId, NodeDefinition>? nodeStore = null
+    ) => false;
 
     public override Node ToNode() => this;
 
@@ -142,6 +152,18 @@ public abstract class NodeDefinition : BeamOsModelEntity<NodeId>
     public ICollection<Element1d>? EndNodeElements { get; set; }
 
     public abstract Point GetLocationPoint(
+        IReadOnlyDictionary<Element1dId, Element1d>? elementStore = null,
+        IReadOnlyDictionary<NodeId, NodeDefinition>? nodeStore = null
+    );
+
+    public abstract bool DependsOnElement1d(
+        Element1dId element1dId,
+        IReadOnlyDictionary<Element1dId, Element1d>? elementStore = null,
+        IReadOnlyDictionary<NodeId, NodeDefinition>? nodeStore = null
+    );
+
+    public abstract bool DependsOnNode(
+        NodeId nodeId,
         IReadOnlyDictionary<Element1dId, Element1d>? elementStore = null,
         IReadOnlyDictionary<NodeId, NodeDefinition>? nodeStore = null
     );

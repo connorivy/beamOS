@@ -6,7 +6,7 @@
 
 @inherits FluxorComponent
 
-@if (proposalInfos is null)
+@if (state.Value.ProposalInfos is null)
 {
     <MudPaper Class="flex flex-col items-center justify-center h-32 w-full">
         <MudProgressCircular Indeterminate Color="Color.Primary" Size="Size.Large" />
@@ -20,7 +20,7 @@ else
         <MudPaper Class="p-3 w-full max-w-xs">
             <MudText Typo="Typo.h6" Class="mb-2">Proposals</MudText>
             <MudList T="ModelProposalInfo" Class="w-full">
-                @foreach (var proposal in proposalInfos)
+                @foreach (var proposal in state.Value.ProposalInfos)
                 {
                     <MudListItem Value="@proposal">
                         <div class="flex flex-row">

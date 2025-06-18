@@ -111,7 +111,6 @@ public sealed class InternalNodeProposal : NodeProposalBase
     public Restraint Restraint { get; set; }
     public Ratio RatioAlongElement1d { get; set; }
     public ExistingOrProposedElement1dId Element1dId { get; set; }
-    public Element1d? Element1d { get; set; }
 
     public override InternalNode ToDomain(
         Dictionary<Element1dProposalId, Element1d>? element1dProposalIdToNewIdDict = null

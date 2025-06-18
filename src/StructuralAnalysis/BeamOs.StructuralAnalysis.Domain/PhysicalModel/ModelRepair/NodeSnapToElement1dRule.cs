@@ -33,6 +33,22 @@ public class NodeSnapToElement1dRule : IndividualNodeVisitingRule
                 modelProposalBuilder.Element1dStore,
                 modelProposalBuilder.NodeStore
             );
+            if (
+                startNode.DependsOnNode(
+                    node.Id,
+                    modelProposalBuilder.Element1dStore,
+                    modelProposalBuilder.NodeStore
+                )
+                || endNode.DependsOnNode(
+                    node.Id,
+                    modelProposalBuilder.Element1dStore,
+                    modelProposalBuilder.NodeStore
+                )
+            )
+            {
+                // skip elements that depend on the current node to avoid cycles
+                continue;
+            }
 
             double sx = start.X.Meters;
             double sy = start.Y.Meters;

@@ -41,6 +41,74 @@ public class InternalNode : NodeDefinition
         return element1d.GetPointAtRatio(this.RatioAlongElement1d, elementStore, nodeStore);
     }
 
+    public override bool DependsOnElement1d(
+        Element1dId element1dId,
+        IReadOnlyDictionary<Element1dId, Element1d>? elementStore = null,
+        IReadOnlyDictionary<NodeId, NodeDefinition>? nodeStore = null
+    )
+    {
+        if (this.Element1dId == element1dId)
+        {
+            return true;
+        }
+
+        var element1d =
+            (this.Element1d ?? elementStore?.GetValueOrDefault(this.Element1dId))
+            ?? throw new InvalidOperationException(
+                "Element1d must be set before checking dependencies."
+            );
+
+        var startNode =
+            element1d.StartNode
+            ?? nodeStore?.GetValueOrDefault(element1d.StartNodeId)
+            ?? throw new InvalidOperationException(
+                "StartNode must be set before checking dependencies."
+            );
+        var endNode =
+            element1d.EndNode
+            ?? nodeStore?.GetValueOrDefault(element1d.EndNodeId)
+            ?? throw new InvalidOperationException(
+                "EndNode must be set before checking dependencies."
+            );
+
+        return startNode.DependsOnElement1d(element1dId, elementStore, nodeStore)
+            || endNode.DependsOnElement1d(element1dId, elementStore, nodeStore);
+    }
+
+    public override bool DependsOnNode(
+        NodeId nodeId,
+        IReadOnlyDictionary<Element1dId, Element1d>? elementStore = null,
+        IReadOnlyDictionary<NodeId, NodeDefinition>? nodeStore = null
+    )
+    {
+        if (this.Id == nodeId)
+        {
+            return true;
+        }
+        var element1d =
+            (this.Element1d ?? elementStore?.GetValueOrDefault(this.Element1dId))
+            ?? throw new InvalidOperationException(
+                "Element1d must be set before checking dependencies."
+            );
+        var startNode =
+            element1d.StartNode
+            ?? nodeStore?.GetValueOrDefault(element1d.StartNodeId)
+            ?? throw new InvalidOperationException(
+                "StartNode must be set before checking dependencies."
+            );
+        var endNode =
+            element1d.EndNode
+            ?? nodeStore?.GetValueOrDefault(element1d.EndNodeId)
+            ?? throw new InvalidOperationException(
+                "EndNode must be set before checking dependencies."
+            );
+
+        return startNode.Id == nodeId
+            || endNode.Id == nodeId
+            || startNode.DependsOnNode(nodeId, elementStore, nodeStore)
+            || endNode.DependsOnNode(nodeId, elementStore, nodeStore);
+    }
+
     public override Node ToNode()
     {
         return new(this.ModelId, this.GetLocationPoint(), this.Restraint, this.Id);
