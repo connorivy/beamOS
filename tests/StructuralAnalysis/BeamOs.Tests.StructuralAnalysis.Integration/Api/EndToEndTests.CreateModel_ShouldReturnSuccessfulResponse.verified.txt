@@ -22,6 +22,7 @@
     },
     LastModified: DateTimeOffset_1,
     Nodes: null,
+    InternalNodes: null,
     Element1ds: null,
     Materials: null,
     SectionProfiles: null,

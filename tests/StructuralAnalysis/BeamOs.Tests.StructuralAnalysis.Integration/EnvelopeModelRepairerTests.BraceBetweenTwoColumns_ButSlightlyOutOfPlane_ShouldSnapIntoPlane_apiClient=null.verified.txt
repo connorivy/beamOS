@@ -8,18 +8,20 @@
       Description: Proposed repairs for model connectivity
     },
     CreateNodeProposals: null,
-    ModifyNodeProposals: [
+    ModifyNodeProposals: null,
+    CreateInternalNodeProposals: null,
+    ModifyInternalNodeProposals: [
       {
-        ExistingNodeId: 5,
+        ExistingInternalNodeId: 5,
         ExistingId: 5,
-        Id: {Scrubbed},
-        ObjectType: Node,
-        ProposalType: Modify,
-        LocationPoint: {
-          X: 0.0,
-          Y: 0.0,
-          Z: 7.0,
-          LengthUnit: Meter
+        Element1dId: {
+          ExistingId: 1,
+          ProposedId: null,
+          IsDefault: false
+        },
+        RatioAlongElement1d: {
+          Value: 0.7,
+          Unit: DecimalFraction
         },
         Restraint: {
           CanTranslateAlongX: true,
@@ -29,19 +31,22 @@
           CanRotateAboutY: true,
           CanRotateAboutZ: true
         },
-        Metadata: null
+        Metadata: null,
+        ObjectType: InternalNode,
+        ProposalType: Modify,
+        Id: {Scrubbed}
       },
       {
-        ExistingNodeId: 6,
+        ExistingInternalNodeId: 6,
         ExistingId: 6,
-        Id: {Scrubbed},
-        ObjectType: Node,
-        ProposalType: Modify,
-        LocationPoint: {
-          X: 5.0,
-          Y: 0.0,
-          Z: 1.0,
-          LengthUnit: Meter
+        Element1dId: {
+          ExistingId: 2,
+          ProposedId: null,
+          IsDefault: false
+        },
+        RatioAlongElement1d: {
+          Value: 0.1,
+          Unit: DecimalFraction
         },
         Restraint: {
           CanTranslateAlongX: true,
@@ -51,7 +56,10 @@
           CanRotateAboutY: true,
           CanRotateAboutZ: true
         },
-        Metadata: null
+        Metadata: null,
+        ObjectType: InternalNode,
+        ProposalType: Modify,
+        Id: {Scrubbed}
       }
     ],
     CreateElement1dProposals: null,

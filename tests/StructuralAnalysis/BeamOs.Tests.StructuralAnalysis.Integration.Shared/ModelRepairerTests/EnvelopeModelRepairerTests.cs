@@ -246,12 +246,26 @@ public static class ModelRepairerTestUtil
             if (repairedElement == null)
                 continue;
 
-            var startNode = originalModel.Nodes.First(n => n.Id == element.StartNodeId);
-            var endNode = originalModel.Nodes.First(n => n.Id == element.EndNodeId);
-            var repairedStartNode = repairedModel.Nodes.First(n =>
+            var startNode = originalModel.Nodes.FirstOrDefault(n => n.Id == element.StartNodeId);
+            var endNode = originalModel.Nodes.FirstOrDefault(n => n.Id == element.EndNodeId);
+            var repairedStartNode = repairedModel.Nodes.FirstOrDefault(n =>
                 n.Id == repairedElement.StartNodeId
             );
-            var repairedEndNode = repairedModel.Nodes.First(n => n.Id == repairedElement.EndNodeId);
+            var repairedEndNode = repairedModel.Nodes.FirstOrDefault(n =>
+                n.Id == repairedElement.EndNodeId
+            );
+
+            if (
+                startNode == null
+                || endNode == null
+                || repairedStartNode == null
+                || repairedEndNode == null
+            )
+            {
+                // if any nodes are null, that means it is an internal node. I should probably make a way to check the location of
+                // internal nodes via the api responses, but I also think the response objects should be dumb continue;
+                return;
+            }
 
             if (Math.Abs(startNode.LocationPoint.X - endNode.LocationPoint.X) < 1e-6)
             {

@@ -55,7 +55,7 @@ public sealed class GetModelProposalsQueryHandler(IModelProposalRepository model
     )
     {
         var proposals = await modelProposalRepository.GetMany(command, null, ct);
-        if (proposals is null || proposals.Count == 0)
+        if (proposals is null)
         {
             return BeamOsError.NotFound(
                 description: $"No proposals found for model with id {command}"

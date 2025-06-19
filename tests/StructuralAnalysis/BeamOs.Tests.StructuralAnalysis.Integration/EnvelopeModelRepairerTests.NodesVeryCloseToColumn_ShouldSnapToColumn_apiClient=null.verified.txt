@@ -8,18 +8,20 @@
       Description: Proposed repairs for model connectivity
     },
     CreateNodeProposals: null,
-    ModifyNodeProposals: [
+    ModifyNodeProposals: null,
+    CreateInternalNodeProposals: null,
+    ModifyInternalNodeProposals: [
       {
-        ExistingNodeId: 3,
+        ExistingInternalNodeId: 3,
         ExistingId: 3,
-        Id: {Scrubbed},
-        ObjectType: Node,
-        ProposalType: Modify,
-        LocationPoint: {
-          X: 0.0,
-          Y: 0.0,
-          Z: 5.0,
-          LengthUnit: Meter
+        Element1dId: {
+          ExistingId: 1,
+          ProposedId: null,
+          IsDefault: false
+        },
+        RatioAlongElement1d: {
+          Value: 0.5,
+          Unit: DecimalFraction
         },
         Restraint: {
           CanTranslateAlongX: true,
@@ -29,7 +31,10 @@
           CanRotateAboutY: true,
           CanRotateAboutZ: true
         },
-        Metadata: null
+        Metadata: null,
+        ObjectType: InternalNode,
+        ProposalType: Modify,
+        Id: {Scrubbed}
       }
     ],
     CreateElement1dProposals: null,

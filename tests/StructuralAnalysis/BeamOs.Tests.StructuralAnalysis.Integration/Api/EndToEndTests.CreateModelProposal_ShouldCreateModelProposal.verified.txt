@@ -30,6 +30,8 @@
       }
     ],
     ModifyNodeProposals: null,
+    CreateInternalNodeProposals: null,
+    ModifyInternalNodeProposals: null,
     CreateElement1dProposals: [
       {
         Id: {Scrubbed},
