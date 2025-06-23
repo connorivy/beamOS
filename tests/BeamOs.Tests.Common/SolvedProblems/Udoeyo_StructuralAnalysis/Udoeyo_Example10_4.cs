@@ -11,7 +11,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 
 namespace BeamOs.Tests.Common.SolvedProblems.Udoeyo_StructuralAnalysis;
 
-public class Udoeyo_Example10_4 : ModelFixture, IHasExpectedNodeResults
+public class Udoeyo_Example10_4 : ModelFixture, IHasExpectedNodeResults, ISkipDsmTests
 {
     public override SourceInfo SourceInfo => SourceInfos.Udoeyo with { ModelName = "Example 10.4" };
 

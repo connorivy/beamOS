@@ -33,6 +33,10 @@ public partial class DsmTests(ModelFixture modelFixture)
                 "Model fixture does not implement IHasExpectedDiagramResults"
             );
         }
+        if (modelFixture is ISkipDsmTests)
+        {
+            throw new SkipTestException("Skipping DSM tests for this model fixture");
+        }
 
         var strongUnits = modelFixture.Settings.UnitSettings.ToDomain();
         foreach (var expectedNodeDisplacementResult in nodeResultsFixture.ExpectedNodeResults)

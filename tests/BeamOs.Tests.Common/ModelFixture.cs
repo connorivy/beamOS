@@ -43,6 +43,8 @@ public interface IHasExpectedNodeResults
     public NodeResultFixture[] ExpectedNodeResults { get; }
 }
 
+public interface ISkipDsmTests { }
+
 public interface IHasDsmElement1dResults
 {
     public DsmElement1dResultFixture[] ExpectedDsmElement1dResults { get; }

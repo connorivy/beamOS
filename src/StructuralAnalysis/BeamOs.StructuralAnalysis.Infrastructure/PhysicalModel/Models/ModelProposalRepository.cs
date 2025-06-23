@@ -12,50 +12,6 @@ internal sealed class ModelProposalRepository(StructuralAnalysisDbContext dbCont
     : ModelResourceRepositoryBase<ModelProposalId, ModelProposal>(dbContext),
         IModelProposalRepository
 {
-    public override void Add(ModelProposal aggregate)
-    {
-        var idProp = this
-            .DbContext.Model.FindEntityType(typeof(Element1dProposal))
-            ?.FindProperty(nameof(Element1dProposal.Id));
-        var y = idProp?.ValueGenerated;
-        try
-        {
-            if (
-                aggregate.DeleteModelEntityProposals is not null
-                && aggregate.DeleteModelEntityProposals.Count > 0
-            )
-            {
-                foreach (var prop in aggregate.DeleteModelEntityProposals)
-                {
-                    prop.ModelProposal = aggregate;
-                    this.DbContext.DeleteModelEntityProposals.Add(prop);
-                }
-            }
-            if (aggregate.Element1dProposals is not null && aggregate.Element1dProposals.Count > 0)
-            {
-                foreach (var prop in aggregate.Element1dProposals)
-                {
-                    prop.ModelProposal = aggregate;
-                    this.DbContext.Element1dProposals.Add(prop);
-                }
-            }
-            base.Add(aggregate);
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debugger.Launch();
-            foreach (var delete in aggregate.DeleteModelEntityProposals ?? [])
-            {
-                var trackerEntry = this.DbContext.Entry(delete);
-            }
-            foreach (var prop in aggregate.Element1dProposals ?? [])
-            {
-                var trackerEntry = this.DbContext.Entry(prop);
-            }
-            throw;
-        }
-    }
-
     public override Task<ModelProposal?> GetSingle(
         ModelId modelId,
         ModelProposalId id,

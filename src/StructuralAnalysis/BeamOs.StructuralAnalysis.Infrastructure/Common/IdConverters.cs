@@ -89,12 +89,6 @@ public class SectionProfileProposalIdConverter : ValueConverter<SectionProfilePr
         : base(x => x.Id, x => new(x), null) { }
 }
 
-public class SectionProfileFromLibraryIdConverter : ValueConverter<SectionProfileFromLibraryId, int>
-{
-    public SectionProfileFromLibraryIdConverter()
-        : base(x => x.Id, x => new(x), null) { }
-}
-
 public class ResultSetIdConverter : ValueConverter<ResultSetId, int>
 {
     public ResultSetIdConverter()
