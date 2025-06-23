@@ -52,7 +52,12 @@ public class GetModelProposal(GetModelProposalQueryHandler getModelProposalQuery
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 public class AcceptModelProposal(
     AcceptModelProposalCommandHandler acceptModelProposalCommandHandler
-) : BeamOsModelResourceWithIntIdBaseEndpoint<List<EntityProposal>?, ModelResponse>
+)
+    : BeamOsModelResourceWithIntIdBaseEndpoint<
+        ModelResourceWithIntIdRequest<List<EntityProposal>?>,
+        List<EntityProposal>?,
+        ModelResponse
+    >
 {
     public override async Task<Result<ModelResponse>> ExecuteRequestAsync(
         ModelResourceWithIntIdRequest<List<EntityProposal>?> req,

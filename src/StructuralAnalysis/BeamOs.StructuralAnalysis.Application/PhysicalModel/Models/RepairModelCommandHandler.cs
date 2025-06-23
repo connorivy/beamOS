@@ -40,12 +40,12 @@ public class RepairModelCommandHandler(
             return BeamOsError.NotFound($"Model with id {command.ModelId} has no elements.");
         }
 
-        Node firstNodes = model.Nodes[0];
-        Octree nodeOctree = new(model.Id, firstNodes.LocationPoint, 10.0);
-        foreach (Node node in model.Nodes)
-        {
-            nodeOctree.Add(node);
-        }
+        // Node firstNodes = model.Nodes[0];
+        // Octree nodeOctree = new(model.Id, firstNodes.LocationPoint, 10.0);
+        // foreach (Node node in model.Nodes)
+        // {
+        //     nodeOctree.Add(node);
+        // }
 
         ModelRepairer repairer = new(
             new()

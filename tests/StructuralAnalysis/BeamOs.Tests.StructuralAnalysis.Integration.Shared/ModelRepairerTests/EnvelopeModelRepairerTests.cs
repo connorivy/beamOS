@@ -39,6 +39,7 @@ public class EnvelopeModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient
         await builder.CreateOnly(apiClient);
 
         var proposal = await apiClient.RepairModelAsync(modelId, "this doesn't do anything yet");
+        proposal.ThrowIfError();
 
         await ModelRepairerTestUtil.EnsureGlobalGeometricContraints(
             apiClient,
@@ -71,6 +72,7 @@ public class EnvelopeModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient
         await builder.CreateOnly(apiClient);
 
         var proposal = await apiClient.RepairModelAsync(modelId, "this doesn't do anything yet");
+        proposal.ThrowIfError();
 
         await ModelRepairerTestUtil.EnsureGlobalGeometricContraints(
             apiClient,
@@ -115,6 +117,7 @@ public class EnvelopeModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient
             modelId,
             "test nearly converging nodes in xy plane"
         );
+        proposal.ThrowIfError();
 
         await ModelRepairerTestUtil.EnsureGlobalGeometricContraints(
             apiClient,
@@ -189,6 +192,7 @@ public class EnvelopeModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient
         await builder.CreateOnly(apiClient);
 
         var proposal = await apiClient.RepairModelAsync(modelId, "snap beam node to column");
+        proposal.ThrowIfError();
 
         await ModelRepairerTestUtil.EnsureGlobalGeometricContraints(
             apiClient,
@@ -264,6 +268,7 @@ public static class ModelRepairerTestUtil
             {
                 // if any nodes are null, that means it is an internal node. I should probably make a way to check the location of
                 // internal nodes via the api responses, but I also think the response objects should be dumb continue;
+                // todo: fix the following logic to test internal node geometric constraints as well
                 return;
             }
 

@@ -8,6 +8,13 @@ public class Element1dProposalConfiguration : IEntityTypeConfiguration<Element1d
 {
     public void Configure(EntityTypeBuilder<Element1dProposal> builder)
     {
+        _ = builder.HasKey(el => el.Id);
+        _ = builder
+            .Property(el => el.Id)
+            .ValueGeneratedOnAdd()
+            .IsRequired()
+            .HasConversion(el => el.Id, el => new Element1dProposalId(el));
+
         _ = builder
             .HasOne(el => el.Model)
             .WithMany()

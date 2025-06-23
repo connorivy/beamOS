@@ -12,7 +12,7 @@ public sealed class DeleteModelEntityProposal : BeamOsModelEntity<ModelEntityDel
         BeamOsObjectType objectType,
         ModelEntityDeleteProposalId? id = null
     )
-        : base(id ?? new(), modelId)
+        : base(id ?? default, modelId)
     {
         this.ModelProposalId = modelProposalId;
         this.ModelEntityId = modelEntityId;
@@ -22,7 +22,7 @@ public sealed class DeleteModelEntityProposal : BeamOsModelEntity<ModelEntityDel
     public int ModelEntityId { get; private set; }
     public BeamOsObjectType ObjectType { get; private set; }
     public ModelProposalId ModelProposalId { get; private set; }
-    public ModelProposal? ModelProposal { get; private set; }
+    public ModelProposal? ModelProposal { get; set; }
 
     [Obsolete("EF Core Constructor", true)]
     public DeleteModelEntityProposal() { }

@@ -70,17 +70,14 @@ internal class ModelConfiguration : IEntityTypeConfiguration<Model>
     }
 }
 
-internal class ModelEntityDeleteProposalConfiguration
+public class ModelEntityDeleteProposalConfiguration
     : IEntityTypeConfiguration<DeleteModelEntityProposal>
 {
     public void Configure(EntityTypeBuilder<DeleteModelEntityProposal> builder)
     {
-        _ = builder.HasKey(el => new
-        {
-            el.Id,
-            el.ModelProposalId,
-            el.ModelId,
-        });
+        _ = builder.HasKey(el => el.Id);
+        _ = builder.Property(el => el.Id).HasSentinel(new()).ValueGeneratedOnAdd().IsRequired();
+        // builder.HasIndex(el => new { el.ModelProposalId, el.ModelId });
 
         builder
             .HasOne(p => p.Model)

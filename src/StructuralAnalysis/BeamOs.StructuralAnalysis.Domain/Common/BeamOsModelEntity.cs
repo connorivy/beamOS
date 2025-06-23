@@ -16,13 +16,6 @@ public class BeamOsModelEntity<TId> : BeamOsEntity<TId>, IBeamOsModelEntity
         this.ModelId = modelId;
     }
 
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public override TId Id
-    {
-        get => base.Id;
-        protected set => base.Id = value;
-    }
-
     public virtual ModelId ModelId { get; protected set; }
     public Model? Model { get; private set; }
 
@@ -53,12 +46,6 @@ public class BeamOsAnalyticalResultEntity<TId> : BeamOsEntity<TId>
         this.ResultSetId = resultSetId;
     }
 
-    public override TId Id
-    {
-        get => base.Id;
-        protected set => base.Id = value;
-    }
-
     public ModelId ModelId { get; protected set; }
     public Model? Model { get; private set; }
 
@@ -87,18 +74,11 @@ public abstract class BeamOsModelProposalEntity<TId, TModelEntityId> : BeamOsEnt
         this.ExistingId = existingId;
     }
 
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public override TId Id
-    {
-        get => base.Id;
-        protected set => base.Id = value;
-    }
-
     public ModelId ModelId { get; protected set; }
     public Model? Model { get; private set; }
 
     public ModelProposalId ModelProposalId { get; protected set; }
-    public ModelProposal? ModelProposal { get; private set; }
+    public ModelProposal? ModelProposal { get; set; }
 
     public TModelEntityId? ExistingId { get; set; }
     public bool IsExisting => this.ExistingId != null;

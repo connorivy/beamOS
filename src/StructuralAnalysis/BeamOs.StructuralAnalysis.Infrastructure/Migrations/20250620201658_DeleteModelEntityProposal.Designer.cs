@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using BeamOs.StructuralAnalysis.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
 {
     [DbContext(typeof(StructuralAnalysisDbContext))]
-    partial class StructuralAnalysisDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250620201658_DeleteModelEntityProposal")]
+    partial class DeleteModelEntityProposal
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -485,19 +488,19 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ModelEntityId")
+                    b.Property<int>("ModelProposalId")
                         .HasColumnType("integer");
 
                     b.Property<Guid>("ModelId")
                         .HasColumnType("uuid");
 
-                    b.Property<int>("ModelProposalId")
+                    b.Property<int>("ModelEntityId")
                         .HasColumnType("integer");
 
                     b.Property<int>("ObjectType")
                         .HasColumnType("integer");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id", "ModelProposalId", "ModelId");
 
                     b.HasIndex("ModelId");
 

@@ -1,4 +1,5 @@
 using BeamOs.Common.Domain.Models;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.EnvelopeResultSets;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.NodeResultAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
@@ -34,6 +35,11 @@ public class StructuralAnalysisDbContext : DbContext
     public DbSet<LoadCase> LoadCases { get; set; }
     public DbSet<LoadCombination> LoadCombinations { get; set; }
     public DbSet<ModelProposal> ModelProposals { get; set; }
+    public DbSet<DeleteModelEntityProposal> DeleteModelEntityProposals { get; set; }
+
+    // public DbSet<NodeProposal> NodeProposals { get; set; }
+    // public DbSet<InternalNodeProposal> InternalNodeProposals { get; set; }
+    public DbSet<Element1dProposal> Element1dProposals { get; set; }
 
     public DbSet<ResultSet> ResultSets { get; set; }
     public DbSet<NodeResult> NodeResults { get; set; }
@@ -57,15 +63,5 @@ public class StructuralAnalysisDbContext : DbContext
         _ = builder
             .Ignore<List<IDomainEvent>>()
             .ApplyConfigurationsFromAssembly(typeof(StructuralAnalysisDbContext).Assembly);
-
-        //builder
-        //    .Model
-        //    .GetEntityTypes()
-        //    .SelectMany(e => e.GetProperties())
-        //    .Where(p => p.IsPrimaryKey())
-        //    .ToList()
-        //    .ForEach(
-        //        p => p.ValueGenerated = Microsoft.EntityFrameworkCore.Metadata.ValueGenerated.Never
-        //    );
     }
 }
