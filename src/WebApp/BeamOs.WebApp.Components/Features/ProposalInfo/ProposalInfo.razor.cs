@@ -14,7 +14,6 @@ using BeamOs.WebApp.EditorCommands;
 using Fluxor;
 using Fluxor.Blazor.Web.Components;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore.Metadata;
 using MudBlazor;
 

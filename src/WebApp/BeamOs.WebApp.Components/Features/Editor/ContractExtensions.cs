@@ -1,5 +1,6 @@
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.StructuralAnalysis.Contracts.Common;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
 
@@ -7,6 +8,13 @@ namespace BeamOs.WebApp.Components.Features.Editor;
 
 internal static class ContractExtensions
 {
+    public static ModelResponse ToEditorUnits(this ModelResponse element) =>
+        element with
+        {
+            Nodes = element.Nodes?.Select(e => e.ToEditorUnits()).ToList(),
+            PointLoads = element.PointLoads?.Select(e => e.ToEditorUnits()).ToList(),
+        };
+
     public static NodeResponse ToEditorUnits(this NodeResponse element) =>
         element with
         {

@@ -24,8 +24,8 @@ public class RunOpenSeesAnalysis(RunOpenSeesAnalysisCommandHandler runOpenSeesCo
             new()
             {
                 ModelId = req.ModelId,
-                UnitsOverride = req.Body.UnitsOverride,
-                LoadCombinationIds = req.Body.LoadCombinationIds,
+                UnitsOverride = req.Body?.UnitsOverride,
+                LoadCombinationIds = req.Body?.LoadCombinationIds,
             },
             ct
         );

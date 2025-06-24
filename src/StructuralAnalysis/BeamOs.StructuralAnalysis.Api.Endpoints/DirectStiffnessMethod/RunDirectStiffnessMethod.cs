@@ -24,18 +24,9 @@ public class RunDirectStiffnessMethod(RunDirectStiffnessMethodCommandHandler dsm
             new()
             {
                 ModelId = req.ModelId,
-                UnitsOverride = req.Body.UnitsOverride,
-                LoadCombinationIds = req.Body.LoadCombinationIds,
+                UnitsOverride = req.Body?.UnitsOverride,
+                LoadCombinationIds = req.Body?.LoadCombinationIds,
             },
             ct
         );
-}
-
-public record ModelIdAndBody<TBody> : IHasModelId
-{
-    [FromRoute]
-    public Guid ModelId { get; init; }
-
-    [FromBody]
-    public required TBody Body { get; init; }
 }

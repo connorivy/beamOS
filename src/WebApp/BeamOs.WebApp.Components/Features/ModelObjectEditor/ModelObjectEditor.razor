@@ -47,11 +47,6 @@
                     Combinations</MudButton>
             </div>
         </div>
-
-        <div class="mb-10">
-            <MudDivider Class="mb-5" />
-            <MudButton Variant="Variant.Outlined" OnClick="() => ShowView(BeamOsObjectType.ModelProposal)">Proposals</MudButton>
-        </div>
     </div>
 }
 else
@@ -92,9 +87,5 @@ else
     else if (state.Value.CurrentViewType == BeamOsObjectType.LoadCombination)
     {
         <LoadCombinationObjectEditor ModelId="@ModelId" SelectedObject="state.Value.SelectedObject" />
-    }
-    else if (state.Value.CurrentViewType == BeamOsObjectType.ModelProposal)
-    {
-        <ProposalInfo ModelId="@ModelId" EditorApi="@editorState.Value.EditorApi" />
     }
 }

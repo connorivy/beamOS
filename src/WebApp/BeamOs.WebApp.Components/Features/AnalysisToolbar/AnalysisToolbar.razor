@@ -37,25 +37,11 @@
                 <MudMenuItem OnClick="@editorComponent.ShowDeflection">Deflection Diagrams</MudMenuItem>
             </MudMenu>
         </MudTooltip>
-        <MudTooltip Text="Get Model Proposals">
-            <MudIconButton OnClick="GetModelProposals" Icon="@Icons.Material.Outlined.Refresh" Color="Color.Inherit"
-                Class="">Get Model Proposals</MudIconButton>
-        </MudTooltip>
-
-        <MudTooltip Text="Show Model Proposal">
-            <MudSelect T="int" Label="Model Proposals" Color="Color.Inherit" Value="this.selectedModelProposalId"
-                ValueChanged="DisplayModelProposal">
-                <MudSelectItem Value="0">0</MudSelectItem>
-                @foreach (var proposal in modelProposals)
-                {
-                    <MudSelectItem Value="@proposal.Id">@proposal.Id</MudSelectItem>
-                }
-            </MudSelect>
-        </MudTooltip>
 
         <MudTooltip Text="Recieve Date From Speckle">
             <MudIconButton OnClick="ReceiveFromSpeckle" Icon="@Icons.Material.Filled.CallReceived" />
         </MudTooltip>
+
         <MudTooltip Text="Repair Model">
             <MudIconButton OnClick="RepairModel" Icon="@Icons.Material.Outlined.Build" Color="Color.Inherit" Class="">
                 Repair Model</MudIconButton>
@@ -158,41 +144,6 @@
             speckleToken));
         }
     }
-    private List<ModelProposalInfo> modelProposals = new();
-    private int selectedModelProposalId;
-    private async Task GetModelProposals()
-    {
-        var result = await structuralAnalysisApiClientV1.GetModelProposalsAsync(this.ModelId, CancellationToken.None);
-
-        if (result.IsSuccess)
-        {
-            modelProposals = result.Value;
-        }
-        else
-        {
-            snackbar.Add(result.Error.Description, Severity.Error);
-        }
-    }
-
-    private async Task DisplayModelProposal(int selectedModelProposalId)
-    {
-        this.selectedModelProposalId = selectedModelProposalId;
-        if (selectedModelProposalId == 0)
-        {
-            await editorState.Value.EditorApi.ClearModelProposalsAsync();
-            return;
-        }
-
-        var modelProposal = await structuralAnalysisApiClientV1.GetModelProposalAsync(this.ModelId,
-        selectedModelProposalId, CancellationToken.None);
-        if (modelProposal.IsError)
-        {
-            throw new Exception(modelProposal.Error.Description);
-        }
-
-        await editorState.Value.EditorApi.ClearModelProposalsAsync();
-        await editorState.Value.EditorApi.DisplayModelProposalAsync(modelProposal.Value);
-    }
 
     private async Task RepairModel()
     {
@@ -201,14 +152,6 @@
             ModelId = this.ModelId,
             CanvasId = this.CanvasId
         }, CancellationToken.None);
-
-        if (result.IsSuccess)
-        {
-        }
-        else
-        {
-            snackbar.Add(result.Error.Description, Severity.Error);
-        }
     }
 
     [FeatureState]
