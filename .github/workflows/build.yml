@@ -1,8 +1,8 @@
-name: Build / Test / Lint
+name: Build / Test
 
 on:
   pull_request:
-    branches: [ main, dev ]
+    branches: [main, dev]
 
 jobs:
   build_and_test:
@@ -12,50 +12,38 @@ jobs:
       ContinuousIntegrationEnv: true
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 9.0.x
-
-    - name: Setup Node
-      uses: actions/setup-node@v4
-      with:
-        node-version: 22
-
-    - name: Test And Collect CodeCov
-      run: |
-        dotnet tool install --global dotnet-coverage
-        export PATH="$PATH:/root/.dotnet/tools"
-        dotnet-coverage collect "dotnet test" -f cobertura -s ./CodeCov.runsettings
-
-    - name: ReportGenerator
-      uses: danielpalme/ReportGenerator-GitHub-Action@5.2.0
-      with:
-        reports: './output.cobertura.xml'
-        targetdir: './tests/TestResults'
-        reporttypes: 'lcov'
-
-    - name: Coveralls
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        path-to-lcov: ./tests/TestResults/lcov.info
+      - uses: actions/checkout@v4
+      - name: Run in Dev Container
+        uses: devcontainers/ci@v0.3
+        with:
+          runCmd: |
+            dotnet tool install --global dotnet-coverage
+            export PATH="$PATH:/root/.dotnet/tools"
+            dotnet-coverage collect "dotnet test" -f cobertura -s ./CodeCov.runsettings
+      - name: ReportGenerator
+        uses: danielpalme/ReportGenerator-GitHub-Action@5.2.0
+        with:
+          reports: "./output.cobertura.xml"
+          targetdir: "./tests/TestResults"
+          reporttypes: "lcov"
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: ./tests/TestResults/lcov.info
 
   check_formatting:
     runs-on: ubuntu-latest
     name: Check Formatting
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 9.0.x
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 9.0.x
 
-    - name: Restore csharpier tool
-      run: dotnet tool restore
+      - name: Restore csharpier tool
+        run: dotnet tool restore
 
-    - name: Check formatting
-      run: dotnet csharpier --check .
-
-    
+      - name: Check formatting
+        run: dotnet csharpier --check .
