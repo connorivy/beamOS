@@ -1,5 +1,6 @@
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCombinations;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 
 namespace BeamOs.Tests.Common.SolvedProblems.SAP2000;
 
@@ -15,6 +16,8 @@ public partial class TwistyBowlFraming : ModelFixture, IHasExpectedNodeResults
         yield return new LoadCombination(1, (1, 1.0));
         yield return new LoadCombination(2, (1, 1.0));
     }
+
+    public override IEnumerable<InternalNode> InternalNodeRequests() => [];
 
     public override SourceInfo SourceInfo { get; } =
         new("SAP2000", FixtureSourceType.SAP2000, nameof(TwistyBowlFraming));

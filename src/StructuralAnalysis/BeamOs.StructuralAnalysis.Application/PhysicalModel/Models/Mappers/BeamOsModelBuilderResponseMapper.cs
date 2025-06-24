@@ -37,7 +37,14 @@ public partial class BeamOsModelBuilderDomainMapper(Guid modelId)
     {
         model = this.ToDomain(builder);
 
-        var nodeDict = model.Nodes.ToDictionary(x => x.Id);
+        var nodeDict = model
+            .Nodes.Concat<NodeDefinition>(model.InternalNodes)
+            .ToDictionary(x => x.Id);
+
+        var internalNodeDict = model
+            .InternalNodes.GroupBy(el => el.Element1dId)
+            .ToDictionary(x => x.Key, x => x.ToList());
+
         var materialDict = model.Materials.ToDictionary(x => x.Id);
         var sectionProfileDict = (model.SectionProfiles ?? [])
             .Concat<SectionProfileInfoBase>(model.SectionProfilesFromLibrary ?? [])
@@ -47,6 +54,7 @@ public partial class BeamOsModelBuilderDomainMapper(Guid modelId)
         {
             el.StartNode = nodeDict[el.StartNodeId];
             el.EndNode = nodeDict[el.EndNodeId];
+            el.InternalNodes = internalNodeDict.GetValueOrDefault(el.Id, []);
             el.Material = materialDict[el.MaterialId];
             el.SectionProfile = sectionProfileDict[el.SectionProfileId].GetSectionProfile();
         }
