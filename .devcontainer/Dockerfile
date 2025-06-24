@@ -37,6 +37,8 @@ ENV ConnectionStrings__BeamOsDb="Host=db;Port=5432;Database=postgres;Username=po
 # RUN apt-get update
 # RUN apt-get install k6
 
+RUN apt-get update && apt-get install -y gcc g++ gfortran
+
 # # Install OpenSees directly from source. This takes a long time, but results in a faster OpenSees binary.
 # # OpenSees dependencies
 # RUN apt-get update && apt-get install -y gcc g++ gfortran
