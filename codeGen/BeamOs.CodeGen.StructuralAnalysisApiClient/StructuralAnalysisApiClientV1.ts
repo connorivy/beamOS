@@ -320,7 +320,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
 
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         this.http = http ? http : window as any;
-        this.baseUrl = baseUrl ?? "https://localhost:7060";
+        this.baseUrl = baseUrl ?? "https://localhost:7060/";
     }
 
     /**

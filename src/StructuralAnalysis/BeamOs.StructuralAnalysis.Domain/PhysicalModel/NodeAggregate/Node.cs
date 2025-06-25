@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
@@ -18,6 +19,12 @@ public class Node : NodeDefinition
     {
         this.LocationPoint = locationPoint;
         this.Restraint = restraint ?? Restraint.Free;
+    }
+
+    public override BeamOsObjectType NodeType
+    {
+        get => BeamOsObjectType.Node;
+        protected set { } // EF Core requires a setter for the discriminator property
     }
 
     public Point LocationPoint { get; set; }
@@ -92,6 +99,8 @@ public class Node : NodeDefinition
 
 public abstract class NodeDefinition : BeamOsModelEntity<NodeId>
 {
+    public const string TypeDiscriminator = "NodeType";
+
     public NodeDefinition(NodeId id, ModelId modelId)
         : base(id, modelId) { }
 
@@ -146,6 +155,7 @@ public abstract class NodeDefinition : BeamOsModelEntity<NodeId>
 
     // Navigation properties
     // public Element1d? Element1d { get; set; }
+    public abstract BeamOsObjectType NodeType { get; protected set; }
     public ICollection<PointLoad>? PointLoads { get; set; }
     public ICollection<MomentLoad>? MomentLoads { get; set; }
     public ICollection<Element1d>? StartNodeElements { get; set; }

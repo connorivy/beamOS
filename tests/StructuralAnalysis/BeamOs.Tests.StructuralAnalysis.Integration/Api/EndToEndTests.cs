@@ -10,6 +10,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using FluentAssertions;
+using TUnit.Core;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration.Api;
 
@@ -18,7 +19,7 @@ public class EndToEndTests
     private static Guid modelId;
     private static Result<ModelResponse> modelResponseResult;
 
-    [Before(Class)]
+    [Before(HookType.Class)]
     public static async Task SetupModel()
     {
         modelId = Guid.NewGuid();

@@ -27,6 +27,7 @@ public class StructuralAnalysisDbContext : DbContext
 
     public DbSet<Node> Nodes { get; set; }
     public DbSet<InternalNode> InternalNodes { get; set; }
+    public DbSet<NodeDefinition> NodeDefinitions { get; set; }
     public DbSet<Material> Materials { get; set; }
     public DbSet<SectionProfile> SectionProfiles { get; set; }
     public DbSet<Element1d> Element1ds { get; set; }

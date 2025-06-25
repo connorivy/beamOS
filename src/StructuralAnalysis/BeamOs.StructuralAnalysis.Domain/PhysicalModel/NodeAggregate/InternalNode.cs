@@ -1,3 +1,4 @@
+using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
@@ -20,6 +21,12 @@ public class InternalNode : NodeDefinition
         this.RatioAlongElement1d = ratioAlongElement1d;
         this.Element1dId = element1DId;
         this.Restraint = restraint ?? Restraint.Free;
+    }
+
+    public override BeamOsObjectType NodeType
+    {
+        get => BeamOsObjectType.InternalNode;
+        protected set { } // EF Core requires a setter for the discriminator property
     }
 
     public Restraint Restraint { get; set; }

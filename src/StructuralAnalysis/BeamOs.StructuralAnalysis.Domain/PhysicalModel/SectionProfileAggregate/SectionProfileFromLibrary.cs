@@ -1,3 +1,4 @@
+using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
@@ -15,6 +16,12 @@ public class SectionProfileFromLibrary : SectionProfileInfoBase
     {
         this.Name = name;
         this.Library = library;
+    }
+
+    public override BeamOsObjectType SectionProfileType
+    {
+        get => BeamOsObjectType.SectionProfileFromLibrary;
+        protected set { } // EF Core requires a setter for the discriminator property
     }
 
     public StructuralCode Library { get; set; }

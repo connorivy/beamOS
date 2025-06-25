@@ -1,3 +1,4 @@
+using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.DesignCodes.AISC._360_16;
@@ -30,6 +31,12 @@ public class SectionProfile : SectionProfileInfoBase, IHasStrongAxisPlasticSecti
         this.WeakAxisPlasticSectionModulus = weakAxisPlasticSectionModulus;
         this.StrongAxisShearArea = strongAxisShearArea;
         this.WeakAxisShearArea = weakAxisShearArea;
+    }
+
+    public override BeamOsObjectType SectionProfileType
+    {
+        get => BeamOsObjectType.SectionProfile;
+        protected set { } // EF Core requires a setter for the discriminator property
     }
 
     public Area Area { get; set; }

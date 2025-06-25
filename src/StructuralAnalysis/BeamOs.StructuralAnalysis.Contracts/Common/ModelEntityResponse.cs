@@ -4,7 +4,7 @@ namespace BeamOs.StructuralAnalysis.Contracts.Common;
 
 public record ModelEntityResponse(int Id, Guid ModelId) : IModelEntity;
 
-public enum BeamOsObjectType
+public enum BeamOsObjectType : byte
 {
     Undefined = 0,
     Model = 1,
@@ -13,6 +13,7 @@ public enum BeamOsObjectType
     Element1d = 4,
     Material = 5,
     SectionProfile = 6,
+    SectionProfileFromLibrary = 7,
     PointLoad = 50,
     MomentLoad = 51,
     DistributedLoad = 52,
@@ -25,7 +26,7 @@ public enum BeamOsObjectType
     Element1dProposal = 103,
     MaterialProposal = 104,
     SectionProfileProposal = 105,
-    Other = 1000,
+    Other = 255,
 }
 
 public static class BeamOsObjectTypeExtensions

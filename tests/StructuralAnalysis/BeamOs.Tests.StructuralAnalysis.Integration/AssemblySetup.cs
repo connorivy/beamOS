@@ -3,6 +3,7 @@ using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Tests.Common;
 using DiffEngine;
 using Testcontainers.PostgreSql;
+using TUnit.Core;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration;
 
@@ -15,7 +16,7 @@ public static partial class AssemblySetup
     public static bool SetupWebApi { get; set; } = true;
     public static bool SkipOpenSeesTests { get; set; } = BeamOsEnv.IsCiEnv();
 
-    [Before(Assembly)]
+    [Before(HookType.Assembly)]
     public static async Task Setup()
     {
         if (ApiIsRunning || !SetupWebApi)

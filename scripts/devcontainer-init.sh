@@ -7,6 +7,8 @@ set -e
 chmod +x /workspaces/beamOS/deepClean
 /workspaces/beamOS/deepClean
 
+dotnet tool restore
+
 # Restore .NET dependencies
 cd /workspaces/beamOS
 dotnet restore

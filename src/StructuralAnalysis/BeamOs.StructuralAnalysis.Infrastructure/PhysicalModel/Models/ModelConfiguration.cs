@@ -23,13 +23,6 @@ internal class ModelConfiguration : IEntityTypeConfiguration<Model>
             .OnDelete(DeleteBehavior.Cascade);
 
         _ = builder
-            .HasMany(m => m.SectionProfiles)
-            .WithOne(el => el.Model)
-            .HasForeignKey(el => el.ModelId)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);
-
-        _ = builder
             .HasMany(m => m.ResultSets)
             .WithOne(el => el.Model)
             .HasForeignKey(el => el.ModelId)
