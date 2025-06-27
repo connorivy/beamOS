@@ -16,7 +16,9 @@ public class AnalysisBench : IDisposable
 {
     private readonly DsmAnalysisModel dsmAnalysisModel;
     private readonly OpenSeesAnalysisModel openSeesAnalysisModel;
-    private readonly ISolverFactory solverFactory = new PardisoSolverFactory();
+
+    // private readonly ISolverFactory solverFactory = new PardisoSolverFactory();
+    private readonly ISolverFactory solverFactory = new CholeskySolverFactory();
     private readonly LoadCombination loadCombination;
 
     public AnalysisBench()
