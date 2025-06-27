@@ -121,14 +121,10 @@ public static class DependencyInjection
 
         services.AddScoped<IQueryHandler<Guid, ModelInfoResponse>, GetModelInfoQueryHandler>();
 
-        if (BeamOsEnv.IsCiEnv())
-        {
-            services.AddSingleton<ISolverFactory, CholeskySolverFactory>();
-        }
-        else
-        {
-            services.AddSingleton<ISolverFactory, PardisoSolverFactory>();
-        }
+        // pardiso is faster, but it requires mkl libraries. Since we're not using this solver factory in production,
+        // we can use CholeskySolverFactory which is a pure managed implementation.
+        // services.AddSingleton<ISolverFactory, PardisoSolverFactory>();
+        services.AddSingleton<ISolverFactory, CholeskySolverFactory>();
 
         return services;
     }

@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.EnvelopeResultSets;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.NodeResultAggregate;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
@@ -223,6 +224,15 @@ public sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettings
     //private AnalyticalResults GetResults(Model model, TclWriter tclWriter)
     private NodeResult[] GetResults(Model model, TclWriter tclWriter)
     {
+#if DEBUG
+        if (this.displacements is null)
+        {
+            throw new InvalidOperationException(
+                $"Error in opensees process: {errorMessageBuilder.ToString()}"
+            );
+        }
+
+#endif
         ResultSetId analyticalResultsId = new();
 
         NodeResult[] nodeResults = new NodeResult[this.displacements.Length / 6];
@@ -269,6 +279,10 @@ public sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettings
         "  (Copyright and Disclaimer @ http://www.berkeley.edu/OpenSees/copyright.html)",
     };
 
+#if DEBUG
+    private readonly StringBuilder errorMessageBuilder = new();
+#endif
+
     void process_ErrorDataReceived(object sender, DataReceivedEventArgs e)
     {
         if (string.IsNullOrEmpty(e.Data) || ignoredErrorMessages.Contains(e.Data))
@@ -276,6 +290,9 @@ public sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettings
             return;
         }
 
+#if DEBUG
+        errorMessageBuilder.AppendLine(e.Data);
+#endif
         logger.LogError("OpenSees process error {data}", e.Data);
     }
 

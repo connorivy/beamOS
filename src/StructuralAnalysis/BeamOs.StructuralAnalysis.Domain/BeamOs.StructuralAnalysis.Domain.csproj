@@ -27,7 +27,8 @@
   </ItemGroup>
 
   <ItemGroup Condition="$([MSBuild]::IsOSUnixLike())">
-    <PackageReference Include="BeamOs.CSparse.Interop" VersionOverride="4.2.1" />
+    <!-- <PackageReference Include="BeamOs.CSparse.Interop" VersionOverride="4.2.1" /> -->
+    <PackageReference Include="BeamOs.CSparse.Interop" />
     <!-- <PackageReference Include="BeamOs.OpenSees.linux-x64" /> -->
   </ItemGroup>
 
