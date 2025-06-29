@@ -28,7 +28,7 @@ using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.MomentLoads;
 using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.SectionProfiles;
-using BeamOs.Tests.Common;
+using EntityFramework.Exceptions.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
@@ -82,35 +82,7 @@ public static class DependencyInjection
     {
         services.AddSingleton(TimeProvider.System);
 
-        _ = services.AddDbContext<StructuralAnalysisDbContext>(options =>
-        {
-            options
-                .UseNpgsql(
-                    connectionString,
-                    o => o.MigrationsAssembly(typeof(IAssemblyMarkerInfrastructure).Assembly)
-                )
-                .AddInterceptors(
-                    // new ModelEntityIdIncrementingInterceptor(),
-                    new ModelLastModifiedUpdater(TimeProvider.System)
-                )
-#if DEBUG
-                .EnableSensitiveDataLogging()
-                .EnableDetailedErrors()
-                .LogTo(Console.WriteLine, LogLevel.Information)
-#endif
-#if !DEBUG
-                .UseLoggerFactory(
-                    LoggerFactory.Create(builder =>
-                    {
-                        builder.AddFilter((category, level) => level >= LogLevel.Error);
-                    })
-                )
-#endif
-                .ConfigureWarnings(warnings =>
-                {
-                    warnings.Log(RelationalEventId.PendingModelChangesWarning);
-                });
-        });
+        services.AddDb(connectionString);
 
         services.AddScoped<IUserIdProvider, UserIdProvider>();
 
@@ -128,6 +100,33 @@ public static class DependencyInjection
 
         return services;
     }
+
+    private static void AddDb(this IServiceCollection services, string connectionString) =>
+        _ = services.AddDbContext<StructuralAnalysisDbContext>(options =>
+            options
+                .UseNpgsql(
+                    connectionString,
+                    o => o.MigrationsAssembly(typeof(IAssemblyMarkerInfrastructure).Assembly)
+                )
+                .AddInterceptors(new ModelLastModifiedUpdater(TimeProvider.System))
+                .UseExceptionProcessor()
+#if DEBUG
+                .EnableSensitiveDataLogging()
+                .EnableDetailedErrors()
+                .LogTo(Console.WriteLine, LogLevel.Information)
+#endif
+#if !DEBUG
+                .UseLoggerFactory(
+                    LoggerFactory.Create(builder =>
+                    {
+                        builder.AddFilter((category, level) => level >= LogLevel.Error);
+                    })
+                )
+#endif
+                .ConfigureWarnings(warnings =>
+                    warnings.Log(RelationalEventId.PendingModelChangesWarning)
+                )
+        );
 
     public static void AddPhysicalModelInfrastructure(
         this ModelConfigurationBuilder configurationBuilder

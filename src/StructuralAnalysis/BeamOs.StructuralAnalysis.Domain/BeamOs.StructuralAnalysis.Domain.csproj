@@ -32,6 +32,10 @@
     <!-- <PackageReference Include="BeamOs.OpenSees.linux-x64" /> -->
   </ItemGroup>
 
+  <ItemGroup Condition="$(IncludeOpenSeesExe) == 'true' and $([MSBuild]::IsOSUnixLike())">
+    <PackageReference Include="BeamOs.OpenSees.linux-x64" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\Common\BeamOs.Common.Domain\BeamOs.Common.Domain.csproj" />
     <ProjectReference Include="..\BeamOs.StructuralAnalysis.Contracts\BeamOs.StructuralAnalysis.Contracts.csproj" />

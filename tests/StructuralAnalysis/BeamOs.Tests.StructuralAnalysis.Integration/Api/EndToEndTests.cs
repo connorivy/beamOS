@@ -10,7 +10,6 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using FluentAssertions;
-using TUnit.Core;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration.Api;
 
@@ -41,6 +40,24 @@ public class EndToEndTests
     public async Task CreateModel_ShouldReturnSuccessfulResponse()
     {
         await Verify(modelResponseResult);
+    }
+
+    [Test]
+    public async Task CreateModelWithDuplicateId_ShouldReturnConflictError()
+    {
+        CreateModelRequest request = new()
+        {
+            Name = "test model",
+            Description = "test model",
+            Settings = new(UnitSettingsContract.K_FT),
+            Id = modelId,
+        };
+
+        modelResponseResult = await AssemblySetup.StructuralAnalysisApiClient.CreateModelAsync(
+            request
+        );
+
+        await Verify(modelResponseResult).ScrubInlineGuids();
     }
 
     [Test]

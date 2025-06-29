@@ -3,7 +3,6 @@ using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Tests.Common;
 using DiffEngine;
 using Testcontainers.PostgreSql;
-using TUnit.Core;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration;
 

@@ -10,6 +10,8 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+string? connectionString = Environment.GetEnvironmentVariable("TEST_CONNECTION_STRING");
+
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
     BeamOsSerializerOptions.DefaultConfig(options.SerializerOptions);
@@ -17,7 +19,9 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 
 builder
     .Services.AddStructuralAnalysisRequired()
-    .AddStructuralAnalysisConfigurable(builder.Configuration.GetConnectionString("BeamOsDb"));
+    .AddStructuralAnalysisConfigurable(
+        connectionString ?? builder.Configuration.GetConnectionString("BeamOsDb")
+    );
 
 builder.Services.AddObjectThatExtendsBase<IAssemblyMarkerAi>(
     typeof(BeamOsActualBaseEndpoint<,>),

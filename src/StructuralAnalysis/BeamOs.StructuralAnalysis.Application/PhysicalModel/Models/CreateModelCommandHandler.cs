@@ -8,6 +8,8 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
+using EntityFramework.Exceptions.Common;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
@@ -24,10 +26,16 @@ public class CreateModelCommandHandler(
     {
         Model model = command.ToDomainObject();
         modelRepository.Add(model);
-        await unitOfWork.SaveChangesAsync(ct);
+        try
+        {
+            await unitOfWork.SaveChangesAsync(ct);
+        }
+        catch (UniqueConstraintException)
+        {
+            return BeamOsError.Conflict(description: $"Model with ID {model.Id} already exists.");
+        }
 
         return ModelToResponseMapper.Create(model.Settings.UnitSettings).Map(model);
-        //return model.ToResponse();
     }
 }
 
