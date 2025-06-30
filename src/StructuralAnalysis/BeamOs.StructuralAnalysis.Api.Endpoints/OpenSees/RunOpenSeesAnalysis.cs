@@ -30,18 +30,3 @@ public class RunOpenSeesAnalysis(RunOpenSeesAnalysisCommandHandler runOpenSeesCo
             ct
         );
 }
-
-public readonly struct ModelIdRequest : IHasModelId
-{
-    [FromRoute]
-    public Guid ModelId { get; init; }
-}
-
-public readonly struct ModelEntityRequest : IModelEntity
-{
-    [FromRoute]
-    public Guid ModelId { get; init; }
-
-    [FromRoute]
-    public int Id { get; init; }
-}

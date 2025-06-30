@@ -12,7 +12,7 @@ public class DeleteLoadCase(DeleteLoadCaseCommandHandler deleteLoadCaseCommandHa
     : BeamOsModelResourceQueryBaseEndpoint<ModelEntityResponse>
 {
     public override async Task<Result<ModelEntityResponse>> ExecuteRequestAsync(
-        OpenSees.ModelEntityRequest req,
+        ModelResourceWithIntIdRequest req,
         CancellationToken ct = default
     ) => await deleteLoadCaseCommandHandler.ExecuteAsync(req, ct);
 }

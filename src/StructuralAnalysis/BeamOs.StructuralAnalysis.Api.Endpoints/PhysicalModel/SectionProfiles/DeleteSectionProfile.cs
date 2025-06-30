@@ -1,7 +1,5 @@
-using System;
 using BeamOs.Common.Api;
 using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis.Api.Endpoints.OpenSees;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 
@@ -15,7 +13,7 @@ public class DeleteSectionProfile(
 ) : BeamOsModelResourceQueryBaseEndpoint<ModelEntityResponse>
 {
     public override async Task<Result<ModelEntityResponse>> ExecuteRequestAsync(
-        ModelEntityRequest req,
+        ModelResourceWithIntIdRequest req,
         CancellationToken ct = default
     ) => await deleteSectionProfileCommandHandler.ExecuteAsync(req, ct);
 }

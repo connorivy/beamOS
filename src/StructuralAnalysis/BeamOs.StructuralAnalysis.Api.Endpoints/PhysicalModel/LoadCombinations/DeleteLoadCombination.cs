@@ -13,7 +13,7 @@ public class DeleteLoadCombination(
 ) : BeamOsModelResourceQueryBaseEndpoint<ModelEntityResponse>
 {
     public override async Task<Result<ModelEntityResponse>> ExecuteRequestAsync(
-        OpenSees.ModelEntityRequest req,
+        ModelResourceWithIntIdRequest req,
         CancellationToken ct = default
     ) => await deleteLoadCombinationCommandHandler.ExecuteAsync(req, ct);
 }

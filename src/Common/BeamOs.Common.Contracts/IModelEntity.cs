@@ -1,5 +1,3 @@
-using System.Globalization;
-
 namespace BeamOs.Common.Contracts;
 
 public interface IHasModelId

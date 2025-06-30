@@ -13,7 +13,7 @@ public class DeleteElement1d(DeleteElement1dCommandHandler deleteElement1dComman
     : BeamOsModelResourceQueryBaseEndpoint<ModelEntityResponse>
 {
     public override async Task<Result<ModelEntityResponse>> ExecuteRequestAsync(
-        ModelEntityRequest req,
+        ModelResourceWithIntIdRequest req,
         CancellationToken ct = default
     ) => await deleteElement1dCommandHandler.ExecuteAsync(req, ct);
 }

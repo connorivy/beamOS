@@ -1,6 +1,5 @@
 using BeamOs.Common.Api;
 using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis.Api.Endpoints.OpenSees;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCombinations;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCombinations;
 
@@ -13,7 +12,7 @@ public class GetLoadCombination(GetLoadCombinationCommandHandler getLoadCombinat
     : BeamOsModelResourceQueryBaseEndpoint<LoadCombination>
 {
     public override async Task<Result<LoadCombination>> ExecuteRequestAsync(
-        ModelEntityRequest req,
+        ModelResourceWithIntIdRequest req,
         CancellationToken ct = default
     ) => await getLoadCombinationCommandHandler.ExecuteAsync(req, ct);
 }

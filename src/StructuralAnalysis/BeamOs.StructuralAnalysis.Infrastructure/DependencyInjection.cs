@@ -1,4 +1,5 @@
 using BeamOs.Common.Application;
+using BeamOs.Common.Contracts;
 using BeamOs.Identity;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.EnvelopeResultSets;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.NodeResults;

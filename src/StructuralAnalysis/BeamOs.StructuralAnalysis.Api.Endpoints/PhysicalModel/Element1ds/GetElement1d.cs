@@ -1,6 +1,5 @@
 using BeamOs.Common.Api;
 using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis.Api.Endpoints.OpenSees;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
 
@@ -13,7 +12,7 @@ public class GetElement1d(GetElement1dCommandHandler getElement1dCommandHandler)
     : BeamOsModelResourceQueryBaseEndpoint<Element1dResponse>
 {
     public override async Task<Result<Element1dResponse>> ExecuteRequestAsync(
-        ModelEntityRequest req,
+        ModelResourceWithIntIdRequest req,
         CancellationToken ct = default
     ) => await getElement1dCommandHandler.ExecuteAsync(req, ct);
 }

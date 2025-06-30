@@ -1,6 +1,5 @@
 using BeamOs.Common.Api;
 using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis.Api.Endpoints.OpenSees;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 
@@ -14,7 +13,7 @@ public class GetModel(GetModelCommandHandler getModelCommandHandler)
     : BeamOsModelIdRequestBaseEndpoint<ModelResponse>
 {
     public override async Task<Result<ModelResponse>> ExecuteRequestAsync(
-        ModelIdRequest req,
+        ModelResourceRequest req,
         CancellationToken ct = default
     ) => await getModelCommandHandler.ExecuteAsync(req.ModelId, ct);
 }

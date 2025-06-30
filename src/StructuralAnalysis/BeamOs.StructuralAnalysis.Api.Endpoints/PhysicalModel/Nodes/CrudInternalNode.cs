@@ -1,6 +1,5 @@
 using BeamOs.Common.Api;
 using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis.Api.Endpoints.OpenSees;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 
@@ -13,7 +12,7 @@ public class GetInternalNode(GetInternalNodeCommandHandler getNodeCommandHandler
     : BeamOsModelResourceQueryBaseEndpoint<InternalNode>
 {
     public override async Task<Result<InternalNode>> ExecuteRequestAsync(
-        ModelEntityRequest req,
+        ModelResourceWithIntIdRequest req,
         CancellationToken ct = default
     ) => await getNodeCommandHandler.ExecuteAsync(req, ct);
 }

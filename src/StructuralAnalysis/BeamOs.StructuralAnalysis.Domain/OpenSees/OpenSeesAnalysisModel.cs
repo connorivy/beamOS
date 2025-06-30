@@ -267,21 +267,22 @@ public sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettings
         return nodeResults;
     }
 
-    private static readonly HashSet<string> ignoredErrorMessages = new()
-    {
+    private static readonly HashSet<string> IgnoredErrorMessages =
+    [
         "         OpenSees -- Open System For Earthquake Engineering Simulation",
         "                 Pacific Earthquake Engineering Research Center",
         "                        Version 3.8.0 64-Bit",
+        "                        Version 3.7.1 64-Bit",
         "      (c) Copyright 1999-2016 The Regents of the University of California",
         "                              All Rights Reserved",
         "  (Copyright and Disclaimer @ http://www.berkeley.edu/OpenSees/copyright.html)",
-    };
+    ];
 
     private readonly StringBuilder errorMessageBuilder = new();
 
     void process_ErrorDataReceived(object sender, DataReceivedEventArgs e)
     {
-        if (string.IsNullOrEmpty(e.Data) || ignoredErrorMessages.Contains(e.Data))
+        if (string.IsNullOrEmpty(e.Data) || IgnoredErrorMessages.Contains(e.Data))
         {
             return;
         }

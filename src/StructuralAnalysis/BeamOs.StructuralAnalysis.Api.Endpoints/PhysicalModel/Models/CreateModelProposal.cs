@@ -30,7 +30,7 @@ public class GetModelProposals(GetModelProposalsQueryHandler getModelProposalQue
     : BeamOsModelIdRequestBaseEndpoint<List<ModelProposalInfo>>
 {
     public override async Task<Result<List<ModelProposalInfo>>> ExecuteRequestAsync(
-        ModelIdRequest req,
+        ModelResourceRequest req,
         CancellationToken ct = default
     ) => await getModelProposalQueryHandler.ExecuteAsync(req.ModelId, ct);
 }
@@ -42,7 +42,7 @@ public class GetModelProposal(GetModelProposalQueryHandler getModelProposalQuery
     : BeamOsModelResourceQueryBaseEndpoint<ModelProposalResponse>
 {
     public override async Task<Result<ModelProposalResponse>> ExecuteRequestAsync(
-        ModelEntityRequest req,
+        ModelResourceWithIntIdRequest req,
         CancellationToken ct = default
     ) => await getModelProposalQueryHandler.ExecuteAsync(req, ct);
 }
@@ -72,7 +72,7 @@ public class RejectModelProposal(RejectModelProposalCommandHandler rejectProposa
     : BeamOsModelResourceQueryBaseEndpoint<bool>
 {
     public override async Task<Result<bool>> ExecuteRequestAsync(
-        ModelEntityRequest req,
+        ModelResourceWithIntIdRequest req,
         CancellationToken ct = default
     ) => await rejectProposalCommandHandler.ExecuteAsync(req, ct);
 }

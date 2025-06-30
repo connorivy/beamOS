@@ -12,7 +12,7 @@ public readonly record struct ModelId
 
     public ModelId(Guid? id = null)
     {
-        this.Id = id ?? Guid.NewGuid();
+        this.Id = id ?? Guid.CreateVersion7();
     }
 
     public static implicit operator Guid(ModelId id) => id.Id;

@@ -1,6 +1,5 @@
 using BeamOs.Common.Api;
 using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis.Api.Endpoints.OpenSees;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCases;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
 
@@ -13,7 +12,7 @@ public class GetLoadCase(GetLoadCaseCommandHandler getLoadCaseCommandHandler)
     : BeamOsModelResourceQueryBaseEndpoint<LoadCase>
 {
     public override async Task<Result<LoadCase>> ExecuteRequestAsync(
-        ModelEntityRequest req,
+        ModelResourceWithIntIdRequest req,
         CancellationToken ct = default
     ) => await getLoadCaseCommandHandler.ExecuteAsync(req, ct);
 }
