@@ -2,7 +2,7 @@ using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Contracts.Common;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoad;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoads;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.Editor;
 using BeamOs.WebApp.EditorCommands.Interfaces;
@@ -98,7 +98,7 @@ public sealed class DeleteMomentLoadSimpleCommandHandler(
         {
             ModelId = simpleCommand.ModelId,
             MomentLoadId = simpleCommand.Id,
-            Data = node.ToData()
+            Data = node.ToData(),
         };
     }
 }
@@ -120,7 +120,7 @@ public record DeleteMomentLoadClientCommand : IBeamOsClientCommand
             MomentLoadId = this.MomentLoadId,
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
             HandledByEditor = args?.HandledByEditor ?? this.HandledByEditor,
-            HandledByServer = args?.HandledByServer ?? this.HandledByServer
+            HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 
     public IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
@@ -128,6 +128,6 @@ public record DeleteMomentLoadClientCommand : IBeamOsClientCommand
         {
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
             HandledByEditor = args?.HandledByEditor ?? this.HandledByEditor,
-            HandledByServer = args?.HandledByServer ?? this.HandledByServer
+            HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 }

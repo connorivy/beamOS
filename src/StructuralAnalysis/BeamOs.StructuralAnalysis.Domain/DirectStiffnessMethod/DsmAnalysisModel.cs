@@ -1,5 +1,6 @@
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.MomentDiagramAggregate;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.ShearForceDiagramAggregate;
+using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.EnvelopeResultSets;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.NodeResultAggregate;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.Common;
@@ -36,10 +37,16 @@ public sealed class DsmAnalysisModel(
         model.Settings.AnalysisSettings.Element1DAnalysisType switch
         {
             Element1dAnalysisType.Euler => model
-                .Element1ds.Select(el => new DsmElement1d(el))
+                .Element1ds.Select(el => new DsmElement1d(
+                    el,
+                    el.SectionProfile.GetSectionProfile()
+                ))
                 .ToArray(),
             Element1dAnalysisType.Timoshenko => model
-                .Element1ds.Select(el => new TimoshenkoDsmElement1d(el))
+                .Element1ds.Select(el => new TimoshenkoDsmElement1d(
+                    el,
+                    el.SectionProfile.GetSectionProfile()
+                ))
                 .ToArray(),
             Element1dAnalysisType.Undefined or _ => throw new Exception(
                 $"Unsupported Element1DAnalysisType {model.Settings.AnalysisSettings.Element1DAnalysisType}"
@@ -76,10 +83,12 @@ public sealed class DsmAnalysisModel(
             knownReactionVector
         );
         resultSet.NodeResults = nodeResults;
+        EnvelopeResultSet envelopeResultSet = new(modelId);
 
         var otherResults = resultSet.ComputeDiagramsAndElement1dResults(
             dsmElement1Ds,
-            unitSettings
+            unitSettings,
+            envelopeResultSet
         );
 
         return new() { ResultSet = resultSet, OtherAnalyticalResults = otherResults };

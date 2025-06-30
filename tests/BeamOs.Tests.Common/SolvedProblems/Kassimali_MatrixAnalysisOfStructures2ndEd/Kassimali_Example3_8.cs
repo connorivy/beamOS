@@ -1,12 +1,12 @@
 using BeamOs.StructuralAnalysis.Contracts.Common;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCombinations;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Materials;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using UnitsNet.Units;
 
 namespace BeamOs.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd;
@@ -105,30 +105,34 @@ public class Kassimali_Example3_8 : ModelFixture, IHasExpectedNodeResults
 
     public override IEnumerable<PutSectionProfileRequest> SectionProfileRequests()
     {
-        yield return new()
+        yield return new PutSectionProfileRequest
         {
+            Name = "8",
+            LengthUnit = LengthUnitContract.Inch,
             Area = 8,
             StrongAxisMomentOfInertia = 1,
             WeakAxisMomentOfInertia = 1,
             PolarMomentOfInertia = 1,
             StrongAxisShearArea = 1,
             WeakAxisShearArea = 1,
-            AreaUnit = AreaUnitContract.SquareInch,
-            AreaMomentOfInertiaUnit = AreaMomentOfInertiaUnitContract.InchToTheFourth,
             Id = 8,
+            StrongAxisPlasticSectionModulus = 1,
+            WeakAxisPlasticSectionModulus = 1,
         };
 
-        yield return new()
+        yield return new PutSectionProfileRequest()
         {
+            Name = "6",
+            LengthUnit = LengthUnitContract.Inch,
             Area = 6,
             StrongAxisMomentOfInertia = 1,
             WeakAxisMomentOfInertia = 1,
             PolarMomentOfInertia = 1,
             StrongAxisShearArea = 1,
             WeakAxisShearArea = 1,
-            AreaUnit = AreaUnitContract.SquareInch,
-            AreaMomentOfInertiaUnit = AreaMomentOfInertiaUnitContract.InchToTheFourth,
             Id = 6,
+            StrongAxisPlasticSectionModulus = 1,
+            WeakAxisPlasticSectionModulus = 1,
         };
     }
 

@@ -1,4 +1,3 @@
-using System.Reflection;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.ResultSets;
@@ -13,11 +12,11 @@ using Microsoft.Extensions.Logging;
 
 namespace BeamOs.StructuralAnalysis.Application.OpenSees;
 
-public sealed class RunOpenSeesCommandHandler(
+public sealed class RunOpenSeesAnalysisCommandHandler(
     IModelRepository modelRepository,
     IResultSetRepository resultSetRepository,
     IStructuralAnalysisUnitOfWork unitOfWork,
-    ILogger<RunOpenSeesCommandHandler> logger
+    ILogger<RunOpenSeesAnalysisCommandHandler> logger
 ) : ICommandHandler<RunDsmCommand, AnalyticalResultsResponse>
 {
     public async Task<Result<AnalyticalResultsResponse>> ExecuteAsync(
@@ -39,7 +38,9 @@ public sealed class RunOpenSeesCommandHandler(
                     .Include(m => m.Element1ds)
                     .ThenInclude(el => el.SectionProfile)
                     .Include(m => m.Element1ds)
-                    .ThenInclude(el => el.Material),
+                    .ThenInclude(el => el.Material)
+                    .Include(m => m.Element1ds)
+                    .ThenInclude(el => el.InternalNodes),
             ct
         );
 

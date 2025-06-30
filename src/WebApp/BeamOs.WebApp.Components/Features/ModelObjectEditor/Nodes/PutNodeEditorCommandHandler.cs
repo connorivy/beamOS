@@ -1,7 +1,7 @@
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.Editor;
 using BeamOs.WebApp.EditorCommands;

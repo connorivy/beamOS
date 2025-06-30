@@ -6,16 +6,17 @@ public class ModelSettings : BeamOSValueObject
 {
     public UnitSettings UnitSettings { get; private set; }
     public AnalysisSettings AnalysisSettings { get; private set; }
-
     public bool YAxisUp { get; private set; }
 
-    public ModelSettings(UnitSettings unitSettings, AnalysisSettings? analysisSettings = null)
+    public ModelSettings(
+        UnitSettings unitSettings,
+        bool yAxisUp,
+        AnalysisSettings? analysisSettings = null
+    )
     {
         this.UnitSettings = unitSettings;
         this.AnalysisSettings = analysisSettings ?? new();
-
-        // todo: support z-up
-        this.YAxisUp = true;
+        this.YAxisUp = yAxisUp;
     }
 
     protected override IEnumerable<object> GetEqualityComponents()

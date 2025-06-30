@@ -1,7 +1,8 @@
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Materials;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
+using BeamOs.StructuralAnalysis.Contracts.Common;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Materials;
 using BeamOs.WebApp.Components.Features.Editor;
 using BeamOs.WebApp.Components.Features.SelectionInfo;
 using BeamOs.WebApp.EditorCommands;
@@ -14,10 +15,10 @@ namespace BeamOs.WebApp.Components.Features.ModelObjectEditor.Materials;
 public partial class MaterialObjectEditor(
     IDispatcher dispatcher,
     IState<EditorComponentState> editorState,
-    IState<MaterialObjectEditorState> state
-// PutMaterialSimpleCommandHandler putMaterialCommandHandler,
-// CreateMaterialClientCommandHandler createMaterialCommandHandler,
-// DeleteMaterialSimpleCommandHandler deleteMaterialCommandHandler
+    IState<MaterialObjectEditorState> state,
+    PutMaterialSimpleCommandHandler putMaterialCommandHandler,
+    CreateMaterialClientCommandHandler createMaterialCommandHandler,
+    DeleteMaterialSimpleCommandHandler deleteMaterialCommandHandler
 ) : FluxorComponent
 {
     private readonly MaterialModel material = new();
@@ -77,7 +78,10 @@ public partial class MaterialObjectEditor(
     {
         base.OnParametersSet();
 
-        if (this.SelectedObject is not null && this.SelectedObject.TypeName == "Material")
+        if (
+            this.SelectedObject is not null
+            && this.SelectedObject.ObjectType == BeamOsObjectType.Material
+        )
         {
             this.UpdateFromMaterialId(this.SelectedObject.Id);
         }
@@ -112,35 +116,32 @@ public partial class MaterialObjectEditor(
     private async Task Delete()
     {
         ModelEntityCommand command = new() { ModelId = this.ModelId, Id = this.material.Id };
-        // await deleteMaterialCommandHandler.ExecuteAsync(command);
+        await deleteMaterialCommandHandler.ExecuteAsync(command);
     }
 
     private async Task Submit()
     {
-        MaterialRequestData data =
-            new()
-            {
-                PressureUnit = this.UnitSettings.PressureUnit,
-                ModulusOfElasticity = this.material.ModulusOfElasticity.Value,
-                ModulusOfRigidity = this.material.ModulusOfRigidity.Value
-            };
+        MaterialData data = new()
+        {
+            PressureUnit = this.UnitSettings.PressureUnit,
+            ModulusOfElasticity = this.material.ModulusOfElasticity.Value,
+            ModulusOfRigidity = this.material.ModulusOfRigidity.Value,
+        };
 
         if (this.material.Id == 0)
         {
-            // CreateMaterialRequest command = new(materialData) { ModelId = this.ModelId };
-            // await createMaterialCommandHandler.ExecuteAsync(command);
+            await createMaterialCommandHandler.ExecuteAsync(new(data) { ModelId = this.ModelId });
         }
         else
         {
-            PutMaterialCommand command =
-                new()
-                {
-                    Id = this.material.Id,
-                    ModelId = this.ModelId,
-                    Body = data
-                };
+            PutMaterialCommand command = new()
+            {
+                Id = this.material.Id,
+                ModelId = this.ModelId,
+                Body = data,
+            };
 
-            // await putMaterialCommandHandler.ExecuteAsync(command);
+            await putMaterialCommandHandler.ExecuteAsync(command);
         }
     }
 
@@ -160,12 +161,9 @@ public partial class MaterialObjectEditor(
 
         return Task.FromResult(
             NullInt.Concat(
-                editorState
-                    .Value
-                    .CachedModelResponse
-                    .Materials
-                    .Keys
-                    .Where(k => GetPrefix(k, subIntLength) == subInt)
+                editorState.Value.CachedModelResponse.Materials.Keys.Where(k =>
+                    GetPrefix(k, subIntLength) == subInt
+                )
             )
         );
     }
@@ -205,12 +203,6 @@ public partial class MaterialObjectEditor(
         public double? ModulusOfRigidity { get; set; }
     }
 }
-
-public class DeleteMaterialSimpleCommandHandler { }
-
-public class CreateMaterialClientCommandHandler { }
-
-public class PutMaterialSimpleCommandHandler { }
 
 [FeatureState]
 public record MaterialObjectEditorState(bool IsLoading)

@@ -1,8 +1,8 @@
 using BeamOs.Common.Api;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.PointLoads;
 

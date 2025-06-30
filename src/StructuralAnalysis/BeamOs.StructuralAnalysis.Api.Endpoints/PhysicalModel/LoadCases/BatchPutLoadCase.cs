@@ -2,7 +2,7 @@ using BeamOs.Common.Api;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCases;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCases;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using LoadCase = BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases.LoadCase;
@@ -19,27 +19,4 @@ public class BatchPutLoadCase(BatchPutLoadCaseCommandHandler putLoadCaseCommandH
         BatchPutLoadCaseCommand req,
         CancellationToken ct = default
     ) => await putLoadCaseCommandHandler.ExecuteAsync(req, ct);
-}
-
-public sealed class BatchPutLoadCaseCommandHandler(
-    ILoadCaseRepository repository,
-    IStructuralAnalysisUnitOfWork unitOfWork
-)
-    : BatchPutCommandHandler<
-        LoadCaseId,
-        Domain.PhysicalModel.LoadCases.LoadCase,
-        BatchPutLoadCaseCommand,
-        LoadCase
-    >(repository, unitOfWork)
-{
-    protected override Domain.PhysicalModel.LoadCases.LoadCase ToDomainObject(
-        ModelId modelId,
-        LoadCase putRequest
-    ) => new PutLoadCaseCommand(modelId, putRequest).ToDomainObject();
-}
-
-public readonly struct BatchPutLoadCaseCommand : IModelResourceRequest<LoadCase[]>
-{
-    public Guid ModelId { get; init; }
-    public LoadCase[] Body { get; init; }
 }

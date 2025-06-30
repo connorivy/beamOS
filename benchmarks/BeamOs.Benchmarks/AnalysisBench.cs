@@ -1,9 +1,11 @@
+using BeamOs.StructuralAnalysis.Api.Endpoints.OpenSees;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models.Mappers;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 using BeamOs.StructuralAnalysis.Domain.OpenSees;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinations;
 using BeamOs.Tests.Common.SolvedProblems.SAP2000;
 using BenchmarkDotNet.Attributes;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace BeamOs.Benchmarks;
@@ -14,16 +16,19 @@ public class AnalysisBench : IDisposable
 {
     private readonly DsmAnalysisModel dsmAnalysisModel;
     private readonly OpenSeesAnalysisModel openSeesAnalysisModel;
-    private readonly ISolverFactory solverFactory = new PardisoSolverFactory();
+
+    // private readonly ISolverFactory solverFactory = new PardisoSolverFactory();
+    private readonly ISolverFactory solverFactory = new CholeskySolverFactory();
     private readonly LoadCombination loadCombination;
+
     public AnalysisBench()
     {
         var modelFixture = new TwistyBowlFraming();
         BeamOsModelBuilderDomainMapper mapper = new(modelFixture.Id);
         this.dsmAnalysisModel = mapper.ToDsm(modelFixture, out var model);
-        this.loadCombination = model.LoadCombinations.FirstOrDefault() ?? throw new Exception(
-            "Model has no load combinations"
-        );
+        this.loadCombination =
+            model.LoadCombinations.FirstOrDefault()
+            ?? throw new Exception("Model has no load combinations");
         this.openSeesAnalysisModel = new OpenSeesAnalysisModel(
             model,
             model.Settings.UnitSettings,

@@ -83,6 +83,16 @@ public class TorqueValueConverter : ValueConverter<Torque, double>
         ) { }
 }
 
+public class RatioValueConverter : ValueConverter<Ratio, double>
+{
+    public RatioValueConverter()
+        : base(
+            x => x.As(UnitsNet.Units.RatioUnit.DecimalFraction),
+            x => new(x, UnitsNet.Units.RatioUnit.DecimalFraction),
+            null
+        ) { }
+}
+
 public class PressureValueConverter : ValueConverter<Pressure, double>
 {
     public PressureValueConverter()

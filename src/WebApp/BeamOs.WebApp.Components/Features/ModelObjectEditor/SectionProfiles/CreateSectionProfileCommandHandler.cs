@@ -1,6 +1,6 @@
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.EditorCommands.Interfaces;
 using Fluxor;
@@ -69,7 +69,7 @@ public record CreateSectionProfileClientCommand(SectionProfileData Data) : IBeam
             Data = this.Data,
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
             HandledByEditor = args?.HandledByEditor ?? this.HandledByEditor,
-            HandledByServer = args?.HandledByServer ?? this.HandledByServer
+            HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 
     public IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
@@ -77,7 +77,7 @@ public record CreateSectionProfileClientCommand(SectionProfileData Data) : IBeam
         {
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
             HandledByEditor = args?.HandledByEditor ?? this.HandledByEditor,
-            HandledByServer = args?.HandledByServer ?? this.HandledByServer
+            HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 }
 
@@ -98,7 +98,7 @@ public record DeleteSectionProfileClientCommand : IBeamOsClientCommand
             SectionProfileId = this.SectionProfileId,
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
             HandledByEditor = args?.HandledByEditor ?? this.HandledByEditor,
-            HandledByServer = args?.HandledByServer ?? this.HandledByServer
+            HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 
     public IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
@@ -106,6 +106,6 @@ public record DeleteSectionProfileClientCommand : IBeamOsClientCommand
         {
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
             HandledByEditor = args?.HandledByEditor ?? this.HandledByEditor,
-            HandledByServer = args?.HandledByServer ?? this.HandledByServer
+            HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 }

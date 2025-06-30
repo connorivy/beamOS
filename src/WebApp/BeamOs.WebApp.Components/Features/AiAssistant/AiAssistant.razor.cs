@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using BeamOs.CodeGen.AiApiClient;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
 using Microsoft.AspNetCore.Components;
@@ -9,7 +10,7 @@ namespace BeamOs.WebApp.Components.Features.AiAssistant;
 
 public partial class AiAssistant(
     IHttpClientFactory httpClientFactory,
-    IStructuralAnalysisApiClientV1 structuralAnalysisApiClient,
+    IAiApiClient aiApiClient,
     ISnackbar snackbar
 )
 {
@@ -72,11 +73,8 @@ public partial class AiAssistant(
 
         var json = JsonSerializer.Serialize(requestBody);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
-        // using var response = await this.httpClient.PostAsync(aiUri.Uri, content);
-        var response = await structuralAnalysisApiClient.GithubModelsChatAsync(
-            this.ModelId,
-            requestBody
-        );
+
+        var response = await aiApiClient.GithubModelsChatAsync(this.ModelId, requestBody);
 
         if (response.IsError)
         {
@@ -84,7 +82,7 @@ public partial class AiAssistant(
             return;
         }
 
-        ChatMessage chatMessage = new() { IsUser = false, Text = response.Value };
+        ChatMessage chatMessage = new() { IsUser = false, Text = response.Value.Message };
         this.chatMessages.Add(chatMessage);
 
         this.StateHasChanged();

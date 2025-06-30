@@ -4,34 +4,27 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <UseSqlServer Condition="'$(UseSqlServer)' == ''">true</UseSqlServer>
   </PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<!--<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />-->
+		<PackageReference Include="EntityFrameworkCore.Exceptions.PostgreSQL" />
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
 	</ItemGroup>
-
-  <PropertyGroup Condition="'$(UseSqlServer)' == true">
-    <DefineConstants>$(DefineConstants);SQL_SERVER</DefineConstants>
-  </PropertyGroup>
-  
-  <ItemGroup Condition="'$(UseSqlServer)' == true">
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
-  </ItemGroup>
-
-  <!--<ItemGroup Condition="'$(UseSqlServer)' != false">
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
-  </ItemGroup>-->
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\..\tests\BeamOs.Tests.Common\BeamOs.Tests.Common.csproj" />
 	  <ProjectReference Include="..\..\Identity\BeamOs.Identity\BeamOs.Identity.csproj" />
 	  <ProjectReference Include="..\BeamOs.StructuralAnalysis.Application\BeamOs.StructuralAnalysis.Application.csproj" />
 	  <ProjectReference Include="..\BeamOs.StructuralAnalysis.Domain\BeamOs.StructuralAnalysis.Domain.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="AnalyticalResults\EnvelopeResultSets\" />
 	</ItemGroup>
 </Project>

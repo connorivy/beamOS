@@ -1,5 +1,6 @@
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.StructuralAnalysis.Application.Common;
+using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCombinations;
 using BeamOs.WebApp.Components.Features.Editor;
@@ -74,7 +75,10 @@ public partial class LoadCombinationObjectEditor(
     {
         base.OnParametersSet();
 
-        if (this.SelectedObject is not null && this.SelectedObject.TypeName == "LoadCombination")
+        if (
+            this.SelectedObject is not null
+            && this.SelectedObject.ObjectType == BeamOsObjectType.LoadCombination
+        )
         {
             this.UpdateFromLoadCombinationId(this.SelectedObject.Id);
         }

@@ -1,12 +1,13 @@
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text;
+using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.EnvelopeResultSets;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.NodeResultAggregate;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 using BeamOs.StructuralAnalysis.Domain.OpenSees.Tcp;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinations;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using Microsoft.Extensions.Logging;
 
@@ -44,13 +45,28 @@ public sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettings
         {
             NodeResults = this.GetResults(model, tclWriter),
         };
+        var envelopeResultSet = new EnvelopeResultSet(model.Id);
 
         var dsmElements =
             model.Settings.AnalysisSettings.Element1DAnalysisType == Element1dAnalysisType.Euler
-                ? model.Element1ds.Select(el => new DsmElement1d(el)).ToArray()
-                : model.Element1ds.Select(el => new TimoshenkoDsmElement1d(el)).ToArray();
+                ? model
+                    .Element1ds.Select(el => new DsmElement1d(
+                        el,
+                        el.SectionProfile.GetSectionProfile()
+                    ))
+                    .ToArray()
+                : model
+                    .Element1ds.Select(el => new TimoshenkoDsmElement1d(
+                        el,
+                        el.SectionProfile.GetSectionProfile()
+                    ))
+                    .ToArray();
 
-        var otherResults = resultSet.ComputeDiagramsAndElement1dResults(dsmElements, unitSettings);
+        var otherResults = resultSet.ComputeDiagramsAndElement1dResults(
+            dsmElements,
+            unitSettings,
+            envelopeResultSet
+        );
 
         return new AnalysisResults()
         {
@@ -181,15 +197,22 @@ public sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettings
 
         if (listenDisp.Status != TaskStatus.RanToCompletion)
         {
+            var errors = this.errorMessageBuilder.ToString();
             logger.LogError(
-                "Unable to receive the node displacements from OpenSees within the timeframe"
+                "Unable to receive the node displacements from OpenSees within the timeframe. Errors: {errors}",
+                errors
             );
+            throw new InvalidOperationException($"Error in opensees process: {errors}");
         }
+
         if (listenReact.Status != TaskStatus.RanToCompletion)
         {
+            var errors = this.errorMessageBuilder.ToString();
             logger.LogError(
-                "Unable to receive the node reactions from OpenSees within the timeframe"
+                "Unable to receive the node reactions from OpenSees within the timeframe. Errors: {errors}",
+                errors
             );
+            throw new InvalidOperationException($"Error in opensees process: {errors}");
         }
         //if (listenElemForces.Status != TaskStatus.RanToCompletion)
         //{
@@ -244,23 +267,27 @@ public sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettings
         return nodeResults;
     }
 
-    private static readonly HashSet<string> ignoredErrorMessages = new()
-    {
+    private static readonly HashSet<string> IgnoredErrorMessages =
+    [
         "         OpenSees -- Open System For Earthquake Engineering Simulation",
         "                 Pacific Earthquake Engineering Research Center",
         "                        Version 3.8.0 64-Bit",
+        "                        Version 3.7.1 64-Bit",
         "      (c) Copyright 1999-2016 The Regents of the University of California",
         "                              All Rights Reserved",
         "  (Copyright and Disclaimer @ http://www.berkeley.edu/OpenSees/copyright.html)",
-    };
+    ];
+
+    private readonly StringBuilder errorMessageBuilder = new();
 
     void process_ErrorDataReceived(object sender, DataReceivedEventArgs e)
     {
-        if (string.IsNullOrEmpty(e.Data) || ignoredErrorMessages.Contains(e.Data))
+        if (string.IsNullOrEmpty(e.Data) || IgnoredErrorMessages.Contains(e.Data))
         {
             return;
         }
 
+        this.errorMessageBuilder.AppendLine(e.Data);
         logger.LogError("OpenSees process error {data}", e.Data);
     }
 

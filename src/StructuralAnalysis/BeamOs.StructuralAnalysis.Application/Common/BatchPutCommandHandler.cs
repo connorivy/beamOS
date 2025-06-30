@@ -1,14 +1,14 @@
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.Common.Domain.Models;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.Common;
 
 public abstract class BatchPutCommandHandler<TId, TEntity, TBatchPutCommand, TPutRequest>(
-    IModelResourceRepository<TId, TEntity> repository,
+    IModelResourceRepositoryIn<TId, TEntity> repository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<TBatchPutCommand, BatchResponse>
     where TId : struct, IIntBasedId
@@ -37,7 +37,7 @@ public abstract class BatchPutCommandHandler<TId, TEntity, TBatchPutCommand, TPu
 
             if (existingIds.Contains(putRequest.Id))
             {
-                repository.Put(entity);
+                await repository.Put(entity);
                 updated++;
                 statuses[i] = new(putRequest.Id, EntityOperationStatus.Updated);
             }

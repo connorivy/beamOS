@@ -1,7 +1,7 @@
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.Common;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.Editor;
 using BeamOs.WebApp.EditorCommands.Interfaces;
@@ -106,7 +106,7 @@ public record CreateElement1dClientCommand(Element1dData Data) : IBeamOsClientCo
             Data = this.Data,
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
             HandledByEditor = args?.HandledByEditor ?? this.HandledByEditor,
-            HandledByServer = args?.HandledByServer ?? this.HandledByServer
+            HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 
     public IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
@@ -114,6 +114,6 @@ public record CreateElement1dClientCommand(Element1dData Data) : IBeamOsClientCo
         {
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
             HandledByEditor = args?.HandledByEditor ?? this.HandledByEditor,
-            HandledByServer = args?.HandledByServer ?? this.HandledByServer
+            HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 }

@@ -1,6 +1,5 @@
 using BeamOs.Common.Api;
 using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis.Api.Endpoints.OpenSees;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 
@@ -14,7 +13,7 @@ public class DeleteNode(DeleteNodeCommandHandler deleteNodeCommandHandler)
     : BeamOsModelResourceQueryBaseEndpoint<ModelEntityResponse>
 {
     public override async Task<Result<ModelEntityResponse>> ExecuteRequestAsync(
-        ModelEntityRequest req,
+        ModelResourceWithIntIdRequest req,
         CancellationToken ct = default
     ) => await deleteNodeCommandHandler.ExecuteAsync(req, ct);
 }

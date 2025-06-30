@@ -2,7 +2,7 @@ using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.Tests.Common;
 using Microsoft.EntityFrameworkCore;
@@ -23,19 +23,15 @@ public class GetModelsQueryHandler(StructuralAnalysisDbContext dbContext)
             .ToHashSet();
 
         return await dbContext
-            .Models
-            .Where(m => !sampleModels.Contains(m.Id))
-            .Select(
-                m =>
-                    new ModelInfoResponse(
-                        m.Id,
-                        m.Name,
-                        m.Description,
-                        m.Settings.ToContract(),
-                        m.LastModified,
-                        "Owner"
-                    )
-            )
+            .Models.Where(m => !sampleModels.Contains(m.Id))
+            .Select(m => new ModelInfoResponse(
+                m.Id,
+                m.Name,
+                m.Description,
+                m.Settings.ToContract(),
+                m.LastModified,
+                "Owner"
+            ))
             .ToListAsync(cancellationToken: ct);
     }
 }

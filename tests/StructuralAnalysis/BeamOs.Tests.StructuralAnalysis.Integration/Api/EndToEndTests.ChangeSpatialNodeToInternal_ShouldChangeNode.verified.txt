@@ -1,0 +1,22 @@
+﻿{
+  Value: {
+    Id: 5,
+    Element1dId: 99,
+    RatioAlongElement1d: {
+      Value: 0.5,
+      Unit: DecimalFraction
+    },
+    Restraint: {
+      CanTranslateAlongX: true,
+      CanTranslateAlongY: true,
+      CanTranslateAlongZ: true,
+      CanRotateAboutX: true,
+      CanRotateAboutY: true,
+      CanRotateAboutZ: true
+    },
+    Metadata: null
+  },
+  Error: null,
+  IsError: false,
+  IsSuccess: true
+}

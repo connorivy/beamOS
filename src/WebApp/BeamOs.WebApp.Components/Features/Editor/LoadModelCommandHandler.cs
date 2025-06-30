@@ -1,10 +1,11 @@
 using BeamOs.CodeGen.EditorApi;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.Tests.Common;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.TestExplorer;
+using BeamOs.WebApp.EditorCommands.Interfaces;
 using Fluxor;
 using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Logging;
@@ -159,50 +160,58 @@ public class LoadBeamOsEntityCommandHandler(
         CancellationToken ct = default
     )
     {
-        if (command.EntityResponse is ModelResponse modelResponse)
+        return command.EntityResponse switch
         {
-            await command.EditorApi.ClearAsync(ct);
-
-            await command.EditorApi.SetSettingsAsync(modelResponse.Settings, ct);
-
-            await command.EditorApi.CreateNodesAsync(
-                modelResponse.Nodes.Select(e => e.ToEditorUnits()),
+            ModelResponse modelResponse => await DisplayModelResponse(
+                modelResponse,
+                command.EditorApi,
                 ct
-            );
-
-            await command.EditorApi.CreatePointLoadsAsync(
-                modelResponse.PointLoads.Select(e => e.ToEditorUnits()),
+            ),
+            ModelProposalResponse modelProposalResponse => await DisplayModelProposal(
+                modelProposalResponse,
+                command.EditorApi,
                 ct
-            );
+            ),
+            _ => BeamOsError.Failure(
+                description: $"Unsupported entity type: {command.EntityResponse.GetType()}"
+            ),
+        };
+    }
 
-            await command.EditorApi.CreateElement1dsAsync(modelResponse.Element1ds, ct);
+    private static async Task<Result<CachedModelResponse>> DisplayModelResponse(
+        ModelResponse modelResponse,
+        IEditorApiAlpha editorApi,
+        CancellationToken ct
+    )
+    {
+        await editorApi.ClearAsync(ct);
 
-            return new CachedModelResponse(modelResponse);
-        }
-        // else if (command.EntityResponse is ModelResponseHydrated modelResponseH)
-        // {
-        //     await command.EditorApi.ClearAsync(ct);
+        await editorApi.SetSettingsAsync(modelResponse.Settings, ct);
 
-        //     await command.EditorApi.SetSettingsAsync(modelResponseH.Settings, ct);
+        await editorApi.CreateModelAsync(modelResponse, ct);
 
-        //     await command.EditorApi.CreateNodesAsync(
-        //         modelResponseH.Nodes.Select(e => e.ToEditorUnits()),
-        //         ct
-        //     );
+        // await editorApi.CreateNodesAsync(modelResponse.Nodes.Select(e => e.ToEditorUnits()), ct);
 
-        //     await command.EditorApi.CreatePointLoadsAsync(
-        //         modelResponseH.PointLoads.Select(e => e.ToEditorUnits()),
-        //         ct
-        //     );
+        // await editorApi.CreatePointLoadsAsync(
+        //     modelResponse.PointLoads.Select(e => e.ToEditorUnits()),
+        //     ct
+        // );
 
-        //     await command.EditorApi.CreateElement1dsAsync(modelResponseH.Element1ds, ct);
+        // await editorApi.CreateElement1dsAsync(modelResponse.Element1ds, ct);
 
-        //     return new CachedModelResponse(modelResponseH);
-        // }
+        return new CachedModelResponse(modelResponse);
+    }
 
-        throw new NotImplementedException(
-            $"Type {command.EntityResponse.GetType()} is not supported in '{nameof(LoadBeamOsEntityCommandHandler)}'"
-        );
+    private static async Task<Result<CachedModelResponse>> DisplayModelProposal(
+        ModelProposalResponse entity,
+        IEditorApiAlpha editorApi,
+        CancellationToken ct
+    )
+    {
+        await editorApi.DisplayModelProposalAsync(entity, ct);
+        CachedModelResponse cachedModelResponse = default;
+
+        return cachedModelResponse;
     }
 }
 

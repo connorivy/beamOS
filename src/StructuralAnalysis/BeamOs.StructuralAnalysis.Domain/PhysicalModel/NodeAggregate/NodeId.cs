@@ -18,3 +18,19 @@ public readonly record struct NodeId : IIntBasedId
 
     public override string ToString() => this.Id.ToString(CultureInfo.InvariantCulture);
 }
+
+public readonly record struct NodeProposalId : IIntBasedId
+{
+    public int Id { get; init; }
+
+    public NodeProposalId(int id)
+    {
+        this.Id = id;
+    }
+
+    public static implicit operator int(NodeProposalId id) => id.Id;
+
+    public static implicit operator NodeProposalId(int id) => new(id);
+
+    public override string ToString() => this.Id.ToString(CultureInfo.InvariantCulture);
+}

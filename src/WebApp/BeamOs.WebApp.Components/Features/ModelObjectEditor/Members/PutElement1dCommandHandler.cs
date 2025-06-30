@@ -2,7 +2,7 @@ using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.Editor;
 using BeamOs.WebApp.EditorCommands.Interfaces;
@@ -102,7 +102,7 @@ public sealed class PutElement1dSimpleCommandHandler(
             ModelId = simpleCommand.ModelId,
             Element1dId = simpleCommand.Id,
             Previous = element1d,
-            New = simpleCommand.ToResponse()
+            New = simpleCommand.ToResponse(),
         };
     }
 }
@@ -127,7 +127,7 @@ public record PutElement1dClientCommand : IBeamOsClientCommand
             New = this.Previous,
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
             HandledByEditor = args?.HandledByEditor ?? this.HandledByEditor,
-            HandledByServer = args?.HandledByServer ?? this.HandledByServer
+            HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 
     public IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
@@ -135,6 +135,6 @@ public record PutElement1dClientCommand : IBeamOsClientCommand
         {
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
             HandledByEditor = args?.HandledByEditor ?? this.HandledByEditor,
-            HandledByServer = args?.HandledByServer ?? this.HandledByServer
+            HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 }

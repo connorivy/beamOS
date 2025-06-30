@@ -4,7 +4,7 @@ using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.MomentLoads;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoad;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoads;
 using BeamOs.WebApp.Components.Features.Editor;
 using BeamOs.WebApp.Components.Features.SelectionInfo;
 using BeamOs.WebApp.EditorCommands;
@@ -88,7 +88,10 @@ public partial class MomentLoadObjectEditor(
     {
         base.OnParametersSet();
 
-        if (this.SelectedObject is not null && this.SelectedObject.TypeName == "MomentLoad")
+        if (
+            this.SelectedObject is not null
+            && this.SelectedObject.ObjectType == BeamOsObjectType.MomentLoad
+        )
         {
             this.UpdateFromMomentLoadId(this.SelectedObject.Id);
         }

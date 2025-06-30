@@ -2,7 +2,7 @@ using BeamOs.Common.Api;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Models;
 

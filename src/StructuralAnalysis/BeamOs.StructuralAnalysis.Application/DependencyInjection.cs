@@ -9,10 +9,16 @@ public static class DependencyInjection
         this IServiceCollection services
     )
     {
-        return services.AddObjectThatImplementInterface<IAssemblyMarkerStructuralAnalysisApplication>(
+        services.AddObjectThatImplementInterface<IAssemblyMarkerStructuralAnalysisApplication>(
             typeof(ICommandHandler<,>),
             ServiceLifetime.Scoped,
             false
         );
+        services.AddObjectThatImplementInterface<IAssemblyMarkerStructuralAnalysisApplication>(
+            typeof(IQueryHandler<,>),
+            ServiceLifetime.Scoped,
+            false
+        );
+        return services;
     }
 }

@@ -1,14 +1,13 @@
+using System.Diagnostics;
 using BeamOs.StructuralAnalysis.Domain.Common;
-using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
-using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 
-public class Element1d : BeamOsModelEntity<Element1dId>, IHydratedElement1d
+public class Element1d : BeamOsModelEntity<Element1dId>
 {
     public Element1d(
         ModelId modelId,
@@ -27,68 +26,147 @@ public class Element1d : BeamOsModelEntity<Element1dId>, IHydratedElement1d
         this.SectionProfileId = sectionProfileId;
     }
 
-    public NodeId StartNodeId { get; private set; }
-    public Node? StartNode { get; set; }
-    public NodeId EndNodeId { get; private set; }
-    public Node? EndNode { get; set; }
-    public MaterialId MaterialId { get; private set; }
+    public NodeId StartNodeId { get; set; }
+    public NodeDefinition? StartNode { get; set; }
+    public NodeId EndNodeId { get; set; }
+    public NodeDefinition? EndNode { get; set; }
+    public MaterialId MaterialId { get; set; }
     public Material? Material { get; set; }
-    public SectionProfileId SectionProfileId { get; private set; }
-    public SectionProfile? SectionProfile { get; set; }
+    public SectionProfileId SectionProfileId { get; set; }
+    public SectionProfileInfoBase? SectionProfile { get; set; }
+    public IList<InternalNode>? InternalNodes { get; set; }
 
     //public ICollection<ShearForceDiagram>? ShearForceDiagrams { get; init; }
     //public ICollection<MomentDiagram>? MomentDiagrams { get; init; }
 
     public Length Length => this.BaseLine.Length;
 
-    public Line BaseLine => new(this.StartNode.LocationPoint, this.EndNode.LocationPoint);
+    public Line BaseLine
+    {
+        get
+        {
+            var (startNode, endNode) = this.GetNodesOrThrow();
+            return new(startNode.GetLocationPoint(), endNode.GetLocationPoint());
+        }
+    }
 
     /// <summary>
     /// counter-clockwise rotation in radians when looking in the negative (local) x direction
     /// </summary>
     public Angle SectionProfileRotation { get; set; }
 
-    Area IHydratedElement1d.Area => this.SectionProfile.Area;
-    Element1dId IHydratedElement1d.Element1dId => this.Id;
-    Point IHydratedElement1d.StartPoint => this.StartNode.LocationPoint;
-    Point IHydratedElement1d.EndPoint => this.EndNode.LocationPoint;
-    Pressure IHydratedElement1d.ModulusOfElasticity => this.Material.ModulusOfElasticity;
-    Pressure IHydratedElement1d.ModulusOfRigidity => this.Material.ModulusOfRigidity;
-    AreaMomentOfInertia IHydratedElement1d.PolarMomentOfInertia =>
-        this.SectionProfile.PolarMomentOfInertia;
-    AreaMomentOfInertia IHydratedElement1d.StrongAxisMomentOfInertia =>
-        this.SectionProfile.StrongAxisMomentOfInertia;
-    AreaMomentOfInertia IHydratedElement1d.WeakAxisMomentOfInertia =>
-        this.SectionProfile.WeakAxisMomentOfInertia;
-
-    //private readonly SortedList<double, PointLoad> loads = new();
-    //public IReadOnlyDictionary<double, PointLoad> Loads => this.loads.AsReadOnly();
-
-    //public Line BaseLine { get; }
-    //public Length Length => this.BaseLine.Length;
-    //public Dictionary<Ratio, PointLoad> PointLoads { get; private set; } = [];
-
     public static Line GetBaseLine(Point startPoint, Point endPoint)
     {
         return new(startPoint, endPoint);
     }
 
-    //public void AddPointLoad(Ratio locationAlongBeam, ImmutablePointLoad pointLoad)
-    //{
-    //    if (locationAlongBeam.As(UnitsNet.Units.RatioUnit.DecimalFraction) is < 0 or > 1)
-    //    {
-    //        throw new ArgumentException("Provided location along beam must be between 0 and 1");
-    //    }
+    public IEnumerable<Element1d> BreakBetweenInternalNodes(Func<Element1dId, int, int> idGenerator)
+    {
+        _ =
+            this.InternalNodes
+            ?? throw new InvalidOperationException(
+                "InternalNodeIds must be set before breaking the element."
+            );
 
-    //    this.PointLoads.Add(locationAlongBeam, new(new(), pointLoad));
-    //}
+        if (this.InternalNodes.Count == 0)
+        {
+            yield return this;
+            yield break;
+        }
 
-    public double[,] GetRotationMatrix() =>
-        GetRotationMatrix(
-            this.EndNode.LocationPoint,
-            this.StartNode.LocationPoint,
+        if (
+            this.StartNode is null
+            || this.EndNode is null
+            || this.Material is null
+            || this.SectionProfile is null
+        )
+        {
+            throw new InvalidOperationException(
+                "StartNode, EndNode, Material, and SectionProfile must be set before breaking the element."
+            );
+        }
+
+        var startNode = this.StartNode.ToNode();
+        var endNode = this.EndNode.ToNode();
+        for (int i = 0; i < this.InternalNodes.Count; i++)
+        {
+            var internalNode = this.InternalNodes[i].ToNode();
+
+            yield return CreateHydated(
+                this.ModelId,
+                startNode,
+                internalNode,
+                this.Material,
+                this.SectionProfile,
+                this.SectionProfileRotation,
+                new Element1dId(idGenerator(this.Id, i))
+            );
+            startNode = internalNode;
+        }
+
+        yield return CreateHydated(
+            this.ModelId,
+            startNode,
+            endNode,
+            this.Material,
+            this.SectionProfile,
+            this.SectionProfileRotation,
+            new Element1dId(idGenerator(this.Id, this.InternalNodes.Count))
+        );
+    }
+
+    public static Element1d CreateHydated(
+        ModelId modelId,
+        NodeDefinition startNode,
+        NodeDefinition endNode,
+        Material material,
+        SectionProfileInfoBase sectionProfile,
+        Angle sectionProfileRotation,
+        Element1dId id
+    )
+    {
+        if (startNode is null || endNode is null)
+        {
+            throw new ArgumentNullException(
+                "StartNode and EndNode must be set before creating an Element1d."
+            );
+        }
+
+        return new Element1d(modelId, startNode.Id, endNode.Id, material.Id, sectionProfile.Id)
+        {
+            StartNode = startNode,
+            EndNode = endNode,
+            Material = material,
+            SectionProfile = sectionProfile,
+            SectionProfileRotation = sectionProfileRotation,
+            Id = id,
+        };
+    }
+
+    private (NodeDefinition StartNode, NodeDefinition EndNode) GetNodesOrThrow(
+        IReadOnlyDictionary<NodeId, NodeDefinition>? nodeStore = null
+    )
+    {
+        var startNode = this.StartNode ?? nodeStore?.GetValueOrDefault(this.StartNodeId);
+        var endNode = this.EndNode ?? nodeStore?.GetValueOrDefault(this.EndNodeId);
+        if (startNode is null || endNode is null)
+        {
+            throw new InvalidOperationException(
+                "StartNode and EndNode must be set before accessing the nodes."
+            );
+        }
+        return (startNode, endNode);
+    }
+
+    public double[,] GetRotationMatrix()
+    {
+        var (startNode, endNode) = this.GetNodesOrThrow();
+        return GetRotationMatrix(
+            endNode.GetLocationPoint(),
+            startNode.GetLocationPoint(),
             this.SectionProfileRotation
         );
+    }
 
     public static double[,] GetRotationMatrix(
         Point endLocation,
@@ -140,12 +218,15 @@ public class Element1d : BeamOsModelEntity<Element1dId>, IHydratedElement1d
         };
     }
 
-    public double[,] GetTransformationMatrix() =>
-        GetTransformationMatrix(
-            this.EndNode.LocationPoint,
-            this.StartNode.LocationPoint,
+    public double[,] GetTransformationMatrix()
+    {
+        var (startNode, endNode) = this.GetNodesOrThrow();
+        return GetTransformationMatrix(
+            endNode.GetLocationPoint(),
+            startNode.GetLocationPoint(),
             this.SectionProfileRotation
         );
+    }
 
     public static double[,] GetTransformationMatrix(
         Point endLocation,
@@ -168,6 +249,52 @@ public class Element1d : BeamOsModelEntity<Element1dId>, IHydratedElement1d
         }
 
         return transformationMatrix;
+    }
+
+    internal Point GetPointAtRatio(
+        UnitsNet.Ratio ratioAlongElement1d,
+        IReadOnlyDictionary<Element1dId, Element1d>? elementStore = null,
+        IReadOnlyDictionary<NodeId, NodeDefinition>? nodeStore = null
+    )
+    {
+        var decimalFraction = ratioAlongElement1d.As(UnitsNet.Units.RatioUnit.DecimalFraction);
+        if (decimalFraction is < 0 or > 1)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(ratioAlongElement1d),
+                "Ratio along element must be between 0 and 1."
+            );
+        }
+
+        var (startNode, endNode) = this.GetNodesOrThrow(nodeStore);
+
+#if DEBUG
+        if (startNode is InternalNode startInternalNode)
+        {
+            Debug.Assert(
+                startInternalNode.Element1dId != this.Id,
+                "Start node should not be an internal node of this element."
+            );
+        }
+        if (endNode is InternalNode endInternalNode)
+        {
+            Debug.Assert(
+                endInternalNode.Element1dId != this.Id,
+                "End node should not be an internal node of this element."
+            );
+        }
+#endif
+
+        var startLocation = startNode.GetLocationPoint(elementStore, nodeStore);
+        var endLocation = endNode.GetLocationPoint(elementStore, nodeStore);
+
+        var x = startLocation.X + (endLocation.X - startLocation.X) * decimalFraction;
+
+        var y = startLocation.Y + (endLocation.Y - startLocation.Y) * decimalFraction;
+
+        var z = startLocation.Z + (endLocation.Z - startLocation.Z) * decimalFraction;
+
+        return new Point(x, y, z);
     }
 
     [Obsolete("EF Core Constructor", true)]

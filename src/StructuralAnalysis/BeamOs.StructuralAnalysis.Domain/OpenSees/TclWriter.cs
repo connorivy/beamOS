@@ -114,17 +114,19 @@ public class TclWriter
         Debug.Assert(element1d.EndNode is not null);
 
         var rotationMatrix = element1d.GetRotationMatrix();
-        int hash = GetTransformHash(
-            rotationMatrix[1, 0],
-            rotationMatrix[1, 1],
-            rotationMatrix[1, 2]
-        );
+        // todo: if the strong axis of a section is different from the global Y axis,
+        // then this would not be correct.
+        // https://www.youtube.com/watch?v=1IMasmvlVwc
+        var rotationX = rotationMatrix[1, 0];
+        var rotationY = rotationMatrix[1, 1];
+        var rotationZ = rotationMatrix[1, 2];
+        int hash = GetTransformHash(rotationX, rotationY, rotationZ);
         if (!this.transformIds.TryGetValue(hash, out var transformId))
         {
             transformId = this.transformIds.Count;
             this.transformIds.Add(hash, transformId);
             this.document.AppendLine(
-                $"geomTransf Linear {transformId} {rotationMatrix[1, 0]} {rotationMatrix[1, 1]} {rotationMatrix[1, 2]}"
+                $"geomTransf Linear {transformId} {rotationX} {rotationY} {rotationZ}"
             );
         }
 
@@ -132,7 +134,7 @@ public class TclWriter
             this.beamOsToOpenSeesConverter.Element1d(
                 element1d,
                 element1d.Material,
-                element1d.SectionProfile,
+                element1d.SectionProfile.GetSectionProfile(),
                 transformId
             )
         );
@@ -161,11 +163,19 @@ public class TclWriter
         Debug.Assert(element1d.SectionProfile is not null);
         Debug.Assert(element1d.StartNode is not null);
         Debug.Assert(element1d.EndNode is not null);
+        Debug.Assert(element1d.InternalNodes is not null);
 
-        this.AddNode(element1d.StartNode);
-        this.AddNode(element1d.EndNode);
-        this.AddSection(element1d.SectionProfile, element1d.Material);
-        this.AddElement(element1d);
+        foreach (
+            var element in element1d.BreakBetweenInternalNodes(
+                (_, _) => (this.element1dIdsInOrder.Count + 1) * -1
+            )
+        )
+        {
+            this.AddNode(element.StartNode.ToNode());
+            this.AddNode(element.EndNode.ToNode());
+            this.AddSection(element.SectionProfile.GetSectionProfile(), element.Material);
+            this.AddElement(element);
+        }
     }
 
     public void AddLoads(

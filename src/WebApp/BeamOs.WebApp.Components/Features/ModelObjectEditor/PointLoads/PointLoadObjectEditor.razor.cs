@@ -2,15 +2,16 @@ using System.Diagnostics.CodeAnalysis;
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads;
+using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
 using BeamOs.WebApp.Components.Features.Editor;
 using BeamOs.WebApp.Components.Features.SelectionInfo;
 using BeamOs.WebApp.EditorCommands;
 using Fluxor;
 using Fluxor.Blazor.Web.Components;
 using Microsoft.AspNetCore.Components;
+using Objects.BuiltElements;
 
 namespace BeamOs.WebApp.Components.Features.ModelObjectEditor.PointLoads;
 
@@ -82,7 +83,10 @@ public partial class PointLoadObjectEditor(
     {
         base.OnParametersSet();
 
-        if (this.SelectedObject is not null && this.SelectedObject.TypeName == "PointLoad")
+        if (
+            this.SelectedObject is not null
+            && this.SelectedObject.ObjectType == BeamOsObjectType.PointLoad
+        )
         {
             this.UpdateFromPointLoadId(this.SelectedObject.Id);
         }

@@ -1,7 +1,7 @@
 using BeamOs.Common.Api;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Nodes;
 

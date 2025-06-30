@@ -1,0 +1,12 @@
+﻿{
+  Value: null,
+  Error: {
+    Code: General.NotFound,
+    Description: Element1d with id 1234 not found on model with id Guid_1.,
+    Type: NotFound,
+    NumericType: 5,
+    Metadata: null
+  },
+  IsError: true,
+  IsSuccess: false
+}

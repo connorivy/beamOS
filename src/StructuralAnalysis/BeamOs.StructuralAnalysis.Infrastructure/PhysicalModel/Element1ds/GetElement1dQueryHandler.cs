@@ -2,7 +2,7 @@ using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.CsSdk.Mappers.UnitValueDtoMappers;
 using BeamOs.StructuralAnalysis.Application.Common;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using Microsoft.EntityFrameworkCore;
@@ -19,8 +19,7 @@ public class GetElement1dQueryHandler(StructuralAnalysisDbContext dbContext)
     )
     {
         var elementAndModelUnits = await dbContext
-            .Element1ds
-            .Where(e => e.ModelId.Equals(query.ModelId) && e.Id.Equals(query.Id))
+            .Element1ds.Where(e => e.ModelId.Equals(query.ModelId) && e.Id.Equals(query.Id))
             .Select(el => new { el, el.Model.Settings.UnitSettings })
             .FirstOrDefaultAsync(cancellationToken: ct);
 

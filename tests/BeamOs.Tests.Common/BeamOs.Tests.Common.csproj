@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\codeGen\BeamOs.CodeGen.EditorApi\BeamOs.CodeGen.EditorApi.csproj" />
     <ProjectReference Include="..\..\src\StructuralAnalysis\BeamOs.StructuralAnalysis.Contracts\BeamOs.StructuralAnalysis.Contracts.csproj" />
     <ProjectReference Include="..\..\src\StructuralAnalysis\BeamOs.StructuralAnalysis.Sdk\BeamOs.StructuralAnalysis.Sdk.csproj" />
   </ItemGroup>

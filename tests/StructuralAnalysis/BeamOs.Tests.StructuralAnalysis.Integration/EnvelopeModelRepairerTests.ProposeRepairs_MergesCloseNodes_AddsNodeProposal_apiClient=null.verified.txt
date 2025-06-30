@@ -1,0 +1,70 @@
+﻿{
+  Value: {
+    Id: {Scrubbed},
+    LastModified: DateTimeOffset_1,
+    ModelProposal: {
+      Id: {Scrubbed},
+      LastModified: DateTimeOffset_1,
+      Description: Proposed repairs for model connectivity
+    },
+    CreateNodeProposals: null,
+    ModifyNodeProposals: null,
+    CreateInternalNodeProposals: null,
+    ModifyInternalNodeProposals: null,
+    CreateElement1dProposals: null,
+    ModifyElement1dProposals: [
+      {
+        Id: {Scrubbed},
+        ExistingElement1dId: 3,
+        StartNodeId: {
+          ExistingId: 3,
+          ProposedId: null,
+          IsDefault: false
+        },
+        EndNodeId: {
+          ExistingId: 1,
+          ProposedId: null,
+          IsDefault: false
+        },
+        MaterialId: {
+          ExistingId: 1,
+          ProposedId: null,
+          IsDefault: false
+        },
+        SectionProfileId: {
+          ExistingId: 1,
+          ProposedId: null,
+          IsDefault: false
+        },
+        ExistingId: 3,
+        ObjectType: Element1d,
+        SectionProfileRotation: {
+          Value: 0.0,
+          Unit: Degree
+        },
+        Metadata: null
+      }
+    ],
+    Element1dsModifiedBecauseOfNodeChange: null,
+    MaterialProposals: null,
+    SectionProfileProposals: null,
+    SectionProfileFromLibraryProposals: null,
+    PointLoadProposals: null,
+    MomentLoadProposals: null,
+    ResultSetProposals: null,
+    LoadCaseProposals: null,
+    LoadCombinationProposals: null,
+    ProposalIssues: null,
+    DeleteModelEntityProposals: [
+      {
+        Id: {Scrubbed},
+        ProposalType: Delete,
+        ModelEntityId: 4,
+        ObjectType: Node
+      }
+    ]
+  },
+  Error: null,
+  IsError: false,
+  IsSuccess: true
+}

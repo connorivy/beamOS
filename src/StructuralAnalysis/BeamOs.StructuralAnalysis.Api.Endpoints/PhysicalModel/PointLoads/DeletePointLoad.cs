@@ -1,6 +1,5 @@
 using BeamOs.Common.Api;
 using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis.Api.Endpoints.OpenSees;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 
@@ -13,7 +12,7 @@ public class DeletePointLoad(DeletePointLoadCommandHandler deletePointLoadComman
     : BeamOsModelResourceQueryBaseEndpoint<ModelEntityResponse>
 {
     public override async Task<Result<ModelEntityResponse>> ExecuteRequestAsync(
-        ModelEntityRequest req,
+        ModelResourceWithIntIdRequest req,
         CancellationToken ct = default
     ) => await deletePointLoadCommandHandler.ExecuteAsync(req, ct);
 }

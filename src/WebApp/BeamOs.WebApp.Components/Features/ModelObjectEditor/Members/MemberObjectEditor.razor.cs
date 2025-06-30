@@ -1,7 +1,8 @@
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
+using BeamOs.StructuralAnalysis.Contracts.Common;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
 using BeamOs.WebApp.Components.Features.Editor;
 using BeamOs.WebApp.Components.Features.SelectionInfo;
 using BeamOs.WebApp.EditorCommands;
@@ -77,7 +78,10 @@ public partial class MemberObjectEditor(
     {
         base.OnParametersSet();
 
-        if (this.SelectedObject is not null && this.SelectedObject.TypeName == "Element1d")
+        if (
+            this.SelectedObject is not null
+            && this.SelectedObject.ObjectType == BeamOsObjectType.Element1d
+        )
         {
             this.UpdateFromElement1dId(this.SelectedObject.Id);
         }
@@ -97,9 +101,9 @@ public partial class MemberObjectEditor(
         this.element1d.EndNodeId = response.EndNodeId;
         this.element1d.MaterialId = response.MaterialId;
         this.element1d.SectionProfileId = response.SectionProfileId;
-        this.element1d.SectionProfileRotation = response
-            .SectionProfileRotation
-            .As(response.SectionProfileRotation.Unit);
+        this.element1d.SectionProfileRotation = response.SectionProfileRotation.As(
+            response.SectionProfileRotation.Unit
+        );
         this.element1d.Metadata = response.Metadata;
     }
 
@@ -116,19 +120,18 @@ public partial class MemberObjectEditor(
 
     private async Task Submit()
     {
-        Element1dData nodeData =
-            new()
-            {
-                StartNodeId = this.element1d.StartNodeId,
-                EndNodeId = this.element1d.EndNodeId,
-                MaterialId = this.element1d.MaterialId,
-                SectionProfileId = this.element1d.SectionProfileId,
-                SectionProfileRotation = new(
-                    this.element1d.SectionProfileRotation ?? 0,
-                    this.UnitSettings.AngleUnit
-                ),
-                Metadata = this.element1d.Metadata
-            };
+        Element1dData nodeData = new()
+        {
+            StartNodeId = this.element1d.StartNodeId,
+            EndNodeId = this.element1d.EndNodeId,
+            MaterialId = this.element1d.MaterialId,
+            SectionProfileId = this.element1d.SectionProfileId,
+            SectionProfileRotation = new(
+                this.element1d.SectionProfileRotation ?? 0,
+                this.UnitSettings.AngleUnit
+            ),
+            Metadata = this.element1d.Metadata,
+        };
 
         if (this.element1d.Id == 0)
         {
@@ -137,13 +140,12 @@ public partial class MemberObjectEditor(
         }
         else
         {
-            PutElement1dCommand command =
-                new()
-                {
-                    Id = this.element1d.Id,
-                    ModelId = this.ModelId,
-                    Body = nodeData
-                };
+            PutElement1dCommand command = new()
+            {
+                Id = this.element1d.Id,
+                ModelId = this.ModelId,
+                Body = nodeData,
+            };
 
             await putElement1dCommandHandler.ExecuteAsync(command);
         }

@@ -1,11 +1,8 @@
 using System.Text.Json.Serialization;
+using BeamOs.CodeGen.AiApiClient;
 using BeamOs.CodeGen.SpeckleConnectorApi;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.StructuralAnalysis.Contracts.Common;
-using BeamOs.StructuralAnalysis.CsSdk;
-using BeamOs.StructuralAnalysis.Domain;
-using BeamOs.Tests.Common;
-using BeamOs.Tests.Common.SolvedProblems.Kassimali_MatrixAnalysisOfStructures2ndEd;
 using BeamOs.Tests.Runtime.TestRunner;
 using BeamOs.WebApp.Components;
 using BeamOs.WebApp.Components.Features.Common;
@@ -20,10 +17,10 @@ public static class DI
         services.ConfigureHttpJsonOptions(options =>
         {
             BeamOsSerializerOptions.DefaultConfig(options.SerializerOptions);
-            options
-                .SerializerOptions
-                .TypeInfoResolverChain
-                .Insert(0, BeamOsWebAppJsonSerializerContext.Default);
+            options.SerializerOptions.TypeInfoResolverChain.Insert(
+                0,
+                BeamOsWebAppJsonSerializerContext.Default
+            );
             options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
         });
         services.AddSingleton(typeof(IAssemblyMarkerWebApp).Assembly);
@@ -42,8 +39,11 @@ public static class DI
         services.AddHttpClient<IStructuralAnalysisApiClientV1, StructuralAnalysisApiClientV1>(
             client => client.BaseAddress = new("http://localhost:5223")
         );
-        services.AddHttpClient<ISpeckleConnectorApi, SpeckleConnectorApi>(
-            client => client.BaseAddress = new("http://localhost:5223")
+        services.AddHttpClient<ISpeckleConnectorApi, SpeckleConnectorApi>(client =>
+            client.BaseAddress = new("http://localhost:5223")
+        );
+        services.AddHttpClient<IAiApiClient, AiApiClient>(client =>
+            client.BaseAddress = new("http://localhost:5223")
         );
         services.AddScoped<IEditorApiProxyFactory, EditorApiProxyFactory>();
         services.AddTransient<EditorEventsApi>();

@@ -10,6 +10,7 @@ global using AreaMomentOfInertiaUnit = UnitsNet.Units.AreaMomentOfInertiaUnit;
 global using AreaMomentOfInertiaUnitContract = BeamOs.StructuralAnalysis.Contracts.Common.AreaMomentOfInertiaUnit;
 global using AreaUnit = UnitsNet.Units.AreaUnit;
 global using AreaUnitContract = BeamOs.StructuralAnalysis.Contracts.Common.AreaUnit;
+global using DeleteModelEntityProposalContract = BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models.DeleteModelEntityProposal;
 global using Force = UnitsNet.Force;
 global using ForceContract = BeamOs.StructuralAnalysis.Contracts.Common.Force;
 global using ForcePerLength = UnitsNet.ForcePerLength;

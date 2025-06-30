@@ -26,6 +26,7 @@
     <ProjectReference Include="../../StructuralAnalysis/BeamOs.StructuralAnalysis.Contracts/BeamOs.StructuralAnalysis.Contracts.csproj" />
     <ProjectReference Include="../../StructuralAnalysis/BeamOs.StructuralAnalysis.Sdk/BeamOs.StructuralAnalysis.Sdk.csproj" />
     <ProjectReference Include="..\..\Common\BeamOs.Common.Api\BeamOs.Common.Api.csproj" />
+    <ProjectReference Include="..\..\Identity\BeamOs.Identity\BeamOs.Identity.csproj" />
   </ItemGroup>
 
 </Project>

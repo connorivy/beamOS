@@ -1,5 +1,7 @@
 using BeamOs.Common.Application;
+using BeamOs.Common.Contracts;
 using BeamOs.Identity;
+using BeamOs.StructuralAnalysis.Application.AnalyticalResults.EnvelopeResultSets;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.NodeResults;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.ResultSets;
 using BeamOs.StructuralAnalysis.Application.Common;
@@ -12,8 +14,9 @@ using BeamOs.StructuralAnalysis.Application.PhysicalModel.MomentLoads;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
+using BeamOs.StructuralAnalysis.Infrastructure.AnalyticalResults.EnvelopeResultSets;
 using BeamOs.StructuralAnalysis.Infrastructure.AnalyticalResults.NodeResults;
 using BeamOs.StructuralAnalysis.Infrastructure.AnalyticalResults.ResultSets;
 using BeamOs.StructuralAnalysis.Infrastructure.Common;
@@ -26,8 +29,7 @@ using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.MomentLoads;
 using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.SectionProfiles;
-using BeamOs.Tests.Common;
-using MathNet.Numerics.Providers.SparseSolver;
+using EntityFramework.Exceptions.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
@@ -43,9 +45,15 @@ public static class DependencyInjection
     )
     {
         _ = services.AddScoped<INodeRepository, NodeRepository>();
+        _ = services.AddScoped<IInternalNodeRepository, InternalNodeRepository>();
+        _ = services.AddScoped<INodeDefinitionRepository, NodeDefinitionRepository>();
         _ = services.AddScoped<IModelRepository, ModelRepository>();
         _ = services.AddScoped<IMaterialRepository, MaterialRepository>();
         _ = services.AddScoped<ISectionProfileRepository, SectionProfileRepository>();
+        _ = services.AddScoped<
+            ISectionProfileFromLibraryRepository,
+            SectionProfileFromLibraryRepository
+        >();
         _ = services.AddScoped<IElement1dRepository, Element1dRepository>();
         _ = services.AddScoped<IPointLoadRepository, PointLoadRepository>();
         _ = services.AddScoped<IMomentLoadRepository, MomentLoadRepository>();
@@ -53,6 +61,9 @@ public static class DependencyInjection
         _ = services.AddScoped<ILoadCombinationRepository, LoadCombinationRepository>();
         _ = services.AddScoped<INodeResultRepository, NodeResultRepository>();
         _ = services.AddScoped<IResultSetRepository, ResultSetRepository>();
+        _ = services.AddScoped<IEnvelopeResultSetRepository, EnvelopeResultSetRepository>();
+        _ = services.AddScoped<IModelProposalRepository, ModelProposalRepository>();
+        _ = services.AddScoped<IProposalIssueRepository, ProposalIssueRepository>();
 
         _ = services.AddScoped<IStructuralAnalysisUnitOfWork, UnitOfWork>();
 
@@ -72,17 +83,39 @@ public static class DependencyInjection
     {
         services.AddSingleton(TimeProvider.System);
 
+        services.AddDb(connectionString);
+
+        services.AddScoped<IUserIdProvider, UserIdProvider>();
+
+        services.AddScoped<
+            IQueryHandler<EmptyRequest, List<ModelInfoResponse>>,
+            GetModelsQueryHandler
+        >();
+
+        services.AddScoped<IQueryHandler<Guid, ModelInfoResponse>, GetModelInfoQueryHandler>();
+
+        // pardiso is faster, but it requires mkl libraries. Since we're not using this solver factory in production,
+        // we can use CholeskySolverFactory which is a pure managed implementation.
+        // services.AddSingleton<ISolverFactory, PardisoSolverFactory>();
+        services.AddSingleton<ISolverFactory, CholeskySolverFactory>();
+
+        return services;
+    }
+
+    private static void AddDb(this IServiceCollection services, string connectionString) =>
         _ = services.AddDbContext<StructuralAnalysisDbContext>(options =>
-        {
             options
                 .UseNpgsql(
                     connectionString,
                     o => o.MigrationsAssembly(typeof(IAssemblyMarkerInfrastructure).Assembly)
                 )
-                .AddInterceptors(
-                    // new ModelEntityIdIncrementingInterceptor(),
-                    new ModelLastModifiedUpdater(TimeProvider.System)
-                )
+                .AddInterceptors(new ModelLastModifiedUpdater(TimeProvider.System))
+                .UseExceptionProcessor()
+#if DEBUG
+                .EnableSensitiveDataLogging()
+                .EnableDetailedErrors()
+                .LogTo(Console.WriteLine, LogLevel.Information)
+#endif
 #if !DEBUG
                 .UseLoggerFactory(
                     LoggerFactory.Create(builder =>
@@ -92,29 +125,9 @@ public static class DependencyInjection
                 )
 #endif
                 .ConfigureWarnings(warnings =>
-                {
-                    warnings.Log(RelationalEventId.PendingModelChangesWarning);
-                });
-        });
-
-        services.AddScoped<IUserIdProvider, UserIdProvider>();
-
-        services.AddScoped<
-            IQueryHandler<EmptyRequest, List<ModelInfoResponse>>,
-            GetModelsQueryHandler
-        >();
-
-        if (BeamOsEnv.IsCiEnv())
-        {
-            services.AddSingleton<ISolverFactory, CholeskySolverFactory>();
-        }
-        else
-        {
-            services.AddSingleton<ISolverFactory, PardisoSolverFactory>();
-        }
-
-        return services;
-    }
+                    warnings.Log(RelationalEventId.PendingModelChangesWarning)
+                )
+        );
 
     public static void AddPhysicalModelInfrastructure(
         this ModelConfigurationBuilder configurationBuilder

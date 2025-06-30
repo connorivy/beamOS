@@ -37,10 +37,12 @@
                 {
                     objectDisplayName = objectType + "s";
                 }
-                <MudExpansionPanel Expanded="true" Class="text-nowrap text-clip mud-typography mud-typography-subtitle1 p-4">
+                <MudExpansionPanel Expanded="true"
+                    Class="text-nowrap text-clip mud-typography mud-typography-subtitle1 p-4">
                     <TitleContent>
                         <div class="d-flex">
-                            <RunTestButtonGroup TestIds="@idToResultsDict.Where(kvp => ShouldDisplayTestResult(kvp.Key)).SelectMany(kvp => kvp.Value).Select(results => results.Id).ToArray()" />
+                            <RunTestButtonGroup
+                                TestIds="@idToResultsDict.Where(kvp => ShouldDisplayTestResult(kvp.Key)).SelectMany(kvp => kvp.Value).Select(results => results.Id).ToArray()" />
                             <MudText Class="pl-2"><strong>@objectDisplayName</strong></MudText>
                         </div>
                     </TitleContent>
@@ -89,9 +91,11 @@
     [Parameter]
     public SelectedObject[]? SelectedObjects { get; init; }
 
-    private BeamOsObjectType? SelectedObjectType => StringToEnum(this.SelectedObjects?.SingleOrDefault()?.TypeName);
+    public SelectedObject? SelectedObject => this.SelectedObjects?.FirstOrDefault();
 
-    private string? SelectedObjectId => this.SelectedObjects?.SingleOrDefault()?.Id.ToString();
+    private BeamOsObjectType? SelectedObjectType => this.SelectedObject?.ObjectType;
+
+    private string? SelectedObjectId => this.SelectedObject?.Id.ToString();
 
     private async Task SelectedTestInfoChanged(TestResult result)
     {
@@ -99,12 +103,12 @@
         // SingleTestState testResult = TestInfoState.Value.TestInfoIdToTestResultDict[resultId];
         // if (testResult.FrontEndProgressStatus == TestProgressStatus.NotStarted)
         // {
-        //     this.Dispatcher.Dispatch(new TestResultProgressChanged(resultId, TestProgressStatus.InProgress));
+        // this.Dispatcher.Dispatch(new TestResultProgressChanged(resultId, TestProgressStatus.InProgress));
 
-        //     var x = Convert.ToInt32(1000 * Random.Shared.NextDouble());
-        //     await Task.Delay(x);
+        // var x = Convert.ToInt32(1000 * Random.Shared.NextDouble());
+        // await Task.Delay(x);
 
-        //     this.Dispatcher.Dispatch(new TestResultProgressChanged(resultId, TestProgressStatus.Finished));
+        // this.Dispatcher.Dispatch(new TestResultProgressChanged(resultId, TestProgressStatus.Finished));
         // }
         await RunTestsInFrontEndCommandHandler.ExecuteAsync(new RunTestsInFrontEndCommand(result.Id));
 
@@ -117,41 +121,10 @@
         {
             return;
         }
-
-        // this.Dispatcher.Dispatch(new ChangeSelectionCommand(this.CanvasId, [new SelectedObject(intId, EnumToString(objectType))]));
     }
 
     [Parameter]
     public required IDictionary<BeamOsObjectType, ImmutableDictionary<string, List<TestResult>>> TestResults { get; init; }
-
-    public BeamOsObjectType? StringToEnum(string? objectType)
-    {
-        return objectType switch
-        {
-            null => null,
-            "Node" => BeamOsObjectType.Node,
-            "Element1d" => BeamOsObjectType.Element1d,
-            "Material" => BeamOsObjectType.Material,
-            "SectionProfile" => BeamOsObjectType.SectionProfile,
-            "PointLoad" => BeamOsObjectType.PointLoad,
-            "MomentLoad" => BeamOsObjectType.MomentLoad,
-            _ => throw new NotImplementedException($"Object type {objectType} is not implemented")
-        };
-    }
-
-    public string EnumToString(BeamOsObjectType objectType)
-    {
-        return objectType switch
-        {
-            BeamOsObjectType.Node => "Node",
-            BeamOsObjectType.Element1d => "Element1d",
-            BeamOsObjectType.Material => "Material",
-            BeamOsObjectType.SectionProfile => "SectionProfile",
-            BeamOsObjectType.PointLoad => "PointLoad",
-            BeamOsObjectType.MomentLoad => "MomentLoad",
-            _ => throw new NotImplementedException($"Object type {objectType} is not implemented")
-        };
-    }
 
     private bool ShouldDisplayTestResult(string id)
     {
@@ -176,25 +149,4 @@
     {
         this.Dispatcher.Dispatch(new ChangeSelectedProblemTests(null));
     }
-
-    // private void GhostObjectsWithoutTests()
-    // {
-    //     var testIds = this.TestSelectorState.Value.AllTestResults.SelectMany(kvp => kvp.Value.Select(r => r.BeamOsObjectId)).ToList();
-
-    //     this.Dispatcher.Dispatch(new SetColorFilterCommand(this.TestSelectorState.Value.CanvasId, new(testIds, true, "0x808080", true)));
-
-    //     var idsToGhost = this.AllStructuralAnalysisModelCaches.GetByModelId(modelId).GetEntityIdsOfType<BeamOsEntityContractBase>();
-    //     foreach (var id in this.TestSelectorState.Value.AllTestResults.SelectMany(kvp => kvp.Value.Select(r => r.BeamOsObjectId)))
-    //     {
-    //         idsToGhost.Remove(id);
-    //     }
-
-    // }
-
-    // private void RemoveFilters()
-    // {
-    //     var testIds = this.TestSelectorState.Value.AllTestResults.SelectMany(kvp => kvp.Value.Select(r => r.BeamOsObjectId)).ToList();
-
-    //     this.Dispatcher.Dispatch(new RemoveColorFilterCommand(this.TestSelectorState.Value.CanvasId, new(testIds, true)));
-    // }
 }

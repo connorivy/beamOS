@@ -4,3 +4,9 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.MomentLoads;
 
 public interface IMomentLoadRepository : IModelResourceRepository<MomentLoadId, MomentLoad> { }
+
+public sealed class InMemoryMomentLoadRepository(
+    InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage
+)
+    : InMemoryModelResourceRepository<MomentLoadId, MomentLoad>(inMemoryModelRepositoryStorage),
+        IMomentLoadRepository { }

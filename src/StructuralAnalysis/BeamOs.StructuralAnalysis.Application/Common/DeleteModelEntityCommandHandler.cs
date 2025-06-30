@@ -7,7 +7,7 @@ using BeamOs.StructuralAnalysis.Domain.Common;
 namespace BeamOs.StructuralAnalysis.Application.Common;
 
 public abstract class DeleteModelEntityCommandHandler<TId, TEntity>(
-    IModelResourceRepository<TId, TEntity> entityRepository,
+    IModelResourceRepositoryIn<TId, TEntity> entityRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<IModelEntity, ModelEntityResponse>
     where TEntity : BeamOsModelEntity<TId>

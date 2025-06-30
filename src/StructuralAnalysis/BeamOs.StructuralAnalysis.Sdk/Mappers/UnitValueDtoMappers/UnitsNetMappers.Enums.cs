@@ -20,7 +20,9 @@ public static partial class UnitsNetMappers
 
     public static partial AreaMomentOfInertiaUnit MapToAreaMomentOfInertiaUnit(this string unit);
 
-    public static partial AreaMomentOfInertiaUnitContract MapToAreaMomentOfInertiaUnitContract(this string unit);
+    public static partial AreaMomentOfInertiaUnitContract MapToAreaMomentOfInertiaUnitContract(
+        this string unit
+    );
 
     public static partial AreaMomentOfInertiaUnit MapToAreaMomentOfInertiaUnit(
         this AreaMomentOfInertiaUnitContract unit
@@ -44,7 +46,9 @@ public static partial class UnitsNetMappers
 
     public static partial ForcePerLengthUnit MapToForcePerLengthUnit(this string unit);
 
-    public static partial ForcePerLengthUnitContract MapToForcePerLengthUnitContract(this string unit);
+    public static partial ForcePerLengthUnitContract MapToForcePerLengthUnitContract(
+        this string unit
+    );
 
     public static partial ForcePerLengthUnit MapToForcePerLengthUnit(
         this ForcePerLengthUnitContract unit
@@ -73,6 +77,16 @@ public static partial class UnitsNetMappers
     public static partial string MapToString(this PressureUnit unit);
 
     public static partial PressureUnitContract MapToContract(this PressureUnit unit);
+
+    public static partial RatioUnit MapToRatioUnit(this string unit);
+
+    public static partial RatioUnitContract MapToRatioUnitContract(this string unit);
+
+    public static partial RatioUnit MapToRatioUnit(this RatioUnitContract unit);
+
+    public static partial string MapToString(this RatioUnit unit);
+
+    public static partial RatioUnitContract MapToContract(this RatioUnit unit);
 
     public static partial TorqueUnit MapToTorqueUnit(this string unit);
 

@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace BeamOs.Common.Domain.Models;
 
 public abstract class BeamOsEntity<TId>
@@ -6,7 +8,8 @@ public abstract class BeamOsEntity<TId>
         IHasDomainEvents
     where TId : struct
 {
-    public virtual TId Id { get; protected set; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public TId Id { get; protected set; }
 
     protected BeamOsEntity(TId id)
     {

@@ -1,6 +1,7 @@
 using System.Collections.Immutable;
 using System.Diagnostics;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams;
+using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.Editor;
 using BeamOs.WebApp.EditorCommands;
@@ -33,7 +34,7 @@ public partial class ResultChartsComponent(
         {
             if (
                 action.SelectedObjects.Length == 0
-                || action.SelectedObjects[0].TypeName != "Element1d"
+                || action.SelectedObjects[0].ObjectType != BeamOsObjectType.Element1d
             )
             {
                 dispatcher.Dispatch(new ResultsChanged());
@@ -42,10 +43,10 @@ public partial class ResultChartsComponent(
             int element1dId = editorComponentState.Value.SelectedObjects[0].Id;
             if (
                 cachedModelsState.Value.DeflectionDiagrams is null
-                || !cachedModelsState
-                    .Value
-                    .DeflectionDiagrams
-                    .TryGetValue(element1dId, out var deflectionDiagram)
+                || !cachedModelsState.Value.DeflectionDiagrams.TryGetValue(
+                    element1dId,
+                    out var deflectionDiagram
+                )
             )
             {
                 dispatcher.Dispatch(new ResultsChanged());
@@ -99,12 +100,11 @@ public partial class ResultChartsComponent(
 
         int index = 0;
         var evalPoints = shearDiagram
-            .Intervals
-            .SelectMany(i => new double[] { i.StartLocation.Value, i.EndLocation.Value })
+            .Intervals.SelectMany(i => new double[] { i.StartLocation.Value, i.EndLocation.Value })
             .Concat(
-                momentDiagram
-                    .Intervals
-                    .SelectMany(i => new double[] { i.StartLocation.Value, i.EndLocation.Value })
+                momentDiagram.Intervals.SelectMany(i =>
+                    new double[] { i.StartLocation.Value, i.EndLocation.Value }
+                )
             )
             .Concat(regularIntervalLocations)
             .Order()
@@ -139,20 +139,16 @@ public partial class ResultChartsComponent(
 
                 numDiagramXValues++;
             }
-            var (shearValOnLeft, shearValOnRight) = shearDiagram
-                .Intervals
-                .GetValueAtLocation(
-                    new Length(location, LengthUnit.Meter),
-                    new Length(1, LengthUnit.Inch),
-                    out bool isBetweenIntervals
-                );
-            var (momValOnLeft, momValOnRight) = momentDiagram
-                .Intervals
-                .GetValueAtLocation(
-                    new Length(location, LengthUnit.Meter),
-                    new Length(1, LengthUnit.Inch),
-                    out bool isBetweenMomIntervals
-                );
+            var (shearValOnLeft, shearValOnRight) = shearDiagram.Intervals.GetValueAtLocation(
+                new Length(location, LengthUnit.Meter),
+                new Length(1, LengthUnit.Inch),
+                out bool isBetweenIntervals
+            );
+            var (momValOnLeft, momValOnRight) = momentDiagram.Intervals.GetValueAtLocation(
+                new Length(location, LengthUnit.Meter),
+                new Length(1, LengthUnit.Inch),
+                out bool isBetweenMomIntervals
+            );
 
             shearValues.Add(shearValOnLeft);
             momentValues.Add(momValOnLeft);
@@ -184,7 +180,7 @@ public partial class ResultChartsComponent(
                 ChartXValues = evalPoints,
                 DeflectionValues = relativeOffsets,
                 ShearValues = shearValues,
-                MomentValues = momentValues
+                MomentValues = momentValues,
             }
         );
 
@@ -246,6 +242,6 @@ public static class ResultChartsStateReducers
             ChartXValues = action.ChartXValues,
             DeflectionValues = action.DeflectionValues,
             ShearValues = action.ShearValues,
-            MomentValues = action.MomentValues
+            MomentValues = action.MomentValues,
         };
 }

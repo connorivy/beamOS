@@ -52,8 +52,18 @@ public sealed class GetDiagramsCommandHandler(
 
         var dsmElement1ds =
             model.Settings.AnalysisSettings.Element1DAnalysisType == Element1dAnalysisType.Euler
-                ? model.Element1ds.Select(el => new DsmElement1d(el)).ToArray()
-                : model.Element1ds.Select(el => new TimoshenkoDsmElement1d(el)).ToArray();
+                ? model
+                    .Element1ds.Select(el => new DsmElement1d(
+                        el,
+                        el.SectionProfile.GetSectionProfile()
+                    ))
+                    .ToArray()
+                : model
+                    .Element1ds.Select(el => new TimoshenkoDsmElement1d(
+                        el,
+                        el.SectionProfile.GetSectionProfile()
+                    ))
+                    .ToArray();
 
         UnitSettings unitSettings;
         if (command.UnitsOverride is not null)

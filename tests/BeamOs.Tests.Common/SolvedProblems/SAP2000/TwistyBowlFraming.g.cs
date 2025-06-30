@@ -1,12 +1,11 @@
 
 using BeamOs.StructuralAnalysis.Contracts.Common;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoad;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Materials;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.CsSdk;
 using static BeamOs.StructuralAnalysis.Contracts.Common.AngleUnit;
 using static BeamOs.StructuralAnalysis.Contracts.Common.LengthUnit;
@@ -584,19 +583,13 @@ yield return new(5,new(-6989.299597312555, 0, 20194.23866023988,Millimeter),new(
         };
     }
 
-    public override IEnumerable<PutSectionProfileRequest> SectionProfileRequests()
+    public override IEnumerable<SectionProfileFromLibrary> SectionProfilesFromLibraryRequests()
     {
-        yield return new PutSectionProfileRequest
+        yield return new SectionProfileFromLibrary
         {
             Id = 1636,
-            Area = 10.6,
-            StrongAxisMomentOfInertia = 448,
-            WeakAxisMomentOfInertia = 24.5,
-            PolarMomentOfInertia = 0.55,
-            StrongAxisShearArea = 5.0095,
-            WeakAxisShearArea = 4.6905,
-            AreaUnit = SquareInch,
-            AreaMomentOfInertiaUnit = InchToTheFourth
+            Name = "w16x36",
+            Library = StructuralCode.AISC_360_16,
         };
     }
 

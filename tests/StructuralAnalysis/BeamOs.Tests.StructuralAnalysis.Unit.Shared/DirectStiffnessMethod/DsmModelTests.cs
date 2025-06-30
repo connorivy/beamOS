@@ -1,10 +1,7 @@
-using System.Linq;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models.Mappers;
 using BeamOs.StructuralAnalysis.Contracts.Common;
-using BeamOs.StructuralAnalysis.CsSdk.Mappers;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 using BeamOs.Tests.Common;
-using BeamOs.Tests.StructuralAnalysis.Integration;
 
 namespace BeamOs.Tests.StructuralAnalysis.Unit.DirectStiffnessMethod;
 
@@ -27,7 +24,7 @@ public class DsmModelTests
             .BuildStructureStiffnessMatrix()
             .Values;
 
-        Asserter.AssertEqual(
+        TestUtils.Asserter.AssertEqual(
             BeamOsObjectType.Model,
             modelFixture.Id.ToString(),
             "Structural Stiffness Matrix",

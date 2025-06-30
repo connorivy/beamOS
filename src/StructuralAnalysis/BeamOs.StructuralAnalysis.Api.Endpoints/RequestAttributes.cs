@@ -10,7 +10,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints;
     Inherited = true
 )]
 public class FromRouteAttribute
-#if DEBUG
+#if API_PROJECT
     : Microsoft.AspNetCore.Mvc.FromRouteAttribute
 #else
     : Attribute
@@ -23,7 +23,7 @@ public class FromRouteAttribute
     Inherited = true
 )]
 public class FromQueryAttribute
-#if DEBUG
+#if API_PROJECT
     : Microsoft.AspNetCore.Mvc.FromQueryAttribute
 #else
     : Attribute
@@ -36,7 +36,7 @@ public class FromQueryAttribute
     Inherited = true
 )]
 public class FromBodyAttribute
-#if DEBUG
+#if API_PROJECT
     : Microsoft.AspNetCore.Mvc.FromBodyAttribute
 #else
     : Attribute

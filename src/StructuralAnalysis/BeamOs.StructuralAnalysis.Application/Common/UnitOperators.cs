@@ -153,53 +153,65 @@ public static class UnitOperators
 
     public static ForcePerLengthUnit DivideBy(this ForceUnit forceUnit, LengthUnit lengthUnit)
     {
-        return forceUnit switch
+        var result = forceUnit switch
         {
             ForceUnit.Decanewton => throw new NotImplementedException(),
             ForceUnit.Dyn => throw new NotImplementedException(),
-            ForceUnit.KilogramForce
-                => lengthUnit switch
-                {
-                    LengthUnit.Centimeter => ForcePerLengthUnit.KilogramForcePerCentimeter,
-                    LengthUnit.Meter => ForcePerLengthUnit.KilogramForcePerMeter,
-                    LengthUnit.Millimeter => ForcePerLengthUnit.KilogramForcePerMillimeter,
-                },
-            ForceUnit.Kilonewton
-                => lengthUnit switch
-                {
-                    LengthUnit.Centimeter => ForcePerLengthUnit.KilonewtonPerCentimeter,
-                    LengthUnit.Meter => ForcePerLengthUnit.KilonewtonPerMeter,
-                    LengthUnit.Millimeter => ForcePerLengthUnit.KilonewtonPerMillimeter,
-                },
+            ForceUnit.KilogramForce => lengthUnit switch
+            {
+                LengthUnit.Centimeter => ForcePerLengthUnit.KilogramForcePerCentimeter,
+                LengthUnit.Meter => ForcePerLengthUnit.KilogramForcePerMeter,
+                LengthUnit.Millimeter => ForcePerLengthUnit.KilogramForcePerMillimeter,
+                _ => throw new NotImplementedException(
+                    $"Unable to handle force unit {forceUnit} with length unit {lengthUnit}."
+                ),
+            },
+            ForceUnit.Kilonewton => lengthUnit switch
+            {
+                LengthUnit.Centimeter => ForcePerLengthUnit.KilonewtonPerCentimeter,
+                LengthUnit.Meter => ForcePerLengthUnit.KilonewtonPerMeter,
+                LengthUnit.Millimeter => ForcePerLengthUnit.KilonewtonPerMillimeter,
+                _ => throw new NotImplementedException(
+                    $"Unable to handle force unit {forceUnit} with length unit {lengthUnit}."
+                ),
+            },
             ForceUnit.KiloPond => throw new NotImplementedException(),
-            ForceUnit.KilopoundForce
-                => lengthUnit switch
-                {
-                    LengthUnit.Foot => ForcePerLengthUnit.KilopoundForcePerFoot,
-                    LengthUnit.Inch => ForcePerLengthUnit.KilopoundForcePerInch,
-                },
+            ForceUnit.KilopoundForce => lengthUnit switch
+            {
+                LengthUnit.Foot => ForcePerLengthUnit.KilopoundForcePerFoot,
+                LengthUnit.Inch => ForcePerLengthUnit.KilopoundForcePerInch,
+                _ => throw new NotImplementedException(
+                    $"Unable to handle force unit {forceUnit} with length unit {lengthUnit}."
+                ),
+            },
             ForceUnit.Meganewton => throw new NotImplementedException(),
             ForceUnit.Micronewton => throw new NotImplementedException(),
             ForceUnit.Millinewton => throw new NotImplementedException(),
-            ForceUnit.Newton
-                => lengthUnit switch
-                {
-                    LengthUnit.Centimeter => ForcePerLengthUnit.NewtonPerCentimeter,
-                    LengthUnit.Meter => ForcePerLengthUnit.NewtonPerMeter,
-                    LengthUnit.Millimeter => ForcePerLengthUnit.NewtonPerMillimeter,
-                },
+            ForceUnit.Newton => lengthUnit switch
+            {
+                LengthUnit.Centimeter => ForcePerLengthUnit.NewtonPerCentimeter,
+                LengthUnit.Meter => ForcePerLengthUnit.NewtonPerMeter,
+                LengthUnit.Millimeter => ForcePerLengthUnit.NewtonPerMillimeter,
+                _ => throw new NotImplementedException(
+                    $"Unable to handle force unit {forceUnit} with length unit {lengthUnit}."
+                ),
+            },
             ForceUnit.OunceForce => throw new NotImplementedException(),
             ForceUnit.Poundal => throw new NotImplementedException(),
-            ForceUnit.PoundForce
-                => lengthUnit switch
-                {
-                    LengthUnit.Foot => ForcePerLengthUnit.PoundForcePerFoot,
-                    LengthUnit.Inch => ForcePerLengthUnit.PoundForcePerInch,
-                },
+            ForceUnit.PoundForce => lengthUnit switch
+            {
+                LengthUnit.Foot => ForcePerLengthUnit.PoundForcePerFoot,
+                LengthUnit.Inch => ForcePerLengthUnit.PoundForcePerInch,
+                _ => throw new NotImplementedException(
+                    $"Unable to handle force unit {forceUnit} with length unit {lengthUnit}."
+                ),
+            },
             ForceUnit.ShortTonForce => throw new NotImplementedException(),
             ForceUnit.TonneForce => throw new NotImplementedException(),
             _ => throw new NotImplementedException(),
         };
+
+        return result;
     }
 
     public static TorqueUnit MultiplyBy(this ForceUnit forceUnit, LengthUnit lengthUnit)
@@ -208,45 +220,40 @@ public static class UnitOperators
         {
             ForceUnit.Decanewton => throw new NotImplementedException(),
             ForceUnit.Dyn => throw new NotImplementedException(),
-            ForceUnit.KilogramForce
-                => lengthUnit switch
-                {
-                    LengthUnit.Centimeter => TorqueUnit.KilogramForceCentimeter,
-                    LengthUnit.Meter => TorqueUnit.KilogramForceMeter,
-                    LengthUnit.Millimeter => TorqueUnit.KilogramForceMillimeter,
-                },
-            ForceUnit.Kilonewton
-                => lengthUnit switch
-                {
-                    LengthUnit.Centimeter => TorqueUnit.KilonewtonCentimeter,
-                    LengthUnit.Meter => TorqueUnit.KilonewtonMeter,
-                    LengthUnit.Millimeter => TorqueUnit.KilonewtonMillimeter,
-                },
+            ForceUnit.KilogramForce => lengthUnit switch
+            {
+                LengthUnit.Centimeter => TorqueUnit.KilogramForceCentimeter,
+                LengthUnit.Meter => TorqueUnit.KilogramForceMeter,
+                LengthUnit.Millimeter => TorqueUnit.KilogramForceMillimeter,
+            },
+            ForceUnit.Kilonewton => lengthUnit switch
+            {
+                LengthUnit.Centimeter => TorqueUnit.KilonewtonCentimeter,
+                LengthUnit.Meter => TorqueUnit.KilonewtonMeter,
+                LengthUnit.Millimeter => TorqueUnit.KilonewtonMillimeter,
+            },
             ForceUnit.KiloPond => throw new NotImplementedException(),
-            ForceUnit.KilopoundForce
-                => lengthUnit switch
-                {
-                    LengthUnit.Foot => TorqueUnit.KilopoundForceFoot,
-                    LengthUnit.Inch => TorqueUnit.KilopoundForceInch,
-                },
+            ForceUnit.KilopoundForce => lengthUnit switch
+            {
+                LengthUnit.Foot => TorqueUnit.KilopoundForceFoot,
+                LengthUnit.Inch => TorqueUnit.KilopoundForceInch,
+            },
             ForceUnit.Meganewton => throw new NotImplementedException(),
             ForceUnit.Micronewton => throw new NotImplementedException(),
             ForceUnit.Millinewton => throw new NotImplementedException(),
-            ForceUnit.Newton
-                => lengthUnit switch
-                {
-                    LengthUnit.Centimeter => TorqueUnit.NewtonCentimeter,
-                    LengthUnit.Meter => TorqueUnit.NewtonMeter,
-                    LengthUnit.Millimeter => TorqueUnit.NewtonMillimeter,
-                },
+            ForceUnit.Newton => lengthUnit switch
+            {
+                LengthUnit.Centimeter => TorqueUnit.NewtonCentimeter,
+                LengthUnit.Meter => TorqueUnit.NewtonMeter,
+                LengthUnit.Millimeter => TorqueUnit.NewtonMillimeter,
+            },
             ForceUnit.OunceForce => throw new NotImplementedException(),
             ForceUnit.Poundal => throw new NotImplementedException(),
-            ForceUnit.PoundForce
-                => lengthUnit switch
-                {
-                    LengthUnit.Foot => TorqueUnit.PoundForceFoot,
-                    LengthUnit.Inch => TorqueUnit.PoundForceInch,
-                },
+            ForceUnit.PoundForce => lengthUnit switch
+            {
+                LengthUnit.Foot => TorqueUnit.PoundForceFoot,
+                LengthUnit.Inch => TorqueUnit.PoundForceInch,
+            },
             ForceUnit.ShortTonForce => throw new NotImplementedException(),
             ForceUnit.TonneForce => throw new NotImplementedException(),
             _ => throw new NotImplementedException(),
@@ -259,45 +266,40 @@ public static class UnitOperators
         {
             ForceUnit.Decanewton => throw new NotImplementedException(),
             ForceUnit.Dyn => throw new NotImplementedException(),
-            ForceUnit.KilogramForce
-                => lengthUnit switch
-                {
-                    LengthUnit.Centimeter => PressureUnit.KilogramForcePerSquareCentimeter,
-                    LengthUnit.Meter => PressureUnit.KilogramForcePerSquareMeter,
-                    LengthUnit.Millimeter => PressureUnit.KilogramForcePerSquareMillimeter,
-                },
-            ForceUnit.Kilonewton
-                => lengthUnit switch
-                {
-                    LengthUnit.Centimeter => PressureUnit.KilonewtonPerSquareCentimeter,
-                    LengthUnit.Meter => PressureUnit.KilonewtonPerSquareMeter,
-                    LengthUnit.Millimeter => PressureUnit.KilonewtonPerSquareMillimeter,
-                },
+            ForceUnit.KilogramForce => lengthUnit switch
+            {
+                LengthUnit.Centimeter => PressureUnit.KilogramForcePerSquareCentimeter,
+                LengthUnit.Meter => PressureUnit.KilogramForcePerSquareMeter,
+                LengthUnit.Millimeter => PressureUnit.KilogramForcePerSquareMillimeter,
+            },
+            ForceUnit.Kilonewton => lengthUnit switch
+            {
+                LengthUnit.Centimeter => PressureUnit.KilonewtonPerSquareCentimeter,
+                LengthUnit.Meter => PressureUnit.KilonewtonPerSquareMeter,
+                LengthUnit.Millimeter => PressureUnit.KilonewtonPerSquareMillimeter,
+            },
             ForceUnit.KiloPond => throw new NotImplementedException(),
-            ForceUnit.KilopoundForce
-                => lengthUnit switch
-                {
-                    LengthUnit.Foot => PressureUnit.KilopoundForcePerSquareFoot,
-                    LengthUnit.Inch => PressureUnit.KilopoundForcePerSquareInch,
-                },
+            ForceUnit.KilopoundForce => lengthUnit switch
+            {
+                LengthUnit.Foot => PressureUnit.KilopoundForcePerSquareFoot,
+                LengthUnit.Inch => PressureUnit.KilopoundForcePerSquareInch,
+            },
             ForceUnit.Meganewton => throw new NotImplementedException(),
             ForceUnit.Micronewton => throw new NotImplementedException(),
             ForceUnit.Millinewton => throw new NotImplementedException(),
-            ForceUnit.Newton
-                => lengthUnit switch
-                {
-                    LengthUnit.Centimeter => PressureUnit.NewtonPerSquareCentimeter,
-                    LengthUnit.Meter => PressureUnit.NewtonPerSquareMeter,
-                    LengthUnit.Millimeter => PressureUnit.NewtonPerSquareMillimeter,
-                },
+            ForceUnit.Newton => lengthUnit switch
+            {
+                LengthUnit.Centimeter => PressureUnit.NewtonPerSquareCentimeter,
+                LengthUnit.Meter => PressureUnit.NewtonPerSquareMeter,
+                LengthUnit.Millimeter => PressureUnit.NewtonPerSquareMillimeter,
+            },
             ForceUnit.OunceForce => throw new NotImplementedException(),
             ForceUnit.Poundal => throw new NotImplementedException(),
-            ForceUnit.PoundForce
-                => lengthUnit switch
-                {
-                    LengthUnit.Foot => PressureUnit.PoundForcePerSquareFoot,
-                    LengthUnit.Inch => PressureUnit.PoundForcePerSquareInch,
-                },
+            ForceUnit.PoundForce => lengthUnit switch
+            {
+                LengthUnit.Foot => PressureUnit.PoundForcePerSquareFoot,
+                LengthUnit.Inch => PressureUnit.PoundForcePerSquareInch,
+            },
             ForceUnit.ShortTonForce => throw new NotImplementedException(),
             ForceUnit.TonneForce => throw new NotImplementedException(),
             _ => throw new NotImplementedException(),

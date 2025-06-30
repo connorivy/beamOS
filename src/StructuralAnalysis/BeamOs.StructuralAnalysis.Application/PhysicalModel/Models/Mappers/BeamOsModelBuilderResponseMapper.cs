@@ -1,11 +1,11 @@
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.StructuralAnalysis.Application.Common;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoad;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Materials;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoads;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCases;
@@ -37,16 +37,26 @@ public partial class BeamOsModelBuilderDomainMapper(Guid modelId)
     {
         model = this.ToDomain(builder);
 
-        var nodeDict = model.Nodes.ToDictionary(x => x.Id);
+        var nodeDict = model
+            .Nodes.Concat<NodeDefinition>(model.InternalNodes)
+            .ToDictionary(x => x.Id);
+
+        var internalNodeDict = model
+            .InternalNodes.GroupBy(el => el.Element1dId)
+            .ToDictionary(x => x.Key, x => x.ToList());
+
         var materialDict = model.Materials.ToDictionary(x => x.Id);
-        var sectionProfileDict = model.SectionProfiles.ToDictionary(x => x.Id);
+        var sectionProfileDict = (model.SectionProfiles ?? [])
+            .Concat<SectionProfileInfoBase>(model.SectionProfilesFromLibrary ?? [])
+            .ToDictionary(x => x.Id);
 
         foreach (var el in model.Element1ds)
         {
             el.StartNode = nodeDict[el.StartNodeId];
             el.EndNode = nodeDict[el.EndNodeId];
+            el.InternalNodes = internalNodeDict.GetValueOrDefault(el.Id, []);
             el.Material = materialDict[el.MaterialId];
-            el.SectionProfile = sectionProfileDict[el.SectionProfileId];
+            el.SectionProfile = sectionProfileDict[el.SectionProfileId].GetSectionProfile();
         }
 
         foreach (var n in model.Nodes)
@@ -80,6 +90,9 @@ public partial class BeamOsModelBuilderDomainMapper(Guid modelId)
     public partial Node ToDomain(PutNodeRequest request);
 
     [MapValue("ModelId", Use = nameof(GetModelId))]
+    public partial InternalNode ToDomain(InternalNodeContract request);
+
+    [MapValue("ModelId", Use = nameof(GetModelId))]
     public partial Element1d ToDomain(PutElement1dRequest request);
 
     [MapValue("ModelId", Use = nameof(GetModelId))]
@@ -94,6 +107,11 @@ public partial class BeamOsModelBuilderDomainMapper(Guid modelId)
     [MapValue("ModelId", Use = nameof(GetModelId))]
     public partial MomentLoad ToDomain(PutMomentLoadRequest request);
 
+    [MapValue("ModelId", Use = nameof(GetModelId))]
+    public partial Domain.PhysicalModel.SectionProfileAggregate.SectionProfileFromLibrary ToDomain(
+        SectionProfileFromLibraryContract request
+    );
+
     public Material ToDomain(PutMaterialRequest request) =>
         new Material(
             modelId,
@@ -102,10 +120,10 @@ public partial class BeamOsModelBuilderDomainMapper(Guid modelId)
             new(request.Id)
         );
 
-    //[MapValue("ModelId", Use = nameof(GetModelId))]
     public SectionProfile ToDomain(PutSectionProfileRequest request) =>
         new(
             modelId,
+            request.Name,
             new(request.Area, request.AreaUnit.MapToAreaUnit()),
             new(
                 request.StrongAxisMomentOfInertia,
@@ -119,8 +137,14 @@ public partial class BeamOsModelBuilderDomainMapper(Guid modelId)
                 request.PolarMomentOfInertia,
                 request.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
             ),
-            new(request.StrongAxisShearArea, request.AreaUnit.MapToAreaUnit()),
-            new(request.WeakAxisShearArea, request.AreaUnit.MapToAreaUnit()),
+            new(request.StrongAxisPlasticSectionModulus, request.VolumeUnit.MapToVolumeUnit()),
+            new(request.WeakAxisPlasticSectionModulus, request.VolumeUnit.MapToVolumeUnit()),
+            request.StrongAxisShearArea.HasValue
+                ? new(request.StrongAxisShearArea.Value, request.AreaUnit.MapToAreaUnit())
+                : null,
+            request.WeakAxisShearArea.HasValue
+                ? new(request.WeakAxisShearArea.Value, request.AreaUnit.MapToAreaUnit())
+                : null,
             new(request.Id)
         );
 }

@@ -26,6 +26,7 @@ global using Pressure = UnitsNet.Pressure;
 global using PressureContract = BeamOs.StructuralAnalysis.Contracts.Common.Pressure;
 global using PressureUnit = UnitsNet.Units.PressureUnit;
 global using PressureUnitContract = BeamOs.StructuralAnalysis.Contracts.Common.PressureUnit;
+global using RatioUnitContract = BeamOs.StructuralAnalysis.Contracts.Common.RatioUnit;
 global using Torque = UnitsNet.Torque;
 global using TorqueContract = BeamOs.StructuralAnalysis.Contracts.Common.Torque;
 global using TorqueUnit = UnitsNet.Units.TorqueUnit;

@@ -1,7 +1,7 @@
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Models;
@@ -39,25 +39,3 @@ public class GetModelQueryHandler(StructuralAnalysisDbContext dbContext)
         return mapper.Map(model);
     }
 }
-
-//[Mapper]
-//[UseStaticMapper(typeof(BeamOsDomainContractMappers))]
-//[UseStaticMapper(typeof(UnitsNetMappersJustEnums))]
-//internal partial class ModelToResponseMapper : AbstractMapperProvidedUnits<Model, ModelResponse>
-//{
-//    [Obsolete()]
-//    public ModelToResponseMapper()
-//        : base(null) { }
-
-//    private ModelToResponseMapper(UnitSettings unitSettings)
-//        : base(unitSettings) { }
-
-//    public static ModelToResponseMapper Create(UnitSettings unitSettings)
-//    {
-//        return new(unitSettings);
-//    }
-
-//    public ModelResponseHydrated Map(Model source) => this.ToResponse(source);
-
-//    private partial ModelResponseHydrated ToResponse(Model source);
-//}

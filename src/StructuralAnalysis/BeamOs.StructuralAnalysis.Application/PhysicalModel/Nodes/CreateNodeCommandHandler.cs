@@ -3,13 +3,14 @@ using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Contracts.Common;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 
 public class CreateNodeCommandHandler(
+    // INodeDefinitionRepository nodeRepository,
     INodeRepository nodeRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<CreateNodeCommand, NodeResponse>
@@ -20,6 +21,24 @@ public class CreateNodeCommandHandler(
     )
     {
         Node node = command.ToDomainObject();
+        nodeRepository.Add(node);
+        await unitOfWork.SaveChangesAsync(ct);
+
+        return node.ToResponse();
+    }
+}
+
+public sealed class CreateInternalNodeCommandHandler(
+    INodeDefinitionRepository nodeRepository,
+    IStructuralAnalysisUnitOfWork unitOfWork
+) : ICommandHandler<ModelResourceRequest<CreateInternalNodeRequest>, InternalNodeContract>
+{
+    public async Task<Result<InternalNodeContract>> ExecuteAsync(
+        ModelResourceRequest<CreateInternalNodeRequest> command,
+        CancellationToken ct = default
+    )
+    {
+        var node = command.ToDomainObject();
         nodeRepository.Add(node);
         await unitOfWork.SaveChangesAsync(ct);
 
@@ -40,6 +59,13 @@ public static partial class CreateNodeCommandMapper
 
     [MapperIgnoreTarget(nameof(CreateNodeRequest.Id))]
     public static partial CreateNodeRequest ToRequest(this NodeResponse entity);
+
+    [MapNestedProperties(nameof(ModelResourceRequest<>.Body))]
+    public static partial InternalNode ToDomainObject(
+        this ModelResourceRequest<CreateInternalNodeRequest> command
+    );
+
+    public static partial InternalNodeContract ToResponse(this InternalNode entity);
 }
 
 public readonly struct CreateNodeCommand : IModelResourceRequest<CreateNodeRequest>

@@ -1,13 +1,13 @@
 using BeamOs.StructuralAnalysis.Contracts.Common;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCombinations;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoad;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Materials;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoads;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 
 namespace BeamOs.Tests.Common.SolvedProblems.Udoeyo_StructuralAnalysis;
 
@@ -95,14 +95,16 @@ public sealed class Udoeyo_Example7_7 : ModelFixture, IHasExpectedDiagramResults
     {
         yield return new()
         {
+            Name = "Default",
             Area = 1,
             StrongAxisMomentOfInertia = 1,
             WeakAxisMomentOfInertia = 1,
             PolarMomentOfInertia = 1,
             StrongAxisShearArea = 1,
             WeakAxisShearArea = 1,
-            AreaUnit = AreaUnitContract.SquareMeter,
-            AreaMomentOfInertiaUnit = AreaMomentOfInertiaUnitContract.MeterToTheFourth,
+            StrongAxisPlasticSectionModulus = 1,
+            WeakAxisPlasticSectionModulus = 1,
+            LengthUnit = LengthUnitContract.Meter,
             Id = 1,
         };
     }

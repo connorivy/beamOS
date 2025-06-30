@@ -19,9 +19,10 @@ internal abstract class RepositoryBase<TId, TEntity>(StructuralAnalysisDbContext
         _ = dbContext.Set<TEntity>().Add(aggregate);
     }
 
-    public void Put(TEntity aggregate)
+    public virtual ValueTask Put(TEntity aggregate)
     {
         _ = dbContext.Set<TEntity>().Update(aggregate);
+        return ValueTask.CompletedTask;
     }
 
     public void Remove(TEntity aggregate)
@@ -34,11 +35,16 @@ internal abstract class RepositoryBase<TId, TEntity>(StructuralAnalysisDbContext
     {
         _ = dbContext.Set<TEntity>().Update(aggregate);
     }
+
+    public void ClearChangeTracker()
+    {
+        dbContext.ChangeTracker.Clear();
+    }
 }
 
-internal abstract class ModelResourceRepositoryBase<TId, TEntity>(
+internal abstract class ModelResourceRepositoryInBase<TId, TEntity>(
     StructuralAnalysisDbContext dbContext
-) : RepositoryBase<TId, TEntity>(dbContext), IModelResourceRepository<TId, TEntity>
+) : RepositoryBase<TId, TEntity>(dbContext), IModelResourceRepositoryIn<TId, TEntity>
     where TId : struct, IEquatable<TId>, IIntBasedId
     where TEntity : BeamOsModelEntity<TId>
 {
@@ -49,19 +55,77 @@ internal abstract class ModelResourceRepositoryBase<TId, TEntity>(
             .Select(m => m.Id)
             .ToListAsync(ct);
 
-    public async Task<TEntity?> GetSingle(ModelId modelId, TId id) =>
-        await this
-            .DbContext.Set<TEntity>()
-            .AsNoTracking()
-            .FirstOrDefaultAsync(m => m.ModelId == modelId && m.Id.Equals(id));
-
-    public async Task RemoveById(ModelId modelId, TId id)
+    public async Task RemoveById(ModelId modelId, TId id, CancellationToken ct = default)
     {
-        var entity = await this.DbContext.Set<TEntity>().FindAsync([id, modelId]);
+        var entity = await this.DbContext.Set<TEntity>().FindAsync([id, modelId], ct);
         if (entity is not null)
         {
             this.DbContext.Set<TEntity>().Remove(entity);
         }
+    }
+
+    public async Task ReloadEntity(TEntity entity, CancellationToken ct = default)
+    {
+        await this.DbContext.Entry(entity).ReloadAsync(ct);
+    }
+}
+
+internal abstract class ModelResourceRepositoryBase<TId, TEntity>(
+    StructuralAnalysisDbContext dbContext
+) : ModelResourceRepositoryInBase<TId, TEntity>(dbContext), IModelResourceRepository<TId, TEntity>
+    where TId : struct, IEquatable<TId>, IIntBasedId
+    where TEntity : BeamOsModelEntity<TId>
+{
+    public virtual async Task<TEntity?> GetSingle(
+        ModelId modelId,
+        TId id,
+        CancellationToken ct = default
+    )
+    {
+        var entity = this.DbContext.Set<TEntity>();
+        return await entity
+            .AsNoTracking()
+            .FirstOrDefaultAsync(
+                m => m.ModelId == modelId && m.Id.Equals(id),
+                cancellationToken: ct
+            );
+    }
+
+    public virtual async Task<ModelSettingsAndEntity<TEntity>?> GetSingleWithModelSettings(
+        ModelId modelId,
+        TId id,
+        CancellationToken ct = default
+    )
+    {
+        var settingAndEntity = await this
+            .DbContext.Set<TEntity>()
+            .AsNoTracking()
+            .Where(m => m.ModelId == modelId && m.Id.Equals(id))
+            .Select(m => new { ModelSettings = m.Model.Settings, Entity = m })
+            .FirstOrDefaultAsync(ct);
+
+        return settingAndEntity is null
+            ? null
+            : new ModelSettingsAndEntity<TEntity>(
+                settingAndEntity.ModelSettings,
+                settingAndEntity.Entity
+            );
+    }
+
+    public virtual Task<List<TEntity>> GetMany(
+        ModelId modelId,
+        IList<TId>? ids,
+        CancellationToken ct = default
+    )
+    {
+        if (ids is null)
+        {
+            return this.DbContext.Set<TEntity>().Where(m => m.ModelId == modelId).ToListAsync(ct);
+        }
+        return this
+            .DbContext.Set<TEntity>()
+            .Where(m => m.ModelId == modelId && ids.Contains(m.Id))
+            .ToListAsync(ct);
     }
 }
 
@@ -78,4 +142,25 @@ internal abstract class AnalyticalResultRepositoryBase<TId, TEntity>(
             .FirstOrDefaultAsync(m =>
                 m.ModelId == modelId && m.ResultSetId == resultSetId && m.Id.Equals(id)
             );
+
+    public async Task<ModelSettingsAndEntity<TEntity>?> GetSingleWithModelSettings(
+        ModelId modelId,
+        TId id,
+        CancellationToken ct = default
+    )
+    {
+        var settingAndEntity = await this
+            .DbContext.Set<TEntity>()
+            .AsNoTracking()
+            .Where(m => m.ModelId == modelId && m.Id.Equals(id))
+            .Select(m => new { ModelSettings = m.Model.Settings, Entity = m })
+            .FirstOrDefaultAsync(ct);
+
+        return settingAndEntity is null
+            ? null
+            : new ModelSettingsAndEntity<TEntity>(
+                settingAndEntity.ModelSettings,
+                settingAndEntity.Entity
+            );
+    }
 }

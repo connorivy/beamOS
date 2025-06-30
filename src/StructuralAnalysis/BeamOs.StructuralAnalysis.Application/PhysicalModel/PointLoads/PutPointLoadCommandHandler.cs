@@ -3,7 +3,7 @@ using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Contracts.Common;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
 using Riok.Mapperly.Abstractions;
@@ -21,7 +21,7 @@ public class PutPointLoadCommandHandler(
     )
     {
         PointLoad pointLoad = command.ToDomainObject();
-        pointLoadRepository.Put(pointLoad);
+        await pointLoadRepository.Put(pointLoad);
         await unitOfWork.SaveChangesAsync(ct);
 
         return pointLoad.ToResponse();

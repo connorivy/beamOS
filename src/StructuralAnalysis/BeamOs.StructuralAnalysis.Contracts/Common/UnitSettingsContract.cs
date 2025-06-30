@@ -9,10 +9,10 @@ public record UnitSettings
     public AngleUnit AngleUnit { get; init; } = AngleUnit.Radian;
 
     public static UnitSettings K_IN { get; } =
-        new() { LengthUnit = LengthUnit.Inch, ForceUnit = ForceUnit.KilopoundForce, };
+        new() { LengthUnit = LengthUnit.Inch, ForceUnit = ForceUnit.KilopoundForce };
 
     public static UnitSettings K_FT { get; } =
-        new() { LengthUnit = LengthUnit.Foot, ForceUnit = ForceUnit.KilopoundForce, };
+        new() { LengthUnit = LengthUnit.Foot, ForceUnit = ForceUnit.KilopoundForce };
 
     public static UnitSettings N_M { get; } =
         new() { LengthUnit = LengthUnit.Meter, ForceUnit = ForceUnit.Newton };
@@ -155,6 +155,13 @@ public enum PressureUnit
     NewtonPerSquareMillimeter = 19,
     PoundForcePerSquareFoot = 21,
     PoundForcePerSquareInch = 22,
+}
+
+public enum RatioUnit
+{
+    Undefined = 0,
+    DecimalFraction, // 0 to 1
+    Percent, // 0 to 100
 }
 
 public static class PressureUnitExtension

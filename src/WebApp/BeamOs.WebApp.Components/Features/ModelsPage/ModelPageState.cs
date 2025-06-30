@@ -1,5 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.Tests.Common;
 using Fluxor;
 

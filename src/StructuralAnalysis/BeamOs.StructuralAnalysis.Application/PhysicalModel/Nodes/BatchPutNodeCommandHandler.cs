@@ -1,6 +1,6 @@
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.Common;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
@@ -23,4 +23,21 @@ public readonly struct BatchPutNodeCommand : IModelResourceRequest<PutNodeReques
 {
     public Guid ModelId { get; init; }
     public PutNodeRequest[] Body { get; init; }
+}
+
+public class BatchPutInternalNodeCommandHandler(
+    IInternalNodeRepository repository,
+    IStructuralAnalysisUnitOfWork unitOfWork
+)
+    : BatchPutCommandHandler<
+        NodeId,
+        InternalNode,
+        ModelResourceRequest<InternalNodeContract[]>,
+        InternalNodeContract
+    >(repository, unitOfWork)
+{
+    protected override InternalNode ToDomainObject(
+        ModelId modelId,
+        InternalNodeContract putRequest
+    ) => new ModelResourceRequest<InternalNodeContract>(modelId, putRequest).ToDomainObject();
 }

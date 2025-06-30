@@ -3,7 +3,7 @@ using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.Common;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 using Riok.Mapperly.Abstractions;
@@ -22,13 +22,10 @@ public class PutSectionProfileCommandHandler(
     )
     {
         SectionProfile sectionProfile = command.ToDomainObject();
-        sectionProfileRepository.Put(sectionProfile);
+        await sectionProfileRepository.Put(sectionProfile);
         await unitOfWork.SaveChangesAsync(ct);
 
-        return sectionProfile.ToResponse(
-            command.Body.AreaUnit.MapToAreaUnit(),
-            command.Body.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
-        );
+        return sectionProfile.ToResponse(command.Body.LengthUnit.MapToLengthUnit());
     }
 }
 
@@ -55,6 +52,10 @@ public class BatchPutSectionProfileCommandHandler(
 public static partial class PutSectionProfileCommandMapper
 {
     public static partial SectionProfile ToDomainObject(this PutSectionProfileCommand command);
+
+    public static partial SectionProfileFromLibrary ToDomainObject(
+        this PutSectionProfileFromLibraryCommand command
+    );
 }
 
 public readonly struct PutSectionProfileCommand : IModelResourceWithIntIdRequest<SectionProfileData>
@@ -62,6 +63,7 @@ public readonly struct PutSectionProfileCommand : IModelResourceWithIntIdRequest
     public int Id { get; init; }
     public Guid ModelId { get; init; }
     public SectionProfileData Body { get; init; }
+    public string Name => this.Body.Name;
     public Area Area => new(this.Body.Area, this.Body.AreaUnit.MapToAreaUnit());
     public AreaMomentOfInertia StrongAxisMomentOfInertia =>
         new(
@@ -78,10 +80,18 @@ public readonly struct PutSectionProfileCommand : IModelResourceWithIntIdRequest
             this.Body.PolarMomentOfInertia,
             this.Body.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
         );
-    public Area StrongAxisShearArea =>
-        new(this.Body.StrongAxisShearArea, this.Body.AreaUnit.MapToAreaUnit());
-    public Area WeakAxisShearArea =>
-        new(this.Body.WeakAxisShearArea, this.Body.AreaUnit.MapToAreaUnit());
+    public Volume StrongAxisPlasticSectionModulus =>
+        new(this.Body.StrongAxisPlasticSectionModulus, this.Body.VolumeUnit.MapToVolumeUnit());
+    public Volume WeakAxisPlasticSectionModulus =>
+        new(this.Body.WeakAxisPlasticSectionModulus, this.Body.VolumeUnit.MapToVolumeUnit());
+    public Area? StrongAxisShearArea =>
+        this.Body.StrongAxisShearArea.HasValue
+            ? new(this.Body.StrongAxisShearArea.Value, this.Body.AreaUnit.MapToAreaUnit())
+            : null;
+    public Area? WeakAxisShearArea =>
+        this.Body.WeakAxisShearArea.HasValue
+            ? new(this.Body.WeakAxisShearArea.Value, this.Body.AreaUnit.MapToAreaUnit())
+            : null;
 
     public PutSectionProfileCommand() { }
 
@@ -101,6 +111,7 @@ public readonly struct PutSectionProfileCommand : IModelResourceWithIntIdRequest
         return new(
             this.Id,
             this.ModelId,
+            this.Body.Name,
             this.Area.As(this.Body.AreaUnit.MapToAreaUnit()),
             this.StrongAxisMomentOfInertia.As(
                 this.Body.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
@@ -111,10 +122,11 @@ public readonly struct PutSectionProfileCommand : IModelResourceWithIntIdRequest
             this.PolarMomentOfInertia.As(
                 this.Body.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
             ),
-            this.StrongAxisShearArea.As(this.Body.AreaUnit.MapToAreaUnit()),
-            this.WeakAxisShearArea.As(this.Body.AreaUnit.MapToAreaUnit()),
-            this.Body.AreaUnit,
-            this.Body.AreaMomentOfInertiaUnit
+            this.StrongAxisPlasticSectionModulus.As(this.Body.VolumeUnit.MapToVolumeUnit()),
+            this.WeakAxisPlasticSectionModulus.As(this.Body.VolumeUnit.MapToVolumeUnit()),
+            this.StrongAxisShearArea?.As(this.Body.AreaUnit.MapToAreaUnit()),
+            this.WeakAxisShearArea?.As(this.Body.AreaUnit.MapToAreaUnit()),
+            this.Body.LengthUnit
         );
     }
 

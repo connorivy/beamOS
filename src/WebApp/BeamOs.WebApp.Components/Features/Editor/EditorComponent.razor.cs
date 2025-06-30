@@ -4,8 +4,9 @@ using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.CodeGen.EditorApi;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
+using BeamOs.StructuralAnalysis.Contracts.Common;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.WebApp.Components.Features.Common;
@@ -64,7 +65,7 @@ public partial class EditorComponent(
                 await state.Value.EditorApi.ReduceMoveNodeCommandAsync(command);
             }
 
-            var nodeResponse = await apiClient.UpdateNodeAsync(
+            var nodeResponse = await apiClient.PatchNodeAsync(
                 this.ModelId.Value,
                 new UpdateNodeRequest(
                     command.NodeId,
@@ -73,7 +74,7 @@ public partial class EditorComponent(
                         LengthUnit = LengthUnitContract.Meter,
                         X = command.NewLocation.X,
                         Y = command.NewLocation.Y,
-                        Z = command.NewLocation.Z
+                        Z = command.NewLocation.Z,
                     }
                 )
             );
@@ -91,28 +92,25 @@ public partial class EditorComponent(
             {
                 LengthUnit lengthUnit = command.New.LocationPoint.LengthUnit.MapToLengthUnit();
 
-                await state
-                    .Value
-                    .EditorApi
-                    .ReduceMoveNodeCommandAsync(
-                        new MoveNodeCommand()
+                await state.Value.EditorApi.ReduceMoveNodeCommandAsync(
+                    new MoveNodeCommand()
+                    {
+                        CanvasId = this.CanvasId,
+                        NewLocation = new()
                         {
-                            CanvasId = this.CanvasId,
-                            NewLocation = new()
-                            {
-                                X = new Length(command.New.LocationPoint.X, lengthUnit).Meters,
-                                Y = new Length(command.New.LocationPoint.Y, lengthUnit).Meters,
-                                Z = new Length(command.New.LocationPoint.Z, lengthUnit).Meters
-                            },
-                            PreviousLocation = new()
-                            {
-                                X = new Length(command.Previous.LocationPoint.X, lengthUnit).Meters,
-                                Y = new Length(command.Previous.LocationPoint.Y, lengthUnit).Meters,
-                                Z = new Length(command.Previous.LocationPoint.Z, lengthUnit).Meters
-                            },
-                            NodeId = command.New.Id
-                        }
-                    );
+                            X = new Length(command.New.LocationPoint.X, lengthUnit).Meters,
+                            Y = new Length(command.New.LocationPoint.Y, lengthUnit).Meters,
+                            Z = new Length(command.New.LocationPoint.Z, lengthUnit).Meters,
+                        },
+                        PreviousLocation = new()
+                        {
+                            X = new Length(command.Previous.LocationPoint.X, lengthUnit).Meters,
+                            Y = new Length(command.Previous.LocationPoint.Y, lengthUnit).Meters,
+                            Z = new Length(command.Previous.LocationPoint.Z, lengthUnit).Meters,
+                        },
+                        NodeId = command.New.Id,
+                    }
+                );
             }
 
             if (!command.HandledByServer)
@@ -184,9 +182,9 @@ public partial class EditorComponent(
                 return;
             }
 
-            await stateSnapshot
-                .EditorApi
-                .SetGlobalStressesAsync(command.AnalyticalResults.GlobalStresses);
+            await stateSnapshot.EditorApi.SetGlobalStressesAsync(
+                command.AnalyticalResults.GlobalStresses
+            );
         });
 
         dispatcher.Dispatch(new EditorCreated(this.CanvasId));
@@ -315,7 +313,7 @@ public record struct ModelLoaded(CachedModelResponse CachedModelResponse);
 
 //public record struct SelectionChanged(string CanvasId, IModelEntity[] SelectedObjects);
 
-public record struct ModelCacheKey(Guid ModelId, string TypeName, int Id);
+public record struct ModelCacheKey(Guid ModelId, BeamOsObjectType Type, int Id);
 
 [FeatureState]
 public record CachedModelState(ImmutableDictionary<Guid, CachedModelResponse> Models)
@@ -330,12 +328,12 @@ public record CachedModelState(ImmutableDictionary<Guid, CachedModelResponse> Mo
             return null;
         }
 
-        return modelCacheKey.TypeName switch
+        return modelCacheKey.Type switch
         {
-            "Node" => model.Nodes.GetValueOrDefault(modelCacheKey.Id),
-            "Element1d" => model.Element1ds.GetValueOrDefault(modelCacheKey.Id),
-            "PointLoad" => model.PointLoads.GetValueOrDefault(modelCacheKey.Id),
-            _ => null
+            BeamOsObjectType.Node => model.Nodes.GetValueOrDefault(modelCacheKey.Id),
+            BeamOsObjectType.Element1d => model.Element1ds.GetValueOrDefault(modelCacheKey.Id),
+            BeamOsObjectType.PointLoad => model.PointLoads.GetValueOrDefault(modelCacheKey.Id),
+            _ => null,
         };
     }
 
@@ -349,16 +347,12 @@ public record CachedModelState(ImmutableDictionary<Guid, CachedModelResponse> Mo
             return null;
         }
 
-        return modelCacheKey.TypeName switch
+        return modelCacheKey.Type switch
         {
-            "Node"
-                => model
-                    .NodeResults
-                    ?.GetValueOrDefault(resultSetId)
-                    ?.GetValueOrDefault(modelCacheKey.Id),
-            "Element1d" => null,
-            "PointLoad" => null,
-            _ => null
+            BeamOsObjectType.Node => model
+                .NodeResults?.GetValueOrDefault(resultSetId)
+                ?.GetValueOrDefault(modelCacheKey.Id),
+            _ => null,
         };
     }
 }

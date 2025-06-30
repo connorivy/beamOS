@@ -1,7 +1,7 @@
 using BeamOs.Common.Api;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Element1ds;
 

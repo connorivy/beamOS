@@ -1,9 +1,9 @@
 using System.Collections.Immutable;
 using BeamOs.CodeGen.EditorApi;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.ModelObjectEditor;
 using BeamOs.WebApp.Components.Features.ModelObjectEditor.Members;
@@ -75,7 +75,7 @@ public static class EditorComponentStateReducers
         {
             CachedModelResponse = action.CachedModelResponse,
             LoadedModelId = action.CachedModelResponse.Id,
-            HasResults = (action.CachedModelResponse.NodeResults?.Count ?? 0) > 0
+            HasResults = (action.CachedModelResponse.NodeResults?.Count ?? 0) > 0,
         };
     }
 
@@ -118,11 +118,9 @@ public static class EditorComponentStateReducers
             CachedModelResponse = state.CachedModelResponse with
             {
                 Nodes = state
-                    .CachedModelResponse
-                    .Nodes
-                    .Remove(action.New.Id)
-                    .Add(action.New.Id, action.New)
-            }
+                    .CachedModelResponse.Nodes.Remove(action.New.Id)
+                    .Add(action.New.Id, action.New),
+            },
         };
     }
 
@@ -143,8 +141,8 @@ public static class EditorComponentStateReducers
         {
             CachedModelResponse = state.CachedModelResponse with
             {
-                Nodes = state.CachedModelResponse.Nodes.Remove(action.NodeId)
-            }
+                Nodes = state.CachedModelResponse.Nodes.Remove(action.NodeId),
+            },
         };
     }
 
@@ -172,11 +170,11 @@ public static class EditorComponentStateReducers
         {
             CachedModelResponse = state.CachedModelResponse with
             {
-                Nodes = state
-                    .CachedModelResponse
-                    .Nodes
-                    .Add(action.NodeId.Value, new(action.NodeId.Value, action.ModelId, action.Data))
-            }
+                Nodes = state.CachedModelResponse.Nodes.Add(
+                    action.NodeId.Value,
+                    new(action.NodeId.Value, action.ModelId, action.Data)
+                ),
+            },
         };
     }
 
@@ -198,11 +196,9 @@ public static class EditorComponentStateReducers
             CachedModelResponse = state.CachedModelResponse with
             {
                 Element1ds = state
-                    .CachedModelResponse
-                    .Element1ds
-                    .Remove(action.New.Id)
-                    .Add(action.New.Id, action.New)
-            }
+                    .CachedModelResponse.Element1ds.Remove(action.New.Id)
+                    .Add(action.New.Id, action.New),
+            },
         };
     }
 
@@ -223,8 +219,8 @@ public static class EditorComponentStateReducers
         {
             CachedModelResponse = state.CachedModelResponse with
             {
-                Element1ds = state.CachedModelResponse.Element1ds.Remove(action.Element1dId)
-            }
+                Element1ds = state.CachedModelResponse.Element1ds.Remove(action.Element1dId),
+            },
         };
     }
 
@@ -252,23 +248,20 @@ public static class EditorComponentStateReducers
         {
             CachedModelResponse = state.CachedModelResponse with
             {
-                Element1ds = state
-                    .CachedModelResponse
-                    .Element1ds
-                    .Add(
-                        action.Element1dId ?? action.TempElement1dId,
-                        new(
-                            action.Element1dId.Value,
-                            action.ModelId,
-                            action.Data.StartNodeId,
-                            action.Data.EndNodeId,
-                            action.Data.MaterialId,
-                            action.Data.SectionProfileId,
-                            action.Data.SectionProfileRotation.Value,
-                            null
-                        )
+                Element1ds = state.CachedModelResponse.Element1ds.Add(
+                    action.Element1dId ?? action.TempElement1dId,
+                    new(
+                        action.Element1dId.Value,
+                        action.ModelId,
+                        action.Data.StartNodeId,
+                        action.Data.EndNodeId,
+                        action.Data.MaterialId,
+                        action.Data.SectionProfileId,
+                        action.Data.SectionProfileRotation.Value,
+                        null
                     )
-            }
+                ),
+            },
         };
     }
 
@@ -281,9 +274,8 @@ public static class EditorComponentStateReducers
         return state with
         {
             Models = state
-                .Models
-                .Remove(action.CachedModelResponse.Id)
-                .Add(action.CachedModelResponse.Id, action.CachedModelResponse)
+                .Models.Remove(action.CachedModelResponse.Id)
+                .Add(action.CachedModelResponse.Id, action.CachedModelResponse),
         };
     }
 
@@ -299,48 +291,42 @@ public static class EditorComponentStateReducers
         if (action.ModelEntity is NodeResponse nodeResponse)
         {
             newState = state
-                .Models
-                .Remove(action.ModelEntity.ModelId)
+                .Models.Remove(action.ModelEntity.ModelId)
                 .Add(
                     action.ModelEntity.ModelId,
                     model with
                     {
                         Nodes = model
-                            .Nodes
-                            .Remove(nodeResponse.Id)
-                            .Add(nodeResponse.Id, nodeResponse)
+                            .Nodes.Remove(nodeResponse.Id)
+                            .Add(nodeResponse.Id, nodeResponse),
                     }
                 );
         }
         else if (action.ModelEntity is Element1dResponse element1d)
         {
             newState = state
-                .Models
-                .Remove(action.ModelEntity.ModelId)
+                .Models.Remove(action.ModelEntity.ModelId)
                 .Add(
                     action.ModelEntity.ModelId,
                     model with
                     {
                         Element1ds = model
-                            .Element1ds
-                            .Remove(element1d.Id)
-                            .Add(element1d.Id, element1d)
+                            .Element1ds.Remove(element1d.Id)
+                            .Add(element1d.Id, element1d),
                     }
                 );
         }
         else if (action.ModelEntity is PointLoadResponse pointLoad)
         {
             newState = state
-                .Models
-                .Remove(action.ModelEntity.ModelId)
+                .Models.Remove(action.ModelEntity.ModelId)
                 .Add(
                     action.ModelEntity.ModelId,
                     model with
                     {
                         PointLoads = model
-                            .PointLoads
-                            .Remove(pointLoad.Id)
-                            .Add(pointLoad.Id, pointLoad)
+                            .PointLoads.Remove(pointLoad.Id)
+                            .Add(pointLoad.Id, pointLoad),
                     }
                 );
         }
@@ -351,7 +337,7 @@ public static class EditorComponentStateReducers
 
         return state with
         {
-            Models = newState
+            Models = newState,
         };
     }
 
@@ -367,39 +353,36 @@ public static class EditorComponentStateReducers
         if (action.ModelEntity is NodeResponse nodeResponse)
         {
             newState = state
-                .Models
-                .Remove(action.ModelEntity.ModelId)
+                .Models.Remove(action.ModelEntity.ModelId)
                 .Add(
                     action.ModelEntity.ModelId,
                     model with
                     {
-                        Nodes = model.Nodes.Add(nodeResponse.Id, nodeResponse)
+                        Nodes = model.Nodes.Add(nodeResponse.Id, nodeResponse),
                     }
                 );
         }
         else if (action.ModelEntity is Element1dResponse element1d)
         {
             newState = state
-                .Models
-                .Remove(action.ModelEntity.ModelId)
+                .Models.Remove(action.ModelEntity.ModelId)
                 .Add(
                     action.ModelEntity.ModelId,
                     model with
                     {
-                        Element1ds = model.Element1ds.Add(element1d.Id, element1d)
+                        Element1ds = model.Element1ds.Add(element1d.Id, element1d),
                     }
                 );
         }
         else if (action.ModelEntity is PointLoadResponse pointLoad)
         {
             newState = state
-                .Models
-                .Remove(action.ModelEntity.ModelId)
+                .Models.Remove(action.ModelEntity.ModelId)
                 .Add(
                     action.ModelEntity.ModelId,
                     model with
                     {
-                        PointLoads = model.PointLoads.Add(pointLoad.Id, pointLoad)
+                        PointLoads = model.PointLoads.Add(pointLoad.Id, pointLoad),
                     }
                 );
         }
@@ -410,7 +393,7 @@ public static class EditorComponentStateReducers
 
         return state with
         {
-            Models = newState
+            Models = newState,
         };
     }
 
@@ -426,39 +409,36 @@ public static class EditorComponentStateReducers
         if (action.EntityType == "Node")
         {
             newState = state
-                .Models
-                .Remove(action.ModelEntity.ModelId)
+                .Models.Remove(action.ModelEntity.ModelId)
                 .Add(
                     action.ModelEntity.ModelId,
                     model with
                     {
-                        Nodes = model.Nodes.Remove(action.ModelEntity.Id)
+                        Nodes = model.Nodes.Remove(action.ModelEntity.Id),
                     }
                 );
         }
         else if (action.EntityType == "Element1d")
         {
             newState = state
-                .Models
-                .Remove(action.ModelEntity.ModelId)
+                .Models.Remove(action.ModelEntity.ModelId)
                 .Add(
                     action.ModelEntity.ModelId,
                     model with
                     {
-                        Element1ds = model.Element1ds.Remove(action.ModelEntity.Id)
+                        Element1ds = model.Element1ds.Remove(action.ModelEntity.Id),
                     }
                 );
         }
         else if (action.EntityType == "PointLoad")
         {
             newState = state
-                .Models
-                .Remove(action.ModelEntity.ModelId)
+                .Models.Remove(action.ModelEntity.ModelId)
                 .Add(
                     action.ModelEntity.ModelId,
                     model with
                     {
-                        PointLoads = model.PointLoads.Remove(action.ModelEntity.Id)
+                        PointLoads = model.PointLoads.Remove(action.ModelEntity.Id),
                     }
                 );
         }
@@ -469,7 +449,7 @@ public static class EditorComponentStateReducers
 
         return state with
         {
-            Models = newState
+            Models = newState,
         };
     }
 
@@ -484,26 +464,28 @@ public static class EditorComponentStateReducers
         return state with
         {
             Models = state
-                .Models
-                .Remove(action.AnalyticalResults.ModelId)
+                .Models.Remove(action.AnalyticalResults.ModelId)
                 .Add(
                     action.AnalyticalResults.ModelId,
                     model with
                     {
-                        ShearDiagrams = action
-                            .AnalyticalResults
-                            .ShearDiagrams
-                            .ToImmutableDictionary(d => d.Element1dId, d => d),
-                        MomentDiagrams = action
-                            .AnalyticalResults
-                            .MomentDiagrams
-                            .ToImmutableDictionary(d => d.Element1dId, d => d),
-                        DeflectionDiagrams = action
-                            .AnalyticalResults
-                            .DeflectionDiagrams
-                            .ToImmutableDictionary(d => d.Element1dId, d => d),
+                        ShearDiagrams =
+                            action.AnalyticalResults.ShearDiagrams.ToImmutableDictionary(
+                                d => d.Element1dId,
+                                d => d
+                            ),
+                        MomentDiagrams =
+                            action.AnalyticalResults.MomentDiagrams.ToImmutableDictionary(
+                                d => d.Element1dId,
+                                d => d
+                            ),
+                        DeflectionDiagrams =
+                            action.AnalyticalResults.DeflectionDiagrams.ToImmutableDictionary(
+                                d => d.Element1dId,
+                                d => d
+                            ),
                     }
-                )
+                ),
         };
     }
 
@@ -518,8 +500,7 @@ public static class EditorComponentStateReducers
         return state with
         {
             Models = state
-                .Models
-                .Remove(action.ModelId)
+                .Models.Remove(action.ModelId)
                 .Add(
                     action.ModelId,
                     model with
@@ -529,7 +510,7 @@ public static class EditorComponentStateReducers
                         MomentDiagrams = null,
                         DeflectionDiagrams = null,
                     }
-                )
+                ),
         };
     }
 }

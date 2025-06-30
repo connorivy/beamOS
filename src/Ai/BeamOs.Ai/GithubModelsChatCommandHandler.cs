@@ -1,32 +1,45 @@
 using System.ClientModel;
-using System.Runtime.CompilerServices;
 using System.Text;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Agents;
 using Microsoft.SemanticKernel.ChatCompletion;
-using Microsoft.SemanticKernel.Plugins.OpenApi;
 using OpenAI;
 
 namespace BeamOs.Ai;
 
-public class GithubModelsChatCommandHandler(AiApiPlugin aiApiPlugin)
-    : ICommandHandler<GithubModelsChatCommand, string>
+public class GithubModelsChatCommandHandler(
+    CreateModelProposalCommandHandler createModelProposalCommandHandler,
+    IQueryHandler<Guid, ModelInfoResponse> modelInfoQueryHandler
+) : ICommandHandler<GithubModelsChatCommand, GithubModelsChatResponse>
 {
-    public async Task<Result<string>> ExecuteAsync(
+    public async Task<Result<GithubModelsChatResponse>> ExecuteAsync(
         GithubModelsChatCommand command,
         CancellationToken ct = default
     )
     {
-        var kernel = this.BuildOpenAiKernel(command.ApiKey);
+        var modelInfoTask = modelInfoQueryHandler.ExecuteAsync(command.ModelId, ct);
+        var aiApiPlugin = new AiApiPlugin();
+        var kernel = this.BuildOpenAiKernel(command.ApiKey, aiApiPlugin);
+        var modelInfoResult = await modelInfoTask;
+        if (modelInfoResult.IsError)
+        {
+            return modelInfoResult.Error;
+        }
 
         var agent = new ChatCompletionAgent()
         {
             Instructions =
                 $@"
-                Your job is to make changes to and answer questions about structural analysis models based off of user requests. 
-                The Id of the model that you can modify is {command.ModelId}. DO NOT MODIFY MODELS WITH OTHER IDS.
+                Your job is to make changes to and answer questions about structural analysis models based off of user requests.
+
+                These are the default units for the model:
+                - Length: {modelInfoResult.Value.Settings.UnitSettings.LengthUnit}
+                - Force: {modelInfoResult.Value.Settings.UnitSettings.ForceUnit}
+                - Angle: {modelInfoResult.Value.Settings.UnitSettings.AngleUnit}
                 ",
             Kernel = kernel,
             Arguments = new KernelArguments(
@@ -48,10 +61,24 @@ public class GithubModelsChatCommandHandler(AiApiPlugin aiApiPlugin)
             stringBuilder.Append(message.Message.Content);
         }
 
-        return stringBuilder.ToString();
+        var proposalResult = await createModelProposalCommandHandler.ExecuteAsync(
+            new() { ModelId = command.ModelId, Body = aiApiPlugin.GetModelProposalData() },
+            ct
+        );
+
+        if (proposalResult.IsError)
+        {
+            return proposalResult.Error;
+        }
+
+        return new GithubModelsChatResponse()
+        {
+            ProposalId = proposalResult.Value.Id,
+            Message = stringBuilder.ToString(),
+        };
     }
 
-    private Kernel BuildOpenAiKernel(string apiKey)
+    private Kernel BuildOpenAiKernel(string apiKey, AiApiPlugin aiApiPlugin)
     {
         var builder = Kernel.CreateBuilder();
         var credential = new ApiKeyCredential(apiKey);

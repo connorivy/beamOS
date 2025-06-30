@@ -2,16 +2,18 @@ using System.Diagnostics.CodeAnalysis;
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis.Application.AnalyticalResults.NodeResults;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Contracts.Common;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 
 public class PutNodeCommandHandler(
-    INodeRepository nodeRepository,
+    // INodeRepository nodeRepository,
+    INodeDefinitionRepository nodeDefinitionRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<PutNodeCommand, NodeResponse>
 {
@@ -21,11 +23,29 @@ public class PutNodeCommandHandler(
     )
     {
         Node node = command.ToDomainObject();
-        nodeRepository.Put(node);
+        await nodeDefinitionRepository.Put(node);
         await unitOfWork.SaveChangesAsync(ct);
 
         return node.ToResponse();
     }
+}
+
+public sealed class PutInternalNodeCommandHandler(
+    INodeDefinitionRepository nodeRepository,
+    IStructuralAnalysisUnitOfWork unitOfWork
+)
+    : PutCommandHandlerBase<
+        NodeId,
+        InternalNode,
+        ModelResourceWithIntIdRequest<InternalNodeData>,
+        InternalNodeContract
+    >(nodeRepository, unitOfWork)
+{
+    protected override InternalNode ToDomainObject(
+        ModelResourceWithIntIdRequest<InternalNodeData> putCommand
+    ) => putCommand.ToDomainObject();
+
+    protected override InternalNodeContract ToResponse(InternalNode entity) => entity.ToResponse();
 }
 
 [Mapper]
@@ -34,8 +54,20 @@ public class PutNodeCommandHandler(
 public static partial class PutNodeCommandMapper
 {
     public static partial Node ToDomainObject(this PutNodeCommand command);
+
     public static partial NodeResponse ToResponse(this PutNodeCommand command);
+
     public static partial PutNodeRequest ToRequest(this PutNodeCommand command);
+
+    [MapNestedProperties(nameof(ModelResourceRequest<>.Body))]
+    public static partial InternalNode ToDomainObject(
+        this ModelResourceWithIntIdRequest<InternalNodeData> command
+    );
+
+    [MapNestedProperties(nameof(ModelResourceRequest<>.Body))]
+    public static partial InternalNode ToDomainObject(
+        this ModelResourceRequest<InternalNodeContract> command
+    );
 }
 
 public readonly struct PutNodeCommand : IModelResourceWithIntIdRequest<NodeData>

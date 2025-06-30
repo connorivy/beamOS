@@ -1,11 +1,8 @@
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCases;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinations;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using MathNet.Spatial.Euclidean;
-using UnitsNet;
-using UnitsNet.Units;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
 

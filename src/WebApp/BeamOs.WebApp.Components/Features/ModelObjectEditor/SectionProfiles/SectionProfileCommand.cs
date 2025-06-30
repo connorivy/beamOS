@@ -1,5 +1,5 @@
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.WebApp.EditorCommands.Interfaces;
 
 namespace BeamOs.WebApp.Components.Features.ModelObjectEditor.SectionProfiles;
@@ -15,15 +15,13 @@ public record PutSectionProfileClientCommand(
     public bool HandledByBlazor { get; init; }
     public bool HandledByServer { get; init; }
 
-    public IBeamOsClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) => new PutSectionProfileClientCommand(
-        this.New,
-        this.Previous
-    )
-    {
-        HandledByEditor = this.HandledByEditor,
-        HandledByBlazor = this.HandledByBlazor,
-        HandledByServer = this.HandledByServer
-    };
+    public IBeamOsClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
+        new PutSectionProfileClientCommand(this.New, this.Previous)
+        {
+            HandledByEditor = this.HandledByEditor,
+            HandledByBlazor = this.HandledByBlazor,
+            HandledByServer = this.HandledByServer,
+        };
 
     // public PutSectionProfileCommand ToServerCommand()
     // {
@@ -31,14 +29,15 @@ public record PutSectionProfileClientCommand(
     //     {
     //         Id = this.New.Id,
     //         ModelId = this.New.ModelId,
-    //         Body =  
+    //         Body =
     //     };
     // }
 
-    public IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) => this with
-    {
-        HandledByEditor = args?.HandledByEditor ?? this.HandledByEditor,
-        HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
-        HandledByServer = args?.HandledByServer ?? this.HandledByServer
-    };
+    public IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
+        this with
+        {
+            HandledByEditor = args?.HandledByEditor ?? this.HandledByEditor,
+            HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
+            HandledByServer = args?.HandledByServer ?? this.HandledByServer,
+        };
 }

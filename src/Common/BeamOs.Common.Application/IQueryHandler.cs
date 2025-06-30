@@ -4,5 +4,5 @@ namespace BeamOs.Common.Application;
 
 public interface IQueryHandler<TQuery, TResponse>
 {
-    Task<Result<TResponse>> ExecuteAsync(TQuery query, CancellationToken ct = default);
+    public Task<Result<TResponse>> ExecuteAsync(TQuery query, CancellationToken ct = default);
 }

@@ -1,6 +1,4 @@
 @inherits FluxorComponent
-
-@using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node
 @using BeamOs.WebApp.Components.Features.ModelObjectEditor.LoadCases
 @using BeamOs.WebApp.Components.Features.ModelObjectEditor.Materials
 @using BeamOs.WebApp.Components.Features.ModelObjectEditor.Members
@@ -10,6 +8,7 @@
 @using BeamOs.WebApp.Components.Features.ModelObjectEditor.MomentLoads
 @using StructuralAnalysis.Contracts.Common;
 @using BeamOs.WebApp.Components.Features.ModelObjectEditor.LoadCombinations
+@using BeamOs.WebApp.Components.Features.ProposalInfo
 
 @if (state.Value.CurrentViewType == BeamOsObjectType.Model)
 {
@@ -20,11 +19,14 @@
             <MudDivider Class="mb-5" />
             <div class="grid grid-cols-2 gap-2">
                 <MudButton Variant="Variant.Outlined" OnClick="() => ShowView(BeamOsObjectType.Node)">Nodes</MudButton>
-                <MudButton Variant="Variant.Outlined" OnClick="() => ShowView(BeamOsObjectType.Element1d)">Members</MudButton>
+                <MudButton Variant="Variant.Outlined" OnClick="() => ShowView(BeamOsObjectType.Element1d)">Members
+                </MudButton>
                 @* <MudButton Variant="Variant.Outlined">Plates</MudButton> *@
                 @* <MudButton Variant="Variant.Outlined">Supports</MudButton> *@
-                <MudButton Variant="Variant.Outlined" OnClick="() => ShowView(BeamOsObjectType.Material)">Materials</MudButton>
-                <MudButton Variant="Variant.Outlined" OnClick="() => ShowView(BeamOsObjectType.SectionProfile)">Sections</MudButton>
+                <MudButton Variant="Variant.Outlined" OnClick="() => ShowView(BeamOsObjectType.Material)">Materials
+                </MudButton>
+                <MudButton Variant="Variant.Outlined" OnClick="() => ShowView(BeamOsObjectType.SectionProfile)">Sections
+                </MudButton>
             </div>
         </div>
 
@@ -33,12 +35,16 @@
             <MudText Align="Align.Center" Color="Color.Primary">LOADS</MudText>
             <MudDivider Class="mb-5" />
             <div class="grid grid-cols-2 gap-2 mb-2">
-                <MudButton Variant="Variant.Outlined" OnClick="() => ShowView(BeamOsObjectType.PointLoad)">Point Loads</MudButton>
-                <MudButton Variant="Variant.Outlined" OnClick="() => ShowView(BeamOsObjectType.MomentLoad)">Moments</MudButton>
+                <MudButton Variant="Variant.Outlined" OnClick="() => ShowView(BeamOsObjectType.PointLoad)">Point Loads
+                </MudButton>
+                <MudButton Variant="Variant.Outlined" OnClick="() => ShowView(BeamOsObjectType.MomentLoad)">Moments
+                </MudButton>
             </div>
             <div class="grid grid-cols-2 gap-2">
-                <MudButton Variant="Variant.Outlined" OnClick="() => ShowView(BeamOsObjectType.LoadCase)">Load Cases</MudButton>
-                <MudButton Variant="Variant.Outlined" OnClick="() => ShowView(BeamOsObjectType.LoadCombination)">Load Combinations</MudButton>
+                <MudButton Variant="Variant.Outlined" OnClick="() => ShowView(BeamOsObjectType.LoadCase)">Load Cases
+                </MudButton>
+                <MudButton Variant="Variant.Outlined" OnClick="() => ShowView(BeamOsObjectType.LoadCombination)">Load
+                    Combinations</MudButton>
             </div>
         </div>
     </div>
@@ -63,7 +69,8 @@ else
     }
     else if (state.Value.CurrentViewType == BeamOsObjectType.SectionProfile)
     {
-        <SectionProfileObjectEditor ModelId="@ModelId" UnitSettings="@UnitSettings" SelectedObject="state.Value.SelectedObject" />
+        <SectionProfileObjectEditor ModelId="@ModelId" UnitSettings="@UnitSettings"
+            SelectedObject="state.Value.SelectedObject" />
     }
     else if (state.Value.CurrentViewType == BeamOsObjectType.PointLoad)
     {

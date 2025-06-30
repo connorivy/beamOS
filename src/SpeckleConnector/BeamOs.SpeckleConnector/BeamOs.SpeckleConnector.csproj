@@ -8,12 +8,14 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Common\BeamOs.Common.Api\BeamOs.Common.Api.csproj" />
+    <ProjectReference Include="..\..\Identity\BeamOs.Identity\BeamOs.Identity.csproj" />
     <ProjectReference Include="..\..\StructuralAnalysis\BeamOs.StructuralAnalysis.Sdk\BeamOs.StructuralAnalysis.Sdk.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Speckle.Core" />
     <PackageReference Include="Speckle.Objects" />
+    <PackageReference Include="StructuralShapes" />
   </ItemGroup>
   
 </Project>

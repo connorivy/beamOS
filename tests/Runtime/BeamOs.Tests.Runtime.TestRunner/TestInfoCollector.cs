@@ -18,11 +18,38 @@ public class TestInfoCollector
                     .Where(t => !t.IsInterface && !t.IsAbstract)
             )
             {
-                foreach (var methodInfo in exportedType.GetMethods())
+                if (typeof(IModelFixtureTestsClass).IsAssignableFrom(exportedType))
                 {
-                    foreach (var test in GetTestInfoFromMethod(methodInfo, exportedType))
+                    foreach (var methodInfo in exportedType.GetMethods())
                     {
-                        yield return test;
+                        if (
+                            methodInfo.GetCustomAttribute<TestAttribute>() is null
+                            || methodInfo.GetCustomAttribute<SkipInFrontEndAttribute>() is not null
+                        )
+                        {
+                            continue;
+                        }
+
+                        foreach (var modelFixture in AllSolvedProblems.ModelFixtures())
+                        {
+                            var testInfo = new ClassWithModelFixtureTestInfo(
+                                methodInfo,
+                                exportedType,
+                                modelFixture
+                            );
+
+                            yield return testInfo;
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var methodInfo in exportedType.GetMethods())
+                    {
+                        foreach (var test in GetTestInfoFromMethod(methodInfo, exportedType))
+                        {
+                            yield return test;
+                        }
                     }
                 }
             }
@@ -37,7 +64,10 @@ public class TestInfoCollector
 
     public static IEnumerable<TestInfo> GetTestInfoFromMethod(MethodInfo methodInfo, Type classType)
     {
-        if (methodInfo.GetCustomAttribute<TestAttribute>() is null)
+        if (
+            methodInfo.GetCustomAttribute<TestAttribute>() is null
+            || methodInfo.GetCustomAttribute<SkipInFrontEndAttribute>() is not null
+        )
         {
             yield break;
         }
@@ -48,12 +78,10 @@ public class TestInfoCollector
         {
             foreach (var dataAttribute in dataAttributes)
             {
-                MethodInfo? dataMethod = dataAttribute
-                    .ClassProvidingDataSource
-                    .GetMethod(
-                        dataAttribute.MethodNameProvidingDataSource,
-                        BindingFlags.Public | BindingFlags.Static
-                    );
+                MethodInfo? dataMethod = dataAttribute.ClassProvidingDataSource.GetMethod(
+                    dataAttribute.MethodNameProvidingDataSource,
+                    BindingFlags.Public | BindingFlags.Static
+                );
 
                 object? data = dataMethod.Invoke(null, []);
 
@@ -67,7 +95,7 @@ public class TestInfoCollector
                     yield return new TestInfo()
                     {
                         TestClassType = classType,
-                        TestData =  [dataItem],
+                        TestData = [dataItem],
                         MethodInfo = methodInfo,
                     };
                     //    classType,
@@ -86,18 +114,27 @@ public class TestInfoCollector
                 }
             }
         }
-        //else
-        //{
-        //    yield return new TestInfo(
-        //        classType,
-        //        null,
-        //        methodInfo,
-        //        methodInfo
-        //            .GetCustomAttributes<TestBaseAttribute>()
-        //            .Concat(classType.GetCustomAttributes<TestBaseAttribute>())
-        //            .GroupBy(attr => attr.TraitName)
-        //            .ToDictionary(g => g.Key, g => g.Select(attr => attr.TraitValue).First())
-        //    );
-        //}
+        else
+        {
+            // TestTypeAttribute? testTypeAttribute =
+            //     classType.GetCustomAttribute<TestTypeAttribute>();
+            yield return new TestInfo()
+            {
+                TestClassType = classType,
+                TestData = null,
+                MethodInfo = methodInfo,
+                // TestType = testTypeAttribute?.TestType ?? TestType.StructuralAnalysis,
+            };
+            //    yield return new TestInfo(
+            //        classType,
+            //        null,
+            //        methodInfo,
+            //        methodInfo
+            //            .GetCustomAttributes<TestBaseAttribute>()
+            //            .Concat(classType.GetCustomAttributes<TestBaseAttribute>())
+            //            .GroupBy(attr => attr.TraitName)
+            //            .ToDictionary(g => g.Key, g => g.Select(attr => attr.TraitValue).First())
+            //    );
+        }
     }
 }

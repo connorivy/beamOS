@@ -6,6 +6,7 @@
 @using BeamOs.WebApp.Components.Features.Common
 @using BeamOs.WebApp.Components.Features.Editor
 @using BeamOs.WebApp.Components.Features.ModelObjectEditor
+@using BeamOs.WebApp.Components.Features.ProposalInfo
 @using BeamOs.WebApp.Components.Features.ResultCharts
 @using BeamOs.WebApp.Components.Features.ResultsTable
 @using BeamOs.WebApp.Components.Features.SelectionInfo
@@ -32,7 +33,7 @@
     <EditorComponent Class="h-full" @ref="editorComponent" ModelId="@ModelId" IsReadOnly="false"></EditorComponent>
     @if (this.editorComponent is not null && this.State.Value.LoadedModelId is Guid modelId)
     {
-        <div class="flex absolute left-4 right-4 top-4">
+        <div class="flex items-center justify-center absolute left-4 right-4 top-4">
             <AnalysisToolbar Class="" editorComponent="@editorComponent" ModelId="@modelId"
                 CanvasId="@editorComponent.CanvasId"></AnalysisToolbar>
         </div>
@@ -54,6 +55,12 @@
         <div class="absolute right-0 top-0 min-w-[400px] w-1/4 p-4">
             <ResultChartsComponent ModelId="@modelId" />
         </div>
+        @if (this.State.Value.EditorApi is IEditorApiAlpha editorApi)
+        {
+            <FloatingResponsivePanel>
+                <ProposalInfo ModelId="@modelId" EditorApi="@editorApi" />
+            </FloatingResponsivePanel>
+        }
         <AiAssistant ModelId="@ModelId" />
     }
 </MudContainer>

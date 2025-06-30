@@ -1,12 +1,12 @@
 using BeamOs.CsSdk.Mappers.UnitValueDtoMappers;
 using BeamOs.SpeckleConnector;
 using BeamOs.StructuralAnalysis.Contracts.Common;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Materials;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Sdk;
 
 namespace BeamOs.CodeGen.TestModelBuilderGenerator.TestModelGenerators;
@@ -25,18 +25,12 @@ internal class TwistyBowlFramingGenerator(string speckleToken)
     {
         BeamOsDynamicModelBuilder modelBuilder = new(GuidString, Settings, Name, Description);
 
-        modelBuilder.AddSectionProfiles(
-            new PutSectionProfileRequest()
+        modelBuilder.AddSectionProfilesFromLibrary(
+            new SectionProfileFromLibrary()
             {
-                Area = 10.6,
-                StrongAxisMomentOfInertia = 448,
-                WeakAxisMomentOfInertia = 24.5,
-                PolarMomentOfInertia = .55,
-                StrongAxisShearArea = 5.0095,
-                WeakAxisShearArea = 4.6905,
-                AreaUnit = AreaUnitContract.SquareInch,
-                AreaMomentOfInertiaUnit = AreaMomentOfInertiaUnitContract.InchToTheFourth,
                 Id = 1636,
+                Name = "w16x36",
+                Library = StructuralCode.AISC_360_16,
             }
         );
 

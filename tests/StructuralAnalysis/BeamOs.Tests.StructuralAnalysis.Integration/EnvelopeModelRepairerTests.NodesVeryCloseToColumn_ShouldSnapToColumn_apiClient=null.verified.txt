@@ -1,0 +1,57 @@
+﻿{
+  Value: {
+    Id: {Scrubbed},
+    LastModified: DateTimeOffset_1,
+    ModelProposal: {
+      Id: {Scrubbed},
+      LastModified: DateTimeOffset_1,
+      Description: Proposed repairs for model connectivity
+    },
+    CreateNodeProposals: null,
+    ModifyNodeProposals: null,
+    CreateInternalNodeProposals: null,
+    ModifyInternalNodeProposals: [
+      {
+        ExistingInternalNodeId: 3,
+        ExistingId: 3,
+        Element1dId: {
+          ExistingId: 1,
+          ProposedId: null,
+          IsDefault: false
+        },
+        RatioAlongElement1d: {
+          Value: 0.5,
+          Unit: DecimalFraction
+        },
+        Restraint: {
+          CanTranslateAlongX: true,
+          CanTranslateAlongY: true,
+          CanTranslateAlongZ: true,
+          CanRotateAboutX: true,
+          CanRotateAboutY: true,
+          CanRotateAboutZ: true
+        },
+        Metadata: null,
+        ObjectType: InternalNode,
+        ProposalType: Modify,
+        Id: {Scrubbed}
+      }
+    ],
+    CreateElement1dProposals: null,
+    ModifyElement1dProposals: null,
+    Element1dsModifiedBecauseOfNodeChange: null,
+    MaterialProposals: null,
+    SectionProfileProposals: null,
+    SectionProfileFromLibraryProposals: null,
+    PointLoadProposals: null,
+    MomentLoadProposals: null,
+    ResultSetProposals: null,
+    LoadCaseProposals: null,
+    LoadCombinationProposals: null,
+    ProposalIssues: null,
+    DeleteModelEntityProposals: null
+  },
+  Error: null,
+  IsError: false,
+  IsSuccess: true
+}

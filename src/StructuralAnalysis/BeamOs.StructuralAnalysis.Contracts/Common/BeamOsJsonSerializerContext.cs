@@ -4,16 +4,15 @@ using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.NodeResult;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCombinations;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoad;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCases;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Materials;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoads;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using LoadCase = BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases.LoadCase;
 
 namespace BeamOs.StructuralAnalysis.Contracts.Common;
@@ -28,14 +27,20 @@ namespace BeamOs.StructuralAnalysis.Contracts.Common;
 [JsonSerializable(typeof(PutNodeRequest))]
 [JsonSerializable(typeof(NodeData))]
 [JsonSerializable(typeof(IEnumerable<PutNodeRequest>))]
+[JsonSerializable(typeof(CreateInternalNodeRequest))]
+[JsonSerializable(typeof(InternalNodeData))]
+[JsonSerializable(typeof(IEnumerable<InternalNodeData>))]
+[JsonSerializable(typeof(IEnumerable<InternalNode>))]
+[JsonSerializable(typeof(Result<InternalNode>))]
 [JsonSerializable(typeof(PutMaterialRequest))]
 [JsonSerializable(typeof(IEnumerable<PutMaterialRequest>))]
-[JsonSerializable(typeof(MaterialRequestData))]
+[JsonSerializable(typeof(MaterialData))]
 [JsonSerializable(typeof(PutElement1dRequest))]
 [JsonSerializable(typeof(IEnumerable<PutElement1dRequest>))]
 [JsonSerializable(typeof(Element1dData))]
 [JsonSerializable(typeof(PutSectionProfileRequest))]
 [JsonSerializable(typeof(SectionProfileData))]
+[JsonSerializable(typeof(SectionProfileFromLibraryData))]
 [JsonSerializable(typeof(IEnumerable<PutSectionProfileRequest>))]
 [JsonSerializable(typeof(PutPointLoadRequest))]
 [JsonSerializable(typeof(PointLoadData))]
@@ -50,6 +55,11 @@ namespace BeamOs.StructuralAnalysis.Contracts.Common;
 [JsonSerializable(typeof(IEnumerable<LoadCase>))]
 [JsonSerializable(typeof(Dictionary<int, double>))]
 [JsonSerializable(typeof(LoadCombinationData))]
+[JsonSerializable(typeof(ModelProposalData))]
+[JsonSerializable(typeof(IEnumerable<IEntityProposal>))]
+[JsonSerializable(typeof(IEnumerable<EntityProposal>))]
+[JsonSerializable(typeof(Result<ModelProposalResponse>))]
+[JsonSerializable(typeof(Result<List<ModelProposalInfo>>))]
 [JsonSerializable(typeof(IEnumerable<LoadCombination>))]
 [JsonSerializable(typeof(Result<NodeResponse>))]
 [JsonSerializable(typeof(Result<ModelResponse>))]
@@ -57,6 +67,7 @@ namespace BeamOs.StructuralAnalysis.Contracts.Common;
 [JsonSerializable(typeof(Result<Element1dResponse>))]
 [JsonSerializable(typeof(Result<MaterialResponse>))]
 [JsonSerializable(typeof(Result<SectionProfileResponse>))]
+[JsonSerializable(typeof(Result<SectionProfileFromLibrary>))]
 [JsonSerializable(typeof(Result<PointLoadResponse>))]
 [JsonSerializable(typeof(Result<MomentLoadResponse>))]
 [JsonSerializable(typeof(Result<NodeResultResponse>))]
@@ -75,22 +86,44 @@ namespace BeamOs.StructuralAnalysis.Contracts.Common;
 [JsonSerializable(typeof(Result<string>))]
 [JsonSerializable(typeof(Result))]
 [JsonSerializable(typeof(GithubModelsChatRequest))]
+[JsonSerializable(typeof(Result<GithubModelsChatResponse>))]
 internal partial class BeamOsJsonSerializerContext : JsonSerializerContext { }
 
 public static class BeamOsSerializerOptions
 {
-    private static JsonSerializerOptions? options;
+    private static readonly Lock OptionsLock = new();
+    private static readonly Lock PrettyOptionsLock = new();
+
     public static JsonSerializerOptions Default
     {
         get
         {
-            if (options is null)
+            lock (OptionsLock)
             {
-                options = new() { PropertyNameCaseInsensitive = true };
-                options.TypeInfoResolverChain.Insert(0, BeamOsJsonSerializerContext.Default);
-                options.Converters.Add(new JsonStringEnumConverter());
+                if (field is null)
+                {
+                    field = new() { PropertyNameCaseInsensitive = true };
+                    field.TypeInfoResolverChain.Insert(0, BeamOsJsonSerializerContext.Default);
+                    field.Converters.Add(new JsonStringEnumConverter());
+                }
             }
-            return options;
+            return field;
+        }
+    }
+    public static JsonSerializerOptions Pretty
+    {
+        get
+        {
+            lock (PrettyOptionsLock)
+            {
+                if (field is null)
+                {
+                    field = new() { PropertyNameCaseInsensitive = true, WriteIndented = true };
+                    field.TypeInfoResolverChain.Insert(0, BeamOsJsonSerializerContext.Default);
+                    field.Converters.Add(new JsonStringEnumConverter());
+                }
+            }
+            return field;
         }
     }
 

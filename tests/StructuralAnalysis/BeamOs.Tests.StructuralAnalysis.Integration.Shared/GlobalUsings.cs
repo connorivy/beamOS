@@ -39,8 +39,14 @@ global using VolumeUnitContract = BeamOs.StructuralAnalysis.Contracts.Common.Vol
 global using TestAttribute = BeamOs.Tests.Common.TestAttribute;
 global using MethodDataSourceAttribute = BeamOs.Tests.Common.MethodDataSourceAttribute;
 global using ParallelGroupAttribute = BeamOs.Tests.Common.ParallelGroupAttribute;
+global using DependsOnAttribute = BeamOs.Tests.Common.DependsOnAttribute;
+global using BeforeAttribute = BeamOs.Tests.Common.BeforeAttribute;
+global using HookType = BeamOs.Tests.Common.HookType;
 #else
 global using TestAttribute = TUnit.Core.TestAttribute;
 global using MethodDataSourceAttribute = TUnit.Core.MethodDataSourceAttribute;
 global using ParallelGroupAttribute = TUnit.Core.ParallelGroupAttribute;
+global using DependsOnAttribute = TUnit.Core.DependsOnAttribute;
+global using BeforeAttribute = TUnit.Core.BeforeAttribute;
+global using HookType = TUnit.Core.HookType;
 #endif

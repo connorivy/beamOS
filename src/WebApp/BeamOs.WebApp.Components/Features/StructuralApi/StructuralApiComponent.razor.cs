@@ -65,9 +65,9 @@ public partial class StructuralApiComponent : FluxorComponent
         //nameof(IStructuralAnalysisApiClientV1.GetMomentLoadsAsync),
         nameof(IStructuralAnalysisApiClientV1.GetResultSetAsync),
         nameof(IStructuralAnalysisApiClientV1.GetNodeResultAsync),
-    //nameof(IStructuralAnalysisApiClientV1.GetShearDiagramAsync),
-    //nameof(IStructuralAnalysisApiClientV1.GetSingleElement1dAsync),
-    //nameof(IStructuralAnalysisApiClientV1.GetSingleNodeResultAsync),
+        //nameof(IStructuralAnalysisApiClientV1.GetShearDiagramAsync),
+        //nameof(IStructuralAnalysisApiClientV1.GetSingleElement1dAsync),
+        //nameof(IStructuralAnalysisApiClientV1.GetSingleNodeResultAsync),
     ];
 
     static StructuralApiComponent()
@@ -76,14 +76,11 @@ public partial class StructuralApiComponent : FluxorComponent
             .GetMethods(BindingFlags.Public | BindingFlags.Instance)
             .Where(m => !methodsToExclude.Contains(m.Name))
             .OrderBy(m => m.Name)
-            .Select(
-                m =>
-                    new ApiClientMethodInfo(
-                        m,
-                        GetHttpMethodForMethodInfo(m),
-                        GetPrimaryElementType(m)
-                    )
-            )
+            .Select(m => new ApiClientMethodInfo(
+                m,
+                GetHttpMethodForMethodInfo(m),
+                GetPrimaryElementType(m)
+            ))
             .ToArray();
     }
 
@@ -100,22 +97,21 @@ public partial class StructuralApiComponent : FluxorComponent
             }
 
             var state = this.State.Value;
-            string objectIdName = $"{c.SelectedObjects[0].TypeName}Id";
+            string objectIdName = $"{c.SelectedObjects[0].ObjectType}Id";
             if (
                 state.CurrentlySelectedFieldInfo is not null
-                && state
-                    .CurrentlySelectedFieldInfo
-                    .FieldName
-                    .EndsWith(objectIdName, StringComparison.OrdinalIgnoreCase)
+                && state.CurrentlySelectedFieldInfo.FieldName.EndsWith(
+                    objectIdName,
+                    StringComparison.OrdinalIgnoreCase
+                )
             )
             {
                 state.CurrentlySelectedFieldInfo.SetValue(c.SelectedObjects[0].Id);
 
                 if (state.ElementRefs.Count >= state.CurrentlySelectedFieldInfo.FieldIndex + 2)
                 {
-                    await this.State
-                        .Value
-                        .ElementRefs[state.CurrentlySelectedFieldInfo.FieldIndex + 1]
+                    await this
+                        .State.Value.ElementRefs[state.CurrentlySelectedFieldInfo.FieldIndex + 1]
                         .FocusAsync();
                 }
             }
@@ -196,11 +192,10 @@ public partial class StructuralApiComponent : FluxorComponent
 
         parameters[^1] = CancellationToken.None;
 
-        var result = state
-            .SelectedMethod
-            .Value
-            .MethodInfo
-            .Invoke(this.StructuralAnalysisApiAlphaClient, parameters);
+        var result = state.SelectedMethod.Value.MethodInfo.Invoke(
+            this.StructuralAnalysisApiAlphaClient,
+            parameters
+        );
 
         if (result is Task t)
         {
@@ -228,7 +223,7 @@ public partial class StructuralApiComponent : FluxorComponent
                     {
                         ModelEntity = modelEntity,
                         EntityType = state.SelectedMethod.Value.PrimaryElementType,
-                        HandledByServer = true
+                        HandledByServer = true,
                     }
                 );
             }
@@ -364,7 +359,7 @@ public partial class StructuralApiComponent : FluxorComponent
             Http.Patch => Color.Warning,
             Http.Post => Color.Success,
             Http.Put => Color.Warning,
-            _ => throw new Exception("todo")
+            _ => throw new Exception("todo"),
         };
     }
 
@@ -415,7 +410,7 @@ public static class ApiClientComponentReducers
         {
             LazyElementRefs = state.LazyElementRefs is null
                 ? [action.LazyReference]
-                : new(state.LazyElementRefs) { action.LazyReference }
+                : new(state.LazyElementRefs) { action.LazyReference },
         };
     }
 
@@ -442,7 +437,7 @@ public static class ApiClientComponentReducers
                 SelectionInfo = null,
                 CurrentlySelectedFieldInfo = null,
                 LazyElementRefs = null,
-                ElementRefs = null
+                ElementRefs = null,
             };
         }
 
@@ -470,7 +465,7 @@ public static class ApiClientComponentReducers
                         1
                     );
                 })
-                .ToArray()
+                .ToArray(),
         };
     }
 }

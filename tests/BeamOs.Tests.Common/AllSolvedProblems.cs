@@ -12,6 +12,7 @@ public static class AllSolvedProblems
         yield return new Kassimali_Example8_4();
         yield return new Udoeyo_Example7_7();
         yield return new TwistyBowlFraming();
+        yield return new Udoeyo_Example10_4();
     }
 
     public static IEnumerable<ModelFixture> ModelFixturesWithStructuralStiffnessMatrix()
@@ -39,16 +40,13 @@ public static class AllSolvedProblems
         return ModelFixtures().Where(x => x is IHasExpectedNodeResults);
     }
 
+    public static IEnumerable<ModelFixture> DsmModelFixturesWithExpectedNodeResults()
+    {
+        return ModelFixtures().Where(x => x is IHasExpectedNodeResults);
+    }
+
     public static IEnumerable<ModelFixture> ModelFixturesWithExpectedDiagramResults()
     {
         return ModelFixtures().Where(x => x is IHasExpectedDiagramResults);
-    }
-}
-
-public static class AllSolvedProblemsFilter<T>
-{
-    public static IEnumerable<T> ModelFixtures()
-    {
-        return AllSolvedProblems.ModelFixtures().OfType<T>();
     }
 }

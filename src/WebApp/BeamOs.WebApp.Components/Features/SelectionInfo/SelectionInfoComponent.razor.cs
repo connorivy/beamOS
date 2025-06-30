@@ -1,4 +1,5 @@
 using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.WebApp.Components.Features.Editor;
 using BeamOs.WebApp.EditorCommands;
 using Fluxor;
@@ -33,9 +34,9 @@ public partial class SelectionInfoComponent(IState<CachedModelState> state, IDis
     //    );
     //}
 
-    private ISelectionInfo? GetBeamOsObjectByIdAndTypeName(int id, string typeName)
+    private ISelectionInfo? GetBeamOsObjectByIdAndType(int id, BeamOsObjectType type)
     {
-        ModelCacheKey cacheKey = new(this.ModelId, typeName, id);
+        ModelCacheKey cacheKey = new(this.ModelId, type, id);
         IModelEntity? modelEntity = state.Value.GetEntityFromCacheOrDefault(cacheKey);
 
         if (modelEntity is null)
@@ -50,14 +51,14 @@ public partial class SelectionInfoComponent(IState<CachedModelState> state, IDis
         {
             resultInfo =
             [
-                this.selectionInfoFactory.Create(response, response.GetType(), $"Analysis Results")
+                this.selectionInfoFactory.Create(response, response.GetType(), $"Analysis Results"),
             ];
         }
 
         return this.selectionInfoFactory.Create(
             modelEntity,
             modelEntity.GetType(),
-            $"{typeName} {id}",
+            $"{type} {id}",
             additionalSelectionInfo: resultInfo
         );
     }

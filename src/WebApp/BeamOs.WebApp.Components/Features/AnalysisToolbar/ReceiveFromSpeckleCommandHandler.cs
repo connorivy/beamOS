@@ -1,10 +1,12 @@
 using BeamOs.CodeGen.SpeckleConnectorApi;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Contracts.Common;
-using BeamOs.StructuralAnalysis.Sdk;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.Editor;
+using BeamOs.WebApp.Components.Features.ProposalInfo;
 using Fluxor;
 using Microsoft.Extensions.Logging;
 using MudBlazor;
@@ -12,14 +14,13 @@ using MudBlazor;
 namespace BeamOs.WebApp.Components.Features.AnalysisToolbar;
 
 public sealed class ReceiveFromSpeckleCommandHandler(
-    IStructuralAnalysisApiClientV1 structuralAnalysisApiClientV1,
     ISpeckleConnectorApi speckleConnectorApi,
     IDispatcher dispatcher,
     ISnackbar snackbar,
     ILogger<ReceiveFromSpeckleCommandHandler> logger
-) : CommandHandlerBase<ReceiveFromSpeckleCommand, CachedModelResponse>(snackbar, logger)
+) : CommandHandlerBase<ReceiveFromSpeckleCommand, ModelProposalResponse>(snackbar, logger)
 {
-    protected override async Task<Result<CachedModelResponse>> ExecuteCommandAsync(
+    protected override async Task<Result<ModelProposalResponse>> ExecuteCommandAsync(
         ReceiveFromSpeckleCommand command,
         CancellationToken ct = default
     )
@@ -28,49 +29,25 @@ public sealed class ReceiveFromSpeckleCommandHandler(
             new EditorLoadingBegin(command.CanvasId, "Receiving Data From Spackle")
         );
 
-        var beamOsModelBuilderDto = await speckleConnectorApi.ConvertToBeamOsAsync(
+        return await speckleConnectorApi.SpeckleRecieveOperationAsync(
+            command.ModelId,
             command.SpeckleReceiveParameters,
             ct
         );
-
-        if (beamOsModelBuilderDto.IsError)
-        {
-            return beamOsModelBuilderDto.Error;
-        }
-
-        dispatcher.Dispatch(
-            new EditorLoadingBegin(command.CanvasId, "Saving Changes To BeamOS Model")
-        );
-
-        BeamOsDynamicModelBuilder builder = new(
-            command.ModelId.ToString(),
-            new(UnitSettingsContract.K_IN),
-            "na",
-            "na",
-            beamOsModelBuilderDto.Value
-        );
-
-        await builder.CreateOrUpdate(structuralAnalysisApiClientV1);
-
-        var modelResponse = await structuralAnalysisApiClientV1.GetModelAsync(command.ModelId, ct);
-
-        if (modelResponse.IsError)
-        {
-            return modelResponse.Error;
-        }
-
-        var result = new CachedModelResponse(modelResponse.Value);
-        dispatcher.Dispatch(new ModelLoaded() { CachedModelResponse = result });
-
-        return result;
     }
 
     protected override void PostProcess(
         ReceiveFromSpeckleCommand command,
-        Result<CachedModelResponse> result
+        Result<ModelProposalResponse> result
     )
     {
         dispatcher.Dispatch(new EditorLoadingEnd() { CanvasId = command.CanvasId });
+        if (result.IsSuccess && result.Value.ModelProposal is not null)
+        {
+            dispatcher.Dispatch(
+                new ProposalInfoState.ModelProposalInfoLoaded(result.Value.ModelProposal)
+            );
+        }
     }
 }
 
@@ -79,3 +56,37 @@ public readonly record struct ReceiveFromSpeckleCommand(
     Guid ModelId,
     SpeckleReceiveParameters SpeckleReceiveParameters
 );
+
+public readonly record struct ModelRepairRequest(string CanvasId, Guid ModelId);
+
+public sealed class ModelRepairClientCommandHandler(
+    IStructuralAnalysisApiClientV1 structuralAnalysisApiClient,
+    IDispatcher dispatcher,
+    ISnackbar snackbar,
+    ILogger<ModelRepairClientCommandHandler> logger
+) : CommandHandlerBase<ModelRepairRequest, ModelProposalResponse>(snackbar, logger)
+{
+    protected override async Task<Result<ModelProposalResponse>> ExecuteCommandAsync(
+        ModelRepairRequest command,
+        CancellationToken ct = default
+    )
+    {
+        dispatcher.Dispatch(new EditorLoadingBegin(command.CanvasId, "Repairing Model"));
+
+        return await structuralAnalysisApiClient.RepairModelAsync(command.ModelId, "", ct);
+    }
+
+    protected override void PostProcess(
+        ModelRepairRequest command,
+        Result<ModelProposalResponse> result
+    )
+    {
+        dispatcher.Dispatch(new EditorLoadingEnd() { CanvasId = command.CanvasId });
+        if (result.IsSuccess && result.Value.ModelProposal is not null)
+        {
+            dispatcher.Dispatch(
+                new ProposalInfoState.ModelProposalInfoLoaded(result.Value.ModelProposal)
+            );
+        }
+    }
+}

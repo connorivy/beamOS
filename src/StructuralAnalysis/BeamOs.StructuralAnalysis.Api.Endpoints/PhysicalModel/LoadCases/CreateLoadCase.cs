@@ -1,5 +1,6 @@
 using BeamOs.Common.Api;
 using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCases;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.LoadCases;
@@ -14,11 +15,4 @@ public class CreateLoadCase(CreateLoadCaseCommandHandler createLoadCaseCommandHa
         CreateLoadCaseCommand req,
         CancellationToken ct = default
     ) => await createLoadCaseCommandHandler.ExecuteAsync(req, ct);
-}
-
-public readonly struct CreateLoadCaseCommand : IModelResourceRequest<LoadCaseData>
-{
-    public Guid ModelId { get; init; }
-    public LoadCaseData Body { get; init; }
-    public string Name => this.Body.Name;
 }

@@ -1,17 +1,11 @@
 using BeamOs.Common.Domain.Models;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models.Mappers;
+using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.EnvelopeResultSets;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.NodeResultAggregate;
-using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCases;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinations;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
-using BeamOs.Tests.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure;
@@ -29,7 +23,10 @@ public class StructuralAnalysisDbContext : DbContext
         : base(options) { }
 
     public DbSet<Model> Models { get; set; }
+
     public DbSet<Node> Nodes { get; set; }
+    public DbSet<InternalNode> InternalNodes { get; set; }
+    public DbSet<NodeDefinition> NodeDefinitions { get; set; }
     public DbSet<Material> Materials { get; set; }
     public DbSet<SectionProfile> SectionProfiles { get; set; }
     public DbSet<Element1d> Element1ds { get; set; }
@@ -37,10 +34,19 @@ public class StructuralAnalysisDbContext : DbContext
     public DbSet<MomentLoad> MomentLoads { get; set; }
     public DbSet<LoadCase> LoadCases { get; set; }
     public DbSet<LoadCombination> LoadCombinations { get; set; }
+    public DbSet<ModelProposal> ModelProposals { get; set; }
+    public DbSet<DeleteModelEntityProposal> DeleteModelEntityProposals { get; set; }
+
+    // public DbSet<NodeProposal> NodeProposals { get; set; }
+    // public DbSet<InternalNodeProposal> InternalNodeProposals { get; set; }
+    public DbSet<Element1dProposal> Element1dProposals { get; set; }
 
     public DbSet<ResultSet> ResultSets { get; set; }
     public DbSet<NodeResult> NodeResults { get; set; }
     public DbSet<Element1dResult> Element1dResults { get; set; }
+
+    public DbSet<EnvelopeResultSet> EnvelopeResultSets { get; set; }
+    public DbSet<EnvelopeElement1dResult> EnvelopeElement1dResults { get; set; }
 
     //public DbSet<ShearForceDiagram> ShearForceDiagrams { get; set; }
     //public DbSet<MomentDiagram> MomentDiagrams { get; set; }
@@ -57,33 +63,5 @@ public class StructuralAnalysisDbContext : DbContext
         _ = builder
             .Ignore<List<IDomainEvent>>()
             .ApplyConfigurationsFromAssembly(typeof(StructuralAnalysisDbContext).Assembly);
-
-        //builder
-        //    .Model
-        //    .GetEntityTypes()
-        //    .SelectMany(e => e.GetProperties())
-        //    .Where(p => p.IsPrimaryKey())
-        //    .ToList()
-        //    .ForEach(
-        //        p => p.ValueGenerated = Microsoft.EntityFrameworkCore.Metadata.ValueGenerated.Never
-        //    );
-    }
-
-    public async Task SeedTestModels()
-    {
-        foreach (var modelBuilder in AllSolvedProblems.ModelFixtures())
-        {
-            BeamOsModelBuilderDomainMapper mapper = new(modelBuilder.Id);
-            ModelId typedId = new(modelBuilder.Id);
-
-            if (await this.Models.AnyAsync(x => x.Id == typedId))
-            {
-                continue;
-            }
-
-            var model = mapper.ToDomain(modelBuilder);
-            this.Models.Add(model);
-        }
-        await this.SaveChangesAsync();
     }
 }

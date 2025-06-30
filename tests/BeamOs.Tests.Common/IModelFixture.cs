@@ -1,5 +1,5 @@
 using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 
 namespace BeamOs.Tests.Common;
 
@@ -19,5 +19,5 @@ public interface ITestFixture : IHasSourceInfo
 {
     public string Description { get; }
     public string Name { get; }
-    public IBeamOsEntityResponse MapToResponse();
+    public ModelResponse MapToResponse();
 }

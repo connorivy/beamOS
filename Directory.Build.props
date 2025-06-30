@@ -9,6 +9,7 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
     <IsPackable>false</IsPackable>
+    <IncludeOpenSeesExe Condition="'$(IncludeOpenSeesExe)' == ''">true</IncludeOpenSeesExe>
     
     <!--<TUnitImplicitUsings>false</TUnitImplicitUsings>-->
     <!--<InvariantGlobalization>true</InvariantGlobalization>-->

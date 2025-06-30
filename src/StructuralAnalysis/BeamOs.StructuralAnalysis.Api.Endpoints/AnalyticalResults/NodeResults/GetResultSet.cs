@@ -13,7 +13,7 @@ public class GetResultSet(GetResultSetQueryHandler getResultSetCommandHandler)
     : BeamOsModelResourceQueryBaseEndpoint<ResultSetResponse>
 {
     public override async Task<Result<ResultSetResponse>> ExecuteRequestAsync(
-        ModelEntityRequest req,
+        ModelResourceWithIntIdRequest req,
         CancellationToken ct = default
     ) => await getResultSetCommandHandler.ExecuteAsync(req, ct);
 }

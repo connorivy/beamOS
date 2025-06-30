@@ -1,7 +1,8 @@
 using System.Runtime.CompilerServices;
 using BeamOs.StructuralAnalysis.Contracts.Common;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
+using Objects.BuiltElements.Revit;
 using Speckle.Core.Api.GraphQL.Models;
 using Speckle.Core.Credentials;
 using Speckle.Core.Logging;
@@ -53,10 +54,7 @@ public class BeamOsSpeckleReceiveOperation
 
         using ServerTransport transport = new(account, projectId);
         Base commitObject = await Speckle
-            .Core
-            .Api
-            .Operations
-            .Receive(
+            .Core.Api.Operations.Receive(
                 objectId,
                 transport,
                 //localTransport: new DummyLocalTransport(),
@@ -78,6 +76,7 @@ public class BeamOsSpeckleReceiveOperation
                 }
                 yield return this.ToBeamOs(element1d);
             }
+            if (item is RevitBeam revitBeam) { }
         }
     }
 
@@ -94,7 +93,7 @@ public class BeamOsSpeckleReceiveOperation
             StartNodeId = this.nodeUniqueIdToBeamOsId[el.end1Node.id],
             EndNodeId = this.nodeUniqueIdToBeamOsId[el.end2Node.id],
             MaterialId = 0, // todo
-            SectionProfileId = 0 // todo
+            SectionProfileId = 0, // todo
         };
 
         if (this.Element1dRequestModifier is not null)
@@ -123,7 +122,7 @@ public class BeamOsSpeckleReceiveOperation
                 node.basePoint.z,
                 SpeckleUnitsToUnitsNet(node.basePoint.units)
             ),
-            Restraint = ParseRestraintCode(node.restraint.code)
+            Restraint = ParseRestraintCode(node.restraint.code),
         };
 
         if (this.NodeRequestModifier is not null)
@@ -155,9 +154,12 @@ public class BeamOsSpeckleReceiveOperation
     {
         return speckleUnit switch
         {
-            "mm" => LengthUnitContract.Millimeter,
-            "meter" => LengthUnitContract.Meter,
-            _ => throw new NotSupportedException()
+            "mm" or "millimeter" => LengthUnitContract.Millimeter,
+            "cm" or "centimeter" => LengthUnitContract.Centimeter,
+            "m" or "meter" => LengthUnitContract.Meter,
+            "ft" or "feet" or "foot" => LengthUnitContract.Foot,
+            "in" or "inch" => LengthUnitContract.Inch,
+            _ => throw new NotSupportedException("Unsupported unit: " + speckleUnit),
         };
     }
 }

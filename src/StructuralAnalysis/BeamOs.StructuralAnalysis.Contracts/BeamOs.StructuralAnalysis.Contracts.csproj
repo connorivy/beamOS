@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Common\BeamOs.Common.Contracts\BeamOs.Common.Contracts.csproj" />
-    <ProjectReference Include="..\BeamOs.StructuralAnalysis.Domain\BeamOs.StructuralAnalysis.Domain.csproj" />
   </ItemGroup>
 
 </Project>

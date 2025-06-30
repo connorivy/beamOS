@@ -1,13 +1,13 @@
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1d;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCombinations;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Material;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Model;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoad;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Node;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoad;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfile;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Materials;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoads;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 
 namespace BeamOs.StructuralAnalysis.Sdk;
 
@@ -27,10 +27,22 @@ public abstract class BeamOsModelBuilder
 
     public IEnumerable<PutNodeRequest> Nodes => this.NodeRequests();
     public abstract IEnumerable<PutNodeRequest> NodeRequests();
+    public IEnumerable<InternalNode> InternalNodes => this.InternalNodeRequests();
+
+    public virtual IEnumerable<InternalNode> InternalNodeRequests() => [];
+
     public IEnumerable<PutMaterialRequest> Materials => this.MaterialRequests();
     public abstract IEnumerable<PutMaterialRequest> MaterialRequests();
     public IEnumerable<PutSectionProfileRequest> SectionProfiles => this.SectionProfileRequests();
-    public abstract IEnumerable<PutSectionProfileRequest> SectionProfileRequests();
+
+    public virtual IEnumerable<PutSectionProfileRequest> SectionProfileRequests() => [];
+
+    public IEnumerable<SectionProfileFromLibrary> SectionProfilesFromLibrary =>
+        this.SectionProfilesFromLibraryRequests();
+
+    public virtual IEnumerable<SectionProfileFromLibrary> SectionProfilesFromLibraryRequests() =>
+        [];
+
     public IEnumerable<PutElement1dRequest> Element1ds => this.Element1dRequests();
     public abstract IEnumerable<PutElement1dRequest> Element1dRequests();
     public IEnumerable<PutPointLoadRequest> PointLoads => this.PointLoadRequests();
@@ -49,7 +61,7 @@ public abstract class BeamOsModelBuilder
 
     public abstract IEnumerable<LoadCombination> LoadCombinationRequests();
 
-    private static AsyncGuidLockManager lockManager = new();
+    private static readonly AsyncGuidLockManager LockManager = new();
 
     private async Task<bool> Build(IStructuralAnalysisApiClientV1 apiClient, bool createOnly)
     {
@@ -58,7 +70,7 @@ public abstract class BeamOsModelBuilder
             throw new Exception("Guid string is not formatted correctly");
         }
 
-        return await lockManager.ExecuteWithLockAsync(
+        return await LockManager.ExecuteWithLockAsync(
             modelId,
             async () =>
             {
@@ -109,16 +121,6 @@ public abstract class BeamOsModelBuilder
             (await apiClient.BatchPutLoadCombinationAsync(modelId, el)).ThrowIfError();
         }
 
-        foreach (var el in ChunkRequests(this.PointLoadRequests()))
-        {
-            (await apiClient.BatchPutPointLoadAsync(modelId, el)).ThrowIfError();
-        }
-
-        foreach (var el in ChunkRequests(this.MomentLoadRequests()))
-        {
-            (await apiClient.BatchPutMomentLoadAsync(modelId, el)).ThrowIfError();
-        }
-
         foreach (var el in ChunkRequests(this.MaterialRequests()))
         {
             (await apiClient.BatchPutMaterialAsync(modelId, el)).ThrowIfError();
@@ -129,13 +131,37 @@ public abstract class BeamOsModelBuilder
             (await apiClient.BatchPutSectionProfileAsync(modelId, el)).ThrowIfError();
         }
 
+        foreach (var el in ChunkRequests(this.SectionProfilesFromLibraryRequests()))
+        {
+            (await apiClient.BatchPutSectionProfileFromLibraryAsync(modelId, el)).ThrowIfError();
+        }
+
         foreach (var el in ChunkRequests(this.Element1dRequests()))
         {
             (await apiClient.BatchPutElement1dAsync(modelId, el)).ThrowIfError();
         }
 
+        foreach (var el in ChunkRequests(this.InternalNodeRequests()))
+        {
+            (await apiClient.BatchPutInternalNodeAsync(modelId, el)).ThrowIfError();
+        }
+
+        foreach (var el in ChunkRequests(this.PointLoadRequests()))
+        {
+            (await apiClient.BatchPutPointLoadAsync(modelId, el)).ThrowIfError();
+        }
+
+        foreach (var el in ChunkRequests(this.MomentLoadRequests()))
+        {
+            (await apiClient.BatchPutMomentLoadAsync(modelId, el)).ThrowIfError();
+        }
+
+        ModelCreated?.Invoke(this, modelId);
+
         return true;
     }
+
+    public static event EventHandler<Guid>? ModelCreated;
 
     private static IEnumerable<List<TRequest>> ChunkRequests<TRequest>(
         IEnumerable<TRequest> requests

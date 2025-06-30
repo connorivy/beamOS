@@ -10,35 +10,46 @@
         @* var currentFieldNum = numFields++; *@
         @* editableSelectionInfo.FieldNum = currentFieldNum; *@
 
-       if (editableSelectionInfo.FieldType == typeof(int))
+        if (editableSelectionInfo.FieldType == typeof(int))
         {
-            <MudTextField @ref="MudTextFieldIntRef" T="int?" Typo="Typo.input" @bind-Value="@simpleSelectionInfo.ValueAsInt" Required="@editableSelectionInfo.IsRequired" Label="@this.ObjectToDisplay.FieldName" OnlyValidateIfDirty="true" @onfocus="(_) => OnFocus(editableSelectionInfo)" />
+            <MudTextField @ref="MudTextFieldIntRef" T="int?" Typo="Typo.input" @bind-Value="@simpleSelectionInfo.ValueAsInt"
+                Required="@editableSelectionInfo.IsRequired" Label="@this.ObjectToDisplay.FieldName" OnlyValidateIfDirty="true"
+                @onfocus="(_) => OnFocus(editableSelectionInfo)" />
         }
         else if (editableSelectionInfo.FieldType == typeof(double))
         {
-            <MudTextField @ref="MudTextFieldDoubleRef" T="double?" Typo="Typo.input" @bind-Value="@simpleSelectionInfo.ValueAsDouble" Required="@editableSelectionInfo.IsRequired" Label="@this.ObjectToDisplay.FieldName" OnlyValidateIfDirty="true" @onfocus="(_) => OnFocus(editableSelectionInfo)" />
+            <MudTextField @ref="MudTextFieldDoubleRef" T="double?" Typo="Typo.input"
+                @bind-Value="@simpleSelectionInfo.ValueAsDouble" Required="@editableSelectionInfo.IsRequired"
+                Label="@this.ObjectToDisplay.FieldName" OnlyValidateIfDirty="true"
+                @onfocus="(_) => OnFocus(editableSelectionInfo)" />
         }
         else if (editableSelectionInfo.FieldType == typeof(bool))
         {
-            <MudTextField @ref="MudTextFieldBoolRef" T="bool?" Typo="Typo.input" Value="@simpleSelectionInfo.ValueAsBool" Required="@editableSelectionInfo.IsRequired" Label="@this.ObjectToDisplay.FieldName" OnlyValidateIfDirty="true" @onfocus="(_) => OnFocus(editableSelectionInfo)" />
+            <MudTextField @ref="MudTextFieldBoolRef" T="bool?" Typo="Typo.input" @bind-Value="@simpleSelectionInfo.ValueAsBool"
+                Required="@editableSelectionInfo.IsRequired" Label="@this.ObjectToDisplay.FieldName" OnlyValidateIfDirty="true"
+                @onfocus="(_) => OnFocus(editableSelectionInfo)" />
         }
         else if (editableSelectionInfo.FieldType.IsEnum)
         {
-            <MudSelect T="int?" Typo="Typo.input" @bind-Value="@simpleSelectionInfo.ValueAsInt" Required="@editableSelectionInfo.IsRequired" Label="@this.ObjectToDisplay.FieldName" OnlyValidateIfDirty="true" @onfocus="(_) => OnFocus(editableSelectionInfo)">
-            @foreach (var val in Enum.GetValues(editableSelectionInfo.FieldType))
-            {
-                var stringVal = val.ToString();
-                if (string.Equals(stringVal, "Undefined"))
+            <MudSelect T="int?" Typo="Typo.input" @bind-Value="@simpleSelectionInfo.ValueAsInt"
+                Required="@editableSelectionInfo.IsRequired" Label="@this.ObjectToDisplay.FieldName" OnlyValidateIfDirty="true"
+                @onfocus="(_) => OnFocus(editableSelectionInfo)">
+                @foreach (var val in Enum.GetValues(editableSelectionInfo.FieldType))
                 {
-                    continue;
+                    var stringVal = val.ToString();
+                    if (string.Equals(stringVal, "Undefined"))
+                    {
+                        continue;
+                    }
+                    <MudSelectItem T="int?" Value="(int)val">@stringVal</MudSelectItem>
                 }
-                <MudSelectItem T="int?" Value="(int)val">@stringVal</MudSelectItem>
-            }
             </MudSelect>
         }
         else
         {
-            <MudTextField @ref="MudTextFieldStringRef" Typo="Typo.input" @bind-Value="@simpleSelectionInfo.ValueAsString" Required="@editableSelectionInfo.IsRequired" Label="@this.ObjectToDisplay.FieldName" OnlyValidateIfDirty="true" @onfocus="(_) => OnFocus(editableSelectionInfo)" />
+            <MudTextField @ref="MudTextFieldStringRef" Typo="Typo.input" @bind-Value="@simpleSelectionInfo.ValueAsString"
+                Required="@editableSelectionInfo.IsRequired" Label="@this.ObjectToDisplay.FieldName" OnlyValidateIfDirty="true"
+                @onfocus="(_) => OnFocus(editableSelectionInfo)" />
         }
     }
     else
@@ -59,7 +70,8 @@ else if (this.ObjectToDisplay is IComplexSelectionInfo complexSelectionInfo)
 {
     @if (!complexSelectionInfo.Flatten)
     {
-        <MudExpansionPanel Expanded="true" Text="@this.ObjectToDisplay.FieldName" Class="text-nowrap text-clip mud-typography mud-typography-subtitle2">
+        <MudExpansionPanel Expanded="true" Text="@this.ObjectToDisplay.FieldName"
+            Class="text-nowrap text-clip mud-typography mud-typography-subtitle2">
             <MudGrid Spacing="1">
                 @foreach (var selectionInfo in complexSelectionInfo.SelectionInfos)
                 {
