@@ -11,7 +11,7 @@
     <!-- ASP.NET -->
     <PackageVersion Include="BeamOs.OpenSees.linux-x64" Version="3.7.1.0" />
     <PackageVersion Include="BeamOs.OpenSees.win-x64" Version="3.7.1.0" />
-    <PackageVersion Include="BenchmarkDotNet" Version="0.14.0" />
+    <PackageVersion Include="BenchmarkDotNet" Version="0.15.2" />
     <PackageVersion Include="CommunityToolkit.HighPerformance" Version="8.4.0" />
     <PackageVersion Include="CSparse" Version="4.2.0" />
     <PackageVersion Include="EntityFrameworkCore.Exceptions.Common" Version="8.1.3" />
