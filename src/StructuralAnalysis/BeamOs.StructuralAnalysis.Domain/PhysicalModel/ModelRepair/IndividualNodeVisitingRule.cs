@@ -1,30 +1,33 @@
-using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
-public abstract class IndividualNodeVisitingRule : IModelRepairRule
+public abstract class IndividualNodeVisitingRule(ModelRepairContext context) : IModelRepairRule
 {
     public abstract ModelRepairRuleType RuleType { get; }
+    protected ModelRepairContext Context => context;
 
-    public void Apply(ModelProposalBuilder modelProposalBuilder, Length tolerance)
+    public void Apply()
     {
         HashSet<NodeId> visitedNodeIds = [];
-        foreach (Element1d element in modelProposalBuilder.Element1ds)
+        foreach (Element1d element in this.Context.ModelProposalBuilder.Element1ds)
         {
-            var (startNode, endNode) = modelProposalBuilder.GetStartAndEndNodes(element, out _);
+            var (startNode, endNode) = this.Context.ModelProposalBuilder.GetStartAndEndNodes(
+                element,
+                out _
+            );
 
             if (visitedNodeIds.Add(startNode.Id))
             {
                 var startNodeLocation = startNode.GetLocationPoint(
-                    modelProposalBuilder.Element1dStore,
-                    modelProposalBuilder.NodeStore
+                    this.Context.ModelProposalBuilder.Element1dStore,
+                    this.Context.ModelProposalBuilder.NodeStore
                 );
                 this.ApplyToSingleNode(
-                    modelProposalBuilder,
-                    tolerance,
+                    this.Context.ModelProposalBuilder,
+                    this.Context.ModelRepairOperationParameters.GetTolerance(this.RuleType),
                     element,
                     startNode,
                     startNodeLocation
@@ -33,12 +36,12 @@ public abstract class IndividualNodeVisitingRule : IModelRepairRule
             if (visitedNodeIds.Add(endNode.Id))
             {
                 var endNodeLocation = endNode.GetLocationPoint(
-                    modelProposalBuilder.Element1dStore,
-                    modelProposalBuilder.NodeStore
+                    this.Context.ModelProposalBuilder.Element1dStore,
+                    this.Context.ModelProposalBuilder.NodeStore
                 );
                 this.ApplyToSingleNode(
-                    modelProposalBuilder,
-                    tolerance,
+                    this.Context.ModelProposalBuilder,
+                    this.Context.ModelRepairOperationParameters.GetTolerance(this.RuleType),
                     element,
                     endNode,
                     endNodeLocation
@@ -77,7 +80,6 @@ public abstract class IndividualNodeVisitingRule : IModelRepairRule
             nearbyNodes.OfType<Node>().ToList(),
             nearbyNodes.OfType<InternalNode>().ToList(),
             nearbyElement1ds,
-            modelProposalBuilder,
             tolerance
         );
     }
@@ -89,7 +91,6 @@ public abstract class IndividualNodeVisitingRule : IModelRepairRule
         IList<Node> nearbyNodes,
         IList<InternalNode> nearbyInternalNodes,
         IList<Element1d> nearbyElement1ds,
-        ModelProposalBuilder modelProposalBuilder,
         Length tolerance
     );
 }

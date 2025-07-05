@@ -262,6 +262,19 @@ public record ModelRepairOperationParameters
                 null
             ),
         };
+
+    internal Length GetTolerance(ModelRepairRuleType ruleType) =>
+        ruleType switch
+        {
+            ModelRepairRuleType.Favorable => this.RelaxedTolerance,
+            ModelRepairRuleType.Standard => this.StandardTolerance,
+            ModelRepairRuleType.Unfavorable => this.StrictTolerance,
+            ModelRepairRuleType.Undefined or _ => throw new ArgumentOutOfRangeException(
+                nameof(ruleType),
+                ruleType,
+                null
+            ),
+        };
 }
 
 public readonly record struct AxisAlignmentTolerance(
@@ -282,15 +295,6 @@ public enum AxisAlignmentToleranceLevel
 
 public sealed record ModelRepairContext
 {
-    public ModelProposalBuilder ModelProposalBuilder { get; }
-    public ModelRepairOperationParameters ModelRepairOperationParameters { get; }
-
-    public ModelRepairContext(
-        ModelProposalBuilder modelProposalBuilder,
-        ModelRepairOperationParameters modelRepairOperationParameters
-    )
-    {
-        this.ModelProposalBuilder = modelProposalBuilder;
-        this.ModelRepairOperationParameters = modelRepairOperationParameters;
-    }
+    public required ModelProposalBuilder ModelProposalBuilder { get; init; }
+    public required ModelRepairOperationParameters ModelRepairOperationParameters { get; init; }
 }

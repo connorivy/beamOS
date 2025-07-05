@@ -5,15 +5,15 @@ using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
-public class NodeSnapToElement1dRule : IndividualNodeVisitingRule
+public class NodeSnapToElement1dRule(ModelRepairContext context)
+    : IndividualNodeVisitingRule(context)
 {
     public override ModelRepairRuleType RuleType => ModelRepairRuleType.Standard;
 
-    private static void SnapNodesToElements(
+    private void SnapNodesToElements(
         Node node,
         Point nodeLocation,
         IList<Element1d> elements,
-        ModelProposalBuilder modelProposalBuilder,
         double tolerance
     )
     {
@@ -21,6 +21,7 @@ public class NodeSnapToElement1dRule : IndividualNodeVisitingRule
         double nx = nodePt.X.Meters;
         double ny = nodePt.Y.Meters;
         double nz = nodePt.Z.Meters;
+        var modelProposalBuilder = this.Context.ModelProposalBuilder;
 
         foreach (var elem in elements)
         {
@@ -102,7 +103,6 @@ public class NodeSnapToElement1dRule : IndividualNodeVisitingRule
         IList<Node> nearbyNodes,
         IList<InternalNode> nearbyInternalNodes,
         IList<Element1d> nearbyElement1ds,
-        ModelProposalBuilder modelProposalBuilder,
         Length tolerance
     )
     {
@@ -111,12 +111,6 @@ public class NodeSnapToElement1dRule : IndividualNodeVisitingRule
             return; // Only apply to Node types, not InternalNode
         }
 
-        SnapNodesToElements(
-            nodeAsNode,
-            nodeLocation,
-            nearbyElement1ds,
-            modelProposalBuilder,
-            tolerance.Meters
-        );
+        this.SnapNodesToElements(nodeAsNode, nodeLocation, nearbyElement1ds, tolerance.Meters);
     }
 }
