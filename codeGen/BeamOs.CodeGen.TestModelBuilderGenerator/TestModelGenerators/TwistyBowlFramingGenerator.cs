@@ -44,73 +44,73 @@ internal class TwistyBowlFramingGenerator(string speckleToken)
             }
         );
 
-        var recieveOperation = new BeamOsSpeckleReceiveOperation()
-        {
-            Element1dRequestModifier = static el =>
-                el with
-                {
-                    MaterialId = 992,
-                    SectionProfileId = 1636,
-                },
-            NodeRequestModifier = static el =>
-                el with
-                {
-                    LocationPoint = new(
-                        el.LocationPoint.X,
-                        el.LocationPoint.Z,
-                        -el.LocationPoint.Y,
-                        el.LocationPoint.LengthUnit
-                    ),
-                },
-        };
+        // var recieveOperation = new BeamOsSpeckleReceiveOperation2()
+        // {
+        //     Element1dRequestModifier = static el =>
+        //         el with
+        //         {
+        //             MaterialId = 992,
+        //             SectionProfileId = 1636,
+        //         },
+        //     NodeRequestModifier = static el =>
+        //         el with
+        //         {
+        //             LocationPoint = new(
+        //                 el.LocationPoint.X,
+        //                 el.LocationPoint.Z,
+        //                 -el.LocationPoint.Y,
+        //                 el.LocationPoint.LengthUnit
+        //             ),
+        //         },
+        // };
 
-        await foreach (
-            IBeamOsEntityRequest request in recieveOperation.Receive(
-                speckleToken,
-                "d14016537b",
-                "04efd5dd3d8ea53eb7c86062e47c8e10",
-                "https://app.speckle.systems/"
-            )
-        )
-        {
-            if (request is PutNodeRequest putNodeRequest)
-            {
-                modelBuilder.AddNodes(putNodeRequest);
-                if (
-                    new Length(
-                        putNodeRequest.LocationPoint.Y,
-                        putNodeRequest.LocationPoint.LengthUnit.MapEnumToLengthUnit()
-                    ).Millimeters > 10000
-                )
-                {
-                    modelBuilder.AddPointLoads(
-                        new PutPointLoadRequest()
-                        {
-                            Id = putNodeRequest.Id,
-                            LoadCaseId = 1,
-                            Direction = new()
-                            {
-                                X = 0,
-                                Y = -1,
-                                Z = 0,
-                            },
-                            Force = new(100, ForceUnitContract.Kilonewton),
-                            NodeId = putNodeRequest.Id,
-                        }
-                    );
-                }
-            }
-            else if (request is PutElement1dRequest putElement1DRequest)
-            {
-                modelBuilder.AddElement1ds(putElement1DRequest);
-            }
-            else
-            {
-                throw new NotImplementedException(
-                    $"Type {request.GetType()} is not implemented in speckle receive endpoint"
-                );
-            }
-        }
+        // await foreach (
+        //     IBeamOsEntityRequest request in recieveOperation.Receive(
+        //         speckleToken,
+        //         "d14016537b",
+        //         "04efd5dd3d8ea53eb7c86062e47c8e10",
+        //         "https://app.speckle.systems/"
+        //     )
+        // )
+        // {
+        //     if (request is PutNodeRequest putNodeRequest)
+        //     {
+        //         modelBuilder.AddNodes(putNodeRequest);
+        //         if (
+        //             new Length(
+        //                 putNodeRequest.LocationPoint.Y,
+        //                 putNodeRequest.LocationPoint.LengthUnit.MapEnumToLengthUnit()
+        //             ).Millimeters > 10000
+        //         )
+        //         {
+        //             modelBuilder.AddPointLoads(
+        //                 new PutPointLoadRequest()
+        //                 {
+        //                     Id = putNodeRequest.Id,
+        //                     LoadCaseId = 1,
+        //                     Direction = new()
+        //                     {
+        //                         X = 0,
+        //                         Y = -1,
+        //                         Z = 0,
+        //                     },
+        //                     Force = new(100, ForceUnitContract.Kilonewton),
+        //                     NodeId = putNodeRequest.Id,
+        //                 }
+        //             );
+        //         }
+        //     }
+        //     else if (request is PutElement1dRequest putElement1DRequest)
+        //     {
+        //         modelBuilder.AddElement1ds(putElement1DRequest);
+        //     }
+        //     else
+        //     {
+        //         throw new NotImplementedException(
+        //             $"Type {request.GetType()} is not implemented in speckle receive endpoint"
+        //         );
+        //     }
+        // }
 
         modelBuilder.GenerateStaticModelClass(OutputPath, "ModelFixture");
         //modelBuilder.WriteToPyniteFile(OutputPath);

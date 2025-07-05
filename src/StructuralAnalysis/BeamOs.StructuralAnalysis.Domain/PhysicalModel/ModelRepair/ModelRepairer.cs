@@ -1,11 +1,14 @@
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair.Rules;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
+using Microsoft.Extensions.Logging;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
-public class ModelRepairer
+public class ModelRepairer(
+    ModelRepairOperationParameters modelRepairOperationParameters,
+    ILogger logger
+)
 {
     // private readonly IList<Node> nodes;
     // private readonly IList<Element1d> element1ds;
@@ -18,12 +21,6 @@ public class ModelRepairer
         new NodeMergeRule(),
         new NodeSnapToElement1dRule(),
     ];
-    private readonly ModelRepairOperationParameters modelRepairOperationParameters;
-
-    public ModelRepairer(ModelRepairOperationParameters modelRepairOperationParameters)
-    {
-        this.modelRepairOperationParameters = modelRepairOperationParameters;
-    }
 
     public ModelProposal ProposeRepairs(Model model)
     {
@@ -45,7 +42,7 @@ public class ModelRepairer
             "Proposed repairs for model connectivity",
             model.Settings,
             octree,
-            this.modelRepairOperationParameters,
+            modelRepairOperationParameters,
             nodeStore,
             element1dStore
         );
@@ -56,10 +53,27 @@ public class ModelRepairer
         {
             foreach (var rule in rules)
             {
-                rule.Apply(
-                    modelProposal,
-                    this.modelRepairOperationParameters.GetToleranceForRule(rule) * (i + 1) / 3.0
-                );
+                if (rule.GetType() == typeof(ExtendElement1dsInPlaneToNodeRule) && i == 1)
+                {
+                    ;
+                }
+                try
+                {
+                    rule.Apply(
+                        modelProposal,
+                        modelRepairOperationParameters.GetToleranceForRule(rule) * (i + 1) / 3.0
+                    );
+                }
+                catch (Exception ex)
+                {
+                    // Log the exception and continue with the next rule
+                    logger.LogError(
+                        ex,
+                        "Error applying rule {RuleName} on iteration {Iteration}",
+                        rule.GetType().Name,
+                        i
+                    );
+                }
             }
         }
         return modelProposal.Build();

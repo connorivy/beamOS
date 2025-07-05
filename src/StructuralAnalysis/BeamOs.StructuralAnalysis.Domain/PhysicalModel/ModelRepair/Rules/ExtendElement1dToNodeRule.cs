@@ -204,16 +204,24 @@ public sealed class ExtendElement1dsInPlaneToNodeRule : BeamOrBraceVisitingRule
         ModelProposalBuilder modelProposalBuilder
     )
     {
-        var (startNode, endNode) = modelProposalBuilder.GetStartAndEndNodes(element1d);
-        return nodeLocation.ShortestDistanceToLine(
-            startNode.GetLocationPoint(
-                modelProposalBuilder.Element1dStore,
-                modelProposalBuilder.NodeStore
-            ),
-            endNode.GetLocationPoint(
-                modelProposalBuilder.Element1dStore,
-                modelProposalBuilder.NodeStore
-            )
-        );
+        try
+        {
+            var (startNode, endNode) = modelProposalBuilder.GetStartAndEndNodes(element1d);
+            return nodeLocation.ShortestDistanceToLine(
+                startNode.GetLocationPoint(
+                    modelProposalBuilder.Element1dStore,
+                    modelProposalBuilder.NodeStore
+                ),
+                endNode.GetLocationPoint(
+                    modelProposalBuilder.Element1dStore,
+                    modelProposalBuilder.NodeStore
+                )
+            );
+        }
+        catch (Exception ex)
+        {
+            ;
+            throw;
+        }
     }
 }

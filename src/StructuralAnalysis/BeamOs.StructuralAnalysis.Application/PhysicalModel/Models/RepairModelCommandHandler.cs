@@ -2,16 +2,16 @@ using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
+using Microsoft.Extensions.Logging;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 
 public class RepairModelCommandHandler(
     IModelRepository modelRepository,
     IModelProposalRepository modelProposalRepository,
-    IStructuralAnalysisUnitOfWork unitOfWork
+    IStructuralAnalysisUnitOfWork unitOfWork,
+    ILogger<RepairModelCommandHandler> logger
 ) : ICommandHandler<ModelResourceRequest<string>, ModelProposalResponse>
 {
     public async Task<Result<ModelProposalResponse>> ExecuteAsync(
@@ -60,7 +60,8 @@ public class RepairModelCommandHandler(
                 StandardAngleTolerance = new(5, AngleUnit.Degree),
                 StrictAngleTolerance = new(2, AngleUnit.Degree),
                 VeryStrictAngleTolerance = new(1, AngleUnit.Degree),
-            }
+            },
+            logger
         );
 
         ModelProposal proposal = repairer.ProposeRepairs(model);

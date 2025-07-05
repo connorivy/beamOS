@@ -90,8 +90,21 @@ public static class BeamOsObjectTypeExtensions
             BeamOsObjectType.SectionProfileProposal => BeamOsObjectType.SectionProfile,
             _ => throw new ArgumentOutOfRangeException(
                 nameof(beamOsObjectType),
-                $"The object type {beamOsObjectType} does not have a corresponding affected type."
+                $"The proposal type {beamOsObjectType} does not have a corresponding affected type."
             ),
+        };
+    }
+
+    public static BeamOsObjectType? ToAffectedTypeOrDefault(this BeamOsObjectType beamOsObjectType)
+    {
+        return beamOsObjectType switch
+        {
+            BeamOsObjectType.ModelProposal => BeamOsObjectType.Model,
+            BeamOsObjectType.NodeProposal => BeamOsObjectType.Node,
+            BeamOsObjectType.Element1dProposal => BeamOsObjectType.Element1d,
+            BeamOsObjectType.MaterialProposal => BeamOsObjectType.Material,
+            BeamOsObjectType.SectionProfileProposal => BeamOsObjectType.SectionProfile,
+            _ => null,
         };
     }
 

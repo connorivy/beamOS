@@ -55,7 +55,9 @@ public static class DependencyInjection
             var dbContext = scope.ServiceProvider.GetRequiredService<StructuralAnalysisDbContext>();
 
             // await dbContext.Database.EnsureDeletedAsync();
-            if ((await dbContext.Database.GetPendingMigrationsAsync()).Any())
+            var appliedMigrations = (await dbContext.Database.GetAppliedMigrationsAsync()).ToList();
+            var pendingMigrations = (await dbContext.Database.GetPendingMigrationsAsync()).ToList();
+            if (pendingMigrations.Count > 0)
             {
                 await dbContext.Database.MigrateAsync();
             }

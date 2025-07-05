@@ -2,6 +2,7 @@ using System;
 using BeamOs.Common.Api;
 using BeamOs.Common.Application;
 using Microsoft.Extensions.DependencyInjection;
+using Speckle.Sdk;
 
 namespace BeamOs.SpeckleConnector;
 
@@ -14,12 +15,6 @@ public static class DI
         services.AddScoped<SpeckleReceiveOperationContext>();
         services.AddScoped<SpeckleRecieveOperation>();
 
-        services.AddObjectThatImplementInterface<IAssemblyMarkerSpeckleConnector>(
-            typeof(ITopLevelProposalConverter<>),
-            ServiceLifetime.Scoped,
-            true
-        );
-
         services.AddObjectThatExtendsBase<IAssemblyMarkerSpeckleConnector>(
             typeof(ToProposalConverter<>),
             ServiceLifetime.Scoped
@@ -28,6 +23,13 @@ public static class DI
         services.AddObjectThatExtendsBase<IAssemblyMarkerSpeckleConnector>(
             typeof(BeamOsBaseEndpoint<,>),
             ServiceLifetime.Scoped
+        );
+
+        Speckle.Sdk.Application application = new("local", "local");
+        services.AddSpeckleSdk(
+            application,
+            "1.0.0",
+            typeof(Speckle.Objects.Data.RevitObject).Assembly
         );
 
         return services;

@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Speckle.Core" />
+    <!-- <PackageReference Include="Speckle.Core" /> -->
     <PackageReference Include="Speckle.Objects" />
     <PackageReference Include="StructuralShapes" />
   </ItemGroup>

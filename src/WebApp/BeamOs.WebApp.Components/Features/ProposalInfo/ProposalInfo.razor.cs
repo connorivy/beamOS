@@ -321,12 +321,14 @@ public static class ProposalInfoReducers
         // the selected objects are coming from the editor and are going to have the type of 'proposal'
         // whereas the proposals 'objectType' is the actual type that the proposal is going to modify (e.g. Node, Element1d, etc.)
         // so we need to translate the incoming proposal types into the actual proposal types
-        var createOrModifyProposals = action.SelectedObjects.Select(p => new EntityProposal(
-            p.ObjectType.ToAffectedType(),
-            p.Id,
-            ProposalType.Create // todo: this value is only used in the backend to determine
-        // if the proposal type is delete. So it doesn't matter if this is correct currently.
-        ));
+        var createOrModifyProposals = action
+            .SelectedObjects.Where(p => p.ObjectType.IsProposalType())
+            .Select(p => new EntityProposal(
+                p.ObjectType.ToAffectedType(),
+                p.Id,
+                ProposalType.Create // todo: this value is only used in the backend to determine
+            // if the proposal type is delete. So it doesn't matter if this is correct currently.
+            ));
 
         var selectedObjectsHashSet = deleteProposalCandidates
             .Concat<IEntityProposal>(createOrModifyProposals)

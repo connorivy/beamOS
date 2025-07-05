@@ -11,7 +11,6 @@ using BeamOs.WebApp.EditorCommands;
 using Fluxor;
 using Fluxor.Blazor.Web.Components;
 using Microsoft.AspNetCore.Components;
-using Objects.BuiltElements;
 
 namespace BeamOs.WebApp.Components.Features.ModelObjectEditor.PointLoads;
 
