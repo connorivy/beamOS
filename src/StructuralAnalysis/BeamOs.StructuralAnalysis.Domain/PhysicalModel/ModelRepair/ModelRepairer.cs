@@ -1,4 +1,5 @@
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair.Constraints;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair.Rules;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using Microsoft.Extensions.Logging;
@@ -37,6 +38,9 @@ public class ModelRepairer(
             octree.Add(internalNode, element1dStore, nodeStore);
         }
 
+        ElementConstraintManager elementConstraintManager = new(nodeStore, element1dStore);
+        elementConstraintManager.AddConstraints(model, modelRepairOperationParameters);
+
         ModelProposalBuilder modelProposal = new(
             model.Id,
             "Repair Proposal",
@@ -45,7 +49,8 @@ public class ModelRepairer(
             octree,
             modelRepairOperationParameters,
             nodeStore,
-            element1dStore
+            element1dStore,
+            elementConstraintManager
         );
         var context = new ModelRepairContext()
         {

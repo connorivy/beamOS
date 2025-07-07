@@ -55,11 +55,11 @@ public class RepairModelCommandHandler(
                 StandardTolerance = new(1, LengthUnit.Foot),
                 StrictTolerance = new(.33, LengthUnit.Foot),
                 VeryStrictTolerance = new(.1, LengthUnit.Foot),
-                VeryRelaxedAngleTolerance = new(15, AngleUnit.Degree),
-                RelaxedAngleTolerance = new(10, AngleUnit.Degree),
-                StandardAngleTolerance = new(5, AngleUnit.Degree),
-                StrictAngleTolerance = new(2, AngleUnit.Degree),
-                VeryStrictAngleTolerance = new(1, AngleUnit.Degree),
+                // VeryRelaxedAngleTolerance = new(15, AngleUnit.Degree),
+                // RelaxedAngleTolerance = new(10, AngleUnit.Degree),
+                // StandardAngleTolerance = new(5, AngleUnit.Degree),
+                // StrictAngleTolerance = new(2, AngleUnit.Degree),
+                // VeryStrictAngleTolerance = new(1, AngleUnit.Degree),
             },
             logger
         );

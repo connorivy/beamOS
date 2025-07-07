@@ -29,6 +29,7 @@ RUN ln -s libmkl_gnu_thread.so.2 libmkl_gnu_thread.so
 RUN ln -s libmkl_core.so.2 libmkl_core.so
 
 ENV ConnectionStrings__BeamOsDb="Host=db;Port=5432;Database=postgres;Username=postgres;Password=postgres"
+ENV BeamOsDevContainer="true"
 
 # # Install k6
 # RUN gpg -k

@@ -9,4 +9,12 @@ public static class BeamOsEnv
                 out bool isCiEnv
             ) && isCiEnv;
     }
+
+    public static bool IsDevContainer()
+    {
+        return bool.TryParse(
+                Environment.GetEnvironmentVariable("BeamOsDevContainer"),
+                out bool isDevContainer
+            ) && isDevContainer;
+    }
 }

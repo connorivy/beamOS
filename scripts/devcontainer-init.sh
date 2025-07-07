@@ -4,8 +4,8 @@
 set -e
 
 # Make sure deepClean is executable and run it
-chmod +x ./deepClean
-./deepClean
+chmod +x ./scripts/deepClean.sh
+./scripts/deepClean.sh
 
 dotnet tool restore
 
