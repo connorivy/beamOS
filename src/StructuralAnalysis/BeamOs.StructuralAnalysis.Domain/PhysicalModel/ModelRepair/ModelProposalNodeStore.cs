@@ -108,18 +108,6 @@ public sealed class ModelProposalNodeStore : IReadOnlyDictionary<NodeId, NodeDef
         }
     }
 
-    public void AddInternalNodeProposal(InternalNodeProposal proposal)
-    {
-        if (proposal.ExistingId is not null)
-        {
-            this.modifyNodeProposalCache[proposal.ExistingId.Value] = proposal;
-        }
-        else
-        {
-            this.newNodeProposals.Add(proposal);
-        }
-    }
-
     public IEnumerable<NodeProposal> GetNodeProposals() =>
         this.newNodeProposals.Concat(this.modifyNodeProposalCache.Values).OfType<NodeProposal>();
 

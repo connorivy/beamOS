@@ -55,11 +55,11 @@ public class AlignBeamsIntoPlaneOfColumns(ModelRepairContext context)
             foreach (Element1d colEnd in columnsCloseToEnd)
             {
                 var (startNodeA, endNodeA) = this.Context.ModelProposalBuilder.GetStartAndEndNodes(
-                    element1D,
+                    colStart,
                     out _
                 );
                 var (startNodeB, endNodeB) = this.Context.ModelProposalBuilder.GetStartAndEndNodes(
-                    element1D,
+                    colEnd,
                     out _
                 );
 
@@ -153,17 +153,17 @@ public class AlignBeamsIntoPlaneOfColumns(ModelRepairContext context)
                 NodeProposal startNodeProposal = new NodeProposal(
                     startNode,
                     this.Context.ModelProposalBuilder.Id,
-                    projectedStart,
-                    startNode.Restraint
+                    projectedStart
                 );
                 NodeProposal endNodeProposal = new NodeProposal(
                     endNode,
                     this.Context.ModelProposalBuilder.Id,
-                    projectedEnd,
-                    endNode.Restraint
+                    projectedEnd
                 );
-                this.Context.ModelProposalBuilder.NodeStore.AddNodeProposal(startNodeProposal);
-                this.Context.ModelProposalBuilder.NodeStore.AddNodeProposal(endNodeProposal);
+                this.Context.ModelProposalBuilder.AddNodeProposals(
+                    startNodeProposal,
+                    endNodeProposal
+                );
             }
         }
     }

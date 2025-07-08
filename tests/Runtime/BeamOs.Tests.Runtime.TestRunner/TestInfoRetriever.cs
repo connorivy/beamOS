@@ -1,5 +1,4 @@
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
-using BeamOs.StructuralAnalysis.Tests.ModelRepairerTests;
 using BeamOs.Tests.Common;
 using BeamOs.Tests.StructuralAnalysis.Integration;
 using BeamOs.Tests.StructuralAnalysis.Integration.ModelRepairerTests;

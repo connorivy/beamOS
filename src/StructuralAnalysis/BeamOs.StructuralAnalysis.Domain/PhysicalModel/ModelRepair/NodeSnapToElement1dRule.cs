@@ -27,23 +27,20 @@ public class NodeSnapToElement1dRule(ModelRepairContext context)
         {
             var (startNode, endNode) = modelProposalBuilder.GetStartAndEndNodes(elem, out _);
             var start = startNode.GetLocationPoint(
-                modelProposalBuilder.Element1dStore,
-                modelProposalBuilder.NodeStore
+                this.Context.Element1dStore,
+                this.Context.NodeStore
             );
-            var end = endNode.GetLocationPoint(
-                modelProposalBuilder.Element1dStore,
-                modelProposalBuilder.NodeStore
-            );
+            var end = endNode.GetLocationPoint(this.Context.Element1dStore, this.Context.NodeStore);
             if (
                 startNode.DependsOnNode(
                     node.Id,
-                    modelProposalBuilder.Element1dStore,
-                    modelProposalBuilder.NodeStore
+                    this.Context.Element1dStore,
+                    this.Context.NodeStore
                 )
                 || endNode.DependsOnNode(
                     node.Id,
-                    modelProposalBuilder.Element1dStore,
-                    modelProposalBuilder.NodeStore
+                    this.Context.Element1dStore,
+                    this.Context.NodeStore
                 )
             )
             {
@@ -81,7 +78,7 @@ public class NodeSnapToElement1dRule(ModelRepairContext context)
             );
             if (distToLine < tolerance)
             {
-                modelProposalBuilder.NodeStore.AddInternalNodeProposal(
+                modelProposalBuilder.AddNodeProposal(
                     new InternalNodeProposal(
                         node.ModelId,
                         modelProposalBuilder.Id,

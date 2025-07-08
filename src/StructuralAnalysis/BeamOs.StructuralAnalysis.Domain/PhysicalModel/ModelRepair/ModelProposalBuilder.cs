@@ -4,6 +4,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair.Constraints;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
@@ -42,7 +43,6 @@ public sealed class ModelProposalBuilder
     public ModelSettings Settings => this.modelProposal.Settings;
     public Octree Octree { get; }
     public IEnumerable<Element1d> Element1ds => this.Element1dStore.Values;
-    public IEnumerable<NodeDefinition> Nodes => this.NodeStore.Values;
 
     public bool MergeNodes(NodeDefinition originalNode, NodeDefinition targetNode)
     {
@@ -120,6 +120,177 @@ public sealed class ModelProposalBuilder
         return true;
     }
 
+    public bool AddNodeProposal(NodeProposalBase proposal)
+    {
+        if (proposal.ExistingId is not null)
+        {
+            foreach (
+                var element1d in this.Element1ds.Select(e =>
+                    this.Element1dStore.ApplyExistingProposal(e, out _)
+                )
+            )
+            {
+                var (startNode, endNode) = this.GetStartAndEndNodes(element1d, out _);
+                if (startNode.Id == proposal.ExistingId)
+                {
+                    if (
+                        !this.elementConstraintManager.NodeMovementSatisfiesElementConstraints(
+                            element1d,
+                            startNode,
+                            endNode,
+                            this.ModelRepairOperationParameters,
+                            proposal.GetLocationPoint(this.Element1dStore, this.NodeStore),
+                            null
+                        )
+                    )
+                    {
+                        return false; // Movement does not satisfy constraints
+                    }
+                }
+                else if (endNode.Id == proposal.ExistingId)
+                {
+                    if (
+                        !this.elementConstraintManager.NodeMovementSatisfiesElementConstraints(
+                            element1d,
+                            startNode,
+                            endNode,
+                            this.ModelRepairOperationParameters,
+                            null,
+                            proposal.GetLocationPoint(this.Element1dStore, this.NodeStore)
+                        )
+                    )
+                    {
+                        return false; // Movement does not satisfy constraints
+                    }
+                }
+            }
+        }
+
+        this.NodeStore.AddNodeProposal(proposal);
+        return true;
+    }
+
+    public bool AddNodeProposals(NodeProposalBase node1Proposal, NodeProposalBase node2Proposal)
+    {
+        if (node1Proposal.ExistingId is not null && node2Proposal.ExistingId is not null)
+        {
+            foreach (
+                var element1d in this.Element1ds.Select(e =>
+                    this.Element1dStore.ApplyExistingProposal(e, out _)
+                )
+            )
+            {
+                var (startNode, endNode) = this.GetStartAndEndNodes(element1d, out _);
+                if (
+                    startNode.Id == node1Proposal.ExistingId
+                    && endNode.Id == node2Proposal.ExistingId
+                )
+                {
+                    if (
+                        !this.elementConstraintManager.NodeMovementSatisfiesElementConstraints(
+                            element1d,
+                            startNode,
+                            endNode,
+                            this.ModelRepairOperationParameters,
+                            node1Proposal.GetLocationPoint(this.Element1dStore, this.NodeStore),
+                            node2Proposal.GetLocationPoint(this.Element1dStore, this.NodeStore)
+                        )
+                    )
+                    {
+                        return false; // Movement does not satisfy constraints
+                    }
+                }
+                else if (
+                    startNode.Id == node2Proposal.ExistingId
+                    && endNode.Id == node1Proposal.ExistingId
+                )
+                {
+                    if (
+                        !this.elementConstraintManager.NodeMovementSatisfiesElementConstraints(
+                            element1d,
+                            startNode,
+                            endNode,
+                            this.ModelRepairOperationParameters,
+                            node2Proposal.GetLocationPoint(this.Element1dStore, this.NodeStore),
+                            node1Proposal.GetLocationPoint(this.Element1dStore, this.NodeStore)
+                        )
+                    )
+                    {
+                        return false; // Movement does not satisfy constraints
+                    }
+                }
+                else if (startNode.Id == node1Proposal.ExistingId)
+                {
+                    if (
+                        !this.elementConstraintManager.NodeMovementSatisfiesElementConstraints(
+                            element1d,
+                            startNode,
+                            endNode,
+                            this.ModelRepairOperationParameters,
+                            node1Proposal.GetLocationPoint(this.Element1dStore, this.NodeStore),
+                            null
+                        )
+                    )
+                    {
+                        return false; // Movement does not satisfy constraints
+                    }
+                }
+                else if (startNode.Id == node2Proposal.ExistingId)
+                {
+                    if (
+                        !this.elementConstraintManager.NodeMovementSatisfiesElementConstraints(
+                            element1d,
+                            startNode,
+                            endNode,
+                            this.ModelRepairOperationParameters,
+                            node2Proposal.GetLocationPoint(this.Element1dStore, this.NodeStore),
+                            null
+                        )
+                    )
+                    {
+                        return false; // Movement does not satisfy constraints
+                    }
+                }
+                else if (endNode.Id == node1Proposal.ExistingId)
+                {
+                    if (
+                        !this.elementConstraintManager.NodeMovementSatisfiesElementConstraints(
+                            element1d,
+                            startNode,
+                            endNode,
+                            this.ModelRepairOperationParameters,
+                            null,
+                            node1Proposal.GetLocationPoint(this.Element1dStore, this.NodeStore)
+                        )
+                    )
+                    {
+                        return false; // Movement does not satisfy constraints
+                    }
+                }
+                else if (endNode.Id == node2Proposal.ExistingId)
+                {
+                    if (
+                        !this.elementConstraintManager.NodeMovementSatisfiesElementConstraints(
+                            element1d,
+                            startNode,
+                            endNode,
+                            this.ModelRepairOperationParameters,
+                            null,
+                            node2Proposal.GetLocationPoint(this.Element1dStore, this.NodeStore)
+                        )
+                    )
+                    {
+                        return false; // Movement does not satisfy constraints
+                    }
+                }
+            }
+        }
+
+        this.NodeStore.AddNodeProposal(node1Proposal);
+        this.NodeStore.AddNodeProposal(node2Proposal);
+        return true;
+    }
+
     public void RemoveNode(NodeDefinition node)
     {
         this.Octree.Remove(node.Id, node.GetLocationPoint(this.Element1dStore, this.NodeStore));
@@ -188,8 +359,10 @@ public enum AxisAlignmentToleranceLevel
     VeryRelaxed,
 }
 
-public readonly record struct ModelRepairContext
+public record ModelRepairContext
 {
+    public required ModelProposalNodeStore NodeStore { get; init; }
+    public required ModelProposalElement1dStore Element1dStore { get; init; }
     public required ModelProposalBuilder ModelProposalBuilder { get; init; }
     public required ModelRepairOperationParameters ModelRepairOperationParameters { get; init; }
 }

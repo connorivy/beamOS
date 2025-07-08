@@ -97,7 +97,7 @@ public class Node : NodeDefinition
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }
 
-public abstract class NodeDefinition : BeamOsModelEntity<NodeId>
+public abstract class NodeDefinition : BeamOsModelEntity<NodeId>, INode3D
 {
     public const string TypeDiscriminator = "NodeType";
 
@@ -271,3 +271,23 @@ public abstract class NodeDefinition : BeamOsModelEntity<NodeId>
 }
 
 public readonly record struct NodeIdAndLocation(NodeId NodeId, Point LocationPoint);
+
+public interface INode3D
+{
+    public Point GetLocationPoint(
+        IReadOnlyDictionary<Element1dId, Element1d>? elementStore = null,
+        IReadOnlyDictionary<NodeId, NodeDefinition>? nodeStore = null
+    );
+
+    public bool DependsOnElement1d(
+        Element1dId element1dId,
+        IReadOnlyDictionary<Element1dId, Element1d>? elementStore = null,
+        IReadOnlyDictionary<NodeId, NodeDefinition>? nodeStore = null
+    );
+
+    public bool DependsOnNode(
+        NodeId nodeId,
+        IReadOnlyDictionary<Element1dId, Element1d>? elementStore = null,
+        IReadOnlyDictionary<NodeId, NodeDefinition>? nodeStore = null
+    );
+}

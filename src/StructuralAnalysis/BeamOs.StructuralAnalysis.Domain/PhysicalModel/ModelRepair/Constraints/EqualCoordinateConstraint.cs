@@ -1,8 +1,7 @@
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair.Constraints;
 
-namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
+namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair.Constraints;
 
 public record EqualCoordinateConstraint(CoordinateSystemDirection3D CoordinateSystemDirection3d)
     : IElementConstraint
@@ -16,26 +15,70 @@ public record EqualCoordinateConstraint(CoordinateSystemDirection3D CoordinateSy
         Point? newEndNodeLocation
     )
     {
-        if (newStartNodeLocation == null || newEndNodeLocation == null)
-        {
-            return false;
-        }
         Length tolerance = modelRepairOperationParameters.GetLengthTolerance(
             AxisAlignmentToleranceLevel.Strict
         );
 
-        return this.CoordinateSystemDirection3d switch
+        if (newStartNodeLocation is not null && newEndNodeLocation is not null)
         {
-            CoordinateSystemDirection3D.AlongX => Math.Abs(
-                (newStartNodeLocation.X - newEndNodeLocation.X).Meters
-            ) < tolerance.Meters,
-            CoordinateSystemDirection3D.AlongY => Math.Abs(
-                (newStartNodeLocation.Y - newEndNodeLocation.Y).Meters
-            ) < tolerance.Meters,
-            CoordinateSystemDirection3D.AlongZ => Math.Abs(
-                (newStartNodeLocation.Z - newEndNodeLocation.Z).Meters
-            ) < tolerance.Meters,
-            _ => throw new ArgumentOutOfRangeException(),
-        };
+            return this.CoordinateSystemDirection3d switch
+            {
+                CoordinateSystemDirection3D.AlongX => newStartNodeLocation.X.Equals(
+                    newEndNodeLocation.X,
+                    tolerance
+                ),
+                CoordinateSystemDirection3D.AlongY => newStartNodeLocation.Y.Equals(
+                    newEndNodeLocation.Y,
+                    tolerance
+                ),
+                CoordinateSystemDirection3D.AlongZ => newStartNodeLocation.Z.Equals(
+                    newEndNodeLocation.Z,
+                    tolerance
+                ),
+                _ => throw new ArgumentOutOfRangeException("Invalid coordinate system direction."),
+            };
+        }
+        else if (newStartNodeLocation is not null)
+        {
+            return this.CoordinateSystemDirection3d switch
+            {
+                CoordinateSystemDirection3D.AlongX => newStartNodeLocation.X.Equals(
+                    originalStartNodeLocation.X,
+                    tolerance
+                ),
+                CoordinateSystemDirection3D.AlongY => newStartNodeLocation.Y.Equals(
+                    originalStartNodeLocation.Y,
+                    tolerance
+                ),
+                CoordinateSystemDirection3D.AlongZ => newStartNodeLocation.Z.Equals(
+                    originalStartNodeLocation.Z,
+                    tolerance
+                ),
+                _ => throw new ArgumentOutOfRangeException("Invalid coordinate system direction."),
+            };
+        }
+        else if (newEndNodeLocation is not null)
+        {
+            return this.CoordinateSystemDirection3d switch
+            {
+                CoordinateSystemDirection3D.AlongX => newEndNodeLocation.X.Equals(
+                    originalEndNodeLocation.X,
+                    tolerance
+                ),
+                CoordinateSystemDirection3D.AlongY => newEndNodeLocation.Y.Equals(
+                    originalEndNodeLocation.Y,
+                    tolerance
+                ),
+                CoordinateSystemDirection3D.AlongZ => newEndNodeLocation.Z.Equals(
+                    originalEndNodeLocation.Z,
+                    tolerance
+                ),
+                _ => throw new ArgumentOutOfRangeException("Invalid coordinate system direction."),
+            };
+        }
+
+        throw new InvalidOperationException(
+            "At least one of the new node locations must be provided."
+        );
     }
 }

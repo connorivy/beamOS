@@ -94,7 +94,7 @@ public class Element1dExtendOrShortenRule(ModelRepairContext context)
             if (distToLine < tolerance.Meters)
             {
                 // todo: i'm getting t values of like 0.99999, which should be handled by the node snapping
-                this.Context.ModelProposalBuilder.NodeStore.AddInternalNodeProposal(
+                this.Context.ModelProposalBuilder.AddNodeProposal(
                     new InternalNodeProposal(
                         node.ModelId,
                         this.Context.ModelProposalBuilder.Id,

@@ -18,13 +18,13 @@ public class RemoveOrphanedNodeRule(ModelRepairContext context) : IModelRepairRu
             usedNodeIds.Add(endNode.Id);
         }
 
-        var orphanedNodes = modelProposal
-            .Nodes.Where(node => !usedNodeIds.Contains(node.Id))
+        var orphanedNodes = context
+            .NodeStore.Values.Where(node => !usedNodeIds.Contains(node.Id))
             .ToList();
 
-        foreach (var orphanedNodeId in orphanedNodes)
+        foreach (var orphanedNode in orphanedNodes)
         {
-            modelProposal.RemoveNode(orphanedNodeId);
+            modelProposal.RemoveNode(orphanedNode);
         }
     }
 }

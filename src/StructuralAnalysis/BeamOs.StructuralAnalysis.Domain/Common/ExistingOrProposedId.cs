@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using BeamOs.Common.Domain.Models;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
@@ -25,23 +24,17 @@ public class ExistingOrProposedId<TId, TProposedId> : BeamOSValueObject
         this.ProposedId = proposedId;
     }
 
-    public TId ToDomain(Dictionary<TProposedId, TId> proposedIdToDomainIdDict)
+    public T Match<T>(Func<TId, T> existingIdFunc, Func<TProposedId, T> proposedIdFunc)
     {
         if (this.ExistingId is not null)
         {
-            return this.ExistingId.Value;
+            return existingIdFunc(this.ExistingId.Value);
         }
-        if (this.ProposedId is null)
+        if (this.ProposedId is not null)
         {
-            throw new InvalidOperationException("Both ExistingId and ProposedId are null.");
+            return proposedIdFunc(this.ProposedId.Value);
         }
-        if (!proposedIdToDomainIdDict.TryGetValue(this.ProposedId.Value, out var domainId))
-        {
-            throw new InvalidOperationException(
-                $"ProposedId {this.ProposedId} not found in dictionary."
-            );
-        }
-        return domainId;
+        throw new InvalidOperationException("Both ExistingId and ProposedId are null.");
     }
 
     public (TId id, TEntity? entity) ToIdAndEntity<TEntity>(

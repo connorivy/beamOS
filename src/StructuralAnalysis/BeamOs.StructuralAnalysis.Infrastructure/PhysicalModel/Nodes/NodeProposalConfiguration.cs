@@ -43,5 +43,22 @@ public class InternalNodeProposalConfiguration : IEntityTypeConfiguration<Intern
             .HasForeignKey(el => new { el.ModelProposalId, el.ModelId })
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
+
+        // builder
+        //     .HasOne(el => el.Element1dProposal)
+        //     .WithMany()
+        //     .HasPrincipalKey(el => new
+        //     {
+        //         el.Id,
+        //         el.ModelProposalId,
+        //         el.ModelId,
+        //     })
+        //     .HasForeignKey(
+        //         $"{nameof(InternalNodeProposal.Element1dId)}_{nameof(InternalNodeProposal.Element1dId.ProposedId)}",
+        //         nameof(InternalNodeProposal.ModelProposalId),
+        //         nameof(InternalNodeProposal.ModelId)
+        //     )
+        //     .IsRequired(false)
+        //     .OnDelete(DeleteBehavior.SetNull);
     }
 }

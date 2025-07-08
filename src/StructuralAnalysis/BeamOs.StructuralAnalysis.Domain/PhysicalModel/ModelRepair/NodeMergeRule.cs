@@ -70,11 +70,9 @@ public class NodeMergeRule(ModelRepairContext context) : IndividualNodeVisitingR
         ModelProposalBuilder modelProposalBuilder
     )
     {
+        IReadOnlyDictionary<NodeId, NodeDefinition> nodeStore = modelProposalBuilder.NodeStore;
         return nodeLocation.CalculateDistance(
-            nodeDefinition.GetLocationPoint(
-                modelProposalBuilder.Element1dStore,
-                modelProposalBuilder.NodeStore
-            )
+            nodeDefinition.GetLocationPoint(modelProposalBuilder.Element1dStore, nodeStore)
         );
     }
 }

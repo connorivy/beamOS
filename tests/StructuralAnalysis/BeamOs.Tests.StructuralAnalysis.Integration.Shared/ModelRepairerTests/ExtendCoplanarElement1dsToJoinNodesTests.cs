@@ -3,10 +3,8 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Sdk;
 using BeamOs.Tests.Common;
-using BeamOs.Tests.StructuralAnalysis.Integration;
-using BeamOs.Tests.StructuralAnalysis.Integration.ModelRepairerTests;
 
-namespace BeamOs.StructuralAnalysis.Tests.ModelRepairerTests;
+namespace BeamOs.Tests.StructuralAnalysis.Integration.ModelRepairerTests;
 
 [MethodDataSource(typeof(AssemblySetup), nameof(AssemblySetup.GetStructuralAnalysisApiClientV1))]
 public class ExtendCoplanarElement1dsToJoinNodesTests(IStructuralAnalysisApiClientV1 apiClient)

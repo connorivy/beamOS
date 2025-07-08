@@ -54,6 +54,8 @@ public class ModelRepairer(
         );
         var context = new ModelRepairContext()
         {
+            NodeStore = nodeStore,
+            Element1dStore = element1dStore,
             ModelProposalBuilder = modelProposal,
             ModelRepairOperationParameters = modelRepairOperationParameters,
         };
@@ -75,10 +77,6 @@ public class ModelRepairer(
             context = context with { ModelRepairOperationParameters = newRepairOptions };
             foreach (var rule in GetRules(context))
             {
-                if (rule.GetType() == typeof(ExtendElement1dsInPlaneToNodeRule) && i == 1)
-                {
-                    ;
-                }
                 try
                 {
                     rule.Apply();
