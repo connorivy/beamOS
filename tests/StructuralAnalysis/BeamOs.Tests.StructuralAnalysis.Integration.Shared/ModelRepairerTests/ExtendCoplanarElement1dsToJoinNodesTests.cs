@@ -3,6 +3,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Sdk;
 using BeamOs.Tests.Common;
+using FluentAssertions;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration.ModelRepairerTests;
 
@@ -46,11 +47,22 @@ public class ExtendCoplanarElement1dsToJoinNodesTests(IStructuralAnalysisApiClie
 
         var proposal = await apiClient.RepairModelAsync(modelId, "snap beam node to column");
 
-        await ModelRepairerTestUtil.EnsureGlobalGeometricContraints(
+        var repairedModel = await ModelRepairerTestUtil.EnsureGlobalGeometricContraints(
             apiClient,
             modelId,
             proposal.Value?.Id ?? throw new InvalidOperationException("Proposal is null")
         );
+
+        repairedModel
+            .Nodes.Count.Should()
+            .Be(3, "Nodes should be merged or snapped to the center node");
+
+        var centerNode = repairedModel.Nodes.SingleOrDefault(n => n.Id is 2 or 3);
+        centerNode.Should().NotBeNull();
+
+        centerNode.LocationPoint.X.Should().BeApproximately(5, 1e-6);
+        centerNode.LocationPoint.Y.Should().BeApproximately(0.0, 1e-6);
+
         await TestUtils.Asserter.VerifyModelProposal(proposal);
     }
 }

@@ -3,6 +3,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Sdk;
 using BeamOs.Tests.Common;
+using FluentAssertions;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration.ModelRepairerTests;
 
@@ -38,7 +39,7 @@ public class ExtendElement1dToNodeRuleTests(IStructuralAnalysisApiClientV1 apiCl
         builder.AddElement1d(1, 1, 2, 1, 1);
 
         // Element1d B: diagonal, endpoint nearly collinear/coplanar with A's end
-        builder.AddNode(3, 0, .2, 0); // Should merge with node 2 after repair
+        builder.AddNode(3, 0, .2, 0); // Should merge with node 1 after repair
         builder.AddNode(4, 0, 2, 0);
         builder.AddElement1d(2, 3, 4, 1, 1);
 
@@ -46,11 +47,27 @@ public class ExtendElement1dToNodeRuleTests(IStructuralAnalysisApiClientV1 apiCl
 
         var proposal = await apiClient.RepairModelAsync(modelId, "snap beam node to column");
 
-        await ModelRepairerTestUtil.EnsureGlobalGeometricContraints(
+        var repairedModel = await ModelRepairerTestUtil.EnsureGlobalGeometricContraints(
             apiClient,
             modelId,
             proposal.Value?.Id ?? throw new InvalidOperationException("Proposal is null")
         );
+
+        repairedModel
+            .Nodes.Count.Should()
+            .Be(3, "Nodes should be merged or snapped to the center node");
+        var centerNode = repairedModel.Nodes.SingleOrDefault(n => n.Id is 1 or 3);
+
+        repairedModel
+            .Element1ds.First(el => el.Id == 1)
+            .StartNodeId.Should()
+            .Be(centerNode.Id, "Element1d A should extend to the center node");
+
+        repairedModel
+            .Element1ds.First(el => el.Id == 2)
+            .StartNodeId.Should()
+            .Be(centerNode.Id, "Element1d B should extend to the center node");
+
         await TestUtils.Asserter.VerifyModelProposal(proposal);
     }
 
@@ -84,11 +101,27 @@ public class ExtendElement1dToNodeRuleTests(IStructuralAnalysisApiClientV1 apiCl
 
         var proposal = await apiClient.RepairModelAsync(modelId, "snap beam node to column");
 
-        await ModelRepairerTestUtil.EnsureGlobalGeometricContraints(
+        var repairedModel = await ModelRepairerTestUtil.EnsureGlobalGeometricContraints(
             apiClient,
             modelId,
             proposal.Value?.Id ?? throw new InvalidOperationException("Proposal is null")
         );
+
+        repairedModel
+            .Nodes.Count.Should()
+            .Be(3, "Nodes should be merged or snapped to the center node");
+        var centerNode = repairedModel.Nodes.SingleOrDefault(n => n.Id is 2 or 3);
+
+        repairedModel
+            .Element1ds.First(el => el.Id == 1)
+            .EndNodeId.Should()
+            .Be(centerNode.Id, "Element1d A should extend to the center node");
+
+        repairedModel
+            .Element1ds.First(el => el.Id == 2)
+            .StartNodeId.Should()
+            .Be(centerNode.Id, "Element1d B should extend to the center node");
+
         await TestUtils.Asserter.VerifyModelProposal(proposal);
     }
 }

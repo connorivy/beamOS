@@ -6,7 +6,7 @@ namespace BeamOs.Tests.StructuralAnalysis.Integration;
 
 public class VerifyAsserter : Asserter
 {
-    public override async Task VerifyModelProposal(
+    public override async ValueTask VerifyModelProposal(
         Result<ModelProposalResponse> modelProposalResponse
     )
     {

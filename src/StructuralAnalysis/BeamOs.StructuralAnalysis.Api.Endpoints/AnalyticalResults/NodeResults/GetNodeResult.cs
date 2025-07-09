@@ -1,7 +1,6 @@
 using BeamOs.Common.Api;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.NodeResults;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.NodeResult;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.AnalyticalResults.NodeResults;

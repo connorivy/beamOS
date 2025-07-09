@@ -2,7 +2,6 @@ using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.NodeResult;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.Tests.Common;
-using UnitsNet.Units;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration;
 
@@ -48,6 +47,7 @@ public class OpenSeesTests(ModelFixture modelFixture) : IModelFixtureTestsClass
                     1,
                     expectedNodeDisplacementResult.NodeId
                 );
+                result.ThrowIfError();
 
                 AssertDisplacementsEqual(
                     BeamOsObjectType.Node,

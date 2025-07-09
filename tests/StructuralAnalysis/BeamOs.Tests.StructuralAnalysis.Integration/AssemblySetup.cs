@@ -27,7 +27,7 @@ public static partial class AssemblySetup
 
         await DbContainer.StartAsync();
 
-        TestUtils.Asserter = new VerifyAsserter();
+        TestUtils.Asserter = new();
 
         var webAppFactory = new WebAppFactory(
             $"{DbContainer.GetConnectionString()};Include Error Detail=True"
