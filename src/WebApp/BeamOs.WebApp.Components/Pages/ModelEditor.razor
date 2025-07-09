@@ -1,8 +1,10 @@
 @page "/models/{ModelId:guid}"
 
 @using BeamOs.CodeGen.EditorApi
+@using BeamOs.StructuralAnalysis.Contracts.Common
 @using BeamOs.WebApp.Components.Features.AiAssistant
 @using BeamOs.WebApp.Components.Features.AnalysisToolbar
+@using BeamOs.WebApp.Components.Features.BugReports
 @using BeamOs.WebApp.Components.Features.Common
 @using BeamOs.WebApp.Components.Features.Editor
 @using BeamOs.WebApp.Components.Features.ModelObjectEditor
@@ -15,6 +17,7 @@
 @using BeamOs.WebApp.EditorCommands
 @using Fluxor.Blazor.Web.Components
 @using MudBlazor
+@using System.Collections.Immutable
 
 @inherits FluxorComponent
 @layout ResponsiveSidebarLayout
@@ -31,7 +34,7 @@
 } *@
 <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="relative h-full w-full">
     <EditorComponent Class="h-full" @ref="editorComponent" ModelId="@ModelId" IsReadOnly="false"></EditorComponent>
-    @if (this.editorComponent is not null && this.State.Value.LoadedModelId is Guid modelId)
+    @if (this.editorComponent is not null && this.EditorState.Value.LoadedModelId is Guid modelId)
     {
         <div class="flex items-center justify-center absolute left-4 right-4 top-4">
             <AnalysisToolbar Class="" editorComponent="@editorComponent" ModelId="@modelId"
@@ -45,58 +48,38 @@
 
         <FloatingResponsiveSidebar>
             <ModelObjectEditor ModelId="@modelId"
-                UnitSettings="@this.State.Value.CachedModelResponse.Settings.UnitSettings" />
+                UnitSettings="@this.EditorState.Value.CachedModelResponse.Settings.UnitSettings" />
         </FloatingResponsiveSidebar>
 
         @* <div class="flex justify-center absolute bottom-0 right-0 left-0 h-2/5">
             <ResultsTableComponent ModelId="@modelId" Class="w-5/6 p-4" />
         </div> *@
 
-        <div class="absolute right-0 top-0 min-w-[400px] w-1/4 p-4">
-            <ResultChartsComponent ModelId="@modelId" />
-        </div>
-        @if (this.State.Value.EditorApi is IEditorApiAlpha editorApi)
+        var panelContentStack = this.State.Value.PanelContent;
+        if (!panelContentStack.IsEmpty)
         {
+            var panelContent = panelContentStack.Peek();
             <FloatingResponsivePanel>
-                <ProposalInfo ModelId="@modelId" EditorApi="@editorApi" />
+                @if (!this.State.Value.PanelContentLocked && panelContentStack.Count() > 1)
+                {
+                    <MudIconButton OnClick="@GoBack" Icon="@Icons.Material.Filled.ArrowBack" Color="Color.Inherit"
+                        Class="absolute top-2 left-2 z-10" />
+                }
+                @switch (panelContent)
+                {
+                    case PanelContent.ProposalInfo:
+                        <ProposalInfo ModelId="@modelId" EditorApi="@this.EditorState.Value.EditorApi" />
+                        break;
+                    case PanelContent.Element1dResults:
+                        <ResultChartsComponent ModelId="@modelId" />
+                        break;
+                    case PanelContent.ModelRepairScenarioCreator:
+                        <ModelRepairScenarioCreator ModelId="@modelId" />
+                        break;
+                }
             </FloatingResponsivePanel>
         }
+
         <AiAssistant ModelId="@ModelId" />
     }
 </MudContainer>
-
-@code {
-    [Parameter]
-    public Guid ModelId { get; set; }
-
-    [Inject]
-    private IState<EditorComponentState> State { get; init; }
-
-    [Inject]
-    private IDispatcher dispatcher { get; init; }
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        dispatcher.Dispatch(new OpenDrawer());
-    }
-
-    private EditorComponent? editorComponent
-    {
-        get;
-        set
-        {
-            field = value;
-            StateHasChanged();
-        }
-    }
-
-    protected override ValueTask DisposeAsyncCore(bool disposing)
-    {
-        dispatcher.Dispatch(new CloseDrawer());
-        return base.DisposeAsyncCore(disposing);
-    }
-
-    public static string GetRelativeUrl(Guid guid)
-    => $"/models/{guid}";
-}

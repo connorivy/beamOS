@@ -75,7 +75,7 @@ public sealed class CreateMomentLoadClientCommandHandler(
     }
 }
 
-public record CreateMomentLoadClientCommand(MomentLoadData Data) : IBeamOsClientCommand
+public record CreateMomentLoadClientCommand(MomentLoadData Data) : IBeamOsUndoableClientCommand
 {
     public Guid Id { get; } = Guid.NewGuid();
     public bool HandledByEditor { get; init; }
@@ -90,7 +90,7 @@ public record CreateMomentLoadClientCommand(MomentLoadData Data) : IBeamOsClient
     /// </summary>
     public int? MomentLoadId { get; init; }
 
-    public IBeamOsClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
         new DeleteMomentLoadClientCommand
         {
             ModelId = this.ModelId,
@@ -101,7 +101,7 @@ public record CreateMomentLoadClientCommand(MomentLoadData Data) : IBeamOsClient
             HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 
-    public IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
         this with
         {
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace BeamOs.WebApp.Components.Features.StructuralApi;
 
-public readonly record struct ModelEntityCreated : IBeamOsClientCommand
+public readonly record struct ModelEntityCreated : IBeamOsUndoableClientCommand
 {
     public Guid Id { get; }
     public bool HandledByEditor { get; init; }
@@ -12,14 +12,14 @@ public readonly record struct ModelEntityCreated : IBeamOsClientCommand
     public bool HandledByServer { get; init; }
     public IModelEntity ModelEntity { get; init; }
 
-    public IBeamOsClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
         new ModelEntityDeleted() { ModelEntity = this.ModelEntity };
 
-    public IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
         throw new NotImplementedException();
 }
 
-public readonly record struct ModelEntitiesCreated : IBeamOsClientCommand
+public readonly record struct ModelEntitiesCreated : IBeamOsUndoableClientCommand
 {
     public Guid Id { get; }
     public bool HandledByEditor { get; init; }
@@ -27,11 +27,11 @@ public readonly record struct ModelEntitiesCreated : IBeamOsClientCommand
     public bool HandledByServer { get; init; }
     public ICollection<IModelEntity> ModelEntity { get; init; }
 
-    public IBeamOsClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
         //new ModelEntityDeleted() { ModelEntity = this.ModelEntity };
         throw new NotImplementedException();
 
-    public IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
         throw new NotImplementedException();
 }
 
@@ -56,7 +56,7 @@ public readonly record struct ModelEntityUpdated
     //    throw new NotImplementedException();
 }
 
-public readonly record struct ModelEntityDeleted : IBeamOsClientCommand
+public readonly record struct ModelEntityDeleted : IBeamOsUndoableClientCommand
 {
     public Guid Id { get; }
     public bool HandledByEditor { get; init; }
@@ -65,10 +65,10 @@ public readonly record struct ModelEntityDeleted : IBeamOsClientCommand
     public IModelEntity ModelEntity { get; init; }
     public string EntityType { get; init; }
 
-    public IBeamOsClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
         new ModelEntityCreated() { ModelEntity = this.ModelEntity };
 
-    public IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
         throw new NotImplementedException();
 }
 

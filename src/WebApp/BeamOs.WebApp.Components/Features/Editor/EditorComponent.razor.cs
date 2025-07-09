@@ -9,6 +9,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
+using BeamOs.WebApp.Components.Features.AnalysisToolbar;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.StructuralApi;
 using BeamOs.WebApp.Components.Features.UndoRedo;
@@ -29,6 +30,7 @@ public partial class EditorComponent(
     IState<CachedModelState> cachedModelState,
     IDispatcher dispatcher,
     LoadModelCommandHandler loadModelCommandHandler,
+    GetModelProposalsClientCommandHandler getModelProposalsClientCommandHandler,
     LoadBeamOsEntityCommandHandler loadBeamOsEntityCommandHandler,
     ILogger<EditorComponent> logger,
     UndoRedoFunctionality undoRedoFunctionality,
@@ -209,9 +211,13 @@ public partial class EditorComponent(
     public async Task LoadModelFromServer(Guid modelId)
     {
         dispatcher.Dispatch(new EditorLoadingBegin(this.CanvasId, "Fetching Data"));
+        var proposalTask = getModelProposalsClientCommandHandler.ExecuteAsync(
+            new() { CanvasId = this.CanvasId, ModelId = modelId }
+        );
         var result = await loadModelCommandHandler.ExecuteAsync(
             new LoadModelCommand(this.CanvasId, modelId)
         );
+        await proposalTask;
 
         if (result.IsError)
         {

@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net.Security;
 using BeamOs.CodeGen.EditorApi;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
-using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;

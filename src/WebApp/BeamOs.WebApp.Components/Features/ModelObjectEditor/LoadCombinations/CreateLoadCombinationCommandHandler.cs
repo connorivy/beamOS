@@ -42,7 +42,8 @@ public sealed class CreateLoadCombinationClientCommandHandler(
     }
 }
 
-public record CreateLoadCombinationClientCommand(LoadCombinationData Data) : IBeamOsClientCommand
+public record CreateLoadCombinationClientCommand(LoadCombinationData Data)
+    : IBeamOsUndoableClientCommand
 {
     public Guid Id { get; } = Guid.NewGuid();
     public bool HandledByEditor { get; init; }
@@ -57,7 +58,7 @@ public record CreateLoadCombinationClientCommand(LoadCombinationData Data) : IBe
     /// </summary>
     public int? LoadCombinationId { get; init; }
 
-    public IBeamOsClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
         new DeleteLoadCombinationClientCommand
         {
             ModelId = this.ModelId,
@@ -68,7 +69,7 @@ public record CreateLoadCombinationClientCommand(LoadCombinationData Data) : IBe
             HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 
-    public IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
         this with
         {
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
@@ -77,7 +78,7 @@ public record CreateLoadCombinationClientCommand(LoadCombinationData Data) : IBe
         };
 }
 
-public record DeleteLoadCombinationClientCommand : IBeamOsClientCommand
+public record DeleteLoadCombinationClientCommand : IBeamOsUndoableClientCommand
 {
     public Guid Id { get; } = Guid.NewGuid();
     public bool HandledByEditor { get; init; }
@@ -87,7 +88,7 @@ public record DeleteLoadCombinationClientCommand : IBeamOsClientCommand
     public int LoadCombinationId { get; init; }
     public required LoadCombinationData Data { get; init; }
 
-    public IBeamOsClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
         new CreateLoadCombinationClientCommand(this.Data)
         {
             ModelId = this.ModelId,
@@ -97,7 +98,7 @@ public record DeleteLoadCombinationClientCommand : IBeamOsClientCommand
             HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 
-    public IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
         this with
         {
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,

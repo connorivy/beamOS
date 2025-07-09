@@ -7,7 +7,7 @@ public class HistoryMiddleware(HistoryManager historyManager) : Middleware
 {
     public override void AfterDispatch(object action)
     {
-        if (action is IBeamOsClientCommand clientCommand)
+        if (action is IBeamOsUndoableClientCommand clientCommand)
         {
             historyManager.AddItem(clientCommand);
         }

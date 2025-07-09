@@ -65,7 +65,7 @@ public sealed class PutMaterialSimpleCommandHandler(
 }
 
 public record PutMaterialClientCommand(MaterialResponse Previous, MaterialResponse New)
-    : IBeamOsClientCommand
+    : IBeamOsUndoableClientCommand
 {
     public Guid Id { get; } = Guid.NewGuid();
 
@@ -73,7 +73,7 @@ public record PutMaterialClientCommand(MaterialResponse Previous, MaterialRespon
     public bool HandledByBlazor { get; init; }
     public bool HandledByServer { get; init; }
 
-    public IBeamOsClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
         new PutMaterialClientCommand(this.New, this.Previous)
         {
             HandledByEditor = this.HandledByEditor,
@@ -81,7 +81,7 @@ public record PutMaterialClientCommand(MaterialResponse Previous, MaterialRespon
             HandledByServer = this.HandledByServer,
         };
 
-    public IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
         this with
         {
             HandledByEditor = args?.HandledByEditor ?? this.HandledByEditor,

@@ -46,7 +46,8 @@ public sealed class CreateSectionProfileClientCommandHandler(
     }
 }
 
-public record CreateSectionProfileClientCommand(SectionProfileData Data) : IBeamOsClientCommand
+public record CreateSectionProfileClientCommand(SectionProfileData Data)
+    : IBeamOsUndoableClientCommand
 {
     public Guid Id { get; } = Guid.NewGuid();
     public bool HandledByEditor { get; init; }
@@ -61,7 +62,7 @@ public record CreateSectionProfileClientCommand(SectionProfileData Data) : IBeam
     /// </summary>
     public int? SectionProfileId { get; init; }
 
-    public IBeamOsClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
         new DeleteSectionProfileClientCommand
         {
             ModelId = this.ModelId,
@@ -72,7 +73,7 @@ public record CreateSectionProfileClientCommand(SectionProfileData Data) : IBeam
             HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 
-    public IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
         this with
         {
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
@@ -81,7 +82,7 @@ public record CreateSectionProfileClientCommand(SectionProfileData Data) : IBeam
         };
 }
 
-public record DeleteSectionProfileClientCommand : IBeamOsClientCommand
+public record DeleteSectionProfileClientCommand : IBeamOsUndoableClientCommand
 {
     public Guid Id { get; } = Guid.NewGuid();
     public bool HandledByEditor { get; init; }
@@ -91,7 +92,7 @@ public record DeleteSectionProfileClientCommand : IBeamOsClientCommand
     public int SectionProfileId { get; init; }
     public required SectionProfileData Data { get; init; }
 
-    public IBeamOsClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
         new CreateSectionProfileClientCommand(this.Data)
         {
             ModelId = this.ModelId,
@@ -101,7 +102,7 @@ public record DeleteSectionProfileClientCommand : IBeamOsClientCommand
             HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 
-    public IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
         this with
         {
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,

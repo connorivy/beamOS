@@ -138,14 +138,16 @@ public static class PutPointLoadCommandExtensions
 }
 
 public record PutPointLoadClientCommand(PointLoadResponse Previous, PointLoadResponse New)
-    : IBeamOsClientCommand
+    : IBeamOsUndoableClientCommand
 {
     public Guid Id { get; } = Guid.NewGuid();
     public bool HandledByEditor { get; init; }
     public bool HandledByBlazor { get; init; }
     public bool HandledByServer { get; init; }
 
-    public virtual IBeamOsClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
+    public virtual IBeamOsUndoableClientCommand GetUndoCommand(
+        BeamOsClientCommandArgs? args = null
+    ) =>
         this with
         {
             New = this.Previous,
@@ -155,7 +157,7 @@ public record PutPointLoadClientCommand(PointLoadResponse Previous, PointLoadRes
             HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 
-    public virtual IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
+    public virtual IBeamOsUndoableClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
         this with
         {
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,

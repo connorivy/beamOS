@@ -1,6 +1,5 @@
 ﻿using BeamOs.CodeGen.EditorApi;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 
 namespace BeamOs.WebApp.Components.Features.Editor.ModelProposals;
 

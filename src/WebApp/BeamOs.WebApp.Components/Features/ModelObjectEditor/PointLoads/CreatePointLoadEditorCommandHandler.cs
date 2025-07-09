@@ -103,7 +103,7 @@ public sealed class CreatePointLoadClientCommandHandler(
     }
 }
 
-public record CreatePointLoadClientCommand(PointLoadData Data) : IBeamOsClientCommand
+public record CreatePointLoadClientCommand(PointLoadData Data) : IBeamOsUndoableClientCommand
 {
     public Guid Id { get; } = Guid.NewGuid();
     public bool HandledByEditor { get; init; }
@@ -118,7 +118,7 @@ public record CreatePointLoadClientCommand(PointLoadData Data) : IBeamOsClientCo
     /// </summary>
     public int? PointLoadId { get; init; }
 
-    public IBeamOsClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
         new DeletePointLoadClientCommand
         {
             ModelId = this.ModelId,
@@ -129,7 +129,7 @@ public record CreatePointLoadClientCommand(PointLoadData Data) : IBeamOsClientCo
             HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 
-    public IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
         this with
         {
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,

@@ -5,7 +5,6 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.Tests.Common;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.TestExplorer;
-using BeamOs.WebApp.EditorCommands.Interfaces;
 using Fluxor;
 using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Logging;
