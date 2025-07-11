@@ -28,6 +28,7 @@ var abstractGenerators = generators.OfType<AbstractGenerator>().ToArray();
 
 var builder = WebApplication.CreateBuilder(args);
 
+// builder.Services.AddMvcCore().AddApiExplorer();
 builder.Services.AddSwaggerGen(config =>
 {
     config.SchemaFilter<MarkAsRequiredIfNonNullableSchemaProcessor>();
@@ -61,10 +62,10 @@ foreach (AbstractGenerator generator in abstractGenerators)
     generator.AddMethods(app);
 }
 
-//app.Run();
-
 await app.StartAsync();
 foreach (AbstractGenerator generator in abstractGenerators)
 {
     await generator.GenerateClients();
 }
+
+// await app.RunAsync();

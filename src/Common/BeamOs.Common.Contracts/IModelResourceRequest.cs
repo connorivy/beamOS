@@ -19,6 +19,8 @@ public readonly struct ModelResourceRequest(Guid modelId) : IHasModelId
 public readonly struct ModelResourceRequest<TBody> : IModelResourceRequest<TBody>
 {
     public Guid ModelId { get; init; }
+
+    [BeamOs.Common.Contracts.FromBody]
     public TBody Body { get; init; }
 
     public ModelResourceRequest(Guid modelId, TBody body)

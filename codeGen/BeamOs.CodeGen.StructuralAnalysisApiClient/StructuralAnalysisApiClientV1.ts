@@ -192,7 +192,7 @@ export interface IStructuralAnalysisApiClientV1 {
      * @param body (optional) 
      * @return OK
      */
-    repairModel(modelId: string, body: string | undefined): Promise<ResultOfModelProposalResponse>;
+    repairModel(modelId: string, body: string | null | undefined): Promise<ResultOfModelProposalResponse>;
 
     /**
      * @return OK
@@ -325,26 +325,26 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
 
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         this.http = http ? http : window as any;
-        this.baseUrl = baseUrl ?? "https://localhost:7060/";
+        this.baseUrl = baseUrl ?? "http://localhost:5079/";
     }
 
     /**
      * @return OK
      */
     modelRestore(modelId: string, body: Date): Promise<ResultOfModelResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/restore?";
+        let url_ = this.baseUrl + "/api/models/{modelId}/restore";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        if (body === undefined || body === null)
-            throw new Error("The parameter 'body' must be defined and cannot be null.");
-        else
-            url_ += "Body=" + encodeURIComponent(body ? "" + body.toISOString() : "") + "&";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_: RequestInit = {
+            body: content_,
             method: "POST",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -1832,20 +1832,20 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @param body (optional) 
      * @return OK
      */
-    repairModel(modelId: string, body: string | undefined): Promise<ResultOfModelProposalResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/repair?";
+    repairModel(modelId: string, body: string | null | undefined): Promise<ResultOfModelProposalResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/repair";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        if (body === null)
-            throw new Error("The parameter 'body' cannot be null.");
-        else if (body !== undefined)
-            url_ += "Body=" + encodeURIComponent("" + body) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_: RequestInit = {
+            body: content_,
             method: "POST",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };

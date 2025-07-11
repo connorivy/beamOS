@@ -374,7 +374,10 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Content = new System.Net.Http.StringContent(string.Empty, System.Text.Encoding.UTF8, "application/json");
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, JsonSerializerSettings);
+                    var content_ = new System.Net.Http.ByteArrayContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
                     request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
@@ -384,9 +387,6 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                     urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/restore");
-                    urlBuilder_.Append('?');
-                    urlBuilder_.Append(System.Uri.EscapeDataString("Body")).Append('=').Append(System.Uri.EscapeDataString(body.ToString("s", System.Globalization.CultureInfo.InvariantCulture))).Append('&');
-                    urlBuilder_.Length--;
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -3149,7 +3149,10 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Content = new System.Net.Http.StringContent(string.Empty, System.Text.Encoding.UTF8, "application/json");
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, JsonSerializerSettings);
+                    var content_ = new System.Net.Http.ByteArrayContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
                     request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
@@ -3159,12 +3162,6 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                     urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/repair");
-                    urlBuilder_.Append('?');
-                    if (body != null)
-                    {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("Body")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(body, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
-                    }
-                    urlBuilder_.Length--;
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
