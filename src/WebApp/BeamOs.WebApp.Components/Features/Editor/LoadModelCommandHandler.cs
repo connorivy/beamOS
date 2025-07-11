@@ -15,7 +15,7 @@ namespace BeamOs.WebApp.Components.Features.Editor;
 public class LoadModelCommandHandler(
     ISnackbar snackbar,
     IStructuralAnalysisApiClientV1 structuralAnalysisApiClient,
-    //IState<AllEditorComponentState> allEditorComponentState,
+    CacheModelResponseCommandHandler cacheModelResponseCommandHandler,
     IState<EditorComponentState> editorComponentState,
     IDispatcher dispatcher,
     HybridCache cache,
@@ -82,15 +82,44 @@ public class LoadModelCommandHandler(
             ct
         );
 
-        var modelCacheResponse = new CachedModelResponse(modelResponse.Value);
-        dispatcher.Dispatch(new ModelLoaded(modelCacheResponse));
+        CacheModelCommand cacheModelCommand = new(command.CanvasId, modelResponse.Value);
 
-        if (modelResponse.Value.ResultSets is not null && modelResponse.Value.ResultSets.Count > 0)
+        return await cacheModelResponseCommandHandler.ExecuteAsync(cacheModelCommand, ct);
+    }
+
+    protected override void PostProcess(
+        LoadModelCommand command,
+        Result<CachedModelResponse> response
+    )
+    {
+        dispatcher.Dispatch(new EditorLoadingEnd(command.CanvasId));
+    }
+}
+
+public sealed class CacheModelResponseCommandHandler(
+    ISnackbar snackbar,
+    IDispatcher dispatcher,
+    IStructuralAnalysisApiClientV1 structuralAnalysisApiClient,
+    ILogger<CacheModelResponseCommandHandler> logger
+) : CommandHandlerBase<CacheModelCommand, CachedModelResponse>(snackbar, logger)
+{
+    protected override async Task<Result<CachedModelResponse>> ExecuteCommandAsync(
+        CacheModelCommand command,
+        CancellationToken ct = default
+    )
+    {
+        var cachedModelResponse = new CachedModelResponse(command.ModelResponse);
+        dispatcher.Dispatch(new ModelLoaded(cachedModelResponse));
+
+        if (
+            command.ModelResponse.ResultSets is not null
+            && command.ModelResponse.ResultSets.Count > 0
+        )
         {
             dispatcher.Dispatch(new EditorLoadingBegin(command.CanvasId, "Fetching Results"));
-            var resultId = modelResponse.Value.ResultSets[0].Id;
+            var resultId = command.ModelResponse.ResultSets[0].Id;
             var diagrams = await structuralAnalysisApiClient.GetDiagramsAsync(
-                command.ModelId,
+                command.ModelResponse.Id,
                 resultId,
                 "kn-m",
                 ct
@@ -107,20 +136,13 @@ public class LoadModelCommandHandler(
                 );
             }
         }
-
-        return modelCacheResponse;
-    }
-
-    protected override void PostProcess(
-        LoadModelCommand command,
-        Result<CachedModelResponse> response
-    )
-    {
-        dispatcher.Dispatch(new EditorLoadingEnd(command.CanvasId));
+        return cachedModelResponse;
     }
 }
 
 public record struct LoadModelCommand(string CanvasId, Guid ModelId);
+
+public readonly record struct CacheModelCommand(string CanvasId, ModelResponse ModelResponse);
 
 public record struct LoadEntityCommand(
     IBeamOsEntityResponse EntityResponse,

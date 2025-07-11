@@ -75,6 +75,11 @@ public static class DI
             InMemoryGetModelsQueryHandler
         >("InMemory");
 
+        services.AddKeyedScoped<
+            ICommandHandler<ModelResourceRequest<DateTimeOffset>, ModelResponse>,
+            InMemoryRestoreModeCommandHandler
+        >("InMemory");
+
         return services;
     }
 }

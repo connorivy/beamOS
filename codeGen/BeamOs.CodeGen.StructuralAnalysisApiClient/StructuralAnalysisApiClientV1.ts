@@ -11,6 +11,11 @@
 export interface IStructuralAnalysisApiClientV1 {
 
     /**
+     * @return OK
+     */
+    modelRestore(modelId: string, body: Date): Promise<ResultOfModelResponse>;
+
+    /**
      * @param body (optional) 
      * @return OK
      */
@@ -102,7 +107,7 @@ export interface IStructuralAnalysisApiClientV1 {
      * @param body (optional) 
      * @return OK
      */
-    batchPutInternalNode(modelId: string, body: InternalNode2[] | null | undefined): Promise<ResultOfBatchResponse>;
+    batchPutInternalNode(modelId: string, body: InternalNode[] | null | undefined): Promise<ResultOfBatchResponse>;
 
     /**
      * @return OK
@@ -321,6 +326,50 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         this.http = http ? http : window as any;
         this.baseUrl = baseUrl ?? "https://localhost:7060/";
+    }
+
+    /**
+     * @return OK
+     */
+    modelRestore(modelId: string, body: Date): Promise<ResultOfModelResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/restore?";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (body === undefined || body === null)
+            throw new Error("The parameter 'body' must be defined and cannot be null.");
+        else
+            url_ += "Body=" + encodeURIComponent(body ? "" + body.toISOString() : "") + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processModelRestore(_response);
+        });
+    }
+
+    protected processModelRestore(response: Response): Promise<ResultOfModelResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultOfModelResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultOfModelResponse>(null as any);
     }
 
     /**
@@ -1087,7 +1136,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @param body (optional) 
      * @return OK
      */
-    batchPutInternalNode(modelId: string, body: InternalNode2[] | null | undefined): Promise<ResultOfBatchResponse> {
+    batchPutInternalNode(modelId: string, body: InternalNode[] | null | undefined): Promise<ResultOfBatchResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/nodes/internal";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -6883,14 +6932,14 @@ export class ModelResponse implements IModelResponse {
     description!: string;
     settings!: ModelSettings;
     lastModified!: Date;
-    nodes?: NodeResponse2[] | undefined;
-    internalNodes?: InternalNode2[] | undefined;
+    nodes?: NodeResponse[] | undefined;
+    internalNodes?: InternalNode[] | undefined;
     element1ds?: Element1dResponse[] | undefined;
     materials?: MaterialResponse[] | undefined;
-    sectionProfiles?: SectionProfileResponse2[] | undefined;
+    sectionProfiles?: SectionProfileResponse[] | undefined;
     sectionProfilesFromLibrary?: SectionProfileFromLibrary[] | undefined;
-    pointLoads?: PointLoadResponse2[] | undefined;
-    momentLoads?: MomentLoadResponse2[] | undefined;
+    pointLoads?: PointLoadResponse[] | undefined;
+    momentLoads?: MomentLoadResponse[] | undefined;
     resultSets?: ResultSetResponse[] | undefined;
     loadCases?: LoadCase[] | undefined;
     loadCombinations?: LoadCombination[] | undefined;
@@ -6923,12 +6972,12 @@ export class ModelResponse implements IModelResponse {
             if (Array.isArray(_data["nodes"])) {
                 this.nodes = [] as any;
                 for (let item of _data["nodes"])
-                    this.nodes!.push(NodeResponse2.fromJS(item));
+                    this.nodes!.push(NodeResponse.fromJS(item));
             }
             if (Array.isArray(_data["internalNodes"])) {
                 this.internalNodes = [] as any;
                 for (let item of _data["internalNodes"])
-                    this.internalNodes!.push(InternalNode2.fromJS(item));
+                    this.internalNodes!.push(InternalNode.fromJS(item));
             }
             if (Array.isArray(_data["element1ds"])) {
                 this.element1ds = [] as any;
@@ -6943,7 +6992,7 @@ export class ModelResponse implements IModelResponse {
             if (Array.isArray(_data["sectionProfiles"])) {
                 this.sectionProfiles = [] as any;
                 for (let item of _data["sectionProfiles"])
-                    this.sectionProfiles!.push(SectionProfileResponse2.fromJS(item));
+                    this.sectionProfiles!.push(SectionProfileResponse.fromJS(item));
             }
             if (Array.isArray(_data["sectionProfilesFromLibrary"])) {
                 this.sectionProfilesFromLibrary = [] as any;
@@ -6953,12 +7002,12 @@ export class ModelResponse implements IModelResponse {
             if (Array.isArray(_data["pointLoads"])) {
                 this.pointLoads = [] as any;
                 for (let item of _data["pointLoads"])
-                    this.pointLoads!.push(PointLoadResponse2.fromJS(item));
+                    this.pointLoads!.push(PointLoadResponse.fromJS(item));
             }
             if (Array.isArray(_data["momentLoads"])) {
                 this.momentLoads = [] as any;
                 for (let item of _data["momentLoads"])
-                    this.momentLoads!.push(MomentLoadResponse2.fromJS(item));
+                    this.momentLoads!.push(MomentLoadResponse.fromJS(item));
             }
             if (Array.isArray(_data["resultSets"])) {
                 this.resultSets = [] as any;
@@ -7061,14 +7110,14 @@ export interface IModelResponse {
     description: string;
     settings: ModelSettings;
     lastModified: Date;
-    nodes?: NodeResponse2[] | undefined;
-    internalNodes?: InternalNode2[] | undefined;
+    nodes?: NodeResponse[] | undefined;
+    internalNodes?: InternalNode[] | undefined;
     element1ds?: Element1dResponse[] | undefined;
     materials?: MaterialResponse[] | undefined;
-    sectionProfiles?: SectionProfileResponse2[] | undefined;
+    sectionProfiles?: SectionProfileResponse[] | undefined;
     sectionProfilesFromLibrary?: SectionProfileFromLibrary[] | undefined;
-    pointLoads?: PointLoadResponse2[] | undefined;
-    momentLoads?: MomentLoadResponse2[] | undefined;
+    pointLoads?: PointLoadResponse[] | undefined;
+    momentLoads?: MomentLoadResponse[] | undefined;
     resultSets?: ResultSetResponse[] | undefined;
     loadCases?: LoadCase[] | undefined;
     loadCombinations?: LoadCombination[] | undefined;
@@ -9913,7 +9962,7 @@ export interface IResultOfint {
 }
 
 export class ResultOfInternalNode implements IResultOfInternalNode {
-    value!: InternalNode | undefined;
+    value!: InternalNode2 | undefined;
     error!: BeamOsError | undefined;
     isError!: boolean;
 
@@ -9934,7 +9983,7 @@ export class ResultOfInternalNode implements IResultOfInternalNode {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            this.value = _data["value"] ? InternalNode.fromJS(_data["value"]) : <any>undefined;
+            this.value = _data["value"] ? InternalNode2.fromJS(_data["value"]) : <any>undefined;
             this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
             this.isError = _data["isError"];
         }
@@ -9961,7 +10010,7 @@ export class ResultOfInternalNode implements IResultOfInternalNode {
 }
 
 export interface IResultOfInternalNode {
-    value: InternalNode | undefined;
+    value: InternalNode2 | undefined;
     error: BeamOsError | undefined;
     isError: boolean;
 
@@ -10433,7 +10482,7 @@ export interface IResultOfModelResponse {
 }
 
 export class ResultOfMomentLoadResponse implements IResultOfMomentLoadResponse {
-    value!: MomentLoadResponse | undefined;
+    value!: MomentLoadResponse2 | undefined;
     error!: BeamOsError | undefined;
     isError!: boolean;
 
@@ -10454,7 +10503,7 @@ export class ResultOfMomentLoadResponse implements IResultOfMomentLoadResponse {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            this.value = _data["value"] ? MomentLoadResponse.fromJS(_data["value"]) : <any>undefined;
+            this.value = _data["value"] ? MomentLoadResponse2.fromJS(_data["value"]) : <any>undefined;
             this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
             this.isError = _data["isError"];
         }
@@ -10481,7 +10530,7 @@ export class ResultOfMomentLoadResponse implements IResultOfMomentLoadResponse {
 }
 
 export interface IResultOfMomentLoadResponse {
-    value: MomentLoadResponse | undefined;
+    value: MomentLoadResponse2 | undefined;
     error: BeamOsError | undefined;
     isError: boolean;
 
@@ -10489,7 +10538,7 @@ export interface IResultOfMomentLoadResponse {
 }
 
 export class ResultOfNodeResponse implements IResultOfNodeResponse {
-    value!: NodeResponse | undefined;
+    value!: NodeResponse2 | undefined;
     error!: BeamOsError | undefined;
     isError!: boolean;
 
@@ -10510,7 +10559,7 @@ export class ResultOfNodeResponse implements IResultOfNodeResponse {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            this.value = _data["value"] ? NodeResponse.fromJS(_data["value"]) : <any>undefined;
+            this.value = _data["value"] ? NodeResponse2.fromJS(_data["value"]) : <any>undefined;
             this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
             this.isError = _data["isError"];
         }
@@ -10537,7 +10586,7 @@ export class ResultOfNodeResponse implements IResultOfNodeResponse {
 }
 
 export interface IResultOfNodeResponse {
-    value: NodeResponse | undefined;
+    value: NodeResponse2 | undefined;
     error: BeamOsError | undefined;
     isError: boolean;
 
@@ -10601,7 +10650,7 @@ export interface IResultOfNodeResultResponse {
 }
 
 export class ResultOfPointLoadResponse implements IResultOfPointLoadResponse {
-    value!: PointLoadResponse | undefined;
+    value!: PointLoadResponse2 | undefined;
     error!: BeamOsError | undefined;
     isError!: boolean;
 
@@ -10622,7 +10671,7 @@ export class ResultOfPointLoadResponse implements IResultOfPointLoadResponse {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            this.value = _data["value"] ? PointLoadResponse.fromJS(_data["value"]) : <any>undefined;
+            this.value = _data["value"] ? PointLoadResponse2.fromJS(_data["value"]) : <any>undefined;
             this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
             this.isError = _data["isError"];
         }
@@ -10649,7 +10698,7 @@ export class ResultOfPointLoadResponse implements IResultOfPointLoadResponse {
 }
 
 export interface IResultOfPointLoadResponse {
-    value: PointLoadResponse | undefined;
+    value: PointLoadResponse2 | undefined;
     error: BeamOsError | undefined;
     isError: boolean;
 
@@ -10769,7 +10818,7 @@ export interface IResultOfSectionProfileFromLibrary {
 }
 
 export class ResultOfSectionProfileResponse implements IResultOfSectionProfileResponse {
-    value!: SectionProfileResponse | undefined;
+    value!: SectionProfileResponse2 | undefined;
     error!: BeamOsError | undefined;
     isError!: boolean;
 
@@ -10790,7 +10839,7 @@ export class ResultOfSectionProfileResponse implements IResultOfSectionProfileRe
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            this.value = _data["value"] ? SectionProfileResponse.fromJS(_data["value"]) : <any>undefined;
+            this.value = _data["value"] ? SectionProfileResponse2.fromJS(_data["value"]) : <any>undefined;
             this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
             this.isError = _data["isError"];
         }
@@ -10817,7 +10866,7 @@ export class ResultOfSectionProfileResponse implements IResultOfSectionProfileRe
 }
 
 export interface IResultOfSectionProfileResponse {
-    value: SectionProfileResponse | undefined;
+    value: SectionProfileResponse2 | undefined;
     error: BeamOsError | undefined;
     isError: boolean;
 

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Models;
 
-internal class ModelConfiguration : IEntityTypeConfiguration<Model>
+public class ModelConfiguration : IEntityTypeConfiguration<Model>
 {
     public void Configure(EntityTypeBuilder<Model> builder)
     {
@@ -50,6 +50,10 @@ internal class ModelConfiguration : IEntityTypeConfiguration<Model>
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
+        // builder.Property(m => m.Name).HasColumnName(nameof(Model.Name));
+        // builder.Property(m => m.Description).HasColumnName(nameof(Model.Description));
+        // // builder.Property(m => m.Settings).HasColumnName(nameof(Model.Settings));
+        // builder.Property(m => m.LastModified).HasColumnName(nameof(Model.LastModified));
         //builder
         //    .HasMany(m => m.MomentLoads)
         //    .WithOne()

@@ -23,7 +23,6 @@ public class StructuralAnalysisDbContext : DbContext
         : base(options) { }
 
     public DbSet<Model> Models { get; set; }
-
     public DbSet<Node> Nodes { get; set; }
     public DbSet<InternalNode> InternalNodes { get; set; }
     public DbSet<NodeDefinition> NodeDefinitions { get; set; }

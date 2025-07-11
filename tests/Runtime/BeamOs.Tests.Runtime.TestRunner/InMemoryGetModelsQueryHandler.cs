@@ -1,7 +1,6 @@
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.Common;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 
@@ -29,5 +28,17 @@ public class InMemoryGetModelsQueryHandler(
             ))
             .ToList();
         return Task.FromResult(result);
+    }
+}
+
+public sealed class InMemoryRestoreModeCommandHandler()
+    : ICommandHandler<ModelResourceRequest<DateTimeOffset>, ModelResponse>
+{
+    public Task<Result<ModelResponse>> ExecuteAsync(
+        ModelResourceRequest<DateTimeOffset> command,
+        CancellationToken ct = default
+    )
+    {
+        throw new NotImplementedException("InMemoryRestoreModeCommandHandler is not implemented.");
     }
 }

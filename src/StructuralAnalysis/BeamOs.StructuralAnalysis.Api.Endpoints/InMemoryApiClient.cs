@@ -372,4 +372,10 @@ public partial class InMemoryApiClient : IStructuralAnalysisApiClientV1
             Id = id,
             Body = body?.ToList(),
         };
+
+    private partial ModelResourceRequest<DateTimeOffset> CreateDateTimeOffset_Command(
+        Guid modelId,
+        DateTimeOffset body,
+        CancellationToken cancellationToken
+    ) => new() { ModelId = modelId, Body = body };
 }

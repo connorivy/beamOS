@@ -1,11 +1,8 @@
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCases;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinations;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using MathNet.Spatial.Euclidean;
-using UnitsNet;
-using UnitsNet.Units;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
 
@@ -16,7 +13,7 @@ public class MomentLoad : BeamOsModelEntity<MomentLoadId>
         NodeId nodeId,
         LoadCaseId loadCaseId,
         Torque torque,
-        Vector3D axisDirection,
+        UnitVector3d axisDirection,
         MomentLoadId? id = null
     )
         : base(id ?? new(), modelId)
@@ -24,8 +21,19 @@ public class MomentLoad : BeamOsModelEntity<MomentLoadId>
         this.NodeId = nodeId;
         this.LoadCaseId = loadCaseId;
         this.Torque = torque;
-        this.AxisDirection = new(axisDirection.Normalize());
+        this.AxisDirection = axisDirection;
     }
+
+    public MomentLoad(
+        ModelId modelId,
+        NodeId nodeId,
+        LoadCaseId loadCaseId,
+        Torque torque,
+        Vector3D axisDirection,
+        MomentLoadId? id = null
+    )
+        : this(modelId, nodeId, loadCaseId, torque, new UnitVector3d(axisDirection.Normalize()), id)
+    { }
 
     public NodeId NodeId { get; set; }
     public LoadCaseId LoadCaseId { get; set; }
@@ -77,6 +85,6 @@ public class MomentLoad : BeamOsModelEntity<MomentLoadId>
 
     [Obsolete("EF Core Constructor", true)]
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-    private MomentLoad() { }
+    protected MomentLoad() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }
