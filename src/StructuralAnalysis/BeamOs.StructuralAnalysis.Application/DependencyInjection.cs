@@ -8,13 +8,6 @@ namespace BeamOs.StructuralAnalysis.Application;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddStructuralAnalysisApplication(
-        this IServiceCollection services
-    ) =>
-        services
-            .AddStructuralAnalysisApplicationRequired()
-            .AddStructuralAnalysisApplicationConfigurable();
-
     public static IServiceCollection AddStructuralAnalysisApplicationRequired(
         this IServiceCollection services
     )

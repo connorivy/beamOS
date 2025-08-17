@@ -17,7 +17,7 @@ public static class DependencyInjection
         this IServiceCollection services
     ) =>
         services
-            .AddStructuralAnalysisApplication()
+            .AddStructuralAnalysisApplicationRequired()
             .AddStructuralAnalysisInfrastructureRequired()
             .AddStructuralAnalysisApi()
             .AddSpeckleRequired();
@@ -27,6 +27,7 @@ public static class DependencyInjection
         string connectionString
     )
     {
+        services.AddStructuralAnalysisApplicationConfigurable();
         services.AddStructuralAnalysisInfrastructureConfigurable(connectionString);
         return services;
     }

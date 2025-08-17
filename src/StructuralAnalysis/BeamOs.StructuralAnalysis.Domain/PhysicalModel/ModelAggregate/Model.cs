@@ -18,9 +18,9 @@ public class Model : BeamOsEntity<ModelId>
         this.Settings = settings;
     }
 
-    public string Name { get; private set; }
-    public string Description { get; private set; }
-    public ModelSettings Settings { get; private set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public ModelSettings Settings { get; set; }
     public DateTimeOffset LastModified { get; set; } = DateTimeOffset.UtcNow;
 
     // public Octree? NodeOctree { get; private set; }
