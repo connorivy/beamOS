@@ -1,6 +1,7 @@
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.NodeResult;
 using BeamOs.StructuralAnalysis.Contracts.Common;
+using BeamOs.StructuralAnalysis.Sdk;
 using BeamOs.Tests.Common;
 using TUnit.Core.Exceptions;
 

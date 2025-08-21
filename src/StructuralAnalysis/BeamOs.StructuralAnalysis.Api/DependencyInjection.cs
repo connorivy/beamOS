@@ -19,7 +19,7 @@ public static class DependencyInjection
             .Assembly.GetTypes()
             .Where(t => t.IsClass && !t.IsAbstract);
 
-        var baseType = typeof(BeamOsActualBaseEndpoint<,>);
+        var baseType = typeof(BeamOsBaseEndpoint<,>);
         foreach (var assemblyType in assemblyTypes)
         {
             if (
@@ -69,7 +69,7 @@ public static class DependencyInjection
 public static class EndpointToMinimalApi
 {
     public static void Map<TEndpoint, TRequest, TResponse>(IEndpointRouteBuilder app)
-        where TEndpoint : BeamOsActualBaseEndpoint<TRequest, TResponse>
+        where TEndpoint : BeamOsBaseEndpoint<TRequest, TResponse>
     {
         string route =
             typeof(TEndpoint).GetCustomAttribute<BeamOsRouteAttribute>()?.Value
@@ -99,21 +99,21 @@ public static class EndpointToMinimalApi
                 typeof(TEndpoint),
                 typeof(BeamOsFromBodyResultBaseEndpoint<,>)
             )
-            || Common.Application.DependencyInjection.ConcreteTypeDerivedFromBase(
-                typeof(TEndpoint),
-                typeof(BeamOsFromBodyBaseEndpoint<,>)
-            )
+        // || Common.Application.DependencyInjection.ConcreteTypeDerivedFromBase(
+        //     typeof(TEndpoint),
+        //     typeof(BeamOsFromBodyBaseEndpoint<,>)
+        // )
         )
         {
             mapDelegate = (
                 [Microsoft.AspNetCore.Mvc.FromBody] TRequest req,
                 IServiceProvider serviceProvider
-            ) => serviceProvider.GetRequiredService<TEndpoint>().ExecuteRequestAsync(req);
+            ) => serviceProvider.GetRequiredService<TEndpoint>().ExecuteAsync(req);
         }
         else
         {
             mapDelegate = ([AsParameters] TRequest req, IServiceProvider serviceProvider) =>
-                serviceProvider.GetRequiredService<TEndpoint>().ExecuteRequestAsync(req);
+                serviceProvider.GetRequiredService<TEndpoint>().ExecuteAsync(req);
         }
 
         var endpointBuilder = mapFunc(route, mapDelegate);
@@ -123,5 +123,7 @@ public static class EndpointToMinimalApi
         {
             endpointBuilder.WithTags(tag.Value);
         }
+
+        // endpointBuilder.ProducesProblem(404);
     }
 }

@@ -17,7 +17,7 @@ public static partial class AssemblySetup
     public static bool SkipOpenSeesTests { get; set; } = BeamOsEnv.IsCiEnv();
     private static readonly char[] separator = [' ', '\n', '\r'];
 
-    [Before(HookType.Assembly)]
+    [Before(TUnitHookType.Assembly)]
     public static async Task Setup()
     {
         if (ApiIsRunning || !SetupWebApi)

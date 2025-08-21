@@ -24,7 +24,7 @@ builder
     );
 
 builder.Services.AddObjectThatExtendsBase<IAssemblyMarkerAi>(
-    typeof(BeamOsActualBaseEndpoint<,>),
+    typeof(BeamOsBaseEndpoint<,>),
     ServiceLifetime.Scoped
 );
 

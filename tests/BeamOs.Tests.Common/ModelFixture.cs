@@ -6,7 +6,7 @@ using UnitsNet;
 
 namespace BeamOs.Tests.Common;
 
-public abstract class ModelFixture : BeamOsModelBuilder, IModelFixture
+public abstract class ModelFixture : BeamOsStaticModelBase, IModelFixture
 {
     public abstract SourceInfo SourceInfo { get; }
 

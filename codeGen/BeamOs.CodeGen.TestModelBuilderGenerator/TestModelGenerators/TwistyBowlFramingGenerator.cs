@@ -23,7 +23,7 @@ internal class TwistyBowlFramingGenerator(string speckleToken)
 
     public async Task Generate()
     {
-        BeamOsDynamicModelBuilder modelBuilder = new(GuidString, Settings, Name, Description);
+        BeamOsDynamicModel modelBuilder = new(GuidString, Settings, Name, Description);
 
         modelBuilder.AddSectionProfilesFromLibrary(
             new SectionProfileFromLibrary()

@@ -1,5 +1,4 @@
 using System.Text;
-using BeamOs.StructuralAnalysis.Contracts.Common;
 
 namespace BeamOs.CodeGen.StructuralAnalysisApiClient;
 

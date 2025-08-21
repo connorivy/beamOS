@@ -59,18 +59,6 @@ public sealed class BeamOsError
     ) => new(code, description, ErrorType.Failure, metadata);
 
     /// <summary>
-    /// Creates an <see cref="BeamOsError"/> of type <see cref="ErrorType.Unexpected"/> from a code and description.
-    /// </summary>
-    /// <param name="code">The unique error code.</param>
-    /// <param name="description">The error description.</param>
-    /// <param name="metadata">A dictionary which provides optional space for information.</param>
-    public static BeamOsError Unexpected(
-        string code = "General.Unexpected",
-        string description = "An unexpected error has occurred.",
-        Dictionary<string, string>? metadata = null
-    ) => new(code, description, ErrorType.Unexpected, metadata);
-
-    /// <summary>
     /// Creates an <see cref="BeamOsError"/> of type <see cref="ErrorType.Validation"/> from a code and description.
     /// </summary>
     /// <param name="code">The unique error code.</param>

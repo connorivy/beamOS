@@ -11,7 +11,7 @@ namespace BeamOs.Tests.StructuralAnalysis.Integration.ModelRepairerTests;
 [MethodDataSource(typeof(AssemblySetup), nameof(AssemblySetup.GetStructuralAnalysisApiClientV1))]
 public class EnvelopeModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient)
 {
-    [Before(HookType.Test)]
+    [Before(TUnitHookType.Test)]
     public void BeforeClass()
     {
         // This is a workaround to ensure that the API client is initialized before any tests run.
@@ -23,7 +23,7 @@ public class EnvelopeModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient
     {
         Guid modelId = Guid.NewGuid();
         var settings = ModelRepairerTestUtil.CreateDefaultModelSettings();
-        var builder = new BeamOsDynamicModelBuilder(modelId.ToString(), settings, "Test", "Test");
+        var builder = new BeamOsDynamicModel(modelId.ToString(), settings, "Test", "Test");
         builder.AddNode(1, 0, 0, 0);
         builder.AddNode(2, 5, 5, 0);
         builder.AddNode(3, 0, 5, 0);
@@ -60,7 +60,7 @@ public class EnvelopeModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient
     {
         Guid modelId = Guid.NewGuid();
         var settings = ModelRepairerTestUtil.CreateDefaultModelSettings(false);
-        var builder = new BeamOsDynamicModelBuilder(modelId.ToString(), settings, "Test", "Test");
+        var builder = new BeamOsDynamicModel(modelId.ToString(), settings, "Test", "Test");
 
         builder.AddSectionProfileFromLibrary(1, "w12x26", StructuralCode.AISC_360_16);
         builder.AddMaterial(1, 345e6, 200e9);
@@ -97,7 +97,7 @@ public class EnvelopeModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient
     {
         Guid modelId = Guid.NewGuid();
         var settings = ModelRepairerTestUtil.CreateDefaultModelSettings();
-        var builder = new BeamOsDynamicModelBuilder(modelId.ToString(), settings, "Test", "Test");
+        var builder = new BeamOsDynamicModel(modelId.ToString(), settings, "Test", "Test");
 
         builder.AddSectionProfileFromLibrary(1, "w12x26", StructuralCode.AISC_360_16);
         builder.AddMaterial(1, 345e6, 200e9);
@@ -188,7 +188,7 @@ public class EnvelopeModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient
     {
         Guid modelId = Guid.NewGuid();
         var settings = ModelRepairerTestUtil.CreateDefaultModelSettings(false);
-        var builder = new BeamOsDynamicModelBuilder(modelId.ToString(), settings, "Test", "Test");
+        var builder = new BeamOsDynamicModel(modelId.ToString(), settings, "Test", "Test");
 
         builder.AddSectionProfileFromLibrary(1, "w12x26", StructuralCode.AISC_360_16);
         builder.AddMaterial(1, 345e6, 200e9);

@@ -10,7 +10,7 @@ namespace BeamOs.Tests.StructuralAnalysis.Integration.ModelRepairerTests;
 [MethodDataSource(typeof(AssemblySetup), nameof(AssemblySetup.GetStructuralAnalysisApiClientV1))]
 public class ExtendCoplanarElement1dsToJoinNodesTests(IStructuralAnalysisApiClientV1 apiClient)
 {
-    [Before(HookType.Test)]
+    [Before(TUnitHookType.Test)]
     public void BeforeClass()
     {
         // This is a workaround to ensure that the API client is initialized before any tests run.
@@ -23,7 +23,7 @@ public class ExtendCoplanarElement1dsToJoinNodesTests(IStructuralAnalysisApiClie
         // Arrange: Element1d A is horizontal, Element1d B is diagonal and nearly collinear/coplanar with A
         Guid modelId = Guid.NewGuid();
         ModelSettings settings = ModelRepairerTestUtil.CreateDefaultModelSettings(false);
-        BeamOsDynamicModelBuilder builder = new(
+        BeamOsDynamicModel builder = new(
             modelId.ToString(),
             settings,
             "ExtendElement1dToNodeRule",

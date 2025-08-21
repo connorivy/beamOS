@@ -51,6 +51,7 @@ public abstract class AbstractGeneratorFromEndpoints<TAssemblyMarker> : IApiGene
                 {
                     Namespace = this.ClientNamespace,
                     JsonLibrary = CSharpJsonLibrary.SystemTextJson,
+                    TemplateDirectory = "./Templates",
                 },
                 GenerateClientInterfaces = true,
                 GenerateDtoTypes = false,
@@ -79,7 +80,7 @@ public abstract class AbstractGeneratorFromEndpoints<TAssemblyMarker> : IApiGene
             {
                 ClassName = this.ClientName,
                 GenerateClientInterfaces = true,
-                TypeScriptGeneratorSettings = { Namespace = "" } // needed to not generate a namespace
+                TypeScriptGeneratorSettings = { Namespace = "" }, // needed to not generate a namespace
             };
 
             var source = new TypeScriptClientGenerator(doc, tsGenSettings).GenerateFile();
