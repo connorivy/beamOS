@@ -103,7 +103,7 @@ public sealed class DocumentGenerator
         var ctorArgs = previousSegments
             .Append(segment)
             .Where(p => p.IsParameter)
-            .Select(p => $"{p.ParameterType ?? "object"} {p.Name}")
+            .Select(p => $"{p.ParameterType ?? throw new InvalidOperationException($"Parameter type is required for parameter segment '{p.Name}'")} {p.Name}")
             .Prepend($"IStructuralAnalysisApiClientV1 _apiClient");
 
         sb.AppendLine($"public class {className}({string.Join(", ", ctorArgs)})");
@@ -111,13 +111,13 @@ public sealed class DocumentGenerator
 
         // Generate child accessors and indexers
         var childIndexers = new HashSet<string>();
-        var methodCallArgs = previousSegments.Append(segment).Where(p => p.IsParameter).Select(p => p.Name).Prepend("_apiClient").ToImmutableHashSet();
+        var methodCallArgs = previousSegments.Append(segment).Where(p => p.IsParameter).Select(p => p.Name).Prepend("_apiClient").ToArray();
         foreach (var child in segment.Children.Values)
         {
             if (child.IsParameter)
             {
                 // Generate indexer for parameter child
-                var paramType = child.ParameterType ?? "object";
+                var paramType = child.ParameterType ?? throw new InvalidOperationException($"Parameter type is required for parameter segment '{child.Name}'");
                 var indexerSignature = $"this[{paramType}]";
 
                 if (!childIndexers.Contains(indexerSignature))
