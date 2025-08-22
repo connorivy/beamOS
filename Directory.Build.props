@@ -12,6 +12,11 @@
     <IncludeOpenSeesExe Condition="'$(IncludeOpenSeesExe)' == ''">true</IncludeOpenSeesExe>
     
     <TUnitImplicitUsings>false</TUnitImplicitUsings>
+    <DefineConstants Condition="'$(CODEGEN)' == 'true'">$(DefineConstants);CODEGEN</DefineConstants>
+    <!-- <PropertyGroup Condition="'$(CODEGEN)' == 'true'">
+      <DefineConstants>$(DefineConstants);CODEGEN</DefineConstants>
+    </PropertyGroup> -->
+
     <!--<InvariantGlobalization>true</InvariantGlobalization>-->
     <NoWarn>
       CA1707; <!-- Remove the underscores from method name -->

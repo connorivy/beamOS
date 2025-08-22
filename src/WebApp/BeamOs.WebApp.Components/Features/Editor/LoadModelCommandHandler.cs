@@ -71,7 +71,7 @@ public class LoadModelCommandHandler(
 
         if (modelResponse.IsError)
         {
-            return modelResponse.Error;
+            return modelResponse.Error.ToBeamOsError();
         }
 
         await loadBeamOsEntityCommandHandler.ExecuteAsync(
@@ -126,8 +126,8 @@ public sealed class CacheModelResponseCommandHandler(
             );
             if (diagrams.IsError)
             {
-                this.Snackbar.Add(diagrams.Error.Description, Severity.Error);
-                return diagrams.Error;
+                this.Snackbar.Add(diagrams.Error.Detail, Severity.Error);
+                return diagrams.Error.ToBeamOsError();
             }
             else
             {

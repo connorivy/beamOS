@@ -1,7 +1,6 @@
 using System.Text;
 using System.Text.Json;
 using BeamOs.CodeGen.AiApiClient;
-using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -78,7 +77,7 @@ public partial class AiAssistant(
 
         if (response.IsError)
         {
-            snackbar.Add($"Error: {response.Error.Description}", Severity.Error);
+            snackbar.Add($"Error: {response.Error.Detail}", Severity.Error);
             return;
         }
 

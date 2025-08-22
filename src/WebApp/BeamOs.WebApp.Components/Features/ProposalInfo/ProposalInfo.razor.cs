@@ -61,7 +61,7 @@ public partial class ProposalInfo(
         }
         else
         {
-            this.Snackbar.Add(response.Error.Description, Severity.Error);
+            this.Snackbar.Add(response.Error.Detail, Severity.Error);
             dispatcher.Dispatch(new ProposalInfoState.ModelProposalInfosLoaded([]));
         }
     }
@@ -105,7 +105,7 @@ public partial class ProposalInfo(
         }
         else
         {
-            this.Snackbar.Add(response.Error.Description, Severity.Error);
+            this.Snackbar.Add(response.Error.Detail, Severity.Error);
         }
     }
 

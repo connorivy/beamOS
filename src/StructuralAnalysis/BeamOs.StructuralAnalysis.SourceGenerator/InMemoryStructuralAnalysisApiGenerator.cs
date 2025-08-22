@@ -155,7 +155,7 @@ public class InMemoryApiClientGenerator
         public async {returnType} {methodName}({paramList})
         {{
             var command = {partialMethodName}({paramNames});
-            return await _{ToCamelCase(handlerName)}.ExecuteAsync(command, {cancellationTokenParam});
+            return (await _{ToCamelCase(handlerName)}.ExecuteAsync(command, {cancellationTokenParam})).ToApiResponse();
         }}
 "
             );

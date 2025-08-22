@@ -13,309 +13,309 @@ export interface IStructuralAnalysisApiClientV1 {
     /**
      * @return OK
      */
-    modelRestore(modelId: string, body: Date): Promise<ResultOfModelResponse>;
+    modelRestore(modelId: string, body: Date): Promise<ModelResponse>;
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    addSectionProfileFromLibrary(modelId: string, body: SectionProfileFromLibraryData | null | undefined): Promise<ResultOfSectionProfileResponse>;
+    addSectionProfileFromLibrary(modelId: string, body: SectionProfileFromLibraryData | null | undefined): Promise<SectionProfileResponse>;
 
     /**
      * @return OK
      */
-    batchPutSectionProfileFromLibrary(modelId: string, body: SectionProfileFromLibrary[]): Promise<ResultOfBatchResponse>;
+    batchPutSectionProfileFromLibrary(modelId: string, body: SectionProfileFromLibrary[]): Promise<BatchResponse>;
 
     /**
      * @return OK
      */
-    createSectionProfile(modelId: string, body: CreateSectionProfileRequest): Promise<ResultOfSectionProfileResponse>;
+    createSectionProfile(modelId: string, body: CreateSectionProfileRequest): Promise<SectionProfileResponse>;
 
     /**
      * @return OK
      */
-    batchPutSectionProfile(modelId: string, body: PutSectionProfileRequest[]): Promise<ResultOfBatchResponse>;
+    batchPutSectionProfile(modelId: string, body: PutSectionProfileRequest[]): Promise<BatchResponse>;
 
     /**
      * @return OK
      */
-    deleteSectionProfile(modelId: string, id: number): Promise<ResultOfModelEntityResponse>;
+    deleteSectionProfile(modelId: string, id: number): Promise<ModelEntityResponse>;
 
     /**
      * @return OK
      */
-    putSectionProfile(id: number, modelId: string, body: SectionProfileData): Promise<ResultOfSectionProfileResponse>;
+    putSectionProfile(id: number, modelId: string, body: SectionProfileData): Promise<SectionProfileResponse>;
 
     /**
      * @return OK
      */
-    putSectionProfileFromLibrary(id: number, modelId: string, body: SectionProfileFromLibraryData2): Promise<ResultOfSectionProfileFromLibrary>;
+    putSectionProfileFromLibrary(id: number, modelId: string, body: SectionProfileFromLibraryData | null): Promise<SectionProfileFromLibrary>;
 
     /**
      * @return OK
      */
-    createPointLoad(modelId: string, body: CreatePointLoadRequest): Promise<ResultOfPointLoadResponse>;
+    createPointLoad(modelId: string, body: CreatePointLoadRequest): Promise<PointLoadResponse>;
 
     /**
      * @return OK
      */
-    batchPutPointLoad(modelId: string, body: PutPointLoadRequest[]): Promise<ResultOfBatchResponse>;
+    batchPutPointLoad(modelId: string, body: PutPointLoadRequest[]): Promise<BatchResponse>;
 
     /**
      * @return OK
      */
-    deletePointLoad(modelId: string, id: number): Promise<ResultOfModelEntityResponse>;
+    deletePointLoad(modelId: string, id: number): Promise<ModelEntityResponse>;
 
     /**
      * @return OK
      */
-    putPointLoad(id: number, modelId: string, body: PointLoadData): Promise<ResultOfPointLoadResponse>;
+    putPointLoad(id: number, modelId: string, body: PointLoadData): Promise<PointLoadResponse>;
 
     /**
      * @return OK
      */
-    createNode(modelId: string, body: CreateNodeRequest): Promise<ResultOfNodeResponse>;
+    createNode(modelId: string, body: CreateNodeRequest): Promise<NodeResponse>;
 
     /**
      * @return OK
      */
-    patchNode(modelId: string, body: UpdateNodeRequest): Promise<ResultOfNodeResponse>;
+    patchNode(modelId: string, body: UpdateNodeRequest): Promise<NodeResponse>;
 
     /**
      * @return OK
      */
-    batchPutNode(modelId: string, body: PutNodeRequest[]): Promise<ResultOfBatchResponse>;
+    batchPutNode(modelId: string, body: PutNodeRequest[]): Promise<BatchResponse>;
 
     /**
      * @return OK
      */
-    getInternalNode(modelId: string, id: number): Promise<ResultOfInternalNode>;
-
-    /**
-     * @param body (optional) 
-     * @return OK
-     */
-    putInternalNode(modelId: string, id: number, body: InternalNodeData | null | undefined): Promise<ResultOfInternalNode>;
+    getInternalNode(modelId: string, id: number): Promise<InternalNode>;
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    createInternalNode(modelId: string, body: CreateInternalNodeRequest | null | undefined): Promise<ResultOfInternalNode>;
+    putInternalNode(modelId: string, id: number, body: InternalNodeData | null | undefined): Promise<InternalNode>;
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    batchPutInternalNode(modelId: string, body: InternalNode[] | null | undefined): Promise<ResultOfBatchResponse>;
-
-    /**
-     * @return OK
-     */
-    deleteNode(modelId: string, id: number): Promise<ResultOfModelEntityResponse>;
-
-    /**
-     * @return OK
-     */
-    putNode(id: number, modelId: string, body: NodeData): Promise<ResultOfNodeResponse>;
-
-    /**
-     * @return OK
-     */
-    createMomentLoad(modelId: string, body: CreateMomentLoadRequest): Promise<ResultOfMomentLoadResponse>;
-
-    /**
-     * @return OK
-     */
-    batchPutMomentLoad(modelId: string, body: PutMomentLoadRequest[]): Promise<ResultOfBatchResponse>;
-
-    /**
-     * @return OK
-     */
-    deleteMomentLoad(modelId: string, id: number): Promise<ResultOfModelEntityResponse>;
-
-    /**
-     * @return OK
-     */
-    putMomentLoad(id: number, modelId: string, body: MomentLoadData): Promise<ResultOfMomentLoadResponse>;
+    createInternalNode(modelId: string, body: CreateInternalNodeRequest | null | undefined): Promise<InternalNode>;
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    createModel(body: CreateModelRequest | undefined): Promise<ResultOfModelResponse>;
+    batchPutInternalNode(modelId: string, body: InternalNode[] | null | undefined): Promise<BatchResponse>;
 
     /**
      * @return OK
      */
-    getModels(): Promise<ResultOfListOfModelInfoResponse>;
-
-    /**
-     * @param body (optional) 
-     * @return OK
-     */
-    createModelProposal(modelId: string, body: ModelProposalData | null | undefined): Promise<ResultOfModelProposalResponse>;
+    deleteNode(modelId: string, id: number): Promise<ModelEntityResponse>;
 
     /**
      * @return OK
      */
-    getModelProposals(modelId: string): Promise<ResultOfListOfModelProposalInfo>;
+    putNode(id: number, modelId: string, body: NodeData): Promise<NodeResponse>;
 
     /**
      * @return OK
      */
-    getModelProposal(modelId: string, id: number): Promise<ResultOfModelProposalResponse>;
-
-    /**
-     * @param body (optional) 
-     * @return OK
-     */
-    acceptModelProposal(modelId: string, id: number, body: EntityProposal[] | null | undefined): Promise<ResultOfModelResponse>;
+    createMomentLoad(modelId: string, body: CreateMomentLoadRequest): Promise<MomentLoadResponse>;
 
     /**
      * @return OK
      */
-    rejectModelProposal(modelId: string, id: number): Promise<ResultOfboolean>;
+    batchPutMomentLoad(modelId: string, body: PutMomentLoadRequest[]): Promise<BatchResponse>;
 
     /**
      * @return OK
      */
-    getModel(modelId: string): Promise<ResultOfModelResponse>;
+    deleteMomentLoad(modelId: string, id: number): Promise<ModelEntityResponse>;
+
+    /**
+     * @return OK
+     */
+    putMomentLoad(id: number, modelId: string, body: MomentLoadData): Promise<MomentLoadResponse>;
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    putModel(modelId: string, body: ModelInfoData | null | undefined): Promise<ResultOfModelResponse>;
+    createModel(body: CreateModelRequest | undefined): Promise<ModelResponse>;
+
+    /**
+     * @return OK
+     */
+    getModels(): Promise<ModelInfoResponse[]>;
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    repairModel(modelId: string, body: string | undefined): Promise<ResultOfModelProposalResponse>;
+    createModelProposal(modelId: string, body: ModelProposalData | null | undefined): Promise<ModelProposalResponse>;
 
     /**
      * @return OK
      */
-    createMaterial(modelId: string, body: CreateMaterialRequest): Promise<ResultOfMaterialResponse>;
+    getModelProposals(modelId: string): Promise<ModelProposalInfo2[]>;
 
     /**
      * @return OK
      */
-    batchPutMaterial(modelId: string, body: PutMaterialRequest[]): Promise<ResultOfBatchResponse>;
-
-    /**
-     * @return OK
-     */
-    putMaterial(id: number, modelId: string, body: MaterialData): Promise<ResultOfMaterialResponse>;
-
-    /**
-     * @return OK
-     */
-    batchPutLoadCombination(modelId: string, body: LoadCombination[]): Promise<ResultOfBatchResponse>;
-
-    /**
-     * @return OK
-     */
-    createLoadCombination(modelId: string, body: LoadCombinationData): Promise<ResultOfLoadCombination>;
-
-    /**
-     * @return OK
-     */
-    deleteLoadCombination(modelId: string, id: number): Promise<ResultOfModelEntityResponse>;
-
-    /**
-     * @return OK
-     */
-    getLoadCombination(modelId: string, id: number): Promise<ResultOfLoadCombination>;
-
-    /**
-     * @return OK
-     */
-    putLoadCombination(modelId: string, id: number, body: LoadCombinationData): Promise<ResultOfLoadCombination>;
-
-    /**
-     * @return OK
-     */
-    batchPutLoadCase(modelId: string, body: LoadCase[]): Promise<ResultOfBatchResponse>;
-
-    /**
-     * @return OK
-     */
-    createLoadCase(modelId: string, body: LoadCaseData): Promise<ResultOfLoadCase>;
-
-    /**
-     * @return OK
-     */
-    deleteLoadCase(modelId: string, id: number): Promise<ResultOfModelEntityResponse>;
-
-    /**
-     * @return OK
-     */
-    getLoadCase(modelId: string, id: number): Promise<ResultOfLoadCase>;
-
-    /**
-     * @return OK
-     */
-    putLoadCase(modelId: string, id: number, body: LoadCaseData): Promise<ResultOfLoadCase>;
-
-    /**
-     * @return OK
-     */
-    createElement1d(modelId: string, body: CreateElement1dRequest): Promise<ResultOfElement1dResponse>;
-
-    /**
-     * @return OK
-     */
-    batchPutElement1d(modelId: string, body: PutElement1dRequest[]): Promise<ResultOfBatchResponse>;
-
-    /**
-     * @return OK
-     */
-    deleteElement1d(modelId: string, id: number): Promise<ResultOfModelEntityResponse>;
-
-    /**
-     * @return OK
-     */
-    getElement1d(modelId: string, id: number): Promise<ResultOfElement1dResponse>;
-
-    /**
-     * @return OK
-     */
-    putElement1d(id: number, modelId: string, body: Element1dData): Promise<ResultOfElement1dResponse>;
+    getModelProposal(modelId: string, id: number): Promise<ModelProposalResponse>;
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    runDirectStiffnessMethod(modelId: string, body: RunDsmRequest | null | undefined): Promise<ResultOfAnalyticalResultsResponse>;
+    acceptModelProposal(modelId: string, id: number, body: EntityProposal[] | null | undefined): Promise<ModelResponse>;
+
+    /**
+     * @return OK
+     */
+    rejectModelProposal(modelId: string, id: number): Promise<boolean>;
+
+    /**
+     * @return OK
+     */
+    getModel(modelId: string): Promise<ModelResponse>;
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    runOpenSeesAnalysis(modelId: string, body: RunDsmRequest | null | undefined): Promise<ResultOfAnalyticalResultsResponse>;
+    putModel(modelId: string, body: ModelInfoData | null | undefined): Promise<ModelResponse>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    repairModel(modelId: string, body: string | null | undefined): Promise<ModelProposalResponse>;
 
     /**
      * @return OK
      */
-    deleteAllResultSets(modelId: string): Promise<ResultOfint>;
+    createMaterial(modelId: string, body: CreateMaterialRequest): Promise<MaterialResponse>;
+
+    /**
+     * @return OK
+     */
+    batchPutMaterial(modelId: string, body: PutMaterialRequest[]): Promise<BatchResponse>;
+
+    /**
+     * @return OK
+     */
+    putMaterial(id: number, modelId: string, body: MaterialData): Promise<MaterialResponse>;
+
+    /**
+     * @return OK
+     */
+    batchPutLoadCombination(modelId: string, body: LoadCombination[]): Promise<BatchResponse>;
+
+    /**
+     * @return OK
+     */
+    createLoadCombination(modelId: string, body: LoadCombinationData): Promise<LoadCombination>;
+
+    /**
+     * @return OK
+     */
+    deleteLoadCombination(modelId: string, id: number): Promise<ModelEntityResponse>;
+
+    /**
+     * @return OK
+     */
+    getLoadCombination(modelId: string, id: number): Promise<LoadCombination>;
+
+    /**
+     * @return OK
+     */
+    putLoadCombination(modelId: string, id: number, body: LoadCombinationData): Promise<LoadCombination>;
+
+    /**
+     * @return OK
+     */
+    batchPutLoadCase(modelId: string, body: LoadCase[]): Promise<BatchResponse>;
+
+    /**
+     * @return OK
+     */
+    createLoadCase(modelId: string, body: LoadCaseData): Promise<LoadCase>;
+
+    /**
+     * @return OK
+     */
+    deleteLoadCase(modelId: string, id: number): Promise<ModelEntityResponse>;
+
+    /**
+     * @return OK
+     */
+    getLoadCase(modelId: string, id: number): Promise<LoadCase>;
+
+    /**
+     * @return OK
+     */
+    putLoadCase(modelId: string, id: number, body: LoadCaseData): Promise<LoadCase>;
+
+    /**
+     * @return OK
+     */
+    createElement1d(modelId: string, body: CreateElement1dRequest): Promise<Element1dResponse>;
+
+    /**
+     * @return OK
+     */
+    batchPutElement1d(modelId: string, body: PutElement1dRequest[]): Promise<BatchResponse>;
+
+    /**
+     * @return OK
+     */
+    deleteElement1d(modelId: string, id: number): Promise<ModelEntityResponse>;
+
+    /**
+     * @return OK
+     */
+    getElement1d(modelId: string, id: number): Promise<Element1dResponse>;
+
+    /**
+     * @return OK
+     */
+    putElement1d(id: number, modelId: string, body: Element1dData): Promise<Element1dResponse>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    runDirectStiffnessMethod(modelId: string, body: RunDsmRequest | null | undefined): Promise<AnalyticalResultsResponse>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    runOpenSeesAnalysis(modelId: string, body: RunDsmRequest | null | undefined): Promise<AnalyticalResultsResponse>;
+
+    /**
+     * @return OK
+     */
+    deleteAllResultSets(modelId: string): Promise<number>;
 
     /**
      * @param unitsOverride (optional) 
      * @return OK
      */
-    getDiagrams(modelId: string, id: number, unitsOverride: string | undefined): Promise<ResultOfAnalyticalResultsResponse>;
+    getDiagrams(modelId: string, id: number, unitsOverride: string | undefined): Promise<AnalyticalResultsResponse>;
 
     /**
      * @return OK
      */
-    getNodeResult(modelId: string, resultSetId: number, id: number): Promise<ResultOfNodeResultResponse>;
+    getNodeResult(modelId: string, resultSetId: number, id: number): Promise<NodeResultResponse>;
 
     /**
      * @return OK
      */
-    getResultSet(modelId: string, id: number): Promise<ResultOfResultSetResponse>;
+    getResultSet(modelId: string, id: number): Promise<ResultSetResponse>;
 }
 
 export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClientV1 {
@@ -331,20 +331,20 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     /**
      * @return OK
      */
-    modelRestore(modelId: string, body: Date): Promise<ResultOfModelResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/restore?";
+    modelRestore(modelId: string, body: Date): Promise<ModelResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/restore";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        if (body === undefined || body === null)
-            throw new Error("The parameter 'body' must be defined and cannot be null.");
-        else
-            url_ += "Body=" + encodeURIComponent(body ? "" + body.toISOString() : "") + "&";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_: RequestInit = {
+            body: content_,
             method: "POST",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -354,36 +354,29 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processModelRestore(response: Response): Promise<ResultOfModelResponse> {
+    protected processModelRestore(response: Response): Promise<ModelResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfModelResponse.fromJS(resultData200);
+            result200 = ModelResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfModelResponse>(null as any);
+        return Promise.resolve<ModelResponse>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    addSectionProfileFromLibrary(modelId: string, body: SectionProfileFromLibraryData | null | undefined): Promise<ResultOfSectionProfileResponse> {
+    addSectionProfileFromLibrary(modelId: string, body: SectionProfileFromLibraryData | null | undefined): Promise<SectionProfileResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles/from-library";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -406,35 +399,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processAddSectionProfileFromLibrary(response: Response): Promise<ResultOfSectionProfileResponse> {
+    protected processAddSectionProfileFromLibrary(response: Response): Promise<SectionProfileResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfSectionProfileResponse.fromJS(resultData200);
+            result200 = SectionProfileResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfSectionProfileResponse>(null as any);
+        return Promise.resolve<SectionProfileResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    batchPutSectionProfileFromLibrary(modelId: string, body: SectionProfileFromLibrary[]): Promise<ResultOfBatchResponse> {
+    batchPutSectionProfileFromLibrary(modelId: string, body: SectionProfileFromLibrary[]): Promise<BatchResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles/from-library";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -457,35 +443,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processBatchPutSectionProfileFromLibrary(response: Response): Promise<ResultOfBatchResponse> {
+    protected processBatchPutSectionProfileFromLibrary(response: Response): Promise<BatchResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfBatchResponse.fromJS(resultData200);
+            result200 = BatchResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfBatchResponse>(null as any);
+        return Promise.resolve<BatchResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    createSectionProfile(modelId: string, body: CreateSectionProfileRequest): Promise<ResultOfSectionProfileResponse> {
+    createSectionProfile(modelId: string, body: CreateSectionProfileRequest): Promise<SectionProfileResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -508,35 +487,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processCreateSectionProfile(response: Response): Promise<ResultOfSectionProfileResponse> {
+    protected processCreateSectionProfile(response: Response): Promise<SectionProfileResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfSectionProfileResponse.fromJS(resultData200);
+            result200 = SectionProfileResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfSectionProfileResponse>(null as any);
+        return Promise.resolve<SectionProfileResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    batchPutSectionProfile(modelId: string, body: PutSectionProfileRequest[]): Promise<ResultOfBatchResponse> {
+    batchPutSectionProfile(modelId: string, body: PutSectionProfileRequest[]): Promise<BatchResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -559,35 +531,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processBatchPutSectionProfile(response: Response): Promise<ResultOfBatchResponse> {
+    protected processBatchPutSectionProfile(response: Response): Promise<BatchResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfBatchResponse.fromJS(resultData200);
+            result200 = BatchResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfBatchResponse>(null as any);
+        return Promise.resolve<BatchResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    deleteSectionProfile(modelId: string, id: number): Promise<ResultOfModelEntityResponse> {
+    deleteSectionProfile(modelId: string, id: number): Promise<ModelEntityResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -609,35 +574,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processDeleteSectionProfile(response: Response): Promise<ResultOfModelEntityResponse> {
+    protected processDeleteSectionProfile(response: Response): Promise<ModelEntityResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfModelEntityResponse.fromJS(resultData200);
+            result200 = ModelEntityResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfModelEntityResponse>(null as any);
+        return Promise.resolve<ModelEntityResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    putSectionProfile(id: number, modelId: string, body: SectionProfileData): Promise<ResultOfSectionProfileResponse> {
+    putSectionProfile(id: number, modelId: string, body: SectionProfileData): Promise<SectionProfileResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -663,35 +621,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processPutSectionProfile(response: Response): Promise<ResultOfSectionProfileResponse> {
+    protected processPutSectionProfile(response: Response): Promise<SectionProfileResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfSectionProfileResponse.fromJS(resultData200);
+            result200 = SectionProfileResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfSectionProfileResponse>(null as any);
+        return Promise.resolve<SectionProfileResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    putSectionProfileFromLibrary(id: number, modelId: string, body: SectionProfileFromLibraryData2): Promise<ResultOfSectionProfileFromLibrary> {
+    putSectionProfileFromLibrary(id: number, modelId: string, body: SectionProfileFromLibraryData | null): Promise<SectionProfileFromLibrary> {
         let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles/{id}/from-library";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -717,35 +668,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processPutSectionProfileFromLibrary(response: Response): Promise<ResultOfSectionProfileFromLibrary> {
+    protected processPutSectionProfileFromLibrary(response: Response): Promise<SectionProfileFromLibrary> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfSectionProfileFromLibrary.fromJS(resultData200);
+            result200 = SectionProfileFromLibrary.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfSectionProfileFromLibrary>(null as any);
+        return Promise.resolve<SectionProfileFromLibrary>(null as any);
     }
 
     /**
      * @return OK
      */
-    createPointLoad(modelId: string, body: CreatePointLoadRequest): Promise<ResultOfPointLoadResponse> {
+    createPointLoad(modelId: string, body: CreatePointLoadRequest): Promise<PointLoadResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/point-loads";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -768,35 +712,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processCreatePointLoad(response: Response): Promise<ResultOfPointLoadResponse> {
+    protected processCreatePointLoad(response: Response): Promise<PointLoadResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfPointLoadResponse.fromJS(resultData200);
+            result200 = PointLoadResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfPointLoadResponse>(null as any);
+        return Promise.resolve<PointLoadResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    batchPutPointLoad(modelId: string, body: PutPointLoadRequest[]): Promise<ResultOfBatchResponse> {
+    batchPutPointLoad(modelId: string, body: PutPointLoadRequest[]): Promise<BatchResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/point-loads";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -819,35 +756,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processBatchPutPointLoad(response: Response): Promise<ResultOfBatchResponse> {
+    protected processBatchPutPointLoad(response: Response): Promise<BatchResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfBatchResponse.fromJS(resultData200);
+            result200 = BatchResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfBatchResponse>(null as any);
+        return Promise.resolve<BatchResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    deletePointLoad(modelId: string, id: number): Promise<ResultOfModelEntityResponse> {
+    deletePointLoad(modelId: string, id: number): Promise<ModelEntityResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/point-loads/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -869,35 +799,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processDeletePointLoad(response: Response): Promise<ResultOfModelEntityResponse> {
+    protected processDeletePointLoad(response: Response): Promise<ModelEntityResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfModelEntityResponse.fromJS(resultData200);
+            result200 = ModelEntityResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfModelEntityResponse>(null as any);
+        return Promise.resolve<ModelEntityResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    putPointLoad(id: number, modelId: string, body: PointLoadData): Promise<ResultOfPointLoadResponse> {
+    putPointLoad(id: number, modelId: string, body: PointLoadData): Promise<PointLoadResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/point-loads/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -923,35 +846,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processPutPointLoad(response: Response): Promise<ResultOfPointLoadResponse> {
+    protected processPutPointLoad(response: Response): Promise<PointLoadResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfPointLoadResponse.fromJS(resultData200);
+            result200 = PointLoadResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfPointLoadResponse>(null as any);
+        return Promise.resolve<PointLoadResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    createNode(modelId: string, body: CreateNodeRequest): Promise<ResultOfNodeResponse> {
+    createNode(modelId: string, body: CreateNodeRequest): Promise<NodeResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/nodes";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -974,35 +890,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processCreateNode(response: Response): Promise<ResultOfNodeResponse> {
+    protected processCreateNode(response: Response): Promise<NodeResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfNodeResponse.fromJS(resultData200);
+            result200 = NodeResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfNodeResponse>(null as any);
+        return Promise.resolve<NodeResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    patchNode(modelId: string, body: UpdateNodeRequest): Promise<ResultOfNodeResponse> {
+    patchNode(modelId: string, body: UpdateNodeRequest): Promise<NodeResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/nodes";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -1025,35 +934,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processPatchNode(response: Response): Promise<ResultOfNodeResponse> {
+    protected processPatchNode(response: Response): Promise<NodeResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfNodeResponse.fromJS(resultData200);
+            result200 = NodeResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfNodeResponse>(null as any);
+        return Promise.resolve<NodeResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    batchPutNode(modelId: string, body: PutNodeRequest[]): Promise<ResultOfBatchResponse> {
+    batchPutNode(modelId: string, body: PutNodeRequest[]): Promise<BatchResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/nodes";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -1076,35 +978,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processBatchPutNode(response: Response): Promise<ResultOfBatchResponse> {
+    protected processBatchPutNode(response: Response): Promise<BatchResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfBatchResponse.fromJS(resultData200);
+            result200 = BatchResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfBatchResponse>(null as any);
+        return Promise.resolve<BatchResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    getInternalNode(modelId: string, id: number): Promise<ResultOfInternalNode> {
+    getInternalNode(modelId: string, id: number): Promise<InternalNode> {
         let url_ = this.baseUrl + "/api/models/{modelId}/nodes/{id}/internal";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -1126,36 +1021,29 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processGetInternalNode(response: Response): Promise<ResultOfInternalNode> {
+    protected processGetInternalNode(response: Response): Promise<InternalNode> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfInternalNode.fromJS(resultData200);
+            result200 = InternalNode.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfInternalNode>(null as any);
+        return Promise.resolve<InternalNode>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    putInternalNode(modelId: string, id: number, body: InternalNodeData | null | undefined): Promise<ResultOfInternalNode> {
+    putInternalNode(modelId: string, id: number, body: InternalNodeData | null | undefined): Promise<InternalNode> {
         let url_ = this.baseUrl + "/api/models/{modelId}/nodes/{id}/internal";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -1181,36 +1069,29 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processPutInternalNode(response: Response): Promise<ResultOfInternalNode> {
+    protected processPutInternalNode(response: Response): Promise<InternalNode> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfInternalNode.fromJS(resultData200);
+            result200 = InternalNode.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfInternalNode>(null as any);
+        return Promise.resolve<InternalNode>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    createInternalNode(modelId: string, body: CreateInternalNodeRequest | null | undefined): Promise<ResultOfInternalNode> {
+    createInternalNode(modelId: string, body: CreateInternalNodeRequest | null | undefined): Promise<InternalNode> {
         let url_ = this.baseUrl + "/api/models/{modelId}/nodes/internal";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -1233,36 +1114,29 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processCreateInternalNode(response: Response): Promise<ResultOfInternalNode> {
+    protected processCreateInternalNode(response: Response): Promise<InternalNode> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfInternalNode.fromJS(resultData200);
+            result200 = InternalNode.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfInternalNode>(null as any);
+        return Promise.resolve<InternalNode>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    batchPutInternalNode(modelId: string, body: InternalNode[] | null | undefined): Promise<ResultOfBatchResponse> {
+    batchPutInternalNode(modelId: string, body: InternalNode[] | null | undefined): Promise<BatchResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/nodes/internal";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -1285,35 +1159,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processBatchPutInternalNode(response: Response): Promise<ResultOfBatchResponse> {
+    protected processBatchPutInternalNode(response: Response): Promise<BatchResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfBatchResponse.fromJS(resultData200);
+            result200 = BatchResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfBatchResponse>(null as any);
+        return Promise.resolve<BatchResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    deleteNode(modelId: string, id: number): Promise<ResultOfModelEntityResponse> {
+    deleteNode(modelId: string, id: number): Promise<ModelEntityResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/nodes/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -1335,35 +1202,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processDeleteNode(response: Response): Promise<ResultOfModelEntityResponse> {
+    protected processDeleteNode(response: Response): Promise<ModelEntityResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfModelEntityResponse.fromJS(resultData200);
+            result200 = ModelEntityResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfModelEntityResponse>(null as any);
+        return Promise.resolve<ModelEntityResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    putNode(id: number, modelId: string, body: NodeData): Promise<ResultOfNodeResponse> {
+    putNode(id: number, modelId: string, body: NodeData): Promise<NodeResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/nodes/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -1389,35 +1249,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processPutNode(response: Response): Promise<ResultOfNodeResponse> {
+    protected processPutNode(response: Response): Promise<NodeResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfNodeResponse.fromJS(resultData200);
+            result200 = NodeResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfNodeResponse>(null as any);
+        return Promise.resolve<NodeResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    createMomentLoad(modelId: string, body: CreateMomentLoadRequest): Promise<ResultOfMomentLoadResponse> {
+    createMomentLoad(modelId: string, body: CreateMomentLoadRequest): Promise<MomentLoadResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/moment-loads";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -1440,35 +1293,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processCreateMomentLoad(response: Response): Promise<ResultOfMomentLoadResponse> {
+    protected processCreateMomentLoad(response: Response): Promise<MomentLoadResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfMomentLoadResponse.fromJS(resultData200);
+            result200 = MomentLoadResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfMomentLoadResponse>(null as any);
+        return Promise.resolve<MomentLoadResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    batchPutMomentLoad(modelId: string, body: PutMomentLoadRequest[]): Promise<ResultOfBatchResponse> {
+    batchPutMomentLoad(modelId: string, body: PutMomentLoadRequest[]): Promise<BatchResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/moment-loads";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -1491,35 +1337,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processBatchPutMomentLoad(response: Response): Promise<ResultOfBatchResponse> {
+    protected processBatchPutMomentLoad(response: Response): Promise<BatchResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfBatchResponse.fromJS(resultData200);
+            result200 = BatchResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfBatchResponse>(null as any);
+        return Promise.resolve<BatchResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    deleteMomentLoad(modelId: string, id: number): Promise<ResultOfModelEntityResponse> {
+    deleteMomentLoad(modelId: string, id: number): Promise<ModelEntityResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/moment-loads/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -1541,35 +1380,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processDeleteMomentLoad(response: Response): Promise<ResultOfModelEntityResponse> {
+    protected processDeleteMomentLoad(response: Response): Promise<ModelEntityResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfModelEntityResponse.fromJS(resultData200);
+            result200 = ModelEntityResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfModelEntityResponse>(null as any);
+        return Promise.resolve<ModelEntityResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    putMomentLoad(id: number, modelId: string, body: MomentLoadData): Promise<ResultOfMomentLoadResponse> {
+    putMomentLoad(id: number, modelId: string, body: MomentLoadData): Promise<MomentLoadResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/moment-loads/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -1595,36 +1427,29 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processPutMomentLoad(response: Response): Promise<ResultOfMomentLoadResponse> {
+    protected processPutMomentLoad(response: Response): Promise<MomentLoadResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfMomentLoadResponse.fromJS(resultData200);
+            result200 = MomentLoadResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfMomentLoadResponse>(null as any);
+        return Promise.resolve<MomentLoadResponse>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    createModel(body: CreateModelRequest | undefined): Promise<ResultOfModelResponse> {
+    createModel(body: CreateModelRequest | undefined): Promise<ModelResponse> {
         let url_ = this.baseUrl + "/api/models";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1644,35 +1469,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processCreateModel(response: Response): Promise<ResultOfModelResponse> {
+    protected processCreateModel(response: Response): Promise<ModelResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfModelResponse.fromJS(resultData200);
+            result200 = ModelResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfModelResponse>(null as any);
+        return Promise.resolve<ModelResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    getModels(): Promise<ResultOfListOfModelInfoResponse> {
+    getModels(): Promise<ModelInfoResponse[]> {
         let url_ = this.baseUrl + "/api/models";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1688,36 +1506,36 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processGetModels(response: Response): Promise<ResultOfListOfModelInfoResponse> {
+    protected processGetModels(response: Response): Promise<ModelInfoResponse[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfListOfModelInfoResponse.fromJS(resultData200);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ModelInfoResponse.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfListOfModelInfoResponse>(null as any);
+        return Promise.resolve<ModelInfoResponse[]>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    createModelProposal(modelId: string, body: ModelProposalData | null | undefined): Promise<ResultOfModelProposalResponse> {
+    createModelProposal(modelId: string, body: ModelProposalData | null | undefined): Promise<ModelProposalResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/proposals";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -1740,35 +1558,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processCreateModelProposal(response: Response): Promise<ResultOfModelProposalResponse> {
+    protected processCreateModelProposal(response: Response): Promise<ModelProposalResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfModelProposalResponse.fromJS(resultData200);
+            result200 = ModelProposalResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfModelProposalResponse>(null as any);
+        return Promise.resolve<ModelProposalResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    getModelProposals(modelId: string): Promise<ResultOfListOfModelProposalInfo> {
+    getModelProposals(modelId: string): Promise<ModelProposalInfo2[]> {
         let url_ = this.baseUrl + "/api/models/{modelId}/proposals";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -1787,35 +1598,35 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processGetModelProposals(response: Response): Promise<ResultOfListOfModelProposalInfo> {
+    protected processGetModelProposals(response: Response): Promise<ModelProposalInfo2[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfListOfModelProposalInfo.fromJS(resultData200);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ModelProposalInfo2.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfListOfModelProposalInfo>(null as any);
+        return Promise.resolve<ModelProposalInfo2[]>(null as any);
     }
 
     /**
      * @return OK
      */
-    getModelProposal(modelId: string, id: number): Promise<ResultOfModelProposalResponse> {
+    getModelProposal(modelId: string, id: number): Promise<ModelProposalResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/proposals/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -1837,36 +1648,29 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processGetModelProposal(response: Response): Promise<ResultOfModelProposalResponse> {
+    protected processGetModelProposal(response: Response): Promise<ModelProposalResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfModelProposalResponse.fromJS(resultData200);
+            result200 = ModelProposalResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfModelProposalResponse>(null as any);
+        return Promise.resolve<ModelProposalResponse>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    acceptModelProposal(modelId: string, id: number, body: EntityProposal[] | null | undefined): Promise<ResultOfModelResponse> {
+    acceptModelProposal(modelId: string, id: number, body: EntityProposal[] | null | undefined): Promise<ModelResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/proposals/{id}/accept";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -1892,35 +1696,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processAcceptModelProposal(response: Response): Promise<ResultOfModelResponse> {
+    protected processAcceptModelProposal(response: Response): Promise<ModelResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfModelResponse.fromJS(resultData200);
+            result200 = ModelResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfModelResponse>(null as any);
+        return Promise.resolve<ModelResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    rejectModelProposal(modelId: string, id: number): Promise<ResultOfboolean> {
+    rejectModelProposal(modelId: string, id: number): Promise<boolean> {
         let url_ = this.baseUrl + "/api/models/{modelId}/proposals/{id}/reject";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -1942,35 +1739,29 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processRejectModelProposal(response: Response): Promise<ResultOfboolean> {
+    protected processRejectModelProposal(response: Response): Promise<boolean> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfboolean.fromJS(resultData200);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfboolean>(null as any);
+        return Promise.resolve<boolean>(null as any);
     }
 
     /**
      * @return OK
      */
-    getModel(modelId: string): Promise<ResultOfModelResponse> {
+    getModel(modelId: string): Promise<ModelResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -1989,36 +1780,29 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processGetModel(response: Response): Promise<ResultOfModelResponse> {
+    protected processGetModel(response: Response): Promise<ModelResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfModelResponse.fromJS(resultData200);
+            result200 = ModelResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfModelResponse>(null as any);
+        return Promise.resolve<ModelResponse>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    putModel(modelId: string, body: ModelInfoData | null | undefined): Promise<ResultOfModelResponse> {
+    putModel(modelId: string, body: ModelInfoData | null | undefined): Promise<ModelResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -2041,49 +1825,42 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processPutModel(response: Response): Promise<ResultOfModelResponse> {
+    protected processPutModel(response: Response): Promise<ModelResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfModelResponse.fromJS(resultData200);
+            result200 = ModelResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfModelResponse>(null as any);
+        return Promise.resolve<ModelResponse>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    repairModel(modelId: string, body: string | undefined): Promise<ResultOfModelProposalResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/repair?";
+    repairModel(modelId: string, body: string | null | undefined): Promise<ModelProposalResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/repair";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        if (body === null)
-            throw new Error("The parameter 'body' cannot be null.");
-        else if (body !== undefined)
-            url_ += "Body=" + encodeURIComponent("" + body) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_: RequestInit = {
+            body: content_,
             method: "POST",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -2093,35 +1870,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processRepairModel(response: Response): Promise<ResultOfModelProposalResponse> {
+    protected processRepairModel(response: Response): Promise<ModelProposalResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfModelProposalResponse.fromJS(resultData200);
+            result200 = ModelProposalResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfModelProposalResponse>(null as any);
+        return Promise.resolve<ModelProposalResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    createMaterial(modelId: string, body: CreateMaterialRequest): Promise<ResultOfMaterialResponse> {
+    createMaterial(modelId: string, body: CreateMaterialRequest): Promise<MaterialResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/materials";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -2144,35 +1914,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processCreateMaterial(response: Response): Promise<ResultOfMaterialResponse> {
+    protected processCreateMaterial(response: Response): Promise<MaterialResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfMaterialResponse.fromJS(resultData200);
+            result200 = MaterialResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfMaterialResponse>(null as any);
+        return Promise.resolve<MaterialResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    batchPutMaterial(modelId: string, body: PutMaterialRequest[]): Promise<ResultOfBatchResponse> {
+    batchPutMaterial(modelId: string, body: PutMaterialRequest[]): Promise<BatchResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/materials";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -2195,35 +1958,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processBatchPutMaterial(response: Response): Promise<ResultOfBatchResponse> {
+    protected processBatchPutMaterial(response: Response): Promise<BatchResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfBatchResponse.fromJS(resultData200);
+            result200 = BatchResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfBatchResponse>(null as any);
+        return Promise.resolve<BatchResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    putMaterial(id: number, modelId: string, body: MaterialData): Promise<ResultOfMaterialResponse> {
+    putMaterial(id: number, modelId: string, body: MaterialData): Promise<MaterialResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/materials/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -2249,35 +2005,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processPutMaterial(response: Response): Promise<ResultOfMaterialResponse> {
+    protected processPutMaterial(response: Response): Promise<MaterialResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfMaterialResponse.fromJS(resultData200);
+            result200 = MaterialResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfMaterialResponse>(null as any);
+        return Promise.resolve<MaterialResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    batchPutLoadCombination(modelId: string, body: LoadCombination[]): Promise<ResultOfBatchResponse> {
+    batchPutLoadCombination(modelId: string, body: LoadCombination[]): Promise<BatchResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/load-combinations";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -2300,35 +2049,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processBatchPutLoadCombination(response: Response): Promise<ResultOfBatchResponse> {
+    protected processBatchPutLoadCombination(response: Response): Promise<BatchResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfBatchResponse.fromJS(resultData200);
+            result200 = BatchResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfBatchResponse>(null as any);
+        return Promise.resolve<BatchResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    createLoadCombination(modelId: string, body: LoadCombinationData): Promise<ResultOfLoadCombination> {
+    createLoadCombination(modelId: string, body: LoadCombinationData): Promise<LoadCombination> {
         let url_ = this.baseUrl + "/api/models/{modelId}/load-combinations";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -2351,35 +2093,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processCreateLoadCombination(response: Response): Promise<ResultOfLoadCombination> {
+    protected processCreateLoadCombination(response: Response): Promise<LoadCombination> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfLoadCombination.fromJS(resultData200);
+            result200 = LoadCombination.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfLoadCombination>(null as any);
+        return Promise.resolve<LoadCombination>(null as any);
     }
 
     /**
      * @return OK
      */
-    deleteLoadCombination(modelId: string, id: number): Promise<ResultOfModelEntityResponse> {
+    deleteLoadCombination(modelId: string, id: number): Promise<ModelEntityResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/load-combinations/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -2401,35 +2136,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processDeleteLoadCombination(response: Response): Promise<ResultOfModelEntityResponse> {
+    protected processDeleteLoadCombination(response: Response): Promise<ModelEntityResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfModelEntityResponse.fromJS(resultData200);
+            result200 = ModelEntityResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfModelEntityResponse>(null as any);
+        return Promise.resolve<ModelEntityResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    getLoadCombination(modelId: string, id: number): Promise<ResultOfLoadCombination> {
+    getLoadCombination(modelId: string, id: number): Promise<LoadCombination> {
         let url_ = this.baseUrl + "/api/models/{modelId}/load-combinations/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -2451,35 +2179,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processGetLoadCombination(response: Response): Promise<ResultOfLoadCombination> {
+    protected processGetLoadCombination(response: Response): Promise<LoadCombination> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfLoadCombination.fromJS(resultData200);
+            result200 = LoadCombination.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfLoadCombination>(null as any);
+        return Promise.resolve<LoadCombination>(null as any);
     }
 
     /**
      * @return OK
      */
-    putLoadCombination(modelId: string, id: number, body: LoadCombinationData): Promise<ResultOfLoadCombination> {
+    putLoadCombination(modelId: string, id: number, body: LoadCombinationData): Promise<LoadCombination> {
         let url_ = this.baseUrl + "/api/models/{modelId}/load-combinations/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -2505,35 +2226,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processPutLoadCombination(response: Response): Promise<ResultOfLoadCombination> {
+    protected processPutLoadCombination(response: Response): Promise<LoadCombination> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfLoadCombination.fromJS(resultData200);
+            result200 = LoadCombination.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfLoadCombination>(null as any);
+        return Promise.resolve<LoadCombination>(null as any);
     }
 
     /**
      * @return OK
      */
-    batchPutLoadCase(modelId: string, body: LoadCase[]): Promise<ResultOfBatchResponse> {
+    batchPutLoadCase(modelId: string, body: LoadCase[]): Promise<BatchResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/load-cases";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -2556,35 +2270,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processBatchPutLoadCase(response: Response): Promise<ResultOfBatchResponse> {
+    protected processBatchPutLoadCase(response: Response): Promise<BatchResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfBatchResponse.fromJS(resultData200);
+            result200 = BatchResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfBatchResponse>(null as any);
+        return Promise.resolve<BatchResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    createLoadCase(modelId: string, body: LoadCaseData): Promise<ResultOfLoadCase> {
+    createLoadCase(modelId: string, body: LoadCaseData): Promise<LoadCase> {
         let url_ = this.baseUrl + "/api/models/{modelId}/load-cases";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -2607,35 +2314,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processCreateLoadCase(response: Response): Promise<ResultOfLoadCase> {
+    protected processCreateLoadCase(response: Response): Promise<LoadCase> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfLoadCase.fromJS(resultData200);
+            result200 = LoadCase.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfLoadCase>(null as any);
+        return Promise.resolve<LoadCase>(null as any);
     }
 
     /**
      * @return OK
      */
-    deleteLoadCase(modelId: string, id: number): Promise<ResultOfModelEntityResponse> {
+    deleteLoadCase(modelId: string, id: number): Promise<ModelEntityResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/load-cases/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -2657,35 +2357,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processDeleteLoadCase(response: Response): Promise<ResultOfModelEntityResponse> {
+    protected processDeleteLoadCase(response: Response): Promise<ModelEntityResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfModelEntityResponse.fromJS(resultData200);
+            result200 = ModelEntityResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfModelEntityResponse>(null as any);
+        return Promise.resolve<ModelEntityResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    getLoadCase(modelId: string, id: number): Promise<ResultOfLoadCase> {
+    getLoadCase(modelId: string, id: number): Promise<LoadCase> {
         let url_ = this.baseUrl + "/api/models/{modelId}/load-cases/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -2707,35 +2400,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processGetLoadCase(response: Response): Promise<ResultOfLoadCase> {
+    protected processGetLoadCase(response: Response): Promise<LoadCase> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfLoadCase.fromJS(resultData200);
+            result200 = LoadCase.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfLoadCase>(null as any);
+        return Promise.resolve<LoadCase>(null as any);
     }
 
     /**
      * @return OK
      */
-    putLoadCase(modelId: string, id: number, body: LoadCaseData): Promise<ResultOfLoadCase> {
+    putLoadCase(modelId: string, id: number, body: LoadCaseData): Promise<LoadCase> {
         let url_ = this.baseUrl + "/api/models/{modelId}/load-cases/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -2761,35 +2447,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processPutLoadCase(response: Response): Promise<ResultOfLoadCase> {
+    protected processPutLoadCase(response: Response): Promise<LoadCase> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfLoadCase.fromJS(resultData200);
+            result200 = LoadCase.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfLoadCase>(null as any);
+        return Promise.resolve<LoadCase>(null as any);
     }
 
     /**
      * @return OK
      */
-    createElement1d(modelId: string, body: CreateElement1dRequest): Promise<ResultOfElement1dResponse> {
+    createElement1d(modelId: string, body: CreateElement1dRequest): Promise<Element1dResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/element1ds";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -2812,35 +2491,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processCreateElement1d(response: Response): Promise<ResultOfElement1dResponse> {
+    protected processCreateElement1d(response: Response): Promise<Element1dResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfElement1dResponse.fromJS(resultData200);
+            result200 = Element1dResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfElement1dResponse>(null as any);
+        return Promise.resolve<Element1dResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    batchPutElement1d(modelId: string, body: PutElement1dRequest[]): Promise<ResultOfBatchResponse> {
+    batchPutElement1d(modelId: string, body: PutElement1dRequest[]): Promise<BatchResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/element1ds";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -2863,35 +2535,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processBatchPutElement1d(response: Response): Promise<ResultOfBatchResponse> {
+    protected processBatchPutElement1d(response: Response): Promise<BatchResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfBatchResponse.fromJS(resultData200);
+            result200 = BatchResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfBatchResponse>(null as any);
+        return Promise.resolve<BatchResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    deleteElement1d(modelId: string, id: number): Promise<ResultOfModelEntityResponse> {
+    deleteElement1d(modelId: string, id: number): Promise<ModelEntityResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/element1ds/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -2913,35 +2578,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processDeleteElement1d(response: Response): Promise<ResultOfModelEntityResponse> {
+    protected processDeleteElement1d(response: Response): Promise<ModelEntityResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfModelEntityResponse.fromJS(resultData200);
+            result200 = ModelEntityResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfModelEntityResponse>(null as any);
+        return Promise.resolve<ModelEntityResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    getElement1d(modelId: string, id: number): Promise<ResultOfElement1dResponse> {
+    getElement1d(modelId: string, id: number): Promise<Element1dResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/element1ds/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -2963,35 +2621,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processGetElement1d(response: Response): Promise<ResultOfElement1dResponse> {
+    protected processGetElement1d(response: Response): Promise<Element1dResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfElement1dResponse.fromJS(resultData200);
+            result200 = Element1dResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfElement1dResponse>(null as any);
+        return Promise.resolve<Element1dResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    putElement1d(id: number, modelId: string, body: Element1dData): Promise<ResultOfElement1dResponse> {
+    putElement1d(id: number, modelId: string, body: Element1dData): Promise<Element1dResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/element1ds/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -3017,36 +2668,29 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processPutElement1d(response: Response): Promise<ResultOfElement1dResponse> {
+    protected processPutElement1d(response: Response): Promise<Element1dResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfElement1dResponse.fromJS(resultData200);
+            result200 = Element1dResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfElement1dResponse>(null as any);
+        return Promise.resolve<Element1dResponse>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    runDirectStiffnessMethod(modelId: string, body: RunDsmRequest | null | undefined): Promise<ResultOfAnalyticalResultsResponse> {
+    runDirectStiffnessMethod(modelId: string, body: RunDsmRequest | null | undefined): Promise<AnalyticalResultsResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/analyze/dsm";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -3069,36 +2713,29 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processRunDirectStiffnessMethod(response: Response): Promise<ResultOfAnalyticalResultsResponse> {
+    protected processRunDirectStiffnessMethod(response: Response): Promise<AnalyticalResultsResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfAnalyticalResultsResponse.fromJS(resultData200);
+            result200 = AnalyticalResultsResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfAnalyticalResultsResponse>(null as any);
+        return Promise.resolve<AnalyticalResultsResponse>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    runOpenSeesAnalysis(modelId: string, body: RunDsmRequest | null | undefined): Promise<ResultOfAnalyticalResultsResponse> {
+    runOpenSeesAnalysis(modelId: string, body: RunDsmRequest | null | undefined): Promise<AnalyticalResultsResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/analyze/opensees";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -3121,35 +2758,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processRunOpenSeesAnalysis(response: Response): Promise<ResultOfAnalyticalResultsResponse> {
+    protected processRunOpenSeesAnalysis(response: Response): Promise<AnalyticalResultsResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfAnalyticalResultsResponse.fromJS(resultData200);
+            result200 = AnalyticalResultsResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfAnalyticalResultsResponse>(null as any);
+        return Promise.resolve<AnalyticalResultsResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    deleteAllResultSets(modelId: string): Promise<ResultOfint> {
+    deleteAllResultSets(modelId: string): Promise<number> {
         let url_ = this.baseUrl + "/api/models/{modelId}/result-sets";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -3168,36 +2798,30 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processDeleteAllResultSets(response: Response): Promise<ResultOfint> {
+    protected processDeleteAllResultSets(response: Response): Promise<number> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfint.fromJS(resultData200);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfint>(null as any);
+        return Promise.resolve<number>(null as any);
     }
 
     /**
      * @param unitsOverride (optional) 
      * @return OK
      */
-    getDiagrams(modelId: string, id: number, unitsOverride: string | undefined): Promise<ResultOfAnalyticalResultsResponse> {
+    getDiagrams(modelId: string, id: number, unitsOverride: string | undefined): Promise<AnalyticalResultsResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/result-sets/{id}/diagrams?";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -3223,35 +2847,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processGetDiagrams(response: Response): Promise<ResultOfAnalyticalResultsResponse> {
+    protected processGetDiagrams(response: Response): Promise<AnalyticalResultsResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfAnalyticalResultsResponse.fromJS(resultData200);
+            result200 = AnalyticalResultsResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfAnalyticalResultsResponse>(null as any);
+        return Promise.resolve<AnalyticalResultsResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    getNodeResult(modelId: string, resultSetId: number, id: number): Promise<ResultOfNodeResultResponse> {
+    getNodeResult(modelId: string, resultSetId: number, id: number): Promise<NodeResultResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/result-sets/{resultSetId}/node-results/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -3276,35 +2893,28 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processGetNodeResult(response: Response): Promise<ResultOfNodeResultResponse> {
+    protected processGetNodeResult(response: Response): Promise<NodeResultResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfNodeResultResponse.fromJS(resultData200);
+            result200 = NodeResultResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfNodeResultResponse>(null as any);
+        return Promise.resolve<NodeResultResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    getResultSet(modelId: string, id: number): Promise<ResultOfResultSetResponse> {
+    getResultSet(modelId: string, id: number): Promise<ResultSetResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/result-sets/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -3326,29 +2936,22 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processGetResultSet(response: Response): Promise<ResultOfResultSetResponse> {
+    protected processGetResultSet(response: Response): Promise<ResultSetResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfResultSetResponse.fromJS(resultData200);
+            result200 = ResultSetResponse.fromJS(resultData200);
             return result200;
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfResultSetResponse>(null as any);
+        return Promise.resolve<ResultSetResponse>(null as any);
     }
 }
 
@@ -3612,82 +3215,6 @@ export interface IBatchResponse {
     deleted?: number;
     errors?: number;
     entityStatuses?: EntityStatus[];
-
-    [key: string]: any;
-}
-
-export class BeamOsError implements IBeamOsError {
-    code!: string;
-    description!: string;
-    type!: number;
-    numericType?: number;
-    metadata!: { [key: string]: string; } | undefined;
-
-    [key: string]: any;
-
-    constructor(data?: IBeamOsError) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.code = _data["code"];
-            this.description = _data["description"];
-            this.type = _data["type"];
-            this.numericType = _data["numericType"];
-            if (_data["metadata"]) {
-                this.metadata = {} as any;
-                for (let key in _data["metadata"]) {
-                    if (_data["metadata"].hasOwnProperty(key))
-                        (<any>this.metadata)![key] = _data["metadata"][key];
-                }
-            }
-        }
-    }
-
-    static fromJS(data: any): BeamOsError {
-        data = typeof data === 'object' ? data : {};
-        let result = new BeamOsError();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["code"] = this.code;
-        data["description"] = this.description;
-        data["type"] = this.type;
-        data["numericType"] = this.numericType;
-        if (this.metadata) {
-            data["metadata"] = {};
-            for (let key in this.metadata) {
-                if (this.metadata.hasOwnProperty(key))
-                    (<any>data["metadata"])[key] = (<any>this.metadata)[key];
-            }
-        }
-        return data;
-    }
-}
-
-export interface IBeamOsError {
-    code: string;
-    description: string;
-    type: number;
-    numericType?: number;
-    metadata: { [key: string]: string; } | undefined;
 
     [key: string]: any;
 }
@@ -5234,97 +4761,6 @@ export interface IElement1dResponse {
     [key: string]: any;
 }
 
-export class Element1dResponse2 implements IElement1dResponse2 {
-    id!: number;
-    modelId!: string;
-    startNodeId!: number;
-    endNodeId!: number;
-    materialId!: number;
-    sectionProfileId!: number;
-    sectionProfileRotation!: Angle;
-    metadata?: { [key: string]: string; } | undefined;
-
-    [key: string]: any;
-
-    constructor(data?: IElement1dResponse2) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.sectionProfileRotation = new Angle();
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.modelId = _data["modelId"];
-            this.startNodeId = _data["startNodeId"];
-            this.endNodeId = _data["endNodeId"];
-            this.materialId = _data["materialId"];
-            this.sectionProfileId = _data["sectionProfileId"];
-            this.sectionProfileRotation = _data["sectionProfileRotation"] ? Angle.fromJS(_data["sectionProfileRotation"]) : new Angle();
-            if (_data["metadata"]) {
-                this.metadata = {} as any;
-                for (let key in _data["metadata"]) {
-                    if (_data["metadata"].hasOwnProperty(key))
-                        (<any>this.metadata)![key] = _data["metadata"][key];
-                }
-            }
-        }
-    }
-
-    static fromJS(data: any): Element1dResponse2 {
-        data = typeof data === 'object' ? data : {};
-        let result = new Element1dResponse2();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["modelId"] = this.modelId;
-        data["startNodeId"] = this.startNodeId;
-        data["endNodeId"] = this.endNodeId;
-        data["materialId"] = this.materialId;
-        data["sectionProfileId"] = this.sectionProfileId;
-        data["sectionProfileRotation"] = this.sectionProfileRotation ? this.sectionProfileRotation.toJSON() : <any>undefined;
-        if (this.metadata) {
-            data["metadata"] = {};
-            for (let key in this.metadata) {
-                if (this.metadata.hasOwnProperty(key))
-                    (<any>data["metadata"])[key] = (<any>this.metadata)[key];
-            }
-        }
-        return data;
-    }
-}
-
-export interface IElement1dResponse2 {
-    id: number;
-    modelId: string;
-    startNodeId: number;
-    endNodeId: number;
-    materialId: number;
-    sectionProfileId: number;
-    sectionProfileRotation: Angle;
-    metadata?: { [key: string]: string; } | undefined;
-
-    [key: string]: any;
-}
-
 export class Element1dResultResponse implements IElement1dResultResponse {
     modelId!: string;
     resultSetId!: number;
@@ -5798,85 +5234,6 @@ export interface IInternalNode {
     [key: string]: any;
 }
 
-export class InternalNode2 implements IInternalNode2 {
-    id!: number;
-    element1dId!: number;
-    ratioAlongElement1d!: Ratio;
-    restraint?: NullableOfRestraint | undefined;
-    metadata?: { [key: string]: string; } | undefined;
-
-    [key: string]: any;
-
-    constructor(data?: IInternalNode2) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.ratioAlongElement1d = new Ratio();
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.element1dId = _data["element1dId"];
-            this.ratioAlongElement1d = _data["ratioAlongElement1d"] ? Ratio.fromJS(_data["ratioAlongElement1d"]) : new Ratio();
-            this.restraint = _data["restraint"] ? NullableOfRestraint.fromJS(_data["restraint"]) : <any>undefined;
-            if (_data["metadata"]) {
-                this.metadata = {} as any;
-                for (let key in _data["metadata"]) {
-                    if (_data["metadata"].hasOwnProperty(key))
-                        (<any>this.metadata)![key] = _data["metadata"][key];
-                }
-            }
-        }
-    }
-
-    static fromJS(data: any): InternalNode2 {
-        data = typeof data === 'object' ? data : {};
-        let result = new InternalNode2();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["element1dId"] = this.element1dId;
-        data["ratioAlongElement1d"] = this.ratioAlongElement1d ? this.ratioAlongElement1d.toJSON() : <any>undefined;
-        data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
-        if (this.metadata) {
-            data["metadata"] = {};
-            for (let key in this.metadata) {
-                if (this.metadata.hasOwnProperty(key))
-                    (<any>data["metadata"])[key] = (<any>this.metadata)[key];
-            }
-        }
-        return data;
-    }
-}
-
-export interface IInternalNode2 {
-    id: number;
-    element1dId: number;
-    ratioAlongElement1d: Ratio;
-    restraint?: NullableOfRestraint | undefined;
-    metadata?: { [key: string]: string; } | undefined;
-
-    [key: string]: any;
-}
-
 export class InternalNodeData implements IInternalNodeData {
     element1dId!: number;
     ratioAlongElement1d!: Ratio;
@@ -6056,58 +5413,6 @@ export interface ILoadCase {
     [key: string]: any;
 }
 
-export class LoadCase2 implements ILoadCase2 {
-    id!: number;
-    name!: string;
-
-    [key: string]: any;
-
-    constructor(data?: ILoadCase2) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.name = _data["name"];
-        }
-    }
-
-    static fromJS(data: any): LoadCase2 {
-        data = typeof data === 'object' ? data : {};
-        let result = new LoadCase2();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["name"] = this.name;
-        return data;
-    }
-}
-
-export interface ILoadCase2 {
-    id: number;
-    name: string;
-
-    [key: string]: any;
-}
-
 export class LoadCaseData implements ILoadCaseData {
     name!: string;
 
@@ -6217,73 +5522,6 @@ export class LoadCombination implements ILoadCombination {
 }
 
 export interface ILoadCombination {
-    id: number;
-    loadCaseFactors: { [key: string]: number; };
-
-    [key: string]: any;
-}
-
-export class LoadCombination2 implements ILoadCombination2 {
-    id!: number;
-    loadCaseFactors!: { [key: string]: number; };
-
-    [key: string]: any;
-
-    constructor(data?: ILoadCombination2) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.loadCaseFactors = {};
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            if (_data["loadCaseFactors"]) {
-                this.loadCaseFactors = {} as any;
-                for (let key in _data["loadCaseFactors"]) {
-                    if (_data["loadCaseFactors"].hasOwnProperty(key))
-                        (<any>this.loadCaseFactors)![key] = _data["loadCaseFactors"][key];
-                }
-            }
-        }
-    }
-
-    static fromJS(data: any): LoadCombination2 {
-        data = typeof data === 'object' ? data : {};
-        let result = new LoadCombination2();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        if (this.loadCaseFactors) {
-            data["loadCaseFactors"] = {};
-            for (let key in this.loadCaseFactors) {
-                if (this.loadCaseFactors.hasOwnProperty(key))
-                    (<any>data["loadCaseFactors"])[key] = (<any>this.loadCaseFactors)[key];
-            }
-        }
-        return data;
-    }
-}
-
-export interface ILoadCombination2 {
     id: number;
     loadCaseFactors: { [key: string]: number; };
 
@@ -6464,70 +5702,6 @@ export class MaterialResponse implements IMaterialResponse {
 }
 
 export interface IMaterialResponse {
-    id: number;
-    modelId: string;
-    modulusOfElasticity: number;
-    modulusOfRigidity: number;
-    pressureUnit: number;
-
-    [key: string]: any;
-}
-
-export class MaterialResponse2 implements IMaterialResponse2 {
-    id!: number;
-    modelId!: string;
-    modulusOfElasticity!: number;
-    modulusOfRigidity!: number;
-    pressureUnit!: number;
-
-    [key: string]: any;
-
-    constructor(data?: IMaterialResponse2) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.modelId = _data["modelId"];
-            this.modulusOfElasticity = _data["modulusOfElasticity"];
-            this.modulusOfRigidity = _data["modulusOfRigidity"];
-            this.pressureUnit = _data["pressureUnit"];
-        }
-    }
-
-    static fromJS(data: any): MaterialResponse2 {
-        data = typeof data === 'object' ? data : {};
-        let result = new MaterialResponse2();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["modelId"] = this.modelId;
-        data["modulusOfElasticity"] = this.modulusOfElasticity;
-        data["modulusOfRigidity"] = this.modulusOfRigidity;
-        data["pressureUnit"] = this.pressureUnit;
-        return data;
-    }
-}
-
-export interface IMaterialResponse2 {
     id: number;
     modelId: string;
     modulusOfElasticity: number;
@@ -8296,78 +7470,6 @@ export interface IMomentLoadResponse {
     [key: string]: any;
 }
 
-export class MomentLoadResponse2 implements IMomentLoadResponse2 {
-    id!: number;
-    nodeId!: number;
-    loadCaseId!: number;
-    modelId!: string;
-    torque!: Torque;
-    axisDirection!: Vector3;
-
-    [key: string]: any;
-
-    constructor(data?: IMomentLoadResponse2) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.torque = new Torque();
-            this.axisDirection = new Vector3();
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.nodeId = _data["nodeId"];
-            this.loadCaseId = _data["loadCaseId"];
-            this.modelId = _data["modelId"];
-            this.torque = _data["torque"] ? Torque.fromJS(_data["torque"]) : new Torque();
-            this.axisDirection = _data["axisDirection"] ? Vector3.fromJS(_data["axisDirection"]) : new Vector3();
-        }
-    }
-
-    static fromJS(data: any): MomentLoadResponse2 {
-        data = typeof data === 'object' ? data : {};
-        let result = new MomentLoadResponse2();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["nodeId"] = this.nodeId;
-        data["loadCaseId"] = this.loadCaseId;
-        data["modelId"] = this.modelId;
-        data["torque"] = this.torque ? this.torque.toJSON() : <any>undefined;
-        data["axisDirection"] = this.axisDirection ? this.axisDirection.toJSON() : <any>undefined;
-        return data;
-    }
-}
-
-export interface IMomentLoadResponse2 {
-    id: number;
-    nodeId: number;
-    loadCaseId: number;
-    modelId: string;
-    torque: Torque;
-    axisDirection: Vector3;
-
-    [key: string]: any;
-}
-
 export class NodeData implements INodeData {
     locationPoint!: Point;
     restraint!: Restraint;
@@ -8504,70 +7606,6 @@ export interface INodeResponse {
     [key: string]: any;
 }
 
-export class NodeResponse2 implements INodeResponse2 {
-    id!: number;
-    modelId!: string;
-    locationPoint!: Point;
-    restraint!: Restraint;
-
-    [key: string]: any;
-
-    constructor(data?: INodeResponse2) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.locationPoint = new Point();
-            this.restraint = new Restraint();
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.modelId = _data["modelId"];
-            this.locationPoint = _data["locationPoint"] ? Point.fromJS(_data["locationPoint"]) : new Point();
-            this.restraint = _data["restraint"] ? Restraint.fromJS(_data["restraint"]) : new Restraint();
-        }
-    }
-
-    static fromJS(data: any): NodeResponse2 {
-        data = typeof data === 'object' ? data : {};
-        let result = new NodeResponse2();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["modelId"] = this.modelId;
-        data["locationPoint"] = this.locationPoint ? this.locationPoint.toJSON() : <any>undefined;
-        data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
-        return data;
-    }
-}
-
-export interface INodeResponse2 {
-    id: number;
-    modelId: string;
-    locationPoint: Point;
-    restraint: Restraint;
-
-    [key: string]: any;
-}
-
 export class NodeResultResponse implements INodeResultResponse {
     modelId!: string;
     resultSetId!: number;
@@ -8627,74 +7665,6 @@ export class NodeResultResponse implements INodeResultResponse {
 }
 
 export interface INodeResultResponse {
-    modelId: string;
-    resultSetId: number;
-    nodeId: number;
-    forces: ForcesResponse;
-    displacements: DisplacementsResponse;
-
-    [key: string]: any;
-}
-
-export class NodeResultResponse2 implements INodeResultResponse2 {
-    modelId!: string;
-    resultSetId!: number;
-    nodeId!: number;
-    forces!: ForcesResponse;
-    displacements!: DisplacementsResponse;
-
-    [key: string]: any;
-
-    constructor(data?: INodeResultResponse2) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.forces = new ForcesResponse();
-            this.displacements = new DisplacementsResponse();
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.modelId = _data["modelId"];
-            this.resultSetId = _data["resultSetId"];
-            this.nodeId = _data["nodeId"];
-            this.forces = _data["forces"] ? ForcesResponse.fromJS(_data["forces"]) : new ForcesResponse();
-            this.displacements = _data["displacements"] ? DisplacementsResponse.fromJS(_data["displacements"]) : new DisplacementsResponse();
-        }
-    }
-
-    static fromJS(data: any): NodeResultResponse2 {
-        data = typeof data === 'object' ? data : {};
-        let result = new NodeResultResponse2();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["modelId"] = this.modelId;
-        data["resultSetId"] = this.resultSetId;
-        data["nodeId"] = this.nodeId;
-        data["forces"] = this.forces ? this.forces.toJSON() : <any>undefined;
-        data["displacements"] = this.displacements ? this.displacements.toJSON() : <any>undefined;
-        return data;
-    }
-}
-
-export interface INodeResultResponse2 {
     modelId: string;
     resultSetId: number;
     nodeId: number;
@@ -9212,142 +8182,6 @@ export interface IPointLoadResponse {
     loadCaseId: number;
     force: Force;
     direction: Vector3;
-
-    [key: string]: any;
-}
-
-export class PointLoadResponse2 implements IPointLoadResponse2 {
-    modelId!: string;
-    id!: number;
-    nodeId!: number;
-    loadCaseId!: number;
-    force!: Force;
-    direction!: Vector3;
-
-    [key: string]: any;
-
-    constructor(data?: IPointLoadResponse2) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.force = new Force();
-            this.direction = new Vector3();
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.modelId = _data["modelId"];
-            this.id = _data["id"];
-            this.nodeId = _data["nodeId"];
-            this.loadCaseId = _data["loadCaseId"];
-            this.force = _data["force"] ? Force.fromJS(_data["force"]) : new Force();
-            this.direction = _data["direction"] ? Vector3.fromJS(_data["direction"]) : new Vector3();
-        }
-    }
-
-    static fromJS(data: any): PointLoadResponse2 {
-        data = typeof data === 'object' ? data : {};
-        let result = new PointLoadResponse2();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["modelId"] = this.modelId;
-        data["id"] = this.id;
-        data["nodeId"] = this.nodeId;
-        data["loadCaseId"] = this.loadCaseId;
-        data["force"] = this.force ? this.force.toJSON() : <any>undefined;
-        data["direction"] = this.direction ? this.direction.toJSON() : <any>undefined;
-        return data;
-    }
-}
-
-export interface IPointLoadResponse2 {
-    modelId: string;
-    id: number;
-    nodeId: number;
-    loadCaseId: number;
-    force: Force;
-    direction: Vector3;
-
-    [key: string]: any;
-}
-
-export class ProblemDetails implements IProblemDetails {
-    type?: string | undefined;
-    title?: string | undefined;
-    status?: number | undefined;
-    detail?: string | undefined;
-    instance?: string | undefined;
-
-    [key: string]: any;
-
-    constructor(data?: IProblemDetails) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.type = _data["type"];
-            this.title = _data["title"];
-            this.status = _data["status"];
-            this.detail = _data["detail"];
-            this.instance = _data["instance"];
-        }
-    }
-
-    static fromJS(data: any): ProblemDetails {
-        data = typeof data === 'object' ? data : {};
-        let result = new ProblemDetails();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["type"] = this.type;
-        data["title"] = this.title;
-        data["status"] = this.status;
-        data["detail"] = this.detail;
-        data["instance"] = this.instance;
-        return data;
-    }
-}
-
-export interface IProblemDetails {
-    type?: string | undefined;
-    title?: string | undefined;
-    status?: number | undefined;
-    detail?: string | undefined;
-    instance?: string | undefined;
 
     [key: string]: any;
 }
@@ -10158,1198 +8992,6 @@ export interface IRestraint {
     [key: string]: any;
 }
 
-export class ResultOfAnalyticalResultsResponse implements IResultOfAnalyticalResultsResponse {
-    value!: AnalyticalResultsResponse | undefined;
-    error!: BeamOsError | undefined;
-    isError!: boolean;
-
-    [key: string]: any;
-
-    constructor(data?: IResultOfAnalyticalResultsResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"] ? AnalyticalResultsResponse.fromJS(_data["value"]) : <any>undefined;
-            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
-            this.isError = _data["isError"];
-        }
-    }
-
-    static fromJS(data: any): ResultOfAnalyticalResultsResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new ResultOfAnalyticalResultsResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
-        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
-        data["isError"] = this.isError;
-        return data;
-    }
-}
-
-export interface IResultOfAnalyticalResultsResponse {
-    value: AnalyticalResultsResponse | undefined;
-    error: BeamOsError | undefined;
-    isError: boolean;
-
-    [key: string]: any;
-}
-
-export class ResultOfBatchResponse implements IResultOfBatchResponse {
-    value!: BatchResponse | undefined;
-    error!: BeamOsError | undefined;
-    isError!: boolean;
-
-    [key: string]: any;
-
-    constructor(data?: IResultOfBatchResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"] ? BatchResponse.fromJS(_data["value"]) : <any>undefined;
-            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
-            this.isError = _data["isError"];
-        }
-    }
-
-    static fromJS(data: any): ResultOfBatchResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new ResultOfBatchResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
-        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
-        data["isError"] = this.isError;
-        return data;
-    }
-}
-
-export interface IResultOfBatchResponse {
-    value: BatchResponse | undefined;
-    error: BeamOsError | undefined;
-    isError: boolean;
-
-    [key: string]: any;
-}
-
-export class ResultOfboolean implements IResultOfboolean {
-    value!: boolean;
-    error!: BeamOsError | undefined;
-    isError!: boolean;
-
-    [key: string]: any;
-
-    constructor(data?: IResultOfboolean) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"];
-            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
-            this.isError = _data["isError"];
-        }
-    }
-
-    static fromJS(data: any): ResultOfboolean {
-        data = typeof data === 'object' ? data : {};
-        let result = new ResultOfboolean();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value;
-        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
-        data["isError"] = this.isError;
-        return data;
-    }
-}
-
-export interface IResultOfboolean {
-    value: boolean;
-    error: BeamOsError | undefined;
-    isError: boolean;
-
-    [key: string]: any;
-}
-
-export class ResultOfElement1dResponse implements IResultOfElement1dResponse {
-    value!: Element1dResponse2 | undefined;
-    error!: BeamOsError | undefined;
-    isError!: boolean;
-
-    [key: string]: any;
-
-    constructor(data?: IResultOfElement1dResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"] ? Element1dResponse2.fromJS(_data["value"]) : <any>undefined;
-            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
-            this.isError = _data["isError"];
-        }
-    }
-
-    static fromJS(data: any): ResultOfElement1dResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new ResultOfElement1dResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
-        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
-        data["isError"] = this.isError;
-        return data;
-    }
-}
-
-export interface IResultOfElement1dResponse {
-    value: Element1dResponse2 | undefined;
-    error: BeamOsError | undefined;
-    isError: boolean;
-
-    [key: string]: any;
-}
-
-export class ResultOfint implements IResultOfint {
-    value!: number;
-    error!: BeamOsError | undefined;
-    isError!: boolean;
-
-    [key: string]: any;
-
-    constructor(data?: IResultOfint) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"];
-            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
-            this.isError = _data["isError"];
-        }
-    }
-
-    static fromJS(data: any): ResultOfint {
-        data = typeof data === 'object' ? data : {};
-        let result = new ResultOfint();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value;
-        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
-        data["isError"] = this.isError;
-        return data;
-    }
-}
-
-export interface IResultOfint {
-    value: number;
-    error: BeamOsError | undefined;
-    isError: boolean;
-
-    [key: string]: any;
-}
-
-export class ResultOfInternalNode implements IResultOfInternalNode {
-    value!: InternalNode2 | undefined;
-    error!: BeamOsError | undefined;
-    isError!: boolean;
-
-    [key: string]: any;
-
-    constructor(data?: IResultOfInternalNode) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"] ? InternalNode2.fromJS(_data["value"]) : <any>undefined;
-            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
-            this.isError = _data["isError"];
-        }
-    }
-
-    static fromJS(data: any): ResultOfInternalNode {
-        data = typeof data === 'object' ? data : {};
-        let result = new ResultOfInternalNode();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
-        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
-        data["isError"] = this.isError;
-        return data;
-    }
-}
-
-export interface IResultOfInternalNode {
-    value: InternalNode2 | undefined;
-    error: BeamOsError | undefined;
-    isError: boolean;
-
-    [key: string]: any;
-}
-
-export class ResultOfListOfModelInfoResponse implements IResultOfListOfModelInfoResponse {
-    value!: ModelInfoResponse[] | undefined;
-    error!: BeamOsError | undefined;
-    isError!: boolean;
-
-    [key: string]: any;
-
-    constructor(data?: IResultOfListOfModelInfoResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            if (Array.isArray(_data["value"])) {
-                this.value = [] as any;
-                for (let item of _data["value"])
-                    this.value!.push(ModelInfoResponse.fromJS(item));
-            }
-            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
-            this.isError = _data["isError"];
-        }
-    }
-
-    static fromJS(data: any): ResultOfListOfModelInfoResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new ResultOfListOfModelInfoResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        if (Array.isArray(this.value)) {
-            data["value"] = [];
-            for (let item of this.value)
-                data["value"].push(item ? item.toJSON() : <any>undefined);
-        }
-        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
-        data["isError"] = this.isError;
-        return data;
-    }
-}
-
-export interface IResultOfListOfModelInfoResponse {
-    value: ModelInfoResponse[] | undefined;
-    error: BeamOsError | undefined;
-    isError: boolean;
-
-    [key: string]: any;
-}
-
-export class ResultOfListOfModelProposalInfo implements IResultOfListOfModelProposalInfo {
-    value!: ModelProposalInfo2[] | undefined;
-    error!: BeamOsError | undefined;
-    isError!: boolean;
-
-    [key: string]: any;
-
-    constructor(data?: IResultOfListOfModelProposalInfo) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            if (Array.isArray(_data["value"])) {
-                this.value = [] as any;
-                for (let item of _data["value"])
-                    this.value!.push(ModelProposalInfo2.fromJS(item));
-            }
-            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
-            this.isError = _data["isError"];
-        }
-    }
-
-    static fromJS(data: any): ResultOfListOfModelProposalInfo {
-        data = typeof data === 'object' ? data : {};
-        let result = new ResultOfListOfModelProposalInfo();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        if (Array.isArray(this.value)) {
-            data["value"] = [];
-            for (let item of this.value)
-                data["value"].push(item ? item.toJSON() : <any>undefined);
-        }
-        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
-        data["isError"] = this.isError;
-        return data;
-    }
-}
-
-export interface IResultOfListOfModelProposalInfo {
-    value: ModelProposalInfo2[] | undefined;
-    error: BeamOsError | undefined;
-    isError: boolean;
-
-    [key: string]: any;
-}
-
-export class ResultOfLoadCase implements IResultOfLoadCase {
-    value!: LoadCase2 | undefined;
-    error!: BeamOsError | undefined;
-    isError!: boolean;
-
-    [key: string]: any;
-
-    constructor(data?: IResultOfLoadCase) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"] ? LoadCase2.fromJS(_data["value"]) : <any>undefined;
-            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
-            this.isError = _data["isError"];
-        }
-    }
-
-    static fromJS(data: any): ResultOfLoadCase {
-        data = typeof data === 'object' ? data : {};
-        let result = new ResultOfLoadCase();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
-        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
-        data["isError"] = this.isError;
-        return data;
-    }
-}
-
-export interface IResultOfLoadCase {
-    value: LoadCase2 | undefined;
-    error: BeamOsError | undefined;
-    isError: boolean;
-
-    [key: string]: any;
-}
-
-export class ResultOfLoadCombination implements IResultOfLoadCombination {
-    value!: LoadCombination2 | undefined;
-    error!: BeamOsError | undefined;
-    isError!: boolean;
-
-    [key: string]: any;
-
-    constructor(data?: IResultOfLoadCombination) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"] ? LoadCombination2.fromJS(_data["value"]) : <any>undefined;
-            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
-            this.isError = _data["isError"];
-        }
-    }
-
-    static fromJS(data: any): ResultOfLoadCombination {
-        data = typeof data === 'object' ? data : {};
-        let result = new ResultOfLoadCombination();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
-        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
-        data["isError"] = this.isError;
-        return data;
-    }
-}
-
-export interface IResultOfLoadCombination {
-    value: LoadCombination2 | undefined;
-    error: BeamOsError | undefined;
-    isError: boolean;
-
-    [key: string]: any;
-}
-
-export class ResultOfMaterialResponse implements IResultOfMaterialResponse {
-    value!: MaterialResponse2 | undefined;
-    error!: BeamOsError | undefined;
-    isError!: boolean;
-
-    [key: string]: any;
-
-    constructor(data?: IResultOfMaterialResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"] ? MaterialResponse2.fromJS(_data["value"]) : <any>undefined;
-            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
-            this.isError = _data["isError"];
-        }
-    }
-
-    static fromJS(data: any): ResultOfMaterialResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new ResultOfMaterialResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
-        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
-        data["isError"] = this.isError;
-        return data;
-    }
-}
-
-export interface IResultOfMaterialResponse {
-    value: MaterialResponse2 | undefined;
-    error: BeamOsError | undefined;
-    isError: boolean;
-
-    [key: string]: any;
-}
-
-export class ResultOfModelEntityResponse implements IResultOfModelEntityResponse {
-    value!: ModelEntityResponse | undefined;
-    error!: BeamOsError | undefined;
-    isError!: boolean;
-
-    [key: string]: any;
-
-    constructor(data?: IResultOfModelEntityResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"] ? ModelEntityResponse.fromJS(_data["value"]) : <any>undefined;
-            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
-            this.isError = _data["isError"];
-        }
-    }
-
-    static fromJS(data: any): ResultOfModelEntityResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new ResultOfModelEntityResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
-        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
-        data["isError"] = this.isError;
-        return data;
-    }
-}
-
-export interface IResultOfModelEntityResponse {
-    value: ModelEntityResponse | undefined;
-    error: BeamOsError | undefined;
-    isError: boolean;
-
-    [key: string]: any;
-}
-
-export class ResultOfModelProposalResponse implements IResultOfModelProposalResponse {
-    value!: ModelProposalResponse | undefined;
-    error!: BeamOsError | undefined;
-    isError!: boolean;
-
-    [key: string]: any;
-
-    constructor(data?: IResultOfModelProposalResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"] ? ModelProposalResponse.fromJS(_data["value"]) : <any>undefined;
-            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
-            this.isError = _data["isError"];
-        }
-    }
-
-    static fromJS(data: any): ResultOfModelProposalResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new ResultOfModelProposalResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
-        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
-        data["isError"] = this.isError;
-        return data;
-    }
-}
-
-export interface IResultOfModelProposalResponse {
-    value: ModelProposalResponse | undefined;
-    error: BeamOsError | undefined;
-    isError: boolean;
-
-    [key: string]: any;
-}
-
-export class ResultOfModelResponse implements IResultOfModelResponse {
-    value!: ModelResponse | undefined;
-    error!: BeamOsError | undefined;
-    isError!: boolean;
-
-    [key: string]: any;
-
-    constructor(data?: IResultOfModelResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"] ? ModelResponse.fromJS(_data["value"]) : <any>undefined;
-            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
-            this.isError = _data["isError"];
-        }
-    }
-
-    static fromJS(data: any): ResultOfModelResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new ResultOfModelResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
-        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
-        data["isError"] = this.isError;
-        return data;
-    }
-}
-
-export interface IResultOfModelResponse {
-    value: ModelResponse | undefined;
-    error: BeamOsError | undefined;
-    isError: boolean;
-
-    [key: string]: any;
-}
-
-export class ResultOfMomentLoadResponse implements IResultOfMomentLoadResponse {
-    value!: MomentLoadResponse2 | undefined;
-    error!: BeamOsError | undefined;
-    isError!: boolean;
-
-    [key: string]: any;
-
-    constructor(data?: IResultOfMomentLoadResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"] ? MomentLoadResponse2.fromJS(_data["value"]) : <any>undefined;
-            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
-            this.isError = _data["isError"];
-        }
-    }
-
-    static fromJS(data: any): ResultOfMomentLoadResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new ResultOfMomentLoadResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
-        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
-        data["isError"] = this.isError;
-        return data;
-    }
-}
-
-export interface IResultOfMomentLoadResponse {
-    value: MomentLoadResponse2 | undefined;
-    error: BeamOsError | undefined;
-    isError: boolean;
-
-    [key: string]: any;
-}
-
-export class ResultOfNodeResponse implements IResultOfNodeResponse {
-    value!: NodeResponse2 | undefined;
-    error!: BeamOsError | undefined;
-    isError!: boolean;
-
-    [key: string]: any;
-
-    constructor(data?: IResultOfNodeResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"] ? NodeResponse2.fromJS(_data["value"]) : <any>undefined;
-            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
-            this.isError = _data["isError"];
-        }
-    }
-
-    static fromJS(data: any): ResultOfNodeResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new ResultOfNodeResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
-        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
-        data["isError"] = this.isError;
-        return data;
-    }
-}
-
-export interface IResultOfNodeResponse {
-    value: NodeResponse2 | undefined;
-    error: BeamOsError | undefined;
-    isError: boolean;
-
-    [key: string]: any;
-}
-
-export class ResultOfNodeResultResponse implements IResultOfNodeResultResponse {
-    value!: NodeResultResponse2 | undefined;
-    error!: BeamOsError | undefined;
-    isError!: boolean;
-
-    [key: string]: any;
-
-    constructor(data?: IResultOfNodeResultResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"] ? NodeResultResponse2.fromJS(_data["value"]) : <any>undefined;
-            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
-            this.isError = _data["isError"];
-        }
-    }
-
-    static fromJS(data: any): ResultOfNodeResultResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new ResultOfNodeResultResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
-        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
-        data["isError"] = this.isError;
-        return data;
-    }
-}
-
-export interface IResultOfNodeResultResponse {
-    value: NodeResultResponse2 | undefined;
-    error: BeamOsError | undefined;
-    isError: boolean;
-
-    [key: string]: any;
-}
-
-export class ResultOfPointLoadResponse implements IResultOfPointLoadResponse {
-    value!: PointLoadResponse2 | undefined;
-    error!: BeamOsError | undefined;
-    isError!: boolean;
-
-    [key: string]: any;
-
-    constructor(data?: IResultOfPointLoadResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"] ? PointLoadResponse2.fromJS(_data["value"]) : <any>undefined;
-            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
-            this.isError = _data["isError"];
-        }
-    }
-
-    static fromJS(data: any): ResultOfPointLoadResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new ResultOfPointLoadResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
-        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
-        data["isError"] = this.isError;
-        return data;
-    }
-}
-
-export interface IResultOfPointLoadResponse {
-    value: PointLoadResponse2 | undefined;
-    error: BeamOsError | undefined;
-    isError: boolean;
-
-    [key: string]: any;
-}
-
-export class ResultOfResultSetResponse implements IResultOfResultSetResponse {
-    value!: ResultSetResponse2 | undefined;
-    error!: BeamOsError | undefined;
-    isError!: boolean;
-
-    [key: string]: any;
-
-    constructor(data?: IResultOfResultSetResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"] ? ResultSetResponse2.fromJS(_data["value"]) : <any>undefined;
-            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
-            this.isError = _data["isError"];
-        }
-    }
-
-    static fromJS(data: any): ResultOfResultSetResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new ResultOfResultSetResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
-        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
-        data["isError"] = this.isError;
-        return data;
-    }
-}
-
-export interface IResultOfResultSetResponse {
-    value: ResultSetResponse2 | undefined;
-    error: BeamOsError | undefined;
-    isError: boolean;
-
-    [key: string]: any;
-}
-
-export class ResultOfSectionProfileFromLibrary implements IResultOfSectionProfileFromLibrary {
-    value!: SectionProfileFromLibrary2 | undefined;
-    error!: BeamOsError | undefined;
-    isError!: boolean;
-
-    [key: string]: any;
-
-    constructor(data?: IResultOfSectionProfileFromLibrary) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"] ? SectionProfileFromLibrary2.fromJS(_data["value"]) : <any>undefined;
-            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
-            this.isError = _data["isError"];
-        }
-    }
-
-    static fromJS(data: any): ResultOfSectionProfileFromLibrary {
-        data = typeof data === 'object' ? data : {};
-        let result = new ResultOfSectionProfileFromLibrary();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
-        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
-        data["isError"] = this.isError;
-        return data;
-    }
-}
-
-export interface IResultOfSectionProfileFromLibrary {
-    value: SectionProfileFromLibrary2 | undefined;
-    error: BeamOsError | undefined;
-    isError: boolean;
-
-    [key: string]: any;
-}
-
-export class ResultOfSectionProfileResponse implements IResultOfSectionProfileResponse {
-    value!: SectionProfileResponse2 | undefined;
-    error!: BeamOsError | undefined;
-    isError!: boolean;
-
-    [key: string]: any;
-
-    constructor(data?: IResultOfSectionProfileResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"] ? SectionProfileResponse2.fromJS(_data["value"]) : <any>undefined;
-            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
-            this.isError = _data["isError"];
-        }
-    }
-
-    static fromJS(data: any): ResultOfSectionProfileResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new ResultOfSectionProfileResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
-        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
-        data["isError"] = this.isError;
-        return data;
-    }
-}
-
-export interface IResultOfSectionProfileResponse {
-    value: SectionProfileResponse2 | undefined;
-    error: BeamOsError | undefined;
-    isError: boolean;
-
-    [key: string]: any;
-}
-
 export class ResultSet implements IResultSet {
     id!: number;
     modelId!: string;
@@ -11494,82 +9136,6 @@ export class ResultSetResponse implements IResultSetResponse {
 }
 
 export interface IResultSetResponse {
-    id: number;
-    modelId: string;
-    nodeResults?: NodeResultResponse[] | undefined;
-    element1dResults?: Element1dResultResponse[] | undefined;
-
-    [key: string]: any;
-}
-
-export class ResultSetResponse2 implements IResultSetResponse2 {
-    id!: number;
-    modelId!: string;
-    nodeResults?: NodeResultResponse[] | undefined;
-    element1dResults?: Element1dResultResponse[] | undefined;
-
-    [key: string]: any;
-
-    constructor(data?: IResultSetResponse2) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.modelId = _data["modelId"];
-            if (Array.isArray(_data["nodeResults"])) {
-                this.nodeResults = [] as any;
-                for (let item of _data["nodeResults"])
-                    this.nodeResults!.push(NodeResultResponse.fromJS(item));
-            }
-            if (Array.isArray(_data["element1dResults"])) {
-                this.element1dResults = [] as any;
-                for (let item of _data["element1dResults"])
-                    this.element1dResults!.push(Element1dResultResponse.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): ResultSetResponse2 {
-        data = typeof data === 'object' ? data : {};
-        let result = new ResultSetResponse2();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["modelId"] = this.modelId;
-        if (Array.isArray(this.nodeResults)) {
-            data["nodeResults"] = [];
-            for (let item of this.nodeResults)
-                data["nodeResults"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.element1dResults)) {
-            data["element1dResults"] = [];
-            for (let item of this.element1dResults)
-                data["element1dResults"].push(item ? item.toJSON() : <any>undefined);
-        }
-        return data;
-    }
-}
-
-export interface IResultSetResponse2 {
     id: number;
     modelId: string;
     nodeResults?: NodeResultResponse[] | undefined;
@@ -11778,62 +9344,6 @@ export interface ISectionProfileFromLibrary {
     [key: string]: any;
 }
 
-export class SectionProfileFromLibrary2 implements ISectionProfileFromLibrary2 {
-    id!: number;
-    library!: number;
-    name!: string;
-
-    [key: string]: any;
-
-    constructor(data?: ISectionProfileFromLibrary2) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.library = _data["library"];
-            this.name = _data["name"];
-        }
-    }
-
-    static fromJS(data: any): SectionProfileFromLibrary2 {
-        data = typeof data === 'object' ? data : {};
-        let result = new SectionProfileFromLibrary2();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["library"] = this.library;
-        data["name"] = this.name;
-        return data;
-    }
-}
-
-export interface ISectionProfileFromLibrary2 {
-    id: number;
-    library: number;
-    name: string;
-
-    [key: string]: any;
-}
-
 export class SectionProfileFromLibraryData implements ISectionProfileFromLibraryData {
     library!: number;
     name!: string;
@@ -11880,58 +9390,6 @@ export class SectionProfileFromLibraryData implements ISectionProfileFromLibrary
 }
 
 export interface ISectionProfileFromLibraryData {
-    library: number;
-    name: string;
-
-    [key: string]: any;
-}
-
-export class SectionProfileFromLibraryData2 implements ISectionProfileFromLibraryData2 {
-    library!: number;
-    name!: string;
-
-    [key: string]: any;
-
-    constructor(data?: ISectionProfileFromLibraryData2) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.library = _data["library"];
-            this.name = _data["name"];
-        }
-    }
-
-    static fromJS(data: any): SectionProfileFromLibraryData2 {
-        data = typeof data === 'object' ? data : {};
-        let result = new SectionProfileFromLibraryData2();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["library"] = this.library;
-        data["name"] = this.name;
-        return data;
-    }
-}
-
-export interface ISectionProfileFromLibraryData2 {
     library: number;
     name: string;
 
@@ -12014,98 +9472,6 @@ export class SectionProfileResponse implements ISectionProfileResponse {
 }
 
 export interface ISectionProfileResponse {
-    id: number;
-    modelId: string;
-    name: string;
-    area: number;
-    strongAxisMomentOfInertia: number;
-    weakAxisMomentOfInertia: number;
-    polarMomentOfInertia: number;
-    strongAxisPlasticSectionModulus: number;
-    weakAxisPlasticSectionModulus: number;
-    strongAxisShearArea: number | undefined;
-    weakAxisShearArea: number | undefined;
-    lengthUnit: number;
-
-    [key: string]: any;
-}
-
-export class SectionProfileResponse2 implements ISectionProfileResponse2 {
-    id!: number;
-    modelId!: string;
-    name!: string;
-    area!: number;
-    strongAxisMomentOfInertia!: number;
-    weakAxisMomentOfInertia!: number;
-    polarMomentOfInertia!: number;
-    strongAxisPlasticSectionModulus!: number;
-    weakAxisPlasticSectionModulus!: number;
-    strongAxisShearArea!: number | undefined;
-    weakAxisShearArea!: number | undefined;
-    lengthUnit!: number;
-
-    [key: string]: any;
-
-    constructor(data?: ISectionProfileResponse2) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.modelId = _data["modelId"];
-            this.name = _data["name"];
-            this.area = _data["area"];
-            this.strongAxisMomentOfInertia = _data["strongAxisMomentOfInertia"];
-            this.weakAxisMomentOfInertia = _data["weakAxisMomentOfInertia"];
-            this.polarMomentOfInertia = _data["polarMomentOfInertia"];
-            this.strongAxisPlasticSectionModulus = _data["strongAxisPlasticSectionModulus"];
-            this.weakAxisPlasticSectionModulus = _data["weakAxisPlasticSectionModulus"];
-            this.strongAxisShearArea = _data["strongAxisShearArea"];
-            this.weakAxisShearArea = _data["weakAxisShearArea"];
-            this.lengthUnit = _data["lengthUnit"];
-        }
-    }
-
-    static fromJS(data: any): SectionProfileResponse2 {
-        data = typeof data === 'object' ? data : {};
-        let result = new SectionProfileResponse2();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["modelId"] = this.modelId;
-        data["name"] = this.name;
-        data["area"] = this.area;
-        data["strongAxisMomentOfInertia"] = this.strongAxisMomentOfInertia;
-        data["weakAxisMomentOfInertia"] = this.weakAxisMomentOfInertia;
-        data["polarMomentOfInertia"] = this.polarMomentOfInertia;
-        data["strongAxisPlasticSectionModulus"] = this.strongAxisPlasticSectionModulus;
-        data["weakAxisPlasticSectionModulus"] = this.weakAxisPlasticSectionModulus;
-        data["strongAxisShearArea"] = this.strongAxisShearArea;
-        data["weakAxisShearArea"] = this.weakAxisShearArea;
-        data["lengthUnit"] = this.lengthUnit;
-        return data;
-    }
-}
-
-export interface ISectionProfileResponse2 {
     id: number;
     modelId: string;
     name: string;

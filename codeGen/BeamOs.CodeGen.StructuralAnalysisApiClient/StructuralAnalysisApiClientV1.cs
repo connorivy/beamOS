@@ -25,303 +25,304 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
     using System = global::System;
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.4.0.0 (NJsonSchema v11.3.2.0 (Newtonsoft.Json v13.0.0.0))")]
+
     public partial interface IStructuralAnalysisApiClientV1
     {
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfModelResponse> ModelRestoreAsync(System.Guid modelId, System.DateTimeOffset body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<ModelResponse>> ModelRestoreAsync(System.Guid modelId, System.DateTimeOffset body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfSectionProfileResponse> AddSectionProfileFromLibraryAsync(System.Guid modelId, SectionProfileFromLibraryData body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<SectionProfileResponse>> AddSectionProfileFromLibraryAsync(System.Guid modelId, SectionProfileFromLibraryData body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfBatchResponse> BatchPutSectionProfileFromLibraryAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<SectionProfileFromLibrary> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<BatchResponse>> BatchPutSectionProfileFromLibraryAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<SectionProfileFromLibrary> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfSectionProfileResponse> CreateSectionProfileAsync(System.Guid modelId, CreateSectionProfileRequest body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<SectionProfileResponse>> CreateSectionProfileAsync(System.Guid modelId, CreateSectionProfileRequest body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfBatchResponse> BatchPutSectionProfileAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<PutSectionProfileRequest> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<BatchResponse>> BatchPutSectionProfileAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<PutSectionProfileRequest> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfModelEntityResponse> DeleteSectionProfileAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteSectionProfileAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfSectionProfileResponse> PutSectionProfileAsync(int id, System.Guid modelId, SectionProfileData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<SectionProfileResponse>> PutSectionProfileAsync(int id, System.Guid modelId, SectionProfileData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfSectionProfileFromLibrary> PutSectionProfileFromLibraryAsync(int id, System.Guid modelId, SectionProfileFromLibraryData2 body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<SectionProfileFromLibrary>> PutSectionProfileFromLibraryAsync(int id, System.Guid modelId, SectionProfileFromLibraryData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfPointLoadResponse> CreatePointLoadAsync(System.Guid modelId, CreatePointLoadRequest body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<PointLoadResponse>> CreatePointLoadAsync(System.Guid modelId, CreatePointLoadRequest body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfBatchResponse> BatchPutPointLoadAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<PutPointLoadRequest> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<BatchResponse>> BatchPutPointLoadAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<PutPointLoadRequest> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfModelEntityResponse> DeletePointLoadAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeletePointLoadAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfPointLoadResponse> PutPointLoadAsync(int id, System.Guid modelId, PointLoadData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<PointLoadResponse>> PutPointLoadAsync(int id, System.Guid modelId, PointLoadData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfNodeResponse> CreateNodeAsync(System.Guid modelId, CreateNodeRequest body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<NodeResponse>> CreateNodeAsync(System.Guid modelId, CreateNodeRequest body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfNodeResponse> PatchNodeAsync(System.Guid modelId, UpdateNodeRequest body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<NodeResponse>> PatchNodeAsync(System.Guid modelId, UpdateNodeRequest body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfBatchResponse> BatchPutNodeAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<PutNodeRequest> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<BatchResponse>> BatchPutNodeAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<PutNodeRequest> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfInternalNode> GetInternalNodeAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<InternalNode>> GetInternalNodeAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfInternalNode> PutInternalNodeAsync(System.Guid modelId, int id, InternalNodeData body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<InternalNode>> PutInternalNodeAsync(System.Guid modelId, int id, InternalNodeData body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfInternalNode> CreateInternalNodeAsync(System.Guid modelId, CreateInternalNodeRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<InternalNode>> CreateInternalNodeAsync(System.Guid modelId, CreateInternalNodeRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfBatchResponse> BatchPutInternalNodeAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<InternalNode> body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<BatchResponse>> BatchPutInternalNodeAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<InternalNode> body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfModelEntityResponse> DeleteNodeAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteNodeAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfNodeResponse> PutNodeAsync(int id, System.Guid modelId, NodeData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<NodeResponse>> PutNodeAsync(int id, System.Guid modelId, NodeData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfMomentLoadResponse> CreateMomentLoadAsync(System.Guid modelId, CreateMomentLoadRequest body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<MomentLoadResponse>> CreateMomentLoadAsync(System.Guid modelId, CreateMomentLoadRequest body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfBatchResponse> BatchPutMomentLoadAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<PutMomentLoadRequest> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<BatchResponse>> BatchPutMomentLoadAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<PutMomentLoadRequest> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfModelEntityResponse> DeleteMomentLoadAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteMomentLoadAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfMomentLoadResponse> PutMomentLoadAsync(int id, System.Guid modelId, MomentLoadData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<MomentLoadResponse>> PutMomentLoadAsync(int id, System.Guid modelId, MomentLoadData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfModelResponse> CreateModelAsync(CreateModelRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<ModelResponse>> CreateModelAsync(CreateModelRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfListOfModelInfoResponse> GetModelsAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<System.Collections.Generic.ICollection<ModelInfoResponse>>> GetModelsAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfModelProposalResponse> CreateModelProposalAsync(System.Guid modelId, ModelProposalData body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<ModelProposalResponse>> CreateModelProposalAsync(System.Guid modelId, ModelProposalData body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfListOfModelProposalInfo> GetModelProposalsAsync(System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<System.Collections.Generic.ICollection<ModelProposalInfo2>>> GetModelProposalsAsync(System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfModelProposalResponse> GetModelProposalAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<ModelProposalResponse>> GetModelProposalAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfModelResponse> AcceptModelProposalAsync(System.Guid modelId, int id, System.Collections.Generic.IEnumerable<EntityProposal> body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<ModelResponse>> AcceptModelProposalAsync(System.Guid modelId, int id, System.Collections.Generic.IEnumerable<EntityProposal> body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfboolean> RejectModelProposalAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<bool>> RejectModelProposalAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfModelResponse> GetModelAsync(System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<ModelResponse>> GetModelAsync(System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfModelResponse> PutModelAsync(System.Guid modelId, ModelInfoData body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<ModelResponse>> PutModelAsync(System.Guid modelId, ModelInfoData body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfModelProposalResponse> RepairModelAsync(System.Guid modelId, string body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<ModelProposalResponse>> RepairModelAsync(System.Guid modelId, string body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfMaterialResponse> CreateMaterialAsync(System.Guid modelId, CreateMaterialRequest body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<MaterialResponse>> CreateMaterialAsync(System.Guid modelId, CreateMaterialRequest body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfBatchResponse> BatchPutMaterialAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<PutMaterialRequest> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<BatchResponse>> BatchPutMaterialAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<PutMaterialRequest> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfMaterialResponse> PutMaterialAsync(int id, System.Guid modelId, MaterialData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<MaterialResponse>> PutMaterialAsync(int id, System.Guid modelId, MaterialData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfBatchResponse> BatchPutLoadCombinationAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<LoadCombination> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<BatchResponse>> BatchPutLoadCombinationAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<LoadCombination> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfLoadCombination> CreateLoadCombinationAsync(System.Guid modelId, LoadCombinationData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<LoadCombination>> CreateLoadCombinationAsync(System.Guid modelId, LoadCombinationData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfModelEntityResponse> DeleteLoadCombinationAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteLoadCombinationAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfLoadCombination> GetLoadCombinationAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<LoadCombination>> GetLoadCombinationAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfLoadCombination> PutLoadCombinationAsync(System.Guid modelId, int id, LoadCombinationData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<LoadCombination>> PutLoadCombinationAsync(System.Guid modelId, int id, LoadCombinationData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfBatchResponse> BatchPutLoadCaseAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<LoadCase> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<BatchResponse>> BatchPutLoadCaseAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<LoadCase> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfLoadCase> CreateLoadCaseAsync(System.Guid modelId, LoadCaseData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<LoadCase>> CreateLoadCaseAsync(System.Guid modelId, LoadCaseData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfModelEntityResponse> DeleteLoadCaseAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteLoadCaseAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfLoadCase> GetLoadCaseAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<LoadCase>> GetLoadCaseAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfLoadCase> PutLoadCaseAsync(System.Guid modelId, int id, LoadCaseData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<LoadCase>> PutLoadCaseAsync(System.Guid modelId, int id, LoadCaseData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfElement1dResponse> CreateElement1dAsync(System.Guid modelId, CreateElement1dRequest body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<Element1dResponse>> CreateElement1dAsync(System.Guid modelId, CreateElement1dRequest body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfBatchResponse> BatchPutElement1dAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<PutElement1dRequest> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<BatchResponse>> BatchPutElement1dAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<PutElement1dRequest> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfModelEntityResponse> DeleteElement1dAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteElement1dAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfElement1dResponse> GetElement1dAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<Element1dResponse>> GetElement1dAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfElement1dResponse> PutElement1dAsync(int id, System.Guid modelId, Element1dData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<Element1dResponse>> PutElement1dAsync(int id, System.Guid modelId, Element1dData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfAnalyticalResultsResponse> RunDirectStiffnessMethodAsync(System.Guid modelId, RunDsmRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<AnalyticalResultsResponse>> RunDirectStiffnessMethodAsync(System.Guid modelId, RunDsmRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfAnalyticalResultsResponse> RunOpenSeesAnalysisAsync(System.Guid modelId, RunDsmRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<AnalyticalResultsResponse>> RunOpenSeesAnalysisAsync(System.Guid modelId, RunDsmRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfint> DeleteAllResultSetsAsync(System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<int>> DeleteAllResultSetsAsync(System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfAnalyticalResultsResponse> GetDiagramsAsync(System.Guid modelId, int id, string unitsOverride = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<AnalyticalResultsResponse>> GetDiagramsAsync(System.Guid modelId, int id, string unitsOverride = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfNodeResultResponse> GetNodeResultAsync(System.Guid modelId, int resultSetId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<NodeResultResponse>> GetNodeResultAsync(System.Guid modelId, int resultSetId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfResultSetResponse> GetResultSetAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<ResultSetResponse>> GetResultSetAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
     }
 
@@ -360,7 +361,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfModelResponse> ModelRestoreAsync(System.Guid modelId, System.DateTimeOffset body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelResponse>> ModelRestoreAsync(System.Guid modelId, System.DateTimeOffset body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -413,18 +414,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfModelResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<ModelResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -443,7 +442,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfSectionProfileResponse> AddSectionProfileFromLibraryAsync(System.Guid modelId, SectionProfileFromLibraryData body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<SectionProfileResponse>> AddSectionProfileFromLibraryAsync(System.Guid modelId, SectionProfileFromLibraryData body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -493,18 +492,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfSectionProfileResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<SectionProfileResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -523,7 +520,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfBatchResponse> BatchPutSectionProfileFromLibraryAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<SectionProfileFromLibrary> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<BatchResponse>> BatchPutSectionProfileFromLibraryAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<SectionProfileFromLibrary> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -576,18 +573,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfBatchResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<BatchResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -606,7 +601,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfSectionProfileResponse> CreateSectionProfileAsync(System.Guid modelId, CreateSectionProfileRequest body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<SectionProfileResponse>> CreateSectionProfileAsync(System.Guid modelId, CreateSectionProfileRequest body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -659,18 +654,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfSectionProfileResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<SectionProfileResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -689,7 +682,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfBatchResponse> BatchPutSectionProfileAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<PutSectionProfileRequest> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<BatchResponse>> BatchPutSectionProfileAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<PutSectionProfileRequest> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -742,18 +735,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfBatchResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<BatchResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -772,7 +763,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfModelEntityResponse> DeleteSectionProfileAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteSectionProfileAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -822,18 +813,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfModelEntityResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<ModelEntityResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -852,7 +841,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfSectionProfileResponse> PutSectionProfileAsync(int id, System.Guid modelId, SectionProfileData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<SectionProfileResponse>> PutSectionProfileAsync(int id, System.Guid modelId, SectionProfileData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -909,18 +898,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfSectionProfileResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<SectionProfileResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -939,7 +926,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfSectionProfileFromLibrary> PutSectionProfileFromLibraryAsync(int id, System.Guid modelId, SectionProfileFromLibraryData2 body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<SectionProfileFromLibrary>> PutSectionProfileFromLibraryAsync(int id, System.Guid modelId, SectionProfileFromLibraryData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -997,18 +984,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfSectionProfileFromLibrary>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<SectionProfileFromLibrary>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -1027,7 +1012,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfPointLoadResponse> CreatePointLoadAsync(System.Guid modelId, CreatePointLoadRequest body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<PointLoadResponse>> CreatePointLoadAsync(System.Guid modelId, CreatePointLoadRequest body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -1080,18 +1065,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfPointLoadResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<PointLoadResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -1110,7 +1093,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfBatchResponse> BatchPutPointLoadAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<PutPointLoadRequest> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<BatchResponse>> BatchPutPointLoadAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<PutPointLoadRequest> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -1163,18 +1146,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfBatchResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<BatchResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -1193,7 +1174,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfModelEntityResponse> DeletePointLoadAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeletePointLoadAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -1243,18 +1224,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfModelEntityResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<ModelEntityResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -1273,7 +1252,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfPointLoadResponse> PutPointLoadAsync(int id, System.Guid modelId, PointLoadData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<PointLoadResponse>> PutPointLoadAsync(int id, System.Guid modelId, PointLoadData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -1330,18 +1309,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfPointLoadResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<PointLoadResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -1360,7 +1337,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfNodeResponse> CreateNodeAsync(System.Guid modelId, CreateNodeRequest body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<NodeResponse>> CreateNodeAsync(System.Guid modelId, CreateNodeRequest body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -1413,18 +1390,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfNodeResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<NodeResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -1443,7 +1418,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfNodeResponse> PatchNodeAsync(System.Guid modelId, UpdateNodeRequest body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<NodeResponse>> PatchNodeAsync(System.Guid modelId, UpdateNodeRequest body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -1496,18 +1471,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfNodeResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<NodeResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -1526,7 +1499,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfBatchResponse> BatchPutNodeAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<PutNodeRequest> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<BatchResponse>> BatchPutNodeAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<PutNodeRequest> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -1579,18 +1552,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfBatchResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<BatchResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -1609,7 +1580,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfInternalNode> GetInternalNodeAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<InternalNode>> GetInternalNodeAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -1660,18 +1631,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfInternalNode>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<InternalNode>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -1690,7 +1659,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfInternalNode> PutInternalNodeAsync(System.Guid modelId, int id, InternalNodeData body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<InternalNode>> PutInternalNodeAsync(System.Guid modelId, int id, InternalNodeData body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -1745,18 +1714,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfInternalNode>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<InternalNode>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -1775,7 +1742,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfInternalNode> CreateInternalNodeAsync(System.Guid modelId, CreateInternalNodeRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<InternalNode>> CreateInternalNodeAsync(System.Guid modelId, CreateInternalNodeRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -1825,18 +1792,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfInternalNode>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<InternalNode>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -1855,7 +1820,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfBatchResponse> BatchPutInternalNodeAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<InternalNode> body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<BatchResponse>> BatchPutInternalNodeAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<InternalNode> body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -1905,18 +1870,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfBatchResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<BatchResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -1935,7 +1898,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfModelEntityResponse> DeleteNodeAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteNodeAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -1985,18 +1948,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfModelEntityResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<ModelEntityResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -2015,7 +1976,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfNodeResponse> PutNodeAsync(int id, System.Guid modelId, NodeData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<NodeResponse>> PutNodeAsync(int id, System.Guid modelId, NodeData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -2072,18 +2033,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfNodeResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<NodeResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -2102,7 +2061,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfMomentLoadResponse> CreateMomentLoadAsync(System.Guid modelId, CreateMomentLoadRequest body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<MomentLoadResponse>> CreateMomentLoadAsync(System.Guid modelId, CreateMomentLoadRequest body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -2155,18 +2114,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfMomentLoadResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<MomentLoadResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -2185,7 +2142,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfBatchResponse> BatchPutMomentLoadAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<PutMomentLoadRequest> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<BatchResponse>> BatchPutMomentLoadAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<PutMomentLoadRequest> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -2238,18 +2195,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfBatchResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<BatchResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -2268,7 +2223,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfModelEntityResponse> DeleteMomentLoadAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteMomentLoadAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -2318,18 +2273,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfModelEntityResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<ModelEntityResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -2348,7 +2301,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfMomentLoadResponse> PutMomentLoadAsync(int id, System.Guid modelId, MomentLoadData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<MomentLoadResponse>> PutMomentLoadAsync(int id, System.Guid modelId, MomentLoadData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -2405,18 +2358,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfMomentLoadResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<MomentLoadResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -2435,7 +2386,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfModelResponse> CreateModelAsync(CreateModelRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelResponse>> CreateModelAsync(CreateModelRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -2480,18 +2431,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfModelResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<ModelResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -2510,7 +2459,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfListOfModelInfoResponse> GetModelsAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<System.Collections.Generic.ICollection<ModelInfoResponse>>> GetModelsAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -2551,18 +2500,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfListOfModelInfoResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<ModelInfoResponse>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -2581,7 +2528,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfModelProposalResponse> CreateModelProposalAsync(System.Guid modelId, ModelProposalData body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelProposalResponse>> CreateModelProposalAsync(System.Guid modelId, ModelProposalData body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -2631,18 +2578,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfModelProposalResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<ModelProposalResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -2661,7 +2606,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfListOfModelProposalInfo> GetModelProposalsAsync(System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<System.Collections.Generic.ICollection<ModelProposalInfo2>>> GetModelProposalsAsync(System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -2707,18 +2652,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfListOfModelProposalInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<ModelProposalInfo2>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -2737,7 +2680,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfModelProposalResponse> GetModelProposalAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelProposalResponse>> GetModelProposalAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -2787,18 +2730,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfModelProposalResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<ModelProposalResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -2817,7 +2758,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfModelResponse> AcceptModelProposalAsync(System.Guid modelId, int id, System.Collections.Generic.IEnumerable<EntityProposal> body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelResponse>> AcceptModelProposalAsync(System.Guid modelId, int id, System.Collections.Generic.IEnumerable<EntityProposal> body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -2872,18 +2813,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfModelResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<ModelResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -2902,7 +2841,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfboolean> RejectModelProposalAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<bool>> RejectModelProposalAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -2954,18 +2893,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfboolean>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<bool>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -2984,7 +2921,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfModelResponse> GetModelAsync(System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelResponse>> GetModelAsync(System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -3029,18 +2966,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfModelResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<ModelResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -3059,7 +2994,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfModelResponse> PutModelAsync(System.Guid modelId, ModelInfoData body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelResponse>> PutModelAsync(System.Guid modelId, ModelInfoData body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -3108,18 +3043,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfModelResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<ModelResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -3138,7 +3071,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfModelProposalResponse> RepairModelAsync(System.Guid modelId, string body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelProposalResponse>> RepairModelAsync(System.Guid modelId, string body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -3188,18 +3121,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfModelProposalResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<ModelProposalResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -3218,7 +3149,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfMaterialResponse> CreateMaterialAsync(System.Guid modelId, CreateMaterialRequest body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<MaterialResponse>> CreateMaterialAsync(System.Guid modelId, CreateMaterialRequest body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -3271,18 +3202,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfMaterialResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<MaterialResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -3301,7 +3230,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfBatchResponse> BatchPutMaterialAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<PutMaterialRequest> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<BatchResponse>> BatchPutMaterialAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<PutMaterialRequest> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -3354,18 +3283,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfBatchResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<BatchResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -3384,7 +3311,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfMaterialResponse> PutMaterialAsync(int id, System.Guid modelId, MaterialData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<MaterialResponse>> PutMaterialAsync(int id, System.Guid modelId, MaterialData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -3441,18 +3368,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfMaterialResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<MaterialResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -3471,7 +3396,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfBatchResponse> BatchPutLoadCombinationAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<LoadCombination> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<BatchResponse>> BatchPutLoadCombinationAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<LoadCombination> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -3524,18 +3449,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfBatchResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<BatchResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -3554,7 +3477,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfLoadCombination> CreateLoadCombinationAsync(System.Guid modelId, LoadCombinationData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<LoadCombination>> CreateLoadCombinationAsync(System.Guid modelId, LoadCombinationData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -3607,18 +3530,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfLoadCombination>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<LoadCombination>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -3637,7 +3558,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfModelEntityResponse> DeleteLoadCombinationAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteLoadCombinationAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -3687,18 +3608,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfModelEntityResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<ModelEntityResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -3717,7 +3636,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfLoadCombination> GetLoadCombinationAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<LoadCombination>> GetLoadCombinationAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -3767,18 +3686,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfLoadCombination>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<LoadCombination>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -3797,7 +3714,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfLoadCombination> PutLoadCombinationAsync(System.Guid modelId, int id, LoadCombinationData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<LoadCombination>> PutLoadCombinationAsync(System.Guid modelId, int id, LoadCombinationData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -3854,18 +3771,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfLoadCombination>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<LoadCombination>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -3884,7 +3799,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfBatchResponse> BatchPutLoadCaseAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<LoadCase> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<BatchResponse>> BatchPutLoadCaseAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<LoadCase> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -3937,18 +3852,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfBatchResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<BatchResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -3967,7 +3880,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfLoadCase> CreateLoadCaseAsync(System.Guid modelId, LoadCaseData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<LoadCase>> CreateLoadCaseAsync(System.Guid modelId, LoadCaseData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -4020,18 +3933,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfLoadCase>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<LoadCase>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -4050,7 +3961,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfModelEntityResponse> DeleteLoadCaseAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteLoadCaseAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -4100,18 +4011,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfModelEntityResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<ModelEntityResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -4130,7 +4039,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfLoadCase> GetLoadCaseAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<LoadCase>> GetLoadCaseAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -4180,18 +4089,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfLoadCase>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<LoadCase>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -4210,7 +4117,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfLoadCase> PutLoadCaseAsync(System.Guid modelId, int id, LoadCaseData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<LoadCase>> PutLoadCaseAsync(System.Guid modelId, int id, LoadCaseData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -4267,18 +4174,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfLoadCase>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<LoadCase>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -4297,7 +4202,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfElement1dResponse> CreateElement1dAsync(System.Guid modelId, CreateElement1dRequest body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<Element1dResponse>> CreateElement1dAsync(System.Guid modelId, CreateElement1dRequest body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -4350,18 +4255,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfElement1dResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<Element1dResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -4380,7 +4283,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfBatchResponse> BatchPutElement1dAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<PutElement1dRequest> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<BatchResponse>> BatchPutElement1dAsync(System.Guid modelId, System.Collections.Generic.IEnumerable<PutElement1dRequest> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -4433,18 +4336,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfBatchResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<BatchResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -4463,7 +4364,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfModelEntityResponse> DeleteElement1dAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteElement1dAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -4513,18 +4414,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfModelEntityResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<ModelEntityResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -4543,7 +4442,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfElement1dResponse> GetElement1dAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<Element1dResponse>> GetElement1dAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -4593,18 +4492,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfElement1dResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<Element1dResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -4623,7 +4520,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfElement1dResponse> PutElement1dAsync(int id, System.Guid modelId, Element1dData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<Element1dResponse>> PutElement1dAsync(int id, System.Guid modelId, Element1dData body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -4680,18 +4577,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfElement1dResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<Element1dResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -4710,7 +4605,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfAnalyticalResultsResponse> RunDirectStiffnessMethodAsync(System.Guid modelId, RunDsmRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<AnalyticalResultsResponse>> RunDirectStiffnessMethodAsync(System.Guid modelId, RunDsmRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -4760,18 +4655,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfAnalyticalResultsResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<AnalyticalResultsResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -4790,7 +4683,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfAnalyticalResultsResponse> RunOpenSeesAnalysisAsync(System.Guid modelId, RunDsmRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<AnalyticalResultsResponse>> RunOpenSeesAnalysisAsync(System.Guid modelId, RunDsmRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -4840,18 +4733,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfAnalyticalResultsResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<AnalyticalResultsResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -4870,7 +4761,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfint> DeleteAllResultSetsAsync(System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<int>> DeleteAllResultSetsAsync(System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -4916,18 +4807,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfint>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<int>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -4946,7 +4835,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfAnalyticalResultsResponse> GetDiagramsAsync(System.Guid modelId, int id, string unitsOverride = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<AnalyticalResultsResponse>> GetDiagramsAsync(System.Guid modelId, int id, string unitsOverride = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -5003,18 +4892,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfAnalyticalResultsResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<AnalyticalResultsResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -5033,7 +4920,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfNodeResultResponse> GetNodeResultAsync(System.Guid modelId, int resultSetId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<NodeResultResponse>> GetNodeResultAsync(System.Guid modelId, int resultSetId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -5088,18 +4975,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfNodeResultResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<NodeResultResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -5118,7 +5003,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfResultSetResponse> GetResultSetAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<ResultSetResponse>> GetResultSetAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -5168,18 +5053,16 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfResultSetResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<ResultSetResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new StructuralAnalysisApiClientV1Exception("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -5206,6 +5089,26 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
             public T Object { get; }
 
             public string Text { get; }
+        }
+
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        private static System.Threading.Tasks.Task<string> ReadAsStringAsync(System.Net.Http.HttpContent content, System.Threading.CancellationToken cancellationToken)
+        {
+    #if NET5_0_OR_GREATER
+            return content.ReadAsStringAsync(cancellationToken);
+    #else
+            return content.ReadAsStringAsync();
+    #endif
+        }
+
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        private static System.Threading.Tasks.Task<System.IO.Stream> ReadAsStreamAsync(System.Net.Http.HttpContent content, System.Threading.CancellationToken cancellationToken)
+        {
+    #if NET5_0_OR_GREATER
+            return content.ReadAsStreamAsync(cancellationToken);
+    #else
+            return content.ReadAsStreamAsync();
+    #endif
         }
 
         public bool ReadResponseAsString { get; set; }

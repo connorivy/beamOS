@@ -16,7 +16,7 @@ namespace BeamOs.Tests.StructuralAnalysis.Integration.Api;
 public class EndToEndTests
 {
     private static Guid modelId;
-    private static Result<ModelResponse> modelResponseResult;
+    private static ApiResponse<ModelResponse> modelResponseResult;
 
     [Before(HookType.Class)]
     public static async Task SetupModel()
@@ -53,7 +53,7 @@ public class EndToEndTests
             Id = modelId,
         };
 
-        modelResponseResult = await AssemblySetup.StructuralAnalysisApiClient.CreateModelAsync(
+        var modelResponseResult = await AssemblySetup.StructuralAnalysisApiClient.CreateModelAsync(
             request
         );
 

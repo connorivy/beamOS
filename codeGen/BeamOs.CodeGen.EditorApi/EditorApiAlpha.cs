@@ -27,311 +27,176 @@ namespace BeamOs.CodeGen.EditorApi
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.4.0.0 (NJsonSchema v11.3.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial interface IEditorApiAlpha
     {
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> CreateElement1dAsync(Element1dResponse body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> CreateElement1dAsync(Element1dResponse body, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> CreateElement1dsAsync(System.Collections.Generic.IEnumerable<Element1dResponse> body);
+        System.Threading.Tasks.Task<Result> CreateElement1dAsync(Element1dResponse body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> CreateElement1dsAsync(System.Collections.Generic.IEnumerable<Element1dResponse> body, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> UpdateElement1dAsync(Element1dResponse body);
+        System.Threading.Tasks.Task<Result> CreateElement1dsAsync(System.Collections.Generic.IEnumerable<Element1dResponse> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> UpdateElement1dAsync(Element1dResponse body, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> UpdateElement1dsAsync(System.Collections.Generic.IEnumerable<Element1dResponse> body);
+        System.Threading.Tasks.Task<Result> UpdateElement1dAsync(Element1dResponse body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> UpdateElement1dsAsync(System.Collections.Generic.IEnumerable<Element1dResponse> body, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> DeleteElement1dAsync(IModelEntity body);
+        System.Threading.Tasks.Task<Result> UpdateElement1dsAsync(System.Collections.Generic.IEnumerable<Element1dResponse> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> DeleteElement1dAsync(IModelEntity body, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> DeleteElement1dsAsync(System.Collections.Generic.IEnumerable<IModelEntity> body);
+        System.Threading.Tasks.Task<Result> DeleteElement1dAsync(IModelEntity body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> DeleteElement1dsAsync(System.Collections.Generic.IEnumerable<IModelEntity> body, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> CreateModelAsync(ModelResponse body);
+        System.Threading.Tasks.Task<Result> DeleteElement1dsAsync(System.Collections.Generic.IEnumerable<IModelEntity> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> CreateModelAsync(ModelResponse body, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> CreateNodeAsync(NodeResponse body);
+        System.Threading.Tasks.Task<Result> CreateModelAsync(ModelResponse body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> CreateNodeAsync(NodeResponse body, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> CreateNodesAsync(System.Collections.Generic.IEnumerable<NodeResponse> body);
+        System.Threading.Tasks.Task<Result> CreateNodeAsync(NodeResponse body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> CreateNodesAsync(System.Collections.Generic.IEnumerable<NodeResponse> body, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> UpdateNodeAsync(NodeResponse body);
+        System.Threading.Tasks.Task<Result> CreateNodesAsync(System.Collections.Generic.IEnumerable<NodeResponse> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> UpdateNodeAsync(NodeResponse body, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> UpdateNodesAsync(System.Collections.Generic.IEnumerable<NodeResponse> body);
+        System.Threading.Tasks.Task<Result> UpdateNodeAsync(NodeResponse body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> UpdateNodesAsync(System.Collections.Generic.IEnumerable<NodeResponse> body, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> DeleteNodeAsync(IModelEntity body);
+        System.Threading.Tasks.Task<Result> UpdateNodesAsync(System.Collections.Generic.IEnumerable<NodeResponse> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> DeleteNodeAsync(IModelEntity body, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> DeleteNodesAsync(System.Collections.Generic.IEnumerable<IModelEntity> body);
+        System.Threading.Tasks.Task<Result> DeleteNodeAsync(IModelEntity body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> DeleteNodesAsync(System.Collections.Generic.IEnumerable<IModelEntity> body, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> CreatePointLoadAsync(PointLoadResponse body);
+        System.Threading.Tasks.Task<Result> DeleteNodesAsync(System.Collections.Generic.IEnumerable<IModelEntity> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> CreatePointLoadAsync(PointLoadResponse body, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> CreatePointLoadsAsync(System.Collections.Generic.IEnumerable<PointLoadResponse> body);
+        System.Threading.Tasks.Task<Result> CreatePointLoadAsync(PointLoadResponse body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> CreatePointLoadsAsync(System.Collections.Generic.IEnumerable<PointLoadResponse> body, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> UpdatePointLoadAsync(PointLoadResponse body);
+        System.Threading.Tasks.Task<Result> CreatePointLoadsAsync(System.Collections.Generic.IEnumerable<PointLoadResponse> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> UpdatePointLoadAsync(PointLoadResponse body, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> UpdatePointLoadsAsync(System.Collections.Generic.IEnumerable<PointLoadResponse> body);
+        System.Threading.Tasks.Task<Result> UpdatePointLoadAsync(PointLoadResponse body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> UpdatePointLoadsAsync(System.Collections.Generic.IEnumerable<PointLoadResponse> body, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> DeletePointLoadAsync(IModelEntity body);
+        System.Threading.Tasks.Task<Result> UpdatePointLoadsAsync(System.Collections.Generic.IEnumerable<PointLoadResponse> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> DeletePointLoadAsync(IModelEntity body, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> DeletePointLoadsAsync(System.Collections.Generic.IEnumerable<IModelEntity> body);
+        System.Threading.Tasks.Task<Result> DeletePointLoadAsync(IModelEntity body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> DeletePointLoadsAsync(System.Collections.Generic.IEnumerable<IModelEntity> body, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> CreateShearDiagramAsync(ShearDiagramResponse body);
+        System.Threading.Tasks.Task<Result> DeletePointLoadsAsync(System.Collections.Generic.IEnumerable<IModelEntity> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> CreateShearDiagramAsync(ShearDiagramResponse body, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> CreateShearDiagramsAsync(System.Collections.Generic.IEnumerable<ShearDiagramResponse> body);
+        System.Threading.Tasks.Task<Result> CreateShearDiagramAsync(ShearDiagramResponse body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> CreateShearDiagramsAsync(System.Collections.Generic.IEnumerable<ShearDiagramResponse> body, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> CreateMomentDiagramAsync(MomentDiagramResponse body);
+        System.Threading.Tasks.Task<Result> CreateShearDiagramsAsync(System.Collections.Generic.IEnumerable<ShearDiagramResponse> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> CreateMomentDiagramAsync(MomentDiagramResponse body, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> CreateMomentDiagramsAsync(System.Collections.Generic.IEnumerable<MomentDiagramResponse> body);
+        System.Threading.Tasks.Task<Result> CreateMomentDiagramAsync(MomentDiagramResponse body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> CreateMomentDiagramsAsync(System.Collections.Generic.IEnumerable<MomentDiagramResponse> body, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> CreateDeflectionDiagramAsync(DeflectionDiagramResponse body);
+        System.Threading.Tasks.Task<Result> CreateMomentDiagramsAsync(System.Collections.Generic.IEnumerable<MomentDiagramResponse> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> CreateDeflectionDiagramAsync(DeflectionDiagramResponse body, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> CreateDeflectionDiagramsAsync(System.Collections.Generic.IEnumerable<DeflectionDiagramResponse> body);
+        System.Threading.Tasks.Task<Result> CreateDeflectionDiagramAsync(DeflectionDiagramResponse body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> CreateDeflectionDiagramsAsync(System.Collections.Generic.IEnumerable<DeflectionDiagramResponse> body, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> DisplayModelProposalAsync(ModelProposalResponse body);
+        System.Threading.Tasks.Task<Result> CreateDeflectionDiagramsAsync(System.Collections.Generic.IEnumerable<DeflectionDiagramResponse> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> DisplayModelProposalAsync(ModelProposalResponse body, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> ClearModelProposalsAsync();
+        System.Threading.Tasks.Task<Result> DisplayModelProposalAsync(ModelProposalResponse body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> ClearModelProposalsAsync(System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> SetSettingsAsync(ModelSettings body);
+        System.Threading.Tasks.Task<Result> ClearModelProposalsAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> SetSettingsAsync(ModelSettings body, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> SetGlobalStressesAsync(GlobalStresses body);
+        System.Threading.Tasks.Task<Result> SetSettingsAsync(ModelSettings body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> SetGlobalStressesAsync(GlobalStresses body, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> ClearAsync();
+        System.Threading.Tasks.Task<Result> SetGlobalStressesAsync(GlobalStresses body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> ClearAsync(System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> ClearCurrentOverlayAsync();
+        System.Threading.Tasks.Task<Result> ClearAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> ClearCurrentOverlayAsync(System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> ReduceChangeSelectionCommandAsync(ChangeSelectionCommand body);
+        System.Threading.Tasks.Task<Result> ClearCurrentOverlayAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> ReduceChangeSelectionCommandAsync(ChangeSelectionCommand body, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> ReduceMoveNodeCommandAsync(MoveNodeCommand body);
+        System.Threading.Tasks.Task<Result> ReduceChangeSelectionCommandAsync(ChangeSelectionCommand body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> ReduceMoveNodeCommandAsync(MoveNodeCommand body, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> ReducePutNodeClientCommandAsync(PutNodeClientCommand body);
+        System.Threading.Tasks.Task<Result> ReduceMoveNodeCommandAsync(MoveNodeCommand body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Result> ReducePutNodeClientCommandAsync(PutNodeClientCommand body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<Result> ReducePutNodeClientCommandAsync(PutNodeClientCommand body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
     }
 
@@ -367,17 +232,10 @@ namespace BeamOs.CodeGen.EditorApi
         partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, System.Text.StringBuilder urlBuilder);
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> CreateElement1dAsync(Element1dResponse body)
-        {
-            return CreateElement1dAsync(body, System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> CreateElement1dAsync(Element1dResponse body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> CreateElement1dAsync(Element1dResponse body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -397,8 +255,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/CreateElement1d"
-                    urlBuilder_.Append("EditorApiAlpha/CreateElement1d");
+                    // Operation Path: "CreateElement1d"
+                    urlBuilder_.Append("CreateElement1d");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -452,17 +310,10 @@ namespace BeamOs.CodeGen.EditorApi
             }
         }
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> CreateElement1dsAsync(System.Collections.Generic.IEnumerable<Element1dResponse> body)
-        {
-            return CreateElement1dsAsync(body, System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> CreateElement1dsAsync(System.Collections.Generic.IEnumerable<Element1dResponse> body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> CreateElement1dsAsync(System.Collections.Generic.IEnumerable<Element1dResponse> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -482,8 +333,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/CreateElement1ds"
-                    urlBuilder_.Append("EditorApiAlpha/CreateElement1ds");
+                    // Operation Path: "CreateElement1ds"
+                    urlBuilder_.Append("CreateElement1ds");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -537,17 +388,10 @@ namespace BeamOs.CodeGen.EditorApi
             }
         }
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> UpdateElement1dAsync(Element1dResponse body)
-        {
-            return UpdateElement1dAsync(body, System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> UpdateElement1dAsync(Element1dResponse body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> UpdateElement1dAsync(Element1dResponse body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -567,8 +411,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/UpdateElement1d"
-                    urlBuilder_.Append("EditorApiAlpha/UpdateElement1d");
+                    // Operation Path: "UpdateElement1d"
+                    urlBuilder_.Append("UpdateElement1d");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -622,17 +466,10 @@ namespace BeamOs.CodeGen.EditorApi
             }
         }
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> UpdateElement1dsAsync(System.Collections.Generic.IEnumerable<Element1dResponse> body)
-        {
-            return UpdateElement1dsAsync(body, System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> UpdateElement1dsAsync(System.Collections.Generic.IEnumerable<Element1dResponse> body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> UpdateElement1dsAsync(System.Collections.Generic.IEnumerable<Element1dResponse> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -652,8 +489,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/UpdateElement1ds"
-                    urlBuilder_.Append("EditorApiAlpha/UpdateElement1ds");
+                    // Operation Path: "UpdateElement1ds"
+                    urlBuilder_.Append("UpdateElement1ds");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -707,17 +544,10 @@ namespace BeamOs.CodeGen.EditorApi
             }
         }
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> DeleteElement1dAsync(IModelEntity body)
-        {
-            return DeleteElement1dAsync(body, System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> DeleteElement1dAsync(IModelEntity body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> DeleteElement1dAsync(IModelEntity body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -737,8 +567,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/DeleteElement1d"
-                    urlBuilder_.Append("EditorApiAlpha/DeleteElement1d");
+                    // Operation Path: "DeleteElement1d"
+                    urlBuilder_.Append("DeleteElement1d");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -792,17 +622,10 @@ namespace BeamOs.CodeGen.EditorApi
             }
         }
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> DeleteElement1dsAsync(System.Collections.Generic.IEnumerable<IModelEntity> body)
-        {
-            return DeleteElement1dsAsync(body, System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> DeleteElement1dsAsync(System.Collections.Generic.IEnumerable<IModelEntity> body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> DeleteElement1dsAsync(System.Collections.Generic.IEnumerable<IModelEntity> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -822,8 +645,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/DeleteElement1ds"
-                    urlBuilder_.Append("EditorApiAlpha/DeleteElement1ds");
+                    // Operation Path: "DeleteElement1ds"
+                    urlBuilder_.Append("DeleteElement1ds");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -877,17 +700,10 @@ namespace BeamOs.CodeGen.EditorApi
             }
         }
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> CreateModelAsync(ModelResponse body)
-        {
-            return CreateModelAsync(body, System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> CreateModelAsync(ModelResponse body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> CreateModelAsync(ModelResponse body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -907,8 +723,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/CreateModel"
-                    urlBuilder_.Append("EditorApiAlpha/CreateModel");
+                    // Operation Path: "CreateModel"
+                    urlBuilder_.Append("CreateModel");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -962,17 +778,10 @@ namespace BeamOs.CodeGen.EditorApi
             }
         }
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> CreateNodeAsync(NodeResponse body)
-        {
-            return CreateNodeAsync(body, System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> CreateNodeAsync(NodeResponse body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> CreateNodeAsync(NodeResponse body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -992,8 +801,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/CreateNode"
-                    urlBuilder_.Append("EditorApiAlpha/CreateNode");
+                    // Operation Path: "CreateNode"
+                    urlBuilder_.Append("CreateNode");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -1047,17 +856,10 @@ namespace BeamOs.CodeGen.EditorApi
             }
         }
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> CreateNodesAsync(System.Collections.Generic.IEnumerable<NodeResponse> body)
-        {
-            return CreateNodesAsync(body, System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> CreateNodesAsync(System.Collections.Generic.IEnumerable<NodeResponse> body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> CreateNodesAsync(System.Collections.Generic.IEnumerable<NodeResponse> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -1077,8 +879,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/CreateNodes"
-                    urlBuilder_.Append("EditorApiAlpha/CreateNodes");
+                    // Operation Path: "CreateNodes"
+                    urlBuilder_.Append("CreateNodes");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -1132,17 +934,10 @@ namespace BeamOs.CodeGen.EditorApi
             }
         }
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> UpdateNodeAsync(NodeResponse body)
-        {
-            return UpdateNodeAsync(body, System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> UpdateNodeAsync(NodeResponse body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> UpdateNodeAsync(NodeResponse body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -1162,8 +957,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/UpdateNode"
-                    urlBuilder_.Append("EditorApiAlpha/UpdateNode");
+                    // Operation Path: "UpdateNode"
+                    urlBuilder_.Append("UpdateNode");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -1217,17 +1012,10 @@ namespace BeamOs.CodeGen.EditorApi
             }
         }
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> UpdateNodesAsync(System.Collections.Generic.IEnumerable<NodeResponse> body)
-        {
-            return UpdateNodesAsync(body, System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> UpdateNodesAsync(System.Collections.Generic.IEnumerable<NodeResponse> body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> UpdateNodesAsync(System.Collections.Generic.IEnumerable<NodeResponse> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -1247,8 +1035,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/UpdateNodes"
-                    urlBuilder_.Append("EditorApiAlpha/UpdateNodes");
+                    // Operation Path: "UpdateNodes"
+                    urlBuilder_.Append("UpdateNodes");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -1302,17 +1090,10 @@ namespace BeamOs.CodeGen.EditorApi
             }
         }
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> DeleteNodeAsync(IModelEntity body)
-        {
-            return DeleteNodeAsync(body, System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> DeleteNodeAsync(IModelEntity body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> DeleteNodeAsync(IModelEntity body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -1332,8 +1113,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/DeleteNode"
-                    urlBuilder_.Append("EditorApiAlpha/DeleteNode");
+                    // Operation Path: "DeleteNode"
+                    urlBuilder_.Append("DeleteNode");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -1387,17 +1168,10 @@ namespace BeamOs.CodeGen.EditorApi
             }
         }
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> DeleteNodesAsync(System.Collections.Generic.IEnumerable<IModelEntity> body)
-        {
-            return DeleteNodesAsync(body, System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> DeleteNodesAsync(System.Collections.Generic.IEnumerable<IModelEntity> body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> DeleteNodesAsync(System.Collections.Generic.IEnumerable<IModelEntity> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -1417,8 +1191,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/DeleteNodes"
-                    urlBuilder_.Append("EditorApiAlpha/DeleteNodes");
+                    // Operation Path: "DeleteNodes"
+                    urlBuilder_.Append("DeleteNodes");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -1472,17 +1246,10 @@ namespace BeamOs.CodeGen.EditorApi
             }
         }
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> CreatePointLoadAsync(PointLoadResponse body)
-        {
-            return CreatePointLoadAsync(body, System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> CreatePointLoadAsync(PointLoadResponse body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> CreatePointLoadAsync(PointLoadResponse body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -1502,8 +1269,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/CreatePointLoad"
-                    urlBuilder_.Append("EditorApiAlpha/CreatePointLoad");
+                    // Operation Path: "CreatePointLoad"
+                    urlBuilder_.Append("CreatePointLoad");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -1557,17 +1324,10 @@ namespace BeamOs.CodeGen.EditorApi
             }
         }
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> CreatePointLoadsAsync(System.Collections.Generic.IEnumerable<PointLoadResponse> body)
-        {
-            return CreatePointLoadsAsync(body, System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> CreatePointLoadsAsync(System.Collections.Generic.IEnumerable<PointLoadResponse> body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> CreatePointLoadsAsync(System.Collections.Generic.IEnumerable<PointLoadResponse> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -1587,8 +1347,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/CreatePointLoads"
-                    urlBuilder_.Append("EditorApiAlpha/CreatePointLoads");
+                    // Operation Path: "CreatePointLoads"
+                    urlBuilder_.Append("CreatePointLoads");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -1642,17 +1402,10 @@ namespace BeamOs.CodeGen.EditorApi
             }
         }
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> UpdatePointLoadAsync(PointLoadResponse body)
-        {
-            return UpdatePointLoadAsync(body, System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> UpdatePointLoadAsync(PointLoadResponse body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> UpdatePointLoadAsync(PointLoadResponse body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -1672,8 +1425,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/UpdatePointLoad"
-                    urlBuilder_.Append("EditorApiAlpha/UpdatePointLoad");
+                    // Operation Path: "UpdatePointLoad"
+                    urlBuilder_.Append("UpdatePointLoad");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -1727,17 +1480,10 @@ namespace BeamOs.CodeGen.EditorApi
             }
         }
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> UpdatePointLoadsAsync(System.Collections.Generic.IEnumerable<PointLoadResponse> body)
-        {
-            return UpdatePointLoadsAsync(body, System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> UpdatePointLoadsAsync(System.Collections.Generic.IEnumerable<PointLoadResponse> body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> UpdatePointLoadsAsync(System.Collections.Generic.IEnumerable<PointLoadResponse> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -1757,8 +1503,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/UpdatePointLoads"
-                    urlBuilder_.Append("EditorApiAlpha/UpdatePointLoads");
+                    // Operation Path: "UpdatePointLoads"
+                    urlBuilder_.Append("UpdatePointLoads");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -1812,17 +1558,10 @@ namespace BeamOs.CodeGen.EditorApi
             }
         }
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> DeletePointLoadAsync(IModelEntity body)
-        {
-            return DeletePointLoadAsync(body, System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> DeletePointLoadAsync(IModelEntity body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> DeletePointLoadAsync(IModelEntity body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -1842,8 +1581,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/DeletePointLoad"
-                    urlBuilder_.Append("EditorApiAlpha/DeletePointLoad");
+                    // Operation Path: "DeletePointLoad"
+                    urlBuilder_.Append("DeletePointLoad");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -1897,17 +1636,10 @@ namespace BeamOs.CodeGen.EditorApi
             }
         }
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> DeletePointLoadsAsync(System.Collections.Generic.IEnumerable<IModelEntity> body)
-        {
-            return DeletePointLoadsAsync(body, System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> DeletePointLoadsAsync(System.Collections.Generic.IEnumerable<IModelEntity> body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> DeletePointLoadsAsync(System.Collections.Generic.IEnumerable<IModelEntity> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -1927,8 +1659,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/DeletePointLoads"
-                    urlBuilder_.Append("EditorApiAlpha/DeletePointLoads");
+                    // Operation Path: "DeletePointLoads"
+                    urlBuilder_.Append("DeletePointLoads");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -1982,17 +1714,10 @@ namespace BeamOs.CodeGen.EditorApi
             }
         }
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> CreateShearDiagramAsync(ShearDiagramResponse body)
-        {
-            return CreateShearDiagramAsync(body, System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> CreateShearDiagramAsync(ShearDiagramResponse body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> CreateShearDiagramAsync(ShearDiagramResponse body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -2012,8 +1737,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/CreateShearDiagram"
-                    urlBuilder_.Append("EditorApiAlpha/CreateShearDiagram");
+                    // Operation Path: "CreateShearDiagram"
+                    urlBuilder_.Append("CreateShearDiagram");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -2067,17 +1792,10 @@ namespace BeamOs.CodeGen.EditorApi
             }
         }
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> CreateShearDiagramsAsync(System.Collections.Generic.IEnumerable<ShearDiagramResponse> body)
-        {
-            return CreateShearDiagramsAsync(body, System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> CreateShearDiagramsAsync(System.Collections.Generic.IEnumerable<ShearDiagramResponse> body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> CreateShearDiagramsAsync(System.Collections.Generic.IEnumerable<ShearDiagramResponse> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -2097,8 +1815,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/CreateShearDiagrams"
-                    urlBuilder_.Append("EditorApiAlpha/CreateShearDiagrams");
+                    // Operation Path: "CreateShearDiagrams"
+                    urlBuilder_.Append("CreateShearDiagrams");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -2152,17 +1870,10 @@ namespace BeamOs.CodeGen.EditorApi
             }
         }
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> CreateMomentDiagramAsync(MomentDiagramResponse body)
-        {
-            return CreateMomentDiagramAsync(body, System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> CreateMomentDiagramAsync(MomentDiagramResponse body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> CreateMomentDiagramAsync(MomentDiagramResponse body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -2182,8 +1893,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/CreateMomentDiagram"
-                    urlBuilder_.Append("EditorApiAlpha/CreateMomentDiagram");
+                    // Operation Path: "CreateMomentDiagram"
+                    urlBuilder_.Append("CreateMomentDiagram");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -2237,17 +1948,10 @@ namespace BeamOs.CodeGen.EditorApi
             }
         }
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> CreateMomentDiagramsAsync(System.Collections.Generic.IEnumerable<MomentDiagramResponse> body)
-        {
-            return CreateMomentDiagramsAsync(body, System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> CreateMomentDiagramsAsync(System.Collections.Generic.IEnumerable<MomentDiagramResponse> body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> CreateMomentDiagramsAsync(System.Collections.Generic.IEnumerable<MomentDiagramResponse> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -2267,8 +1971,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/CreateMomentDiagrams"
-                    urlBuilder_.Append("EditorApiAlpha/CreateMomentDiagrams");
+                    // Operation Path: "CreateMomentDiagrams"
+                    urlBuilder_.Append("CreateMomentDiagrams");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -2322,17 +2026,10 @@ namespace BeamOs.CodeGen.EditorApi
             }
         }
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> CreateDeflectionDiagramAsync(DeflectionDiagramResponse body)
-        {
-            return CreateDeflectionDiagramAsync(body, System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> CreateDeflectionDiagramAsync(DeflectionDiagramResponse body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> CreateDeflectionDiagramAsync(DeflectionDiagramResponse body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -2352,8 +2049,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/CreateDeflectionDiagram"
-                    urlBuilder_.Append("EditorApiAlpha/CreateDeflectionDiagram");
+                    // Operation Path: "CreateDeflectionDiagram"
+                    urlBuilder_.Append("CreateDeflectionDiagram");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -2407,17 +2104,10 @@ namespace BeamOs.CodeGen.EditorApi
             }
         }
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> CreateDeflectionDiagramsAsync(System.Collections.Generic.IEnumerable<DeflectionDiagramResponse> body)
-        {
-            return CreateDeflectionDiagramsAsync(body, System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> CreateDeflectionDiagramsAsync(System.Collections.Generic.IEnumerable<DeflectionDiagramResponse> body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> CreateDeflectionDiagramsAsync(System.Collections.Generic.IEnumerable<DeflectionDiagramResponse> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -2437,8 +2127,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/CreateDeflectionDiagrams"
-                    urlBuilder_.Append("EditorApiAlpha/CreateDeflectionDiagrams");
+                    // Operation Path: "CreateDeflectionDiagrams"
+                    urlBuilder_.Append("CreateDeflectionDiagrams");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -2492,17 +2182,10 @@ namespace BeamOs.CodeGen.EditorApi
             }
         }
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> DisplayModelProposalAsync(ModelProposalResponse body)
-        {
-            return DisplayModelProposalAsync(body, System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> DisplayModelProposalAsync(ModelProposalResponse body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> DisplayModelProposalAsync(ModelProposalResponse body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -2522,8 +2205,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/DisplayModelProposal"
-                    urlBuilder_.Append("EditorApiAlpha/DisplayModelProposal");
+                    // Operation Path: "DisplayModelProposal"
+                    urlBuilder_.Append("DisplayModelProposal");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -2577,17 +2260,10 @@ namespace BeamOs.CodeGen.EditorApi
             }
         }
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> ClearModelProposalsAsync()
-        {
-            return ClearModelProposalsAsync(System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> ClearModelProposalsAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> ClearModelProposalsAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -2601,8 +2277,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/ClearModelProposals"
-                    urlBuilder_.Append("EditorApiAlpha/ClearModelProposals");
+                    // Operation Path: "ClearModelProposals"
+                    urlBuilder_.Append("ClearModelProposals");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -2656,17 +2332,10 @@ namespace BeamOs.CodeGen.EditorApi
             }
         }
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> SetSettingsAsync(ModelSettings body)
-        {
-            return SetSettingsAsync(body, System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> SetSettingsAsync(ModelSettings body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> SetSettingsAsync(ModelSettings body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -2686,8 +2355,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/SetSettings"
-                    urlBuilder_.Append("EditorApiAlpha/SetSettings");
+                    // Operation Path: "SetSettings"
+                    urlBuilder_.Append("SetSettings");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -2741,17 +2410,10 @@ namespace BeamOs.CodeGen.EditorApi
             }
         }
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> SetGlobalStressesAsync(GlobalStresses body)
-        {
-            return SetGlobalStressesAsync(body, System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> SetGlobalStressesAsync(GlobalStresses body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> SetGlobalStressesAsync(GlobalStresses body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -2771,8 +2433,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/SetGlobalStresses"
-                    urlBuilder_.Append("EditorApiAlpha/SetGlobalStresses");
+                    // Operation Path: "SetGlobalStresses"
+                    urlBuilder_.Append("SetGlobalStresses");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -2826,17 +2488,10 @@ namespace BeamOs.CodeGen.EditorApi
             }
         }
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> ClearAsync()
-        {
-            return ClearAsync(System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> ClearAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> ClearAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -2850,8 +2505,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/Clear"
-                    urlBuilder_.Append("EditorApiAlpha/Clear");
+                    // Operation Path: "Clear"
+                    urlBuilder_.Append("Clear");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -2905,17 +2560,10 @@ namespace BeamOs.CodeGen.EditorApi
             }
         }
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> ClearCurrentOverlayAsync()
-        {
-            return ClearCurrentOverlayAsync(System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> ClearCurrentOverlayAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> ClearCurrentOverlayAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -2929,8 +2577,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/ClearCurrentOverlay"
-                    urlBuilder_.Append("EditorApiAlpha/ClearCurrentOverlay");
+                    // Operation Path: "ClearCurrentOverlay"
+                    urlBuilder_.Append("ClearCurrentOverlay");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -2984,17 +2632,10 @@ namespace BeamOs.CodeGen.EditorApi
             }
         }
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> ReduceChangeSelectionCommandAsync(ChangeSelectionCommand body)
-        {
-            return ReduceChangeSelectionCommandAsync(body, System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> ReduceChangeSelectionCommandAsync(ChangeSelectionCommand body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> ReduceChangeSelectionCommandAsync(ChangeSelectionCommand body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -3014,8 +2655,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/ReduceChangeSelectionCommand"
-                    urlBuilder_.Append("EditorApiAlpha/ReduceChangeSelectionCommand");
+                    // Operation Path: "ReduceChangeSelectionCommand"
+                    urlBuilder_.Append("ReduceChangeSelectionCommand");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -3069,17 +2710,10 @@ namespace BeamOs.CodeGen.EditorApi
             }
         }
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> ReduceMoveNodeCommandAsync(MoveNodeCommand body)
-        {
-            return ReduceMoveNodeCommandAsync(body, System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> ReduceMoveNodeCommandAsync(MoveNodeCommand body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> ReduceMoveNodeCommandAsync(MoveNodeCommand body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -3099,8 +2733,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/ReduceMoveNodeCommand"
-                    urlBuilder_.Append("EditorApiAlpha/ReduceMoveNodeCommand");
+                    // Operation Path: "ReduceMoveNodeCommand"
+                    urlBuilder_.Append("ReduceMoveNodeCommand");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -3154,17 +2788,10 @@ namespace BeamOs.CodeGen.EditorApi
             }
         }
 
-        /// <returns>OK</returns>
-        /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Result> ReducePutNodeClientCommandAsync(PutNodeClientCommand body)
-        {
-            return ReducePutNodeClientCommandAsync(body, System.Threading.CancellationToken.None);
-        }
-
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="EditorApiAlphaException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Result> ReducePutNodeClientCommandAsync(PutNodeClientCommand body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Result> ReducePutNodeClientCommandAsync(PutNodeClientCommand body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -3184,8 +2811,8 @@ namespace BeamOs.CodeGen.EditorApi
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "EditorApiAlpha/ReducePutNodeClientCommand"
-                    urlBuilder_.Append("EditorApiAlpha/ReducePutNodeClientCommand");
+                    // Operation Path: "ReducePutNodeClientCommand"
+                    urlBuilder_.Append("ReducePutNodeClientCommand");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 

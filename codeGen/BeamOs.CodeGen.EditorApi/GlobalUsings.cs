@@ -7,3 +7,6 @@ global using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 global using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
 // editor events
 global using BeamOs.WebApp.EditorCommands;
+
+global using IModelEntity2 = BeamOs.Common.Contracts.IModelEntity;
+global using MomentDiagramResponse2 = BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams.MomentDiagramResponse;

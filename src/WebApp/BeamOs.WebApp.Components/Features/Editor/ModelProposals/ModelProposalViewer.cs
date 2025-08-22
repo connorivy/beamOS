@@ -35,7 +35,7 @@ public class ModelProposalViewer(
         var modelProposal = await apiClient.GetModelProposalAsync(modelId, proposalId, ct);
         if (modelProposal.IsError)
         {
-            throw new Exception(modelProposal.Error.Description);
+            throw new Exception(modelProposal.Error.Detail);
         }
 
         await editorApi.DisplayModelProposalAsync(modelProposal.Value, ct);

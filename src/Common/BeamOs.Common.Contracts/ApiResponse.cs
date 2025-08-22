@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection.Metadata.Ecma335;
 using System.Text.Json.Serialization;
 using BeamOs.Common.Contracts.Exceptions;
 
@@ -40,6 +41,14 @@ public class ApiResponse
     public virtual bool IsSuccess => !this.IsError;
 
     public static implicit operator ApiResponse(ProblemDetails error) => new(error);
+    public static implicit operator Result(ApiResponse apiResponse)
+    {
+        if (apiResponse.IsError)
+        {
+            return apiResponse.Error.ToBeamOsError();
+        }
+        return ApiResponse.Success;
+    }
 
     public void ThrowIfError()
     {
@@ -60,6 +69,7 @@ Extensions: {this.Error.Extensions}
     }
 
     public static ApiResponse Success { get; } = new();
+    public static ApiResponse<TValue> FromValue<TValue>(TValue value) => new(value);
 }
 
 public sealed class ApiResponse<TValue> : ApiResponse
@@ -68,13 +78,13 @@ public sealed class ApiResponse<TValue> : ApiResponse
 
     public override ProblemDetails? Error => base.Error;
 
-    private ApiResponse(TValue value)
+    public ApiResponse(TValue value)
         : base()
     {
         this.Value = value;
     }
 
-    private ApiResponse(ProblemDetails error)
+    public ApiResponse(ProblemDetails error)
         : base(error) { }
 
     [JsonConstructor]
@@ -102,6 +112,14 @@ public sealed class ApiResponse<TValue> : ApiResponse
     public static implicit operator ApiResponse<TValue>(TValue value) => new(value);
 
     public static implicit operator ApiResponse<TValue>(ProblemDetails error) => new(error);
+    public static implicit operator Result<TValue>(ApiResponse<TValue> apiResponse)
+    {
+        if (apiResponse.IsError)
+        {
+            return apiResponse.Error.ToBeamOsError();
+        }
+        return apiResponse.Value;
+    }
 
     public TApiResponse Match<TApiResponse>(
         Func<TValue, TApiResponse> success,
@@ -121,6 +139,40 @@ public record ProblemDetails(
     string Detail,
     int Status,
     string Type,
-    string Instance,
-    IDictionary<string, object?> Extensions
-);
+    string? Instance,
+    IDictionary<string, object?>? Extensions
+)
+{
+    public BeamOsError ToBeamOsError() {
+        return Status switch
+        {
+            400 => BeamOsError.Validation(
+                description: Detail,
+                metadata: this.Extensions
+            ),
+            401 => BeamOsError.Unauthorized(
+                description: Detail,
+                metadata: this.Extensions
+            ),
+            403 => BeamOsError.Forbidden(
+                description: Detail,
+                metadata: this.Extensions
+            ),
+            404 => BeamOsError.NotFound(
+                description: Detail,
+                metadata: this.Extensions
+            ),
+            409 => BeamOsError.Conflict(
+                description: Detail,
+                metadata: this.Extensions
+            ),
+            500 => BeamOsError.Failure(
+                description: Detail,
+                metadata: this.Extensions
+            ),
+            _ => throw new InvalidOperationException(
+                $"Cannot convert ProblemDetails with status {Status} to BeamOsError."
+            )
+        };
+    }
+}

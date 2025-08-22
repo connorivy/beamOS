@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Tests.Common;
 using DiffEngine;
@@ -64,7 +65,24 @@ public static partial class AssemblySetup
         //     DiffTool.Rider
         // );
 
-        if (BeamOsEnv.IsDevContainer())
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        {
+            DiffTools.UseOrder(
+                DiffTool.VisualStudioCode,
+                DiffTool.Neovim,
+                DiffTool.VisualStudio,
+                DiffTool.Rider
+            );
+        }
+        else
+        {
+            DiffTools.UseOrder(
+                DiffTool.VisualStudio,
+                DiffTool.Rider,
+                DiffTool.VisualStudioCode,
+                DiffTool.Neovim
+            );
+        }
         {
             using var process = new Process
             {

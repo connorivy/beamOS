@@ -1,9 +1,10 @@
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using Microsoft.Extensions.DependencyInjection;
+using DotWrap;
 
 namespace BeamOs.StructuralAnalysis.Sdk;
 
-// [DotWrapExpose]
+[DotWrapExpose]
 public static class ModelBuilderFactory
 {
     public static BeamOsModelBuilder CreateRemote(IBeamOsModel model, string apiToken)

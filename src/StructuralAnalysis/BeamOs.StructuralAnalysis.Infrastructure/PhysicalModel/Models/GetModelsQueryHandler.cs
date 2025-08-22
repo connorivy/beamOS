@@ -1,7 +1,6 @@
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.Common;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.Tests.Common;
@@ -10,9 +9,9 @@ using Microsoft.EntityFrameworkCore;
 namespace BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Models;
 
 public class GetModelsQueryHandler(StructuralAnalysisDbContext dbContext)
-    : IQueryHandler<EmptyRequest, List<ModelInfoResponse>>
+    : IQueryHandler<EmptyRequest, ICollection<ModelInfoResponse>>
 {
-    public async Task<Result<List<ModelInfoResponse>>> ExecuteAsync(
+    public async Task<Result<ICollection<ModelInfoResponse>>> ExecuteAsync(
         EmptyRequest query,
         CancellationToken ct = default
     )

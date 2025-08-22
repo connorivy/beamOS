@@ -96,9 +96,9 @@ public sealed class GetModelProposalsClientCommandHandler(
     IDispatcher dispatcher,
     ISnackbar snackbar,
     ILogger<GetModelProposalsClientCommandHandler> logger
-) : CommandHandlerBase<ModelRepairRequest, List<ModelProposalInfo>>(snackbar, logger)
+) : CommandHandlerBase<ModelRepairRequest, ICollection<ModelProposalInfo>>(snackbar, logger)
 {
-    protected override async Task<Result<List<ModelProposalInfo>>> ExecuteCommandAsync(
+    protected override async Task<Result<ICollection<ModelProposalInfo>>> ExecuteCommandAsync(
         ModelRepairRequest command,
         CancellationToken ct = default
     )
@@ -108,7 +108,7 @@ public sealed class GetModelProposalsClientCommandHandler(
 
     protected override void PostProcess(
         ModelRepairRequest command,
-        Result<List<ModelProposalInfo>> result
+        Result<ICollection<ModelProposalInfo>> result
     )
     {
         if (result.IsSuccess && result.Value is not null)

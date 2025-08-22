@@ -88,7 +88,7 @@ public static class DependencyInjection
         services.AddScoped<IUserIdProvider, UserIdProvider>();
 
         services.AddScoped<
-            IQueryHandler<EmptyRequest, List<ModelInfoResponse>>,
+            IQueryHandler<EmptyRequest, ICollection<ModelInfoResponse>>,
             GetModelsQueryHandler
         >();
 

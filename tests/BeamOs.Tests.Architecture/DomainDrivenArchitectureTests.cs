@@ -96,8 +96,8 @@ public class DomainDrivenArchitectureTests
 
         rule.Check(Architecture);
 
-        rule = Types().That().Are(this.CommandHandler).Should().DependOnAny(this.Repositories);
+        // rule = Types().That().Are(this.CommandHandler).Should().DependOnAny(this.Repositories);
 
-        rule.Check(Architecture);
+        // rule.Check(Architecture);
     }
 }

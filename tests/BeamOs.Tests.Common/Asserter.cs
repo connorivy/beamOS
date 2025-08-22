@@ -147,7 +147,7 @@ public class Asserter
     public event EventHandler<ModelProposalResponse>? ModelProposalVerified;
 
     public virtual ValueTask VerifyModelProposal(
-        Result<ModelProposalResponse> modelProposalResponse
+        ApiResponse<ModelProposalResponse> modelProposalResponse
     )
     {
         if (modelProposalResponse.IsSuccess)

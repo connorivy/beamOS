@@ -11,7 +11,7 @@ public sealed class BeamOsError
         string code,
         string description,
         ErrorType type,
-        Dictionary<string, string>? metadata
+        IDictionary<string, object?>? metadata
     )
     {
         this.Code = code;
@@ -44,7 +44,7 @@ public sealed class BeamOsError
     /// <summary>
     /// Gets the metadata.
     /// </summary>
-    public Dictionary<string, string>? Metadata { get; }
+    public IDictionary<string, object?>? Metadata { get; }
 
     /// <summary>
     /// Creates an <see cref="BeamOsError"/> of type <see cref="ErrorType.Failure"/> from a code and description.
@@ -55,7 +55,7 @@ public sealed class BeamOsError
     public static BeamOsError Failure(
         string code = "General.Failure",
         string description = "A failure has occurred.",
-        Dictionary<string, string>? metadata = null
+        IDictionary<string, object?>? metadata = null
     ) => new(code, description, ErrorType.Failure, metadata);
 
     /// <summary>
@@ -67,7 +67,7 @@ public sealed class BeamOsError
     public static BeamOsError Validation(
         string code = "General.Validation",
         string description = "A validation error has occurred.",
-        Dictionary<string, string>? metadata = null
+        IDictionary<string, object?>? metadata = null
     ) => new(code, description, ErrorType.Validation, metadata);
 
     /// <summary>
@@ -79,7 +79,7 @@ public sealed class BeamOsError
     public static BeamOsError Conflict(
         string code = "General.Conflict",
         string description = "A conflict error has occurred.",
-        Dictionary<string, string>? metadata = null
+        IDictionary<string, object?>? metadata = null
     ) => new(code, description, ErrorType.Conflict, metadata);
 
     /// <summary>
@@ -91,7 +91,7 @@ public sealed class BeamOsError
     public static BeamOsError NotFound(
         string code = "General.NotFound",
         string description = "A 'Not Found' error has occurred.",
-        Dictionary<string, string>? metadata = null
+        IDictionary<string, object?>? metadata = null
     ) => new(code, description, ErrorType.NotFound, metadata);
 
     /// <summary>
@@ -103,7 +103,7 @@ public sealed class BeamOsError
     public static BeamOsError Unauthorized(
         string code = "General.Unauthorized",
         string description = "An 'Unauthorized' error has occurred.",
-        Dictionary<string, string>? metadata = null
+        IDictionary<string, object?>? metadata = null
     ) => new(code, description, ErrorType.Unauthorized, metadata);
 
     /// <summary>
@@ -115,13 +115,13 @@ public sealed class BeamOsError
     public static BeamOsError Forbidden(
         string code = "General.Forbidden",
         string description = "A 'Forbidden' error has occurred.",
-        Dictionary<string, string>? metadata = null
+        IDictionary<string, object?>? metadata = null
     ) => new(code, description, ErrorType.Forbidden, metadata);
 
     public static BeamOsError InvalidOperation(
         string code = "General.InvalidOperation",
         string description = "An 'Invalid Operation' error has occurred.",
-        Dictionary<string, string>? metadata = null
+        IDictionary<string, object?>? metadata = null
     ) => new(code, description, ErrorType.InvalidOperation, metadata);
 
     /// <summary>
@@ -136,7 +136,7 @@ public sealed class BeamOsError
         int type,
         string code,
         string description,
-        Dictionary<string, string>? metadata = null
+        IDictionary<string, object?>? metadata = null
     ) => new(code, description, (ErrorType)type, metadata);
 
     public bool Equals(BeamOsError other)
@@ -158,6 +158,19 @@ public sealed class BeamOsError
 
         return other.Metadata is not null && CompareMetadata(this.Metadata, other.Metadata);
     }
+
+    public ProblemDetails ToProblemDetails() => this.Type switch
+    {
+        ErrorType.None => throw new NotImplementedException(),
+        ErrorType.Failure => new ProblemDetails("Internal Server Error", this.Description, 500, "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1", "", this.Metadata),
+        ErrorType.Validation => new ProblemDetails("Validation Error", this.Description, 400, "https://tools.ietf.org/html/rfc7231#section-6.5.1", "", this.Metadata),
+        ErrorType.Conflict => new ProblemDetails("Conflict Error", this.Description, 409, "https://tools.ietf.org/html/rfc7231#section-6.5.8", "", this.Metadata),
+        ErrorType.NotFound => new ProblemDetails("Not Found Error", this.Description, 404, "https://tools.ietf.org/html/rfc7231#section-6.5.4", "", this.Metadata),
+        ErrorType.Unauthorized => new ProblemDetails("Unauthorized Error", this.Description, 401, "https://tools.ietf.org/html/rfc7231#section-6.5.2", "", this.Metadata),
+        ErrorType.Forbidden => new ProblemDetails("Forbidden Error", this.Description, 403, "https://tools.ietf.org/html/rfc7231#section-6.5.3", "", this.Metadata),
+        ErrorType.InvalidOperation => new ProblemDetails("Invalid Operation Error", this.Description, 422, "https://tools.ietf.org/html/rfc4918#section-11.2", "", this.Metadata),
+        _ => throw new NotImplementedException(),
+    };
 
     public override int GetHashCode() =>
         this.Metadata is null
@@ -185,8 +198,8 @@ public sealed class BeamOsError
     }
 
     private static bool CompareMetadata(
-        Dictionary<string, string> metadata,
-        Dictionary<string, string> otherMetadata
+        IDictionary<string, object?> metadata,
+        IDictionary<string, object?> otherMetadata
     )
     {
         if (ReferenceEquals(metadata, otherMetadata))

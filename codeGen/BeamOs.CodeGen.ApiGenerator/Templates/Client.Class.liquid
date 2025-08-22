@@ -400,7 +400,7 @@
                             throw new {{ ExceptionClass }}("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                         }
 {%         endif -%}
-                        return objectResponse_.Object;
+                        return ApiResponse.FromValue(objectResponse_.Object);
                     }
                     var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
                     if (problemObjectResponse_.Object == null)

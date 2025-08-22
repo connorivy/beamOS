@@ -8,16 +8,16 @@ namespace BeamOs.Tests.Runtime.TestRunner;
 
 public class InMemoryGetModelsQueryHandler(
     InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage
-) : IQueryHandler<EmptyRequest, List<ModelInfoResponse>>
+) : IQueryHandler<EmptyRequest, ICollection<ModelInfoResponse>>
 {
-    public Task<Result<List<ModelInfoResponse>>> ExecuteAsync(
+    public Task<Result<ICollection<ModelInfoResponse>>> ExecuteAsync(
         EmptyRequest query,
         CancellationToken ct = default
     )
     {
         var models = inMemoryModelRepositoryStorage.Models.Values;
 
-        Result<List<ModelInfoResponse>> result = models
+        Result<ICollection<ModelInfoResponse>> result = models
             .Select(m => new ModelInfoResponse(
                 m.Id,
                 m.Name,

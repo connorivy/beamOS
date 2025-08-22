@@ -108,12 +108,21 @@ public static class EndpointToMinimalApi
             mapDelegate = (
                 [Microsoft.AspNetCore.Mvc.FromBody] TRequest req,
                 IServiceProvider serviceProvider
-            ) => serviceProvider.GetRequiredService<TEndpoint>().ExecuteAsync(req);
+            ) =>
+#if CODEGEN
+                serviceProvider.GetRequiredService<TEndpoint>().GetResponseTypeForClientGenerationPurposes(req);
+#else
+                serviceProvider.GetRequiredService<TEndpoint>().ExecuteAsync(req);
+#endif
         }
         else
         {
             mapDelegate = ([AsParameters] TRequest req, IServiceProvider serviceProvider) =>
+#if CODEGEN
+                serviceProvider.GetRequiredService<TEndpoint>().GetResponseTypeForClientGenerationPurposes(req);
+#else
                 serviceProvider.GetRequiredService<TEndpoint>().ExecuteAsync(req);
+#endif
         }
 
         var endpointBuilder = mapFunc(route, mapDelegate);

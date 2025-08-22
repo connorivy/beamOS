@@ -45,7 +45,7 @@ public partial class Models : FluxorComponent
     protected override async Task OnInitializedAsync()
     {
         var authState = await this.AuthenticationStateTask;
-        List<ModelInfoResponse>? userModels = null;
+        ICollection<ModelInfoResponse>? userModels = null;
         if (authState?.User.Identity is not null && authState.User.Identity.IsAuthenticated)
         {
             var modelResponses = await this.StructuralAnalysisApiClient.GetModelsAsync();
@@ -53,7 +53,7 @@ public partial class Models : FluxorComponent
             if (modelResponses.IsSuccess)
             {
                 userModels = modelResponses.Value;
-                this.Dispatcher.Dispatch(new UserModelsLoaded(modelResponses.Value));
+                this.Dispatcher.Dispatch(new UserModelsLoaded([.. modelResponses.Value]));
             }
         }
 
