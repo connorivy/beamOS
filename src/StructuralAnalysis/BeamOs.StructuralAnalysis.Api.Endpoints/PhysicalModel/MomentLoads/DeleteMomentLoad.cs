@@ -5,7 +5,7 @@ using BeamOs.StructuralAnalysis.Contracts.Common;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.MomentLoads;
 
-[BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "moment-loads/{id}")]
+[BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "moment-loads/{id:int}")]
 [BeamOsEndpointType(Http.Delete)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 public class DeleteMomentLoad(DeleteMomentLoadCommandHandler deleteMomentLoadCommandHandler)

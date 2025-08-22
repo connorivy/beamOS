@@ -6,45 +6,17 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace BeamOs.StructuralAnalysis.SourceGenerator;
 
-// [Generator]
 public class InMemoryApiClientGenerator
 {
-    // public void Initialize(IncrementalGeneratorInitializationContext context)
-    // {
-    //     IncrementalValuesProvider<InterfaceDeclarationSyntax> interfaceDeclarations =
-    //         context.SyntaxProvider.CreateSyntaxProvider(
-    //             static (s, _) =>
-    //                 s is InterfaceDeclarationSyntax ids
-    //                 && ids.Identifier.Text == "IStructuralAnalysisApiClientV1",
-    //             static (ctx, _) => (InterfaceDeclarationSyntax)ctx.Node
-    //         );
-    //     IncrementalValueProvider<(
-    //         Compilation compilation,
-    //         ImmutableArray<InterfaceDeclarationSyntax> interfaces
-    //     )> compilationAndInterfaces = context.CompilationProvider.Combine(
-    //         interfaceDeclarations.Collect()
-    //     );
-    //     context.RegisterSourceOutput(
-    //         compilationAndInterfaces,
-    //         static (spc, source) =>
-    //         {
-    //             bool flowControl = NewMethod(spc, source);
-    //             if (!flowControl)
-    //             {
-    //                 return;
-    //             }
-    //         }
-    //     );
-    // }
-
     public static bool CreateInMemoryApiClient(
         SourceProductionContext spc,
         (Compilation compilation, ImmutableArray<InterfaceDeclarationSyntax> interfaces) source,
-        // Dictionary<string, ITypeSymbol> commandHandlerNameToParameterDisplayNameMap,
         Dictionary<string, InMemoryHandlerInfo> apiMethodNameToParameterTypeName
     )
     {
         Compilation compilation = source.compilation;
+        FluentApiClientBuilder apiClientBuilder = new FluentApiClientBuilder();
+
         const string interfaceMetadataName =
             "BeamOs.CodeGen.StructuralAnalysisApiClient.IStructuralAnalysisApiClientV1";
         INamedTypeSymbol? interfaceSymbol = compilation.GetTypeByMetadataName(
@@ -66,13 +38,19 @@ public class InMemoryApiClientGenerator
         StringBuilder methodImpls = new StringBuilder();
         StringBuilder partialMethods = new StringBuilder();
         Dictionary<string, string> partialMethodSignatures = new Dictionary<string, string>();
-        int partialMethodIndex = 1;
         bool firstParam = true;
         foreach (IMethodSymbol method in methods)
         {
             string methodName = method.Name;
             var orginalMethodName = method.Name.Replace("Async", string.Empty);
-            var inMemoryTypeInfo = apiMethodNameToParameterTypeName[orginalMethodName];
+
+            if (!apiMethodNameToParameterTypeName.TryGetValue(orginalMethodName, out var inMemoryTypeInfo))
+            {
+                Logger.LogWarning(
+                    $"No InMemoryHandlerInfo found for method {orginalMethodName}. Skipping."
+                );
+                continue;
+            }
 
             // string originalHandlerName;
 
@@ -125,6 +103,8 @@ public class InMemoryApiClientGenerator
             string cancellationTokenParam =
                 method.Parameters.FirstOrDefault(p => p.Type.Name == "CancellationToken")?.Name
                 ?? "cancellationToken";
+
+            apiClientBuilder.AddMethodAtRoute(inMemoryTypeInfo.Route, methodName, returnType, method.Parameters);
 
             string handlerCommandType = inMemoryTypeInfo.HandlerParameterTypeName;
 
@@ -181,6 +161,10 @@ public class InMemoryApiClientGenerator
         sb.Append(methodImpls);
         sb.AppendLine("}");
         spc.AddSource($"{className}.g.cs", SourceText.From(sb.ToString(), Encoding.UTF8));
+
+        // Generate fluent API client classes
+        apiClientBuilder.AddClassesToCompilation(spc);
+
         return true;
     }
 

@@ -6,7 +6,7 @@ using LoadCombination = BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCo
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.LoadCombinations;
 
-[BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "load-combinations/{id}")]
+[BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "load-combinations/{id:int}")]
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 public class PutLoadCombination(PutLoadCombinationCommandHandler putLoadCombinationCommandHandler)

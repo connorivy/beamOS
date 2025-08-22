@@ -6,7 +6,7 @@ using LoadCase = BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases.Loa
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.LoadCases;
 
-[BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "load-cases/{id}")]
+[BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "load-cases/{id:int}")]
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 public class PutLoadCase(PutLoadCaseCommandHandler putLoadCaseCommandHandler)

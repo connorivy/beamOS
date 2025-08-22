@@ -5,7 +5,7 @@ using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.AnalyticalResults;
 
-[BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "result-sets/{id}/diagrams")]
+[BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "result-sets/{id:int}/diagrams")]
 [BeamOsEndpointType(Http.Get)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Reviewer)]
 public class GetDiagrams(GetDiagramsCommandHandler getDiagramsCommandHandler)

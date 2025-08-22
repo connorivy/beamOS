@@ -29,6 +29,7 @@ public static class DependencyInjection
     {
         services.AddStructuralAnalysisApplicationConfigurable();
         services.AddStructuralAnalysisInfrastructureConfigurable(connectionString);
+        FluentApiClient x = default;
         return services;
     }
 

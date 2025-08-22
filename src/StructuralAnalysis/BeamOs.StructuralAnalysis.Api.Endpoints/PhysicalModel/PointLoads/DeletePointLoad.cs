@@ -5,7 +5,7 @@ using BeamOs.StructuralAnalysis.Contracts.Common;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.PointLoads;
 
-[BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "point-loads/{id}")]
+[BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "point-loads/{id:int}")]
 [BeamOsEndpointType(Http.Delete)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 public class DeletePointLoad(DeletePointLoadCommandHandler deletePointLoadCommandHandler)

@@ -7,7 +7,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.SectionProfiles;
 
 [BeamOsRoute(
-    RouteConstants.ModelRoutePrefixWithTrailingSlash + "section-profiles/{id}/from-library"
+    RouteConstants.ModelRoutePrefixWithTrailingSlash + "section-profiles/{id:int}/from-library"
 )]
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]

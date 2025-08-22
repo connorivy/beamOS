@@ -6,7 +6,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.MomentLoads;
 
-[BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "moment-loads/{id}")]
+[BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "moment-loads/{id:int}")]
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 public class PutMomentLoad(PutMomentLoadCommandHandler putMomentLoadCommandHandler)

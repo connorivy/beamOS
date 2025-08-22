@@ -6,7 +6,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Materials;
 
-[BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "materials/{id}")]
+[BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "materials/{id:int}")]
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 public class PutMaterial(PutMaterialCommandHandler putMaterialCommandHandler)
