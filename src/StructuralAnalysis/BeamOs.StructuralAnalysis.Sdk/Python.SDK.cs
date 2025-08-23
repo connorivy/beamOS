@@ -7,12 +7,13 @@ namespace BeamOs.StructuralAnalysis.Sdk;
 [DotWrapExpose]
 public static class ModelBuilderFactory
 {
-    public static BeamOsModelBuilder CreateRemote(IBeamOsModel model, string apiToken)
+    public static async Task<BeamOsModelBuilder> CreateRemote(IBeamOsModel model, string apiToken)
     {
         var services = new ServiceCollection();
         services.AddBeamOsRemote(apiToken);
         var serviceProvider = services.BuildServiceProvider();
         var apiClient = serviceProvider.GetRequiredService<IStructuralAnalysisApiClientV1>();
+        ApiClient x = default;
         return new BeamOsModelBuilder(model, apiClient);
     }
     // public static BeamOsModel Local()
@@ -25,4 +26,12 @@ public static class ModelBuilderFactory
     // }
 
     // public static BeamOsModel WebApp() { }
+}
+
+[DotWrapExpose]
+public sealed class ApiClient : FluentApiClient
+{
+    public ApiClient(IStructuralAnalysisApiClientV1 apiClient) : base(apiClient)
+    {
+    }
 }

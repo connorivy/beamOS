@@ -3,12 +3,13 @@
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <DotWrapGenerateAfterBuild>true</DotWrapGenerateAfterBuild>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Common\BeamOs.Common.Application\BeamOs.Common.Application.csproj" />
     <ProjectReference Include="..\BeamOs.StructuralAnalysis.Contracts\BeamOs.StructuralAnalysis.Contracts.csproj" />
-    <ProjectReference Include="..\BeamOs.StructuralAnalysis.Sdk\BeamOs.StructuralAnalysis.Sdk.csproj" />
+    <!-- <ProjectReference Include="..\BeamOs.StructuralAnalysis.Sdk\BeamOs.StructuralAnalysis.Sdk.csproj" /> -->
     <ProjectReference Include="..\BeamOs.StructuralAnalysis.Domain\BeamOs.StructuralAnalysis.Domain.csproj" />
     <!-- <ProjectReference Include="..\BeamOs.StructuralAnalysis.SourceGenerator\BeamOs.StructuralAnalysis.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" /> -->
   </ItemGroup>

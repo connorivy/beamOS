@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="../BeamOs.StructuralAnalysis.Api.Endpoints/BeamOs.StructuralAnalysis.Api.Endpoints.csproj" />
     <ProjectReference Include="..\..\..\codeGen\BeamOs.CodeGen.StructuralAnalysisApiClient\BeamOs.CodeGen.StructuralAnalysisApiClient.csproj" />
     <ProjectReference Include="..\BeamOs.StructuralAnalysis.Contracts\BeamOs.StructuralAnalysis.Contracts.csproj" />
   </ItemGroup>

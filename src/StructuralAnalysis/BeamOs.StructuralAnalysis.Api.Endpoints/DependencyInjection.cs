@@ -2,7 +2,7 @@ using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Api;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
-using BeamOs.SpeckleConnector;
+// using BeamOs.SpeckleConnector;
 using BeamOs.StructuralAnalysis.Application;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
@@ -19,8 +19,8 @@ public static class DependencyInjection
         services
             .AddStructuralAnalysisApplicationRequired()
             .AddStructuralAnalysisInfrastructureRequired()
-            .AddStructuralAnalysisApi()
-            .AddSpeckleRequired();
+            .AddStructuralAnalysisApi();
+            // .AddSpeckleRequired();
 
     public static IServiceCollection AddStructuralAnalysisConfigurable(
         this IServiceCollection services,
@@ -30,6 +30,8 @@ public static class DependencyInjection
         services.AddStructuralAnalysisApplicationConfigurable();
         services.AddStructuralAnalysisInfrastructureConfigurable(connectionString);
         FluentApiClient x = default;
+        var y = x.models[default];
+        var z = y.element1ds[0];
         return services;
     }
 

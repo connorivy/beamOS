@@ -65,3 +65,6 @@ global using Volume = UnitsNet.Volume;
 global using VolumeContract = BeamOs.StructuralAnalysis.Contracts.Common.Volume;
 global using VolumeUnit = UnitsNet.Units.VolumeUnit;
 global using VolumeUnitContract = BeamOs.StructuralAnalysis.Contracts.Common.VolumeUnit;
+
+global using RatioUnitContract = BeamOs.StructuralAnalysis.Contracts.Common.RatioUnit;
+global using RatioUnit = UnitsNet.Units.RatioUnit;
