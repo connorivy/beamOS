@@ -1,9 +1,6 @@
 using System.Reflection;
-using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Api;
-using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Infrastructure;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.StructuralAnalysis.Api;
@@ -109,19 +106,23 @@ public static class EndpointToMinimalApi
                 [Microsoft.AspNetCore.Mvc.FromBody] TRequest req,
                 IServiceProvider serviceProvider
             ) =>
+                serviceProvider
+                    .GetRequiredService<TEndpoint>()
 #if CODEGEN
-                serviceProvider.GetRequiredService<TEndpoint>().GetResponseTypeForClientGenerationPurposes(req);
+                    .GetResponseTypeForClientGenerationPurposes(req);
 #else
-                serviceProvider.GetRequiredService<TEndpoint>().ExecuteAsync(req);
+                .ExecuteAsync(req);
 #endif
         }
         else
         {
             mapDelegate = ([AsParameters] TRequest req, IServiceProvider serviceProvider) =>
+                serviceProvider
+                    .GetRequiredService<TEndpoint>()
 #if CODEGEN
-                serviceProvider.GetRequiredService<TEndpoint>().GetResponseTypeForClientGenerationPurposes(req);
+                    .GetResponseTypeForClientGenerationPurposes(req);
 #else
-                serviceProvider.GetRequiredService<TEndpoint>().ExecuteAsync(req);
+                .ExecuteAsync(req);
 #endif
         }
 

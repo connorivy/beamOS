@@ -2,6 +2,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BeamOs.Common.Application;
 
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+public sealed class SkipDynamicRegistrationAttribute : Attribute { }
+
 public static class DependencyInjection
 {
     public static IServiceCollection AddObjectThatImplementInterface<TAssemblyMarker>(
@@ -12,9 +15,11 @@ public static class DependencyInjection
     )
     {
         IEnumerable<Type> assemblyTypes = typeof(TAssemblyMarker)
-            .Assembly
-            .GetTypes()
-            .Where(t => t.IsClass && !t.IsAbstract);
+            .Assembly.GetTypes()
+            .Where(t =>
+                t.IsClass && !t.IsAbstract
+            // && !t.IsDefined(typeof(SkipDynamicRegistrationAttribute), false)
+            );
 
         foreach (var assemblyType in assemblyTypes)
         {
@@ -24,12 +29,18 @@ public static class DependencyInjection
                 {
                     _ = serviceLifetime switch
                     {
-                        ServiceLifetime.Transient
-                            => services.AddTransient(repoInterfaceType, assemblyType),
-                        ServiceLifetime.Scoped
-                            => services.AddScoped(repoInterfaceType, assemblyType),
-                        ServiceLifetime.Singleton
-                            => services.AddSingleton(repoInterfaceType, assemblyType),
+                        ServiceLifetime.Transient => services.AddTransient(
+                            repoInterfaceType,
+                            assemblyType
+                        ),
+                        ServiceLifetime.Scoped => services.AddScoped(
+                            repoInterfaceType,
+                            assemblyType
+                        ),
+                        ServiceLifetime.Singleton => services.AddSingleton(
+                            repoInterfaceType,
+                            assemblyType
+                        ),
                         _ => throw new NotImplementedException(),
                     };
                 }
@@ -56,9 +67,11 @@ public static class DependencyInjection
     )
     {
         IEnumerable<Type> assemblyTypes = typeof(TAssemblyMarker)
-            .Assembly
-            .GetTypes()
-            .Where(t => t.IsClass && !t.IsAbstract);
+            .Assembly.GetTypes()
+            .Where(t =>
+                t.IsClass && !t.IsAbstract
+            // && !t.IsDefined(typeof(SkipDynamicRegistrationAttribute), false)
+            );
 
         foreach (var assemblyType in assemblyTypes)
         {
@@ -75,7 +88,7 @@ public static class DependencyInjection
         }
 
         return services;
-    } 
+    }
 
     public static Type? GetInterfaceType(Type concreteType, Type interfaceType)
     {

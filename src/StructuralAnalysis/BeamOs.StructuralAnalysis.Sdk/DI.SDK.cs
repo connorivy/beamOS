@@ -5,6 +5,7 @@ using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Api.Endpoints;
+using BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.EnvelopeResultSets;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.NodeResults;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.ResultSets;

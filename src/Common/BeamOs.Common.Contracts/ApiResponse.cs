@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection.Metadata.Ecma335;
 using System.Text.Json.Serialization;
 using BeamOs.Common.Contracts.Exceptions;
 
@@ -41,6 +40,7 @@ public class ApiResponse
     public virtual bool IsSuccess => !this.IsError;
 
     public static implicit operator ApiResponse(ProblemDetails error) => new(error);
+
     public static implicit operator Result(ApiResponse apiResponse)
     {
         if (apiResponse.IsError)
@@ -69,6 +69,7 @@ Extensions: {this.Error.Extensions}
     }
 
     public static ApiResponse Success { get; } = new();
+
     public static ApiResponse<TValue> FromValue<TValue>(TValue value) => new(value);
 }
 
@@ -112,6 +113,7 @@ public sealed class ApiResponse<TValue> : ApiResponse
     public static implicit operator ApiResponse<TValue>(TValue value) => new(value);
 
     public static implicit operator ApiResponse<TValue>(ProblemDetails error) => new(error);
+
     public static implicit operator Result<TValue>(ApiResponse<TValue> apiResponse)
     {
         if (apiResponse.IsError)
@@ -143,36 +145,19 @@ public record ProblemDetails(
     IDictionary<string, object?>? Extensions
 )
 {
-    public BeamOsError ToBeamOsError() {
+    public BeamOsError ToBeamOsError()
+    {
         return Status switch
         {
-            400 => BeamOsError.Validation(
-                description: Detail,
-                metadata: this.Extensions
-            ),
-            401 => BeamOsError.Unauthorized(
-                description: Detail,
-                metadata: this.Extensions
-            ),
-            403 => BeamOsError.Forbidden(
-                description: Detail,
-                metadata: this.Extensions
-            ),
-            404 => BeamOsError.NotFound(
-                description: Detail,
-                metadata: this.Extensions
-            ),
-            409 => BeamOsError.Conflict(
-                description: Detail,
-                metadata: this.Extensions
-            ),
-            500 => BeamOsError.Failure(
-                description: Detail,
-                metadata: this.Extensions
-            ),
+            400 => BeamOsError.Validation(description: Detail, metadata: this.Extensions),
+            401 => BeamOsError.Unauthorized(description: Detail, metadata: this.Extensions),
+            403 => BeamOsError.Forbidden(description: Detail, metadata: this.Extensions),
+            404 => BeamOsError.NotFound(description: Detail, metadata: this.Extensions),
+            409 => BeamOsError.Conflict(description: Detail, metadata: this.Extensions),
+            500 => BeamOsError.Failure(description: Detail, metadata: this.Extensions),
             _ => throw new InvalidOperationException(
                 $"Cannot convert ProblemDetails with status {Status} to BeamOsError."
-            )
+            ),
         };
     }
 }
