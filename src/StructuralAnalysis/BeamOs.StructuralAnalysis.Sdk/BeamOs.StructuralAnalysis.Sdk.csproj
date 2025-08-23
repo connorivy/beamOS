@@ -7,7 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DotWrap" />
+    <!-- dotwrap reference is added in the directory.build.props file so I can configure it to be swapped with a local version -->
+    <!-- <PackageReference Include="DotWrap" /> -->
     <PackageReference Include="Riok.Mapperly" />
     <PackageReference Include="UnitsNet" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
