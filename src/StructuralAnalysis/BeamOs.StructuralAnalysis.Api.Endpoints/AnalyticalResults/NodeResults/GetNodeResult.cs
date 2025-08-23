@@ -6,7 +6,8 @@ using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.NodeResult;
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.AnalyticalResults.NodeResults;
 
 [BeamOsRoute(
-    RouteConstants.ModelRoutePrefixWithTrailingSlash + "result-sets/{resultSetId:int}/node-results/{id:int}"
+    RouteConstants.ModelRoutePrefixWithTrailingSlash
+        + "result-sets/{resultSetId:int}/node-results/{id:int}"
 )]
 [BeamOsEndpointType(Http.Get)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Reviewer)]

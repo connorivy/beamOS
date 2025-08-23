@@ -14,6 +14,7 @@ public static class ModelBuilderFactory
         var serviceProvider = services.BuildServiceProvider();
         var apiClient = serviceProvider.GetRequiredService<IStructuralAnalysisApiClientV1>();
         ApiClient x = default;
+        TaskDotWrapWrapper_BeamOs
         return new BeamOsModelBuilder(model, apiClient);
     }
     // public static BeamOsModel Local()

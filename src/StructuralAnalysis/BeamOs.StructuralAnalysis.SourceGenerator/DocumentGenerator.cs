@@ -188,25 +188,4 @@ public sealed class DocumentGenerator
         this.fileNameMappings[originalName] = uniqueName;
         return uniqueName;
     }
-
-    private string ExtractParameterNames(List<string> parameters)
-    {
-        var paramNames = new List<string>();
-        foreach (var param in parameters)
-        {
-            // Extract parameter name from "Type paramName" or "Type paramName = default"
-            var parts = param.Split(' ');
-            if (parts.Length >= 2)
-            {
-                var paramName = parts[1];
-                // Remove default value assignment if present
-                if (paramName.Contains('='))
-                {
-                    paramName = paramName.Split('=')[0].Trim();
-                }
-                paramNames.Add(paramName);
-            }
-        }
-        return string.Join(", ", paramNames);
-    }
 }

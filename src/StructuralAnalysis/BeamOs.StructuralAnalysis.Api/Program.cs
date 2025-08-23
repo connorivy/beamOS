@@ -5,23 +5,29 @@ using BeamOs.SpeckleConnector;
 using BeamOs.StructuralAnalysis.Api;
 using BeamOs.StructuralAnalysis.Api.Endpoints;
 using BeamOs.StructuralAnalysis.Contracts.Common;
+using BeamOs.StructuralAnalysis.Infrastructure;
 using Microsoft.AspNetCore.Http.Metadata;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-string? connectionString = Environment.GetEnvironmentVariable("TEST_CONNECTION_STRING");
+string? testConnectionString = Environment.GetEnvironmentVariable("TEST_CONNECTION_STRING");
 
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
     BeamOsSerializerOptions.DefaultConfig(options.SerializerOptions);
 });
 
+var connectionString =
+    testConnectionString
+    ?? builder.Configuration.GetConnectionString("BeamOsDb")
+    ?? throw new InvalidOperationException("Connection string 'BeamOsDb' not found.");
+
 builder
     .Services.AddStructuralAnalysisRequired()
-    .AddStructuralAnalysisConfigurable(
-        connectionString ?? builder.Configuration.GetConnectionString("BeamOsDb")
-    );
+    .AddStructuralAnalysisConfigurable()
+    .AddStructuralAnalysisInfrastructureRequired()
+    .AddStructuralAnalysisInfrastructureConfigurable(connectionString);
 
 builder.Services.AddObjectThatExtendsBase<IAssemblyMarkerAi>(
     typeof(BeamOsBaseEndpoint<,>),

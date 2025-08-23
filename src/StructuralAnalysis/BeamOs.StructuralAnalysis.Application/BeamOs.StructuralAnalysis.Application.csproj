@@ -20,4 +20,8 @@
     <PackageReference Include="Riok.Mapperly" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="PhysicalModel/ModelProposals/" />
+  </ItemGroup>
+
 </Project>
