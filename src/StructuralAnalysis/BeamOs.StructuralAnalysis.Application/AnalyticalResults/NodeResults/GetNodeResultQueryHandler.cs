@@ -2,7 +2,6 @@ using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.CsSdk.Mappers.UnitValueDtoMappers;
 using BeamOs.StructuralAnalysis.Application.Common;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.NodeResult;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.NodeResultAggregate;
 using Riok.Mapperly.Abstractions;
@@ -34,6 +33,36 @@ public class GetNodeResultQueryHandler(INodeResultRepository nodeResultRepositor
             elementAndModelUnits.Value.ModelSettings.UnitSettings
         );
         return mapper.Map(elementAndModelUnits.Value.Entity);
+    }
+}
+
+public class GetNodeResultsQueryHandler(INodeResultRepository nodeResultRepository)
+    : IQueryHandler<GetAnalyticalResultQuery, IDictionary<int, NodeResultResponse>>
+{
+    public async Task<Result<IDictionary<int, NodeResultResponse>>> ExecuteAsync(
+        GetAnalyticalResultQuery query,
+        CancellationToken ct = default
+    )
+    {
+        var elementAndModelUnits =
+            await nodeResultRepository.GetAllFromLoadCombinationWithModelSettings(
+                query.ModelId,
+                query.ResultSetId,
+                ct
+            );
+
+        if (elementAndModelUnits is null)
+        {
+            return BeamOsError.NotFound(
+                description: $"Could not find node result for result set {query.ResultSetId}, and model {query.ModelId}"
+            );
+        }
+
+        var mapper = NodeResultToResponseMapper.Create(
+            elementAndModelUnits.Value.ModelSettings.UnitSettings
+        );
+
+        return elementAndModelUnits.Value.Entity.ToDictionary(x => x.Id.Id, x => mapper.Map(x));
     }
 }
 

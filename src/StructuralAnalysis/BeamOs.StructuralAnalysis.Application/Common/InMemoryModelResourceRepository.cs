@@ -1,9 +1,7 @@
 using BeamOs.Common.Domain.Models;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace BeamOs.StructuralAnalysis.Application.Common;
 
@@ -177,13 +175,28 @@ public class InMemoryModelResourceRepository<TId, T>(
 
 public class InMemoryAnalyticalResultRepository<TId, T>(
     InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage
-) : InMemoryRepository<TId, T>, IAnalyticalResultRepository<TId, T>
-    where TId : struct
-    where T : BeamOsEntity<TId>
+)
+    : InMemoryModelResourceRepository<TId, T>(inMemoryModelRepositoryStorage),
+        IAnalyticalResultRepository<TId, T>
+    where TId : struct, IIntBasedId
+    where T : BeamOsAnalyticalResultEntity<TId>
 {
     public Task<T?> GetSingle(ModelId modelId, ResultSetId resultSetId, TId id)
     {
-        return Task.FromResult(this.Entities.TryGetValue(id, out var entity) ? entity : null);
+        var model = inMemoryModelRepositoryStorage.Models.GetValueOrDefault(modelId);
+        if (model is null)
+        {
+            return Task.FromResult<T?>(null); // Model not found
+        }
+
+        if (
+            this.ModelResources.TryGetValue(modelId, out var resources)
+            && resources.TryGetValue(id, out var entity)
+        )
+        {
+            return Task.FromResult(entity);
+        }
+        return Task.FromResult<T?>(null); // Entity not found
     }
 
     public Task<ModelSettingsAndEntity<T>?> GetSingleWithModelSettings(
@@ -198,12 +211,38 @@ public class InMemoryAnalyticalResultRepository<TId, T>(
             return Task.FromResult<ModelSettingsAndEntity<T>?>(null); // Model not found
         }
 
-        if (this.Entities.TryGetValue(id, out var entity))
+        if (
+            this.ModelResources.TryGetValue(modelId, out var resources)
+            && resources.TryGetValue(id, out var entity)
+        )
         {
             return Task.FromResult<ModelSettingsAndEntity<T>?>(new(model.Settings, entity));
         }
-
         return Task.FromResult<ModelSettingsAndEntity<T>?>(null); // Entity not found
+    }
+
+    public Task<ModelSettingsAndEntity<T[]>?> GetAllFromLoadCombinationWithModelSettings(
+        ModelId modelId,
+        ResultSetId resultSetId,
+        CancellationToken ct = default
+    )
+    {
+        var model = inMemoryModelRepositoryStorage.Models.GetValueOrDefault(modelId);
+        if (model is null)
+        {
+            return Task.FromResult<ModelSettingsAndEntity<T[]>?>(null); // Model not found
+        }
+
+        if (this.ModelResources.TryGetValue(modelId, out var resources))
+        {
+            return Task.FromResult<ModelSettingsAndEntity<T[]>?>(
+                new(
+                    model.Settings,
+                    resources.Values.Where(r => r.ResultSetId == resultSetId).ToArray()
+                )
+            );
+        }
+        return Task.FromResult<ModelSettingsAndEntity<T[]>?>(null); // Entity not found
     }
 }
 

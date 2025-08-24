@@ -35,18 +35,15 @@ public interface IBeamOsModelEntity
 }
 
 [PrimaryKey(nameof(Id), nameof(ResultSetId), nameof(ModelId))]
-public class BeamOsAnalyticalResultEntity<TId> : BeamOsEntity<TId>
-    where TId : struct
+public class BeamOsAnalyticalResultEntity<TId> : BeamOsModelEntity<TId>
+    where TId : struct, IIntBasedId
 {
     public BeamOsAnalyticalResultEntity(TId id, ResultSetId resultSetId, ModelId modelId)
-        : base(id)
+        : base(id, modelId)
     {
         this.ModelId = modelId;
         this.ResultSetId = resultSetId;
     }
-
-    public ModelId ModelId { get; protected set; }
-    public Model? Model { get; private set; }
 
     public ResultSetId ResultSetId { get; protected set; }
     public ResultSet? ResultSet { get; private set; }

@@ -24,7 +24,8 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.CodeGen.StructuralAnalysisApiClient;
 
-public partial class InMemoryApiClient : BeamOs.CodeGen.StructuralAnalysisApiClient.IStructuralAnalysisApiClientV1
+public partial class InMemoryApiClient
+    : BeamOs.CodeGen.StructuralAnalysisApiClient.IStructuralAnalysisApiClientV1
 {
     private partial ModelResourceRequest<SectionProfileFromLibraryData> CreateSectionProfileFromLibraryData_Command(
         Guid modelId,
@@ -329,10 +330,10 @@ public partial class InMemoryApiClient : BeamOs.CodeGen.StructuralAnalysisApiCli
             UnitsOverride = body.UnitsOverride,
         };
 
-    private partial ModelId CreateModelIdCommand(
-        Guid modelId,
-        CancellationToken cancellationToken
-    ) => new(modelId);
+    // private partial ModelId CreateModelIdCommand(
+    //     Guid modelId,
+    //     CancellationToken cancellationToken
+    // ) => new(modelId);
 
     private partial GetDiagramsCommand CreateGetDiagramsCommandCommand(
         Guid modelId,

@@ -54,6 +54,11 @@ public interface IAnalyticalResultRepository<TId, T> : IRepository<TId, T>
         TId id,
         CancellationToken ct = default
     );
+    public Task<ModelSettingsAndEntity<T[]>?> GetAllFromLoadCombinationWithModelSettings(
+        ModelId modelId,
+        ResultSetId resultSetId,
+        CancellationToken ct = default
+    );
 }
 
 public interface IProposalRepository<TId, T> : IRepository<TId, T>

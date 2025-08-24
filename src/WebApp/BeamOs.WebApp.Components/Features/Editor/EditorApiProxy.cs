@@ -1,5 +1,4 @@
 using System.Reflection;
-using System.Text;
 using BeamOs.CodeGen.EditorApi;
 using BeamOs.Common.Contracts;
 using Microsoft.JSInterop;

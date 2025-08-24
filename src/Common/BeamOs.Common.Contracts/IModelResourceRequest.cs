@@ -52,6 +52,12 @@ public readonly struct ModelResourceWithIntIdRequest<TBody> : IModelResourceWith
 
 public readonly struct EmptyRequest;
 
+public readonly struct GetAnalyticalResultQuery : IHasModelId
+{
+    public Guid ModelId { get; init; }
+    public int ResultSetId { get; init; }
+}
+
 public readonly struct GetAnalyticalResultResourceQuery : IHasModelId
 {
     public Guid ModelId { get; init; }

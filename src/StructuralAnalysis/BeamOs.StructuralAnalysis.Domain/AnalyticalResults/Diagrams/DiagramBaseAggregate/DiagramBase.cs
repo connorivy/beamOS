@@ -1,16 +1,15 @@
+using BeamOs.Common.Domain.Models;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.Common;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.Common.ValueObjects.DiagramBuilder;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using MathNet.Numerics;
-using UnitsNet;
-using UnitsNet.Units;
 
 namespace BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.DiagramBaseAggregate;
 
 public abstract class DiagramBase<TId, TInterval> : BeamOsAnalyticalResultEntity<TId>
-    where TId : struct
+    where TId : struct, IIntBasedId
     where TInterval : DiagramConsistentInterval
 {
     public Length ElementLength { get; private set; }

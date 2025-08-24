@@ -299,7 +299,7 @@ export interface IStructuralAnalysisApiClientV1 {
     /**
      * @return OK
      */
-    deleteAllResultSets(modelId: string): Promise<number>;
+    clearResults(modelId: string): Promise<number>;
 
     /**
      * @param unitsOverride (optional) 
@@ -310,12 +310,12 @@ export interface IStructuralAnalysisApiClientV1 {
     /**
      * @return OK
      */
-    getNodeResult(modelId: string, resultSetId: number, id: number): Promise<NodeResultResponse>;
+    getResultSet(modelId: string, id: number): Promise<ResultSetResponse>;
 
     /**
      * @return OK
      */
-    getResultSet(modelId: string, id: number): Promise<ResultSetResponse>;
+    getNodeResult(modelId: string, resultSetId: number, id: number): Promise<NodeResultResponse>;
 }
 
 export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClientV1 {
@@ -2779,8 +2779,8 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     /**
      * @return OK
      */
-    deleteAllResultSets(modelId: string): Promise<number> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/result-sets";
+    clearResults(modelId: string): Promise<number> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/results";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -2794,11 +2794,11 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDeleteAllResultSets(_response);
+            return this.processClearResults(_response);
         });
     }
 
-    protected processDeleteAllResultSets(response: Response): Promise<number> {
+    protected processClearResults(response: Response): Promise<number> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -2868,6 +2868,49 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     /**
      * @return OK
      */
+    getResultSet(modelId: string, id: number): Promise<ResultSetResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/result-sets/{id}";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetResultSet(_response);
+        });
+    }
+
+    protected processGetResultSet(response: Response): Promise<ResultSetResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResultSetResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResultSetResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
     getNodeResult(modelId: string, resultSetId: number, id: number): Promise<NodeResultResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/result-sets/{resultSetId}/node-results/{id}";
         if (modelId === undefined || modelId === null)
@@ -2909,49 +2952,6 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             });
         }
         return Promise.resolve<NodeResultResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    getResultSet(modelId: string, id: number): Promise<ResultSetResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/result-sets/{id}";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetResultSet(_response);
-        });
-    }
-
-    protected processGetResultSet(response: Response): Promise<ResultSetResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultSetResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<ResultSetResponse>(null as any);
     }
 }
 

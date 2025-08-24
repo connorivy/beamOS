@@ -163,4 +163,28 @@ internal abstract class AnalyticalResultRepositoryBase<TId, TEntity>(
                 settingAndEntity.Entity
             );
     }
+
+    public async Task<ModelSettingsAndEntity<TEntity[]>?> GetAllFromLoadCombinationWithModelSettings(
+        ModelId modelId,
+        ResultSetId resultSetId,
+        CancellationToken ct = default
+    )
+    {
+        var modelSettings = await this
+            .DbContext.Set<Model>()
+            .AsNoTracking()
+            .Where(m => m.Id == modelId)
+            .Select(m => m.Settings)
+            .FirstAsync(ct);
+
+        var settingAndEntity = await this
+            .DbContext.Set<TEntity>()
+            .AsNoTracking()
+            .Where(m => m.ModelId == modelId && m.ResultSetId == resultSetId)
+            .ToArrayAsync(ct);
+
+        return settingAndEntity is null
+            ? null
+            : new ModelSettingsAndEntity<TEntity[]>(modelSettings, settingAndEntity);
+    }
 }

@@ -20,6 +20,7 @@ public static class ModelBuilderFactory
         var y = await x.models[model.Id].analyze.opensees.RunOpenSeesAnalysisAsync(null, default);
         var z = await x.models[Guid.Empty].result_sets[0].GetResultSetAsync(default);
         var resultSet = await w.result_sets[1].GetResultSetAsync(default);
+        var resultSet2 = await w.
         // var asdf = resultSet.Value.NodeResults
         var a = z.Value.NodeResults[0].Displacements.DisplacementAlongX;
         // TaskDotWrapWrapper_BeamOs

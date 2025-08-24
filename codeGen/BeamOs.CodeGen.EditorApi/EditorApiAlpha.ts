@@ -1679,7 +1679,7 @@ export class BeamOsError implements IBeamOsError {
     description!: string;
     type!: number;
     numericType?: number;
-    metadata!: { [key: string]: string; } | undefined;
+    metadata!: any | undefined;
 
     [key: string]: any;
 
@@ -1702,13 +1702,7 @@ export class BeamOsError implements IBeamOsError {
             this.description = _data["description"];
             this.type = _data["type"];
             this.numericType = _data["numericType"];
-            if (_data["metadata"]) {
-                this.metadata = {} as any;
-                for (let key in _data["metadata"]) {
-                    if (_data["metadata"].hasOwnProperty(key))
-                        (<any>this.metadata)![key] = _data["metadata"][key];
-                }
-            }
+            this.metadata = _data["metadata"];
         }
     }
 
@@ -1729,13 +1723,7 @@ export class BeamOsError implements IBeamOsError {
         data["description"] = this.description;
         data["type"] = this.type;
         data["numericType"] = this.numericType;
-        if (this.metadata) {
-            data["metadata"] = {};
-            for (let key in this.metadata) {
-                if (this.metadata.hasOwnProperty(key))
-                    (<any>data["metadata"])[key] = (<any>this.metadata)[key];
-            }
-        }
+        data["metadata"] = this.metadata;
         return data;
     }
 }
@@ -1745,7 +1733,7 @@ export interface IBeamOsError {
     description: string;
     type: number;
     numericType?: number;
-    metadata: { [key: string]: string; } | undefined;
+    metadata: any | undefined;
 
     [key: string]: any;
 }
