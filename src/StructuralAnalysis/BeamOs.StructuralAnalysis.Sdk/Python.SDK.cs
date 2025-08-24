@@ -20,7 +20,7 @@ public static class ModelBuilderFactory
         var y = await x.models[model.Id].analyze.opensees.RunOpenSeesAnalysisAsync(null, default);
         var z = await x.models[Guid.Empty].result_sets[0].GetResultSetAsync(default);
         var resultSet = await w.result_sets[1].GetResultSetAsync(default);
-        var resultSet2 = await w.
+        // var resultSet2 = await w.
         // var asdf = resultSet.Value.NodeResults
         var a = z.Value.NodeResults[0].Displacements.DisplacementAlongX;
         // TaskDotWrapWrapper_BeamOs
@@ -36,7 +36,9 @@ public static class ModelBuilderFactory
             .AddInMemoryInfrastructure();
 
         var serviceProvider = services.BuildServiceProvider();
-        var apiClient = serviceProvider.GetRequiredKeyedService<IStructuralAnalysisApiClientV1>("InMemory");
+        var apiClient = serviceProvider.GetRequiredKeyedService<IStructuralAnalysisApiClientV1>(
+            "InMemory"
+        );
         return new BeamOsModelBuilder(model, apiClient);
     }
     // public static BeamOsModel Local()

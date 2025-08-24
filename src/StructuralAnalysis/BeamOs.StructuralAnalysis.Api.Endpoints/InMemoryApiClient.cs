@@ -379,4 +379,9 @@ public partial class InMemoryApiClient
         DateTimeOffset body,
         CancellationToken cancellationToken
     ) => new() { ModelId = modelId, Body = body };
+
+    private partial ModelId CreateModelIdCommand(
+        Guid modelId,
+        CancellationToken cancellationToken
+    ) => new(modelId);
 }

@@ -15,7 +15,10 @@ public sealed class DocumentGenerator
     /// </summary>
     /// <param name="spc"></param>
     /// <param name="routeTree"></param>
-    public void GenerateDocuments(SourceProductionContext spc, Dictionary<string, RouteSegment> routeTree)
+    public void GenerateDocuments(
+        SourceProductionContext spc,
+        Dictionary<string, RouteSegment> routeTree
+    )
     {
         if (routeTree.Count == 0)
         {
@@ -23,11 +26,7 @@ public sealed class DocumentGenerator
         }
 
         var apiClientName = "FluentApiClient";
-        RouteSegment topRouteSegment = new()
-        {
-            Name = apiClientName,
-            IsParameter = false
-        };
+        RouteSegment topRouteSegment = new() { Name = apiClientName, IsParameter = false };
 
         // Generate the main fluent API client
         this.GenerateFluentApiClient(spc, routeTree, apiClientName);
@@ -36,7 +35,11 @@ public sealed class DocumentGenerator
         this.GenerateAccessorClasses(spc, routeTree, [topRouteSegment]);
     }
 
-    private void GenerateFluentApiClient(SourceProductionContext spc, Dictionary<string, RouteSegment> routeTree, string apiClientName)
+    private void GenerateFluentApiClient(
+        SourceProductionContext spc,
+        Dictionary<string, RouteSegment> routeTree,
+        string apiClientName
+    )
     {
         var sb = new StringBuilder();
         sb.AppendLine("using System;");
@@ -52,7 +55,9 @@ public sealed class DocumentGenerator
         sb.AppendLine();
         sb.AppendLine($"    public {apiClientName}(IStructuralAnalysisApiClientV1 apiClient)");
         sb.AppendLine("    {");
-        sb.AppendLine("        _apiClient = apiClient ?? throw new ArgumentNullException(nameof(apiClient));");
+        sb.AppendLine(
+            "        _apiClient = apiClient ?? throw new ArgumentNullException(nameof(apiClient));"
+        );
         sb.AppendLine("    }");
         sb.AppendLine();
 
@@ -60,15 +65,24 @@ public sealed class DocumentGenerator
         foreach (var rootSegment in routeTree.Values.Where(s => !s.IsParameter))
         {
             var className = apiClientName + $"_{rootSegment.Name}";
-            sb.AppendLine($"    public {className} {rootSegment.Name} => new {className}(_apiClient);");
+            sb.AppendLine(
+                $"    public {className} {rootSegment.Name} => new {className}(_apiClient);"
+            );
         }
 
         sb.AppendLine("}");
 
-        spc.AddSource(this.GetUniqueFileName("FluentApiClient.g.cs"), SourceText.From(sb.ToString(), Encoding.UTF8));
+        spc.AddSource(
+            this.GetUniqueFileName("FluentApiClient.g.cs"),
+            SourceText.From(sb.ToString(), Encoding.UTF8)
+        );
     }
 
-    private void GenerateAccessorClasses(SourceProductionContext spc, Dictionary<string, RouteSegment> segments, RouteSegment[] previousSegments)
+    private void GenerateAccessorClasses(
+        SourceProductionContext spc,
+        Dictionary<string, RouteSegment> segments,
+        RouteSegment[] previousSegments
+    )
     {
         foreach (var segment in segments.Values)
         {
@@ -85,7 +99,11 @@ public sealed class DocumentGenerator
         }
     }
 
-    private void GenerateNamedAccessor(SourceProductionContext spc, RouteSegment segment, RouteSegment[] previousSegments)
+    private void GenerateNamedAccessor(
+        SourceProductionContext spc,
+        RouteSegment segment,
+        RouteSegment[] previousSegments
+    )
     {
         // var originalClassName = segment.Name + "Accessor";
         // var className = this.GetUniqueClassName(originalClassName);
@@ -103,7 +121,9 @@ public sealed class DocumentGenerator
         var ctorArgs = previousSegments
             .Append(segment)
             .Where(p => p.IsParameter)
-            .Select(p => $"{p.ParameterType ?? throw new InvalidOperationException($"Parameter type is required for parameter segment '{p.Name}'")} {p.Name}")
+            .Select(p =>
+                $"{p.ParameterType ?? throw new InvalidOperationException($"Parameter type is required for parameter segment '{p.Name}'")} {p.Name}"
+            )
             .Prepend($"IStructuralAnalysisApiClientV1 _apiClient");
 
         sb.AppendLine($"public class {className}({string.Join(", ", ctorArgs)})");
@@ -111,45 +131,68 @@ public sealed class DocumentGenerator
 
         // Generate child accessors and indexers
         var childIndexers = new HashSet<string>();
-        var methodCallArgs = previousSegments.Append(segment).Where(p => p.IsParameter).Select(p => p.Name).Prepend("_apiClient").ToArray();
+        var methodCallArgs = previousSegments
+            .Append(segment)
+            .Where(p => p.IsParameter)
+            .Select(p => p.Name)
+            .Prepend("_apiClient")
+            .ToArray();
         foreach (var child in segment.Children.Values)
         {
+            var paramName = CleanName(child.Name);
+            var childClassName = className + $"_{paramName}";
             if (child.IsParameter)
             {
                 // Generate indexer for parameter child
-                var paramType = child.ParameterType ?? throw new InvalidOperationException($"Parameter type is required for parameter segment '{child.Name}'");
+                var paramType = CleanName(
+                    child.ParameterType
+                        ?? throw new InvalidOperationException(
+                            $"Parameter type is required for parameter segment '{child.Name}'"
+                        )
+                );
                 var indexerSignature = $"this[{paramType}]";
 
                 if (!childIndexers.Contains(indexerSignature))
                 {
                     childIndexers.Add(indexerSignature);
-                    var childClassName = className + $"_{child.Name}";
-                    sb.AppendLine($"    public {childClassName} this[{paramType} {child.Name}] => new {childClassName}({string.Join(", ", methodCallArgs.Append(child.Name))});");
+                    sb.AppendLine(
+                        $"    public {childClassName} this[{paramType} {paramName}] => new {childClassName}({string.Join(", ", methodCallArgs.Append(paramName))});"
+                    );
                 }
             }
             else
             {
                 // Generate property for named child
-                var childClassName = className + $"_{child.Name}";
-                sb.AppendLine($"    public {childClassName} @{child.Name} => new {childClassName}({string.Join(", ", methodCallArgs)});");
+                sb.AppendLine(
+                    $"    public {childClassName} @{paramName} => new {childClassName}({string.Join(", ", methodCallArgs)});"
+                );
             }
         }
 
         // Generate methods for this segment
         foreach (var method in segment.Methods)
         {
-            var parametersInMethodSig = method.Parameters.Where(p => !methodCallArgs.Contains(p.Name));
+            var parametersInMethodSig = method.Parameters.Where(p =>
+                !methodCallArgs.Contains(p.Name)
+            );
 
-            sb.AppendLine($"    public {method.ReturnType} {method.Name}({string.Join(", ", parametersInMethodSig.Select(p => $"{p.Type.ToDisplayString()} {p.Name}"))})");
+            sb.AppendLine(
+                $"    public {method.ReturnType} {method.Name}({string.Join(", ", parametersInMethodSig.Select(p => $"{p.Type.ToDisplayString()} {p.Name}"))})"
+            );
             sb.AppendLine("    {");
-            sb.AppendLine($"        return _apiClient.{method.Name}({string.Join(", ", method.Parameters.Select(p => p.Name))});");
+            sb.AppendLine(
+                $"        return _apiClient.{method.Name}({string.Join(", ", method.Parameters.Select(p => p.Name))});"
+            );
             sb.AppendLine("    }");
         }
 
         sb.AppendLine("}");
 
         // Use the original class name for filename to ensure unique naming based on original segments
-        spc.AddSource(this.GetUniqueFileName($"{className}.g.cs"), SourceText.From(sb.ToString(), Encoding.UTF8));
+        spc.AddSource(
+            this.GetUniqueFileName($"{className}.g.cs"),
+            SourceText.From(sb.ToString(), Encoding.UTF8)
+        );
 
         // Recursively generate child accessors
         this.GenerateAccessorClasses(spc, segment.Children, [.. previousSegments, segment]);
@@ -164,7 +207,7 @@ public sealed class DocumentGenerator
         }
 
         // Clean the name to ensure it's a valid filename
-        var cleanName = originalName.Replace("-", "_").Replace(" ", "_");
+        var cleanName = CleanName(originalName);
 
         // If it's unique, return it
         if (!this.generatedFileNames.Contains(cleanName))
@@ -179,7 +222,9 @@ public sealed class DocumentGenerator
         string uniqueName;
         do
         {
-            var baseName = cleanName.EndsWith(".g.cs") ? cleanName.Substring(0, cleanName.Length - 5) : cleanName;
+            var baseName = cleanName.EndsWith(".g.cs")
+                ? cleanName.Substring(0, cleanName.Length - 5)
+                : cleanName;
             uniqueName = $"{baseName}_{counter}.g.cs";
             counter++;
         } while (this.generatedFileNames.Contains(uniqueName));
@@ -187,5 +232,10 @@ public sealed class DocumentGenerator
         this.generatedFileNames.Add(uniqueName);
         this.fileNameMappings[originalName] = uniqueName;
         return uniqueName;
+    }
+
+    private static string CleanName(string name)
+    {
+        return name.Replace("-", "_").Replace(" ", "_");
     }
 }

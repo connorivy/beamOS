@@ -9,14 +9,19 @@ public sealed class FluentApiClientBuilder
     /// <summary>
     /// Adds a method to the generated API client.
     /// Input: /api/models/{modelId:Guid}/node/{id:int}, GetNode, [modelId, id, options]
-    /// Expected behavior: Builds a method in the API client that will be called like this: 
+    /// Expected behavior: Builds a method in the API client that will be called like this:
     ///     apiClient.Models[<modelId>].Nodes.GetNode(id, options);
     /// The implementation of the 'getNode' method should just be
     ///     return await apiClient.<methodName>(<parameters>);
     /// </summary>
     /// <param name="route"></param>
     /// <param name="methodName"></param>
-    public void AddMethodAtRoute(string route, string methodName, string returnType, ICollection<IParameterSymbol> parameters)
+    public void AddMethodAtRoute(
+        string route,
+        string methodName,
+        string returnType,
+        ICollection<IParameterSymbol> parameters
+    )
     {
         var routeSegments = this.ParseRoute(route);
         var currentSegment = this.routeTree;
@@ -31,7 +36,7 @@ public sealed class FluentApiClientBuilder
                     IsParameter = segment.IsParameter,
                     ParameterType = segment.ParameterType,
                     Children = [],
-                    Methods = []
+                    Methods = [],
                 };
             }
 
@@ -43,12 +48,14 @@ public sealed class FluentApiClientBuilder
         if (finalSegment != null)
         {
             var targetSegment = this.GetSegmentByPath(routeSegments);
-            targetSegment?.Methods.Add(new ApiMethod
-            {
-                Name = methodName,
-                ReturnType = returnType,
-                Parameters = parameters
-            });
+            targetSegment?.Methods.Add(
+                new ApiMethod
+                {
+                    Name = methodName,
+                    ReturnType = returnType,
+                    Parameters = parameters,
+                }
+            );
         }
     }
 
@@ -62,7 +69,9 @@ public sealed class FluentApiClientBuilder
         foreach (var part in parts)
         {
             // Skip empty parts and "api" prefix as requested
-            if (string.IsNullOrEmpty(part) || part.Equals("api", StringComparison.OrdinalIgnoreCase))
+            if (
+                string.IsNullOrEmpty(part) || part.Equals("api", StringComparison.OrdinalIgnoreCase)
+            )
             {
                 continue;
             }
@@ -87,23 +96,27 @@ public sealed class FluentApiClientBuilder
                     paramName = paramContent;
                 }
 
-                segments.Add(new RouteSegmentInfo
-                {
-                    Name = paramName,
-                    IsParameter = true,
-                    ParameterType = paramType
-                });
+                segments.Add(
+                    new RouteSegmentInfo
+                    {
+                        Name = paramName,
+                        IsParameter = true,
+                        ParameterType = paramType,
+                    }
+                );
             }
             else
             {
                 // Regular path segment - pluralize for collection access
                 var segmentName = this.PluralizeSegment(part);
-                segments.Add(new RouteSegmentInfo
-                {
-                    Name = segmentName,
-                    IsParameter = false,
-                    ParameterType = null
-                });
+                segments.Add(
+                    new RouteSegmentInfo
+                    {
+                        Name = segmentName,
+                        IsParameter = false,
+                        ParameterType = null,
+                    }
+                );
             }
         }
 
@@ -124,7 +137,7 @@ public sealed class FluentApiClientBuilder
             "float" => "float",
             "decimal" => "decimal",
             "datetime" => "DateTime",
-            _ => "string"
+            _ => "string",
         };
     }
 
@@ -154,7 +167,6 @@ public sealed class FluentApiClientBuilder
         var documentGenerator = new DocumentGenerator();
         documentGenerator.GenerateDocuments(spc, this.routeTree);
     }
-
 }
 
 public class RouteSegmentInfo
@@ -166,11 +178,20 @@ public class RouteSegmentInfo
 
 public class RouteSegment
 {
-    public string Name { get; set; } = string.Empty;
+    public string Name
+    {
+        get;
+        set => field = CleanName(value);
+    } = string.Empty;
     public bool IsParameter { get; set; }
     public string? ParameterType { get; set; }
     public Dictionary<string, RouteSegment> Children { get; set; } = [];
     public List<ApiMethod> Methods { get; set; } = [];
+
+    private static string CleanName(string name)
+    {
+        return name.Replace("-", "_").Replace(" ", "_");
+    }
 }
 
 public class ApiMethod
