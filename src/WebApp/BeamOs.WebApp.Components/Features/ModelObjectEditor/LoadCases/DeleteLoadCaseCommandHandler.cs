@@ -23,7 +23,7 @@ public sealed class DeleteLoadCaseCommandHandler(
         CancellationToken ct = default
     )
     {
-        return await structuralAnalysisApiClientV1.DeleteLoadCase(
+        return await structuralAnalysisApiClientV1.DeleteLoadCaseAsync(
             command.ModelId,
             command.LoadCaseId,
             ct

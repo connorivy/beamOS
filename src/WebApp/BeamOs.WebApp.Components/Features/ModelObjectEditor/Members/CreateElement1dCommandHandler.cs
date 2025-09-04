@@ -43,7 +43,7 @@ public sealed class CreateElement1dClientCommandHandler(
         CancellationToken ct = default
     )
     {
-        return await structuralAnalysisApiClientV1.CreateElement1d(
+        return await structuralAnalysisApiClientV1.CreateElement1dAsync(
             command.ModelId,
             new CreateElement1dRequest(command.Data),
             ct

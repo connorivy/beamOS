@@ -40,7 +40,7 @@ public sealed class DeleteMomentLoadCommandHandler(
         CancellationToken ct = default
     )
     {
-        return await structuralAnalysisApiClientV1.DeleteMomentLoad(
+        return await structuralAnalysisApiClientV1.DeleteMomentLoadAsync(
             command.ModelId,
             command.MomentLoadId,
             ct

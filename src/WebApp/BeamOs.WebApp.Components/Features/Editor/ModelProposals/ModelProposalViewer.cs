@@ -10,7 +10,7 @@ public class ModelProposalViewer(
 {
     // public async Task<IList<int>> GetModelProposalIds(Guid modelId, CancellationToken ct)
     // {
-    //     var modelProposals = await apiClient.GetModelProposals(modelId, ct);
+    //     var modelProposals = await apiClient.GetModelProposalsAsync(modelId, ct);
     //     if (modelProposals.IsError)
     //     {
     //         throw new Exception(modelProposals.Error.Description);
@@ -21,7 +21,7 @@ public class ModelProposalViewer(
     //
     // public async Task<ModelProposal> GetModelProposal(Guid modelId, CancellationToken ct)
     // {
-    //     var modelProposal = await apiClient.GetModelProposal(modelId, ct);
+    //     var modelProposal = await apiClient.GetModelProposalAsync(modelId, ct);
     //     if (modelProposal.IsError)
     //     {
     //         throw new Exception(modelProposal.Error.Description);
@@ -32,7 +32,7 @@ public class ModelProposalViewer(
     //
     public async Task DisplayModelProposal(Guid modelId, int proposalId, CancellationToken ct)
     {
-        var modelProposal = await apiClient.GetModelProposal(modelId, proposalId, ct);
+        var modelProposal = await apiClient.GetModelProposalAsync(modelId, proposalId, ct);
         if (modelProposal.IsError)
         {
             throw new Exception(modelProposal.Error.Detail);

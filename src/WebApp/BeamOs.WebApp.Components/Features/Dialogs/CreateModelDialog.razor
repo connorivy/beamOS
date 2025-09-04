@@ -61,7 +61,7 @@
     [Inject]
     private IStructuralAnalysisApiClientV1 StructuralAnalysisApiAlphaClient { get; init; }
 
-    // private ComplexFieldTypeMarker parameterValues = StructuralApiClientComponent.GetSettableParameterProperties(typeof(CreateModelRequest), null, true);
+    // private ComplexFieldTypeMarker parameterValues = StructuralApiClientComponent.GetSettableParameterPropertiesAsync(typeof(CreateModelRequest), null, true);
 
     private bool validationSuccess;
     private string[] errors = [];
@@ -76,7 +76,7 @@
 
     private static MethodInfo CreateModel { get; } = typeof(IStructuralAnalysisApiClientV1)
         .GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.Equals(nameof(IStructuralAnalysisApiClientV1.CreateModel)))
+            .Where(m => m.Name.Equals(nameof(IStructuralAnalysisApiClientV1.CreateModelAsync)))
             .First();
 
     private void Cancel() => MudDialog.Cancel();

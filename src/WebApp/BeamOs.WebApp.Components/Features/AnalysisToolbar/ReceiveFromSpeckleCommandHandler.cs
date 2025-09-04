@@ -73,7 +73,7 @@ public sealed class ModelRepairClientCommandHandler(
     {
         dispatcher.Dispatch(new EditorLoadingBegin(command.CanvasId, "Repairing Model"));
 
-        return await structuralAnalysisApiClient.RepairModel(command.ModelId, "", ct);
+        return await structuralAnalysisApiClient.RepairModelAsync(command.ModelId, "", ct);
     }
 
     protected override void PostProcess(
@@ -103,7 +103,7 @@ public sealed class GetModelProposalsClientCommandHandler(
         CancellationToken ct = default
     )
     {
-        return await structuralAnalysisApiClient.GetModelProposals(command.ModelId, ct);
+        return await structuralAnalysisApiClient.GetModelProposalsAsync(command.ModelId, ct);
     }
 
     protected override void PostProcess(

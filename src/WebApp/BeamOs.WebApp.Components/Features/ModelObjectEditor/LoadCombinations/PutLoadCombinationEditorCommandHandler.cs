@@ -21,7 +21,7 @@ public sealed class PutLoadCombinationEditorCommandHandler(
         CancellationToken ct = default
     )
     {
-        return await structuralAnalysisApiClientV1.PutLoadCombination(
+        return await structuralAnalysisApiClientV1.PutLoadCombinationAsync(
             command.ModelId,
             command.New.Id,
             command.New,

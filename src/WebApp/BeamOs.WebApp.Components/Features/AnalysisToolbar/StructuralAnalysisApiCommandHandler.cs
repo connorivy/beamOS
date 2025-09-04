@@ -25,7 +25,7 @@ public sealed class RunDsmCommandCommandHandler(
     {
         dispatcher.Dispatch(new AnalysisBegan() { ModelId = command.ModelId });
 
-        var result = await structuralAnalysisApiClientV1.RunDirectStiffnessMethod(
+        var result = await structuralAnalysisApiClientV1.RunDirectStiffnessMethodAsync(
             command.ModelId,
             new()
             {
@@ -34,7 +34,7 @@ public sealed class RunDsmCommandCommandHandler(
             },
             ct
         );
-        //var result = await structuralAnalysisApiClientV1.RunDirectStiffnessMethodAsync(
+        //var result = await structuralAnalysisApiClientV1.RunDirectStiffnessMethodAsyncAsync(
         //    command.ModelId,
         //    command.UnitsOverride,
         //    ct

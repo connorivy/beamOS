@@ -52,7 +52,7 @@ public partial class ProposalInfo(
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        var response = await this.StructuralAnalysisApiClient.GetModelProposals(this.ModelId);
+        var response = await this.StructuralAnalysisApiClient.GetModelProposalsAsync(this.ModelId);
         if (response.IsSuccess)
         {
             dispatcher.Dispatch(
@@ -68,7 +68,7 @@ public partial class ProposalInfo(
 
     private async Task LoadProposal(int proposalId)
     {
-        var response = await this.StructuralAnalysisApiClient.GetModelProposal(
+        var response = await this.StructuralAnalysisApiClient.GetModelProposalAsync(
             this.ModelId,
             proposalId
         );
@@ -86,7 +86,7 @@ public partial class ProposalInfo(
 
     private async Task AcceptProposal(int proposalId)
     {
-        var response = await this.StructuralAnalysisApiClient.AcceptModelProposal(
+        var response = await this.StructuralAnalysisApiClient.AcceptModelProposalAsync(
             this.ModelId,
             proposalId,
             this.unselectedProposalObjectIds.Select(o => new EntityProposal(
@@ -111,7 +111,7 @@ public partial class ProposalInfo(
 
     private async Task RejectProposal(int proposalId)
     {
-        var response = await this.StructuralAnalysisApiClient.RejectModelProposal(
+        var response = await this.StructuralAnalysisApiClient.RejectModelProposalAsync(
             this.ModelId,
             proposalId
         );

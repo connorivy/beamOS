@@ -27,7 +27,7 @@ public sealed class PutSectionProfileEditorCommandHandler(
         CancellationToken ct = default
     )
     {
-        return await structuralAnalysisApiClientV1.PutSectionProfile(
+        return await structuralAnalysisApiClientV1.PutSectionProfileAsync(
             command.New.Id,
             command.New.ModelId,
             command.New.ToSectionProfileData(),

@@ -37,7 +37,7 @@ public sealed class DeletePointLoadEditorCommandHandler(
         CancellationToken ct = default
     )
     {
-        return await structuralAnalysisApiClientV1.DeletePointLoad(
+        return await structuralAnalysisApiClientV1.DeletePointLoadAsync(
             command.ModelId,
             command.PointLoadId,
             ct

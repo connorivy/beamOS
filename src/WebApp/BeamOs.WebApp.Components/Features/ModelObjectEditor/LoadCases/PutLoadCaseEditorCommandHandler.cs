@@ -21,7 +21,7 @@ public sealed class PutLoadCaseEditorCommandHandler(
         CancellationToken ct = default
     )
     {
-        return await structuralAnalysisApiClientV1.PutLoadCase(
+        return await structuralAnalysisApiClientV1.PutLoadCaseAsync(
             command.ModelId,
             command.New.Id,
             command.New,
