@@ -71,7 +71,11 @@ public class BeamOsRouteInMemoryGenerator : IIncrementalGenerator
         );
     }
 
-    private static void CreateInMemoryCommandHandlers(SourceProductionContext spc, (Compilation compilation, ImmutableArray<ClassDeclarationSyntax> classes) source, Dictionary<string, InMemoryHandlerInfo> apiMethodNameToParameterTypeName)
+    private static void CreateInMemoryCommandHandlers(
+        SourceProductionContext spc,
+        (Compilation compilation, ImmutableArray<ClassDeclarationSyntax> classes) source,
+        Dictionary<string, InMemoryHandlerInfo> apiMethodNameToParameterTypeName
+    )
     {
         // System.Diagnostics.Debugger.Launch();
         Compilation compilation = source.compilation;
@@ -105,10 +109,7 @@ public class BeamOsRouteInMemoryGenerator : IIncrementalGenerator
             var ctors = classDecl.Members.OfType<ConstructorDeclarationSyntax>().ToList();
             int paramCount = 0;
             ParameterSyntax? singleParam = null;
-            if (
-                classDecl.ParameterList != null
-                && classDecl.ParameterList.Parameters.Count == 1
-            )
+            if (classDecl.ParameterList != null && classDecl.ParameterList.Parameters.Count == 1)
             {
                 paramCount = 1;
                 singleParam = classDecl.ParameterList.Parameters[0];
@@ -131,11 +132,14 @@ public class BeamOsRouteInMemoryGenerator : IIncrementalGenerator
             INamedTypeSymbol? ctorParamTypeSymbol = null;
             if (singleParam.Type != null)
             {
-                ctorParamTypeSymbol = (INamedTypeSymbol)
-                    model.GetTypeInfo(singleParam.Type).Type;
+                ctorParamTypeSymbol = (INamedTypeSymbol)model.GetTypeInfo(singleParam.Type).Type;
             }
 
-            var route = symbol.GetAttributes().Where(a => a.AttributeClass?.Name.Contains("BeamOsRoute") ?? false).Select(a => a.ConstructorArguments.First().Value.ToString()).First();
+            var route = symbol
+                .GetAttributes()
+                .Where(a => a.AttributeClass?.Name.Contains("BeamOsRoute") ?? false)
+                .Select(a => a.ConstructorArguments.First().Value.ToString())
+                .First();
             if (ctorParamTypeSymbol.TypeKind == TypeKind.Interface)
             {
                 if (
@@ -162,13 +166,12 @@ public class BeamOsRouteInMemoryGenerator : IIncrementalGenerator
             }
             else
             {
-                var inMemoryType =
-                    InMemoryCommandHandlerGenerator.CreateInMemoryHandlerDecorator(
-                        spc,
-                        ctorParamTypeSymbol,
-                        di,
-                        route
-                    );
+                var inMemoryType = InMemoryCommandHandlerGenerator.CreateInMemoryHandlerDecorator(
+                    spc,
+                    ctorParamTypeSymbol,
+                    di,
+                    route
+                );
                 if (inMemoryType is not null)
                 {
                     apiMethodNameToParameterTypeName.Add(symbol.Name, inMemoryType);
@@ -181,7 +184,6 @@ public class BeamOsRouteInMemoryGenerator : IIncrementalGenerator
         di.AppendLine("}");
         spc.AddSource("InMemoryCommandHandlerRegistration.g.cs", di.ToString());
     }
-
 
     private static bool HasBeamOsRouteAttribute(SyntaxNode node)
     {

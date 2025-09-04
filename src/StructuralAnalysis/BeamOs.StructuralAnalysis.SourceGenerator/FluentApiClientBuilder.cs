@@ -16,13 +16,76 @@ public sealed class FluentApiClientBuilder
     /// </summary>
     /// <param name="route"></param>
     /// <param name="methodName"></param>
+    // public void AddMethodAtRoute(
+    //     string route,
+    //     string methodName,
+    //     ITypeSymbol returnType,
+    //     ICollection<IParameterSymbol> parameters
+    // )
+    // {
+    //     var routeSegments = this.ParseRoute(route);
+    //     var currentSegment = this.routeTree;
+
+    //     foreach (var segment in routeSegments)
+    //     {
+    //         if (!currentSegment.ContainsKey(segment.Name))
+    //         {
+    //             currentSegment[segment.Name] = new RouteSegment
+    //             {
+    //                 Name = segment.Name,
+    //                 IsParameter = segment.IsParameter,
+    //                 ParameterType = segment.ParameterType,
+    //                 Children = [],
+    //                 Methods = [],
+    //             };
+    //         }
+
+    //         currentSegment = currentSegment[segment.Name].Children;
+    //     }
+
+    //     // Add the method to the final segment
+    //     var finalSegment = routeSegments.LastOrDefault();
+    //     if (finalSegment != null)
+    //     {
+    //         var targetSegment = this.GetSegmentByPath(routeSegments);
+    //         targetSegment?.Methods.Add(
+    //             new ApiMethod
+    //             {
+    //                 Name = methodName,
+    //                 ReturnType = returnType,
+    //                 // Parameters = parameters,
+    //             }
+    //         );
+    //     }
+    // }
+
+    /// <summary>
+    /// Adds a method to the generated API client.
+    /// Input: /api/models/{modelId:Guid}/node/{id:int}, GetNode, [modelId, id, options]
+    /// Expected behavior: Builds a method in the API client that will be called like this:
+    ///     apiClient.Models[<modelId>].Nodes.GetNode(id, options);
+    /// The implementation of the 'getNode' method should just be
+    ///     return await apiClient.<methodName>(<parameters>);
+    /// </summary>
+    /// <param name="route"></param>
+    /// <param name="methodName"></param>
     public void AddMethodAtRoute(
-        string route,
-        string methodName,
-        string returnType,
-        ICollection<IParameterSymbol> parameters
+        INamedTypeSymbol endpointSymbol,
+        ITypeSymbol handlerSymbol,
+        ITypeSymbol requestType,
+        ITypeSymbol returnType
     )
     {
+        var routeAttribute =
+            endpointSymbol
+                .GetAttributes()
+                .FirstOrDefault(attr => attr.AttributeClass?.Name == "BeamOsRouteAttribute")
+            ?? throw new InvalidOperationException("RouteAttribute not found on endpoint class");
+
+        var route =
+            routeAttribute?.ConstructorArguments.FirstOrDefault().Value?.ToString()
+            ?? throw new InvalidOperationException("Could not get route from RouteAttribute");
+
         var routeSegments = this.ParseRoute(route);
         var currentSegment = this.routeTree;
 
@@ -51,9 +114,12 @@ public sealed class FluentApiClientBuilder
             targetSegment?.Methods.Add(
                 new ApiMethod
                 {
-                    Name = methodName,
+                    Name = endpointSymbol.Name,
+                    RequestType = requestType,
+                    HandlerSymbol = handlerSymbol,
                     ReturnType = returnType,
-                    Parameters = parameters,
+                    EndpointSymbol = endpointSymbol,
+                    // Parameters = parameters,
                 }
             );
         }
@@ -164,8 +230,13 @@ public sealed class FluentApiClientBuilder
 
     public void AddClassesToCompilation(SourceProductionContext spc)
     {
-        var documentGenerator = new DocumentGenerator();
-        documentGenerator.GenerateDocuments(spc, this.routeTree);
+        var resultApiGenerator = new ResultApiClassGenerator(
+            "BeamOsFluentResultApiClient",
+            "BeamOsApiResult"
+        );
+        var throwing = new ThrowingApiClassGenerator("BeamOsFluentApiClient", "BeamOsApi");
+        resultApiGenerator.GenerateFluentApiClasses(spc, this.routeTree);
+        throwing.GenerateFluentApiClasses(spc, this.routeTree);
     }
 }
 
@@ -190,13 +261,16 @@ public class RouteSegment
 
     private static string CleanName(string name)
     {
-        return name.Replace("-", "_").Replace(" ", "_");
+        return name.Replace('-', '_').Replace(' ', '_');
     }
 }
 
 public class ApiMethod
 {
     public string Name { get; set; } = string.Empty;
-    public string ReturnType { get; set; } = string.Empty;
-    public ICollection<IParameterSymbol> Parameters { get; set; } = [];
+    public ITypeSymbol ReturnType { get; set; }
+    public ITypeSymbol RequestType { get; set; }
+    public ITypeSymbol HandlerSymbol { get; set; }
+    public INamedTypeSymbol EndpointSymbol { get; set; }
+    // public ICollection<IParameterSymbol> Parameters { get; set; } = [];
 }

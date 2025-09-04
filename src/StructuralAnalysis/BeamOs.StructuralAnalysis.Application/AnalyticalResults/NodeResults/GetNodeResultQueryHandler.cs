@@ -25,7 +25,7 @@ public class GetNodeResultQueryHandler(INodeResultRepository nodeResultRepositor
         if (elementAndModelUnits is null)
         {
             return BeamOsError.NotFound(
-                description: $"Could not find node result for node {query.Id}, result set {query.ResultSetId}, and model {query.ModelId}"
+                description: $"Could not find node result for node {query.Id}, result set {query.LoadCombinationId}, and model {query.ModelId}"
             );
         }
 
@@ -47,14 +47,14 @@ public class GetNodeResultsQueryHandler(INodeResultRepository nodeResultReposito
         var elementAndModelUnits =
             await nodeResultRepository.GetAllFromLoadCombinationWithModelSettings(
                 query.ModelId,
-                query.ResultSetId,
+                query.LoadCombinationId,
                 ct
             );
 
         if (elementAndModelUnits is null)
         {
             return BeamOsError.NotFound(
-                description: $"Could not find node result for result set {query.ResultSetId}, and model {query.ModelId}"
+                description: $"Could not find node result for result set {query.LoadCombinationId}, and model {query.ModelId}"
             );
         }
 

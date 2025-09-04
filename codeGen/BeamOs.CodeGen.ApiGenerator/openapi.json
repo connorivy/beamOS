@@ -1,0 +1,6363 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "BeamOs.CodeGen.ApiGenerator | v1",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5079/"
+    }
+  ],
+  "paths": {
+    "/api/models/{modelId}/restore": {
+      "post": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "ModelRestore",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{modelId}/section-profiles/from-library": {
+      "post": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "AddSectionProfileFromLibrary",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SectionProfileFromLibraryData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SectionProfileResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "BatchPutSectionProfileFromLibrary",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SectionProfileFromLibrary"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{modelId}/section-profiles": {
+      "post": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "CreateSectionProfile",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSectionProfileRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SectionProfileResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "BatchPutSectionProfile",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/PutSectionProfileRequest"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{modelId}/section-profiles/{id}": {
+      "delete": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "DeleteSectionProfile",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelEntityResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "PutSectionProfile",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SectionProfileData"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SectionProfileResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{modelId}/section-profiles/{id}/from-library": {
+      "put": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "PutSectionProfileFromLibrary",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SectionProfileFromLibraryData"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SectionProfileFromLibrary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{modelId}/point-loads": {
+      "post": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "CreatePointLoad",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePointLoadRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PointLoadResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "BatchPutPointLoad",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/PutPointLoadRequest"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{modelId}/point-loads/{id}": {
+      "delete": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "DeletePointLoad",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelEntityResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "PutPointLoad",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PointLoadData"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PointLoadResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{modelId}/nodes": {
+      "post": {
+        "tags": [
+          "AI"
+        ],
+        "operationId": "CreateNode",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNodeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NodeResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "PatchNode",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateNodeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NodeResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "BatchPutNode",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/PutNodeRequest"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{modelId}/nodes/{id}/internal": {
+      "get": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "GetInternalNode",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalNode"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "PutInternalNode",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InternalNodeData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalNode"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{modelId}/nodes/internal": {
+      "post": {
+        "tags": [
+          "AI"
+        ],
+        "operationId": "CreateInternalNode",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateInternalNodeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalNode"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "BatchPutInternalNode",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": [
+                  "null",
+                  "array"
+                ],
+                "items": {
+                  "$ref": "#/components/schemas/InternalNode"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{modelId}/nodes/{id}": {
+      "delete": {
+        "tags": [
+          "AI"
+        ],
+        "operationId": "DeleteNode",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelEntityResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "PutNode",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NodeData"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NodeResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{modelId}/moment-loads": {
+      "post": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "CreateMomentLoad",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMomentLoadRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MomentLoadResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "BatchPutMomentLoad",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/PutMomentLoadRequest"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{modelId}/moment-loads/{id}": {
+      "delete": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "DeleteMomentLoad",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelEntityResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "PutMomentLoad",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MomentLoadData"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MomentLoadResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models": {
+      "post": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "CreateModel",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateModelRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "GetModels",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ModelInfoResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{modelId}/proposals": {
+      "post": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "CreateModelProposal",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModelProposalData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelProposalResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "GetModelProposals",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ModelProposalInfo"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{modelId}/proposals/{id}": {
+      "get": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "GetModelProposal",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelProposalResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{modelId}/proposals/{id}/accept": {
+      "post": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "AcceptModelProposal",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": [
+                  "null",
+                  "array"
+                ],
+                "items": {
+                  "$ref": "#/components/schemas/EntityProposal"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{modelId}/proposals/{id}/reject": {
+      "post": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "RejectModelProposal",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{modelId}": {
+      "get": {
+        "tags": [
+          "AI"
+        ],
+        "operationId": "GetModel",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "PutModel",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModelInfoData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{modelId}/repair": {
+      "post": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "RepairModel",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": [
+                  "null",
+                  "string"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelProposalResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{modelId}/materials": {
+      "post": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "CreateMaterial",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMaterialRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaterialResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "BatchPutMaterial",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/PutMaterialRequest"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{modelId}/materials/{id}": {
+      "put": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "PutMaterial",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MaterialData"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaterialResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{modelId}/load-combinations": {
+      "put": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "BatchPutLoadCombination",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/LoadCombination"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "CreateLoadCombination",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoadCombinationData"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoadCombination"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{modelId}/load-combinations/{id}": {
+      "delete": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "DeleteLoadCombination",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelEntityResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "GetLoadCombination",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoadCombination"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "PutLoadCombination",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoadCombinationData"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoadCombination"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{modelId}/load-cases": {
+      "put": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "BatchPutLoadCase",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/LoadCase"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "CreateLoadCase",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoadCaseData"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoadCase"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{modelId}/load-cases/{id}": {
+      "delete": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "DeleteLoadCase",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelEntityResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "GetLoadCase",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoadCase"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "PutLoadCase",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoadCaseData"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoadCase"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{modelId}/element1ds": {
+      "post": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "CreateElement1d",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateElement1dRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Element1dResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "BatchPutElement1d",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/PutElement1dRequest"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{modelId}/element1ds/{id}": {
+      "delete": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "DeleteElement1d",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelEntityResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "GetElement1d",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Element1dResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "PutElement1d",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Element1dData"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Element1dResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{modelId}/analyze/dsm": {
+      "post": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "RunDirectStiffnessMethod",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RunDsmRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalyticalResultsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{modelId}/analyze/opensees": {
+      "post": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "RunOpenSeesAnalysis",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RunDsmRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalyticalResultsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{modelId}/results": {
+      "delete": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "ClearResults",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "pattern": "^-?(?:0|[1-9]\\d*)$",
+                  "type": [
+                    "integer",
+                    "string"
+                  ],
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{modelId}/result-sets/{id}/diagrams": {
+      "get": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "GetDiagrams",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "UnitsOverride",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalyticalResultsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{modelId}/result-sets/{id}": {
+      "get": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "GetResultSet",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultSetResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{modelId}/results/load-combinations/{load-combination-id}/node/{id}": {
+      "get": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "GetNodeResult",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "LoadCombinationId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NodeResultResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/models/{modelId}/results/load-combinations/{load-combination-id}/node": {
+      "get": {
+        "tags": [
+          "BeamOs.CodeGen.ApiGenerator"
+        ],
+        "operationId": "GetNodeResults",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "LoadCombinationId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "patternProperties": {
+                    "^[0-9]+$": { "$ref": "#/components/schemas/NodeResultResponse" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AnalysisSettings": {
+        "type": [
+          "null",
+          "object"
+        ],
+        "properties": {
+          "element1DAnalysisType": {
+            "$ref": "#/components/schemas/Element1dAnalysisType"
+          }
+        }
+      },
+      "AnalyticalResultsResponse": {
+        "required": [
+          "id",
+          "modelId"
+        ],
+        "type": "object",
+        "properties": {
+          "shearDiagrams": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShearDiagramResponse"
+            }
+          },
+          "momentDiagrams": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MomentDiagramResponse"
+            }
+          },
+          "deflectionDiagrams": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeflectionDiagramResponse"
+            }
+          },
+          "globalStresses": {
+            "$ref": "#/components/schemas/GlobalStresses"
+          },
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "modelId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "Angle": {
+        "required": [
+          "value",
+          "unit"
+        ],
+        "type": "object",
+        "properties": {
+          "value": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "unit": {
+            "$ref": "#/components/schemas/AngleUnit"
+          }
+        }
+      },
+      "AngleUnit": {
+        "type": "integer"
+      },
+      "BatchResponse": {
+        "type": "object",
+        "properties": {
+          "created": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "updated": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "deleted": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "errors": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "entityStatuses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EntityStatus"
+            }
+          }
+        }
+      },
+      "BeamOsObjectType": {
+        "type": "integer"
+      },
+      "CreateElement1dProposal": {
+        "required": [
+          "startNodeId",
+          "endNodeId",
+          "materialId",
+          "sectionProfileId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "startNodeId": {
+            "$ref": "#/components/schemas/ProposedID"
+          },
+          "endNodeId": {
+            "$ref": "#/components/schemas/ProposedID"
+          },
+          "materialId": {
+            "$ref": "#/components/schemas/ProposedID"
+          },
+          "sectionProfileId": {
+            "$ref": "#/components/schemas/ProposedID"
+          },
+          "sectionProfileRotation": {
+            "$ref": "#/components/schemas/NullableOfAngle"
+          },
+          "metadata": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CreateElement1dProposalResponse": {
+        "required": [
+          "startNodeId",
+          "endNodeId",
+          "materialId",
+          "sectionProfileId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "startNodeId": {
+            "$ref": "#/components/schemas/ProposedID"
+          },
+          "endNodeId": {
+            "$ref": "#/components/schemas/ProposedID"
+          },
+          "materialId": {
+            "$ref": "#/components/schemas/ProposedID"
+          },
+          "sectionProfileId": {
+            "$ref": "#/components/schemas/ProposedID"
+          },
+          "sectionProfileRotation": {
+            "$ref": "#/components/schemas/NullableOfAngle"
+          },
+          "metadata": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CreateElement1dRequest": {
+        "required": [
+          "startNodeId",
+          "endNodeId",
+          "materialId",
+          "sectionProfileId"
+        ],
+        "type": "object",
+        "properties": {
+          "startNodeId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "endNodeId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "materialId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "sectionProfileId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "sectionProfileRotation": {
+            "$ref": "#/components/schemas/NullableOfAngle"
+          },
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "metadata": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CreateInternalNodeProposalResponse": {
+        "required": [
+          "element1dId",
+          "ratioAlongElement1d"
+        ],
+        "type": "object",
+        "properties": {
+          "element1dId": {
+            "$ref": "#/components/schemas/ProposedID"
+          },
+          "ratioAlongElement1d": {
+            "$ref": "#/components/schemas/Ratio"
+          },
+          "restraint": {
+            "$ref": "#/components/schemas/NullableOfRestraint"
+          },
+          "metadata": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "CreateInternalNodeRequest": {
+        "required": [
+          "element1dId",
+          "ratioAlongElement1d"
+        ],
+        "type": [
+          "null",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "element1dId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "ratioAlongElement1d": {
+            "$ref": "#/components/schemas/Ratio"
+          },
+          "restraint": {
+            "$ref": "#/components/schemas/NullableOfRestraint"
+          },
+          "metadata": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CreateMaterialRequest": {
+        "required": [
+          "modulusOfElasticity",
+          "modulusOfRigidity",
+          "pressureUnit"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "modulusOfElasticity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "modulusOfRigidity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "pressureUnit": {
+            "$ref": "#/components/schemas/PressureUnit"
+          }
+        }
+      },
+      "CreateModelRequest": {
+        "required": [
+          "name",
+          "description",
+          "settings"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "settings": {
+            "$ref": "#/components/schemas/ModelSettings"
+          }
+        }
+      },
+      "CreateMomentLoadRequest": {
+        "required": [
+          "nodeId",
+          "loadCaseId",
+          "torque",
+          "axisDirection"
+        ],
+        "type": "object",
+        "properties": {
+          "nodeId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "loadCaseId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "torque": {
+            "$ref": "#/components/schemas/Torque"
+          },
+          "axisDirection": {
+            "$ref": "#/components/schemas/Vector3"
+          },
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "CreateNodeProposalResponse": {
+        "required": [
+          "id",
+          "locationPoint",
+          "restraint"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "locationPoint": {
+            "$ref": "#/components/schemas/Point"
+          },
+          "restraint": {
+            "$ref": "#/components/schemas/Restraint"
+          },
+          "metadata": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CreateNodeRequest": {
+        "required": [
+          "locationPoint",
+          "restraint"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "locationPoint": {
+            "$ref": "#/components/schemas/Point"
+          },
+          "restraint": {
+            "$ref": "#/components/schemas/Restraint"
+          },
+          "metadata": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CreatePointLoadRequest": {
+        "required": [
+          "nodeId",
+          "loadCaseId",
+          "force",
+          "direction"
+        ],
+        "type": "object",
+        "properties": {
+          "nodeId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "loadCaseId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "force": {
+            "$ref": "#/components/schemas/Force"
+          },
+          "direction": {
+            "$ref": "#/components/schemas/Vector3"
+          },
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "CreateSectionProfileFromLibraryRequest": {
+        "required": [
+          "id",
+          "library",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "library": {
+            "$ref": "#/components/schemas/StructuralCode"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateSectionProfileRequest": {
+        "required": [
+          "area",
+          "strongAxisMomentOfInertia",
+          "weakAxisMomentOfInertia",
+          "polarMomentOfInertia",
+          "strongAxisPlasticSectionModulus",
+          "weakAxisPlasticSectionModulus",
+          "lengthUnit",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "area": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "strongAxisMomentOfInertia": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "weakAxisMomentOfInertia": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "polarMomentOfInertia": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "strongAxisPlasticSectionModulus": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "weakAxisPlasticSectionModulus": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "strongAxisShearArea": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "weakAxisShearArea": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "lengthUnit": {
+            "$ref": "#/components/schemas/LengthUnit"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "DeflectionDiagramResponse": {
+        "required": [
+          "element1dId",
+          "numSteps",
+          "offsets"
+        ],
+        "type": "object",
+        "properties": {
+          "element1dId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "numSteps": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "offsets": {
+            "type": "array",
+            "items": {
+              "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+              "type": [
+                "number",
+                "string"
+              ],
+              "format": "double"
+            }
+          }
+        }
+      },
+      "DeleteModelEntityProposal": {
+        "required": [
+          "id",
+          "modelEntityId",
+          "objectType"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "proposalType": {
+            "$ref": "#/components/schemas/ProposalType"
+          },
+          "modelEntityId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "objectType": {
+            "$ref": "#/components/schemas/BeamOsObjectType"
+          }
+        }
+      },
+      "DeleteModelEntityProposalData": {
+        "required": [
+          "modelEntityId",
+          "objectType"
+        ],
+        "type": "object",
+        "properties": {
+          "modelEntityId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "objectType": {
+            "$ref": "#/components/schemas/BeamOsObjectType"
+          }
+        }
+      },
+      "DiagramConsistentIntervalResponse": {
+        "required": [
+          "startLocation",
+          "endLocation",
+          "polynomialCoefficients"
+        ],
+        "type": "object",
+        "properties": {
+          "startLocation": {
+            "$ref": "#/components/schemas/Length"
+          },
+          "endLocation": {
+            "$ref": "#/components/schemas/Length"
+          },
+          "polynomialCoefficients": {
+            "type": "array",
+            "items": {
+              "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+              "type": [
+                "number",
+                "string"
+              ],
+              "format": "double"
+            }
+          }
+        }
+      },
+      "DiagramConsistentIntervalResponse2": {
+        "required": [
+          "startLocation",
+          "endLocation",
+          "polynomialCoefficients"
+        ],
+        "type": "object",
+        "properties": {
+          "startLocation": {
+            "$ref": "#/components/schemas/Length"
+          },
+          "endLocation": {
+            "$ref": "#/components/schemas/Length"
+          },
+          "polynomialCoefficients": {
+            "type": "array",
+            "items": {
+              "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+              "type": [
+                "number",
+                "string"
+              ],
+              "format": "double"
+            }
+          }
+        }
+      },
+      "DisplacementsResponse": {
+        "required": [
+          "displacementAlongX",
+          "displacementAlongY",
+          "displacementAlongZ",
+          "rotationAboutX",
+          "rotationAboutY",
+          "rotationAboutZ"
+        ],
+        "type": "object",
+        "properties": {
+          "displacementAlongX": {
+            "$ref": "#/components/schemas/Length"
+          },
+          "displacementAlongY": {
+            "$ref": "#/components/schemas/Length"
+          },
+          "displacementAlongZ": {
+            "$ref": "#/components/schemas/Length"
+          },
+          "rotationAboutX": {
+            "$ref": "#/components/schemas/Angle"
+          },
+          "rotationAboutY": {
+            "$ref": "#/components/schemas/Angle"
+          },
+          "rotationAboutZ": {
+            "$ref": "#/components/schemas/Angle"
+          }
+        }
+      },
+      "Element1dAnalysisType": {
+        "type": "integer"
+      },
+      "Element1dData": {
+        "required": [
+          "startNodeId",
+          "endNodeId",
+          "materialId",
+          "sectionProfileId"
+        ],
+        "type": "object",
+        "properties": {
+          "startNodeId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "endNodeId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "materialId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "sectionProfileId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "sectionProfileRotation": {
+            "$ref": "#/components/schemas/NullableOfAngle"
+          },
+          "metadata": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Element1dResponse": {
+        "required": [
+          "id",
+          "modelId",
+          "startNodeId",
+          "endNodeId",
+          "materialId",
+          "sectionProfileId",
+          "sectionProfileRotation"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "modelId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "startNodeId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "endNodeId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "materialId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "sectionProfileId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "sectionProfileRotation": {
+            "$ref": "#/components/schemas/Angle"
+          },
+          "metadata": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Element1dResultResponse": {
+        "required": [
+          "modelId",
+          "resultSetId",
+          "element1dId",
+          "minShear",
+          "maxShear",
+          "minMoment",
+          "maxMoment",
+          "minDisplacement",
+          "maxDisplacement"
+        ],
+        "type": "object",
+        "properties": {
+          "modelId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "resultSetId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "element1dId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "minShear": {
+            "$ref": "#/components/schemas/Length"
+          },
+          "maxShear": {
+            "$ref": "#/components/schemas/Length"
+          },
+          "minMoment": {
+            "$ref": "#/components/schemas/Torque"
+          },
+          "maxMoment": {
+            "$ref": "#/components/schemas/Torque"
+          },
+          "minDisplacement": {
+            "$ref": "#/components/schemas/Length"
+          },
+          "maxDisplacement": {
+            "$ref": "#/components/schemas/Length"
+          }
+        }
+      },
+      "EntityOperationStatus": {
+        "type": "integer"
+      },
+      "EntityProposal": {
+        "required": [
+          "objectType",
+          "id",
+          "proposalType"
+        ],
+        "type": "object",
+        "properties": {
+          "objectType": {
+            "$ref": "#/components/schemas/BeamOsObjectType"
+          },
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "proposalType": {
+            "$ref": "#/components/schemas/ProposalType"
+          }
+        }
+      },
+      "EntityStatus": {
+        "required": [
+          "id",
+          "entityOperationStatus"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "entityOperationStatus": {
+            "$ref": "#/components/schemas/EntityOperationStatus"
+          },
+          "errorMessage": {
+            "type": "string"
+          }
+        }
+      },
+      "Force": {
+        "required": [
+          "value",
+          "unit"
+        ],
+        "type": "object",
+        "properties": {
+          "value": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "unit": {
+            "$ref": "#/components/schemas/ForceUnit"
+          }
+        }
+      },
+      "ForcesResponse": {
+        "required": [
+          "forceAlongX",
+          "forceAlongY",
+          "forceAlongZ",
+          "momentAboutX",
+          "momentAboutY",
+          "momentAboutZ"
+        ],
+        "type": "object",
+        "properties": {
+          "forceAlongX": {
+            "$ref": "#/components/schemas/Force"
+          },
+          "forceAlongY": {
+            "$ref": "#/components/schemas/Force"
+          },
+          "forceAlongZ": {
+            "$ref": "#/components/schemas/Force"
+          },
+          "momentAboutX": {
+            "$ref": "#/components/schemas/Torque"
+          },
+          "momentAboutY": {
+            "$ref": "#/components/schemas/Torque"
+          },
+          "momentAboutZ": {
+            "$ref": "#/components/schemas/Torque"
+          }
+        }
+      },
+      "ForceUnit": {
+        "type": "integer"
+      },
+      "GlobalStresses": {
+        "required": [
+          "maxShear",
+          "minShear",
+          "maxMoment",
+          "minMoment"
+        ],
+        "type": "object",
+        "properties": {
+          "maxShear": {
+            "$ref": "#/components/schemas/Force"
+          },
+          "minShear": {
+            "$ref": "#/components/schemas/Force"
+          },
+          "maxMoment": {
+            "$ref": "#/components/schemas/Torque"
+          },
+          "minMoment": {
+            "$ref": "#/components/schemas/Torque"
+          }
+        }
+      },
+      "InternalNode": {
+        "required": [
+          "id",
+          "element1dId",
+          "ratioAlongElement1d"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "element1dId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "ratioAlongElement1d": {
+            "$ref": "#/components/schemas/Ratio"
+          },
+          "restraint": {
+            "$ref": "#/components/schemas/NullableOfRestraint"
+          },
+          "metadata": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "InternalNodeData": {
+        "required": [
+          "element1dId",
+          "ratioAlongElement1d"
+        ],
+        "type": [
+          "null",
+          "object"
+        ],
+        "properties": {
+          "element1dId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "ratioAlongElement1d": {
+            "$ref": "#/components/schemas/Ratio"
+          },
+          "restraint": {
+            "$ref": "#/components/schemas/NullableOfRestraint"
+          },
+          "metadata": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Length": {
+        "required": [
+          "value",
+          "unit"
+        ],
+        "type": "object",
+        "properties": {
+          "value": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "unit": {
+            "$ref": "#/components/schemas/LengthUnit"
+          }
+        }
+      },
+      "LengthUnit": {
+        "type": "integer"
+      },
+      "LoadCase": {
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "LoadCaseData": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "LoadCombination": {
+        "required": [
+          "id",
+          "loadCaseFactors"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "loadCaseFactors": {
+            "type": "object",
+            "additionalProperties": {
+              "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+              "type": [
+                "number",
+                "string"
+              ],
+              "format": "double"
+            }
+          }
+        }
+      },
+      "LoadCombinationData": {
+        "required": [
+          "loadCaseFactors"
+        ],
+        "type": "object",
+        "properties": {
+          "loadCaseFactors": {
+            "type": "object",
+            "additionalProperties": {
+              "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+              "type": [
+                "number",
+                "string"
+              ],
+              "format": "double"
+            }
+          }
+        }
+      },
+      "MaterialData": {
+        "required": [
+          "modulusOfElasticity",
+          "modulusOfRigidity",
+          "pressureUnit"
+        ],
+        "type": "object",
+        "properties": {
+          "modulusOfElasticity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "modulusOfRigidity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "pressureUnit": {
+            "$ref": "#/components/schemas/PressureUnit"
+          }
+        }
+      },
+      "MaterialResponse": {
+        "required": [
+          "id",
+          "modelId",
+          "modulusOfElasticity",
+          "modulusOfRigidity",
+          "pressureUnit"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "modelId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "modulusOfElasticity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "modulusOfRigidity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "pressureUnit": {
+            "$ref": "#/components/schemas/PressureUnit"
+          }
+        }
+      },
+      "ModelEntityResponse": {
+        "required": [
+          "id",
+          "modelId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "modelId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "ModelInfoData": {
+        "required": [
+          "name",
+          "description",
+          "settings"
+        ],
+        "type": [
+          "null",
+          "object"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "settings": {
+            "$ref": "#/components/schemas/ModelSettings"
+          }
+        }
+      },
+      "ModelInfoResponse": {
+        "required": [
+          "id",
+          "name",
+          "description",
+          "settings",
+          "lastModified",
+          "role"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "settings": {
+            "$ref": "#/components/schemas/ModelSettings"
+          },
+          "lastModified": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "role": {
+            "type": "string"
+          }
+        }
+      },
+      "ModelProposalData": {
+        "type": [
+          "null",
+          "object"
+        ],
+        "properties": {
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "settings": {
+            "$ref": "#/components/schemas/ModelSettings"
+          },
+          "createNodeProposals": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/CreateNodeRequest"
+            }
+          },
+          "modifyNodeProposals": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/PutNodeRequest"
+            }
+          },
+          "createElement1dProposals": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/CreateElement1dProposal"
+            }
+          },
+          "modifyElement1dProposals": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/ModifyElement1dProposal"
+            }
+          },
+          "createMaterialProposals": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/CreateMaterialRequest"
+            }
+          },
+          "modifyMaterialProposals": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/PutMaterialRequest"
+            }
+          },
+          "createSectionProfileProposals": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/CreateSectionProfileRequest"
+            }
+          },
+          "modifySectionProfileProposals": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/PutSectionProfileRequest"
+            }
+          },
+          "createSectionProfileFromLibraryProposals": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/CreateSectionProfileFromLibraryRequest"
+            }
+          },
+          "pointLoadProposals": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/PointLoad"
+            }
+          },
+          "momentLoadProposals": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MomentLoad"
+            }
+          },
+          "resultSetProposals": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/ResultSet"
+            }
+          },
+          "loadCaseProposals": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/LoadCase"
+            }
+          },
+          "loadCombinationProposals": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/LoadCombination"
+            }
+          },
+          "proposalIssues": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/ProposalIssueData"
+            }
+          },
+          "deleteModelEntityProposals": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/DeleteModelEntityProposalData"
+            }
+          }
+        }
+      },
+      "ModelProposalInfo": {
+        "required": [
+          "id",
+          "lastModified"
+        ],
+        "type": [
+          "null",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "lastModified": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "ModelProposalResponse": {
+        "required": [
+          "id",
+          "lastModified"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "lastModified": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "modelProposal": {
+            "$ref": "#/components/schemas/ModelProposalInfo"
+          },
+          "createNodeProposals": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/CreateNodeProposalResponse"
+            }
+          },
+          "modifyNodeProposals": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/ModifyNodeProposalResponse"
+            }
+          },
+          "createInternalNodeProposals": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/CreateInternalNodeProposalResponse"
+            }
+          },
+          "modifyInternalNodeProposals": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/ModifyInternalNodeProposalResponse"
+            }
+          },
+          "createElement1dProposals": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/CreateElement1dProposalResponse"
+            }
+          },
+          "modifyElement1dProposals": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/ModifyElement1dProposalResponse"
+            }
+          },
+          "element1dsModifiedBecauseOfNodeChange": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          "materialProposals": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/PutMaterialRequest"
+            }
+          },
+          "sectionProfileProposals": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/PutSectionProfileRequest"
+            }
+          },
+          "sectionProfileFromLibraryProposals": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/SectionProfileFromLibrary"
+            }
+          },
+          "pointLoadProposals": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/PointLoad"
+            }
+          },
+          "momentLoadProposals": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MomentLoad"
+            }
+          },
+          "resultSetProposals": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/ResultSet"
+            }
+          },
+          "loadCaseProposals": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/LoadCase"
+            }
+          },
+          "loadCombinationProposals": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/LoadCombination"
+            }
+          },
+          "proposalIssues": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/ProposalIssue"
+            }
+          },
+          "deleteModelEntityProposals": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/DeleteModelEntityProposal"
+            }
+          }
+        }
+      },
+      "ModelResponse": {
+        "required": [
+          "id",
+          "name",
+          "description",
+          "settings",
+          "lastModified"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "settings": {
+            "$ref": "#/components/schemas/ModelSettings"
+          },
+          "lastModified": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "nodes": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/NodeResponse"
+            }
+          },
+          "internalNodes": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/InternalNode"
+            }
+          },
+          "element1ds": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/Element1dResponse"
+            }
+          },
+          "materials": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MaterialResponse"
+            }
+          },
+          "sectionProfiles": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/SectionProfileResponse"
+            }
+          },
+          "sectionProfilesFromLibrary": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/SectionProfileFromLibrary"
+            }
+          },
+          "pointLoads": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/PointLoadResponse"
+            }
+          },
+          "momentLoads": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MomentLoadResponse"
+            }
+          },
+          "resultSets": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/ResultSetResponse"
+            }
+          },
+          "loadCases": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/LoadCase"
+            }
+          },
+          "loadCombinations": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/LoadCombination"
+            }
+          }
+        }
+      },
+      "ModelSettings": {
+        "required": [
+          "unitSettings"
+        ],
+        "type": "object",
+        "properties": {
+          "unitSettings": {
+            "$ref": "#/components/schemas/UnitSettings"
+          },
+          "analysisSettings": {
+            "$ref": "#/components/schemas/AnalysisSettings"
+          },
+          "yAxisUp": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      },
+      "ModifyElement1dProposal": {
+        "required": [
+          "existingElement1dId"
+        ],
+        "type": "object",
+        "properties": {
+          "existingElement1dId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "startNodeId": {
+            "$ref": "#/components/schemas/ProposedID"
+          },
+          "endNodeId": {
+            "$ref": "#/components/schemas/ProposedID"
+          },
+          "materialId": {
+            "$ref": "#/components/schemas/ProposedID"
+          },
+          "sectionProfileId": {
+            "$ref": "#/components/schemas/ProposedID"
+          },
+          "sectionProfileRotation": {
+            "$ref": "#/components/schemas/NullableOfAngle"
+          },
+          "metadata": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ModifyElement1dProposalResponse": {
+        "required": [
+          "existingElement1dId",
+          "startNodeId",
+          "endNodeId",
+          "materialId",
+          "sectionProfileId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "existingElement1dId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "startNodeId": {
+            "$ref": "#/components/schemas/ProposedID"
+          },
+          "endNodeId": {
+            "$ref": "#/components/schemas/ProposedID"
+          },
+          "materialId": {
+            "$ref": "#/components/schemas/ProposedID"
+          },
+          "sectionProfileId": {
+            "$ref": "#/components/schemas/ProposedID"
+          },
+          "existingId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "objectType": {
+            "$ref": "#/components/schemas/BeamOsObjectType"
+          },
+          "sectionProfileRotation": {
+            "$ref": "#/components/schemas/NullableOfAngle"
+          },
+          "metadata": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ModifyInternalNodeProposalResponse": {
+        "required": [
+          "existingInternalNodeId",
+          "element1dId",
+          "ratioAlongElement1d",
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "existingInternalNodeId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "element1dId": {
+            "$ref": "#/components/schemas/ProposedID"
+          },
+          "ratioAlongElement1d": {
+            "$ref": "#/components/schemas/Ratio"
+          },
+          "restraint": {
+            "$ref": "#/components/schemas/NullableOfRestraint"
+          },
+          "metadata": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "ModifyNodeProposalResponse": {
+        "required": [
+          "existingNodeId",
+          "id",
+          "locationPoint",
+          "restraint"
+        ],
+        "type": "object",
+        "properties": {
+          "existingNodeId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "locationPoint": {
+            "$ref": "#/components/schemas/Point"
+          },
+          "restraint": {
+            "$ref": "#/components/schemas/Restraint"
+          },
+          "metadata": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "MomentDiagramResponse": {
+        "required": [
+          "modelId",
+          "resultSetId",
+          "element1dId",
+          "lengthUnit",
+          "torqueUnit",
+          "elementLength",
+          "intervals"
+        ],
+        "type": "object",
+        "properties": {
+          "modelId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "resultSetId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "element1dId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "lengthUnit": {
+            "$ref": "#/components/schemas/LengthUnit"
+          },
+          "torqueUnit": {
+            "$ref": "#/components/schemas/TorqueUnit"
+          },
+          "elementLength": {
+            "$ref": "#/components/schemas/Length"
+          },
+          "intervals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DiagramConsistentIntervalResponse2"
+            }
+          }
+        }
+      },
+      "MomentLoad": {
+        "required": [
+          "nodeId",
+          "loadCaseId",
+          "torque",
+          "axisDirection"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "nodeId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "loadCaseId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "torque": {
+            "$ref": "#/components/schemas/Torque"
+          },
+          "axisDirection": {
+            "$ref": "#/components/schemas/Vector3"
+          }
+        }
+      },
+      "MomentLoadData": {
+        "required": [
+          "nodeId",
+          "loadCaseId",
+          "torque",
+          "axisDirection"
+        ],
+        "type": "object",
+        "properties": {
+          "nodeId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "loadCaseId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "torque": {
+            "$ref": "#/components/schemas/Torque"
+          },
+          "axisDirection": {
+            "$ref": "#/components/schemas/Vector3"
+          }
+        }
+      },
+      "MomentLoadResponse": {
+        "required": [
+          "id",
+          "nodeId",
+          "loadCaseId",
+          "modelId",
+          "torque",
+          "axisDirection"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "nodeId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "loadCaseId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "modelId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "torque": {
+            "$ref": "#/components/schemas/Torque"
+          },
+          "axisDirection": {
+            "$ref": "#/components/schemas/Vector3"
+          }
+        }
+      },
+      "NodeData": {
+        "required": [
+          "locationPoint",
+          "restraint"
+        ],
+        "type": "object",
+        "properties": {
+          "locationPoint": {
+            "$ref": "#/components/schemas/Point"
+          },
+          "restraint": {
+            "$ref": "#/components/schemas/Restraint"
+          },
+          "metadata": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "NodeResponse": {
+        "required": [
+          "id",
+          "modelId",
+          "locationPoint",
+          "restraint"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "modelId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "locationPoint": {
+            "$ref": "#/components/schemas/Point"
+          },
+          "restraint": {
+            "$ref": "#/components/schemas/Restraint"
+          }
+        }
+      },
+      "NodeResultResponse": {
+        "required": [
+          "modelId",
+          "resultSetId",
+          "nodeId",
+          "forces",
+          "displacements"
+        ],
+        "type": "object",
+        "properties": {
+          "modelId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "resultSetId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "nodeId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "forces": {
+            "$ref": "#/components/schemas/ForcesResponse"
+          },
+          "displacements": {
+            "$ref": "#/components/schemas/DisplacementsResponse"
+          }
+        }
+      },
+      "NullableOfAngle": {
+        "required": [
+          "value",
+          "unit"
+        ],
+        "type": [
+          "null",
+          "object"
+        ],
+        "properties": {
+          "value": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "unit": {
+            "$ref": "#/components/schemas/AngleUnit"
+          }
+        }
+      },
+      "NullableOfPartialPoint": {
+        "required": [
+          "lengthUnit"
+        ],
+        "type": [
+          "null",
+          "object"
+        ],
+        "properties": {
+          "x": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "y": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "z": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "lengthUnit": {
+            "$ref": "#/components/schemas/LengthUnit"
+          }
+        }
+      },
+      "NullableOfPartialRestraint": {
+        "type": [
+          "null",
+          "object"
+        ],
+        "properties": {
+          "canTranslateAlongX": {
+            "type": [
+              "null",
+              "boolean"
+            ]
+          },
+          "canTranslateAlongY": {
+            "type": [
+              "null",
+              "boolean"
+            ]
+          },
+          "canTranslateAlongZ": {
+            "type": [
+              "null",
+              "boolean"
+            ]
+          },
+          "canRotateAboutX": {
+            "type": [
+              "null",
+              "boolean"
+            ]
+          },
+          "canRotateAboutY": {
+            "type": [
+              "null",
+              "boolean"
+            ]
+          },
+          "canRotateAboutZ": {
+            "type": [
+              "null",
+              "boolean"
+            ]
+          }
+        }
+      },
+      "NullableOfRestraint": {
+        "required": [
+          "canTranslateAlongX",
+          "canTranslateAlongY",
+          "canTranslateAlongZ",
+          "canRotateAboutX",
+          "canRotateAboutY",
+          "canRotateAboutZ"
+        ],
+        "type": [
+          "null",
+          "object"
+        ],
+        "properties": {
+          "canTranslateAlongX": {
+            "type": "boolean"
+          },
+          "canTranslateAlongY": {
+            "type": "boolean"
+          },
+          "canTranslateAlongZ": {
+            "type": "boolean"
+          },
+          "canRotateAboutX": {
+            "type": "boolean"
+          },
+          "canRotateAboutY": {
+            "type": "boolean"
+          },
+          "canRotateAboutZ": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Point": {
+        "required": [
+          "x",
+          "y",
+          "z",
+          "lengthUnit"
+        ],
+        "type": "object",
+        "properties": {
+          "x": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "y": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "z": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "lengthUnit": {
+            "$ref": "#/components/schemas/LengthUnit"
+          }
+        }
+      },
+      "PointLoad": {
+        "required": [
+          "id",
+          "nodeId",
+          "loadCaseId",
+          "force",
+          "direction"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "nodeId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "loadCaseId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "force": {
+            "$ref": "#/components/schemas/Force"
+          },
+          "direction": {
+            "$ref": "#/components/schemas/Vector3"
+          }
+        }
+      },
+      "PointLoadData": {
+        "required": [
+          "nodeId",
+          "loadCaseId",
+          "force",
+          "direction"
+        ],
+        "type": "object",
+        "properties": {
+          "nodeId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "loadCaseId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "force": {
+            "$ref": "#/components/schemas/Force"
+          },
+          "direction": {
+            "$ref": "#/components/schemas/Vector3"
+          }
+        }
+      },
+      "PointLoadResponse": {
+        "required": [
+          "modelId",
+          "id",
+          "nodeId",
+          "loadCaseId",
+          "force",
+          "direction"
+        ],
+        "type": "object",
+        "properties": {
+          "modelId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "nodeId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "loadCaseId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "force": {
+            "$ref": "#/components/schemas/Force"
+          },
+          "direction": {
+            "$ref": "#/components/schemas/Vector3"
+          }
+        }
+      },
+      "PressureUnit": {
+        "type": "integer"
+      },
+      "ProposalIssue": {
+        "required": [
+          "id",
+          "proposedId",
+          "objectType",
+          "message",
+          "severity",
+          "code"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "proposedId": {
+            "$ref": "#/components/schemas/ProposedID"
+          },
+          "objectType": {
+            "$ref": "#/components/schemas/BeamOsObjectType"
+          },
+          "message": {
+            "type": "string"
+          },
+          "severity": {
+            "$ref": "#/components/schemas/ProposalIssueSeverity"
+          },
+          "code": {
+            "$ref": "#/components/schemas/ProposalIssueCode"
+          }
+        }
+      },
+      "ProposalIssueCode": {
+        "type": "integer"
+      },
+      "ProposalIssueData": {
+        "required": [
+          "proposedId",
+          "objectType",
+          "message",
+          "severity",
+          "code"
+        ],
+        "type": "object",
+        "properties": {
+          "proposedId": {
+            "$ref": "#/components/schemas/ProposedID"
+          },
+          "objectType": {
+            "$ref": "#/components/schemas/BeamOsObjectType"
+          },
+          "message": {
+            "type": "string"
+          },
+          "severity": {
+            "$ref": "#/components/schemas/ProposalIssueSeverity"
+          },
+          "code": {
+            "$ref": "#/components/schemas/ProposalIssueCode"
+          }
+        }
+      },
+      "ProposalIssueSeverity": {
+        "type": "integer"
+      },
+      "ProposalType": {
+        "type": "integer"
+      },
+      "ProposedID": {
+        "required": [
+          "existingId",
+          "proposedId"
+        ],
+        "type": "object",
+        "properties": {
+          "existingId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "proposedId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "PutElement1dRequest": {
+        "required": [
+          "id",
+          "startNodeId",
+          "endNodeId",
+          "materialId",
+          "sectionProfileId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "startNodeId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "endNodeId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "materialId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "sectionProfileId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "sectionProfileRotation": {
+            "$ref": "#/components/schemas/NullableOfAngle"
+          },
+          "metadata": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "PutMaterialRequest": {
+        "required": [
+          "modulusOfElasticity",
+          "modulusOfRigidity",
+          "pressureUnit"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "modulusOfElasticity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "modulusOfRigidity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "pressureUnit": {
+            "$ref": "#/components/schemas/PressureUnit"
+          }
+        }
+      },
+      "PutMomentLoadRequest": {
+        "required": [
+          "nodeId",
+          "loadCaseId",
+          "torque",
+          "axisDirection"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "nodeId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "loadCaseId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "torque": {
+            "$ref": "#/components/schemas/Torque"
+          },
+          "axisDirection": {
+            "$ref": "#/components/schemas/Vector3"
+          }
+        }
+      },
+      "PutNodeRequest": {
+        "required": [
+          "id",
+          "locationPoint",
+          "restraint"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "locationPoint": {
+            "$ref": "#/components/schemas/Point"
+          },
+          "restraint": {
+            "$ref": "#/components/schemas/Restraint"
+          },
+          "metadata": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "PutPointLoadRequest": {
+        "required": [
+          "id",
+          "nodeId",
+          "loadCaseId",
+          "force",
+          "direction"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "nodeId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "loadCaseId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "force": {
+            "$ref": "#/components/schemas/Force"
+          },
+          "direction": {
+            "$ref": "#/components/schemas/Vector3"
+          }
+        }
+      },
+      "PutSectionProfileRequest": {
+        "required": [
+          "id",
+          "area",
+          "strongAxisMomentOfInertia",
+          "weakAxisMomentOfInertia",
+          "polarMomentOfInertia",
+          "strongAxisPlasticSectionModulus",
+          "weakAxisPlasticSectionModulus",
+          "lengthUnit",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "area": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "strongAxisMomentOfInertia": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "weakAxisMomentOfInertia": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "polarMomentOfInertia": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "strongAxisPlasticSectionModulus": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "weakAxisPlasticSectionModulus": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "strongAxisShearArea": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "weakAxisShearArea": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "lengthUnit": {
+            "$ref": "#/components/schemas/LengthUnit"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "Ratio": {
+        "required": [
+          "value",
+          "unit"
+        ],
+        "type": "object",
+        "properties": {
+          "value": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "unit": {
+            "$ref": "#/components/schemas/RatioUnit"
+          }
+        }
+      },
+      "RatioUnit": {
+        "type": "integer"
+      },
+      "Restraint": {
+        "required": [
+          "canTranslateAlongX",
+          "canTranslateAlongY",
+          "canTranslateAlongZ",
+          "canRotateAboutX",
+          "canRotateAboutY",
+          "canRotateAboutZ"
+        ],
+        "type": "object",
+        "properties": {
+          "canTranslateAlongX": {
+            "type": "boolean"
+          },
+          "canTranslateAlongY": {
+            "type": "boolean"
+          },
+          "canTranslateAlongZ": {
+            "type": "boolean"
+          },
+          "canRotateAboutX": {
+            "type": "boolean"
+          },
+          "canRotateAboutY": {
+            "type": "boolean"
+          },
+          "canRotateAboutZ": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ResultSet": {
+        "required": [
+          "id",
+          "modelId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "modelId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "nodeResults": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/NodeResultResponse"
+            }
+          },
+          "element1dResults": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/Element1dResultResponse"
+            }
+          }
+        }
+      },
+      "ResultSetResponse": {
+        "required": [
+          "id",
+          "modelId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "modelId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "nodeResults": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/NodeResultResponse"
+            }
+          },
+          "element1dResults": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/Element1dResultResponse"
+            }
+          }
+        }
+      },
+      "RunDsmRequest": {
+        "type": [
+          "null",
+          "object"
+        ],
+        "properties": {
+          "unitsOverride": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "loadCombinationIds": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        }
+      },
+      "SectionProfileData": {
+        "required": [
+          "area",
+          "strongAxisMomentOfInertia",
+          "weakAxisMomentOfInertia",
+          "polarMomentOfInertia",
+          "strongAxisPlasticSectionModulus",
+          "weakAxisPlasticSectionModulus",
+          "lengthUnit",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "area": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "strongAxisMomentOfInertia": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "weakAxisMomentOfInertia": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "polarMomentOfInertia": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "strongAxisPlasticSectionModulus": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "weakAxisPlasticSectionModulus": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "strongAxisShearArea": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "weakAxisShearArea": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "lengthUnit": {
+            "$ref": "#/components/schemas/LengthUnit"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "SectionProfileFromLibrary": {
+        "required": [
+          "id",
+          "library",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "library": {
+            "$ref": "#/components/schemas/StructuralCode"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "SectionProfileFromLibraryData": {
+        "required": [
+          "library",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "library": {
+            "$ref": "#/components/schemas/StructuralCode"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "SectionProfileResponse": {
+        "required": [
+          "id",
+          "modelId",
+          "name",
+          "area",
+          "strongAxisMomentOfInertia",
+          "weakAxisMomentOfInertia",
+          "polarMomentOfInertia",
+          "strongAxisPlasticSectionModulus",
+          "weakAxisPlasticSectionModulus",
+          "strongAxisShearArea",
+          "weakAxisShearArea",
+          "lengthUnit"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "modelId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "area": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "strongAxisMomentOfInertia": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "weakAxisMomentOfInertia": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "polarMomentOfInertia": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "strongAxisPlasticSectionModulus": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "weakAxisPlasticSectionModulus": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "strongAxisShearArea": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "weakAxisShearArea": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "lengthUnit": {
+            "$ref": "#/components/schemas/LengthUnit"
+          }
+        }
+      },
+      "ShearDiagramResponse": {
+        "required": [
+          "globalShearDirection",
+          "lengthUnit",
+          "forceUnit",
+          "elementLength",
+          "modelId",
+          "resultSetId",
+          "element1dId",
+          "intervals"
+        ],
+        "type": "object",
+        "properties": {
+          "globalShearDirection": {
+            "$ref": "#/components/schemas/Vector3"
+          },
+          "lengthUnit": {
+            "$ref": "#/components/schemas/LengthUnit"
+          },
+          "forceUnit": {
+            "$ref": "#/components/schemas/ForceUnit"
+          },
+          "elementLength": {
+            "$ref": "#/components/schemas/Length"
+          },
+          "modelId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "resultSetId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "element1dId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "intervals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DiagramConsistentIntervalResponse"
+            }
+          }
+        }
+      },
+      "StructuralCode": {
+        "type": "integer"
+      },
+      "Torque": {
+        "required": [
+          "value",
+          "unit"
+        ],
+        "type": "object",
+        "properties": {
+          "value": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "unit": {
+            "$ref": "#/components/schemas/TorqueUnit"
+          }
+        }
+      },
+      "TorqueUnit": {
+        "type": "integer"
+      },
+      "UnitSettings": {
+        "required": [
+          "lengthUnit",
+          "forceUnit"
+        ],
+        "type": "object",
+        "properties": {
+          "lengthUnit": {
+            "$ref": "#/components/schemas/LengthUnit"
+          },
+          "forceUnit": {
+            "$ref": "#/components/schemas/ForceUnit"
+          },
+          "angleUnit": {
+            "$ref": "#/components/schemas/AngleUnit"
+          }
+        }
+      },
+      "UpdateNodeRequest": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "locationPoint": {
+            "$ref": "#/components/schemas/NullableOfPartialPoint"
+          },
+          "restraint": {
+            "$ref": "#/components/schemas/NullableOfPartialRestraint"
+          }
+        }
+      },
+      "Vector3": {
+        "required": [
+          "x",
+          "y",
+          "z"
+        ],
+        "type": "object",
+        "properties": {
+          "x": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "y": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "z": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "BeamOs.CodeGen.ApiGenerator"
+    },
+    {
+      "name": "AI"
+    }
+  ]
+}

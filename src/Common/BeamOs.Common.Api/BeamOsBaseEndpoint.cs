@@ -24,7 +24,10 @@ public abstract partial class BeamOsBaseEndpoint<TRequest, TResponse>
     /// <param name="req"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
-    internal TResponse GetResponseTypeForClientGenerationPurposes(TRequest req, CancellationToken ct = default)
+    internal TResponse GetResponseTypeForClientGenerationPurposes(
+        TRequest req,
+        CancellationToken ct = default
+    )
     {
         return default!;
     }
@@ -42,14 +45,17 @@ public abstract partial class BeamOsBaseEndpoint<TRequest, TResponse>
         }
         catch (Exception ex)
         {
-            result = BeamOsError.Failure(description: "An unexpected error has occurred. " + ex.Message, metadata: new Dictionary<string, object?>
-            {
-                ["Request"] = req,
-                ["ExceptionMessage"] = ex.Message,
-                ["StackTrace"] = ex.StackTrace,
-                ["InnerExceptionMessage"] = ex.InnerException?.Message,
-                ["InnerStackTrace"] = ex.InnerException?.StackTrace
-            });
+            result = BeamOsError.Failure(
+                description: "An unexpected error has occurred. " + ex.Message,
+                metadata: new Dictionary<string, object?>
+                {
+                    ["Request"] = req,
+                    ["ExceptionMessage"] = ex.Message,
+                    ["StackTrace"] = ex.StackTrace,
+                    ["InnerExceptionMessage"] = ex.InnerException?.Message,
+                    ["InnerStackTrace"] = ex.InnerException?.StackTrace,
+                }
+            );
         }
         return this.MapErrorToResult(result.Error!);
     }
@@ -120,19 +126,15 @@ public abstract partial class BeamOsBaseEndpoint<TRequest, TResponse>
 //     : BeamOsActualBaseEndpoint<TRequest, TResponse> { }
 
 public abstract partial class BeamOsFromBodyResultBaseEndpoint<TRequest, TResponse>
-    : BeamOsBaseEndpoint<TRequest, TResponse>
-{ }
+    : BeamOsBaseEndpoint<TRequest, TResponse> { }
 
 public abstract partial class BeamOsModelResourceBaseEndpoint<TCommand, TBody, TResponse>
     : BeamOsBaseEndpoint<TCommand, TResponse>
-    where TCommand : IModelResourceRequest<TBody>, new()
-{ }
+    where TCommand : IModelResourceRequest<TBody>, new() { }
 
 public abstract partial class BeamOsModelResourceWithIntIdBaseEndpoint<TCommand, TBody, TResponse>
     : BeamOsBaseEndpoint<TCommand, TResponse>
-    where TCommand : IModelResourceWithIntIdRequest<TBody>, new()
-{ }
+    where TCommand : IModelResourceWithIntIdRequest<TBody>, new() { }
 
 public abstract partial class BeamOsModelResourceWithIntIdBaseEndpoint<TBody, TResponse>
-    : BeamOsBaseEndpoint<ModelResourceWithIntIdRequest<TBody>, TResponse>
-{ }
+    : BeamOsBaseEndpoint<ModelResourceWithIntIdRequest<TBody>, TResponse> { }

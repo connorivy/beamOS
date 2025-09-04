@@ -52,6 +52,7 @@ public static class DI
 
     public static IServiceCollection AddInMemoryInfrastructure(this IServiceCollection services)
     {
+#if !CODEGEN
         services.AddInMemoryCommandHandlers();
         services.AddKeyedScoped<IStructuralAnalysisApiClientV1, InMemoryApiClient>("InMemory");
         services.AddScoped<InMemoryModelRepositoryStorage>();
@@ -99,6 +100,7 @@ public static class DI
             ICommandHandler<ModelResourceRequest<DateTimeOffset>, ModelResponse>,
             InMemoryRestoreModeCommandHandler
         >("InMemory");
+#endif
 
         return services;
     }

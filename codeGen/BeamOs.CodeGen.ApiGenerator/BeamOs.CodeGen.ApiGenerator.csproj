@@ -7,7 +7,8 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
-    <PackageReference Include="Microsoft.OpenApi.Readers" />
+    <!-- <PackageReference Include="Microsoft.OpenApi.Readers" /> -->
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     <PackageReference Include="NSwag.AspNetCore" />
     <PackageReference Include="NSwag.CodeGeneration.CSharp" />
     <PackageReference Include="NSwag.CodeGeneration.TypeScript" />
@@ -16,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\SpeckleConnector\BeamOs.SpeckleConnector\BeamOs.SpeckleConnector.csproj" />
+    <!-- <ProjectReference Include="..\..\src\SpeckleConnector\BeamOs.SpeckleConnector\BeamOs.SpeckleConnector.csproj" /> -->
     <ProjectReference Include="..\..\src\StructuralAnalysis\BeamOs.StructuralAnalysis.Api\BeamOs.StructuralAnalysis.Api.csproj" />
     <ProjectReference Include="..\..\src\WebApp\BeamOs.WebApp.EditorCommands\BeamOs.WebApp.EditorCommands.csproj" />
   </ItemGroup>

@@ -44,7 +44,12 @@ public class InMemoryApiClientGenerator
             string methodName = method.Name;
             var orginalMethodName = method.Name.Replace("Async", string.Empty);
 
-            if (!apiMethodNameToParameterTypeName.TryGetValue(orginalMethodName, out var inMemoryTypeInfo))
+            if (
+                !apiMethodNameToParameterTypeName.TryGetValue(
+                    orginalMethodName,
+                    out var inMemoryTypeInfo
+                )
+            )
             {
                 Logger.LogWarning(
                     $"No InMemoryHandlerInfo found for method {orginalMethodName}. Skipping."
@@ -72,8 +77,8 @@ public class InMemoryApiClientGenerator
             // string handlerName = "InMemory" + originalHandlerName;
 
 
-            string handlerName = orginalMethodName + "InMemoryHandler";
-            string handlerField =
+            var handlerName = orginalMethodName + "InMemoryHandler";
+            var handlerField =
                 $"private readonly {inMemoryTypeInfo.HandlerTypeName} _{ToCamelCase(handlerName)};";
             handlerFields.AppendLine("        " + handlerField);
             if (!firstParam)
@@ -89,8 +94,7 @@ public class InMemoryApiClientGenerator
                 $"            _{ToCamelCase(handlerName)} = {ToCamelCase(handlerName)};"
             );
             firstParam = false;
-            string returnType = method.ReturnType.ToDisplayString();
-            string paramList = string.Join(
+            var paramList = string.Join(
                 ", ",
                 method.Parameters.Select(p =>
                     p.Type.ToDisplayString()
@@ -99,12 +103,17 @@ public class InMemoryApiClientGenerator
                     + (p.HasExplicitDefaultValue ? " = default" : string.Empty)
                 )
             );
-            string paramNames = string.Join(", ", method.Parameters.Select(p => p.Name));
-            string cancellationTokenParam =
+            var paramNames = string.Join(", ", method.Parameters.Select(p => p.Name));
+            var cancellationTokenParam =
                 method.Parameters.FirstOrDefault(p => p.Type.Name == "CancellationToken")?.Name
                 ?? "cancellationToken";
 
-            apiClientBuilder.AddMethodAtRoute(inMemoryTypeInfo.Route, methodName, returnType, method.Parameters);
+            // apiClientBuilder.AddMethodAtRoute(
+            //     inMemoryTypeInfo.Route,
+            //     methodName,
+            //     method.ReturnType,
+            //     method.Parameters
+            // );
 
             string handlerCommandType = inMemoryTypeInfo.HandlerParameterTypeName;
 
@@ -132,7 +141,7 @@ public class InMemoryApiClientGenerator
             }
             methodImpls.AppendLine(
                 $@"
-        public async {returnType} {methodName}({paramList})
+        public async {method.ReturnType.ToDisplayString()} {methodName}({paramList})
         {{
             var command = {partialMethodName}({paramNames});
             return (await _{ToCamelCase(handlerName)}.ExecuteAsync(command, {cancellationTokenParam})).ToApiResponse();
@@ -141,29 +150,53 @@ public class InMemoryApiClientGenerator
             );
         }
         StringBuilder sb = new StringBuilder();
-        sb.AppendLine("using System.Threading;");
-        sb.AppendLine("using System.Threading.Tasks;");
-        sb.AppendLine("using Microsoft.Extensions.DependencyInjection;");
-        sb.AppendLine("using BeamOs.StructuralAnalysis.Application.InMemory;");
-        sb.AppendLine($"namespace {namespaceName};");
-        sb.AppendLine();
-        sb.AppendLine($"public partial class {className}");
-        sb.AppendLine("{");
-        sb.Append(handlerFields);
-        sb.AppendLine();
-        sb.AppendLine($"    public {className}({ctorParams})");
-        sb.AppendLine("    {");
-        sb.Append(ctorAssignments);
-        sb.AppendLine("    }");
-        sb.AppendLine();
-        sb.Append(partialMethods);
-        sb.AppendLine();
-        sb.Append(methodImpls);
-        sb.AppendLine("}");
+        sb.AppendLine(
+            $$"""
+#if !CODEGEN
+using System.Threading; 
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using BeamOs.StructuralAnalysis.Application.InMemory;
+namespace {{namespaceName}};
+
+public partial class {{className}}
+{
+{{handlerFields}}
+    public {{className}}({{ctorParams}})
+    {
+{{ctorAssignments}}
+    }
+
+{{partialMethods}}
+
+{{methodImpls}}
+}
+#endif
+"""
+        );
+        // sb.AppendLine("using System.Threading;");
+        // sb.AppendLine("using System.Threading.Tasks;");
+        // sb.AppendLine("using Microsoft.Extensions.DependencyInjection;");
+        // sb.AppendLine("using BeamOs.StructuralAnalysis.Application.InMemory;");
+        // sb.AppendLine($"namespace {namespaceName};");
+        // sb.AppendLine();
+        // sb.AppendLine($"public partial class {className}");
+        // sb.AppendLine("{");
+        // sb.Append(handlerFields);
+        // sb.AppendLine();
+        // sb.AppendLine($"    public {className}({ctorParams})");
+        // sb.AppendLine("    {");
+        // sb.Append(ctorAssignments);
+        // sb.AppendLine("    }");
+        // sb.AppendLine();
+        // sb.Append(partialMethods);
+        // sb.AppendLine();
+        // sb.Append(methodImpls);
+        // sb.AppendLine("}");
         spc.AddSource($"{className}.g.cs", SourceText.From(sb.ToString(), Encoding.UTF8));
 
         // Generate fluent API client classes
-        apiClientBuilder.AddClassesToCompilation(spc);
+        // apiClientBuilder.AddClassesToCompilation(spc);
 
         return true;
     }

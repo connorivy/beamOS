@@ -1,6 +1,4 @@
 using BeamOs.CodeGen.ApiGenerator.ApiGenerators;
-using BeamOs.CodeGen.ApiGenerator.Utils;
-using Microsoft.OpenApi.Models;
 
 //var builder = WebApplication.CreateBuilder(args);
 
@@ -15,57 +13,60 @@ IApiGenerator[] generators =
     new AiApi(),
 ];
 
-foreach (var generator in generators.Where(g => g is not AbstractGenerator))
-{
-    await generator.GenerateClients();
-}
+// foreach (var generator in generators.Where(g => g is not AbstractGenerator))
+// {
+//     await generator.GenerateClients();
+// }
 
-///*
-// *
-// *
-// */
-var abstractGenerators = generators.OfType<AbstractGenerator>().ToArray();
+var gen = new StructuralAnalysisApi();
+await gen.GenerateClients();
 
-var builder = WebApplication.CreateBuilder(args);
+// ///*
+// // *
+// // *
+// // */
+// var abstractGenerators = generators.OfType<AbstractGenerator>().ToArray();
 
-// builder.Services.AddMvcCore().AddApiExplorer();
-builder.Services.AddSwaggerGen(config =>
-{
-    config.SchemaFilter<MarkAsRequiredIfNonNullableSchemaProcessor>();
-    config.SupportNonNullableReferenceTypes();
+// var builder = WebApplication.CreateBuilder(args);
 
-    foreach (AbstractGenerator generator in abstractGenerators)
-    {
-        config.SwaggerDoc(
-            generator.ClientName,
-            new OpenApiInfo { Title = generator.ClientName, Version = "v0" }
-        );
-    }
-});
+// // builder.Services.AddMvcCore().AddApiExplorer();
+// builder.Services.AddSwaggerGen(config =>
+// {
+//     config.SchemaFilter<MarkAsRequiredIfNonNullableSchemaProcessor>();
+//     config.SupportNonNullableReferenceTypes();
 
-var app = builder.Build();
+//     foreach (AbstractGenerator generator in abstractGenerators)
+//     {
+//         config.SwaggerDoc(
+//             generator.ClientName,
+//             new OpenApiInfo { Title = generator.ClientName, Version = "v0" }
+//         );
+//     }
+// });
 
-app.UseSwagger();
-app.UseSwaggerUI(options =>
-{
-    foreach (AbstractGenerator generator in abstractGenerators)
-    {
-        options.SwaggerEndpoint(
-            $"/swagger/{generator.ClientName}/swagger.json",
-            generator.ClientName
-        );
-    }
-});
+// var app = builder.Build();
 
-foreach (AbstractGenerator generator in abstractGenerators)
-{
-    generator.AddMethods(app);
-}
+// app.UseSwagger();
+// app.UseSwaggerUI(options =>
+// {
+//     foreach (AbstractGenerator generator in abstractGenerators)
+//     {
+//         options.SwaggerEndpoint(
+//             $"/swagger/{generator.ClientName}/swagger.json",
+//             generator.ClientName
+//         );
+//     }
+// });
 
-await app.StartAsync();
-foreach (AbstractGenerator generator in abstractGenerators)
-{
-    await generator.GenerateClients();
-}
+// foreach (AbstractGenerator generator in abstractGenerators)
+// {
+//     generator.AddMethods(app);
+// }
+
+// await app.StartAsync();
+// foreach (AbstractGenerator generator in abstractGenerators)
+// {
+//     await generator.GenerateClients();
+// }
 
 // await app.RunAsync();

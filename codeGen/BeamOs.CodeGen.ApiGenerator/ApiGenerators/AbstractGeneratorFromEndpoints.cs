@@ -30,7 +30,9 @@ public abstract class AbstractGenerator2 : IApiGenerator
         var builder = WebApplication.CreateBuilder();
 
 #if DEBUG
-        builder.Services.AddOpenApi();
+        builder.Services.AddOpenApi(o =>
+            o.OpenApiVersion = Microsoft.OpenApi.OpenApiSpecVersion.OpenApi3_1
+        );
 #endif
 
         WebApplication app = builder.Build();
@@ -48,7 +50,8 @@ public abstract class AbstractGenerator2 : IApiGenerator
 
         UriBuilder uriBuilder = new(baseUrl) { Path = this.OpenApiDefinitionPath };
 
-        var doc = await OpenApiDocument.FromUrlAsync(uriBuilder.ToString());
+        // var doc = await OpenApiDocument.FromUrlAsync(uriBuilder.ToString());
+        var doc = await OpenApiDocument.FromFileAsync("openapi.json");
 
         if (this.GenerateCsClient)
         {

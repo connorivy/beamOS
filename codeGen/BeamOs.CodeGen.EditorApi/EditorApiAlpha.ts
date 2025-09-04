@@ -188,7 +188,7 @@ export class EditorApiAlpha implements IEditorApiAlpha {
 
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         this.http = http ? http : window as any;
-        this.baseUrl = baseUrl ?? "http://localhost:5079/";
+        this.baseUrl = baseUrl ?? "https://localhost:7060/";
     }
 
     /**
@@ -4574,10 +4574,6 @@ export interface INullableOfRestraint {
 }
 
 export class Point implements IPoint {
-    x!: number;
-    y!: number;
-    z!: number;
-    lengthUnit!: number;
 
     [key: string]: any;
 
@@ -4596,10 +4592,6 @@ export class Point implements IPoint {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            this.x = _data["x"];
-            this.y = _data["y"];
-            this.z = _data["z"];
-            this.lengthUnit = _data["lengthUnit"];
         }
     }
 
@@ -4616,19 +4608,11 @@ export class Point implements IPoint {
             if (this.hasOwnProperty(property))
                 data[property] = this[property];
         }
-        data["x"] = this.x;
-        data["y"] = this.y;
-        data["z"] = this.z;
-        data["lengthUnit"] = this.lengthUnit;
         return data;
     }
 }
 
 export interface IPoint {
-    x: number;
-    y: number;
-    z: number;
-    lengthUnit: number;
 
     [key: string]: any;
 }
@@ -5169,12 +5153,6 @@ export interface IRatio {
 }
 
 export class Restraint implements IRestraint {
-    canTranslateAlongX!: boolean;
-    canTranslateAlongY!: boolean;
-    canTranslateAlongZ!: boolean;
-    canRotateAboutX!: boolean;
-    canRotateAboutY!: boolean;
-    canRotateAboutZ!: boolean;
 
     [key: string]: any;
 
@@ -5193,12 +5171,6 @@ export class Restraint implements IRestraint {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            this.canTranslateAlongX = _data["canTranslateAlongX"];
-            this.canTranslateAlongY = _data["canTranslateAlongY"];
-            this.canTranslateAlongZ = _data["canTranslateAlongZ"];
-            this.canRotateAboutX = _data["canRotateAboutX"];
-            this.canRotateAboutY = _data["canRotateAboutY"];
-            this.canRotateAboutZ = _data["canRotateAboutZ"];
         }
     }
 
@@ -5215,23 +5187,11 @@ export class Restraint implements IRestraint {
             if (this.hasOwnProperty(property))
                 data[property] = this[property];
         }
-        data["canTranslateAlongX"] = this.canTranslateAlongX;
-        data["canTranslateAlongY"] = this.canTranslateAlongY;
-        data["canTranslateAlongZ"] = this.canTranslateAlongZ;
-        data["canRotateAboutX"] = this.canRotateAboutX;
-        data["canRotateAboutY"] = this.canRotateAboutY;
-        data["canRotateAboutZ"] = this.canRotateAboutZ;
         return data;
     }
 }
 
 export interface IRestraint {
-    canTranslateAlongX: boolean;
-    canTranslateAlongY: boolean;
-    canTranslateAlongZ: boolean;
-    canRotateAboutX: boolean;
-    canRotateAboutY: boolean;
-    canRotateAboutZ: boolean;
 
     [key: string]: any;
 }

@@ -1,3 +1,4 @@
+#if !CODEGEN
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults;
 using BeamOs.StructuralAnalysis.Application.Common;
@@ -357,7 +358,7 @@ public partial class InMemoryApiClient
         new()
         {
             ModelId = modelId,
-            ResultSetId = resultSetId,
+            LoadCombinationId = resultSetId,
             Id = id,
         };
 
@@ -384,4 +385,11 @@ public partial class InMemoryApiClient
         Guid modelId,
         CancellationToken cancellationToken
     ) => new(modelId);
+
+    private partial GetAnalyticalResultQuery CreateGetAnalyticalResultQueryCommand(
+        Guid modelId,
+        int loadCombinationId,
+        CancellationToken cancellationToken
+    ) => new() { ModelId = modelId, LoadCombinationId = loadCombinationId };
 }
+#endif
