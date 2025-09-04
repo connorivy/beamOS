@@ -28,7 +28,7 @@ public sealed class DeleteSectionProfileCommandHandler(
         CancellationToken ct = default
     )
     {
-        return await structuralAnalysisApiClientV1.DeleteSectionProfileAsync(
+        return await structuralAnalysisApiClientV1.DeleteSectionProfile(
             command.ModelId,
             command.SectionProfileId,
             ct

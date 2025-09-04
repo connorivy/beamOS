@@ -12,7 +12,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 namespace BeamOs.StructuralAnalysis.Sdk;
 
 public sealed class BeamOsDynamicModel(
-    string guidString,
+    Guid id,
     ModelSettings physicalModelSettings,
     string name,
     string description
@@ -21,7 +21,7 @@ public sealed class BeamOsDynamicModel(
     public string Name => name;
     public string Description => description;
     public ModelSettings Settings => physicalModelSettings;
-    public string GuidString => guidString;
+    public Guid Id => id;
     public DateTimeOffset LastModified { get; } = DateTimeOffset.UtcNow;
 
     private readonly List<PutNodeRequest> nodes = [];
@@ -29,13 +29,13 @@ public sealed class BeamOsDynamicModel(
     public UnitSettings UnitSettings => this.Settings.UnitSettings;
 
     public BeamOsDynamicModel(
-        string guidString,
+        Guid modelId,
         ModelSettings physicalModelSettings,
         string name,
         string description,
         BeamOsModelBuilderDto beamOsModelBuilderDto
     )
-        : this(guidString, physicalModelSettings, name, description)
+        : this(modelId, physicalModelSettings, name, description)
     {
         this.nodes = beamOsModelBuilderDto.Nodes.ToList();
         this.materials = beamOsModelBuilderDto.Materials.ToList();

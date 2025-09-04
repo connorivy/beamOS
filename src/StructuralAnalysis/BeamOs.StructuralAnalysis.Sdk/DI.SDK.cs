@@ -53,8 +53,8 @@ public static class DI
     public static IServiceCollection AddInMemoryInfrastructure(this IServiceCollection services)
     {
 #if !CODEGEN
-        services.AddInMemoryCommandHandlers();
-        services.AddKeyedScoped<IStructuralAnalysisApiClientV1, InMemoryApiClient>("InMemory");
+        // services.AddInMemoryCommandHandlers();
+        // services.AddKeyedScoped<IStructuralAnalysisApiClientV1, InMemoryApiClient>("InMemory");
         services.AddScoped<InMemoryModelRepositoryStorage>();
         services.AddKeyedScoped<IStructuralAnalysisUnitOfWork, InMemoryUnitOfWork>("InMemory");
         services.AddKeyedScoped<IModelRepository, InMemoryModelRepository>("InMemory");

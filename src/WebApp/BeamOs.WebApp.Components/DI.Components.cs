@@ -73,13 +73,15 @@ public static class DI
     public static async Task InitializeBeamOsData(this IServiceProvider services)
     {
         using var scope = services.CreateScope();
-        var apiClient = scope.ServiceProvider.GetRequiredService<IStructuralAnalysisApiClientV1>();
+        var apiClient = scope.ServiceProvider.GetRequiredService<BeamOsResultApiClient>();
 
         foreach (var modelBuilder in AllSolvedProblems.ModelFixtures())
         {
             if (await modelBuilder.CreateOnly(apiClient))
             {
-                await apiClient.RunOpenSeesAnalysisAsync(modelBuilder.Id, new());
+                await apiClient
+                    .Models[modelBuilder.Id]
+                    .Analyze.Opensees.RunOpenSeesAnalysisAsync(new());
             }
         }
     }

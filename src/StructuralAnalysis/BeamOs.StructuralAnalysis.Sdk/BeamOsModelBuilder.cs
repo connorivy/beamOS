@@ -1,8 +1,8 @@
-using BeamOs.CodeGen.StructuralAnalysisApiClient;
+using BeamOs.StructuralAnalysis.Api;
 
 namespace BeamOs.StructuralAnalysis.Sdk;
 
-public class BeamOsModelBuilder(IBeamOsModel model, IStructuralAnalysisApiClientV1 apiClient)
+public class BeamOsModelBuilder(IBeamOsModel model, IStructuralAnalysisApiClientV2 apiClient)
 {
     private static readonly AsyncGuidLockManager LockManager = new();
 
@@ -23,14 +23,9 @@ public class BeamOsModelBuilder(IBeamOsModel model, IStructuralAnalysisApiClient
 
     private async Task<bool> Build(bool createOnly)
     {
-        if (!Guid.TryParse(model.GuidString, out var modelId))
-        {
-            throw new Exception("Guid string is not formatted correctly");
-        }
-
         return await LockManager.ExecuteWithLockAsync(
-            modelId,
-            async () => await this.Build(createOnly, modelId)
+            model.Id,
+            async () => await this.Build(createOnly, model.Id)
         );
     }
 
@@ -38,7 +33,7 @@ public class BeamOsModelBuilder(IBeamOsModel model, IStructuralAnalysisApiClient
     {
         try
         {
-            var createModelResult = await apiClient.CreateModelAsync(
+            var createModelResult = await apiClient.CreateModel(
                 new()
                 {
                     Name = model.Name,
@@ -59,52 +54,72 @@ public class BeamOsModelBuilder(IBeamOsModel model, IStructuralAnalysisApiClient
 
         foreach (var el in ChunkRequests(model.NodeRequests()))
         {
-            (await apiClient.BatchPutNodeAsync(modelId, el)).ThrowIfError();
+            (await apiClient.BatchPutNode(new() { ModelId = modelId, Body = el })).ThrowIfError();
         }
 
         foreach (var el in ChunkRequests(model.LoadCaseRequests()))
         {
-            (await apiClient.BatchPutLoadCaseAsync(modelId, el)).ThrowIfError();
+            (
+                await apiClient.BatchPutLoadCase(new() { ModelId = modelId, Body = el })
+            ).ThrowIfError();
         }
 
         foreach (var el in ChunkRequests(model.LoadCombinationRequests()))
         {
-            (await apiClient.BatchPutLoadCombinationAsync(modelId, el)).ThrowIfError();
+            (
+                await apiClient.BatchPutLoadCombination(new() { ModelId = modelId, Body = el })
+            ).ThrowIfError();
         }
 
         foreach (var el in ChunkRequests(model.MaterialRequests()))
         {
-            (await apiClient.BatchPutMaterialAsync(modelId, el)).ThrowIfError();
+            (
+                await apiClient.BatchPutMaterial(new() { ModelId = modelId, Body = el })
+            ).ThrowIfError();
         }
 
         foreach (var el in ChunkRequests(model.SectionProfileRequests()))
         {
-            (await apiClient.BatchPutSectionProfileAsync(modelId, el)).ThrowIfError();
+            (
+                await apiClient.BatchPutSectionProfile(new() { ModelId = modelId, Body = el })
+            ).ThrowIfError();
         }
 
         foreach (var el in ChunkRequests(model.SectionProfilesFromLibraryRequests()))
         {
-            (await apiClient.BatchPutSectionProfileFromLibraryAsync(modelId, el)).ThrowIfError();
+            (
+                await apiClient.BatchPutSectionProfileFromLibrary(
+                    new() { ModelId = modelId, Body = el }
+                )
+            ).ThrowIfError();
         }
 
         foreach (var el in ChunkRequests(model.Element1dRequests()))
         {
-            (await apiClient.BatchPutElement1dAsync(modelId, el)).ThrowIfError();
+            (
+                await apiClient.BatchPutElement1d(new() { ModelId = modelId, Body = el })
+            ).ThrowIfError();
         }
 
         foreach (var el in ChunkRequests(model.InternalNodeRequests()))
         {
-            (await apiClient.BatchPutInternalNodeAsync(modelId, el)).ThrowIfError();
+            (
+                await apiClient.BatchPutInternalNode(new() { ModelId = modelId, Body = el })
+            ).ThrowIfError();
         }
 
         foreach (var el in ChunkRequests(model.PointLoadRequests()))
         {
-            (await apiClient.BatchPutPointLoadAsync(modelId, el)).ThrowIfError();
+            (
+                await apiClient.BatchPutPointLoad(new() { ModelId = modelId, Body = el })
+            ).ThrowIfError();
         }
 
         foreach (var el in ChunkRequests(model.MomentLoadRequests()))
         {
-            (await apiClient.BatchPutMomentLoadAsync(modelId, el)).ThrowIfError();
+            (
+                await apiClient.BatchPutMomentLoad(new() { ModelId = modelId, Body = el })
+            ).ThrowIfError();
         }
 
         ModelCreated?.Invoke(this, modelId);
@@ -114,16 +129,14 @@ public class BeamOsModelBuilder(IBeamOsModel model, IStructuralAnalysisApiClient
 
     public static event EventHandler<Guid>? ModelCreated;
 
-    private static IEnumerable<List<TRequest>> ChunkRequests<TRequest>(
-        IEnumerable<TRequest> requests
-    )
+    private static IEnumerable<TRequest[]> ChunkRequests<TRequest>(IEnumerable<TRequest> requests)
     {
         const int batchSize = 50;
 
         var requestsList = requests.ToList();
         for (int i = 0; i < requestsList.Count; i += batchSize)
         {
-            var batch = requestsList.Skip(i).Take(batchSize).ToList();
+            var batch = requestsList.Skip(i).Take(batchSize).ToArray();
             yield return batch;
         }
     }

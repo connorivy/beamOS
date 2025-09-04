@@ -76,7 +76,7 @@
 
     private static MethodInfo CreateModel { get; } = typeof(IStructuralAnalysisApiClientV1)
         .GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.Equals(nameof(IStructuralAnalysisApiClientV1.CreateModelAsync)))
+            .Where(m => m.Name.Equals(nameof(IStructuralAnalysisApiClientV1.CreateModel)))
             .First();
 
     private void Cancel() => MudDialog.Cancel();

@@ -33,7 +33,7 @@ public sealed class PutNodeEditorCommandHandler(
         CancellationToken ct = default
     )
     {
-        return await structuralAnalysisApiClientV1.PutNodeAsync(
+        return await structuralAnalysisApiClientV1.PutNode(
             command.New.Id,
             command.New.ModelId,
             command.New.ToNodeData(),

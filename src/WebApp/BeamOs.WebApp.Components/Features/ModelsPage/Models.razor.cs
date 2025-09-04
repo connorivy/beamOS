@@ -48,7 +48,7 @@ public partial class Models : FluxorComponent
         ICollection<ModelInfoResponse>? userModels = null;
         if (authState?.User.Identity is not null && authState.User.Identity.IsAuthenticated)
         {
-            var modelResponses = await this.StructuralAnalysisApiClient.GetModelsAsync();
+            var modelResponses = await this.StructuralAnalysisApiClient.GetModels();
 
             if (modelResponses.IsSuccess)
             {

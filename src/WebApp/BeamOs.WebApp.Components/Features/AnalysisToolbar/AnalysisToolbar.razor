@@ -119,7 +119,7 @@
 
     private async Task UnlockModel()
     {
-        var result = await structuralAnalysisApiClientV1.ClearResultsAsync(this.ModelId, CancellationToken.None);
+        var result = await structuralAnalysisApiClientV1.ClearResults(this.ModelId, CancellationToken.None);
 
         if (result.IsSuccess)
         {

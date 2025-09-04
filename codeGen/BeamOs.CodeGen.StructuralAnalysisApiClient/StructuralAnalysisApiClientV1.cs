@@ -327,7 +327,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ApiResponse<System.Collections.Generic.IDictionary<string, object>>> GetNodeResultsAsync(System.Guid modelId, int loadCombinationId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<System.Collections.Generic.IDictionary<string, NodeResultResponse>>> GetNodeResultsAsync(System.Guid modelId, int loadCombinationId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
     }
 
@@ -5008,11 +5008,11 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
 
-            if (id == null)
-                throw new System.ArgumentNullException("id");
-
             if (loadCombinationId == null)
                 throw new System.ArgumentNullException("loadCombinationId");
+
+            if (id == null)
+                throw new System.ArgumentNullException("id");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -5025,15 +5025,13 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/models/{modelId}/results/load-combinations/{load-combination-id}/node/{id}"
+                    // Operation Path: "api/models/{modelId}/results/load-combinations/{loadCombinationId}/nodes/{id}"
                     urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/results/load-combinations/");
-                    urlBuilder_.Append("/node/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(loadCombinationId, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/nodes/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
-                    urlBuilder_.Append('?');
-                    urlBuilder_.Append(System.Uri.EscapeDataString("LoadCombinationId")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(loadCombinationId, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
-                    urlBuilder_.Length--;
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -5088,7 +5086,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ApiResponse<System.Collections.Generic.IDictionary<string, object>>> GetNodeResultsAsync(System.Guid modelId, int loadCombinationId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<System.Collections.Generic.IDictionary<string, NodeResultResponse>>> GetNodeResultsAsync(System.Guid modelId, int loadCombinationId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -5107,14 +5105,12 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/models/{modelId}/results/load-combinations/{load-combination-id}/node"
+                    // Operation Path: "api/models/{modelId}/results/load-combinations/{loadCombinationId}/nodes"
                     urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/results/load-combinations/");
-                    urlBuilder_.Append("/node");
-                    urlBuilder_.Append('?');
-                    urlBuilder_.Append(System.Uri.EscapeDataString("LoadCombinationId")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(loadCombinationId, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
-                    urlBuilder_.Length--;
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(loadCombinationId, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/nodes");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -5141,7 +5137,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.IDictionary<string, object>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.IDictionary<string, NodeResultResponse>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             return ApiResponse.FromValue(objectResponse_.Object);
                         }
                         var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);

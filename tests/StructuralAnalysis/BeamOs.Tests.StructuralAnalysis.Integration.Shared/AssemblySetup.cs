@@ -1,12 +1,12 @@
-using BeamOs.CodeGen.StructuralAnalysisApiClient;
+using BeamOs.StructuralAnalysis.Sdk;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration;
 
 public static partial class AssemblySetup
 {
-    public static IStructuralAnalysisApiClientV1 StructuralAnalysisApiClient { get; set; }
+    public static BeamOsResultApiClient StructuralAnalysisApiClient { get; set; }
 
-    public static Func<IStructuralAnalysisApiClientV1> GetStructuralAnalysisApiClientV1() =>
+    public static Func<BeamOsResultApiClient> GetStructuralAnalysisApiClientV1() =>
         () =>
         {
             return StructuralAnalysisApiClient;

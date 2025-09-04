@@ -35,7 +35,7 @@ public sealed class CreateMomentLoadClientCommandHandler(
         CancellationToken ct = default
     )
     {
-        return await structuralAnalysisApiClientV1.CreateMomentLoadAsync(
+        return await structuralAnalysisApiClientV1.CreateMomentLoad(
             command.ModelId,
             new(command.Data.NodeId, command.Data.Torque, command.Data.AxisDirection),
             ct

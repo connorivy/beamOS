@@ -45,7 +45,7 @@ public sealed class PutPointLoadEditorCommandHandler(
             command.New.Force,
             command.New.Direction
         );
-        return await structuralAnalysisApiClientV1.PutPointLoadAsync(
+        return await structuralAnalysisApiClientV1.PutPointLoad(
             command.New.Id,
             command.New.ModelId,
             pointLoadData,

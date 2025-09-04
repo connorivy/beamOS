@@ -25,7 +25,7 @@ public sealed class CreateSectionProfileClientCommandHandler(
         CancellationToken ct = default
     )
     {
-        return await structuralAnalysisApiClientV1.CreateSectionProfileAsync(
+        return await structuralAnalysisApiClientV1.CreateSectionProfile(
             command.ModelId,
             new(command.Data),
             ct

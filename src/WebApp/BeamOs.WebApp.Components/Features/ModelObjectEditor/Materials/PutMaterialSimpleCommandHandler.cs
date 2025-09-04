@@ -24,7 +24,7 @@ public sealed class PutMaterialClientCommandHandler(
         CancellationToken ct = default
     )
     {
-        return await structuralAnalysisApiClientV1.PutMaterialAsync(
+        return await structuralAnalysisApiClientV1.PutMaterial(
             command.New.Id,
             command.New.ModelId,
             command.New.ToMaterialData(),

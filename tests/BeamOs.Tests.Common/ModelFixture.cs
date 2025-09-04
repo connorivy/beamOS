@@ -1,8 +1,6 @@
-using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.CsSdk.Mappers;
 using BeamOs.StructuralAnalysis.Sdk;
-using UnitsNet;
 
 namespace BeamOs.Tests.Common;
 

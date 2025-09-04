@@ -13,13 +13,10 @@ IApiGenerator[] generators =
     new AiApi(),
 ];
 
-// foreach (var generator in generators.Where(g => g is not AbstractGenerator))
-// {
-//     await generator.GenerateClients();
-// }
-
-var gen = new StructuralAnalysisApi();
-await gen.GenerateClients();
+foreach (var generator in generators.Where(g => g is not AbstractGenerator))
+{
+    await generator.GenerateClients();
+}
 
 // ///*
 // // *

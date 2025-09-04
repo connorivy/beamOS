@@ -50,8 +50,8 @@ public abstract class AbstractGenerator2 : IApiGenerator
 
         UriBuilder uriBuilder = new(baseUrl) { Path = this.OpenApiDefinitionPath };
 
-        // var doc = await OpenApiDocument.FromUrlAsync(uriBuilder.ToString());
-        var doc = await OpenApiDocument.FromFileAsync("openapi.json");
+        var doc = await OpenApiDocument.FromUrlAsync(uriBuilder.ToString());
+        // var doc = await OpenApiDocument.FromFileAsync("openapi.json");
 
         if (this.GenerateCsClient)
         {

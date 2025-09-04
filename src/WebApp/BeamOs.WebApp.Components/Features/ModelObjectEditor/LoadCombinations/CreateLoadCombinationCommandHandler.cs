@@ -21,7 +21,7 @@ public sealed class CreateLoadCombinationClientCommandHandler(
         CancellationToken ct = default
     )
     {
-        return await structuralAnalysisApiClientV1.CreateLoadCombinationAsync(
+        return await structuralAnalysisApiClientV1.CreateLoadCombination(
             command.ModelId,
             command.Data,
             ct

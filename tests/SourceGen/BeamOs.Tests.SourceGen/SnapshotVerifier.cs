@@ -7,7 +7,10 @@ namespace BeamOs.Tests.SourceGen;
 
 public static class SnapshotVerifier
 {
-    public static Task Verify(Func<GeneratorDriverRunResult, string> selector, params IEnumerable<string> sources)
+    public static Task Verify(
+        Func<GeneratorDriverRunResult, string> selector,
+        params IEnumerable<string> sources
+    )
     {
         var attrSource = """
 using System;
@@ -54,27 +57,36 @@ public static class BeamOsTags
         [
             MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
             MetadataReference.CreateFromFile(typeof(Attribute).Assembly.Location),
-            MetadataReference.CreateFromFile(typeof(BeamOs.Common.Api.BeamOsRouteAttribute).Assembly.Location),
+            MetadataReference.CreateFromFile(
+                typeof(BeamOs.Common.Api.BeamOsRouteAttribute).Assembly.Location
+            ),
             MetadataReference.CreateFromFile(typeof(ICommandHandler<,>).Assembly.Location),
-            MetadataReference.CreateFromFile(typeof(BeamOs.CodeGen.StructuralAnalysisApiClient.IStructuralAnalysisApiClientV1).Assembly.Location),
+            MetadataReference.CreateFromFile(
+                typeof(BeamOs.CodeGen.StructuralAnalysisApiClient.IStructuralAnalysisApiClientV1)
+                    .Assembly
+                    .Location
+            ),
         ];
 
         var compilation = CSharpCompilation.Create(
             "BeamOs.StructuralAnalysis.Generator",
-            [CSharpSyntaxTree.ParseText(attrSource), .. sources.Select(s => CSharpSyntaxTree.ParseText(s))],
+            [
+                CSharpSyntaxTree.ParseText(attrSource),
+                .. sources.Select(s => CSharpSyntaxTree.ParseText(s)),
+            ],
             references,
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
         );
 
-        var generator = new BeamOsRouteInMemoryGenerator().AsSourceGenerator();
-        GeneratorDriver driver = CSharpGeneratorDriver.Create(generator);
+        // var generator = new BeamOsRouteInMemoryGenerator().AsSourceGenerator();
+        // GeneratorDriver driver = CSharpGeneratorDriver.Create(generator);
 
-        driver = driver.RunGeneratorsAndUpdateCompilation(
-            compilation,
-            out var outputCompilation,
-            out var diagnostics
-        );
-        var result = driver.GetRunResult();
+        // driver = driver.RunGeneratorsAndUpdateCompilation(
+        //     compilation,
+        //     out var outputCompilation,
+        //     out var diagnostics
+        // );
+        // var result = driver.GetRunResult();
 
         // return Verifier.Verify(selector(result));
         return Task.CompletedTask;

@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using BeamOs.CodeGen.StructuralAnalysisApiClient;
+using BeamOs.StructuralAnalysis.Api.Endpoints;
 using BeamOs.Tests.Common;
 using DiffEngine;
 using Testcontainers.PostgreSql;
@@ -34,9 +34,8 @@ public static partial class AssemblySetup
             $"{DbContainer.GetConnectionString()};Include Error Detail=True"
         );
 
-        StructuralAnalysisApiClient = new StructuralAnalysisApiClientV1(
-            webAppFactory.CreateClient()
-        );
+        var client = new StructuralAnalysisApiClientV2(webAppFactory.CreateClient());
+        StructuralAnalysisApiClient = new(client);
 
         ApiIsRunning = true;
     }

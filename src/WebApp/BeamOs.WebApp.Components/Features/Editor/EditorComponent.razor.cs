@@ -67,7 +67,7 @@ public partial class EditorComponent(
                 await state.Value.EditorApi.ReduceMoveNodeCommandAsync(command);
             }
 
-            var nodeResponse = await apiClient.PatchNodeAsync(
+            var nodeResponse = await apiClient.PatchNode(
                 this.ModelId.Value,
                 new UpdateNodeRequest(
                     command.NodeId,
@@ -117,7 +117,7 @@ public partial class EditorComponent(
 
             if (!command.HandledByServer)
             {
-                await apiClient.PutNodeAsync(
+                await apiClient.PutNode(
                     command.New.Id,
                     command.New.ModelId,
                     new(command.New.LocationPoint, command.New.Restraint)

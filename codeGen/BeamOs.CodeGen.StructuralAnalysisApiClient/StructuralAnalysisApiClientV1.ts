@@ -320,7 +320,7 @@ export interface IStructuralAnalysisApiClientV1 {
     /**
      * @return OK
      */
-    getNodeResults(modelId: string, loadCombinationId: number): Promise<{ [key: string]: any; }>;
+    getNodeResults(modelId: string, loadCombinationId: number): Promise<{ [key: string]: NodeResultResponse; }>;
 }
 
 export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClientV1 {
@@ -2917,17 +2917,16 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     getNodeResult(modelId: string, loadCombinationId: number, id: number): Promise<NodeResultResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/results/load-combinations/{load-combination-id}/node/{id}?";
+        let url_ = this.baseUrl + "/api/models/{modelId}/results/load-combinations/{loadCombinationId}/nodes/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (loadCombinationId === undefined || loadCombinationId === null)
+            throw new Error("The parameter 'loadCombinationId' must be defined.");
+        url_ = url_.replace("{loadCombinationId}", encodeURIComponent("" + loadCombinationId));
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        if (loadCombinationId === undefined || loadCombinationId === null)
-            throw new Error("The parameter 'loadCombinationId' must be defined and cannot be null.");
-        else
-            url_ += "LoadCombinationId=" + encodeURIComponent("" + loadCombinationId) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -2963,15 +2962,14 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     /**
      * @return OK
      */
-    getNodeResults(modelId: string, loadCombinationId: number): Promise<{ [key: string]: any; }> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/results/load-combinations/{load-combination-id}/node?";
+    getNodeResults(modelId: string, loadCombinationId: number): Promise<{ [key: string]: NodeResultResponse; }> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/results/load-combinations/{loadCombinationId}/nodes";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         if (loadCombinationId === undefined || loadCombinationId === null)
-            throw new Error("The parameter 'loadCombinationId' must be defined and cannot be null.");
-        else
-            url_ += "LoadCombinationId=" + encodeURIComponent("" + loadCombinationId) + "&";
+            throw new Error("The parameter 'loadCombinationId' must be defined.");
+        url_ = url_.replace("{loadCombinationId}", encodeURIComponent("" + loadCombinationId));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -2986,7 +2984,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processGetNodeResults(response: Response): Promise<{ [key: string]: any; }> {
+    protected processGetNodeResults(response: Response): Promise<{ [key: string]: NodeResultResponse; }> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -2997,7 +2995,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
                 result200 = {} as any;
                 for (let key in resultData200) {
                     if (resultData200.hasOwnProperty(key))
-                        (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
+                        (<any>result200)![key] = resultData200[key] ? NodeResultResponse.fromJS(resultData200[key]) : new NodeResultResponse();
                 }
             }
             else {
@@ -3010,7 +3008,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<{ [key: string]: any; }>(null as any);
+        return Promise.resolve<{ [key: string]: NodeResultResponse; }>(null as any);
     }
 }
 

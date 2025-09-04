@@ -24,7 +24,7 @@ public sealed class AcceptModelProposalClientCommandHandler(
         CancellationToken ct = default
     )
     {
-        return await structuralAnalysisApiClient.AcceptModelProposalAsync(
+        return await structuralAnalysisApiClient.AcceptModelProposal(
             command.ModelId,
             command.ProposalId,
             command.EntitiesToIgnore,

@@ -34,7 +34,7 @@ public sealed class PutMomentLoadEditorCommandHandler(
         CancellationToken ct = default
     )
     {
-        return await structuralAnalysisApiClientV1.PutMomentLoadAsync(
+        return await structuralAnalysisApiClientV1.PutMomentLoad(
             command.New.Id,
             command.New.ModelId,
             command.New.ToData(),

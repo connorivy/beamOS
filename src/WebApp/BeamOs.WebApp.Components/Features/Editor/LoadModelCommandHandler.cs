@@ -47,7 +47,7 @@ public class LoadModelCommandHandler(
             );
         }
 
-        var modelResponse = await structuralAnalysisApiClient.GetModelAsync(command.ModelId, ct);
+        var modelResponse = await structuralAnalysisApiClient.GetModel(command.ModelId, ct);
 
         //var modelCacheResponse = await cache.GetOrCreateAsync<Result<CachedModelResponse>>(
         //    command.ModelId.ToString(),
@@ -118,7 +118,7 @@ public sealed class CacheModelResponseCommandHandler(
         {
             dispatcher.Dispatch(new EditorLoadingBegin(command.CanvasId, "Fetching Results"));
             var resultId = command.ModelResponse.ResultSets[0].Id;
-            var diagrams = await structuralAnalysisApiClient.GetDiagramsAsync(
+            var diagrams = await structuralAnalysisApiClient.GetDiagrams(
                 command.ModelResponse.Id,
                 resultId,
                 "kn-m",

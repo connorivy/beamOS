@@ -1,19 +1,13 @@
-using BeamOs.CsSdk.Mappers.UnitValueDtoMappers;
-using BeamOs.SpeckleConnector;
-using BeamOs.StructuralAnalysis.Contracts.Common;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Materials;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Sdk;
 
 namespace BeamOs.CodeGen.TestModelBuilderGenerator.TestModelGenerators;
 
-internal class TwistyBowlFramingGenerator(string speckleToken)
+internal sealed class TwistyBowlFramingGenerator(string speckleToken)
 {
-    private static string GuidString => "4ce66084-4ac1-40bc-99ae-3d0f334c66fa";
+    private static Guid Id => Guid.Parse("4ce66084-4ac1-40bc-99ae-3d0f334c66fa");
     private static ModelSettings Settings { get; } = new(UnitSettingsContract.K_IN);
     private static string Name => "TwistyBowlFraming";
     private static string Description =>
@@ -23,7 +17,7 @@ internal class TwistyBowlFramingGenerator(string speckleToken)
 
     public async Task Generate()
     {
-        BeamOsDynamicModel modelBuilder = new(GuidString, Settings, Name, Description);
+        BeamOsDynamicModel modelBuilder = new(Id, Settings, Name, Description);
 
         modelBuilder.AddSectionProfilesFromLibrary(
             new SectionProfileFromLibrary()

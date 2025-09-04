@@ -44,7 +44,7 @@ public sealed class PutElement1dCommandHandler(
         CancellationToken ct = default
     )
     {
-        return await structuralAnalysisApiClientV1.PutElement1dAsync(
+        return await structuralAnalysisApiClientV1.PutElement1d(
             command.Element1dId,
             command.ModelId,
             command.New.ToElement1dData(),

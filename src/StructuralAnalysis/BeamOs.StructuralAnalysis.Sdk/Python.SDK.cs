@@ -13,21 +13,7 @@ public static class ModelBuilderFactory
     {
         var services = new ServiceCollection();
         services.AddBeamOsRemote(apiToken);
-        var serviceProvider = services.BuildServiceProvider();
-        var apiClient = serviceProvider.GetRequiredService<IStructuralAnalysisApiClientV1>();
-        ApiClient x = default!;
-        var asdf = await x.Models[default].Nodes[0].PutNodeAsync(default);
-        BeamOsFluentApiClient z = default!;
-        BeamOsFluentResultApiClient zz = default!;
-
-        BeamOs.StructuralAnalysis.Api.IStructuralAnalysisApiClientV2 erd = default!;
-        InMemoryApiClient2 zzz = default!;
-        InMemoryApiClient zzx = default!;
-        z.Models[default].Nodes[0].DeleteNodeAsync();
-        z.Models[default].Nodes[0].Internal.GetInternalNodeAsync();
-        var w = x.Models[model.Id];
-        var y = await w.Proposals.GetModelProposalsAsync();
-        return new BeamOsModelBuilder(model, apiClient);
+        return default;
     }
 
     public static BeamOsModelBuilder CreateLocal(IBeamOsModel model)
@@ -42,7 +28,8 @@ public static class ModelBuilderFactory
         var apiClient = serviceProvider.GetRequiredKeyedService<IStructuralAnalysisApiClientV1>(
             "InMemory"
         );
-        return new BeamOsModelBuilder(model, apiClient);
+        // return new BeamOsModelBuilder(model, apiClient);
+        return default;
     }
     // public static BeamOsModel Local()
     // {
@@ -61,4 +48,16 @@ public sealed class ApiClient : BeamOsFluentResultApiClient
 {
     public ApiClient(IStructuralAnalysisApiClientV2 apiClient)
         : base(apiClient) { }
+}
+
+public sealed class BeamOsApiClient(IStructuralAnalysisApiClientV2 apiClient)
+    : BeamOsFluentApiClient(apiClient)
+{
+    internal IStructuralAnalysisApiClientV2 ApiClient => apiClient;
+}
+
+public sealed class BeamOsResultApiClient(IStructuralAnalysisApiClientV2 apiClient)
+    : BeamOsFluentResultApiClient(apiClient)
+{
+    internal IStructuralAnalysisApiClientV2 ApiClient => apiClient;
 }

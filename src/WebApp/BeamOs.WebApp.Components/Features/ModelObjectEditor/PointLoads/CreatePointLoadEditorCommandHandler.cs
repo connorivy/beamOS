@@ -48,11 +48,7 @@ public sealed class CreatePointLoadEditorCommandHandler(
             Force = command.Data.Force,
             Direction = command.Data.Direction,
         };
-        return await structuralAnalysisApiClientV1.CreatePointLoadAsync(
-            command.ModelId,
-            request,
-            ct
-        );
+        return await structuralAnalysisApiClientV1.CreatePointLoad(command.ModelId, request, ct);
     }
 
     protected override async ValueTask<Result> UpdateEditorAfterServerResponse(

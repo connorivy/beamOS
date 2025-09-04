@@ -1,4 +1,4 @@
-using BeamOs.CodeGen.StructuralAnalysisApiClient;
+using BeamOs.StructuralAnalysis.Sdk;
 using BeamOs.Tests.Common;
 using BeamOs.Tests.StructuralAnalysis.Integration;
 using BeamOs.Tests.StructuralAnalysis.Integration.ModelRepairerTests;
@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace BeamOs.Tests.Runtime.TestRunner;
 
 public class TestInfoRetriever(
-    [FromKeyedServices("InMemory")] IStructuralAnalysisApiClientV1 inMemoryApiClient
+    [FromKeyedServices("InMemory")] BeamOsResultApiClient inMemoryApiClient
 )
 {
     public IEnumerable<TestInfoBase> GetTestInfos()

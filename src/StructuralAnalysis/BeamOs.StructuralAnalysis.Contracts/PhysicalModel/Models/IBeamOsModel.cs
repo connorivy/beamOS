@@ -22,9 +22,9 @@ public interface IBeamOsModel
     /// <summary>
     /// You can go to this website to generate a random guid string
     /// https://www.uuidgenerator.net/guid
+    /// and then use Guid.Parse("your-guid-string") to convert it to a Guid
     /// </summary>
-    public string GuidString { get; }
-    public Guid Id => Guid.Parse(this.GuidString);
+    public Guid Id { get; }
 
     public IEnumerable<PutNodeRequest> Nodes => this.NodeRequests();
     public IEnumerable<PutNodeRequest> NodeRequests();
@@ -60,5 +60,4 @@ public interface IBeamOsModel
     public IEnumerable<LoadCombination> LoadCombinations => this.LoadCombinationRequests();
 
     public IEnumerable<LoadCombination> LoadCombinationRequests();
-
 }

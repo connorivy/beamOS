@@ -5,7 +5,7 @@ using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.NodeResult;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.AnalyticalResults.NodeResults;
 
-[BeamOsRoute(RouteConstants.LoadCombinations + "{load-combination-id:int}/node/{id:int}")]
+[BeamOsRoute(RouteConstants.LoadCombinations + "{loadCombinationId:int}/nodes/{id:int}")]
 [BeamOsEndpointType(Http.Get)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Reviewer)]
 public class GetNodeResult(GetNodeResultQueryHandler getNodeResultCommandHandler)
@@ -17,7 +17,7 @@ public class GetNodeResult(GetNodeResultQueryHandler getNodeResultCommandHandler
     ) => await getNodeResultCommandHandler.ExecuteAsync(req, ct);
 }
 
-[BeamOsRoute(RouteConstants.LoadCombinations + "{load-combination-id:int}/node")]
+[BeamOsRoute(RouteConstants.LoadCombinations + "{loadCombinationId:int}/nodes")]
 [BeamOsEndpointType(Http.Get)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Reviewer)]
 public class GetNodeResults(GetNodeResultsQueryHandler getNodeResultCommandHandler)

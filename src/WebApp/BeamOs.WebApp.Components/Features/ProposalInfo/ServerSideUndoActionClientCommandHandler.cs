@@ -25,7 +25,7 @@ public sealed class ServerSideUndoActionClientCommandHandler(
         CancellationToken ct = default
     )
     {
-        return await structuralAnalysisApiClient.ModelRestoreAsync(
+        return await structuralAnalysisApiClient.ModelRestore(
             command.ModelId,
             command.ActionTime - TimeSpan.FromSeconds(1),
             ct
@@ -131,7 +131,7 @@ public sealed class ServerSideActionClientCommandHandler(
         CancellationToken ct = default
     )
     {
-        return await structuralAnalysisApiClient.ModelRestoreAsync(
+        return await structuralAnalysisApiClient.ModelRestore(
             command.ModelId,
             command.ActionTime,
             ct

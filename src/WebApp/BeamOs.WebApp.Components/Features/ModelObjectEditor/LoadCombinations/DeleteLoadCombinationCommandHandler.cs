@@ -27,7 +27,7 @@ public sealed class DeleteLoadCombinationCommandHandler(
         CancellationToken ct = default
     )
     {
-        return await structuralAnalysisApiClientV1.DeleteLoadCombinationAsync(
+        return await structuralAnalysisApiClientV1.DeleteLoadCombination(
             command.ModelId,
             command.LoadCombinationId,
             ct

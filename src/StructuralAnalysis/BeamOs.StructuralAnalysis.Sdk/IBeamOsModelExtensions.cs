@@ -1,6 +1,6 @@
 using System.Text;
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
-using BeamOs.CodeGen.StructuralAnalysisApiClient;
+using BeamOs.StructuralAnalysis.Api;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Sdk.Extensions;
@@ -16,7 +16,22 @@ public static class IBeamOsModelExtensions
         /// (could be a local or online repository)
         /// </summary>
         /// <returns>a bool that is true if the model was created or false if it already existed</returns>
-        public async Task<bool> CreateOnly(IStructuralAnalysisApiClientV1 apiClientV1)
+        public Task<bool> CreateOnly(BeamOsApiClient apiClient)
+        {
+            return model.CreateOnly(apiClient.ApiClient);
+        }
+
+        /// <summary>
+        /// Create the current model, but only if a model doesn't already exist in the current model repository
+        /// (could be a local or online repository)
+        /// </summary>
+        /// <returns>a bool that is true if the model was created or false if it already existed</returns>
+        public Task<bool> CreateOnly(BeamOsResultApiClient apiClient)
+        {
+            return model.CreateOnly(apiClient.ApiClient);
+        }
+
+        internal async Task<bool> CreateOnly(IStructuralAnalysisApiClientV2 apiClientV1)
         {
             BeamOsModelBuilder builder = new(model, apiClientV1);
             return await builder.CreateOnly();
@@ -28,7 +43,23 @@ public static class IBeamOsModelExtensions
         /// Other existing elements in the model will not be affected.
         /// </summary>
         /// <returns>a bool that is true if the model was created or false if it already existed</returns>
-        public async Task<bool> CreateOrUpdate(IStructuralAnalysisApiClientV1 apiClientV1)
+        public Task<bool> CreateOrUpdate(BeamOsApiClient apiClient)
+        {
+            return model.CreateOrUpdate(apiClient.ApiClient);
+        }
+
+        /// <summary>
+        /// Create the current model if it doesn't exist in the current model repository, or update the
+        /// model if it does exist. Only the elements added to the this model builder instance will be updated.
+        /// Other existing elements in the model will not be affected.
+        /// </summary>
+        /// <returns>a bool that is true if the model was created or false if it already existed</returns>
+        public Task<bool> CreateOrUpdate(BeamOsResultApiClient apiClient)
+        {
+            return model.CreateOrUpdate(apiClient.ApiClient);
+        }
+
+        internal async Task<bool> CreateOrUpdate(IStructuralAnalysisApiClientV2 apiClientV1)
         {
             BeamOsModelBuilder builder = new(model, apiClientV1);
             return await builder.CreateOrUpdate();
@@ -91,7 +122,7 @@ namespace {namespac};"
             sb.AppendLine("        },");
             sb.AppendLine($"        yAxisUp: {model.Settings.YAxisUp.ToString().ToLower()}");
             sb.AppendLine("    );");
-            sb.AppendLine($"    public override string GuidString => \"{model.GuidString}\";");
+            sb.AppendLine($"    public override Guid Id => Guid.Parse(\"{model.Id.ToString()}\");");
             sb.AppendLine();
             sb.AppendLine("    public override IEnumerable<PutNodeRequest> NodeRequests()");
             sb.AppendLine("    {");

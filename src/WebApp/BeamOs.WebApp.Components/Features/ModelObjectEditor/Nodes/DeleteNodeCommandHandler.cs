@@ -39,11 +39,7 @@ public sealed class DeleteNodeCommandHandler(
         CancellationToken ct = default
     )
     {
-        return await structuralAnalysisApiClientV1.DeleteNodeAsync(
-            command.ModelId,
-            command.NodeId,
-            ct
-        );
+        return await structuralAnalysisApiClientV1.DeleteNode(command.ModelId, command.NodeId, ct);
     }
 
     protected override async ValueTask<Result> UpdateEditorAfterServerResponse(

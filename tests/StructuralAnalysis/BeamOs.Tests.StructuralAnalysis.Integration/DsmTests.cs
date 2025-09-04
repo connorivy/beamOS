@@ -1,3 +1,4 @@
+using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.NodeResult;
 using BeamOs.StructuralAnalysis.Contracts.Common;
@@ -10,16 +11,23 @@ namespace BeamOs.Tests.StructuralAnalysis.Integration;
 [MethodDataSource(typeof(AllSolvedProblems), nameof(AllSolvedProblems.ModelFixtures))]
 public partial class DsmTests(ModelFixture modelFixture)
 {
+    private BeamOsApiResultModelId modelClient;
+
+    [Before(TUnitHookType.Test)]
+    public void BeforeClass()
+    {
+        // This is a workaround to ensure that the API client is initialized before any tests run.
+        this.modelClient ??= AssemblySetup.StructuralAnalysisApiClient.Models[modelFixture.Id];
+    }
+
     [Test, SkipInFrontEnd]
     public async Task RunDsmAnalysis_ShouldReturnSuccessfulStatusCode()
     {
         await modelFixture.CreateOnly(AssemblySetup.StructuralAnalysisApiClient);
 
-        var resultSetIdResponse =
-            await AssemblySetup.StructuralAnalysisApiClient.RunDirectStiffnessMethodAsync(
-                modelFixture.Id,
-                new() { LoadCombinationIds = [2] }
-            );
+        var resultSetIdResponse = await this.modelClient.Analyze.Dsm.RunDirectStiffnessMethodAsync(
+            new() { LoadCombinationIds = [2] }
+        );
 
         resultSetIdResponse.ThrowIfError();
     }
@@ -51,11 +59,10 @@ public partial class DsmTests(ModelFixture modelFixture)
                 || expectedNodeDisplacementResult.RotationAboutZ.HasValue
             )
             {
-                var result = await AssemblySetup.StructuralAnalysisApiClient.GetNodeResultAsync(
-                    modelFixture.Id,
-                    2,
-                    expectedNodeDisplacementResult.NodeId
-                );
+                var result = await this
+                    .modelClient.Results.LoadCombinations[2]
+                    .Nodes[expectedNodeDisplacementResult.NodeId]
+                    .GetNodeResultAsync();
 
                 result.ThrowIfError();
 
@@ -79,11 +86,10 @@ public partial class DsmTests(ModelFixture modelFixture)
                 || expectedNodeDisplacementResult.TorqueAboutZ.HasValue
             )
             {
-                var result = await AssemblySetup.StructuralAnalysisApiClient.GetNodeResultAsync(
-                    modelFixture.Id,
-                    2,
-                    expectedNodeDisplacementResult.NodeId
-                );
+                var result = await this
+                    .modelClient.Results.LoadCombinations[2]
+                    .Nodes[expectedNodeDisplacementResult.NodeId]
+                    .GetNodeResultAsync();
 
                 result.ThrowIfError();
 
@@ -195,10 +201,7 @@ public partial class DsmTests(ModelFixture modelFixture)
             );
         }
 
-        var resultSet = await AssemblySetup.StructuralAnalysisApiClient.GetResultSetAsync(
-            modelFixture.Id,
-            2
-        );
+        var resultSet = await modelClient.ResultSets[2].GetResultSetAsync();
 
         resultSet.ThrowIfError();
 

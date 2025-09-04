@@ -1,4 +1,3 @@
-using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Sdk;
@@ -8,7 +7,7 @@ using FluentAssertions;
 namespace BeamOs.Tests.StructuralAnalysis.Integration.ModelRepairerTests;
 
 [MethodDataSource(typeof(AssemblySetup), nameof(AssemblySetup.GetStructuralAnalysisApiClientV1))]
-public class ExtendCoplanarElement1dsToJoinNodesTests(IStructuralAnalysisApiClientV1 apiClient)
+public class ExtendCoplanarElement1dsToJoinNodesTests(BeamOsResultApiClient apiClient)
 {
     [Before(TUnitHookType.Test)]
     public void BeforeClass()
@@ -23,12 +22,7 @@ public class ExtendCoplanarElement1dsToJoinNodesTests(IStructuralAnalysisApiClie
         // Arrange: Element1d A is horizontal, Element1d B is diagonal and nearly collinear/coplanar with A
         Guid modelId = Guid.NewGuid();
         ModelSettings settings = ModelRepairerTestUtil.CreateDefaultModelSettings(false);
-        BeamOsDynamicModel builder = new(
-            modelId.ToString(),
-            settings,
-            "ExtendElement1dToNodeRule",
-            "Test"
-        );
+        BeamOsDynamicModel builder = new(modelId, settings, "ExtendElement1dToNodeRule", "Test");
 
         builder.AddSectionProfileFromLibrary(1, "w12x26", StructuralCode.AISC_360_16);
         builder.AddMaterial(1, 345e6, 200e9);
@@ -44,11 +38,12 @@ public class ExtendCoplanarElement1dsToJoinNodesTests(IStructuralAnalysisApiClie
         builder.AddElement1d(2, 3, 4, 1, 1);
 
         await builder.CreateOnly(apiClient);
+        var modelClient = apiClient.Models[modelId];
 
-        var proposal = await apiClient.RepairModelAsync(modelId, "snap beam node to column");
+        var proposal = await modelClient.Repair.RepairModelAsync("snap beam node to column");
 
         var repairedModel = await ModelRepairerTestUtil.EnsureGlobalGeometricContraints(
-            apiClient,
+            modelClient,
             modelId,
             proposal.Value?.Id ?? throw new InvalidOperationException("Proposal is null")
         );

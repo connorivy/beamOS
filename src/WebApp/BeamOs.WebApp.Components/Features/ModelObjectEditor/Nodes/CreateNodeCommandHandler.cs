@@ -35,7 +35,7 @@ public sealed class CreateNodeClientCommandHandler(
         CancellationToken ct = default
     )
     {
-        return await structuralAnalysisApiClientV1.CreateNodeAsync(
+        return await structuralAnalysisApiClientV1.CreateNode(
             command.ModelId,
             new(command.Data),
             ct

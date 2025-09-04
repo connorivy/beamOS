@@ -21,7 +21,7 @@ public sealed class CreateMaterialClientCommandHandler(
         CancellationToken ct = default
     )
     {
-        return await structuralAnalysisApiClientV1.CreateMaterialAsync(
+        return await structuralAnalysisApiClientV1.CreateMaterial(
             command.ModelId,
             new CreateMaterialRequest()
             {

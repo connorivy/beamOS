@@ -32,7 +32,7 @@ public class ModelProposalViewer(
     //
     public async Task DisplayModelProposal(Guid modelId, int proposalId, CancellationToken ct)
     {
-        var modelProposal = await apiClient.GetModelProposalAsync(modelId, proposalId, ct);
+        var modelProposal = await apiClient.GetModelProposal(modelId, proposalId, ct);
         if (modelProposal.IsError)
         {
             throw new Exception(modelProposal.Error.Detail);

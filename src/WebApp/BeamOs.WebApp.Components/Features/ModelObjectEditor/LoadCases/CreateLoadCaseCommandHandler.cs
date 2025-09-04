@@ -21,7 +21,7 @@ public sealed class CreateLoadCaseClientCommandHandler(
         CancellationToken ct = default
     )
     {
-        return await structuralAnalysisApiClientV1.CreateLoadCaseAsync(
+        return await structuralAnalysisApiClientV1.CreateLoadCase(
             command.ModelId,
             command.Data,
             ct

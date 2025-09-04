@@ -9,7 +9,7 @@ namespace BeamOs.Tests.StructuralAnalysis.Integration.ModelRepairerTests;
 
 // [TestType(TestType.ModelRepair)]
 [MethodDataSource(typeof(AssemblySetup), nameof(AssemblySetup.GetStructuralAnalysisApiClientV1))]
-public class EnvelopeModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient)
+public class EnvelopeModelRepairerTests(BeamOsResultApiClient apiClient)
 {
     [Before(TUnitHookType.Test)]
     public void BeforeClass()
@@ -23,7 +23,7 @@ public class EnvelopeModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient
     {
         Guid modelId = Guid.NewGuid();
         var settings = ModelRepairerTestUtil.CreateDefaultModelSettings();
-        var builder = new BeamOsDynamicModel(modelId.ToString(), settings, "Test", "Test");
+        var builder = new BeamOsDynamicModel(modelId, settings, "Test", "Test");
         builder.AddNode(1, 0, 0, 0);
         builder.AddNode(2, 5, 5, 0);
         builder.AddNode(3, 0, 5, 0);
@@ -37,12 +37,13 @@ public class EnvelopeModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient
         builder.AddElement1d(3, 3, 4, 1, 1);
 
         await builder.CreateOnly(apiClient);
+        var modelClient = apiClient.Models[modelId];
 
-        var proposal = await apiClient.RepairModelAsync(modelId, "this doesn't do anything yet");
+        var proposal = await modelClient.Repair.RepairModelAsync("this doesn't do anything yet");
         proposal.ThrowIfError();
 
         var repairedModel = await ModelRepairerTestUtil.EnsureGlobalGeometricContraints(
-            apiClient,
+            modelClient,
             modelId,
             proposal.Value?.Id ?? throw new InvalidOperationException("Proposal is null")
         );
@@ -60,7 +61,7 @@ public class EnvelopeModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient
     {
         Guid modelId = Guid.NewGuid();
         var settings = ModelRepairerTestUtil.CreateDefaultModelSettings(false);
-        var builder = new BeamOsDynamicModel(modelId.ToString(), settings, "Test", "Test");
+        var builder = new BeamOsDynamicModel(modelId, settings, "Test", "Test");
 
         builder.AddSectionProfileFromLibrary(1, "w12x26", StructuralCode.AISC_360_16);
         builder.AddMaterial(1, 345e6, 200e9);
@@ -76,12 +77,13 @@ public class EnvelopeModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient
         builder.AddElement1d(2, 3, 4, 1, 1);
 
         await builder.CreateOnly(apiClient);
+        var modelClient = apiClient.Models[modelId];
 
-        var proposal = await apiClient.RepairModelAsync(modelId, "this doesn't do anything yet");
+        var proposal = await modelClient.Repair.RepairModelAsync("this doesn't do anything yet");
         proposal.ThrowIfError();
 
         var repairedModel = await ModelRepairerTestUtil.EnsureGlobalGeometricContraints(
-            apiClient,
+            modelClient,
             modelId,
             proposal.Value?.Id ?? throw new InvalidOperationException("Proposal is null")
         );
@@ -97,7 +99,7 @@ public class EnvelopeModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient
     {
         Guid modelId = Guid.NewGuid();
         var settings = ModelRepairerTestUtil.CreateDefaultModelSettings();
-        var builder = new BeamOsDynamicModel(modelId.ToString(), settings, "Test", "Test");
+        var builder = new BeamOsDynamicModel(modelId, settings, "Test", "Test");
 
         builder.AddSectionProfileFromLibrary(1, "w12x26", StructuralCode.AISC_360_16);
         builder.AddMaterial(1, 345e6, 200e9);
@@ -120,15 +122,15 @@ public class EnvelopeModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient
         builder.AddElement1d(4, 5, 9, 1, 1);
 
         await builder.CreateOnly(apiClient);
+        var modelClient = apiClient.Models[modelId];
 
-        var proposal = await apiClient.RepairModelAsync(
-            modelId,
+        var proposal = await modelClient.Repair.RepairModelAsync(
             "test nearly converging nodes in xy plane"
         );
         proposal.ThrowIfError();
 
         var repairedModel = await ModelRepairerTestUtil.EnsureGlobalGeometricContraints(
-            apiClient,
+            modelClient,
             modelId,
             proposal.Value?.Id ?? throw new InvalidOperationException("Proposal is null")
         );
@@ -151,7 +153,7 @@ public class EnvelopeModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient
     // {
     //     Guid modelId = Guid.NewGuid();
     //     var settings = ModelRepairerTestUtil.CreateDefaultModelSettings(false);
-    //     var builder = new BeamOsDynamicModelBuilder(modelId.ToString(), settings, "Test", "Test");
+    //     var builder = new BeamOsDynamicModelBuilder(modelId, settings, "Test", "Test");
 
     //     builder.AddSectionProfileFromLibrary(1, "w12x26", StructuralCode.AISC_360_16);
     //     builder.AddMaterial(1, 345e6, 200e9);
@@ -188,7 +190,7 @@ public class EnvelopeModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient
     {
         Guid modelId = Guid.NewGuid();
         var settings = ModelRepairerTestUtil.CreateDefaultModelSettings(false);
-        var builder = new BeamOsDynamicModel(modelId.ToString(), settings, "Test", "Test");
+        var builder = new BeamOsDynamicModel(modelId, settings, "Test", "Test");
 
         builder.AddSectionProfileFromLibrary(1, "w12x26", StructuralCode.AISC_360_16);
         builder.AddMaterial(1, 345e6, 200e9);
@@ -209,12 +211,13 @@ public class EnvelopeModelRepairerTests(IStructuralAnalysisApiClientV1 apiClient
         builder.AddElement1d(3, 5, 6, 1, 1);
 
         await builder.CreateOnly(apiClient);
+        var modelClient = apiClient.Models[modelId];
 
-        var proposal = await apiClient.RepairModelAsync(modelId, "snap beam node to column");
+        var proposal = await modelClient.Repair.RepairModelAsync("snap beam node to column");
         proposal.ThrowIfError();
 
         var repairedModel = await ModelRepairerTestUtil.EnsureGlobalGeometricContraints(
-            apiClient,
+            modelClient,
             modelId,
             proposal.Value?.Id ?? throw new InvalidOperationException("Proposal is null")
         );
@@ -242,16 +245,16 @@ public static class ModelRepairerTestUtil
     }
 
     public static async Task<ModelResponse> EnsureGlobalGeometricContraints(
-        IStructuralAnalysisApiClientV1 apiClient,
+        BeamOsApiResultModelId apiClient,
         Guid modelId,
         int modelProposalId
     )
     {
 #if !RUNTIME
-        var originalModel = await apiClient.GetModelAsync(modelId);
+        var originalModel = await apiClient.GetModelAsync();
 #endif
-        await apiClient.AcceptModelProposalAsync(modelId, modelProposalId);
-        var repairedModel = await apiClient.GetModelAsync(modelId);
+        await apiClient.Proposals[modelProposalId].Accept.AcceptModelProposalAsync(null);
+        var repairedModel = await apiClient.GetModelAsync();
         repairedModel.ThrowIfError();
 #if !RUNTIME
         // Ensure that the repaired model maintains global geometric constraints

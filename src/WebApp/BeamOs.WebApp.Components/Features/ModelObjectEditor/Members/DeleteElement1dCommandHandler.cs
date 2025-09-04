@@ -40,7 +40,7 @@ public sealed class DeleteElement1dCommandHandler(
         CancellationToken ct = default
     )
     {
-        return await structuralAnalysisApiClientV1.DeleteElement1dAsync(
+        return await structuralAnalysisApiClientV1.DeleteElement1d(
             command.ModelId,
             command.Element1dId,
             ct
