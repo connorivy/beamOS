@@ -40,7 +40,7 @@ public partial class BeamOsModelBuilderResponseMapper(Guid modelId)
     [MapValue("ModelId", Use = nameof(GetModelId))]
     public partial SectionProfileResponse ToResponse(PutSectionProfileRequest request);
 
-    private List<ResultSetResponse> EmptyResultSets() => [];
+    private static List<ResultSetResponse> EmptyResultSets() => [];
 }
 
 [Mapper]

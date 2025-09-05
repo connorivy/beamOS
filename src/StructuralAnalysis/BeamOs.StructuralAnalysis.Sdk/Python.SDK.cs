@@ -26,11 +26,12 @@ public static class ApiClientFactory
             .AddInMemoryInfrastructure();
 
         var serviceProvider = services.BuildServiceProvider();
-        var apiClient = serviceProvider.GetRequiredKeyedService<IStructuralAnalysisApiClientV1>(
+        var apiClient = serviceProvider.GetRequiredKeyedService<IStructuralAnalysisApiClientV2>(
             "InMemory"
         );
+
+        return new BeamOsApiClient(apiClient);
         // return new BeamOsModelBuilder(model, apiClient);
-        return default;
     }
     // public static BeamOsModel Local()
     // {
@@ -45,23 +46,18 @@ public static class ApiClientFactory
 }
 
 // [DotWrapExpose]
-public sealed class ApiClient : BeamOsFluentResultApiClient
-{
-    public ApiClient(IStructuralAnalysisApiClientV2 apiClient)
-        : base(apiClient) { }
-}
-
 public sealed class BeamOsApiClient(IStructuralAnalysisApiClientV2 apiClient)
     : BeamOsFluentApiClient(apiClient)
 // IDisposable
 {
-    internal IStructuralAnalysisApiClientV2 ApiClient => apiClient;
+    internal IStructuralAnalysisApiClientV2 InternalClient => this.ProtectedClient;
 
     // public void Dispose()
 }
 
+// [DotWrapExpose]
 public sealed class BeamOsResultApiClient(IStructuralAnalysisApiClientV2 apiClient)
     : BeamOsFluentResultApiClient(apiClient)
 {
-    internal IStructuralAnalysisApiClientV2 ApiClient => apiClient;
+    internal IStructuralAnalysisApiClientV2 InternalClient => this.ProtectedClient;
 }

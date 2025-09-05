@@ -7,6 +7,9 @@ using BeamOs.StructuralAnalysis.Sdk.Extensions;
 
 namespace BeamOs.StructuralAnalysis.Sdk;
 
+// todo: the new extension method syntax is causing this false error
+#pragma warning disable CA1822 // Mark members as static
+
 public static class IBeamOsModelExtensions
 {
     extension(IBeamOsModel model)
@@ -18,7 +21,7 @@ public static class IBeamOsModelExtensions
         /// <returns>a bool that is true if the model was created or false if it already existed</returns>
         public Task<bool> CreateOnly(BeamOsApiClient apiClient)
         {
-            return model.CreateOnly(apiClient.ApiClient);
+            return model.CreateOnly(apiClient.InternalClient);
         }
 
         /// <summary>
@@ -28,7 +31,7 @@ public static class IBeamOsModelExtensions
         /// <returns>a bool that is true if the model was created or false if it already existed</returns>
         public Task<bool> CreateOnly(BeamOsResultApiClient apiClient)
         {
-            return model.CreateOnly(apiClient.ApiClient);
+            return model.CreateOnly(apiClient.InternalClient);
         }
 
         internal async Task<bool> CreateOnly(IStructuralAnalysisApiClientV2 apiClientV1)
@@ -45,7 +48,7 @@ public static class IBeamOsModelExtensions
         /// <returns>a bool that is true if the model was created or false if it already existed</returns>
         public Task<bool> CreateOrUpdate(BeamOsApiClient apiClient)
         {
-            return model.CreateOrUpdate(apiClient.ApiClient);
+            return model.CreateOrUpdate(apiClient.InternalClient);
         }
 
         /// <summary>
@@ -56,7 +59,7 @@ public static class IBeamOsModelExtensions
         /// <returns>a bool that is true if the model was created or false if it already existed</returns>
         public Task<bool> CreateOrUpdate(BeamOsResultApiClient apiClient)
         {
-            return model.CreateOrUpdate(apiClient.ApiClient);
+            return model.CreateOrUpdate(apiClient.InternalClient);
         }
 
         internal async Task<bool> CreateOrUpdate(IStructuralAnalysisApiClientV2 apiClientV1)
@@ -69,11 +72,12 @@ public static class IBeamOsModelExtensions
         {
             var sb = new StringBuilder();
 
-            string namespac =
+            var namespac =
                 "BeamOs.Tests.Common"
                 + outputDir.Split("BeamOs.Tests.Common")[1].Replace("\\", ".").Replace("/", ".");
-            string className = model.Name.Replace(" ", "");
+            var className = model.Name.Replace(" ", "");
 
+#pragma warning disable 
             sb.AppendLine(
                 $@"
 using BeamOs.StructuralAnalysis.Contracts.Common;
@@ -93,6 +97,7 @@ using static BeamOs.StructuralAnalysis.Contracts.Common.AreaMomentOfInertiaUnit;
 
 namespace {namespac};"
             );
+#pragma warning restore CA1305 // Specify IFormatProvider
             sb.AppendLine();
             sb.AppendLine(
                 $"public partial class {className} : {baseClass ?? nameof(BeamOsStaticModelBase)}"
@@ -296,7 +301,7 @@ namespace {namespac};"
         {
             StringBuilder sb = new();
 
-            string className = model.Name.Replace(" ", "");
+            var className = model.Name.Replace(" ", "");
 
             sb.AppendLine(
                 @"
@@ -421,3 +426,5 @@ print(f""Execution time: {execution_time} seconds"")
 
     //  }
 }
+
+#pragma warning restore CA1822 // Mark members as static
