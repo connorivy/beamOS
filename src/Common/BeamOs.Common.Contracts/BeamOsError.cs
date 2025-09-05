@@ -2,53 +2,39 @@ using System.Text.Json.Serialization;
 
 namespace BeamOs.Common.Contracts;
 
-[System.Diagnostics.CodeAnalysis.SuppressMessage(
-    "Obsolete",
-    "CS0618",
-    Justification = "Factory method intentionally uses obsolete JSON constructor"
-)]
-public sealed class BeamOsError
+[method: JsonConstructor]
+[method: Obsolete("JSON ctor. Don't use")]
+public sealed class BeamOsError(
+    string code,
+    string description,
+    ErrorType type,
+    IDictionary<string, object?>? metadata
+)
 {
-    [JsonConstructor]
-    [Obsolete("JSON ctor. Don't use")]
-    public BeamOsError(
-        string code,
-        string description,
-        ErrorType type,
-        IDictionary<string, object?>? metadata
-    )
-    {
-        this.Code = code;
-        this.Description = description;
-        this.Type = type;
-        this.NumericType = (int)type;
-        this.Metadata = metadata;
-    }
-
     /// <summary>
     /// Gets the unique error code.
     /// </summary>
-    public string Code { get; }
+    public string Code { get; } = code;
 
     /// <summary>
     /// Gets the error description.
     /// </summary>
-    public string Description { get; }
+    public string Description { get; } = description;
 
     /// <summary>
     /// Gets the error type.
     /// </summary>
-    public ErrorType Type { get; }
+    public ErrorType Type { get; } = type;
 
     /// <summary>
     /// Gets the numeric value of the type.
     /// </summary>
-    public int NumericType { get; }
+    public int NumericType { get; } = (int)type;
 
     /// <summary>
     /// Gets the metadata.
     /// </summary>
-    public IDictionary<string, object?>? Metadata { get; }
+    public IDictionary<string, object?>? Metadata { get; } = metadata;
 
     /// <summary>
     /// Creates an <see cref="BeamOsError"/> of type <see cref="ErrorType.Failure"/> from a code and description.
@@ -60,7 +46,9 @@ public sealed class BeamOsError
         string code = "General.Failure",
         string description = "A failure has occurred.",
         IDictionary<string, object?>? metadata = null
+#pragma warning disable CS0618 // Type or member is obsolete
     ) => new(code, description, ErrorType.Failure, metadata);
+#pragma warning restore CS0618 // Type or member is obsolete
 
     /// <summary>
     /// Creates an <see cref="BeamOsError"/> of type <see cref="ErrorType.Validation"/> from a code and description.
@@ -77,7 +65,9 @@ public sealed class BeamOsError
         string code = "General.Validation",
         string description = "A validation error has occurred.",
         IDictionary<string, object?>? metadata = null
+#pragma warning disable CS0618 // Type or member is obsolete
     ) => new(code, description, ErrorType.Validation, metadata);
+#pragma warning restore CS0618 // Type or member is obsolete
 
     /// <summary>
     /// Creates an <see cref="BeamOsError"/> of type <see cref="ErrorType.Conflict"/> from a code and description.
@@ -94,7 +84,9 @@ public sealed class BeamOsError
         string code = "General.Conflict",
         string description = "A conflict error has occurred.",
         IDictionary<string, object?>? metadata = null
+#pragma warning disable CS0618 // Type or member is obsolete
     ) => new(code, description, ErrorType.Conflict, metadata);
+#pragma warning restore CS0618 // Type or member is obsolete
 
     /// <summary>
     /// Creates an <see cref="BeamOsError"/> of type <see cref="ErrorType.NotFound"/> from a code and description.
@@ -111,7 +103,9 @@ public sealed class BeamOsError
         string code = "General.NotFound",
         string description = "A 'Not Found' error has occurred.",
         IDictionary<string, object?>? metadata = null
+#pragma warning disable CS0618 // Type or member is obsolete
     ) => new(code, description, ErrorType.NotFound, metadata);
+#pragma warning restore CS0618 // Type or member is obsolete
 
     /// <summary>
     /// Creates an <see cref="BeamOsError"/> of type <see cref="ErrorType.Unauthorized"/> from a code and description.
@@ -128,7 +122,9 @@ public sealed class BeamOsError
         string code = "General.Unauthorized",
         string description = "An 'Unauthorized' error has occurred.",
         IDictionary<string, object?>? metadata = null
+#pragma warning disable CS0618 // Type or member is obsolete
     ) => new(code, description, ErrorType.Unauthorized, metadata);
+#pragma warning restore CS0618 // Type or member is obsolete
 
     /// <summary>
     /// Creates an <see cref="BeamOsError"/> of type <see cref="ErrorType.Forbidden"/> from a code and description.
@@ -145,7 +141,9 @@ public sealed class BeamOsError
         string code = "General.Forbidden",
         string description = "A 'Forbidden' error has occurred.",
         IDictionary<string, object?>? metadata = null
+#pragma warning disable CS0618 // Type or member is obsolete
     ) => new(code, description, ErrorType.Forbidden, metadata);
+#pragma warning restore CS0618 // Type or member is obsolete
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage(
         "Usage",
@@ -156,7 +154,9 @@ public sealed class BeamOsError
         string code = "General.InvalidOperation",
         string description = "An 'Invalid Operation' error has occurred.",
         IDictionary<string, object?>? metadata = null
+#pragma warning disable CS0618 // Type or member is obsolete
     ) => new(code, description, ErrorType.InvalidOperation, metadata);
+#pragma warning restore CS0618 // Type or member is obsolete
 
     /// <summary>
     /// Creates an <see cref="BeamOsError"/> with the given numeric <paramref name="type"/>,
@@ -176,7 +176,9 @@ public sealed class BeamOsError
         string code,
         string description,
         IDictionary<string, object?>? metadata = null
+#pragma warning disable CS0618 // Type or member is obsolete
     ) => new(code, description, (ErrorType)type, metadata);
+#pragma warning restore CS0618 // Type or member is obsolete
 
     public bool Equals(BeamOsError other)
     {
@@ -305,7 +307,7 @@ public sealed class BeamOsError
         {
             if (
                 !otherMetadata.TryGetValue(keyValuePair.Key, out var otherValue)
-                || !keyValuePair.Value.Equals(otherValue)
+                || keyValuePair.Value != otherValue
             )
             {
                 return false;

@@ -128,11 +128,6 @@ public sealed class ApiResponse<TValue> : ApiResponse
         Func<ProblemDetails, TApiResponse> failure
     ) => !this.IsError ? success(this.Value!) : failure(this.Error);
 
-    public async Task<TApiResponse> MatchAsync<TApiResponse>(
-        Func<TValue, TApiResponse> success,
-        Func<ProblemDetails, TApiResponse> failure
-    ) => !this.IsError ? success(this.Value!) : failure(this.Error);
-
     public static ApiResponse<TValue> Success() => new(default(TValue), null, false);
 }
 

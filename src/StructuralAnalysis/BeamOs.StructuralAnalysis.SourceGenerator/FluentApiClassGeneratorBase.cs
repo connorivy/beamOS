@@ -51,12 +51,12 @@ public abstract class FluentApiClassGeneratorBase(string apiClientName, string c
         sb.AppendLine();
         sb.AppendLine($"public class {apiClientName}");
         sb.AppendLine("{");
-        sb.AppendLine("    private readonly IStructuralAnalysisApiClientV2 _apiClient;");
+        sb.AppendLine("    protected IStructuralAnalysisApiClientV2 ProtectedClient { get; }");
         sb.AppendLine();
         sb.AppendLine($"    public {apiClientName}(IStructuralAnalysisApiClientV2 apiClient)");
         sb.AppendLine("    {");
         sb.AppendLine(
-            "        _apiClient = apiClient ?? throw new ArgumentNullException(nameof(apiClient));"
+            "        ProtectedClient = apiClient ?? throw new ArgumentNullException(nameof(apiClient));"
         );
         sb.AppendLine("    }");
         sb.AppendLine();
@@ -66,7 +66,7 @@ public abstract class FluentApiClassGeneratorBase(string apiClientName, string c
         {
             var className = this.GetUniqueClassName(rootSegment.Name, [apiClientName]);
             sb.AppendLine(
-                $"    public {className} {ToCSharpCase(rootSegment.Name)} => new {className}(_apiClient);"
+                $"    public {className} {ToCSharpCase(rootSegment.Name)} => new {className}(ProtectedClient);"
             );
         }
 
@@ -127,7 +127,7 @@ public abstract class FluentApiClassGeneratorBase(string apiClientName, string c
             .Select(p =>
                 $"{p.ParameterType ?? throw new InvalidOperationException($"Parameter type is required for parameter segment '{p.Name}'")} {p.Name}"
             )
-            .Prepend($"IStructuralAnalysisApiClientV2 _apiClient");
+            .Prepend($"IStructuralAnalysisApiClientV2 ProtectedClient");
 
         sb.AppendLine($"public class {className}({string.Join(", ", ctorArgs)})");
         sb.AppendLine("{");
@@ -138,7 +138,7 @@ public abstract class FluentApiClassGeneratorBase(string apiClientName, string c
             .Append(segment)
             .Where(p => p.IsParameter)
             .Select(p => p.Name)
-            .Prepend("_apiClient")
+            .Prepend("ProtectedClient")
             .ToArray();
         foreach (var child in segment.Children.Values)
         {
@@ -350,7 +350,7 @@ public sealed class ResultApiClassGenerator(string apiClientName, string classNa
             )}})
     {
         {{requestAssignment}}
-        return _apiClient.{{method.Name}}(request_, ct);
+        return ProtectedClient.{{method.Name}}(request_, ct);
     }
 """;
     }
@@ -405,7 +405,7 @@ public sealed class ThrowingApiClassGenerator(string apiClientName, string class
             )}})
     {
         {{requestAssignment}}
-        var result = await _apiClient.{{method.Name}}(request_, ct);
+        var result = await ProtectedClient.{{method.Name}}(request_, ct);
         result.ThrowIfError();
         return result.Value!;
     }
@@ -416,7 +416,7 @@ public sealed class ThrowingApiClassGenerator(string apiClientName, string class
             )}})
     {
         {{requestAssignment}}
-        var result = _apiClient.{{method.Name}}(request_, CancellationToken.None).GetAwaiter().GetResult();
+        var result = ProtectedClient.{{method.Name}}(request_, CancellationToken.None).GetAwaiter().GetResult();
         result.ThrowIfError();
         return result.Value!;
     }

@@ -9,7 +9,6 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
     <IsPackable>false</IsPackable>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <IncludeOpenSeesExe Condition="'$(IncludeOpenSeesExe)' == ''">true</IncludeOpenSeesExe>
     
     <TUnitImplicitUsings>false</TUnitImplicitUsings>
@@ -33,6 +32,13 @@
       IDE0100; <!-- IDE0100: Ignore redundant equality -->
       $(NoWarn)
     </NoWarn>
+
+    <WarningsNotAsErrors>
+      <!-- TODO: we need to get rid of pretty much all of these -->
+      RMG012; <!-- Riok.Mapperly: The member 'PROPERTY' on the mapping target type 'TYPE' was not found on the mapping source type 'TYPE' -->
+      RMG020; <!-- Riok.Mapperly: The member 'PROPERTY' on the mapping source type 'TYPE' is not mapped to any member on the mapping target type 'TYPE' -->
+      CA1305; <!-- Specify IFormatProvider -->
+    </WarningsNotAsErrors>
     
     <WarningsAsErrors>
       <!--Net6 default enabled analysers-->
