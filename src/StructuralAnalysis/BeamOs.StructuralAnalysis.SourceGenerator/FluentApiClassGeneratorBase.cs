@@ -41,6 +41,7 @@ public abstract class FluentApiClassGeneratorBase(string apiClientName, string c
     )
     {
         var sb = new StringBuilder();
+        sb.AppendLine("#nullable enable");
         sb.AppendLine("using System;");
         sb.AppendLine("using System.Collections.Generic;");
         sb.AppendLine("using System.Threading;");
@@ -112,6 +113,7 @@ public abstract class FluentApiClassGeneratorBase(string apiClientName, string c
 
         var sb = new StringBuilder();
 
+        sb.AppendLine("#nullable enable");
         sb.AppendLine("using System;");
         sb.AppendLine("using System.Collections.Generic;");
         sb.AppendLine("using System.Threading;");

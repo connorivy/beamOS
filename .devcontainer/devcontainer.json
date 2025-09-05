@@ -46,6 +46,9 @@
         5178,
         35482
     ],
+    "mounts": [
+        "source=/etc/localtime,target=/etc/localtime,type=bind,readonly"
+    ],
     // "portsAttributes": {
     //		"5001": {
     //			"protocol": "https"
