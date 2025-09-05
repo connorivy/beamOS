@@ -1,4 +1,3 @@
-using BeamOs.StructuralAnalysis.Domain;
 using BeamOs.WebApp;
 using BeamOs.WebApp.Components;
 

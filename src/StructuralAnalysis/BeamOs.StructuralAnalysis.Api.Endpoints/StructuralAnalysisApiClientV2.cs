@@ -356,4 +356,9 @@ public sealed class StructuralAnalysisApiClientV2 : IStructuralAnalysisApiClient
         ModelResourceRequest<RunDsmRequest> request,
         CancellationToken ct = default
     ) => apiClientV1.RunOpenSeesAnalysisAsync(request.ModelId, request.Body, ct);
+
+    public Task<ApiResponse<bool>> DeleteModel(
+        ModelResourceRequest request,
+        CancellationToken ct = default
+    ) => apiClientV1.DeleteModelAsync(request.ModelId, ct);
 }

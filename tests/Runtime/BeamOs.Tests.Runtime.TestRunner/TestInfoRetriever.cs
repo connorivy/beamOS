@@ -7,7 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 namespace BeamOs.Tests.Runtime.TestRunner;
 
 public class TestInfoRetriever(
-    [FromKeyedServices("InMemory")] BeamOsResultApiClient inMemoryApiClient
+    // [FromKeyedServices("InMemory")] BeamOsResultApiClient inMemoryApiClient
+    BeamOsResultApiClient inMemoryApiClient
 )
 {
     public IEnumerable<TestInfoBase> GetTestInfos()

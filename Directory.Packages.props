@@ -67,7 +67,6 @@
     <PackageVersion Include="Microsoft.Azure.EventHubs" Version="2.1.0" />
     <PackageVersion Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="4.0.5-11874" />
     <PackageVersion Include="Microsoft.Azure.Mobile.Client" Version="4.0.2" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="$(MicrosoftExtensionsVersion)" />
     <!-- EF Core -->
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="$(EfVersion)" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="$(EfVersion)" />

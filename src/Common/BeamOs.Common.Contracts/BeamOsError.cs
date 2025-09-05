@@ -2,7 +2,11 @@ using System.Text.Json.Serialization;
 
 namespace BeamOs.Common.Contracts;
 
-//public readonly record struct BeamOsError
+[System.Diagnostics.CodeAnalysis.SuppressMessage(
+    "Obsolete",
+    "CS0618",
+    Justification = "Factory method intentionally uses obsolete JSON constructor"
+)]
 public sealed class BeamOsError
 {
     [JsonConstructor]
@@ -64,6 +68,11 @@ public sealed class BeamOsError
     /// <param name="code">The unique error code.</param>
     /// <param name="description">The error description.</param>
     /// <param name="metadata">A dictionary which provides optional space for information.</param>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Usage",
+        "CS0618",
+        Justification = "Factory method intentionally uses obsolete JSON constructor"
+    )]
     public static BeamOsError Validation(
         string code = "General.Validation",
         string description = "A validation error has occurred.",
@@ -76,6 +85,11 @@ public sealed class BeamOsError
     /// <param name="code">The unique error code.</param>
     /// <param name="description">The error description.</param>
     /// <param name="metadata">A dictionary which provides optional space for information.</param>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Usage",
+        "CS0618",
+        Justification = "Factory method intentionally uses obsolete JSON constructor"
+    )]
     public static BeamOsError Conflict(
         string code = "General.Conflict",
         string description = "A conflict error has occurred.",
@@ -88,6 +102,11 @@ public sealed class BeamOsError
     /// <param name="code">The unique error code.</param>
     /// <param name="description">The error description.</param>
     /// <param name="metadata">A dictionary which provides optional space for information.</param>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Usage",
+        "CS0618",
+        Justification = "Factory method intentionally uses obsolete JSON constructor"
+    )]
     public static BeamOsError NotFound(
         string code = "General.NotFound",
         string description = "A 'Not Found' error has occurred.",
@@ -100,6 +119,11 @@ public sealed class BeamOsError
     /// <param name="code">The unique error code.</param>
     /// <param name="description">The error description.</param>
     /// <param name="metadata">A dictionary which provides optional space for information.</param>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Usage",
+        "CS0618",
+        Justification = "Factory method intentionally uses obsolete JSON constructor"
+    )]
     public static BeamOsError Unauthorized(
         string code = "General.Unauthorized",
         string description = "An 'Unauthorized' error has occurred.",
@@ -112,12 +136,22 @@ public sealed class BeamOsError
     /// <param name="code">The unique error code.</param>
     /// <param name="description">The error description.</param>
     /// <param name="metadata">A dictionary which provides optional space for information.</param>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Usage",
+        "CS0618",
+        Justification = "Factory method intentionally uses obsolete JSON constructor"
+    )]
     public static BeamOsError Forbidden(
         string code = "General.Forbidden",
         string description = "A 'Forbidden' error has occurred.",
         IDictionary<string, object?>? metadata = null
     ) => new(code, description, ErrorType.Forbidden, metadata);
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Usage",
+        "CS0618",
+        Justification = "Factory method intentionally uses obsolete JSON constructor"
+    )]
     public static BeamOsError InvalidOperation(
         string code = "General.InvalidOperation",
         string description = "An 'Invalid Operation' error has occurred.",
@@ -132,6 +166,11 @@ public sealed class BeamOsError
     /// <param name="code">The unique error code.</param>
     /// <param name="description">The error description.</param>
     /// <param name="metadata">A dictionary which provides optional space for information.</param>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Usage",
+        "CS0618",
+        Justification = "Factory method intentionally uses obsolete JSON constructor"
+    )]
     public static BeamOsError Custom(
         int type,
         string code,
@@ -159,18 +198,68 @@ public sealed class BeamOsError
         return other.Metadata is not null && CompareMetadata(this.Metadata, other.Metadata);
     }
 
-    public ProblemDetails ToProblemDetails() => this.Type switch
-    {
-        ErrorType.None => throw new NotImplementedException(),
-        ErrorType.Failure => new ProblemDetails("Internal Server Error", this.Description, 500, "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1", "", this.Metadata),
-        ErrorType.Validation => new ProblemDetails("Validation Error", this.Description, 400, "https://tools.ietf.org/html/rfc7231#section-6.5.1", "", this.Metadata),
-        ErrorType.Conflict => new ProblemDetails("Conflict Error", this.Description, 409, "https://tools.ietf.org/html/rfc7231#section-6.5.8", "", this.Metadata),
-        ErrorType.NotFound => new ProblemDetails("Not Found Error", this.Description, 404, "https://tools.ietf.org/html/rfc7231#section-6.5.4", "", this.Metadata),
-        ErrorType.Unauthorized => new ProblemDetails("Unauthorized Error", this.Description, 401, "https://tools.ietf.org/html/rfc7231#section-6.5.2", "", this.Metadata),
-        ErrorType.Forbidden => new ProblemDetails("Forbidden Error", this.Description, 403, "https://tools.ietf.org/html/rfc7231#section-6.5.3", "", this.Metadata),
-        ErrorType.InvalidOperation => new ProblemDetails("Invalid Operation Error", this.Description, 422, "https://tools.ietf.org/html/rfc4918#section-11.2", "", this.Metadata),
-        _ => throw new NotImplementedException(),
-    };
+    public ProblemDetails ToProblemDetails() =>
+        this.Type switch
+        {
+            ErrorType.None => throw new NotImplementedException(),
+            ErrorType.Failure => new ProblemDetails(
+                "Internal Server Error",
+                this.Description,
+                500,
+                "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1",
+                "",
+                this.Metadata
+            ),
+            ErrorType.Validation => new ProblemDetails(
+                "Validation Error",
+                this.Description,
+                400,
+                "https://tools.ietf.org/html/rfc7231#section-6.5.1",
+                "",
+                this.Metadata
+            ),
+            ErrorType.Conflict => new ProblemDetails(
+                "Conflict Error",
+                this.Description,
+                409,
+                "https://tools.ietf.org/html/rfc7231#section-6.5.8",
+                "",
+                this.Metadata
+            ),
+            ErrorType.NotFound => new ProblemDetails(
+                "Not Found Error",
+                this.Description,
+                404,
+                "https://tools.ietf.org/html/rfc7231#section-6.5.4",
+                "",
+                this.Metadata
+            ),
+            ErrorType.Unauthorized => new ProblemDetails(
+                "Unauthorized Error",
+                this.Description,
+                401,
+                "https://tools.ietf.org/html/rfc7231#section-6.5.2",
+                "",
+                this.Metadata
+            ),
+            ErrorType.Forbidden => new ProblemDetails(
+                "Forbidden Error",
+                this.Description,
+                403,
+                "https://tools.ietf.org/html/rfc7231#section-6.5.3",
+                "",
+                this.Metadata
+            ),
+            ErrorType.InvalidOperation => new ProblemDetails(
+                "Invalid Operation Error",
+                this.Description,
+                422,
+                "https://tools.ietf.org/html/rfc4918#section-11.2",
+                "",
+                this.Metadata
+            ),
+            _ => throw new NotImplementedException(),
+        };
 
     public override int GetHashCode() =>
         this.Metadata is null

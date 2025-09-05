@@ -4,6 +4,7 @@ using BeamOs.CodeGen.SpeckleConnectorApi;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis.Api;
 using BeamOs.StructuralAnalysis.Api.Endpoints;
 using BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.EnvelopeResultSets;
@@ -26,6 +27,15 @@ namespace BeamOs.StructuralAnalysis.Sdk;
 
 public static class DI
 {
+    public static IServiceCollection AddStructuralAnalysisSdkRequired(
+        this IServiceCollection services
+    )
+    {
+        services.AddScoped<BeamOsResultApiClient>();
+        services.AddScoped<BeamOsApiClient>();
+        return services;
+    }
+
     public static IServiceCollection AddBeamOsRemote(
         this IServiceCollection services,
         string apiToken
@@ -40,6 +50,8 @@ public static class DI
                 client.BaseAddress = new("https://beamos.net/")
             )
             .AddHttpMessageHandler<AuthMessageHandler>();
+
+        services.AddScoped<IStructuralAnalysisApiClientV2, StructuralAnalysisApiClientV2>();
 
         services
             .AddHttpClient<ISpeckleConnectorApi, SpeckleConnectorApi>(client =>
