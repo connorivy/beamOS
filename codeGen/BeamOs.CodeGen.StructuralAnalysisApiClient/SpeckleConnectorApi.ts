@@ -14,7 +14,7 @@ export interface ISpeckleConnectorApi {
      * @param body (optional) 
      * @return OK
      */
-    speckleRecieveOperation(modelId: string, body: SpeckleReceiveParameters | null | undefined): Promise<ResultOfModelProposalResponse>;
+    speckleRecieveOperation(modelId: string, body: SpeckleReceiveParameters | null | undefined): Promise<ModelProposalResponse>;
 }
 
 export class SpeckleConnectorApi implements ISpeckleConnectorApi {
@@ -24,14 +24,14 @@ export class SpeckleConnectorApi implements ISpeckleConnectorApi {
 
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         this.http = http ? http : window as any;
-        this.baseUrl = baseUrl ?? "https://localhost:7060/";
+        this.baseUrl = baseUrl ?? "http://localhost:5079/";
     }
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    speckleRecieveOperation(modelId: string, body: SpeckleReceiveParameters | null | undefined): Promise<ResultOfModelProposalResponse> {
+    speckleRecieveOperation(modelId: string, body: SpeckleReceiveParameters | null | undefined): Promise<ModelProposalResponse> {
         let url_ = this.baseUrl + "/api/speckle-receive?";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined and cannot be null.");
@@ -55,14 +55,14 @@ export class SpeckleConnectorApi implements ISpeckleConnectorApi {
         });
     }
 
-    protected processSpeckleRecieveOperation(response: Response): Promise<ResultOfModelProposalResponse> {
+    protected processSpeckleRecieveOperation(response: Response): Promise<ModelProposalResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultOfModelProposalResponse.fromJS(resultData200);
+            result200 = ModelProposalResponse.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -70,7 +70,7 @@ export class SpeckleConnectorApi implements ISpeckleConnectorApi {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultOfModelProposalResponse>(null as any);
+        return Promise.resolve<ModelProposalResponse>(null as any);
     }
 }
 
@@ -122,82 +122,6 @@ export class Angle implements IAngle {
 export interface IAngle {
     value: number;
     unit: number;
-
-    [key: string]: any;
-}
-
-export class BeamOsError implements IBeamOsError {
-    code!: string;
-    description!: string;
-    type!: number;
-    numericType?: number;
-    metadata!: { [key: string]: string; } | undefined;
-
-    [key: string]: any;
-
-    constructor(data?: IBeamOsError) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.code = _data["code"];
-            this.description = _data["description"];
-            this.type = _data["type"];
-            this.numericType = _data["numericType"];
-            if (_data["metadata"]) {
-                this.metadata = {} as any;
-                for (let key in _data["metadata"]) {
-                    if (_data["metadata"].hasOwnProperty(key))
-                        (<any>this.metadata)![key] = _data["metadata"][key];
-                }
-            }
-        }
-    }
-
-    static fromJS(data: any): BeamOsError {
-        data = typeof data === 'object' ? data : {};
-        let result = new BeamOsError();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["code"] = this.code;
-        data["description"] = this.description;
-        data["type"] = this.type;
-        data["numericType"] = this.numericType;
-        if (this.metadata) {
-            data["metadata"] = {};
-            for (let key in this.metadata) {
-                if (this.metadata.hasOwnProperty(key))
-                    (<any>data["metadata"])[key] = (<any>this.metadata)[key];
-            }
-        }
-        return data;
-    }
-}
-
-export interface IBeamOsError {
-    code: string;
-    description: string;
-    type: number;
-    numericType?: number;
-    metadata: { [key: string]: string; } | undefined;
 
     [key: string]: any;
 }
@@ -2324,62 +2248,6 @@ export interface IRestraint {
     canRotateAboutX: boolean;
     canRotateAboutY: boolean;
     canRotateAboutZ: boolean;
-
-    [key: string]: any;
-}
-
-export class ResultOfModelProposalResponse implements IResultOfModelProposalResponse {
-    value!: ModelProposalResponse | undefined;
-    error!: BeamOsError | undefined;
-    isError!: boolean;
-
-    [key: string]: any;
-
-    constructor(data?: IResultOfModelProposalResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"] ? ModelProposalResponse.fromJS(_data["value"]) : <any>undefined;
-            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
-            this.isError = _data["isError"];
-        }
-    }
-
-    static fromJS(data: any): ResultOfModelProposalResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new ResultOfModelProposalResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
-        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
-        data["isError"] = this.isError;
-        return data;
-    }
-}
-
-export interface IResultOfModelProposalResponse {
-    value: ModelProposalResponse | undefined;
-    error: BeamOsError | undefined;
-    isError: boolean;
 
     [key: string]: any;
 }

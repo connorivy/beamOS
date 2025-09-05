@@ -51,7 +51,7 @@ Result is in error state.
 Message: {this.Error.Description}
 ErrorCode: {this.Error.Code}
 ErrorType: {this.Error.Type}
-StackTrace: {this.Error.Metadata?.GetValueOrDefault("StackTrace")}
+StackTrace: {(this.Error.Metadata?.TryGetValue("StackTrace", out var stackTrace) ?? false ? stackTrace : "")}
 Metadata: {this.Error.Metadata}
 "
             );
@@ -113,4 +113,13 @@ public sealed class Result<TValue> : Result
     ) => !this.IsError ? success(this.Value!) : failure(this.Error);
 
     public static Result<TValue> Success() => new(default(TValue), null, false);
+
+    public ApiResponse<TValue> ToApiResponse()
+    {
+        if (this.IsSuccess)
+        {
+            return ApiResponse.FromValue(this.Value!);
+        }
+        return this.Error!.ToProblemDetails();
+    }
 }

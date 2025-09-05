@@ -45,16 +45,15 @@ public abstract class AbstractGenerator : IApiGenerator
     {
         Console.WriteLine("Api client generation starting...");
 
-        UriBuilder uriBuilder =
-            new(
-                this.baseUrl
-                    ?? throw new Exception(
-                        $"baseUrl was null. Need to call the '{nameof(AddMethods)}' method before client can be generated"
-                    )
-            )
-            {
-                Path = this.OpenApiDefinitionPath
-            };
+        UriBuilder uriBuilder = new(
+            this.baseUrl
+                ?? throw new Exception(
+                    $"baseUrl was null. Need to call the '{nameof(AddMethods)}' method before client can be generated"
+                )
+        )
+        {
+            Path = this.OpenApiDefinitionPath,
+        };
 
         var doc = await OpenApiDocument.FromUrlAsync(uriBuilder.ToString());
 
@@ -71,7 +70,7 @@ public abstract class AbstractGenerator : IApiGenerator
                 GenerateClientInterfaces = true,
                 GenerateDtoTypes = false,
                 UseBaseUrl = false,
-                ExceptionClass = $"{this.ClientName}Exception"
+                ExceptionClass = $"{this.ClientName}Exception",
             };
 
             var source = new CSharpClientGenerator(doc, csGenSettings).GenerateFile();
@@ -94,7 +93,7 @@ public abstract class AbstractGenerator : IApiGenerator
             {
                 ClassName = this.ClientName,
                 GenerateClientInterfaces = true,
-                TypeScriptGeneratorSettings = { Namespace = "" } // needed to not generate a namespace
+                TypeScriptGeneratorSettings = { Namespace = "" }, // needed to not generate a namespace
             };
 
             var source = new TypeScriptClientGenerator(doc, tsGenSettings).GenerateFile();

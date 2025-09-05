@@ -1,12 +1,10 @@
-using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.CsSdk.Mappers;
 using BeamOs.StructuralAnalysis.Sdk;
-using UnitsNet;
 
 namespace BeamOs.Tests.Common;
 
-public abstract class ModelFixture : BeamOsModelBuilder, IModelFixture
+public abstract class ModelFixture : BeamOsStaticModelBase, IModelFixture
 {
     public abstract SourceInfo SourceInfo { get; }
 

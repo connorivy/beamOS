@@ -9,68 +9,69 @@ using BeamOs.WebApp.EditorCommands.Interfaces;
 
 namespace BeamOs.CodeGen.ApiGenerator.ApiGenerators;
 
-public class EditorApiGenerator : AbstractGenerator
+public class EditorApiGenerator : AbstractGenerator2
 {
     public override string ClientName => "EditorApiAlpha";
     protected override string ClientNamespace => "BeamOs.CodeGen.EditorApi";
     protected override string DestinationPath => $"../{this.ClientNamespace}/";
-    protected override string OpenApiDefinitionPath => $"/swagger/{this.ClientName}/swagger.json";
+    protected override string OpenApiDefinitionPath => "openapi/v1.json";
 
-    protected override void AddApiMethods(Func<string, RouteHandlerBuilder> addMethod)
+    // no custom templates for this builder
+    protected override string? TemplateDirectory => null;
+
+
+    protected override void MapEndpoints(WebApplication app)
     {
-        _ = addMethod("CreateElement1d").Accepts<Element1dResponse>();
-        _ = addMethod("CreateElement1ds").Accepts<ICollection<Element1dResponse>>();
+        var builder = app;
 
-        _ = addMethod("UpdateElement1d").Accepts<Element1dResponse>();
-        _ = addMethod("UpdateElement1ds").Accepts<ICollection<Element1dResponse>>();
+        builder.AddResultMethod<Element1dResponse>("CreateElement1d");
+        builder.AddResultMethod<ICollection<Element1dResponse>>("CreateElement1ds");
 
-        _ = addMethod("DeleteElement1d").Accepts<IModelEntity>();
-        _ = addMethod("DeleteElement1ds").Accepts<ICollection<IModelEntity>>();
+        builder.AddResultMethod<Element1dResponse>("UpdateElement1d");
+        builder.AddResultMethod<ICollection<Element1dResponse>>("UpdateElement1ds");
 
-        _ = addMethod("CreateModel").Accepts<ModelResponse>();
+        builder.AddResultMethod<IModelEntity>("DeleteElement1d");
+        builder.AddResultMethod<ICollection<IModelEntity>>("DeleteElement1ds");
 
-        //_ = addMethod("CreateModelHydrated").Accepts<ModelResponseHydrated>();
+        builder.AddResultMethod<ModelResponse>("CreateModel");
 
-        _ = addMethod("CreateNode").Accepts<NodeResponse>();
-        _ = addMethod("CreateNodes").Accepts<ICollection<NodeResponse>>();
+        builder.AddResultMethod<NodeResponse>("CreateNode");
+        builder.AddResultMethod<ICollection<NodeResponse>>("CreateNodes");
 
-        _ = addMethod("UpdateNode").Accepts<NodeResponse>();
-        _ = addMethod("UpdateNodes").Accepts<ICollection<NodeResponse>>();
+        builder.AddResultMethod<NodeResponse>("UpdateNode");
+        builder.AddResultMethod<ICollection<NodeResponse>>("UpdateNodes");
 
-        _ = addMethod("DeleteNode").Accepts<IModelEntity>();
-        _ = addMethod("DeleteNodes").Accepts<ICollection<IModelEntity>>();
+        builder.AddResultMethod<IModelEntity>("DeleteNode");
+        builder.AddResultMethod<ICollection<IModelEntity>>("DeleteNodes");
 
-        _ = addMethod("CreatePointLoad").Accepts<PointLoadResponse>();
-        _ = addMethod("CreatePointLoads").Accepts<ICollection<PointLoadResponse>>();
+        builder.AddResultMethod<PointLoadResponse>("CreatePointLoad");
+        builder.AddResultMethod<ICollection<PointLoadResponse>>("CreatePointLoads");
 
-        _ = addMethod("UpdatePointLoad").Accepts<PointLoadResponse>();
-        _ = addMethod("UpdatePointLoads").Accepts<ICollection<PointLoadResponse>>();
+        builder.AddResultMethod<PointLoadResponse>("UpdatePointLoad");
+        builder.AddResultMethod<ICollection<PointLoadResponse>>("UpdatePointLoads");
 
-        _ = addMethod("DeletePointLoad").Accepts<IModelEntity>();
-        _ = addMethod("DeletePointLoads").Accepts<ICollection<IModelEntity>>();
+        builder.AddResultMethod<IModelEntity>("DeletePointLoad");
+        builder.AddResultMethod<ICollection<IModelEntity>>("DeletePointLoads");
 
-        _ = addMethod("CreateShearDiagram").Accepts<ShearDiagramResponse>();
-        _ = addMethod("CreateShearDiagrams").Accepts<ShearDiagramResponse[]>();
+        builder.AddResultMethod<ShearDiagramResponse>("CreateShearDiagram");
+        builder.AddResultMethod<ICollection<ShearDiagramResponse>>("CreateShearDiagrams");
 
-        _ = addMethod("CreateMomentDiagram").Accepts<MomentDiagramResponse>();
-        _ = addMethod("CreateMomentDiagrams").Accepts<MomentDiagramResponse[]>();
+        builder.AddResultMethod<MomentDiagramResponse>("CreateMomentDiagram");
+        builder.AddResultMethod<ICollection<MomentDiagramResponse>>("CreateMomentDiagrams");
 
-        _ = addMethod("CreateDeflectionDiagram").Accepts<DeflectionDiagramResponse>();
-        _ = addMethod("CreateDeflectionDiagrams").Accepts<DeflectionDiagramResponse[]>();
+        builder.AddResultMethod<DeflectionDiagramResponse>("CreateDeflectionDiagram");
+        builder.AddResultMethod<ICollection<DeflectionDiagramResponse>>("CreateDeflectionDiagrams");
 
-        _ = addMethod("DisplayModelProposal").Accepts<ModelProposalResponse>();
-        _ = addMethod("ClearModelProposals");
+        builder.AddResultMethod<ModelProposalResponse>("DisplayModelProposal");
+        builder.AddResultMethod("ClearModelProposals");
 
-        _ = addMethod("SetSettings").Accepts<ModelSettings>();
+        builder.AddResultMethod<ModelSettings>("SetSettings");
 
-        _ = addMethod("SetGlobalStresses").Accepts<GlobalStresses>();
+        builder.AddResultMethod<GlobalStresses>("SetGlobalStresses");
 
-        _ = addMethod("Clear");
+        builder.AddResultMethod("Clear");
 
-        _ = addMethod("ClearCurrentOverlay");
-
-        //_ = addMethod("SetColorFilter").Accepts<SetColorFilter>();
-        //_ = addMethod("ClearFilters").Accepts<ClearFilters>();
+        builder.AddResultMethod("ClearCurrentOverlay");
 
         foreach (
             Type contractType in typeof(IAssemblyMarkerClientCommands).Assembly.ExportedTypes.Where(
@@ -78,11 +79,56 @@ public class EditorApiGenerator : AbstractGenerator
             )
         )
         {
-            _ = addMethod($"Reduce{contractType.Name}").Accepts(contractType);
+            builder.AddResultMethod(
+                contractType,
+                $"Reduce{contractType.Name}"
+            );
         }
     }
+}
 
-    protected override RouteHandlerBuilder ConfigEachMethod(
-        RouteHandlerBuilder routeGroupBuilder
-    ) => base.ConfigEachMethod(routeGroupBuilder).Produces<Result>();
+public static class RouteGroupBuilderExtensions
+{
+    public static RouteHandlerBuilder AddMethod<TAccept, TReturn>(this IEndpointRouteBuilder builder, string methodName)
+        where TAccept : notnull
+    {
+        return builder.MapPost(
+            methodName,
+            () => Results.Ok()
+        ).Accepts<TAccept>()
+        .Produces<TReturn>();
+    }
+
+    public static RouteHandlerBuilder AddMethod<TReturn>(this IEndpointRouteBuilder builder, string methodName)
+    {
+        return builder.MapPost(
+            methodName,
+            () => Results.Ok()
+        )
+        .Produces<TReturn>();
+    }
+
+    public static RouteHandlerBuilder AddResultMethod<TAccept>(
+        this IEndpointRouteBuilder builder,
+        string methodName
+    )
+        where TAccept : notnull
+    {
+        return builder.AddMethod<TAccept, Result>(methodName);
+    }
+    public static RouteHandlerBuilder AddResultMethod(
+        this IEndpointRouteBuilder builder,
+        Type acceptType,
+        string methodName
+    )
+    {
+        return builder.AddMethod<Result>(methodName).Accepts(acceptType);
+    }
+    public static RouteHandlerBuilder AddResultMethod(
+        this IEndpointRouteBuilder builder,
+        string methodName
+    )
+    {
+        return builder.AddMethod<Result>(methodName);
+    }
 }

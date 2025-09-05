@@ -3,12 +3,13 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair.Rules;
 
-public class RemoveOrphanedNodeRule : IModelRepairRule
+public class RemoveOrphanedNodeRule(ModelRepairContext context) : IModelRepairRule
 {
     public ModelRepairRuleType RuleType => ModelRepairRuleType.Favorable;
 
-    public void Apply(ModelProposalBuilder modelProposal, Length tolerance)
+    public void Apply()
     {
+        var modelProposal = context.ModelProposalBuilder;
         HashSet<NodeId> usedNodeIds = [];
         foreach (Element1d element in modelProposal.Element1ds)
         {
@@ -17,13 +18,13 @@ public class RemoveOrphanedNodeRule : IModelRepairRule
             usedNodeIds.Add(endNode.Id);
         }
 
-        var orphanedNodes = modelProposal
-            .Nodes.Where(node => !usedNodeIds.Contains(node.Id))
+        var orphanedNodes = context
+            .NodeStore.Values.Where(node => !usedNodeIds.Contains(node.Id))
             .ToList();
 
-        foreach (var orphanedNodeId in orphanedNodes)
+        foreach (var orphanedNode in orphanedNodes)
         {
-            modelProposal.RemoveNode(orphanedNodeId);
+            modelProposal.RemoveNode(orphanedNode);
         }
     }
 }

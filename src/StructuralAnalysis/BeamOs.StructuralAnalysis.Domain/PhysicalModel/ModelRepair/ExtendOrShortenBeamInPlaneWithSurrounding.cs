@@ -1,10 +1,10 @@
-using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
-public class ExtendOrShortenBeamInPlaneWithSurrounding : BeamOrBraceVisitingRule
+public class ExtendOrShortenBeamInPlaneWithSurrounding(ModelRepairContext context)
+    : BeamOrBraceVisitingRule(context)
 {
     public override ModelRepairRuleType RuleType => ModelRepairRuleType.Favorable;
 
@@ -22,7 +22,6 @@ public class ExtendOrShortenBeamInPlaneWithSurrounding : BeamOrBraceVisitingRule
         IList<InternalNode> nearbyEndInternalNodes,
         IEnumerable<Element1d> beamsAndBracesCloseToEnd,
         IEnumerable<Element1d> columnsCloseToEnd,
-        ModelProposalBuilder modelProposalBuilder,
         Length tolerance
     )
     {
@@ -36,7 +35,6 @@ public class ExtendOrShortenBeamInPlaneWithSurrounding : BeamOrBraceVisitingRule
             endNodeAsNode,
             beamsAndBracesCloseToStart,
             beamsAndBracesCloseToEnd,
-            modelProposalBuilder,
             tolerance
         );
     }
@@ -46,34 +44,21 @@ public class ExtendOrShortenBeamInPlaneWithSurrounding : BeamOrBraceVisitingRule
         Node endNode,
         IEnumerable<Element1d> beamsAndBracesCloseToStart,
         IEnumerable<Element1d> beamsAndBracesCloseToEnd,
-        ModelProposalBuilder modelProposalBuilder,
         Length tolerance
     )
     {
-        ExtendOrShortenIfCoplanar(
-            startNode,
-            endNode,
-            beamsAndBracesCloseToStart,
-            modelProposalBuilder,
-            tolerance
-        );
-        ExtendOrShortenIfCoplanar(
-            endNode,
-            startNode,
-            beamsAndBracesCloseToEnd,
-            modelProposalBuilder,
-            tolerance
-        );
+        this.ExtendOrShortenIfCoplanar(startNode, endNode, beamsAndBracesCloseToStart, tolerance);
+        this.ExtendOrShortenIfCoplanar(endNode, startNode, beamsAndBracesCloseToEnd, tolerance);
     }
 
-    private static void ExtendOrShortenIfCoplanar(
+    private void ExtendOrShortenIfCoplanar(
         Node thisEnd,
         Node otherEnd,
         IEnumerable<Element1d> nearbyElements,
-        ModelProposalBuilder modelProposalBuilder,
         Length tolerance
     )
     {
+        var modelProposalBuilder = this.Context.ModelProposalBuilder;
         var elementsAndDistances = nearbyElements
             .Select(elem =>
                 (elem, ShortestDistanceTo(thisEnd.LocationPoint, elem, modelProposalBuilder))

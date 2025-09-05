@@ -75,7 +75,7 @@ public sealed class CreateNodeClientCommandHandler(
     }
 }
 
-public record CreateNodeClientCommand(NodeData Data) : IBeamOsClientCommand
+public record CreateNodeClientCommand(NodeData Data) : IBeamOsUndoableClientCommand
 {
     public Guid Id { get; } = Guid.NewGuid();
     public bool HandledByEditor { get; init; }
@@ -90,7 +90,7 @@ public record CreateNodeClientCommand(NodeData Data) : IBeamOsClientCommand
     /// </summary>
     public int? NodeId { get; init; }
 
-    public IBeamOsClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
         new DeleteNodeClientCommand
         {
             ModelId = this.ModelId,
@@ -101,7 +101,7 @@ public record CreateNodeClientCommand(NodeData Data) : IBeamOsClientCommand
             HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 
-    public IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
         this with
         {
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
@@ -110,7 +110,7 @@ public record CreateNodeClientCommand(NodeData Data) : IBeamOsClientCommand
         };
 }
 
-public record DeleteNodeClientCommand : IBeamOsClientCommand
+public record DeleteNodeClientCommand : IBeamOsUndoableClientCommand
 {
     public Guid Id { get; } = Guid.NewGuid();
     public bool HandledByEditor { get; init; }
@@ -120,7 +120,7 @@ public record DeleteNodeClientCommand : IBeamOsClientCommand
     public int NodeId { get; init; }
     public required NodeData Data { get; init; }
 
-    public IBeamOsClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
         new CreateNodeClientCommand(this.Data)
         {
             ModelId = this.ModelId,
@@ -130,7 +130,7 @@ public record DeleteNodeClientCommand : IBeamOsClientCommand
             HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 
-    public IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
         this with
         {
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,

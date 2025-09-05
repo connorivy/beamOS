@@ -8,8 +8,13 @@ using Scalar.AspNetCore;
 
 namespace BeamOs.CodeGen.ApiGenerator.ApiGenerators;
 
-public abstract class AbstractGeneratorFromEndpoints<TAssemblyMarker> : IApiGenerator
+public abstract class AbstractGeneratorFromEndpoints<TAssemblyMarker> : AbstractGenerator2
     where TAssemblyMarker : class
+{
+    protected override void MapEndpoints(WebApplication app) => app.MapEndpoints<TAssemblyMarker>();
+}
+
+public abstract class AbstractGenerator2 : IApiGenerator
 {
     protected abstract string DestinationPath { get; }
     public abstract string ClientName { get; }
@@ -17,18 +22,23 @@ public abstract class AbstractGeneratorFromEndpoints<TAssemblyMarker> : IApiGene
     protected abstract string OpenApiDefinitionPath { get; }
     protected virtual bool GenerateCsClient { get; } = true;
     protected virtual bool GenerateTsClient { get; } = true;
+    protected virtual string? TemplateDirectory { get; } = "./Templates";
+    protected abstract void MapEndpoints(WebApplication app);
 
     public async Task GenerateClients()
     {
         var builder = WebApplication.CreateBuilder();
 
 #if DEBUG
-        builder.Services.AddOpenApi();
+        builder.Services.AddOpenApi(o =>
+            o.OpenApiVersion = Microsoft.OpenApi.OpenApiSpecVersion.OpenApi3_1
+        );
 #endif
 
         WebApplication app = builder.Build();
 
-        app.MapEndpoints<TAssemblyMarker>();
+        this.MapEndpoints(app);
+        // app.MapPost("hello", () => Results.Ok("Hello World!"));
 
 #if DEBUG
         app.MapOpenApi();
@@ -41,6 +51,7 @@ public abstract class AbstractGeneratorFromEndpoints<TAssemblyMarker> : IApiGene
         UriBuilder uriBuilder = new(baseUrl) { Path = this.OpenApiDefinitionPath };
 
         var doc = await OpenApiDocument.FromUrlAsync(uriBuilder.ToString());
+        // var doc = await OpenApiDocument.FromFileAsync("openapi.json");
 
         if (this.GenerateCsClient)
         {
@@ -51,6 +62,7 @@ public abstract class AbstractGeneratorFromEndpoints<TAssemblyMarker> : IApiGene
                 {
                     Namespace = this.ClientNamespace,
                     JsonLibrary = CSharpJsonLibrary.SystemTextJson,
+                    TemplateDirectory = this.TemplateDirectory,
                 },
                 GenerateClientInterfaces = true,
                 GenerateDtoTypes = false,
@@ -79,7 +91,7 @@ public abstract class AbstractGeneratorFromEndpoints<TAssemblyMarker> : IApiGene
             {
                 ClassName = this.ClientName,
                 GenerateClientInterfaces = true,
-                TypeScriptGeneratorSettings = { Namespace = "" } // needed to not generate a namespace
+                TypeScriptGeneratorSettings = { Namespace = "" }, // needed to not generate a namespace
             };
 
             var source = new TypeScriptClientGenerator(doc, tsGenSettings).GenerateFile();

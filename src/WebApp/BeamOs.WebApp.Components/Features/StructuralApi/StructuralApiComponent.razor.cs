@@ -56,18 +56,18 @@ public partial class StructuralApiComponent : FluxorComponent
     private static HashSet<string> methodsToExclude =
     [
         nameof(IStructuralAnalysisApiClientV1.CreateModelAsync),
-        //nameof(IStructuralAnalysisApiClientV1.GetElement1dsAsync),
+        //nameof(IStructuralAnalysisApiClientV1.GetElement1dsAsyncAsync),
         nameof(IStructuralAnalysisApiClientV1.GetModelAsync),
         nameof(IStructuralAnalysisApiClientV1.GetElement1dAsync),
-        //nameof(IStructuralAnalysisApiClientV1.GetModelResultsAsync),
+        //nameof(IStructuralAnalysisApiClientV1.GetModelResultsAsyncAsync),
         nameof(IStructuralAnalysisApiClientV1.GetModelsAsync),
-        //nameof(IStructuralAnalysisApiClientV1.GetMomentDiagramAsync),
-        //nameof(IStructuralAnalysisApiClientV1.GetMomentLoadsAsync),
+        //nameof(IStructuralAnalysisApiClientV1.GetMomentDiagramAsyncAsync),
+        //nameof(IStructuralAnalysisApiClientV1.GetMomentLoadsAsyncAsync),
         nameof(IStructuralAnalysisApiClientV1.GetResultSetAsync),
         nameof(IStructuralAnalysisApiClientV1.GetNodeResultAsync),
-        //nameof(IStructuralAnalysisApiClientV1.GetShearDiagramAsync),
-        //nameof(IStructuralAnalysisApiClientV1.GetSingleElement1dAsync),
-        //nameof(IStructuralAnalysisApiClientV1.GetSingleNodeResultAsync),
+        //nameof(IStructuralAnalysisApiClientV1.GetShearDiagramAsyncAsync),
+        //nameof(IStructuralAnalysisApiClientV1.GetSingleElement1dAsyncAsync),
+        //nameof(IStructuralAnalysisApiClientV1.GetSingleNodeResultAsyncAsync),
     ];
 
     static StructuralApiComponent()

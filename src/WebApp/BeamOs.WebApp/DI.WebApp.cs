@@ -2,6 +2,8 @@ using System.Text.Json.Serialization;
 using BeamOs.CodeGen.AiApiClient;
 using BeamOs.CodeGen.SpeckleConnectorApi;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
+using BeamOs.StructuralAnalysis.Api;
+using BeamOs.StructuralAnalysis.Api.Endpoints;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.Tests.Runtime.TestRunner;
 using BeamOs.WebApp.Components;
@@ -37,6 +39,9 @@ public static class DI
     public static IServiceCollection AddWebAppConfigurable(this IServiceCollection services)
     {
         services.AddHttpClient<IStructuralAnalysisApiClientV1, StructuralAnalysisApiClientV1>(
+            client => client.BaseAddress = new("http://localhost:5223")
+        );
+        services.AddHttpClient<IStructuralAnalysisApiClientV2, StructuralAnalysisApiClientV2>(
             client => client.BaseAddress = new("http://localhost:5223")
         );
         services.AddHttpClient<ISpeckleConnectorApi, SpeckleConnectorApi>(client =>

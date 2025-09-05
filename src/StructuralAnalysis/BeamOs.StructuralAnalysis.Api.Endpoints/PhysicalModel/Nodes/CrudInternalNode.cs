@@ -5,7 +5,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Nodes;
 
-[BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "nodes/{id}/internal")]
+[BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "nodes/{id:int}/internal")]
 [BeamOsEndpointType(Http.Get)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Reviewer)]
 public class GetInternalNode(GetInternalNodeCommandHandler getNodeCommandHandler)
@@ -34,7 +34,7 @@ public class CreateInternalNode(CreateInternalNodeCommandHandler createInternalN
     ) => await createInternalNodeCommandHandler.ExecuteAsync(req, ct);
 }
 
-[BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "nodes/{id}/internal")]
+[BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "nodes/{id:int}/internal")]
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 public class PutInternalNode(PutInternalNodeCommandHandler putInternalNodeCommandHandler)
@@ -66,7 +66,7 @@ public class BatchPutInternalNode(BatchPutInternalNodeCommandHandler putInternal
     ) => await putInternalNodeCommandHandler.ExecuteAsync(req, ct);
 }
 
-// [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "nodes/{id}")]
+// [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "nodes/{id:int}")]
 // [BeamOsEndpointType(Http.Delete)]
 // [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 // [BeamOsTag(BeamOsTags.AI)]

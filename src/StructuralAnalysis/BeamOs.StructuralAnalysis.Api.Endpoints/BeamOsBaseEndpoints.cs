@@ -12,5 +12,8 @@ public abstract partial class BeamOsModelIdRequestBaseEndpoint<TResponse>
 public abstract partial class BeamOsModelResourceQueryBaseEndpoint<TResponse>
     : BeamOsBaseEndpoint<ModelResourceWithIntIdRequest, TResponse> { }
 
+public abstract partial class BeamOsAnalyticalResultQueryBaseEndpoint<TResponse>
+    : BeamOsBaseEndpoint<GetAnalyticalResultQuery, TResponse> { }
+
 public abstract partial class BeamOsAnalyticalResultResourceQueryBaseEndpoint<TResponse>
     : BeamOsBaseEndpoint<GetAnalyticalResultResourceQuery, TResponse> { }

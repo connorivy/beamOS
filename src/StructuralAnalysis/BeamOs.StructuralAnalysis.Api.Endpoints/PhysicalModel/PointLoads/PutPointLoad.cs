@@ -6,7 +6,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.PointLoads;
 
-[BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "point-loads/{id}")]
+[BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "point-loads/{id:int}")]
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 public class PutPointLoad(PutPointLoadCommandHandler putPointLoadCommandHandler)

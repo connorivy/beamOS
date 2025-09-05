@@ -1,49 +1,62 @@
-using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
-public abstract class Element1dVisitingRule : IModelRepairRule
+public abstract class Element1dVisitingRule(ModelRepairContext context) : IModelRepairRule
 {
-    public void Apply(ModelProposalBuilder modelProposal, Length tolerance)
+    protected ModelRepairContext Context => context;
+
+    public void Apply()
     {
-        foreach (Element1d element in modelProposal.Element1ds)
+        var tolerance = this.Context.ModelRepairOperationParameters.GetTolerance(this.RuleType);
+        foreach (Element1d element in this.Context.ModelProposalBuilder.Element1ds)
         {
-            var (startNode, endNode) = modelProposal.GetStartAndEndNodes(element, out _);
+            var (startNode, endNode) = this.Context.ModelProposalBuilder.GetStartAndEndNodes(
+                element,
+                out _
+            );
             var startNodeLocation = startNode.GetLocationPoint(
-                modelProposal.Element1dStore,
-                modelProposal.NodeStore
+                this.Context.ModelProposalBuilder.Element1dStore,
+                this.Context.ModelProposalBuilder.NodeStore
             );
             var endNodeLocation = endNode.GetLocationPoint(
-                modelProposal.Element1dStore,
-                modelProposal.NodeStore
+                this.Context.ModelProposalBuilder.Element1dStore,
+                this.Context.ModelProposalBuilder.NodeStore
             );
 
-            var nearbyStartNodes = modelProposal
-                .Octree.FindNodeIdsWithin(startNodeLocation, tolerance.Meters, startNode.Id)
-                .Select(modelProposal.NodeStore.ApplyExistingProposal)
+            var nearbyStartNodes = this
+                .Context.ModelProposalBuilder.Octree.FindNodeIdsWithin(
+                    startNodeLocation,
+                    tolerance.Meters,
+                    startNode.Id
+                )
+                .Select(this.Context.ModelProposalBuilder.NodeStore.ApplyExistingProposal)
                 .Distinct()
                 .Where(node => node.Id != startNode.Id)
                 .ToList();
-            var nearbyEndNodes = modelProposal
-                .Octree.FindNodeIdsWithin(endNodeLocation, tolerance.Meters, endNode.Id)
-                .Select(modelProposal.NodeStore.ApplyExistingProposal)
+            var nearbyEndNodes = this
+                .Context.ModelProposalBuilder.Octree.FindNodeIdsWithin(
+                    endNodeLocation,
+                    tolerance.Meters,
+                    endNode.Id
+                )
+                .Select(this.Context.ModelProposalBuilder.NodeStore.ApplyExistingProposal)
                 .Distinct()
                 .Where(node => node.Id != endNode.Id)
                 .ToList();
 
             var nearbyElement1dsAtStart = Element1dSpatialHelper.FindElement1dsWithin(
-                modelProposal.Element1ds,
-                modelProposal,
+                this.Context.ModelProposalBuilder.Element1ds,
+                this.Context.ModelProposalBuilder,
                 startNodeLocation,
                 tolerance.Meters,
                 startNode.Id
             );
             var nearbyElement1dsAtEnd = Element1dSpatialHelper.FindElement1dsWithin(
-                modelProposal.Element1ds,
-                modelProposal,
+                this.Context.ModelProposalBuilder.Element1ds,
+                this.Context.ModelProposalBuilder,
                 endNodeLocation,
                 tolerance.Meters,
                 endNode.Id
@@ -57,13 +70,12 @@ public abstract class Element1dVisitingRule : IModelRepairRule
                 endNodeLocation,
                 nearbyStartNodes.OfType<Node>().ToList(),
                 nearbyStartNodes.OfType<InternalNode>().ToList(),
-                nearbyElement1dsAtStart.Where(e => !IsColumn(e, modelProposal)),
-                nearbyElement1dsAtStart.Where(e => IsColumn(e, modelProposal)),
+                nearbyElement1dsAtStart.Where(e => !IsColumn(e, this.Context.ModelProposalBuilder)),
+                nearbyElement1dsAtStart.Where(e => IsColumn(e, this.Context.ModelProposalBuilder)),
                 nearbyEndNodes.OfType<Node>().ToList(),
                 nearbyEndNodes.OfType<InternalNode>().ToList(),
-                nearbyElement1dsAtEnd.Where(e => !IsColumn(e, modelProposal)),
-                nearbyElement1dsAtEnd.Where(e => IsColumn(e, modelProposal)),
-                modelProposal,
+                nearbyElement1dsAtEnd.Where(e => !IsColumn(e, this.Context.ModelProposalBuilder)),
+                nearbyElement1dsAtEnd.Where(e => IsColumn(e, this.Context.ModelProposalBuilder)),
                 tolerance
             );
         }
@@ -85,7 +97,6 @@ public abstract class Element1dVisitingRule : IModelRepairRule
         IList<InternalNode> nearbyEndInternalNodes,
         IEnumerable<Element1d> beamsAndBracesCloseToEnd,
         IEnumerable<Element1d> columnsCloseToEnd,
-        ModelProposalBuilder modelProposalBuilder,
         Length tolerance
     );
 
@@ -139,7 +150,8 @@ public abstract class Element1dVisitingRule : IModelRepairRule
     }
 }
 
-public abstract class BeamOrBraceVisitingRule : Element1dVisitingRule
+public abstract class BeamOrBraceVisitingRule(ModelRepairContext context)
+    : Element1dVisitingRule(context)
 {
     protected override void ApplyRule(
         Element1d element1D,
@@ -155,11 +167,10 @@ public abstract class BeamOrBraceVisitingRule : Element1dVisitingRule
         IList<InternalNode> nearbyEndInternalNodes,
         IEnumerable<Element1d> beamsAndBracesCloseToEnd,
         IEnumerable<Element1d> columnsCloseToEnd,
-        ModelProposalBuilder modelProposalBuilder,
         Length tolerance
     )
     {
-        if (IsColumn(startNodeLocation, endNodeLocation, modelProposalBuilder))
+        if (IsColumn(startNodeLocation, endNodeLocation, this.Context.ModelProposalBuilder))
         {
             // If the element is a column, skip this rule
             return;
@@ -178,7 +189,6 @@ public abstract class BeamOrBraceVisitingRule : Element1dVisitingRule
             nearbyEndInternalNodes,
             beamsAndBracesCloseToEnd,
             columnsCloseToEnd,
-            modelProposalBuilder,
             tolerance
         );
     }
@@ -197,12 +207,12 @@ public abstract class BeamOrBraceVisitingRule : Element1dVisitingRule
         IList<InternalNode> nearbyEndInternalNodes,
         IEnumerable<Element1d> beamsAndBracesCloseToEnd,
         IEnumerable<Element1d> columnsCloseToEnd,
-        ModelProposalBuilder modelProposalBuilder,
         Length tolerance
     );
 }
 
-public abstract class ColumnVisitingRule : Element1dVisitingRule
+public abstract class ColumnVisitingRule(ModelRepairContext context)
+    : Element1dVisitingRule(context)
 {
     protected override void ApplyRule(
         Element1d element1D,
@@ -218,11 +228,10 @@ public abstract class ColumnVisitingRule : Element1dVisitingRule
         IList<InternalNode> nearbyEndInternalNodes,
         IEnumerable<Element1d> beamsAndBracesCloseToEnd,
         IEnumerable<Element1d> columnsCloseToEnd,
-        ModelProposalBuilder modelProposalBuilder,
         Length tolerance
     )
     {
-        if (!IsColumn(startNodeLocation, endNodeLocation, modelProposalBuilder))
+        if (!IsColumn(startNodeLocation, endNodeLocation, this.Context.ModelProposalBuilder))
         {
             // If the element is a not a column, skip this rule
             return;
@@ -241,7 +250,6 @@ public abstract class ColumnVisitingRule : Element1dVisitingRule
             nearbyEndInternalNodes,
             beamsAndBracesCloseToEnd,
             columnsCloseToEnd,
-            modelProposalBuilder,
             tolerance
         );
     }
@@ -260,7 +268,6 @@ public abstract class ColumnVisitingRule : Element1dVisitingRule
         IList<InternalNode> nearbyEndInternalNodes,
         IEnumerable<Element1d> beamsAndBracesCloseToEnd,
         IEnumerable<Element1d> columnsCloseToEnd,
-        ModelProposalBuilder modelProposalBuilder,
         Length tolerance
     );
 }

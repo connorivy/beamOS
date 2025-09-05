@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
   <PropertyGroup Label="General Config">
-    <BeamOsTargetFramework Condition="'$(BeamOsTargetFramework)' == ''">net9.0</BeamOsTargetFramework>
+    <BeamOsTargetFramework Condition="'$(BeamOsTargetFramework)' == ''">net10.0</BeamOsTargetFramework>
     <TargetFramework>$(BeamOsTargetFramework)</TargetFramework>
     <LangVersion>preview</LangVersion>
     <OpenSeesDir Condition="'$(OpenSeesDir)' == ''">$(MSBuildThisFileDirectory)openSees\OpenSees3.7.0\</OpenSeesDir>
@@ -11,7 +11,12 @@
     <IsPackable>false</IsPackable>
     <IncludeOpenSeesExe Condition="'$(IncludeOpenSeesExe)' == ''">true</IncludeOpenSeesExe>
     
-    <!--<TUnitImplicitUsings>false</TUnitImplicitUsings>-->
+    <TUnitImplicitUsings>false</TUnitImplicitUsings>
+    <DefineConstants Condition="'$(CODEGEN)' == 'true'">$(DefineConstants);CODEGEN</DefineConstants>
+    <!-- <PropertyGroup Condition="'$(CODEGEN)' == 'true'">
+      <DefineConstants>$(DefineConstants);CODEGEN</DefineConstants>
+    </PropertyGroup> -->
+
     <!--<InvariantGlobalization>true</InvariantGlobalization>-->
     <NoWarn>
       CA1707; <!-- Remove the underscores from method name -->

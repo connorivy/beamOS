@@ -6,6 +6,10 @@ namespace BeamOs.Tests.Common;
 
 public static class AllSolvedProblems
 {
+    /// <summary>
+    /// When you add a new model fixture, please add it to the 'GetModelsQueryHandler' class in BeamOs.Struct..Infrastructure
+    /// </summary>
+    /// <returns></returns>
     public static IEnumerable<ModelFixture> ModelFixtures()
     {
         yield return new Kassimali_Example3_8();

@@ -1,17 +1,15 @@
-using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Sdk;
 using BeamOs.Tests.Common;
-using BeamOs.Tests.StructuralAnalysis.Integration;
-using BeamOs.Tests.StructuralAnalysis.Integration.ModelRepairerTests;
+using FluentAssertions;
 
-namespace BeamOs.StructuralAnalysis.Tests.ModelRepairerTests;
+namespace BeamOs.Tests.StructuralAnalysis.Integration.ModelRepairerTests;
 
 [MethodDataSource(typeof(AssemblySetup), nameof(AssemblySetup.GetStructuralAnalysisApiClientV1))]
-public class ExtendCoplanarElement1dsToJoinNodesTests(IStructuralAnalysisApiClientV1 apiClient)
+public class ExtendCoplanarElement1dsToJoinNodesTests(BeamOsResultApiClient apiClient)
 {
-    [Before(HookType.Test)]
+    [Before(TUnitHookType.Test)]
     public void BeforeClass()
     {
         // This is a workaround to ensure that the API client is initialized before any tests run.
@@ -24,12 +22,7 @@ public class ExtendCoplanarElement1dsToJoinNodesTests(IStructuralAnalysisApiClie
         // Arrange: Element1d A is horizontal, Element1d B is diagonal and nearly collinear/coplanar with A
         Guid modelId = Guid.NewGuid();
         ModelSettings settings = ModelRepairerTestUtil.CreateDefaultModelSettings(false);
-        BeamOsDynamicModelBuilder builder = new(
-            modelId.ToString(),
-            settings,
-            "ExtendElement1dToNodeRule",
-            "Test"
-        );
+        BeamOsDynamicModel builder = new(modelId, settings, "ExtendElement1dToNodeRule", "Test");
 
         builder.AddSectionProfileFromLibrary(1, "w12x26", StructuralCode.AISC_360_16);
         builder.AddMaterial(1, 345e6, 200e9);
@@ -45,14 +38,26 @@ public class ExtendCoplanarElement1dsToJoinNodesTests(IStructuralAnalysisApiClie
         builder.AddElement1d(2, 3, 4, 1, 1);
 
         await builder.CreateOnly(apiClient);
+        var modelClient = apiClient.Models[modelId];
 
-        var proposal = await apiClient.RepairModelAsync(modelId, "snap beam node to column");
+        var proposal = await modelClient.Repair.RepairModelAsync("snap beam node to column");
 
-        await ModelRepairerTestUtil.EnsureGlobalGeometricContraints(
-            apiClient,
+        var repairedModel = await ModelRepairerTestUtil.EnsureGlobalGeometricContraints(
+            modelClient,
             modelId,
             proposal.Value?.Id ?? throw new InvalidOperationException("Proposal is null")
         );
+
+        repairedModel
+            .Nodes.Count.Should()
+            .Be(3, "Nodes should be merged or snapped to the center node");
+
+        var centerNode = repairedModel.Nodes.SingleOrDefault(n => n.Id is 2 or 3);
+        centerNode.Should().NotBeNull();
+
+        centerNode.LocationPoint.X.Should().BeApproximately(5, 1e-6);
+        centerNode.LocationPoint.Y.Should().BeApproximately(0.0, 1e-6);
+
         await TestUtils.Asserter.VerifyModelProposal(proposal);
     }
 }

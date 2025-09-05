@@ -47,9 +47,9 @@ public sealed class GetModelProposalQueryHandler(
 }
 
 public sealed class GetModelProposalsQueryHandler(IModelProposalRepository modelProposalRepository)
-    : IQueryHandler<Guid, List<ModelProposalInfo>>
+    : IQueryHandler<Guid, ICollection<ModelProposalInfo>>
 {
-    public async Task<Result<List<ModelProposalInfo>>> ExecuteAsync(
+    public async Task<Result<ICollection<ModelProposalInfo>>> ExecuteAsync(
         Guid command,
         CancellationToken ct = default
     )

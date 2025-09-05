@@ -101,7 +101,7 @@ public class ModelRepairTestInfo<TTestClass> : TestInfoBase
         Func<TTestClass, Task> executeTest,
         string testName,
         TTestClass testClass,
-        IStructuralAnalysisApiClientV1 apiClient
+        BeamOsResultApiClient apiClient
     )
     {
         this.TestName = testName;
@@ -115,7 +115,7 @@ public class ModelRepairTestInfo<TTestClass> : TestInfoBase
     public ModelResponse? ModelResponse { get; set; }
     public ModelProposalResponse? ModelProposalResponse { get; set; }
     public TTestClass TestClass { get; set; }
-    public IStructuralAnalysisApiClientV1 ApiClient { get; }
+    public BeamOsResultApiClient ApiClient { get; }
 
     protected override ValueTask BeforeTest()
     {
@@ -144,7 +144,7 @@ public class ModelRepairTestInfo<TTestClass> : TestInfoBase
             throw new Exception("ModelId is null");
         }
 
-        var response = await this.ApiClient.GetModelAsync(this.ModelId.Value);
+        var response = await this.ApiClient.Models[this.ModelId.Value].GetModelAsync();
         response.ThrowIfError();
         this.ModelResponse = response.Value;
     }

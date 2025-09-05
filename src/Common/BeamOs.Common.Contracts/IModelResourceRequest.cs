@@ -19,6 +19,8 @@ public readonly struct ModelResourceRequest(Guid modelId) : IHasModelId
 public readonly struct ModelResourceRequest<TBody> : IModelResourceRequest<TBody>
 {
     public Guid ModelId { get; init; }
+
+    [BeamOs.Common.Contracts.FromBody]
     public TBody Body { get; init; }
 
     public ModelResourceRequest(Guid modelId, TBody body)
@@ -50,9 +52,15 @@ public readonly struct ModelResourceWithIntIdRequest<TBody> : IModelResourceWith
 
 public readonly struct EmptyRequest;
 
+public readonly struct GetAnalyticalResultQuery : IHasModelId
+{
+    public Guid ModelId { get; init; }
+    public int LoadCombinationId { get; init; }
+}
+
 public readonly struct GetAnalyticalResultResourceQuery : IHasModelId
 {
     public Guid ModelId { get; init; }
-    public int ResultSetId { get; init; }
+    public int LoadCombinationId { get; init; }
     public int Id { get; init; }
 }

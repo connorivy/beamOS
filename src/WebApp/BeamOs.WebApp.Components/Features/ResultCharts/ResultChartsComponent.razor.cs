@@ -9,8 +9,6 @@ using Fluxor;
 using Fluxor.Blazor.Web.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using UnitsNet;
-using UnitsNet.Units;
 
 namespace BeamOs.WebApp.Components.Features.ResultCharts;
 
@@ -25,10 +23,19 @@ public partial class ResultChartsComponent(
     [Parameter]
     public Guid ModelId { get; set; }
 
+    public int Element1dId { get; set; }
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
         cachedModelsState.Select(m => m.Models[this.ModelId]);
+
+        var selectedObjects = editorComponentState.Value.SelectedObjects;
+        var selectedObject = selectedObjects.Length == 1 ? selectedObjects[0] : null;
+
+        this.Element1dId =
+            selectedObject?.ObjectType == BeamOsObjectType.Element1d ? selectedObject.Id : -1;
+        this.UpdateResults();
 
         this.SubscribeToAction<ChangeSelectionCommand>(action =>
         {
@@ -40,21 +47,31 @@ public partial class ResultChartsComponent(
                 dispatcher.Dispatch(new ResultsChanged());
                 return;
             }
-            int element1dId = editorComponentState.Value.SelectedObjects[0].Id;
-            if (
-                cachedModelsState.Value.DeflectionDiagrams is null
-                || !cachedModelsState.Value.DeflectionDiagrams.TryGetValue(
-                    element1dId,
-                    out var deflectionDiagram
-                )
-            )
-            {
-                dispatcher.Dispatch(new ResultsChanged());
-                return;
-            }
 
-            this.GetSelectedMemberChartValues(element1dId, deflectionDiagram);
+            var selectedObjects = action.SelectedObjects;
+            var selectedObject = selectedObjects.Length == 1 ? selectedObjects[0] : null;
+
+            this.Element1dId =
+                selectedObject?.ObjectType == BeamOsObjectType.Element1d ? selectedObject.Id : -1;
+            this.UpdateResults();
         });
+    }
+
+    private void UpdateResults()
+    {
+        if (
+            cachedModelsState.Value.DeflectionDiagrams is null
+            || !cachedModelsState.Value.DeflectionDiagrams.TryGetValue(
+                this.Element1dId,
+                out var deflectionDiagram
+            )
+        )
+        {
+            dispatcher.Dispatch(new ResultsChanged());
+            return;
+        }
+
+        this.GetSelectedMemberChartValues(this.Element1dId, deflectionDiagram);
     }
 
     private void GetSelectedMemberChartValues(

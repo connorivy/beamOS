@@ -25,13 +25,14 @@ namespace BeamOs.CodeGen.SpeckleConnectorApi
     using System = global::System;
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.4.0.0 (NJsonSchema v11.3.2.0 (Newtonsoft.Json v13.0.0.0))")]
+
     public partial interface ISpeckleConnectorApi
     {
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="SpeckleConnectorApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultOfModelProposalResponse> SpeckleRecieveOperationAsync(System.Guid modelId, SpeckleReceiveParameters body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<ModelProposalResponse>> SpeckleRecieveOperationAsync(System.Guid modelId, SpeckleReceiveParameters body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
     }
 
@@ -70,7 +71,7 @@ namespace BeamOs.CodeGen.SpeckleConnectorApi
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="SpeckleConnectorApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultOfModelProposalResponse> SpeckleRecieveOperationAsync(System.Guid modelId, SpeckleReceiveParameters body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelProposalResponse>> SpeckleRecieveOperationAsync(System.Guid modelId, SpeckleReceiveParameters body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -121,18 +122,16 @@ namespace BeamOs.CodeGen.SpeckleConnectorApi
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultOfModelProposalResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new SpeckleConnectorApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var objectResponse_ = await ReadObjectResponseAsync<ModelProposalResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
                         }
-                        else
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SpeckleConnectorApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new SpeckleConnectorApiException("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
                         }
+                        return problemObjectResponse_.Object;
+
                     }
                     finally
                     {
@@ -159,6 +158,26 @@ namespace BeamOs.CodeGen.SpeckleConnectorApi
             public T Object { get; }
 
             public string Text { get; }
+        }
+
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        private static System.Threading.Tasks.Task<string> ReadAsStringAsync(System.Net.Http.HttpContent content, System.Threading.CancellationToken cancellationToken)
+        {
+    #if NET5_0_OR_GREATER
+            return content.ReadAsStringAsync(cancellationToken);
+    #else
+            return content.ReadAsStringAsync();
+    #endif
+        }
+
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        private static System.Threading.Tasks.Task<System.IO.Stream> ReadAsStreamAsync(System.Net.Http.HttpContent content, System.Threading.CancellationToken cancellationToken)
+        {
+    #if NET5_0_OR_GREATER
+            return content.ReadAsStreamAsync(cancellationToken);
+    #else
+            return content.ReadAsStreamAsync();
+    #endif
         }
 
         public bool ReadResponseAsString { get; set; }

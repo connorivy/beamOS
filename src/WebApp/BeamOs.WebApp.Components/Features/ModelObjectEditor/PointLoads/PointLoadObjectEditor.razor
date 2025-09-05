@@ -15,7 +15,7 @@
             </MudAutocomplete>
 
             <MudAutocomplete InputMode="InputMode.numeric" MaxItems="@ResultLimit" T="LoadCase" SearchFunc="LoadCases"
-                @bind-Value="LoadCase" ToStringFunc="@(c => c.Name)" Label="Load Case" Required="true">
+                @bind-Value="LoadCase" ToStringFunc="@(c => c?.Name)" Label="Load Case" Required="true">
                 <MoreItemsTemplate>
                     <MudText Align="Align.Center" Class="px-4 py-1">
                         Only the first @ResultLimit.ToString() items are shown. Type to refine results.

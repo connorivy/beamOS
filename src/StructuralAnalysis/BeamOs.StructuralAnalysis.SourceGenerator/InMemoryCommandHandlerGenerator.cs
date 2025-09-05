@@ -11,7 +11,8 @@ public class InMemoryCommandHandlerGenerator
     public static InMemoryHandlerInfo? CreateInMemoryHandlerDecorator(
         SourceProductionContext spc,
         INamedTypeSymbol symbol,
-        StringBuilder diRegistrationBuilder
+        StringBuilder diRegistrationBuilder,
+        string route
     )
     {
         // Skip abstract classes
@@ -123,7 +124,8 @@ public class InMemoryCommandHandlerGenerator
             symbol.TypeKind,
             $"{newNamespace}.{newClassName}",
             typeArgs[0].ToDisplayString(),
-            returnType
+            returnType,
+            route
         );
     }
 

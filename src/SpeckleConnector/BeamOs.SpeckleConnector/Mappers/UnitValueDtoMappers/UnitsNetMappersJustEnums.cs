@@ -1,7 +1,5 @@
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
-using BeamOs.StructuralAnalysis.Contracts.Common;
 using Riok.Mapperly.Abstractions;
-using UnitsNet.Units;
 
 namespace BeamOs.CsSdk.Mappers.UnitValueDtoMappers;
 

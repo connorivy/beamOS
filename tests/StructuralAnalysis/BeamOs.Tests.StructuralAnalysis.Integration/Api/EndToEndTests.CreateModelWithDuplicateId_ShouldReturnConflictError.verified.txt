@@ -1,11 +1,12 @@
 ﻿{
   Value: null,
   Error: {
-    Code: General.Conflict,
-    Description: Model with ID ModelId { Id = Guid_1 } already exists.,
-    Type: Conflict,
-    NumericType: 4,
-    Metadata: null
+    Title: Conflict Error,
+    Detail: Model with ID ModelId { Id = Guid_1 } already exists.,
+    Status: 409,
+    Type: https://tools.ietf.org/html/rfc7231#section-6.5.8,
+    Instance: null,
+    Extensions: null
   },
   IsError: true,
   IsSuccess: false

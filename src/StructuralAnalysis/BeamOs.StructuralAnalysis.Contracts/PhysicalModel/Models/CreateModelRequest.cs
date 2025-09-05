@@ -1,15 +1,3 @@
-using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults;
-using BeamOs.StructuralAnalysis.Contracts.Common;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCombinations;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Materials;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoads;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
-
 namespace BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 
 public record CreateModelRequest : ModelInfoData

@@ -6,6 +6,7 @@
 @using BeamOs.WebApp.Components.Features.Common
 @using BeamOs.WebApp.Components.Features.Dialogs
 @using BeamOs.WebApp.Components.Features.Editor
+@using static BeamOs.WebApp.Components.Pages.ModelEditor
 @using static BeamOs.WebApp.Components.Features.Dialogs.ReceiveFromSpeckleDialog
 
 @inherits FluxorComponent
@@ -45,6 +46,14 @@
         <MudTooltip Text="Repair Model">
             <MudIconButton OnClick="RepairModel" Icon="@Icons.Material.Outlined.Build" Color="Color.Inherit" Class="">
                 Repair Model</MudIconButton>
+        </MudTooltip>
+
+        <MudTooltip Text="Submit Bug Report">
+            <MudMenu Icon="@Icons.Material.Filled.BugReport">
+                <MudMenuItem OnClick="@BeginModelRepairBugReport">
+                    Model Repair Not Working
+                </MudMenuItem>
+            </MudMenu>
         </MudTooltip>
     </MudToolBar>
 </MudPaper>
@@ -110,7 +119,7 @@
 
     private async Task UnlockModel()
     {
-        var result = await structuralAnalysisApiClientV1.DeleteAllResultSetsAsync(this.ModelId, CancellationToken.None);
+        var result = await structuralAnalysisApiClientV1.ClearResultsAsync(this.ModelId, CancellationToken.None);
 
         if (result.IsSuccess)
         {
@@ -152,6 +161,11 @@
             ModelId = this.ModelId,
             CanvasId = this.CanvasId
         }, CancellationToken.None);
+    }
+
+    private void BeginModelRepairBugReport()
+    {
+        dispatcher.Dispatch(new ShowPanelContent(PanelContent.ModelRepairScenarioCreator));
     }
 
     [FeatureState]

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
   <PropertyGroup>
-    <AspnetVersion>9.0.6</AspnetVersion>
+    <AspnetVersion>10.0.0-preview.7.25380.108</AspnetVersion>
     <MicrosoftExtensionsVersion>9.0.6</MicrosoftExtensionsVersion>
     <EfVersion>9.0.6</EfVersion>
     <FastEndpointVersion>5.30.0</FastEndpointVersion>
@@ -11,9 +11,10 @@
     <!-- ASP.NET -->
     <PackageVersion Include="BeamOs.OpenSees.linux-x64" Version="3.7.1.0" />
     <PackageVersion Include="BeamOs.OpenSees.win-x64" Version="3.7.1.0" />
-    <PackageVersion Include="BenchmarkDotNet" Version="0.14.0" />
+    <PackageVersion Include="BenchmarkDotNet" Version="0.15.2" />
     <PackageVersion Include="CommunityToolkit.HighPerformance" Version="8.4.0" />
     <PackageVersion Include="CSparse" Version="4.2.0" />
+    <PackageVersion Include="DotWrap" Version="0.2.1" />
     <PackageVersion Include="EntityFrameworkCore.Exceptions.Common" Version="8.1.3" />
     <PackageVersion Include="EntityFrameworkCore.Exceptions.PostgreSQL" Version="8.1.3" />
     <PackageVersion Include="intelmkl.redist.win-x64" Version="2025.0.1.5" />
@@ -25,6 +26,8 @@
     <PackageVersion Include="Microsoft.AspNetCore.Components.Authorization" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="$(AspnetVersion)" />
+    <PackageVersion Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Http.Extensions" Version="2.3.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
@@ -44,7 +47,7 @@
     <PackageVersion Include="Microsoft.Extensions.AI.OpenAI" Version="9.3.0-preview.1.25161.3" />
     <PackageVersion Include="Microsoft.Extensions.Caching.Hybrid" Version="9.1.0-preview.1.25064.3" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
-    <PackageVersion Include="Microsoft.Kiota.Bundle" Version="1.16.0" />
+    <PackageVersion Include="Microsoft.Kiota.Bundle" Version="1.19.1" />
     <PackageVersion Include="Microsoft.SemanticKernel.Agents.Core" Version="1.45.0" />
     <PackageVersion Include="Microsoft.SemanticKernel.Connectors.Ollama" Version="1.45.0-alpha" />
     <PackageVersion Include="Microsoft.SemanticKernel.Connectors.OpenAI" Version="1.45.0" />
@@ -104,16 +107,18 @@
     <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.9.0" />
     <PackageVersion Include="PuppeteerSharp" Version="18.0.1" />
     <PackageVersion Include="Scalar.AspNetCore" Version="1.2.53" />
-    <PackageVersion Include="Speckle.Core" Version="2.21.3" />
-    <PackageVersion Include="Speckle.Objects" Version="2.21.3" />
+    <!-- <PackageVersion Include="Speckle.Core" Version="2.21.3" /> -->
+    <PackageVersion Include="Speckle.Objects" Version="3.4.4" />
+    <!-- <PackageVersion Include="Speckle.Sdk" Version="3.4.4" /> -->
     <PackageVersion Include="StructuralShapes" Version="0.0.5" />
     <PackageVersion Include="System.CodeDom" Version="4.4.0" />
     <PackageVersion Include="Testcontainers.MsSql" Version="4.1.0" />
     <PackageVersion Include="Testcontainers.PostgreSql" Version="4.1.0" />
     <PackageVersion Include="TngTech.ArchUnitNET" Version="0.11.3" />
-    <PackageVersion Include="TUnit" Version="0.19.148" />
-    <PackageVersion Include="Verify" Version="30.0.0" />
-    <PackageVersion Include="Verify.TUnit" Version="30.0.0" />
+    <PackageVersion Include="TUnit" Version="0.57.1" />
+    <PackageVersion Include="Verify" Version="30.7.3" />
+    <PackageVersion Include="Verify.SourceGenerators" Version="2.5.0" />
+    <PackageVersion Include="Verify.TUnit" Version="30.7.3" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0" />
     <!-- Testing -->

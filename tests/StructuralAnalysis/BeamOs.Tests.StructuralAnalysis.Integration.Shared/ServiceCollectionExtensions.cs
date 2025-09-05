@@ -47,7 +47,7 @@ public static class ServiceCollectionExtensions
             "InMemory"
         );
         services.AddKeyedScoped<
-            IQueryHandler<EmptyRequest, List<ModelInfoResponse>>,
+            IQueryHandler<EmptyRequest, ICollection<ModelInfoResponse>>,
             InMemoryGetModelsQueryHandler
         >("InMemory");
 

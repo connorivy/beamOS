@@ -146,12 +146,14 @@ public class Asserter
 
     public event EventHandler<ModelProposalResponse>? ModelProposalVerified;
 
-    public virtual Task VerifyModelProposal(Result<ModelProposalResponse> modelProposalResponse)
+    public virtual ValueTask VerifyModelProposal(
+        ApiResponse<ModelProposalResponse> modelProposalResponse
+    )
     {
         if (modelProposalResponse.IsSuccess)
         {
             ModelProposalVerified?.Invoke(typeof(Asserter), modelProposalResponse.Value);
         }
-        return Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
 }

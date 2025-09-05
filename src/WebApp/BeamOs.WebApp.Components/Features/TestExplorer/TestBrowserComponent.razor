@@ -1,6 +1,7 @@
 @using BeamOs.CodeGen.EditorApi
 @using BeamOs.CodeGen.StructuralAnalysisApiClient
 @using BeamOs.StructuralAnalysis.Contracts.Common
+@using BeamOs.StructuralAnalysis.Sdk
 @using BeamOs.Tests.Common
 @using BeamOs.Tests.Runtime.TestRunner
 @using BeamOs.WebApp.Components.Features.Editor
@@ -62,7 +63,7 @@
     public LoadBeamOsEntityCommandHandler2 LoadBeamOsEntityCommandHandler2 { get; init; }
 
     [Inject]
-    public IStructuralAnalysisApiClientV1 StructuralAnalysisApiClient { get; init; }
+    public BeamOsResultApiClient StructuralAnalysisApiClient { get; init; }
 
     [Inject]
     public TestInfoRetriever TestInfoRetriever { get; init; }

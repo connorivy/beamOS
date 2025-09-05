@@ -64,7 +64,7 @@ public class LoadBeamOsEntityCommandHandler2(
 public record struct LoadBeamOsEntityCommand(
     IBeamOsEntityResponse EntityResponse,
     IEditorApiAlpha EditorApi
-) : ILoadEntityResponseCommand, IBeamOsClientCommand
+) : ILoadEntityResponseCommand, IBeamOsUndoableClientCommand
 {
     public Guid Id { get; init; } = Guid.NewGuid();
 
@@ -72,10 +72,10 @@ public record struct LoadBeamOsEntityCommand(
     public bool HandledByBlazor { get; init; }
     public bool HandledByServer { get; init; }
 
-    public IBeamOsClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
         throw new NotImplementedException();
 
-    public IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
         this with
         {
             HandledByEditor = args?.HandledByEditor ?? this.HandledByEditor,

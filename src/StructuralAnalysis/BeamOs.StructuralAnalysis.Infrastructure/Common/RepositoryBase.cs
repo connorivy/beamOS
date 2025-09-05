@@ -132,7 +132,7 @@ internal abstract class ModelResourceRepositoryBase<TId, TEntity>(
 internal abstract class AnalyticalResultRepositoryBase<TId, TEntity>(
     StructuralAnalysisDbContext dbContext
 ) : RepositoryBase<TId, TEntity>(dbContext), IAnalyticalResultRepository<TId, TEntity>
-    where TId : struct, IEquatable<TId>
+    where TId : struct, IIntBasedId, IEquatable<TId>
     where TEntity : BeamOsAnalyticalResultEntity<TId>
 {
     public async Task<TEntity?> GetSingle(ModelId modelId, ResultSetId resultSetId, TId id) =>
@@ -162,5 +162,29 @@ internal abstract class AnalyticalResultRepositoryBase<TId, TEntity>(
                 settingAndEntity.ModelSettings,
                 settingAndEntity.Entity
             );
+    }
+
+    public async Task<ModelSettingsAndEntity<TEntity[]>?> GetAllFromLoadCombinationWithModelSettings(
+        ModelId modelId,
+        ResultSetId resultSetId,
+        CancellationToken ct = default
+    )
+    {
+        var modelSettings = await this
+            .DbContext.Set<Model>()
+            .AsNoTracking()
+            .Where(m => m.Id == modelId)
+            .Select(m => m.Settings)
+            .FirstAsync(ct);
+
+        var settingAndEntity = await this
+            .DbContext.Set<TEntity>()
+            .AsNoTracking()
+            .Where(m => m.ModelId == modelId && m.ResultSetId == resultSetId)
+            .ToArrayAsync(ct);
+
+        return settingAndEntity is null
+            ? null
+            : new ModelSettingsAndEntity<TEntity[]>(modelSettings, settingAndEntity);
     }
 }

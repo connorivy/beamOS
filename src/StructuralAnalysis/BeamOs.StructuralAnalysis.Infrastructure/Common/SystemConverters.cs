@@ -31,14 +31,36 @@ public class DictIdToDoubleConverter : ValueConverter<Dictionary<LoadCaseId, dou
 {
     public DictIdToDoubleConverter()
         : base(
-            x =>
+            static x =>
                 JsonSerializer.Serialize(
                     x.ToDictionary(k => (int)k.Key, v => v.Value),
                     BeamOsSerializerOptions.Default
                 ),
-            x =>
+            static x =>
                 JsonSerializer
                     .Deserialize<Dictionary<int, double>>(x, BeamOsSerializerOptions.Default)
                     .ToDictionary(k => new LoadCaseId(k.Key), v => v.Value)
+        ) { }
+}
+
+public class DictIntToDoubleConverter : ValueConverter<Dictionary<int, double>, string>
+{
+    public DictIntToDoubleConverter()
+        : base(
+            static x => JsonSerializer.Serialize(x, BeamOsSerializerOptions.Default),
+            static x =>
+                JsonSerializer.Deserialize<Dictionary<int, double>>(
+                    x,
+                    BeamOsSerializerOptions.Default
+                )
+        ) { }
+}
+
+public class Vector3Converter : ValueConverter<Vector3, string>
+{
+    public Vector3Converter()
+        : base(
+            static x => JsonSerializer.Serialize(x, BeamOsSerializerOptions.Default),
+            static x => JsonSerializer.Deserialize<Vector3>(x, BeamOsSerializerOptions.Default)
         ) { }
 }

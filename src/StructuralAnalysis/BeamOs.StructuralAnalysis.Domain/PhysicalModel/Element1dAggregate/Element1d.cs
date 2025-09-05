@@ -252,7 +252,7 @@ public class Element1d : BeamOsModelEntity<Element1dId>
     }
 
     internal Point GetPointAtRatio(
-        UnitsNet.Ratio ratioAlongElement1d,
+        Ratio ratioAlongElement1d,
         IReadOnlyDictionary<Element1dId, Element1d>? elementStore = null,
         IReadOnlyDictionary<NodeId, NodeDefinition>? nodeStore = null
     )

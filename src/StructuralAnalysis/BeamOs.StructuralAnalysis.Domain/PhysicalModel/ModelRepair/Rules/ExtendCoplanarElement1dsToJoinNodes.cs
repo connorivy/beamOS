@@ -1,4 +1,3 @@
-using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
@@ -17,7 +16,8 @@ namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair.Rules;
 ///                   o (Element1d B)
 ///
 /// </summary>
-public sealed class ExtendCoplanarElement1dsToJoinNodes : BeamOrBraceVisitingRule
+public sealed class ExtendCoplanarElement1dsToJoinNodes(ModelRepairContext context)
+    : BeamOrBraceVisitingRule(context)
 {
     public override ModelRepairRuleType RuleType => ModelRepairRuleType.Standard;
 
@@ -35,12 +35,11 @@ public sealed class ExtendCoplanarElement1dsToJoinNodes : BeamOrBraceVisitingRul
         IList<InternalNode> nearbyEndInternalNodes,
         IEnumerable<Element1d> beamsAndBracesCloseToEnd,
         IEnumerable<Element1d> columnsCloseToEnd,
-        ModelProposalBuilder modelProposalBuilder,
         Length tolerance
     )
     {
         var axisAlignmentTolerance =
-            modelProposalBuilder.ModelRepairOperationParameters.GetAxisAlignmentTolerance(
+            this.Context.ModelProposalBuilder.ModelRepairOperationParameters.GetAxisAlignmentTolerance(
                 startNodeLocation,
                 endNodeLocation
             );
@@ -52,7 +51,7 @@ public sealed class ExtendCoplanarElement1dsToJoinNodes : BeamOrBraceVisitingRul
                 startNodeLocation,
                 endNodeLocation,
                 beamsAndBracesCloseToStart,
-                modelProposalBuilder,
+                this.Context.ModelProposalBuilder,
                 tolerance,
                 axisAlignmentTolerance
             );
@@ -64,7 +63,7 @@ public sealed class ExtendCoplanarElement1dsToJoinNodes : BeamOrBraceVisitingRul
                 endNodeLocation,
                 startNodeLocation,
                 beamsAndBracesCloseToEnd,
-                modelProposalBuilder,
+                this.Context.ModelProposalBuilder,
                 tolerance,
                 axisAlignmentTolerance
             );

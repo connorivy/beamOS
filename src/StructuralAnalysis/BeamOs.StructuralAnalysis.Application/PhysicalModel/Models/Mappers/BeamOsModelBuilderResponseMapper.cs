@@ -8,12 +8,9 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCases;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 using BeamOs.StructuralAnalysis.Sdk;
 using Riok.Mapperly.Abstractions;
@@ -29,11 +26,11 @@ public partial class BeamOsModelBuilderDomainMapper(Guid modelId)
 
     private ModelId GetModelId() => this.modelIdTyped;
 
-    public partial Model ToDomain(BeamOsModelBuilder builder);
+    public partial Model ToDomain(IBeamOsModel builder);
 
-    public DsmAnalysisModel ToDsm(BeamOsModelBuilder builder) => this.ToDsm(builder, out _);
+    public DsmAnalysisModel ToDsm(IBeamOsModel builder) => this.ToDsm(builder, out _);
 
-    public DsmAnalysisModel ToDsm(BeamOsModelBuilder builder, out Model model)
+    public DsmAnalysisModel ToDsm(IBeamOsModel builder, out Model model)
     {
         model = this.ToDomain(builder);
 

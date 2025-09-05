@@ -61,7 +61,7 @@
     [Inject]
     private IStructuralAnalysisApiClientV1 StructuralAnalysisApiAlphaClient { get; init; }
 
-    // private ComplexFieldTypeMarker parameterValues = StructuralApiClientComponent.GetSettableParameterProperties(typeof(CreateModelRequest), null, true);
+    // private ComplexFieldTypeMarker parameterValues = StructuralApiClientComponent.GetSettableParameterPropertiesAsync(typeof(CreateModelRequest), null, true);
 
     private bool validationSuccess;
     private string[] errors = [];

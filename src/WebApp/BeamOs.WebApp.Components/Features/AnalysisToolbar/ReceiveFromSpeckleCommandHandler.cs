@@ -1,7 +1,7 @@
+using System.Collections.Immutable;
 using BeamOs.CodeGen.SpeckleConnectorApi;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.WebApp.Components.Features.Common;
@@ -87,6 +87,33 @@ public sealed class ModelRepairClientCommandHandler(
             dispatcher.Dispatch(
                 new ProposalInfoState.ModelProposalInfoLoaded(result.Value.ModelProposal)
             );
+        }
+    }
+}
+
+public sealed class GetModelProposalsClientCommandHandler(
+    IStructuralAnalysisApiClientV1 structuralAnalysisApiClient,
+    IDispatcher dispatcher,
+    ISnackbar snackbar,
+    ILogger<GetModelProposalsClientCommandHandler> logger
+) : CommandHandlerBase<ModelRepairRequest, ICollection<ModelProposalInfo>>(snackbar, logger)
+{
+    protected override async Task<Result<ICollection<ModelProposalInfo>>> ExecuteCommandAsync(
+        ModelRepairRequest command,
+        CancellationToken ct = default
+    )
+    {
+        return await structuralAnalysisApiClient.GetModelProposalsAsync(command.ModelId, ct);
+    }
+
+    protected override void PostProcess(
+        ModelRepairRequest command,
+        Result<ICollection<ModelProposalInfo>> result
+    )
+    {
+        if (result.IsSuccess && result.Value is not null)
+        {
+            dispatcher.Dispatch(new ProposalInfoState.ModelProposalInfosLoaded([.. result.Value]));
         }
     }
 }

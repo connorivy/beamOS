@@ -1,7 +1,6 @@
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
-using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
@@ -17,6 +16,11 @@ public abstract class NodeProposalBase : BeamOsModelProposalEntity<NodeProposalI
 
     public abstract NodeDefinition ToDomain(
         Dictionary<Element1dProposalId, Element1d>? element1dProposalIdToNewIdDict = null
+    );
+
+    public abstract Point GetLocationPoint(
+        IReadOnlyDictionary<Element1dId, Element1d> elementStore,
+        IReadOnlyDictionary<NodeId, NodeDefinition> nodeStore
     );
 
     [Obsolete("EF Core Constructor")]
@@ -65,6 +69,11 @@ public sealed class NodeProposal : NodeProposalBase
         return new(this.ModelId, this.LocationPoint, this.Restraint, this.ExistingId);
     }
 
+    public override Point GetLocationPoint(
+        IReadOnlyDictionary<Element1dId, Element1d> element1dStore,
+        IReadOnlyDictionary<NodeId, NodeDefinition> nodeStore
+    ) => this.LocationPoint;
+
     [Obsolete("EF Core Constructor")]
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private NodeProposal()
@@ -112,6 +121,8 @@ public sealed class InternalNodeProposal : NodeProposalBase
     public Ratio RatioAlongElement1d { get; set; }
     public ExistingOrProposedElement1dId Element1dId { get; set; }
 
+    // public Element1dProposal? Element1dProposal { get; set; }
+
     public override InternalNode ToDomain(
         Dictionary<Element1dProposalId, Element1d>? element1dProposalIdToNewIdDict = null
     )
@@ -129,6 +140,32 @@ public sealed class InternalNodeProposal : NodeProposalBase
         {
             Element1d = element1d,
         };
+    }
+
+    public override Point GetLocationPoint(
+        IReadOnlyDictionary<Element1dId, Element1d> element1dStore,
+        IReadOnlyDictionary<NodeId, NodeDefinition> nodeStore
+    )
+    {
+        Element1d el = this.Element1dId.Match(
+            existingId =>
+            {
+                if (element1dStore.TryGetValue(existingId, out var element1d))
+                {
+                    return element1d;
+                }
+
+                throw new KeyNotFoundException(
+                    $"Element1d with ID {existingId} not found in element1d store."
+                );
+            },
+            static proposedId =>
+                throw new NotImplementedException(
+                    "Getting location for internal node proposal that is based on a proposed element1d is not implemented."
+                )
+        );
+
+        return el.GetPointAtRatio(this.RatioAlongElement1d, element1dStore, nodeStore);
     }
 
     [Obsolete("EF Core Constructor")]

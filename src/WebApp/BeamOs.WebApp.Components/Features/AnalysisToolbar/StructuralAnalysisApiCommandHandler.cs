@@ -34,7 +34,7 @@ public sealed class RunDsmCommandCommandHandler(
             },
             ct
         );
-        //var result = await structuralAnalysisApiClientV1.RunDirectStiffnessMethodAsync(
+        //var result = await structuralAnalysisApiClientV1.RunDirectStiffnessMethodAsyncAsync(
         //    command.ModelId,
         //    command.UnitsOverride,
         //    ct

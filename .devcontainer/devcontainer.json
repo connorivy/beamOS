@@ -17,8 +17,8 @@
     "customizations": {
         "vscode": {
             "extensions": [
-                "ms-dotnettools.csharp",
-                "ms-dotnettools.csdevkit",
+                "ms-dotnettools.csharp@prerelease",
+                "ms-dotnettools.csdevkit@prerelease",
                 "ms-azuretools.vscode-docker",
                 "eamodio.gitlens",
                 "ms-vscode-remote.remote-containers",
@@ -42,7 +42,9 @@
     "forwardPorts": [
         5000,
         5001,
-        5432
+        5432,
+        5178,
+        35482
     ],
     // "portsAttributes": {
     //		"5001": {

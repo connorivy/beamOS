@@ -1,5 +1,6 @@
 using System.Numerics;
 using BeamOs.StructuralAnalysis.Domain.Common;
+using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
@@ -355,5 +356,68 @@ public static class ModelRepairRuleUtils
             return false;
         }
         return true;
+    }
+
+    public static double GetToleranceValue(
+        AxisAlignmentToleranceLevel level,
+        ModelRepairOperationParameters p
+    )
+    {
+        return level switch
+        {
+            AxisAlignmentToleranceLevel.VeryStrict => p.VeryStrictTolerance.Meters,
+            AxisAlignmentToleranceLevel.Strict => p.StrictTolerance.Meters,
+            AxisAlignmentToleranceLevel.Standard => p.StandardTolerance.Meters,
+            AxisAlignmentToleranceLevel.Relaxed => p.RelaxedTolerance.Meters,
+            AxisAlignmentToleranceLevel.VeryRelaxed => p.VeryRelaxedTolerance.Meters,
+            _ => p.StandardTolerance.Meters,
+        };
+    }
+
+    public static AxisAlignmentTolerance GetAxisAlignmentTolerance(
+        Point startNodeLocation,
+        Point endNodeLocation,
+        ModelRepairOperationParameters modelRepairOperationParameters
+    )
+    {
+        return new(
+            GetAxisAlignmentToleranceLevel(
+                startNodeLocation.X - endNodeLocation.X,
+                modelRepairOperationParameters
+            ),
+            GetAxisAlignmentToleranceLevel(
+                startNodeLocation.Y - endNodeLocation.Y,
+                modelRepairOperationParameters
+            ),
+            GetAxisAlignmentToleranceLevel(
+                startNodeLocation.Z - endNodeLocation.Z,
+                modelRepairOperationParameters
+            )
+        );
+    }
+
+    public static AxisAlignmentToleranceLevel GetAxisAlignmentToleranceLevel(
+        Length length,
+        ModelRepairOperationParameters modelRepairOperationParameters
+    )
+    {
+        length = length.Abs();
+        if (length < modelRepairOperationParameters.VeryStrictTolerance)
+        {
+            return AxisAlignmentToleranceLevel.VeryStrict;
+        }
+        if (length < modelRepairOperationParameters.StrictTolerance)
+        {
+            return AxisAlignmentToleranceLevel.Strict;
+        }
+        if (length < modelRepairOperationParameters.StandardTolerance)
+        {
+            return AxisAlignmentToleranceLevel.Standard;
+        }
+        if (length < modelRepairOperationParameters.RelaxedTolerance)
+        {
+            return AxisAlignmentToleranceLevel.Relaxed;
+        }
+        return AxisAlignmentToleranceLevel.VeryRelaxed;
     }
 }

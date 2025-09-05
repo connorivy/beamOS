@@ -5,4 +5,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(CODEGEN)' == 'true'">
+    <DefineConstants>$(DefineConstants);CODEGEN</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(CODEGEN)' == 'true'">
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" />
+  </ItemGroup>
+
 </Project>

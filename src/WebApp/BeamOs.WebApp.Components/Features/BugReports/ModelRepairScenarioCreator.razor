@@ -1,0 +1,58 @@
+@using MudBlazor
+@inherits FluxorComponent
+
+<MudCard>
+    <MudCardHeader>
+        <MudStack Direction="Row" AlignItems="MudBlazor.AlignItems.Center" Spacing="1">
+            <MudIcon Icon="@Icons.Material.Filled.BugReport" Color="Color.Primary" Size="Size.Large" />
+            <MudText Typo="Typo.h6" Class="ml-2">Model Repair Bug Report</MudText>
+        </MudStack>
+    </MudCardHeader>
+    @{
+        bool showNextStep = true;
+        bool showSubmitButton = false;
+        string? disableNextStepReason = null;
+    }
+    <MudCardContent>
+        @switch (state.Value.Step)
+        {
+            case ModelRepairBugReportStep.SelectElements:
+                if (editorState.Value.SelectedObjects.Length < 2)
+                {
+                    disableNextStepReason = "Please select at least two elements.";
+                }
+                <MudText Typo="Typo.subtitle1" Class="mb-1">Step 1: Select Elements</MudText>
+                <MudDivider Class="mb-2" />
+                <MudAlert Severity="Severity.Info" Variant="Variant.Filled" Dense="true" Class="mb-2">Select at least two
+                    elements in the model to report a bug.</MudAlert>
+                break;
+            case ModelRepairBugReportStep.DescribeExpectedState:
+                showNextStep = false;
+                showSubmitButton = true;
+                <MudText Typo="Typo.subtitle1" Class="mb-1">Step 2: Describe Expected State</MudText>
+                <MudDivider Class="mb-2" />
+                <MudText Class="mb-4">Describe the expected state of the selected elements after the repair.</MudText>
+                <MudTextField AutoGrow @bind-Value="this.ExpectedStateDescription" Variant="Variant.Outlined" FullWidth="true"
+                    Lines="3" MaxLines="10" Label="Expected State Description"
+                    Placeholder="e.g., Element 123 should have it's start node ID = 456..."
+                    HelperText="Be specific and reference elements by their IDs." />
+                break;
+            default:
+                throw new InvalidOperationException("Invalid step in Model Repair Bug Report.");
+        }
+    </MudCardContent>
+    <MudCardActions Class="justify-end mt-4">
+        <MudButton OnClick="@Cancel" Color="Color.Error" Variant="Variant.Text">Cancel</MudButton>
+        @if (showNextStep)
+        {
+            <MudTooltip Text="@disableNextStepReason">
+                <MudButton OnClick="@NextStep" Disabled="@(disableNextStepReason is not null)" Color="Color.Primary"
+                    Variant="Variant.Filled">Next Step</MudButton>
+            </MudTooltip>
+        }
+        else if (showSubmitButton)
+        {
+            <MudButton OnClick="@Submit" Color="Color.Primary" Variant="Variant.Filled">Submit</MudButton>
+        }
+    </MudCardActions>
+</MudCard>

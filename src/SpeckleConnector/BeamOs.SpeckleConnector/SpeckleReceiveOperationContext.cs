@@ -1,18 +1,47 @@
+using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Sdk;
-using Objects.BuiltElements.Revit;
+using Speckle.Objects.Data;
+using Speckle.Sdk.Models.Collections;
 
 namespace BeamOs.SpeckleConnector;
 
 public class SpeckleReceiveOperationContext
 {
     public BeamOsModelProposalBuilder ProposalBuilder { get; } = new();
-    private readonly Dictionary<Type, Dictionary<string, int>> cache = [];
+    private readonly Dictionary<BeamOsObjectType, Dictionary<string, int>> cache = [];
+    private readonly Dictionary<string, Length> levelCache = [];
 
-    public int? GetConvertedId(Type type, string identifier)
+    public void AddLevel(string name, Length level)
+    {
+        this.levelCache[name] = level;
+    }
+
+    public Length? GetLevelElevation(string name)
+    {
+        if (name == "Top of Parapet")
+        {
+            return new Length(6141, LengthUnit.Millimeter);
+        }
+        else if (name == "Level 2")
+        {
+            return new Length(2900, LengthUnit.Millimeter);
+        }
+        else if (name == "Ref Beam system")
+        {
+            return new Length(2398, LengthUnit.Millimeter);
+        }
+        if (this.levelCache.TryGetValue(name, out var level))
+        {
+            return level;
+        }
+        return null;
+    }
+
+    public int? GetConvertedId(BeamOsObjectType type, string identifier)
     {
         if (
             this.cache.TryGetValue(type, out var typeCache)
@@ -24,7 +53,7 @@ public class SpeckleReceiveOperationContext
         return null;
     }
 
-    public void SaveConvertedId(Type type, string identifier, int id)
+    public void SaveConvertedId(BeamOsObjectType type, string identifier, int id)
     {
         if (!this.cache.TryGetValue(type, out var typeCache))
         {
@@ -62,15 +91,21 @@ public class SpeckleReceiveOperationContext
             + 1;
     }
 
-    public static LengthUnitContract SpeckleUnitsToUnitsNet(string speckleUnit)
+    public static LengthUnitContract SpeckleUnitsToContract(string speckleUnit)
     {
-        return speckleUnit switch
+        var unitsNetUnit = SpeckleUnitsToUnitsNet(speckleUnit);
+        return unitsNetUnit.MapToContract();
+    }
+
+    public static LengthUnit SpeckleUnitsToUnitsNet(string speckleUnit)
+    {
+        return speckleUnit.ToLowerInvariant() switch
         {
-            "mm" or "millimeter" => LengthUnitContract.Millimeter,
-            "cm" or "centimeter" => LengthUnitContract.Centimeter,
-            "m" or "meter" => LengthUnitContract.Meter,
-            "ft" or "feet" or "foot" => LengthUnitContract.Foot,
-            "in" or "inch" => LengthUnitContract.Inch,
+            "mm" or "millimeter" or "millimeters" => LengthUnit.Millimeter,
+            "cm" or "centimeter" or "centimeters" => LengthUnit.Centimeter,
+            "m" or "meter" or "meters" => LengthUnit.Meter,
+            "ft" or "foot" or "feet" => LengthUnit.Foot,
+            "in" or "inch" or "inches" => LengthUnit.Inch,
             _ => throw new NotSupportedException("Unsupported unit: " + speckleUnit),
         };
     }
@@ -81,12 +116,14 @@ public class RevitBeamConverter(
     RevitNodeConverter revitNodeConverter,
     RevitSectionProfileConverter revitSectionProfileConverter,
     RevitMaterialConverter revitMaterialConverter
-) : ToProposalConverter<RevitBeam>(context), ITopLevelProposalConverter<RevitBeam>
+) : ToProposalConverter<RevitObject>(context)
 {
-    protected override int AddToProposalBuilder(RevitBeam item)
+    protected override BeamOsObjectType BeamOsObjectType => BeamOsObjectType.Element1d;
+
+    protected override int AddToProposalBuilder(RevitObject item)
     {
         int id = this.Context.ProposalBuilder.CreateElement1dProposals.Count + 1;
-        if (item.baseLine is not Objects.Geometry.Line baseline)
+        if (item.location is not Speckle.Objects.Geometry.Line baseline)
         {
             this.Context.AddIssue(
                 BeamOsObjectType.Element1d,
@@ -94,7 +131,7 @@ public class RevitBeamConverter(
                 id,
                 ProposalIssueCode.CouldNotCreateProposedObject,
                 ProposalIssueSeverity.Error,
-                "Unsupported baseLine type: " + item.baseLine.GetType()
+                "Unsupported baseLine type: " + item.location?.GetType()
             );
             return id;
         }
@@ -120,7 +157,9 @@ public class RevitBeamConverter(
         return id;
     }
 
-    protected override string GetIdentifier(RevitBeam item) => item.id;
+    protected override string GetIdentifier(RevitObject item) =>
+        item.id
+        ?? throw new ArgumentNullException(nameof(item.id), "RevitObject id cannot be null");
 }
 
 public class RevitColumnConverter(
@@ -128,12 +167,14 @@ public class RevitColumnConverter(
     RevitNodeConverter revitNodeConverter,
     RevitSectionProfileConverter revitSectionProfileConverter,
     RevitMaterialConverter revitMaterialConverter
-) : ToProposalConverter<RevitColumn>(context), ITopLevelProposalConverter<RevitColumn>
+) : ToProposalConverter<RevitObject>(context)
 {
-    protected override int AddToProposalBuilder(RevitColumn item)
+    protected override BeamOsObjectType BeamOsObjectType => BeamOsObjectType.Element1d;
+
+    protected override int AddToProposalBuilder(RevitObject item)
     {
         int id = this.Context.ProposalBuilder.CreateElement1dProposals.Count + 1;
-        if (item.baseLine is not Objects.Geometry.Line baseline)
+        if (item.location is not Speckle.Objects.Geometry.Point point)
         {
             this.Context.AddIssue(
                 BeamOsObjectType.Element1d,
@@ -141,13 +182,46 @@ public class RevitColumnConverter(
                 id,
                 ProposalIssueCode.CouldNotCreateProposedObject,
                 ProposalIssueSeverity.Error,
-                "Unsupported baseLine type: " + item.baseLine.GetType()
+                "Unsupported location type: " + item.location?.GetType()
             );
             return id;
         }
 
-        var startNodeId = revitNodeConverter.ConvertAndReturnId(baseline.start);
-        var endNodeId = revitNodeConverter.ConvertAndReturnId(baseline.end);
+        var constraints =
+            (IReadOnlyDictionary<string, object>)
+                (
+                    (IReadOnlyDictionary<string, object>)
+                        ((IReadOnlyDictionary<string, object>)item.properties["Parameters"])[
+                            "Instance Parameters"
+                        ]
+                )["Constraints"];
+        var levelName = (string)
+            ((IReadOnlyDictionary<string, object>)constraints["Top Level"])["value"];
+        var topOffsetObject = ((IReadOnlyDictionary<string, object>)constraints["Top Offset"])[
+            "value"
+        ];
+        var topOffset = Convert.ToDouble(topOffsetObject);
+        var offsetUnit = (string)
+            ((IReadOnlyDictionary<string, object>)constraints["Top Offset"])["units"];
+        var strongOffsetUnits = SpeckleReceiveOperationContext.SpeckleUnitsToUnitsNet(offsetUnit);
+        var pointUnits = SpeckleReceiveOperationContext.SpeckleUnitsToUnitsNet(point.units);
+
+        var levelElevation =
+            this.Context.GetLevelElevation(levelName)
+            ?? throw new ArgumentException($"Level '{levelName}' not found in the context.");
+
+        var topPoint = new Speckle.Objects.Geometry.Point(
+            point.x,
+            point.y,
+            (levelElevation + new Length(topOffset, strongOffsetUnits)).As(pointUnits),
+            point.units
+        )
+        {
+            id = item.id + "_topPoint",
+        };
+
+        var startNodeId = revitNodeConverter.ConvertAndReturnId(point);
+        var endNodeId = revitNodeConverter.ConvertAndReturnId(topPoint);
 
         this.Context.ProposalBuilder.CreateElement1dProposals.Add(
             new()
@@ -167,16 +241,20 @@ public class RevitColumnConverter(
         return id;
     }
 
-    protected override string GetIdentifier(RevitColumn item) => item.id;
+    protected override string GetIdentifier(RevitObject item) =>
+        item.id
+        ?? throw new ArgumentNullException(nameof(item.id), "RevitObject id cannot be null");
 }
 
 public class RevitNodeConverter(SpeckleReceiveOperationContext context)
-    : ToProposalConverter<Objects.Geometry.Point>(context)
+    : ToProposalConverter<Speckle.Objects.Geometry.Point>(context)
 {
-    protected override int AddToProposalBuilder(Objects.Geometry.Point item)
+    protected override BeamOsObjectType BeamOsObjectType => BeamOsObjectType.Node;
+
+    protected override int AddToProposalBuilder(Speckle.Objects.Geometry.Point item)
     {
         var id = this.Context.ProposalBuilder.CreateNodeProposals.Count + 1;
-        var lengthUnit = SpeckleReceiveOperationContext.SpeckleUnitsToUnitsNet(item.units);
+        var lengthUnit = SpeckleReceiveOperationContext.SpeckleUnitsToContract(item.units);
         this.Context.ProposalBuilder.CreateNodeProposals.Add(
             new()
             {
@@ -196,12 +274,14 @@ public class RevitNodeConverter(SpeckleReceiveOperationContext context)
         return id;
     }
 
-    protected override string GetIdentifier(Objects.Geometry.Point item) => item.id;
+    protected override string GetIdentifier(Speckle.Objects.Geometry.Point item) => item.id;
 }
 
 public class RevitSectionProfileConverter(SpeckleReceiveOperationContext context)
     : ToProposalConverter<SectionProfileName>(context)
 {
+    protected override BeamOsObjectType BeamOsObjectType => BeamOsObjectType.SectionProfile;
+
     protected override int AddToProposalBuilder(SectionProfileName item)
     {
         var id = this.Context.GetNextSectionProfileId();
@@ -270,6 +350,8 @@ public readonly record struct MaterialName(string Name)
 public class RevitMaterialConverter(SpeckleReceiveOperationContext context)
     : ToProposalConverter<MaterialName>(context)
 {
+    protected override BeamOsObjectType BeamOsObjectType => BeamOsObjectType.Material;
+
     protected override int AddToProposalBuilder(MaterialName item)
     {
         var id = this.Context.ProposalBuilder.CreateMaterialProposals.Count + 1;
@@ -296,42 +378,68 @@ public class RevitMaterialConverter(SpeckleReceiveOperationContext context)
     protected override string GetIdentifier(MaterialName item) => item;
 }
 
-public interface ITopLevelProposalConverter<T> : ITopLevelProposalConverter
+public class CollectionConverter(SpeckleReceiveOperationContext context)
+    : ToProposalConverter<Collection>(context)
 {
-    public int ConvertAndReturnId(T item);
+    protected override BeamOsObjectType BeamOsObjectType => BeamOsObjectType.Other;
+
+    protected override int AddToProposalBuilder(Collection item)
+    {
+        if (item["properties"] is not IReadOnlyDictionary<string, object> properties)
+        {
+            return 0;
+        }
+        if (
+            properties["elevation"] is not double elevation
+            || properties["units"] is not string units
+        )
+        {
+            return 0;
+        }
+
+        var strongUnits = SpeckleReceiveOperationContext.SpeckleUnitsToUnitsNet(units);
+        this.Context.AddLevel(item.name, new Length(elevation, strongUnits));
+
+        return 0;
+    }
+
+    protected override string GetIdentifier(Collection item) => "Collection_" + item.name;
 }
 
-public interface ITopLevelProposalConverter
+public abstract class ToProposalConverter
 {
-    public int ConvertAndReturnId(object item);
+    public abstract int ConvertAndReturnId(object item);
 }
 
-public abstract class ToProposalConverter<T>(SpeckleReceiveOperationContext context)
+public abstract class ToProposalConverter<TObject>(SpeckleReceiveOperationContext context)
+    : ToProposalConverter
 {
     protected SpeckleReceiveOperationContext Context => context;
-    protected abstract int AddToProposalBuilder(T item);
+    protected abstract int AddToProposalBuilder(TObject item);
 
-    protected abstract string GetIdentifier(T item);
+    protected abstract string GetIdentifier(TObject item);
 
-    public int ConvertAndReturnId(T item)
+    protected abstract BeamOsObjectType BeamOsObjectType { get; }
+
+    public int ConvertAndReturnId(TObject item)
     {
         var identifier = this.GetIdentifier(item);
 
-        if (context.GetConvertedId(typeof(T), identifier) is int id)
+        if (context.GetConvertedId(this.BeamOsObjectType, identifier) is int id)
         {
             return id;
         }
         var newId = this.AddToProposalBuilder(item);
-        context.SaveConvertedId(typeof(T), identifier, newId);
+        context.SaveConvertedId(this.BeamOsObjectType, identifier, newId);
         return newId;
     }
 
-    public int ConvertAndReturnId(object item)
+    public override int ConvertAndReturnId(object item)
     {
-        if (item is not T typedItem)
+        if (item is not TObject typedItem)
         {
-            throw new InvalidOperationException(
-                "Item is not of the expected type: " + typeof(T).FullName
+            throw new ArgumentException(
+                $"Expected item of type {typeof(TObject).Name}, but got {item.GetType().Name}."
             );
         }
         return this.ConvertAndReturnId(typedItem);

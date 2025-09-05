@@ -5,7 +5,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
-public class NodeMergeRule : IndividualNodeVisitingRule
+public class NodeMergeRule(ModelRepairContext context) : IndividualNodeVisitingRule(context)
 {
     public override ModelRepairRuleType RuleType => ModelRepairRuleType.Unfavorable;
 
@@ -16,10 +16,10 @@ public class NodeMergeRule : IndividualNodeVisitingRule
         IList<Node> nearbyNodes,
         IList<InternalNode> nearbyInternalNodes,
         IList<Element1d> nearbyElement1ds,
-        ModelProposalBuilder modelProposalBuilder,
         Length tolerance
     )
     {
+        var modelProposalBuilder = this.Context.ModelProposalBuilder;
         var nearestNodeWithinTolerance = nearbyNodes
             .Concat<NodeDefinition>(nearbyInternalNodes)
             .Select(definition =>
@@ -70,11 +70,9 @@ public class NodeMergeRule : IndividualNodeVisitingRule
         ModelProposalBuilder modelProposalBuilder
     )
     {
+        IReadOnlyDictionary<NodeId, NodeDefinition> nodeStore = modelProposalBuilder.NodeStore;
         return nodeLocation.CalculateDistance(
-            nodeDefinition.GetLocationPoint(
-                modelProposalBuilder.Element1dStore,
-                modelProposalBuilder.NodeStore
-            )
+            nodeDefinition.GetLocationPoint(modelProposalBuilder.Element1dStore, nodeStore)
         );
     }
 }

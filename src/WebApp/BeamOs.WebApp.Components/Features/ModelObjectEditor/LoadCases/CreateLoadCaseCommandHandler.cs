@@ -42,7 +42,7 @@ public sealed class CreateLoadCaseClientCommandHandler(
     }
 }
 
-public record CreateLoadCaseClientCommand(LoadCaseData Data) : IBeamOsClientCommand
+public record CreateLoadCaseClientCommand(LoadCaseData Data) : IBeamOsUndoableClientCommand
 {
     public Guid Id { get; } = Guid.NewGuid();
     public bool HandledByEditor { get; init; }
@@ -57,7 +57,7 @@ public record CreateLoadCaseClientCommand(LoadCaseData Data) : IBeamOsClientComm
     /// </summary>
     public int? LoadCaseId { get; init; }
 
-    public IBeamOsClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
         new DeleteLoadCaseClientCommand
         {
             ModelId = this.ModelId,
@@ -68,7 +68,7 @@ public record CreateLoadCaseClientCommand(LoadCaseData Data) : IBeamOsClientComm
             HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 
-    public IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
         this with
         {
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
@@ -77,7 +77,7 @@ public record CreateLoadCaseClientCommand(LoadCaseData Data) : IBeamOsClientComm
         };
 }
 
-public record DeleteLoadCaseClientCommand : IBeamOsClientCommand
+public record DeleteLoadCaseClientCommand : IBeamOsUndoableClientCommand
 {
     public Guid Id { get; } = Guid.NewGuid();
     public bool HandledByEditor { get; init; }
@@ -87,7 +87,7 @@ public record DeleteLoadCaseClientCommand : IBeamOsClientCommand
     public int LoadCaseId { get; init; }
     public required LoadCaseData Data { get; init; }
 
-    public IBeamOsClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
         new CreateLoadCaseClientCommand(this.Data)
         {
             ModelId = this.ModelId,
@@ -97,7 +97,7 @@ public record DeleteLoadCaseClientCommand : IBeamOsClientCommand
             HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 
-    public IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
         this with
         {
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,

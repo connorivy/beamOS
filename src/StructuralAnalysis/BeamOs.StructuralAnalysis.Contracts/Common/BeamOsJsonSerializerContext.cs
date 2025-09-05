@@ -59,7 +59,7 @@ namespace BeamOs.StructuralAnalysis.Contracts.Common;
 [JsonSerializable(typeof(IEnumerable<IEntityProposal>))]
 [JsonSerializable(typeof(IEnumerable<EntityProposal>))]
 [JsonSerializable(typeof(Result<ModelProposalResponse>))]
-[JsonSerializable(typeof(Result<List<ModelProposalInfo>>))]
+[JsonSerializable(typeof(Result<ICollection<ModelProposalInfo>>))]
 [JsonSerializable(typeof(IEnumerable<LoadCombination>))]
 [JsonSerializable(typeof(Result<NodeResponse>))]
 [JsonSerializable(typeof(Result<ModelResponse>))]
@@ -73,7 +73,7 @@ namespace BeamOs.StructuralAnalysis.Contracts.Common;
 [JsonSerializable(typeof(Result<NodeResultResponse>))]
 [JsonSerializable(typeof(Result<ResultSetResponse>))]
 [JsonSerializable(typeof(Result<ModelEntityResponse>))]
-[JsonSerializable(typeof(Result<List<ModelInfoResponse>>))]
+[JsonSerializable(typeof(Result<ICollection<ModelInfoResponse>>))]
 [JsonSerializable(typeof(Result<AnalyticalResultsResponse>))]
 [JsonSerializable(typeof(Result<BatchResponse>))]
 [JsonSerializable(typeof(Result<BeamOsModelBuilderDto>))]
@@ -87,6 +87,7 @@ namespace BeamOs.StructuralAnalysis.Contracts.Common;
 [JsonSerializable(typeof(Result))]
 [JsonSerializable(typeof(GithubModelsChatRequest))]
 [JsonSerializable(typeof(Result<GithubModelsChatResponse>))]
+[JsonSerializable(typeof(ProblemDetails))]
 internal partial class BeamOsJsonSerializerContext : JsonSerializerContext { }
 
 public static class BeamOsSerializerOptions

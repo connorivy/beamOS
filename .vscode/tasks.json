@@ -8,5 +8,17 @@
       "args": ["build", "${workspaceFolder}"],
       "problemMatcher": "$msCompile"
     }
+    ,
+    {
+      "label": "build-codegen",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/codeGen/BeamOs.CodeGen.ApiGenerator/BeamOs.CodeGen.ApiGenerator.csproj",
+        "-p:CODEGEN=true"
+      ],
+      "problemMatcher": "$msCompile"
+    }
   ]
 }

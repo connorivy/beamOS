@@ -27,9 +27,9 @@ public class CreateModelProposal(CreateModelProposalCommandHandler createProposa
 [BeamOsEndpointType(Http.Get)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Reviewer)]
 public class GetModelProposals(GetModelProposalsQueryHandler getModelProposalQueryHandler)
-    : BeamOsModelIdRequestBaseEndpoint<List<ModelProposalInfo>>
+    : BeamOsModelIdRequestBaseEndpoint<ICollection<ModelProposalInfo>>
 {
-    public override async Task<Result<List<ModelProposalInfo>>> ExecuteRequestAsync(
+    public override async Task<Result<ICollection<ModelProposalInfo>>> ExecuteRequestAsync(
         ModelResourceRequest req,
         CancellationToken ct = default
     ) => await getModelProposalQueryHandler.ExecuteAsync(req.ModelId, ct);

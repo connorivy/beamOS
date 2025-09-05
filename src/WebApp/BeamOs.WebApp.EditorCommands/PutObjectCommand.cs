@@ -4,14 +4,16 @@ using BeamOs.WebApp.EditorCommands.Interfaces;
 namespace BeamOs.WebApp.EditorCommands;
 
 public abstract record PutObjectCommand<TObject>(TObject? Previous, TObject? New)
-    : IBeamOsClientCommand
+    : IBeamOsUndoableClientCommand
 {
     public Guid Id { get; } = Guid.NewGuid();
     public bool HandledByEditor { get; init; }
     public bool HandledByBlazor { get; init; }
     public bool HandledByServer { get; init; }
 
-    public virtual IBeamOsClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
+    public virtual IBeamOsUndoableClientCommand GetUndoCommand(
+        BeamOsClientCommandArgs? args = null
+    ) =>
         this with
         {
             New = this.Previous,
@@ -21,7 +23,7 @@ public abstract record PutObjectCommand<TObject>(TObject? Previous, TObject? New
             HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 
-    public virtual IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
+    public virtual IBeamOsUndoableClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
         this with
         {
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
@@ -30,14 +32,17 @@ public abstract record PutObjectCommand<TObject>(TObject? Previous, TObject? New
         };
 }
 
-public record PutNodeClientCommand(NodeResponse Previous, NodeResponse New) : IBeamOsClientCommand
+public record PutNodeClientCommand(NodeResponse Previous, NodeResponse New)
+    : IBeamOsUndoableClientCommand
 {
     public Guid Id { get; } = Guid.NewGuid();
     public bool HandledByEditor { get; init; }
     public bool HandledByBlazor { get; init; }
     public bool HandledByServer { get; init; }
 
-    public virtual IBeamOsClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
+    public virtual IBeamOsUndoableClientCommand GetUndoCommand(
+        BeamOsClientCommandArgs? args = null
+    ) =>
         this with
         {
             New = this.Previous,
@@ -47,7 +52,7 @@ public record PutNodeClientCommand(NodeResponse Previous, NodeResponse New) : IB
             HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 
-    public virtual IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
+    public virtual IBeamOsUndoableClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
         this with
         {
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,

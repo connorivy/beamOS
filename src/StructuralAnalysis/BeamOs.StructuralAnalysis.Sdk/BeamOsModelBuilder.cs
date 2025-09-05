@@ -1,98 +1,44 @@
-using BeamOs.CodeGen.StructuralAnalysisApiClient;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCombinations;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Materials;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoads;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
+using BeamOs.StructuralAnalysis.Api;
 
 namespace BeamOs.StructuralAnalysis.Sdk;
 
-public abstract class BeamOsModelBuilder
+public class BeamOsModelBuilder(IBeamOsModel model, IStructuralAnalysisApiClientV2 apiClient)
 {
-    public abstract string Name { get; }
-    public abstract string Description { get; }
-    public abstract ModelSettings Settings { get; }
-    public DateTimeOffset LastModified { get; } = DateTimeOffset.UtcNow;
-
-    /// <summary>
-    /// You can go to this website to generate a random guid string
-    /// https://www.uuidgenerator.net/guid
-    /// </summary>
-    public abstract string GuidString { get; }
-    public Guid Id => Guid.Parse(this.GuidString);
-
-    public IEnumerable<PutNodeRequest> Nodes => this.NodeRequests();
-    public abstract IEnumerable<PutNodeRequest> NodeRequests();
-    public IEnumerable<InternalNode> InternalNodes => this.InternalNodeRequests();
-
-    public virtual IEnumerable<InternalNode> InternalNodeRequests() => [];
-
-    public IEnumerable<PutMaterialRequest> Materials => this.MaterialRequests();
-    public abstract IEnumerable<PutMaterialRequest> MaterialRequests();
-    public IEnumerable<PutSectionProfileRequest> SectionProfiles => this.SectionProfileRequests();
-
-    public virtual IEnumerable<PutSectionProfileRequest> SectionProfileRequests() => [];
-
-    public IEnumerable<SectionProfileFromLibrary> SectionProfilesFromLibrary =>
-        this.SectionProfilesFromLibraryRequests();
-
-    public virtual IEnumerable<SectionProfileFromLibrary> SectionProfilesFromLibraryRequests() =>
-        [];
-
-    public IEnumerable<PutElement1dRequest> Element1ds => this.Element1dRequests();
-    public abstract IEnumerable<PutElement1dRequest> Element1dRequests();
-    public IEnumerable<PutPointLoadRequest> PointLoads => this.PointLoadRequests();
-
-    public virtual IEnumerable<PutPointLoadRequest> PointLoadRequests() => [];
-
-    public IEnumerable<PutMomentLoadRequest> MomentLoads => this.MomentLoadRequests();
-
-    public virtual IEnumerable<PutMomentLoadRequest> MomentLoadRequests() => [];
-
-    public IEnumerable<LoadCase> LoadCases => this.LoadCaseRequests();
-
-    public abstract IEnumerable<LoadCase> LoadCaseRequests();
-
-    public IEnumerable<LoadCombination> LoadCombinations => this.LoadCombinationRequests();
-
-    public abstract IEnumerable<LoadCombination> LoadCombinationRequests();
-
     private static readonly AsyncGuidLockManager LockManager = new();
 
-    private async Task<bool> Build(IStructuralAnalysisApiClientV1 apiClient, bool createOnly)
-    {
-        if (!Guid.TryParse(this.GuidString, out var modelId))
-        {
-            throw new Exception("Guid string is not formatted correctly");
-        }
+    /// <summary>
+    /// Create the current model, but only if a model doesn't already exist in the current model repository
+    /// (could be a local or online repository)
+    /// </summary>
+    /// <returns>a bool that is true if the model was created or false if it already existed</returns>
+    public async Task<bool> CreateOnly() => await this.Build(true);
 
+    /// <summary>
+    /// Create the current model if it doesn't exist in the current model repository, or update the
+    /// model if it does exist. Only the elements added to the this model builder instance will be updated.
+    /// Other existing elements in the model will not be affected.
+    /// </summary>
+    /// <returns>a bool that is true if the model was created or false if it already existed</returns>
+    public async Task<bool> CreateOrUpdate() => await this.Build(false);
+
+    private async Task<bool> Build(bool createOnly)
+    {
         return await LockManager.ExecuteWithLockAsync(
-            modelId,
-            async () =>
-            {
-                return await this.Build(apiClient, createOnly, modelId);
-            }
+            model.Id,
+            async () => await this.Build(createOnly, model.Id)
         );
     }
 
-    private async Task<bool> Build(
-        IStructuralAnalysisApiClientV1 apiClient,
-        bool createOnly,
-        Guid modelId
-    )
+    private async Task<bool> Build(bool createOnly, Guid modelId)
     {
         try
         {
-            var createModelResult = await apiClient.CreateModelAsync(
+            var createModelResult = await apiClient.CreateModel(
                 new()
                 {
-                    Name = this.Name,
-                    Description = this.Description,
-                    Settings = this.Settings,
+                    Name = model.Name,
+                    Description = model.Description,
+                    Settings = model.Settings,
                     Id = modelId,
                 }
             );
@@ -106,54 +52,74 @@ public abstract class BeamOsModelBuilder
             }
         }
 
-        foreach (var el in ChunkRequests(this.NodeRequests()))
+        foreach (var el in ChunkRequests(model.NodeRequests()))
         {
-            (await apiClient.BatchPutNodeAsync(modelId, el)).ThrowIfError();
+            (await apiClient.BatchPutNode(new() { ModelId = modelId, Body = el })).ThrowIfError();
         }
 
-        foreach (var el in ChunkRequests(this.LoadCaseRequests()))
+        foreach (var el in ChunkRequests(model.LoadCaseRequests()))
         {
-            (await apiClient.BatchPutLoadCaseAsync(modelId, el)).ThrowIfError();
+            (
+                await apiClient.BatchPutLoadCase(new() { ModelId = modelId, Body = el })
+            ).ThrowIfError();
         }
 
-        foreach (var el in ChunkRequests(this.LoadCombinationRequests()))
+        foreach (var el in ChunkRequests(model.LoadCombinationRequests()))
         {
-            (await apiClient.BatchPutLoadCombinationAsync(modelId, el)).ThrowIfError();
+            (
+                await apiClient.BatchPutLoadCombination(new() { ModelId = modelId, Body = el })
+            ).ThrowIfError();
         }
 
-        foreach (var el in ChunkRequests(this.MaterialRequests()))
+        foreach (var el in ChunkRequests(model.MaterialRequests()))
         {
-            (await apiClient.BatchPutMaterialAsync(modelId, el)).ThrowIfError();
+            (
+                await apiClient.BatchPutMaterial(new() { ModelId = modelId, Body = el })
+            ).ThrowIfError();
         }
 
-        foreach (var el in ChunkRequests(this.SectionProfileRequests()))
+        foreach (var el in ChunkRequests(model.SectionProfileRequests()))
         {
-            (await apiClient.BatchPutSectionProfileAsync(modelId, el)).ThrowIfError();
+            (
+                await apiClient.BatchPutSectionProfile(new() { ModelId = modelId, Body = el })
+            ).ThrowIfError();
         }
 
-        foreach (var el in ChunkRequests(this.SectionProfilesFromLibraryRequests()))
+        foreach (var el in ChunkRequests(model.SectionProfilesFromLibraryRequests()))
         {
-            (await apiClient.BatchPutSectionProfileFromLibraryAsync(modelId, el)).ThrowIfError();
+            (
+                await apiClient.BatchPutSectionProfileFromLibrary(
+                    new() { ModelId = modelId, Body = el }
+                )
+            ).ThrowIfError();
         }
 
-        foreach (var el in ChunkRequests(this.Element1dRequests()))
+        foreach (var el in ChunkRequests(model.Element1dRequests()))
         {
-            (await apiClient.BatchPutElement1dAsync(modelId, el)).ThrowIfError();
+            (
+                await apiClient.BatchPutElement1d(new() { ModelId = modelId, Body = el })
+            ).ThrowIfError();
         }
 
-        foreach (var el in ChunkRequests(this.InternalNodeRequests()))
+        foreach (var el in ChunkRequests(model.InternalNodeRequests()))
         {
-            (await apiClient.BatchPutInternalNodeAsync(modelId, el)).ThrowIfError();
+            (
+                await apiClient.BatchPutInternalNode(new() { ModelId = modelId, Body = el })
+            ).ThrowIfError();
         }
 
-        foreach (var el in ChunkRequests(this.PointLoadRequests()))
+        foreach (var el in ChunkRequests(model.PointLoadRequests()))
         {
-            (await apiClient.BatchPutPointLoadAsync(modelId, el)).ThrowIfError();
+            (
+                await apiClient.BatchPutPointLoad(new() { ModelId = modelId, Body = el })
+            ).ThrowIfError();
         }
 
-        foreach (var el in ChunkRequests(this.MomentLoadRequests()))
+        foreach (var el in ChunkRequests(model.MomentLoadRequests()))
         {
-            (await apiClient.BatchPutMomentLoadAsync(modelId, el)).ThrowIfError();
+            (
+                await apiClient.BatchPutMomentLoad(new() { ModelId = modelId, Body = el })
+            ).ThrowIfError();
         }
 
         ModelCreated?.Invoke(this, modelId);
@@ -163,41 +129,15 @@ public abstract class BeamOsModelBuilder
 
     public static event EventHandler<Guid>? ModelCreated;
 
-    private static IEnumerable<List<TRequest>> ChunkRequests<TRequest>(
-        IEnumerable<TRequest> requests
-    )
+    private static IEnumerable<TRequest[]> ChunkRequests<TRequest>(IEnumerable<TRequest> requests)
     {
         const int batchSize = 50;
 
-        List<TRequest> requestsList = requests.ToList();
+        var requestsList = requests.ToList();
         for (int i = 0; i < requestsList.Count; i += batchSize)
         {
-            List<TRequest> batch = requestsList.Skip(i).Take(batchSize).ToList();
+            var batch = requestsList.Skip(i).Take(batchSize).ToArray();
             yield return batch;
         }
-    }
-
-    /// <summary>
-    ///
-    /// </summary>
-    /// <param name="structuralAnalysisApiClient"></param>
-    /// <returns>a bool that is true if the model was created or false if it already existed</returns>
-    public async Task<bool> CreateOnly(
-        IStructuralAnalysisApiClientV1 structuralAnalysisApiClient
-    ) => await this.Build(structuralAnalysisApiClient, true);
-
-    /// <summary>
-    /// Create or
-    /// </summary>
-    /// <param name="structuralAnalysisApiClient"></param>
-    /// <returns>a bool that is true if the model was created or false if it already existed</returns>
-    public async Task<bool> CreateOrUpdate(
-        IStructuralAnalysisApiClientV1 structuralAnalysisApiClient
-    ) => await this.Build(structuralAnalysisApiClient, false);
-
-    private static StructuralAnalysisApiClientV1 CreateDefaultApiClient()
-    {
-        HttpClient httpClient = new();
-        return new StructuralAnalysisApiClientV1(httpClient);
     }
 }

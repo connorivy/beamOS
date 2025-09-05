@@ -1,3 +1,4 @@
+using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
@@ -16,7 +17,8 @@ namespace BeamOs.Tests.StructuralAnalysis.Integration.Api;
 public class EndToEndTests
 {
     private static Guid modelId;
-    private static Result<ModelResponse> modelResponseResult;
+    private static ApiResponse<ModelResponse> modelResponseResult;
+    private static BeamOsApiResultModelId modelClient;
 
     [Before(HookType.Class)]
     public static async Task SetupModel()
@@ -31,9 +33,10 @@ public class EndToEndTests
             Id = modelId,
         };
 
-        modelResponseResult = await AssemblySetup.StructuralAnalysisApiClient.CreateModelAsync(
-            request
-        );
+        modelResponseResult =
+            await AssemblySetup.StructuralAnalysisApiClient.Models.CreateModelAsync(request);
+
+        modelClient = AssemblySetup.StructuralAnalysisApiClient.Models[modelId];
     }
 
     [Test]
@@ -53,9 +56,8 @@ public class EndToEndTests
             Id = modelId,
         };
 
-        modelResponseResult = await AssemblySetup.StructuralAnalysisApiClient.CreateModelAsync(
-            request
-        );
+        var modelResponseResult =
+            await AssemblySetup.StructuralAnalysisApiClient.Models.CreateModelAsync(request);
 
         await Verify(modelResponseResult).ScrubInlineGuids();
     }
@@ -68,10 +70,7 @@ public class EndToEndTests
             Restraint.Fixed
         );
 
-        var nodeResponseResult = await AssemblySetup.StructuralAnalysisApiClient.CreateNodeAsync(
-            modelId,
-            createNodeRequestBody
-        );
+        var nodeResponseResult = await modelClient.Nodes.CreateNodeAsync(createNodeRequestBody);
 
         await Verify(nodeResponseResult)
             .ScrubMembers(l =>
@@ -84,10 +83,7 @@ public class EndToEndTests
     {
         LoadCaseData data = new() { Name = "Dead" };
 
-        var loadCaseResponse = await AssemblySetup.StructuralAnalysisApiClient.CreateLoadCaseAsync(
-            modelId,
-            data
-        );
+        var loadCaseResponse = await modelClient.LoadCases.CreateLoadCaseAsync(data);
 
         await Verify(loadCaseResponse);
     }
@@ -97,11 +93,9 @@ public class EndToEndTests
     {
         LoadCombinationData data = new((1, 1.0));
 
-        var loadCombinationResponse =
-            await AssemblySetup.StructuralAnalysisApiClient.CreateLoadCombinationAsync(
-                modelId,
-                data
-            );
+        var loadCombinationResponse = await modelClient.LoadCombinations.CreateLoadCombinationAsync(
+            data
+        );
 
         await Verify(loadCombinationResponse);
     }
@@ -118,7 +112,7 @@ public class EndToEndTests
             Id = Guid.NewGuid(),
         };
 
-        var modelResponse = await AssemblySetup.StructuralAnalysisApiClient.CreateModelAsync(
+        var modelResponse = await AssemblySetup.StructuralAnalysisApiClient.Models.CreateModelAsync(
             request
         );
 
@@ -128,11 +122,11 @@ public class EndToEndTests
             new(1, 1, 1, LengthUnitContract.Foot),
             Restraint.Fixed
         );
+        var newModelClient = AssemblySetup.StructuralAnalysisApiClient.Models[
+            modelResponse.Value.Id
+        ];
 
-        var nodeResponseResult = await AssemblySetup.StructuralAnalysisApiClient.CreateNodeAsync(
-            modelResponse.Value.Id,
-            createNodeRequestBody
-        );
+        var nodeResponseResult = await newModelClient.Nodes.CreateNodeAsync(createNodeRequestBody);
 
         nodeResponseResult.Value.Id.Should().BeLessThan(5);
     }
@@ -147,10 +141,7 @@ public class EndToEndTests
             5
         );
 
-        var nodeResponseResult = await AssemblySetup.StructuralAnalysisApiClient.CreateNodeAsync(
-            modelId,
-            createNodeRequestBody
-        );
+        var nodeResponseResult = await modelClient.Nodes.CreateNodeAsync(createNodeRequestBody);
 
         await Verify(nodeResponseResult);
     }
@@ -169,10 +160,7 @@ public class EndToEndTests
             Id = 5,
         };
 
-        var result = await AssemblySetup.StructuralAnalysisApiClient.CreatePointLoadAsync(
-            modelId,
-            requestBody
-        );
+        var result = await modelClient.PointLoads.CreatePointLoadAsync(requestBody);
 
         await Verify(result);
     }
@@ -191,10 +179,7 @@ public class EndToEndTests
             Id = 5,
         };
 
-        var result = await AssemblySetup.StructuralAnalysisApiClient.CreateMomentLoadAsync(
-            modelId,
-            requestBody
-        );
+        var result = await modelClient.MomentLoads.CreateMomentLoadAsync(requestBody);
 
         await Verify(result);
     }
@@ -227,10 +212,7 @@ public class EndToEndTests
             Id = 1636,
         };
         var sectionProfileResponseResult =
-            await AssemblySetup.StructuralAnalysisApiClient.CreateSectionProfileAsync(
-                modelId,
-                w16x36Request
-            );
+            await modelClient.SectionProfiles.CreateSectionProfileAsync(w16x36Request);
 
         await Verify(sectionProfileResponseResult);
     }
@@ -244,10 +226,7 @@ public class EndToEndTests
             Library = StructuralCode.AISC_360_16,
         };
         var sectionProfileResponseResult =
-            await AssemblySetup.StructuralAnalysisApiClient.AddSectionProfileFromLibraryAsync(
-                modelId,
-                w14x22
-            );
+            await modelClient.SectionProfiles.FromLibrary.AddSectionProfileFromLibraryAsync(w14x22);
 
         await Verify(sectionProfileResponseResult)
             .ScrubMembers(l =>
@@ -266,11 +245,7 @@ public class EndToEndTests
             Id = 992,
         };
 
-        var materialResponseResult =
-            await AssemblySetup.StructuralAnalysisApiClient.CreateMaterialAsync(
-                modelId,
-                a992Request
-            );
+        var materialResponseResult = await modelClient.Materials.CreateMaterialAsync(a992Request);
 
         await Verify(materialResponseResult);
     }
@@ -290,10 +265,7 @@ public class EndToEndTests
             6
         );
 
-        var nodeResponseResult = await AssemblySetup.StructuralAnalysisApiClient.CreateNodeAsync(
-            modelId,
-            createNodeRequestBody
-        );
+        var nodeResponseResult = await modelClient.Nodes.CreateNodeAsync(createNodeRequestBody);
 
         await Assert.That(nodeResponseResult.IsSuccess).IsTrue();
 
@@ -306,10 +278,7 @@ public class EndToEndTests
             Id = 99,
         };
 
-        var elResponseResult = await AssemblySetup.StructuralAnalysisApiClient.CreateElement1dAsync(
-            modelId,
-            elRequest
-        );
+        var elResponseResult = await modelClient.Element1ds.CreateElement1dAsync(elRequest);
 
         await Verify(elResponseResult);
     }
@@ -320,11 +289,9 @@ public class EndToEndTests
     {
         CreateInternalNodeRequest requestBody = new(99, new(50, RatioUnit.Percent), null, 10);
 
-        var internalNodeResponseResult =
-            await AssemblySetup.StructuralAnalysisApiClient.CreateInternalNodeAsync(
-                modelId,
-                requestBody
-            );
+        var internalNodeResponseResult = await modelClient.Nodes.Internal.CreateInternalNodeAsync(
+            requestBody
+        );
 
         await Verify(internalNodeResponseResult)
             .ScrubMembers(l =>
@@ -336,15 +303,15 @@ public class EndToEndTests
     [DependsOn(nameof(CreateInternalNode_ShouldCreateInternalNode))]
     public async Task ChangeInternalNodeToSpatial_ShouldChangeNode()
     {
-        var x = await AssemblySetup.StructuralAnalysisApiClient.PutNodeAsync(
-            10,
-            modelId,
-            new NodeData()
-            {
-                LocationPoint = new(50, 50, 50, LengthUnitContract.Meter),
-                Restraint = Restraint.PinnedXyPlane,
-            }
-        );
+        var x = await modelClient
+            .Nodes[10]
+            .PutNodeAsync(
+                new NodeData()
+                {
+                    LocationPoint = new(50, 50, 50, LengthUnitContract.Meter),
+                    Restraint = Restraint.PinnedXyPlane,
+                }
+            );
 
         await Verify(x)
             .ScrubMembers(l =>
@@ -356,10 +323,7 @@ public class EndToEndTests
     [DependsOn(nameof(CreateElement1d_ShouldCreateElement1d))]
     public async Task GetElement1d_ShouldResultInExpectedResponse()
     {
-        var elResponseResult = await AssemblySetup.StructuralAnalysisApiClient.GetElement1dAsync(
-            modelId,
-            99
-        );
+        var elResponseResult = await modelClient.Element1ds[99].GetElement1dAsync();
 
         await Verify(elResponseResult);
     }
@@ -374,10 +338,7 @@ public class EndToEndTests
             Restraint.Free
         );
 
-        var nodeResponseResult = await AssemblySetup.StructuralAnalysisApiClient.PatchNodeAsync(
-            modelId,
-            updateNodeRequest
-        );
+        var nodeResponseResult = await modelClient.Nodes.PatchNodeAsync(updateNodeRequest);
 
         await Verify(nodeResponseResult);
     }
@@ -387,22 +348,16 @@ public class EndToEndTests
     [DependsOn(nameof(CreateElement1d_ShouldCreateElement1d))]
     public async Task ChangeSpatialNodeToInternal_ShouldChangeNode()
     {
-        var changeToInternal = await AssemblySetup.StructuralAnalysisApiClient.PutInternalNodeAsync(
-            modelId,
-            5,
-            new InternalNodeData(99, new(50, RatioUnit.Percent))
-        );
+        var changeToInternal = await modelClient
+            .Nodes[5]
+            .Internal.PutInternalNodeAsync(new InternalNodeData(99, new(50, RatioUnit.Percent)));
         changeToInternal.ThrowIfError();
 
         // element with id 99 has start node with id 5
         // changing the node type should not affect the element
-        var existingElement = await AssemblySetup.StructuralAnalysisApiClient.GetElement1dAsync(
-            modelId,
-            99
-        );
+        var existingElement = await modelClient.Element1ds[99].GetElement1dAsync();
 
-        var internalNodeResponseResult =
-            await AssemblySetup.StructuralAnalysisApiClient.GetInternalNodeAsync(modelId, 5);
+        var internalNodeResponseResult = await modelClient.Nodes[5].Internal.GetInternalNodeAsync();
 
         await Verify(internalNodeResponseResult);
     }
@@ -443,11 +398,9 @@ public class EndToEndTests
             ],
         };
 
-        var modelProposalResponseResult =
-            await AssemblySetup.StructuralAnalysisApiClient.CreateModelProposalAsync(
-                modelId,
-                modelProposalRequest
-            );
+        var modelProposalResponseResult = await modelClient.Proposals.CreateModelProposalAsync(
+            modelProposalRequest
+        );
 
         await Verify(modelProposalResponseResult)
             .ScrubMembers(l =>
@@ -465,16 +418,14 @@ public class EndToEndTests
         var newNode1Id = 456;
         var newNode2Id = 789;
         var newElement1dId = 1234;
-        var newNode1Response = await AssemblySetup.StructuralAnalysisApiClient.CreateNodeAsync(
-            modelId,
+        var newNode1Response = await modelClient.Nodes.CreateNodeAsync(
             new CreateNodeRequest(
                 new(7, 7, 7, LengthUnitContract.Foot),
                 Restraint.Fixed,
                 newNode1Id
             )
         );
-        var newNode2Response = await AssemblySetup.StructuralAnalysisApiClient.CreateNodeAsync(
-            modelId,
+        var newNode2Response = await modelClient.Nodes.CreateNodeAsync(
             new CreateNodeRequest(
                 new(17, 17, 17, LengthUnitContract.Foot),
                 Restraint.Fixed,
@@ -484,18 +435,16 @@ public class EndToEndTests
         newNode1Response.ThrowIfError();
         newNode2Response.ThrowIfError();
 
-        var newElement1dResponse =
-            await AssemblySetup.StructuralAnalysisApiClient.CreateElement1dAsync(
-                modelId,
-                new CreateElement1dRequest()
-                {
-                    Id = newElement1dId,
-                    StartNodeId = newNode1Id,
-                    EndNodeId = newNode2Id,
-                    MaterialId = 992,
-                    SectionProfileId = 1636,
-                }
-            );
+        var newElement1dResponse = await modelClient.Element1ds.CreateElement1dAsync(
+            new CreateElement1dRequest()
+            {
+                Id = newElement1dId,
+                StartNodeId = newNode1Id,
+                EndNodeId = newNode2Id,
+                MaterialId = 992,
+                SectionProfileId = 1636,
+            }
+        );
         newElement1dResponse.ThrowIfError();
 
         if (
@@ -508,15 +457,11 @@ public class EndToEndTests
             );
         }
 
-        var deleteNodeResponse = await AssemblySetup.StructuralAnalysisApiClient.DeleteNodeAsync(
-            modelId,
-            newNode1Id
-        );
+        var deleteNodeResponse = await modelClient.Nodes[newNode1Id].DeleteNodeAsync();
         deleteNodeResponse.ThrowIfError();
 
         // Verify that the element1d with id 1234 has been deleted
-        var getElement1dResponse =
-            await AssemblySetup.StructuralAnalysisApiClient.GetElement1dAsync(modelId, 1234);
+        var getElement1dResponse = await modelClient.Element1ds[1234].GetElement1dAsync();
 
         await Verify(getElement1dResponse)
             .ScrubInlineGuids()

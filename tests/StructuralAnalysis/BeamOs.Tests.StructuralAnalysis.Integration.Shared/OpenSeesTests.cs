@@ -1,8 +1,9 @@
+using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.NodeResult;
 using BeamOs.StructuralAnalysis.Contracts.Common;
+using BeamOs.StructuralAnalysis.Sdk;
 using BeamOs.Tests.Common;
-using UnitsNet.Units;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration;
 
@@ -12,16 +13,23 @@ namespace BeamOs.Tests.StructuralAnalysis.Integration;
 )]
 public class OpenSeesTests(ModelFixture modelFixture) : IModelFixtureTestsClass
 {
+    private BeamOsApiResultModelId modelClient;
+
+    [Before(TUnitHookType.Test)]
+    public void BeforeClass()
+    {
+        // This is a workaround to ensure that the API client is initialized before any tests run.
+        this.modelClient ??= AssemblySetup.StructuralAnalysisApiClient.Models[modelFixture.Id];
+    }
+
     [Test, SkipInFrontEnd]
     public async Task RunOpenSeesAnalysis_ShouldReturnSuccessfulStatusCode()
     {
         await modelFixture.CreateOnly(AssemblySetup.StructuralAnalysisApiClient);
 
-        var resultSetIdResponse =
-            await AssemblySetup.StructuralAnalysisApiClient.RunOpenSeesAnalysisAsync(
-                modelFixture.Id,
-                new() { LoadCombinationIds = [1] }
-            );
+        var resultSetIdResponse = await modelClient.Analyze.Opensees.RunOpenSeesAnalysisAsync(
+            new() { LoadCombinationIds = [1] }
+        );
 
         resultSetIdResponse.ThrowIfError();
     }
@@ -43,11 +51,12 @@ public class OpenSeesTests(ModelFixture modelFixture) : IModelFixtureTestsClass
                 || expectedNodeDisplacementResult.RotationAboutZ.HasValue
             )
             {
-                var result = await AssemblySetup.StructuralAnalysisApiClient.GetNodeResultAsync(
-                    modelFixture.Id,
-                    1,
-                    expectedNodeDisplacementResult.NodeId
-                );
+                var result = await modelClient
+                    .Results.LoadCombinations[1]
+                    .Nodes[expectedNodeDisplacementResult.NodeId]
+                    .GetNodeResultAsync();
+
+                result.ThrowIfError();
 
                 AssertDisplacementsEqual(
                     BeamOsObjectType.Node,
@@ -69,11 +78,10 @@ public class OpenSeesTests(ModelFixture modelFixture) : IModelFixtureTestsClass
                 || expectedNodeDisplacementResult.TorqueAboutZ.HasValue
             )
             {
-                var result = await AssemblySetup.StructuralAnalysisApiClient.GetNodeResultAsync(
-                    modelFixture.Id,
-                    1,
-                    expectedNodeDisplacementResult.NodeId
-                );
+                var result = await modelClient
+                    .Results.LoadCombinations[1]
+                    .Nodes[expectedNodeDisplacementResult.NodeId]
+                    .GetNodeResultAsync();
 
                 AssertReactionsEqual(
                     BeamOsObjectType.Node,

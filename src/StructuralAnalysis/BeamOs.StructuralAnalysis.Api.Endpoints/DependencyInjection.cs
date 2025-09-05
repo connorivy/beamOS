@@ -1,12 +1,10 @@
-using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Api;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
-using BeamOs.SpeckleConnector;
+// using BeamOs.SpeckleConnector;
 using BeamOs.StructuralAnalysis.Application;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
-using BeamOs.StructuralAnalysis.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints;
@@ -15,19 +13,13 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddStructuralAnalysisRequired(
         this IServiceCollection services
-    ) =>
-        services
-            .AddStructuralAnalysisApplication()
-            .AddStructuralAnalysisInfrastructureRequired()
-            .AddStructuralAnalysisApi()
-            .AddSpeckleRequired();
+    ) => services.AddStructuralAnalysisApplicationRequired().AddStructuralAnalysisApi();
 
     public static IServiceCollection AddStructuralAnalysisConfigurable(
-        this IServiceCollection services,
-        string connectionString
+        this IServiceCollection services
     )
     {
-        services.AddStructuralAnalysisInfrastructureConfigurable(connectionString);
+        services.AddStructuralAnalysisApplicationConfigurable();
         return services;
     }
 

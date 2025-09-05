@@ -1,3 +1,5 @@
+using BeamOs.StructuralAnalysis.Contracts.Common;
+
 namespace BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 
 public static partial class UnitsNetMappers

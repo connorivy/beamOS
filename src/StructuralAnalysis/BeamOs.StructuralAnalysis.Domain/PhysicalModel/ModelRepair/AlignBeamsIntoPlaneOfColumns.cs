@@ -1,10 +1,10 @@
-using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
-public class AlignBeamsIntoPlaneOfColumns : BeamOrBraceVisitingRule
+public class AlignBeamsIntoPlaneOfColumns(ModelRepairContext context)
+    : BeamOrBraceVisitingRule(context)
 {
     public override ModelRepairRuleType RuleType => ModelRepairRuleType.Standard;
 
@@ -22,7 +22,6 @@ public class AlignBeamsIntoPlaneOfColumns : BeamOrBraceVisitingRule
         IList<InternalNode> nearbyEndInternalNodes,
         IEnumerable<Element1d> beamsAndBracesCloseToEnd,
         IEnumerable<Element1d> columnsCloseToEnd,
-        ModelProposalBuilder modelProposalBuilder,
         Length tolerance
     )
     {
@@ -37,7 +36,6 @@ public class AlignBeamsIntoPlaneOfColumns : BeamOrBraceVisitingRule
             endNodeAsNode,
             columnsCloseToStart,
             columnsCloseToEnd,
-            modelProposalBuilder,
             tolerance
         );
     }
@@ -48,7 +46,6 @@ public class AlignBeamsIntoPlaneOfColumns : BeamOrBraceVisitingRule
         Node endNode,
         IEnumerable<Element1d> columnsCloseToStart,
         IEnumerable<Element1d> columnsCloseToEnd,
-        ModelProposalBuilder modelProposalBuilder,
         Length tolerance
     )
     {
@@ -57,30 +54,30 @@ public class AlignBeamsIntoPlaneOfColumns : BeamOrBraceVisitingRule
         {
             foreach (Element1d colEnd in columnsCloseToEnd)
             {
-                var (startNodeA, endNodeA) = modelProposalBuilder.GetStartAndEndNodes(
-                    element1D,
+                var (startNodeA, endNodeA) = this.Context.ModelProposalBuilder.GetStartAndEndNodes(
+                    colStart,
                     out _
                 );
-                var (startNodeB, endNodeB) = modelProposalBuilder.GetStartAndEndNodes(
-                    element1D,
+                var (startNodeB, endNodeB) = this.Context.ModelProposalBuilder.GetStartAndEndNodes(
+                    colEnd,
                     out _
                 );
 
                 Point colStartA = startNodeA.GetLocationPoint(
-                    modelProposalBuilder.Element1dStore,
-                    modelProposalBuilder.NodeStore
+                    this.Context.ModelProposalBuilder.Element1dStore,
+                    this.Context.ModelProposalBuilder.NodeStore
                 );
                 Point colStartB = startNodeB.GetLocationPoint(
-                    modelProposalBuilder.Element1dStore,
-                    modelProposalBuilder.NodeStore
+                    this.Context.ModelProposalBuilder.Element1dStore,
+                    this.Context.ModelProposalBuilder.NodeStore
                 );
                 Point colEndA = endNodeA.GetLocationPoint(
-                    modelProposalBuilder.Element1dStore,
-                    modelProposalBuilder.NodeStore
+                    this.Context.ModelProposalBuilder.Element1dStore,
+                    this.Context.ModelProposalBuilder.NodeStore
                 );
                 Point colEndB = endNodeB.GetLocationPoint(
-                    modelProposalBuilder.Element1dStore,
-                    modelProposalBuilder.NodeStore
+                    this.Context.ModelProposalBuilder.Element1dStore,
+                    this.Context.ModelProposalBuilder.NodeStore
                 );
 
                 if (
@@ -91,7 +88,7 @@ public class AlignBeamsIntoPlaneOfColumns : BeamOrBraceVisitingRule
                         colEndA,
                         colStartB,
                         tolerance,
-                        modelProposalBuilder.Settings.YAxisUp
+                        this.Context.ModelProposalBuilder.Settings.YAxisUp
                     )
                 )
                 {
@@ -155,18 +152,18 @@ public class AlignBeamsIntoPlaneOfColumns : BeamOrBraceVisitingRule
                 // Use the existing node's restraint
                 NodeProposal startNodeProposal = new NodeProposal(
                     startNode,
-                    modelProposalBuilder.Id,
-                    projectedStart,
-                    startNode.Restraint
+                    this.Context.ModelProposalBuilder.Id,
+                    projectedStart
                 );
                 NodeProposal endNodeProposal = new NodeProposal(
                     endNode,
-                    modelProposalBuilder.Id,
-                    projectedEnd,
-                    endNode.Restraint
+                    this.Context.ModelProposalBuilder.Id,
+                    projectedEnd
                 );
-                modelProposalBuilder.NodeStore.AddNodeProposal(startNodeProposal);
-                modelProposalBuilder.NodeStore.AddNodeProposal(endNodeProposal);
+                this.Context.ModelProposalBuilder.AddNodeProposals(
+                    startNodeProposal,
+                    endNodeProposal
+                );
             }
         }
     }

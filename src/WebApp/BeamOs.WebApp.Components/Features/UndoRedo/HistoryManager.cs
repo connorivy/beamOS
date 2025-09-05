@@ -6,13 +6,13 @@ namespace BeamOs.WebApp.Components.Features.UndoRedo;
 
 public sealed class HistoryManager(IServiceProvider serviceProvider)
 {
-    private readonly LinkedList<IBeamOsClientCommand> undoActions = new();
-    private readonly LinkedList<IBeamOsClientCommand> redoActions = new();
+    private readonly LinkedList<IBeamOsUndoableClientCommand> undoActions = new();
+    private readonly LinkedList<IBeamOsUndoableClientCommand> redoActions = new();
     private readonly int itemLimit = 50;
 
     public async Task UndoLast()
     {
-        if (this.undoActions.FirstOrDefault() is not IBeamOsClientCommand undoable)
+        if (this.undoActions.FirstOrDefault() is not IBeamOsUndoableClientCommand undoable)
         {
             // no undo history
             return;
@@ -31,7 +31,7 @@ public sealed class HistoryManager(IServiceProvider serviceProvider)
 
     public async Task Redo()
     {
-        if (this.redoActions.FirstOrDefault() is not IBeamOsClientCommand undoable)
+        if (this.redoActions.FirstOrDefault() is not IBeamOsUndoableClientCommand undoable)
         {
             // no redo history
             return;
@@ -49,7 +49,7 @@ public sealed class HistoryManager(IServiceProvider serviceProvider)
         this.undoActions.AddFirst(undoable);
     }
 
-    public void AddItem(IBeamOsClientCommand clientEvent)
+    public void AddItem(IBeamOsUndoableClientCommand clientEvent)
     {
         if (clientEvent.Id == this.undoActions.FirstOrDefault()?.Id)
         {

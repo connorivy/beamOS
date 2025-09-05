@@ -47,7 +47,7 @@ public sealed class CreateMaterialClientCommandHandler(
     }
 }
 
-public record CreateMaterialClientCommand(MaterialData Data) : IBeamOsClientCommand
+public record CreateMaterialClientCommand(MaterialData Data) : IBeamOsUndoableClientCommand
 {
     public Guid Id { get; } = Guid.NewGuid();
     public bool HandledByEditor { get; init; }
@@ -62,7 +62,7 @@ public record CreateMaterialClientCommand(MaterialData Data) : IBeamOsClientComm
     /// </summary>
     public int? MaterialId { get; init; }
 
-    public IBeamOsClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
         new DeleteMaterialClientCommand
         {
             ModelId = this.ModelId,
@@ -73,7 +73,7 @@ public record CreateMaterialClientCommand(MaterialData Data) : IBeamOsClientComm
             HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 
-    public IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
         this with
         {
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
@@ -82,7 +82,7 @@ public record CreateMaterialClientCommand(MaterialData Data) : IBeamOsClientComm
         };
 }
 
-public record DeleteMaterialClientCommand : IBeamOsClientCommand
+public record DeleteMaterialClientCommand : IBeamOsUndoableClientCommand
 {
     public Guid Id { get; } = Guid.NewGuid();
     public bool HandledByEditor { get; init; }
@@ -92,7 +92,7 @@ public record DeleteMaterialClientCommand : IBeamOsClientCommand
     public int MaterialId { get; init; }
     public required MaterialData Data { get; init; }
 
-    public IBeamOsClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
         new CreateMaterialClientCommand(this.Data)
         {
             ModelId = this.ModelId,
@@ -102,7 +102,7 @@ public record DeleteMaterialClientCommand : IBeamOsClientCommand
             HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 
-    public IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
         this with
         {
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,

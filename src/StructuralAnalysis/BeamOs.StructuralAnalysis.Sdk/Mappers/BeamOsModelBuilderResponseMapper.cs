@@ -20,7 +20,7 @@ public partial class BeamOsModelBuilderResponseMapper(Guid modelId)
     private Guid GetModelId() => modelId;
 
     [MapValue(nameof(ModelResponse.ResultSets), Use = nameof(EmptyResultSets))]
-    public partial ModelResponse ToReponse(BeamOsModelBuilder builder);
+    public partial ModelResponse ToReponse(BeamOsStaticModelBase builder);
 
     [MapValue("ModelId", Use = nameof(GetModelId))]
     public partial NodeResponse ToResponse(PutNodeRequest request);
@@ -47,5 +47,5 @@ public partial class BeamOsModelBuilderResponseMapper(Guid modelId)
 [UseStaticMapper(typeof(UnitsNetMappers))]
 public static partial class BeamOsModelBuilderDtoMapper
 {
-    public static partial BeamOsModelBuilderDto ToDto(this BeamOsModelBuilder builder);
+    public static partial BeamOsModelBuilderDto ToDto(this BeamOsStaticModelBase builder);
 }

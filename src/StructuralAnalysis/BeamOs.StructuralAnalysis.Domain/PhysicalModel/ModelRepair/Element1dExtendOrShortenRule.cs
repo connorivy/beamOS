@@ -1,11 +1,10 @@
-using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
-using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
-public class Element1dExtendOrShortenRule : IndividualNodeVisitingRule
+public class Element1dExtendOrShortenRule(ModelRepairContext context)
+    : IndividualNodeVisitingRule(context)
 {
     public override ModelRepairRuleType RuleType => ModelRepairRuleType.Standard;
 
@@ -16,7 +15,6 @@ public class Element1dExtendOrShortenRule : IndividualNodeVisitingRule
         IList<Node> nearbyNodes,
         IList<InternalNode> nearbyInternalNodes,
         IList<Element1d> nearbyElement1ds,
-        ModelProposalBuilder modelProposalBuilder,
         Length tolerance
     )
     {
@@ -25,33 +23,32 @@ public class Element1dExtendOrShortenRule : IndividualNodeVisitingRule
             return; // Only apply to Node
         }
 
-        if (SnapToNearbyNode(element, nodeAsNode, nearbyNodes, modelProposalBuilder, tolerance))
+        if (this.SnapToNearbyNode(element, nodeAsNode, nearbyNodes, tolerance))
         {
             return;
         }
-        _ = SnapToNearbyElement1d(nodeAsNode, nearbyElement1ds, modelProposalBuilder, tolerance);
+        _ = this.SnapToNearbyElement1d(nodeAsNode, nearbyElement1ds, tolerance);
     }
 
-    private static bool SnapToNearbyElement1d(
+    private bool SnapToNearbyElement1d(
         Node node,
         IList<Element1d> element1DsCloseToNode,
-        ModelProposalBuilder modelProposalBuilder,
         Length tolerance
     )
     {
         foreach (Element1d elem in element1DsCloseToNode)
         {
-            var (startNode, endNode) = modelProposalBuilder.GetStartAndEndNodes(elem);
+            var (startNode, endNode) = this.Context.ModelProposalBuilder.GetStartAndEndNodes(elem);
             if (
                 startNode.DependsOnNode(
                     node.Id,
-                    modelProposalBuilder.Element1dStore,
-                    modelProposalBuilder.NodeStore
+                    this.Context.ModelProposalBuilder.Element1dStore,
+                    this.Context.ModelProposalBuilder.NodeStore
                 )
                 || endNode.DependsOnNode(
                     node.Id,
-                    modelProposalBuilder.Element1dStore,
-                    modelProposalBuilder.NodeStore
+                    this.Context.ModelProposalBuilder.Element1dStore,
+                    this.Context.ModelProposalBuilder.NodeStore
                 )
             )
             {
@@ -61,12 +58,12 @@ public class Element1dExtendOrShortenRule : IndividualNodeVisitingRule
 
             Point p = node.LocationPoint;
             Point a = startNode.GetLocationPoint(
-                modelProposalBuilder.Element1dStore,
-                modelProposalBuilder.NodeStore
+                this.Context.ModelProposalBuilder.Element1dStore,
+                this.Context.ModelProposalBuilder.NodeStore
             );
             Point b = endNode.GetLocationPoint(
-                modelProposalBuilder.Element1dStore,
-                modelProposalBuilder.NodeStore
+                this.Context.ModelProposalBuilder.Element1dStore,
+                this.Context.ModelProposalBuilder.NodeStore
             );
             // Vector AB
             double abX = b.X.Meters - a.X.Meters;
@@ -97,10 +94,10 @@ public class Element1dExtendOrShortenRule : IndividualNodeVisitingRule
             if (distToLine < tolerance.Meters)
             {
                 // todo: i'm getting t values of like 0.99999, which should be handled by the node snapping
-                modelProposalBuilder.NodeStore.AddInternalNodeProposal(
+                this.Context.ModelProposalBuilder.AddNodeProposal(
                     new InternalNodeProposal(
                         node.ModelId,
-                        modelProposalBuilder.Id,
+                        this.Context.ModelProposalBuilder.Id,
                         Ratio.FromDecimalFractions(t), // Ratio along the element
                         elem.Id, // Element1dId
                         node.Restraint, // Use the node's restraint
@@ -113,25 +110,24 @@ public class Element1dExtendOrShortenRule : IndividualNodeVisitingRule
         return false;
     }
 
-    private static bool SnapToNearbyNode(
+    private bool SnapToNearbyNode(
         Element1d element,
         Node node,
         IList<Node> nearbyNodes,
-        ModelProposalBuilder modelProposalBuilder,
         Length tolerance
     )
     {
         // Get the start and end nodes of the element
-        var (startNode, endNode) = modelProposalBuilder.GetStartAndEndNodes(element);
+        var (startNode, endNode) = this.Context.ModelProposalBuilder.GetStartAndEndNodes(element);
         // Determine which node is fixed and which is being considered for snapping
         var fixedNode = node == startNode ? endNode : startNode;
         Point fixedPoint = fixedNode.GetLocationPoint(
-            modelProposalBuilder.Element1dStore,
-            modelProposalBuilder.NodeStore
+            this.Context.ModelProposalBuilder.Element1dStore,
+            this.Context.ModelProposalBuilder.NodeStore
         );
         Point nodePoint = node.GetLocationPoint(
-            modelProposalBuilder.Element1dStore,
-            modelProposalBuilder.NodeStore
+            this.Context.ModelProposalBuilder.Element1dStore,
+            this.Context.ModelProposalBuilder.NodeStore
         );
         // Direction vector of the element (from fixedNode to node)
         double dirX = nodePoint.X.Meters - fixedPoint.X.Meters;
@@ -177,7 +173,7 @@ public class Element1dExtendOrShortenRule : IndividualNodeVisitingRule
                 double dist = Math.Abs(candLen - dirLen);
                 if (dist < tolerance.Meters)
                 {
-                    modelProposalBuilder.MergeNodes(node, candidate);
+                    this.Context.ModelProposalBuilder.MergeNodes(node, candidate);
                     return true;
                 }
             }

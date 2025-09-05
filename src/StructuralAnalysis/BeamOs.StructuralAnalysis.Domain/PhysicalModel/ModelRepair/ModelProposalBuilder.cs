@@ -3,9 +3,9 @@ using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair.Constraints;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
-using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
@@ -25,6 +25,7 @@ public sealed class ModelProposalBuilder
         ModelRepairOperationParameters modelRepairOperationParameters,
         ModelProposalNodeStore nodeStore,
         ModelProposalElement1dStore element1dStore,
+        ElementConstraintManager elementConstraintManager,
         ModelProposalId? id = null
     )
     {
@@ -33,16 +34,17 @@ public sealed class ModelProposalBuilder
         this.ModelRepairOperationParameters = modelRepairOperationParameters;
         this.NodeStore = nodeStore;
         this.Element1dStore = element1dStore;
+        this.elementConstraintManager = elementConstraintManager;
     }
 
+    private readonly ElementConstraintManager elementConstraintManager;
     private ModelId ModelId => this.modelProposal.ModelId;
     public ModelProposalId Id => this.modelProposal.Id;
     public ModelSettings Settings => this.modelProposal.Settings;
     public Octree Octree { get; }
     public IEnumerable<Element1d> Element1ds => this.Element1dStore.Values;
-    public IEnumerable<NodeDefinition> Nodes => this.NodeStore.Values;
 
-    public void MergeNodes(NodeDefinition originalNode, NodeDefinition targetNode)
+    public bool MergeNodes(NodeDefinition originalNode, NodeDefinition targetNode)
     {
         Debug.Assert(
             originalNode.Id != targetNode.Id,
@@ -52,6 +54,7 @@ public sealed class ModelProposalBuilder
             !targetNode.DependsOnNode(originalNode.Id, this.Element1dStore, this.NodeStore),
             "Target node should not depend on original node"
         );
+        List<Element1dProposal> element1dProposals = [];
         foreach (var originalElement1d in this.Element1ds)
         {
             var element1d = this.Element1dStore.ApplyExistingProposal(originalElement1d, out _);
@@ -59,7 +62,21 @@ public sealed class ModelProposalBuilder
             var (startNode, endNode) = this.GetStartAndEndNodes(element1d, out _);
             if (startNode.Id == originalNode.Id)
             {
-                this.Element1dStore.AddElement1dProposals(
+                if (
+                    !this.elementConstraintManager.NodeMovementSatisfiesElementConstraints(
+                        element1d,
+                        startNode,
+                        endNode,
+                        this.ModelRepairOperationParameters,
+                        targetNode.GetLocationPoint(this.Element1dStore, this.NodeStore),
+                        null
+                    )
+                )
+                {
+                    return false; // Movement does not satisfy constraints
+                }
+
+                element1dProposals.Add(
                     this.Element1dStore.CreateModifyElement1dProposal(
                         element1d,
                         this.Id,
@@ -69,7 +86,21 @@ public sealed class ModelProposalBuilder
             }
             else if (endNode.Id == originalNode.Id)
             {
-                this.Element1dStore.AddElement1dProposals(
+                if (
+                    !this.elementConstraintManager.NodeMovementSatisfiesElementConstraints(
+                        element1d,
+                        startNode,
+                        endNode,
+                        this.ModelRepairOperationParameters,
+                        null,
+                        targetNode.GetLocationPoint(this.Element1dStore, this.NodeStore)
+                    )
+                )
+                {
+                    return false; // Movement does not satisfy constraints
+                }
+
+                element1dProposals.Add(
                     this.Element1dStore.CreateModifyElement1dProposal(
                         element1d,
                         this.Id,
@@ -78,8 +109,186 @@ public sealed class ModelProposalBuilder
                 );
             }
         }
+
+        foreach (var element1dProposal in element1dProposals)
+        {
+            this.Element1dStore.AddElement1dProposals(element1dProposal);
+        }
+
         this.RemoveNode(originalNode);
         this.NodeStore.MergeNodes(originalNode, targetNode);
+        return true;
+    }
+
+    public bool AddNodeProposal(NodeProposalBase proposal)
+    {
+        if (proposal.ExistingId is not null)
+        {
+            foreach (
+                var element1d in this.Element1ds.Select(e =>
+                    this.Element1dStore.ApplyExistingProposal(e, out _)
+                )
+            )
+            {
+                var (startNode, endNode) = this.GetStartAndEndNodes(element1d, out _);
+                if (startNode.Id == proposal.ExistingId)
+                {
+                    if (
+                        !this.elementConstraintManager.NodeMovementSatisfiesElementConstraints(
+                            element1d,
+                            startNode,
+                            endNode,
+                            this.ModelRepairOperationParameters,
+                            proposal.GetLocationPoint(this.Element1dStore, this.NodeStore),
+                            null
+                        )
+                    )
+                    {
+                        return false; // Movement does not satisfy constraints
+                    }
+                }
+                else if (endNode.Id == proposal.ExistingId)
+                {
+                    if (
+                        !this.elementConstraintManager.NodeMovementSatisfiesElementConstraints(
+                            element1d,
+                            startNode,
+                            endNode,
+                            this.ModelRepairOperationParameters,
+                            null,
+                            proposal.GetLocationPoint(this.Element1dStore, this.NodeStore)
+                        )
+                    )
+                    {
+                        return false; // Movement does not satisfy constraints
+                    }
+                }
+            }
+        }
+
+        this.NodeStore.AddNodeProposal(proposal);
+        return true;
+    }
+
+    public bool AddNodeProposals(NodeProposalBase node1Proposal, NodeProposalBase node2Proposal)
+    {
+        if (node1Proposal.ExistingId is not null && node2Proposal.ExistingId is not null)
+        {
+            foreach (
+                var element1d in this.Element1ds.Select(e =>
+                    this.Element1dStore.ApplyExistingProposal(e, out _)
+                )
+            )
+            {
+                var (startNode, endNode) = this.GetStartAndEndNodes(element1d, out _);
+                if (
+                    startNode.Id == node1Proposal.ExistingId
+                    && endNode.Id == node2Proposal.ExistingId
+                )
+                {
+                    if (
+                        !this.elementConstraintManager.NodeMovementSatisfiesElementConstraints(
+                            element1d,
+                            startNode,
+                            endNode,
+                            this.ModelRepairOperationParameters,
+                            node1Proposal.GetLocationPoint(this.Element1dStore, this.NodeStore),
+                            node2Proposal.GetLocationPoint(this.Element1dStore, this.NodeStore)
+                        )
+                    )
+                    {
+                        return false; // Movement does not satisfy constraints
+                    }
+                }
+                else if (
+                    startNode.Id == node2Proposal.ExistingId
+                    && endNode.Id == node1Proposal.ExistingId
+                )
+                {
+                    if (
+                        !this.elementConstraintManager.NodeMovementSatisfiesElementConstraints(
+                            element1d,
+                            startNode,
+                            endNode,
+                            this.ModelRepairOperationParameters,
+                            node2Proposal.GetLocationPoint(this.Element1dStore, this.NodeStore),
+                            node1Proposal.GetLocationPoint(this.Element1dStore, this.NodeStore)
+                        )
+                    )
+                    {
+                        return false; // Movement does not satisfy constraints
+                    }
+                }
+                else if (startNode.Id == node1Proposal.ExistingId)
+                {
+                    if (
+                        !this.elementConstraintManager.NodeMovementSatisfiesElementConstraints(
+                            element1d,
+                            startNode,
+                            endNode,
+                            this.ModelRepairOperationParameters,
+                            node1Proposal.GetLocationPoint(this.Element1dStore, this.NodeStore),
+                            null
+                        )
+                    )
+                    {
+                        return false; // Movement does not satisfy constraints
+                    }
+                }
+                else if (startNode.Id == node2Proposal.ExistingId)
+                {
+                    if (
+                        !this.elementConstraintManager.NodeMovementSatisfiesElementConstraints(
+                            element1d,
+                            startNode,
+                            endNode,
+                            this.ModelRepairOperationParameters,
+                            node2Proposal.GetLocationPoint(this.Element1dStore, this.NodeStore),
+                            null
+                        )
+                    )
+                    {
+                        return false; // Movement does not satisfy constraints
+                    }
+                }
+                else if (endNode.Id == node1Proposal.ExistingId)
+                {
+                    if (
+                        !this.elementConstraintManager.NodeMovementSatisfiesElementConstraints(
+                            element1d,
+                            startNode,
+                            endNode,
+                            this.ModelRepairOperationParameters,
+                            null,
+                            node1Proposal.GetLocationPoint(this.Element1dStore, this.NodeStore)
+                        )
+                    )
+                    {
+                        return false; // Movement does not satisfy constraints
+                    }
+                }
+                else if (endNode.Id == node2Proposal.ExistingId)
+                {
+                    if (
+                        !this.elementConstraintManager.NodeMovementSatisfiesElementConstraints(
+                            element1d,
+                            startNode,
+                            endNode,
+                            this.ModelRepairOperationParameters,
+                            null,
+                            node2Proposal.GetLocationPoint(this.Element1dStore, this.NodeStore)
+                        )
+                    )
+                    {
+                        return false; // Movement does not satisfy constraints
+                    }
+                }
+            }
+        }
+
+        this.NodeStore.AddNodeProposal(node1Proposal);
+        this.NodeStore.AddNodeProposal(node2Proposal);
+        return true;
     }
 
     public void RemoveNode(NodeDefinition node)
@@ -134,136 +343,6 @@ public sealed class ModelProposalBuilder
     }
 }
 
-public record ModelRepairOperationParameters
-{
-    public required Length VeryRelaxedTolerance { get; init; }
-    public required Length RelaxedTolerance { get; init; }
-    public required Length StandardTolerance { get; init; }
-    public required Length StrictTolerance { get; init; }
-    public required Length VeryStrictTolerance { get; init; }
-    public Angle VeryRelaxedAngleTolerance { get; init; } = new(10, AngleUnit.Degree);
-    public Angle RelaxedAngleTolerance { get; init; } = new(10, AngleUnit.Degree);
-    public Angle StandardAngleTolerance { get; init; } = new(5, AngleUnit.Degree);
-    public Angle StrictAngleTolerance { get; init; } = new(2, AngleUnit.Degree);
-    public Angle VeryStrictAngleTolerance { get; init; } = new(2, AngleUnit.Degree);
-
-    public AxisAlignmentToleranceLevel GetAxisAlignmentToleranceLevel(Length length)
-    {
-        length = length.Abs();
-        if (length < this.VeryStrictTolerance)
-        {
-            return AxisAlignmentToleranceLevel.VeryStrict;
-        }
-        if (length < this.StrictTolerance)
-        {
-            return AxisAlignmentToleranceLevel.Strict;
-        }
-        if (length < this.StandardTolerance)
-        {
-            return AxisAlignmentToleranceLevel.Standard;
-        }
-        if (length < this.RelaxedTolerance)
-        {
-            return AxisAlignmentToleranceLevel.Relaxed;
-        }
-        return AxisAlignmentToleranceLevel.VeryRelaxed;
-    }
-
-    public AxisAlignmentToleranceLevel GetAxisAlignmentToleranceLevel(Angle angle)
-    {
-        angle = angle.Abs();
-        if (angle < this.VeryStrictAngleTolerance)
-        {
-            return AxisAlignmentToleranceLevel.VeryStrict;
-        }
-        if (angle < this.StrictAngleTolerance)
-        {
-            return AxisAlignmentToleranceLevel.Strict;
-        }
-        if (angle < this.StandardAngleTolerance)
-        {
-            return AxisAlignmentToleranceLevel.Standard;
-        }
-        if (angle < this.RelaxedAngleTolerance)
-        {
-            return AxisAlignmentToleranceLevel.Relaxed;
-        }
-        return AxisAlignmentToleranceLevel.VeryRelaxed;
-    }
-
-    public Length GetLengthTolerance(AxisAlignmentToleranceLevel level)
-    {
-        return level switch
-        {
-            AxisAlignmentToleranceLevel.VeryRelaxed => this.VeryRelaxedTolerance,
-            AxisAlignmentToleranceLevel.Relaxed => this.RelaxedTolerance,
-            AxisAlignmentToleranceLevel.Standard => this.StandardTolerance,
-            AxisAlignmentToleranceLevel.Strict => this.StrictTolerance,
-            AxisAlignmentToleranceLevel.VeryStrict => this.VeryStrictTolerance,
-            AxisAlignmentToleranceLevel.Undefined or _ => throw new ArgumentOutOfRangeException(
-                nameof(level),
-                level,
-                null
-            ),
-        };
-    }
-
-    public Angle GetAngleTolerance(AxisAlignmentToleranceLevel level)
-    {
-        return level switch
-        {
-            AxisAlignmentToleranceLevel.VeryRelaxed => this.VeryRelaxedAngleTolerance,
-            AxisAlignmentToleranceLevel.Relaxed => this.RelaxedAngleTolerance,
-            AxisAlignmentToleranceLevel.Standard => this.StandardAngleTolerance,
-            AxisAlignmentToleranceLevel.Strict => this.StrictAngleTolerance,
-            AxisAlignmentToleranceLevel.VeryStrict => this.VeryStrictAngleTolerance,
-            AxisAlignmentToleranceLevel.Undefined or _ => throw new ArgumentOutOfRangeException(
-                nameof(level),
-                level,
-                null
-            ),
-        };
-    }
-
-    public AxisAlignmentTolerance GetAxisAlignmentTolerance(Node startNode, Node endNode)
-    {
-        return new(
-            this.GetAxisAlignmentToleranceLevel(
-                startNode.LocationPoint.X - endNode.LocationPoint.X
-            ),
-            this.GetAxisAlignmentToleranceLevel(
-                startNode.LocationPoint.Y - endNode.LocationPoint.Y
-            ),
-            this.GetAxisAlignmentToleranceLevel(startNode.LocationPoint.Z - endNode.LocationPoint.Z)
-        );
-    }
-
-    public AxisAlignmentTolerance GetAxisAlignmentTolerance(
-        Common.Point startNodeLocation,
-        Common.Point endNodeLocation
-    )
-    {
-        return new(
-            this.GetAxisAlignmentToleranceLevel(startNodeLocation.X - endNodeLocation.X),
-            this.GetAxisAlignmentToleranceLevel(startNodeLocation.Y - endNodeLocation.Y),
-            this.GetAxisAlignmentToleranceLevel(startNodeLocation.Z - endNodeLocation.Z)
-        );
-    }
-
-    internal Length GetToleranceForRule(IModelRepairRule rule) =>
-        rule.RuleType switch
-        {
-            ModelRepairRuleType.Favorable => this.RelaxedTolerance,
-            ModelRepairRuleType.Standard => this.StandardTolerance,
-            ModelRepairRuleType.Unfavorable => this.StrictTolerance,
-            ModelRepairRuleType.Undefined or _ => throw new ArgumentOutOfRangeException(
-                nameof(rule),
-                rule,
-                null
-            ),
-        };
-}
-
 public readonly record struct AxisAlignmentTolerance(
     AxisAlignmentToleranceLevel X,
     AxisAlignmentToleranceLevel Y,
@@ -280,17 +359,10 @@ public enum AxisAlignmentToleranceLevel
     VeryRelaxed,
 }
 
-public sealed record ModelRepairContext
+public record ModelRepairContext
 {
-    public ModelProposalBuilder ModelProposalBuilder { get; }
-    public ModelRepairOperationParameters ModelRepairOperationParameters { get; }
-
-    public ModelRepairContext(
-        ModelProposalBuilder modelProposalBuilder,
-        ModelRepairOperationParameters modelRepairOperationParameters
-    )
-    {
-        this.ModelProposalBuilder = modelProposalBuilder;
-        this.ModelRepairOperationParameters = modelRepairOperationParameters;
-    }
+    public required ModelProposalNodeStore NodeStore { get; init; }
+    public required ModelProposalElement1dStore Element1dStore { get; init; }
+    public required ModelProposalBuilder ModelProposalBuilder { get; init; }
+    public required ModelRepairOperationParameters ModelRepairOperationParameters { get; init; }
 }

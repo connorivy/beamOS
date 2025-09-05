@@ -7,7 +7,7 @@ public record PutLoadCombinationClientCommand(
     Guid ModelId,
     LoadCombination Previous,
     LoadCombination New
-) : IBeamOsClientCommand
+) : IBeamOsUndoableClientCommand
 {
     public Guid Id { get; } = Guid.NewGuid();
 
@@ -15,7 +15,7 @@ public record PutLoadCombinationClientCommand(
     public bool HandledByBlazor { get; init; }
     public bool HandledByServer { get; init; }
 
-    public IBeamOsClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
         new PutLoadCombinationClientCommand(this.ModelId, this.New, this.Previous)
         {
             HandledByEditor = this.HandledByEditor,
@@ -33,7 +33,7 @@ public record PutLoadCombinationClientCommand(
     //     };
     // }
 
-    public IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
         this with
         {
             HandledByEditor = args?.HandledByEditor ?? this.HandledByEditor,

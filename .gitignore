@@ -378,4 +378,7 @@ output.cobertura.xml
 
 # generated Python
 /py/
+python_project_root/
 # /tests/BeamOs.Tests.Common/SolvedProblems/**/*.g.cs
+
+*.user.props

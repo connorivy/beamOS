@@ -64,7 +64,7 @@ public abstract partial class CommandHandlerBase<TCommand, TResponse>(
 
 public interface IClientCommandHandler
 {
-    public Task ExecuteAsync(IBeamOsClientCommand command, CancellationToken ct = default);
+    public Task ExecuteAsync(IBeamOsUndoableClientCommand command, CancellationToken ct = default);
 }
 
 public interface IClientCommandHandler<TCommand> : IClientCommandHandler
@@ -201,14 +201,16 @@ public abstract partial class ClientCommandHandlerBase<TCommand, TServerResponse
         Result<TServerResponse> serverResponse
     ) => ValueTask.FromResult(Result.Success);
 
-    public Task ExecuteAsync(IBeamOsClientCommand command, CancellationToken ct = default) =>
-        this.ExecuteAsync((TCommand)command, ct);
+    public Task ExecuteAsync(
+        IBeamOsUndoableClientCommand command,
+        CancellationToken ct = default
+    ) => this.ExecuteAsync((TCommand)command, ct);
 }
 
 public abstract class SimpleCommandHandlerBase<TSimpleCommand, TCommand, TServerResponse>(
     ClientCommandHandlerBase<TCommand, TServerResponse> clientCommandHandler
 )
-    where TCommand : IBeamOsClientCommand
+    where TCommand : IBeamOsUndoableClientCommand
 {
     public async Task ExecuteAsync(TSimpleCommand command, CancellationToken ct = default) =>
         await clientCommandHandler.ExecuteAsync(this.CreateCommand(command), ct);

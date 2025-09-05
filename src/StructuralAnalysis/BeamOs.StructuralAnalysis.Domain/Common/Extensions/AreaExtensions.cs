@@ -1,5 +1,3 @@
-using UnitsNet;
-
 namespace BeamOs.StructuralAnalysis.Domain.Common.Extensions;
 
 public static class AreaExtensions

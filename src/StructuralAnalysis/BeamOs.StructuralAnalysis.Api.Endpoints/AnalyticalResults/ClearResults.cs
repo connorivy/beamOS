@@ -4,10 +4,10 @@ using BeamOs.StructuralAnalysis.Application.AnalyticalResults.ResultSets;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.AnalyticalResults;
 
-[BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "result-sets")]
+[BeamOsRoute(RouteConstants.ModelResults)]
 [BeamOsEndpointType(Http.Delete)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-public class DeleteAllResultSets(DeleteAllResultSetsCommandHandler deleteResultSetsCommandHandler)
+public class ClearResults(DeleteAllResultSetsCommandHandler deleteResultSetsCommandHandler)
     : BeamOsModelIdRequestBaseEndpoint<int>
 {
     public override async Task<Result<int>> ExecuteRequestAsync(

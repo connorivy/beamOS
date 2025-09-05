@@ -88,7 +88,7 @@ public sealed class DeleteElement1dCommandHandler(
     }
 }
 
-public record DeleteElement1dClientCommand : IBeamOsClientCommand
+public record DeleteElement1dClientCommand : IBeamOsUndoableClientCommand
 {
     public Guid Id { get; } = Guid.NewGuid();
     public bool HandledByEditor { get; init; }
@@ -98,7 +98,7 @@ public record DeleteElement1dClientCommand : IBeamOsClientCommand
     public int Element1dId { get; init; }
     public required Element1dData Data { get; init; }
 
-    public IBeamOsClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
         new CreateElement1dClientCommand(this.Data)
         {
             ModelId = this.ModelId,
@@ -108,7 +108,7 @@ public record DeleteElement1dClientCommand : IBeamOsClientCommand
             HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 
-    public IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
         this with
         {
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,

@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using BeamOs.Common.Domain.Models;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.EnvelopeResultSets;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
@@ -19,9 +18,9 @@ public class Model : BeamOsEntity<ModelId>
         this.Settings = settings;
     }
 
-    public string Name { get; private set; }
-    public string Description { get; private set; }
-    public ModelSettings Settings { get; private set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public ModelSettings Settings { get; set; }
     public DateTimeOffset LastModified { get; set; } = DateTimeOffset.UtcNow;
 
     // public Octree? NodeOctree { get; private set; }
@@ -73,7 +72,7 @@ public class Model : BeamOsEntity<ModelId>
 
     [Obsolete("EF Core Constructor", true)]
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-    private Model() { }
+    protected Model() { }
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }

@@ -107,7 +107,7 @@ public sealed class PutElement1dSimpleCommandHandler(
     }
 }
 
-public record PutElement1dClientCommand : IBeamOsClientCommand
+public record PutElement1dClientCommand : IBeamOsUndoableClientCommand
 {
     public Guid Id { get; } = Guid.NewGuid();
     public bool HandledByEditor { get; init; }
@@ -118,7 +118,7 @@ public record PutElement1dClientCommand : IBeamOsClientCommand
     public required Element1dResponse Previous { get; init; }
     public required Element1dResponse New { get; init; }
 
-    public IBeamOsClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
         new PutElement1dClientCommand
         {
             ModelId = this.ModelId,
@@ -130,7 +130,7 @@ public record PutElement1dClientCommand : IBeamOsClientCommand
             HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 
-    public IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
         this with
         {
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,

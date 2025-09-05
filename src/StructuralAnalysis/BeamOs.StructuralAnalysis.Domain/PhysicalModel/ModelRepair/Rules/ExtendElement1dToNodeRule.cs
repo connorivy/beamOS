@@ -21,7 +21,8 @@ namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair.Rules;
 /// - If the element is axis-aligned (X, Y, or Z constant), use strict tolerance.
 /// - If not, allow greater rotational tolerance for extension.
 /// </summary>
-public sealed class ExtendElement1dsInPlaneToNodeRule : BeamOrBraceVisitingRule
+public sealed class ExtendElement1dsInPlaneToNodeRule(ModelRepairContext context)
+    : BeamOrBraceVisitingRule(context)
 {
     public override ModelRepairRuleType RuleType => ModelRepairRuleType.Favorable;
 
@@ -39,10 +40,10 @@ public sealed class ExtendElement1dsInPlaneToNodeRule : BeamOrBraceVisitingRule
         IList<InternalNode> nearbyEndInternalNodes,
         IEnumerable<Element1d> beamsAndBracesCloseToEnd,
         IEnumerable<Element1d> columnsCloseToEnd,
-        ModelProposalBuilder modelProposalBuilder,
         Length tolerance
     )
     {
+        var modelProposalBuilder = this.Context.ModelProposalBuilder;
         var axisAlignmentTolerance =
             modelProposalBuilder.ModelRepairOperationParameters.GetAxisAlignmentTolerance(
                 startNodeLocation,
@@ -204,16 +205,28 @@ public sealed class ExtendElement1dsInPlaneToNodeRule : BeamOrBraceVisitingRule
         ModelProposalBuilder modelProposalBuilder
     )
     {
-        var (startNode, endNode) = modelProposalBuilder.GetStartAndEndNodes(element1d);
-        return nodeLocation.ShortestDistanceToLine(
-            startNode.GetLocationPoint(
-                modelProposalBuilder.Element1dStore,
-                modelProposalBuilder.NodeStore
-            ),
-            endNode.GetLocationPoint(
-                modelProposalBuilder.Element1dStore,
-                modelProposalBuilder.NodeStore
-            )
-        );
+        if (element1d.Id.Id == 134)
+        {
+            ;
+        }
+        try
+        {
+            var (startNode, endNode) = modelProposalBuilder.GetStartAndEndNodes(element1d);
+            return nodeLocation.ShortestDistanceToLine(
+                startNode.GetLocationPoint(
+                    modelProposalBuilder.Element1dStore,
+                    modelProposalBuilder.NodeStore
+                ),
+                endNode.GetLocationPoint(
+                    modelProposalBuilder.Element1dStore,
+                    modelProposalBuilder.NodeStore
+                )
+            );
+        }
+        catch (Exception ex)
+        {
+            ;
+            throw;
+        }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using BeamOs.CodeGen.EditorApi;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 
 namespace BeamOs.WebApp.Components.Features.Editor.ModelProposals;
 
@@ -11,7 +10,7 @@ public class ModelProposalViewer(
 {
     // public async Task<IList<int>> GetModelProposalIds(Guid modelId, CancellationToken ct)
     // {
-    //     var modelProposals = await apiClient.GetModelProposals(modelId, ct);
+    //     var modelProposals = await apiClient.GetModelProposalsAsync(modelId, ct);
     //     if (modelProposals.IsError)
     //     {
     //         throw new Exception(modelProposals.Error.Description);
@@ -22,7 +21,7 @@ public class ModelProposalViewer(
     //
     // public async Task<ModelProposal> GetModelProposal(Guid modelId, CancellationToken ct)
     // {
-    //     var modelProposal = await apiClient.GetModelProposal(modelId, ct);
+    //     var modelProposal = await apiClient.GetModelProposalAsync(modelId, ct);
     //     if (modelProposal.IsError)
     //     {
     //         throw new Exception(modelProposal.Error.Description);
@@ -36,7 +35,7 @@ public class ModelProposalViewer(
         var modelProposal = await apiClient.GetModelProposalAsync(modelId, proposalId, ct);
         if (modelProposal.IsError)
         {
-            throw new Exception(modelProposal.Error.Description);
+            throw new Exception(modelProposal.Error.Detail);
         }
 
         await editorApi.DisplayModelProposalAsync(modelProposal.Value, ct);

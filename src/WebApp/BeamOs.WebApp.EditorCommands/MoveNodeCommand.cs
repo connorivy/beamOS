@@ -3,7 +3,7 @@ using BeamOs.WebApp.EditorCommands.Interfaces;
 
 namespace BeamOs.WebApp.EditorCommands;
 
-public readonly record struct MoveNodeCommand : IBeamOsClientCommand
+public readonly record struct MoveNodeCommand : IBeamOsUndoableClientCommand
 {
     public MoveNodeCommand() { }
 
@@ -27,16 +27,16 @@ public readonly record struct MoveNodeCommand : IBeamOsClientCommand
     //        Source = clientEventSource
     //    };
 
-    public IBeamOsClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand GetUndoCommand(BeamOsClientCommandArgs? args = null) =>
         this with
         {
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
             HandledByEditor = args?.HandledByEditor ?? this.HandledByEditor,
             NewLocation = this.PreviousLocation,
-            PreviousLocation = this.NewLocation
+            PreviousLocation = this.NewLocation,
         };
 
-    public IBeamOsClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
+    public IBeamOsUndoableClientCommand WithArgs(BeamOsClientCommandArgs? args = null) =>
         this with
         {
             HandledByBlazor = args?.HandledByBlazor ?? this.HandledByBlazor,
