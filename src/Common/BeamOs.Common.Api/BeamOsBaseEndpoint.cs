@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using BeamOs.Common.Contracts;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 [assembly: InternalsVisibleTo("BeamOs.StructuralAnalysis.Api")]
 
@@ -24,9 +25,9 @@ public abstract partial class BeamOsBaseEndpoint<TRequest, TResponse>
     /// <param name="req"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
+#pragma warning disable CA1822 // Mark members as static
     internal TResponse GetResponseTypeForClientGenerationPurposes(
-        TRequest req,
-        CancellationToken ct = default
+#pragma warning restore CA1822 // Mark members as static
     )
     {
         return default!;
@@ -57,10 +58,35 @@ public abstract partial class BeamOsBaseEndpoint<TRequest, TResponse>
                 }
             );
         }
-        return this.MapErrorToResult(result.Error!);
+        return BeamOsErrorUtils.MapErrorToResult(result.Error!);
     }
 
-    private IResult MapErrorToResult(BeamOsError error) =>
+    protected virtual IResult MapSuccessToResult(TResponse response) => TypedResults.Ok(response);
+}
+
+// public abstract partial class BeamOsBaseEndpoint<TRequest, TResponse>
+//     : BeamOsActualBaseEndpoint<TRequest, Task<Result<TResponse>>> { }
+
+// public abstract partial class BeamOsFromBodyBaseEndpoint<TRequest, TResponse>
+//     : BeamOsActualBaseEndpoint<TRequest, TResponse> { }
+
+public abstract partial class BeamOsFromBodyResultBaseEndpoint<TRequest, TResponse>
+    : BeamOsBaseEndpoint<TRequest, TResponse> { }
+
+public abstract partial class BeamOsModelResourceBaseEndpoint<TCommand, TBody, TResponse>
+    : BeamOsBaseEndpoint<TCommand, TResponse>
+    where TCommand : IModelResourceRequest<TBody>, new() { }
+
+public abstract partial class BeamOsModelResourceWithIntIdBaseEndpoint<TCommand, TBody, TResponse>
+    : BeamOsBaseEndpoint<TCommand, TResponse>
+    where TCommand : IModelResourceWithIntIdRequest<TBody>, new() { }
+
+public abstract partial class BeamOsModelResourceWithIntIdBaseEndpoint<TBody, TResponse>
+    : BeamOsBaseEndpoint<ModelResourceWithIntIdRequest<TBody>, TResponse> { }
+
+internal static class BeamOsErrorUtils
+{
+    internal static ProblemHttpResult MapErrorToResult(BeamOsError error) =>
         error.Type switch
         {
             ErrorType.None => throw new NotImplementedException(),
@@ -115,26 +141,4 @@ public abstract partial class BeamOsBaseEndpoint<TRequest, TResponse>
             ),
             _ => throw new NotImplementedException(),
         };
-
-    protected virtual IResult MapSuccessToResult(TResponse response) => TypedResults.Ok(response);
 }
-
-// public abstract partial class BeamOsBaseEndpoint<TRequest, TResponse>
-//     : BeamOsActualBaseEndpoint<TRequest, Task<Result<TResponse>>> { }
-
-// public abstract partial class BeamOsFromBodyBaseEndpoint<TRequest, TResponse>
-//     : BeamOsActualBaseEndpoint<TRequest, TResponse> { }
-
-public abstract partial class BeamOsFromBodyResultBaseEndpoint<TRequest, TResponse>
-    : BeamOsBaseEndpoint<TRequest, TResponse> { }
-
-public abstract partial class BeamOsModelResourceBaseEndpoint<TCommand, TBody, TResponse>
-    : BeamOsBaseEndpoint<TCommand, TResponse>
-    where TCommand : IModelResourceRequest<TBody>, new() { }
-
-public abstract partial class BeamOsModelResourceWithIntIdBaseEndpoint<TCommand, TBody, TResponse>
-    : BeamOsBaseEndpoint<TCommand, TResponse>
-    where TCommand : IModelResourceWithIntIdRequest<TBody>, new() { }
-
-public abstract partial class BeamOsModelResourceWithIntIdBaseEndpoint<TBody, TResponse>
-    : BeamOsBaseEndpoint<ModelResourceWithIntIdRequest<TBody>, TResponse> { }

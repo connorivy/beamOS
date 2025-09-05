@@ -109,7 +109,7 @@ public static class EndpointToMinimalApi
                 serviceProvider
                     .GetRequiredService<TEndpoint>()
 #if CODEGEN
-                    .GetResponseTypeForClientGenerationPurposes(req);
+                    .GetResponseTypeForClientGenerationPurposes();
 #else
                 .ExecuteAsync(req);
 #endif
@@ -120,7 +120,7 @@ public static class EndpointToMinimalApi
                 serviceProvider
                     .GetRequiredService<TEndpoint>()
 #if CODEGEN
-                    .GetResponseTypeForClientGenerationPurposes(req);
+                    .GetResponseTypeForClientGenerationPurposes();
 #else
                 .ExecuteAsync(req);
 #endif
