@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;

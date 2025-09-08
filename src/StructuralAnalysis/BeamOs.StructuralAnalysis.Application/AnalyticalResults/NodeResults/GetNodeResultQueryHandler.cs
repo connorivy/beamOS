@@ -71,10 +71,6 @@ public class GetNodeResultsQueryHandler(INodeResultRepository nodeResultReposito
 internal partial class NodeResultToResponseMapper
     : AbstractMapperProvidedUnits<NodeResult, NodeResultResponse>
 {
-    [Obsolete()]
-    public NodeResultToResponseMapper()
-        : base(null) { }
-
     private NodeResultToResponseMapper(UnitSettings unitSettings)
         : base(unitSettings) { }
 

@@ -15,7 +15,7 @@ public class DeleteElement1dCommandHandler(
         CancellationToken ct = default
     )
     {
-        await element1dRepository.RemoveById(command.ModelId, command.Id);
+        await element1dRepository.RemoveById(command.ModelId, command.Id, ct);
         await unitOfWork.SaveChangesAsync(ct);
 
         return new ModelEntityResponse(command.Id, command.ModelId);

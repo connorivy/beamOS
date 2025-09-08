@@ -55,9 +55,9 @@ public static partial class CreateModelCommandMapper
 [UseStaticMapper(typeof(UnitsNetMappersJustEnums))]
 public partial class ModelToResponseMapper : AbstractMapperProvidedUnits<Model, ModelResponse>
 {
-    [Obsolete()]
-    public ModelToResponseMapper()
-        : base(null) { }
+    // [Obsolete()]
+    // public ModelToResponseMapper()
+    //     : base(null) { }
 
     private ModelToResponseMapper(UnitSettings unitSettings)
         : base(unitSettings) { }

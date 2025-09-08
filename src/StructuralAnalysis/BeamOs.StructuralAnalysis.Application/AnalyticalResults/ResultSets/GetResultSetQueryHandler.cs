@@ -36,13 +36,9 @@ public class GetResultSetQueryHandler(IResultSetRepository resultSetRepository)
 
 [Mapper]
 [UseStaticMapper(typeof(UnitsNetMappersJustEnums))]
-internal partial class ResultSetToResponseMapper
+internal sealed partial class ResultSetToResponseMapper
     : AbstractMapperProvidedUnits<ResultSet, ResultSetResponse>
 {
-    [Obsolete()]
-    public ResultSetToResponseMapper()
-        : base(null) { }
-
     private ResultSetToResponseMapper(UnitSettings unitSettings)
         : base(unitSettings) { }
 

@@ -3,6 +3,7 @@ using BeamOs.Common.Domain.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Domain.Common;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
@@ -157,6 +158,13 @@ public static partial class BeamOsDomainContractMappers
 
     public static ProposedID? ToProposedIdContractWithNullable(
         this ExistingOrProposedNodeId? proposedId
+    ) => ToProposedIdContractOrNull(proposedId);
+
+    public static ProposedID ToProposedIdContract(this ExistingOrProposedElement1dId proposedId) =>
+        ToProposedIdContract<Element1dId, Element1dProposalId>(proposedId);
+
+    public static ProposedID? ToProposedIdContractWithNullable(
+        this ExistingOrProposedElement1dId? proposedId
     ) => ToProposedIdContractOrNull(proposedId);
 
     public static ProposedID ToProposedIdContract(this ExistingOrProposedMaterialId proposedId) =>

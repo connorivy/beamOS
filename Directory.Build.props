@@ -38,10 +38,32 @@
 
       RMG012; <!-- Riok.Mapperly: The member 'PROPERTY' on the mapping target type 'TYPE' was not found on the mapping source type 'TYPE' -->
       RMG020; <!-- Riok.Mapperly: The member 'PROPERTY' on the mapping source type 'TYPE' is not mapped to any member on the mapping target type 'TYPE' -->
-      CA1305; <!-- Specify IFormatProvider -->
+      RMG037; <!-- Enum member 'PROPERTY' on 'TYPE' not found on source enum 'TYPE' -->
+      RMG038; <!-- Enum member 'PROPERTY' on 'TYPE' not found on target enum 'TYPE' -->
+      
+      <!-- TODO: THIS IS DEFINITELY LEADING TO BUGS -->
+      RMG066; <!-- No members are mapped -->
 
+      CA1305; <!-- Specify IFormatProvider -->
+      CA1852; <!-- Seal internal types -->
+      CA2016; <!-- Forward the 'CancellationToken' parameter to methods that take one -->
+
+      IDE0001; <!-- Name can be simplified -->
       IDE0005; <!-- Using directive is unnecessary -->
       IDE0055; <!-- Fix formatting -->
+
+      CS0108; <!-- Member hides inherited member; missing new keyword -->
+      CS0618; <!-- Operator is obsolete: for null checks, use 'is null' or 'is not null' -->
+      CS8509; <!-- The switch expression does not handle all possible values of its input type (it is not exhaustive) -->
+      CS8602; <!-- Dereference of a possibly null reference. -->
+      CS8604; <!-- Possible null reference argument for parameter 'PARAM' in 'METHOD'. -->
+      CS8618; <!-- Non-nullable property 'PROPERTY' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. -->
+      CS8619; <!-- Nullability of reference types in value of type 'TYPE' doesn't match target type 'TYPE'. -->
+      CS8620; <!-- Arguement of type 'TYPE' cannot be used for parameter 'PARAM' of type 'TYPE' in 'METHOD' due to differences in nullablility -->
+      CS8625; <!-- Cannot convert null literal to non-nullable reference type. -->
+      CS8629; <!-- Nullable value type may be null. -->
+      CS9107; <!-- Parameter is captured into the state of the class -->
+      CS9113; <!-- Parameter 'PARAM' is unread -->
     </WarningsNotAsErrors>
 
     <WarningsNotAsErrors Condition="'$(CODEGEN)' == 'true'">
