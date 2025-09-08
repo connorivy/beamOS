@@ -17,7 +17,9 @@ public record UnitSettings
     public static UnitSettings N_M { get; } =
         new() { LengthUnit = LengthUnit.Meter, ForceUnit = ForceUnit.Newton };
 
+#pragma warning disable IDE1006 // Naming Styles
     public static UnitSettings kN_M { get; } =
+#pragma warning restore IDE1006 // Naming Styles
         new() { LengthUnit = LengthUnit.Meter, ForceUnit = ForceUnit.Kilonewton };
 
     [JsonIgnore]

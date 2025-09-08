@@ -56,6 +56,7 @@
       CS0618; <!-- Operator is obsolete: for null checks, use 'is null' or 'is not null' -->
       CS8509; <!-- The switch expression does not handle all possible values of its input type (it is not exhaustive) -->
       CS8602; <!-- Dereference of a possibly null reference. -->
+      CS8603; <!-- Possible null reference return. -->
       CS8604; <!-- Possible null reference argument for parameter 'PARAM' in 'METHOD'. -->
       CS8618; <!-- Non-nullable property 'PROPERTY' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. -->
       CS8619; <!-- Nullability of reference types in value of type 'TYPE' doesn't match target type 'TYPE'. -->
