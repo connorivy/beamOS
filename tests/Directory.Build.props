@@ -5,5 +5,14 @@
   <PropertyGroup>
     <TUnitImplictUsings>false</TUnitImplictUsings>
     <BeamOsStructuralAnalysisSdkRef>false</BeamOsStructuralAnalysisSdkRef>
+    <UseBeamOsPackage Condition="'$(ContinuousIntegrationEnv)' == 'true' or '$(BeamOsVersion)' != ''">true</UseBeamOsPackage>
   </PropertyGroup>
+
+  <!-- Use project references locally, but use nuget package in CI -->
+  <ItemGroup Condition="'$(BeamOsStructuralAnalysisSdkRef)' == 'true' and '$(UseBeamOsPackage)' != 'true'">
+    <ProjectReference Include="$(BeamOsRoot)src\StructuralAnalysis\BeamOs.StructuralAnalysis.Sdk\BeamOs.StructuralAnalysis.Sdk.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(BeamOsStructuralAnalysisSdkRef)' == 'true' and '$(UseBeamOsPackage)' == 'true'">
+    <PackageReference Include="BeamOs.StructuralAnalysis.Sdk" VersionOverride="$(BeamOsVersion)" />
+  </ItemGroup>
 </Project>

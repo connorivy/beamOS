@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using BeamOs.Common.Contracts;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -6,83 +7,63 @@ using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace BeamOs.Common.Api;
 
-public abstract partial class BeamOsActualBaseEndpoint<TRequest, TResponse>
+public static class BeamOsBaseEndpointExtensions
 {
-    public abstract TResponse ExecuteRequestAsync(TRequest req, CancellationToken ct = default);
-}
-
-public abstract partial class BeamOsBaseEndpoint<TRequest, TResponse>
-{
-    public abstract Task<Result<TResponse>> ExecuteRequestAsync(
-        TRequest req,
-        CancellationToken ct = default
-    );
-
-    /// <summary>
-    /// Do not remove. This method says 0 usages, but that is not true. It is used instead of ExecuteAsync when
-    /// generating strongly typed api clients
-    /// </summary>
-    /// <param name="req"></param>
-    /// <param name="ct"></param>
-    /// <returns></returns>
+    extension<TResponse>(Result<TResponse> result)
+    {
+        /// <summary>
+        /// Do not remove. This method says 0 usages, but that is not true. It is used instead of ExecuteAsync when
+        /// generating strongly typed api clients
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
 #pragma warning disable CA1822 // Mark members as static
-    internal TResponse GetResponseTypeForClientGenerationPurposes(
+        internal TResponse GetResponseTypeForClientGenerationPurposes(
 #pragma warning restore CA1822 // Mark members as static
-    )
-    {
-        return default!;
-    }
-
-    public async Task<IResult> ExecuteAsync(TRequest req, CancellationToken ct = default)
-    {
-        Result<TResponse> result;
-        try
+        )
         {
-            result = await this.ExecuteRequestAsync(req, ct);
+            return default!;
+        }
+
+#pragma warning disable IDE0060 // Remove unused parameter
+        public IResult ToWebResult(CancellationToken ct = default)
+#pragma warning restore IDE0060 // Remove unused parameter
+        {
             if (result.IsSuccess)
             {
-                return this.MapSuccessToResult(result.Value!);
+                return TypedResults.Ok(result.Value);
             }
+            return BeamOsErrorUtils.MapErrorToResult(result.Error);
         }
-        catch (Exception ex)
-        {
-            result = BeamOsError.Failure(
-                description: "An unexpected error has occurred. " + ex.Message,
-                metadata: new Dictionary<string, object?>
-                {
-                    ["Request"] = req,
-                    ["ExceptionMessage"] = ex.Message,
-                    ["StackTrace"] = ex.StackTrace,
-                    ["InnerExceptionMessage"] = ex.InnerException?.Message,
-                    ["InnerStackTrace"] = ex.InnerException?.StackTrace,
-                }
-            );
-        }
-        return BeamOsErrorUtils.MapErrorToResult(result.Error!);
     }
 
-    protected virtual IResult MapSuccessToResult(TResponse response) => TypedResults.Ok(response);
+    extension<TResponse, TEnumerable>(Result<TResponse> result)
+        where TResponse : IAsyncEnumerable<TEnumerable>
+    {
+        public IResult ToWebResult(
+            CancellationToken ct = default
+        )
+        {
+            static async IAsyncEnumerable<System.Net.ServerSentEvents.SseItem<TEnumerable>> ToSse(
+                IAsyncEnumerable<TEnumerable> result,
+                [EnumeratorCancellation] CancellationToken ct
+            )
+            {
+                await foreach (var item in result.WithCancellation(ct))
+                {
+                    yield return new System.Net.ServerSentEvents.SseItem<TEnumerable>(item);
+                }
+            }
+
+            if (result.IsSuccess)
+            {
+                return TypedResults.ServerSentEvents(ToSse(result.Value, ct));
+            }
+            return BeamOsErrorUtils.MapErrorToResult(result.Error);
+        }
+    }
 }
-
-// public abstract partial class BeamOsBaseEndpoint<TRequest, TResponse>
-//     : BeamOsActualBaseEndpoint<TRequest, Task<Result<TResponse>>> { }
-
-// public abstract partial class BeamOsFromBodyBaseEndpoint<TRequest, TResponse>
-//     : BeamOsActualBaseEndpoint<TRequest, TResponse> { }
-
-public abstract partial class BeamOsFromBodyResultBaseEndpoint<TRequest, TResponse>
-    : BeamOsBaseEndpoint<TRequest, TResponse> { }
-
-public abstract partial class BeamOsModelResourceBaseEndpoint<TCommand, TBody, TResponse>
-    : BeamOsBaseEndpoint<TCommand, TResponse>
-    where TCommand : IModelResourceRequest<TBody>, new() { }
-
-public abstract partial class BeamOsModelResourceWithIntIdBaseEndpoint<TCommand, TBody, TResponse>
-    : BeamOsBaseEndpoint<TCommand, TResponse>
-    where TCommand : IModelResourceWithIntIdRequest<TBody>, new() { }
-
-public abstract partial class BeamOsModelResourceWithIntIdBaseEndpoint<TBody, TResponse>
-    : BeamOsBaseEndpoint<ModelResourceWithIntIdRequest<TBody>, TResponse> { }
 
 internal static class BeamOsErrorUtils
 {

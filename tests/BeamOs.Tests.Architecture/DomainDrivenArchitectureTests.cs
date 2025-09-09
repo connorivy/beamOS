@@ -77,6 +77,8 @@ public class DomainDrivenArchitectureTests
             .Should()
             .DependOnAny(this.CommandHandler)
             .OrShould()
+            .DependOnAny(typeof(ICommandHandler<,>))
+            .OrShould()
             .DependOnAny(this.QueryHandlers)
             .OrShould()
             .DependOnAny(typeof(IQueryHandler<,>));

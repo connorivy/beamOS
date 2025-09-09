@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
+  <Import Project="BeamOs.user.props" Condition="Exists('BeamOs.user.props')" />
   <PropertyGroup Label="General Config">
     <BeamOsTargetFramework Condition="'$(BeamOsTargetFramework)' == ''">net10.0</BeamOsTargetFramework>
     <TargetFramework>$(BeamOsTargetFramework)</TargetFramework>
@@ -10,6 +11,7 @@
     <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
     <IsPackable>false</IsPackable>
     <IncludeOpenSeesExe Condition="'$(IncludeOpenSeesExe)' == ''">true</IncludeOpenSeesExe>
+    <BeamOsRoot>$(MSBuildThisFileDirectory)</BeamOsRoot>
     
     <TUnitImplicitUsings>false</TUnitImplicitUsings>
     <DefineConstants Condition="'$(CODEGEN)' == 'true'">$(DefineConstants);CODEGEN</DefineConstants>
