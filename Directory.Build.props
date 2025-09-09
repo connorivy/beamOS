@@ -48,6 +48,8 @@
       RMG066; <!-- No members are mapped -->
 
       CA1305; <!-- Specify IFormatProvider -->
+      CA1000; <!-- Do not declare static members on generic types -->
+      CA1716; <!-- Rename virtual/interface member 'NAME' to avoid conflicts with keywords -->
       CA1852; <!-- Seal internal types -->
       CA2016; <!-- Forward the 'CancellationToken' parameter to methods that take one -->
 
@@ -57,6 +59,7 @@
 
       CS0108; <!-- Member hides inherited member; missing new keyword -->
       CS0618; <!-- Operator is obsolete: for null checks, use 'is null' or 'is not null' -->
+      CS1998; <!-- Async method lacks 'await' operators and will run synchronously -->
       CS8509; <!-- The switch expression does not handle all possible values of its input type (it is not exhaustive) -->
       CS8602; <!-- Dereference of a possibly null reference. -->
       CS8603; <!-- Possible null reference return. -->
