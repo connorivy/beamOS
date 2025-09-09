@@ -11,3 +11,7 @@ dotnet tool restore
 
 # Restore .NET dependencies
 dotnet restore
+
+# Set up local NuGet feed
+mkdir -p /workspaces/beamOS/.nuget-local
+dotnet nuget add source /workspaces/beamOS/.nuget-local --name local

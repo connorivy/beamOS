@@ -4,5 +4,6 @@
 
   <PropertyGroup>
     <TUnitImplictUsings>false</TUnitImplictUsings>
+    <BeamOsStructuralAnalysisSdkRef>false</BeamOsStructuralAnalysisSdkRef>
   </PropertyGroup>
 </Project>

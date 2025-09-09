@@ -10,6 +10,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoads;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
+using BeamOs.StructuralAnalysis.Sdk;
 using FluentAssertions;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration.Api;

@@ -61,11 +61,11 @@ public static class BeamOsTags
                 typeof(BeamOs.Common.Api.BeamOsRouteAttribute).Assembly.Location
             ),
             MetadataReference.CreateFromFile(typeof(ICommandHandler<,>).Assembly.Location),
-            MetadataReference.CreateFromFile(
-                typeof(BeamOs.CodeGen.StructuralAnalysisApiClient.IStructuralAnalysisApiClientV1)
-                    .Assembly
-                    .Location
-            ),
+            // MetadataReference.CreateFromFile(
+            //     typeof(BeamOs.CodeGen.StructuralAnalysisApiClient.IStructuralAnalysisApiClientV1)
+            //         .Assembly
+            //         .Location
+            // ),
         ];
 
         var compilation = CSharpCompilation.Create(

@@ -10,6 +10,7 @@
   <Import Project="..\..\StructuralAnalysis\BeamOs.Tests.StructuralAnalysis.Integration.Shared\BeamOs.Tests.StructuralAnalysis.Integration.Shared.projitems" Label="Shared" />
 
   <ItemGroup>
+    <ProjectReference Include="../../../src/StructuralAnalysis/BeamOs.StructuralAnalysis.Application/BeamOs.StructuralAnalysis.Application.csproj" PrivateAssests="all" />
     <ProjectReference Include="..\..\..\src\StructuralAnalysis\BeamOs.StructuralAnalysis.Api.Endpoints\BeamOs.StructuralAnalysis.Api.Endpoints.csproj" />
     <ProjectReference Include="..\..\BeamOs.Tests.Common\BeamOs.Tests.Common.csproj" />
   </ItemGroup>

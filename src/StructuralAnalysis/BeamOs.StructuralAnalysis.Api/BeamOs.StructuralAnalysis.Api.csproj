@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <InvariantGlobalization>false</InvariantGlobalization>
+    <InvariantGlobalization>true</InvariantGlobalization>
     <!--<PublishAot>true</PublishAot>--> <!-- Need to wait for AOT EF Core support --> 
     <API_PROJECT>true</API_PROJECT>
     <DefineConstants>$(DefineConstants);API_PROJECT</DefineConstants>
@@ -23,15 +23,9 @@
     <ProjectReference Include="..\..\Ai\BeamOs.Ai\BeamOs.Ai.csproj" />
     <ProjectReference Include="..\..\Common\BeamOs.Common.Api\BeamOs.Common.Api.csproj" />
     <ProjectReference Include="..\..\SpeckleConnector\BeamOs.SpeckleConnector\BeamOs.SpeckleConnector.csproj" />
-    <ProjectReference Include="..\BeamOs.StructuralAnalysis.Api.Endpoints\BeamOs.StructuralAnalysis.Api.Endpoints.csproj" />
-    <ProjectReference Include="..\BeamOs.StructuralAnalysis.Application\BeamOs.StructuralAnalysis.Application.csproj" />
+    <ProjectReference Include="..\BeamOs.StructuralAnalysis.Api.Endpoints\BeamOs.StructuralAnalysis.Api.Endpoints.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\BeamOs.StructuralAnalysis.Contracts\BeamOs.StructuralAnalysis.Contracts.csproj" />
     <ProjectReference Include="..\BeamOs.StructuralAnalysis.Infrastructure\BeamOs.StructuralAnalysis.Infrastructure.csproj" />
   </ItemGroup>
-
-  <!-- <Target Name="CopyOpenSees" AfterTargets="AfterBuild" Condition="'$(ContinuousIntegrationEnv)' == false">
-    <Exec Condition="Exists('$(OpenSeesDir)bin\')" Command="xcopy /y /s $(OpenSeesDir)bin\** $(OutDir)bin\" />
-    <Exec Condition="Exists('$(OpenSeesDir)lib\')" Command="xcopy /y /s $(OpenSeesDir)lib\** $(OutDir)lib\" />
-  </Target> -->
 
 </Project>
