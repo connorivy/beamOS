@@ -9,9 +9,9 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.LoadCombinations
 [BeamOsEndpointType(Http.Get)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Reviewer)]
 public class GetLoadCombination(GetLoadCombinationCommandHandler getLoadCombinationCommandHandler)
-    : BeamOsModelResourceQueryBaseEndpoint<LoadCombination>
+    : BeamOsModelResourceQueryBaseEndpoint<LoadCombinationContract>
 {
-    public override async Task<Result<LoadCombination>> ExecuteRequestAsync(
+    public override async Task<Result<LoadCombinationContract>> ExecuteRequestAsync(
         ModelResourceWithIntIdRequest req,
         CancellationToken ct = default
     ) => await getLoadCombinationCommandHandler.ExecuteAsync(req, ct);

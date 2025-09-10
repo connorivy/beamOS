@@ -17,10 +17,10 @@ public class PutSectionProfileFromLibrary(
     : BeamOsModelResourceWithIntIdBaseEndpoint<
         PutSectionProfileFromLibraryCommand,
         SectionProfileFromLibraryData,
-        SectionProfileFromLibrary
+        SectionProfileFromLibraryContract
     >
 {
-    public override async Task<Result<SectionProfileFromLibrary>> ExecuteRequestAsync(
+    public override async Task<Result<SectionProfileFromLibraryContract>> ExecuteRequestAsync(
         PutSectionProfileFromLibraryCommand req,
         CancellationToken ct = default
     ) => await putSectionProfileCommandHandler.ExecuteAsync(req, ct);
@@ -34,7 +34,7 @@ public class BatchPutSectionProfileFromLibrary(
 )
     : BeamOsModelResourceBaseEndpoint<
         BatchPutSectionProfileFromLibraryCommand,
-        SectionProfileFromLibrary[],
+        SectionProfileFromLibraryContract[],
         BatchResponse
     >
 {

@@ -53,7 +53,7 @@ public sealed class StructuralAnalysisApiClientV2 : IStructuralAnalysisApiClient
     ) => apiClientV1.BatchPutElement1dAsync(request.ModelId, request.Body, ct);
 
     public Task<ApiResponse<BatchResponse>> BatchPutInternalNode(
-        ModelResourceRequest<InternalNode[]> request,
+        ModelResourceRequest<InternalNodeContract[]> request,
         CancellationToken ct = default
     ) => apiClientV1.BatchPutInternalNodeAsync(request.ModelId, request.Body, ct);
 
@@ -107,17 +107,17 @@ public sealed class StructuralAnalysisApiClientV2 : IStructuralAnalysisApiClient
         CancellationToken ct = default
     ) => apiClientV1.CreateElement1dAsync(request.ModelId, request.Body, ct);
 
-    public Task<ApiResponse<InternalNode>> CreateInternalNode(
+    public Task<ApiResponse<InternalNodeContract>> CreateInternalNode(
         ModelResourceRequest<CreateInternalNodeRequest> request,
         CancellationToken ct = default
     ) => apiClientV1.CreateInternalNodeAsync(request.ModelId, request.Body, ct);
 
-    public Task<ApiResponse<LoadCase>> CreateLoadCase(
+    public Task<ApiResponse<LoadCaseContract>> CreateLoadCase(
         CreateLoadCaseCommand request,
         CancellationToken ct = default
     ) => apiClientV1.CreateLoadCaseAsync(request.ModelId, request.Body, ct);
 
-    public Task<ApiResponse<LoadCombination>> CreateLoadCombination(
+    public Task<ApiResponse<LoadCombinationContract>> CreateLoadCombination(
         CreateLoadCombinationCommand request,
         CancellationToken ct = default
     ) => apiClientV1.CreateLoadCombinationAsync(request.ModelId, request.Body, ct);
@@ -202,17 +202,17 @@ public sealed class StructuralAnalysisApiClientV2 : IStructuralAnalysisApiClient
         CancellationToken ct = default
     ) => apiClientV1.GetElement1dAsync(request.ModelId, request.Id, ct);
 
-    public Task<ApiResponse<InternalNode>> GetInternalNode(
+    public Task<ApiResponse<InternalNodeContract>> GetInternalNode(
         ModelResourceWithIntIdRequest request,
         CancellationToken ct = default
     ) => apiClientV1.GetInternalNodeAsync(request.ModelId, request.Id, ct);
 
-    public Task<ApiResponse<LoadCase>> GetLoadCase(
+    public Task<ApiResponse<LoadCaseContract>> GetLoadCase(
         ModelResourceWithIntIdRequest request,
         CancellationToken ct = default
     ) => apiClientV1.GetLoadCaseAsync(request.ModelId, request.Id, ct);
 
-    public Task<ApiResponse<LoadCombination>> GetLoadCombination(
+    public Task<ApiResponse<LoadCombinationContract>> GetLoadCombination(
         ModelResourceWithIntIdRequest request,
         CancellationToken ct = default
     ) => apiClientV1.GetLoadCombinationAsync(request.ModelId, request.Id, ct);
@@ -281,17 +281,17 @@ public sealed class StructuralAnalysisApiClientV2 : IStructuralAnalysisApiClient
         CancellationToken ct = default
     ) => apiClientV1.PutElement1dAsync(request.Id, request.ModelId, request.Body, ct);
 
-    public Task<ApiResponse<InternalNode>> PutInternalNode(
+    public Task<ApiResponse<InternalNodeContract>> PutInternalNode(
         ModelResourceWithIntIdRequest<InternalNodeData> request,
         CancellationToken ct = default
     ) => apiClientV1.PutInternalNodeAsync(request.ModelId, request.Id, request.Body, ct);
 
-    public Task<ApiResponse<LoadCase>> PutLoadCase(
+    public Task<ApiResponse<LoadCaseContract>> PutLoadCase(
         PutLoadCaseCommand request,
         CancellationToken ct = default
     ) => apiClientV1.PutLoadCaseAsync(request.ModelId, request.Id, request.Body, ct);
 
-    public Task<ApiResponse<LoadCombination>> PutLoadCombination(
+    public Task<ApiResponse<LoadCombinationContract>> PutLoadCombination(
         PutLoadCombinationCommand request,
         CancellationToken ct = default
     ) => apiClientV1.PutLoadCombinationAsync(request.ModelId, request.Id, request.Body, ct);
@@ -326,7 +326,7 @@ public sealed class StructuralAnalysisApiClientV2 : IStructuralAnalysisApiClient
         CancellationToken ct = default
     ) => apiClientV1.PutSectionProfileAsync(request.Id, request.ModelId, request.Body, ct);
 
-    public Task<ApiResponse<SectionProfileFromLibrary>> PutSectionProfileFromLibrary(
+    public Task<ApiResponse<SectionProfileFromLibraryContract>> PutSectionProfileFromLibrary(
         PutSectionProfileFromLibraryCommand request,
         CancellationToken ct = default
     ) =>

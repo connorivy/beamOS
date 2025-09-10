@@ -2,7 +2,6 @@ using BeamOs.Common.Api;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCombinations;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCombinations;
-using LoadCombination = BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCombinations.LoadCombination;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.LoadCombinations;
 
@@ -13,10 +12,10 @@ public class PutLoadCombination(PutLoadCombinationCommandHandler putLoadCombinat
     : BeamOsModelResourceWithIntIdBaseEndpoint<
         PutLoadCombinationCommand,
         LoadCombinationData,
-        LoadCombination
+        LoadCombinationContract
     >
 {
-    public override async Task<Result<LoadCombination>> ExecuteRequestAsync(
+    public override async Task<Result<LoadCombinationContract>> ExecuteRequestAsync(
         PutLoadCombinationCommand req,
         CancellationToken ct = default
     ) => await putLoadCombinationCommandHandler.ExecuteAsync(req, ct);

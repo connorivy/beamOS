@@ -14,10 +14,10 @@ public class CreateLoadCombination(
     : BeamOsModelResourceBaseEndpoint<
         CreateLoadCombinationCommand,
         LoadCombinationData,
-        LoadCombination
+        LoadCombinationContract
     >
 {
-    public override async Task<Result<LoadCombination>> ExecuteRequestAsync(
+    public override async Task<Result<LoadCombinationContract>> ExecuteRequestAsync(
         CreateLoadCombinationCommand req,
         CancellationToken ct = default
     ) => await createLoadCombinationCommandHandler.ExecuteAsync(req, ct);

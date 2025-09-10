@@ -2,7 +2,6 @@ using BeamOs.Common.Api;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCases;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
-using LoadCase = BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases.LoadCase;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.LoadCases;
 
@@ -10,9 +9,9 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.LoadCases;
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 public class PutLoadCase(PutLoadCaseCommandHandler putLoadCaseCommandHandler)
-    : BeamOsModelResourceWithIntIdBaseEndpoint<PutLoadCaseCommand, LoadCaseData, LoadCase>
+    : BeamOsModelResourceWithIntIdBaseEndpoint<PutLoadCaseCommand, LoadCaseData, LoadCaseContract>
 {
-    public override async Task<Result<LoadCase>> ExecuteRequestAsync(
+    public override async Task<Result<LoadCaseContract>> ExecuteRequestAsync(
         PutLoadCaseCommand req,
         CancellationToken ct = default
     ) => await putLoadCaseCommandHandler.ExecuteAsync(req, ct);

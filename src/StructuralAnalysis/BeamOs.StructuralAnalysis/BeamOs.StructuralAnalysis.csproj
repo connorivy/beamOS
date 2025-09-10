@@ -20,6 +20,7 @@
     <PackageReference Include="StructuralShapes" />
     <PackageReference Include="UnitsNet" />
     <PackageReference Include="EntityFrameworkCore.Exceptions.Common" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
   </ItemGroup>
 
@@ -40,8 +41,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Common\BeamOs.Common.Domain\BeamOs.Common.Domain.csproj" />
+    <ProjectReference Include="../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/BeamOs.CodeGen.StructuralAnalysisApiClient.csproj" />
+    <ProjectReference Include="..\..\Common\BeamOs.Common\BeamOs.Common.csproj" />
+    <ProjectReference Include="..\..\Identity\BeamOs.Identity\BeamOs.Identity.csproj" />
     <ProjectReference Include="..\BeamOs.StructuralAnalysis.Contracts\BeamOs.StructuralAnalysis.Contracts.csproj" />
+    <ProjectReference Include="..\BeamOs.StructuralAnalysis.SourceGenerator\BeamOs.StructuralAnalysis.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <ItemGroup>
