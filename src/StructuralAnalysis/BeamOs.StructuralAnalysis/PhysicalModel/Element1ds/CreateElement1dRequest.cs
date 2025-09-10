@@ -11,7 +11,7 @@ public record CreateElement1dRequest
         int endNodeId,
         int materialId,
         int sectionProfileId,
-        Angle? sectionProfileRotation,
+        AngleContract? sectionProfileRotation,
         int? id,
         Dictionary<string, string>? metadata
     )
@@ -20,7 +20,7 @@ public record CreateElement1dRequest
         this.EndNodeId = endNodeId;
         this.MaterialId = materialId;
         this.SectionProfileId = sectionProfileId;
-        this.SectionProfileRotation = sectionProfileRotation ?? new(0, AngleUnit.Degree);
+        this.SectionProfileRotation = sectionProfileRotation ?? new(0, AngleUnitContract.Degree);
         this.Id = id;
         this.Metadata = metadata;
     }
@@ -43,7 +43,7 @@ public record CreateElement1dRequest
     public required int EndNodeId { get; init; }
     public required int MaterialId { get; init; }
     public required int SectionProfileId { get; init; }
-    public Angle? SectionProfileRotation { get; init; } = new(0, AngleUnit.Degree);
+    public AngleContract? SectionProfileRotation { get; init; } = new(0, AngleUnitContract.Degree);
     public int? Id { get; init; }
     public Dictionary<string, string>? Metadata { get; init; }
 }

@@ -31,12 +31,15 @@ public readonly record struct Restraint
     public required bool CanRotateAboutY { get; init; }
     public required bool CanRotateAboutZ { get; init; }
 
-    public static Restraint Free { get; } = new(true, true, true, true, true, true);
-    public static Restraint FreeXzPlane { get; } = new(true, false, true, false, true, false);
-    public static Restraint FreeXyPlane { get; } = new(true, true, false, false, false, true);
-    public static Restraint Pinned { get; } = new(false, false, false, true, true, true);
-    public static Restraint PinnedXyPlane { get; } = new(false, false, false, false, false, true);
-    public static Restraint Fixed { get; } = new(false, false, false, false, false, false);
+    public static RestraintContract Free { get; } = new(true, true, true, true, true, true);
+    public static RestraintContract FreeXzPlane { get; } =
+        new(true, false, true, false, true, false);
+    public static RestraintContract FreeXyPlane { get; } =
+        new(true, true, false, false, false, true);
+    public static RestraintContract Pinned { get; } = new(false, false, false, true, true, true);
+    public static RestraintContract PinnedXyPlane { get; } =
+        new(false, false, false, false, false, true);
+    public static RestraintContract Fixed { get; } = new(false, false, false, false, false, false);
 }
 
 public record struct PartialRestraint(

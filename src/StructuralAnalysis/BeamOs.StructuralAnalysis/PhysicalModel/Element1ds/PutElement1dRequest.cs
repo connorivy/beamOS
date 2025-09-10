@@ -12,7 +12,7 @@ public record Element1dData
         int endNodeId,
         int materialId,
         int sectionProfileId,
-        Angle? sectionProfileRotation,
+        AngleContract? sectionProfileRotation,
         Dictionary<string, string>? metadata
     )
     {
@@ -20,7 +20,7 @@ public record Element1dData
         this.EndNodeId = endNodeId;
         this.MaterialId = materialId;
         this.SectionProfileId = sectionProfileId;
-        this.SectionProfileRotation = sectionProfileRotation ?? new(0, AngleUnit.Degree);
+        this.SectionProfileRotation = sectionProfileRotation ?? new(0, AngleUnitContract.Degree);
         this.Metadata = metadata;
     }
 
@@ -30,7 +30,7 @@ public record Element1dData
     public required int EndNodeId { get; init; }
     public required int MaterialId { get; init; }
     public required int SectionProfileId { get; init; }
-    public Angle? SectionProfileRotation { get; init; } = new(0, AngleUnit.Degree);
+    public AngleContract? SectionProfileRotation { get; init; } = new(0, AngleUnitContract.Degree);
     public Dictionary<string, string>? Metadata { get; init; }
 }
 
@@ -43,7 +43,7 @@ public record PutElement1dRequest : Element1dData, IHasIntId, IBeamOsEntityReque
         int endNodeId,
         int materialId,
         int sectionProfileId,
-        Angle? sectionProfileRotation,
+        AngleContract? sectionProfileRotation,
         Dictionary<string, string>? metadata = null
     )
         : base(

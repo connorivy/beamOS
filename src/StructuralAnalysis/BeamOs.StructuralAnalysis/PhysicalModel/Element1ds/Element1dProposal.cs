@@ -10,7 +10,8 @@ namespace BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
 // [JsonDerivedType(typeof(ModifyElement1dProposal), typeDiscriminator: "Modify")]
 public abstract record Element1dProposalBase
 {
-    public Angle? SectionProfileRotation { get; protected init; } = new(0, AngleUnit.Degree);
+    public AngleContract? SectionProfileRotation { get; protected init; } =
+        new(0, AngleUnitContract.Degree);
     public Dictionary<string, string>? Metadata { get; protected init; }
 
     public static CreateElement1dProposal Create(
@@ -18,7 +19,7 @@ public abstract record Element1dProposalBase
         ProposedID endNodeId,
         ProposedID materialId,
         ProposedID sectionProfileId,
-        Angle? sectionProfileRotation = null,
+        AngleContract? sectionProfileRotation = null,
         Dictionary<string, string>? metadata = null,
         int? id = null
     )
@@ -30,7 +31,7 @@ public abstract record Element1dProposalBase
             EndNodeId = endNodeId,
             MaterialId = materialId,
             SectionProfileId = sectionProfileId,
-            SectionProfileRotation = sectionProfileRotation ?? new(0, AngleUnit.Degree),
+            SectionProfileRotation = sectionProfileRotation ?? new(0, AngleUnitContract.Degree),
             Metadata = metadata,
         };
     }
@@ -41,7 +42,7 @@ public abstract record Element1dProposalBase
         ProposedID? endNodeId = null,
         ProposedID? materialId = null,
         ProposedID? sectionProfileId = null,
-        Angle? sectionProfileRotation = null,
+        AngleContract? sectionProfileRotation = null,
         Dictionary<string, string>? metadata = null
     )
     {
@@ -52,7 +53,7 @@ public abstract record Element1dProposalBase
             EndNodeId = endNodeId ?? default,
             MaterialId = materialId ?? default,
             SectionProfileId = sectionProfileId ?? default,
-            SectionProfileRotation = sectionProfileRotation ?? new(0, AngleUnit.Degree),
+            SectionProfileRotation = sectionProfileRotation ?? new(0, AngleUnitContract.Degree),
             Metadata = metadata,
         };
     }

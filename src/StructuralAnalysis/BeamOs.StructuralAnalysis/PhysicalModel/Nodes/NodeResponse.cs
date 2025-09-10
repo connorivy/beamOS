@@ -11,7 +11,12 @@ public record NodeResponse : IModelEntity
     public NodeResponse() { }
 
     [SetsRequiredMembers]
-    public NodeResponse(int id, Guid modelId, Point locationPoint, Restraint restraint)
+    public NodeResponse(
+        int id,
+        Guid modelId,
+        PointContract locationPoint,
+        RestraintContract restraint
+    )
     {
         this.Id = id;
         this.ModelId = modelId;
@@ -25,8 +30,8 @@ public record NodeResponse : IModelEntity
 
     public required int Id { get; init; }
     public required Guid ModelId { get; init; }
-    public required Point LocationPoint { get; init; }
-    public required Restraint Restraint { get; init; }
+    public required PointContract LocationPoint { get; init; }
+    public required RestraintContract Restraint { get; init; }
 
     public NodeData ToNodeData() => new(this.LocationPoint, this.Restraint);
 }

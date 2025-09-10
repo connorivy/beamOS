@@ -10,4 +10,17 @@
     <ProjectReference Include="..\..\Common\BeamOs.Common\BeamOs.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!--<PackageReference Include="MathNet.Numerics" />-->
+    <PackageReference Include="CommunityToolkit.HighPerformance" />
+    <PackageReference Include="CSparse" />
+    <PackageReference Include="MathNet.Numerics.MKL.Win-x64" />
+    <PackageReference Include="MathNet.Spatial" />
+    <PackageReference Include="MediatR" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="Riok.Mapperly" />
+    <PackageReference Include="StructuralShapes" />
+    <PackageReference Include="UnitsNet" />
+  </ItemGroup>
+
 </Project>

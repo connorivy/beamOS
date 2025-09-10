@@ -8,7 +8,7 @@ public record MaterialResponse(
     Guid ModelId,
     double ModulusOfElasticity,
     double ModulusOfRigidity,
-    PressureUnit PressureUnit
+    PressureUnitContract PressureUnit
 ) : IModelEntity
 {
     public MaterialData ToMaterialData() =>

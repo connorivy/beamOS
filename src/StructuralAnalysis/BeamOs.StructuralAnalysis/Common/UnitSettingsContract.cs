@@ -4,42 +4,51 @@ namespace BeamOs.StructuralAnalysis.Contracts.Common;
 
 public record UnitSettings
 {
-    public required LengthUnit LengthUnit { get; init; }
-    public required ForceUnit ForceUnit { get; init; }
-    public AngleUnit AngleUnit { get; init; } = AngleUnit.Radian;
+    public required LengthUnitContract LengthUnit { get; init; }
+    public required ForceUnitContract ForceUnit { get; init; }
+    public AngleUnitContract AngleUnit { get; init; } = AngleUnitContract.Radian;
 
     public static UnitSettings K_IN { get; } =
-        new() { LengthUnit = LengthUnit.Inch, ForceUnit = ForceUnit.KilopoundForce };
+        new()
+        {
+            LengthUnit = LengthUnitContract.Inch,
+            ForceUnit = ForceUnitContract.KilopoundForce,
+        };
 
     public static UnitSettings K_FT { get; } =
-        new() { LengthUnit = LengthUnit.Foot, ForceUnit = ForceUnit.KilopoundForce };
+        new()
+        {
+            LengthUnit = LengthUnitContract.Foot,
+            ForceUnit = ForceUnitContract.KilopoundForce,
+        };
 
     public static UnitSettings N_M { get; } =
-        new() { LengthUnit = LengthUnit.Meter, ForceUnit = ForceUnit.Newton };
+        new() { LengthUnit = LengthUnitContract.Meter, ForceUnit = ForceUnitContract.Newton };
 
 #pragma warning disable IDE1006 // Naming Styles
     public static UnitSettings kN_M { get; } =
 #pragma warning restore IDE1006 // Naming Styles
-        new() { LengthUnit = LengthUnit.Meter, ForceUnit = ForceUnit.Kilonewton };
+        new() { LengthUnit = LengthUnitContract.Meter, ForceUnit = ForceUnitContract.Kilonewton };
 
     [JsonIgnore]
-    public AreaUnit AreaUnit => this.LengthUnit.ToArea();
+    public AreaUnitContract AreaUnit => this.LengthUnit.ToArea();
 
     [JsonIgnore]
-    public VolumeUnit VolumeUnit => this.LengthUnit.ToVolume();
+    public VolumeUnitContract VolumeUnit => this.LengthUnit.ToVolume();
 
     [JsonIgnore]
-    public AreaMomentOfInertiaUnit AreaMomentOfInertiaUnit =>
+    public AreaMomentOfInertiaUnitContract AreaMomentOfInertiaUnit =>
         this.LengthUnit.ToAreaMomentOfInertia();
 
     [JsonIgnore]
-    public TorqueUnit TorqueUnit => this.ForceUnit.MultiplyBy(this.LengthUnit);
+    public TorqueUnitContract TorqueUnit => this.ForceUnit.MultiplyBy(this.LengthUnit);
 
     [JsonIgnore]
-    public ForcePerLengthUnit ForcePerLengthUnit => this.ForceUnit.DivideBy(this.LengthUnit);
+    public ForcePerLengthUnitContract ForcePerLengthUnit =>
+        this.ForceUnit.DivideBy(this.LengthUnit);
 
     [JsonIgnore]
-    public PressureUnit PressureUnit => this.ForceUnit.GetPressure(this.LengthUnit);
+    public PressureUnitContract PressureUnit => this.ForceUnit.GetPressure(this.LengthUnit);
 }
 
 public enum LengthUnit
@@ -168,85 +177,87 @@ public enum RatioUnit
 
 public static class PressureUnitExtension
 {
-    public static string ToFriendlyString(this AreaUnit areaUnit) =>
+    public static string ToFriendlyString(this AreaUnitContract areaUnit) =>
         areaUnit switch
         {
-            AreaUnit.SquareCentimeter => "cm²",
-            AreaUnit.SquareFoot => "ft²",
-            AreaUnit.SquareInch => "in²",
-            AreaUnit.SquareMeter => "m²",
-            AreaUnit.SquareMillimeter => "mm²",
-            AreaUnit.Undefined => throw new NotImplementedException(),
+            AreaUnitContract.SquareCentimeter => "cm²",
+            AreaUnitContract.SquareFoot => "ft²",
+            AreaUnitContract.SquareInch => "in²",
+            AreaUnitContract.SquareMeter => "m²",
+            AreaUnitContract.SquareMillimeter => "mm²",
+            AreaUnitContract.Undefined => throw new NotImplementedException(),
             _ => areaUnit.ToString(),
         };
 
-    public static string ToFriendlyString(this AreaMomentOfInertiaUnit areaMomentOfInertiaUnit) =>
+    public static string ToFriendlyString(
+        this AreaMomentOfInertiaUnitContract areaMomentOfInertiaUnit
+    ) =>
         areaMomentOfInertiaUnit switch
         {
-            AreaMomentOfInertiaUnit.CentimeterToTheFourth => "cm⁴",
-            AreaMomentOfInertiaUnit.FootToTheFourth => "ft⁴",
-            AreaMomentOfInertiaUnit.InchToTheFourth => "in⁴",
-            AreaMomentOfInertiaUnit.MeterToTheFourth => "m⁴",
-            AreaMomentOfInertiaUnit.MillimeterToTheFourth => "mm⁴",
-            AreaMomentOfInertiaUnit.Undefined => throw new NotImplementedException(),
+            AreaMomentOfInertiaUnitContract.CentimeterToTheFourth => "cm⁴",
+            AreaMomentOfInertiaUnitContract.FootToTheFourth => "ft⁴",
+            AreaMomentOfInertiaUnitContract.InchToTheFourth => "in⁴",
+            AreaMomentOfInertiaUnitContract.MeterToTheFourth => "m⁴",
+            AreaMomentOfInertiaUnitContract.MillimeterToTheFourth => "mm⁴",
+            AreaMomentOfInertiaUnitContract.Undefined => throw new NotImplementedException(),
             _ => areaMomentOfInertiaUnit.ToString(),
         };
 
-    public static string ToFriendlyString(this LengthUnit lengthUnit) =>
+    public static string ToFriendlyString(this LengthUnitContract lengthUnit) =>
         lengthUnit switch
         {
-            LengthUnit.Centimeter => "cm",
-            LengthUnit.Foot => "ft",
-            LengthUnit.Inch => "in",
-            LengthUnit.Meter => "m",
-            LengthUnit.Millimeter => "mm",
-            LengthUnit.Undefined => throw new NotImplementedException(),
+            LengthUnitContract.Centimeter => "cm",
+            LengthUnitContract.Foot => "ft",
+            LengthUnitContract.Inch => "in",
+            LengthUnitContract.Meter => "m",
+            LengthUnitContract.Millimeter => "mm",
+            LengthUnitContract.Undefined => throw new NotImplementedException(),
             _ => lengthUnit.ToString(),
         };
 
-    public static string ToFriendlyString(this VolumeUnit volumeUnit) =>
+    public static string ToFriendlyString(this VolumeUnitContract volumeUnit) =>
         volumeUnit switch
         {
-            VolumeUnit.CubicCentimeter => "cm³",
-            VolumeUnit.CubicFoot => "ft³",
-            VolumeUnit.CubicInch => "in³",
-            VolumeUnit.CubicMeter => "m³",
-            VolumeUnit.CubicMillimeter => "mm³",
-            VolumeUnit.Undefined => throw new NotImplementedException(),
+            VolumeUnitContract.CubicCentimeter => "cm³",
+            VolumeUnitContract.CubicFoot => "ft³",
+            VolumeUnitContract.CubicInch => "in³",
+            VolumeUnitContract.CubicMeter => "m³",
+            VolumeUnitContract.CubicMillimeter => "mm³",
+            VolumeUnitContract.Undefined => throw new NotImplementedException(),
             _ => volumeUnit.ToString(),
         };
 
-    public static string ToFriendlyString(this TorqueUnit torqueUnit) =>
+    public static string ToFriendlyString(this TorqueUnitContract torqueUnit) =>
         torqueUnit switch
         {
-            TorqueUnit.KilonewtonCentimeter => "kN·cm",
-            TorqueUnit.KilonewtonMeter => "kN·m",
-            TorqueUnit.KilonewtonMillimeter => "kN·mm",
-            TorqueUnit.KilopoundForceFoot => "kip·ft",
-            TorqueUnit.KilopoundForceInch => "kip·in",
-            TorqueUnit.NewtonCentimeter => "N·cm",
-            TorqueUnit.NewtonMeter => "N·m",
-            TorqueUnit.NewtonMillimeter => "N·mm",
-            TorqueUnit.PoundForceFoot => "lb·ft",
-            TorqueUnit.PoundForceInch => "lb·in",
-            TorqueUnit.Undefined => throw new NotImplementedException(),
+            TorqueUnitContract.KilonewtonCentimeter => "kN·cm",
+            TorqueUnitContract.KilonewtonMeter => "kN·m",
+            TorqueUnitContract.KilonewtonMillimeter => "kN·mm",
+            TorqueUnitContract.KilopoundForceFoot => "kip·ft",
+            TorqueUnitContract.KilopoundForceInch => "kip·in",
+            TorqueUnitContract.NewtonCentimeter => "N·cm",
+            TorqueUnitContract.NewtonMeter => "N·m",
+            TorqueUnitContract.NewtonMillimeter => "N·mm",
+            TorqueUnitContract.PoundForceFoot => "lb·ft",
+            TorqueUnitContract.PoundForceInch => "lb·in",
+            TorqueUnitContract.Undefined => throw new NotImplementedException(),
             _ => torqueUnit.ToString(),
         };
 
-    public static string ToFriendlyString(this PressureUnit pressureUnit) =>
+    public static string ToFriendlyString(this PressureUnitContract pressureUnit) =>
         pressureUnit switch
         {
-            PressureUnit.KilonewtonPerSquareCentimeter => "kN/cm²",
-            PressureUnit.KilonewtonPerSquareMeter => "kN/m²",
-            PressureUnit.KilonewtonPerSquareMillimeter => "kN/mm²",
-            PressureUnit.KilopoundForcePerSquareFoot => "kip/ft²",
-            PressureUnit.KilopoundForcePerSquareInch => "kip/in²",
-            PressureUnit.NewtonPerSquareCentimeter => "N/cm²",
-            PressureUnit.NewtonPerSquareMeter => "N/m²",
-            PressureUnit.NewtonPerSquareMillimeter => "N/mm²",
-            PressureUnit.PoundForcePerSquareFoot => "lb/ft²",
-            PressureUnit.PoundForcePerSquareInch => "lb/in²",
-            PressureUnit.Undefined => throw new NotImplementedException(),
+            PressureUnitContract.KilonewtonPerSquareCentimeter => "kN/cm²",
+            PressureUnitContract.KilonewtonPerSquareMeter => "kN/m²",
+            PressureUnitContract.KilonewtonPerSquareMillimeter => "kN/mm²",
+            PressureUnitContract.KilopoundForcePerSquareFoot => "kip/ft²",
+            PressureUnitContract.KilopoundForcePerSquareInch => "kip/in²",
+            PressureUnitContract.NewtonPerSquareCentimeter => "N/cm²",
+            PressureUnitContract.NewtonPerSquareMeter => "N/m²",
+            PressureUnitContract.NewtonPerSquareMillimeter => "N/mm²",
+            PressureUnitContract.PoundForcePerSquareFoot => "lb/ft²",
+            PressureUnitContract.PoundForcePerSquareInch => "lb/in²",
+            PressureUnitContract.Undefined => throw new NotImplementedException(),
             _ => pressureUnit.ToString(),
         };
 }

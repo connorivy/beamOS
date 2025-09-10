@@ -25,8 +25,8 @@ public record DiagramResponseBase
 }
 
 public record DiagramConsistentIntervalResponse(
-    Length StartLocation,
-    Length EndLocation,
+    LengthContract StartLocation,
+    LengthContract EndLocation,
     double[] PolynomialCoefficients
 ) : IDiagramConsistentIntervalResponse;
 
@@ -35,9 +35,9 @@ public record ShearDiagramResponse(
     int ResultSetId,
     int Element1dId,
     Vector3 GlobalShearDirection,
-    LengthUnit LengthUnit,
-    ForceUnit ForceUnit,
-    Length ElementLength,
+    LengthUnitContract LengthUnit,
+    ForceUnitContract ForceUnit,
+    LengthContract ElementLength,
     DiagramConsistentIntervalResponse[] Intervals
 ) : DiagramResponseBase(ModelId, ResultSetId, Element1dId, Intervals);
 
@@ -45,17 +45,17 @@ public record MomentDiagramResponse(
     Guid ModelId,
     int ResultSetId,
     int Element1dId,
-    LengthUnit LengthUnit,
-    TorqueUnit TorqueUnit,
-    Length ElementLength,
+    LengthUnitContract LengthUnit,
+    TorqueUnitContract TorqueUnit,
+    LengthContract ElementLength,
     DiagramConsistentIntervalResponse2[] Intervals
 );
 
 // weird bug with generating the openapi document if I use the same diagramConsistantIntervalResponse
 // as the shear diagram response
 public record DiagramConsistentIntervalResponse2(
-    Length StartLocation,
-    Length EndLocation,
+    LengthContract StartLocation,
+    LengthContract EndLocation,
     double[] PolynomialCoefficients
 ) : IDiagramConsistentIntervalResponse;
 
@@ -85,10 +85,10 @@ public record DiagramResponse
 
 public readonly record struct GlobalStresses
 {
-    public required Force MaxShear { get; init; }
-    public required Force MinShear { get; init; }
-    public required Torque MaxMoment { get; init; }
-    public required Torque MinMoment { get; init; }
+    public required ForceContract MaxShear { get; init; }
+    public required ForceContract MinShear { get; init; }
+    public required TorqueContract MaxMoment { get; init; }
+    public required TorqueContract MinMoment { get; init; }
 }
 
 public enum DiagramType
@@ -96,7 +96,7 @@ public enum DiagramType
     None = 0,
     Shear,
     Moment,
-    Displacement
+    Displacement,
 }
 
 public enum RelativeDirection3D
@@ -107,5 +107,5 @@ public enum RelativeDirection3D
     LocalZ,
     GlobalX,
     GlobalY,
-    GlobalZ
+    GlobalZ,
 }

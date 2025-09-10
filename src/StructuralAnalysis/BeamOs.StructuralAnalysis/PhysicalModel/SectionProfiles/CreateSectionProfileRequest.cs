@@ -27,16 +27,16 @@ public record SectionProfileData : SectionProfileDataBase
     public double? StrongAxisShearArea { get; init; }
     public double? WeakAxisShearArea { get; init; }
 
-    public required LengthUnit LengthUnit { get; init; }
+    public required LengthUnitContract LengthUnit { get; init; }
 
     [JsonIgnore]
-    public VolumeUnit VolumeUnit => this.LengthUnit.ToVolume();
+    public VolumeUnitContract VolumeUnit => this.LengthUnit.ToVolume();
 
     [JsonIgnore]
-    public AreaUnit AreaUnit => this.LengthUnit.ToArea();
+    public AreaUnitContract AreaUnit => this.LengthUnit.ToArea();
 
     [JsonIgnore]
-    public AreaMomentOfInertiaUnit AreaMomentOfInertiaUnit =>
+    public AreaMomentOfInertiaUnitContract AreaMomentOfInertiaUnit =>
         this.LengthUnit.ToAreaMomentOfInertia();
 
     public SectionProfileData() { }

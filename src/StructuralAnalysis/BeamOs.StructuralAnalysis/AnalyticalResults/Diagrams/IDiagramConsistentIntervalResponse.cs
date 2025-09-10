@@ -4,7 +4,7 @@ namespace BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams;
 
 public interface IDiagramConsistentIntervalResponse
 {
-    Length EndLocation { get; init; }
+    LengthContract EndLocation { get; init; }
     double[] PolynomialCoefficients { get; init; }
-    Length StartLocation { get; init; }
+    LengthContract StartLocation { get; init; }
 }
