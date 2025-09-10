@@ -10,9 +10,9 @@
 
   <!-- Use project references locally, but use nuget package in CI -->
   <ItemGroup Condition="'$(BeamOsStructuralAnalysisSdkRef)' == 'true' and '$(UseBeamOsPackage)' != 'true'">
-    <ProjectReference Include="$(BeamOsRoot)src\StructuralAnalysis\BeamOs.StructuralAnalysis.Sdk\BeamOs.StructuralAnalysis.Sdk.csproj" />
+    <ProjectReference Include="$(BeamOsRoot)src\StructuralAnalysis\BeamOs.StructuralAnalysis\BeamOs.StructuralAnalysis.csproj" />
   </ItemGroup>
   <ItemGroup Condition="'$(BeamOsStructuralAnalysisSdkRef)' == 'true' and '$(UseBeamOsPackage)' == 'true'">
-    <PackageReference Include="BeamOs.StructuralAnalysis.Sdk" VersionOverride="$(BeamOsVersion)" />
+    <PackageReference Include="BeamOs.StructuralAnalysis" VersionOverride="$(BeamOsVersion)" />
   </ItemGroup>
 </Project>

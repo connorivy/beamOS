@@ -134,7 +134,7 @@ public class BeamOsModelBuilder(IBeamOsModel model, IStructuralAnalysisApiClient
         const int batchSize = 50;
 
         var requestsList = requests.ToList();
-        for (int i = 0; i < requestsList.Count; i += batchSize)
+        for (var i = 0; i < requestsList.Count; i += batchSize)
         {
             var batch = requestsList.Skip(i).Take(batchSize).ToArray();
             yield return batch;

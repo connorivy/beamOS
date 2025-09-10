@@ -21,9 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/BeamOs.CodeGen.StructuralAnalysisApiClient.csproj" />
     <ProjectReference Include="../../Common/BeamOs.Common.Contracts/BeamOs.Common.Contracts.csproj" />
-    <ProjectReference Include="../../StructuralAnalysis/BeamOs.StructuralAnalysis.Application/BeamOs.StructuralAnalysis.Application.csproj" />
-    <ProjectReference Include="../../StructuralAnalysis/BeamOs.StructuralAnalysis.Contracts/BeamOs.StructuralAnalysis.Contracts.csproj" />
-    <ProjectReference Include="../../StructuralAnalysis/BeamOs.StructuralAnalysis.Sdk/BeamOs.StructuralAnalysis.Sdk.csproj" />
+    <ProjectReference Include="../../StructuralAnalysis/BeamOs.StructuralAnalysis/BeamOs.StructuralAnalysis.csproj" />
     <ProjectReference Include="..\..\Common\BeamOs.Common.Api\BeamOs.Common.Api.csproj" />
     <ProjectReference Include="..\..\Identity\BeamOs.Identity\BeamOs.Identity.csproj" />
   </ItemGroup>

@@ -42,7 +42,7 @@ public class CreateModelProposalCommandHandler(
         {
             return BeamOsError.NotFound(description: $"Model with id {command.ModelId} not found");
         }
-        ModelProposal modelProposal = command.Body.ToProposalDomain(model);
+        var modelProposal = command.Body.ToProposalDomain(model);
         modelProposal.NodeProposals = [];
         modelProposal.Element1dProposals = [];
         modelProposal.MaterialProposals = [];
