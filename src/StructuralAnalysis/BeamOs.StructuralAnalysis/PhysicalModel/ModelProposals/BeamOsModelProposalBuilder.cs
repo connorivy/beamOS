@@ -57,7 +57,7 @@ public record BeamOsModelProposalBuilder : ModelProposalData
     {
         get => base.MomentLoadProposals;
     }
-    public new List<ResultSet> ResultSetProposals
+    public new List<ResultSetContract> ResultSetProposals
     {
         get => base.ResultSetProposals;
     }

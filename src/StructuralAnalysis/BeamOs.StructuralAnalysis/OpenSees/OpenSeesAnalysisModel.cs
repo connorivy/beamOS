@@ -38,7 +38,8 @@ public sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettings
             );
         }
 
-        string outputDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        // string outputDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        string outputDir = Path.GetDirectoryName(System.AppContext.BaseDirectory);
         await this.RunTclWithOpenSees(tclWriter.OutputFileWithPath, outputDir);
 
         var resultSet = new ResultSet(model.Id, loadCombination.Id)

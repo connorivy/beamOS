@@ -25,7 +25,7 @@ public record BeamOsModelBuilderDto
     public IEnumerable<PutNodeRequest> Nodes { get; init; }
     public IEnumerable<PutMaterialRequest> Materials { get; init; }
     public IEnumerable<PutSectionProfileRequest> SectionProfiles { get; init; }
-    public IEnumerable<SectionProfileFromLibrary> SectionProfilesFromLibrary { get; init; }
+    public IEnumerable<SectionProfileFromLibraryContract> SectionProfilesFromLibrary { get; init; }
     public IEnumerable<PutElement1dRequest> Element1ds { get; init; }
     public IEnumerable<PutPointLoadRequest> PointLoads { get; init; }
     public IEnumerable<PutMomentLoadRequest> MomentLoads { get; init; }

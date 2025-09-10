@@ -46,7 +46,7 @@ public record ModelProposalData : ModelProposalInfoData
     public List<CreateSectionProfileFromLibraryRequest>? CreateSectionProfileFromLibraryProposals { get; init; }
     public List<PointLoadContract>? PointLoadProposals { get; init; }
     public List<MomentLoadContract>? MomentLoadProposals { get; init; }
-    public List<ResultSet>? ResultSetProposals { get; init; }
+    public List<ResultSetContract>? ResultSetProposals { get; init; }
     public List<LoadCaseContract>? LoadCaseProposals { get; init; }
     public List<LoadCombinationContract>? LoadCombinationProposals { get; init; }
     public List<ProposalIssueData>? ProposalIssues { get; init; }
@@ -67,10 +67,10 @@ public record ModelProposalResponse : IHasIntId, IBeamOsEntityResponse
     public List<int>? Element1dsModifiedBecauseOfNodeChange { get; init; }
     public List<PutMaterialRequest>? MaterialProposals { get; init; }
     public List<PutSectionProfileRequest>? SectionProfileProposals { get; init; }
-    public List<SectionProfileFromLibrary>? SectionProfileFromLibraryProposals { get; init; }
+    public List<SectionProfileFromLibraryContract>? SectionProfileFromLibraryProposals { get; init; }
     public List<PointLoadContract>? PointLoadProposals { get; init; }
     public List<MomentLoadContract>? MomentLoadProposals { get; init; }
-    public List<ResultSet>? ResultSetProposals { get; init; }
+    public List<ResultSetContract>? ResultSetProposals { get; init; }
     public List<LoadCaseContract>? LoadCaseProposals { get; init; }
     public List<LoadCombinationContract>? LoadCombinationProposals { get; init; }
     public List<ProposalIssue>? ProposalIssues { get; init; }

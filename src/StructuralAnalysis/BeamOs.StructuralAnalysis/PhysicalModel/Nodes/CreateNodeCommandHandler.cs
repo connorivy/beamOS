@@ -73,6 +73,6 @@ public readonly struct CreateNodeCommand : IModelResourceRequest<CreateNodeReque
     public Guid ModelId { get; init; }
     public CreateNodeRequest Body { get; init; }
     public int? Id => this.Body.Id;
-    public Point LocationPoint => this.Body.LocationPoint;
-    public Restraint? Restraint => this.Body.Restraint;
+    public PointContract LocationPoint => this.Body.LocationPoint;
+    public RestraintContract? Restraint => this.Body.Restraint;
 }

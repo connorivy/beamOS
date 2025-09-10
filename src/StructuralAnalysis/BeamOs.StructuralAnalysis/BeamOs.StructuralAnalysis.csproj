@@ -23,6 +23,8 @@
     <PackageReference Include="Riok.Mapperly" />
     <PackageReference Include="StructuralShapes" />
     <PackageReference Include="UnitsNet" />
+    <PackageReference Include="EntityFrameworkCore.Exceptions.Common" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
   </ItemGroup>
 
   <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">

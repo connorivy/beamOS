@@ -75,8 +75,8 @@ public readonly struct PutNodeCommand : IModelResourceWithIntIdRequest<NodeData>
     public int Id { get; init; }
     public Guid ModelId { get; init; }
     public NodeData Body { get; init; }
-    public Point LocationPoint => this.Body.LocationPoint;
-    public Restraint? Restraint => this.Body.Restraint;
+    public PointContract LocationPoint => this.Body.LocationPoint;
+    public RestraintContract? Restraint => this.Body.Restraint;
 
     public PutNodeCommand() { }
 
