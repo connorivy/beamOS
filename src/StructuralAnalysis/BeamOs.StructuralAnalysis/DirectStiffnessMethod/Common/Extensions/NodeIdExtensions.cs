@@ -11,9 +11,7 @@ public static class NodeIdExtensions
     )
     {
         foreach (
-            CoordinateSystemDirection3D direction in Enum.GetValues(
-                typeof(CoordinateSystemDirection3D)
-            )
+            CoordinateSystemDirection3D direction in Enum.GetValues<CoordinateSystemDirection3D>()
         )
         {
             if (direction == CoordinateSystemDirection3D.Undefined)

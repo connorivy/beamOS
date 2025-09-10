@@ -32,8 +32,9 @@ public readonly record struct VectorIdentified
         IList<double>? values
     )
     {
-        Dictionary<UnsupportedStructureDisplacementId, double> identifierDict =
-            new(identifiers.Count);
+        Dictionary<UnsupportedStructureDisplacementId, double> identifierDict = new(
+            identifiers.Count
+        );
 
         for (int i = 0; i < identifiers.Count; i++)
         {
@@ -48,8 +49,9 @@ public readonly record struct VectorIdentified
         Span<double> values
     )
     {
-        Dictionary<UnsupportedStructureDisplacementId, double> identifierDict =
-            new(identifiers.Length);
+        Dictionary<UnsupportedStructureDisplacementId, double> identifierDict = new(
+            identifiers.Length
+        );
 
         for (int i = 0; i < identifiers.Length; i++)
         {
@@ -96,14 +98,14 @@ public readonly record struct VectorIdentified
     IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 }
 
-public readonly record struct VectorIdentifiedBase<UnsupportedStructureDisplacementId2>
-    : IEnumerable<KeyValuePair<UnsupportedStructureDisplacementId2, double>>
-    where UnsupportedStructureDisplacementId2 : notnull
+public readonly record struct VectorIdentifiedBase<TUnsupportedStructureDisplacementId2>
+    : IEnumerable<KeyValuePair<TUnsupportedStructureDisplacementId2, double>>
+    where TUnsupportedStructureDisplacementId2 : notnull
 {
-    private readonly Dictionary<UnsupportedStructureDisplacementId2, double> identifiers;
+    private readonly Dictionary<TUnsupportedStructureDisplacementId2, double> identifiers;
 
     public VectorIdentifiedBase(
-        Span<UnsupportedStructureDisplacementId2> identifiers,
+        Span<TUnsupportedStructureDisplacementId2> identifiers,
         Span<double> values
     )
     {
@@ -115,11 +117,11 @@ public readonly record struct VectorIdentifiedBase<UnsupportedStructureDisplacem
         }
     }
 
-    public VectorIdentifiedBase(Span<UnsupportedStructureDisplacementId2> identifiers)
+    public VectorIdentifiedBase(Span<TUnsupportedStructureDisplacementId2> identifiers)
         : this(identifiers, Enumerable.Repeat(0.0, identifiers.Length).ToArray()) { }
 
     public void AddEntriesWithMatchingIdentifiers(
-        VectorIdentifiedBase<UnsupportedStructureDisplacementId2> vectorToBeAdded
+        VectorIdentifiedBase<TUnsupportedStructureDisplacementId2> vectorToBeAdded
     )
     {
         foreach (var kvp in vectorToBeAdded)
@@ -141,11 +143,11 @@ public readonly record struct VectorIdentifiedBase<UnsupportedStructureDisplacem
         return Vector<double>.Build.DenseOfEnumerable(this.identifiers.Values);
     }
 
-    public IEnumerator<KeyValuePair<UnsupportedStructureDisplacementId2, double>> GetEnumerator()
+    public IEnumerator<KeyValuePair<TUnsupportedStructureDisplacementId2, double>> GetEnumerator()
     {
         foreach (var kvp in this.identifiers)
         {
-            yield return new KeyValuePair<UnsupportedStructureDisplacementId2, double>(
+            yield return new KeyValuePair<TUnsupportedStructureDisplacementId2, double>(
                 kvp.Key,
                 kvp.Value
             );

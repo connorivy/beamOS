@@ -49,11 +49,11 @@ public record BeamOsModelProposalBuilder : ModelProposalData
     {
         get => base.CreateSectionProfileFromLibraryProposals;
     }
-    public new List<PointLoad> PointLoadProposals
+    public new List<PointLoadContract> PointLoadProposals
     {
         get => base.PointLoadProposals;
     }
-    public new List<MomentLoad> MomentLoadProposals
+    public new List<MomentLoadContract> MomentLoadProposals
     {
         get => base.MomentLoadProposals;
     }

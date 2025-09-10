@@ -87,6 +87,11 @@ namespace BeamOs.StructuralAnalysis.Contracts.Common;
 [JsonSerializable(typeof(GithubModelsChatRequest))]
 [JsonSerializable(typeof(Result<GithubModelsChatResponse>))]
 [JsonSerializable(typeof(ProblemDetails))]
+[JsonSerializable(typeof(AngleUnitContract), TypeInfoPropertyName = "AngleUnitJsonTypeInfo")]
+[JsonSerializable(typeof(ForceUnitContract), TypeInfoPropertyName = "ForceUnitJsonTypeInfo")]
+[JsonSerializable(typeof(LengthUnitContract), TypeInfoPropertyName = "LengthUnitJsonTypeInfo")]
+[JsonSerializable(typeof(PressureUnitContract), TypeInfoPropertyName = "PressureUnitJsonTypeInfo")]
+[JsonSerializable(typeof(TorqueUnitContract), TypeInfoPropertyName = "TorqueUnitJsonTypeInfo")]
 internal partial class BeamOsJsonSerializerContext : JsonSerializerContext { }
 
 public static class BeamOsSerializerOptions

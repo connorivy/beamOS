@@ -66,13 +66,12 @@ public sealed class TcpServer : IDisposable
         // Console.WriteLine($"Data Size == {dataSize}");
 
         // Loop over each step
-        int sizeReceived = 0;
         data = new double[((int)dataSize - 1)];
 
         for (int i = 0; i < dataSize + 1; i++)
         {
             byte[] rawValue = new byte[sizeof(double)];
-            stream.Read(rawValue, 0, rawValue.Length);
+            stream.ReadExactly(rawValue);
 
             if (i <= 1)
             {
