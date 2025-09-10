@@ -12,7 +12,7 @@ public record MaterialData
     public MaterialData(
         double modulusOfElasticity,
         double modulusOfRigidity,
-        PressureUnitContract pressureUnit
+        PressureUnit pressureUnit
     )
     {
         this.ModulusOfElasticity = modulusOfElasticity;
@@ -22,7 +22,7 @@ public record MaterialData
 
     public required double ModulusOfElasticity { get; init; }
     public required double ModulusOfRigidity { get; init; }
-    public required PressureUnitContract PressureUnit { get; init; }
+    public required PressureUnit PressureUnit { get; init; }
 }
 
 public record CreateMaterialRequest : MaterialData

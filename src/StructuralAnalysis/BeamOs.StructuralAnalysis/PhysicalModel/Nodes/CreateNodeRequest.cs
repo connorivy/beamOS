@@ -11,8 +11,8 @@ public record CreateNodeRequest : NodeData
 {
     [SetsRequiredMembers]
     public CreateNodeRequest(
-        PointContract locationPoint,
-        RestraintContract restraint,
+        Point locationPoint,
+        Restraint restraint,
         int? id = null,
         Dictionary<string, string>? metadata = null
     )
@@ -34,8 +34,8 @@ public record NodeData
 {
     [SetsRequiredMembers]
     public NodeData(
-        PointContract locationPoint,
-        RestraintContract restraint,
+        Point locationPoint,
+        Restraint restraint,
         Dictionary<string, string>? metadata = null
     )
     {
@@ -46,8 +46,8 @@ public record NodeData
 
     public NodeData() { }
 
-    public required PointContract LocationPoint { get; init; }
-    public required RestraintContract Restraint { get; init; }
+    public required Point LocationPoint { get; init; }
+    public required Restraint Restraint { get; init; }
     public Dictionary<string, string>? Metadata { get; init; }
 }
 
@@ -58,8 +58,8 @@ public record PutNodeRequest : NodeData, IHasIntId, IBeamOsEntityRequest
     [SetsRequiredMembers]
     public PutNodeRequest(
         int id,
-        PointContract locationPoint,
-        RestraintContract restraint,
+        Point locationPoint,
+        Restraint restraint,
         Dictionary<string, string>? metadata = null
     )
         : base(locationPoint, restraint, metadata)
@@ -105,13 +105,13 @@ public record CreateInternalNodeProposalResponse : IEntityProposal
     [SetsRequiredMembers]
     public CreateInternalNodeProposalResponse(
         ProposedID element1dId,
-        RatioContract ratioAlongElement1d,
-        RestraintContract? restraint = null,
+        Ratio ratioAlongElement1d,
+        Restraint? restraint = null,
         Dictionary<string, string>? metadata = null
     )
     {
         this.Element1dId = element1dId;
-        if (ratioAlongElement1d.As(RatioUnitContract.DecimalFraction) is < 0 or > 1)
+        if (ratioAlongElement1d.As(RatioUnit.DecimalFraction) is < 0 or > 1)
         {
             throw new ArgumentException("Ratio along element must be between 0 and 1");
         }
@@ -122,8 +122,8 @@ public record CreateInternalNodeProposalResponse : IEntityProposal
     }
 
     public required ProposedID Element1dId { get; init; }
-    public required RatioContract RatioAlongElement1d { get; init; }
-    public RestraintContract? Restraint { get; init; }
+    public required Ratio RatioAlongElement1d { get; init; }
+    public Restraint? Restraint { get; init; }
 
     // public InternalNodeData() { }
 
@@ -160,8 +160,8 @@ public record ModifyInternalNodeProposalResponse
         int id,
         int existingInternalNodeId,
         ProposedID element1dId,
-        RatioContract ratioAlongElement1d,
-        RestraintContract? restraint = null,
+        Ratio ratioAlongElement1d,
+        Restraint? restraint = null,
         Dictionary<string, string>? metadata = null
     )
         : base(element1dId, ratioAlongElement1d, restraint, metadata)

@@ -9,13 +9,13 @@ public record InternalNodeData
     [SetsRequiredMembers]
     public InternalNodeData(
         int element1dId,
-        RatioContract ratioAlongElement1d,
-        RestraintContract? restraint = null,
+        Ratio ratioAlongElement1d,
+        Restraint? restraint = null,
         Dictionary<string, string>? metadata = null
     )
     {
         this.Element1dId = element1dId;
-        if (ratioAlongElement1d.As(RatioUnitContract.DecimalFraction) is < 0 or > 1)
+        if (ratioAlongElement1d.As(RatioUnit.DecimalFraction) is < 0 or > 1)
         {
             throw new ArgumentException("Ratio along element must be between 0 and 1");
         }
@@ -26,8 +26,8 @@ public record InternalNodeData
     }
 
     public required int Element1dId { get; init; }
-    public required RatioContract RatioAlongElement1d { get; init; }
-    public RestraintContract? Restraint { get; init; }
+    public required Ratio RatioAlongElement1d { get; init; }
+    public Restraint? Restraint { get; init; }
 
     // public InternalNodeData() { }
 
@@ -39,8 +39,8 @@ public record CreateInternalNodeRequest : InternalNodeData
     [SetsRequiredMembers]
     public CreateInternalNodeRequest(
         int element1dId,
-        RatioContract ratioAlongElement1d,
-        RestraintContract? restraint = null,
+        Ratio ratioAlongElement1d,
+        Restraint? restraint = null,
         int? id = null,
         Dictionary<string, string>? metadata = null
     )
@@ -58,8 +58,8 @@ public record InternalNode : InternalNodeData, IHasIntId
     public InternalNode(
         int id,
         int element1dId,
-        RatioContract ratioAlongElement1d,
-        RestraintContract? restraint = null,
+        Ratio ratioAlongElement1d,
+        Restraint? restraint = null,
         Dictionary<string, string>? metadata = null
     )
         : base(element1dId, ratioAlongElement1d, restraint, metadata)

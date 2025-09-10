@@ -8,19 +8,14 @@ public record CreateMomentLoadRequest
 {
     public required int NodeId { get; init; }
     public required int LoadCaseId { get; init; }
-    public required TorqueContract Torque { get; init; }
+    public required Torque Torque { get; init; }
     public required Vector3 AxisDirection { get; init; }
     public int? Id { get; init; }
 
     public CreateMomentLoadRequest() { }
 
     [SetsRequiredMembers]
-    public CreateMomentLoadRequest(
-        int nodeId,
-        TorqueContract torque,
-        Vector3 axisDirection,
-        int? id = null
-    )
+    public CreateMomentLoadRequest(int nodeId, Torque torque, Vector3 axisDirection, int? id = null)
     {
         this.NodeId = nodeId;
         this.Torque = torque;
@@ -33,13 +28,13 @@ public record MomentLoadData
 {
     public required int NodeId { get; init; }
     public required int LoadCaseId { get; init; }
-    public required TorqueContract Torque { get; init; }
+    public required Torque Torque { get; init; }
     public required Vector3 AxisDirection { get; init; }
 
     public MomentLoadData() { }
 
     [SetsRequiredMembers]
-    public MomentLoadData(int nodeId, int loadCaseId, TorqueContract torque, Vector3 axisDirection)
+    public MomentLoadData(int nodeId, int loadCaseId, Torque torque, Vector3 axisDirection)
     {
         this.NodeId = nodeId;
         this.LoadCaseId = loadCaseId;
@@ -55,13 +50,7 @@ public record MomentLoad : MomentLoadData, IHasIntId
     public MomentLoad() { }
 
     [SetsRequiredMembers]
-    public MomentLoad(
-        int id,
-        int nodeId,
-        int loadCaseId,
-        TorqueContract torque,
-        Vector3 axisDirection
-    )
+    public MomentLoad(int id, int nodeId, int loadCaseId, Torque torque, Vector3 axisDirection)
         : base(nodeId, loadCaseId, torque, axisDirection)
     {
         this.Id = id;

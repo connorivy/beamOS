@@ -17,7 +17,7 @@ public record SectionProfileResponse(
     double WeakAxisPlasticSectionModulus,
     double? StrongAxisShearArea,
     double? WeakAxisShearArea,
-    LengthUnitContract LengthUnit
+    LengthUnit LengthUnit
 ) : IModelEntity
 {
     public SectionProfileData ToSectionProfileData() =>
@@ -37,14 +37,14 @@ public record SectionProfileResponse(
 
     [JsonIgnore]
     [IgnoreDataMember]
-    public VolumeUnitContract VolumeUnit => this.LengthUnit.ToVolume();
+    public VolumeUnit VolumeUnit => this.LengthUnit.ToVolume();
 
     [JsonIgnore]
     [IgnoreDataMember]
-    public AreaUnitContract AreaUnit => this.LengthUnit.ToArea();
+    public AreaUnit AreaUnit => this.LengthUnit.ToArea();
 
     [JsonIgnore]
     [IgnoreDataMember]
-    public AreaMomentOfInertiaUnitContract AreaMomentOfInertiaUnit =>
+    public AreaMomentOfInertiaUnit AreaMomentOfInertiaUnit =>
         this.LengthUnit.ToAreaMomentOfInertia();
 }

@@ -8,7 +8,7 @@ public record MomentLoadResponse(
     int NodeId,
     int LoadCaseId,
     Guid ModelId,
-    TorqueContract Torque,
+    Torque Torque,
     Vector3 AxisDirection
 ) : IModelEntity
 {

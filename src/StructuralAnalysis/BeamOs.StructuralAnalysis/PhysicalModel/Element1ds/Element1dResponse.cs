@@ -10,7 +10,7 @@ public record Element1dResponse(
     int EndNodeId,
     int MaterialId,
     int SectionProfileId,
-    AngleContract SectionProfileRotation,
+    Angle SectionProfileRotation,
     Dictionary<string, string>? Metadata = null
 ) : IModelEntity
 {

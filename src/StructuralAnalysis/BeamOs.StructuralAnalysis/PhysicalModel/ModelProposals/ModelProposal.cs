@@ -139,9 +139,9 @@ public record DeleteModelEntityProposal : DeleteModelEntityProposalData, IHasInt
 
 public record ModelRepairOperationParameters
 {
-    public required LengthContract FavorableOperationTolerance { get; init; }
-    public required LengthContract StandardOperationTolerance { get; init; }
-    public required LengthContract UnfavorableOperationTolerance { get; init; }
+    public required Length FavorableOperationTolerance { get; init; }
+    public required Length StandardOperationTolerance { get; init; }
+    public required Length UnfavorableOperationTolerance { get; init; }
 }
 
 public record AcceptModelProposalRequest : IModelEntity, IBeamOsEntityRequest

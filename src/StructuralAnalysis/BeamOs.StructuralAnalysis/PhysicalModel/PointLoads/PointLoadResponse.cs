@@ -20,7 +20,7 @@ public record PointLoadResponse : PointLoad, IModelEntity
         int nodeId,
         int loadCaseId,
         Guid modelId,
-        ForceContract force,
+        Force force,
         Vector3 direction
     )
         : base(id, nodeId, loadCaseId, force, direction)
