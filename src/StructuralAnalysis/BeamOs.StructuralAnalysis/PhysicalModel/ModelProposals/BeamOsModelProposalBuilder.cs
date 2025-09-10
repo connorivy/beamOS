@@ -61,11 +61,11 @@ public record BeamOsModelProposalBuilder : ModelProposalData
     {
         get => base.ResultSetProposals;
     }
-    public new List<LoadCase> LoadCaseProposals
+    public new List<LoadCaseContract> LoadCaseProposals
     {
         get => base.LoadCaseProposals;
     }
-    public new List<LoadCombination> LoadCombinationProposals
+    public new List<LoadCombinationContract> LoadCombinationProposals
     {
         get => base.LoadCombinationProposals;
     }
