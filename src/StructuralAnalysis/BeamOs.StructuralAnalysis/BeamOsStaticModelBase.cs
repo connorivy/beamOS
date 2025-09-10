@@ -26,13 +26,13 @@ public abstract class BeamOsStaticModelBase : IBeamOsModel
 
     public abstract IEnumerable<PutNodeRequest> NodeRequests();
 
-    public virtual IEnumerable<InternalNode> InternalNodeRequests() => [];
+    public virtual IEnumerable<InternalNodeContract> InternalNodeRequests() => [];
 
     public abstract IEnumerable<PutMaterialRequest> MaterialRequests();
 
     public virtual IEnumerable<PutSectionProfileRequest> SectionProfileRequests() => [];
 
-    public virtual IEnumerable<SectionProfileFromLibrary> SectionProfilesFromLibraryRequests() =>
+    public virtual IEnumerable<SectionProfileFromLibraryContract> SectionProfilesFromLibraryRequests() =>
         [];
 
     public abstract IEnumerable<PutElement1dRequest> Element1dRequests();
@@ -41,6 +41,6 @@ public abstract class BeamOsStaticModelBase : IBeamOsModel
 
     public virtual IEnumerable<PutMomentLoadRequest> MomentLoadRequests() => [];
 
-    public abstract IEnumerable<LoadCase> LoadCaseRequests();
-    public abstract IEnumerable<LoadCombination> LoadCombinationRequests();
+    public abstract IEnumerable<LoadCaseContract> LoadCaseRequests();
+    public abstract IEnumerable<LoadCombinationContract> LoadCombinationRequests();
 }

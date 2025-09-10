@@ -26,7 +26,7 @@ public sealed class BeamOsDynamicModel(
 
     private readonly List<PutNodeRequest> nodes = [];
 
-    public UnitSettings UnitSettings => this.Settings.UnitSettings;
+    public UnitSettingsContract UnitSettings => this.Settings.UnitSettings;
 
     public BeamOsDynamicModel(
         Guid modelId,
@@ -45,13 +45,19 @@ public sealed class BeamOsDynamicModel(
         this.sectionProfiles = beamOsModelBuilderDto.SectionProfiles.ToList();
     }
 
-    public void AddNode(int id, double x, double y, double z, Restraint? restraint = null) =>
+    public void AddNode(
+        int id,
+        double x,
+        double y,
+        double z,
+        RestraintContract? restraint = null
+    ) =>
         this.AddNodes(
             new PutNodeRequest()
             {
                 Id = id,
                 LocationPoint = new(x, y, z, this.UnitSettings.LengthUnit),
-                Restraint = restraint ?? Restraint.Free,
+                Restraint = restraint ?? RestraintContract.Free,
             }
         );
 
@@ -103,24 +109,25 @@ public sealed class BeamOsDynamicModel(
 
     public IEnumerable<PutMaterialRequest> MaterialRequests() => this.materials.AsReadOnly();
 
-    private readonly List<LoadCase> loadCases = [];
+    private readonly List<LoadCaseContract> loadCases = [];
 
     public void AddLoadCase(int id, string caseName) =>
-        this.AddLoadCases(new LoadCase() { Id = id, Name = caseName });
+        this.AddLoadCases(new LoadCaseContract() { Id = id, Name = caseName });
 
-    public void AddLoadCases(params Span<LoadCase> loadCases) => this.loadCases.AddRange(loadCases);
+    public void AddLoadCases(params Span<LoadCaseContract> loadCases) =>
+        this.loadCases.AddRange(loadCases);
 
-    public IEnumerable<LoadCase> LoadCaseRequests() => this.loadCases.AsReadOnly();
+    public IEnumerable<LoadCaseContract> LoadCaseRequests() => this.loadCases.AsReadOnly();
 
-    private readonly List<LoadCombination> loadCombinations = [];
+    private readonly List<LoadCombinationContract> loadCombinations = [];
 
     public void AddLoadCombination(int id, params Span<(int, double)> loadCaseFactor) =>
-        this.AddLoadCombinations(new LoadCombination(id, loadCaseFactor));
+        this.AddLoadCombinations(new LoadCombinationContract(id, loadCaseFactor));
 
-    public void AddLoadCombinations(params Span<LoadCombination> loadCombinations) =>
+    public void AddLoadCombinations(params Span<LoadCombinationContract> loadCombinations) =>
         this.loadCombinations.AddRange(loadCombinations);
 
-    public IEnumerable<LoadCombination> LoadCombinationRequests() =>
+    public IEnumerable<LoadCombinationContract> LoadCombinationRequests() =>
         this.loadCombinations.AsReadOnly();
 
     private readonly List<PutPointLoadRequest> pointLoads = [];
@@ -204,11 +211,11 @@ public sealed class BeamOsDynamicModel(
     public IEnumerable<PutSectionProfileRequest> SectionProfileRequests() =>
         this.sectionProfiles.AsReadOnly();
 
-    private readonly List<SectionProfileFromLibrary> sectionProfilesFromLibrary = [];
+    private readonly List<SectionProfileFromLibraryContract> sectionProfilesFromLibrary = [];
 
     public void AddSectionProfileFromLibrary(int id, string name, StructuralCode library) =>
         this.AddSectionProfilesFromLibrary(
-            new SectionProfileFromLibrary()
+            new SectionProfileFromLibraryContract()
             {
                 Id = id,
                 Name = name,
@@ -217,9 +224,9 @@ public sealed class BeamOsDynamicModel(
         );
 
     public void AddSectionProfilesFromLibrary(
-        params Span<SectionProfileFromLibrary> sectionProfilesFromLibrary
+        params Span<SectionProfileFromLibraryContract> sectionProfilesFromLibrary
     ) => this.sectionProfilesFromLibrary.AddRange(sectionProfilesFromLibrary);
 
-    public IEnumerable<SectionProfileFromLibrary> SectionProfilesFromLibraryRequests() =>
+    public IEnumerable<SectionProfileFromLibraryContract> SectionProfilesFromLibraryRequests() =>
         this.sectionProfilesFromLibrary.AsReadOnly();
 }
