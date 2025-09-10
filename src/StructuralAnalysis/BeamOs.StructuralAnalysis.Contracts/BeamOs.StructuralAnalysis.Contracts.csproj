@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Common\BeamOs.Common.Contracts\BeamOs.Common.Contracts.csproj" />
+    <ProjectReference Include="..\..\Common\BeamOs.Common\BeamOs.Common.csproj" />
   </ItemGroup>
 
 </Project>

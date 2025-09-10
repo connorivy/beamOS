@@ -72,6 +72,7 @@
       CS0108; <!-- Member hides inherited member; missing new keyword -->
       CS0168; <!-- Variable is declared but never used -->
       CS0618; <!-- Operator is obsolete: for null checks, use 'is null' or 'is not null' -->
+      CS1998; <!-- This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread. -->
       CS8509; <!-- The switch expression does not handle all possible values of its input type (it is not exhaustive) -->
       CS8524; <!-- The switch expression is not exhaustive. -->
       CS8600; <!-- Converting null literal or possible null value to non-nullable type. -->
