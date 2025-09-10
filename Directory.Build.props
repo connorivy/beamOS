@@ -49,18 +49,33 @@
 
       CA1305; <!-- Specify IFormatProvider -->
       CA1000; <!-- Do not declare static members on generic types -->
+      CA1710; <!-- Rename type 'TYPE' to end in 'Collection' because it implements 'INTERFACE' -->
       CA1716; <!-- Rename virtual/interface member 'NAME' to avoid conflicts with keywords -->
+      CA1727; <!-- Use PascalCase for named placeholders -->
+      CA1822; <!-- Member 'METHOD' does not access instance data and can be marked as static -->
       CA1852; <!-- Seal internal types -->
+      CA1848; <!-- For improved performance, use the LoggerMessage delegates -->
+      CA1873; <!-- Evaluation of this argument may be expensive. -->
       CA2016; <!-- Forward the 'CancellationToken' parameter to methods that take one -->
+      CA2201; <!-- Exception type System.Exception is not sufficiently specific. -->
+      CA2208; <!-- Method 'METHOD' passes 'PARAM' as the 'paramName' argument to ArgumentOutOfRangeException -->
 
       IDE0001; <!-- Name can be simplified -->
       IDE0005; <!-- Using directive is unnecessary -->
+      IDE0009; <!-- Add this modifier -->
       IDE0055; <!-- Fix formatting -->
+      IDE0052; <!-- Private field is never used -->
+      IDE0060; <!-- Remove unused parameter -->
+      IDE0290; <!-- Use primary ctor -->
+      IDE1006; <!-- These words must begin with uppercase characters -->
 
       CS0108; <!-- Member hides inherited member; missing new keyword -->
+      CS0168; <!-- Variable is declared but never used -->
       CS0618; <!-- Operator is obsolete: for null checks, use 'is null' or 'is not null' -->
       CS1998; <!-- Async method lacks 'await' operators and will run synchronously -->
       CS8509; <!-- The switch expression does not handle all possible values of its input type (it is not exhaustive) -->
+      CS8524; <!-- The switch expression is not exhaustive. -->
+      CS8600; <!-- Converting null literal or possible null value to non-nullable type. -->
       CS8602; <!-- Dereference of a possibly null reference. -->
       CS8603; <!-- Possible null reference return. -->
       CS8604; <!-- Possible null reference argument for parameter 'PARAM' in 'METHOD'. -->
@@ -71,6 +86,8 @@
       CS8629; <!-- Nullable value type may be null. -->
       CS9107; <!-- Parameter is captured into the state of the class -->
       CS9113; <!-- Parameter 'PARAM' is unread -->
+
+      SYSLIB0014; <!-- Obsolete API usage: 'API': Use 'Alternative' instead. -->
     </WarningsNotAsErrors>
 
     <WarningsNotAsErrors Condition="'$(CODEGEN)' == 'true'">
