@@ -44,11 +44,11 @@ public record ModelProposalData : ModelProposalInfoData
     public List<CreateSectionProfileRequest>? CreateSectionProfileProposals { get; init; }
     public List<PutSectionProfileRequest>? ModifySectionProfileProposals { get; init; }
     public List<CreateSectionProfileFromLibraryRequest>? CreateSectionProfileFromLibraryProposals { get; init; }
-    public List<PointLoadContract>? PointLoadProposals { get; init; }
-    public List<MomentLoadContract>? MomentLoadProposals { get; init; }
-    public List<ResultSetContract>? ResultSetProposals { get; init; }
-    public List<LoadCaseContract>? LoadCaseProposals { get; init; }
-    public List<LoadCombinationContract>? LoadCombinationProposals { get; init; }
+    public List<PointLoad>? PointLoadProposals { get; init; }
+    public List<MomentLoad>? MomentLoadProposals { get; init; }
+    public List<ResultSet>? ResultSetProposals { get; init; }
+    public List<LoadCase>? LoadCaseProposals { get; init; }
+    public List<LoadCombination>? LoadCombinationProposals { get; init; }
     public List<ProposalIssueData>? ProposalIssues { get; init; }
     public List<DeleteModelEntityProposalData>? DeleteModelEntityProposals { get; init; }
 }
@@ -67,12 +67,12 @@ public record ModelProposalResponse : IHasIntId, IBeamOsEntityResponse
     public List<int>? Element1dsModifiedBecauseOfNodeChange { get; init; }
     public List<PutMaterialRequest>? MaterialProposals { get; init; }
     public List<PutSectionProfileRequest>? SectionProfileProposals { get; init; }
-    public List<SectionProfileFromLibraryContract>? SectionProfileFromLibraryProposals { get; init; }
-    public List<PointLoadContract>? PointLoadProposals { get; init; }
-    public List<MomentLoadContract>? MomentLoadProposals { get; init; }
-    public List<ResultSetContract>? ResultSetProposals { get; init; }
-    public List<LoadCaseContract>? LoadCaseProposals { get; init; }
-    public List<LoadCombinationContract>? LoadCombinationProposals { get; init; }
+    public List<SectionProfileFromLibrary>? SectionProfileFromLibraryProposals { get; init; }
+    public List<PointLoad>? PointLoadProposals { get; init; }
+    public List<MomentLoad>? MomentLoadProposals { get; init; }
+    public List<ResultSet>? ResultSetProposals { get; init; }
+    public List<LoadCase>? LoadCaseProposals { get; init; }
+    public List<LoadCombination>? LoadCombinationProposals { get; init; }
     public List<ProposalIssue>? ProposalIssues { get; init; }
     public List<DeleteModelEntityProposal>? DeleteModelEntityProposals { get; init; }
 }

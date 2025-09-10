@@ -53,11 +53,11 @@ public interface IBeamOsModel
 
     public IEnumerable<PutMomentLoadRequest> MomentLoadRequests() => [];
 
-    public IEnumerable<LoadCaseContract> LoadCases => this.LoadCaseRequests();
+    public IEnumerable<LoadCase> LoadCases => this.LoadCaseRequests();
 
-    public IEnumerable<LoadCaseContract> LoadCaseRequests();
+    public IEnumerable<LoadCase> LoadCaseRequests();
 
-    public IEnumerable<LoadCombinationContract> LoadCombinations => this.LoadCombinationRequests();
+    public IEnumerable<LoadCombination> LoadCombinations => this.LoadCombinationRequests();
 
-    public IEnumerable<LoadCombinationContract> LoadCombinationRequests();
+    public IEnumerable<LoadCombination> LoadCombinationRequests();
 }

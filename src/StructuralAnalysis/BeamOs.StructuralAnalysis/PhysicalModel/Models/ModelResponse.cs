@@ -38,8 +38,8 @@ public record ModelResponse(
     List<PointLoadResponse>? PointLoads = null,
     List<MomentLoadResponse>? MomentLoads = null,
     List<ResultSetResponse>? ResultSets = null,
-    List<LoadCaseContract>? LoadCases = null,
-    List<LoadCombinationContract>? LoadCombinations = null
+    List<LoadCase>? LoadCases = null,
+    List<LoadCombination>? LoadCombinations = null
 ) : IBeamOsEntityResponse;
 
 public record ModelResponseHydrated(

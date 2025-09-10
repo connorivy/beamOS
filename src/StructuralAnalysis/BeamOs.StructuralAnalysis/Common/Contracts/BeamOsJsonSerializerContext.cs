@@ -13,6 +13,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoads;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
+using LoadCase = BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases.LoadCase;
 
 namespace BeamOs.StructuralAnalysis.Contracts.Common;
 
@@ -51,7 +52,7 @@ namespace BeamOs.StructuralAnalysis.Contracts.Common;
 [JsonSerializable(typeof(SpeckleReceiveParameters))]
 [JsonSerializable(typeof(RunDsmRequest))]
 [JsonSerializable(typeof(LoadCaseData))]
-[JsonSerializable(typeof(IEnumerable<LoadCaseContract>))]
+[JsonSerializable(typeof(IEnumerable<LoadCase>))]
 [JsonSerializable(typeof(Dictionary<int, double>))]
 [JsonSerializable(typeof(LoadCombinationData))]
 [JsonSerializable(typeof(ModelProposalData))]
@@ -59,7 +60,7 @@ namespace BeamOs.StructuralAnalysis.Contracts.Common;
 [JsonSerializable(typeof(IEnumerable<EntityProposal>))]
 [JsonSerializable(typeof(Result<ModelProposalResponse>))]
 [JsonSerializable(typeof(Result<ICollection<ModelProposalInfo>>))]
-[JsonSerializable(typeof(IEnumerable<LoadCombinationContract>))]
+[JsonSerializable(typeof(IEnumerable<LoadCombination>))]
 [JsonSerializable(typeof(Result<NodeResponse>))]
 [JsonSerializable(typeof(Result<ModelResponse>))]
 [JsonSerializable(typeof(Result<ModelResponseHydrated>))]
@@ -76,8 +77,8 @@ namespace BeamOs.StructuralAnalysis.Contracts.Common;
 [JsonSerializable(typeof(Result<AnalyticalResultsResponse>))]
 [JsonSerializable(typeof(Result<BatchResponse>))]
 [JsonSerializable(typeof(Result<BeamOsModelBuilderDto>))]
-[JsonSerializable(typeof(Result<LoadCaseContract>))]
-[JsonSerializable(typeof(Result<LoadCombinationContract>))]
+[JsonSerializable(typeof(Result<LoadCase>))]
+[JsonSerializable(typeof(Result<LoadCombination>))]
 [JsonSerializable(typeof(DiagramConsistentIntervalResponse))]
 [JsonSerializable(typeof(MomentDiagramResponse))]
 [JsonSerializable(typeof(Result<int>))]
