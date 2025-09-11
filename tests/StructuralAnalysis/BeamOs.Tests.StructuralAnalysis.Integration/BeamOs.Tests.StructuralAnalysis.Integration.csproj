@@ -11,6 +11,10 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
     <PackageReference Include="TUnit" />
     <PackageReference Include="Verify.TUnit" />
+    <PackageReference Include="MathNet.Numerics.MKL.Win-x64" PrivateAssets="all" />
+    <PackageReference Include="MathNet.Spatial" PrivateAssets="all" />
+    <PackageReference Include="Riok.Mapperly" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" PrivateAssets="all" />
     <!--<PackageReference Include="Microsoft.Azure.WebJobs.Core" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Http" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker" />

@@ -4,11 +4,11 @@
   <Import Project="BeamOs.Sdk.user.props" Condition="Exists('BeamOs.Sdk.user.props')" />
 
   <!-- In development, regenerate wrappers after build instead of after publish -->
-  <PropertyGroup Condition="'$(ContinuousIntegrationEnv)' == 'false' and '$(DotWrapRelativeLocation)' != ''">
+  <!-- <PropertyGroup Condition="'$(ContinuousIntegrationEnv)' == 'false' and '$(DotWrapRelativeLocation)' != ''">
     <DotWrapGenerateAfterBuild>true</DotWrapGenerateAfterBuild>
-  </PropertyGroup>
+  </PropertyGroup> -->
   <!-- Use project references locally, but use nuget package in CI -->
-  <ItemGroup Condition="'$(ContinuousIntegrationEnv)' == 'false' and '$(DotWrapRelativeLocation)' != ''">
+  <!-- <ItemGroup Condition="'$(ContinuousIntegrationEnv)' == 'false' and '$(DotWrapRelativeLocation)' != ''">
     <ProjectReference
       Include="$(DotWrapRelativeLocation)\src\DotWrap.Generator\DotWrap.Generator.csproj"
       OutputItemType="Analyzer"
@@ -27,5 +27,5 @@
   />
   <ItemGroup Condition="'$(ContinuousIntegrationEnv)' != 'false' or '$(DotWrapRelativeLocation)' == ''">
     <PackageReference Include="DotWrap" />
-  </ItemGroup>
+  </ItemGroup> -->
 </Project>

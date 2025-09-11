@@ -9,7 +9,6 @@
   <ItemGroup>
     <PackageReference Include="UnitsNet" />
     <PackageReference Include="FluentAssertions" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
   </ItemGroup>
 
   <ItemGroup>
