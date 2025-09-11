@@ -19,13 +19,30 @@ public record CreateSectionProfileRequest : SectionProfileData
 public record SectionProfileData : SectionProfileDataBase
 {
     public required double Area { get; init; }
+    internal Area AreaInternal => new(this.Area, this.AreaUnit);
     public required double StrongAxisMomentOfInertia { get; init; }
+    internal AreaMomentOfInertia StrongAxisMomentOfInertiaInternal =>
+        new(this.StrongAxisMomentOfInertia, this.AreaMomentOfInertiaUnit);
     public required double WeakAxisMomentOfInertia { get; init; }
+    internal AreaMomentOfInertia WeakAxisMomentOfInertiaInternal =>
+        new(this.WeakAxisMomentOfInertia, this.AreaMomentOfInertiaUnit);
     public required double PolarMomentOfInertia { get; init; }
+    internal AreaMomentOfInertia PolarMomentOfInertiaInternal =>
+        new(this.PolarMomentOfInertia, this.AreaMomentOfInertiaUnit);
     public required double StrongAxisPlasticSectionModulus { get; init; }
+    internal Volume StrongAxisPlasticSectionModulusInternal =>
+        new(this.StrongAxisPlasticSectionModulus, this.VolumeUnit);
     public required double WeakAxisPlasticSectionModulus { get; init; }
+    internal Volume WeakAxisPlasticSectionModulusInternal =>
+        new(this.WeakAxisPlasticSectionModulus, this.VolumeUnit);
     public double? StrongAxisShearArea { get; init; }
+    internal Area? StrongAxisShearAreaInternal =>
+        this.StrongAxisShearArea is null
+            ? null
+            : new(this.StrongAxisShearArea.Value, this.AreaUnit);
     public double? WeakAxisShearArea { get; init; }
+    internal Area? WeakAxisShearAreaInternal =>
+        this.WeakAxisShearArea is null ? null : new(this.WeakAxisShearArea.Value, this.AreaUnit);
 
     public required LengthUnit LengthUnit { get; init; }
 

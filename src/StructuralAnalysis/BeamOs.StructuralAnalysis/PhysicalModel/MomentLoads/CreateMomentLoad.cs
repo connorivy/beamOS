@@ -9,14 +9,10 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.MomentLoads;
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 internal class CreateMomentLoad(CreateMomentLoadCommandHandler createMomentLoadCommandHandler)
-    : BeamOsModelResourceBaseEndpoint<
-        CreateMomentLoadCommand,
-        CreateMomentLoadRequest,
-        MomentLoadResponse
-    >
+    : BeamOsModelResourceBaseEndpoint<CreateMomentLoadRequest, MomentLoadResponse>
 {
     public override async Task<Result<MomentLoadResponse>> ExecuteRequestAsync(
-        CreateMomentLoadCommand req,
+        ModelResourceRequest<CreateMomentLoadRequest> req,
         CancellationToken ct = default
     ) => await createMomentLoadCommandHandler.ExecuteAsync(req, ct);
 }

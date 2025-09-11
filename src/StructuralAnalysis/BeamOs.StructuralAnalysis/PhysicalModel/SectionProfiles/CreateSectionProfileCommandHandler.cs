@@ -5,18 +5,16 @@ using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 using Riok.Mapperly.Abstractions;
-using UnitsNet;
-using UnitsNet.Units;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
 
 internal class CreateSectionProfileCommandHandler(
     ISectionProfileRepository sectionProfileRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
-) : ICommandHandler<CreateSectionProfileCommand, SectionProfileResponse>
+) : ICommandHandler<ModelResourceRequest<CreateSectionProfileRequest>, SectionProfileResponse>
 {
     public async Task<Result<SectionProfileResponse>> ExecuteAsync(
-        CreateSectionProfileCommand command,
+        ModelResourceRequest<CreateSectionProfileRequest> command,
         CancellationToken ct = default
     )
     {
@@ -33,7 +31,73 @@ internal class CreateSectionProfileCommandHandler(
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
 internal static partial class CreateSectionProfileCommandMapper
 {
-    public static partial SectionProfile ToDomainObject(this CreateSectionProfileCommand command);
+    [MapNestedProperties(nameof(ModelResourceRequest<>.Body))]
+    [MapProperty("Body." + nameof(CreateSectionProfileRequest.AreaInternal), "Area")]
+    [MapProperty(
+        "Body." + nameof(CreateSectionProfileRequest.StrongAxisMomentOfInertiaInternal),
+        nameof(SectionProfile.StrongAxisMomentOfInertia)
+    )]
+    [MapProperty(
+        "Body." + nameof(CreateSectionProfileRequest.WeakAxisMomentOfInertiaInternal),
+        nameof(SectionProfile.WeakAxisMomentOfInertia)
+    )]
+    [MapProperty(
+        "Body." + nameof(CreateSectionProfileRequest.PolarMomentOfInertiaInternal),
+        nameof(SectionProfile.PolarMomentOfInertia)
+    )]
+    [MapProperty(
+        "Body." + nameof(CreateSectionProfileRequest.StrongAxisPlasticSectionModulusInternal),
+        nameof(SectionProfile.StrongAxisPlasticSectionModulus)
+    )]
+    [MapProperty(
+        "Body." + nameof(CreateSectionProfileRequest.WeakAxisPlasticSectionModulusInternal),
+        nameof(SectionProfile.WeakAxisPlasticSectionModulus)
+    )]
+    [MapProperty(
+        "Body." + nameof(CreateSectionProfileRequest.StrongAxisShearAreaInternal),
+        nameof(SectionProfile.StrongAxisShearArea)
+    )]
+    [MapProperty(
+        "Body." + nameof(CreateSectionProfileRequest.WeakAxisShearAreaInternal),
+        nameof(SectionProfile.WeakAxisShearArea)
+    )]
+    public static partial SectionProfile ToDomainObject(
+        this ModelResourceRequest<CreateSectionProfileRequest> command
+    );
+
+    [MapNestedProperties(nameof(ModelResourceRequest<>.Body))]
+    [MapProperty("Body." + nameof(CreateSectionProfileRequest.AreaInternal), "Area")]
+    [MapProperty(
+        "Body." + nameof(CreateSectionProfileRequest.StrongAxisMomentOfInertiaInternal),
+        nameof(SectionProfile.StrongAxisMomentOfInertia)
+    )]
+    [MapProperty(
+        "Body." + nameof(CreateSectionProfileRequest.WeakAxisMomentOfInertiaInternal),
+        nameof(SectionProfile.WeakAxisMomentOfInertia)
+    )]
+    [MapProperty(
+        "Body." + nameof(CreateSectionProfileRequest.PolarMomentOfInertiaInternal),
+        nameof(SectionProfile.PolarMomentOfInertia)
+    )]
+    [MapProperty(
+        "Body." + nameof(CreateSectionProfileRequest.StrongAxisPlasticSectionModulusInternal),
+        nameof(SectionProfile.StrongAxisPlasticSectionModulus)
+    )]
+    [MapProperty(
+        "Body." + nameof(CreateSectionProfileRequest.WeakAxisPlasticSectionModulusInternal),
+        nameof(SectionProfile.WeakAxisPlasticSectionModulus)
+    )]
+    [MapProperty(
+        "Body." + nameof(CreateSectionProfileRequest.StrongAxisShearAreaInternal),
+        nameof(SectionProfile.StrongAxisShearArea)
+    )]
+    [MapProperty(
+        "Body." + nameof(CreateSectionProfileRequest.WeakAxisShearAreaInternal),
+        nameof(SectionProfile.WeakAxisShearArea)
+    )]
+    public static partial SectionProfile ToDomainObject(
+        this ModelResourceWithIntIdRequest<SectionProfileData> command
+    );
 
     [MapNestedProperties(nameof(ModelResourceRequest<>.Body))]
     public static partial SectionProfileFromLibrary ToDomainObject(
@@ -78,41 +142,4 @@ internal static partial class CreateSectionProfileCommandMapper
         double? weakAxisShearArea,
         LengthUnit lengthUnit
     );
-}
-
-internal readonly struct CreateSectionProfileCommand
-    : IModelResourceRequest<CreateSectionProfileRequest>
-{
-    public Guid ModelId { get; init; }
-    public CreateSectionProfileRequest Body { get; init; }
-    public string Name => this.Body.Name;
-    public Area Area => new(this.Body.Area, this.Body.AreaUnit.MapToAreaUnit());
-    public AreaMomentOfInertia StrongAxisMomentOfInertia =>
-        new(
-            this.Body.StrongAxisMomentOfInertia,
-            this.Body.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
-        );
-    public AreaMomentOfInertia WeakAxisMomentOfInertia =>
-        new(
-            this.Body.WeakAxisMomentOfInertia,
-            this.Body.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
-        );
-    public AreaMomentOfInertia PolarMomentOfInertia =>
-        new(
-            this.Body.PolarMomentOfInertia,
-            this.Body.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
-        );
-    public Volume StrongAxisPlasticSectionModulus =>
-        new(this.Body.StrongAxisPlasticSectionModulus, this.Body.VolumeUnit.MapToVolumeUnit());
-    public Volume WeakAxisPlasticSectionModulus =>
-        new(this.Body.WeakAxisPlasticSectionModulus, this.Body.VolumeUnit.MapToVolumeUnit());
-    public Area? StrongAxisShearArea =>
-        this.Body.StrongAxisShearArea is null
-            ? null
-            : new(this.Body.StrongAxisShearArea.Value, this.Body.AreaUnit.MapToAreaUnit());
-    public Area? WeakAxisShearArea =>
-        this.Body.WeakAxisShearArea is null
-            ? null
-            : new(this.Body.WeakAxisShearArea.Value, this.Body.AreaUnit.MapToAreaUnit());
-    public int? Id => this.Body.Id;
 }

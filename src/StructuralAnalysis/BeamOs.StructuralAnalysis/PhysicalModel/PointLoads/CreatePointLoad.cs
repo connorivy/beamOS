@@ -9,14 +9,10 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.PointLoads;
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 internal class CreatePointLoad(CreatePointLoadCommandHandler createPointLoadCommandHandler)
-    : BeamOsModelResourceBaseEndpoint<
-        CreatePointLoadCommand,
-        CreatePointLoadRequest,
-        PointLoadResponse
-    >
+    : BeamOsModelResourceBaseEndpoint<CreatePointLoadRequest, PointLoadResponse>
 {
     public override async Task<Result<PointLoadResponse>> ExecuteRequestAsync(
-        CreatePointLoadCommand req,
+        ModelResourceRequest<CreatePointLoadRequest> req,
         CancellationToken ct = default
     ) => await createPointLoadCommandHandler.ExecuteAsync(req, ct);
 }

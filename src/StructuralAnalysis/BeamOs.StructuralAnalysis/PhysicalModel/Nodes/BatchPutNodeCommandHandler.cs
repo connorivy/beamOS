@@ -10,19 +10,17 @@ internal class BatchPutNodeCommandHandler(
     INodeRepository repository,
     IStructuralAnalysisUnitOfWork unitOfWork
 )
-    : BatchPutCommandHandler<NodeId, Node, BatchPutNodeCommand, PutNodeRequest>(
+    : BatchPutCommandHandler<NodeId, Node, ModelResourceRequest<PutNodeRequest[]>, PutNodeRequest>(
         repository,
         unitOfWork
     )
 {
     protected override Node ToDomainObject(ModelId modelId, PutNodeRequest putRequest) =>
-        new PutNodeCommand(modelId, putRequest).ToDomainObject();
-}
-
-internal readonly struct BatchPutNodeCommand : IModelResourceRequest<PutNodeRequest[]>
-{
-    public Guid ModelId { get; init; }
-    public PutNodeRequest[] Body { get; init; }
+        new ModelResourceWithIntIdRequest<NodeData>(
+            modelId,
+            putRequest.Id,
+            putRequest
+        ).ToDomainObject();
 }
 
 internal class BatchPutInternalNodeCommandHandler(

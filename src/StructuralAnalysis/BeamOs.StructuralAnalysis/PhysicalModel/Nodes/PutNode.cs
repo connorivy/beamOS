@@ -9,10 +9,10 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Nodes;
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 internal class PutNode(PutNodeCommandHandler putNodeCommandHandler)
-    : BeamOsModelResourceBaseEndpoint<PutNodeCommand, NodeData, NodeResponse>
+    : BeamOsModelResourceWithIntIdBaseEndpoint<NodeData, NodeResponse>
 {
     public override async Task<Result<NodeResponse>> ExecuteRequestAsync(
-        PutNodeCommand req,
+        ModelResourceWithIntIdRequest<NodeData> req,
         CancellationToken ct = default
     ) => await putNodeCommandHandler.ExecuteAsync(req, ct);
 }
@@ -21,10 +21,10 @@ internal class PutNode(PutNodeCommandHandler putNodeCommandHandler)
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 internal class BatchPutNode(BatchPutNodeCommandHandler putNodeCommandHandler)
-    : BeamOsModelResourceBaseEndpoint<BatchPutNodeCommand, PutNodeRequest[], BatchResponse>
+    : BeamOsModelResourceBaseEndpoint<PutNodeRequest[], BatchResponse>
 {
     public override async Task<Result<BatchResponse>> ExecuteRequestAsync(
-        BatchPutNodeCommand req,
+        ModelResourceRequest<PutNodeRequest[]> req,
         CancellationToken ct = default
     ) => await putNodeCommandHandler.ExecuteAsync(req, ct);
 }

@@ -10,15 +10,10 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.SectionProfiles;
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 internal class CreateSectionProfile(
     CreateSectionProfileCommandHandler createSectionProfileCommandHandler
-)
-    : BeamOsModelResourceBaseEndpoint<
-        CreateSectionProfileCommand,
-        CreateSectionProfileRequest,
-        SectionProfileResponse
-    >
+) : BeamOsModelResourceBaseEndpoint<CreateSectionProfileRequest, SectionProfileResponse>
 {
     public override async Task<Result<SectionProfileResponse>> ExecuteRequestAsync(
-        CreateSectionProfileCommand req,
+        ModelResourceRequest<CreateSectionProfileRequest> req,
         CancellationToken ct = default
     ) => await createSectionProfileCommandHandler.ExecuteAsync(req, ct);
 }

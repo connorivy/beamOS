@@ -6,23 +6,6 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCases;
 
-internal readonly struct PutLoadCaseCommand : IModelResourceWithIntIdRequest<LoadCaseData>
-{
-    public Guid ModelId { get; init; }
-    public LoadCaseData Body { get; init; }
-    public string Name => this.Body.Name;
-    public int Id { get; init; }
-
-    public PutLoadCaseCommand() { }
-
-    public PutLoadCaseCommand(ModelId modelId, LoadCaseContract putElement1DRequest)
-    {
-        this.Id = putElement1DRequest.Id;
-        this.ModelId = modelId;
-        this.Body = putElement1DRequest;
-    }
-}
-
 internal sealed class BatchPutLoadCaseCommandHandler(
     ILoadCaseRepository repository,
     IStructuralAnalysisUnitOfWork unitOfWork
@@ -30,20 +13,19 @@ internal sealed class BatchPutLoadCaseCommandHandler(
     : BatchPutCommandHandler<
         LoadCaseId,
         Domain.PhysicalModel.LoadCases.LoadCase,
-        BatchPutLoadCaseCommand,
+        ModelResourceRequest<LoadCaseContract[]>,
         LoadCaseContract
     >(repository, unitOfWork)
 {
     protected override Domain.PhysicalModel.LoadCases.LoadCase ToDomainObject(
         ModelId modelId,
         LoadCaseContract putRequest
-    ) => new PutLoadCaseCommand(modelId, putRequest).ToDomainObject();
-}
-
-internal readonly struct BatchPutLoadCaseCommand : IModelResourceRequest<LoadCaseContract[]>
-{
-    public Guid ModelId { get; init; }
-    public LoadCaseContract[] Body { get; init; }
+    ) =>
+        new ModelResourceWithIntIdRequest<LoadCaseData>(
+            modelId,
+            putRequest.Id,
+            putRequest
+        ).ToDomainObject();
 }
 
 internal sealed class PutLoadCaseCommandHandler(
@@ -53,12 +35,12 @@ internal sealed class PutLoadCaseCommandHandler(
     : PutCommandHandlerBase<
         LoadCaseId,
         Domain.PhysicalModel.LoadCases.LoadCase,
-        PutLoadCaseCommand,
+        ModelResourceWithIntIdRequest<LoadCaseData>,
         LoadCaseContract
     >(repository, unitOfWork)
 {
     protected override Domain.PhysicalModel.LoadCases.LoadCase ToDomainObject(
-        PutLoadCaseCommand putCommand
+        ModelResourceWithIntIdRequest<LoadCaseData> putCommand
     ) => putCommand.ToDomainObject();
 
     protected override LoadCaseContract ToResponse(

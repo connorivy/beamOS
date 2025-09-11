@@ -9,7 +9,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Models;
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Proposer)]
 internal class RepairModel(RepairModelCommandHandler repairModelCommandHandler)
-    : BeamOsModelResourceBaseEndpoint<ModelResourceRequest<string>, string, ModelProposalResponse>
+    : BeamOsModelResourceBaseEndpoint<string, ModelProposalResponse>
 {
     public override async Task<Result<ModelProposalResponse>> ExecuteRequestAsync(
         ModelResourceRequest<string> req,

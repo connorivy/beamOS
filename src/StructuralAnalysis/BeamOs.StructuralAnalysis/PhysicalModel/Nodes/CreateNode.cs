@@ -10,10 +10,10 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Nodes;
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 [BeamOsTag(BeamOsTags.AI)]
 internal class CreateNode(CreateNodeCommandHandler createNodeCommandHandler)
-    : BeamOsModelResourceBaseEndpoint<CreateNodeCommand, CreateNodeRequest, NodeResponse>
+    : BeamOsModelResourceBaseEndpoint<CreateNodeRequest, NodeResponse>
 {
     public override async Task<Result<NodeResponse>> ExecuteRequestAsync(
-        CreateNodeCommand req,
+        ModelResourceRequest<CreateNodeRequest> req,
         CancellationToken ct = default
     ) => await createNodeCommandHandler.ExecuteAsync(req, ct);
 }

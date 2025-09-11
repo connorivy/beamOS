@@ -21,7 +21,10 @@ public record MaterialData
     }
 
     public required double ModulusOfElasticity { get; init; }
+    internal Pressure ModulusOfElasticityInternal =>
+        new(this.ModulusOfElasticity, this.PressureUnit);
     public required double ModulusOfRigidity { get; init; }
+    internal Pressure ModulusOfRigidityInternal => new(this.ModulusOfRigidity, this.PressureUnit);
     public required PressureUnit PressureUnit { get; init; }
 }
 

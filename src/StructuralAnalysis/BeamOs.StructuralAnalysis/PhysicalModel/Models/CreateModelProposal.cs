@@ -11,11 +11,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Models;
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Proposer)]
 internal class CreateModelProposal(CreateModelProposalCommandHandler createProposalCommandHandler)
-    : BeamOsModelResourceBaseEndpoint<
-        ModelResourceRequest<ModelProposalData>,
-        ModelProposalData,
-        ModelProposalResponse
-    >
+    : BeamOsModelResourceBaseEndpoint<ModelProposalData, ModelProposalResponse>
 {
     public override async Task<Result<ModelProposalResponse>> ExecuteRequestAsync(
         ModelResourceRequest<ModelProposalData> req,
@@ -52,12 +48,7 @@ internal class GetModelProposal(GetModelProposalQueryHandler getModelProposalQue
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 internal class AcceptModelProposal(
     AcceptModelProposalCommandHandler acceptModelProposalCommandHandler
-)
-    : BeamOsModelResourceWithIntIdBaseEndpoint<
-        ModelResourceWithIntIdRequest<List<EntityProposal>?>,
-        List<EntityProposal>?,
-        ModelResponse
-    >
+) : BeamOsModelResourceWithIntIdBaseEndpoint<List<EntityProposal>?, ModelResponse>
 {
     public override async Task<Result<ModelResponse>> ExecuteRequestAsync(
         ModelResourceWithIntIdRequest<List<EntityProposal>?> req,

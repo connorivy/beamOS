@@ -9,14 +9,10 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Element1ds;
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 internal class CreateElement1d(CreateElement1dCommandHandler createElement1dCommandHandler)
-    : BeamOsModelResourceBaseEndpoint<
-        CreateElement1dCommand,
-        CreateElement1dRequest,
-        Element1dResponse
-    >
+    : BeamOsModelResourceBaseEndpoint<CreateElement1dRequest, Element1dResponse>
 {
     public override async Task<Result<Element1dResponse>> ExecuteRequestAsync(
-        CreateElement1dCommand req,
+        ModelResourceRequest<CreateElement1dRequest> req,
         CancellationToken ct = default
     ) => await createElement1dCommandHandler.ExecuteAsync(req, ct);
 }

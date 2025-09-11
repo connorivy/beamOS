@@ -2,7 +2,7 @@ using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.Common;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinations;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCombinations;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCombinations;
@@ -10,10 +10,10 @@ namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCombinations;
 internal class CreateLoadCombinationCommandHandler(
     ILoadCombinationRepository element1dRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
-) : ICommandHandler<CreateLoadCombinationCommand, LoadCombinationContract>
+) : ICommandHandler<ModelResourceRequest<LoadCombinationData>, LoadCombinationContract>
 {
     public async Task<Result<LoadCombinationContract>> ExecuteAsync(
-        CreateLoadCombinationCommand command,
+        ModelResourceRequest<LoadCombinationData> command,
         CancellationToken ct = default
     )
     {
@@ -30,9 +30,15 @@ internal class CreateLoadCombinationCommandHandler(
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
 internal static partial class CreateLoadCombinationCommandMapper
 {
-    public static partial LoadCombination ToDomainObject(this CreateLoadCombinationCommand command);
+    [MapNestedProperties(nameof(ModelResourceRequest<>.Body))]
+    public static partial LoadCombination ToDomainObject(
+        this ModelResourceRequest<LoadCombinationData> command
+    );
 
     public static partial LoadCombinationContract ToResponse(this LoadCombination entity);
 
-    public static partial LoadCombination ToDomainObject(this PutLoadCombinationCommand entity);
+    [MapNestedProperties(nameof(ModelResourceWithIntIdRequest<>.Body))]
+    public static partial LoadCombination ToDomainObject(
+        this ModelResourceWithIntIdRequest<LoadCombinationData> entity
+    );
 }

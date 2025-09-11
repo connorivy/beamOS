@@ -9,11 +9,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Models;
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 internal class PutModel(PutModelCommandHandler putModelCommandHandler)
-    : BeamOsModelResourceBaseEndpoint<
-        ModelResourceRequest<ModelInfoData>,
-        ModelInfoData,
-        ModelResponse
-    >
+    : BeamOsModelResourceBaseEndpoint<ModelInfoData, ModelResponse>
 {
     public override async Task<Result<ModelResponse>> ExecuteRequestAsync(
         ModelResourceRequest<ModelInfoData> req,

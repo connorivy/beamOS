@@ -15,13 +15,12 @@ internal class PutSectionProfileFromLibrary(
     PutSectionProfileFromLibraryCommandHandler putSectionProfileCommandHandler
 )
     : BeamOsModelResourceWithIntIdBaseEndpoint<
-        PutSectionProfileFromLibraryCommand,
         SectionProfileFromLibraryData,
         SectionProfileFromLibraryContract
     >
 {
     public override async Task<Result<SectionProfileFromLibraryContract>> ExecuteRequestAsync(
-        PutSectionProfileFromLibraryCommand req,
+        ModelResourceWithIntIdRequest<SectionProfileFromLibraryData> req,
         CancellationToken ct = default
     ) => await putSectionProfileCommandHandler.ExecuteAsync(req, ct);
 }
@@ -31,15 +30,10 @@ internal class PutSectionProfileFromLibrary(
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 internal class BatchPutSectionProfileFromLibrary(
     BatchPutSectionProfileFromLibraryCommandHandler putSectionProfileFromLibraryCommandHandler
-)
-    : BeamOsModelResourceBaseEndpoint<
-        BatchPutSectionProfileFromLibraryRequest,
-        SectionProfileFromLibraryContract[],
-        BatchResponse
-    >
+) : BeamOsModelResourceBaseEndpoint<SectionProfileFromLibraryContract[], BatchResponse>
 {
     public override async Task<Result<BatchResponse>> ExecuteRequestAsync(
-        BatchPutSectionProfileFromLibraryRequest req,
+        ModelResourceRequest<SectionProfileFromLibraryContract[]> req,
         CancellationToken ct = default
     ) => await putSectionProfileFromLibraryCommandHandler.ExecuteAsync(req, ct);
 }

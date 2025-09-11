@@ -12,10 +12,10 @@ namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
 internal class CreateElement1dCommandHandler(
     IElement1dRepository element1dRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
-) : ICommandHandler<CreateElement1dCommand, Element1dResponse>
+) : ICommandHandler<ModelResourceRequest<CreateElement1dRequest>, Element1dResponse>
 {
     public async Task<Result<Element1dResponse>> ExecuteAsync(
-        CreateElement1dCommand command,
+        ModelResourceRequest<CreateElement1dRequest> command,
         CancellationToken ct = default
     )
     {
@@ -32,20 +32,10 @@ internal class CreateElement1dCommandHandler(
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
 internal static partial class CreateElement1dCommandMapper
 {
-    public static partial Element1d ToDomainObject(this CreateElement1dCommand command);
+    [MapNestedProperties(nameof(ModelResourceRequest<>.Body))]
+    public static partial Element1d ToDomainObject(
+        this ModelResourceRequest<CreateElement1dRequest> command
+    );
 
     public static partial Element1dResponse ToResponse(this Element1d entity);
-}
-
-internal readonly struct CreateElement1dCommand : IModelResourceRequest<CreateElement1dRequest>
-{
-    public Guid ModelId { get; init; }
-    public CreateElement1dRequest Body { get; init; }
-    public int StartNodeId => this.Body.StartNodeId;
-    public int EndNodeId => this.Body.EndNodeId;
-    public int MaterialId => this.Body.MaterialId;
-    public int SectionProfileId => this.Body.SectionProfileId;
-    public AngleContract? SectionProfileRotation => this.Body.SectionProfileRotation;
-    public int? Id => this.Body.Id;
-    public Dictionary<string, string>? Metadata => this.Body.Metadata;
 }

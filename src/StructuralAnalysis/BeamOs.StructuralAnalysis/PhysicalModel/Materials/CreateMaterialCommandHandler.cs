@@ -14,10 +14,10 @@ namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Materials;
 internal class CreateMaterialCommandHandler(
     IMaterialRepository materialRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
-) : ICommandHandler<CreateMaterialCommand, MaterialResponse>
+) : ICommandHandler<ModelResourceRequest<CreateMaterialRequest>, MaterialResponse>
 {
     public async Task<Result<MaterialResponse>> ExecuteAsync(
-        CreateMaterialCommand command,
+        ModelResourceRequest<CreateMaterialRequest> command,
         CancellationToken ct = default
     )
     {
@@ -34,7 +34,17 @@ internal class CreateMaterialCommandHandler(
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
 internal static partial class CreateMaterialStaticMapper
 {
-    public static partial Material ToDomainObject(this CreateMaterialCommand command);
+    [MapProperty("Body." + nameof(MaterialData.ModulusOfElasticityInternal), "ModulusOfElasticity")]
+    [MapProperty("Body." + nameof(MaterialData.ModulusOfRigidityInternal), "ModulusOfRigidity")]
+    public static partial Material ToDomainObject(
+        this ModelResourceWithIntIdRequest<MaterialData> command
+    );
+
+    [MapProperty("Body." + nameof(MaterialData.ModulusOfElasticityInternal), "ModulusOfElasticity")]
+    [MapProperty("Body." + nameof(MaterialData.ModulusOfRigidityInternal), "ModulusOfRigidity")]
+    public static partial Material ToDomainObject(
+        this ModelResourceRequest<CreateMaterialRequest> command
+    );
 
     public static MaterialResponse ToResponse(this Material command, PressureUnit pressureUnit) =>
         command.ToResponse(
@@ -49,15 +59,4 @@ internal static partial class CreateMaterialStaticMapper
         double modulusOfRigidity,
         PressureUnit pressureUnit
     );
-}
-
-internal readonly struct CreateMaterialCommand : IModelResourceRequest<CreateMaterialRequest>
-{
-    public Guid ModelId { get; init; }
-    public CreateMaterialRequest Body { get; init; }
-    public Pressure ModulusOfElasticity =>
-        new(this.Body.ModulusOfElasticity, this.Body.PressureUnit.MapToPressureUnit());
-    public Pressure ModulusOfRigidity =>
-        new(this.Body.ModulusOfRigidity, this.Body.PressureUnit.MapToPressureUnit());
-    public int? Id => this.Body.Id;
 }

@@ -14,10 +14,10 @@ namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
 internal class PutSectionProfileCommandHandler(
     ISectionProfileRepository sectionProfileRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
-) : ICommandHandler<PutSectionProfileCommand, SectionProfileResponse>
+) : ICommandHandler<ModelResourceWithIntIdRequest<SectionProfileData>, SectionProfileResponse>
 {
     public async Task<Result<SectionProfileResponse>> ExecuteAsync(
-        PutSectionProfileCommand command,
+        ModelResourceWithIntIdRequest<SectionProfileData> command,
         CancellationToken ct = default
     )
     {
@@ -36,14 +36,19 @@ internal class BatchPutSectionProfileCommandHandler(
     : BatchPutCommandHandler<
         SectionProfileId,
         SectionProfile,
-        BatchPutSectionProfileCommand,
+        ModelResourceRequest<PutSectionProfileRequest[]>,
         PutSectionProfileRequest
     >(sectionProfileRepository, unitOfWork)
 {
     protected override SectionProfile ToDomainObject(
         ModelId modelId,
         PutSectionProfileRequest putRequest
-    ) => new PutSectionProfileCommand(modelId, putRequest).ToDomainObject();
+    ) =>
+        new ModelResourceWithIntIdRequest<SectionProfileData>(
+            modelId,
+            putRequest.Id,
+            putRequest
+        ).ToDomainObject();
 }
 
 [Mapper]
@@ -56,89 +61,9 @@ internal static partial class PutSectionProfileCommandMapper
     public static partial SectionProfileFromLibrary ToDomainObject(
         this PutSectionProfileFromLibraryCommand command
     );
-}
 
-internal readonly struct PutSectionProfileCommand : IModelResourceWithIntIdRequest<SectionProfileData>
-{
-    public int Id { get; init; }
-    public Guid ModelId { get; init; }
-    public SectionProfileData Body { get; init; }
-    public string Name => this.Body.Name;
-    public Area Area => new(this.Body.Area, this.Body.AreaUnit.MapToAreaUnit());
-    public AreaMomentOfInertia StrongAxisMomentOfInertia =>
-        new(
-            this.Body.StrongAxisMomentOfInertia,
-            this.Body.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
-        );
-    public AreaMomentOfInertia WeakAxisMomentOfInertia =>
-        new(
-            this.Body.WeakAxisMomentOfInertia,
-            this.Body.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
-        );
-    public AreaMomentOfInertia PolarMomentOfInertia =>
-        new(
-            this.Body.PolarMomentOfInertia,
-            this.Body.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
-        );
-    public Volume StrongAxisPlasticSectionModulus =>
-        new(this.Body.StrongAxisPlasticSectionModulus, this.Body.VolumeUnit.MapToVolumeUnit());
-    public Volume WeakAxisPlasticSectionModulus =>
-        new(this.Body.WeakAxisPlasticSectionModulus, this.Body.VolumeUnit.MapToVolumeUnit());
-    public Area? StrongAxisShearArea =>
-        this.Body.StrongAxisShearArea.HasValue
-            ? new(this.Body.StrongAxisShearArea.Value, this.Body.AreaUnit.MapToAreaUnit())
-            : null;
-    public Area? WeakAxisShearArea =>
-        this.Body.WeakAxisShearArea.HasValue
-            ? new(this.Body.WeakAxisShearArea.Value, this.Body.AreaUnit.MapToAreaUnit())
-            : null;
-
-    public PutSectionProfileCommand() { }
-
-    [SetsRequiredMembers]
-    public PutSectionProfileCommand(
-        ModelId modelId,
-        PutSectionProfileRequest putSectionProfileRequest
-    )
-    {
-        this.Id = putSectionProfileRequest.Id;
-        this.ModelId = modelId;
-        this.Body = putSectionProfileRequest;
-    }
-
-    public SectionProfileResponse ToResponse()
-    {
-        return new(
-            this.Id,
-            this.ModelId,
-            this.Body.Name,
-            this.Area.As(this.Body.AreaUnit.MapToAreaUnit()),
-            this.StrongAxisMomentOfInertia.As(
-                this.Body.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
-            ),
-            this.WeakAxisMomentOfInertia.As(
-                this.Body.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
-            ),
-            this.PolarMomentOfInertia.As(
-                this.Body.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit()
-            ),
-            this.StrongAxisPlasticSectionModulus.As(this.Body.VolumeUnit.MapToVolumeUnit()),
-            this.WeakAxisPlasticSectionModulus.As(this.Body.VolumeUnit.MapToVolumeUnit()),
-            this.StrongAxisShearArea?.As(this.Body.AreaUnit.MapToAreaUnit()),
-            this.WeakAxisShearArea?.As(this.Body.AreaUnit.MapToAreaUnit()),
-            this.Body.LengthUnit
-        );
-    }
-
-    public PutSectionProfileRequest ToRequest()
-    {
-        return new(this.Id, this.Body);
-    }
-}
-
-internal readonly struct BatchPutSectionProfileCommand
-    : IModelResourceRequest<PutSectionProfileRequest[]>
-{
-    public Guid ModelId { get; init; }
-    public PutSectionProfileRequest[] Body { get; init; }
+    [MapNestedProperties(nameof(ModelResourceWithIntIdRequest<>.Body))]
+    public static partial SectionProfileFromLibrary ToDomainObject(
+        this ModelResourceWithIntIdRequest<SectionProfileFromLibraryData> command
+    );
 }

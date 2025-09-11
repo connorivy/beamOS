@@ -9,10 +9,10 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Nodes;
 [BeamOsEndpointType(Http.Patch)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 internal class PatchNode(PatchNodeCommandHandler patchNodeCommandHandler)
-    : BeamOsModelResourceBaseEndpoint<PatchNodeCommand, UpdateNodeRequest, NodeResponse>
+    : BeamOsModelResourceBaseEndpoint<UpdateNodeRequest, NodeResponse>
 {
     public override async Task<Result<NodeResponse>> ExecuteRequestAsync(
-        PatchNodeCommand req,
+        ModelResourceRequest<UpdateNodeRequest> req,
         CancellationToken ct = default
     ) => await patchNodeCommandHandler.ExecuteAsync(req, ct);
 }

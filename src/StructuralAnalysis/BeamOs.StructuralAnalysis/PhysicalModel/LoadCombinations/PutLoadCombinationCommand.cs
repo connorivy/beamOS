@@ -6,24 +6,6 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCombinations;
 
-internal readonly struct PutLoadCombinationCommand
-    : IModelResourceWithIntIdRequest<LoadCombinationData>
-{
-    public Guid ModelId { get; init; }
-    public LoadCombinationData Body { get; init; }
-    public Dictionary<int, double> LoadCaseFactors => this.Body.LoadCaseFactors;
-    public int Id { get; init; }
-
-    public PutLoadCombinationCommand() { }
-
-    public PutLoadCombinationCommand(ModelId modelId, LoadCombinationContract putElement1DRequest)
-    {
-        this.Id = putElement1DRequest.Id;
-        this.ModelId = modelId;
-        this.Body = putElement1DRequest;
-    }
-}
-
 internal sealed class PutLoadCombinationCommandHandler(
     ILoadCombinationRepository repository,
     IStructuralAnalysisUnitOfWork unitOfWork
@@ -31,12 +13,13 @@ internal sealed class PutLoadCombinationCommandHandler(
     : PutCommandHandlerBase<
         LoadCombinationId,
         LoadCombination,
-        PutLoadCombinationCommand,
+        ModelResourceWithIntIdRequest<LoadCombinationData>,
         LoadCombinationContract
     >(repository, unitOfWork)
 {
-    protected override LoadCombination ToDomainObject(PutLoadCombinationCommand putCommand) =>
-        putCommand.ToDomainObject();
+    protected override LoadCombination ToDomainObject(
+        ModelResourceWithIntIdRequest<LoadCombinationData> putCommand
+    ) => putCommand.ToDomainObject();
 
     protected override LoadCombinationContract ToResponse(LoadCombination entity) =>
         entity.ToResponse();
@@ -49,19 +32,17 @@ internal sealed class BatchPutLoadCombinationCommandHandler(
     : BatchPutCommandHandler<
         LoadCombinationId,
         Domain.PhysicalModel.LoadCombinations.LoadCombination,
-        BatchPutLoadCombinationCommand,
+        ModelResourceRequest<LoadCombinationContract[]>,
         LoadCombinationContract
     >(repository, unitOfWork)
 {
     protected override Domain.PhysicalModel.LoadCombinations.LoadCombination ToDomainObject(
         ModelId modelId,
         LoadCombinationContract putRequest
-    ) => new PutLoadCombinationCommand(modelId, putRequest).ToDomainObject();
-}
-
-internal readonly struct BatchPutLoadCombinationCommand
-    : IModelResourceRequest<LoadCombinationContract[]>
-{
-    public Guid ModelId { get; init; }
-    public LoadCombinationContract[] Body { get; init; }
+    ) =>
+        new ModelResourceWithIntIdRequest<LoadCombinationData>(
+            modelId,
+            putRequest.Id,
+            putRequest
+        ).ToDomainObject();
 }

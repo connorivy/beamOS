@@ -13,10 +13,10 @@ namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
 internal class PutElement1dCommandHandler(
     IElement1dRepository element1dRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
-) : ICommandHandler<PutElement1dCommand, Element1dResponse>
+) : ICommandHandler<ModelResourceWithIntIdRequest<Element1dData>, Element1dResponse>
 {
     public async Task<Result<Element1dResponse>> ExecuteAsync(
-        PutElement1dCommand command,
+        ModelResourceWithIntIdRequest<Element1dData> command,
         CancellationToken ct = default
     )
     {
@@ -32,13 +32,19 @@ internal class BatchPutElement1dCommandHandler(
     IElement1dRepository element1dRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 )
-    : BatchPutCommandHandler<Element1dId, Element1d, BatchPutElement1dCommand, PutElement1dRequest>(
-        element1dRepository,
-        unitOfWork
-    )
+    : BatchPutCommandHandler<
+        Element1dId,
+        Element1d,
+        ModelResourceRequest<PutElement1dRequest[]>,
+        PutElement1dRequest
+    >(element1dRepository, unitOfWork)
 {
     protected override Element1d ToDomainObject(ModelId modelId, PutElement1dRequest putRequest) =>
-        new PutElement1dCommand(modelId, putRequest).ToDomainObject();
+        new ModelResourceWithIntIdRequest<Element1dData>(
+            modelId,
+            putRequest.Id,
+            putRequest
+        ).ToDomainObject();
 }
 
 [Mapper]
@@ -46,35 +52,13 @@ internal class BatchPutElement1dCommandHandler(
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
 internal static partial class PutElement1dCommandMapper
 {
-    public static partial Element1dResponse ToResponse(this PutElement1dCommand command);
+    [MapNestedProperties(nameof(ModelResourceWithIntIdRequest<>.Body))]
+    public static partial Element1dResponse ToResponse(
+        this ModelResourceWithIntIdRequest<Element1dData> command
+    );
 
-    public static partial Element1d ToDomainObject(this PutElement1dCommand command);
-}
-
-internal readonly struct PutElement1dCommand : IModelResourceWithIntIdRequest<Element1dData>
-{
-    public int Id { get; init; }
-    public Guid ModelId { get; init; }
-    public Element1dData Body { get; init; }
-    public int StartNodeId => this.Body.StartNodeId;
-    public int EndNodeId => this.Body.EndNodeId;
-    public int MaterialId => this.Body.MaterialId;
-    public int SectionProfileId => this.Body.SectionProfileId;
-    public AngleContract? SectionProfileRotation => this.Body.SectionProfileRotation;
-    public Dictionary<string, string>? Metadata => this.Body.Metadata;
-
-    public PutElement1dCommand() { }
-
-    public PutElement1dCommand(ModelId modelId, PutElement1dRequest putElement1DRequest)
-    {
-        this.Id = putElement1DRequest.Id;
-        this.ModelId = modelId;
-        this.Body = putElement1DRequest;
-    }
-}
-
-internal readonly struct BatchPutElement1dCommand : IModelResourceRequest<PutElement1dRequest[]>
-{
-    public Guid ModelId { get; init; }
-    public PutElement1dRequest[] Body { get; init; }
+    [MapNestedProperties(nameof(ModelResourceWithIntIdRequest<>.Body))]
+    public static partial Element1d ToDomainObject(
+        this ModelResourceWithIntIdRequest<Element1dData> command
+    );
 }

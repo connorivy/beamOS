@@ -10,15 +10,10 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.LoadCombinations
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 internal class BatchPutLoadCombination(
     BatchPutLoadCombinationCommandHandler putLoadCombinationCommandHandler
-)
-    : BeamOsModelResourceBaseEndpoint<
-        BatchPutLoadCombinationCommand,
-        LoadCombinationContract[],
-        BatchResponse
-    >
+) : BeamOsModelResourceBaseEndpoint<LoadCombinationContract[], BatchResponse>
 {
     public override async Task<Result<BatchResponse>> ExecuteRequestAsync(
-        BatchPutLoadCombinationCommand req,
+        ModelResourceRequest<LoadCombinationContract[]> req,
         CancellationToken ct = default
     ) => await putLoadCombinationCommandHandler.ExecuteAsync(req, ct);
 }

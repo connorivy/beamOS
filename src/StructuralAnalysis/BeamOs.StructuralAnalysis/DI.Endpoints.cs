@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints;
 
-internal static class DependencyInjection
+internal static partial class DependencyInjection
 {
     public static IServiceCollection AddStructuralAnalysisRequired(
         this IServiceCollection services

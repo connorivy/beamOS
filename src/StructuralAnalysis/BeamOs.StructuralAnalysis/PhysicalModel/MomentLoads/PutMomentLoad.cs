@@ -10,14 +10,10 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.MomentLoads;
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 internal class PutMomentLoad(PutMomentLoadCommandHandler putMomentLoadCommandHandler)
-    : BeamOsModelResourceWithIntIdBaseEndpoint<
-        PutMomentLoadCommand,
-        MomentLoadData,
-        MomentLoadResponse
-    >
+    : BeamOsModelResourceWithIntIdBaseEndpoint<MomentLoadData, MomentLoadResponse>
 {
     public override async Task<Result<MomentLoadResponse>> ExecuteRequestAsync(
-        PutMomentLoadCommand req,
+        ModelResourceWithIntIdRequest<MomentLoadData> req,
         CancellationToken ct = default
     ) => await putMomentLoadCommandHandler.ExecuteAsync(req, ct);
 }
@@ -26,14 +22,10 @@ internal class PutMomentLoad(PutMomentLoadCommandHandler putMomentLoadCommandHan
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 internal class BatchPutMomentLoad(BatchPutMomentLoadCommandHandler putMomentLoadCommandHandler)
-    : BeamOsModelResourceBaseEndpoint<
-        BatchPutMomentLoadRequest,
-        PutMomentLoadRequest[],
-        BatchResponse
-    >
+    : BeamOsModelResourceBaseEndpoint<PutMomentLoadRequest[], BatchResponse>
 {
     public override async Task<Result<BatchResponse>> ExecuteRequestAsync(
-        BatchPutMomentLoadRequest req,
+        ModelResourceRequest<PutMomentLoadRequest[]> req,
         CancellationToken ct = default
     ) => await putMomentLoadCommandHandler.ExecuteAsync(req, ct);
 }

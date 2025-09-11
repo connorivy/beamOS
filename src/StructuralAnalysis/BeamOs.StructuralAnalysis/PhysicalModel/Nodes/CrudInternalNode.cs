@@ -22,11 +22,7 @@ internal class GetInternalNode(GetInternalNodeCommandHandler getNodeCommandHandl
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 [BeamOsTag(BeamOsTags.AI)]
 internal class CreateInternalNode(CreateInternalNodeCommandHandler createInternalNodeCommandHandler)
-    : BeamOsModelResourceBaseEndpoint<
-        ModelResourceRequest<CreateInternalNodeRequest>,
-        CreateInternalNodeRequest,
-        InternalNodeContract
-    >
+    : BeamOsModelResourceBaseEndpoint<CreateInternalNodeRequest, InternalNodeContract>
 {
     public override async Task<Result<InternalNodeContract>> ExecuteRequestAsync(
         ModelResourceRequest<CreateInternalNodeRequest> req,
@@ -38,11 +34,7 @@ internal class CreateInternalNode(CreateInternalNodeCommandHandler createInterna
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 internal class PutInternalNode(PutInternalNodeCommandHandler putInternalNodeCommandHandler)
-    : BeamOsModelResourceWithIntIdBaseEndpoint<
-        ModelResourceWithIntIdRequest<InternalNodeData>,
-        InternalNodeData,
-        InternalNodeContract
-    >
+    : BeamOsModelResourceWithIntIdBaseEndpoint<InternalNodeData, InternalNodeContract>
 {
     public override async Task<Result<InternalNodeContract>> ExecuteRequestAsync(
         ModelResourceWithIntIdRequest<InternalNodeData> req,
@@ -53,12 +45,9 @@ internal class PutInternalNode(PutInternalNodeCommandHandler putInternalNodeComm
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "nodes/internal")]
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-internal class BatchPutInternalNode(BatchPutInternalNodeCommandHandler putInternalNodeCommandHandler)
-    : BeamOsModelResourceBaseEndpoint<
-        ModelResourceRequest<InternalNodeContract[]>,
-        InternalNodeContract[],
-        BatchResponse
-    >
+internal class BatchPutInternalNode(
+    BatchPutInternalNodeCommandHandler putInternalNodeCommandHandler
+) : BeamOsModelResourceBaseEndpoint<InternalNodeContract[], BatchResponse>
 {
     public override async Task<Result<BatchResponse>> ExecuteRequestAsync(
         ModelResourceRequest<InternalNodeContract[]> req,

@@ -10,10 +10,10 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Materials;
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 internal class PutMaterial(PutMaterialCommandHandler putMaterialCommandHandler)
-    : BeamOsModelResourceWithIntIdBaseEndpoint<PutMaterialCommand, MaterialData, MaterialResponse>
+    : BeamOsModelResourceWithIntIdBaseEndpoint<MaterialData, MaterialResponse>
 {
     public override async Task<Result<MaterialResponse>> ExecuteRequestAsync(
-        PutMaterialCommand req,
+        ModelResourceWithIntIdRequest<MaterialData> req,
         CancellationToken ct = default
     ) => await putMaterialCommandHandler.ExecuteAsync(req, ct);
 }
@@ -22,10 +22,10 @@ internal class PutMaterial(PutMaterialCommandHandler putMaterialCommandHandler)
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 internal class BatchPutMaterial(BatchPutMaterialCommandHandler putMaterialCommandHandler)
-    : BeamOsModelResourceBaseEndpoint<BatchPutMaterialCommand, PutMaterialRequest[], BatchResponse>
+    : BeamOsModelResourceBaseEndpoint<PutMaterialRequest[], BatchResponse>
 {
     public override async Task<Result<BatchResponse>> ExecuteRequestAsync(
-        BatchPutMaterialCommand req,
+        ModelResourceRequest<PutMaterialRequest[]> req,
         CancellationToken ct = default
     ) => await putMaterialCommandHandler.ExecuteAsync(req, ct);
 }

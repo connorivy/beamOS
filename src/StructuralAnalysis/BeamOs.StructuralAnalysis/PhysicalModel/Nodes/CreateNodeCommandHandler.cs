@@ -13,10 +13,10 @@ internal class CreateNodeCommandHandler(
     // INodeDefinitionRepository nodeRepository,
     INodeRepository nodeRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
-) : ICommandHandler<CreateNodeCommand, NodeResponse>
+) : ICommandHandler<ModelResourceRequest<CreateNodeRequest>, NodeResponse>
 {
     public async Task<Result<NodeResponse>> ExecuteAsync(
-        CreateNodeCommand command,
+        ModelResourceRequest<CreateNodeRequest> command,
         CancellationToken ct = default
     )
     {
@@ -51,9 +51,13 @@ internal sealed class CreateInternalNodeCommandHandler(
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
 internal static partial class CreateNodeCommandMapper
 {
-    public static partial Node ToDomainObject(this CreateNodeCommand command);
+    [MapNestedProperties(nameof(ModelResourceRequest<>.Body))]
+    public static partial Node ToDomainObject(this ModelResourceRequest<CreateNodeRequest> command);
 
-    public static partial CreateNodeRequest ToRequest(this CreateNodeCommand entity);
+    [MapNestedProperties(nameof(ModelResourceRequest<>.Body))]
+    public static partial CreateNodeRequest ToRequest(
+        this ModelResourceRequest<CreateNodeRequest> entity
+    );
 
     public static partial NodeResponse ToResponse(this Node entity);
 
@@ -66,13 +70,4 @@ internal static partial class CreateNodeCommandMapper
     );
 
     public static partial InternalNodeContract ToResponse(this InternalNode entity);
-}
-
-internal readonly struct CreateNodeCommand : IModelResourceRequest<CreateNodeRequest>
-{
-    public Guid ModelId { get; init; }
-    public CreateNodeRequest Body { get; init; }
-    public int? Id => this.Body.Id;
-    public PointContract LocationPoint => this.Body.LocationPoint;
-    public RestraintContract? Restraint => this.Body.Restraint;
 }

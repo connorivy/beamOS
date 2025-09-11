@@ -10,14 +10,10 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.SectionProfiles;
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 internal class PutSectionProfile(PutSectionProfileCommandHandler putSectionProfileCommandHandler)
-    : BeamOsModelResourceWithIntIdBaseEndpoint<
-        PutSectionProfileCommand,
-        SectionProfileData,
-        SectionProfileResponse
-    >
+    : BeamOsModelResourceWithIntIdBaseEndpoint<SectionProfileData, SectionProfileResponse>
 {
     public override async Task<Result<SectionProfileResponse>> ExecuteRequestAsync(
-        PutSectionProfileCommand req,
+        ModelResourceWithIntIdRequest<SectionProfileData> req,
         CancellationToken ct = default
     ) => await putSectionProfileCommandHandler.ExecuteAsync(req, ct);
 }
@@ -27,15 +23,10 @@ internal class PutSectionProfile(PutSectionProfileCommandHandler putSectionProfi
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 internal class BatchPutSectionProfile(
     BatchPutSectionProfileCommandHandler putSectionProfileCommandHandler
-)
-    : BeamOsModelResourceBaseEndpoint<
-        BatchPutSectionProfileCommand,
-        PutSectionProfileRequest[],
-        BatchResponse
-    >
+) : BeamOsModelResourceBaseEndpoint<PutSectionProfileRequest[], BatchResponse>
 {
     public override async Task<Result<BatchResponse>> ExecuteRequestAsync(
-        BatchPutSectionProfileCommand req,
+        ModelResourceRequest<PutSectionProfileRequest[]> req,
         CancellationToken ct = default
     ) => await putSectionProfileCommandHandler.ExecuteAsync(req, ct);
 }

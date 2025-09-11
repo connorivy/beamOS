@@ -13,10 +13,10 @@ namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads;
 internal class CreatePointLoadCommandHandler(
     IPointLoadRepository pointLoadRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
-) : ICommandHandler<CreatePointLoadCommand, PointLoadResponse>
+) : ICommandHandler<ModelResourceRequest<CreatePointLoadRequest>, PointLoadResponse>
 {
     public async Task<Result<PointLoadResponse>> ExecuteAsync(
-        CreatePointLoadCommand command,
+        ModelResourceRequest<CreatePointLoadRequest> command,
         CancellationToken ct = default
     )
     {
@@ -33,18 +33,10 @@ internal class CreatePointLoadCommandHandler(
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
 internal static partial class CreatePointLoadCommandMapper
 {
-    public static partial PointLoad ToDomainObject(this CreatePointLoadCommand command);
+    [MapNestedProperties(nameof(ModelResourceRequest<>.Body))]
+    public static partial PointLoad ToDomainObject(
+        this ModelResourceRequest<CreatePointLoadRequest> command
+    );
 
     public static partial PointLoadResponse ToResponse(this PointLoad entity);
-}
-
-internal readonly struct CreatePointLoadCommand : IModelResourceRequest<CreatePointLoadRequest>
-{
-    public Guid ModelId { get; init; }
-    public CreatePointLoadRequest Body { get; init; }
-    public int NodeId => this.Body.NodeId;
-    public int LoadCaseId => this.Body.LoadCaseId;
-    public ForceContract Force => this.Body.Force;
-    public Contracts.Common.Vector3 Direction => this.Body.Direction;
-    public int? Id => this.Body.Id;
 }

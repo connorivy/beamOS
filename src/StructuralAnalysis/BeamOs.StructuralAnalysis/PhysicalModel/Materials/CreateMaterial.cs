@@ -9,14 +9,10 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Materials;
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 internal class CreateMaterial(CreateMaterialCommandHandler createMaterialCommandHandler)
-    : BeamOsModelResourceBaseEndpoint<
-        CreateMaterialCommand,
-        CreateMaterialRequest,
-        MaterialResponse
-    >
+    : BeamOsModelResourceBaseEndpoint<CreateMaterialRequest, MaterialResponse>
 {
     public override async Task<Result<MaterialResponse>> ExecuteRequestAsync(
-        CreateMaterialCommand req,
+        ModelResourceRequest<CreateMaterialRequest> req,
         CancellationToken ct = default
     ) => await createMaterialCommandHandler.ExecuteAsync(req, ct);
 }

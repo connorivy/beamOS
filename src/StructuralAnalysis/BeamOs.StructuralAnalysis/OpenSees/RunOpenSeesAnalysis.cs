@@ -10,11 +10,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.OpenSees;
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 internal class RunOpenSeesAnalysis(RunOpenSeesAnalysisCommandHandler runOpenSeesCommandHandler)
-    : BeamOsModelResourceBaseEndpoint<
-        ModelResourceRequest<RunDsmRequest>,
-        RunDsmRequest,
-        AnalyticalResultsResponse
-    >
+    : BeamOsModelResourceBaseEndpoint<RunDsmRequest, AnalyticalResultsResponse>
 {
     public override async Task<Result<AnalyticalResultsResponse>> ExecuteRequestAsync(
         ModelResourceRequest<RunDsmRequest> req,

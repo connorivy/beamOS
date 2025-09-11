@@ -9,14 +9,10 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.LoadCombinations
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 internal class PutLoadCombination(PutLoadCombinationCommandHandler putLoadCombinationCommandHandler)
-    : BeamOsModelResourceWithIntIdBaseEndpoint<
-        PutLoadCombinationCommand,
-        LoadCombinationData,
-        LoadCombinationContract
-    >
+    : BeamOsModelResourceWithIntIdBaseEndpoint<LoadCombinationData, LoadCombinationContract>
 {
     public override async Task<Result<LoadCombinationContract>> ExecuteRequestAsync(
-        PutLoadCombinationCommand req,
+        ModelResourceWithIntIdRequest<LoadCombinationData> req,
         CancellationToken ct = default
     ) => await putLoadCombinationCommandHandler.ExecuteAsync(req, ct);
 }

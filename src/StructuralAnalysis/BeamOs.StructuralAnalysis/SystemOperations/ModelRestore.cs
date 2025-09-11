@@ -10,12 +10,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.SystemOperations;
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 internal class ModelRestore(
     ICommandHandler<ModelResourceRequest<DateTimeOffset>, ModelResponse> commandHandler
-)
-    : BeamOsModelResourceBaseEndpoint<
-        ModelResourceRequest<DateTimeOffset>,
-        DateTimeOffset,
-        ModelResponse
-    >
+) : BeamOsModelResourceBaseEndpoint<DateTimeOffset, ModelResponse>
 {
     public override async Task<Result<ModelResponse>> ExecuteRequestAsync(
         ModelResourceRequest<DateTimeOffset> req,

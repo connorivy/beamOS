@@ -13,10 +13,10 @@ namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.MomentLoads;
 internal class PutMomentLoadCommandHandler(
     IMomentLoadRepository momentLoadRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
-) : ICommandHandler<PutMomentLoadCommand, MomentLoadResponse>
+) : ICommandHandler<ModelResourceWithIntIdRequest<MomentLoadData>, MomentLoadResponse>
 {
     public async Task<Result<MomentLoadResponse>> ExecuteAsync(
-        PutMomentLoadCommand command,
+        ModelResourceWithIntIdRequest<MomentLoadData> command,
         CancellationToken ct = default
     )
     {
@@ -42,7 +42,12 @@ internal class BatchPutMomentLoadCommandHandler(
     protected override MomentLoad ToDomainObject(
         ModelId modelId,
         PutMomentLoadRequest putRequest
-    ) => new PutMomentLoadCommand(modelId, putRequest).ToDomainObject();
+    ) =>
+        new ModelResourceWithIntIdRequest<MomentLoadData>(
+            modelId,
+            putRequest.Id,
+            putRequest
+        ).ToDomainObject();
 }
 
 [Mapper]
@@ -50,27 +55,13 @@ internal class BatchPutMomentLoadCommandHandler(
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
 internal static partial class PutMomentLoadCommandMapper
 {
-    public static partial MomentLoad ToDomainObject(this PutMomentLoadCommand command);
+    [MapNestedProperties(nameof(ModelResourceWithIntIdRequest<>.Body))]
+    public static partial MomentLoad ToDomainObject(
+        this ModelResourceWithIntIdRequest<MomentLoadData> command
+    );
 
-    public static partial MomentLoadResponse ToResponse(this PutMomentLoadCommand command);
-}
-
-internal readonly struct PutMomentLoadCommand : IModelResourceWithIntIdRequest<MomentLoadData>
-{
-    public int Id { get; init; }
-    public Guid ModelId { get; init; }
-    public MomentLoadData Body { get; init; }
-    public int NodeId => this.Body.NodeId;
-    public int LoadCaseId => this.Body.LoadCaseId;
-    public TorqueContract Torque => this.Body.Torque;
-    public Contracts.Common.Vector3 AxisDirection => this.Body.AxisDirection;
-
-    public PutMomentLoadCommand() { }
-
-    public PutMomentLoadCommand(ModelId modelId, PutMomentLoadRequest putMomentLoadRequest)
-    {
-        this.Id = putMomentLoadRequest.Id;
-        this.ModelId = modelId;
-        this.Body = putMomentLoadRequest;
-    }
+    [MapNestedProperties(nameof(ModelResourceWithIntIdRequest<>.Body))]
+    public static partial MomentLoadResponse ToResponse(
+        this ModelResourceWithIntIdRequest<MomentLoadData> command
+    );
 }

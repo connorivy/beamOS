@@ -10,12 +10,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.SectionProfiles;
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 internal class AddSectionProfileFromLibrary(
     AddSectionProfileFromLibraryCommandHandler createSectionProfileFromLibraryCommandHandler
-)
-    : BeamOsModelResourceBaseEndpoint<
-        ModelResourceRequest<SectionProfileFromLibraryData>,
-        SectionProfileFromLibraryData,
-        SectionProfileResponse
-    >
+) : BeamOsModelResourceBaseEndpoint<SectionProfileFromLibraryData, SectionProfileResponse>
 {
     public override async Task<Result<SectionProfileResponse>> ExecuteRequestAsync(
         ModelResourceRequest<SectionProfileFromLibraryData> req,

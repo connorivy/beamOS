@@ -10,15 +10,10 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.LoadCombinations
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 internal class CreateLoadCombination(
     CreateLoadCombinationCommandHandler createLoadCombinationCommandHandler
-)
-    : BeamOsModelResourceBaseEndpoint<
-        CreateLoadCombinationCommand,
-        LoadCombinationData,
-        LoadCombinationContract
-    >
+) : BeamOsModelResourceBaseEndpoint<LoadCombinationData, LoadCombinationContract>
 {
     public override async Task<Result<LoadCombinationContract>> ExecuteRequestAsync(
-        CreateLoadCombinationCommand req,
+        ModelResourceRequest<LoadCombinationData> req,
         CancellationToken ct = default
     ) => await createLoadCombinationCommandHandler.ExecuteAsync(req, ct);
 }

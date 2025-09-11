@@ -12,10 +12,10 @@ namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.MomentLoads;
 internal class CreateMomentLoadCommandHandler(
     IMomentLoadRepository momentLoadRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
-) : ICommandHandler<CreateMomentLoadCommand, MomentLoadResponse>
+) : ICommandHandler<ModelResourceRequest<CreateMomentLoadRequest>, MomentLoadResponse>
 {
     public async Task<Result<MomentLoadResponse>> ExecuteAsync(
-        CreateMomentLoadCommand command,
+        ModelResourceRequest<CreateMomentLoadRequest> command,
         CancellationToken ct = default
     )
     {
@@ -32,18 +32,10 @@ internal class CreateMomentLoadCommandHandler(
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
 internal static partial class CreateMomentLoadCommandMapper
 {
-    public static partial MomentLoad ToDomainObject(this CreateMomentLoadCommand command);
+    [MapNestedProperties(nameof(ModelResourceRequest<>.Body))]
+    public static partial MomentLoad ToDomainObject(
+        this ModelResourceRequest<CreateMomentLoadRequest> command
+    );
 
     public static partial MomentLoadResponse ToResponse(this MomentLoad entity);
-}
-
-internal readonly struct CreateMomentLoadCommand : IModelResourceRequest<CreateMomentLoadRequest>
-{
-    public Guid ModelId { get; init; }
-    public CreateMomentLoadRequest Body { get; init; }
-    public int NodeId => this.Body.NodeId;
-    public int LoadCaseId => this.Body.LoadCaseId;
-    public TorqueContract Torque => this.Body.Torque;
-    public Contracts.Common.Vector3 AxisDirection => this.Body.AxisDirection;
-    public int? Id => this.Body.Id;
 }

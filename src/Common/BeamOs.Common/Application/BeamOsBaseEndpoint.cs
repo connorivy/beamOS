@@ -25,11 +25,11 @@ public abstract partial class BeamOsBaseEndpoint<TRequest, TResponse>
     /// <param name="ct"></param>
     /// <returns></returns>
 #pragma warning disable CA1822 // Mark members as static
-    internal TResponse GetResponseTypeForClientGenerationPurposes(
+    internal Task<TResponse> GetResponseTypeForClientGenerationPurposes(
 #pragma warning restore CA1822 // Mark members as static
     )
     {
-        return default!;
+        return Task.FromResult<TResponse>(default!);
     }
 
     public async Task<Result<TResponse>> ExecuteAsync(TRequest req, CancellationToken ct = default)
@@ -64,13 +64,11 @@ public abstract partial class BeamOsBaseEndpoint<TRequest, TResponse>
 public abstract partial class BeamOsFromBodyResultBaseEndpoint<TRequest, TResponse>
     : BeamOsBaseEndpoint<TRequest, TResponse> { }
 
-public abstract partial class BeamOsModelResourceBaseEndpoint<TCommand, TBody, TResponse>
-    : BeamOsBaseEndpoint<TCommand, TResponse>
-    where TCommand : IModelResourceRequest<TBody>, new() { }
+public abstract partial class BeamOsModelResourceBaseEndpoint<TRequest, TResponse>
+    : BeamOsBaseEndpoint<ModelResourceRequest<TRequest>, TResponse> { }
 
-public abstract partial class BeamOsModelResourceWithIntIdBaseEndpoint<TCommand, TBody, TResponse>
-    : BeamOsBaseEndpoint<TCommand, TResponse>
-    where TCommand : IModelResourceWithIntIdRequest<TBody>, new() { }
+public abstract partial class BeamOsModelResourceWithIntIdBaseEndpoint<TRequest, TResponse>
+    : BeamOsBaseEndpoint<ModelResourceWithIntIdRequest<TRequest>, TResponse> { }
 
-public abstract partial class BeamOsModelResourceWithIntIdBaseEndpoint<TBody, TResponse>
-    : BeamOsBaseEndpoint<ModelResourceWithIntIdRequest<TBody>, TResponse> { }
+// public abstract partial class BeamOsModelResourceWithIntIdBaseEndpoint<TBody, TResponse>
+//     : BeamOsBaseEndpoint<ModelResourceWithIntIdRequest<TBody>, TResponse> { }

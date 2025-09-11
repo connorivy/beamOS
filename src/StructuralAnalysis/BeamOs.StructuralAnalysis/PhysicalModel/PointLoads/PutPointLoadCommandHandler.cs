@@ -13,10 +13,10 @@ namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads;
 internal class PutPointLoadCommandHandler(
     IPointLoadRepository pointLoadRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
-) : ICommandHandler<PutPointLoadCommand, PointLoadResponse>
+) : ICommandHandler<ModelResourceWithIntIdRequest<PointLoadData>, PointLoadResponse>
 {
     public async Task<Result<PointLoadResponse>> ExecuteAsync(
-        PutPointLoadCommand command,
+        ModelResourceWithIntIdRequest<PointLoadData> command,
         CancellationToken ct = default
     )
     {
@@ -32,13 +32,19 @@ internal class BatchPutPointLoadCommandHandler(
     IPointLoadRepository pointLoadRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 )
-    : BatchPutCommandHandler<PointLoadId, PointLoad, BatchPutPointLoadCommand, PutPointLoadRequest>(
-        pointLoadRepository,
-        unitOfWork
-    )
+    : BatchPutCommandHandler<
+        PointLoadId,
+        PointLoad,
+        ModelResourceRequest<PutPointLoadRequest[]>,
+        PutPointLoadRequest
+    >(pointLoadRepository, unitOfWork)
 {
     protected override PointLoad ToDomainObject(ModelId modelId, PutPointLoadRequest putRequest) =>
-        new PutPointLoadCommand(modelId, putRequest).ToDomainObject();
+        new ModelResourceWithIntIdRequest<PointLoadData>(
+            modelId,
+            putRequest.Id,
+            putRequest
+        ).ToDomainObject();
 }
 
 [Mapper(PreferParameterlessConstructors = false)]
@@ -46,31 +52,8 @@ internal class BatchPutPointLoadCommandHandler(
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
 internal static partial class PutPointLoadCommandMapper
 {
-    public static partial PointLoad ToDomainObject(this PutPointLoadCommand command);
-}
-
-internal readonly struct PutPointLoadCommand : IModelResourceWithIntIdRequest<PointLoadData>
-{
-    public int Id { get; init; }
-    public Guid ModelId { get; init; }
-    public PointLoadData Body { get; init; }
-    public int NodeId => this.Body.NodeId;
-    public int LoadCaseId => this.Body.LoadCaseId;
-    public ForceContract Force => this.Body.Force;
-    public Contracts.Common.Vector3 Direction => this.Body.Direction;
-
-    public PutPointLoadCommand() { }
-
-    public PutPointLoadCommand(ModelId modelId, PutPointLoadRequest putPointLoadRequest)
-    {
-        this.Id = putPointLoadRequest.Id;
-        this.ModelId = modelId;
-        this.Body = putPointLoadRequest;
-    }
-}
-
-internal readonly struct BatchPutPointLoadCommand : IModelResourceRequest<PutPointLoadRequest[]>
-{
-    public Guid ModelId { get; init; }
-    public PutPointLoadRequest[] Body { get; init; }
+    [MapNestedProperties(nameof(ModelResourceWithIntIdRequest<>.Body))]
+    public static partial PointLoad ToDomainObject(
+        this ModelResourceWithIntIdRequest<PointLoadData> command
+    );
 }

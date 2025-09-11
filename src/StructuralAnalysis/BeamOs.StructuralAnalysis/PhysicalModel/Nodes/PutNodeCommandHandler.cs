@@ -15,10 +15,10 @@ internal class PutNodeCommandHandler(
     // INodeRepository nodeRepository,
     INodeDefinitionRepository nodeDefinitionRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
-) : ICommandHandler<PutNodeCommand, NodeResponse>
+) : ICommandHandler<ModelResourceWithIntIdRequest<NodeData>, NodeResponse>
 {
     public async Task<Result<NodeResponse>> ExecuteAsync(
-        PutNodeCommand command,
+        ModelResourceWithIntIdRequest<NodeData> command,
         CancellationToken ct = default
     )
     {
@@ -53,11 +53,18 @@ internal sealed class PutInternalNodeCommandHandler(
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
 internal static partial class PutNodeCommandMapper
 {
-    public static partial Node ToDomainObject(this PutNodeCommand command);
+    [MapNestedProperties(nameof(ModelResourceWithIntIdRequest<>.Body))]
+    public static partial Node ToDomainObject(this ModelResourceWithIntIdRequest<NodeData> command);
 
-    public static partial NodeResponse ToResponse(this PutNodeCommand command);
+    [MapNestedProperties(nameof(ModelResourceWithIntIdRequest<>.Body))]
+    public static partial NodeResponse ToResponse(
+        this ModelResourceWithIntIdRequest<NodeData> command
+    );
 
-    public static partial PutNodeRequest ToRequest(this PutNodeCommand command);
+    [MapNestedProperties(nameof(ModelResourceWithIntIdRequest<>.Body))]
+    public static partial PutNodeRequest ToRequest(
+        this ModelResourceWithIntIdRequest<NodeData> command
+    );
 
     [MapNestedProperties(nameof(ModelResourceRequest<>.Body))]
     public static partial InternalNode ToDomainObject(
@@ -68,23 +75,4 @@ internal static partial class PutNodeCommandMapper
     public static partial InternalNode ToDomainObject(
         this ModelResourceRequest<InternalNodeContract> command
     );
-}
-
-internal readonly struct PutNodeCommand : IModelResourceWithIntIdRequest<NodeData>
-{
-    public int Id { get; init; }
-    public Guid ModelId { get; init; }
-    public NodeData Body { get; init; }
-    public PointContract LocationPoint => this.Body.LocationPoint;
-    public RestraintContract? Restraint => this.Body.Restraint;
-
-    public PutNodeCommand() { }
-
-    [SetsRequiredMembers]
-    public PutNodeCommand(Guid modelId, PutNodeRequest putNodeRequest)
-    {
-        this.Id = putNodeRequest.Id;
-        this.ModelId = modelId;
-        this.Body = putNodeRequest;
-    }
 }

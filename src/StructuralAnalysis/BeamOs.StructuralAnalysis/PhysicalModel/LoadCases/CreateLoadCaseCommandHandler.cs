@@ -10,10 +10,10 @@ namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCases;
 internal class CreateLoadCaseCommandHandler(
     ILoadCaseRepository element1dRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
-) : ICommandHandler<CreateLoadCaseCommand, LoadCaseContract>
+) : ICommandHandler<ModelResourceRequest<LoadCaseData>, LoadCaseContract>
 {
     public async Task<Result<LoadCaseContract>> ExecuteAsync(
-        CreateLoadCaseCommand command,
+        ModelResourceRequest<LoadCaseData> command,
         CancellationToken ct = default
     )
     {
@@ -30,22 +30,17 @@ internal class CreateLoadCaseCommandHandler(
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
 internal static partial class CreateLoadCaseCommandMapper
 {
+    [MapNestedProperties(nameof(ModelResourceRequest<>.Body))]
     public static partial Domain.PhysicalModel.LoadCases.LoadCase ToDomainObject(
-        this CreateLoadCaseCommand command
+        this ModelResourceRequest<LoadCaseData> command
     );
 
     public static partial LoadCaseContract ToResponse(
         this Domain.PhysicalModel.LoadCases.LoadCase entity
     );
 
+    [MapNestedProperties(nameof(ModelResourceRequest<>.Body))]
     public static partial Domain.PhysicalModel.LoadCases.LoadCase ToDomainObject(
-        this PutLoadCaseCommand entity
+        this ModelResourceWithIntIdRequest<LoadCaseData> entity
     );
-}
-
-internal readonly struct CreateLoadCaseCommand : IModelResourceRequest<LoadCaseData>
-{
-    public Guid ModelId { get; init; }
-    public LoadCaseData Body { get; init; }
-    public string Name => this.Body.Name;
 }

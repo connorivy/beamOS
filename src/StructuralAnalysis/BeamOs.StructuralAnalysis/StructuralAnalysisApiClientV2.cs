@@ -153,7 +153,7 @@ internal sealed class StructuralAnalysisApiClientV2 : IStructuralAnalysisApiClie
     ) => apiClientV1.CreatePointLoadAsync(request.ModelId, request.Body, ct);
 
     public Task<ApiResponse<SectionProfileResponse>> CreateSectionProfile(
-        CreateSectionProfileCommand request,
+        Application.PhysicalModel.SectionProfiles.CreateSectionProfileRequest request,
         CancellationToken ct = default
     ) => apiClientV1.CreateSectionProfileAsync(request.ModelId, request.Body, ct);
 
