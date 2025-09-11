@@ -33,6 +33,10 @@ builder.Services.AddObjectThatExtendsBase<IAssemblyMarkerAi>(
     typeof(BeamOsBaseEndpoint<,>),
     ServiceLifetime.Scoped
 );
+builder.Services.AddObjectThatExtendsBase<IAssemblyMarkerStructuralAnalysisApiEndpoints>(
+    typeof(BeamOsBaseEndpoint<,>),
+    ServiceLifetime.Scoped
+);
 
 builder.Services.AddLogging(b =>
 {

@@ -52,12 +52,12 @@ public abstract class FluentApiClassGeneratorBase(string apiClientName, string c
         sb.AppendLine();
         sb.AppendLine($"public class {apiClientName}");
         sb.AppendLine("{");
-        sb.AppendLine("    protected IStructuralAnalysisApiClientV2 ProtectedClient { get; }");
+        sb.AppendLine("    internal IStructuralAnalysisApiClientV2 InternalClient { get; }");
         sb.AppendLine();
         sb.AppendLine($"    public {apiClientName}(IStructuralAnalysisApiClientV2 apiClient)");
         sb.AppendLine("    {");
         sb.AppendLine(
-            "        ProtectedClient = apiClient ?? throw new ArgumentNullException(nameof(apiClient));"
+            "        InternalClient = apiClient ?? throw new ArgumentNullException(nameof(apiClient));"
         );
         sb.AppendLine("    }");
         sb.AppendLine();
@@ -67,7 +67,7 @@ public abstract class FluentApiClassGeneratorBase(string apiClientName, string c
         {
             var className = this.GetUniqueClassName(rootSegment.Name, [apiClientName]);
             sb.AppendLine(
-                $"    public {className} {ToCSharpCase(rootSegment.Name)} => new {className}(ProtectedClient);"
+                $"    public {className} {ToCSharpCase(rootSegment.Name)} => new {className}(InternalClient);"
             );
         }
 
@@ -129,7 +129,7 @@ public abstract class FluentApiClassGeneratorBase(string apiClientName, string c
             .Select(p =>
                 $"{p.ParameterType ?? throw new InvalidOperationException($"Parameter type is required for parameter segment '{p.Name}'")} {p.Name}"
             )
-            .Prepend($"IStructuralAnalysisApiClientV2 ProtectedClient");
+            .Prepend($"IStructuralAnalysisApiClientV2 InternalClient");
 
         sb.AppendLine($"public class {className}({string.Join(", ", ctorArgs)})");
         sb.AppendLine("{");
@@ -140,7 +140,7 @@ public abstract class FluentApiClassGeneratorBase(string apiClientName, string c
             .Append(segment)
             .Where(p => p.IsParameter)
             .Select(p => p.Name)
-            .Prepend("ProtectedClient")
+            .Prepend("InternalClient")
             .ToArray();
         foreach (var child in segment.Children.Values)
         {
@@ -352,7 +352,7 @@ public sealed class ResultApiClassGenerator(string apiClientName, string classNa
             )}})
     {
         {{requestAssignment}}
-        return ProtectedClient.{{method.Name}}(request_, ct);
+        return InternalClient.{{method.Name}}(request_, ct);
     }
 """;
     }
@@ -407,7 +407,7 @@ public sealed class ThrowingApiClassGenerator(string apiClientName, string class
             )}})
     {
         {{requestAssignment}}
-        var result = await ProtectedClient.{{method.Name}}(request_, ct);
+        var result = await InternalClient.{{method.Name}}(request_, ct);
         result.ThrowIfError();
         return result.Value!;
     }
@@ -418,7 +418,7 @@ public sealed class ThrowingApiClassGenerator(string apiClientName, string class
             )}})
     {
         {{requestAssignment}}
-        var result = ProtectedClient.{{method.Name}}(request_, CancellationToken.None).GetAwaiter().GetResult();
+        var result = InternalClient.{{method.Name}}(request_, CancellationToken.None).GetAwaiter().GetResult();
         result.ThrowIfError();
         return result.Value!;
     }

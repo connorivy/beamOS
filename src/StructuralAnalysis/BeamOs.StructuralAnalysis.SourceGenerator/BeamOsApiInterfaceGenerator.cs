@@ -27,6 +27,11 @@ public class BeamOsApiInterfaceGenerator : IIncrementalGenerator
                 Logger.Context = spc;
                 try
                 {
+                    if (source.Right.IsDefaultOrEmpty)
+                    {
+                        // nothing to do yet
+                        return;
+                    }
                     CreateApiInterface(spc, source);
                 }
                 catch (Exception ex)

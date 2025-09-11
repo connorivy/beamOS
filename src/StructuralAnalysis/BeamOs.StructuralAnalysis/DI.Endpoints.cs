@@ -25,16 +25,16 @@ public static class DependencyInjection
 
     public static IServiceCollection AddStructuralAnalysisApi(this IServiceCollection services)
     {
-        services.AddObjectThatExtendsBase<IAssemblyMarkerStructuralAnalysisApiEndpoints>(
-            typeof(BeamOsBaseEndpoint<,>),
-            ServiceLifetime.Scoped
-        );
+        // services.AddObjectThatExtendsBase<IAssemblyMarkerStructuralAnalysisApiEndpoints>(
+        //     typeof(BeamOsBaseEndpoint<,>),
+        //     ServiceLifetime.Scoped
+        // );
 
-        services.AddObjectThatImplementInterface<IAssemblyMarkerStructuralAnalysisApiEndpoints>(
-            typeof(ICommandHandler<,>),
-            ServiceLifetime.Scoped,
-            false
-        );
+        // services.AddObjectThatImplementInterface<IAssemblyMarkerStructuralAnalysisApiEndpoints>(
+        //     typeof(ICommandHandler<,>),
+        //     ServiceLifetime.Scoped,
+        //     false
+        // );
 
         // required for the speckle connector
         services.AddScoped<

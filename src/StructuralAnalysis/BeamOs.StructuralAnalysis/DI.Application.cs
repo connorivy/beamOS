@@ -1,5 +1,6 @@
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.SystemOperations;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,16 +13,18 @@ public static class DependencyInjection
         this IServiceCollection services
     )
     {
-        services.AddObjectThatImplementInterface<IAssemblyMarkerStructuralAnalysisApplication>(
-            typeof(ICommandHandler<,>),
-            ServiceLifetime.Scoped,
-            false
-        );
-        services.AddObjectThatImplementInterface<IAssemblyMarkerStructuralAnalysisApplication>(
-            typeof(IQueryHandler<,>),
-            ServiceLifetime.Scoped,
-            false
-        );
+        services.AddBeamOsServices();
+        services.AddScoped<InMemoryModelRepositoryStorage>();
+        // services.AddObjectThatImplementInterface<IAssemblyMarkerStructuralAnalysisApplication>(
+        //     typeof(ICommandHandler<,>),
+        //     ServiceLifetime.Scoped,
+        //     false
+        // );
+        // services.AddObjectThatImplementInterface<IAssemblyMarkerStructuralAnalysisApplication>(
+        //     typeof(IQueryHandler<,>),
+        //     ServiceLifetime.Scoped,
+        //     false
+        // );
         return services;
     }
 

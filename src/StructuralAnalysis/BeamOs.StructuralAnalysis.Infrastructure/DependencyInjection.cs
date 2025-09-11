@@ -67,11 +67,12 @@ public static class DependencyInjection
 
         _ = services.AddScoped<IStructuralAnalysisUnitOfWork, UnitOfWork>();
 
-        services.AddObjectThatImplementInterface<IAssemblyMarkerInfrastructure>(
-            typeof(IQueryHandler<,>),
-            ServiceLifetime.Scoped,
-            false
-        );
+        services.AddBeamOsServices();
+        // services.AddObjectThatImplementInterface<IAssemblyMarkerInfrastructure>(
+        //     typeof(IQueryHandler<,>),
+        //     ServiceLifetime.Scoped,
+        //     false
+        // );
 
         return services;
     }

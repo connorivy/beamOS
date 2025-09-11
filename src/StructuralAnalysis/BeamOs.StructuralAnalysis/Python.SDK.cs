@@ -46,18 +46,24 @@ public static class ApiClientFactory
 }
 
 // [DotWrapExpose]
-public sealed class BeamOsApiClient(IStructuralAnalysisApiClientV2 apiClient)
-    : BeamOsFluentApiClient(apiClient)
+public sealed class BeamOsApiClient : BeamOsFluentApiClient
 // IDisposable
 {
-    internal IStructuralAnalysisApiClientV2 InternalClient => this.ProtectedClient;
+    internal BeamOsApiClient(IStructuralAnalysisApiClientV2 apiClient)
+        : base(apiClient) { }
+
+    public BeamOsApiClient(HttpClient httpClient)
+        : base(new StructuralAnalysisApiClientV2(httpClient)) { }
 
     // public void Dispose()
 }
 
 // [DotWrapExpose]
-public sealed class BeamOsResultApiClient(IStructuralAnalysisApiClientV2 apiClient)
-    : BeamOsFluentResultApiClient(apiClient)
+public sealed class BeamOsResultApiClient : BeamOsFluentResultApiClient
 {
-    internal IStructuralAnalysisApiClientV2 InternalClient => this.ProtectedClient;
+    internal BeamOsResultApiClient(IStructuralAnalysisApiClientV2 apiClient)
+        : base(apiClient) { }
+
+    public BeamOsResultApiClient(HttpClient httpClient)
+        : base(new StructuralAnalysisApiClientV2(httpClient)) { }
 }
