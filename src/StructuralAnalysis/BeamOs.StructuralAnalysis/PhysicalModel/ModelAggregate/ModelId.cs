@@ -3,7 +3,7 @@ using BeamOs.Common.Domain.Models;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
-public readonly record struct ModelId
+internal readonly record struct ModelId
 {
     public Guid Id { get; }
 
@@ -20,7 +20,7 @@ public readonly record struct ModelId
     public static implicit operator ModelId(Guid id) => new(id);
 }
 
-public readonly record struct ModelProposalId : IIntBasedId
+internal readonly record struct ModelProposalId : IIntBasedId
 {
     public int Id { get; init; }
 
@@ -36,7 +36,7 @@ public readonly record struct ModelProposalId : IIntBasedId
     public override string ToString() => this.Id.ToString(CultureInfo.InvariantCulture);
 }
 
-public readonly record struct ProposalIssueId : IIntBasedId
+internal readonly record struct ProposalIssueId : IIntBasedId
 {
     public int Id { get; init; }
 
@@ -52,7 +52,7 @@ public readonly record struct ProposalIssueId : IIntBasedId
     public override string ToString() => this.Id.ToString(CultureInfo.InvariantCulture);
 }
 
-public readonly record struct ModelEntityDeleteProposalId : IIntBasedId
+internal readonly record struct ModelEntityDeleteProposalId : IIntBasedId
 {
     public int Id { get; init; }
 

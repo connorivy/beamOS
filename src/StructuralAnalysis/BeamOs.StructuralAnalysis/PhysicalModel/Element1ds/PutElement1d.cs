@@ -9,7 +9,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Element1ds;
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "element1ds/{id:int}")]
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-public class PutElement1d(PutElement1dCommandHandler putElement1dCommandHandler)
+internal class PutElement1d(PutElement1dCommandHandler putElement1dCommandHandler)
     : BeamOsModelResourceWithIntIdBaseEndpoint<
         PutElement1dCommand,
         Element1dData,
@@ -25,7 +25,7 @@ public class PutElement1d(PutElement1dCommandHandler putElement1dCommandHandler)
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "element1ds")]
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-public class BatchPutElement1d(BatchPutElement1dCommandHandler putElement1dCommandHandler)
+internal class BatchPutElement1d(BatchPutElement1dCommandHandler putElement1dCommandHandler)
     : BeamOsModelResourceBaseEndpoint<
         BatchPutElement1dCommand,
         PutElement1dRequest[],

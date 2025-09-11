@@ -8,7 +8,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 
-public class PatchNodeCommandHandler(
+internal class PatchNodeCommandHandler(
     INodeRepository nodeRepository,
     // INodeDefinitionRepository nodeRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
@@ -55,7 +55,7 @@ public class PatchNodeCommandHandler(
     }
 }
 
-public readonly struct PatchNodeCommand : IModelResourceRequest<UpdateNodeRequest>
+internal readonly struct PatchNodeCommand : IModelResourceRequest<UpdateNodeRequest>
 {
     public Guid ModelId { get; init; }
     public UpdateNodeRequest Body { get; init; }

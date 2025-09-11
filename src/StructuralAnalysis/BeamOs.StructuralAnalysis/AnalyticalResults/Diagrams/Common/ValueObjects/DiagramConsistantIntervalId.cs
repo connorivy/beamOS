@@ -3,7 +3,7 @@ using BeamOs.Common.Domain.Models;
 
 namespace BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.Common.ValueObjects;
 
-public readonly record struct DiagramConsistantIntervalId : IIntBasedId
+internal readonly record struct DiagramConsistantIntervalId : IIntBasedId
 {
     public int Id { get; init; }
 

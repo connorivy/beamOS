@@ -3,7 +3,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
-public class AlignBeamsIntoPlaneOfColumns(ModelRepairContext context)
+internal class AlignBeamsIntoPlaneOfColumns(ModelRepairContext context)
     : BeamOrBraceVisitingRule(context)
 {
     public override ModelRepairRuleType RuleType => ModelRepairRuleType.Standard;

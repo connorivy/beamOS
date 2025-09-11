@@ -3,7 +3,7 @@ using BeamOs.Common.Domain.Models;
 
 namespace BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.MomentDiagramAggregate.ValueObjects;
 
-public readonly record struct MomentDiagramId : IIntBasedId
+internal readonly record struct MomentDiagramId : IIntBasedId
 {
     public int Id { get; init; }
 

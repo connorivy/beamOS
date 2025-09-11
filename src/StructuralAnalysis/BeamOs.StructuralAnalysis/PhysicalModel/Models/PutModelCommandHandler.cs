@@ -5,7 +5,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 
-public class PutModelCommandHandler(
+internal class PutModelCommandHandler(
     IModelRepository modelRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<ModelResourceRequest<ModelInfoData>, ModelResponse>

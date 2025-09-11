@@ -8,7 +8,7 @@ using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.StructuralAnalysis.Application.AnalyticalResults.NodeResults;
 
-public class GetNodeResultQueryHandler(INodeResultRepository nodeResultRepository)
+internal class GetNodeResultQueryHandler(INodeResultRepository nodeResultRepository)
     : IQueryHandler<GetAnalyticalResultResourceQuery, NodeResultResponse>
 {
     public async Task<Result<NodeResultResponse>> ExecuteAsync(
@@ -36,7 +36,7 @@ public class GetNodeResultQueryHandler(INodeResultRepository nodeResultRepositor
     }
 }
 
-public class GetNodeResultsQueryHandler(INodeResultRepository nodeResultRepository)
+internal class GetNodeResultsQueryHandler(INodeResultRepository nodeResultRepository)
     : IQueryHandler<GetAnalyticalResultQuery, IDictionary<int, NodeResultResponse>>
 {
     public async Task<Result<IDictionary<int, NodeResultResponse>>> ExecuteAsync(

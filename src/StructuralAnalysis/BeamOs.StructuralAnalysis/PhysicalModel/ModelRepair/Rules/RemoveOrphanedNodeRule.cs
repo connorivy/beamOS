@@ -3,7 +3,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair.Rules;
 
-public class RemoveOrphanedNodeRule(ModelRepairContext context) : IModelRepairRule
+internal class RemoveOrphanedNodeRule(ModelRepairContext context) : IModelRepairRule
 {
     public ModelRepairRuleType RuleType => ModelRepairRuleType.Favorable;
 

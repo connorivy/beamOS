@@ -10,7 +10,7 @@ using UnitsNet.Units;
 
 namespace BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 
-public class TimoshenkoDsmElement1d(
+internal class TimoshenkoDsmElement1d(
     Element1dId element1dId,
     Angle sectionProfileRotation,
     Pressure modulusOfElasticity,

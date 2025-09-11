@@ -8,7 +8,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.SystemOperations;
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "restore")]
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-public class ModelRestore(
+internal class ModelRestore(
     ICommandHandler<ModelResourceRequest<DateTimeOffset>, ModelResponse> commandHandler
 )
     : BeamOsModelResourceBaseEndpoint<

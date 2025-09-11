@@ -2,7 +2,7 @@ using BeamOs.StructuralAnalysis.Contracts.Common;
 
 namespace BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 
-public static partial class UnitsNetMappers
+internal static partial class UnitsNetMappers
 {
     public static partial AngleUnit MapToAngleUnit(this string unit);
 

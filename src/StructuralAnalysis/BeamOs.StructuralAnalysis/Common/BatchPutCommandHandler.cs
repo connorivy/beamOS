@@ -7,7 +7,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.Common;
 
-public abstract class BatchPutCommandHandler<TId, TEntity, TBatchPutCommand, TPutRequest>(
+internal abstract class BatchPutCommandHandler<TId, TEntity, TBatchPutCommand, TPutRequest>(
     IModelResourceRepositoryIn<TId, TEntity> repository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<TBatchPutCommand, BatchResponse>

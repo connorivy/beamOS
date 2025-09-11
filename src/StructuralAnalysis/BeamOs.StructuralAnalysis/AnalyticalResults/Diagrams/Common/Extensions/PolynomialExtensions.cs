@@ -2,7 +2,7 @@ using MathNet.Numerics;
 
 namespace BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.Common.Extensions;
 
-public static class PolynomialExtensions
+internal static class PolynomialExtensions
 {
     public static Func<double, double> ToFunc(this Polynomial poly)
     {

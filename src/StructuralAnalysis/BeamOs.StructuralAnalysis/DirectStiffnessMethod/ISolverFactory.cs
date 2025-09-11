@@ -5,12 +5,12 @@ using CSparse.Storage;
 
 namespace BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 
-public interface ISolverFactory
+internal interface ISolverFactory
 {
     public ISolver<double> GetSolver(CompressedColumnStorage<double> matrix);
 }
 
-public sealed class PardisoSolverFactory : ISolverFactory
+internal sealed class PardisoSolverFactory : ISolverFactory
 {
     public ISolver<double> GetSolver(CompressedColumnStorage<double> matrix)
     {
@@ -18,7 +18,7 @@ public sealed class PardisoSolverFactory : ISolverFactory
     }
 }
 
-public sealed class CholeskySolverFactory : ISolverFactory
+internal sealed class CholeskySolverFactory : ISolverFactory
 {
     public ISolver<double> GetSolver(CompressedColumnStorage<double> matrix)
     {

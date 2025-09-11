@@ -3,10 +3,10 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinations;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCombinations;
 
-public interface ILoadCombinationRepository
+internal interface ILoadCombinationRepository
     : IModelResourceRepository<LoadCombinationId, LoadCombination> { }
 
-public sealed class InMemoryLoadCombinationRepository(
+internal sealed class InMemoryLoadCombinationRepository(
     InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage
 )
     : InMemoryModelResourceRepository<LoadCombinationId, LoadCombination>(

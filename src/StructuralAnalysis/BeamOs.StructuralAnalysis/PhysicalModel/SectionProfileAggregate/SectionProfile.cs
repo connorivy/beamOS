@@ -6,7 +6,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 
-public class SectionProfile : SectionProfileInfoBase, IHasStrongAxisPlasticSectionModulus
+internal class SectionProfile : SectionProfileInfoBase, IHasStrongAxisPlasticSectionModulus
 {
     public SectionProfile(
         ModelId modelId,
@@ -155,7 +155,7 @@ public class SectionProfile : SectionProfileInfoBase, IHasStrongAxisPlasticSecti
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }
 
-public abstract class SectionProfileProposalInfoBase
+internal abstract class SectionProfileProposalInfoBase
     : BeamOsModelProposalEntity<SectionProfileProposalId, SectionProfileId>
 {
     public SectionProfileProposalInfoBase(
@@ -180,7 +180,7 @@ public abstract class SectionProfileProposalInfoBase
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }
 
-public sealed class SectionProfileProposal : SectionProfileProposalInfoBase
+internal sealed class SectionProfileProposal : SectionProfileProposalInfoBase
 {
     public SectionProfileProposal(
         ModelId modelId,
@@ -269,7 +269,7 @@ public sealed class SectionProfileProposal : SectionProfileProposalInfoBase
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }
 
-public sealed class SectionProfileProposalFromLibrary : SectionProfileProposalInfoBase
+internal sealed class SectionProfileProposalFromLibrary : SectionProfileProposalInfoBase
 {
     public SectionProfileProposalFromLibrary(
         ModelId modelId,

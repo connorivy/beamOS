@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BeamOs.StructuralAnalysis.Application;
 
-public static class DependencyInjection
+internal static class DependencyInjection
 {
     public static IServiceCollection AddStructuralAnalysisApplicationRequired(
         this IServiceCollection services

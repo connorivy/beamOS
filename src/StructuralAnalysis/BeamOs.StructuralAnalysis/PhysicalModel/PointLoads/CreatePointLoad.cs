@@ -8,7 +8,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.PointLoads;
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "point-loads")]
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-public class CreatePointLoad(CreatePointLoadCommandHandler createPointLoadCommandHandler)
+internal class CreatePointLoad(CreatePointLoadCommandHandler createPointLoadCommandHandler)
     : BeamOsModelResourceBaseEndpoint<
         CreatePointLoadCommand,
         CreatePointLoadRequest,

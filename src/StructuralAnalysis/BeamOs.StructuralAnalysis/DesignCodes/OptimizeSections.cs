@@ -8,7 +8,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.OpenSees;
 // [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "analyze/optimize-sections")]
 // [BeamOsEndpointType(Http.Post)]
 // [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-// public class OptimizeSections() : BeamOsBaseEndpoint<ModelIdRequest, AnalyticalResultsResponse>
+// internal class OptimizeSections() : BeamOsBaseEndpoint<ModelIdRequest, AnalyticalResultsResponse>
 // {
 //     public override async Task<Result<AnalyticalResultsResponse>> ExecuteRequestAsync(
 //         ModelIdRequest req,

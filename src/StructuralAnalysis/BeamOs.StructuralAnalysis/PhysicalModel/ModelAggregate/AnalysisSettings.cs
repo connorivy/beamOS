@@ -1,8 +1,8 @@
-﻿using BeamOs.Common.Domain.Models;
+using BeamOs.Common.Domain.Models;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
-public class AnalysisSettings(Element1dAnalysisType element1DAnalysisType) : BeamOSValueObject
+internal class AnalysisSettings(Element1dAnalysisType element1DAnalysisType) : BeamOSValueObject
 {
     public AnalysisSettings()
         : this(Element1dAnalysisType.Timoshenko) { }

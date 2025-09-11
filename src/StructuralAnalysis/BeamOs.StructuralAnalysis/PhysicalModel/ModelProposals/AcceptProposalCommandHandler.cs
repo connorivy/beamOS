@@ -15,7 +15,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 
-public class AcceptModelProposalCommandHandler(
+internal class AcceptModelProposalCommandHandler(
     IModelProposalRepository modelProposalRepository,
     INodeDefinitionRepository nodeRepository,
     IMaterialRepository materialRepository,
@@ -285,7 +285,7 @@ public class AcceptModelProposalCommandHandler(
     }
 }
 
-public class RejectModelProposalCommandHandler(
+internal class RejectModelProposalCommandHandler(
     IModelProposalRepository modelProposalRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<IModelEntity, bool>

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BeamOs.StructuralAnalysis.Domain.Common;
 
 [PrimaryKey(nameof(Id), nameof(ModelId))]
-public class BeamOsModelEntity<TId> : BeamOsEntity<TId>, IBeamOsModelEntity
+internal class BeamOsModelEntity<TId> : BeamOsEntity<TId>, IBeamOsModelEntity
     where TId : struct, IIntBasedId
 {
     public BeamOsModelEntity(TId id, ModelId modelId)
@@ -26,7 +26,7 @@ public class BeamOsModelEntity<TId> : BeamOsEntity<TId>, IBeamOsModelEntity
     public void SetIntId(int value) => this.Id = new TId() { Id = value };
 }
 
-public interface IBeamOsModelEntity
+internal interface IBeamOsModelEntity
 {
     public ModelId ModelId { get; }
     public Model? Model { get; }
@@ -35,7 +35,7 @@ public interface IBeamOsModelEntity
 }
 
 [PrimaryKey(nameof(Id), nameof(ResultSetId), nameof(ModelId))]
-public class BeamOsAnalyticalResultEntity<TId> : BeamOsModelEntity<TId>
+internal class BeamOsAnalyticalResultEntity<TId> : BeamOsModelEntity<TId>
     where TId : struct, IIntBasedId
 {
     public BeamOsAnalyticalResultEntity(TId id, ResultSetId resultSetId, ModelId modelId)
@@ -53,7 +53,7 @@ public class BeamOsAnalyticalResultEntity<TId> : BeamOsModelEntity<TId>
 }
 
 [PrimaryKey(nameof(Id), nameof(ModelProposalId), nameof(ModelId))]
-public abstract class BeamOsModelProposalEntity<TId, TModelEntityId> : BeamOsEntity<TId>
+internal abstract class BeamOsModelProposalEntity<TId, TModelEntityId> : BeamOsEntity<TId>
     where TId : struct
     where TModelEntityId : struct
 {

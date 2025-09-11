@@ -13,7 +13,7 @@ using UnitsNet.Units;
 
 namespace BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 
-public sealed class DsmAnalysisModel(
+internal sealed class DsmAnalysisModel(
     ModelId modelId,
     UnitSettings unitSettings,
     DsmElement1d[] dsmElement1Ds,
@@ -367,13 +367,13 @@ public sealed class DsmAnalysisModel(
     }
 }
 
-public record AnalysisResults
+internal record AnalysisResults
 {
     public required ResultSet ResultSet { get; init; }
     public required OtherAnalyticalResults OtherAnalyticalResults { get; init; }
 }
 
-public record OtherAnalyticalResults
+internal record OtherAnalyticalResults
 {
     public required ResultSetId Id { get; init; }
     public required ModelId ModelId { get; init; }
@@ -383,7 +383,7 @@ public record OtherAnalyticalResults
     public required GlobalStresses GlobalStresses { get; init; }
 }
 
-public readonly record struct GlobalStresses
+internal readonly record struct GlobalStresses
 {
     public required Force MaxShear { get; init; }
     public required Force MinShear { get; init; }

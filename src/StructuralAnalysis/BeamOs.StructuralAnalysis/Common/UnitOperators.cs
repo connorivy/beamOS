@@ -2,7 +2,7 @@ using UnitsNet.Units;
 
 namespace BeamOs.StructuralAnalysis.Application.Common;
 
-public static class UnitOperators
+internal static class UnitOperators
 {
     public static AreaUnit ToArea(this LengthUnit lengthUnit)
     {

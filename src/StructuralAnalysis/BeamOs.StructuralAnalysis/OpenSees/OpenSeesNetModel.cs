@@ -1,6 +1,6 @@
 namespace BeamOs.StructuralAnalysis.Domain.OpenSees;
 
-public class OpenSeesNetModel
+internal class OpenSeesNetModel
 {
     public static string ElasticBeamColumn(
         int id,
@@ -41,7 +41,7 @@ public class OpenSeesNetModel
         $"element ElasticTimoshenkoBeam {id} {node1Id} {node2Id} {modulusOfElasticity} {shearModulus} {area} {torsionalMoment} {strongAxisMoment} {weakAxisMoment} {strongAxisShearArea} {weakAxisShearArea} {transformId}";
 }
 
-//public readonly ref struct ElasticBeamColumnElementParameters
+//internal readonly ref struct ElasticBeamColumnElementParameters
 //{
 //    public string ElementTag { get; init; }
 //    public Span<int> NodeIds { get; init; }

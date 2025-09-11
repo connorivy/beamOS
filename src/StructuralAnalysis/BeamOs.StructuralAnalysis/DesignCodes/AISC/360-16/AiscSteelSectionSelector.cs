@@ -7,7 +7,7 @@ using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Domain.DesignCodes.AISC._360_16;
 
-public class AiscSteelSectionSelector<TSectionProfile, TMaterial> : SectionSelectorBase
+internal class AiscSteelSectionSelector<TSectionProfile, TMaterial> : SectionSelectorBase
     where TSectionProfile : SectionProfile, IHasWebArea, IHasStrongAxisPlasticSectionModulus
     where TMaterial : ISteelMaterial
 {
@@ -120,7 +120,7 @@ public class AiscSteelSectionSelector<TSectionProfile, TMaterial> : SectionSelec
     }
 }
 
-public interface ISteelMaterial
+internal interface ISteelMaterial
 {
     public Pressure YieldStrength { get; }
     public Pressure UltimateStrength { get; }
@@ -129,7 +129,7 @@ public interface ISteelMaterial
     public Pressure PoissonRatio { get; }
 }
 
-public interface IHasWebArea
+internal interface IHasWebArea
 {
     /// <summary>
     /// The area of the web of the section profile.
@@ -137,7 +137,7 @@ public interface IHasWebArea
     public Area Aw { get; }
 }
 
-public interface IHasStrongAxisPlasticSectionModulus
+internal interface IHasStrongAxisPlasticSectionModulus
 {
     /// <summary>
     /// The strong axis plastic section modulus of the section profile.
@@ -145,7 +145,7 @@ public interface IHasStrongAxisPlasticSectionModulus
     public Volume StrongAxisPlasticSectionModulus { get; }
 }
 
-public class AiscSteelSelectionResult
+internal class AiscSteelSelectionResult
 {
     public AiscSteelSelectionResult(
         SectionProfile sectionProfile,

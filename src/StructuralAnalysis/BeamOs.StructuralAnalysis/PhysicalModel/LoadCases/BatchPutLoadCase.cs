@@ -11,7 +11,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.LoadCases;
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "load-cases")]
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-public class BatchPutLoadCase(BatchPutLoadCaseCommandHandler putLoadCaseCommandHandler)
+internal class BatchPutLoadCase(BatchPutLoadCaseCommandHandler putLoadCaseCommandHandler)
     : BeamOsModelResourceBaseEndpoint<BatchPutLoadCaseCommand, LoadCaseContract[], BatchResponse>
 {
     public override async Task<Result<BatchResponse>> ExecuteRequestAsync(

@@ -3,7 +3,7 @@ using BeamOs.Common.Domain.Models;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
 
-public readonly record struct MomentLoadId : IIntBasedId
+internal readonly record struct MomentLoadId : IIntBasedId
 {
     public int Id { get; init; }
 

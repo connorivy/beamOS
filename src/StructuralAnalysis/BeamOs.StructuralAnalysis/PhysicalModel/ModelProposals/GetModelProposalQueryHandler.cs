@@ -6,7 +6,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 
-public sealed class GetModelProposalQueryHandler(
+internal sealed class GetModelProposalQueryHandler(
     IModelProposalRepository modelProposalRepository,
     IElement1dRepository element1DRepository
 ) : IQueryHandler<IModelEntity, ModelProposalResponse>
@@ -46,7 +46,7 @@ public sealed class GetModelProposalQueryHandler(
     }
 }
 
-public sealed class GetModelProposalsQueryHandler(IModelProposalRepository modelProposalRepository)
+internal sealed class GetModelProposalsQueryHandler(IModelProposalRepository modelProposalRepository)
     : IQueryHandler<Guid, ICollection<ModelProposalInfo>>
 {
     public async Task<Result<ICollection<ModelProposalInfo>>> ExecuteAsync(

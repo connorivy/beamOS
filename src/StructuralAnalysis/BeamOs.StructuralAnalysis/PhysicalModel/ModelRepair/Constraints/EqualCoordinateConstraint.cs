@@ -3,7 +3,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair.Constraints;
 
-public record EqualCoordinateConstraint(CoordinateSystemDirection3D CoordinateSystemDirection3d)
+internal record EqualCoordinateConstraint(CoordinateSystemDirection3D CoordinateSystemDirection3d)
     : IElementConstraint
 {
     public bool IsSatisfied(

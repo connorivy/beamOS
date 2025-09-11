@@ -5,7 +5,7 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod.Common.ValueObjects;
 
-public readonly record struct VectorIdentified
+internal readonly record struct VectorIdentified
     : IEnumerable<KeyValuePair<UnsupportedStructureDisplacementId, double>>
 {
     private readonly Dictionary<UnsupportedStructureDisplacementId, double> identifiers;
@@ -98,7 +98,7 @@ public readonly record struct VectorIdentified
     IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 }
 
-public readonly record struct VectorIdentifiedBase<TUnsupportedStructureDisplacementId2>
+internal readonly record struct VectorIdentifiedBase<TUnsupportedStructureDisplacementId2>
     : IEnumerable<KeyValuePair<TUnsupportedStructureDisplacementId2, double>>
     where TUnsupportedStructureDisplacementId2 : notnull
 {

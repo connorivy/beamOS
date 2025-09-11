@@ -8,7 +8,7 @@ using MathNet.Numerics;
 
 namespace BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.DiagramBaseAggregate;
 
-public abstract class DiagramBase<TId, TInterval> : BeamOsAnalyticalResultEntity<TId>
+internal abstract class DiagramBase<TId, TInterval> : BeamOsAnalyticalResultEntity<TId>
     where TId : struct, IIntBasedId
     where TInterval : DiagramConsistentInterval
 {

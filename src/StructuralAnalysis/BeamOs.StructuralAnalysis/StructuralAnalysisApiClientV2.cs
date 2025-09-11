@@ -25,7 +25,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints;
 
-public sealed class StructuralAnalysisApiClientV2 : IStructuralAnalysisApiClientV2
+internal sealed class StructuralAnalysisApiClientV2 : IStructuralAnalysisApiClientV2
 {
     private readonly StructuralAnalysisApiClientV1 apiClientV1;
 
@@ -93,7 +93,7 @@ public sealed class StructuralAnalysisApiClientV2 : IStructuralAnalysisApiClient
     ) => apiClientV1.BatchPutSectionProfileAsync(request.ModelId, request.Body, ct);
 
     public Task<ApiResponse<BatchResponse>> BatchPutSectionProfileFromLibrary(
-        BatchPutSectionProfileFromLibraryCommand request,
+        BatchPutSectionProfileFromLibraryRequest request,
         CancellationToken ct = default
     ) => apiClientV1.BatchPutSectionProfileFromLibraryAsync(request.ModelId, request.Body, ct);
 

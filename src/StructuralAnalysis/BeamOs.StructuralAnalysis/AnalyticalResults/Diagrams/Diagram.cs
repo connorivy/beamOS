@@ -7,7 +7,7 @@ using UnitsNet.Units;
 
 namespace BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams;
 
-public class Diagram
+internal class Diagram
 {
     private static readonly Length EqualityTolerance = new(1, LengthUnit.Inch);
     public Length ElementLength { get; private set; }

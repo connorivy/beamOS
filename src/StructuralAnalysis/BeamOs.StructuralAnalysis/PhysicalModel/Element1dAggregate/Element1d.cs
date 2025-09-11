@@ -7,7 +7,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 
-public class Element1d : BeamOsModelEntity<Element1dId>
+internal class Element1d : BeamOsModelEntity<Element1dId>
 {
     public Element1d(
         ModelId modelId,

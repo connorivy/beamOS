@@ -12,7 +12,7 @@ using Riok.Mapperly.Abstractions;
 namespace BeamOs.StructuralAnalysis.Application.Common;
 
 [Mapper(EnumMappingStrategy = EnumMappingStrategy.ByName)]
-public static partial class BeamOsDomainContractMappers
+internal static partial class BeamOsDomainContractMappers
 {
     public static BeamOs.StructuralAnalysis.Contracts.Common.Point ToContract(
         BeamOs.StructuralAnalysis.Domain.Common.Point source

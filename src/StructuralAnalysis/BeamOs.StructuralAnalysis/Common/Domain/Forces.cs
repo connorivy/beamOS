@@ -6,7 +6,7 @@ using UnitsNet.Units;
 
 namespace BeamOs.StructuralAnalysis.Domain.Common;
 
-public sealed class Forces : BeamOSValueObject
+internal sealed class Forces : BeamOSValueObject
 {
     public Forces(
         Force forceAlongX,

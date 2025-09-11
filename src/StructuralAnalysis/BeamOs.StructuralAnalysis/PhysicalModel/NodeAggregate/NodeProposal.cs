@@ -4,7 +4,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
-public abstract class NodeProposalBase : BeamOsModelProposalEntity<NodeProposalId, NodeId>
+internal abstract class NodeProposalBase : BeamOsModelProposalEntity<NodeProposalId, NodeId>
 {
     protected NodeProposalBase(
         NodeProposalId id,
@@ -30,7 +30,7 @@ public abstract class NodeProposalBase : BeamOsModelProposalEntity<NodeProposalI
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }
 
-public sealed class NodeProposal : NodeProposalBase
+internal sealed class NodeProposal : NodeProposalBase
 {
     public NodeProposal(
         ModelId modelId,
@@ -81,7 +81,7 @@ public sealed class NodeProposal : NodeProposalBase
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }
 
-public sealed class InternalNodeProposal : NodeProposalBase
+internal sealed class InternalNodeProposal : NodeProposalBase
 {
     public InternalNodeProposal(
         ModelId modelId,

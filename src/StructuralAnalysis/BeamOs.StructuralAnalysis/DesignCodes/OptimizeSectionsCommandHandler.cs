@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BeamOs.StructuralAnalysis.Application.DesignCodes;
 
-public sealed class OptimizeSectionsCommandHandler(
+internal sealed class OptimizeSectionsCommandHandler(
     IModelRepository modelRepository,
     IEnvelopeResultSetRepository resultSetRepository,
     IStructuralAnalysisUnitOfWork unitOfWork,

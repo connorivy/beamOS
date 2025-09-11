@@ -12,7 +12,7 @@ using UnitsNet.Units;
 
 namespace BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.ShearForceDiagramAggregate;
 
-public class ShearForceDiagram : DiagramBase<ShearForceDiagramId, ShearDiagramConsistentInterval>
+internal class ShearForceDiagram : DiagramBase<ShearForceDiagramId, ShearDiagramConsistentInterval>
 {
     public Element1d? Element1d { get; private set; }
     public Element1dId Element1dId { get; private set; }

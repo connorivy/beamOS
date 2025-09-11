@@ -9,7 +9,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.MomentLoads;
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "moment-loads/{id:int}")]
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-public class PutMomentLoad(PutMomentLoadCommandHandler putMomentLoadCommandHandler)
+internal class PutMomentLoad(PutMomentLoadCommandHandler putMomentLoadCommandHandler)
     : BeamOsModelResourceWithIntIdBaseEndpoint<
         PutMomentLoadCommand,
         MomentLoadData,
@@ -25,15 +25,15 @@ public class PutMomentLoad(PutMomentLoadCommandHandler putMomentLoadCommandHandl
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "moment-loads")]
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-public class BatchPutMomentLoad(BatchPutMomentLoadCommandHandler putMomentLoadCommandHandler)
+internal class BatchPutMomentLoad(BatchPutMomentLoadCommandHandler putMomentLoadCommandHandler)
     : BeamOsModelResourceBaseEndpoint<
-        BatchPutMomentLoadCommand,
+        BatchPutMomentLoadRequest,
         PutMomentLoadRequest[],
         BatchResponse
     >
 {
     public override async Task<Result<BatchResponse>> ExecuteRequestAsync(
-        BatchPutMomentLoadCommand req,
+        BatchPutMomentLoadRequest req,
         CancellationToken ct = default
     ) => await putMomentLoadCommandHandler.ExecuteAsync(req, ct);
 }

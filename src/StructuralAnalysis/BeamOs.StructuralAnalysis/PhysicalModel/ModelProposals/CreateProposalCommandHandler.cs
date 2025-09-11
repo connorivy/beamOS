@@ -22,7 +22,7 @@ using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 
-public class CreateModelProposalCommandHandler(
+internal class CreateModelProposalCommandHandler(
     IModelRepository modelRepository,
     IModelProposalRepository modelProposalRepository,
     INodeDefinitionRepository nodeRepository,
@@ -181,7 +181,7 @@ public class CreateModelProposalCommandHandler(
 [Mapper(ThrowOnPropertyMappingNullMismatch = true)]
 [UseStaticMapper(typeof(UnitsNetMappers))]
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
-public static partial class ProposalStaticMappers
+internal static partial class ProposalStaticMappers
 {
     public static ModelProposal ToProposalDomain(this ModelProposalData command, Model model) =>
         new(model, command.Name, command.Description, command.Settings?.ToDomain());

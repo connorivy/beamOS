@@ -5,7 +5,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.AnalyticalResults.NodeResultAggregate;
 
-public class NodeResult : BeamOsAnalyticalResultEntity<NodeId>
+internal class NodeResult : BeamOsAnalyticalResultEntity<NodeId>
 {
     public NodeResult(
         ModelId modelId,

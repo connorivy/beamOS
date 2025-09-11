@@ -8,7 +8,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
-public class Model : BeamOsEntity<ModelId>
+internal class Model : BeamOsEntity<ModelId>
 {
     public Model(string name, string description, ModelSettings settings, ModelId? id = null)
         : base(id ?? new())

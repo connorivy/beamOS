@@ -4,7 +4,7 @@ using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
-public static class ModelRepairRuleUtils
+internal static class ModelRepairRuleUtils
 {
     /// <summary>
     /// Takes the start and end points of two segments and checks if the two lines are roughly coplanar.

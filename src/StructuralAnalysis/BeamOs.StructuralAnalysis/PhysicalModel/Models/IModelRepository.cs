@@ -12,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 
-public interface IModelRepository : IRepository<ModelId, Model>
+internal interface IModelRepository : IRepository<ModelId, Model>
 {
     public Task<Model?> GetSingle(
         ModelId modelId,
@@ -27,7 +27,7 @@ public interface IModelRepository : IRepository<ModelId, Model>
     );
 }
 
-public sealed class InMemoryModelRepository(
+internal sealed class InMemoryModelRepository(
     InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage,
     [FromKeyedServices("InMemory")] INodeRepository nodeRepository,
     [FromKeyedServices("InMemory")] IInternalNodeRepository internalNodeRepository,

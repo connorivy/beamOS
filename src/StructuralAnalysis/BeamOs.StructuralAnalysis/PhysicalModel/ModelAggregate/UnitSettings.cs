@@ -1,9 +1,9 @@
-﻿using BeamOs.Common.Domain.Models;
+using BeamOs.Common.Domain.Models;
 using UnitsNet.Units;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
-public class UnitSettings : BeamOSValueObject
+internal class UnitSettings : BeamOSValueObject
 {
     public UnitSettings(
         LengthUnit lengthUnit,

@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BeamOs.StructuralAnalysis.Domain.OpenSees;
 
-public sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettings, ILogger logger)
+internal sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettings, ILogger logger)
     : IDisposable
 {
     private readonly TcpServer displacementServer = TcpServer.CreateStarted(logger);

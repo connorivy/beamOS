@@ -3,7 +3,7 @@ using BeamOs.Common.Domain.Models;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCases;
 
-public readonly record struct LoadCaseId : IIntBasedId
+internal readonly record struct LoadCaseId : IIntBasedId
 {
     public int Id { get; init; }
 

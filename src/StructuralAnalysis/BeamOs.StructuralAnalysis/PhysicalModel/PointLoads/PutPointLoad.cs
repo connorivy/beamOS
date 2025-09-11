@@ -9,7 +9,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.PointLoads;
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "point-loads/{id:int}")]
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-public class PutPointLoad(PutPointLoadCommandHandler putPointLoadCommandHandler)
+internal class PutPointLoad(PutPointLoadCommandHandler putPointLoadCommandHandler)
     : BeamOsModelResourceWithIntIdBaseEndpoint<
         PutPointLoadCommand,
         PointLoadData,
@@ -25,7 +25,7 @@ public class PutPointLoad(PutPointLoadCommandHandler putPointLoadCommandHandler)
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "point-loads")]
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-public class BatchPutPointLoad(BatchPutPointLoadCommandHandler putPointLoadCommandHandler)
+internal class BatchPutPointLoad(BatchPutPointLoadCommandHandler putPointLoadCommandHandler)
     : BeamOsModelResourceBaseEndpoint<
         BatchPutPointLoadCommand,
         PutPointLoadRequest[],

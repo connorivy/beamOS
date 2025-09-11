@@ -5,7 +5,7 @@ using UnitsNet.Units;
 
 namespace BeamOs.StructuralAnalysis.Domain.Common;
 
-public class Line : BeamOSValueObject
+internal class Line : BeamOSValueObject
 {
     public Line(Point startPoint, Point endPoint)
     {

@@ -25,7 +25,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BeamOs.StructuralAnalysis.Sdk;
 
-public static class DI
+internal static class DI
 {
     public static IServiceCollection AddStructuralAnalysisSdkRequired(
         this IServiceCollection services
@@ -123,7 +123,7 @@ public static class DI
 // {
 // }
 
-public class AuthMessageHandler(string apiToken) : DelegatingHandler
+internal class AuthMessageHandler(string apiToken) : DelegatingHandler
 {
     protected override async Task<HttpResponseMessage> SendAsync(
         HttpRequestMessage request,

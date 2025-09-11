@@ -3,7 +3,7 @@ using BeamOs.Common.Domain.Models;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
 
-public readonly record struct PointLoadId : IIntBasedId
+internal readonly record struct PointLoadId : IIntBasedId
 {
     public int Id { get; init; }
 

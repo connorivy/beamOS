@@ -9,7 +9,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
-public sealed class ModelProposalBuilder
+internal sealed class ModelProposalBuilder
 {
     private readonly ModelProposal modelProposal;
     public ModelRepairOperationParameters ModelRepairOperationParameters { get; init; }
@@ -343,7 +343,7 @@ public sealed class ModelProposalBuilder
     }
 }
 
-public readonly record struct AxisAlignmentTolerance(
+internal readonly record struct AxisAlignmentTolerance(
     AxisAlignmentToleranceLevel X,
     AxisAlignmentToleranceLevel Y,
     AxisAlignmentToleranceLevel Z
@@ -359,7 +359,7 @@ public enum AxisAlignmentToleranceLevel
     VeryRelaxed,
 }
 
-public record ModelRepairContext
+internal record ModelRepairContext
 {
     public required ModelProposalNodeStore NodeStore { get; init; }
     public required ModelProposalElement1dStore Element1dStore { get; init; }

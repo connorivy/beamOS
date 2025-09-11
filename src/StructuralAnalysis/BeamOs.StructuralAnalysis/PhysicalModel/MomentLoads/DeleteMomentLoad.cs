@@ -8,7 +8,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.MomentLoads;
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "moment-loads/{id:int}")]
 [BeamOsEndpointType(Http.Delete)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-public class DeleteMomentLoad(DeleteMomentLoadCommandHandler deleteMomentLoadCommandHandler)
+internal class DeleteMomentLoad(DeleteMomentLoadCommandHandler deleteMomentLoadCommandHandler)
     : BeamOsModelResourceQueryBaseEndpoint<ModelEntityResponse>
 {
     public override async Task<Result<ModelEntityResponse>> ExecuteRequestAsync(

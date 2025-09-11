@@ -1,4 +1,4 @@
-﻿using BeamOs.Common.Application;
+using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.Common.Domain.Models;
 using BeamOs.StructuralAnalysis.Contracts.Common;
@@ -6,7 +6,7 @@ using BeamOs.StructuralAnalysis.Domain.Common;
 
 namespace BeamOs.StructuralAnalysis.Application.Common;
 
-public abstract class DeleteModelEntityCommandHandler<TId, TEntity>(
+internal abstract class DeleteModelEntityCommandHandler<TId, TEntity>(
     IModelResourceRepositoryIn<TId, TEntity> entityRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<IModelEntity, ModelEntityResponse>

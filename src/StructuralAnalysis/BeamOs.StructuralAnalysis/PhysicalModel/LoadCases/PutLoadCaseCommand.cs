@@ -6,7 +6,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCases;
 
-public readonly struct PutLoadCaseCommand : IModelResourceWithIntIdRequest<LoadCaseData>
+internal readonly struct PutLoadCaseCommand : IModelResourceWithIntIdRequest<LoadCaseData>
 {
     public Guid ModelId { get; init; }
     public LoadCaseData Body { get; init; }
@@ -23,7 +23,7 @@ public readonly struct PutLoadCaseCommand : IModelResourceWithIntIdRequest<LoadC
     }
 }
 
-public sealed class BatchPutLoadCaseCommandHandler(
+internal sealed class BatchPutLoadCaseCommandHandler(
     ILoadCaseRepository repository,
     IStructuralAnalysisUnitOfWork unitOfWork
 )
@@ -40,13 +40,13 @@ public sealed class BatchPutLoadCaseCommandHandler(
     ) => new PutLoadCaseCommand(modelId, putRequest).ToDomainObject();
 }
 
-public readonly struct BatchPutLoadCaseCommand : IModelResourceRequest<LoadCaseContract[]>
+internal readonly struct BatchPutLoadCaseCommand : IModelResourceRequest<LoadCaseContract[]>
 {
     public Guid ModelId { get; init; }
     public LoadCaseContract[] Body { get; init; }
 }
 
-public sealed class PutLoadCaseCommandHandler(
+internal sealed class PutLoadCaseCommandHandler(
     ILoadCaseRepository repository,
     IStructuralAnalysisUnitOfWork unitOfWork
 )

@@ -6,7 +6,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCombinations;
 
-public readonly struct PutLoadCombinationCommand
+internal readonly struct PutLoadCombinationCommand
     : IModelResourceWithIntIdRequest<LoadCombinationData>
 {
     public Guid ModelId { get; init; }
@@ -24,7 +24,7 @@ public readonly struct PutLoadCombinationCommand
     }
 }
 
-public sealed class PutLoadCombinationCommandHandler(
+internal sealed class PutLoadCombinationCommandHandler(
     ILoadCombinationRepository repository,
     IStructuralAnalysisUnitOfWork unitOfWork
 )
@@ -42,7 +42,7 @@ public sealed class PutLoadCombinationCommandHandler(
         entity.ToResponse();
 }
 
-public sealed class BatchPutLoadCombinationCommandHandler(
+internal sealed class BatchPutLoadCombinationCommandHandler(
     ILoadCombinationRepository repository,
     IStructuralAnalysisUnitOfWork unitOfWork
 )
@@ -59,7 +59,7 @@ public sealed class BatchPutLoadCombinationCommandHandler(
     ) => new PutLoadCombinationCommand(modelId, putRequest).ToDomainObject();
 }
 
-public readonly struct BatchPutLoadCombinationCommand
+internal readonly struct BatchPutLoadCombinationCommand
     : IModelResourceRequest<LoadCombinationContract[]>
 {
     public Guid ModelId { get; init; }

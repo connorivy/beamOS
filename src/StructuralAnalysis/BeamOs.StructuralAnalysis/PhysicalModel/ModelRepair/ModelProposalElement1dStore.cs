@@ -6,7 +6,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
-public sealed class ModelProposalElement1dStore : IReadOnlyDictionary<Element1dId, Element1d>
+internal sealed class ModelProposalElement1dStore : IReadOnlyDictionary<Element1dId, Element1d>
 {
     public ModelProposalElement1dStore(IList<Element1d> element1ds)
     {

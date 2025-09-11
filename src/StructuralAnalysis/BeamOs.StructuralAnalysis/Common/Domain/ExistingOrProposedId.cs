@@ -7,7 +7,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.Common;
 
-public class ExistingOrProposedId<TId, TProposedId> : BeamOSValueObject
+internal class ExistingOrProposedId<TId, TProposedId> : BeamOSValueObject
     where TId : struct, IIntBasedId
     where TProposedId : struct, IIntBasedId
 {
@@ -80,7 +80,7 @@ public class ExistingOrProposedId<TId, TProposedId> : BeamOSValueObject
     }
 }
 
-public sealed class ExisitingOrProposedGenericId : BeamOSValueObject
+internal sealed class ExisitingOrProposedGenericId : BeamOSValueObject
 {
     public int? ExistingId { get; init; }
     public int? ProposedId { get; init; }
@@ -103,7 +103,7 @@ public sealed class ExisitingOrProposedGenericId : BeamOSValueObject
     }
 }
 
-public sealed class ExistingOrProposedNodeId : ExistingOrProposedId<NodeId, NodeProposalId>
+internal sealed class ExistingOrProposedNodeId : ExistingOrProposedId<NodeId, NodeProposalId>
 {
     public static implicit operator ExistingOrProposedNodeId(NodeId id) => new(id);
 
@@ -120,7 +120,7 @@ public sealed class ExistingOrProposedNodeId : ExistingOrProposedId<NodeId, Node
         : base(existingId, proposedId) { }
 }
 
-public sealed class ExistingOrProposedElement1dId
+internal sealed class ExistingOrProposedElement1dId
     : ExistingOrProposedId<Element1dId, Element1dProposalId>
 {
     public static implicit operator ExistingOrProposedElement1dId(Element1dId id) => new(id);
@@ -139,7 +139,7 @@ public sealed class ExistingOrProposedElement1dId
         : base(existingId, proposedId) { }
 }
 
-public sealed class ExistingOrProposedMaterialId
+internal sealed class ExistingOrProposedMaterialId
     : ExistingOrProposedId<MaterialId, MaterialProposalId>
 {
     public ExistingOrProposedMaterialId(MaterialId existingId)
@@ -153,7 +153,7 @@ public sealed class ExistingOrProposedMaterialId
         : base(existingId, proposedId) { }
 }
 
-public sealed class ExistingOrProposedSectionProfileId
+internal sealed class ExistingOrProposedSectionProfileId
     : ExistingOrProposedId<SectionProfileId, SectionProfileProposalId>
 {
     public ExistingOrProposedSectionProfileId(SectionProfileId existingId)
@@ -170,7 +170,7 @@ public sealed class ExistingOrProposedSectionProfileId
         : base(existingId, proposedId) { }
 }
 
-public sealed class BeamOsModelEntityId : BeamOSValueObject
+internal sealed class BeamOsModelEntityId : BeamOSValueObject
 {
     public int Id { get; private set; }
     public BeamOsObjectType BeamOsObjectType { get; private set; }

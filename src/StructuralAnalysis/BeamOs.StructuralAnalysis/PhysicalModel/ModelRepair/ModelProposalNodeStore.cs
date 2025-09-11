@@ -5,7 +5,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
-public sealed class ModelProposalNodeStore : IReadOnlyDictionary<NodeId, NodeDefinition>
+internal sealed class ModelProposalNodeStore : IReadOnlyDictionary<NodeId, NodeDefinition>
 {
     public ModelProposalNodeStore(IList<Node> nodes, IList<InternalNode> internalNodes)
     {

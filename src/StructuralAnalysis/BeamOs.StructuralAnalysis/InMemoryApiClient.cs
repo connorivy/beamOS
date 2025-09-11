@@ -25,7 +25,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.CodeGen.StructuralAnalysisApiClient;
 
-// public partial class InMemoryApiClient
+// internal partial class InMemoryApiClient
 //     : BeamOs.CodeGen.StructuralAnalysisApiClient.IStructuralAnalysisApiClientV1
 // {
 //     private partial ModelResourceRequest<SectionProfileFromLibraryData> CreateSectionProfileFromLibraryData_Command(

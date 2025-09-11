@@ -3,7 +3,7 @@ using BeamOs.StructuralAnalysis.Domain.Common;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
-public sealed class DeleteModelEntityProposal : BeamOsModelEntity<ModelEntityDeleteProposalId>
+internal sealed class DeleteModelEntityProposal : BeamOsModelEntity<ModelEntityDeleteProposalId>
 {
     public DeleteModelEntityProposal(
         ModelId modelId,

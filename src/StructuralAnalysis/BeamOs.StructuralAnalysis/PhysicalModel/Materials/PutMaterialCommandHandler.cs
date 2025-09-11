@@ -9,7 +9,7 @@ using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Materials;
 
-public class PutMaterialCommandHandler(
+internal class PutMaterialCommandHandler(
     IMaterialRepository materialRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<PutMaterialCommand, MaterialResponse>
@@ -27,7 +27,7 @@ public class PutMaterialCommandHandler(
     }
 }
 
-public class BatchPutMaterialCommandHandler(
+internal class BatchPutMaterialCommandHandler(
     IMaterialRepository materialRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 )
@@ -43,12 +43,12 @@ public class BatchPutMaterialCommandHandler(
 [Mapper]
 [UseStaticMapper(typeof(UnitsNetMappers))]
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
-public static partial class PutMaterialCommandMapper
+internal static partial class PutMaterialCommandMapper
 {
     public static partial Material ToDomainObject(this PutMaterialCommand command);
 }
 
-public readonly struct PutMaterialCommand : IModelResourceWithIntIdRequest<MaterialData>
+internal readonly struct PutMaterialCommand : IModelResourceWithIntIdRequest<MaterialData>
 {
     public int Id { get; init; }
     public Guid ModelId { get; init; }
@@ -79,7 +79,7 @@ public readonly struct PutMaterialCommand : IModelResourceWithIntIdRequest<Mater
     }
 }
 
-public readonly struct BatchPutMaterialCommand : IModelResourceRequest<PutMaterialRequest[]>
+internal readonly struct BatchPutMaterialCommand : IModelResourceRequest<PutMaterialRequest[]>
 {
     public Guid ModelId { get; init; }
     public PutMaterialRequest[] Body { get; init; }

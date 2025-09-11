@@ -9,7 +9,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Models;
 [BeamOsEndpointType(Http.Get)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Reviewer)]
 [BeamOsTag(BeamOsTags.AI)]
-public class GetModel(GetModelCommandHandler getModelCommandHandler)
+internal class GetModel(GetModelCommandHandler getModelCommandHandler)
     : BeamOsModelIdRequestBaseEndpoint<ModelResponse>
 {
     public override async Task<Result<ModelResponse>> ExecuteRequestAsync(

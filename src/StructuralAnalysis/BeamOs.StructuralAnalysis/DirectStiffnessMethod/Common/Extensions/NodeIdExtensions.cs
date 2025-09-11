@@ -4,7 +4,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod.Common.Extensions;
 
-public static class NodeIdExtensions
+internal static class NodeIdExtensions
 {
     public static IEnumerable<UnsupportedStructureDisplacementId> GetUnsupportedStructureDisplacementIds(
         this NodeId nodeId

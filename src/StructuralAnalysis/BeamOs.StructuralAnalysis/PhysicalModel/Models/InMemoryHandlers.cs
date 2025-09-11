@@ -5,7 +5,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Models;
 
-public class InMemoryGetModelsQueryHandler(
+internal class InMemoryGetModelsQueryHandler(
     InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage
 ) : IQueryHandler<EmptyRequest, ICollection<ModelInfoResponse>>
 {
@@ -30,7 +30,7 @@ public class InMemoryGetModelsQueryHandler(
     }
 }
 
-public sealed class InMemoryRestoreModeCommandHandler()
+internal sealed class InMemoryRestoreModeCommandHandler()
     : ICommandHandler<ModelResourceRequest<DateTimeOffset>, ModelResponse>
 {
     public Task<Result<ModelResponse>> ExecuteAsync(

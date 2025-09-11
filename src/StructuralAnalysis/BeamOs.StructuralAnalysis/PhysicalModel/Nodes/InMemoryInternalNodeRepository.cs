@@ -3,7 +3,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 
-// public class InMemoryInternalNodeRepository(
+// internal class InMemoryInternalNodeRepository(
 //     InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage
 // )
 //     : InMemoryModelResourceRepository<NodeId, InternalNode>(inMemoryModelRepositoryStorage),

@@ -11,7 +11,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 
 namespace BeamOs.StructuralAnalysis.Sdk;
 
-public sealed class BeamOsDynamicModel(
+internal sealed class BeamOsDynamicModel(
     Guid id,
     ModelSettings physicalModelSettings,
     string name,
@@ -213,7 +213,7 @@ public sealed class BeamOsDynamicModel(
 
     private readonly List<SectionProfileFromLibraryContract> sectionProfilesFromLibrary = [];
 
-    public void AddSectionProfileFromLibrary(int id, string name, StructuralCode library) =>
+    internal void AddSectionProfileFromLibrary(int id, string name, StructuralCode library) =>
         this.AddSectionProfilesFromLibrary(
             new SectionProfileFromLibraryContract()
             {

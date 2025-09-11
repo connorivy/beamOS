@@ -3,7 +3,7 @@ using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod.Common.ValueObjects;
 
-public class MatrixIdentifiedGeneric<TIdentifier>
+internal class MatrixIdentifiedGeneric<TIdentifier>
     where TIdentifier : notnull
 {
     private readonly Dictionary<TIdentifier, int> rowIdentifierToIndexDict = [];

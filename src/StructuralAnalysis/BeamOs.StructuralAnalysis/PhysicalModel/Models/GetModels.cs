@@ -8,7 +8,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Models;
 [BeamOsRoute("models/")]
 [BeamOsEndpointType(Http.Get)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Authenticated)]
-public class GetModels(IQueryHandler<EmptyRequest, ICollection<ModelInfoResponse>> getModelsCommandHandler)
+internal class GetModels(IQueryHandler<EmptyRequest, ICollection<ModelInfoResponse>> getModelsCommandHandler)
     : BeamOsEmptyRequestBaseEndpoint<ICollection<ModelInfoResponse>>
 {
     public override async Task<Result<ICollection<ModelInfoResponse>>> ExecuteRequestAsync(

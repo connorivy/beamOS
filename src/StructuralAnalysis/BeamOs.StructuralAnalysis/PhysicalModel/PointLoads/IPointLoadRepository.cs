@@ -3,9 +3,9 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads;
 
-public interface IPointLoadRepository : IModelResourceRepository<PointLoadId, PointLoad> { }
+internal interface IPointLoadRepository : IModelResourceRepository<PointLoadId, PointLoad> { }
 
-public sealed class InMemoryPointLoadRepository(
+internal sealed class InMemoryPointLoadRepository(
     InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage
 )
     : InMemoryModelResourceRepository<PointLoadId, PointLoad>(inMemoryModelRepositoryStorage),

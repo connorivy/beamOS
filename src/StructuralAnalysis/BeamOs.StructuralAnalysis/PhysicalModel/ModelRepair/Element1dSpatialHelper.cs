@@ -5,7 +5,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
-public static class Element1dSpatialHelper
+internal static class Element1dSpatialHelper
 {
     public static List<Element1d> FindElement1dsWithin(
         IEnumerable<Element1d> element1ds,

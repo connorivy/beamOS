@@ -3,7 +3,7 @@ using BeamOs.Common.Domain.Models;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
-public readonly record struct NodeId : IIntBasedId
+internal readonly record struct NodeId : IIntBasedId
 {
     public int Id { get; init; }
 
@@ -19,7 +19,7 @@ public readonly record struct NodeId : IIntBasedId
     public override string ToString() => this.Id.ToString(CultureInfo.InvariantCulture);
 }
 
-public readonly record struct NodeProposalId : IIntBasedId
+internal readonly record struct NodeProposalId : IIntBasedId
 {
     public int Id { get; init; }
 

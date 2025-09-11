@@ -9,7 +9,7 @@ using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
 
-public class CreateElement1dCommandHandler(
+internal class CreateElement1dCommandHandler(
     IElement1dRepository element1dRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<CreateElement1dCommand, Element1dResponse>
@@ -30,14 +30,14 @@ public class CreateElement1dCommandHandler(
 [Mapper]
 [UseStaticMapper(typeof(UnitsNetMappers))]
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
-public static partial class CreateElement1dCommandMapper
+internal static partial class CreateElement1dCommandMapper
 {
     public static partial Element1d ToDomainObject(this CreateElement1dCommand command);
 
     public static partial Element1dResponse ToResponse(this Element1d entity);
 }
 
-public readonly struct CreateElement1dCommand : IModelResourceRequest<CreateElement1dRequest>
+internal readonly struct CreateElement1dCommand : IModelResourceRequest<CreateElement1dRequest>
 {
     public Guid ModelId { get; init; }
     public CreateElement1dRequest Body { get; init; }

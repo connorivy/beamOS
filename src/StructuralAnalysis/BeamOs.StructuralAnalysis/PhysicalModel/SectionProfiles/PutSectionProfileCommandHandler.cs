@@ -11,7 +11,7 @@ using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
 
-public class PutSectionProfileCommandHandler(
+internal class PutSectionProfileCommandHandler(
     ISectionProfileRepository sectionProfileRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<PutSectionProfileCommand, SectionProfileResponse>
@@ -29,7 +29,7 @@ public class PutSectionProfileCommandHandler(
     }
 }
 
-public class BatchPutSectionProfileCommandHandler(
+internal class BatchPutSectionProfileCommandHandler(
     ISectionProfileRepository sectionProfileRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 )
@@ -49,7 +49,7 @@ public class BatchPutSectionProfileCommandHandler(
 [Mapper]
 [UseStaticMapper(typeof(UnitsNetMappers))]
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
-public static partial class PutSectionProfileCommandMapper
+internal static partial class PutSectionProfileCommandMapper
 {
     public static partial SectionProfile ToDomainObject(this PutSectionProfileCommand command);
 
@@ -58,7 +58,7 @@ public static partial class PutSectionProfileCommandMapper
     );
 }
 
-public readonly struct PutSectionProfileCommand : IModelResourceWithIntIdRequest<SectionProfileData>
+internal readonly struct PutSectionProfileCommand : IModelResourceWithIntIdRequest<SectionProfileData>
 {
     public int Id { get; init; }
     public Guid ModelId { get; init; }
@@ -136,7 +136,7 @@ public readonly struct PutSectionProfileCommand : IModelResourceWithIntIdRequest
     }
 }
 
-public readonly struct BatchPutSectionProfileCommand
+internal readonly struct BatchPutSectionProfileCommand
     : IModelResourceRequest<PutSectionProfileRequest[]>
 {
     public Guid ModelId { get; init; }

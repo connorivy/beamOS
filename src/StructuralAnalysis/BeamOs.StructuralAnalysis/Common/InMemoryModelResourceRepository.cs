@@ -5,7 +5,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.Common;
 
-public class InMemoryRepository<TId, T> : IRepository<TId, T>
+internal class InMemoryRepository<TId, T> : IRepository<TId, T>
     where TId : struct
     where T : BeamOsEntity<TId>
 {
@@ -36,7 +36,7 @@ public class InMemoryRepository<TId, T> : IRepository<TId, T>
     }
 }
 
-public class InMemoryModelResourceRepository<TId, T>(
+internal class InMemoryModelResourceRepository<TId, T>(
     InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage
 ) : IModelResourceRepository<TId, T>
     where TId : struct, IIntBasedId
@@ -173,7 +173,7 @@ public class InMemoryModelResourceRepository<TId, T>(
     }
 }
 
-public class InMemoryAnalyticalResultRepository<TId, T>(
+internal class InMemoryAnalyticalResultRepository<TId, T>(
     InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage
 )
     : InMemoryModelResourceRepository<TId, T>(inMemoryModelRepositoryStorage),
@@ -246,7 +246,7 @@ public class InMemoryAnalyticalResultRepository<TId, T>(
     }
 }
 
-public class InMemoryProposalRepository<TId, T>
+internal class InMemoryProposalRepository<TId, T>
     : InMemoryRepository<TId, T>,
         IProposalRepository<TId, T>
     where TId : struct
@@ -258,7 +258,7 @@ public class InMemoryProposalRepository<TId, T>
     }
 }
 
-public record InMemoryModelRepositoryStorage
+internal record InMemoryModelRepositoryStorage
 {
     public Dictionary<ModelId, Model> Models { get; } = [];
 }

@@ -10,7 +10,7 @@ namespace BeamOs.StructuralAnalysis.Sdk;
 // todo: the new extension method syntax is causing this false error
 #pragma warning disable CA1822 // Mark members as static
 
-public static class IBeamOsModelExtensions
+internal static class IBeamOsModelExtensions
 {
     extension(IBeamOsModel model)
     {
@@ -68,7 +68,7 @@ public static class IBeamOsModelExtensions
             return await builder.CreateOrUpdate();
         }
 
-        public void GenerateStaticModelClass(string outputDir, string? baseClass = null)
+        internal void GenerateStaticModelClass(string outputDir, string? baseclass = null)
         {
             var sb = new StringBuilder();
 
@@ -77,7 +77,7 @@ public static class IBeamOsModelExtensions
                 + outputDir.Split("BeamOs.Tests.Common")[1].Replace("\\", ".").Replace("/", ".");
             var className = model.Name.Replace(" ", "");
 
-#pragma warning disable 
+#pragma warning disable
             sb.AppendLine(
                 $@"
 using BeamOs.StructuralAnalysis.Contracts.Common;
@@ -100,10 +100,10 @@ namespace {namespac};"
 #pragma warning restore CA1305 // Specify IFormatProvider
             sb.AppendLine();
             sb.AppendLine(
-                $"public partial class {className} : {baseClass ?? nameof(BeamOsStaticModelBase)}"
+                $"internal partial class {className} : {baseClass ?? nameof(BeamOsStaticModelBase)}"
             );
             sb.AppendLine("{");
-            sb.AppendLine($"    public override string Name => nameof({className});");
+            sb.AppendLine($"    internal override string Name => nameof({className});");
             sb.AppendLine($"    public override string Description => \"{model.Description}\";");
             sb.AppendLine("    public override ModelSettings Settings => new ModelSettings");
             sb.AppendLine("    (");

@@ -5,7 +5,7 @@ using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
-public class NodeSnapToElement1dRule(ModelRepairContext context)
+internal class NodeSnapToElement1dRule(ModelRepairContext context)
     : IndividualNodeVisitingRule(context)
 {
     public override ModelRepairRuleType RuleType => ModelRepairRuleType.Standard;

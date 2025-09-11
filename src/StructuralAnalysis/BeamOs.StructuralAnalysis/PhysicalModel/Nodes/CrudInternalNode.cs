@@ -8,7 +8,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Nodes;
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "nodes/{id:int}/internal")]
 [BeamOsEndpointType(Http.Get)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Reviewer)]
-public class GetInternalNode(GetInternalNodeCommandHandler getNodeCommandHandler)
+internal class GetInternalNode(GetInternalNodeCommandHandler getNodeCommandHandler)
     : BeamOsModelResourceQueryBaseEndpoint<InternalNodeContract>
 {
     public override async Task<Result<InternalNodeContract>> ExecuteRequestAsync(
@@ -21,7 +21,7 @@ public class GetInternalNode(GetInternalNodeCommandHandler getNodeCommandHandler
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 [BeamOsTag(BeamOsTags.AI)]
-public class CreateInternalNode(CreateInternalNodeCommandHandler createInternalNodeCommandHandler)
+internal class CreateInternalNode(CreateInternalNodeCommandHandler createInternalNodeCommandHandler)
     : BeamOsModelResourceBaseEndpoint<
         ModelResourceRequest<CreateInternalNodeRequest>,
         CreateInternalNodeRequest,
@@ -37,7 +37,7 @@ public class CreateInternalNode(CreateInternalNodeCommandHandler createInternalN
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "nodes/{id:int}/internal")]
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-public class PutInternalNode(PutInternalNodeCommandHandler putInternalNodeCommandHandler)
+internal class PutInternalNode(PutInternalNodeCommandHandler putInternalNodeCommandHandler)
     : BeamOsModelResourceWithIntIdBaseEndpoint<
         ModelResourceWithIntIdRequest<InternalNodeData>,
         InternalNodeData,
@@ -53,7 +53,7 @@ public class PutInternalNode(PutInternalNodeCommandHandler putInternalNodeComman
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "nodes/internal")]
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-public class BatchPutInternalNode(BatchPutInternalNodeCommandHandler putInternalNodeCommandHandler)
+internal class BatchPutInternalNode(BatchPutInternalNodeCommandHandler putInternalNodeCommandHandler)
     : BeamOsModelResourceBaseEndpoint<
         ModelResourceRequest<InternalNodeContract[]>,
         InternalNodeContract[],
@@ -70,7 +70,7 @@ public class BatchPutInternalNode(BatchPutInternalNodeCommandHandler putInternal
 // [BeamOsEndpointType(Http.Delete)]
 // [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 // [BeamOsTag(BeamOsTags.AI)]
-// public class DeleteInternalNode(DeleteInternalNodeCommandHandler deleteInternalNodeCommandHandler)
+// internal class DeleteInternalNode(DeleteInternalNodeCommandHandler deleteInternalNodeCommandHandler)
 //     : BeamOsModelResourceQueryBaseEndpoint<ModelEntityResponse>
 // {
 //     public override async Task<Result<ModelEntityResponse>> ExecuteRequestAsync(

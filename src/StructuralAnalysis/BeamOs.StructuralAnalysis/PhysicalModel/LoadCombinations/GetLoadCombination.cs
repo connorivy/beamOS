@@ -8,7 +8,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.LoadCombinations
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "load-combinations/{id:int}")]
 [BeamOsEndpointType(Http.Get)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Reviewer)]
-public class GetLoadCombination(GetLoadCombinationCommandHandler getLoadCombinationCommandHandler)
+internal class GetLoadCombination(GetLoadCombinationCommandHandler getLoadCombinationCommandHandler)
     : BeamOsModelResourceQueryBaseEndpoint<LoadCombinationContract>
 {
     public override async Task<Result<LoadCombinationContract>> ExecuteRequestAsync(

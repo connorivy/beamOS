@@ -5,7 +5,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 
-public interface IModelProposalRepository : IModelResourceRepository<ModelProposalId, ModelProposal>
+internal interface IModelProposalRepository : IModelResourceRepository<ModelProposalId, ModelProposal>
 {
     public Task<ModelProposal?> GetSingle(
         ModelId modelId,
@@ -15,7 +15,7 @@ public interface IModelProposalRepository : IModelResourceRepository<ModelPropos
     );
 }
 
-public sealed class InMemoryModelProposalRepository(
+internal sealed class InMemoryModelProposalRepository(
     InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage
 )
     : InMemoryModelResourceRepository<ModelProposalId, ModelProposal>(
@@ -82,11 +82,11 @@ public sealed class InMemoryModelProposalRepository(
     }
 }
 
-public interface IProposalIssueRepository
+internal interface IProposalIssueRepository
     : IModelResourceRepository<ProposalIssueId, ProposalIssue>
 { }
 
-public sealed class InMemoryProposalIssueRepository(
+internal sealed class InMemoryProposalIssueRepository(
     InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage
 )
     : InMemoryModelResourceRepository<ProposalIssueId, ProposalIssue>(

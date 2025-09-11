@@ -5,7 +5,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.Common;
 
-public interface IRepository<TId, in T>
+internal interface IRepository<TId, in T>
     where TId : struct
     where T : BeamOsEntity<TId>
 {
@@ -22,7 +22,7 @@ public interface IRepository<TId, in T>
     public void ClearChangeTracker();
 }
 
-public interface IModelResourceRepositoryIn<TId, in T> : IRepository<TId, T>
+internal interface IModelResourceRepositoryIn<TId, in T> : IRepository<TId, T>
     where TId : struct, IIntBasedId
     where T : BeamOsModelEntity<TId>
 {
@@ -31,7 +31,7 @@ public interface IModelResourceRepositoryIn<TId, in T> : IRepository<TId, T>
     public Task ReloadEntity(T entity, CancellationToken ct = default);
 }
 
-public interface IModelResourceRepository<TId, T> : IModelResourceRepositoryIn<TId, T>
+internal interface IModelResourceRepository<TId, T> : IModelResourceRepositoryIn<TId, T>
     where TId : struct, IIntBasedId
     where T : BeamOsModelEntity<TId>
 {
@@ -44,7 +44,7 @@ public interface IModelResourceRepository<TId, T> : IModelResourceRepositoryIn<T
     );
 }
 
-public interface IAnalyticalResultRepository<TId, T> : IRepository<TId, T>
+internal interface IAnalyticalResultRepository<TId, T> : IRepository<TId, T>
     where TId : struct
     where T : BeamOsEntity<TId>
 {
@@ -61,11 +61,11 @@ public interface IAnalyticalResultRepository<TId, T> : IRepository<TId, T>
     );
 }
 
-public interface IProposalRepository<TId, T> : IRepository<TId, T>
+internal interface IProposalRepository<TId, T> : IRepository<TId, T>
     where TId : struct
     where T : BeamOsEntity<TId>
 {
     public Task<T?> GetSingle(ModelId modelId, ModelProposalId modelProposalId, TId id);
 }
 
-public readonly record struct ModelSettingsAndEntity<T>(ModelSettings ModelSettings, T Entity);
+internal readonly record struct ModelSettingsAndEntity<T>(ModelSettings ModelSettings, T Entity);

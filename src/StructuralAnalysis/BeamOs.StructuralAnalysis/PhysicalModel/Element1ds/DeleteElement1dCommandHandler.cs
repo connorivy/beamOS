@@ -5,7 +5,7 @@ using BeamOs.StructuralAnalysis.Contracts.Common;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
 
-public class DeleteElement1dCommandHandler(
+internal class DeleteElement1dCommandHandler(
     IElement1dRepository element1dRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<IModelEntity, ModelEntityResponse>

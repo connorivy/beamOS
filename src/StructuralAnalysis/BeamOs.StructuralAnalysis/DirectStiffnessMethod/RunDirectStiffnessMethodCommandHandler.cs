@@ -14,7 +14,7 @@ using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.StructuralAnalysis.Application.DirectStiffnessMethod;
 
-public class RunDirectStiffnessMethodCommandHandler(
+internal class RunDirectStiffnessMethodCommandHandler(
     IModelRepository modelRepository,
     IResultSetRepository resultSetRepository,
     IStructuralAnalysisUnitOfWork unitOfWork,
@@ -103,7 +103,7 @@ public class RunDirectStiffnessMethodCommandHandler(
         };
 }
 
-public readonly struct RunDsmCommand : IHasModelId
+internal readonly struct RunDsmCommand : IHasModelId
 {
     public Guid ModelId { get; init; }
     public string? UnitsOverride { get; init; }
@@ -113,7 +113,7 @@ public readonly struct RunDsmCommand : IHasModelId
 [Mapper]
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
 [UseStaticMapper(typeof(UnitsNetMappers))]
-public static partial class DiagramToResponseMapper
+internal static partial class DiagramToResponseMapper
 {
     public static partial AnalyticalResultsResponse Map(this OtherAnalyticalResults diagram);
 }

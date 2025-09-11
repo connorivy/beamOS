@@ -5,7 +5,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
-public class NodeMergeRule(ModelRepairContext context) : IndividualNodeVisitingRule(context)
+internal class NodeMergeRule(ModelRepairContext context) : IndividualNodeVisitingRule(context)
 {
     public override ModelRepairRuleType RuleType => ModelRepairRuleType.Unfavorable;
 

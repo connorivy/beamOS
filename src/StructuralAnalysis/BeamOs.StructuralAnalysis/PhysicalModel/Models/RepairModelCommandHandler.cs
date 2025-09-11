@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 
-public class RepairModelCommandHandler(
+internal class RepairModelCommandHandler(
     IModelRepository modelRepository,
     IModelProposalRepository modelProposalRepository,
     IStructuralAnalysisUnitOfWork unitOfWork,

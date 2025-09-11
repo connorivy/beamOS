@@ -3,7 +3,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair.Constraints;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
-public record DirectionAlignmentConstraint(AxisAlignmentToleranceLevel ToleranceLevel)
+internal record DirectionAlignmentConstraint(AxisAlignmentToleranceLevel ToleranceLevel)
     : IElementConstraint
 {
     public bool IsSatisfied(

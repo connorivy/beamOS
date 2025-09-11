@@ -5,7 +5,7 @@ using BeamOs.StructuralAnalysis.Domain.Common;
 
 namespace BeamOs.StructuralAnalysis.Application.Common;
 
-public abstract class GetModelEntityCommandHandler<TId, TEntity, TResponse>(
+internal abstract class GetModelEntityCommandHandler<TId, TEntity, TResponse>(
     IModelResourceRepository<TId, TEntity> entityRepository
 ) : ICommandHandler<IModelEntity, TResponse>
     where TEntity : BeamOsModelEntity<TId>

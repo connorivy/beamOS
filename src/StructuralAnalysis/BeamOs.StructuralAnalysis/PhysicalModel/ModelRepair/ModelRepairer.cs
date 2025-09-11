@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
-public class ModelRepairer(
+internal class ModelRepairer(
     ModelRepairOperationParameters modelRepairOperationParameters,
     ILogger logger
 )

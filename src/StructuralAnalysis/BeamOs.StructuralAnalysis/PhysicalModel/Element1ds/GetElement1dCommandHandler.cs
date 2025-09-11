@@ -8,7 +8,7 @@ using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
 
-public class GetElement1dCommandHandler(IElement1dRepository repository)
+internal class GetElement1dCommandHandler(IElement1dRepository repository)
     : ICommandHandler<IModelEntity, Element1dResponse>
 {
     public async Task<Result<Element1dResponse>> ExecuteAsync(

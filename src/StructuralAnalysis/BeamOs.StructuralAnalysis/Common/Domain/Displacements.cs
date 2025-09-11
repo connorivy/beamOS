@@ -5,7 +5,7 @@ using UnitsNet.Units;
 
 namespace BeamOs.StructuralAnalysis.Domain.Common;
 
-public sealed class Displacements(
+internal sealed class Displacements(
     Length displacementAlongX,
     Length displacementAlongY,
     Length displacementAlongZ,

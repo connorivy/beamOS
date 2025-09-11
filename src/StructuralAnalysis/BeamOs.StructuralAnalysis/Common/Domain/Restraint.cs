@@ -3,7 +3,7 @@ using MathNet.Spatial.Euclidean;
 
 namespace BeamOs.StructuralAnalysis.Domain.Common;
 
-public class Restraint(
+internal class Restraint(
     bool canTranslateAlongX,
     bool canTranslateAlongY,
     bool canTranslateAlongZ,

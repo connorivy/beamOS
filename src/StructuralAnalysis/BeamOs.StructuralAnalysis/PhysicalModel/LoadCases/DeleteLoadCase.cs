@@ -8,7 +8,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.LoadCases;
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "load-cases/{id:int}")]
 [BeamOsEndpointType(Http.Delete)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-public class DeleteLoadCase(DeleteLoadCaseCommandHandler deleteLoadCaseCommandHandler)
+internal class DeleteLoadCase(DeleteLoadCaseCommandHandler deleteLoadCaseCommandHandler)
     : BeamOsModelResourceQueryBaseEndpoint<ModelEntityResponse>
 {
     public override async Task<Result<ModelEntityResponse>> ExecuteRequestAsync(

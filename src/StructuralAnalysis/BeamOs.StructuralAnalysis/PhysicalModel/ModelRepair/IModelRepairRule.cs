@@ -1,6 +1,6 @@
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
-public interface IModelRepairRule
+internal interface IModelRepairRule
 {
     public void Apply();
 

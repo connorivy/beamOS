@@ -1,6 +1,6 @@
 namespace BeamOs.StructuralAnalysis.Domain.Common.Extensions;
 
-public static class AreaExtensions
+internal static class AreaExtensions
 {
     public static AreaMomentOfInertia MultiplyBy(this Area area1, Area area2)
     {

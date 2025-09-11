@@ -8,7 +8,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Element1ds;
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "element1ds")]
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-public class CreateElement1d(CreateElement1dCommandHandler createElement1dCommandHandler)
+internal class CreateElement1d(CreateElement1dCommandHandler createElement1dCommandHandler)
     : BeamOsModelResourceBaseEndpoint<
         CreateElement1dCommand,
         CreateElement1dRequest,

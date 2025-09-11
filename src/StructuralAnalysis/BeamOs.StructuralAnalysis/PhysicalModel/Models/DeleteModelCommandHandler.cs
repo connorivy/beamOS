@@ -4,7 +4,7 @@ using BeamOs.StructuralAnalysis.Application.Common;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 
-public sealed class DeleteModelCommandHandler(
+internal sealed class DeleteModelCommandHandler(
     IModelRepository modelRepository,
     IStructuralAnalysisUnitOfWork uow
 ) : ICommandHandler<Guid, bool>

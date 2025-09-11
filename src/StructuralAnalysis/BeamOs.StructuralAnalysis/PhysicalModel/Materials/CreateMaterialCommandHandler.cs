@@ -11,7 +11,7 @@ using UnitsNet.Units;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Materials;
 
-public class CreateMaterialCommandHandler(
+internal class CreateMaterialCommandHandler(
     IMaterialRepository materialRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<CreateMaterialCommand, MaterialResponse>
@@ -32,7 +32,7 @@ public class CreateMaterialCommandHandler(
 [Mapper]
 [UseStaticMapper(typeof(UnitsNetMappers))]
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
-public static partial class CreateMaterialStaticMapper
+internal static partial class CreateMaterialStaticMapper
 {
     public static partial Material ToDomainObject(this CreateMaterialCommand command);
 
@@ -51,7 +51,7 @@ public static partial class CreateMaterialStaticMapper
     );
 }
 
-public readonly struct CreateMaterialCommand : IModelResourceRequest<CreateMaterialRequest>
+internal readonly struct CreateMaterialCommand : IModelResourceRequest<CreateMaterialRequest>
 {
     public Guid ModelId { get; init; }
     public CreateMaterialRequest Body { get; init; }

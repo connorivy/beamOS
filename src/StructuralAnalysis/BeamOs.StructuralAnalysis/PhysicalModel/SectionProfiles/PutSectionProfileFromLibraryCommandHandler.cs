@@ -8,7 +8,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
 
-public class PutSectionProfileFromLibraryCommandHandler(
+internal class PutSectionProfileFromLibraryCommandHandler(
     ISectionProfileRepository sectionProfileRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<PutSectionProfileFromLibraryCommand, SectionProfileFromLibraryContract>
@@ -41,7 +41,7 @@ public class PutSectionProfileFromLibraryCommandHandler(
     }
 }
 
-public readonly struct PutSectionProfileFromLibraryCommand
+internal readonly struct PutSectionProfileFromLibraryCommand
     : IModelResourceWithIntIdRequest<SectionProfileFromLibraryData>
 {
     public int Id { get; init; }
@@ -64,14 +64,14 @@ public readonly struct PutSectionProfileFromLibraryCommand
     }
 }
 
-public class BatchPutSectionProfileFromLibraryCommandHandler(
+internal class BatchPutSectionProfileFromLibraryCommandHandler(
     ISectionProfileFromLibraryRepository sectionProfileFromLibraryRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 )
     : BatchPutCommandHandler<
         SectionProfileId,
         SectionProfileFromLibrary,
-        BatchPutSectionProfileFromLibraryCommand,
+        BatchPutSectionProfileFromLibraryRequest,
         SectionProfileFromLibraryContract
     >(sectionProfileFromLibraryRepository, unitOfWork)
 {
@@ -79,11 +79,4 @@ public class BatchPutSectionProfileFromLibraryCommandHandler(
         ModelId modelId,
         SectionProfileFromLibraryContract putRequest
     ) => new PutSectionProfileFromLibraryCommand(modelId, putRequest).ToDomainObject();
-}
-
-public readonly struct BatchPutSectionProfileFromLibraryCommand
-    : IModelResourceRequest<SectionProfileFromLibraryContract[]>
-{
-    public Guid ModelId { get; init; }
-    public SectionProfileFromLibraryContract[] Body { get; init; }
 }

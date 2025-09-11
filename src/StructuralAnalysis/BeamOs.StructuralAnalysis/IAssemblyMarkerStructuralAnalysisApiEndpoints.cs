@@ -1,3 +1,3 @@
 namespace BeamOs.StructuralAnalysis.Api.Endpoints;
 
-public interface IAssemblyMarkerStructuralAnalysisApiEndpoints { }
+internal interface IAssemblyMarkerStructuralAnalysisApiEndpoints { }

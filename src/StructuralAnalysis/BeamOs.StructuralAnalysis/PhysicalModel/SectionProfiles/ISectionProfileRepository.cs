@@ -3,10 +3,10 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
 
-public interface ISectionProfileRepository
+internal interface ISectionProfileRepository
     : IModelResourceRepository<SectionProfileId, SectionProfile> { }
 
-public class InMemorySectionProfileRepository(
+internal class InMemorySectionProfileRepository(
     InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage
 )
     : InMemoryModelResourceRepository<SectionProfileId, SectionProfile>(

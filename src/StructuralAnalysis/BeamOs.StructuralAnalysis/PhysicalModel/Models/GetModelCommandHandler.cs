@@ -5,7 +5,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 
-public sealed class GetModelCommandHandler(IModelRepository modelRepository)
+internal sealed class GetModelCommandHandler(IModelRepository modelRepository)
     : ICommandHandler<Guid, ModelResponse>
 {
     public async Task<Result<ModelResponse>> ExecuteAsync(

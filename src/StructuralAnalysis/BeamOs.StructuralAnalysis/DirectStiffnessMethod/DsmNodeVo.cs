@@ -7,7 +7,7 @@ using UnitsNet.Units;
 
 namespace BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 
-public class DsmNodeVo(Node node) : BeamOSValueObject
+internal class DsmNodeVo(Node node) : BeamOSValueObject
 {
     public Node Node => node;
 

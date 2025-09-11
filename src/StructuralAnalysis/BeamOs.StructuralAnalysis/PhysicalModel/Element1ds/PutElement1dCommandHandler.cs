@@ -10,7 +10,7 @@ using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
 
-public class PutElement1dCommandHandler(
+internal class PutElement1dCommandHandler(
     IElement1dRepository element1dRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<PutElement1dCommand, Element1dResponse>
@@ -28,7 +28,7 @@ public class PutElement1dCommandHandler(
     }
 }
 
-public class BatchPutElement1dCommandHandler(
+internal class BatchPutElement1dCommandHandler(
     IElement1dRepository element1dRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 )
@@ -44,14 +44,14 @@ public class BatchPutElement1dCommandHandler(
 [Mapper]
 [UseStaticMapper(typeof(UnitsNetMappers))]
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
-public static partial class PutElement1dCommandMapper
+internal static partial class PutElement1dCommandMapper
 {
     public static partial Element1dResponse ToResponse(this PutElement1dCommand command);
 
     public static partial Element1d ToDomainObject(this PutElement1dCommand command);
 }
 
-public readonly struct PutElement1dCommand : IModelResourceWithIntIdRequest<Element1dData>
+internal readonly struct PutElement1dCommand : IModelResourceWithIntIdRequest<Element1dData>
 {
     public int Id { get; init; }
     public Guid ModelId { get; init; }
@@ -73,7 +73,7 @@ public readonly struct PutElement1dCommand : IModelResourceWithIntIdRequest<Elem
     }
 }
 
-public readonly struct BatchPutElement1dCommand : IModelResourceRequest<PutElement1dRequest[]>
+internal readonly struct BatchPutElement1dCommand : IModelResourceRequest<PutElement1dRequest[]>
 {
     public Guid ModelId { get; init; }
     public PutElement1dRequest[] Body { get; init; }

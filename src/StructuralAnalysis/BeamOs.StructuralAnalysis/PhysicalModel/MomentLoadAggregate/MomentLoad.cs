@@ -6,7 +6,7 @@ using MathNet.Spatial.Euclidean;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
 
-public class MomentLoad : BeamOsModelEntity<MomentLoadId>
+internal class MomentLoad : BeamOsModelEntity<MomentLoadId>
 {
     public MomentLoad(
         ModelId modelId,

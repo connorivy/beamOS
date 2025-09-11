@@ -6,7 +6,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
-public class Node : NodeDefinition
+internal class Node : NodeDefinition
 {
     public Node(
         ModelId modelId,
@@ -97,7 +97,7 @@ public class Node : NodeDefinition
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }
 
-public abstract class NodeDefinition : BeamOsModelEntity<NodeId>, INode3D
+internal abstract class NodeDefinition : BeamOsModelEntity<NodeId>, INode3D
 {
     public const string TypeDiscriminator = "NodeType";
 
@@ -270,9 +270,9 @@ public abstract class NodeDefinition : BeamOsModelEntity<NodeId>, INode3D
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }
 
-public readonly record struct NodeIdAndLocation(NodeId NodeId, Point LocationPoint);
+internal readonly record struct NodeIdAndLocation(NodeId NodeId, Point LocationPoint);
 
-public interface INode3D
+internal interface INode3D
 {
     public Point GetLocationPoint(
         IReadOnlyDictionary<Element1dId, Element1d>? elementStore = null,

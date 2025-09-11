@@ -8,7 +8,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.LoadCombinations
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "load-combinations")]
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-public class CreateLoadCombination(
+internal class CreateLoadCombination(
     CreateLoadCombinationCommandHandler createLoadCombinationCommandHandler
 )
     : BeamOsModelResourceBaseEndpoint<

@@ -8,7 +8,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.PointLoads;
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "point-loads/{id:int}")]
 [BeamOsEndpointType(Http.Delete)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-public class DeletePointLoad(DeletePointLoadCommandHandler deletePointLoadCommandHandler)
+internal class DeletePointLoad(DeletePointLoadCommandHandler deletePointLoadCommandHandler)
     : BeamOsModelResourceQueryBaseEndpoint<ModelEntityResponse>
 {
     public override async Task<Result<ModelEntityResponse>> ExecuteRequestAsync(

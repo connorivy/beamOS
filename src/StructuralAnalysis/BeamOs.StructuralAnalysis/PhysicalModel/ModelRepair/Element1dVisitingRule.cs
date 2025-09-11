@@ -4,7 +4,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
-public abstract class Element1dVisitingRule(ModelRepairContext context) : IModelRepairRule
+internal abstract class Element1dVisitingRule(ModelRepairContext context) : IModelRepairRule
 {
     protected ModelRepairContext Context => context;
 
@@ -150,7 +150,7 @@ public abstract class Element1dVisitingRule(ModelRepairContext context) : IModel
     }
 }
 
-public abstract class BeamOrBraceVisitingRule(ModelRepairContext context)
+internal abstract class BeamOrBraceVisitingRule(ModelRepairContext context)
     : Element1dVisitingRule(context)
 {
     protected override void ApplyRule(
@@ -211,7 +211,7 @@ public abstract class BeamOrBraceVisitingRule(ModelRepairContext context)
     );
 }
 
-public abstract class ColumnVisitingRule(ModelRepairContext context)
+internal abstract class ColumnVisitingRule(ModelRepairContext context)
     : Element1dVisitingRule(context)
 {
     protected override void ApplyRule(

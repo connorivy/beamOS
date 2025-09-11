@@ -4,7 +4,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 
-public class SectionProfileFromLibrary : SectionProfileInfoBase
+internal class SectionProfileFromLibrary : SectionProfileInfoBase
 {
     public SectionProfileFromLibrary(
         ModelId modelId,

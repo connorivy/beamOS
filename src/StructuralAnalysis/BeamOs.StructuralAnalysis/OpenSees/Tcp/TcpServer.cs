@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BeamOs.StructuralAnalysis.Domain.OpenSees.Tcp;
 
-public sealed class TcpServer : IDisposable
+internal sealed class TcpServer : IDisposable
 {
     private static readonly IPAddress localAddress = IPAddress.Parse("127.0.0.1");
     private readonly TcpListener server;

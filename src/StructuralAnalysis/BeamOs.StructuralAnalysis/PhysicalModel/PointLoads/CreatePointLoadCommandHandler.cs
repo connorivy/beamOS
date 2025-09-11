@@ -10,7 +10,7 @@ using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads;
 
-public class CreatePointLoadCommandHandler(
+internal class CreatePointLoadCommandHandler(
     IPointLoadRepository pointLoadRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<CreatePointLoadCommand, PointLoadResponse>
@@ -31,14 +31,14 @@ public class CreatePointLoadCommandHandler(
 [Mapper(PreferParameterlessConstructors = false)]
 [UseStaticMapper(typeof(UnitsNetMappers))]
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
-public static partial class CreatePointLoadCommandMapper
+internal static partial class CreatePointLoadCommandMapper
 {
     public static partial PointLoad ToDomainObject(this CreatePointLoadCommand command);
 
     public static partial PointLoadResponse ToResponse(this PointLoad entity);
 }
 
-public readonly struct CreatePointLoadCommand : IModelResourceRequest<CreatePointLoadRequest>
+internal readonly struct CreatePointLoadCommand : IModelResourceRequest<CreatePointLoadRequest>
 {
     public Guid ModelId { get; init; }
     public CreatePointLoadRequest Body { get; init; }

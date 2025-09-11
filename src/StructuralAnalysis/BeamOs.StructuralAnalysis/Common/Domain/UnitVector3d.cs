@@ -3,7 +3,7 @@ using MathNet.Spatial.Euclidean;
 
 namespace BeamOs.StructuralAnalysis.Domain.Common;
 
-public class UnitVector3d : BeamOSValueObject
+internal class UnitVector3d : BeamOSValueObject
 {
     public UnitVector3d(double x, double y, double z)
     {
@@ -31,7 +31,7 @@ public class UnitVector3d : BeamOSValueObject
     }
 }
 
-public class Vector3d : BeamOSValueObject
+internal class Vector3d : BeamOSValueObject
 {
     public Vector3d(double x, double y, double z)
     {

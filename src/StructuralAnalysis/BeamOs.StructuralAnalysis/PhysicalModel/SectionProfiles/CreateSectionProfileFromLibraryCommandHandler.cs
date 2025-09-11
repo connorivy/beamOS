@@ -1,4 +1,4 @@
-﻿using BeamOs.Common.Application;
+using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
@@ -7,7 +7,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
 
-public class AddSectionProfileFromLibraryCommandHandler(
+internal class AddSectionProfileFromLibraryCommandHandler(
     IModelRepository modelRepository,
     ISectionProfileFromLibraryRepository sectionProfileFromLibraryRepository,
     IStructuralAnalysisUnitOfWork unitOfWork

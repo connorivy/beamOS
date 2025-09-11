@@ -3,7 +3,7 @@ using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.Common.Extensions;
 
-public static class DiagramConsistantIntervalExtensions
+internal static class DiagramConsistantIntervalExtensions
 {
     internal static (double leftValue, double rightValue) GetValueAtLocation(
         this IList<DiagramConsistentInterval> intervals,

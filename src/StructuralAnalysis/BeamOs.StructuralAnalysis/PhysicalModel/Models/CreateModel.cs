@@ -8,7 +8,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Models;
 [BeamOsRoute("models")]
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Authenticated)]
-public class CreateModel(CreateModelCommandHandler createModelCommandHandler)
+internal class CreateModel(CreateModelCommandHandler createModelCommandHandler)
     : BeamOsFromBodyResultBaseEndpoint<CreateModelRequest, ModelResponse>
 {
     public override async Task<Result<ModelResponse>> ExecuteRequestAsync(

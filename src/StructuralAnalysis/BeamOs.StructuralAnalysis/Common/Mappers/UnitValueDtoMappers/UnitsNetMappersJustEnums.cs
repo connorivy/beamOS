@@ -5,7 +5,7 @@ namespace BeamOs.CsSdk.Mappers.UnitValueDtoMappers;
 
 [Mapper(EnumMappingStrategy = EnumMappingStrategy.ByName)]
 [UseStaticMapper(typeof(UnitsNetMappers))]
-public static partial class UnitsNetMappersJustEnums
+internal static partial class UnitsNetMappersJustEnums
 {
     public static partial AngleUnit MapEnumToAngleUnit(this string unit);
 

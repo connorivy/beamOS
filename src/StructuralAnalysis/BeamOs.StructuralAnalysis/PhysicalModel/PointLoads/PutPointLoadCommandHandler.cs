@@ -10,7 +10,7 @@ using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads;
 
-public class PutPointLoadCommandHandler(
+internal class PutPointLoadCommandHandler(
     IPointLoadRepository pointLoadRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<PutPointLoadCommand, PointLoadResponse>
@@ -28,7 +28,7 @@ public class PutPointLoadCommandHandler(
     }
 }
 
-public class BatchPutPointLoadCommandHandler(
+internal class BatchPutPointLoadCommandHandler(
     IPointLoadRepository pointLoadRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 )
@@ -44,12 +44,12 @@ public class BatchPutPointLoadCommandHandler(
 [Mapper(PreferParameterlessConstructors = false)]
 [UseStaticMapper(typeof(UnitsNetMappers))]
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
-public static partial class PutPointLoadCommandMapper
+internal static partial class PutPointLoadCommandMapper
 {
     public static partial PointLoad ToDomainObject(this PutPointLoadCommand command);
 }
 
-public readonly struct PutPointLoadCommand : IModelResourceWithIntIdRequest<PointLoadData>
+internal readonly struct PutPointLoadCommand : IModelResourceWithIntIdRequest<PointLoadData>
 {
     public int Id { get; init; }
     public Guid ModelId { get; init; }
@@ -69,7 +69,7 @@ public readonly struct PutPointLoadCommand : IModelResourceWithIntIdRequest<Poin
     }
 }
 
-public readonly struct BatchPutPointLoadCommand : IModelResourceRequest<PutPointLoadRequest[]>
+internal readonly struct BatchPutPointLoadCommand : IModelResourceRequest<PutPointLoadRequest[]>
 {
     public Guid ModelId { get; init; }
     public PutPointLoadRequest[] Body { get; init; }

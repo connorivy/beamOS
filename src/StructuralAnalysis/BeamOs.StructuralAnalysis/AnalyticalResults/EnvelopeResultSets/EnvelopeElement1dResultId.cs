@@ -2,7 +2,7 @@ using BeamOs.Common.Domain.Models;
 
 namespace BeamOs.StructuralAnalysis.Domain.AnalyticalResults.EnvelopeResultSets;
 
-public readonly record struct EnvelopeElement1dResultId : IIntBasedId
+internal readonly record struct EnvelopeElement1dResultId : IIntBasedId
 {
     public int Id { get; init; }
 

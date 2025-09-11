@@ -3,7 +3,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 
-public class Material : BeamOsModelEntity<MaterialId>
+internal class Material : BeamOsModelEntity<MaterialId>
 {
     public Material(
         ModelId modelId,
@@ -27,7 +27,7 @@ public class Material : BeamOsModelEntity<MaterialId>
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }
 
-public sealed class MaterialProposal : BeamOsModelProposalEntity<MaterialProposalId, MaterialId>
+internal sealed class MaterialProposal : BeamOsModelProposalEntity<MaterialProposalId, MaterialId>
 {
     public MaterialProposal(
         ModelId modelId,

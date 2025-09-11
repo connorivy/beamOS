@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BeamOs.StructuralAnalysis.Application.OpenSees;
 
-public sealed class RunOpenSeesAnalysisCommandHandler(
+internal sealed class RunOpenSeesAnalysisCommandHandler(
     IModelRepository modelRepository,
     IResultSetRepository resultSetRepository,
     IStructuralAnalysisUnitOfWork unitOfWork,

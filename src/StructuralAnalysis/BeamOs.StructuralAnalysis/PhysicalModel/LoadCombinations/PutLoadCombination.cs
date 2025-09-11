@@ -8,7 +8,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.LoadCombinations
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "load-combinations/{id:int}")]
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-public class PutLoadCombination(PutLoadCombinationCommandHandler putLoadCombinationCommandHandler)
+internal class PutLoadCombination(PutLoadCombinationCommandHandler putLoadCombinationCommandHandler)
     : BeamOsModelResourceWithIntIdBaseEndpoint<
         PutLoadCombinationCommand,
         LoadCombinationData,

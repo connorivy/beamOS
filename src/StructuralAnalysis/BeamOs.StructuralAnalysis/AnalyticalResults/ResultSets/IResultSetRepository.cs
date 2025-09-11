@@ -4,7 +4,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.AnalyticalResults.ResultSets;
 
-public interface IResultSetRepository : IModelResourceRepository<ResultSetId, ResultSet>
+internal interface IResultSetRepository : IModelResourceRepository<ResultSetId, ResultSet>
 {
     public Task<int> DeleteAll(ModelId modelId, CancellationToken ct);
     public Task<ResultSet?> GetSingle(
@@ -15,7 +15,7 @@ public interface IResultSetRepository : IModelResourceRepository<ResultSetId, Re
     );
 }
 
-public sealed class InMemoryResultSetRepository(
+internal sealed class InMemoryResultSetRepository(
     InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage
 )
     : InMemoryModelResourceRepository<ResultSetId, ResultSet>(inMemoryModelRepositoryStorage),

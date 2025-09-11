@@ -4,7 +4,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair.Constraints;
 
-public sealed class ElementConstraintManager(
+internal sealed class ElementConstraintManager(
     ModelProposalNodeStore nodeStore,
     ModelProposalElement1dStore element1dStore
 )
@@ -126,7 +126,7 @@ public sealed class ElementConstraintManager(
     }
 }
 
-public interface IElementConstraint
+internal interface IElementConstraint
 {
     public bool IsSatisfied(
         Element1d element1d,

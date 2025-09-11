@@ -9,7 +9,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Nodes;
 [BeamOsEndpointType(Http.Delete)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 [BeamOsTag(BeamOsTags.AI)]
-public class DeleteNode(DeleteNodeCommandHandler deleteNodeCommandHandler)
+internal class DeleteNode(DeleteNodeCommandHandler deleteNodeCommandHandler)
     : BeamOsModelResourceQueryBaseEndpoint<ModelEntityResponse>
 {
     public override async Task<Result<ModelEntityResponse>> ExecuteRequestAsync(

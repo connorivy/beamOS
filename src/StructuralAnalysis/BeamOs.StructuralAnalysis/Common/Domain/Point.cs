@@ -5,7 +5,7 @@ using UnitsNet.Units;
 
 namespace BeamOs.StructuralAnalysis.Domain.Common;
 
-public class Point : BeamOSValueObject
+internal class Point : BeamOSValueObject
 {
     public Point(double x, double y, double z, LengthUnit lengthUnit)
     {

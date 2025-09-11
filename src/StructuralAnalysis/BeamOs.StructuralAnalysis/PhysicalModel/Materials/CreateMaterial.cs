@@ -8,7 +8,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Materials;
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "materials")]
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-public class CreateMaterial(CreateMaterialCommandHandler createMaterialCommandHandler)
+internal class CreateMaterial(CreateMaterialCommandHandler createMaterialCommandHandler)
     : BeamOsModelResourceBaseEndpoint<
         CreateMaterialCommand,
         CreateMaterialRequest,

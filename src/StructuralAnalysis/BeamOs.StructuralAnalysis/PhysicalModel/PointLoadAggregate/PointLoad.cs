@@ -6,7 +6,7 @@ using MathNet.Spatial.Euclidean;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
 
-public class PointLoad : BeamOsModelEntity<PointLoadId>
+internal class PointLoad : BeamOsModelEntity<PointLoadId>
 {
     public PointLoad(
         ModelId modelId,

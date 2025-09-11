@@ -9,7 +9,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.SectionProfiles;
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "section-profiles/{id:int}")]
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-public class PutSectionProfile(PutSectionProfileCommandHandler putSectionProfileCommandHandler)
+internal class PutSectionProfile(PutSectionProfileCommandHandler putSectionProfileCommandHandler)
     : BeamOsModelResourceWithIntIdBaseEndpoint<
         PutSectionProfileCommand,
         SectionProfileData,
@@ -25,7 +25,7 @@ public class PutSectionProfile(PutSectionProfileCommandHandler putSectionProfile
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "section-profiles")]
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-public class BatchPutSectionProfile(
+internal class BatchPutSectionProfile(
     BatchPutSectionProfileCommandHandler putSectionProfileCommandHandler
 )
     : BeamOsModelResourceBaseEndpoint<

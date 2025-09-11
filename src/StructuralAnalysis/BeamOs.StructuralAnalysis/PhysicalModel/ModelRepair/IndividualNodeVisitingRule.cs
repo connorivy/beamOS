@@ -4,7 +4,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
-public abstract class IndividualNodeVisitingRule(ModelRepairContext context) : IModelRepairRule
+internal abstract class IndividualNodeVisitingRule(ModelRepairContext context) : IModelRepairRule
 {
     public abstract ModelRepairRuleType RuleType { get; }
     protected ModelRepairContext Context => context;

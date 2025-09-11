@@ -3,7 +3,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCombinations;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCombinations;
 
-public readonly struct CreateLoadCombinationCommand : IModelResourceRequest<LoadCombinationData>
+internal readonly struct CreateLoadCombinationCommand : IModelResourceRequest<LoadCombinationData>
 {
     public Guid ModelId { get; init; }
     public LoadCombinationData Body { get; init; }

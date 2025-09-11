@@ -7,7 +7,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Models;
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash)]
 [BeamOsEndpointType(Http.Delete)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Owner)]
-public class DeleteModel(DeleteModelCommandHandler deleteModelCommandHandler)
+internal class DeleteModel(DeleteModelCommandHandler deleteModelCommandHandler)
     : BeamOsModelIdRequestBaseEndpoint<bool>
 {
     public override async Task<Result<bool>> ExecuteRequestAsync(

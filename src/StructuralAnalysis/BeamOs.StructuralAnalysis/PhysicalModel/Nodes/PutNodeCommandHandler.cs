@@ -11,7 +11,7 @@ using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 
-public class PutNodeCommandHandler(
+internal class PutNodeCommandHandler(
     // INodeRepository nodeRepository,
     INodeDefinitionRepository nodeDefinitionRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
@@ -30,7 +30,7 @@ public class PutNodeCommandHandler(
     }
 }
 
-public sealed class PutInternalNodeCommandHandler(
+internal sealed class PutInternalNodeCommandHandler(
     INodeDefinitionRepository nodeRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 )
@@ -51,7 +51,7 @@ public sealed class PutInternalNodeCommandHandler(
 [Mapper]
 [UseStaticMapper(typeof(UnitsNetMappers))]
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
-public static partial class PutNodeCommandMapper
+internal static partial class PutNodeCommandMapper
 {
     public static partial Node ToDomainObject(this PutNodeCommand command);
 
@@ -70,7 +70,7 @@ public static partial class PutNodeCommandMapper
     );
 }
 
-public readonly struct PutNodeCommand : IModelResourceWithIntIdRequest<NodeData>
+internal readonly struct PutNodeCommand : IModelResourceWithIntIdRequest<NodeData>
 {
     public int Id { get; init; }
     public Guid ModelId { get; init; }

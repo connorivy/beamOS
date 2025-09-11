@@ -3,7 +3,7 @@ using BeamOs.Common.Domain.Models;
 
 namespace BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.ShearForceDiagramAggregate.ValueObjects;
 
-public readonly record struct ShearForceDiagramId : IIntBasedId
+internal readonly record struct ShearForceDiagramId : IIntBasedId
 {
     public int Id { get; init; }
 

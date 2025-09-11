@@ -4,7 +4,7 @@ using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Domain.AnalyticalResults.EnvelopeResultSets;
 
-public sealed class ResultSetAndQuantity<TQuantity>(ResultSetId resultSetId, TQuantity value)
+internal sealed class ResultSetAndQuantity<TQuantity>(ResultSetId resultSetId, TQuantity value)
     : BeamOSValueObject
     where TQuantity : IQuantity
 {

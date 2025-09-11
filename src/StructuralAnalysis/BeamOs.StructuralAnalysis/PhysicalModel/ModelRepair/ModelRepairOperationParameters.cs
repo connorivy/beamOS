@@ -3,7 +3,7 @@ using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
-public readonly record struct ModelRepairOperationParameters
+internal readonly record struct ModelRepairOperationParameters
 {
     public required Length VeryRelaxedTolerance { get; init; }
     public required Length RelaxedTolerance { get; init; }

@@ -7,7 +7,7 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams;
 
-public sealed class DeflectedShapeShapeFunctionCalculator
+internal sealed class DeflectedShapeShapeFunctionCalculator
 {
     //private static double N1(double x, double l) =>
     //    1 - 3 * Math.Pow(x / l, 2) + 2 * Math.Pow(x / l, 3);

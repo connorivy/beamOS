@@ -6,7 +6,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 
-public class BatchPutNodeCommandHandler(
+internal class BatchPutNodeCommandHandler(
     INodeRepository repository,
     IStructuralAnalysisUnitOfWork unitOfWork
 )
@@ -19,13 +19,13 @@ public class BatchPutNodeCommandHandler(
         new PutNodeCommand(modelId, putRequest).ToDomainObject();
 }
 
-public readonly struct BatchPutNodeCommand : IModelResourceRequest<PutNodeRequest[]>
+internal readonly struct BatchPutNodeCommand : IModelResourceRequest<PutNodeRequest[]>
 {
     public Guid ModelId { get; init; }
     public PutNodeRequest[] Body { get; init; }
 }
 
-public class BatchPutInternalNodeCommandHandler(
+internal class BatchPutInternalNodeCommandHandler(
     IInternalNodeRepository repository,
     IStructuralAnalysisUnitOfWork unitOfWork
 )

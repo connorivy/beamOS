@@ -7,7 +7,7 @@ using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCases;
 
-public class CreateLoadCaseCommandHandler(
+internal class CreateLoadCaseCommandHandler(
     ILoadCaseRepository element1dRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<CreateLoadCaseCommand, LoadCaseContract>
@@ -28,7 +28,7 @@ public class CreateLoadCaseCommandHandler(
 [Mapper]
 [UseStaticMapper(typeof(UnitsNetMappers))]
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
-public static partial class CreateLoadCaseCommandMapper
+internal static partial class CreateLoadCaseCommandMapper
 {
     public static partial Domain.PhysicalModel.LoadCases.LoadCase ToDomainObject(
         this CreateLoadCaseCommand command
@@ -43,7 +43,7 @@ public static partial class CreateLoadCaseCommandMapper
     );
 }
 
-public readonly struct CreateLoadCaseCommand : IModelResourceRequest<LoadCaseData>
+internal readonly struct CreateLoadCaseCommand : IModelResourceRequest<LoadCaseData>
 {
     public Guid ModelId { get; init; }
     public LoadCaseData Body { get; init; }

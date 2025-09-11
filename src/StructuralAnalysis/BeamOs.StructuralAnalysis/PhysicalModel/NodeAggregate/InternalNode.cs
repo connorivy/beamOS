@@ -6,7 +6,7 @@ using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
-public class InternalNode : NodeDefinition
+internal class InternalNode : NodeDefinition
 {
     public InternalNode(
         ModelId modelId,

@@ -4,9 +4,9 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.AnalyticalResults.NodeResults;
 
-public interface INodeResultRepository : IAnalyticalResultRepository<NodeId, NodeResult> { }
+internal interface INodeResultRepository : IAnalyticalResultRepository<NodeId, NodeResult> { }
 
-public class InMemoryNodeResultRepository(
+internal class InMemoryNodeResultRepository(
     InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage
 )
     : InMemoryAnalyticalResultRepository<NodeId, NodeResult>(inMemoryModelRepositoryStorage),

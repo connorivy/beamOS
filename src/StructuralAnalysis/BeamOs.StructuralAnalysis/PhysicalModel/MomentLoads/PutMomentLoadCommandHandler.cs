@@ -10,7 +10,7 @@ using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.MomentLoads;
 
-public class PutMomentLoadCommandHandler(
+internal class PutMomentLoadCommandHandler(
     IMomentLoadRepository momentLoadRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<PutMomentLoadCommand, MomentLoadResponse>
@@ -28,14 +28,14 @@ public class PutMomentLoadCommandHandler(
     }
 }
 
-public class BatchPutMomentLoadCommandHandler(
+internal class BatchPutMomentLoadCommandHandler(
     IMomentLoadRepository momentLoadRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 )
     : BatchPutCommandHandler<
         MomentLoadId,
         MomentLoad,
-        BatchPutMomentLoadCommand,
+        BatchPutMomentLoadRequest,
         PutMomentLoadRequest
     >(momentLoadRepository, unitOfWork)
 {
@@ -48,14 +48,14 @@ public class BatchPutMomentLoadCommandHandler(
 [Mapper]
 [UseStaticMapper(typeof(UnitsNetMappers))]
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
-public static partial class PutMomentLoadCommandMapper
+internal static partial class PutMomentLoadCommandMapper
 {
     public static partial MomentLoad ToDomainObject(this PutMomentLoadCommand command);
 
     public static partial MomentLoadResponse ToResponse(this PutMomentLoadCommand command);
 }
 
-public readonly struct PutMomentLoadCommand : IModelResourceWithIntIdRequest<MomentLoadData>
+internal readonly struct PutMomentLoadCommand : IModelResourceWithIntIdRequest<MomentLoadData>
 {
     public int Id { get; init; }
     public Guid ModelId { get; init; }
@@ -73,10 +73,4 @@ public readonly struct PutMomentLoadCommand : IModelResourceWithIntIdRequest<Mom
         this.ModelId = modelId;
         this.Body = putMomentLoadRequest;
     }
-}
-
-public readonly struct BatchPutMomentLoadCommand : IModelResourceRequest<PutMomentLoadRequest[]>
-{
-    public Guid ModelId { get; init; }
-    public PutMomentLoadRequest[] Body { get; init; }
 }

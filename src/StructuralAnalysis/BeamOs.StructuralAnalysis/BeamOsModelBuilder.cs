@@ -2,7 +2,7 @@ using BeamOs.StructuralAnalysis.Api;
 
 namespace BeamOs.StructuralAnalysis.Sdk;
 
-public class BeamOsModelBuilder(IBeamOsModel model, IStructuralAnalysisApiClientV2 apiClient)
+internal class BeamOsModelBuilder(IBeamOsModel model, IStructuralAnalysisApiClientV2 apiClient)
 {
     private static readonly AsyncGuidLockManager LockManager = new();
 

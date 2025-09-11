@@ -7,7 +7,7 @@ using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCombinations;
 
-public class CreateLoadCombinationCommandHandler(
+internal class CreateLoadCombinationCommandHandler(
     ILoadCombinationRepository element1dRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<CreateLoadCombinationCommand, LoadCombinationContract>
@@ -28,7 +28,7 @@ public class CreateLoadCombinationCommandHandler(
 [Mapper]
 [UseStaticMapper(typeof(UnitsNetMappers))]
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
-public static partial class CreateLoadCombinationCommandMapper
+internal static partial class CreateLoadCombinationCommandMapper
 {
     public static partial LoadCombination ToDomainObject(this CreateLoadCombinationCommand command);
 

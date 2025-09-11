@@ -21,7 +21,7 @@ namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair.Rules;
 /// - If the element is axis-aligned (X, Y, or Z constant), use strict tolerance.
 /// - If not, allow greater rotational tolerance for extension.
 /// </summary>
-public sealed class ExtendElement1dsInPlaneToNodeRule(ModelRepairContext context)
+internal sealed class ExtendElement1dsInPlaneToNodeRule(ModelRepairContext context)
     : BeamOrBraceVisitingRule(context)
 {
     public override ModelRepairRuleType RuleType => ModelRepairRuleType.Favorable;

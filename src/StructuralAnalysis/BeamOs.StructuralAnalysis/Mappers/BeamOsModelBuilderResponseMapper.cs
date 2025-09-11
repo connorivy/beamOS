@@ -15,7 +15,7 @@ namespace BeamOs.StructuralAnalysis.CsSdk.Mappers;
 
 [Mapper]
 [UseStaticMapper(typeof(UnitsNetMappers))]
-public partial class BeamOsModelBuilderResponseMapper(Guid modelId)
+internal partial class BeamOsModelBuilderResponseMapper(Guid modelId)
 {
     private Guid GetModelId() => modelId;
 
@@ -45,7 +45,7 @@ public partial class BeamOsModelBuilderResponseMapper(Guid modelId)
 
 [Mapper]
 [UseStaticMapper(typeof(UnitsNetMappers))]
-public static partial class BeamOsModelBuilderDtoMapper
+internal static partial class BeamOsModelBuilderDtoMapper
 {
     public static partial BeamOsModelBuilderDto ToDto(this BeamOsStaticModelBase builder);
 }

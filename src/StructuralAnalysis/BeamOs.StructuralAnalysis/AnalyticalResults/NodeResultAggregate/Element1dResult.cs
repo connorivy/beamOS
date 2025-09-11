@@ -10,7 +10,7 @@ using UnitsNet.Units;
 
 namespace BeamOs.StructuralAnalysis.Domain.AnalyticalResults.NodeResultAggregate;
 
-public class Element1dResult : BeamOsAnalyticalResultEntity<Element1dId>
+internal class Element1dResult : BeamOsAnalyticalResultEntity<Element1dId>
 {
     public Element1dResult(ModelId modelId, ResultSetId resultSetId, Element1dId element1dId)
         : base(element1dId, resultSetId, modelId) { }
@@ -39,7 +39,7 @@ public class Element1dResult : BeamOsAnalyticalResultEntity<Element1dId>
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }
 
-public readonly record struct DeflectionDiagrams(
+internal readonly record struct DeflectionDiagrams(
     Element1dId Element1dId,
     int NumSteps,
     double[] Offsets

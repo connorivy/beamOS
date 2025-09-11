@@ -8,7 +8,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.MomentLoads;
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "moment-loads")]
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-public class CreateMomentLoad(CreateMomentLoadCommandHandler createMomentLoadCommandHandler)
+internal class CreateMomentLoad(CreateMomentLoadCommandHandler createMomentLoadCommandHandler)
     : BeamOsModelResourceBaseEndpoint<
         CreateMomentLoadCommand,
         CreateMomentLoadRequest,

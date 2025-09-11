@@ -8,7 +8,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.LoadCombinations
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "load-combinations/{id:int}")]
 [BeamOsEndpointType(Http.Delete)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-public class DeleteLoadCombination(
+internal class DeleteLoadCombination(
     DeleteLoadCombinationCommandHandler deleteLoadCombinationCommandHandler
 ) : BeamOsModelResourceQueryBaseEndpoint<ModelEntityResponse>
 {

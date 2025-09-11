@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace BeamOs.StructuralAnalysis.Sdk;
 
 // [DotWrapExpose]
-public static class ApiClientFactory
+internal static class ApiClientFactory
 {
     public static BeamOsApiClient CreateRemote(string apiToken)
     {
@@ -30,6 +30,7 @@ public static class ApiClientFactory
             "InMemory"
         );
 
+        InMemoryApiClient2 x = default;
         return new BeamOsApiClient(apiClient);
         // return new BeamOsModelBuilder(model, apiClient);
     }
@@ -46,7 +47,7 @@ public static class ApiClientFactory
 }
 
 // [DotWrapExpose]
-public sealed class BeamOsApiClient : BeamOsFluentApiClient
+internal sealed class BeamOsApiClient : BeamOsFluentApiClient
 // IDisposable
 {
     internal BeamOsApiClient(IStructuralAnalysisApiClientV2 apiClient)
@@ -59,7 +60,7 @@ public sealed class BeamOsApiClient : BeamOsFluentApiClient
 }
 
 // [DotWrapExpose]
-public sealed class BeamOsResultApiClient : BeamOsFluentResultApiClient
+internal sealed class BeamOsResultApiClient : BeamOsFluentResultApiClient
 {
     internal BeamOsResultApiClient(IStructuralAnalysisApiClientV2 apiClient)
         : base(apiClient) { }

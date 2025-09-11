@@ -8,7 +8,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.LoadCases;
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "load-cases/{id:int}")]
 [BeamOsEndpointType(Http.Get)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Reviewer)]
-public class GetLoadCase(GetLoadCaseCommandHandler getLoadCaseCommandHandler)
+internal class GetLoadCase(GetLoadCaseCommandHandler getLoadCaseCommandHandler)
     : BeamOsModelResourceQueryBaseEndpoint<LoadCaseContract>
 {
     public override async Task<Result<LoadCaseContract>> ExecuteRequestAsync(

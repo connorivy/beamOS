@@ -3,7 +3,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Materials;
 
-public interface IMaterialRepository : IModelResourceRepository<MaterialId, Material>
+internal interface IMaterialRepository : IModelResourceRepository<MaterialId, Material>
 {
     //public Task<List<Material>> GetMaterialsInModel(
     //    ModelId modelId,
@@ -11,7 +11,7 @@ public interface IMaterialRepository : IModelResourceRepository<MaterialId, Mate
     //);
 }
 
-public class InMemoryMaterialRepository(
+internal class InMemoryMaterialRepository(
     InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage
 )
     : InMemoryModelResourceRepository<MaterialId, Material>(inMemoryModelRepositoryStorage),

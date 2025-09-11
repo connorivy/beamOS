@@ -8,7 +8,7 @@ using UnitsNet.Units;
 
 namespace BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.Common;
 
-public class DiagramConsistentInterval : BeamOsEntity<DiagramConsistantIntervalId>
+internal class DiagramConsistentInterval : BeamOsEntity<DiagramConsistantIntervalId>
 {
     public DiagramConsistentInterval(
         Length startLocation,
@@ -52,7 +52,7 @@ public class DiagramConsistentInterval : BeamOsEntity<DiagramConsistantIntervalI
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }
 
-public class ShearDiagramConsistentInterval : DiagramConsistentInterval
+internal class ShearDiagramConsistentInterval : DiagramConsistentInterval
 {
     public ShearForceDiagramId ShearForceDiagramId { get; set; }
 
@@ -85,7 +85,7 @@ public class ShearDiagramConsistentInterval : DiagramConsistentInterval
         : base(default, default, default) { }
 }
 
-public class MomentDiagramConsistentInterval : DiagramConsistentInterval
+internal class MomentDiagramConsistentInterval : DiagramConsistentInterval
 {
     public MomentDiagramId MomentForceDiagramId { get; set; }
 

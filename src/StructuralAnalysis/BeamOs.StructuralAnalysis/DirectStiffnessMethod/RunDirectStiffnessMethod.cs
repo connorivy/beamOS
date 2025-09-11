@@ -9,7 +9,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.DirectStiffnessMethod;
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "analyze/dsm")]
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-public class RunDirectStiffnessMethod(RunDirectStiffnessMethodCommandHandler dsmCommandHandler)
+internal class RunDirectStiffnessMethod(RunDirectStiffnessMethodCommandHandler dsmCommandHandler)
     : BeamOsModelResourceBaseEndpoint<
         ModelResourceRequest<RunDsmRequest>,
         RunDsmRequest,

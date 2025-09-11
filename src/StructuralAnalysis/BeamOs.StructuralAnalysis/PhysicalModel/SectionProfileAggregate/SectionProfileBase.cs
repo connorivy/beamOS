@@ -4,7 +4,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 
-public abstract class SectionProfileInfoBase : BeamOsModelEntity<SectionProfileId>
+internal abstract class SectionProfileInfoBase : BeamOsModelEntity<SectionProfileId>
 {
     public const string TypeDiscriminator = "SectionProfileInfoType";
 

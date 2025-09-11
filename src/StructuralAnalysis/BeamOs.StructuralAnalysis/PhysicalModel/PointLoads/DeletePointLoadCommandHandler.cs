@@ -3,7 +3,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads;
 
-public class DeletePointLoadCommandHandler(
+internal class DeletePointLoadCommandHandler(
     IPointLoadRepository repo,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : DeleteModelEntityCommandHandler<PointLoadId, PointLoad>(repo, unitOfWork) { }

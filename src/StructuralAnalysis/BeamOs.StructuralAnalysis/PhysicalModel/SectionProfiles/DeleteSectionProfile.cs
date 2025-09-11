@@ -8,7 +8,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.SectionProfiles;
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "section-profiles/{id:int}")]
 [BeamOsEndpointType(Http.Delete)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-public class DeleteSectionProfile(
+internal class DeleteSectionProfile(
     DeleteSectionProfileCommandHandler deleteSectionProfileCommandHandler
 ) : BeamOsModelResourceQueryBaseEndpoint<ModelEntityResponse>
 {

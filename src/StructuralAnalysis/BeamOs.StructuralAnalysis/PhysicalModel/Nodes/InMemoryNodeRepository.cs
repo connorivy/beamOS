@@ -4,7 +4,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 
-public class InMemoryNodeRepository(InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage)
+internal class InMemoryNodeRepository(InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage)
     : InMemoryModelResourceRepository<NodeId, Node>(inMemoryModelRepositoryStorage),
         INodeRepository
 {
@@ -59,13 +59,13 @@ public class InMemoryNodeRepository(InMemoryModelRepositoryStorage inMemoryModel
     // }
 }
 
-public class InMemoryNodeDefinitionRepository(
+internal class InMemoryNodeDefinitionRepository(
     InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage
 )
     : InMemoryModelResourceRepository<NodeId, NodeDefinition>(inMemoryModelRepositoryStorage),
         INodeDefinitionRepository { }
 
-public class InMemoryInternalNodeRepository(
+internal class InMemoryInternalNodeRepository(
     InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage
 )
     : InMemoryModelResourceRepository<NodeId, InternalNode>(inMemoryModelRepositoryStorage),

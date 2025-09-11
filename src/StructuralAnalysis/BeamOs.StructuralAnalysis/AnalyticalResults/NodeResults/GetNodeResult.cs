@@ -8,7 +8,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.AnalyticalResults.NodeResults;
 [BeamOsRoute(RouteConstants.LoadCombinations + "{loadCombinationId:int}/nodes/{id:int}")]
 [BeamOsEndpointType(Http.Get)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Reviewer)]
-public class GetNodeResult(GetNodeResultQueryHandler getNodeResultCommandHandler)
+internal class GetNodeResult(GetNodeResultQueryHandler getNodeResultCommandHandler)
     : BeamOsAnalyticalResultResourceQueryBaseEndpoint<NodeResultResponse>
 {
     public override async Task<Result<NodeResultResponse>> ExecuteRequestAsync(
@@ -20,7 +20,7 @@ public class GetNodeResult(GetNodeResultQueryHandler getNodeResultCommandHandler
 [BeamOsRoute(RouteConstants.LoadCombinations + "{loadCombinationId:int}/nodes")]
 [BeamOsEndpointType(Http.Get)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Reviewer)]
-public class GetNodeResults(GetNodeResultsQueryHandler getNodeResultCommandHandler)
+internal class GetNodeResults(GetNodeResultsQueryHandler getNodeResultCommandHandler)
     : BeamOsAnalyticalResultQueryBaseEndpoint<IDictionary<int, NodeResultResponse>>
 {
     public override async Task<Result<IDictionary<int, NodeResultResponse>>> ExecuteRequestAsync(

@@ -3,7 +3,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair;
 
-public class Element1dExtendOrShortenRule(ModelRepairContext context)
+internal class Element1dExtendOrShortenRule(ModelRepairContext context)
     : IndividualNodeVisitingRule(context)
 {
     public override ModelRepairRuleType RuleType => ModelRepairRuleType.Standard;

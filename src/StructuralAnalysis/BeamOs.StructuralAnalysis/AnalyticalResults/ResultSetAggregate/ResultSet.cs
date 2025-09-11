@@ -10,7 +10,7 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 
-public class ResultSet : BeamOsModelEntity<ResultSetId>
+internal class ResultSet : BeamOsModelEntity<ResultSetId>
 {
     // public ResultSet(ModelId modelId, LoadCombinationId loadCombinationId, ResultSetId? id = null)
     //     : base(id ?? new(), modelId)

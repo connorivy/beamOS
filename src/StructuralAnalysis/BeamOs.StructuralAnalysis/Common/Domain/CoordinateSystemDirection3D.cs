@@ -27,7 +27,7 @@ public enum RotationalCoordinateDirection3D
     AboutZ = 6,
 }
 
-public static class CoordinateSystemDirection3dExtensions
+internal static class CoordinateSystemDirection3dExtensions
 {
     public static bool IsLinearDirection(this CoordinateSystemDirection3D coord)
     {

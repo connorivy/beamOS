@@ -1,8 +1,8 @@
-﻿using BeamOs.Common.Domain.Models;
+using BeamOs.Common.Domain.Models;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
-public class ModelSettings : BeamOSValueObject
+internal class ModelSettings : BeamOSValueObject
 {
     public UnitSettings UnitSettings { get; private set; }
     public AnalysisSettings AnalysisSettings { get; private set; }

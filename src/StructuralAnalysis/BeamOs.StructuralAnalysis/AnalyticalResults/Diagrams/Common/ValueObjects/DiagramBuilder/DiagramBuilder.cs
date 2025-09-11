@@ -9,7 +9,7 @@ using UnitsNet.Units;
 
 namespace BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.Common.ValueObjects.DiagramBuilder;
 
-public class DiagramBuilder
+internal class DiagramBuilder
 {
     private readonly Length elementLength;
     private readonly Length equalityTolerance;
@@ -417,7 +417,7 @@ public class DiagramBuilder
     #endregion
 }
 
-public class DiagramPointValue
+internal class DiagramPointValue
 {
     public DiagramPointValue(Length location, double value)
     {
@@ -429,7 +429,7 @@ public class DiagramPointValue
     public double Value { get; set; }
 }
 
-public class DiagramDistributedValue
+internal class DiagramDistributedValue
 {
     public DiagramDistributedValue(Length startLocation, Length endLocation, Polynomial polynomial)
     {

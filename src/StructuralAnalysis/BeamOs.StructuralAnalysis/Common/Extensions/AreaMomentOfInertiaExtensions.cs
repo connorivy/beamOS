@@ -2,7 +2,7 @@ using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Domain.Common.Extensions;
 
-public static class AreaMomentOfInertiaExtensions
+internal static class AreaMomentOfInertiaExtensions
 {
     public static Length DivideBy(this AreaMomentOfInertia areaMomentOfInertia, Volume volume)
     {

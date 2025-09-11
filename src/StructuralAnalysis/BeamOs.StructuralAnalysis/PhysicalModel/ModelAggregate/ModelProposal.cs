@@ -8,7 +8,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
-public class ModelProposal : BeamOsModelEntity<ModelProposalId>
+internal class ModelProposal : BeamOsModelEntity<ModelProposalId>
 {
     public ModelProposal(
         ModelId modelId,
@@ -60,7 +60,7 @@ public class ModelProposal : BeamOsModelEntity<ModelProposalId>
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }
 
-public sealed class ProposalIssue : BeamOsModelEntity<ProposalIssueId>
+internal sealed class ProposalIssue : BeamOsModelEntity<ProposalIssueId>
 {
     public ProposalIssue(
         ModelId modelId,

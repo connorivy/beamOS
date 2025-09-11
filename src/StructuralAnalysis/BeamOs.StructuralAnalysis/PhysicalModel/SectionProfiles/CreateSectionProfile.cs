@@ -8,7 +8,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.SectionProfiles;
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "section-profiles")]
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-public class CreateSectionProfile(
+internal class CreateSectionProfile(
     CreateSectionProfileCommandHandler createSectionProfileCommandHandler
 )
     : BeamOsModelResourceBaseEndpoint<

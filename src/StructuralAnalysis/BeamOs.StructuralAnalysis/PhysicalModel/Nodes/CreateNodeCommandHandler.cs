@@ -9,7 +9,7 @@ using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 
-public class CreateNodeCommandHandler(
+internal class CreateNodeCommandHandler(
     // INodeDefinitionRepository nodeRepository,
     INodeRepository nodeRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
@@ -28,7 +28,7 @@ public class CreateNodeCommandHandler(
     }
 }
 
-public sealed class CreateInternalNodeCommandHandler(
+internal sealed class CreateInternalNodeCommandHandler(
     INodeDefinitionRepository nodeRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<ModelResourceRequest<CreateInternalNodeRequest>, InternalNodeContract>
@@ -49,7 +49,7 @@ public sealed class CreateInternalNodeCommandHandler(
 [Mapper]
 [UseStaticMapper(typeof(UnitsNetMappers))]
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
-public static partial class CreateNodeCommandMapper
+internal static partial class CreateNodeCommandMapper
 {
     public static partial Node ToDomainObject(this CreateNodeCommand command);
 
@@ -68,7 +68,7 @@ public static partial class CreateNodeCommandMapper
     public static partial InternalNodeContract ToResponse(this InternalNode entity);
 }
 
-public readonly struct CreateNodeCommand : IModelResourceRequest<CreateNodeRequest>
+internal readonly struct CreateNodeCommand : IModelResourceRequest<CreateNodeRequest>
 {
     public Guid ModelId { get; init; }
     public CreateNodeRequest Body { get; init; }

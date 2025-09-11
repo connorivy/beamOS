@@ -1,4 +1,4 @@
-﻿using BeamOs.Common.Api;
+using BeamOs.Common.Api;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
@@ -8,7 +8,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Models;
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash)]
 [BeamOsEndpointType(Http.Put)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-public class PutModel(PutModelCommandHandler putModelCommandHandler)
+internal class PutModel(PutModelCommandHandler putModelCommandHandler)
     : BeamOsModelResourceBaseEndpoint<
         ModelResourceRequest<ModelInfoData>,
         ModelInfoData,

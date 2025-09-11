@@ -2,7 +2,7 @@ using BeamOs.Common.Domain.Models;
 
 namespace BeamOs.StructuralAnalysis.Domain.AnalyticalResults.Diagrams.Common.ValueObjects;
 
-public class DiagramValueAtLocation : BeamOSValueObject
+internal class DiagramValueAtLocation : BeamOSValueObject
 {
     public DiagramValueAtLocation(
         double valueOnLeft,

@@ -8,7 +8,7 @@ using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.AnalyticalResults.ResultSets;
 
-public class GetResultSetQueryHandler(IResultSetRepository resultSetRepository)
+internal class GetResultSetQueryHandler(IResultSetRepository resultSetRepository)
     : IQueryHandler<IModelEntity, ResultSetResponse>
 {
     public async Task<Result<ResultSetResponse>> ExecuteAsync(

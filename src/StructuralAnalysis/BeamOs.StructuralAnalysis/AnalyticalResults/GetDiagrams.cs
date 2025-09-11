@@ -8,7 +8,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.AnalyticalResults;
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "result-sets/{id:int}/diagrams")]
 [BeamOsEndpointType(Http.Get)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Reviewer)]
-public class GetDiagrams(GetDiagramsCommandHandler getDiagramsCommandHandler)
+internal class GetDiagrams(GetDiagramsCommandHandler getDiagramsCommandHandler)
     : BeamOsBaseEndpoint<GetDiagramsRequest, AnalyticalResultsResponse>
 {
     public override async Task<Result<AnalyticalResultsResponse>> ExecuteRequestAsync(
@@ -26,7 +26,7 @@ public class GetDiagrams(GetDiagramsCommandHandler getDiagramsCommandHandler)
         );
 }
 
-public readonly record struct GetDiagramsRequest : IHasModelId
+internal readonly record struct GetDiagramsRequest : IHasModelId
 {
     [FromRoute]
     public Guid ModelId { get; init; }

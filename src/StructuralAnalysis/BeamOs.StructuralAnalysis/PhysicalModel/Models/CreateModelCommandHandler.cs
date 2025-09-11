@@ -14,7 +14,7 @@ using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 
-public class CreateModelCommandHandler(
+internal class CreateModelCommandHandler(
     IModelRepository modelRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<CreateModelRequest, ModelResponse>
@@ -42,7 +42,7 @@ public class CreateModelCommandHandler(
 [Mapper]
 [UseStaticMapper(typeof(UnitsNetMappers))]
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
-public static partial class CreateModelCommandMapper
+internal static partial class CreateModelCommandMapper
 {
     public static partial Model ToDomainObject(this CreateModelRequest command);
 
@@ -53,7 +53,7 @@ public static partial class CreateModelCommandMapper
 [Mapper]
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
 [UseStaticMapper(typeof(UnitsNetMappersJustEnums))]
-public partial class ModelToResponseMapper : AbstractMapperProvidedUnits<Model, ModelResponse>
+internal partial class ModelToResponseMapper : AbstractMapperProvidedUnits<Model, ModelResponse>
 {
     // [Obsolete()]
     // public ModelToResponseMapper()

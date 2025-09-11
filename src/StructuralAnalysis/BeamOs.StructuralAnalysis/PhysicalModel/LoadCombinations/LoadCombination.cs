@@ -4,7 +4,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinations;
 
-public class LoadCombination : BeamOsModelEntity<LoadCombinationId>
+internal class LoadCombination : BeamOsModelEntity<LoadCombinationId>
 {
     public LoadCombination(ModelId modelId, LoadCombinationId? id = null)
         : base(id ?? new(), modelId) { }

@@ -5,7 +5,7 @@ using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 
-public interface IHydratedElement1d
+internal interface IHydratedElement1d
 {
     public Area Area { get; }
     public Element1dId Element1dId { get; }

@@ -10,7 +10,7 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Models;
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "proposals")]
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Proposer)]
-public class CreateModelProposal(CreateModelProposalCommandHandler createProposalCommandHandler)
+internal class CreateModelProposal(CreateModelProposalCommandHandler createProposalCommandHandler)
     : BeamOsModelResourceBaseEndpoint<
         ModelResourceRequest<ModelProposalData>,
         ModelProposalData,
@@ -26,7 +26,7 @@ public class CreateModelProposal(CreateModelProposalCommandHandler createProposa
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "proposals")]
 [BeamOsEndpointType(Http.Get)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Reviewer)]
-public class GetModelProposals(GetModelProposalsQueryHandler getModelProposalQueryHandler)
+internal class GetModelProposals(GetModelProposalsQueryHandler getModelProposalQueryHandler)
     : BeamOsModelIdRequestBaseEndpoint<ICollection<ModelProposalInfo>>
 {
     public override async Task<Result<ICollection<ModelProposalInfo>>> ExecuteRequestAsync(
@@ -38,7 +38,7 @@ public class GetModelProposals(GetModelProposalsQueryHandler getModelProposalQue
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "proposals/{id:int}")]
 [BeamOsEndpointType(Http.Get)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Reviewer)]
-public class GetModelProposal(GetModelProposalQueryHandler getModelProposalQueryHandler)
+internal class GetModelProposal(GetModelProposalQueryHandler getModelProposalQueryHandler)
     : BeamOsModelResourceQueryBaseEndpoint<ModelProposalResponse>
 {
     public override async Task<Result<ModelProposalResponse>> ExecuteRequestAsync(
@@ -50,7 +50,7 @@ public class GetModelProposal(GetModelProposalQueryHandler getModelProposalQuery
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "proposals/{id:int}/accept")]
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-public class AcceptModelProposal(
+internal class AcceptModelProposal(
     AcceptModelProposalCommandHandler acceptModelProposalCommandHandler
 )
     : BeamOsModelResourceWithIntIdBaseEndpoint<
@@ -68,7 +68,7 @@ public class AcceptModelProposal(
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "proposals/{id:int}/reject")]
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-public class RejectModelProposal(RejectModelProposalCommandHandler rejectProposalCommandHandler)
+internal class RejectModelProposal(RejectModelProposalCommandHandler rejectProposalCommandHandler)
     : BeamOsModelResourceQueryBaseEndpoint<bool>
 {
     public override async Task<Result<bool>> ExecuteRequestAsync(

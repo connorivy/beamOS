@@ -10,7 +10,7 @@ using UnitsNet.Units;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
 
-public class CreateSectionProfileCommandHandler(
+internal class CreateSectionProfileCommandHandler(
     ISectionProfileRepository sectionProfileRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<CreateSectionProfileCommand, SectionProfileResponse>
@@ -31,7 +31,7 @@ public class CreateSectionProfileCommandHandler(
 [Mapper]
 [UseStaticMapper(typeof(UnitsNetMappers))]
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
-public static partial class CreateSectionProfileCommandMapper
+internal static partial class CreateSectionProfileCommandMapper
 {
     public static partial SectionProfile ToDomainObject(this CreateSectionProfileCommand command);
 
@@ -80,7 +80,7 @@ public static partial class CreateSectionProfileCommandMapper
     );
 }
 
-public readonly struct CreateSectionProfileCommand
+internal readonly struct CreateSectionProfileCommand
     : IModelResourceRequest<CreateSectionProfileRequest>
 {
     public Guid ModelId { get; init; }

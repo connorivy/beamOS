@@ -2,7 +2,7 @@ using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Domain.Common.Extensions;
 
-public static class PressureExtensions
+internal static class PressureExtensions
 {
     public static ForcePerLength MultiplyBy(this Pressure pressure, Length length)
     {
@@ -20,7 +20,7 @@ public static class PressureExtensions
     }
 }
 
-public static class TorqueExtensions
+internal static class TorqueExtensions
 {
     public static Volume DivideBy(this Torque torque, Pressure pressure)
     {

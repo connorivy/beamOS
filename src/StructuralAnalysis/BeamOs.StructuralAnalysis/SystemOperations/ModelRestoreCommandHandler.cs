@@ -5,7 +5,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 
 namespace BeamOs.StructuralAnalysis.Application.SystemOperations;
 
-public sealed class ModelRestoreCommandHandler(GetModelCommandHandler getModelCommandHandler)
+internal sealed class ModelRestoreCommandHandler(GetModelCommandHandler getModelCommandHandler)
     : ICommandHandler<ModelResourceRequest<DateTimeOffset>, ModelResponse>
 {
     public async Task<Result<ModelResponse>> ExecuteAsync(

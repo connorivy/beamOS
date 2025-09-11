@@ -16,7 +16,7 @@ namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelRepair.Rules;
 ///                   o (Element1d B)
 ///
 /// </summary>
-public sealed class ExtendCoplanarElement1dsToJoinNodes(ModelRepairContext context)
+internal sealed class ExtendCoplanarElement1dsToJoinNodes(ModelRepairContext context)
     : BeamOrBraceVisitingRule(context)
 {
     public override ModelRepairRuleType RuleType => ModelRepairRuleType.Standard;

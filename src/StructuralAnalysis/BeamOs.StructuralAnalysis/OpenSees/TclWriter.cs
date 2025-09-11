@@ -12,7 +12,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.OpenSees;
 
-public class TclWriter
+internal class TclWriter
 {
     private readonly SortedSet<int> nodeIdsInOrder = [];
     private readonly SortedSet<int> element1dIdsInOrder = [];
@@ -343,4 +343,4 @@ public enum OpenseesObjectTypes
     Node,
 }
 
-public record TclWriterOptions();
+internal record TclWriterOptions();

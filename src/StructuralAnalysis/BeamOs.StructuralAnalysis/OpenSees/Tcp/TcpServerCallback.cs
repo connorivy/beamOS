@@ -2,7 +2,7 @@ using System.Net.Sockets;
 
 namespace BeamOs.StructuralAnalysis.Domain.OpenSees.Tcp;
 
-public class TcpServerCallback
+internal class TcpServerCallback
 {
     private static readonly TaskCompletionSource Tcs = new();
     public static Task Result => Tcs.Task;

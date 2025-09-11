@@ -9,7 +9,7 @@ using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.MomentLoads;
 
-public class CreateMomentLoadCommandHandler(
+internal class CreateMomentLoadCommandHandler(
     IMomentLoadRepository momentLoadRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<CreateMomentLoadCommand, MomentLoadResponse>
@@ -30,14 +30,14 @@ public class CreateMomentLoadCommandHandler(
 [Mapper(PreferParameterlessConstructors = false)]
 [UseStaticMapper(typeof(UnitsNetMappers))]
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
-public static partial class CreateMomentLoadCommandMapper
+internal static partial class CreateMomentLoadCommandMapper
 {
     public static partial MomentLoad ToDomainObject(this CreateMomentLoadCommand command);
 
     public static partial MomentLoadResponse ToResponse(this MomentLoad entity);
 }
 
-public readonly struct CreateMomentLoadCommand : IModelResourceRequest<CreateMomentLoadRequest>
+internal readonly struct CreateMomentLoadCommand : IModelResourceRequest<CreateMomentLoadRequest>
 {
     public Guid ModelId { get; init; }
     public CreateMomentLoadRequest Body { get; init; }

@@ -1,8 +1,8 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 
 namespace BeamOs.StructuralAnalysis.Sdk;
 
-public sealed class AsyncGuidLockManager : IDisposable
+internal sealed class AsyncGuidLockManager : IDisposable
 {
     private readonly ConcurrentDictionary<Guid, SemaphoreSlim> semaphores = new();
 

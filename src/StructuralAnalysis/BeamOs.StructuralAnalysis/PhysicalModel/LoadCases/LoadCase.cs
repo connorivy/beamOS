@@ -3,7 +3,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCases;
 
-public class LoadCase : BeamOsModelEntity<LoadCaseId>
+internal class LoadCase : BeamOsModelEntity<LoadCaseId>
 {
     public LoadCase(ModelId modelId, string name, LoadCaseId? id = null)
         : base(id ?? new(), modelId)

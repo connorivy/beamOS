@@ -11,7 +11,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.AnalyticalResults;
 
-public sealed class GetDiagramsCommandHandler(
+internal sealed class GetDiagramsCommandHandler(
     IModelRepository modelRepository,
     IResultSetRepository resultSetRepository
 ) : ICommandHandler<GetDiagramsCommand, AnalyticalResultsResponse>
@@ -81,7 +81,7 @@ public sealed class GetDiagramsCommandHandler(
     }
 }
 
-public readonly struct GetDiagramsCommand : IHasModelId
+internal readonly struct GetDiagramsCommand : IHasModelId
 {
     public Guid ModelId { get; init; }
 

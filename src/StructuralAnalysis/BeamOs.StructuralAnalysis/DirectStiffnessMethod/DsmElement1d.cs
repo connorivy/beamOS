@@ -11,7 +11,7 @@ using UnitsNet.Units;
 
 namespace BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 
-public class DsmElement1d(
+internal class DsmElement1d(
     Element1dId element1dId,
     Angle sectionProfileRotation,
     Pressure modulusOfElasticity,

@@ -7,7 +7,7 @@ using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Domain.AnalyticalResults.EnvelopeResultSets;
 
-public sealed class EnvelopeElement1dResult : BeamOsModelEntity<EnvelopeElement1dResultId>
+internal sealed class EnvelopeElement1dResult : BeamOsModelEntity<EnvelopeElement1dResultId>
 {
     public EnvelopeElement1dResult(
         ModelId modelId,

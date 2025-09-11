@@ -3,7 +3,7 @@ using BeamOs.Common.Contracts;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 
-public class GetInternalNodeCommandHandler(INodeDefinitionRepository repository)
+internal class GetInternalNodeCommandHandler(INodeDefinitionRepository repository)
     : ICommandHandler<IModelEntity, InternalNodeContract>
 {
     public async Task<Result<InternalNodeContract>> ExecuteAsync(

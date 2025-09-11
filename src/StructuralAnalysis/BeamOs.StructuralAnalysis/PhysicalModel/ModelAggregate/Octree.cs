@@ -7,7 +7,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
-public class OctreeNode : BeamOsEntity<OctreeNodeId>
+internal class OctreeNode : BeamOsEntity<OctreeNodeId>
 {
     private const int MaxObjects = 8;
     private const int MaxDepth = 8;
@@ -224,7 +224,7 @@ public class OctreeNode : BeamOsEntity<OctreeNodeId>
     }
 }
 
-public class Octree : BeamOsModelEntity<OctreeId>
+internal class Octree : BeamOsModelEntity<OctreeId>
 {
     private const double DefaultStartNodeSize = 1.0;
     public OctreeNode Root { get; private set; }
@@ -346,7 +346,7 @@ public class Octree : BeamOsModelEntity<OctreeId>
     }
 }
 
-public readonly record struct OctreeId : IIntBasedId
+internal readonly record struct OctreeId : IIntBasedId
 {
     public int Id { get; init; }
 
@@ -362,7 +362,7 @@ public readonly record struct OctreeId : IIntBasedId
     public override string ToString() => this.Id.ToString(CultureInfo.InvariantCulture);
 }
 
-public readonly record struct OctreeNodeId : IIntBasedId
+internal readonly record struct OctreeNodeId : IIntBasedId
 {
     public int Id { get; init; }
 
