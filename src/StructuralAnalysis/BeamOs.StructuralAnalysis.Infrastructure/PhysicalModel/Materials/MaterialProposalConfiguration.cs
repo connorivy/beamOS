@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Materials;
 
-public class MaterialProposalConfiguration : IEntityTypeConfiguration<MaterialProposal>
+internal class MaterialProposalConfiguration : IEntityTypeConfiguration<MaterialProposal>
 {
     public void Configure(EntityTypeBuilder<MaterialProposal> builder)
     {

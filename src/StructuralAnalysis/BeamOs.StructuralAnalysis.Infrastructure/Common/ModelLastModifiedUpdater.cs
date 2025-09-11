@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.Common;
 
-public class ModelLastModifiedUpdater(TimeProvider timeProvider) : SaveChangesInterceptor
+internal class ModelLastModifiedUpdater(TimeProvider timeProvider) : SaveChangesInterceptor
 {
     public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(
         DbContextEventData eventData,

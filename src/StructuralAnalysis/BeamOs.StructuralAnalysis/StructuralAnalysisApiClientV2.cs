@@ -1,3 +1,4 @@
+#if !CODEGEN
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Api.Endpoints.AnalyticalResults;
@@ -48,7 +49,7 @@ internal sealed class StructuralAnalysisApiClientV2 : IStructuralAnalysisApiClie
     ) => apiClientV1.AddSectionProfileFromLibraryAsync(request.ModelId, request.Body, ct);
 
     public Task<ApiResponse<BatchResponse>> BatchPutElement1d(
-        BatchPutElement1dCommand request,
+        ModelResourceRequest<PutElement1dRequest[]> request,
         CancellationToken ct = default
     ) => apiClientV1.BatchPutElement1dAsync(request.ModelId, request.Body, ct);
 
@@ -58,42 +59,42 @@ internal sealed class StructuralAnalysisApiClientV2 : IStructuralAnalysisApiClie
     ) => apiClientV1.BatchPutInternalNodeAsync(request.ModelId, request.Body, ct);
 
     public Task<ApiResponse<BatchResponse>> BatchPutLoadCase(
-        BatchPutLoadCaseCommand request,
+        ModelResourceRequest<LoadCaseContract[]> request,
         CancellationToken ct = default
     ) => apiClientV1.BatchPutLoadCaseAsync(request.ModelId, request.Body, ct);
 
     public Task<ApiResponse<BatchResponse>> BatchPutLoadCombination(
-        BatchPutLoadCombinationCommand request,
+        ModelResourceRequest<LoadCombinationContract[]> request,
         CancellationToken ct = default
     ) => apiClientV1.BatchPutLoadCombinationAsync(request.ModelId, request.Body, ct);
 
     public Task<ApiResponse<BatchResponse>> BatchPutMaterial(
-        BatchPutMaterialCommand request,
+        ModelResourceRequest<PutMaterialRequest[]> request,
         CancellationToken ct = default
     ) => apiClientV1.BatchPutMaterialAsync(request.ModelId, request.Body, ct);
 
     public Task<ApiResponse<BatchResponse>> BatchPutMomentLoad(
-        BatchPutMomentLoadCommand request,
+        ModelResourceRequest<PutMomentLoadRequest[]> request,
         CancellationToken ct = default
     ) => apiClientV1.BatchPutMomentLoadAsync(request.ModelId, request.Body, ct);
 
     public Task<ApiResponse<BatchResponse>> BatchPutNode(
-        BatchPutNodeCommand request,
+        ModelResourceRequest<PutNodeRequest[]> request,
         CancellationToken ct = default
     ) => apiClientV1.BatchPutNodeAsync(request.ModelId, request.Body, ct);
 
     public Task<ApiResponse<BatchResponse>> BatchPutPointLoad(
-        BatchPutPointLoadCommand request,
+        ModelResourceRequest<PutPointLoadRequest[]> request,
         CancellationToken ct = default
     ) => apiClientV1.BatchPutPointLoadAsync(request.ModelId, request.Body, ct);
 
     public Task<ApiResponse<BatchResponse>> BatchPutSectionProfile(
-        BatchPutSectionProfileCommand request,
+        ModelResourceRequest<PutSectionProfileRequest[]> request,
         CancellationToken ct = default
     ) => apiClientV1.BatchPutSectionProfileAsync(request.ModelId, request.Body, ct);
 
     public Task<ApiResponse<BatchResponse>> BatchPutSectionProfileFromLibrary(
-        BatchPutSectionProfileFromLibraryRequest request,
+        ModelResourceRequest<SectionProfileFromLibraryContract[]> request,
         CancellationToken ct = default
     ) => apiClientV1.BatchPutSectionProfileFromLibraryAsync(request.ModelId, request.Body, ct);
 
@@ -103,7 +104,7 @@ internal sealed class StructuralAnalysisApiClientV2 : IStructuralAnalysisApiClie
     ) => apiClientV1.ClearResultsAsync(request.ModelId, ct);
 
     public Task<ApiResponse<Element1dResponse>> CreateElement1d(
-        CreateElement1dCommand request,
+        ModelResourceRequest<CreateElement1dRequest> request,
         CancellationToken ct = default
     ) => apiClientV1.CreateElement1dAsync(request.ModelId, request.Body, ct);
 
@@ -113,17 +114,17 @@ internal sealed class StructuralAnalysisApiClientV2 : IStructuralAnalysisApiClie
     ) => apiClientV1.CreateInternalNodeAsync(request.ModelId, request.Body, ct);
 
     public Task<ApiResponse<LoadCaseContract>> CreateLoadCase(
-        CreateLoadCaseCommand request,
+        ModelResourceRequest<LoadCaseData> request,
         CancellationToken ct = default
     ) => apiClientV1.CreateLoadCaseAsync(request.ModelId, request.Body, ct);
 
     public Task<ApiResponse<LoadCombinationContract>> CreateLoadCombination(
-        CreateLoadCombinationCommand request,
+        ModelResourceRequest<LoadCombinationData> request,
         CancellationToken ct = default
     ) => apiClientV1.CreateLoadCombinationAsync(request.ModelId, request.Body, ct);
 
     public Task<ApiResponse<MaterialResponse>> CreateMaterial(
-        CreateMaterialCommand request,
+        ModelResourceRequest<CreateMaterialRequest> request,
         CancellationToken ct = default
     ) => apiClientV1.CreateMaterialAsync(request.ModelId, request.Body, ct);
 
@@ -138,22 +139,22 @@ internal sealed class StructuralAnalysisApiClientV2 : IStructuralAnalysisApiClie
     ) => apiClientV1.CreateModelProposalAsync(request.ModelId, request.Body, ct);
 
     public Task<ApiResponse<MomentLoadResponse>> CreateMomentLoad(
-        CreateMomentLoadCommand request,
+        ModelResourceRequest<CreateMomentLoadRequest> request,
         CancellationToken ct = default
     ) => apiClientV1.CreateMomentLoadAsync(request.ModelId, request.Body, ct);
 
     public Task<ApiResponse<NodeResponse>> CreateNode(
-        CreateNodeCommand request,
+        ModelResourceRequest<CreateNodeRequest> request,
         CancellationToken ct = default
     ) => apiClientV1.CreateNodeAsync(request.ModelId, request.Body, ct);
 
     public Task<ApiResponse<PointLoadResponse>> CreatePointLoad(
-        CreatePointLoadCommand request,
+        ModelResourceRequest<CreatePointLoadRequest> request,
         CancellationToken ct = default
     ) => apiClientV1.CreatePointLoadAsync(request.ModelId, request.Body, ct);
 
     public Task<ApiResponse<SectionProfileResponse>> CreateSectionProfile(
-        Application.PhysicalModel.SectionProfiles.CreateSectionProfileRequest request,
+        ModelResourceRequest<CreateSectionProfileRequest> request,
         CancellationToken ct = default
     ) => apiClientV1.CreateSectionProfileAsync(request.ModelId, request.Body, ct);
 
@@ -272,14 +273,14 @@ internal sealed class StructuralAnalysisApiClientV2 : IStructuralAnalysisApiClie
     ) => apiClientV1.ModelRestoreAsync(request.ModelId, request.Body, ct);
 
     public Task<ApiResponse<NodeResponse>> PatchNode(
-        PatchNodeCommand request,
+        ModelResourceRequest<UpdateNodeRequest> request,
         CancellationToken ct = default
     ) => apiClientV1.PatchNodeAsync(request.ModelId, request.Body, ct);
 
     public Task<ApiResponse<Element1dResponse>> PutElement1d(
-        PutElement1dCommand request,
+        ModelResourceWithIntIdRequest<Element1dData> request,
         CancellationToken ct = default
-    ) => apiClientV1.PutElement1dAsync(request.Id, request.ModelId, request.Body, ct);
+    ) => apiClientV1.PutElement1dAsync(request.ModelId, request.Id, request.Body, ct);
 
     public Task<ApiResponse<InternalNodeContract>> PutInternalNode(
         ModelResourceWithIntIdRequest<InternalNodeData> request,
@@ -287,19 +288,19 @@ internal sealed class StructuralAnalysisApiClientV2 : IStructuralAnalysisApiClie
     ) => apiClientV1.PutInternalNodeAsync(request.ModelId, request.Id, request.Body, ct);
 
     public Task<ApiResponse<LoadCaseContract>> PutLoadCase(
-        PutLoadCaseCommand request,
+        ModelResourceWithIntIdRequest<LoadCaseData> request,
         CancellationToken ct = default
     ) => apiClientV1.PutLoadCaseAsync(request.ModelId, request.Id, request.Body, ct);
 
     public Task<ApiResponse<LoadCombinationContract>> PutLoadCombination(
-        PutLoadCombinationCommand request,
+        ModelResourceWithIntIdRequest<LoadCombinationData> request,
         CancellationToken ct = default
     ) => apiClientV1.PutLoadCombinationAsync(request.ModelId, request.Id, request.Body, ct);
 
     public Task<ApiResponse<MaterialResponse>> PutMaterial(
-        PutMaterialCommand request,
+        ModelResourceWithIntIdRequest<MaterialData> request,
         CancellationToken ct = default
-    ) => apiClientV1.PutMaterialAsync(request.Id, request.ModelId, request.Body, ct);
+    ) => apiClientV1.PutMaterialAsync(request.ModelId, request.Id, request.Body, ct);
 
     public Task<ApiResponse<ModelResponse>> PutModel(
         ModelResourceRequest<ModelInfoData> request,
@@ -307,32 +308,32 @@ internal sealed class StructuralAnalysisApiClientV2 : IStructuralAnalysisApiClie
     ) => apiClientV1.PutModelAsync(request.ModelId, request.Body, ct);
 
     public Task<ApiResponse<MomentLoadResponse>> PutMomentLoad(
-        PutMomentLoadCommand request,
+        ModelResourceWithIntIdRequest<MomentLoadData> request,
         CancellationToken ct = default
-    ) => apiClientV1.PutMomentLoadAsync(request.Id, request.ModelId, request.Body, ct);
+    ) => apiClientV1.PutMomentLoadAsync(request.ModelId, request.Id, request.Body, ct);
 
     public Task<ApiResponse<NodeResponse>> PutNode(
-        PutNodeCommand request,
+        ModelResourceWithIntIdRequest<NodeData> request,
         CancellationToken ct = default
-    ) => apiClientV1.PutNodeAsync(request.Id, request.ModelId, request.Body, ct);
+    ) => apiClientV1.PutNodeAsync(request.ModelId, request.Id, request.Body, ct);
 
     public Task<ApiResponse<PointLoadResponse>> PutPointLoad(
-        PutPointLoadCommand request,
+        ModelResourceWithIntIdRequest<PointLoadData> request,
         CancellationToken ct = default
-    ) => apiClientV1.PutPointLoadAsync(request.Id, request.ModelId, request.Body, ct);
+    ) => apiClientV1.PutPointLoadAsync(request.ModelId, request.Id, request.Body, ct);
 
     public Task<ApiResponse<SectionProfileResponse>> PutSectionProfile(
-        PutSectionProfileCommand request,
+        ModelResourceWithIntIdRequest<SectionProfileData> request,
         CancellationToken ct = default
-    ) => apiClientV1.PutSectionProfileAsync(request.Id, request.ModelId, request.Body, ct);
+    ) => apiClientV1.PutSectionProfileAsync(request.ModelId, request.Id, request.Body, ct);
 
     public Task<ApiResponse<SectionProfileFromLibraryContract>> PutSectionProfileFromLibrary(
-        PutSectionProfileFromLibraryCommand request,
+        ModelResourceWithIntIdRequest<SectionProfileFromLibraryData> request,
         CancellationToken ct = default
     ) =>
         apiClientV1.PutSectionProfileFromLibraryAsync(
-            request.Id,
             request.ModelId,
+            request.Id,
             request.Body,
             ct
         );
@@ -362,3 +363,4 @@ internal sealed class StructuralAnalysisApiClientV2 : IStructuralAnalysisApiClie
         CancellationToken ct = default
     ) => apiClientV1.DeleteModelAsync(request.ModelId, ct);
 }
+#endif

@@ -3,7 +3,7 @@ using Riok.Mapperly.Abstractions;
 namespace BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 
 [Mapper(PreferParameterlessConstructors = false, EnumMappingStrategy = EnumMappingStrategy.ByName)]
-public static partial class UnitsNetMappers
+internal static partial class UnitsNetMappers
 {
     public static partial Angle MapToAngle(this AngleContract unit);
 

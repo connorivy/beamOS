@@ -19,6 +19,10 @@
 		<PackageReference Include="Riok.Mapperly" PrivateAssets="all" />
 		<PackageReference Include="UnitsNet" PrivateAssets="all" />
 		<PackageReference Include="MediatR" PrivateAssets="all" />
+		<PackageReference Include="ServiceScan.SourceGenerator">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>

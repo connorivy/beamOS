@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.AnalyticalResults.EnvelopeResultSets;
 
-public class EnvelopeResultSetConfiguration : IEntityTypeConfiguration<EnvelopeResultSet>
+internal class EnvelopeResultSetConfiguration : IEntityTypeConfiguration<EnvelopeResultSet>
 {
     public void Configure(EntityTypeBuilder<EnvelopeResultSet> builder)
     {

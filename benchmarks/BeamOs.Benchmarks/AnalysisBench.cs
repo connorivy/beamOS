@@ -37,7 +37,7 @@ public class AnalysisBench : IDisposable
     }
 
     [Benchmark]
-    public AnalysisResults RunDsm()
+    internal AnalysisResults RunDsm()
     {
         // we need to clone because we are caching some calculated results.
         // those are not copied when we clone the model.
@@ -46,7 +46,7 @@ public class AnalysisBench : IDisposable
     }
 
     [Benchmark]
-    public async Task<AnalysisResults> RunOpenSees()
+    internal async Task<AnalysisResults> RunOpenSees()
     {
         return await this.openSeesAnalysisModel.RunAnalysis(this.loadCombination);
     }

@@ -14,8 +14,8 @@ public static class DI
         services.AddScoped<DsmModelTests>();
         services.AddScoped<TestInfoRetriever>();
 
-        services.AddSingleton<ISolverFactory, CholeskySolverFactory>();
-        services.AddInMemoryInfrastructure();
+        // services.AddSingleton<ISolverFactory, CholeskySolverFactory>();
+        // services.AddInMemoryInfrastructure();
 
         return services;
     }

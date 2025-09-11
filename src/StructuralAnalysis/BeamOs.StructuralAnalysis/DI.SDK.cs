@@ -51,7 +51,7 @@ internal static class DI
             )
             .AddHttpMessageHandler<AuthMessageHandler>();
 
-        services.AddScoped<IStructuralAnalysisApiClientV2, StructuralAnalysisApiClientV2>();
+        // services.AddScoped<IStructuralAnalysisApiClientV2, StructuralAnalysisApiClientV2>();
 
         services
             .AddHttpClient<ISpeckleConnectorApi, SpeckleConnectorApi>(client =>

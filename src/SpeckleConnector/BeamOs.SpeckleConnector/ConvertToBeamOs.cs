@@ -9,11 +9,7 @@ namespace BeamOs.SpeckleConnector;
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Authenticated)]
 public class SpeckleRecieveOperation(BeamOsSpeckleReceiveOperation2 beamOsSpeckleReceiveOperation)
-    : BeamOsModelResourceBaseEndpoint<
-        ModelResourceRequest<SpeckleReceiveParameters>,
-        SpeckleReceiveParameters,
-        ModelProposalResponse
-    >
+    : BeamOsModelResourceBaseEndpoint<SpeckleReceiveParameters, ModelProposalResponse>
 {
     public override async Task<Result<ModelProposalResponse>> ExecuteRequestAsync(
         ModelResourceRequest<SpeckleReceiveParameters> req,

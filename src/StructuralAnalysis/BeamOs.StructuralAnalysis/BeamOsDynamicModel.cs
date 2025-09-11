@@ -11,7 +11,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 
 namespace BeamOs.StructuralAnalysis.Sdk;
 
-internal sealed class BeamOsDynamicModel(
+public sealed class BeamOsDynamicModel(
     Guid id,
     ModelSettings physicalModelSettings,
     string name,

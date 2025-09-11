@@ -97,6 +97,8 @@ WebApplication app = builder.Build();
 await app.InitializeBeamOsDb();
 #endif
 
+// app.MapStructuralEndpoints();
+// app.MapSpeckleEndpoints();
 app.MapEndpoints<IAssemblyMarkerStructuralAnalysisApiEndpoints>();
 app.MapEndpoints<IAssemblyMarkerSpeckleConnector>();
 app.MapEndpoints<IAssemblyMarkerAi>();

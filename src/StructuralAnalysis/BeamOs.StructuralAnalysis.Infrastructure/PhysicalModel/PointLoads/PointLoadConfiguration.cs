@@ -1,10 +1,10 @@
-﻿using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.PointLoads;
 
-public class PointLoadConfiguration : IEntityTypeConfiguration<PointLoad>
+internal class PointLoadConfiguration : IEntityTypeConfiguration<PointLoad>
 {
     public void Configure(EntityTypeBuilder<PointLoad> builder)
     {

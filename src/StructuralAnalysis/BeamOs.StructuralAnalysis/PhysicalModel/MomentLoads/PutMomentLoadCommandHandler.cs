@@ -35,7 +35,7 @@ internal class BatchPutMomentLoadCommandHandler(
     : BatchPutCommandHandler<
         MomentLoadId,
         MomentLoad,
-        BatchPutMomentLoadRequest,
+        ModelResourceRequest<PutMomentLoadRequest[]>,
         PutMomentLoadRequest
     >(momentLoadRepository, unitOfWork)
 {

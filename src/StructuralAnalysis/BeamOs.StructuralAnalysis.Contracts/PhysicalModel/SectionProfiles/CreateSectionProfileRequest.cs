@@ -154,10 +154,3 @@ public record SectionProfileFromLibrary : SectionProfileFromLibraryData, IHasInt
 
     public SectionProfileFromLibrary() { }
 }
-
-public record BatchPutSectionProfileFromLibraryRequest
-    : IModelResourceRequest<SectionProfileFromLibrary[]>
-{
-    public Guid ModelId { get; init; }
-    public SectionProfileFromLibrary[] Body { get; init; }
-}

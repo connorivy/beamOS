@@ -10,7 +10,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 
 namespace BeamOs.StructuralAnalysis.Sdk;
 
-internal abstract class BeamOsStaticModelBase : IBeamOsModel
+public abstract class BeamOsStaticModelBase : IBeamOsModel
 {
     public abstract string Name { get; }
     public abstract string Description { get; }

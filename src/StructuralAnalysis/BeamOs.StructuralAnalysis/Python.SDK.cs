@@ -30,7 +30,7 @@ internal static class ApiClientFactory
             "InMemory"
         );
 
-        InMemoryApiClient2 x = default;
+        // InMemoryApiClient2 x = default;
         return new BeamOsApiClient(apiClient);
         // return new BeamOsModelBuilder(model, apiClient);
     }
@@ -47,24 +47,32 @@ internal static class ApiClientFactory
 }
 
 // [DotWrapExpose]
-internal sealed class BeamOsApiClient : BeamOsFluentApiClient
+public sealed class BeamOsApiClient : BeamOsFluentApiClient
 // IDisposable
 {
     internal BeamOsApiClient(IStructuralAnalysisApiClientV2 apiClient)
         : base(apiClient) { }
 
     public BeamOsApiClient(HttpClient httpClient)
+#if CODEGEN
+        : base(default) { }
+#else
         : base(new StructuralAnalysisApiClientV2(httpClient)) { }
+#endif
 
     // public void Dispose()
 }
 
 // [DotWrapExpose]
-internal sealed class BeamOsResultApiClient : BeamOsFluentResultApiClient
+public sealed class BeamOsResultApiClient : BeamOsFluentResultApiClient
 {
     internal BeamOsResultApiClient(IStructuralAnalysisApiClientV2 apiClient)
         : base(apiClient) { }
 
     public BeamOsResultApiClient(HttpClient httpClient)
+#if CODEGEN
+        : base(default) { }
+#else
         : base(new StructuralAnalysisApiClientV2(httpClient)) { }
+#endif
 }

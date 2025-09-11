@@ -11,4 +11,13 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
   </ItemGroup>
 
+  <PropertyGroup Condition="'$(CODEGEN)' == 'true'">
+    <DefineConstants>$(DefineConstants);CODEGEN</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(CODEGEN)' == 'true'">
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" />
+  </ItemGroup>
+
+
 </Project>

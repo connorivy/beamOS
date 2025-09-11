@@ -2,11 +2,45 @@ using System.Reflection;
 using BeamOs.Common.Api;
 using BeamOs.StructuralAnalysis.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using ServiceScan.SourceGenerator;
 
 namespace BeamOs.StructuralAnalysis.Api;
 
 public static partial class DependencyInjection
 {
+    [GenerateServiceRegistrations(
+        AssignableTo = typeof(BeamOsBaseEndpoint<,>),
+        FromAssemblyOf = typeof(BeamOs.StructuralAnalysis.Sdk.BeamOsApiClient),
+        // AttributeFilter = typeof(BeamOsRouteAttribute),
+        CustomHandler = nameof(Asdf)
+    )]
+    public static partial IEndpointRouteBuilder MapStructuralEndpoints(
+        this IEndpointRouteBuilder services
+    );
+
+    [GenerateServiceRegistrations(
+        AssignableTo = typeof(BeamOsBaseEndpoint<,>),
+        FromAssemblyOf = typeof(BeamOs.SpeckleConnector.IAssemblyMarkerSpeckleConnector),
+        CustomHandler = nameof(Asdf)
+    )]
+    public static partial IEndpointRouteBuilder MapSpeckleEndpoints(
+        this IEndpointRouteBuilder services
+    );
+
+    // [GenerateServiceRegistrations(
+    //     AssignableTo = typeof(BeamOsBaseEndpoint<,>),
+    //     FromAssemblyOf = typeof(BeamOs.Ai.IAssemblyMarkerAi),
+    //     CustomHandler = nameof(Asdf)
+    // )]
+    // public static partial IEndpointRouteBuilder MapAiEndpoints(this IEndpointRouteBuilder services);
+
+    private static void Asdf<TEndpoint, TRequest, TResponse>(IEndpointRouteBuilder app)
+        where TEndpoint : BeamOsBaseEndpoint<TRequest, TResponse>
+    // where T : BeamOsBaseEndpoint<TRequest, TResponse>
+    {
+        EndpointToMinimalApi.Map<TEndpoint, TRequest, TResponse>(app);
+    }
+
     public static void MapEndpoints<TAssemblyMarker>(this IEndpointRouteBuilder app)
     {
         var endpointGroup = app.MapGroup("api");
@@ -49,16 +83,7 @@ public static partial class DependencyInjection
         if (app.Environment.IsDevelopment())
         {
             using var scope = app.Services.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<StructuralAnalysisDbContext>();
-
-            // await dbContext.Database.EnsureDeletedAsync();
-            var appliedMigrations = (await dbContext.Database.GetAppliedMigrationsAsync()).ToList();
-            var pendingMigrations = (await dbContext.Database.GetPendingMigrationsAsync()).ToList();
-            if (pendingMigrations.Count > 0)
-            {
-                await dbContext.Database.MigrateAsync();
-            }
-            // await dbContext.Database.EnsureCreatedAsync();
+            await BeamOs.StructuralAnalysis.Infrastructure.DependencyInjection.MigrateDb(scope);
         }
     }
 }

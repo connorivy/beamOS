@@ -26,7 +26,7 @@ internal class GetDiagrams(GetDiagramsCommandHandler getDiagramsCommandHandler)
         );
 }
 
-internal readonly record struct GetDiagramsRequest : IHasModelId
+public record GetDiagramsRequest : IHasModelId
 {
     [FromRoute]
     public Guid ModelId { get; init; }

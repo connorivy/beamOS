@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.SectionProfiles;
 
-public class SectionProfileProposalFromLibraryConfiguration
+internal class SectionProfileProposalFromLibraryConfiguration
     : IEntityTypeConfiguration<SectionProfileProposalFromLibrary>
 {
     public void Configure(EntityTypeBuilder<SectionProfileProposalFromLibrary> builder)

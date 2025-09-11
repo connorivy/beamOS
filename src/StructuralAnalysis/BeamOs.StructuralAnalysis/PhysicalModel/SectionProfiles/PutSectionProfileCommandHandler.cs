@@ -56,12 +56,6 @@ internal class BatchPutSectionProfileCommandHandler(
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
 internal static partial class PutSectionProfileCommandMapper
 {
-    public static partial SectionProfile ToDomainObject(this PutSectionProfileCommand command);
-
-    public static partial SectionProfileFromLibrary ToDomainObject(
-        this PutSectionProfileFromLibraryCommand command
-    );
-
     [MapNestedProperties(nameof(ModelResourceWithIntIdRequest<>.Body))]
     public static partial SectionProfileFromLibrary ToDomainObject(
         this ModelResourceWithIntIdRequest<SectionProfileFromLibraryData> command

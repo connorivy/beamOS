@@ -68,7 +68,7 @@ internal static class IBeamOsModelExtensions
             return await builder.CreateOrUpdate();
         }
 
-        internal void GenerateStaticModelClass(string outputDir, string? baseclass = null)
+        public void GenerateStaticModelClass(string outputDir, string? baseClass = null)
         {
             var sb = new StringBuilder();
 

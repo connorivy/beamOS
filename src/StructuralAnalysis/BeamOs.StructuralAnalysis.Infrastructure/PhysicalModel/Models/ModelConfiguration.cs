@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Models;
 
-public class ModelConfiguration : IEntityTypeConfiguration<Model>
+internal class ModelConfiguration : IEntityTypeConfiguration<Model>
 {
     public void Configure(EntityTypeBuilder<Model> builder)
     {
@@ -67,7 +67,7 @@ public class ModelConfiguration : IEntityTypeConfiguration<Model>
     }
 }
 
-public class ModelEntityDeleteProposalConfiguration
+internal class ModelEntityDeleteProposalConfiguration
     : IEntityTypeConfiguration<DeleteModelEntityProposal>
 {
     public void Configure(EntityTypeBuilder<DeleteModelEntityProposal> builder)

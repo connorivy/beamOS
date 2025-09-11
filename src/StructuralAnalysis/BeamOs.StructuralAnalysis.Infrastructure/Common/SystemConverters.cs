@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.Common;
 
-public class DoubleArrayConverter : ValueConverter<double[], string>
+internal class DoubleArrayConverter : ValueConverter<double[], string>
 {
     public DoubleArrayConverter()
         : base(
@@ -14,7 +14,7 @@ public class DoubleArrayConverter : ValueConverter<double[], string>
         ) { }
 }
 
-// public class DictIdToDoubleConverter : ValueConverter<Dictionary<LoadCaseId, double>, string>
+// internal class DictIdToDoubleConverter : ValueConverter<Dictionary<LoadCaseId, double>, string>
 // {
 //     public DictIdToDoubleConverter()
 //         : base(
@@ -27,7 +27,7 @@ public class DoubleArrayConverter : ValueConverter<double[], string>
 //         ) { }
 // }
 
-public class DictIdToDoubleConverter : ValueConverter<Dictionary<LoadCaseId, double>, string>
+internal class DictIdToDoubleConverter : ValueConverter<Dictionary<LoadCaseId, double>, string>
 {
     public DictIdToDoubleConverter()
         : base(
@@ -43,7 +43,7 @@ public class DictIdToDoubleConverter : ValueConverter<Dictionary<LoadCaseId, dou
         ) { }
 }
 
-public class DictIntToDoubleConverter : ValueConverter<Dictionary<int, double>, string>
+internal class DictIntToDoubleConverter : ValueConverter<Dictionary<int, double>, string>
 {
     public DictIntToDoubleConverter()
         : base(
@@ -56,7 +56,7 @@ public class DictIntToDoubleConverter : ValueConverter<Dictionary<int, double>, 
         ) { }
 }
 
-public class Vector3Converter : ValueConverter<Vector3, string>
+internal class Vector3Converter : ValueConverter<Vector3, string>
 {
     public Vector3Converter()
         : base(

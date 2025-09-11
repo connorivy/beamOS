@@ -35,10 +35,11 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using ServiceScan.SourceGenerator;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure;
 
-public static class DependencyInjection
+public static partial class DependencyInjection
 {
     public static IServiceCollection AddStructuralAnalysisInfrastructureRequired(
         this IServiceCollection services
@@ -67,7 +68,7 @@ public static class DependencyInjection
 
         _ = services.AddScoped<IStructuralAnalysisUnitOfWork, UnitOfWork>();
 
-        services.AddBeamOsServices();
+        services.AddQueryHandlers();
         // services.AddObjectThatImplementInterface<IAssemblyMarkerInfrastructure>(
         //     typeof(IQueryHandler<,>),
         //     ServiceLifetime.Scoped,
@@ -130,6 +131,22 @@ public static class DependencyInjection
                 )
         );
 
+    public static async Task MigrateDb(
+        this IServiceScope scope,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<StructuralAnalysisDbContext>();
+
+        // await dbContext.Database.EnsureDeletedAsync();
+        var appliedMigrations = (await dbContext.Database.GetAppliedMigrationsAsync()).ToList();
+        var pendingMigrations = (await dbContext.Database.GetPendingMigrationsAsync()).ToList();
+        if (pendingMigrations.Count > 0)
+        {
+            await dbContext.Database.MigrateAsync();
+        }
+    }
+
     public static void AddPhysicalModelInfrastructure(
         this ModelConfigurationBuilder configurationBuilder
     )
@@ -161,4 +178,11 @@ public static class DependencyInjection
             _ = configurationBuilder.Properties(genericArgs[0]).HaveConversion(valueConverterType);
         }
     }
+
+    [GenerateServiceRegistrations(
+        AssignableTo = typeof(IQueryHandler<,>),
+        Lifetime = ServiceLifetime.Scoped,
+        AsSelf = true
+    )]
+    public static partial IServiceCollection AddQueryHandlers(this IServiceCollection services);
 }

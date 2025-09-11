@@ -1,10 +1,10 @@
-﻿using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.MomentLoads;
 
-public class MomentLoadConfiguration : IEntityTypeConfiguration<MomentLoad>
+internal class MomentLoadConfiguration : IEntityTypeConfiguration<MomentLoad>
 {
     public void Configure(EntityTypeBuilder<MomentLoad> builder)
     {

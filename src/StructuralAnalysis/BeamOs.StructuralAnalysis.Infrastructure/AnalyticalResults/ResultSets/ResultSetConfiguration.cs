@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.AnalyticalResults.ResultSets;
 
-public class ResultSetConfiguration : IEntityTypeConfiguration<ResultSet>
+internal class ResultSetConfiguration : IEntityTypeConfiguration<ResultSet>
 {
     public void Configure(EntityTypeBuilder<ResultSet> builder)
     {
