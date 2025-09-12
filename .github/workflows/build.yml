@@ -16,9 +16,11 @@ jobs:
       - name: Run in Dev Container
         uses: devcontainers/ci@v0.3
         with:
+          # we get strange linking errors the first time that we build, so try to build and ignore errors
           runCmd: |
             dotnet tool install --global dotnet-coverage
             export PATH="$PATH:/root/.dotnet/tools"
+            dotnet build || true
             dotnet-coverage collect "dotnet test" -f cobertura -s ./CodeCov.runsettings
 
       # must install .net for the report generator to work
