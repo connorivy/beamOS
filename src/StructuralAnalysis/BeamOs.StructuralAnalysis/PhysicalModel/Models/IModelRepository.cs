@@ -8,6 +8,7 @@ using BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
+using EntityFramework.Exceptions.Common;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
@@ -29,18 +30,25 @@ internal interface IModelRepository : IRepository<ModelId, Model>
 
 internal sealed class InMemoryModelRepository(
     InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage,
-    [FromKeyedServices("InMemory")] INodeRepository nodeRepository,
-    [FromKeyedServices("InMemory")] IInternalNodeRepository internalNodeRepository,
-    [FromKeyedServices("InMemory")] IElement1dRepository element1dRepository,
-    [FromKeyedServices("InMemory")] IMaterialRepository materialRepository,
-    [FromKeyedServices("InMemory")] ISectionProfileRepository sectionProfileRepository,
-    [FromKeyedServices("InMemory")]
-        ISectionProfileFromLibraryRepository sectionProfileFromLibraryRepository
+    INodeRepository nodeRepository,
+    IInternalNodeRepository internalNodeRepository,
+    IElement1dRepository element1dRepository,
+    IMaterialRepository materialRepository,
+    ISectionProfileRepository sectionProfileRepository,
+    ISectionProfileFromLibraryRepository sectionProfileFromLibraryRepository,
+    InMemoryUnitOfWork unitOfWork
 ) : IModelRepository
 {
     public void Add(Model aggregate)
     {
-        inMemoryModelRepositoryStorage.Models.Add(aggregate.Id, aggregate);
+        if (!inMemoryModelRepositoryStorage.Models.TryAdd(aggregate.Id, aggregate))
+        {
+            unitOfWork.SimulatedFailures.Add(
+                new UniqueConstraintException(
+                    $"Model with ID {aggregate.Id} already exists in the repository."
+                )
+            );
+        }
     }
 
     public void ClearChangeTracker()

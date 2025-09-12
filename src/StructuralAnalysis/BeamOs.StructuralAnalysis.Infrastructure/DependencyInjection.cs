@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.Identity;
@@ -136,15 +137,16 @@ public static partial class DependencyInjection
         CancellationToken cancellationToken = default
     )
     {
-        var dbContext = scope.ServiceProvider.GetRequiredService<StructuralAnalysisDbContext>();
+        // var dbContext = scope.ServiceProvider.GetRequiredService<StructuralAnalysisDbContext>();
 
-        // await dbContext.Database.EnsureDeletedAsync();
-        var appliedMigrations = (await dbContext.Database.GetAppliedMigrationsAsync()).ToList();
-        var pendingMigrations = (await dbContext.Database.GetPendingMigrationsAsync()).ToList();
-        if (pendingMigrations.Count > 0)
-        {
-            await dbContext.Database.MigrateAsync();
-        }
+        // // await dbContext.Database.EnsureDeletedAsync();
+        // var appliedMigrations = (await dbContext.Database.GetAppliedMigrationsAsync()).ToList();
+        // var pendingMigrations = (await dbContext.Database.GetPendingMigrationsAsync()).ToList();
+        // if (pendingMigrations.Count > 0)
+        // {
+        //     await dbContext.Database.MigrateAsync();
+        // }
+        // await dbContext.Database.EnsureCreatedAsync(cancellationToken);
     }
 
     public static void AddPhysicalModelInfrastructure(
@@ -178,6 +180,31 @@ public static partial class DependencyInjection
     //         _ = configurationBuilder.Properties(genericArgs[0]).HaveConversion(valueConverterType);
     //     }
     // }
+
+    [GenerateServiceRegistrations(
+        AssignableTo = typeof(IEntityTypeConfiguration<>),
+        CustomHandler = nameof(ApplyConfiguration)
+    )]
+    public static partial ModelBuilder AddEntityConfigurations(this ModelBuilder builder);
+
+    private static void ApplyConfiguration<
+        TConfig,
+        [DynamicallyAccessedMembers(
+            DynamicallyAccessedMemberTypes.PublicConstructors
+                | DynamicallyAccessedMemberTypes.NonPublicConstructors
+                | DynamicallyAccessedMemberTypes.PublicFields
+                | DynamicallyAccessedMemberTypes.NonPublicFields
+                | DynamicallyAccessedMemberTypes.PublicProperties
+                | DynamicallyAccessedMemberTypes.NonPublicProperties
+                | DynamicallyAccessedMemberTypes.Interfaces
+        )]
+            TEntity
+    >(ModelBuilder builder)
+        where TConfig : IEntityTypeConfiguration<TEntity>, new()
+        where TEntity : class
+    {
+        _ = builder.ApplyConfiguration(new TConfig());
+    }
 
     [GenerateServiceRegistrations(
         AssignableTo = typeof(ValueConverter<,>),

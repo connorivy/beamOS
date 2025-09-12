@@ -16,7 +16,7 @@
     <TUnitImplicitUsings>false</TUnitImplicitUsings>
     <DefineConstants Condition="'$(CODEGEN)' == 'true'">$(DefineConstants);CODEGEN</DefineConstants>
     <LocalNugetFeed>/workspaces/beamOS/.nuget-local</LocalNugetFeed>
-    <BeamOsEnableAot Condition="'$(BeamOsEnableAot)' == ''">true</BeamOsEnableAot>
+    <BeamOsEnableAot Condition="'$(BeamOsEnableAot)' == ''">false</BeamOsEnableAot>
     <!-- <PropertyGroup Condition="'$(CODEGEN)' == 'true'">
       <DefineConstants>$(DefineConstants);CODEGEN</DefineConstants>
     </PropertyGroup> -->
@@ -57,6 +57,7 @@
       CA1727; <!-- Use PascalCase for named placeholders -->
       CA1822; <!-- Member 'METHOD' does not access instance data and can be marked as static -->
       CA1852; <!-- Seal internal types -->
+      CA1861; <!-- Prefer 'static readonly' fields over const array arguments -->
       CA1848; <!-- For improved performance, use the LoggerMessage delegates -->
       CA1873; <!-- Evaluation of this argument may be expensive. -->
       CA2016; <!-- Forward the 'CancellationToken' parameter to methods that take one -->
@@ -74,6 +75,7 @@
 
       CS0108; <!-- Member hides inherited member; missing new keyword -->
       CS0168; <!-- Variable is declared but never used -->
+      CS0436; <!-- Type conflicts with imported type -->
       CS0618; <!-- Operator is obsolete: for null checks, use 'is null' or 'is not null' -->
       CS1572; <!-- XML comment has a param tag, but there is no parameter by that name -->
       CS1573; <!-- Parameter has no matching param tag in the XML comment -->

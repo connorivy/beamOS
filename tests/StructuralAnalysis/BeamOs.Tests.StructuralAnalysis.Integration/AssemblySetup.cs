@@ -33,9 +33,9 @@ public static partial class AssemblySetup
         var webAppFactory = new WebAppFactory(
             $"{DbContainer.GetConnectionString()};Include Error Detail=True"
         );
-
-        var client = new StructuralAnalysisApiClientV2(webAppFactory.CreateClient());
-        StructuralAnalysisApiClient = new(client);
+        // var httpClient = webAppFactory.CreateClient();
+        // StructuralAnalysisApiClient = CreateApiClientWebAppFactory(httpClient);
+        StructuralAnalysisApiClient = CreateApiClientLocal();
 
         ApiIsRunning = true;
     }

@@ -69,52 +69,41 @@ internal static class DI
 #if !CODEGEN
         // services.AddScoped<InMemoryApiClient2>();
         // services.AddInMemoryCommandHandlers();
-        // services.AddKeyedScoped<IStructuralAnalysisApiClientV1, InMemoryApiClient>("InMemory");
-        services.AddScoped<InMemoryModelRepositoryStorage>();
-        services.AddKeyedScoped<IStructuralAnalysisUnitOfWork, InMemoryUnitOfWork>("InMemory");
-        services.AddKeyedScoped<IModelRepository, InMemoryModelRepository>("InMemory");
-        services.AddKeyedScoped<INodeDefinitionRepository, InMemoryNodeDefinitionRepository>(
-            "InMemory"
+        // services.AddScoped<IStructuralAnalysisApiClientV1, InMemoryApiClient>();
+        // services.AddScoped<InMemoryModelRepositoryStorage>();
+        services.AddScoped<InMemoryUnitOfWork>();
+        services.AddScoped<IStructuralAnalysisUnitOfWork>(sp =>
+            sp.GetRequiredService<InMemoryUnitOfWork>()
         );
-        services.AddKeyedScoped<INodeRepository, InMemoryNodeRepository>("InMemory");
-        services.AddKeyedScoped<IInternalNodeRepository, InMemoryInternalNodeRepository>(
-            "InMemory"
-        );
-        services.AddKeyedScoped<IMaterialRepository, InMemoryMaterialRepository>("InMemory");
-        services.AddKeyedScoped<ISectionProfileRepository, InMemorySectionProfileRepository>(
-            "InMemory"
-        );
-        services.AddKeyedScoped<
+        services.AddScoped<IModelRepository, InMemoryModelRepository>();
+        services.AddScoped<INodeDefinitionRepository, InMemoryNodeDefinitionRepository>();
+        services.AddScoped<INodeRepository, InMemoryNodeRepository>();
+        services.AddScoped<IInternalNodeRepository, InMemoryInternalNodeRepository>();
+        services.AddScoped<IMaterialRepository, InMemoryMaterialRepository>();
+        services.AddScoped<ISectionProfileRepository, InMemorySectionProfileRepository>();
+        services.AddScoped<
             ISectionProfileFromLibraryRepository,
             InMemorySectionProfileFromLibraryRepository
-        >("InMemory");
-        services.AddKeyedScoped<IElement1dRepository, InMemoryElement1dRepository>("InMemory");
-        services.AddKeyedScoped<IPointLoadRepository, InMemoryPointLoadRepository>("InMemory");
-        services.AddKeyedScoped<IMomentLoadRepository, InMemoryMomentLoadRepository>("InMemory");
-        services.AddKeyedScoped<ILoadCaseRepository, InMemoryLoadCaseRepository>("InMemory");
-        services.AddKeyedScoped<ILoadCombinationRepository, InMemoryLoadCombinationRepository>(
-            "InMemory"
-        );
-        services.AddKeyedScoped<INodeResultRepository, InMemoryNodeResultRepository>("InMemory");
-        services.AddKeyedScoped<IResultSetRepository, InMemoryResultSetRepository>("InMemory");
-        services.AddKeyedScoped<IEnvelopeResultSetRepository, InMemoryEnvelopeResultSetRepository>(
-            "InMemory"
-        );
-        services.AddKeyedScoped<IModelProposalRepository, InMemoryModelProposalRepository>(
-            "InMemory"
-        );
-        services.AddKeyedScoped<IProposalIssueRepository, InMemoryProposalIssueRepository>(
-            "InMemory"
-        );
-        services.AddKeyedScoped<
+        >();
+        services.AddScoped<IElement1dRepository, InMemoryElement1dRepository>();
+        services.AddScoped<IPointLoadRepository, InMemoryPointLoadRepository>();
+        services.AddScoped<IMomentLoadRepository, InMemoryMomentLoadRepository>();
+        services.AddScoped<ILoadCaseRepository, InMemoryLoadCaseRepository>();
+        services.AddScoped<ILoadCombinationRepository, InMemoryLoadCombinationRepository>();
+        services.AddScoped<INodeResultRepository, InMemoryNodeResultRepository>();
+        services.AddScoped<IResultSetRepository, InMemoryResultSetRepository>();
+        services.AddScoped<IEnvelopeResultSetRepository, InMemoryEnvelopeResultSetRepository>();
+        services.AddScoped<IModelProposalRepository, InMemoryModelProposalRepository>();
+        services.AddScoped<IProposalIssueRepository, InMemoryProposalIssueRepository>();
+        services.AddScoped<
             IQueryHandler<EmptyRequest, ICollection<ModelInfoResponse>>,
             InMemoryGetModelsQueryHandler
-        >("InMemory");
+        >();
 
-        services.AddKeyedScoped<
+        services.AddScoped<
             ICommandHandler<ModelResourceRequest<DateTimeOffset>, ModelResponse>,
             InMemoryRestoreModeCommandHandler
-        >("InMemory");
+        >();
 #endif
 
         return services;

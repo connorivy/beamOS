@@ -48,10 +48,12 @@ internal class InMemoryModelResourceRepository<TId, T>(
     {
         if (!this.ModelResources.TryGetValue(aggregate.ModelId, out var resources))
         {
-            resources = new Dictionary<TId, T>();
+            resources = [];
             this.ModelResources[aggregate.ModelId] = resources;
         }
-        resources[aggregate.Id] = aggregate;
+        TId id = aggregate.Id.Id == 0 ? new() { Id = resources.Count + 1 } : aggregate.Id;
+        aggregate.__SetId(id);
+        resources[id] = aggregate;
     }
 
     public void ClearChangeTracker()

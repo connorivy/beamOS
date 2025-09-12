@@ -16,7 +16,7 @@ internal static partial class DependencyInjection
     {
         services.AddCommandHandlers();
         services.AddQueryHandlers();
-        services.AddScoped<InMemoryModelRepositoryStorage>();
+        services.AddSingleton<InMemoryModelRepositoryStorage>();
         // services.AddObjectThatImplementInterface<IAssemblyMarkerStructuralAnalysisApplication>(
         //     typeof(ICommandHandler<,>),
         //     ServiceLifetime.Scoped,

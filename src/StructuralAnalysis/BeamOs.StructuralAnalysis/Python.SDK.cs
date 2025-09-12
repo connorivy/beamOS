@@ -6,12 +6,13 @@ using Microsoft.Extensions.DependencyInjection;
 namespace BeamOs.StructuralAnalysis.Sdk;
 
 // [DotWrapExpose]
-internal static class ApiClientFactory
+public static class ApiClientFactory
 {
     public static BeamOsApiClient CreateRemote(string apiToken)
     {
         var services = new ServiceCollection();
         services.AddBeamOsRemote(apiToken);
+        services.AddStructuralAnalysisSdkRequired();
         var serviceProvider = services.BuildServiceProvider();
         return serviceProvider.GetRequiredService<BeamOsApiClient>();
     }
@@ -24,15 +25,32 @@ internal static class ApiClientFactory
             .AddStructuralAnalysisRequired()
             .AddStructuralAnalysisConfigurable()
             .AddInMemoryInfrastructure();
+#if !CODEGEN
+        services.AddScoped<IStructuralAnalysisApiClientV2, InMemoryApiClient2>();
+#endif
 
         var serviceProvider = services.BuildServiceProvider();
-        var apiClient = serviceProvider.GetRequiredKeyedService<IStructuralAnalysisApiClientV2>(
-            "InMemory"
-        );
+        var apiClient = serviceProvider.GetRequiredService<IStructuralAnalysisApiClientV2>();
 
         // InMemoryApiClient2 x = default;
         return new BeamOsApiClient(apiClient);
         // return new BeamOsModelBuilder(model, apiClient);
+    }
+
+    public static BeamOsResultApiClient CreateResultLocal()
+    {
+        var services = new ServiceCollection();
+        services
+            .AddStructuralAnalysisSdkRequired()
+            .AddStructuralAnalysisRequired()
+            .AddStructuralAnalysisConfigurable()
+            .AddInMemoryInfrastructure();
+#if !CODEGEN
+        services.AddScoped<IStructuralAnalysisApiClientV2, InMemoryApiClient2>();
+#endif
+
+        var serviceProvider = services.BuildServiceProvider();
+        return serviceProvider.GetRequiredService<BeamOsResultApiClient>();
     }
     // public static BeamOsModel Local()
     // {
@@ -50,7 +68,7 @@ internal static class ApiClientFactory
 public sealed class BeamOsApiClient : BeamOsFluentApiClient
 // IDisposable
 {
-    internal BeamOsApiClient(IStructuralAnalysisApiClientV2 apiClient)
+    public BeamOsApiClient(IStructuralAnalysisApiClientV2 apiClient)
         : base(apiClient) { }
 
     public BeamOsApiClient(HttpClient httpClient)
@@ -66,7 +84,7 @@ public sealed class BeamOsApiClient : BeamOsFluentApiClient
 // [DotWrapExpose]
 public sealed class BeamOsResultApiClient : BeamOsFluentResultApiClient
 {
-    internal BeamOsResultApiClient(IStructuralAnalysisApiClientV2 apiClient)
+    public BeamOsResultApiClient(IStructuralAnalysisApiClientV2 apiClient)
         : base(apiClient) { }
 
     public BeamOsResultApiClient(HttpClient httpClient)

@@ -3,7 +3,6 @@ using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.EnvelopeResultSets;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.NodeResultAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 using Microsoft.EntityFrameworkCore;
@@ -12,15 +11,23 @@ namespace BeamOs.StructuralAnalysis.Infrastructure;
 
 /// <summary>
 /// dotnet ef migrations add Initial --project ..\BeamOs.StructuralAnalysis.Infrastructure\
-/// dotnet ef dbcontext optimize --output-dir ..\BeamOs.StructuralAnalysis.Infrastructure\CompiledModels
+/// dotnet ef dbcontext optimize --output-dir ../BeamOs.StructuralAnalysis.Infrastructure/CompiledModels
 /// </summary>
 internal class StructuralAnalysisDbContext : DbContext
 {
     public StructuralAnalysisDbContext(DbContextOptions<StructuralAnalysisDbContext> options)
+#pragma warning disable IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
+#pragma warning disable IL3050 // Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.
         : base(options) { }
+#pragma warning restore IL3050 // Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.
+#pragma warning restore IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
 
     protected StructuralAnalysisDbContext(DbContextOptions options)
+#pragma warning disable IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
+#pragma warning disable IL3050 // Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.
         : base(options) { }
+#pragma warning restore IL3050 // Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.
+#pragma warning restore IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
 
     public DbSet<Model> Models { get; set; }
     public DbSet<Node> Nodes { get; set; }
@@ -59,8 +66,7 @@ internal class StructuralAnalysisDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        _ = builder
-            .Ignore<List<IDomainEvent>>()
-            .ApplyConfigurationsFromAssembly(typeof(StructuralAnalysisDbContext).Assembly);
+        _ = builder.Ignore<List<IDomainEvent>>().AddEntityConfigurations();
+        // .ApplyConfigurationsFromAssembly(typeof(StructuralAnalysisDbContext).Assembly);
     }
 }

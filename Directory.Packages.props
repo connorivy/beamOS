@@ -17,6 +17,7 @@
     <PackageVersion Include="DotWrap" Version="0.2.1" />
     <PackageVersion Include="EntityFrameworkCore.Exceptions.Common" Version="8.1.3" />
     <PackageVersion Include="EntityFrameworkCore.Exceptions.PostgreSQL" Version="8.1.3" />
+    <PackageVersion Include="EntityFrameworkCore.Exceptions.Sqlite" Version="8.1.3" />
     <PackageVersion Include="intelmkl.redist.win-x64" Version="2025.0.1.5" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.Google" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(AspnetVersion)" />
@@ -73,6 +74,7 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="$(EfVersion)" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(EfVersion)" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="$(EfVersion)" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tasks" Version="$(EfVersion)" />
     <!-- Fluxor -->
     <PackageVersion Include="Fluxor" Version="$(FluxorVersion)" />
     <PackageVersion Include="Fluxor.Blazor.Web" Version="$(FluxorVersion)" />

@@ -29,6 +29,16 @@ internal class DoubleArrayConverter : ValueConverter<double[], string>
 
 internal class DictIdToDoubleConverter : ValueConverter<Dictionary<LoadCaseId, double>, string>
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Trimming",
+        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+        Justification = "Using JsonSerializer with known types only"
+    )]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "AOT",
+        "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.",
+        Justification = "Using JsonSerializer with known types only"
+    )]
     public DictIdToDoubleConverter()
         : base(
             static x =>
@@ -45,6 +55,16 @@ internal class DictIdToDoubleConverter : ValueConverter<Dictionary<LoadCaseId, d
 
 internal class DictIntToDoubleConverter : ValueConverter<Dictionary<int, double>, string>
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Trimming",
+        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+        Justification = "Using JsonSerializer with known types only"
+    )]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "AOT",
+        "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.",
+        Justification = "Using JsonSerializer with known types only"
+    )]
     public DictIntToDoubleConverter()
         : base(
             static x => JsonSerializer.Serialize(x, BeamOsSerializerOptions.Default),
@@ -58,6 +78,16 @@ internal class DictIntToDoubleConverter : ValueConverter<Dictionary<int, double>
 
 internal class Vector3Converter : ValueConverter<Vector3, string>
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Trimming",
+        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+        Justification = "Using JsonSerializer with known types only"
+    )]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "AOT",
+        "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.",
+        Justification = "Using JsonSerializer with known types only"
+    )]
     public Vector3Converter()
         : base(
             static x => JsonSerializer.Serialize(x, BeamOsSerializerOptions.Default),

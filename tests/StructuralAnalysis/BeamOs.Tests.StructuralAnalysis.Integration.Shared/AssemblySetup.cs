@@ -1,4 +1,10 @@
+using BeamOs.CodeGen.SpeckleConnectorApi;
+using BeamOs.CodeGen.StructuralAnalysisApiClient;
+using BeamOs.Common.Api;
+using BeamOs.StructuralAnalysis.Api;
+using BeamOs.StructuralAnalysis.Api.Endpoints;
 using BeamOs.StructuralAnalysis.Sdk;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration;
 
@@ -11,4 +17,36 @@ public static partial class AssemblySetup
         {
             return StructuralAnalysisApiClient;
         };
+
+    public static BeamOsResultApiClient CreateApiClientWebAppFactory(HttpClient httpClient)
+    {
+        var services = new ServiceCollection();
+        services.AddBeamOsRemoteTest(httpClient);
+        var serviceProvider = services.BuildServiceProvider();
+        return serviceProvider.GetRequiredService<BeamOsResultApiClient>();
+    }
+
+    public static BeamOsResultApiClient CreateApiClientLocal()
+    {
+        return ApiClientFactory.CreateResultLocal();
+    }
+
+    private static IServiceCollection AddBeamOsRemoteTest(
+        this IServiceCollection services,
+        HttpClient httpClient
+    )
+    {
+        services.AddSingleton(httpClient);
+
+        services.AddScoped<IStructuralAnalysisApiClientV1, StructuralAnalysisApiClientV1>();
+        services.AddScoped<ISpeckleConnectorApi, SpeckleConnectorApi>();
+
+#if !CODEGEN
+        services.AddScoped<IStructuralAnalysisApiClientV2, StructuralAnalysisApiClientV2>();
+#endif
+
+        services.AddStructuralAnalysisSdkRequired();
+
+        return services;
+    }
 }

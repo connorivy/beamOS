@@ -144,11 +144,13 @@ public class BeamOsApiInterfaceGenerator : IIncrementalGenerator
     {
         if (requestType != null && returnType != null)
         {
+            // var handler = serviceProvider.GetRequiredKeyedService<{commandHandlerType.ToDisplayString()}>(""InMemory"");
             inMemoryImpl.AppendLine(
                 @$"
     public async Task<ApiResponse<{returnType}>> {symbol.Name}({requestType} request, CancellationToken ct = default) 
     {{
-        var handler = serviceProvider.GetRequiredKeyedService<{commandHandlerType.ToDisplayString()}>(""InMemory"");
+        using var scope = serviceProvider.CreateScope();
+        var handler = scope.ServiceProvider.GetRequiredService<{commandHandlerType.ToDisplayString()}>();
         var endpoint = new {symbol.ToDisplayString()}(handler);
         return (await endpoint.ExecuteRequestAsync(request, ct)).ToApiResponse();
     }}
