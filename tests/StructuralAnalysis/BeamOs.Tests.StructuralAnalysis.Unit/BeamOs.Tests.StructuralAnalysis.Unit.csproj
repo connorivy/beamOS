@@ -8,10 +8,14 @@
   <ItemGroup>
     <PackageReference Include="FluentAssertions" />
     <PackageReference Include="TUnit" />
+    <PackageReference Include="MathNet.Numerics.MKL.Win-x64" PrivateAssets="all" />
+    <PackageReference Include="MathNet.Spatial" PrivateAssets="all" />
+    <PackageReference Include="Riok.Mapperly" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" PrivateAssets="all" />
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\StructuralAnalysis\BeamOs.StructuralAnalysis.Application\BeamOs.StructuralAnalysis.Application.csproj" />
+    <ProjectReference Include="..\..\..\src\StructuralAnalysis\BeamOs.StructuralAnalysis\BeamOs.StructuralAnalysis.csproj" />
     <ProjectReference Include="..\..\BeamOs.Tests.Common\BeamOs.Tests.Common.csproj" />
   </ItemGroup>
   

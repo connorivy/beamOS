@@ -40,6 +40,7 @@ public partial class Models : FluxorComponent
             .ModelState.Value.UserModelResponses.Where(model =>
                 model.Name.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase)
             )
+            .OrderByDescending(m => m.LastModified)
             .ToList();
 
     protected override async Task OnInitializedAsync()

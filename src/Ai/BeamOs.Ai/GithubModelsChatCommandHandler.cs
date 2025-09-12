@@ -11,19 +11,19 @@ using OpenAI;
 
 namespace BeamOs.Ai;
 
-public class GithubModelsChatCommandHandler(
+internal class GithubModelsChatCommandHandler(
     CreateModelProposalCommandHandler createModelProposalCommandHandler,
     IQueryHandler<Guid, ModelInfoResponse> modelInfoQueryHandler
-) : ICommandHandler<GithubModelsChatCommand, GithubModelsChatResponse>
+) : ICommandHandler<ModelResourceRequest<GithubModelsChatRequest>, GithubModelsChatResponse>
 {
     public async Task<Result<GithubModelsChatResponse>> ExecuteAsync(
-        GithubModelsChatCommand command,
+        ModelResourceRequest<GithubModelsChatRequest> command,
         CancellationToken ct = default
     )
     {
         var modelInfoTask = modelInfoQueryHandler.ExecuteAsync(command.ModelId, ct);
         var aiApiPlugin = new AiApiPlugin();
-        var kernel = this.BuildOpenAiKernel(command.ApiKey, aiApiPlugin);
+        var kernel = this.BuildOpenAiKernel(command.Body.ApiKey, aiApiPlugin);
         var modelInfoResult = await modelInfoTask;
         if (modelInfoResult.IsError)
         {
@@ -53,7 +53,7 @@ public class GithubModelsChatCommandHandler(
         StringBuilder stringBuilder = new();
         await foreach (
             var message in agent.InvokeAsync(
-                new ChatMessageContent(AuthorRole.User, command.Message),
+                new ChatMessageContent(AuthorRole.User, command.Body.Message),
                 cancellationToken: ct
             )
         )

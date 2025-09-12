@@ -6,7 +6,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.SectionProfiles;
 
-public class SectionProfileInfoBaseConfiguration : IEntityTypeConfiguration<SectionProfileInfoBase>
+internal class SectionProfileInfoBaseConfiguration
+    : IEntityTypeConfiguration<SectionProfileInfoBase>
 {
     public void Configure(EntityTypeBuilder<SectionProfileInfoBase> builder)
     {
@@ -22,7 +23,7 @@ public class SectionProfileInfoBaseConfiguration : IEntityTypeConfiguration<Sect
     }
 }
 
-public class SectionProfileConfiguration : IEntityTypeConfiguration<SectionProfile>
+internal class SectionProfileConfiguration : IEntityTypeConfiguration<SectionProfile>
 {
     public void Configure(EntityTypeBuilder<SectionProfile> builder)
     {
@@ -35,7 +36,7 @@ public class SectionProfileConfiguration : IEntityTypeConfiguration<SectionProfi
     }
 }
 
-public class SectionProfileFromLibraryConfiguration
+internal class SectionProfileFromLibraryConfiguration
     : IEntityTypeConfiguration<SectionProfileFromLibrary>
 {
     public void Configure(EntityTypeBuilder<SectionProfileFromLibrary> builder)

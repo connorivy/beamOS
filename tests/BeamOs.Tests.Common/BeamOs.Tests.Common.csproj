@@ -3,17 +3,17 @@
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <BeamOsStructuralAnalysisSdkRef>true</BeamOsStructuralAnalysisSdkRef>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="UnitsNet" />
     <PackageReference Include="FluentAssertions" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\codeGen\BeamOs.CodeGen.EditorApi\BeamOs.CodeGen.EditorApi.csproj" />
-    <ProjectReference Include="..\..\src\StructuralAnalysis\BeamOs.StructuralAnalysis.Contracts\BeamOs.StructuralAnalysis.Contracts.csproj" />
-    <ProjectReference Include="..\..\src\StructuralAnalysis\BeamOs.StructuralAnalysis.Sdk\BeamOs.StructuralAnalysis.Sdk.csproj" />
+    <ProjectReference Include="..\..\src\StructuralAnalysis\BeamOs.StructuralAnalysis\BeamOs.StructuralAnalysis.csproj" />
   </ItemGroup>
 
 </Project>

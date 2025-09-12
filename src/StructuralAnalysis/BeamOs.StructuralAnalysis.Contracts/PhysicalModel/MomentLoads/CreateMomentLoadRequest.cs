@@ -61,3 +61,9 @@ public record PutMomentLoadRequest : MomentLoadData, IHasIntId
 {
     public int Id { get; init; }
 }
+
+public record BatchPutMomentLoadRequest : IModelResourceRequest<PutMomentLoadRequest[]>
+{
+    public Guid ModelId { get; init; }
+    public PutMomentLoadRequest[] Body { get; init; }
+}

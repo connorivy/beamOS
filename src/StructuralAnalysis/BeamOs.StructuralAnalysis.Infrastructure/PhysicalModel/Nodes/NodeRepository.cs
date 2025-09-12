@@ -9,7 +9,7 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Nodes;
 
 [Mapper(ThrowOnMappingNullMismatch = false)]
 [UseStaticMapper(typeof(UnitsNetMappers))]
-public static partial class CreateNodeCommandMapper
+internal static partial class CreateNodeCommandMapper
 {
     public static partial Domain.Common.Point ToDomainObject(this PartialPoint command);
 

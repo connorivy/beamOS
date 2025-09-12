@@ -15,7 +15,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.Common;
 
-public class ModelEntityIdIncrementingInterceptor : SaveChangesInterceptor
+internal class ModelEntityIdIncrementingInterceptor : SaveChangesInterceptor
 {
     public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(
         DbContextEventData eventData,

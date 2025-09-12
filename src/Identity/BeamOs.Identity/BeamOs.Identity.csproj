@@ -3,10 +3,12 @@
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <IsAotCompatible Condition="'$(BeamOsEnableAot)' == 'true'">true</IsAotCompatible>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Common\BeamOs.Common.Contracts\BeamOs.Common.Contracts.csproj" />
+    <ProjectReference Include="..\..\Common\BeamOs.Common\BeamOs.Common.csproj" />
   </ItemGroup>
 
 </Project>

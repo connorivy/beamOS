@@ -3,7 +3,8 @@
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <IsPackable>true</IsPackable>
+    <IsAotCompatible Condition="'$(BeamOsEnableAot)' == 'true'">true</IsAotCompatible>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>

@@ -10,7 +10,7 @@ using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Element1ds;
 
-public class GetElement1dQueryHandler(StructuralAnalysisDbContext dbContext)
+internal class GetElement1dQueryHandler(StructuralAnalysisDbContext dbContext)
     : IQueryHandler<IModelEntity, Element1dResponse>
 {
     public async Task<Result<Element1dResponse>> ExecuteAsync(

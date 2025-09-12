@@ -1,0 +1,18 @@
+using BeamOs.Common.Api;
+using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
+
+namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Nodes;
+
+[BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "nodes")]
+[BeamOsEndpointType(Http.Patch)]
+[BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
+internal class PatchNode(PatchNodeCommandHandler patchNodeCommandHandler)
+    : BeamOsModelResourceBaseEndpoint<UpdateNodeRequest, NodeResponse>
+{
+    public override async Task<Result<NodeResponse>> ExecuteRequestAsync(
+        ModelResourceRequest<UpdateNodeRequest> req,
+        CancellationToken ct = default
+    ) => await patchNodeCommandHandler.ExecuteAsync(req, ct);
+}

@@ -14,7 +14,7 @@ namespace BeamOs.StructuralAnalysis.Infrastructure;
 /// dotnet ef migrations add Initial --project ..\BeamOs.StructuralAnalysis.Infrastructure\
 /// dotnet ef dbcontext optimize --output-dir ..\BeamOs.StructuralAnalysis.Infrastructure\CompiledModels
 /// </summary>
-public class StructuralAnalysisDbContext : DbContext
+internal class StructuralAnalysisDbContext : DbContext
 {
     public StructuralAnalysisDbContext(DbContextOptions<StructuralAnalysisDbContext> options)
         : base(options) { }

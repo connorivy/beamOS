@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.LoadCombinations;
 
-public class LoadCombinationConfiguration : IEntityTypeConfiguration<LoadCombination>
+internal class LoadCombinationConfiguration : IEntityTypeConfiguration<LoadCombination>
 {
     public void Configure(EntityTypeBuilder<LoadCombination> builder)
     {

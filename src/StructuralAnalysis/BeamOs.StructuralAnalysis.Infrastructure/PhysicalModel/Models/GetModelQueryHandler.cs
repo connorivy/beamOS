@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Models;
 
-public class GetModelQueryHandler(StructuralAnalysisDbContext dbContext)
+internal class GetModelQueryHandler(StructuralAnalysisDbContext dbContext)
     : IQueryHandler<Guid, ModelResponse>
 {
     public async Task<Result<ModelResponse>> ExecuteAsync(

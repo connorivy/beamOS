@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.AnalyticalResults.NodeResults;
 
-public class NodeResultConfiguration : IEntityTypeConfiguration<NodeResult>
+internal class NodeResultConfiguration : IEntityTypeConfiguration<NodeResult>
 {
     public void Configure(EntityTypeBuilder<NodeResult> builder)
     {

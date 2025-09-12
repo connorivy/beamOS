@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class GoBackToCompositeKeys : Migration
+    internal partial class GoBackToCompositeKeys : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

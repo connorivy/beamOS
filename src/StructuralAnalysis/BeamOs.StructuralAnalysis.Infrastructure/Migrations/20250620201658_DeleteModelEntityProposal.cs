@@ -1,11 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class DeleteModelEntityProposal : Migration
+    internal partial class DeleteModelEntityProposal : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

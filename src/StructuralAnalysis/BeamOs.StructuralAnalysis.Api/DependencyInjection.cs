@@ -2,11 +2,45 @@ using System.Reflection;
 using BeamOs.Common.Api;
 using BeamOs.StructuralAnalysis.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using ServiceScan.SourceGenerator;
 
 namespace BeamOs.StructuralAnalysis.Api;
 
-public static class DependencyInjection
+public static partial class DependencyInjection
 {
+    [GenerateServiceRegistrations(
+        AssignableTo = typeof(BeamOsBaseEndpoint<,>),
+        FromAssemblyOf = typeof(BeamOs.StructuralAnalysis.Sdk.BeamOsApiClient),
+        // AttributeFilter = typeof(BeamOsRouteAttribute),
+        CustomHandler = nameof(Asdf)
+    )]
+    public static partial IEndpointRouteBuilder MapStructuralEndpoints(
+        this IEndpointRouteBuilder services
+    );
+
+    [GenerateServiceRegistrations(
+        AssignableTo = typeof(BeamOsBaseEndpoint<,>),
+        FromAssemblyOf = typeof(BeamOs.SpeckleConnector.IAssemblyMarkerSpeckleConnector),
+        CustomHandler = nameof(Asdf)
+    )]
+    public static partial IEndpointRouteBuilder MapSpeckleEndpoints(
+        this IEndpointRouteBuilder services
+    );
+
+    // [GenerateServiceRegistrations(
+    //     AssignableTo = typeof(BeamOsBaseEndpoint<,>),
+    //     FromAssemblyOf = typeof(BeamOs.Ai.IAssemblyMarkerAi),
+    //     CustomHandler = nameof(Asdf)
+    // )]
+    // public static partial IEndpointRouteBuilder MapAiEndpoints(this IEndpointRouteBuilder services);
+
+    private static void Asdf<TEndpoint, TRequest, TResponse>(IEndpointRouteBuilder app)
+        where TEndpoint : BeamOsBaseEndpoint<TRequest, TResponse>
+    // where T : BeamOsBaseEndpoint<TRequest, TResponse>
+    {
+        EndpointToMinimalApi.Map<TEndpoint, TRequest, TResponse>(app);
+    }
+
     public static void MapEndpoints<TAssemblyMarker>(this IEndpointRouteBuilder app)
     {
         var endpointGroup = app.MapGroup("api");
@@ -49,91 +83,7 @@ public static class DependencyInjection
         if (app.Environment.IsDevelopment())
         {
             using var scope = app.Services.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<StructuralAnalysisDbContext>();
-
-            // await dbContext.Database.EnsureDeletedAsync();
-            var appliedMigrations = (await dbContext.Database.GetAppliedMigrationsAsync()).ToList();
-            var pendingMigrations = (await dbContext.Database.GetPendingMigrationsAsync()).ToList();
-            if (pendingMigrations.Count > 0)
-            {
-                await dbContext.Database.MigrateAsync();
-            }
-            // await dbContext.Database.EnsureCreatedAsync();
+            await BeamOs.StructuralAnalysis.Infrastructure.DependencyInjection.MigrateDb(scope);
         }
-    }
-}
-
-public static class EndpointToMinimalApi
-{
-    public static void Map<TEndpoint, TRequest, TResponse>(IEndpointRouteBuilder app)
-        where TEndpoint : BeamOsBaseEndpoint<TRequest, TResponse>
-    {
-        string route =
-            typeof(TEndpoint).GetCustomAttribute<BeamOsRouteAttribute>()?.Value
-            ?? throw new InvalidOperationException(
-                $"Class {typeof(TEndpoint).Name} is missing the route attribute"
-            );
-        string endpointType =
-            typeof(TEndpoint).GetCustomAttribute<BeamOsEndpointTypeAttribute>()?.Value
-            ?? throw new InvalidOperationException(
-                $"Class {typeof(TEndpoint).Name} is missing the route attribute"
-            );
-        var tags = typeof(TEndpoint).GetCustomAttributes<BeamOsTagAttribute>();
-
-        Func<string, Delegate, RouteHandlerBuilder> mapFunc = endpointType switch
-        {
-            Http.Delete => app.MapDelete,
-            Http.Get => app.MapGet,
-            Http.Patch => app.MapPatch,
-            Http.Post => app.MapPost,
-            Http.Put => app.MapPut,
-            _ => throw new NotImplementedException(),
-        };
-
-        Delegate mapDelegate;
-        if (
-            Common.Application.DependencyInjection.ConcreteTypeDerivedFromBase(
-                typeof(TEndpoint),
-                typeof(BeamOsFromBodyResultBaseEndpoint<,>)
-            )
-        // || Common.Application.DependencyInjection.ConcreteTypeDerivedFromBase(
-        //     typeof(TEndpoint),
-        //     typeof(BeamOsFromBodyBaseEndpoint<,>)
-        // )
-        )
-        {
-            mapDelegate = (
-                [Microsoft.AspNetCore.Mvc.FromBody] TRequest req,
-                IServiceProvider serviceProvider
-            ) =>
-                serviceProvider
-                    .GetRequiredService<TEndpoint>()
-#if CODEGEN
-                    .GetResponseTypeForClientGenerationPurposes(req);
-#else
-                .ExecuteAsync(req);
-#endif
-        }
-        else
-        {
-            mapDelegate = ([AsParameters] TRequest req, IServiceProvider serviceProvider) =>
-                serviceProvider
-                    .GetRequiredService<TEndpoint>()
-#if CODEGEN
-                    .GetResponseTypeForClientGenerationPurposes(req);
-#else
-                .ExecuteAsync(req);
-#endif
-        }
-
-        var endpointBuilder = mapFunc(route, mapDelegate);
-
-        endpointBuilder.WithName(typeof(TEndpoint).Name);
-        foreach (var tag in tags)
-        {
-            endpointBuilder.WithTags(tag.Value);
-        }
-
-        // endpointBuilder.ProducesProblem(404);
     }
 }

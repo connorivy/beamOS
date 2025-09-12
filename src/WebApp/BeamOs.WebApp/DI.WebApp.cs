@@ -5,6 +5,7 @@ using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.StructuralAnalysis.Api;
 using BeamOs.StructuralAnalysis.Api.Endpoints;
 using BeamOs.StructuralAnalysis.Contracts.Common;
+using BeamOs.StructuralAnalysis.Sdk;
 using BeamOs.Tests.Runtime.TestRunner;
 using BeamOs.WebApp.Components;
 using BeamOs.WebApp.Components.Features.Common;
@@ -25,6 +26,7 @@ public static class DI
             );
             options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
         });
+        services.AddStructuralAnalysisSdkRequired();
         services.AddSingleton(typeof(IAssemblyMarkerWebApp).Assembly);
         services.RegisterSharedServices<IAssemblyMarkerWebApp>();
         services.RegisterSharedServicesConfigurable<IAssemblyMarkerWebApp>();

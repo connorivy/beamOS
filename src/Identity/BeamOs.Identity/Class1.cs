@@ -8,10 +8,10 @@ public record CreateApiTokenRequest
 
 public record ApiTokenResponse
 {
-    public string Name { get; init; }
+    public required string Name { get; init; }
     public DateTimeOffset CreatedOn { get; init; }
-    public List<string> Scopes { get; init; }
-    public string Value { get; init; }
+    public required List<string> Scopes { get; init; }
+    public required string Value { get; init; }
 }
 
 public record ApiUsageResponse
@@ -29,9 +29,9 @@ public record UsageBreakdownResponse
     public bool IsToken { get; init; }
 
     public double SharePercentage(long totalDurationMs) =>
-        TotalDurationMs == 0
+        this.TotalDurationMs == 0
             ? 0
-            : Math.Round((TotalDurationMs / (double)(totalDurationMs)) * 100, 1);
+            : Math.Round(this.TotalDurationMs / (double)totalDurationMs * 100, 1);
 }
 
 public interface IAuthStateProvider

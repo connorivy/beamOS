@@ -35,10 +35,11 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using ServiceScan.SourceGenerator;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure;
 
-public static class DependencyInjection
+public static partial class DependencyInjection
 {
     public static IServiceCollection AddStructuralAnalysisInfrastructureRequired(
         this IServiceCollection services
@@ -67,11 +68,12 @@ public static class DependencyInjection
 
         _ = services.AddScoped<IStructuralAnalysisUnitOfWork, UnitOfWork>();
 
-        services.AddObjectThatImplementInterface<IAssemblyMarkerInfrastructure>(
-            typeof(IQueryHandler<,>),
-            ServiceLifetime.Scoped,
-            false
-        );
+        services.AddQueryHandlers();
+        // services.AddObjectThatImplementInterface<IAssemblyMarkerInfrastructure>(
+        //     typeof(IQueryHandler<,>),
+        //     ServiceLifetime.Scoped,
+        //     false
+        // );
 
         return services;
     }
@@ -129,35 +131,74 @@ public static class DependencyInjection
                 )
         );
 
+    public static async Task MigrateDb(
+        this IServiceScope scope,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<StructuralAnalysisDbContext>();
+
+        // await dbContext.Database.EnsureDeletedAsync();
+        var appliedMigrations = (await dbContext.Database.GetAppliedMigrationsAsync()).ToList();
+        var pendingMigrations = (await dbContext.Database.GetPendingMigrationsAsync()).ToList();
+        if (pendingMigrations.Count > 0)
+        {
+            await dbContext.Database.MigrateAsync();
+        }
+    }
+
     public static void AddPhysicalModelInfrastructure(
         this ModelConfigurationBuilder configurationBuilder
     )
     {
-        configurationBuilder.AddValueConverters<IAssemblyMarkerInfrastructure>();
+        configurationBuilder.AddValueConverters();
     }
 
-    public static void AddValueConverters<TAssemblyMarker>(
+    // public static void AddValueConverters<TAssemblyMarker>(
+    //     this ModelConfigurationBuilder configurationBuilder
+    // )
+    // {
+    //     var valueConverters = typeof(TAssemblyMarker)
+    //         .Assembly.GetTypes()
+    //         .Where(t =>
+    //             t.IsClass
+    //             && t.BaseType is not null
+    //             && t.BaseType.IsGenericType
+    //             && t.BaseType.GetGenericTypeDefinition() == typeof(ValueConverter<,>)
+    //         );
+
+    //     foreach (var valueConverterType in valueConverters)
+    //     {
+    //         var genericArgs = valueConverterType.BaseType?.GetGenericArguments();
+    //         if (genericArgs?.Length != 2)
+    //         {
+    //             throw new ArgumentException();
+    //         }
+
+    //         _ = configurationBuilder.Properties(genericArgs[0]).HaveConversion(valueConverterType);
+    //     }
+    // }
+
+    [GenerateServiceRegistrations(
+        AssignableTo = typeof(ValueConverter<,>),
+        CustomHandler = nameof(AddValueConverter)
+    )]
+    public static partial ModelConfigurationBuilder AddValueConverters(
+        this ModelConfigurationBuilder services
+    );
+
+    private static void AddValueConverter<T, TModel, TProvider>(
         this ModelConfigurationBuilder configurationBuilder
     )
+        where T : ValueConverter<TModel, TProvider>
     {
-        var valueConverters = typeof(TAssemblyMarker)
-            .Assembly.GetTypes()
-            .Where(t =>
-                t.IsClass
-                && t.BaseType is not null
-                && t.BaseType.IsGenericType
-                && t.BaseType.GetGenericTypeDefinition() == typeof(ValueConverter<,>)
-            );
-
-        foreach (var valueConverterType in valueConverters)
-        {
-            var genericArgs = valueConverterType.BaseType?.GetGenericArguments();
-            if (genericArgs?.Length != 2)
-            {
-                throw new ArgumentException();
-            }
-
-            _ = configurationBuilder.Properties(genericArgs[0]).HaveConversion(valueConverterType);
-        }
+        configurationBuilder.Properties<TModel>().HaveConversion<T>();
     }
+
+    [GenerateServiceRegistrations(
+        AssignableTo = typeof(IQueryHandler<,>),
+        Lifetime = ServiceLifetime.Scoped,
+        AsSelf = true
+    )]
+    public static partial IServiceCollection AddQueryHandlers(this IServiceCollection services);
 }

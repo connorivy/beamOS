@@ -15,20 +15,31 @@ public class ExampleUserApiTokenService : IUserApiTokenService
 {
     private List<ApiTokenResponse> apiTokenResponses =
     [
-        new() { Name = "Mobile App Token", Scopes= ["models:read"], CreatedOn = DateTime.Now.AddDays(-5) },
-        new() { Name = "CI/CD Pipeline Token", Scopes= ["models:read", "models:write"], CreatedOn = DateTime.Now.AddDays(-2) }
+        new()
+        {
+            Name = "Mobile App Token",
+            Scopes = ["models:read"],
+            CreatedOn = DateTime.Now.AddDays(-5),
+            Value = Guid.NewGuid().ToString(),
+        },
+        new()
+        {
+            Name = "CI/CD Pipeline Token",
+            Scopes = ["models:read", "models:write"],
+            CreatedOn = DateTime.Now.AddDays(-2),
+            Value = Guid.NewGuid().ToString(),
+        },
     ];
 
     public Task<Result<ApiTokenResponse>> CreateToken(CreateApiTokenRequest token)
     {
-        ApiTokenResponse resp =
-            new()
-            {
-                Name = token.Name,
-                Scopes = token.Scopes,
-                CreatedOn = DateTime.UtcNow,
-                Value = Guid.NewGuid().ToString()
-            };
+        ApiTokenResponse resp = new()
+        {
+            Name = token.Name,
+            Scopes = token.Scopes,
+            CreatedOn = DateTime.UtcNow,
+            Value = Guid.NewGuid().ToString(),
+        };
         this.apiTokenResponses.Add(resp);
 
         Result<ApiTokenResponse> result = resp;

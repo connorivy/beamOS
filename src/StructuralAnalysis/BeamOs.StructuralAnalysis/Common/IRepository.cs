@@ -1,0 +1,71 @@
+using BeamOs.Common.Domain.Models;
+using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
+using BeamOs.StructuralAnalysis.Domain.Common;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
+
+namespace BeamOs.StructuralAnalysis.Application.Common;
+
+internal interface IRepository<TId, in T>
+    where TId : struct
+    where T : BeamOsEntity<TId>
+{
+    //Task<T?> GetById(TId id, CancellationToken ct = default);
+
+    public void Add(T aggregate);
+
+    public ValueTask Put(T aggregate);
+
+    //void Update(T aggregate);
+
+    public void Remove(T aggregate);
+
+    public void ClearChangeTracker();
+}
+
+internal interface IModelResourceRepositoryIn<TId, in T> : IRepository<TId, T>
+    where TId : struct, IIntBasedId
+    where T : BeamOsModelEntity<TId>
+{
+    public Task<List<TId>> GetIdsInModel(ModelId modelId, CancellationToken ct = default);
+    public Task RemoveById(ModelId modelId, TId id, CancellationToken ct = default);
+    public Task ReloadEntity(T entity, CancellationToken ct = default);
+}
+
+internal interface IModelResourceRepository<TId, T> : IModelResourceRepositoryIn<TId, T>
+    where TId : struct, IIntBasedId
+    where T : BeamOsModelEntity<TId>
+{
+    public Task<List<T>> GetMany(ModelId modelId, IList<TId>? ids, CancellationToken ct = default);
+    public Task<T?> GetSingle(ModelId modelId, TId id, CancellationToken ct = default);
+    public Task<ModelSettingsAndEntity<T>?> GetSingleWithModelSettings(
+        ModelId modelId,
+        TId id,
+        CancellationToken ct = default
+    );
+}
+
+internal interface IAnalyticalResultRepository<TId, T> : IRepository<TId, T>
+    where TId : struct
+    where T : BeamOsEntity<TId>
+{
+    public Task<T?> GetSingle(ModelId modelId, ResultSetId resultSetId, TId id);
+    public Task<ModelSettingsAndEntity<T>?> GetSingleWithModelSettings(
+        ModelId modelId,
+        TId id,
+        CancellationToken ct = default
+    );
+    public Task<ModelSettingsAndEntity<T[]>?> GetAllFromLoadCombinationWithModelSettings(
+        ModelId modelId,
+        ResultSetId resultSetId,
+        CancellationToken ct = default
+    );
+}
+
+internal interface IProposalRepository<TId, T> : IRepository<TId, T>
+    where TId : struct
+    where T : BeamOsEntity<TId>
+{
+    public Task<T?> GetSingle(ModelId modelId, ModelProposalId modelProposalId, TId id);
+}
+
+internal readonly record struct ModelSettingsAndEntity<T>(ModelSettings ModelSettings, T Entity);

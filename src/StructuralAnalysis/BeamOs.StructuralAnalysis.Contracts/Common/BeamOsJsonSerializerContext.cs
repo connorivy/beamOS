@@ -104,8 +104,7 @@ public static class BeamOsSerializerOptions
                 if (field is null)
                 {
                     field = new() { PropertyNameCaseInsensitive = true };
-                    field.TypeInfoResolverChain.Insert(0, BeamOsJsonSerializerContext.Default);
-                    field.Converters.Add(new JsonStringEnumConverter());
+                    DefaultConfig(field);
                 }
             }
             return field;
@@ -120,8 +119,9 @@ public static class BeamOsSerializerOptions
                 if (field is null)
                 {
                     field = new() { PropertyNameCaseInsensitive = true, WriteIndented = true };
-                    field.TypeInfoResolverChain.Insert(0, BeamOsJsonSerializerContext.Default);
-                    field.Converters.Add(new JsonStringEnumConverter());
+                    DefaultConfig(field);
+                    // field.TypeInfoResolverChain.Insert(0, BeamOsJsonSerializerContext.Default);
+                    // field.Converters.Add(new JsonStringEnumConverter());
                 }
             }
             return field;
@@ -133,6 +133,6 @@ public static class BeamOsSerializerOptions
         {
             options.PropertyNameCaseInsensitive = true;
             options.TypeInfoResolverChain.Insert(0, BeamOsJsonSerializerContext.Default);
-            options.Converters.Add(new JsonStringEnumConverter());
+            // options.Converters.Add(new JsonStringEnumConverter());
         };
 }

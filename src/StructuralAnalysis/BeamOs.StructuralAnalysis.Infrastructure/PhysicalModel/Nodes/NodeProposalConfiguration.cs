@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Nodes;
 
-public class NodeProposalConfiguration : IEntityTypeConfiguration<NodeProposal>
+internal class NodeProposalConfiguration : IEntityTypeConfiguration<NodeProposal>
 {
     public void Configure(EntityTypeBuilder<NodeProposal> builder)
     {
@@ -25,7 +25,7 @@ public class NodeProposalConfiguration : IEntityTypeConfiguration<NodeProposal>
     }
 }
 
-public class InternalNodeProposalConfiguration : IEntityTypeConfiguration<InternalNodeProposal>
+internal class InternalNodeProposalConfiguration : IEntityTypeConfiguration<InternalNodeProposal>
 {
     public void Configure(EntityTypeBuilder<InternalNodeProposal> builder)
     {

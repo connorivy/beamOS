@@ -17,133 +17,133 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.Common;
 
-public class ModelIdConverter : ValueConverter<ModelId, Guid>
+internal class ModelIdConverter : ValueConverter<ModelId, Guid>
 {
     public ModelIdConverter()
         : base(x => x.Id, x => new(x), null) { }
 }
 
-public class ModelIdProposalConverter : ValueConverter<ModelProposalId, int>
+internal class ModelIdProposalConverter : ValueConverter<ModelProposalId, int>
 {
     public ModelIdProposalConverter()
         : base(x => x.Id, x => new(x), null) { }
 }
 
-public class NodeIdConverter : ValueConverter<NodeId, int>
+internal class NodeIdConverter : ValueConverter<NodeId, int>
 {
     public NodeIdConverter()
         : base(x => x.Id, x => new(x), null) { }
 }
 
-public class NodeProposalIdConverter : ValueConverter<NodeProposalId, int>
+internal class NodeProposalIdConverter : ValueConverter<NodeProposalId, int>
 {
     public NodeProposalIdConverter()
         : base(x => x.Id, x => new(x), null) { }
 }
 
-public class PointLoadIdConverter : ValueConverter<PointLoadId, int>
+internal class PointLoadIdConverter : ValueConverter<PointLoadId, int>
 {
     public PointLoadIdConverter()
         : base(x => x.Id, x => new(x), null) { }
 }
 
-public class MomentLoadIdConverter : ValueConverter<MomentLoadId, int>
+internal class MomentLoadIdConverter : ValueConverter<MomentLoadId, int>
 {
     public MomentLoadIdConverter()
         : base(x => x.Id, x => new(x), null) { }
 }
 
-public class Element1dIdConverter : ValueConverter<Element1dId, int>
+internal class Element1dIdConverter : ValueConverter<Element1dId, int>
 {
     public Element1dIdConverter()
         : base(x => x.Id, x => new(x), null) { }
 }
 
-public class Element1dProposalIdConverter : ValueConverter<Element1dProposalId, int>
+internal class Element1dProposalIdConverter : ValueConverter<Element1dProposalId, int>
 {
     public Element1dProposalIdConverter()
         : base(x => x.Id, x => new(x), null) { }
 }
 
-public class MaterialIdConverter : ValueConverter<MaterialId, int>
+internal class MaterialIdConverter : ValueConverter<MaterialId, int>
 {
     public MaterialIdConverter()
         : base(x => x.Id, x => new(x), null) { }
 }
 
-public class MaterialProposalIdConverter : ValueConverter<MaterialProposalId, int>
+internal class MaterialProposalIdConverter : ValueConverter<MaterialProposalId, int>
 {
     public MaterialProposalIdConverter()
         : base(x => x.Id, x => new(x), null) { }
 }
 
-public class SectionProfileIdConverter : ValueConverter<SectionProfileId, int>
+internal class SectionProfileIdConverter : ValueConverter<SectionProfileId, int>
 {
     public SectionProfileIdConverter()
         : base(x => x.Id, x => new(x), null) { }
 }
 
-public class SectionProfileProposalIdConverter : ValueConverter<SectionProfileProposalId, int>
+internal class SectionProfileProposalIdConverter : ValueConverter<SectionProfileProposalId, int>
 {
     public SectionProfileProposalIdConverter()
         : base(x => x.Id, x => new(x), null) { }
 }
 
-public class ResultSetIdConverter : ValueConverter<ResultSetId, int>
+internal class ResultSetIdConverter : ValueConverter<ResultSetId, int>
 {
     public ResultSetIdConverter()
         : base(x => x.Id, x => new(x), null) { }
 }
 
-public class DiagramConsistantIntervalIdConverter : ValueConverter<DiagramConsistantIntervalId, int>
+internal class DiagramConsistantIntervalIdConverter : ValueConverter<DiagramConsistantIntervalId, int>
 {
     public DiagramConsistantIntervalIdConverter()
         : base(x => x.Id, x => new(x), null) { }
 }
 
-public class ShearForceDiagramIdConverter : ValueConverter<ShearForceDiagramId, int>
+internal class ShearForceDiagramIdConverter : ValueConverter<ShearForceDiagramId, int>
 {
     public ShearForceDiagramIdConverter()
         : base(x => x.Id, x => new(x), null) { }
 }
 
-public class MomentDiagramIdConverter : ValueConverter<MomentDiagramId, int>
+internal class MomentDiagramIdConverter : ValueConverter<MomentDiagramId, int>
 {
     public MomentDiagramIdConverter()
         : base(x => x.Id, x => new(x), null) { }
 }
 
-public class LoadCaseIdConverter : ValueConverter<LoadCaseId, int>
+internal class LoadCaseIdConverter : ValueConverter<LoadCaseId, int>
 {
     public LoadCaseIdConverter()
         : base(x => x.Id, x => new(x), null) { }
 }
 
-public class LoadCombinationIdConverter : ValueConverter<LoadCombinationId, int>
+internal class LoadCombinationIdConverter : ValueConverter<LoadCombinationId, int>
 {
     public LoadCombinationIdConverter()
         : base(x => x.Id, x => new(x), null) { }
 }
 
-public class EnvelopeElement1dResultIdConverter : ValueConverter<EnvelopeElement1dResultId, int>
+internal class EnvelopeElement1dResultIdConverter : ValueConverter<EnvelopeElement1dResultId, int>
 {
     public EnvelopeElement1dResultIdConverter()
         : base(x => x.Id, x => new(x), null) { }
 }
 
-public class EnvelopeResultSetIdConverter : ValueConverter<EnvelopeResultSetId, int>
+internal class EnvelopeResultSetIdConverter : ValueConverter<EnvelopeResultSetId, int>
 {
     public EnvelopeResultSetIdConverter()
         : base(x => x.Id, x => new(x), null) { }
 }
 
-public class ProposalIssueIdConverter : ValueConverter<ProposalIssueId, int>
+internal class ProposalIssueIdConverter : ValueConverter<ProposalIssueId, int>
 {
     public ProposalIssueIdConverter()
         : base(x => x.Id, x => new(x), null) { }
 }
 
-public class ModelEntityDeleteProposalIdConverter : ValueConverter<ModelEntityDeleteProposalId, int>
+internal class ModelEntityDeleteProposalIdConverter : ValueConverter<ModelEntityDeleteProposalId, int>
 {
     public ModelEntityDeleteProposalIdConverter()
         : base(x => x.Id, x => new(x), null) { }

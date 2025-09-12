@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Models;
 
-public class GetModelInfoQueryHandler(StructuralAnalysisDbContext dbContext)
+internal class GetModelInfoQueryHandler(StructuralAnalysisDbContext dbContext)
     : IQueryHandler<Guid, ModelInfoResponse>
 {
     public async Task<Result<ModelInfoResponse>> ExecuteAsync(

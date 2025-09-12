@@ -3,7 +3,7 @@ using UnitsNet;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.Common;
 
-public class AngleValueConverter : ValueConverter<Angle, double>
+internal class AngleValueConverter : ValueConverter<Angle, double>
 {
     public AngleValueConverter()
         : base(
@@ -13,7 +13,7 @@ public class AngleValueConverter : ValueConverter<Angle, double>
         ) { }
 }
 
-public class LengthValueConverter : ValueConverter<Length, double>
+internal class LengthValueConverter : ValueConverter<Length, double>
 {
     public LengthValueConverter()
         : base(
@@ -23,7 +23,7 @@ public class LengthValueConverter : ValueConverter<Length, double>
         ) { }
 }
 
-public class AreaValueConverter : ValueConverter<Area, double>
+internal class AreaValueConverter : ValueConverter<Area, double>
 {
     public AreaValueConverter()
         : base(
@@ -33,7 +33,7 @@ public class AreaValueConverter : ValueConverter<Area, double>
         ) { }
 }
 
-public class VolumeValueConverter : ValueConverter<Volume, double>
+internal class VolumeValueConverter : ValueConverter<Volume, double>
 {
     public VolumeValueConverter()
         : base(
@@ -43,7 +43,7 @@ public class VolumeValueConverter : ValueConverter<Volume, double>
         ) { }
 }
 
-public class AreaMomentOfInertiaValueConverter : ValueConverter<AreaMomentOfInertia, double>
+internal class AreaMomentOfInertiaValueConverter : ValueConverter<AreaMomentOfInertia, double>
 {
     public AreaMomentOfInertiaValueConverter()
         : base(
@@ -53,7 +53,7 @@ public class AreaMomentOfInertiaValueConverter : ValueConverter<AreaMomentOfIner
         ) { }
 }
 
-public class ForceValueConverter : ValueConverter<Force, double>
+internal class ForceValueConverter : ValueConverter<Force, double>
 {
     public ForceValueConverter()
         : base(
@@ -63,7 +63,7 @@ public class ForceValueConverter : ValueConverter<Force, double>
         ) { }
 }
 
-public class ForcePerLengthValueConverter : ValueConverter<ForcePerLength, double>
+internal class ForcePerLengthValueConverter : ValueConverter<ForcePerLength, double>
 {
     public ForcePerLengthValueConverter()
         : base(
@@ -73,7 +73,7 @@ public class ForcePerLengthValueConverter : ValueConverter<ForcePerLength, doubl
         ) { }
 }
 
-public class TorqueValueConverter : ValueConverter<Torque, double>
+internal class TorqueValueConverter : ValueConverter<Torque, double>
 {
     public TorqueValueConverter()
         : base(
@@ -83,7 +83,7 @@ public class TorqueValueConverter : ValueConverter<Torque, double>
         ) { }
 }
 
-public class RatioValueConverter : ValueConverter<Ratio, double>
+internal class RatioValueConverter : ValueConverter<Ratio, double>
 {
     public RatioValueConverter()
         : base(
@@ -93,7 +93,7 @@ public class RatioValueConverter : ValueConverter<Ratio, double>
         ) { }
 }
 
-public class PressureValueConverter : ValueConverter<Pressure, double>
+internal class PressureValueConverter : ValueConverter<Pressure, double>
 {
     public PressureValueConverter()
         : base(

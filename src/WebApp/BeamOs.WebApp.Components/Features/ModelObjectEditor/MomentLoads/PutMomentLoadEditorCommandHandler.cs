@@ -13,7 +13,7 @@ using MudBlazor;
 namespace BeamOs.WebApp.Components.Features.ModelObjectEditor.MomentLoads;
 
 public sealed class PutMomentLoadEditorCommandHandler(
-    ILogger<PutMomentLoadCommandHandler> logger,
+    ILogger<PutMomentLoadEditorCommandHandler> logger,
     ISnackbar snackbar,
     IStructuralAnalysisApiClientV1 structuralAnalysisApiClientV1,
     IDispatcher dispatcher,

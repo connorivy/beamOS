@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Element1ds;
 
-public class Element1dProposalConfiguration : IEntityTypeConfiguration<Element1dProposal>
+internal class Element1dProposalConfiguration : IEntityTypeConfiguration<Element1dProposal>
 {
     public void Configure(EntityTypeBuilder<Element1dProposal> builder)
     {

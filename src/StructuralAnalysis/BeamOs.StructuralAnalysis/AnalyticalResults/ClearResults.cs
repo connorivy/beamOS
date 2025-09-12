@@ -1,0 +1,17 @@
+using BeamOs.Common.Api;
+using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis.Application.AnalyticalResults.ResultSets;
+
+namespace BeamOs.StructuralAnalysis.Api.Endpoints.AnalyticalResults;
+
+[BeamOsRoute(RouteConstants.ModelResults)]
+[BeamOsEndpointType(Http.Delete)]
+[BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
+internal class ClearResults(DeleteAllResultSetsCommandHandler deleteResultSetsCommandHandler)
+    : BeamOsModelIdRequestBaseEndpoint<int>
+{
+    public override async Task<Result<int>> ExecuteRequestAsync(
+        ModelResourceRequest req,
+        CancellationToken ct = default
+    ) => await deleteResultSetsCommandHandler.ExecuteAsync(req.ModelId, ct);
+}

@@ -1,0 +1,73 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/benchmarks/">
+    <Project Path="benchmarks/BeamOs.Benchmarks/BeamOs.Benchmarks.csproj" />
+  </Folder>
+  <Folder Name="/codeGen/">
+    <Project Path="codeGen/BeamOs.CodeGen.ApiGenerator/BeamOs.CodeGen.ApiGenerator.csproj" />
+    <Project Path="codeGen/BeamOs.CodeGen.EditorApi/BeamOs.CodeGen.EditorApi.csproj" />
+    <Project Path="codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/BeamOs.CodeGen.StructuralAnalysisApiClient.csproj" />
+    <Project Path="codeGen/BeamOs.CodeGen.TestModelBuilderGenerator/BeamOs.CodeGen.TestModelBuilderGenerator.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".github/workflows/build.yml" />
+    <File Path=".github/workflows/release.yml" />
+    <File Path=".gitignore" />
+    <File Path=".netconfig" />
+    <File Path="CodeCov.runsettings" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+    <File Path="IAssemblyMarkerRepoRoot.cs" />
+    <File Path="openapitools.json" />
+    <File Path="README.md" />
+    <File Path="stryker-config.json" />
+  </Folder>
+  <Folder Name="/src/" />
+  <Folder Name="/src/Ai/">
+    <Project Path="src/Ai/BeamOs.Ai/BeamOs.Ai.csproj" />
+  </Folder>
+  <Folder Name="/src/Common/">
+    <Project Path="src/Common/BeamOs.Common.Api/BeamOs.Common.Api.csproj" />
+    <Project Path="src/Common/BeamOs.Common.Application/BeamOs.Common.Application.csproj" />
+    <Project Path="src/Common/BeamOs.Common.Contracts/BeamOs.Common.Contracts.csproj" />
+    <Project Path="src/Common/BeamOs.Common.Domain/BeamOs.Common.Domain.csproj" />
+    <Project Path="src/Common/BeamOs.Common/BeamOs.Common.csproj" />
+  </Folder>
+  <Folder Name="/src/Identity/">
+    <Project Path="src/Identity/BeamOs.Identity/BeamOs.Identity.csproj" />
+  </Folder>
+  <Folder Name="/src/SpeckleConnector/">
+    <Project Path="src/SpeckleConnector/BeamOs.SpeckleConnector/BeamOs.SpeckleConnector.csproj" />
+  </Folder>
+  <Folder Name="/src/StructuralAnalysis/">
+    <Project Path="src/StructuralAnalysis/BeamOs.StructuralAnalysis.Api/BeamOs.StructuralAnalysis.Api.csproj" />
+    <Project Path="src/StructuralAnalysis/BeamOs.StructuralAnalysis.Contracts/BeamOs.StructuralAnalysis.Contracts.csproj" />
+    <Project Path="src/StructuralAnalysis/BeamOs.StructuralAnalysis.Infrastructure/BeamOs.StructuralAnalysis.Infrastructure.csproj" />
+    <Project Path="src/StructuralAnalysis/BeamOs.StructuralAnalysis.SourceGenerator/BeamOs.StructuralAnalysis.SourceGenerator.csproj" />
+    <Project Path="src/StructuralAnalysis/BeamOs.StructuralAnalysis/BeamOs.StructuralAnalysis.csproj" />
+  </Folder>
+  <Folder Name="/src/WebApp/">
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/BeamOs.Tests.Architecture/BeamOs.Tests.Architecture.csproj" />
+    <Project Path="tests/BeamOs.Tests.Common/BeamOs.Tests.Common.csproj" />
+    <Project Path="tests/StructuralAnalysis/BeamOs.Tests.StructuralAnalysis.Integration.Shared/BeamOs.Tests.StructuralAnalysis.Integration.Shared.shproj" />
+    <Project Path="tests/StructuralAnalysis/BeamOs.Tests.StructuralAnalysis.Integration/BeamOs.Tests.StructuralAnalysis.Integration.csproj" />
+    <Project Path="tests/StructuralAnalysis/BeamOs.Tests.StructuralAnalysis.Unit.Shared/BeamOs.Tests.StructuralAnalysis.Unit.Shared.shproj" />
+    <Project Path="tests/StructuralAnalysis/BeamOs.Tests.StructuralAnalysis.Unit/BeamOs.Tests.StructuralAnalysis.Unit.csproj" />
+  </Folder>
+  <Folder Name="/tests/Runtime/">
+    <Project Path="tests/Runtime/BeamOs.Tests.Runtime.TestRunner/BeamOs.Tests.Runtime.TestRunner.csproj" />
+    <Project Path="tests/Runtime/BeamOs.Tests.StructuralAnalysis.Integration.Runtime/BeamOs.Tests.StructuralAnalysis.Integration.Runtime.csproj" />
+    <Project Path="tests/Runtime/BeamOs.Tests.StructuralAnalysis.Unit.Runtime/BeamOs.Tests.StructuralAnalysis.Unit.Runtime.csproj" />
+  </Folder>
+  <Folder Name="/tests/SourceGen/">
+    <Project Path="tests/SourceGen/BeamOs.Tests.SourceGen/BeamOs.Tests.SourceGen.csproj" />
+  </Folder>
+</Solution>

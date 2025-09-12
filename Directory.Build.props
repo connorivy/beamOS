@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
+  <Import Project="BeamOs.user.props" Condition="Exists('BeamOs.user.props')" />
   <PropertyGroup Label="General Config">
     <BeamOsTargetFramework Condition="'$(BeamOsTargetFramework)' == ''">net10.0</BeamOsTargetFramework>
     <TargetFramework>$(BeamOsTargetFramework)</TargetFramework>
@@ -10,9 +11,12 @@
     <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
     <IsPackable>false</IsPackable>
     <IncludeOpenSeesExe Condition="'$(IncludeOpenSeesExe)' == ''">true</IncludeOpenSeesExe>
+    <BeamOsRoot>$(MSBuildThisFileDirectory)</BeamOsRoot>
     
     <TUnitImplicitUsings>false</TUnitImplicitUsings>
     <DefineConstants Condition="'$(CODEGEN)' == 'true'">$(DefineConstants);CODEGEN</DefineConstants>
+    <LocalNugetFeed>/workspaces/beamOS/.nuget-local</LocalNugetFeed>
+    <BeamOsEnableAot Condition="'$(BeamOsEnableAot)' == ''">true</BeamOsEnableAot>
     <!-- <PropertyGroup Condition="'$(CODEGEN)' == 'true'">
       <DefineConstants>$(DefineConstants);CODEGEN</DefineConstants>
     </PropertyGroup> -->
@@ -32,6 +36,69 @@
       IDE0100; <!-- IDE0100: Ignore redundant equality -->
       $(NoWarn)
     </NoWarn>
+
+    <WarningsNotAsErrors>
+      <!-- TODO: we need to get rid of pretty much all of these -->
+
+      RMG012; <!-- Riok.Mapperly: The member 'PROPERTY' on the mapping target type 'TYPE' was not found on the mapping source type 'TYPE' -->
+      RMG020; <!-- Riok.Mapperly: The member 'PROPERTY' on the mapping source type 'TYPE' is not mapped to any member on the mapping target type 'TYPE' -->
+      RMG037; <!-- Enum member 'PROPERTY' on 'TYPE' not found on source enum 'TYPE' -->
+      RMG038; <!-- Enum member 'PROPERTY' on 'TYPE' not found on target enum 'TYPE' -->
+      
+      <!-- TODO: THIS IS DEFINITELY LEADING TO BUGS -->
+      RMG066; <!-- No members are mapped -->
+
+      CA1305; <!-- Specify IFormatProvider -->
+      CA1000; <!-- Do not declare static members on generic types -->
+      CA1707; <!-- Identifiers should not contain underscores -->
+      CA1710; <!-- Rename type 'TYPE' to end in 'Collection' because it implements 'INTERFACE' -->
+      CA1716; <!-- Rename virtual/interface member 'NAME' to avoid conflicts with keywords -->
+      CA1725; <!-- Parameter names should match base declaration -->
+      CA1727; <!-- Use PascalCase for named placeholders -->
+      CA1822; <!-- Member 'METHOD' does not access instance data and can be marked as static -->
+      CA1852; <!-- Seal internal types -->
+      CA1848; <!-- For improved performance, use the LoggerMessage delegates -->
+      CA1873; <!-- Evaluation of this argument may be expensive. -->
+      CA2016; <!-- Forward the 'CancellationToken' parameter to methods that take one -->
+      CA2201; <!-- Exception type System.Exception is not sufficiently specific. -->
+      CA2208; <!-- Method 'METHOD' passes 'PARAM' as the 'paramName' argument to ArgumentOutOfRangeException -->
+
+      IDE0001; <!-- Name can be simplified -->
+      IDE0005; <!-- Using directive is unnecessary -->
+      IDE0009; <!-- Add this modifier -->
+      IDE0055; <!-- Fix formatting -->
+      IDE0052; <!-- Private field is never used -->
+      IDE0060; <!-- Remove unused parameter -->
+      IDE0290; <!-- Use primary ctor -->
+      IDE1006; <!-- These words must begin with uppercase characters -->
+
+      CS0108; <!-- Member hides inherited member; missing new keyword -->
+      CS0168; <!-- Variable is declared but never used -->
+      CS0618; <!-- Operator is obsolete: for null checks, use 'is null' or 'is not null' -->
+      CS1572; <!-- XML comment has a param tag, but there is no parameter by that name -->
+      CS1573; <!-- Parameter has no matching param tag in the XML comment -->
+      CS1998; <!-- This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread. -->
+      CS8509; <!-- The switch expression does not handle all possible values of its input type (it is not exhaustive) -->
+      CS8524; <!-- The switch expression is not exhaustive. -->
+      CS8600; <!-- Converting null literal or possible null value to non-nullable type. -->
+      CS8602; <!-- Dereference of a possibly null reference. -->
+      CS8603; <!-- Possible null reference return. -->
+      CS8604; <!-- Possible null reference argument for parameter 'PARAM' in 'METHOD'. -->
+      CS8618; <!-- Non-nullable property 'PROPERTY' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. -->
+      CS8619; <!-- Nullability of reference types in value of type 'TYPE' doesn't match target type 'TYPE'. -->
+      CS8620; <!-- Arguement of type 'TYPE' cannot be used for parameter 'PARAM' of type 'TYPE' in 'METHOD' due to differences in nullablility -->
+      CS8625; <!-- Cannot convert null literal to non-nullable reference type. -->
+      CS8629; <!-- Nullable value type may be null. -->
+      CS9107; <!-- Parameter is captured into the state of the class -->
+      CS9113; <!-- Parameter 'PARAM' is unread -->
+
+      SYSLIB0014; <!-- Obsolete API usage: 'API': Use 'Alternative' instead. -->
+    </WarningsNotAsErrors>
+
+    <WarningsNotAsErrors Condition="'$(CODEGEN)' == 'true'">
+      $(WarningsNotAsErrors);
+      NU1903 <!-- package with a known vulnerability -->
+    </WarningsNotAsErrors>
     
     <WarningsAsErrors>
       <!--Net6 default enabled analysers-->

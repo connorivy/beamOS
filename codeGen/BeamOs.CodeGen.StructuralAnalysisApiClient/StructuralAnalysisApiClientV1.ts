@@ -13,131 +13,142 @@ export interface IStructuralAnalysisApiClientV1 {
     /**
      * @return OK
      */
-    modelRestore(modelId: string, body: Date): Promise<ModelResponse>;
+    clearResults(modelId: string): Promise<number>;
+
+    /**
+     * @param unitsOverride (optional) 
+     * @return OK
+     */
+    getDiagrams(modelId: string, id: number, unitsOverride: string | undefined): Promise<AnalyticalResultsResponse>;
+
+    /**
+     * @return OK
+     */
+    getResultSet(modelId: string, id: number): Promise<ResultSetResponse>;
+
+    /**
+     * @return OK
+     */
+    getNodeResult(modelId: string, loadCombinationId: number, id: number): Promise<NodeResultResponse>;
+
+    /**
+     * @return OK
+     */
+    getNodeResults(modelId: string, loadCombinationId: number): Promise<{ [key: string]: NodeResultResponse; }>;
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    addSectionProfileFromLibrary(modelId: string, body: SectionProfileFromLibraryData | undefined): Promise<SectionProfileResponse>;
-
-    /**
-     * @return OK
-     */
-    batchPutSectionProfileFromLibrary(modelId: string, body: SectionProfileFromLibrary[]): Promise<BatchResponse>;
-
-    /**
-     * @return OK
-     */
-    createSectionProfile(modelId: string, body: CreateSectionProfileRequest): Promise<SectionProfileResponse>;
-
-    /**
-     * @return OK
-     */
-    batchPutSectionProfile(modelId: string, body: PutSectionProfileRequest[]): Promise<BatchResponse>;
-
-    /**
-     * @return OK
-     */
-    deleteSectionProfile(modelId: string, id: number): Promise<ModelEntityResponse>;
-
-    /**
-     * @return OK
-     */
-    putSectionProfile(id: number, modelId: string, body: SectionProfileData): Promise<SectionProfileResponse>;
-
-    /**
-     * @return OK
-     */
-    putSectionProfileFromLibrary(id: number, modelId: string, body: SectionProfileFromLibraryData): Promise<SectionProfileFromLibrary>;
-
-    /**
-     * @return OK
-     */
-    createPointLoad(modelId: string, body: CreatePointLoadRequest): Promise<PointLoadResponse>;
-
-    /**
-     * @return OK
-     */
-    batchPutPointLoad(modelId: string, body: PutPointLoadRequest[]): Promise<BatchResponse>;
-
-    /**
-     * @return OK
-     */
-    deletePointLoad(modelId: string, id: number): Promise<ModelEntityResponse>;
-
-    /**
-     * @return OK
-     */
-    putPointLoad(id: number, modelId: string, body: PointLoadData): Promise<PointLoadResponse>;
-
-    /**
-     * @return OK
-     */
-    createNode(modelId: string, body: CreateNodeRequest): Promise<NodeResponse>;
-
-    /**
-     * @return OK
-     */
-    patchNode(modelId: string, body: UpdateNodeRequest): Promise<NodeResponse>;
-
-    /**
-     * @return OK
-     */
-    batchPutNode(modelId: string, body: PutNodeRequest[]): Promise<BatchResponse>;
-
-    /**
-     * @return OK
-     */
-    getInternalNode(modelId: string, id: number): Promise<InternalNode>;
+    runDirectStiffnessMethod(modelId: string, body: RunDsmRequest | null | undefined): Promise<AnalyticalResultsResponse>;
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    putInternalNode(modelId: string, id: number, body: InternalNodeData | null | undefined): Promise<InternalNode>;
+    runOpenSeesAnalysis(modelId: string, body: RunDsmRequest | null | undefined): Promise<AnalyticalResultsResponse>;
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    createInternalNode(modelId: string, body: CreateInternalNodeRequest | null | undefined): Promise<InternalNode>;
+    createElement1d(modelId: string, body: CreateElement1dRequest | null | undefined): Promise<Element1dResponse>;
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    batchPutInternalNode(modelId: string, body: InternalNode[] | null | undefined): Promise<BatchResponse>;
+    batchPutElement1d(modelId: string, body: PutElement1dRequest[] | null | undefined): Promise<BatchResponse>;
 
     /**
      * @return OK
      */
-    deleteNode(modelId: string, id: number): Promise<ModelEntityResponse>;
+    deleteElement1d(modelId: string, id: number): Promise<ModelEntityResponse>;
 
     /**
      * @return OK
      */
-    putNode(id: number, modelId: string, body: NodeData): Promise<NodeResponse>;
+    getElement1d(modelId: string, id: number): Promise<Element1dResponse>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    putElement1d(modelId: string, id: number, body: Element1dData | null | undefined): Promise<Element1dResponse>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    batchPutLoadCase(modelId: string, body: LoadCase[] | null | undefined): Promise<BatchResponse>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    createLoadCase(modelId: string, body: LoadCaseData | null | undefined): Promise<LoadCase>;
 
     /**
      * @return OK
      */
-    createMomentLoad(modelId: string, body: CreateMomentLoadRequest): Promise<MomentLoadResponse>;
+    deleteLoadCase(modelId: string, id: number): Promise<ModelEntityResponse>;
 
     /**
      * @return OK
      */
-    batchPutMomentLoad(modelId: string, body: PutMomentLoadRequest[]): Promise<BatchResponse>;
+    getLoadCase(modelId: string, id: number): Promise<LoadCase>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    putLoadCase(modelId: string, id: number, body: LoadCaseData | null | undefined): Promise<LoadCase>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    batchPutLoadCombination(modelId: string, body: LoadCombination[] | null | undefined): Promise<BatchResponse>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    createLoadCombination(modelId: string, body: LoadCombinationData | null | undefined): Promise<LoadCombination>;
 
     /**
      * @return OK
      */
-    deleteMomentLoad(modelId: string, id: number): Promise<ModelEntityResponse>;
+    deleteLoadCombination(modelId: string, id: number): Promise<ModelEntityResponse>;
 
     /**
      * @return OK
      */
-    putMomentLoad(id: number, modelId: string, body: MomentLoadData): Promise<MomentLoadResponse>;
+    getLoadCombination(modelId: string, id: number): Promise<LoadCombination>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    putLoadCombination(modelId: string, id: number, body: LoadCombinationData | null | undefined): Promise<LoadCombination>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    createMaterial(modelId: string, body: CreateMaterialRequest | undefined): Promise<MaterialResponse>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    batchPutMaterial(modelId: string, body: PutMaterialRequest[] | null | undefined): Promise<BatchResponse>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    putMaterial(modelId: string, id: number, body: MaterialData | null | undefined): Promise<MaterialResponse>;
 
     /**
      * @param body (optional) 
@@ -180,6 +191,11 @@ export interface IStructuralAnalysisApiClientV1 {
     /**
      * @return OK
      */
+    deleteModel(modelId: string): Promise<boolean>;
+
+    /**
+     * @return OK
+     */
     getModel(modelId: string): Promise<ModelResponse>;
 
     /**
@@ -195,132 +211,148 @@ export interface IStructuralAnalysisApiClientV1 {
     repairModel(modelId: string, body: string | null | undefined): Promise<ModelProposalResponse>;
 
     /**
+     * @param body (optional) 
      * @return OK
      */
-    createMaterial(modelId: string, body: CreateMaterialRequest): Promise<MaterialResponse>;
-
-    /**
-     * @return OK
-     */
-    batchPutMaterial(modelId: string, body: PutMaterialRequest[]): Promise<BatchResponse>;
-
-    /**
-     * @return OK
-     */
-    putMaterial(id: number, modelId: string, body: MaterialData): Promise<MaterialResponse>;
-
-    /**
-     * @return OK
-     */
-    batchPutLoadCombination(modelId: string, body: LoadCombination[]): Promise<BatchResponse>;
-
-    /**
-     * @return OK
-     */
-    createLoadCombination(modelId: string, body: LoadCombinationData): Promise<LoadCombination>;
-
-    /**
-     * @return OK
-     */
-    deleteLoadCombination(modelId: string, id: number): Promise<ModelEntityResponse>;
-
-    /**
-     * @return OK
-     */
-    getLoadCombination(modelId: string, id: number): Promise<LoadCombination>;
-
-    /**
-     * @return OK
-     */
-    putLoadCombination(modelId: string, id: number, body: LoadCombinationData): Promise<LoadCombination>;
-
-    /**
-     * @return OK
-     */
-    batchPutLoadCase(modelId: string, body: LoadCase[]): Promise<BatchResponse>;
-
-    /**
-     * @return OK
-     */
-    createLoadCase(modelId: string, body: LoadCaseData): Promise<LoadCase>;
-
-    /**
-     * @return OK
-     */
-    deleteLoadCase(modelId: string, id: number): Promise<ModelEntityResponse>;
-
-    /**
-     * @return OK
-     */
-    getLoadCase(modelId: string, id: number): Promise<LoadCase>;
-
-    /**
-     * @return OK
-     */
-    putLoadCase(modelId: string, id: number, body: LoadCaseData): Promise<LoadCase>;
-
-    /**
-     * @return OK
-     */
-    createElement1d(modelId: string, body: CreateElement1dRequest): Promise<Element1dResponse>;
-
-    /**
-     * @return OK
-     */
-    batchPutElement1d(modelId: string, body: PutElement1dRequest[]): Promise<BatchResponse>;
-
-    /**
-     * @return OK
-     */
-    deleteElement1d(modelId: string, id: number): Promise<ModelEntityResponse>;
-
-    /**
-     * @return OK
-     */
-    getElement1d(modelId: string, id: number): Promise<Element1dResponse>;
-
-    /**
-     * @return OK
-     */
-    putElement1d(id: number, modelId: string, body: Element1dData): Promise<Element1dResponse>;
+    createMomentLoad(modelId: string, body: CreateMomentLoadRequest | null | undefined): Promise<MomentLoadResponse>;
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    runDirectStiffnessMethod(modelId: string, body: RunDsmRequest | null | undefined): Promise<AnalyticalResultsResponse>;
+    batchPutMomentLoad(modelId: string, body: PutMomentLoadRequest[] | null | undefined): Promise<BatchResponse>;
+
+    /**
+     * @return OK
+     */
+    deleteMomentLoad(modelId: string, id: number): Promise<ModelEntityResponse>;
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    runOpenSeesAnalysis(modelId: string, body: RunDsmRequest | null | undefined): Promise<AnalyticalResultsResponse>;
+    putMomentLoad(modelId: string, id: number, body: MomentLoadData | null | undefined): Promise<MomentLoadResponse>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    createNode(modelId: string, body: CreateNodeRequest | null | undefined): Promise<NodeResponse>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    patchNode(modelId: string, body: UpdateNodeRequest | null | undefined): Promise<NodeResponse>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    batchPutNode(modelId: string, body: PutNodeRequest[] | null | undefined): Promise<BatchResponse>;
 
     /**
      * @return OK
      */
-    clearResults(modelId: string): Promise<number>;
+    getInternalNode(modelId: string, id: number): Promise<InternalNode>;
 
     /**
-     * @param unitsOverride (optional) 
+     * @param body (optional) 
      * @return OK
      */
-    getDiagrams(modelId: string, id: number, unitsOverride: string | undefined): Promise<AnalyticalResultsResponse>;
+    putInternalNode(modelId: string, id: number, body: InternalNodeData | null | undefined): Promise<InternalNode>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    createInternalNode(modelId: string, body: CreateInternalNodeRequest | null | undefined): Promise<InternalNode>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    batchPutInternalNode(modelId: string, body: InternalNode[] | null | undefined): Promise<BatchResponse>;
 
     /**
      * @return OK
      */
-    getResultSet(modelId: string, id: number): Promise<ResultSetResponse>;
+    deleteNode(modelId: string, id: number): Promise<ModelEntityResponse>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    putNode(modelId: string, id: number, body: NodeData | null | undefined): Promise<NodeResponse>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    createPointLoad(modelId: string, body: CreatePointLoadRequest | null | undefined): Promise<PointLoadResponse>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    batchPutPointLoad(modelId: string, body: PutPointLoadRequest[] | null | undefined): Promise<BatchResponse>;
 
     /**
      * @return OK
      */
-    getNodeResult(modelId: string, loadCombinationId: number, id: number): Promise<NodeResultResponse>;
+    deletePointLoad(modelId: string, id: number): Promise<ModelEntityResponse>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    putPointLoad(modelId: string, id: number, body: PointLoadData | null | undefined): Promise<PointLoadResponse>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    addSectionProfileFromLibrary(modelId: string, body: SectionProfileFromLibraryData | null | undefined): Promise<SectionProfileResponse>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    batchPutSectionProfileFromLibrary(modelId: string, body: SectionProfileFromLibrary[] | null | undefined): Promise<BatchResponse>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    createSectionProfile(modelId: string, body: CreateSectionProfileRequest | null | undefined): Promise<SectionProfileResponse>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    batchPutSectionProfile(modelId: string, body: PutSectionProfileRequest[] | null | undefined): Promise<BatchResponse>;
 
     /**
      * @return OK
      */
-    getNodeResults(modelId: string, loadCombinationId: number): Promise<{ [key: string]: NodeResultResponse; }>;
+    deleteSectionProfile(modelId: string, id: number): Promise<ModelEntityResponse>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    putSectionProfile(modelId: string, id: number, body: SectionProfileData | null | undefined): Promise<SectionProfileResponse>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    putSectionProfileFromLibrary(modelId: string, id: number, body: SectionProfileFromLibraryData | null | undefined): Promise<SectionProfileFromLibrary>;
+
+    /**
+     * @return OK
+     */
+    modelRestore(modelId: string, body: Date): Promise<ModelResponse>;
 }
 
 export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClientV1 {
@@ -336,235 +368,11 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     /**
      * @return OK
      */
-    modelRestore(modelId: string, body: Date): Promise<ModelResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/restore";
+    clearResults(modelId: string): Promise<number> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/results";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processModelRestore(_response);
-        });
-    }
-
-    protected processModelRestore(response: Response): Promise<ModelResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ModelResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<ModelResponse>(null as any);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return OK
-     */
-    addSectionProfileFromLibrary(modelId: string, body: SectionProfileFromLibraryData | undefined): Promise<SectionProfileResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles/from-library";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processAddSectionProfileFromLibrary(_response);
-        });
-    }
-
-    protected processAddSectionProfileFromLibrary(response: Response): Promise<SectionProfileResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = SectionProfileResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<SectionProfileResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    batchPutSectionProfileFromLibrary(modelId: string, body: SectionProfileFromLibrary[]): Promise<BatchResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles/from-library";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processBatchPutSectionProfileFromLibrary(_response);
-        });
-    }
-
-    protected processBatchPutSectionProfileFromLibrary(response: Response): Promise<BatchResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = BatchResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<BatchResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    createSectionProfile(modelId: string, body: CreateSectionProfileRequest): Promise<SectionProfileResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateSectionProfile(_response);
-        });
-    }
-
-    protected processCreateSectionProfile(response: Response): Promise<SectionProfileResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = SectionProfileResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<SectionProfileResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    batchPutSectionProfile(modelId: string, body: PutSectionProfileRequest[]): Promise<BatchResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processBatchPutSectionProfile(_response);
-        });
-    }
-
-    protected processBatchPutSectionProfile(response: Response): Promise<BatchResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = BatchResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<BatchResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    deleteSectionProfile(modelId: string, id: number): Promise<ModelEntityResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles/{id}";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -575,18 +383,19 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDeleteSectionProfile(_response);
+            return this.processClearResults(_response);
         });
     }
 
-    protected processDeleteSectionProfile(response: Response): Promise<ModelEntityResponse> {
+    protected processClearResults(response: Response): Promise<number> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ModelEntityResponse.fromJS(resultData200);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -594,224 +403,47 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ModelEntityResponse>(null as any);
+        return Promise.resolve<number>(null as any);
     }
 
     /**
+     * @param unitsOverride (optional) 
      * @return OK
      */
-    putSectionProfile(id: number, modelId: string, body: SectionProfileData): Promise<SectionProfileResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processPutSectionProfile(_response);
-        });
-    }
-
-    protected processPutSectionProfile(response: Response): Promise<SectionProfileResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = SectionProfileResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<SectionProfileResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    putSectionProfileFromLibrary(id: number, modelId: string, body: SectionProfileFromLibraryData): Promise<SectionProfileFromLibrary> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles/{id}/from-library";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processPutSectionProfileFromLibrary(_response);
-        });
-    }
-
-    protected processPutSectionProfileFromLibrary(response: Response): Promise<SectionProfileFromLibrary> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = SectionProfileFromLibrary.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<SectionProfileFromLibrary>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    createPointLoad(modelId: string, body: CreatePointLoadRequest): Promise<PointLoadResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/point-loads";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreatePointLoad(_response);
-        });
-    }
-
-    protected processCreatePointLoad(response: Response): Promise<PointLoadResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = PointLoadResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<PointLoadResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    batchPutPointLoad(modelId: string, body: PutPointLoadRequest[]): Promise<BatchResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/point-loads";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processBatchPutPointLoad(_response);
-        });
-    }
-
-    protected processBatchPutPointLoad(response: Response): Promise<BatchResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = BatchResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<BatchResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    deletePointLoad(modelId: string, id: number): Promise<ModelEntityResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/point-loads/{id}";
+    getDiagrams(modelId: string, id: number, unitsOverride: string | undefined): Promise<AnalyticalResultsResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/result-sets/{id}/diagrams?";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (unitsOverride === null)
+            throw new Error("The parameter 'unitsOverride' cannot be null.");
+        else if (unitsOverride !== undefined)
+            url_ += "UnitsOverride=" + encodeURIComponent("" + unitsOverride) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
-            method: "DELETE",
+            method: "GET",
             headers: {
                 "Accept": "application/json"
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDeletePointLoad(_response);
+            return this.processGetDiagrams(_response);
         });
     }
 
-    protected processDeletePointLoad(response: Response): Promise<ModelEntityResponse> {
+    protected processGetDiagrams(response: Response): Promise<AnalyticalResultsResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ModelEntityResponse.fromJS(resultData200);
+            result200 = AnalyticalResultsResponse.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -819,193 +451,14 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ModelEntityResponse>(null as any);
+        return Promise.resolve<AnalyticalResultsResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    putPointLoad(id: number, modelId: string, body: PointLoadData): Promise<PointLoadResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/point-loads/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processPutPointLoad(_response);
-        });
-    }
-
-    protected processPutPointLoad(response: Response): Promise<PointLoadResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = PointLoadResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<PointLoadResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    createNode(modelId: string, body: CreateNodeRequest): Promise<NodeResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/nodes";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateNode(_response);
-        });
-    }
-
-    protected processCreateNode(response: Response): Promise<NodeResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = NodeResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<NodeResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    patchNode(modelId: string, body: UpdateNodeRequest): Promise<NodeResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/nodes";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processPatchNode(_response);
-        });
-    }
-
-    protected processPatchNode(response: Response): Promise<NodeResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = NodeResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<NodeResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    batchPutNode(modelId: string, body: PutNodeRequest[]): Promise<BatchResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/nodes";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processBatchPutNode(_response);
-        });
-    }
-
-    protected processBatchPutNode(response: Response): Promise<BatchResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = BatchResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<BatchResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    getInternalNode(modelId: string, id: number): Promise<InternalNode> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/nodes/{id}/internal";
+    getResultSet(modelId: string, id: number): Promise<ResultSetResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/result-sets/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -1022,18 +475,18 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetInternalNode(_response);
+            return this.processGetResultSet(_response);
         });
     }
 
-    protected processGetInternalNode(response: Response): Promise<InternalNode> {
+    protected processGetResultSet(response: Response): Promise<ResultSetResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = InternalNode.fromJS(resultData200);
+            result200 = ResultSetResponse.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1041,47 +494,45 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<InternalNode>(null as any);
+        return Promise.resolve<ResultSetResponse>(null as any);
     }
 
     /**
-     * @param body (optional) 
      * @return OK
      */
-    putInternalNode(modelId: string, id: number, body: InternalNodeData | null | undefined): Promise<InternalNode> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/nodes/{id}/internal";
+    getNodeResult(modelId: string, loadCombinationId: number, id: number): Promise<NodeResultResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/results/load-combinations/{loadCombinationId}/nodes/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (loadCombinationId === undefined || loadCombinationId === null)
+            throw new Error("The parameter 'loadCombinationId' must be defined.");
+        url_ = url_.replace("{loadCombinationId}", encodeURIComponent("" + loadCombinationId));
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
-
         let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
+            method: "GET",
             headers: {
-                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processPutInternalNode(_response);
+            return this.processGetNodeResult(_response);
         });
     }
 
-    protected processPutInternalNode(response: Response): Promise<InternalNode> {
+    protected processGetNodeResult(response: Response): Promise<NodeResultResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = InternalNode.fromJS(resultData200);
+            result200 = NodeResultResponse.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1089,15 +540,67 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<InternalNode>(null as any);
+        return Promise.resolve<NodeResultResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    getNodeResults(modelId: string, loadCombinationId: number): Promise<{ [key: string]: NodeResultResponse; }> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/results/load-combinations/{loadCombinationId}/nodes";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (loadCombinationId === undefined || loadCombinationId === null)
+            throw new Error("The parameter 'loadCombinationId' must be defined.");
+        url_ = url_.replace("{loadCombinationId}", encodeURIComponent("" + loadCombinationId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetNodeResults(_response);
+        });
+    }
+
+    protected processGetNodeResults(response: Response): Promise<{ [key: string]: NodeResultResponse; }> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200) {
+                result200 = {} as any;
+                for (let key in resultData200) {
+                    if (resultData200.hasOwnProperty(key))
+                        (<any>result200)![key] = resultData200[key] ? NodeResultResponse.fromJS(resultData200[key]) : new NodeResultResponse();
+                }
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<{ [key: string]: NodeResultResponse; }>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    createInternalNode(modelId: string, body: CreateInternalNodeRequest | null | undefined): Promise<InternalNode> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/nodes/internal";
+    runDirectStiffnessMethod(modelId: string, body: RunDsmRequest | null | undefined): Promise<AnalyticalResultsResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/analyze/dsm";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -1115,18 +618,18 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateInternalNode(_response);
+            return this.processRunDirectStiffnessMethod(_response);
         });
     }
 
-    protected processCreateInternalNode(response: Response): Promise<InternalNode> {
+    protected processRunDirectStiffnessMethod(response: Response): Promise<AnalyticalResultsResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = InternalNode.fromJS(resultData200);
+            result200 = AnalyticalResultsResponse.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1134,15 +637,105 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<InternalNode>(null as any);
+        return Promise.resolve<AnalyticalResultsResponse>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    batchPutInternalNode(modelId: string, body: InternalNode[] | null | undefined): Promise<BatchResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/nodes/internal";
+    runOpenSeesAnalysis(modelId: string, body: RunDsmRequest | null | undefined): Promise<AnalyticalResultsResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/analyze/opensees";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processRunOpenSeesAnalysis(_response);
+        });
+    }
+
+    protected processRunOpenSeesAnalysis(response: Response): Promise<AnalyticalResultsResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AnalyticalResultsResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<AnalyticalResultsResponse>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    createElement1d(modelId: string, body: CreateElement1dRequest | null | undefined): Promise<Element1dResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/element1ds";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateElement1d(_response);
+        });
+    }
+
+    protected processCreateElement1d(response: Response): Promise<Element1dResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Element1dResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Element1dResponse>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    batchPutElement1d(modelId: string, body: PutElement1dRequest[] | null | undefined): Promise<BatchResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/element1ds";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -1160,11 +753,11 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processBatchPutInternalNode(_response);
+            return this.processBatchPutElement1d(_response);
         });
     }
 
-    protected processBatchPutInternalNode(response: Response): Promise<BatchResponse> {
+    protected processBatchPutElement1d(response: Response): Promise<BatchResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -1185,8 +778,8 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     /**
      * @return OK
      */
-    deleteNode(modelId: string, id: number): Promise<ModelEntityResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/nodes/{id}";
+    deleteElement1d(modelId: string, id: number): Promise<ModelEntityResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/element1ds/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -1203,11 +796,11 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDeleteNode(_response);
+            return this.processDeleteElement1d(_response);
         });
     }
 
-    protected processDeleteNode(response: Response): Promise<ModelEntityResponse> {
+    protected processDeleteElement1d(response: Response): Promise<ModelEntityResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -1228,11 +821,100 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     /**
      * @return OK
      */
-    putNode(id: number, modelId: string, body: NodeData): Promise<NodeResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/nodes/{id}";
+    getElement1d(modelId: string, id: number): Promise<Element1dResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/element1ds/{id}";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetElement1d(_response);
+        });
+    }
+
+    protected processGetElement1d(response: Response): Promise<Element1dResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Element1dResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Element1dResponse>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    putElement1d(modelId: string, id: number, body: Element1dData | null | undefined): Promise<Element1dResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/element1ds/{id}";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPutElement1d(_response);
+        });
+    }
+
+    protected processPutElement1d(response: Response): Promise<Element1dResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Element1dResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Element1dResponse>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    batchPutLoadCase(modelId: string, body: LoadCase[] | null | undefined): Promise<BatchResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/load-cases";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -1250,99 +932,11 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processPutNode(_response);
+            return this.processBatchPutLoadCase(_response);
         });
     }
 
-    protected processPutNode(response: Response): Promise<NodeResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = NodeResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<NodeResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    createMomentLoad(modelId: string, body: CreateMomentLoadRequest): Promise<MomentLoadResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/moment-loads";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateMomentLoad(_response);
-        });
-    }
-
-    protected processCreateMomentLoad(response: Response): Promise<MomentLoadResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = MomentLoadResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<MomentLoadResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    batchPutMomentLoad(modelId: string, body: PutMomentLoadRequest[]): Promise<BatchResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/moment-loads";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processBatchPutMomentLoad(_response);
-        });
-    }
-
-    protected processBatchPutMomentLoad(response: Response): Promise<BatchResponse> {
+    protected processBatchPutLoadCase(response: Response): Promise<BatchResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -1361,10 +955,55 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     }
 
     /**
+     * @param body (optional) 
      * @return OK
      */
-    deleteMomentLoad(modelId: string, id: number): Promise<ModelEntityResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/moment-loads/{id}";
+    createLoadCase(modelId: string, body: LoadCaseData | null | undefined): Promise<LoadCase> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/load-cases";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateLoadCase(_response);
+        });
+    }
+
+    protected processCreateLoadCase(response: Response): Promise<LoadCase> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = LoadCase.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<LoadCase>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    deleteLoadCase(modelId: string, id: number): Promise<ModelEntityResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/load-cases/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -1381,11 +1020,11 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDeleteMomentLoad(_response);
+            return this.processDeleteLoadCase(_response);
         });
     }
 
-    protected processDeleteMomentLoad(response: Response): Promise<ModelEntityResponse> {
+    protected processDeleteLoadCase(response: Response): Promise<ModelEntityResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -1406,11 +1045,100 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     /**
      * @return OK
      */
-    putMomentLoad(id: number, modelId: string, body: MomentLoadData): Promise<MomentLoadResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/moment-loads/{id}";
+    getLoadCase(modelId: string, id: number): Promise<LoadCase> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/load-cases/{id}";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetLoadCase(_response);
+        });
+    }
+
+    protected processGetLoadCase(response: Response): Promise<LoadCase> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = LoadCase.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<LoadCase>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    putLoadCase(modelId: string, id: number, body: LoadCaseData | null | undefined): Promise<LoadCase> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/load-cases/{id}";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPutLoadCase(_response);
+        });
+    }
+
+    protected processPutLoadCase(response: Response): Promise<LoadCase> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = LoadCase.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<LoadCase>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    batchPutLoadCombination(modelId: string, body: LoadCombination[] | null | undefined): Promise<BatchResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/load-combinations";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -1428,18 +1156,18 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processPutMomentLoad(_response);
+            return this.processBatchPutLoadCombination(_response);
         });
     }
 
-    protected processPutMomentLoad(response: Response): Promise<MomentLoadResponse> {
+    protected processBatchPutLoadCombination(response: Response): Promise<BatchResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = MomentLoadResponse.fromJS(resultData200);
+            result200 = BatchResponse.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1447,7 +1175,324 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<MomentLoadResponse>(null as any);
+        return Promise.resolve<BatchResponse>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    createLoadCombination(modelId: string, body: LoadCombinationData | null | undefined): Promise<LoadCombination> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/load-combinations";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateLoadCombination(_response);
+        });
+    }
+
+    protected processCreateLoadCombination(response: Response): Promise<LoadCombination> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = LoadCombination.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<LoadCombination>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    deleteLoadCombination(modelId: string, id: number): Promise<ModelEntityResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/load-combinations/{id}";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeleteLoadCombination(_response);
+        });
+    }
+
+    protected processDeleteLoadCombination(response: Response): Promise<ModelEntityResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ModelEntityResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ModelEntityResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    getLoadCombination(modelId: string, id: number): Promise<LoadCombination> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/load-combinations/{id}";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetLoadCombination(_response);
+        });
+    }
+
+    protected processGetLoadCombination(response: Response): Promise<LoadCombination> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = LoadCombination.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<LoadCombination>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    putLoadCombination(modelId: string, id: number, body: LoadCombinationData | null | undefined): Promise<LoadCombination> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/load-combinations/{id}";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPutLoadCombination(_response);
+        });
+    }
+
+    protected processPutLoadCombination(response: Response): Promise<LoadCombination> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = LoadCombination.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<LoadCombination>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    createMaterial(modelId: string, body: CreateMaterialRequest | undefined): Promise<MaterialResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/materials";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateMaterial(_response);
+        });
+    }
+
+    protected processCreateMaterial(response: Response): Promise<MaterialResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MaterialResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<MaterialResponse>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    batchPutMaterial(modelId: string, body: PutMaterialRequest[] | null | undefined): Promise<BatchResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/materials";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBatchPutMaterial(_response);
+        });
+    }
+
+    protected processBatchPutMaterial(response: Response): Promise<BatchResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = BatchResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<BatchResponse>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    putMaterial(modelId: string, id: number, body: MaterialData | null | undefined): Promise<MaterialResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/materials/{id}";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPutMaterial(_response);
+        });
+    }
+
+    protected processPutMaterial(response: Response): Promise<MaterialResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MaterialResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<MaterialResponse>(null as any);
     }
 
     /**
@@ -1766,6 +1811,47 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     /**
      * @return OK
      */
+    deleteModel(modelId: string): Promise<boolean> {
+        let url_ = this.baseUrl + "/api/models/{modelId}";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeleteModel(_response);
+        });
+    }
+
+    protected processDeleteModel(response: Response): Promise<boolean> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<boolean>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
     getModel(modelId: string): Promise<ModelResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}";
         if (modelId === undefined || modelId === null)
@@ -1894,10 +1980,11 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     }
 
     /**
+     * @param body (optional) 
      * @return OK
      */
-    createMaterial(modelId: string, body: CreateMaterialRequest): Promise<MaterialResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/materials";
+    createMomentLoad(modelId: string, body: CreateMomentLoadRequest | null | undefined): Promise<MomentLoadResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/moment-loads";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -1915,18 +2002,18 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateMaterial(_response);
+            return this.processCreateMomentLoad(_response);
         });
     }
 
-    protected processCreateMaterial(response: Response): Promise<MaterialResponse> {
+    protected processCreateMomentLoad(response: Response): Promise<MomentLoadResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = MaterialResponse.fromJS(resultData200);
+            result200 = MomentLoadResponse.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1934,769 +2021,15 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<MaterialResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    batchPutMaterial(modelId: string, body: PutMaterialRequest[]): Promise<BatchResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/materials";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processBatchPutMaterial(_response);
-        });
-    }
-
-    protected processBatchPutMaterial(response: Response): Promise<BatchResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = BatchResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<BatchResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    putMaterial(id: number, modelId: string, body: MaterialData): Promise<MaterialResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/materials/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processPutMaterial(_response);
-        });
-    }
-
-    protected processPutMaterial(response: Response): Promise<MaterialResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = MaterialResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<MaterialResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    batchPutLoadCombination(modelId: string, body: LoadCombination[]): Promise<BatchResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/load-combinations";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processBatchPutLoadCombination(_response);
-        });
-    }
-
-    protected processBatchPutLoadCombination(response: Response): Promise<BatchResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = BatchResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<BatchResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    createLoadCombination(modelId: string, body: LoadCombinationData): Promise<LoadCombination> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/load-combinations";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateLoadCombination(_response);
-        });
-    }
-
-    protected processCreateLoadCombination(response: Response): Promise<LoadCombination> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = LoadCombination.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<LoadCombination>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    deleteLoadCombination(modelId: string, id: number): Promise<ModelEntityResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/load-combinations/{id}";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "DELETE",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDeleteLoadCombination(_response);
-        });
-    }
-
-    protected processDeleteLoadCombination(response: Response): Promise<ModelEntityResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ModelEntityResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<ModelEntityResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    getLoadCombination(modelId: string, id: number): Promise<LoadCombination> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/load-combinations/{id}";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetLoadCombination(_response);
-        });
-    }
-
-    protected processGetLoadCombination(response: Response): Promise<LoadCombination> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = LoadCombination.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<LoadCombination>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    putLoadCombination(modelId: string, id: number, body: LoadCombinationData): Promise<LoadCombination> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/load-combinations/{id}";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processPutLoadCombination(_response);
-        });
-    }
-
-    protected processPutLoadCombination(response: Response): Promise<LoadCombination> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = LoadCombination.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<LoadCombination>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    batchPutLoadCase(modelId: string, body: LoadCase[]): Promise<BatchResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/load-cases";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processBatchPutLoadCase(_response);
-        });
-    }
-
-    protected processBatchPutLoadCase(response: Response): Promise<BatchResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = BatchResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<BatchResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    createLoadCase(modelId: string, body: LoadCaseData): Promise<LoadCase> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/load-cases";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateLoadCase(_response);
-        });
-    }
-
-    protected processCreateLoadCase(response: Response): Promise<LoadCase> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = LoadCase.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<LoadCase>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    deleteLoadCase(modelId: string, id: number): Promise<ModelEntityResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/load-cases/{id}";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "DELETE",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDeleteLoadCase(_response);
-        });
-    }
-
-    protected processDeleteLoadCase(response: Response): Promise<ModelEntityResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ModelEntityResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<ModelEntityResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    getLoadCase(modelId: string, id: number): Promise<LoadCase> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/load-cases/{id}";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetLoadCase(_response);
-        });
-    }
-
-    protected processGetLoadCase(response: Response): Promise<LoadCase> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = LoadCase.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<LoadCase>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    putLoadCase(modelId: string, id: number, body: LoadCaseData): Promise<LoadCase> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/load-cases/{id}";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processPutLoadCase(_response);
-        });
-    }
-
-    protected processPutLoadCase(response: Response): Promise<LoadCase> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = LoadCase.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<LoadCase>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    createElement1d(modelId: string, body: CreateElement1dRequest): Promise<Element1dResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/element1ds";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateElement1d(_response);
-        });
-    }
-
-    protected processCreateElement1d(response: Response): Promise<Element1dResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Element1dResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Element1dResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    batchPutElement1d(modelId: string, body: PutElement1dRequest[]): Promise<BatchResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/element1ds";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processBatchPutElement1d(_response);
-        });
-    }
-
-    protected processBatchPutElement1d(response: Response): Promise<BatchResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = BatchResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<BatchResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    deleteElement1d(modelId: string, id: number): Promise<ModelEntityResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/element1ds/{id}";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "DELETE",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDeleteElement1d(_response);
-        });
-    }
-
-    protected processDeleteElement1d(response: Response): Promise<ModelEntityResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ModelEntityResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<ModelEntityResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    getElement1d(modelId: string, id: number): Promise<Element1dResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/element1ds/{id}";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetElement1d(_response);
-        });
-    }
-
-    protected processGetElement1d(response: Response): Promise<Element1dResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Element1dResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Element1dResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    putElement1d(id: number, modelId: string, body: Element1dData): Promise<Element1dResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/element1ds/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processPutElement1d(_response);
-        });
-    }
-
-    protected processPutElement1d(response: Response): Promise<Element1dResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Element1dResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Element1dResponse>(null as any);
+        return Promise.resolve<MomentLoadResponse>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    runDirectStiffnessMethod(modelId: string, body: RunDsmRequest | null | undefined): Promise<AnalyticalResultsResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/analyze/dsm";
+    batchPutMomentLoad(modelId: string, body: PutMomentLoadRequest[] | null | undefined): Promise<BatchResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/moment-loads";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -2706,7 +2039,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
 
         let options_: RequestInit = {
             body: content_,
-            method: "POST",
+            method: "PUT",
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
@@ -2714,18 +2047,18 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processRunDirectStiffnessMethod(_response);
+            return this.processBatchPutMomentLoad(_response);
         });
     }
 
-    protected processRunDirectStiffnessMethod(response: Response): Promise<AnalyticalResultsResponse> {
+    protected processBatchPutMomentLoad(response: Response): Promise<BatchResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = AnalyticalResultsResponse.fromJS(resultData200);
+            result200 = BatchResponse.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2733,62 +2066,20 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<AnalyticalResultsResponse>(null as any);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return OK
-     */
-    runOpenSeesAnalysis(modelId: string, body: RunDsmRequest | null | undefined): Promise<AnalyticalResultsResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/analyze/opensees";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processRunOpenSeesAnalysis(_response);
-        });
-    }
-
-    protected processRunOpenSeesAnalysis(response: Response): Promise<AnalyticalResultsResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = AnalyticalResultsResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<AnalyticalResultsResponse>(null as any);
+        return Promise.resolve<BatchResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    clearResults(modelId: string): Promise<number> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/results";
+    deleteMomentLoad(modelId: string, id: number): Promise<ModelEntityResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/moment-loads/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -2799,19 +2090,18 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processClearResults(_response);
+            return this.processDeleteMomentLoad(_response);
         });
     }
 
-    protected processClearResults(response: Response): Promise<number> {
+    protected processDeleteMomentLoad(response: Response): Promise<ModelEntityResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+            result200 = ModelEntityResponse.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2819,62 +2109,15 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<number>(null as any);
+        return Promise.resolve<ModelEntityResponse>(null as any);
     }
 
     /**
-     * @param unitsOverride (optional) 
+     * @param body (optional) 
      * @return OK
      */
-    getDiagrams(modelId: string, id: number, unitsOverride: string | undefined): Promise<AnalyticalResultsResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/result-sets/{id}/diagrams?";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        if (unitsOverride === null)
-            throw new Error("The parameter 'unitsOverride' cannot be null.");
-        else if (unitsOverride !== undefined)
-            url_ += "UnitsOverride=" + encodeURIComponent("" + unitsOverride) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetDiagrams(_response);
-        });
-    }
-
-    protected processGetDiagrams(response: Response): Promise<AnalyticalResultsResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = AnalyticalResultsResponse.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<AnalyticalResultsResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    getResultSet(modelId: string, id: number): Promise<ResultSetResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/result-sets/{id}";
+    putMomentLoad(modelId: string, id: number, body: MomentLoadData | null | undefined): Promise<MomentLoadResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/moment-loads/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -2883,26 +2126,30 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_: RequestInit = {
-            method: "GET",
+            body: content_,
+            method: "PUT",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetResultSet(_response);
+            return this.processPutMomentLoad(_response);
         });
     }
 
-    protected processGetResultSet(response: Response): Promise<ResultSetResponse> {
+    protected processPutMomentLoad(response: Response): Promise<MomentLoadResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ResultSetResponse.fromJS(resultData200);
+            result200 = MomentLoadResponse.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2910,20 +2157,152 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ResultSetResponse>(null as any);
+        return Promise.resolve<MomentLoadResponse>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    createNode(modelId: string, body: CreateNodeRequest | null | undefined): Promise<NodeResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/nodes";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateNode(_response);
+        });
+    }
+
+    protected processCreateNode(response: Response): Promise<NodeResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = NodeResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<NodeResponse>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    patchNode(modelId: string, body: UpdateNodeRequest | null | undefined): Promise<NodeResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/nodes";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPatchNode(_response);
+        });
+    }
+
+    protected processPatchNode(response: Response): Promise<NodeResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = NodeResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<NodeResponse>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    batchPutNode(modelId: string, body: PutNodeRequest[] | null | undefined): Promise<BatchResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/nodes";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBatchPutNode(_response);
+        });
+    }
+
+    protected processBatchPutNode(response: Response): Promise<BatchResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = BatchResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<BatchResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    getNodeResult(modelId: string, loadCombinationId: number, id: number): Promise<NodeResultResponse> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/results/load-combinations/{loadCombinationId}/nodes/{id}";
+    getInternalNode(modelId: string, id: number): Promise<InternalNode> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/nodes/{id}/internal";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        if (loadCombinationId === undefined || loadCombinationId === null)
-            throw new Error("The parameter 'loadCombinationId' must be defined.");
-        url_ = url_.replace("{loadCombinationId}", encodeURIComponent("" + loadCombinationId));
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -2937,18 +2316,18 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetNodeResult(_response);
+            return this.processGetInternalNode(_response);
         });
     }
 
-    protected processGetNodeResult(response: Response): Promise<NodeResultResponse> {
+    protected processGetInternalNode(response: Response): Promise<InternalNode> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = NodeResultResponse.fromJS(resultData200);
+            result200 = InternalNode.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2956,51 +2335,180 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<NodeResultResponse>(null as any);
+        return Promise.resolve<InternalNode>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    putInternalNode(modelId: string, id: number, body: InternalNodeData | null | undefined): Promise<InternalNode> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/nodes/{id}/internal";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPutInternalNode(_response);
+        });
+    }
+
+    protected processPutInternalNode(response: Response): Promise<InternalNode> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = InternalNode.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<InternalNode>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    createInternalNode(modelId: string, body: CreateInternalNodeRequest | null | undefined): Promise<InternalNode> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/nodes/internal";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateInternalNode(_response);
+        });
+    }
+
+    protected processCreateInternalNode(response: Response): Promise<InternalNode> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = InternalNode.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<InternalNode>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    batchPutInternalNode(modelId: string, body: InternalNode[] | null | undefined): Promise<BatchResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/nodes/internal";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBatchPutInternalNode(_response);
+        });
+    }
+
+    protected processBatchPutInternalNode(response: Response): Promise<BatchResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = BatchResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<BatchResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    getNodeResults(modelId: string, loadCombinationId: number): Promise<{ [key: string]: NodeResultResponse; }> {
-        let url_ = this.baseUrl + "/api/models/{modelId}/results/load-combinations/{loadCombinationId}/nodes";
+    deleteNode(modelId: string, id: number): Promise<ModelEntityResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/nodes/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
-        if (loadCombinationId === undefined || loadCombinationId === null)
-            throw new Error("The parameter 'loadCombinationId' must be defined.");
-        url_ = url_.replace("{loadCombinationId}", encodeURIComponent("" + loadCombinationId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
-            method: "GET",
+            method: "DELETE",
             headers: {
                 "Accept": "application/json"
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetNodeResults(_response);
+            return this.processDeleteNode(_response);
         });
     }
 
-    protected processGetNodeResults(response: Response): Promise<{ [key: string]: NodeResultResponse; }> {
+    protected processDeleteNode(response: Response): Promise<ModelEntityResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (resultData200) {
-                result200 = {} as any;
-                for (let key in resultData200) {
-                    if (resultData200.hasOwnProperty(key))
-                        (<any>result200)![key] = resultData200[key] ? NodeResultResponse.fromJS(resultData200[key]) : new NodeResultResponse();
-                }
-            }
-            else {
-                result200 = <any>null;
-            }
+            result200 = ModelEntityResponse.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -3008,7 +2516,599 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<{ [key: string]: NodeResultResponse; }>(null as any);
+        return Promise.resolve<ModelEntityResponse>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    putNode(modelId: string, id: number, body: NodeData | null | undefined): Promise<NodeResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/nodes/{id}";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPutNode(_response);
+        });
+    }
+
+    protected processPutNode(response: Response): Promise<NodeResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = NodeResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<NodeResponse>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    createPointLoad(modelId: string, body: CreatePointLoadRequest | null | undefined): Promise<PointLoadResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/point-loads";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreatePointLoad(_response);
+        });
+    }
+
+    protected processCreatePointLoad(response: Response): Promise<PointLoadResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PointLoadResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PointLoadResponse>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    batchPutPointLoad(modelId: string, body: PutPointLoadRequest[] | null | undefined): Promise<BatchResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/point-loads";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBatchPutPointLoad(_response);
+        });
+    }
+
+    protected processBatchPutPointLoad(response: Response): Promise<BatchResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = BatchResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<BatchResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    deletePointLoad(modelId: string, id: number): Promise<ModelEntityResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/point-loads/{id}";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeletePointLoad(_response);
+        });
+    }
+
+    protected processDeletePointLoad(response: Response): Promise<ModelEntityResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ModelEntityResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ModelEntityResponse>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    putPointLoad(modelId: string, id: number, body: PointLoadData | null | undefined): Promise<PointLoadResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/point-loads/{id}";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPutPointLoad(_response);
+        });
+    }
+
+    protected processPutPointLoad(response: Response): Promise<PointLoadResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PointLoadResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PointLoadResponse>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    addSectionProfileFromLibrary(modelId: string, body: SectionProfileFromLibraryData | null | undefined): Promise<SectionProfileResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles/from-library";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAddSectionProfileFromLibrary(_response);
+        });
+    }
+
+    protected processAddSectionProfileFromLibrary(response: Response): Promise<SectionProfileResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SectionProfileResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SectionProfileResponse>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    batchPutSectionProfileFromLibrary(modelId: string, body: SectionProfileFromLibrary[] | null | undefined): Promise<BatchResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles/from-library";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBatchPutSectionProfileFromLibrary(_response);
+        });
+    }
+
+    protected processBatchPutSectionProfileFromLibrary(response: Response): Promise<BatchResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = BatchResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<BatchResponse>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    createSectionProfile(modelId: string, body: CreateSectionProfileRequest | null | undefined): Promise<SectionProfileResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateSectionProfile(_response);
+        });
+    }
+
+    protected processCreateSectionProfile(response: Response): Promise<SectionProfileResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SectionProfileResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SectionProfileResponse>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    batchPutSectionProfile(modelId: string, body: PutSectionProfileRequest[] | null | undefined): Promise<BatchResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processBatchPutSectionProfile(_response);
+        });
+    }
+
+    protected processBatchPutSectionProfile(response: Response): Promise<BatchResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = BatchResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<BatchResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    deleteSectionProfile(modelId: string, id: number): Promise<ModelEntityResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles/{id}";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeleteSectionProfile(_response);
+        });
+    }
+
+    protected processDeleteSectionProfile(response: Response): Promise<ModelEntityResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ModelEntityResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ModelEntityResponse>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    putSectionProfile(modelId: string, id: number, body: SectionProfileData | null | undefined): Promise<SectionProfileResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles/{id}";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPutSectionProfile(_response);
+        });
+    }
+
+    protected processPutSectionProfile(response: Response): Promise<SectionProfileResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SectionProfileResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SectionProfileResponse>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    putSectionProfileFromLibrary(modelId: string, id: number, body: SectionProfileFromLibraryData | null | undefined): Promise<SectionProfileFromLibrary> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles/{id}/from-library";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPutSectionProfileFromLibrary(_response);
+        });
+    }
+
+    protected processPutSectionProfileFromLibrary(response: Response): Promise<SectionProfileFromLibrary> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SectionProfileFromLibrary.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SectionProfileFromLibrary>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    modelRestore(modelId: string, body: Date): Promise<ModelResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/restore";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processModelRestore(_response);
+        });
+    }
+
+    protected processModelRestore(response: Response): Promise<ModelResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ModelResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ModelResponse>(null as any);
     }
 }
 
@@ -5954,13 +6054,13 @@ export class ModelProposalData implements IModelProposalData {
     name?: string | undefined;
     description?: string | undefined;
     settings?: ModelSettings;
-    createNodeProposals?: CreateNodeRequest[] | undefined;
+    createNodeProposals?: (CreateNodeRequest | undefined)[] | undefined;
     modifyNodeProposals?: PutNodeRequest[] | undefined;
     createElement1dProposals?: CreateElement1dProposal[] | undefined;
     modifyElement1dProposals?: ModifyElement1dProposal[] | undefined;
     createMaterialProposals?: CreateMaterialRequest[] | undefined;
     modifyMaterialProposals?: PutMaterialRequest[] | undefined;
-    createSectionProfileProposals?: CreateSectionProfileRequest[] | undefined;
+    createSectionProfileProposals?: (CreateSectionProfileRequest | undefined)[] | undefined;
     modifySectionProfileProposals?: PutSectionProfileRequest[] | undefined;
     createSectionProfileFromLibraryProposals?: CreateSectionProfileFromLibraryRequest[] | undefined;
     pointLoadProposals?: PointLoad[] | undefined;
@@ -6178,13 +6278,13 @@ export interface IModelProposalData {
     name?: string | undefined;
     description?: string | undefined;
     settings?: ModelSettings;
-    createNodeProposals?: CreateNodeRequest[] | undefined;
+    createNodeProposals?: (CreateNodeRequest | undefined)[] | undefined;
     modifyNodeProposals?: PutNodeRequest[] | undefined;
     createElement1dProposals?: CreateElement1dProposal[] | undefined;
     modifyElement1dProposals?: ModifyElement1dProposal[] | undefined;
     createMaterialProposals?: CreateMaterialRequest[] | undefined;
     modifyMaterialProposals?: PutMaterialRequest[] | undefined;
-    createSectionProfileProposals?: CreateSectionProfileRequest[] | undefined;
+    createSectionProfileProposals?: (CreateSectionProfileRequest | undefined)[] | undefined;
     modifySectionProfileProposals?: PutSectionProfileRequest[] | undefined;
     createSectionProfileFromLibraryProposals?: CreateSectionProfileFromLibraryRequest[] | undefined;
     pointLoadProposals?: PointLoad[] | undefined;

@@ -32,7 +32,7 @@ namespace BeamOs.CodeGen.AiApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="AiApiClientException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ApiResponse<GithubModelsChatResponse>> GithubModelsChatAsync(System.Guid modelId, GithubModelsChatRequest body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<GithubModelsChatResponse>> GithubModelsChatAsync(System.Guid modelId, GithubModelsChatRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
     }
 
@@ -71,13 +71,10 @@ namespace BeamOs.CodeGen.AiApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="AiApiClientException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ApiResponse<GithubModelsChatResponse>> GithubModelsChatAsync(System.Guid modelId, GithubModelsChatRequest body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<GithubModelsChatResponse>> GithubModelsChatAsync(System.Guid modelId, GithubModelsChatRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
-
-            if (body == null)
-                throw new System.ArgumentNullException("body");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -235,17 +232,6 @@ namespace BeamOs.CodeGen.AiApiClient
                 var name = System.Enum.GetName(value.GetType(), value);
                 if (name != null)
                 {
-                    var field = System.Reflection.IntrospectionExtensions.GetTypeInfo(value.GetType()).GetDeclaredField(name);
-                    if (field != null)
-                    {
-                        var attribute = System.Reflection.CustomAttributeExtensions.GetCustomAttribute(field, typeof(System.Runtime.Serialization.EnumMemberAttribute)) 
-                            as System.Runtime.Serialization.EnumMemberAttribute;
-                        if (attribute != null)
-                        {
-                            return attribute.Value != null ? attribute.Value : name;
-                        }
-                    }
-
                     var converted = System.Convert.ToString(System.Convert.ChangeType(value, System.Enum.GetUnderlyingType(value.GetType()), cultureInfo));
                     return converted == null ? string.Empty : converted;
                 }

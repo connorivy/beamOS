@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\SpeckleConnector\BeamOs.SpeckleConnector\BeamOs.SpeckleConnector.csproj" />
-    <ProjectReference Include="..\..\src\StructuralAnalysis\BeamOs.StructuralAnalysis.Sdk\BeamOs.StructuralAnalysis.Sdk.csproj" />
+    <ProjectReference Include="..\..\src\StructuralAnalysis\BeamOs.StructuralAnalysis\BeamOs.StructuralAnalysis.csproj" />
   </ItemGroup>
 
 </Project>

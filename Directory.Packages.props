@@ -67,7 +67,6 @@
     <PackageVersion Include="Microsoft.Azure.EventHubs" Version="2.1.0" />
     <PackageVersion Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="4.0.5-11874" />
     <PackageVersion Include="Microsoft.Azure.Mobile.Client" Version="4.0.2" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="$(MicrosoftExtensionsVersion)" />
     <!-- EF Core -->
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="$(EfVersion)" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="$(EfVersion)" />
@@ -108,6 +107,10 @@
     <PackageVersion Include="PuppeteerSharp" Version="18.0.1" />
     <PackageVersion Include="Scalar.AspNetCore" Version="1.2.53" />
     <!-- <PackageVersion Include="Speckle.Core" Version="2.21.3" /> -->
+    <PackageVersion Include="ServiceScan.SourceGenerator" Version="2.3.2">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageVersion>
     <PackageVersion Include="Speckle.Objects" Version="3.4.4" />
     <!-- <PackageVersion Include="Speckle.Sdk" Version="3.4.4" /> -->
     <PackageVersion Include="StructuralShapes" Version="0.0.5" />

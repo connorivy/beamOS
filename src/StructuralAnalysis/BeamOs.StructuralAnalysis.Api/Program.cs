@@ -33,6 +33,10 @@ builder.Services.AddObjectThatExtendsBase<IAssemblyMarkerAi>(
     typeof(BeamOsBaseEndpoint<,>),
     ServiceLifetime.Scoped
 );
+builder.Services.AddObjectThatExtendsBase<IAssemblyMarkerStructuralAnalysisApiEndpoints>(
+    typeof(BeamOsBaseEndpoint<,>),
+    ServiceLifetime.Scoped
+);
 
 builder.Services.AddLogging(b =>
 {
@@ -93,6 +97,8 @@ WebApplication app = builder.Build();
 await app.InitializeBeamOsDb();
 #endif
 
+// app.MapStructuralEndpoints();
+// app.MapSpeckleEndpoints();
 app.MapEndpoints<IAssemblyMarkerStructuralAnalysisApiEndpoints>();
 app.MapEndpoints<IAssemblyMarkerSpeckleConnector>();
 app.MapEndpoints<IAssemblyMarkerAi>();

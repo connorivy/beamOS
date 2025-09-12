@@ -30,10 +30,10 @@
         }
     },
     // 👇🏼 Restore NuGet packages when the container is created
-    // "onCreateCommand": "dotnet restore",
+    "onCreateCommand": "bash -i ${containerWorkspaceFolder}/scripts/devcontainer-init.sh",
     // 👇🏼 Trust the development certificates, run each time the
     // container is successfully started
-    "postStartCommand": "dotnet dev-certs https --trust",
+    // "postStartCommand": "dotnet dev-certs https --trust",
     // Features to add to the dev container. More info: https://containers.dev/features.
     // "features": {},
     // Configure tool-specific properties.
@@ -46,13 +46,16 @@
         5178,
         35482
     ],
+    "mounts": [
+        "source=/etc/localtime,target=/etc/localtime,type=bind,readonly"
+    ],
     // "portsAttributes": {
     //		"5001": {
     //			"protocol": "https"
     //		}
     // }
     // Use 'postCreateCommand' to run commands after the container is created.
-    "postCreateCommand": "chmod +x ./scripts/devcontainer-init.sh && ./scripts/devcontainer-init.sh",
+    // "postCreateCommand": "chmod +x ./scripts/devcontainer-init.sh && ./scripts/devcontainer-init.sh",
     // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-    "remoteUser": "root"
+    "remoteUser": "vscode"
 }

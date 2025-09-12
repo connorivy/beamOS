@@ -27,6 +27,11 @@ public class BeamOsApiInterfaceGenerator : IIncrementalGenerator
                 Logger.Context = spc;
                 try
                 {
+                    if (source.Right.IsDefaultOrEmpty)
+                    {
+                        // nothing to do yet
+                        return;
+                    }
                     CreateApiInterface(spc, source);
                 }
                 catch (Exception ex)
@@ -47,6 +52,7 @@ public class BeamOsApiInterfaceGenerator : IIncrementalGenerator
         ImmutableArray<ClassDeclarationSyntax> classes = source.classes;
 
         StringBuilder api = new();
+        api.AppendLine("#nullable enable");
         api.AppendLine("using System.Threading.Tasks;");
         api.AppendLine("using BeamOs.Common.Api;");
         api.AppendLine("using BeamOs.Common.Contracts;");
@@ -112,6 +118,7 @@ public class BeamOsApiInterfaceGenerator : IIncrementalGenerator
     private static StringBuilder CreateInMemoryImpl()
     {
         StringBuilder impl = new();
+        impl.AppendLine("#nullable enable");
         impl.AppendLine("using System.Threading.Tasks;");
         impl.AppendLine("using BeamOs.Common.Api;");
         impl.AppendLine("using BeamOs.Common.Contracts;");

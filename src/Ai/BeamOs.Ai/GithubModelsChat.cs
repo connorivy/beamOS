@@ -6,15 +6,11 @@ namespace BeamOs.Ai;
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "github-models-chat")]
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
-public class GithubModelsChat(GithubModelsChatCommandHandler chatCommandHandler)
-    : BeamOsModelResourceBaseEndpoint<
-        GithubModelsChatCommand,
-        GithubModelsChatRequest,
-        GithubModelsChatResponse
-    >
+internal class GithubModelsChat(GithubModelsChatCommandHandler chatCommandHandler)
+    : BeamOsModelResourceBaseEndpoint<GithubModelsChatRequest, GithubModelsChatResponse>
 {
     public override Task<Result<GithubModelsChatResponse>> ExecuteRequestAsync(
-        GithubModelsChatCommand req,
+        ModelResourceRequest<GithubModelsChatRequest> req,
         CancellationToken ct = default
     ) => chatCommandHandler.ExecuteAsync(req, ct);
 }

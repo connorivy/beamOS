@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration;
 
-public class WebAppFactory(string connectionString, TimeProvider? timeProvider = null)
+public sealed class WebAppFactory(string connectionString, TimeProvider? timeProvider = null)
     : WebApplicationFactory<IAssemblyMarkerStructuralAnalysisApi>
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)

@@ -4,10 +4,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>true</IsPackable>
+    <IsAotCompatible>true</IsAotCompatible>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Common\BeamOs.Common.Contracts\BeamOs.Common.Contracts.csproj" />
+    <ProjectReference Include="..\..\Common\BeamOs.Common\BeamOs.Common.csproj" />
   </ItemGroup>
 
 </Project>
