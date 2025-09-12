@@ -1,34 +1,32 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>true</IsPackable>
-    <PublishAot>true</PublishAot>
-    <IsAotCompatible>true</IsAotCompatible>
+    <PublishAot Condition="'$(BeamOsEnableAot)' == 'true'">true</PublishAot>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
     <!--<PackageReference Include="MathNet.Numerics" />-->
-    <PackageReference Include="CommunityToolkit.HighPerformance" PrivateAssets="all" />
-    <PackageReference Include="CSparse" PrivateAssets="all" />
-    <PackageReference Include="MathNet.Numerics.MKL.Win-x64" PrivateAssets="all" />
+    <PackageReference Include="CommunityToolkit.HighPerformance" />
+    <PackageReference Include="CSparse" />
+    <PackageReference Include="MathNet.Numerics.MKL.Win-x64" />
     <PackageReference Include="MathNet.Spatial" />
-    <PackageReference Include="MediatR" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" PrivateAssets="all" />
-    <PackageReference Include="Riok.Mapperly" PrivateAssets="all" />
+    <PackageReference Include="MediatR" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="Riok.Mapperly" />
     <PackageReference Include="ServiceScan.SourceGenerator">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="StructuralShapes" PrivateAssets="all" />
-    <PackageReference Include="UnitsNet" PrivateAssets="all" />
-    <PackageReference Include="EntityFrameworkCore.Exceptions.Common" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.Extensions.Http" PrivateAssets="all" />
+    <PackageReference Include="StructuralShapes" />
+    <PackageReference Include="UnitsNet" />
+    <PackageReference Include="EntityFrameworkCore.Exceptions.Common" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Http" />
   </ItemGroup>
 
   <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">

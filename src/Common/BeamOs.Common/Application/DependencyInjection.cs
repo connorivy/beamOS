@@ -1,3 +1,4 @@
+using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BeamOs.Common.Application;
@@ -66,12 +67,20 @@ public static class DependencyInjection
         ServiceLifetime serviceLifetime
     )
     {
-        IEnumerable<Type> assemblyTypes = typeof(TAssemblyMarker)
-            .Assembly.GetTypes()
-            .Where(t =>
-                t.IsClass && !t.IsAbstract
-            // && !t.IsDefined(typeof(SkipDynamicRegistrationAttribute), false)
-            );
+        Type[] types;
+        try
+        {
+            types = typeof(TAssemblyMarker).Assembly.GetTypes();
+        }
+        catch (ReflectionTypeLoadException ex)
+        {
+            types = ex.Types.Where(t => t != null).ToArray()!;
+        }
+
+        IEnumerable<Type> assemblyTypes = types.Where(t =>
+            t.IsClass && !t.IsAbstract
+        // && !t.IsDefined(typeof(SkipDynamicRegistrationAttribute), false)
+        );
 
         foreach (var assemblyType in assemblyTypes)
         {

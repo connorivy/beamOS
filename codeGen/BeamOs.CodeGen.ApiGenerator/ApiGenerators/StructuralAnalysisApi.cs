@@ -12,7 +12,8 @@ public class StructuralAnalysisApi
     protected override string DestinationPath => $"../{this.ClientNamespace}/";
     protected override string OpenApiDefinitionPath => "openapi/v1.json";
 
-    protected override void MapEndpoints(WebApplication app) => app.MapStructuralEndpoints();
+    protected override void MapEndpoints(WebApplication app) =>
+        app.MapGroup("api").MapStructuralEndpoints();
 }
 
 public class AiApi : AbstractGeneratorFromEndpoints<IAssemblyMarkerAi>

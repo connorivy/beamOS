@@ -40,6 +40,7 @@ internal static partial class CreateMaterialStaticMapper
         this ModelResourceWithIntIdRequest<MaterialData> command
     );
 
+    [MapNestedProperties(nameof(ModelResourceRequest<>.Body))]
     [MapProperty("Body." + nameof(MaterialData.ModulusOfElasticityInternal), "ModulusOfElasticity")]
     [MapProperty("Body." + nameof(MaterialData.ModulusOfRigidityInternal), "ModulusOfRigidity")]
     public static partial Material ToDomainObject(

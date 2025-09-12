@@ -10,7 +10,7 @@ namespace BeamOs.StructuralAnalysis.Sdk;
 // todo: the new extension method syntax is causing this false error
 #pragma warning disable CA1822 // Mark members as static
 
-internal static class IBeamOsModelExtensions
+public static class IBeamOsModelExtensions
 {
     extension(IBeamOsModel model)
     {

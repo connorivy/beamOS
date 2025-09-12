@@ -3,6 +3,7 @@
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <!-- <IsAotCompatible Condition="'$(BeamOsEnableAot)' == 'true'">true</IsAotCompatible> -->
   </PropertyGroup>
 
 	<ItemGroup>
@@ -18,7 +19,8 @@
 		<PackageReference Include="MathNet.Spatial" PrivateAssets="all" />
 		<PackageReference Include="Riok.Mapperly" PrivateAssets="all" />
 		<PackageReference Include="UnitsNet" PrivateAssets="all" />
-		<PackageReference Include="MediatR" PrivateAssets="all" />
+		<PackageReference Include="MediatR" />
+    	<PackageReference Include="CSparse" />
 		<PackageReference Include="ServiceScan.SourceGenerator">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>

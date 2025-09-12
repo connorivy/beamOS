@@ -369,7 +369,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     clearResults(modelId: string): Promise<number> {
-        let url_ = this.baseUrl + "/models/{modelId}/results";
+        let url_ = this.baseUrl + "/api/models/{modelId}/results";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -411,7 +411,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     getDiagrams(modelId: string, id: number, unitsOverride: string | undefined): Promise<AnalyticalResultsResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/result-sets/{id}/diagrams?";
+        let url_ = this.baseUrl + "/api/models/{modelId}/result-sets/{id}/diagrams?";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -458,7 +458,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     getResultSet(modelId: string, id: number): Promise<ResultSetResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/result-sets/{id}";
+        let url_ = this.baseUrl + "/api/models/{modelId}/result-sets/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -501,7 +501,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     getNodeResult(modelId: string, loadCombinationId: number, id: number): Promise<NodeResultResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/results/load-combinations/{loadCombinationId}/nodes/{id}";
+        let url_ = this.baseUrl + "/api/models/{modelId}/results/load-combinations/{loadCombinationId}/nodes/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -547,7 +547,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     getNodeResults(modelId: string, loadCombinationId: number): Promise<{ [key: string]: NodeResultResponse; }> {
-        let url_ = this.baseUrl + "/models/{modelId}/results/load-combinations/{loadCombinationId}/nodes";
+        let url_ = this.baseUrl + "/api/models/{modelId}/results/load-combinations/{loadCombinationId}/nodes";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -600,7 +600,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     runDirectStiffnessMethod(modelId: string, body: RunDsmRequest | null | undefined): Promise<AnalyticalResultsResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/analyze/dsm";
+        let url_ = this.baseUrl + "/api/models/{modelId}/analyze/dsm";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -645,7 +645,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     runOpenSeesAnalysis(modelId: string, body: RunDsmRequest | null | undefined): Promise<AnalyticalResultsResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/analyze/opensees";
+        let url_ = this.baseUrl + "/api/models/{modelId}/analyze/opensees";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -690,7 +690,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     createElement1d(modelId: string, body: CreateElement1dRequest | null | undefined): Promise<Element1dResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/element1ds";
+        let url_ = this.baseUrl + "/api/models/{modelId}/element1ds";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -735,7 +735,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     batchPutElement1d(modelId: string, body: PutElement1dRequest[] | null | undefined): Promise<BatchResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/element1ds";
+        let url_ = this.baseUrl + "/api/models/{modelId}/element1ds";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -779,7 +779,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     deleteElement1d(modelId: string, id: number): Promise<ModelEntityResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/element1ds/{id}";
+        let url_ = this.baseUrl + "/api/models/{modelId}/element1ds/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -822,7 +822,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     getElement1d(modelId: string, id: number): Promise<Element1dResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/element1ds/{id}";
+        let url_ = this.baseUrl + "/api/models/{modelId}/element1ds/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -866,7 +866,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     putElement1d(modelId: string, id: number, body: Element1dData | null | undefined): Promise<Element1dResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/element1ds/{id}";
+        let url_ = this.baseUrl + "/api/models/{modelId}/element1ds/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -914,7 +914,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     batchPutLoadCase(modelId: string, body: LoadCase[] | null | undefined): Promise<BatchResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/load-cases";
+        let url_ = this.baseUrl + "/api/models/{modelId}/load-cases";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -959,7 +959,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     createLoadCase(modelId: string, body: LoadCaseData | null | undefined): Promise<LoadCase> {
-        let url_ = this.baseUrl + "/models/{modelId}/load-cases";
+        let url_ = this.baseUrl + "/api/models/{modelId}/load-cases";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -1003,7 +1003,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     deleteLoadCase(modelId: string, id: number): Promise<ModelEntityResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/load-cases/{id}";
+        let url_ = this.baseUrl + "/api/models/{modelId}/load-cases/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -1046,7 +1046,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     getLoadCase(modelId: string, id: number): Promise<LoadCase> {
-        let url_ = this.baseUrl + "/models/{modelId}/load-cases/{id}";
+        let url_ = this.baseUrl + "/api/models/{modelId}/load-cases/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -1090,7 +1090,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     putLoadCase(modelId: string, id: number, body: LoadCaseData | null | undefined): Promise<LoadCase> {
-        let url_ = this.baseUrl + "/models/{modelId}/load-cases/{id}";
+        let url_ = this.baseUrl + "/api/models/{modelId}/load-cases/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -1138,7 +1138,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     batchPutLoadCombination(modelId: string, body: LoadCombination[] | null | undefined): Promise<BatchResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/load-combinations";
+        let url_ = this.baseUrl + "/api/models/{modelId}/load-combinations";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -1183,7 +1183,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     createLoadCombination(modelId: string, body: LoadCombinationData | null | undefined): Promise<LoadCombination> {
-        let url_ = this.baseUrl + "/models/{modelId}/load-combinations";
+        let url_ = this.baseUrl + "/api/models/{modelId}/load-combinations";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -1227,7 +1227,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     deleteLoadCombination(modelId: string, id: number): Promise<ModelEntityResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/load-combinations/{id}";
+        let url_ = this.baseUrl + "/api/models/{modelId}/load-combinations/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -1270,7 +1270,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     getLoadCombination(modelId: string, id: number): Promise<LoadCombination> {
-        let url_ = this.baseUrl + "/models/{modelId}/load-combinations/{id}";
+        let url_ = this.baseUrl + "/api/models/{modelId}/load-combinations/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -1314,7 +1314,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     putLoadCombination(modelId: string, id: number, body: LoadCombinationData | null | undefined): Promise<LoadCombination> {
-        let url_ = this.baseUrl + "/models/{modelId}/load-combinations/{id}";
+        let url_ = this.baseUrl + "/api/models/{modelId}/load-combinations/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -1362,7 +1362,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     createMaterial(modelId: string, body: CreateMaterialRequest | undefined): Promise<MaterialResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/materials";
+        let url_ = this.baseUrl + "/api/models/{modelId}/materials";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -1407,7 +1407,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     batchPutMaterial(modelId: string, body: PutMaterialRequest[] | null | undefined): Promise<BatchResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/materials";
+        let url_ = this.baseUrl + "/api/models/{modelId}/materials";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -1452,7 +1452,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     putMaterial(modelId: string, id: number, body: MaterialData | null | undefined): Promise<MaterialResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/materials/{id}";
+        let url_ = this.baseUrl + "/api/models/{modelId}/materials/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -1500,7 +1500,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     createModel(body: CreateModelRequest | undefined): Promise<ModelResponse> {
-        let url_ = this.baseUrl + "/models";
+        let url_ = this.baseUrl + "/api/models";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -1541,7 +1541,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     getModels(): Promise<ModelInfoResponse[]> {
-        let url_ = this.baseUrl + "/models";
+        let url_ = this.baseUrl + "/api/models";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -1586,7 +1586,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     createModelProposal(modelId: string, body: ModelProposalData | null | undefined): Promise<ModelProposalResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/proposals";
+        let url_ = this.baseUrl + "/api/models/{modelId}/proposals";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -1630,7 +1630,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     getModelProposals(modelId: string): Promise<(ModelProposalInfo | undefined)[]> {
-        let url_ = this.baseUrl + "/models/{modelId}/proposals";
+        let url_ = this.baseUrl + "/api/models/{modelId}/proposals";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -1677,7 +1677,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     getModelProposal(modelId: string, id: number): Promise<ModelProposalResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/proposals/{id}";
+        let url_ = this.baseUrl + "/api/models/{modelId}/proposals/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -1721,7 +1721,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     acceptModelProposal(modelId: string, id: number, body: EntityProposal[] | null | undefined): Promise<ModelResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/proposals/{id}/accept";
+        let url_ = this.baseUrl + "/api/models/{modelId}/proposals/{id}/accept";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -1768,7 +1768,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     rejectModelProposal(modelId: string, id: number): Promise<boolean> {
-        let url_ = this.baseUrl + "/models/{modelId}/proposals/{id}/reject";
+        let url_ = this.baseUrl + "/api/models/{modelId}/proposals/{id}/reject";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -1812,7 +1812,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     deleteModel(modelId: string): Promise<boolean> {
-        let url_ = this.baseUrl + "/models/{modelId}";
+        let url_ = this.baseUrl + "/api/models/{modelId}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -1853,7 +1853,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     getModel(modelId: string): Promise<ModelResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}";
+        let url_ = this.baseUrl + "/api/models/{modelId}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -1894,7 +1894,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     putModel(modelId: string, body: ModelInfoData | null | undefined): Promise<ModelResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}";
+        let url_ = this.baseUrl + "/api/models/{modelId}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -1939,7 +1939,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     repairModel(modelId: string, body: string | null | undefined): Promise<ModelProposalResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/repair";
+        let url_ = this.baseUrl + "/api/models/{modelId}/repair";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -1984,7 +1984,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     createMomentLoad(modelId: string, body: CreateMomentLoadRequest | null | undefined): Promise<MomentLoadResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/moment-loads";
+        let url_ = this.baseUrl + "/api/models/{modelId}/moment-loads";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -2029,7 +2029,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     batchPutMomentLoad(modelId: string, body: PutMomentLoadRequest[] | null | undefined): Promise<BatchResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/moment-loads";
+        let url_ = this.baseUrl + "/api/models/{modelId}/moment-loads";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -2073,7 +2073,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     deleteMomentLoad(modelId: string, id: number): Promise<ModelEntityResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/moment-loads/{id}";
+        let url_ = this.baseUrl + "/api/models/{modelId}/moment-loads/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -2117,7 +2117,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     putMomentLoad(modelId: string, id: number, body: MomentLoadData | null | undefined): Promise<MomentLoadResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/moment-loads/{id}";
+        let url_ = this.baseUrl + "/api/models/{modelId}/moment-loads/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -2165,7 +2165,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     createNode(modelId: string, body: CreateNodeRequest | null | undefined): Promise<NodeResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/nodes";
+        let url_ = this.baseUrl + "/api/models/{modelId}/nodes";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -2210,7 +2210,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     patchNode(modelId: string, body: UpdateNodeRequest | null | undefined): Promise<NodeResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/nodes";
+        let url_ = this.baseUrl + "/api/models/{modelId}/nodes";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -2255,7 +2255,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     batchPutNode(modelId: string, body: PutNodeRequest[] | null | undefined): Promise<BatchResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/nodes";
+        let url_ = this.baseUrl + "/api/models/{modelId}/nodes";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -2299,7 +2299,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     getInternalNode(modelId: string, id: number): Promise<InternalNode> {
-        let url_ = this.baseUrl + "/models/{modelId}/nodes/{id}/internal";
+        let url_ = this.baseUrl + "/api/models/{modelId}/nodes/{id}/internal";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -2343,7 +2343,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     putInternalNode(modelId: string, id: number, body: InternalNodeData | null | undefined): Promise<InternalNode> {
-        let url_ = this.baseUrl + "/models/{modelId}/nodes/{id}/internal";
+        let url_ = this.baseUrl + "/api/models/{modelId}/nodes/{id}/internal";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -2391,7 +2391,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     createInternalNode(modelId: string, body: CreateInternalNodeRequest | null | undefined): Promise<InternalNode> {
-        let url_ = this.baseUrl + "/models/{modelId}/nodes/internal";
+        let url_ = this.baseUrl + "/api/models/{modelId}/nodes/internal";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -2436,7 +2436,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     batchPutInternalNode(modelId: string, body: InternalNode[] | null | undefined): Promise<BatchResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/nodes/internal";
+        let url_ = this.baseUrl + "/api/models/{modelId}/nodes/internal";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -2480,7 +2480,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     deleteNode(modelId: string, id: number): Promise<ModelEntityResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/nodes/{id}";
+        let url_ = this.baseUrl + "/api/models/{modelId}/nodes/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -2524,7 +2524,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     putNode(modelId: string, id: number, body: NodeData | null | undefined): Promise<NodeResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/nodes/{id}";
+        let url_ = this.baseUrl + "/api/models/{modelId}/nodes/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -2572,7 +2572,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     createPointLoad(modelId: string, body: CreatePointLoadRequest | null | undefined): Promise<PointLoadResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/point-loads";
+        let url_ = this.baseUrl + "/api/models/{modelId}/point-loads";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -2617,7 +2617,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     batchPutPointLoad(modelId: string, body: PutPointLoadRequest[] | null | undefined): Promise<BatchResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/point-loads";
+        let url_ = this.baseUrl + "/api/models/{modelId}/point-loads";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -2661,7 +2661,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     deletePointLoad(modelId: string, id: number): Promise<ModelEntityResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/point-loads/{id}";
+        let url_ = this.baseUrl + "/api/models/{modelId}/point-loads/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -2705,7 +2705,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     putPointLoad(modelId: string, id: number, body: PointLoadData | null | undefined): Promise<PointLoadResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/point-loads/{id}";
+        let url_ = this.baseUrl + "/api/models/{modelId}/point-loads/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -2753,7 +2753,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     addSectionProfileFromLibrary(modelId: string, body: SectionProfileFromLibraryData | null | undefined): Promise<SectionProfileResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/section-profiles/from-library";
+        let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles/from-library";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -2798,7 +2798,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     batchPutSectionProfileFromLibrary(modelId: string, body: SectionProfileFromLibrary[] | null | undefined): Promise<BatchResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/section-profiles/from-library";
+        let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles/from-library";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -2843,7 +2843,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     createSectionProfile(modelId: string, body: CreateSectionProfileRequest | null | undefined): Promise<SectionProfileResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/section-profiles";
+        let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -2888,7 +2888,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     batchPutSectionProfile(modelId: string, body: PutSectionProfileRequest[] | null | undefined): Promise<BatchResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/section-profiles";
+        let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -2932,7 +2932,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     deleteSectionProfile(modelId: string, id: number): Promise<ModelEntityResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/section-profiles/{id}";
+        let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -2976,7 +2976,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     putSectionProfile(modelId: string, id: number, body: SectionProfileData | null | undefined): Promise<SectionProfileResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/section-profiles/{id}";
+        let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -3024,7 +3024,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     putSectionProfileFromLibrary(modelId: string, id: number, body: SectionProfileFromLibraryData | null | undefined): Promise<SectionProfileFromLibrary> {
-        let url_ = this.baseUrl + "/models/{modelId}/section-profiles/{id}/from-library";
+        let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles/{id}/from-library";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
@@ -3071,7 +3071,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @return OK
      */
     modelRestore(modelId: string, body: Date): Promise<ModelResponse> {
-        let url_ = this.baseUrl + "/models/{modelId}/restore";
+        let url_ = this.baseUrl + "/api/models/{modelId}/restore";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
         url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));

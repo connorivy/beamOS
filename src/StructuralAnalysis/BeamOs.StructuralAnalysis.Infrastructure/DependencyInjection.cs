@@ -151,32 +151,48 @@ public static partial class DependencyInjection
         this ModelConfigurationBuilder configurationBuilder
     )
     {
-        configurationBuilder.AddValueConverters<IAssemblyMarkerInfrastructure>();
+        configurationBuilder.AddValueConverters();
     }
 
-    public static void AddValueConverters<TAssemblyMarker>(
+    // public static void AddValueConverters<TAssemblyMarker>(
+    //     this ModelConfigurationBuilder configurationBuilder
+    // )
+    // {
+    //     var valueConverters = typeof(TAssemblyMarker)
+    //         .Assembly.GetTypes()
+    //         .Where(t =>
+    //             t.IsClass
+    //             && t.BaseType is not null
+    //             && t.BaseType.IsGenericType
+    //             && t.BaseType.GetGenericTypeDefinition() == typeof(ValueConverter<,>)
+    //         );
+
+    //     foreach (var valueConverterType in valueConverters)
+    //     {
+    //         var genericArgs = valueConverterType.BaseType?.GetGenericArguments();
+    //         if (genericArgs?.Length != 2)
+    //         {
+    //             throw new ArgumentException();
+    //         }
+
+    //         _ = configurationBuilder.Properties(genericArgs[0]).HaveConversion(valueConverterType);
+    //     }
+    // }
+
+    [GenerateServiceRegistrations(
+        AssignableTo = typeof(ValueConverter<,>),
+        CustomHandler = nameof(AddValueConverter)
+    )]
+    public static partial ModelConfigurationBuilder AddValueConverters(
+        this ModelConfigurationBuilder services
+    );
+
+    private static void AddValueConverter<T, TModel, TProvider>(
         this ModelConfigurationBuilder configurationBuilder
     )
+        where T : ValueConverter<TModel, TProvider>
     {
-        var valueConverters = typeof(TAssemblyMarker)
-            .Assembly.GetTypes()
-            .Where(t =>
-                t.IsClass
-                && t.BaseType is not null
-                && t.BaseType.IsGenericType
-                && t.BaseType.GetGenericTypeDefinition() == typeof(ValueConverter<,>)
-            );
-
-        foreach (var valueConverterType in valueConverters)
-        {
-            var genericArgs = valueConverterType.BaseType?.GetGenericArguments();
-            if (genericArgs?.Length != 2)
-            {
-                throw new ArgumentException();
-            }
-
-            _ = configurationBuilder.Properties(genericArgs[0]).HaveConversion(valueConverterType);
-        }
+        configurationBuilder.Properties<TModel>().HaveConversion<T>();
     }
 
     [GenerateServiceRegistrations(

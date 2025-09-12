@@ -387,8 +387,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/results"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/results"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/results");
 
@@ -464,8 +464,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/result-sets/{id}/diagrams"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/result-sets/{id}/diagrams"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/result-sets/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
@@ -549,8 +549,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/result-sets/{id}"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/result-sets/{id}"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/result-sets/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
@@ -630,8 +630,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/results/load-combinations/{loadCombinationId}/nodes/{id}"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/results/load-combinations/{loadCombinationId}/nodes/{id}"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/results/load-combinations/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(loadCombinationId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -710,8 +710,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/results/load-combinations/{loadCombinationId}/nodes"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/results/load-combinations/{loadCombinationId}/nodes"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/results/load-combinations/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(loadCombinationId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -790,8 +790,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/analyze/dsm"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/analyze/dsm"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/analyze/dsm");
 
@@ -868,8 +868,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/analyze/opensees"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/analyze/opensees"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/analyze/opensees");
 
@@ -946,8 +946,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/element1ds"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/element1ds"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/element1ds");
 
@@ -1024,8 +1024,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/element1ds"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/element1ds"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/element1ds");
 
@@ -1101,8 +1101,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/element1ds/{id}"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/element1ds/{id}"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/element1ds/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
@@ -1179,8 +1179,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/element1ds/{id}"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/element1ds/{id}"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/element1ds/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
@@ -1261,8 +1261,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/element1ds/{id}"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/element1ds/{id}"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/element1ds/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
@@ -1340,8 +1340,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/load-cases"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/load-cases"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/load-cases");
 
@@ -1418,8 +1418,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/load-cases"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/load-cases"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/load-cases");
 
@@ -1495,8 +1495,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/load-cases/{id}"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/load-cases/{id}"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/load-cases/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
@@ -1573,8 +1573,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/load-cases/{id}"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/load-cases/{id}"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/load-cases/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
@@ -1655,8 +1655,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/load-cases/{id}"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/load-cases/{id}"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/load-cases/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
@@ -1734,8 +1734,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/load-combinations"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/load-combinations"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/load-combinations");
 
@@ -1812,8 +1812,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/load-combinations"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/load-combinations"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/load-combinations");
 
@@ -1889,8 +1889,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/load-combinations/{id}"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/load-combinations/{id}"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/load-combinations/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
@@ -1967,8 +1967,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/load-combinations/{id}"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/load-combinations/{id}"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/load-combinations/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
@@ -2049,8 +2049,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/load-combinations/{id}"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/load-combinations/{id}"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/load-combinations/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
@@ -2128,8 +2128,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/materials"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/materials"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/materials");
 
@@ -2206,8 +2206,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/materials"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/materials"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/materials");
 
@@ -2287,8 +2287,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/materials/{id}"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/materials/{id}"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/materials/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
@@ -2363,8 +2363,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models"
-                    urlBuilder_.Append("models");
+                    // Operation Path: "api/models"
+                    urlBuilder_.Append("api/models");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -2432,8 +2432,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models"
-                    urlBuilder_.Append("models");
+                    // Operation Path: "api/models"
+                    urlBuilder_.Append("api/models");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -2508,8 +2508,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/proposals"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/proposals"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/proposals");
 
@@ -2582,8 +2582,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/proposals"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/proposals"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/proposals");
 
@@ -2659,8 +2659,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/proposals/{id}"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/proposals/{id}"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/proposals/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
@@ -2741,8 +2741,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/proposals/{id}/accept"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/proposals/{id}/accept"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/proposals/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
@@ -2821,8 +2821,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/proposals/{id}/reject"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/proposals/{id}/reject"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/proposals/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
@@ -2897,8 +2897,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
@@ -2970,8 +2970,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
@@ -3047,8 +3047,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
@@ -3124,8 +3124,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/repair"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/repair"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/repair");
 
@@ -3202,8 +3202,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/moment-loads"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/moment-loads"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/moment-loads");
 
@@ -3280,8 +3280,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/moment-loads"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/moment-loads"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/moment-loads");
 
@@ -3357,8 +3357,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/moment-loads/{id}"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/moment-loads/{id}"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/moment-loads/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
@@ -3439,8 +3439,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/moment-loads/{id}"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/moment-loads/{id}"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/moment-loads/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
@@ -3518,8 +3518,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/nodes"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/nodes"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/nodes");
 
@@ -3596,8 +3596,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/nodes"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/nodes"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/nodes");
 
@@ -3674,8 +3674,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/nodes"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/nodes"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/nodes");
 
@@ -3751,8 +3751,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/nodes/{id}/internal"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/nodes/{id}/internal"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/nodes/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
@@ -3834,8 +3834,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/nodes/{id}/internal"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/nodes/{id}/internal"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/nodes/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
@@ -3914,8 +3914,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/nodes/internal"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/nodes/internal"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/nodes/internal");
 
@@ -3992,8 +3992,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/nodes/internal"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/nodes/internal"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/nodes/internal");
 
@@ -4069,8 +4069,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/nodes/{id}"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/nodes/{id}"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/nodes/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
@@ -4151,8 +4151,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/nodes/{id}"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/nodes/{id}"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/nodes/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
@@ -4230,8 +4230,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/point-loads"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/point-loads"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/point-loads");
 
@@ -4308,8 +4308,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/point-loads"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/point-loads"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/point-loads");
 
@@ -4385,8 +4385,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/point-loads/{id}"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/point-loads/{id}"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/point-loads/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
@@ -4467,8 +4467,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/point-loads/{id}"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/point-loads/{id}"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/point-loads/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
@@ -4546,8 +4546,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/section-profiles/from-library"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/section-profiles/from-library"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/section-profiles/from-library");
 
@@ -4624,8 +4624,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/section-profiles/from-library"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/section-profiles/from-library"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/section-profiles/from-library");
 
@@ -4702,8 +4702,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/section-profiles"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/section-profiles"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/section-profiles");
 
@@ -4780,8 +4780,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/section-profiles"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/section-profiles"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/section-profiles");
 
@@ -4857,8 +4857,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/section-profiles/{id}"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/section-profiles/{id}"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/section-profiles/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
@@ -4939,8 +4939,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/section-profiles/{id}"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/section-profiles/{id}"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/section-profiles/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
@@ -5021,8 +5021,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/section-profiles/{id}/from-library"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/section-profiles/{id}/from-library"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/section-profiles/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
@@ -5104,8 +5104,8 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "models/{modelId}/restore"
-                    urlBuilder_.Append("models/");
+                    // Operation Path: "api/models/{modelId}/restore"
+                    urlBuilder_.Append("api/models/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(modelId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/restore");
 
