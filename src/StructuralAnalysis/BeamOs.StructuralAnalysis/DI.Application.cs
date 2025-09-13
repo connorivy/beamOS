@@ -3,6 +3,7 @@ using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.SystemOperations;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
+using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 using Microsoft.Extensions.DependencyInjection;
 using ServiceScan.SourceGenerator;
 
@@ -34,6 +35,11 @@ internal static partial class DependencyInjection
         this IServiceCollection services
     )
     {
+        // pardiso is faster, but it requires mkl libraries. Since we're not using this solver factory in production,
+        // we can use CholeskySolverFactory which is a pure managed implementation.
+        // services.AddSingleton<ISolverFactory, PardisoSolverFactory>();
+        services.AddSingleton<ISolverFactory, CholeskySolverFactory>();
+
         services.AddScoped<
             ICommandHandler<ModelResourceRequest<DateTimeOffset>, ModelResponse>,
             ModelRestoreCommandHandler

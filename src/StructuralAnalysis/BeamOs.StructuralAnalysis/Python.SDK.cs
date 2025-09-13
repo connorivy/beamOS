@@ -2,6 +2,7 @@ using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.StructuralAnalysis.Api;
 using BeamOs.StructuralAnalysis.Api.Endpoints;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace BeamOs.StructuralAnalysis.Sdk;
 
@@ -30,10 +31,10 @@ public static class ApiClientFactory
 #endif
 
         var serviceProvider = services.BuildServiceProvider();
-        var httpClient = serviceProvider.GetRequiredService<HttpClient>();
+        var apiClient = serviceProvider.GetRequiredService<IStructuralAnalysisApiClientV2>();
 
         // InMemoryApiClient2 x = default;
-        return new BeamOsApiClient(httpClient);
+        return new BeamOsApiClient(apiClient);
         // return new BeamOsModelBuilder(model, apiClient);
     }
 
@@ -48,6 +49,7 @@ public static class ApiClientFactory
 #if !CODEGEN
         services.AddScoped<IStructuralAnalysisApiClientV2, InMemoryApiClient2>();
 #endif
+        services.AddLogging(builder => builder.SetMinimumLevel(LogLevel.Debug));
 
         var serviceProvider = services.BuildServiceProvider();
         return serviceProvider.GetRequiredService<BeamOsResultApiClient>();
@@ -68,15 +70,15 @@ public static class ApiClientFactory
 public sealed class BeamOsApiClient : BeamOsFluentApiClient
 // IDisposable
 {
-    // public BeamOsApiClient(IStructuralAnalysisApiClientV2 apiClient)
-    //     : base(apiClient) { }
+    public BeamOsApiClient(IStructuralAnalysisApiClientV2 apiClient)
+        : base(apiClient) { }
 
-    public BeamOsApiClient(HttpClient httpClient)
-#if CODEGEN
-        : base(default) { }
-#else
-        : base(new StructuralAnalysisApiClientV2(httpClient)) { }
-#endif
+    //     public BeamOsApiClient(HttpClient httpClient)
+    // #if CODEGEN
+    //         : base(default) { }
+    // #else
+    //         : base(new StructuralAnalysisApiClientV2(httpClient)) { }
+    // #endif
 
     // public void Dispose()
 }
@@ -84,13 +86,13 @@ public sealed class BeamOsApiClient : BeamOsFluentApiClient
 // [DotWrapExpose]
 public sealed class BeamOsResultApiClient : BeamOsFluentResultApiClient
 {
-    // public BeamOsResultApiClient(IStructuralAnalysisApiClientV2 apiClient)
-    //     : base(apiClient) { }
+    public BeamOsResultApiClient(IStructuralAnalysisApiClientV2 apiClient)
+        : base(apiClient) { }
 
-    public BeamOsResultApiClient(HttpClient httpClient)
-#if CODEGEN
-        : base(default) { }
-#else
-        : base(new StructuralAnalysisApiClientV2(httpClient)) { }
-#endif
+    //     public BeamOsResultApiClient(HttpClient httpClient)
+    // #if CODEGEN
+    //         : base(default) { }
+    // #else
+    //         : base(new StructuralAnalysisApiClientV2(httpClient)) { }
+    // #endif
 }

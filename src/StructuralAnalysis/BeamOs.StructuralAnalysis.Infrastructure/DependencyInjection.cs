@@ -97,11 +97,6 @@ public static partial class DependencyInjection
 
         services.AddScoped<IQueryHandler<Guid, ModelInfoResponse>, GetModelInfoQueryHandler>();
 
-        // pardiso is faster, but it requires mkl libraries. Since we're not using this solver factory in production,
-        // we can use CholeskySolverFactory which is a pure managed implementation.
-        // services.AddSingleton<ISolverFactory, PardisoSolverFactory>();
-        services.AddSingleton<ISolverFactory, CholeskySolverFactory>();
-
         return services;
     }
 

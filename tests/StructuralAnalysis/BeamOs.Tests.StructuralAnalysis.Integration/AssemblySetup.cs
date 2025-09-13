@@ -10,9 +10,9 @@ namespace BeamOs.Tests.StructuralAnalysis.Integration;
 
 public static partial class AssemblySetup
 {
-    public static PostgreSqlContainer DbContainer { get; } =
-        new PostgreSqlBuilder().WithImage("postgres:15-alpine").Build();
+    public static PostgreSqlContainer DbContainer { get; private set; }
 
+    public static bool UseLocalApi { get; } = false;
     public static bool ApiIsRunning { get; set; }
     public static bool SetupWebApi { get; set; } = true;
     public static bool SkipOpenSeesTests { get; set; } = BeamOsEnv.IsCiEnv();
@@ -26,17 +26,34 @@ public static partial class AssemblySetup
             return;
         }
 
-        await DbContainer.StartAsync();
-
         TestUtils.Asserter = new();
+
+        if (UseLocalApi)
+        {
+            UseLocalApiClient();
+        }
+        else
+        {
+            await UseRemoteApiClient();
+        }
+
+        ApiIsRunning = true;
+    }
+
+    private static async Task UseRemoteApiClient()
+    {
+        DbContainer = new PostgreSqlBuilder().WithImage("postgres:15-alpine").Build();
+        await DbContainer.StartAsync();
 
         var webAppFactory = new WebAppFactory(
             $"{DbContainer.GetConnectionString()};Include Error Detail=True"
         );
         StructuralAnalysisApiClient = CreateApiClientWebAppFactory(webAppFactory.CreateClient());
-        // StructuralAnalysisApiClient = CreateApiClientLocal();
+    }
 
-        ApiIsRunning = true;
+    private static void UseLocalApiClient()
+    {
+        StructuralAnalysisApiClient = CreateApiClientLocal();
     }
 
     public static async Task TearDown()
