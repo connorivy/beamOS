@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using BeamOs.Common.Domain.Models;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.Common;
@@ -42,7 +43,8 @@ internal class InMemoryModelResourceRepository<TId, T>(
     where TId : struct, IIntBasedId
     where T : BeamOsModelEntity<TId>
 {
-    protected Dictionary<ModelId, Dictionary<TId, T>> ModelResources { get; } = [];
+    protected Dictionary<ModelId, Dictionary<TId, T>> ModelResources { get; } =
+        inMemoryModelRepositoryStorage.GetStorage<Dictionary<ModelId, Dictionary<TId, T>>>();
 
     public void Add(T aggregate)
     {
@@ -263,4 +265,17 @@ internal class InMemoryProposalRepository<TId, T>
 internal record InMemoryModelRepositoryStorage
 {
     public Dictionary<ModelId, Model> Models { get; } = [];
+    private readonly ConcurrentDictionary<Type, object> resourceStorage = [];
+
+    public T GetStorage<T>()
+        where T : class, new()
+    {
+        var type = typeof(T);
+        if (!this.resourceStorage.TryGetValue(type, out var storage))
+        {
+            storage = new T();
+            this.resourceStorage[type] = storage;
+        }
+        return (T)storage;
+    }
 }
