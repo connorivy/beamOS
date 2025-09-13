@@ -30,10 +30,10 @@ public static class ApiClientFactory
 #endif
 
         var serviceProvider = services.BuildServiceProvider();
-        var apiClient = serviceProvider.GetRequiredService<IStructuralAnalysisApiClientV2>();
+        var httpClient = serviceProvider.GetRequiredService<HttpClient>();
 
         // InMemoryApiClient2 x = default;
-        return new BeamOsApiClient(apiClient);
+        return new BeamOsApiClient(httpClient);
         // return new BeamOsModelBuilder(model, apiClient);
     }
 
@@ -68,8 +68,8 @@ public static class ApiClientFactory
 public sealed class BeamOsApiClient : BeamOsFluentApiClient
 // IDisposable
 {
-    public BeamOsApiClient(IStructuralAnalysisApiClientV2 apiClient)
-        : base(apiClient) { }
+    // public BeamOsApiClient(IStructuralAnalysisApiClientV2 apiClient)
+    //     : base(apiClient) { }
 
     public BeamOsApiClient(HttpClient httpClient)
 #if CODEGEN
@@ -84,8 +84,8 @@ public sealed class BeamOsApiClient : BeamOsFluentApiClient
 // [DotWrapExpose]
 public sealed class BeamOsResultApiClient : BeamOsFluentResultApiClient
 {
-    public BeamOsResultApiClient(IStructuralAnalysisApiClientV2 apiClient)
-        : base(apiClient) { }
+    // public BeamOsResultApiClient(IStructuralAnalysisApiClientV2 apiClient)
+    //     : base(apiClient) { }
 
     public BeamOsResultApiClient(HttpClient httpClient)
 #if CODEGEN
