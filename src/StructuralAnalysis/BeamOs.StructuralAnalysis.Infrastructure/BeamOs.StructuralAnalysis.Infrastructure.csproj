@@ -5,8 +5,8 @@
     <Nullable>enable</Nullable>
     <IsAotCompatible Condition="'$(BeamOsEnableAot)' == 'true'">true</IsAotCompatible>
 	<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-	<BeamOsUsePostgres>true</BeamOsUsePostgres>
-	<BeamOsUseSqlite>false</BeamOsUseSqlite>
+	<BeamOsUsePostgres>false</BeamOsUsePostgres>
+	<BeamOsUseSqlite>true</BeamOsUseSqlite>
 	<InterceptorsNamespaces>$(InterceptorsNamespaces);Microsoft.EntityFrameworkCore.GeneratedInterceptors</InterceptorsNamespaces>
   </PropertyGroup>
 

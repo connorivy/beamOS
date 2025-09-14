@@ -1,3 +1,4 @@
+#if Postgres
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -12,34 +13,41 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_DeleteModelEntityProposal_ModelProposals_ModelProposalId_Mo~",
-                table: "DeleteModelEntityProposal");
+                table: "DeleteModelEntityProposal"
+            );
 
             migrationBuilder.DropForeignKey(
                 name: "FK_DeleteModelEntityProposal_Models_ModelId",
-                table: "DeleteModelEntityProposal");
+                table: "DeleteModelEntityProposal"
+            );
 
             migrationBuilder.DropPrimaryKey(
                 name: "PK_DeleteModelEntityProposal",
-                table: "DeleteModelEntityProposal");
+                table: "DeleteModelEntityProposal"
+            );
 
             migrationBuilder.RenameTable(
                 name: "DeleteModelEntityProposal",
-                newName: "DeleteModelEntityProposals");
+                newName: "DeleteModelEntityProposals"
+            );
 
             migrationBuilder.RenameIndex(
                 name: "IX_DeleteModelEntityProposal_ModelProposalId_ModelId",
                 table: "DeleteModelEntityProposals",
-                newName: "IX_DeleteModelEntityProposals_ModelProposalId_ModelId");
+                newName: "IX_DeleteModelEntityProposals_ModelProposalId_ModelId"
+            );
 
             migrationBuilder.RenameIndex(
                 name: "IX_DeleteModelEntityProposal_ModelId",
                 table: "DeleteModelEntityProposals",
-                newName: "IX_DeleteModelEntityProposals_ModelId");
+                newName: "IX_DeleteModelEntityProposals_ModelId"
+            );
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_DeleteModelEntityProposals",
                 table: "DeleteModelEntityProposals",
-                columns: new[] { "Id", "ModelProposalId", "ModelId" });
+                columns: new[] { "Id", "ModelProposalId", "ModelId" }
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_DeleteModelEntityProposals_ModelProposals_ModelProposalId_M~",
@@ -47,7 +55,8 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                 columns: new[] { "ModelProposalId", "ModelId" },
                 principalTable: "ModelProposals",
                 principalColumns: new[] { "Id", "ModelId" },
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Cascade
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_DeleteModelEntityProposals_Models_ModelId",
@@ -55,7 +64,8 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                 column: "ModelId",
                 principalTable: "Models",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Cascade
+            );
         }
 
         /// <inheritdoc />
@@ -63,34 +73,41 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_DeleteModelEntityProposals_ModelProposals_ModelProposalId_M~",
-                table: "DeleteModelEntityProposals");
+                table: "DeleteModelEntityProposals"
+            );
 
             migrationBuilder.DropForeignKey(
                 name: "FK_DeleteModelEntityProposals_Models_ModelId",
-                table: "DeleteModelEntityProposals");
+                table: "DeleteModelEntityProposals"
+            );
 
             migrationBuilder.DropPrimaryKey(
                 name: "PK_DeleteModelEntityProposals",
-                table: "DeleteModelEntityProposals");
+                table: "DeleteModelEntityProposals"
+            );
 
             migrationBuilder.RenameTable(
                 name: "DeleteModelEntityProposals",
-                newName: "DeleteModelEntityProposal");
+                newName: "DeleteModelEntityProposal"
+            );
 
             migrationBuilder.RenameIndex(
                 name: "IX_DeleteModelEntityProposals_ModelProposalId_ModelId",
                 table: "DeleteModelEntityProposal",
-                newName: "IX_DeleteModelEntityProposal_ModelProposalId_ModelId");
+                newName: "IX_DeleteModelEntityProposal_ModelProposalId_ModelId"
+            );
 
             migrationBuilder.RenameIndex(
                 name: "IX_DeleteModelEntityProposals_ModelId",
                 table: "DeleteModelEntityProposal",
-                newName: "IX_DeleteModelEntityProposal_ModelId");
+                newName: "IX_DeleteModelEntityProposal_ModelId"
+            );
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_DeleteModelEntityProposal",
                 table: "DeleteModelEntityProposal",
-                columns: new[] { "Id", "ModelProposalId", "ModelId" });
+                columns: new[] { "Id", "ModelProposalId", "ModelId" }
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_DeleteModelEntityProposal_ModelProposals_ModelProposalId_Mo~",
@@ -98,7 +115,8 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                 columns: new[] { "ModelProposalId", "ModelId" },
                 principalTable: "ModelProposals",
                 principalColumns: new[] { "Id", "ModelId" },
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Cascade
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_DeleteModelEntityProposal_Models_ModelId",
@@ -106,7 +124,10 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
                 column: "ModelId",
                 principalTable: "Models",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Cascade
+            );
         }
     }
 }
+
+#endif

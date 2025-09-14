@@ -131,3 +131,9 @@ public record DeleteMomentLoadClientCommand : IBeamOsUndoableClientCommand
             HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
 }
+
+public readonly struct ModelEntityCommand : IModelEntity
+{
+    public Guid ModelId { get; init; }
+    public int Id { get; init; }
+}

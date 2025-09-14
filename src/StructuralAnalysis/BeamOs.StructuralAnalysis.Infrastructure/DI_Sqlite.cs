@@ -1,0 +1,43 @@
+#if Sqlite
+using EntityFramework.Exceptions.Sqlite;
+using BeamOs.StructuralAnalysis.Infrastructure.Common;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+
+namespace BeamOs.StructuralAnalysis.Infrastructure;
+
+public static class DI_Sqlite
+{
+    public static IDisposable AddSqliteInMemoryAndReturnConnection(this IServiceCollection services)
+    {
+        var connection = new Microsoft.Data.Sqlite.SqliteConnection("DataSource=:memory:");
+        connection.Open();
+        _ = services.AddDbContext<StructuralAnalysisDbContext>(options =>
+            options
+                .UseSqlite(connection)
+                .AddInterceptors(new ModelLastModifiedUpdater(TimeProvider.System))
+                .UseExceptionProcessor()
+#if DEBUG
+                .EnableSensitiveDataLogging()
+                .EnableDetailedErrors()
+                .LogTo(Console.WriteLine, LogLevel.Information)
+#endif
+#if !DEBUG
+                .UseLoggerFactory(
+                    LoggerFactory.Create(builder =>
+                    {
+                        builder.AddFilter((category, level) => level >= LogLevel.Error);
+                    })
+                )
+#endif
+                .ConfigureWarnings(warnings =>
+                    warnings.Log(RelationalEventId.PendingModelChangesWarning)
+                )
+        );
+        return connection;
+    }
+}
+
+#endif

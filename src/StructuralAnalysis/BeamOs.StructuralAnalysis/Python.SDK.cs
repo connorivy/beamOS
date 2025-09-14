@@ -51,6 +51,8 @@ public static class ApiClientFactory
 #endif
         services.AddLogging(builder => builder.SetMinimumLevel(LogLevel.Debug));
 
+        var sqliteConnection = DI_Sqlite.AddSqliteInMemoryAndReturnConnection(services);
+
         var serviceProvider = services.BuildServiceProvider();
         return serviceProvider.GetRequiredService<BeamOsResultApiClient>();
     }

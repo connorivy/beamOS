@@ -30,13 +30,17 @@ using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.MomentLoads;
 using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.SectionProfiles;
-using EntityFramework.Exceptions.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ServiceScan.SourceGenerator;
+#if Postgres
+using EntityFramework.Exceptions.PostgreSQL;
+#else
+using EntityFramework.Exceptions.Sqlite;
+#endif
 
 namespace BeamOs.StructuralAnalysis.Infrastructure;
 
@@ -86,7 +90,9 @@ public static partial class DependencyInjection
     {
         services.AddSingleton(TimeProvider.System);
 
+#if Postgres
         services.AddDb(connectionString);
+#endif
 
         services.AddScoped<IUserIdProvider, UserIdProvider>();
 
@@ -100,6 +106,7 @@ public static partial class DependencyInjection
         return services;
     }
 
+#if Postgres
     private static void AddDb(this IServiceCollection services, string connectionString) =>
         _ = services.AddDbContext<StructuralAnalysisDbContext>(options =>
             options
@@ -126,22 +133,23 @@ public static partial class DependencyInjection
                     warnings.Log(RelationalEventId.PendingModelChangesWarning)
                 )
         );
+#endif
 
     public static async Task MigrateDb(
         this IServiceScope scope,
         CancellationToken cancellationToken = default
     )
     {
-        // var dbContext = scope.ServiceProvider.GetRequiredService<StructuralAnalysisDbContext>();
+        var dbContext = scope.ServiceProvider.GetRequiredService<StructuralAnalysisDbContext>();
 
-        // // await dbContext.Database.EnsureDeletedAsync();
-        // var appliedMigrations = (await dbContext.Database.GetAppliedMigrationsAsync()).ToList();
-        // var pendingMigrations = (await dbContext.Database.GetPendingMigrationsAsync()).ToList();
-        // if (pendingMigrations.Count > 0)
-        // {
-        //     await dbContext.Database.MigrateAsync();
-        // }
-        // await dbContext.Database.EnsureCreatedAsync(cancellationToken);
+        // await dbContext.Database.EnsureDeletedAsync();
+        var appliedMigrations = (await dbContext.Database.GetAppliedMigrationsAsync()).ToList();
+        var pendingMigrations = (await dbContext.Database.GetPendingMigrationsAsync()).ToList();
+        if (pendingMigrations.Count > 0)
+        {
+            await dbContext.Database.MigrateAsync();
+        }
+        await dbContext.Database.EnsureCreatedAsync(cancellationToken);
     }
 
     public static void AddPhysicalModelInfrastructure(
