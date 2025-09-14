@@ -1,3 +1,4 @@
+using BeamOs.StructuralAnalysis;
 using BeamOs.StructuralAnalysis.Sdk;
 using BeamOs.Tests.Common;
 using BeamOs.Tests.StructuralAnalysis.Integration;

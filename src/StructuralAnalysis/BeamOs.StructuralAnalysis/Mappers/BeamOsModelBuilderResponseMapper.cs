@@ -43,9 +43,9 @@ internal partial class BeamOsModelBuilderResponseMapper(Guid modelId)
     private static List<ResultSetResponse> EmptyResultSets() => [];
 }
 
-[Mapper]
-[UseStaticMapper(typeof(UnitsNetMappers))]
-internal static partial class BeamOsModelBuilderDtoMapper
-{
-    public static partial BeamOsModelBuilderDto ToDto(this BeamOsStaticModelBase builder);
-}
+// [Mapper]
+// [UseStaticMapper(typeof(UnitsNetMappers))]
+// internal static partial class BeamOsModelBuilderDtoMapper
+// {
+//     public static partial BeamOsModelBuilderDto ToDto(this BeamOsStaticModelBase builder);
+// }

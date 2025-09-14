@@ -25,7 +25,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BeamOs.StructuralAnalysis.Sdk;
 
-internal static class DI
+public static class DI
 {
     public static IServiceCollection AddStructuralAnalysisSdkRequired(
         this IServiceCollection services

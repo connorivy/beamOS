@@ -12,7 +12,7 @@ public static partial class AssemblySetup
 {
     public static PostgreSqlContainer DbContainer { get; private set; }
 
-    public static bool UseLocalApi { get; } = false;
+    public static bool UseLocalApi { get; } = true;
     public static bool ApiIsRunning { get; set; }
     public static bool SetupWebApi { get; set; } = true;
     public static bool SkipOpenSeesTests { get; set; } = BeamOsEnv.IsCiEnv();

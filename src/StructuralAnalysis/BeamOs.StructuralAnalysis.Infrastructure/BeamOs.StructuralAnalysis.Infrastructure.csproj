@@ -5,8 +5,6 @@
     <Nullable>enable</Nullable>
     <IsAotCompatible Condition="'$(BeamOsEnableAot)' == 'true'">true</IsAotCompatible>
 	<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-	<BeamOsUsePostgres>false</BeamOsUsePostgres>
-	<BeamOsUseSqlite>true</BeamOsUseSqlite>
 	<InterceptorsNamespaces>$(InterceptorsNamespaces);Microsoft.EntityFrameworkCore.GeneratedInterceptors</InterceptorsNamespaces>
   </PropertyGroup>
 
@@ -27,7 +25,7 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tasks" >
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tasks">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
@@ -53,8 +51,8 @@
 
 	<ItemGroup>
 	  <!-- <ProjectReference Include="..\..\..\tests\BeamOs.Tests.Common\BeamOs.Tests.Common.csproj" /> -->
+	  <ProjectReference Include="../BeamOs.StructuralAnalysis.Core/BeamOs.StructuralAnalysis.Core.csproj" />
 	  <ProjectReference Include="..\..\Identity\BeamOs.Identity\BeamOs.Identity.csproj" />
-	  <ProjectReference Include="..\BeamOs.StructuralAnalysis\BeamOs.StructuralAnalysis.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

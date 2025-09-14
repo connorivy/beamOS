@@ -3,6 +3,7 @@ using System.Text.Json;
 using BeamOs.CodeGen.EditorApi;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Sdk;

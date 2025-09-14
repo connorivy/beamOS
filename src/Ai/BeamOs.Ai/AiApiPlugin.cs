@@ -1,9 +1,4 @@
 using System.ComponentModel;
-using BeamOs.CodeGen.StructuralAnalysisApiClient;
-using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis.Application.Common;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;

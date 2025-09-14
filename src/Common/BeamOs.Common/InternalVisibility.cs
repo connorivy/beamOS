@@ -1,3 +1,3 @@
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("BeamOs.StructuralAnalysis")]
+[assembly: InternalsVisibleTo("BeamOs.StructuralAnalysis.Core")]

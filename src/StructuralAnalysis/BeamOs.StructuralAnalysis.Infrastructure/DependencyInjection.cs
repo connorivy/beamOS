@@ -152,6 +152,13 @@ public static partial class DependencyInjection
         await dbContext.Database.EnsureCreatedAsync(cancellationToken);
     }
 
+    public static void EnsureDbCreated(this IServiceScope scope)
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<StructuralAnalysisDbContext>();
+
+        dbContext.Database.EnsureCreated();
+    }
+
     public static void AddPhysicalModelInfrastructure(
         this ModelConfigurationBuilder configurationBuilder
     )

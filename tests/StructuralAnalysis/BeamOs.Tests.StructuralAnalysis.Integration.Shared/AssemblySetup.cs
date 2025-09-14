@@ -1,6 +1,7 @@
 using BeamOs.CodeGen.SpeckleConnectorApi;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Api;
+using BeamOs.StructuralAnalysis;
 using BeamOs.StructuralAnalysis.Api;
 using BeamOs.StructuralAnalysis.Api.Endpoints;
 using BeamOs.StructuralAnalysis.Sdk;

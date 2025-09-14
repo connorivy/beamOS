@@ -213,7 +213,7 @@ public sealed class BeamOsDynamicModel(
 
     private readonly List<SectionProfileFromLibraryContract> sectionProfilesFromLibrary = [];
 
-    internal void AddSectionProfileFromLibrary(int id, string name, StructuralCode library) =>
+    public void AddSectionProfileFromLibrary(int id, string name, StructuralCode library) =>
         this.AddSectionProfilesFromLibrary(
             new SectionProfileFromLibraryContract()
             {

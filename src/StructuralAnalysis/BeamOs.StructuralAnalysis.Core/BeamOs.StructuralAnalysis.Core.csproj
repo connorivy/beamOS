@@ -1,0 +1,78 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>true</IsPackable>
+    <PublishAot Condition="'$(BeamOsEnableAot)' == 'true'">true</PublishAot>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--<PackageReference Include="MathNet.Numerics" />-->
+    <PackageReference Include="CommunityToolkit.HighPerformance" />
+    <PackageReference Include="CSparse" />
+    <PackageReference Include="MathNet.Numerics.MKL.Win-x64" />
+    <PackageReference Include="MathNet.Spatial" />
+    <PackageReference Include="MediatR" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="Riok.Mapperly" />
+    <PackageReference Include="ServiceScan.SourceGenerator">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="StructuralShapes" />
+    <PackageReference Include="UnitsNet" />
+    <PackageReference Include="EntityFrameworkCore.Exceptions.Common" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Http" />
+    <PackageReference Include="Microsoft.Extensions.Logging" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+    <PackageReference Include="BeamOs.CSparse.Interop" VersionOverride="4.2.0" />
+    <PackageReference Include="intelmkl.redist.win-x64" />
+    <PackageReference Include="BeamOs.OpenSees.win-x64" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$([MSBuild]::IsOSUnixLike())">
+    <!-- <PackageReference Include="BeamOs.CSparse.Interop" VersionOverride="4.2.1" /> -->
+    <PackageReference Include="BeamOs.CSparse.Interop" />
+    <!-- <PackageReference Include="BeamOs.OpenSees.linux-x64" /> -->
+  </ItemGroup>
+
+  <ItemGroup Condition="$(IncludeOpenSeesExe) == 'true' and $([MSBuild]::IsOSUnixLike())">
+    <PackageReference Include="BeamOs.OpenSees.linux-x64" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/BeamOs.CodeGen.StructuralAnalysisApiClient.csproj" />
+    <ProjectReference Include="..\..\Common\BeamOs.Common\BeamOs.Common.csproj" />
+    <ProjectReference Include="..\..\Identity\BeamOs.Identity\BeamOs.Identity.csproj" />
+    <ProjectReference Include="..\BeamOs.StructuralAnalysis.Contracts\BeamOs.StructuralAnalysis.Contracts.csproj" />
+    <ProjectReference Include="..\BeamOs.StructuralAnalysis.SourceGenerator\BeamOs.StructuralAnalysis.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>BeamOs.Tests.StructuralAnalysis.Integration</_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>BeamOs.Tests.StructuralAnalysis.Integration.Runtime</_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>BeamOs.Tests.StructuralAnalysis.Unit</_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>BeamOs.Tests.StructuralAnalysis.Unit.Runtime</_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>BeamOs.StructuralAnalysis.Api</_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>BeamOs.StructuralAnalysis.Integration</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+</Project>

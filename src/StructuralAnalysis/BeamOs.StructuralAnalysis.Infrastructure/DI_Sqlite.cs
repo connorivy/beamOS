@@ -23,8 +23,7 @@ public static class DI_Sqlite
                 .EnableSensitiveDataLogging()
                 .EnableDetailedErrors()
                 .LogTo(Console.WriteLine, LogLevel.Information)
-#endif
-#if !DEBUG
+#else
                 .UseLoggerFactory(
                     LoggerFactory.Create(builder =>
                     {
