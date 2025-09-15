@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using BeamOs.StructuralAnalysis.Api.Endpoints;
@@ -45,9 +46,11 @@ public static partial class AssemblySetup
         DbContainer = new PostgreSqlBuilder().WithImage("postgres:15-alpine").Build();
         await DbContainer.StartAsync();
 
+#pragma warning disable IL3050 // Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.
         var webAppFactory = new WebAppFactory(
             $"{DbContainer.GetConnectionString()};Include Error Detail=True"
         );
+#pragma warning restore IL3050 // Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.
         StructuralAnalysisApiClient = CreateApiClientWebAppFactory(webAppFactory.CreateClient());
     }
 
@@ -62,9 +65,6 @@ public static partial class AssemblySetup
 
         await DbContainer.StopAsync();
     }
-
-    private static bool isFirstTestRun = true;
-    private static Lock firstRunLock = new();
 
     [ModuleInitializer]
     public static void Init()

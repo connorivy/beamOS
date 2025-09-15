@@ -71,11 +71,11 @@ public static partial class DependencyInjection
         _ = services.AddScoped<IModelProposalRepository, ModelProposalRepository>();
         _ = services.AddScoped<IProposalIssueRepository, ProposalIssueRepository>();
 
-        #if Postgres
-                _ = services.AddScoped<IStructuralAnalysisUnitOfWork, UnitOfWork>();
-        #elif Sqlite
-                _ = services.AddScoped<IStructuralAnalysisUnitOfWork, SqliteUnitOfWork>();
-        #endif
+#if Postgres
+        _ = services.AddScoped<IStructuralAnalysisUnitOfWork, UnitOfWork>();
+#elif Sqlite
+        _ = services.AddScoped<IStructuralAnalysisUnitOfWork, SqliteUnitOfWork>();
+#endif
         // _ = services.AddScoped<IStructuralAnalysisUnitOfWork, UnitOfWork>();
 
         services.AddQueryHandlers();
@@ -140,6 +140,7 @@ public static partial class DependencyInjection
         );
 #endif
 
+    [RequiresDynamicCode("Calls MigrateAsync which uses reflection to create tables.")]
     public static async Task MigrateDb(
         this IServiceScope scope,
         CancellationToken cancellationToken = default
@@ -148,15 +149,15 @@ public static partial class DependencyInjection
         var dbContext = scope.ServiceProvider.GetRequiredService<StructuralAnalysisDbContext>();
 
         // await dbContext.Database.EnsureDeletedAsync();
-        var appliedMigrations = (await dbContext.Database.GetAppliedMigrationsAsync()).ToList();
+        // var appliedMigrations = (await dbContext.Database.GetAppliedMigrationsAsync()).ToList();
         var pendingMigrations = (await dbContext.Database.GetPendingMigrationsAsync()).ToList();
         if (pendingMigrations.Count > 0)
         {
-            await dbContext.Database.MigrateAsync();
+            await dbContext.Database.MigrateAsync(cancellationToken);
         }
-        await dbContext.Database.EnsureCreatedAsync(cancellationToken);
     }
 
+    [RequiresDynamicCode("Calls EnsureCreated which uses reflection to create tables.")]
     public static void EnsureDbCreated(this IServiceScope scope)
     {
         var dbContext = scope.ServiceProvider.GetRequiredService<StructuralAnalysisDbContext>();

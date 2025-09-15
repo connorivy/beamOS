@@ -1,3 +1,4 @@
+#if Sqlite
 using System.Runtime.InteropServices;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
@@ -198,3 +199,5 @@ internal class SqliteCompositeKeyIncrementingInterceptor : SaveChangesIntercepto
         return result;
     }
 }
+
+#endif

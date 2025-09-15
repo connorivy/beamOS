@@ -19,47 +19,11 @@ public static class DI_Sqlite
         );
         connection.Open();
 
-        //         var options = new DbContextOptionsBuilder<StructuralAnalysisDbContext>()
-        //             // .UseSqlite(connection)
-        //             .UseSqlite(connection)
-        //             // .AddInterceptors(new ModelLastModifiedUpdater(TimeProvider.System))
-        //             .AddInterceptors(new SqliteConnectionLockInterceptor())
-        //             .AddInterceptors(new ModelEntityIdIncrementingInterceptor(TimeProvider.System))
-        //             .UseExceptionProcessor()
-        // #if DEBUG
-        //             .EnableSensitiveDataLogging()
-        //             .EnableDetailedErrors()
-        //             .LogTo(Console.WriteLine, LogLevel.Information)
-        // #else
-        //             .UseLoggerFactory(
-        //                 LoggerFactory.Create(builder =>
-        //                 {
-        //                     builder.AddFilter((category, level) => level >= LogLevel.Error);
-        //                 })
-        //             )
-        // #endif
-        //             .ConfigureWarnings(warnings =>
-        //                 warnings.Log(RelationalEventId.PendingModelChangesWarning)
-        //             )
-        //             .Options;
-
-        //         services.AddScoped(sp =>
-        //         {
-        //             sp.GetRequiredService<ConnectionLock>();
-        //             lock (dbConnectionLock)
-        //             {
-        //                 return new StructuralAnalysisDbContext(options);
-        //             }
-        //         });
         _ = services.AddDbContext<StructuralAnalysisDbContext>(options =>
             options
                 .UseSqlite(connection)
-                // .UseSqlite("DataSource=::;Cache=Shared")
-                // .AddInterceptors(new ModelLastModifiedUpdater(TimeProvider.System))
-                // .AddInterceptors(new SqliteConnectionLockInterceptor())
                 .AddInterceptors(new SqliteCompositeKeyIncrementingInterceptor())
                 .AddInterceptors(new ModelEntityIdIncrementingInterceptor(TimeProvider.System))
-                // .AddInterceptors(new SqliteSavingChangesConnectionLockInterceptor())
                 .UseExceptionProcessor()
 #if DEBUG
                 .EnableSensitiveDataLogging()
@@ -78,21 +42,6 @@ public static class DI_Sqlite
                 )
         );
         return connection;
-    }
-}
-
-internal sealed class ConnectionLock : IDisposable
-{
-    private static readonly SemaphoreSlim _semaphore = new(1, 1);
-
-    public ConnectionLock()
-    {
-        _semaphore.Wait();
-    }
-
-    public void Dispose()
-    {
-        _semaphore.Release();
     }
 }
 

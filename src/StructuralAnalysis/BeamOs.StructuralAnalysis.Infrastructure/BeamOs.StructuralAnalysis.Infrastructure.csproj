@@ -42,6 +42,7 @@
 
 	<PropertyGroup Condition="'$(BeamOsUseSqlite)' == 'true'">
 		<DefineConstants>$(DefineConstants);Sqlite</DefineConstants>
+		<IsPackable>true</IsPackable>
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(BeamOsUseSqlite)' == 'true'">

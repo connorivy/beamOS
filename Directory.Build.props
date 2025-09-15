@@ -38,6 +38,9 @@
 
       IDE0051;
       IDE0100; <!-- IDE0100: Ignore redundant equality -->
+
+      TUnit0046; <!-- Return a Func<T> rather than a T -->
+      TUnit0057; <!-- Hook method can accept a AssemblyHookContext -->
       $(NoWarn)
     </NoWarn>
 

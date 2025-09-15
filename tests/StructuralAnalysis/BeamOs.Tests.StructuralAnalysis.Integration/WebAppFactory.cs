@@ -1,4 +1,5 @@
 #if !RUNTIME
+using System.Diagnostics.CodeAnalysis;
 using BeamOs.StructuralAnalysis.Api;
 using BeamOs.StructuralAnalysis.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration;
 
+[RequiresDynamicCode("WebApplicationFactory uses reflection which is not compatible with AOT.")]
 public sealed class WebAppFactory(string connectionString, TimeProvider? timeProvider = null)
     : WebApplicationFactory<IAssemblyMarkerStructuralAnalysisApi>
 {
