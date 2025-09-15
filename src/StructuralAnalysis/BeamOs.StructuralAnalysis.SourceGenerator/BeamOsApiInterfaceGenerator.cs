@@ -118,18 +118,21 @@ public class BeamOsApiInterfaceGenerator : IIncrementalGenerator
     private static StringBuilder CreateInMemoryImpl()
     {
         StringBuilder impl = new();
-        impl.AppendLine("#nullable enable");
-        impl.AppendLine("using System.Threading.Tasks;");
-        impl.AppendLine("using BeamOs.Common.Api;");
-        impl.AppendLine("using BeamOs.Common.Contracts;");
-        impl.AppendLine("using Microsoft.Extensions.DependencyInjection;");
-        impl.AppendLine();
-        impl.AppendLine("namespace BeamOs.StructuralAnalysis.Api;");
-        impl.AppendLine();
         impl.AppendLine(
-            "public sealed class InMemoryApiClient2(IServiceProvider serviceProvider) : IStructuralAnalysisApiClientV2"
+            @$"
+#nullable enable
+using System.Threading.Tasks;
+using BeamOs.Common.Api;
+using BeamOs.Common.Contracts;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace BeamOs.StructuralAnalysis.Api;
+
+public sealed class InMemoryApiClient2(IServiceProvider serviceProvider) : IStructuralAnalysisApiClientV2
+{{
+    private static readonly SemaphoreSlim semaphore = new(1, 1);
+        "
         );
-        impl.AppendLine("{");
 
         return impl;
     }
@@ -152,7 +155,17 @@ public class BeamOsApiInterfaceGenerator : IIncrementalGenerator
         using var scope = serviceProvider.CreateScope();
         var handler = scope.ServiceProvider.GetRequiredService<{commandHandlerType.ToDisplayString()}>();
         var endpoint = new {symbol.ToDisplayString()}(handler);
-        return (await endpoint.ExecuteRequestAsync(request, ct)).ToApiResponse();
+        await semaphore.WaitAsync(ct);
+        Result<{returnType}> response;
+        try 
+        {{
+            response = await endpoint.ExecuteRequestAsync(request, ct);
+        }} 
+        finally 
+        {{
+            semaphore.Release();
+        }}
+        return response.ToApiResponse();
     }}
 "
             );

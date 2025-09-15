@@ -49,24 +49,25 @@ public static class ApiClientFactory
         services
             .AddStructuralAnalysisSdkRequired()
             .AddStructuralAnalysisRequired()
-            .AddStructuralAnalysisConfigurable()
+            .AddStructuralAnalysisConfigurable();
+
+#if Sqlite
+        var sqliteConnection = DI_Sqlite.AddSqliteInMemoryAndReturnConnection(services);
+        services
             .AddStructuralAnalysisInfrastructureRequired()
             .AddStructuralAnalysisInfrastructureConfigurable("dummy");
-        // .AddInMemoryInfrastructure();
+#endif
+
 #if !CODEGEN
         services.AddScoped<IStructuralAnalysisApiClientV2, InMemoryApiClient2>();
 #endif
         services.AddLogging(builder => builder.SetMinimumLevel(LogLevel.Debug));
 
-#if Sqlite
-        var sqliteConnection = DI_Sqlite.AddSqliteInMemoryAndReturnConnection(services);
-#endif
-
         var serviceProvider = services.BuildServiceProvider();
-        using var scope = serviceProvider.CreateScope();
-        scope.EnsureDbCreated();
         var client = serviceProvider.GetRequiredService<BeamOsResultApiClient>();
 #if Sqlite
+        using var scope = serviceProvider.CreateScope();
+        scope.EnsureDbCreated();
         client.Disposables.Add(sqliteConnection);
 #endif
         return client;

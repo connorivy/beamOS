@@ -1,3 +1,4 @@
+using BeamOs.Common.Contracts;
 using BeamOs.Common.Domain.Models;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
@@ -26,12 +27,23 @@ internal class BeamOsModelEntity<TId> : BeamOsEntity<TId>, IBeamOsModelEntity
     public void SetIntId(int value) => this.Id = new TId() { Id = value };
 }
 
-internal interface IBeamOsModelEntity
+internal interface IHasModelIdDomain
 {
     public ModelId ModelId { get; }
     public Model? Model { get; }
+}
+
+internal interface IHasIntIdDomain
+{
     public int GetIntId();
     public void SetIntId(int value);
+}
+
+internal interface IBeamOsModelEntity : IHasModelIdDomain, IHasIntIdDomain { }
+
+internal interface IBeamOsModelProposalEntity : IHasModelIdDomain, IHasIntIdDomain
+{
+    public ModelProposalId ModelProposalId { get; }
 }
 
 [PrimaryKey(nameof(Id), nameof(ResultSetId), nameof(ModelId))]
@@ -53,8 +65,10 @@ internal class BeamOsAnalyticalResultEntity<TId> : BeamOsModelEntity<TId>
 }
 
 [PrimaryKey(nameof(Id), nameof(ModelProposalId), nameof(ModelId))]
-internal abstract class BeamOsModelProposalEntity<TId, TModelEntityId> : BeamOsEntity<TId>
-    where TId : struct
+internal abstract class BeamOsModelProposalEntity<TId, TModelEntityId>
+    : BeamOsEntity<TId>,
+        IBeamOsModelProposalEntity
+    where TId : struct, IIntBasedId
     where TModelEntityId : struct
 {
     public BeamOsModelProposalEntity(
@@ -78,6 +92,10 @@ internal abstract class BeamOsModelProposalEntity<TId, TModelEntityId> : BeamOsE
 
     public TModelEntityId? ExistingId { get; set; }
     public bool IsExisting => this.ExistingId != null;
+
+    public int GetIntId() => this.Id.Id;
+
+    public void SetIntId(int value) => this.Id = new TId() { Id = value };
 
     [Obsolete("EF Ctor", true)]
     protected BeamOsModelProposalEntity() { }

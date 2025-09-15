@@ -71,7 +71,12 @@ public static partial class DependencyInjection
         _ = services.AddScoped<IModelProposalRepository, ModelProposalRepository>();
         _ = services.AddScoped<IProposalIssueRepository, ProposalIssueRepository>();
 
-        _ = services.AddScoped<IStructuralAnalysisUnitOfWork, UnitOfWork>();
+        #if Postgres
+                _ = services.AddScoped<IStructuralAnalysisUnitOfWork, UnitOfWork>();
+        #elif Sqlite
+                _ = services.AddScoped<IStructuralAnalysisUnitOfWork, SqliteUnitOfWork>();
+        #endif
+        // _ = services.AddScoped<IStructuralAnalysisUnitOfWork, UnitOfWork>();
 
         services.AddQueryHandlers();
         // services.AddObjectThatImplementInterface<IAssemblyMarkerInfrastructure>(

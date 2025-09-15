@@ -19,6 +19,8 @@
     <BeamOsEnableAot Condition="'$(BeamOsEnableAot)' == ''">false</BeamOsEnableAot>
     <BeamOsUsePostgres>false</BeamOsUsePostgres>
     <BeamOsUseSqlite>true</BeamOsUseSqlite>
+    <!-- <BeamOsUsePostgres>true</BeamOsUsePostgres>
+    <BeamOsUseSqlite>false</BeamOsUseSqlite> -->
     <!-- <PropertyGroup Condition="'$(CODEGEN)' == 'true'">
       <DefineConstants>$(DefineConstants);CODEGEN</DefineConstants>
     </PropertyGroup> -->

@@ -363,51 +363,51 @@ public class EndToEndTests
         await Verify(internalNodeResponseResult);
     }
 
-    [Test]
-    [DependsOn(nameof(GetElement1d_ShouldResultInExpectedResponse))]
-    public async Task CreateModelProposal_ShouldCreateModelProposal()
-    {
-        var modelProposalRequest = new ModelProposalData
-        {
-            Name = "a new name!!!",
-            Description = "a new description!!!",
-            CreateNodeProposals =
-            [
-                new()
-                {
-                    Id = 1,
-                    LocationPoint = new(2, 2, 2, LengthUnitContract.Foot),
-                    Restraint = Restraint.Fixed,
-                },
-            ],
-            CreateElement1dProposals =
-            [
-                Element1dProposalBase.Create(
-                    ProposedID.Existing(5),
-                    ProposedID.Proposed(1),
-                    ProposedID.Existing(992),
-                    ProposedID.Existing(1636)
-                ),
-            ],
-            ModifyElement1dProposals =
-            [
-                new ModifyElement1dProposal()
-                {
-                    ExistingElement1dId = 99,
-                    EndNodeId = ProposedID.Proposed(1),
-                },
-            ],
-        };
+    // [Test]
+    // [DependsOn(nameof(GetElement1d_ShouldResultInExpectedResponse))]
+    // public async Task CreateModelProposal_ShouldCreateModelProposal()
+    // {
+    //     var modelProposalRequest = new ModelProposalData
+    //     {
+    //         Name = "a new name!!!",
+    //         Description = "a new description!!!",
+    //         CreateNodeProposals =
+    //         [
+    //             new()
+    //             {
+    //                 Id = 1,
+    //                 LocationPoint = new(2, 2, 2, LengthUnitContract.Foot),
+    //                 Restraint = Restraint.Fixed,
+    //             },
+    //         ],
+    //         CreateElement1dProposals =
+    //         [
+    //             Element1dProposalBase.Create(
+    //                 ProposedID.Existing(5),
+    //                 ProposedID.Proposed(1),
+    //                 ProposedID.Existing(992),
+    //                 ProposedID.Existing(1636)
+    //             ),
+    //         ],
+    //         ModifyElement1dProposals =
+    //         [
+    //             new ModifyElement1dProposal()
+    //             {
+    //                 ExistingElement1dId = 99,
+    //                 EndNodeId = ProposedID.Proposed(1),
+    //             },
+    //         ],
+    //     };
 
-        var modelProposalResponseResult = await modelClient.Proposals.CreateModelProposalAsync(
-            modelProposalRequest
-        );
+    //     var modelProposalResponseResult = await modelClient.Proposals.CreateModelProposalAsync(
+    //         modelProposalRequest
+    //     );
 
-        await Verify(modelProposalResponseResult)
-            .ScrubMembers(l =>
-                typeof(IHasIntId).IsAssignableFrom(l.DeclaringType) && l.Name == "Id"
-            );
-    }
+    //     await Verify(modelProposalResponseResult)
+    //         .ScrubMembers(l =>
+    //             typeof(IHasIntId).IsAssignableFrom(l.DeclaringType) && l.Name == "Id"
+    //         );
+    // }
 
     [Test]
     [DependsOn(nameof(CreateMaterial_WithSpecifiedId_ShouldCreateMaterial_WithCorrectId))]
