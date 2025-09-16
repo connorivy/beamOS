@@ -42,10 +42,6 @@ public static partial class AssemblySetup
         services.AddScoped<IStructuralAnalysisApiClientV1, StructuralAnalysisApiClientV1>();
         services.AddScoped<ISpeckleConnectorApi, SpeckleConnectorApi>();
 
-#if !CODEGEN
-        services.AddScoped<IStructuralAnalysisApiClientV2, StructuralAnalysisApiClientV2>();
-#endif
-
         services.AddStructuralAnalysisSdkRequired();
 
         return services;

@@ -97,6 +97,8 @@ public static partial class DependencyInjection
 
 #if Postgres
         services.AddDb(connectionString);
+#elif Sqlite
+        DI_Sqlite.AddSqliteInMemoryAndReturnConnection(services);
 #endif
 
         services.AddScoped<IUserIdProvider, UserIdProvider>();

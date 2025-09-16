@@ -48,6 +48,8 @@
 	<ItemGroup Condition="'$(BeamOsUseSqlite)' == 'true'">
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
 		<PackageReference Include="EntityFrameworkCore.Exceptions.Sqlite" />
+		<RdXmlFile Include="Microsoft.EntityFrameworkCore.rd.xml" />
+		<RdXmlFile Include="Microsoft.EntityFrameworkCore.Sqlite.rd.xml" />
 	</ItemGroup>
 
 	<ItemGroup>

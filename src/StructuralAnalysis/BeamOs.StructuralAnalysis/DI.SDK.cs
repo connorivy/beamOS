@@ -33,6 +33,10 @@ public static class DI
     {
         services.AddScoped<BeamOsResultApiClient>();
         services.AddScoped<BeamOsApiClient>();
+#if !CODEGEN
+        services.AddScoped<IStructuralAnalysisApiClientV2, StructuralAnalysisApiClientV2>();
+#endif
+
         return services;
     }
 
@@ -50,10 +54,6 @@ public static class DI
                 client.BaseAddress = new("https://beamos.net/")
             )
             .AddHttpMessageHandler<AuthMessageHandler>();
-
-#if !CODEGEN
-        services.AddScoped<IStructuralAnalysisApiClientV2, StructuralAnalysisApiClientV2>();
-#endif
 
         services
             .AddHttpClient<ISpeckleConnectorApi, SpeckleConnectorApi>(client =>

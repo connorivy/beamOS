@@ -1,34 +1,36 @@
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
-using BeamOs.CsSdk.Mappers.UnitValueDtoMappers;
-using BeamOs.StructuralAnalysis.Application.Common;
+using BeamOs.StructuralAnalysis;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.NodeResult;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Sdk;
 using BeamOs.Tests.Common;
+using BeamOs.Tests.StructuralAnalysis.Integration;
+using TUnit.Core.Attributes;
 
-namespace BeamOs.Tests.StructuralAnalysis.Integration;
+namespace BeamOs.Tests.Aot;
 
 [MethodDataSource(
     typeof(AllSolvedProblems),
     nameof(AllSolvedProblems.ModelFixturesWithExpectedNodeResults)
 )]
-public class OpenSeesTests(ModelFixture modelFixture) : IModelFixtureTestsClass
+public class OpenSeesTests(ModelFixture modelFixture)
 {
+    private BeamOsResultApiClient client;
     private BeamOsApiResultModelId modelClient;
 
     [Before(TUnitHookType.Test)]
     public void BeforeClass()
     {
-        // This is a workaround to ensure that the API client is initialized before any tests run.
-        this.modelClient ??= AssemblySetup.StructuralAnalysisApiClient.Models[modelFixture.Id];
+        this.client = ApiClientFactory.CreateResultLocal();
+        this.modelClient ??= this.client.Models[modelFixture.Id];
     }
 
     [Test, SkipInFrontEnd]
     public async Task RunOpenSeesAnalysis_ShouldReturnSuccessfulStatusCode()
     {
-        await modelFixture.CreateOnly(AssemblySetup.StructuralAnalysisApiClient);
+        await modelFixture.CreateOnly(this.client);
 
-        var resultSetIdResponse = await modelClient.Analyze.Opensees.RunOpenSeesAnalysisAsync(
+        var resultSetIdResponse = await this.modelClient.Analyze.Opensees.RunOpenSeesAnalysisAsync(
             new() { LoadCombinationIds = [1] }
         );
 
@@ -186,9 +188,4 @@ public class OpenSeesTests(ModelFixture modelFixture) : IModelFixtureTestsClass
     }
 
     public static object Create(ModelFixture modelFixture) => new OpenSeesTests(modelFixture);
-}
-
-public interface IModelFixtureTestsClass
-{
-    public static abstract object Create(BeamOs.Tests.Common.ModelFixture modelFixture);
 }

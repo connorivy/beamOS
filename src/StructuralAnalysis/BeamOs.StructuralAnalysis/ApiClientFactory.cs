@@ -66,10 +66,10 @@ public static class ApiClientFactory
         var serviceProvider = services.BuildServiceProvider();
         var client = serviceProvider.GetRequiredService<BeamOsResultApiClient>();
 #if Sqlite
-        using var scope = serviceProvider.CreateScope();
-#pragma warning disable IL3050 // Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.
-        scope.EnsureDbCreated();
-#pragma warning restore IL3050 // Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.
+//         using var scope = serviceProvider.CreateScope();
+// #pragma warning disable IL3050 // Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.
+//         scope.EnsureDbCreated();
+// #pragma warning restore IL3050 // Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.
         client.Disposables.Add(sqliteConnection);
 #endif
         return client;
