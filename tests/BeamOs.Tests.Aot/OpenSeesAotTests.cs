@@ -25,7 +25,7 @@ public class OpenSeesTests(ModelFixture modelFixture)
         this.modelClient ??= this.client.Models[modelFixture.Id];
     }
 
-    [Test, SkipInFrontEnd]
+    [Test]
     public async Task RunOpenSeesAnalysis_ShouldReturnSuccessfulStatusCode()
     {
         await modelFixture.CreateOnly(this.client);

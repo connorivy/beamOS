@@ -6,7 +6,8 @@ RUN apt-get update && \
 
 RUN pip install mkl
 
-FROM mcr.microsoft.com/devcontainers/dotnet:10.0-preview-noble
+FROM mcr.microsoft.com/devcontainers/dotnet:dev-10.0-preview-noble
+COPY --from=mcr.microsoft.com/dotnet/sdk:10.0.100-rc.1-noble /usr/share/dotnet /usr/share/dotnet
 
 # Create directory for the libraries in the destination image
 ENV SOURCE_LIB_DIR=/usr/local/lib

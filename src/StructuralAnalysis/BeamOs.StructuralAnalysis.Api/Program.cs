@@ -11,7 +11,8 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-string? testConnectionString = Environment.GetEnvironmentVariable("TEST_CONNECTION_STRING");
+var testConnectionString = Environment.GetEnvironmentVariable("TEST_CONNECTION_STRING");
+bool isTestContainer = testConnectionString is not null;
 
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
@@ -94,7 +95,10 @@ builder.Services.AddAi();
 WebApplication app = builder.Build();
 
 #if DEBUG
-await app.InitializeBeamOsDb();
+if (!isTestContainer)
+{
+    await app.InitializeBeamOsDb();
+}
 #endif
 
 // app.MapStructuralEndpoints();

@@ -372,6 +372,8 @@ openSees/*
 *.received.*
 *.received/
 
+CompiledModels/
+
 # Results
 output.xml
 output.cobertura.xml

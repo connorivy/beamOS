@@ -42,6 +42,7 @@ internal sealed class ResultSetRepository(StructuralAnalysisDbContext dbContext)
     {
         var settingAndEntity = await this
             .DbContext.ResultSets.AsNoTracking()
+            .AsSplitQuery()
             .Include(el => el.NodeResults)
             .Include(el => el.Element1dResults)
             .Where(m => m.ModelId == modelId && m.Id.Equals(id))

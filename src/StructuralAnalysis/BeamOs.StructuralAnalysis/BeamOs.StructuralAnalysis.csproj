@@ -20,5 +20,9 @@
     <ProjectReference Include="../BeamOs.StructuralAnalysis.Infrastructure/BeamOs.StructuralAnalysis.Infrastructure.csproj" />
 	</ItemGroup>
 
+  <Target Name="EchoDefines" BeforeTargets="CoreCompile">
+    <Message Importance="high" Text="BeamOsUseSqlite: $(BeamOsUseSqlite)" />
+    <Message Importance="high" Text="Defined symbols: $(DefineConstants)" />
+  </Target>
 
 </Project>

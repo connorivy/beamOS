@@ -17,8 +17,8 @@
     <DefineConstants Condition="'$(CODEGEN)' == 'true'">$(DefineConstants);CODEGEN</DefineConstants>
     <LocalNugetFeed>/workspaces/beamOS/.nuget-local</LocalNugetFeed>
     <BeamOsEnableAot Condition="'$(BeamOsEnableAot)' == ''">false</BeamOsEnableAot>
-    <BeamOsUsePostgres>false</BeamOsUsePostgres>
-    <BeamOsUseSqlite>true</BeamOsUseSqlite>
+    <BeamOsUsePostgres Condition="'$(BeamOsUsePostgres)' == ''">true</BeamOsUsePostgres>
+    <BeamOsUseSqlite Condition="'$(BeamOsUseSqlite)' == ''">false</BeamOsUseSqlite>
     <!-- <BeamOsUsePostgres>true</BeamOsUsePostgres>
     <BeamOsUseSqlite>false</BeamOsUseSqlite> -->
     <!-- <PropertyGroup Condition="'$(CODEGEN)' == 'true'">

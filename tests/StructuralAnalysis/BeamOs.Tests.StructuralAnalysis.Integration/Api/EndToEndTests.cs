@@ -288,7 +288,12 @@ public class EndToEndTests
     [DependsOn(nameof(CreateElement1d_ShouldCreateElement1d))]
     public async Task CreateInternalNode_ShouldCreateInternalNode()
     {
-        CreateInternalNodeRequest requestBody = new(99, new(50, RatioUnit.Percent), null, 10);
+        CreateInternalNodeRequest requestBody = new(
+            99,
+            new(50, RatioUnitContract.Percent),
+            null,
+            10
+        );
 
         var internalNodeResponseResult = await modelClient.Nodes.Internal.CreateInternalNodeAsync(
             requestBody
@@ -351,7 +356,9 @@ public class EndToEndTests
     {
         var changeToInternal = await modelClient
             .Nodes[5]
-            .Internal.PutInternalNodeAsync(new InternalNodeData(99, new(50, RatioUnit.Percent)));
+            .Internal.PutInternalNodeAsync(
+                new InternalNodeData(99, new(50, RatioUnitContract.Percent))
+            );
         changeToInternal.ThrowIfError();
 
         // element with id 99 has start node with id 5

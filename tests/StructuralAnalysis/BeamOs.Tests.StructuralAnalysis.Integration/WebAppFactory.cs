@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration;
 
-[RequiresDynamicCode("WebApplicationFactory uses reflection which is not compatible with AOT.")]
+// [RequiresDynamicCode("WebApplicationFactory uses reflection which is not compatible with AOT.")]
 public sealed class WebAppFactory(string connectionString, TimeProvider? timeProvider = null)
     : WebApplicationFactory<IAssemblyMarkerStructuralAnalysisApi>
 {
@@ -20,8 +20,8 @@ public sealed class WebAppFactory(string connectionString, TimeProvider? timePro
         {
             using IServiceScope scope = services.BuildServiceProvider().CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<StructuralAnalysisDbContext>();
-            // dbContext.Database.EnsureCreated();
-            dbContext.Database.Migrate();
+            dbContext.Database.EnsureCreated();
+            // dbContext.Database.Migrate();
         });
     }
 

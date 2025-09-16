@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Numerics;
 using BeamOs.Common.Domain.Models;
 using UnitsNet;

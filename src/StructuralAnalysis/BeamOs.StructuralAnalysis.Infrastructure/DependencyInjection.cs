@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.Identity;
+using BeamOs.StructuralAnalysis.Api;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.EnvelopeResultSets;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.NodeResults;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.ResultSets;
@@ -123,6 +124,7 @@ public static partial class DependencyInjection
                 )
                 .AddInterceptors(new ModelLastModifiedUpdater(TimeProvider.System))
                 .UseExceptionProcessor()
+                .UseModel(StructuralAnalysisDbContextModel.Instance)
 #if DEBUG
                 .EnableSensitiveDataLogging()
                 .EnableDetailedErrors()

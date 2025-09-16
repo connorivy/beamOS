@@ -7,6 +7,8 @@
     <BeamOsStructuralAnalysisSdkRef>true</BeamOsStructuralAnalysisSdkRef>
     <PublishAot>true</PublishAot>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <BeamOsUsePostgres>false</BeamOsUsePostgres>
+    <BeamOsUseSqlite>true</BeamOsUseSqlite>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,5 +20,5 @@
   <ItemGroup>
     <ProjectReference Include="../BeamOs.Tests.Common/BeamOs.Tests.Common.csproj" />
   </ItemGroup>
-  
+
 </Project>
