@@ -14,83 +14,44 @@ internal class DoubleArrayConverter : ValueConverter<double[], string>
         ) { }
 }
 
-// internal class DictIdToDoubleConverter : ValueConverter<Dictionary<LoadCaseId, double>, string>
-// {
-//     public DictIdToDoubleConverter()
-//         : base(
-//             x => JsonSerializer.Serialize(x, BeamOsSerializerOptions.Default),
-//             x =>
-//                 JsonSerializer.Deserialize<Dictionary<LoadCaseId, double>>(
-//                     x,
-//                     BeamOsSerializerOptions.Default
-//                 )
-//         ) { }
-// }
-
 internal class DictIdToDoubleConverter : ValueConverter<Dictionary<LoadCaseId, double>, string>
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "Trimming",
-        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
-        Justification = "Using JsonSerializer with known types only"
-    )]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "AOT",
-        "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.",
-        Justification = "Using JsonSerializer with known types only"
-    )]
     public DictIdToDoubleConverter()
         : base(
             static x =>
                 JsonSerializer.Serialize(
                     x.ToDictionary(k => (int)k.Key, v => v.Value),
-                    BeamOsSerializerOptions.Default
+                    BeamOsJsonSerializerContext.Default.DictionaryInt32Double
                 ),
             static x =>
                 JsonSerializer
-                    .Deserialize<Dictionary<int, double>>(x, BeamOsSerializerOptions.Default)
+                    .Deserialize(x, BeamOsJsonSerializerContext.Default.DictionaryInt32Double)
                     .ToDictionary(k => new LoadCaseId(k.Key), v => v.Value)
         ) { }
 }
 
 internal class DictIntToDoubleConverter : ValueConverter<Dictionary<int, double>, string>
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "Trimming",
-        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
-        Justification = "Using JsonSerializer with known types only"
-    )]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "AOT",
-        "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.",
-        Justification = "Using JsonSerializer with known types only"
-    )]
     public DictIntToDoubleConverter()
         : base(
-            static x => JsonSerializer.Serialize(x, BeamOsSerializerOptions.Default),
             static x =>
-                JsonSerializer.Deserialize<Dictionary<int, double>>(
+                JsonSerializer.Serialize(
                     x,
-                    BeamOsSerializerOptions.Default
+                    BeamOsJsonSerializerContext.Default.DictionaryInt32Double
+                ),
+            static x =>
+                JsonSerializer.Deserialize(
+                    x,
+                    BeamOsJsonSerializerContext.Default.DictionaryInt32Double
                 )
         ) { }
 }
 
-internal class Vector3Converter : ValueConverter<Vector3, string>
-{
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "Trimming",
-        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
-        Justification = "Using JsonSerializer with known types only"
-    )]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "AOT",
-        "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.",
-        Justification = "Using JsonSerializer with known types only"
-    )]
-    public Vector3Converter()
-        : base(
-            static x => JsonSerializer.Serialize(x, BeamOsSerializerOptions.Default),
-            static x => JsonSerializer.Deserialize<Vector3>(x, BeamOsSerializerOptions.Default)
-        ) { }
-}
+// internal class Vector3Converter : ValueConverter<Vector3, string>
+// {
+//     public Vector3Converter()
+//         : base(
+//             static x => JsonSerializer.Serialize(x, BeamOsSerializerOptions.Default),
+//             static x => JsonSerializer.Deserialize<Vector3>(x, BeamOsSerializerOptions.Default)
+//         ) { }
+// }

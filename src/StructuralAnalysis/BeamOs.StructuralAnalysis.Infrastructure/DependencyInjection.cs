@@ -124,7 +124,7 @@ public static partial class DependencyInjection
                 )
                 .AddInterceptors(new ModelLastModifiedUpdater(TimeProvider.System))
                 .UseExceptionProcessor()
-                .UseModel(StructuralAnalysisDbContextModel.Instance)
+                // .UseModel(StructuralAnalysisDbContextModel.Instance)
 #if DEBUG
                 .EnableSensitiveDataLogging()
                 .EnableDetailedErrors()

@@ -213,7 +213,7 @@
                 var content_ = new System.Net.Http.StringContent({{ operation.ContentParameter.VariableName }});
                 content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("{{ operation.Consumes }}");
 {%         elsif operation.ConsumesOnlyFormUrlEncoded -%}
-                var json_ = {% if UseSystemTextJson %}System.Text.Json.JsonSerializer.SerializeToUtf8Bytes{% else %}Newtonsoft.Json.JsonConvert.SerializeObject{% endif %}({{ operation.ContentParameter.VariableName }}, JsonSerializerSettings);
+                var json_ = {% if UseSystemTextJson %}System.Text.Json.JsonSerializer.SerializeToUtf8Bytes{% else %}Newtonsoft.Json.JsonConvert.SerializeObject{% endif %}({{ operation.ContentParameter.VariableName }}, typeof({{ operation.ContentParameter.Type}}), BeamOsJsonSerializerContext.Default);
                 var dictionary_ = {% if UseSystemTextJson %}System.Text.Json.JsonSerializer.Deserialize{% else %}Newtonsoft.Json.JsonConvert.DeserializeObject{% endif %}<System.Collections.Generic.Dictionary<string, string>>(json_, JsonSerializerSettings);
                 var content_ = new System.Net.Http.FormUrlEncodedContent(dictionary_);
                 content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("{{ operation.Consumes }}");
@@ -221,7 +221,7 @@
                 var content_ = new System.Net.Http.StringContent({{ operation.ContentParameter.VariableName }});
                 content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("{{ operation.Consumes }}");
 {%         else -%}
-                var json_ = {% if UseSystemTextJson %}System.Text.Json.JsonSerializer.SerializeToUtf8Bytes{% else %}Newtonsoft.Json.JsonConvert.SerializeObject{% endif %}({{ operation.ContentParameter.VariableName }}, {% if SerializeTypeInformation %}typeof({{ operation.ContentParameter.Type }}), {% endif %}{% if UseRequestAndResponseSerializationSettings %}Request{% endif %}JsonSerializerSettings);
+                var json_ = {% if UseSystemTextJson %}System.Text.Json.JsonSerializer.SerializeToUtf8Bytes{% else %}Newtonsoft.Json.JsonConvert.SerializeObject{% endif %}({{ operation.ContentParameter.VariableName }}, typeof({{ operation.ContentParameter.Type}}), BeamOsJsonSerializerContext.Default);
                 var content_ = new System.Net.Http.{% if UseSystemTextJson %}ByteArrayContent{% else %}StringContent{% endif %}(json_);
                 content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("{{ operation.Consumes }}");
 {%         endif -%}

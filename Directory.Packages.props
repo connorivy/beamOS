@@ -3,8 +3,8 @@
   <PropertyGroup>
     <AspnetVersion>10.0.0-preview.7.25380.108</AspnetVersion>
     <MicrosoftExtensionsVersion>10.0.0-rc.1.25451.107</MicrosoftExtensionsVersion>
-    <!-- <EfVersion>9.0.6</EfVersion> -->
-    <EfVersion>10.0.0-rc.1.25451.107</EfVersion>
+    <EfVersion>9.0.9</EfVersion>
+    <!-- <EfVersion>10.0.0-rc.1.25451.107</EfVersion> -->
     <FastEndpointVersion>5.30.0</FastEndpointVersion>
     <FluxorVersion>6.5.2</FluxorVersion>
   </PropertyGroup>
@@ -76,6 +76,8 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(EfVersion)" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="$(EfVersion)" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tasks" Version="$(EfVersion)" />
+    <!-- <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0-rc.1" /> -->
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
     <!-- Fluxor -->
     <PackageVersion Include="Fluxor" Version="$(FluxorVersion)" />
     <PackageVersion Include="Fluxor.Blazor.Web" Version="$(FluxorVersion)" />
@@ -101,7 +103,6 @@
     <PackageVersion Include="MudBlazor" Version="7.0.0-preview.3" />
     <PackageVersion Include="MudBlazor.ThemeManager" Version="1.0.9" />
     <PackageVersion Include="NetArchTest.Rules" Version="1.3.2" />
-    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0-rc.1" />
     <PackageVersion Include="NSwag.AspNetCore" Version="14.4.0" />
     <PackageVersion Include="NSwag.CodeGeneration.CSharp" Version="14.4.0" />
     <PackageVersion Include="NSwag.CodeGeneration.TypeScript" Version="14.4.0" />

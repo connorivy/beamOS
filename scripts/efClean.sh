@@ -2,6 +2,10 @@
 
 cd $BEAMOS_ROOT/src/StructuralAnalysis/BeamOs.StructuralAnalysis.Api 
 dotnet build -p:BeamOsUseSqlite=true -p:BeamOsUsePostgres=false
+if [ $? -ne 0 ]; then
+    echo "Sqlite build failed. Exiting."
+    exit 1
+fi
 dotnet ef dbcontext optimize --output-dir ../BeamOs.StructuralAnalysis.Infrastructure/CompiledModels/Sqlite --nativeaot --precompile-queries --no-build 
 
 TARGET_DIR="$BEAMOS_ROOT/src/StructuralAnalysis/BeamOs.StructuralAnalysis.Infrastructure/CompiledModels/Sqlite"
@@ -20,6 +24,10 @@ find "$TARGET_DIR" -type f -name "*Accessors.cs" | while read -r file; do
 done
 
 dotnet build -p:BeamOsUseSqlite=false -p:BeamOsUsePostgres=true
+if [ $? -ne 0 ]; then
+    echo "Postgres build failed. Exiting."
+    exit 1
+fi
 dotnet ef dbcontext optimize --output-dir ../BeamOs.StructuralAnalysis.Infrastructure/CompiledModels/Postgres --nativeaot --precompile-queries --no-build
 
 TARGET_DIR="$BEAMOS_ROOT/src/StructuralAnalysis/BeamOs.StructuralAnalysis.Infrastructure/CompiledModels/Postgres"
