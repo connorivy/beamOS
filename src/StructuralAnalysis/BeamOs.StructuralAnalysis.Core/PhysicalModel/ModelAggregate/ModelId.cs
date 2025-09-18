@@ -1,24 +1,25 @@
+global using ModelId = System.Guid;
 using System.Globalization;
 using BeamOs.Common.Domain.Models;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
-internal readonly record struct ModelId
-{
-    public Guid Id { get; }
+// internal readonly record struct ModelId
+// {
+//     public Guid Id { get; }
 
-    public ModelId()
-        : this(null) { }
+//     public ModelId()
+//         : this(null) { }
 
-    public ModelId(Guid? id = null)
-    {
-        this.Id = id ?? Guid.CreateVersion7();
-    }
+//     public ModelId(Guid? id = null)
+//     {
+//         this.Id = id ?? Guid.CreateVersion7();
+//     }
 
-    public static implicit operator Guid(ModelId id) => id.Id;
+//     public static implicit operator Guid(ModelId id) => id.Id;
 
-    public static implicit operator ModelId(Guid id) => new(id);
-}
+//     public static implicit operator ModelId(Guid id) => new(id);
+// }
 
 internal readonly record struct ModelProposalId : IIntBasedId
 {

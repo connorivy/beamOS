@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Directives>
+  <Application>
+    <!--
+      This file is part of RdXmlLibrary project.
+      Visit https://github.com/kant2002/rdxmllibrary for latest version.
+      If you have modifications specific to this Nuget package,
+      please contribute back.
+
+      Look at the https://github.com/hez2010/EFCore.NativeAOT.RdGenerator for automatic
+      code generation for EF Core.
+  -->
+    <Assembly Name="Microsoft.EntityFrameworkCore" Dynamic="Required All">
+    </Assembly>
+    <Assembly Name="Microsoft.EntityFrameworkCore.Relational" Dynamic="Required All">
+    </Assembly>
+    <Assembly Name="System.Private.CoreLib" Dynamic="Required All">
+      <Type Name="System.DateTimeOffset" Dynamic="Required All">
+        <Method Name="AddYears" Dynamic="Required" />
+        <Method Name="AddMonths" Dynamic="Required" />
+        <Method Name="AddDays" Dynamic="Required" />
+        <Method Name="AddHours" Dynamic="Required" />
+        <Method Name="AddMinutes" Dynamic="Required" />
+        <Method Name="AddSeconds" Dynamic="Required" />
+        <Method Name="AddMilliseconds" Dynamic="Required" />
+        <Method Name="AddTicks" Dynamic="Required" />
+      </Type>
+      <Type Name="System.DateTime" Dynamic="Required All">
+        <Method Name="AddYears" Dynamic="Required" />
+        <Method Name="AddMonths" Dynamic="Required" />
+        <Method Name="AddDays" Dynamic="Required" />
+        <Method Name="AddHours" Dynamic="Required" />
+        <Method Name="AddMinutes" Dynamic="Required" />
+        <Method Name="AddSeconds" Dynamic="Required" />
+        <Method Name="AddMilliseconds" Dynamic="Required" />
+        <Method Name="AddTicks" Dynamic="Required" />
+      </Type>
+      <Type Name="System.DateOnly" Dynamic="Required All">
+        <Method Name="AddYears" Dynamic="Required" />
+        <Method Name="AddMonths" Dynamic="Required" />
+        <Method Name="AddDays" Dynamic="Required" />
+      </Type>
+      <Type Name="System.Guid" Dynamic="Required All">
+        <Method Name="NewGuid" Dynamic="Required" />
+      </Type>
+    </Assembly>
+  </Application>
+</Directives>

@@ -22,7 +22,8 @@ namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Models.Mappers;
 [UseStaticMapper(typeof(BeamOsDomainContractMappers))]
 internal partial class BeamOsModelBuilderDomainMapper(Guid modelId)
 {
-    private readonly ModelId modelIdTyped = new(modelId);
+    // private readonly ModelId modelIdTyped = new(modelId);
+    private ModelId modelIdTyped => modelId;
 
     private ModelId GetModelId() => this.modelIdTyped;
 

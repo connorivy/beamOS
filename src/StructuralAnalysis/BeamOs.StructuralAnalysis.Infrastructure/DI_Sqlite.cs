@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using BeamOs.StructuralAnalysis.Api;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure;
 
@@ -18,13 +19,13 @@ public static class DI_Sqlite
             "DataSource=:memory:;Cache=Shared"
         );
         connection.Open();
-
         _ = services.AddDbContext<StructuralAnalysisDbContext>(options =>
             options
                 .UseSqlite(connection)
                 .AddInterceptors(new SqliteCompositeKeyIncrementingInterceptor())
                 .AddInterceptors(new ModelEntityIdIncrementingInterceptor(TimeProvider.System))
                 .UseExceptionProcessor()
+                .UseModel(StructuralAnalysisDbContextModel.Instance)
 #if DEBUG
                 .EnableSensitiveDataLogging()
                 .EnableDetailedErrors()
