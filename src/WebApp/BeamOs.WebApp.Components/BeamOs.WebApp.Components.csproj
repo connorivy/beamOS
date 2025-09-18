@@ -25,6 +25,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="ServiceScan.SourceGenerator">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="MudBlazor" />
     <PackageReference Include="Fluxor" />
     <PackageReference Include="Fluxor.Blazor.Web" />
@@ -33,11 +37,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\codeGen\BeamOs.CodeGen.EditorApi\BeamOs.CodeGen.EditorApi.csproj" />
-    <ProjectReference Include="..\..\..\codeGen\BeamOs.CodeGen.StructuralAnalysisApiClient\BeamOs.CodeGen.StructuralAnalysisApiClient.csproj" />
     <ProjectReference Include="..\..\..\tests\Runtime\BeamOs.Tests.Runtime.TestRunner\BeamOs.Tests.Runtime.TestRunner.csproj" />
-    <ProjectReference Include="..\..\Common\BeamOs.Common.Api\BeamOs.Common.Api.csproj" />
-    <ProjectReference Include="..\..\Common\BeamOs.Common.Application\BeamOs.Common.Application.csproj" />
-    <ProjectReference Include="..\..\Identity\BeamOs.Identity\BeamOs.Identity.csproj" />
+    <!-- <ProjectReference Include="..\..\Common\BeamOs.Common.Api\BeamOs.Common.Api.csproj" /> -->
+    <ProjectReference Include="..\..\StructuralAnalysis\BeamOs.StructuralAnalysis\BeamOs.StructuralAnalysis.csproj">
+      <Properties>BeamOsUseSqlite=false</Properties>
+    </ProjectReference>
+    <!-- <ProjectReference Include="..\..\Identity\BeamOs.Identity\BeamOs.Identity.csproj" /> -->
     <ProjectReference Include="..\BeamOs.WebApp.EditorCommands\BeamOs.WebApp.EditorCommands.csproj" />
   </ItemGroup>
 

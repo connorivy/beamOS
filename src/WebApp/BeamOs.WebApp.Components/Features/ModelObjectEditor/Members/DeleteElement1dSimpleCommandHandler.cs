@@ -2,6 +2,7 @@ using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.Editor;
+using BeamOs.WebApp.Components.Features.ModelObjectEditor.MomentLoads;
 using Fluxor;
 
 namespace BeamOs.WebApp.Components.Features.ModelObjectEditor.Members;
@@ -26,7 +27,7 @@ public sealed class DeleteElement1dSimpleCommandHandler(
         {
             ModelId = simpleCommand.ModelId,
             Element1dId = simpleCommand.Id,
-            Data = element1d.ToElement1dData()
+            Data = element1d.ToElement1dData(),
         };
     }
 }

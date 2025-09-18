@@ -58,10 +58,9 @@ internal class Model : BeamOsEntity<ModelId>
     public IList<LoadCombination>? LoadCombinations { get; set; }
     public int MaxLoadCombinationId { get; set; }
     public IList<ResultSet>? ResultSets { get; set; }
-    public int MaxResultSetId { get; set; }
     public IList<EnvelopeResultSet>? EnvelopeResultSets { get; set; }
-    public int MaxEnvelopeResultSetId { get; set; }
     public IList<ModelProposal>? ModelProposals { get; set; }
+    public int MaxModelProposalId { get; set; }
 
     // public void AddNode(Node node)
     // {

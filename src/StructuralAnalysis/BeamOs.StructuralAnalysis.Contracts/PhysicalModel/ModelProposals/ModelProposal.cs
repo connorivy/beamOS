@@ -127,13 +127,12 @@ public enum ProposalIssueCode
 
 public record DeleteModelEntityProposalData
 {
-    public required int ModelEntityId { get; init; }
+    public required int Id { get; init; }
     public required BeamOsObjectType ObjectType { get; init; }
 }
 
 public record DeleteModelEntityProposal : DeleteModelEntityProposalData, IHasIntId, IEntityProposal
 {
-    public required int Id { get; init; }
     public ProposalType ProposalType => ProposalType.Delete;
 }
 

@@ -1,10 +1,7 @@
-﻿using System.Threading.Tasks;
-using BeamOs.CodeGen.StructuralAnalysisApiClient;
+﻿using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.StructuralAnalysis.Api;
-using BeamOs.StructuralAnalysis.Api.Endpoints;
 using BeamOs.StructuralAnalysis.Sdk;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 #if Sqlite
 using BeamOs.StructuralAnalysis.Infrastructure;
 #endif
@@ -23,6 +20,7 @@ public static class ApiClientFactory
         return serviceProvider.GetRequiredService<BeamOsApiClient>();
     }
 
+#if Sqlite
     public static BeamOsApiClient CreateLocal()
     {
         var services = new ServiceCollection();
@@ -61,7 +59,6 @@ public static class ApiClientFactory
 #if !CODEGEN
         services.AddScoped<IStructuralAnalysisApiClientV2, InMemoryApiClient2>();
 #endif
-        services.AddLogging(builder => builder.SetMinimumLevel(LogLevel.Debug));
 
         var serviceProvider = services.BuildServiceProvider();
         var client = serviceProvider.GetRequiredService<BeamOsResultApiClient>();
@@ -74,6 +71,7 @@ public static class ApiClientFactory
 #endif
         return client;
     }
+#endif
     // public static BeamOsModel Local()
     // {
 

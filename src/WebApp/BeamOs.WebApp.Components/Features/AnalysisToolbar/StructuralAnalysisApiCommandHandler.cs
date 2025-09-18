@@ -1,5 +1,6 @@
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis;
 using BeamOs.StructuralAnalysis.Application.DirectStiffnessMethod;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams;
 using BeamOs.StructuralAnalysis.Contracts.Common;
@@ -12,33 +13,33 @@ using MudBlazor;
 namespace BeamOs.WebApp.Components.Features.AnalysisToolbar;
 
 public sealed class RunDsmCommandCommandHandler(
-    IStructuralAnalysisApiClientV1 structuralAnalysisApiClientV1,
+    BeamOsResultApiClient apiClient,
     IDispatcher dispatcher,
     ISnackbar snackbar,
     ILogger<RunDsmCommandCommandHandler> logger
-) : CommandHandlerBase<RunDsmCommand, AnalyticalResultsResponse>(snackbar, logger)
+)
+    : CommandHandlerBase<ModelResourceRequest<RunDsmRequest>, AnalyticalResultsResponse>(
+        snackbar,
+        logger
+    )
 {
     protected override async Task<Result<AnalyticalResultsResponse>> ExecuteCommandAsync(
-        RunDsmCommand command,
+        ModelResourceRequest<RunDsmRequest> command,
         CancellationToken ct = default
     )
     {
         dispatcher.Dispatch(new AnalysisBegan() { ModelId = command.ModelId });
 
-        var result = await structuralAnalysisApiClientV1.RunDirectStiffnessMethodAsync(
-            command.ModelId,
-            new()
-            {
-                LoadCombinationIds = command.LoadCombinationIds,
-                UnitsOverride = command.UnitsOverride,
-            },
-            ct
-        );
-        //var result = await structuralAnalysisApiClientV1.RunDirectStiffnessMethodAsyncAsync(
-        //    command.ModelId,
-        //    command.UnitsOverride,
-        //    ct
-        //);
+        var result = await apiClient
+            .Models[command.ModelId]
+            .Analyze.Dsm.RunDirectStiffnessMethodAsync(
+                new()
+                {
+                    LoadCombinationIds = command.Body.LoadCombinationIds,
+                    UnitsOverride = command.Body.UnitsOverride,
+                },
+                ct
+            );
 
         if (result.IsSuccess)
         {
@@ -50,7 +51,10 @@ public sealed class RunDsmCommandCommandHandler(
         return result;
     }
 
-    protected override void PostProcess(RunDsmCommand command, Result<AnalyticalResultsResponse> _)
+    protected override void PostProcess(
+        ModelResourceRequest<RunDsmRequest> command,
+        Result<AnalyticalResultsResponse> _
+    )
     {
         dispatcher.Dispatch(new AnalysisEnded() { ModelId = command.ModelId });
     }

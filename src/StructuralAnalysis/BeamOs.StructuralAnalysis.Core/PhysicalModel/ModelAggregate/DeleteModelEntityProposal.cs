@@ -3,23 +3,20 @@ using BeamOs.StructuralAnalysis.Domain.Common;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
-internal sealed class DeleteModelEntityProposal : BeamOsModelEntity<ModelEntityDeleteProposalId>
+internal class DeleteModelEntityProposal : BeamOsModelEntity<DeleteModelEntityProposalId>
 {
     public DeleteModelEntityProposal(
         ModelId modelId,
         ModelProposalId modelProposalId,
         int modelEntityId,
-        BeamOsObjectType objectType,
-        ModelEntityDeleteProposalId? id = null
+        BeamOsObjectType objectType
     )
-        : base(id ?? default, modelId)
+        : base(new(modelEntityId), modelId)
     {
         this.ModelProposalId = modelProposalId;
-        this.ModelEntityId = modelEntityId;
         this.ObjectType = objectType;
     }
 
-    public int ModelEntityId { get; private set; }
     public BeamOsObjectType ObjectType { get; private set; }
     public ModelProposalId ModelProposalId { get; private set; }
     public ModelProposal? ModelProposal { get; set; }

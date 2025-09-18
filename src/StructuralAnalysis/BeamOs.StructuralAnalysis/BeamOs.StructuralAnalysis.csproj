@@ -9,6 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Riok.Mapperly" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/BeamOs.CodeGen.StructuralAnalysisApiClient.csproj" />
+    <ProjectReference Include="..\BeamOs.StructuralAnalysis.SourceGenerator\BeamOs.StructuralAnalysis.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\BeamOs.StructuralAnalysis.Contracts\BeamOs.StructuralAnalysis.Contracts.csproj" />
     <ProjectReference Include="../BeamOs.StructuralAnalysis.Core/BeamOs.StructuralAnalysis.Core.csproj" />
   </ItemGroup>
 

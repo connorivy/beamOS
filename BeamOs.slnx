@@ -54,9 +54,9 @@
     <Project Path="src/StructuralAnalysis/BeamOs.StructuralAnalysis/BeamOs.StructuralAnalysis.csproj" />
   </Folder>
   <Folder Name="/src/WebApp/">
-    <!-- <Project Path="src/WebApp/BeamOs.WebApp.Components/BeamOs.WebApp.Components.csproj" />
+    <Project Path="src/WebApp/BeamOs.WebApp.Components/BeamOs.WebApp.Components.csproj" />
     <Project Path="src/WebApp/BeamOs.WebApp.EditorCommands/BeamOs.WebApp.EditorCommands.csproj" />
-    <Project Path="src/WebApp/BeamOs.WebApp/BeamOs.WebApp.csproj" /> -->
+    <Project Path="src/WebApp/BeamOs.WebApp/BeamOs.WebApp.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/BeamOs.Tests.Aot/BeamOs.Tests.Aot.csproj" />

@@ -109,7 +109,14 @@
 
     private async Task RunAnalysis()
     {
-        var result = await runDsmCommandCommandHandler.ExecuteAsync(new() { ModelId = this.ModelId, UnitsOverride = "kn-m" });
+        var result = await runDsmCommandCommandHandler.ExecuteAsync(new()
+        {
+            ModelId = this.ModelId,
+            Body = new()
+            {
+                UnitsOverride = "kn-m"
+            }
+        });
 
         if (result.IsSuccess)
         {

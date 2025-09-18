@@ -4,6 +4,7 @@ using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCombinations;
 using BeamOs.WebApp.Components.Features.Editor;
+using BeamOs.WebApp.Components.Features.ModelObjectEditor.MomentLoads;
 using BeamOs.WebApp.Components.Features.SelectionInfo;
 using BeamOs.WebApp.EditorCommands;
 using Fluxor;

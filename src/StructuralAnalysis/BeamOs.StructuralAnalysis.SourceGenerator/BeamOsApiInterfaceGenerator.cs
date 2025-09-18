@@ -10,10 +10,14 @@ public class BeamOsApiInterfaceGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        var classDeclarations = context.SyntaxProvider.ForAttributeWithMetadataName(
-            "BeamOs.Common.Api.BeamOsRouteAttribute",
+        // var classDeclarations = context.SyntaxProvider.ForAttributeWithMetadataName(
+        //     "BeamOs.Common.Api.BeamOsRouteAttribute",
+        //     static (s, _) => s is ClassDeclarationSyntax,
+        //     static (ctx, _) => (ClassDeclarationSyntax)ctx.TargetNode
+        // );
+        var classDeclarations = context.SyntaxProvider.CreateSyntaxProvider(
             static (s, _) => s is ClassDeclarationSyntax,
-            static (ctx, _) => (ClassDeclarationSyntax)ctx.TargetNode
+            static (ctx, _) => (ClassDeclarationSyntax)ctx.Node
         );
 
         var compilationAndClasses = context.CompilationProvider.Combine(
@@ -29,6 +33,7 @@ public class BeamOsApiInterfaceGenerator : IIncrementalGenerator
                 {
                     if (source.Right.IsDefaultOrEmpty)
                     {
+                        Logger.LogError("Did not find any classes with BeamOsRouteAttribute");
                         // nothing to do yet
                         return;
                     }
@@ -65,14 +70,8 @@ public class BeamOsApiInterfaceGenerator : IIncrementalGenerator
 
         FluentApiClientBuilder apiClientBuilder = new();
 
-        foreach (ClassDeclarationSyntax classDecl in classes)
+        foreach (var symbol in GetBeamOsApiTypes(compilation))
         {
-            SemanticModel model = compilation.GetSemanticModel(classDecl.SyntaxTree);
-            if (model.GetDeclaredSymbol(classDecl) is not INamedTypeSymbol symbol)
-            {
-                continue;
-            }
-
             // class should inherit from BeamOsBaseEndpoint<TRequest, TResponse>
             INamedTypeSymbol? baseEndpointType = symbol.BaseType;
             while (!EqualsBeamOsBaseEndpoint(baseEndpointType) && baseEndpointType != null)
@@ -115,6 +114,46 @@ public class BeamOsApiInterfaceGenerator : IIncrementalGenerator
         spc.AddSource("InMemoryApiClient2.g.cs", inMemoryImpl.ToString());
     }
 
+    private static IEnumerable<INamedTypeSymbol> GetBeamOsApiTypes(Compilation compilation)
+    {
+        foreach (var reference in compilation.References)
+        {
+            if (compilation.GetAssemblyOrModuleSymbol(reference) is not IAssemblySymbol asm)
+            {
+                continue;
+            }
+            if (asm.Name != "BeamOs.StructuralAnalysis.Core")
+            {
+                continue;
+            }
+            foreach (var type in GetNamespaceTypesRecursive(asm.GlobalNamespace))
+            {
+                if (
+                    type.GetAttributes()
+                        .Any(ad =>
+                            ad.AttributeClass?.ToDisplayString()
+                            == "BeamOs.Common.Api.BeamOsRouteAttribute"
+                        )
+                )
+                {
+                    yield return type;
+                }
+            }
+        }
+    }
+
+    public static IEnumerable<INamedTypeSymbol> GetNamespaceTypesRecursive(INamespaceSymbol ns)
+    {
+        foreach (var member in ns.GetTypeMembers())
+            yield return member;
+
+        foreach (var subNs in ns.GetNamespaceMembers())
+        {
+            foreach (var type in GetNamespaceTypesRecursive(subNs))
+                yield return type;
+        }
+    }
+
     private static StringBuilder CreateInMemoryImpl()
     {
         StringBuilder impl = new();
@@ -145,11 +184,17 @@ public sealed class InMemoryApiClient2(IServiceProvider serviceProvider) : IStru
         ITypeSymbol returnType
     )
     {
-        if (requestType != null && returnType != null)
+        if (requestType is null)
         {
-            // var handler = serviceProvider.GetRequiredKeyedService<{commandHandlerType.ToDisplayString()}>(""InMemory"");
-            inMemoryImpl.AppendLine(
-                @$"
+            throw new ArgumentNullException(nameof(requestType));
+        }
+        if (returnType is null)
+        {
+            throw new ArgumentNullException(nameof(returnType));
+        }
+        // var handler = serviceProvider.GetRequiredKeyedService<{commandHandlerType.ToDisplayString()}>(""InMemory"");
+        inMemoryImpl.AppendLine(
+            @$"
     public async Task<ApiResponse<{returnType}>> {symbol.Name}({requestType} request, CancellationToken ct = default) 
     {{
         using var scope = serviceProvider.CreateScope();
@@ -168,8 +213,7 @@ public sealed class InMemoryApiClient2(IServiceProvider serviceProvider) : IStru
         return response.ToApiResponse();
     }}
 "
-            );
-        }
+        );
     }
 
     private static bool EqualsBeamOsBaseEndpoint(ITypeSymbol? typeSymbol)

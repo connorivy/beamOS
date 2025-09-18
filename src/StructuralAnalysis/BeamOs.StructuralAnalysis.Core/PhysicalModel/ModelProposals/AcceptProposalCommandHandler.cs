@@ -216,28 +216,28 @@ internal class AcceptModelProposalCommandHandler(
                 case BeamOsObjectType.Node:
                     await nodeRepository.RemoveById(
                         command.ModelId,
-                        new(deleteModelEntityProposal.ModelEntityId),
+                        new(deleteModelEntityProposal.Id),
                         ct
                     );
                     break;
                 case BeamOsObjectType.Element1d:
                     await element1dRepository.RemoveById(
                         command.ModelId,
-                        new(deleteModelEntityProposal.ModelEntityId),
+                        new(deleteModelEntityProposal.Id),
                         ct
                     );
                     break;
                 case BeamOsObjectType.Material:
                     await materialRepository.RemoveById(
                         command.ModelId,
-                        new(deleteModelEntityProposal.ModelEntityId),
+                        new(deleteModelEntityProposal.Id),
                         ct
                     );
                     break;
                 case BeamOsObjectType.SectionProfile:
                     await sectionProfileRepository.RemoveById(
                         command.ModelId,
-                        new(deleteModelEntityProposal.ModelEntityId),
+                        new(deleteModelEntityProposal.Id),
                         ct
                     );
                     break;

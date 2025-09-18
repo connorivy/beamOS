@@ -1,5 +1,6 @@
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.MomentLoads;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoads;
 using BeamOs.StructuralAnalysis.Sdk;

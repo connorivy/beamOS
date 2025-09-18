@@ -1,9 +1,11 @@
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
+using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.WebApp.Components.Features.Editor;
+using BeamOs.WebApp.Components.Features.ModelObjectEditor.MomentLoads;
 using BeamOs.WebApp.Components.Features.SelectionInfo;
 using BeamOs.WebApp.EditorCommands;
 using Fluxor;
@@ -95,13 +97,12 @@ public partial class SectionProfileObjectEditor(
 
     private void UpdateFromSectionProfileResponse(SectionProfileResponse response)
     {
-        var areaUnit = response.AreaUnit.MapToAreaUnit();
-        var volumeUnit = response.VolumeUnit.MapToVolumeUnit();
-        var momentOfInertiaUnit = response.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit();
-        var thisAreaUnit = this.UnitSettings.AreaUnit.MapToAreaUnit();
-        var thisVolumeUnit = this.UnitSettings.VolumeUnit.MapToVolumeUnit();
-        var thisMomentOfInertiaUnit =
-            this.UnitSettings.AreaMomentOfInertiaUnit.MapToAreaMomentOfInertiaUnit();
+        var areaUnit = response.AreaUnit.ToUnitsNet();
+        var volumeUnit = response.VolumeUnit.ToUnitsNet();
+        var momentOfInertiaUnit = response.AreaMomentOfInertiaUnit.ToUnitsNet();
+        var thisAreaUnit = this.UnitSettings.AreaUnit.ToUnitsNet();
+        var thisVolumeUnit = this.UnitSettings.VolumeUnit.ToUnitsNet();
+        var thisMomentOfInertiaUnit = this.UnitSettings.AreaMomentOfInertiaUnit.ToUnitsNet();
 
         this.sectionProfile.Id = response.Id;
         this.sectionProfile.Name = response.Name;
@@ -174,7 +175,7 @@ public partial class SectionProfileObjectEditor(
         }
         else
         {
-            PutSectionProfileCommand command = new()
+            ModelResourceWithIntIdRequest<SectionProfileData> command = new()
             {
                 Id = this.sectionProfile.Id,
                 ModelId = this.ModelId,

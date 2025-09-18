@@ -2,6 +2,7 @@ using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Api;
 using BeamOs.Common.Application;
 using BeamOs.Identity;
+using BeamOs.StructuralAnalysis;
 using BeamOs.StructuralAnalysis.Sdk;
 using BeamOs.Tests.Common;
 using BeamOs.WebApp.Components.Features.Common;
@@ -11,33 +12,17 @@ using Fluxor;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor.Services;
+using ServiceScan.SourceGenerator;
 
 namespace BeamOs.WebApp.Components;
 
-public static class DI
+public static partial class DI
 {
     public static IServiceCollection RegisterSharedServices<TAssembly>(
         this IServiceCollection services
     )
     {
-        services.AddObjectThatExtendsBase<IAssemblyMarkerWebAppComponents>(
-            typeof(CommandHandlerBase<,>),
-            ServiceLifetime.Scoped
-        );
-        services.AddObjectThatExtendsBase<IAssemblyMarkerWebAppComponents>(
-            typeof(ClientCommandHandlerBase<,>),
-            ServiceLifetime.Scoped
-        );
-        services.AddObjectThatExtendsBase<IAssemblyMarkerWebAppComponents>(
-            typeof(SimpleCommandHandlerBase<,,>),
-            ServiceLifetime.Scoped
-        );
-
-        services.AddObjectThatImplementInterface<IAssemblyMarkerWebAppComponents>(
-            typeof(IClientCommandHandler<>),
-            ServiceLifetime.Scoped,
-            true
-        );
+        services.AddCommandHandlers().AddClientCommandHandlers().AddSimpleCommandHandlers();
 
         services.AddFluxor(options =>
             options.ScanAssemblies(typeof(DI).Assembly).AddMiddleware<HistoryMiddleware>()
@@ -66,7 +51,7 @@ public static class DI
         services.AddSingleton<AuthenticationStateProvider, CustomAuthStateProvider>();
         services.AddScoped<IUserApiTokenService, ExampleUserApiTokenService>();
         services.AddScoped<IUserApiUsageService, ExampleUserApiUsageService>();
-        services.AddSingleton<UriProvider>();
+        // services.AddSingleton<UriProvider>();
         return services;
     }
 
@@ -85,6 +70,32 @@ public static class DI
             }
         }
     }
+
+    [GenerateServiceRegistrations(
+        AssignableTo = typeof(CommandHandlerBase<,>),
+        Lifetime = ServiceLifetime.Scoped,
+        AsSelf = true
+    )]
+    private static partial IServiceCollection AddCommandHandlers(this IServiceCollection services);
+
+    [GenerateServiceRegistrations(
+        AssignableTo = typeof(ClientCommandHandlerBase<,>),
+        Lifetime = ServiceLifetime.Scoped,
+        AsSelf = true,
+        AsImplementedInterfaces = true
+    )]
+    private static partial IServiceCollection AddClientCommandHandlers(
+        this IServiceCollection services
+    );
+
+    [GenerateServiceRegistrations(
+        AssignableTo = typeof(SimpleCommandHandlerBase<,,>),
+        Lifetime = ServiceLifetime.Scoped,
+        AsSelf = true
+    )]
+    private static partial IServiceCollection AddSimpleCommandHandlers(
+        this IServiceCollection services
+    );
 }
 
 public interface IAssemblyMarkerWebAppComponents { }

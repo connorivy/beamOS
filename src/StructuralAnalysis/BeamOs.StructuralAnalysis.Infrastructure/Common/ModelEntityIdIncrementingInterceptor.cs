@@ -91,14 +91,15 @@ internal class ModelEntityIdIncrementingInterceptor(TimeProvider timeProvider)
                 { typeof(Node), currentModel.MaxNodeId },
                 { typeof(InternalNode), currentModel.MaxInternalNodeId },
                 { typeof(Element1d), currentModel.MaxElement1dId },
+                { typeof(DeleteModelEntityProposal), 0 }, // no max id tracking for delete proposals
                 { typeof(Material), currentModel.MaxMaterialId },
                 { typeof(SectionProfile), currentModel.MaxSectionProfileId },
                 { typeof(SectionProfileFromLibrary), currentModel.MaxSectionProfileFromLibraryId },
                 { typeof(PointLoad), currentModel.MaxPointLoadId },
                 { typeof(MomentLoad), currentModel.MaxMomentLoadId },
-                { typeof(ResultSet), currentModel.MaxResultSetId },
                 { typeof(LoadCase), currentModel.MaxLoadCaseId },
                 { typeof(LoadCombination), currentModel.MaxLoadCombinationId },
+                { typeof(ModelProposal), currentModel.MaxModelProposalId },
             };
 
             foreach (var entityInfoByType in entityInfoByType2)

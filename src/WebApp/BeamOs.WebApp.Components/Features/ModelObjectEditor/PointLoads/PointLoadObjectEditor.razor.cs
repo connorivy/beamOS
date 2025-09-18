@@ -1,11 +1,13 @@
 using System.Diagnostics.CodeAnalysis;
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
+using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
 using BeamOs.WebApp.Components.Features.Editor;
+using BeamOs.WebApp.Components.Features.ModelObjectEditor.MomentLoads;
 using BeamOs.WebApp.Components.Features.SelectionInfo;
 using BeamOs.WebApp.EditorCommands;
 using Fluxor;
@@ -99,8 +101,8 @@ public partial class PointLoadObjectEditor(
 
     private void UpdateFromPointLoadResponse(PointLoadResponse response)
     {
-        var thisForceUnit = this.UnitSettings.ForceUnit.MapToForceUnit();
-        var forceUnit = response.Force.Unit.MapToForceUnit();
+        var thisForceUnit = this.UnitSettings.ForceUnit.ToUnitsNet();
+        var forceUnit = response.Force.Unit.ToUnitsNet();
 
         this.pointLoad.Id = response.Id;
         this.pointLoad.ModelId = response.ModelId;
@@ -145,7 +147,7 @@ public partial class PointLoadObjectEditor(
         }
         else
         {
-            PutPointLoadCommand command = new()
+            ModelResourceWithIntIdRequest<PointLoadData> command = new()
             {
                 Id = this.pointLoad.Id,
                 ModelId = this.ModelId,

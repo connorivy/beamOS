@@ -1,4 +1,5 @@
 using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Materials;
 using BeamOs.StructuralAnalysis.Sdk;
 using BeamOs.WebApp.Components.Features.Common;

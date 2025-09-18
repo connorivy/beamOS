@@ -17,8 +17,8 @@
     <DefineConstants Condition="'$(CODEGEN)' == 'true'">$(DefineConstants);CODEGEN</DefineConstants>
     <LocalNugetFeed>/workspaces/beamOS/.nuget-local</LocalNugetFeed>
     <BeamOsEnableAot Condition="'$(BeamOsEnableAot)' == ''">false</BeamOsEnableAot>
-    <BeamOsUsePostgres Condition="'$(BeamOsUsePostgres)' == ''">false</BeamOsUsePostgres>
-    <BeamOsUseSqlite Condition="'$(BeamOsUseSqlite)' == ''">true</BeamOsUseSqlite>
+    <BeamOsUsePostgres Condition="'$(BeamOsUsePostgres)' == ''">true</BeamOsUsePostgres>
+    <BeamOsUseSqlite Condition="'$(BeamOsUseSqlite)' == ''">false</BeamOsUseSqlite>
     <!-- <BeamOsUsePostgres>true</BeamOsUsePostgres>
     <BeamOsUseSqlite>false</BeamOsUseSqlite> -->
     <!-- <PropertyGroup Condition="'$(CODEGEN)' == 'true'">
@@ -41,6 +41,9 @@
 
       TUnit0046; <!-- Return a Func<T> rather than a T -->
       TUnit0057; <!-- Hook method can accept a AssemblyHookContext -->
+
+      RMG020;
+      RMG012;
       $(NoWarn)
     </NoWarn>
 
@@ -80,6 +83,7 @@
       IDE0290; <!-- Use primary ctor -->
       IDE1006; <!-- These words must begin with uppercase characters -->
 
+      CS0067; <!-- The event 'EVENT' is never used -->
       CS0108; <!-- Member hides inherited member; missing new keyword -->
       CS0168; <!-- Variable is declared but never used -->
       CS0436; <!-- Type conflicts with imported type -->

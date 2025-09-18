@@ -6,13 +6,15 @@ using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.Editor;
 using BeamOs.WebApp.EditorCommands;
 using Fluxor;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 using MudBlazor;
+using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.WebApp.Components.Features.ModelObjectEditor.Nodes;
 
 public sealed class PutNodeEditorCommandHandler(
-    ILogger<PutNodeCommandHandler> logger,
+    ILogger<PutNodeEditorCommandHandler> logger,
     ISnackbar snackbar,
     IStructuralAnalysisApiClientV1 structuralAnalysisApiClientV1,
     IDispatcher dispatcher,
@@ -34,8 +36,8 @@ public sealed class PutNodeEditorCommandHandler(
     )
     {
         return await structuralAnalysisApiClientV1.PutNodeAsync(
-            command.New.Id,
             command.New.ModelId,
+            command.New.Id,
             command.New.ToNodeData(),
             ct
         );
@@ -81,11 +83,15 @@ public sealed class PutNodeSimpleCommandHandler(
     PutNodeEditorCommandHandler putNodeEditorCommandHandler,
     IState<EditorComponentState> editorState
 )
-    : SimpleCommandHandlerBase<PutNodeCommand, PutNodeClientCommand, NodeResponse>(
-        putNodeEditorCommandHandler
-    )
+    : SimpleCommandHandlerBase<
+        ModelResourceWithIntIdRequest<NodeData>,
+        PutNodeClientCommand,
+        NodeResponse
+    >(putNodeEditorCommandHandler)
 {
-    protected override PutNodeClientCommand CreateCommand(PutNodeCommand simpleCommand)
+    protected override PutNodeClientCommand CreateCommand(
+        ModelResourceWithIntIdRequest<NodeData> simpleCommand
+    )
     {
         var node =
             (editorState.Value.CachedModelResponse?.Nodes.GetValueOrDefault(simpleCommand.Id))
@@ -93,4 +99,13 @@ public sealed class PutNodeSimpleCommandHandler(
 
         return new(node, simpleCommand.ToResponse());
     }
+}
+
+[Mapper]
+internal static partial class NodeDataMapper
+{
+    [MapNestedProperties(nameof(ModelResourceWithIntIdRequest<>.Body))]
+    public static partial NodeResponse ToResponse(
+        this ModelResourceWithIntIdRequest<NodeData> request
+    );
 }

@@ -75,6 +75,7 @@ internal class ModelEntityDeleteProposalConfiguration
         _ = builder.HasKey(el => new
         {
             el.Id,
+            el.ObjectType,
             el.ModelProposalId,
             el.ModelId,
         });

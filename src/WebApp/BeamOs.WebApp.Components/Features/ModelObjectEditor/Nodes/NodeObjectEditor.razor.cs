@@ -1,9 +1,11 @@
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
+using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 using BeamOs.WebApp.Components.Features.Editor;
+using BeamOs.WebApp.Components.Features.ModelObjectEditor.MomentLoads;
 using BeamOs.WebApp.Components.Features.SelectionInfo;
 using BeamOs.WebApp.EditorCommands;
 using Fluxor;
@@ -94,8 +96,8 @@ public partial class NodeObjectEditor(
 
     private void UpdateFromNodeResponse(NodeResponse response)
     {
-        var thisLengthUnit = this.UnitSettings.LengthUnit.MapToLengthUnit();
-        var lengthUnit = response.LocationPoint.LengthUnit.MapToLengthUnit();
+        var thisLengthUnit = this.UnitSettings.LengthUnit.ToUnitsNet();
+        var lengthUnit = response.LocationPoint.LengthUnit.ToUnitsNet();
         this.node.Id = response.Id;
         this.node.ModelId = response.ModelId;
         this.node.LocationPoint.X = new Length(response.LocationPoint.X, lengthUnit).As(
@@ -154,7 +156,7 @@ public partial class NodeObjectEditor(
         }
         else
         {
-            PutNodeCommand command = new()
+            ModelResourceWithIntIdRequest<NodeData> command = new()
             {
                 Id = this.node.Id,
                 ModelId = this.ModelId,

@@ -9,6 +9,7 @@ using BeamOs.WebApp.EditorCommands.Interfaces;
 using Fluxor;
 using Microsoft.Extensions.Logging;
 using MudBlazor;
+using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.WebApp.Components.Features.ModelObjectEditor.Members;
 
@@ -45,8 +46,8 @@ public sealed class PutElement1dCommandHandler(
     )
     {
         return await structuralAnalysisApiClientV1.PutElement1dAsync(
-            command.Element1dId,
             command.ModelId,
+            command.Element1dId,
             command.New.ToElement1dData(),
             ct
         );
@@ -87,11 +88,15 @@ public sealed class PutElement1dSimpleCommandHandler(
     PutElement1dCommandHandler putElement1dCommandHandler,
     IState<EditorComponentState> editorState
 )
-    : SimpleCommandHandlerBase<PutElement1dCommand, PutElement1dClientCommand, Element1dResponse>(
-        putElement1dCommandHandler
-    )
+    : SimpleCommandHandlerBase<
+        ModelResourceWithIntIdRequest<Element1dData>,
+        PutElement1dClientCommand,
+        Element1dResponse
+    >(putElement1dCommandHandler)
 {
-    protected override PutElement1dClientCommand CreateCommand(PutElement1dCommand simpleCommand)
+    protected override PutElement1dClientCommand CreateCommand(
+        ModelResourceWithIntIdRequest<Element1dData> simpleCommand
+    )
     {
         var element1d =
             editorState.Value.CachedModelResponse?.Element1ds.GetValueOrDefault(simpleCommand.Id)
@@ -105,6 +110,15 @@ public sealed class PutElement1dSimpleCommandHandler(
             New = simpleCommand.ToResponse(),
         };
     }
+}
+
+[Mapper]
+internal static partial class Element1dMappers
+{
+    [MapNestedProperties(nameof(ModelResourceWithIntIdRequest<>.Body))]
+    public static partial Element1dResponse ToResponse(
+        this ModelResourceWithIntIdRequest<Element1dData> command
+    );
 }
 
 public record PutElement1dClientCommand : IBeamOsUndoableClientCommand

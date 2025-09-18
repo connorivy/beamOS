@@ -5,6 +5,7 @@ using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.Editor;
+using BeamOs.WebApp.Components.Features.ModelObjectEditor.MomentLoads;
 using BeamOs.WebApp.EditorCommands;
 using BeamOs.WebApp.EditorCommands.Interfaces;
 using Fluxor;

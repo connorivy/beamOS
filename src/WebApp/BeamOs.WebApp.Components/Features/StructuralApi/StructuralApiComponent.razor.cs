@@ -308,44 +308,44 @@ public partial class StructuralApiComponent : FluxorComponent
 
     private static string GetPrimaryElementType(MethodInfo methodInfo)
     {
-        if (methodInfo.Name.Contains(nameof(Element1d), StringComparison.Ordinal))
+        if (methodInfo.Name.Contains("Element1d", StringComparison.Ordinal))
         {
-            return nameof(Element1d);
+            return "Element1d";
         }
-        else if (methodInfo.Name.Contains(nameof(Node), StringComparison.Ordinal))
+        else if (methodInfo.Name.Contains("Node", StringComparison.Ordinal))
         {
-            return nameof(Node);
+            return "Node";
         }
-        else if (methodInfo.Name.Contains(nameof(PointLoad), StringComparison.Ordinal))
+        else if (methodInfo.Name.Contains("PointLoad", StringComparison.Ordinal))
         {
-            return nameof(PointLoad);
+            return "PointLoad";
         }
-        else if (methodInfo.Name.Contains(nameof(MomentLoad), StringComparison.Ordinal))
+        else if (methodInfo.Name.Contains("MomentLoad", StringComparison.Ordinal))
         {
-            return nameof(MomentLoad);
+            return "MomentLoad";
         }
-        else if (methodInfo.Name.Contains(nameof(Material), StringComparison.Ordinal))
+        else if (methodInfo.Name.Contains("Material", StringComparison.Ordinal))
         {
-            return nameof(Material);
+            return "Material";
         }
-        else if (methodInfo.Name.Contains(nameof(SectionProfile), StringComparison.Ordinal))
+        else if (methodInfo.Name.Contains("SectionProfile", StringComparison.Ordinal))
         {
-            return nameof(SectionProfile);
+            return "SectionProfile";
         }
-        else if (methodInfo.Name.Contains(nameof(Model), StringComparison.Ordinal))
+        else if (methodInfo.Name.Contains("Model", StringComparison.Ordinal))
         {
-            return nameof(Model);
+            return "Model";
         }
-        else if (methodInfo.Name.Contains(nameof(ResultSet), StringComparison.Ordinal))
+        else if (methodInfo.Name.Contains("ResultSet", StringComparison.Ordinal))
         {
-            return nameof(ResultSet);
+            return "ResultSet";
         }
         else if (
             methodInfo.Name.Contains("OpenSees", StringComparison.Ordinal)
             || methodInfo.Name.Contains("DirectStiffness", StringComparison.Ordinal)
         )
         {
-            return nameof(Model);
+            return "Model";
         }
         throw new Exception($"could not find primary element type for method {methodInfo.Name}");
     }

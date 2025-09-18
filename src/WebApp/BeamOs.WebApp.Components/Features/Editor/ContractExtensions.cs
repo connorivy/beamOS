@@ -24,12 +24,12 @@ internal static class ContractExtensions
     public static PointLoadResponse ToEditorUnits(this PointLoadResponse element) =>
         element with
         {
-            Force = new(element.Force.MapToForce().Kilonewtons, ForceUnitContract.Kilonewton),
+            Force = new(element.Force.ToUnitsNet().Kilonewtons, ForceUnitContract.Kilonewton),
         };
 
     public static Point InMeters(this Point element)
     {
-        LengthUnit lengthUnit = element.LengthUnit.MapToLengthUnit();
+        LengthUnit lengthUnit = element.LengthUnit.ToUnitsNet();
         return new()
         {
             X = new Length(element.X, lengthUnit).Meters,
