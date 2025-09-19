@@ -1,14 +1,8 @@
-using System.Diagnostics;
 using System.Runtime.InteropServices;
-using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCases;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinations;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -59,7 +53,7 @@ internal class ModelEntityIdIncrementingInterceptor(TimeProvider timeProvider)
                 .GroupBy(i => i.Type)
                 .ToDictionary(info => info.Key, info => info.Select(i => i.Id).ToHashSet());
 
-            var entityInfoByType2 = entityInfoGroup
+            var entitiesWithDefaultIds = entityInfoGroup
                 .Where(info => info.Id == 0)
                 .GroupBy(info => info.Type)
                 .ToArray();
@@ -91,7 +85,6 @@ internal class ModelEntityIdIncrementingInterceptor(TimeProvider timeProvider)
                 { typeof(Node), currentModel.MaxNodeId },
                 { typeof(InternalNode), currentModel.MaxInternalNodeId },
                 { typeof(Element1d), currentModel.MaxElement1dId },
-                { typeof(DeleteModelEntityProposal), 0 }, // no max id tracking for delete proposals
                 { typeof(Material), currentModel.MaxMaterialId },
                 { typeof(SectionProfile), currentModel.MaxSectionProfileId },
                 { typeof(SectionProfileFromLibrary), currentModel.MaxSectionProfileFromLibraryId },
@@ -102,13 +95,9 @@ internal class ModelEntityIdIncrementingInterceptor(TimeProvider timeProvider)
                 { typeof(ModelProposal), currentModel.MaxModelProposalId },
             };
 
-            foreach (var entityInfoByType in entityInfoByType2)
+            foreach (var entityInfoByType in entitiesWithDefaultIds)
             {
                 var entityType = entityInfoByType.Key;
-                // Debug.Assert(
-                //     entityTypeToMaxIdDict.ContainsKey(entityType),
-                //     $"Could not find next id for entity of type {entityType}"
-                // );
                 if (!entityTypeToMaxIdDict.ContainsKey(entityType))
                 {
                     throw new InvalidOperationException(
@@ -124,15 +113,16 @@ internal class ModelEntityIdIncrementingInterceptor(TimeProvider timeProvider)
                 HashSet<int>? takenIds = entityTypeToTakenIdsDict.GetValueOrDefault(entityType);
                 foreach (var entityInfo in entityInfoByType)
                 {
-                    while (takenIds?.Contains(++maxId) ?? false)
+                    do
                     {
-                        // do nothing
-                    }
+                        maxId++;
+                    } while (takenIds?.Contains(maxId) ?? false);
                     entityInfo.Entity.SetIntId(maxId);
                 }
             }
 
             currentModel.MaxNodeId = entityTypeToMaxIdDict[typeof(Node)];
+            currentModel.MaxInternalNodeId = entityTypeToMaxIdDict[typeof(InternalNode)];
             currentModel.MaxElement1dId = entityTypeToMaxIdDict[typeof(Element1d)];
             currentModel.MaxMaterialId = entityTypeToMaxIdDict[typeof(Material)];
             currentModel.MaxSectionProfileId = entityTypeToMaxIdDict[typeof(SectionProfile)];
@@ -141,7 +131,6 @@ internal class ModelEntityIdIncrementingInterceptor(TimeProvider timeProvider)
             ];
             currentModel.MaxPointLoadId = entityTypeToMaxIdDict[typeof(PointLoad)];
             currentModel.MaxMomentLoadId = entityTypeToMaxIdDict[typeof(MomentLoad)];
-            // currentModel.MaxResultSetId = entityTypeToMaxIdDict[typeof(ResultSet)];
             currentModel.MaxLoadCaseId = entityTypeToMaxIdDict[typeof(LoadCase)];
             currentModel.MaxLoadCombinationId = entityTypeToMaxIdDict[typeof(LoadCombination)];
             currentModel.LastModified = timeProvider.GetUtcNow();

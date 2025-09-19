@@ -52,6 +52,11 @@ internal class ModelProposal : BeamOsModelEntity<ModelProposalId>
     public List<SectionProfileProposalFromLibrary>? SectionProfileProposalsFromLibrary { get; set; }
     public List<ProposalIssue>? ProposalIssues { get; set; }
     public List<DeleteModelEntityProposal>? DeleteModelEntityProposals { get; set; }
+    public int MaxNodeId { get; internal set; }
+    public int MaxInternalNodeId { get; internal set; }
+    public int MaxElement1dId { get; internal set; }
+    public int MaxMaterialId { get; internal set; }
+    public int MaxSectionProfileId { get; internal set; }
 
     [Obsolete("EF Core Constructor", true)]
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

@@ -11,6 +11,9 @@ internal class SectionProfileInfoBaseConfiguration
 {
     public void Configure(EntityTypeBuilder<SectionProfileInfoBase> builder)
     {
+        builder.HasKey(n => new { n.Id, n.ModelId });
+        builder.Property(n => n.Id).ValueGeneratedNever();
+
         builder
             .UseTphMappingStrategy()
             .HasDiscriminator(el => el.SectionProfileType)

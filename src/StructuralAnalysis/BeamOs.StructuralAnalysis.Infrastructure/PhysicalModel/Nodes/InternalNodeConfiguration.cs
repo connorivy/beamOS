@@ -16,22 +16,6 @@ internal class InternalNodeConfiguration : IEntityTypeConfiguration<InternalNode
             .HasForeignKey(el => el.ModelId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
-
-        // builder
-        //     .HasMany(n => n.PointLoads)
-        //     .WithOne()
-        //     .HasPrincipalKey(el => new { el.Id, el.ModelId })
-        //     .HasForeignKey(el => new { el.NodeId, el.ModelId })
-        //     .IsRequired()
-        //     .OnDelete(DeleteBehavior.Cascade);
-
-        // builder
-        //     .HasMany(n => n.MomentLoads)
-        //     .WithOne()
-        //     .HasPrincipalKey(el => new { el.Id, el.ModelId })
-        //     .HasForeignKey(el => new { el.NodeId, el.ModelId })
-        //     .IsRequired()
-        //     .OnDelete(DeleteBehavior.Cascade);
     }
 }
 
@@ -39,6 +23,9 @@ internal class NodeDefinitionConfiguration : IEntityTypeConfiguration<NodeDefini
 {
     public void Configure(EntityTypeBuilder<NodeDefinition> builder)
     {
+        builder.HasKey(n => new { n.Id, n.ModelId });
+        builder.Property(n => n.Id).ValueGeneratedNever();
+
         builder
             .UseTphMappingStrategy()
             .HasDiscriminator(el => el.NodeType)
@@ -48,12 +35,5 @@ internal class NodeDefinitionConfiguration : IEntityTypeConfiguration<NodeDefini
         builder
             .Property(el => el.NodeType)
             .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
-
-        // builder
-        //     .HasOne(el => el.Model)
-        //     .WithMany()
-        //     .HasForeignKey(el => el.ModelId)
-        //     .IsRequired()
-        //     .OnDelete(DeleteBehavior.Cascade);
     }
 }

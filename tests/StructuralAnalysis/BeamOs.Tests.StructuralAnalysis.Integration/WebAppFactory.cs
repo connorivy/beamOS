@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using BeamOs.StructuralAnalysis.Api;
 using BeamOs.StructuralAnalysis.Infrastructure;
+using BeamOs.Tests.Common;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -20,8 +21,15 @@ public sealed class WebAppFactory(string connectionString, TimeProvider? timePro
         {
             using IServiceScope scope = services.BuildServiceProvider().CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<StructuralAnalysisDbContext>();
-            dbContext.Database.EnsureCreated();
-            // dbContext.Database.Migrate();
+
+            if (BeamOsEnv.IsCiEnv())
+            {
+                dbContext.Database.Migrate();
+            }
+            else
+            {
+                dbContext.Database.EnsureCreated();
+            }
         });
     }
 

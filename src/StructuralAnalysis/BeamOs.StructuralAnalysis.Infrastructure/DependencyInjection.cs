@@ -122,7 +122,11 @@ public static partial class DependencyInjection
                     connectionString,
                     o => o.MigrationsAssembly(typeof(IAssemblyMarkerInfrastructure).Assembly)
                 )
-                .AddInterceptors(new ModelLastModifiedUpdater(TimeProvider.System))
+                // .AddInterceptors(new ModelLastModifiedUpdater(TimeProvider.System))
+                .AddInterceptors(new ModelEntityIdIncrementingInterceptor(TimeProvider.System))
+                .AddInterceptors(
+                    new ModelProposalEntityIdIncrementingInterceptor(TimeProvider.System)
+                )
                 .UseExceptionProcessor()
                 // .UseModel(StructuralAnalysisDbContextModel.Instance)
 #if DEBUG
