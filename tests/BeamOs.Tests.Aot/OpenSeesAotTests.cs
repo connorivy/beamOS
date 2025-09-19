@@ -25,83 +25,83 @@ public class OpenSeesTests(ModelFixture modelFixture)
         this.modelClient ??= this.client.Models[modelFixture.Id];
     }
 
-    [Test]
-    public async Task RunOpenSeesAnalysis_ShouldReturnSuccessfulStatusCode()
-    {
-        await modelFixture.CreateOnly(this.client);
+    // [Test]
+    // public async Task RunOpenSeesAnalysis_ShouldReturnSuccessfulStatusCode()
+    // {
+    //     await modelFixture.CreateOnly(this.client);
 
-        var resultSetIdResponse = await this.modelClient.Analyze.Opensees.RunOpenSeesAnalysisAsync(
-            new() { LoadCombinationIds = [1] }
-        );
+    //     var resultSetIdResponse = await this.modelClient.Analyze.Opensees.RunOpenSeesAnalysisAsync(
+    //         new() { LoadCombinationIds = [1] }
+    //     );
 
-        resultSetIdResponse.ThrowIfError();
-    }
+    //     resultSetIdResponse.ThrowIfError();
+    // }
 
-    [Test]
-    [DependsOn(typeof(OpenSeesTests), nameof(RunOpenSeesAnalysis_ShouldReturnSuccessfulStatusCode))]
-    public async Task AssertNodeResults_AreApproxEqualToExpectedValues()
-    {
-        var nodeResultsFixture = (IHasExpectedNodeResults)modelFixture;
-        var strongUnits = modelFixture.Settings.UnitSettings;
-        var lengthUnit = strongUnits.LengthUnit.MapEnumToLengthUnit();
-        var angleUnit = strongUnits.AngleUnit.MapEnumToAngleUnit();
-        var forceUnit = strongUnits.ForceUnit.MapEnumToForceUnit();
-        var torqueUnit = strongUnits.TorqueUnit.MapEnumToTorqueUnit();
-        foreach (var expectedNodeDisplacementResult in nodeResultsFixture.ExpectedNodeResults)
-        {
-            if (
-                expectedNodeDisplacementResult.DisplacementAlongX.HasValue
-                || expectedNodeDisplacementResult.DisplacementAlongY.HasValue
-                || expectedNodeDisplacementResult.DisplacementAlongZ.HasValue
-                || expectedNodeDisplacementResult.RotationAboutX.HasValue
-                || expectedNodeDisplacementResult.RotationAboutY.HasValue
-                || expectedNodeDisplacementResult.RotationAboutZ.HasValue
-            )
-            {
-                var result = await modelClient
-                    .Results.LoadCombinations[1]
-                    .Nodes[expectedNodeDisplacementResult.NodeId]
-                    .GetNodeResultAsync();
+    // [Test]
+    // [DependsOn(typeof(OpenSeesTests), nameof(RunOpenSeesAnalysis_ShouldReturnSuccessfulStatusCode))]
+    // public async Task AssertNodeResults_AreApproxEqualToExpectedValues()
+    // {
+    //     var nodeResultsFixture = (IHasExpectedNodeResults)modelFixture;
+    //     var strongUnits = modelFixture.Settings.UnitSettings;
+    //     var lengthUnit = strongUnits.LengthUnit.MapEnumToLengthUnit();
+    //     var angleUnit = strongUnits.AngleUnit.MapEnumToAngleUnit();
+    //     var forceUnit = strongUnits.ForceUnit.MapEnumToForceUnit();
+    //     var torqueUnit = strongUnits.TorqueUnit.MapEnumToTorqueUnit();
+    //     foreach (var expectedNodeDisplacementResult in nodeResultsFixture.ExpectedNodeResults)
+    //     {
+    //         if (
+    //             expectedNodeDisplacementResult.DisplacementAlongX.HasValue
+    //             || expectedNodeDisplacementResult.DisplacementAlongY.HasValue
+    //             || expectedNodeDisplacementResult.DisplacementAlongZ.HasValue
+    //             || expectedNodeDisplacementResult.RotationAboutX.HasValue
+    //             || expectedNodeDisplacementResult.RotationAboutY.HasValue
+    //             || expectedNodeDisplacementResult.RotationAboutZ.HasValue
+    //         )
+    //         {
+    //             var result = await modelClient
+    //                 .Results.LoadCombinations[1]
+    //                 .Nodes[expectedNodeDisplacementResult.NodeId]
+    //                 .GetNodeResultAsync();
 
-                result.ThrowIfError();
+    //             result.ThrowIfError();
 
-                AssertDisplacementsEqual(
-                    BeamOsObjectType.Node,
-                    expectedNodeDisplacementResult.NodeId.ToString(),
-                    expectedNodeDisplacementResult,
-                    result.Value.Displacements,
-                    lengthUnit,
-                    angleUnit,
-                    .001
-                );
-            }
+    //             AssertDisplacementsEqual(
+    //                 BeamOsObjectType.Node,
+    //                 expectedNodeDisplacementResult.NodeId.ToString(),
+    //                 expectedNodeDisplacementResult,
+    //                 result.Value.Displacements,
+    //                 lengthUnit,
+    //                 angleUnit,
+    //                 .001
+    //             );
+    //         }
 
-            if (
-                expectedNodeDisplacementResult.ForceAlongX.HasValue
-                || expectedNodeDisplacementResult.ForceAlongY.HasValue
-                || expectedNodeDisplacementResult.ForceAlongZ.HasValue
-                || expectedNodeDisplacementResult.TorqueAboutX.HasValue
-                || expectedNodeDisplacementResult.TorqueAboutY.HasValue
-                || expectedNodeDisplacementResult.TorqueAboutZ.HasValue
-            )
-            {
-                var result = await modelClient
-                    .Results.LoadCombinations[1]
-                    .Nodes[expectedNodeDisplacementResult.NodeId]
-                    .GetNodeResultAsync();
+    //         if (
+    //             expectedNodeDisplacementResult.ForceAlongX.HasValue
+    //             || expectedNodeDisplacementResult.ForceAlongY.HasValue
+    //             || expectedNodeDisplacementResult.ForceAlongZ.HasValue
+    //             || expectedNodeDisplacementResult.TorqueAboutX.HasValue
+    //             || expectedNodeDisplacementResult.TorqueAboutY.HasValue
+    //             || expectedNodeDisplacementResult.TorqueAboutZ.HasValue
+    //         )
+    //         {
+    //             var result = await modelClient
+    //                 .Results.LoadCombinations[1]
+    //                 .Nodes[expectedNodeDisplacementResult.NodeId]
+    //                 .GetNodeResultAsync();
 
-                AssertReactionsEqual(
-                    BeamOsObjectType.Node,
-                    expectedNodeDisplacementResult.NodeId.ToString(),
-                    expectedNodeDisplacementResult,
-                    result.Value.Forces,
-                    forceUnit,
-                    torqueUnit,
-                    .01
-                );
-            }
-        }
-    }
+    //             AssertReactionsEqual(
+    //                 BeamOsObjectType.Node,
+    //                 expectedNodeDisplacementResult.NodeId.ToString(),
+    //                 expectedNodeDisplacementResult,
+    //                 result.Value.Forces,
+    //                 forceUnit,
+    //                 torqueUnit,
+    //                 .01
+    //             );
+    //         }
+    //     }
+    // }
 
     private static void AssertDisplacementsEqual(
         BeamOsObjectType beamOsObjectType,

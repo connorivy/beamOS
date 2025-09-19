@@ -1,10 +1,9 @@
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
-using BeamOs.CsSdk.Mappers.UnitValueDtoMappers;
-using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.NodeResult;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Sdk;
 using BeamOs.Tests.Common;
+using BeamOs.Tests.Common.Mappers.UnitValueDtoMappers;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration;
 

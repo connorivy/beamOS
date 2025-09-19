@@ -29,14 +29,14 @@ public static partial class AssemblySetup
 
         TestUtils.Asserter = new();
 
-        if (UseLocalApi)
-        {
-            UseLocalApiClient();
-        }
-        else
-        {
-            await UseRemoteApiClient();
-        }
+        // if (UseLocalApi)
+        // {
+        //     UseLocalApiClient();
+        // }
+        // else
+        // {
+        await UseRemoteApiClient();
+        // }
 
         ApiIsRunning = true;
     }
@@ -54,10 +54,10 @@ public static partial class AssemblySetup
         StructuralAnalysisApiClient = CreateApiClientWebAppFactory(webAppFactory.CreateClient());
     }
 
-    private static void UseLocalApiClient()
-    {
-        StructuralAnalysisApiClient = CreateApiClientLocal();
-    }
+    // private static void UseLocalApiClient()
+    // {
+    //     StructuralAnalysisApiClient = CreateApiClientLocal();
+    // }
 
     public static async Task TearDown()
     {

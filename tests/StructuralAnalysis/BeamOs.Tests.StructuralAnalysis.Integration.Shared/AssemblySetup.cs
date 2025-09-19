@@ -27,11 +27,6 @@ public static partial class AssemblySetup
         return serviceProvider.GetRequiredService<BeamOsResultApiClient>();
     }
 
-    public static BeamOsResultApiClient CreateApiClientLocal()
-    {
-        return ApiClientFactory.CreateResultLocal();
-    }
-
     private static IServiceCollection AddBeamOsRemoteTest(
         this IServiceCollection services,
         HttpClient httpClient

@@ -20,9 +20,9 @@ public static class ApiClientFactory
         return serviceProvider.GetRequiredService<BeamOsApiClient>();
     }
 
-#if Sqlite
     public static BeamOsApiClient CreateLocal()
     {
+#if Sqlite
         var services = new ServiceCollection();
         services
             .AddStructuralAnalysisSdkRequired()
@@ -39,22 +39,24 @@ public static class ApiClientFactory
         // InMemoryApiClient2 x = default;
         return new BeamOsApiClient(apiClient);
         // return new BeamOsModelBuilder(model, apiClient);
+#else
+        throw new NotSupportedException("Local client requires Sqlite support.");
+#endif
     }
 
     public static BeamOsResultApiClient CreateResultLocal()
     {
+#if Sqlite
         var services = new ServiceCollection();
         services
             .AddStructuralAnalysisSdkRequired()
             .AddStructuralAnalysisRequired()
             .AddStructuralAnalysisConfigurable();
 
-#if Sqlite
         var sqliteConnection = DI_Sqlite.AddSqliteInMemoryAndReturnConnection(services);
         services
             .AddStructuralAnalysisInfrastructureRequired()
             .AddStructuralAnalysisInfrastructureConfigurable("dummy");
-#endif
 
 #if !CODEGEN
         services.AddScoped<IStructuralAnalysisApiClientV2, InMemoryApiClient2>();
@@ -62,16 +64,17 @@ public static class ApiClientFactory
 
         var serviceProvider = services.BuildServiceProvider();
         var client = serviceProvider.GetRequiredService<BeamOsResultApiClient>();
-#if Sqlite
+
         using var scope = serviceProvider.CreateScope();
 #pragma warning disable IL3050 // Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.
         scope.EnsureDbCreated();
 #pragma warning restore IL3050 // Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.
         client.Disposables.Add(sqliteConnection);
-#endif
         return client;
-    }
+#else
+        throw new NotSupportedException("Local client requires Sqlite support.");
 #endif
+    }
     // public static BeamOsModel Local()
     // {
 

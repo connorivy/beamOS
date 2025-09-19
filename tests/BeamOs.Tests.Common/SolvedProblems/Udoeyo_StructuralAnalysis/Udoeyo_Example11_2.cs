@@ -127,13 +127,13 @@ public class Udoeyo_Example11_2 : ModelFixture, IHasExpectedNodeResults
         yield return new InternalNode(
             3,
             1,
-            new(12.0 / 3.0 / 24.0, RatioUnit.DecimalFraction),
+            new(12.0 / 3.0 / 24.0, RatioUnitContract.DecimalFraction),
             Restraint.FreeXyPlane
         );
         yield return new InternalNode(
             4,
             1,
-            new(0.5, RatioUnit.DecimalFraction),
+            new(0.5, RatioUnitContract.DecimalFraction),
             new()
             {
                 CanTranslateAlongX = true,
@@ -144,7 +144,7 @@ public class Udoeyo_Example11_2 : ModelFixture, IHasExpectedNodeResults
                 CanRotateAboutZ = true,
             }
         );
-        yield return new InternalNode(5, 1, new(0.75, RatioUnit.DecimalFraction));
+        yield return new InternalNode(5, 1, new(0.75, RatioUnitContract.DecimalFraction));
     }
 
     public override IEnumerable<PutPointLoadRequest> PointLoadRequests()

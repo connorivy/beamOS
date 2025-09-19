@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\StructuralAnalysis\BeamOs.StructuralAnalysis.Infrastructure\BeamOs.StructuralAnalysis.Infrastructure.csproj" />
     <ProjectReference Include="..\BeamOs.WebApp.Components\BeamOs.WebApp.Components.csproj" />
   </ItemGroup>
 
