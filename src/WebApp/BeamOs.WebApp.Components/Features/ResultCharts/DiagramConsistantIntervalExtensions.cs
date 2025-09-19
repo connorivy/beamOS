@@ -1,6 +1,4 @@
-using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams;
-using UnitsNet;
 
 namespace BeamOs.WebApp.Components.Features.ResultCharts;
 

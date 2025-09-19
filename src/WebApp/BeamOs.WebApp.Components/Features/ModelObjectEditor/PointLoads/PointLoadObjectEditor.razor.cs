@@ -1,8 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
-using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis.Application.Common;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;

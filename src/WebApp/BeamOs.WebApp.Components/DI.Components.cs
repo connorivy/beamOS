@@ -1,10 +1,6 @@
-using BeamOs.CodeGen.StructuralAnalysisApiClient;
-using BeamOs.Common.Api;
-using BeamOs.Common.Application;
 using BeamOs.Identity;
 using BeamOs.StructuralAnalysis;
 using BeamOs.StructuralAnalysis.Sdk;
-using BeamOs.Tests.Common;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.Identity;
 using BeamOs.WebApp.Components.Features.UndoRedo;
@@ -57,18 +53,18 @@ public static partial class DI
 
     public static async Task InitializeBeamOsData(this IServiceProvider services)
     {
-        using var scope = services.CreateScope();
-        var apiClient = scope.ServiceProvider.GetRequiredService<BeamOsResultApiClient>();
+        // using var scope = services.CreateScope();
+        // var apiClient = scope.ServiceProvider.GetRequiredService<BeamOsResultApiClient>();
 
-        foreach (var modelBuilder in AllSolvedProblems.ModelFixtures())
-        {
-            if (await modelBuilder.CreateOnly(apiClient))
-            {
-                await apiClient
-                    .Models[modelBuilder.Id]
-                    .Analyze.Opensees.RunOpenSeesAnalysisAsync(new());
-            }
-        }
+        // foreach (var modelBuilder in AllSolvedProblems.ModelFixtures())
+        // {
+        //     if (await modelBuilder.CreateOnly(apiClient))
+        //     {
+        //         await apiClient
+        //             .Models[modelBuilder.Id]
+        //             .Analyze.Opensees.RunOpenSeesAnalysisAsync(new());
+        //     }
+        // }
     }
 
     [GenerateServiceRegistrations(

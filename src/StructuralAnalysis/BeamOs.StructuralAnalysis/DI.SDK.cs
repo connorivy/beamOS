@@ -31,66 +31,66 @@ public static class DI
         string apiToken
     )
     {
-        // services.AddHttpClient();
-        // AuthMessageHandler authMessageHandler = new(apiToken);
-        // services.AddSingleton(authMessageHandler);
+        services.AddHttpClient();
+        AuthMessageHandler authMessageHandler = new(apiToken);
+        services.AddSingleton(authMessageHandler);
 
-        // services
-        //     .AddHttpClient<IStructuralAnalysisApiClientV1, StructuralAnalysisApiClientV1>(client =>
-        //         client.BaseAddress = new("https://beamos.net/")
-        //     )
-        //     .AddHttpMessageHandler<AuthMessageHandler>();
+        services
+            .AddHttpClient<IStructuralAnalysisApiClientV1, StructuralAnalysisApiClientV1>(client =>
+                client.BaseAddress = new("https://beamos.net/")
+            )
+            .AddHttpMessageHandler<AuthMessageHandler>();
 
-        // services
-        //     .AddHttpClient<ISpeckleConnectorApi, SpeckleConnectorApi>(client =>
-        //         client.BaseAddress = new("https://beamos.net/")
-        //     )
-        //     .AddHttpMessageHandler<AuthMessageHandler>();
+        services
+            .AddHttpClient<ISpeckleConnectorApi, SpeckleConnectorApi>(client =>
+                client.BaseAddress = new("https://beamos.net/")
+            )
+            .AddHttpMessageHandler<AuthMessageHandler>();
 
         return services;
     }
 
     public static IServiceCollection AddInMemoryInfrastructure(this IServiceCollection services)
     {
-// #if !CODEGEN
-//         // services.AddScoped<InMemoryApiClient2>();
-//         // services.AddInMemoryCommandHandlers();
-//         // services.AddScoped<IStructuralAnalysisApiClientV1, InMemoryApiClient>();
-//         // services.AddScoped<InMemoryModelRepositoryStorage>();
-//         services.AddScoped<InMemoryUnitOfWork>();
-//         services.AddScoped<IStructuralAnalysisUnitOfWork>(sp =>
-//             sp.GetRequiredService<InMemoryUnitOfWork>()
-//         );
-//         services.AddScoped<IModelRepository, InMemoryModelRepository>();
-//         services.AddScoped<INodeDefinitionRepository, InMemoryNodeDefinitionRepository>();
-//         services.AddScoped<INodeRepository, InMemoryNodeRepository>();
-//         services.AddScoped<IInternalNodeRepository, InMemoryInternalNodeRepository>();
-//         services.AddScoped<IMaterialRepository, InMemoryMaterialRepository>();
-//         services.AddScoped<ISectionProfileRepository, InMemorySectionProfileRepository>();
-//         services.AddScoped<
-//             ISectionProfileFromLibraryRepository,
-//             InMemorySectionProfileFromLibraryRepository
-//         >();
-//         services.AddScoped<IElement1dRepository, InMemoryElement1dRepository>();
-//         services.AddScoped<IPointLoadRepository, InMemoryPointLoadRepository>();
-//         services.AddScoped<IMomentLoadRepository, InMemoryMomentLoadRepository>();
-//         services.AddScoped<ILoadCaseRepository, InMemoryLoadCaseRepository>();
-//         services.AddScoped<ILoadCombinationRepository, InMemoryLoadCombinationRepository>();
-//         services.AddScoped<INodeResultRepository, InMemoryNodeResultRepository>();
-//         services.AddScoped<IResultSetRepository, InMemoryResultSetRepository>();
-//         services.AddScoped<IEnvelopeResultSetRepository, InMemoryEnvelopeResultSetRepository>();
-//         services.AddScoped<IModelProposalRepository, InMemoryModelProposalRepository>();
-//         services.AddScoped<IProposalIssueRepository, InMemoryProposalIssueRepository>();
-//         services.AddScoped<
-//             IQueryHandler<EmptyRequest, ICollection<ModelInfoResponse>>,
-//             InMemoryGetModelsQueryHandler
-//         >();
+        // #if !CODEGEN
+        //         // services.AddScoped<InMemoryApiClient2>();
+        //         // services.AddInMemoryCommandHandlers();
+        //         // services.AddScoped<IStructuralAnalysisApiClientV1, InMemoryApiClient>();
+        //         // services.AddScoped<InMemoryModelRepositoryStorage>();
+        //         services.AddScoped<InMemoryUnitOfWork>();
+        //         services.AddScoped<IStructuralAnalysisUnitOfWork>(sp =>
+        //             sp.GetRequiredService<InMemoryUnitOfWork>()
+        //         );
+        //         services.AddScoped<IModelRepository, InMemoryModelRepository>();
+        //         services.AddScoped<INodeDefinitionRepository, InMemoryNodeDefinitionRepository>();
+        //         services.AddScoped<INodeRepository, InMemoryNodeRepository>();
+        //         services.AddScoped<IInternalNodeRepository, InMemoryInternalNodeRepository>();
+        //         services.AddScoped<IMaterialRepository, InMemoryMaterialRepository>();
+        //         services.AddScoped<ISectionProfileRepository, InMemorySectionProfileRepository>();
+        //         services.AddScoped<
+        //             ISectionProfileFromLibraryRepository,
+        //             InMemorySectionProfileFromLibraryRepository
+        //         >();
+        //         services.AddScoped<IElement1dRepository, InMemoryElement1dRepository>();
+        //         services.AddScoped<IPointLoadRepository, InMemoryPointLoadRepository>();
+        //         services.AddScoped<IMomentLoadRepository, InMemoryMomentLoadRepository>();
+        //         services.AddScoped<ILoadCaseRepository, InMemoryLoadCaseRepository>();
+        //         services.AddScoped<ILoadCombinationRepository, InMemoryLoadCombinationRepository>();
+        //         services.AddScoped<INodeResultRepository, InMemoryNodeResultRepository>();
+        //         services.AddScoped<IResultSetRepository, InMemoryResultSetRepository>();
+        //         services.AddScoped<IEnvelopeResultSetRepository, InMemoryEnvelopeResultSetRepository>();
+        //         services.AddScoped<IModelProposalRepository, InMemoryModelProposalRepository>();
+        //         services.AddScoped<IProposalIssueRepository, InMemoryProposalIssueRepository>();
+        //         services.AddScoped<
+        //             IQueryHandler<EmptyRequest, ICollection<ModelInfoResponse>>,
+        //             InMemoryGetModelsQueryHandler
+        //         >();
 
-//         services.AddScoped<
-//             ICommandHandler<ModelResourceRequest<DateTimeOffset>, ModelResponse>,
-//             InMemoryRestoreModeCommandHandler
-//         >();
-// #endif
+        //         services.AddScoped<
+        //             ICommandHandler<ModelResourceRequest<DateTimeOffset>, ModelResponse>,
+        //             InMemoryRestoreModeCommandHandler
+        //         >();
+        // #endif
 
         return services;
     }

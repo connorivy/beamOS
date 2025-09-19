@@ -1,7 +1,5 @@
-using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis;
-using BeamOs.StructuralAnalysis.Application.DirectStiffnessMethod;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.WebApp.Components.Features.Common;
