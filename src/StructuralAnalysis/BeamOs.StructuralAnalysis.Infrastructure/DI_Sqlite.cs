@@ -25,7 +25,7 @@ public static class DI_Sqlite
                 .AddInterceptors(new SqliteCompositeKeyIncrementingInterceptor())
                 .AddInterceptors(new ModelEntityIdIncrementingInterceptor(TimeProvider.System))
                 .UseExceptionProcessor()
-                .UseModel(StructuralAnalysisDbContextModel.Instance)
+                // .UseModel(StructuralAnalysisDbContextModel.Instance)
 #if DEBUG
                 .EnableSensitiveDataLogging()
                 .EnableDetailedErrors()

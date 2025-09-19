@@ -3,6 +3,7 @@ using BeamOs.StructuralAnalysis.Api;
 using BeamOs.StructuralAnalysis.Sdk;
 using Microsoft.Extensions.DependencyInjection;
 #if Sqlite
+using BeamOs.StructuralAnalysis.Api.Endpoints;
 using BeamOs.StructuralAnalysis.Infrastructure;
 #endif
 
