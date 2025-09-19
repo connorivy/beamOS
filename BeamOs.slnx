@@ -59,7 +59,7 @@
     <Project Path="src/WebApp/BeamOs.WebApp/BeamOs.WebApp.csproj" />
   </Folder>
   <Folder Name="/tests/">
-    <!-- <Project Path="tests/BeamOs.Tests.Aot/BeamOs.Tests.Aot.csproj" /> -->
+    <Project Path="tests/BeamOs.Tests.Aot/BeamOs.Tests.Aot.csproj" />
     <Project Path="tests/BeamOs.Tests.Architecture/BeamOs.Tests.Architecture.csproj" />
     <Project Path="tests/BeamOs.Tests.Common/BeamOs.Tests.Common.csproj" />
     <Project Path="tests/StructuralAnalysis/BeamOs.Tests.StructuralAnalysis.Integration.Shared/BeamOs.Tests.StructuralAnalysis.Integration.Shared.shproj" />

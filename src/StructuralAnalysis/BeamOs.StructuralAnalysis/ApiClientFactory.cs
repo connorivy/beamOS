@@ -59,6 +59,8 @@ public static class ApiClientFactory
             .AddStructuralAnalysisInfrastructureRequired()
             .AddStructuralAnalysisInfrastructureConfigurable("dummy");
 
+        services.AddLogging();
+
 #if !CODEGEN
         services.AddScoped<IStructuralAnalysisApiClientV2, InMemoryApiClient2>();
 #endif
@@ -67,9 +69,7 @@ public static class ApiClientFactory
         var client = serviceProvider.GetRequiredService<BeamOsResultApiClient>();
 
         using var scope = serviceProvider.CreateScope();
-#pragma warning disable IL3050 // Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.
         scope.EnsureDbCreated();
-#pragma warning restore IL3050 // Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.
         client.Disposables.Add(sqliteConnection);
         return client;
 #else

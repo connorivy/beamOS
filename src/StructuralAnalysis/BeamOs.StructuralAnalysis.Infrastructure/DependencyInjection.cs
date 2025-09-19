@@ -165,12 +165,11 @@ public static partial class DependencyInjection
         }
     }
 
-    [RequiresDynamicCode("Calls EnsureCreated which uses reflection to create tables.")]
     public static void EnsureDbCreated(this IServiceScope scope)
     {
         var dbContext = scope.ServiceProvider.GetRequiredService<StructuralAnalysisDbContext>();
-
-        dbContext.Database.EnsureCreated();
+        var sql = File.ReadAllText("createSqliteDb.sql");
+        _ = dbContext.Database.ExecuteSqlRaw(sql);
     }
 
     public static void AddPhysicalModelInfrastructure(

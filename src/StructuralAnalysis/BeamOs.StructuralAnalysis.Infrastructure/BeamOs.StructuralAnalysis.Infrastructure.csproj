@@ -48,6 +48,10 @@
 	<ItemGroup Condition="'$(BeamOsUseSqlite)' == 'true'">
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
 		<PackageReference Include="EntityFrameworkCore.Exceptions.Sqlite" />
+		<Content Include="*.sql">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -59,4 +63,7 @@
 	<ItemGroup>
 	  <Folder Include="AnalyticalResults\EnvelopeResultSets\" />
 	</ItemGroup>
+	<ItemGroup>
+
+  	</ItemGroup>
 </Project>
