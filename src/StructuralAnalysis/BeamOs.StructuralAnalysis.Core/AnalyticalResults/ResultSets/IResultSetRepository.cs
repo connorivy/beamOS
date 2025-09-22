@@ -1,3 +1,4 @@
+using BeamOs.StructuralAnalysis.Application.AnalyticalResults.NodeResults;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
@@ -16,11 +17,21 @@ internal interface IResultSetRepository : IModelResourceRepository<ResultSetId, 
 }
 
 internal sealed class InMemoryResultSetRepository(
-    InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage
+    InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage,
+    INodeResultRepository nodeResultRepository
 )
     : InMemoryModelResourceRepository<ResultSetId, ResultSet>(inMemoryModelRepositoryStorage),
         IResultSetRepository
 {
+    public override void Add(ResultSet aggregate)
+    {
+        base.Add(aggregate);
+        foreach (var nodeResult in aggregate.NodeResults)
+        {
+            nodeResultRepository.Add(nodeResult);
+        }
+    }
+
     public Task<int> DeleteAll(ModelId modelId, CancellationToken ct)
     {
         int result = 0;

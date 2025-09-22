@@ -2,9 +2,14 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using BeamOs.CodeGen.SpeckleConnectorApi;
+using BeamOs.CodeGen.StructuralAnalysisApiClient;
+using BeamOs.StructuralAnalysis;
 using BeamOs.StructuralAnalysis.Api.Endpoints;
+using BeamOs.StructuralAnalysis.Sdk;
 using BeamOs.Tests.Common;
 using DiffEngine;
+using Microsoft.Extensions.DependencyInjection;
 using Testcontainers.PostgreSql;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration;
@@ -17,6 +22,39 @@ public static partial class AssemblySetup
     public static bool ApiIsRunning { get; set; }
     public static bool SetupWebApi { get; set; } = true;
     public static bool SkipOpenSeesTests { get; set; } = BeamOsEnv.IsCiEnv();
+    public static BeamOsResultApiClient StructuralAnalysisRemoteApiClient { get; set; }
+    public static BeamOsResultApiClient StructuralAnalysisLocalApiClient { get; set; }
+    public static VerifySettings ThisVerifierSettings { get; } = new();
+
+    public static Func<BeamOsResultApiClient> GetStructuralAnalysisApiClientV1() =>
+        () =>
+        {
+            return StructuralAnalysisRemoteApiClient;
+        };
+
+    public static BeamOsResultApiClient CreateApiClientWebAppFactory(HttpClient httpClient)
+    {
+        var services = new ServiceCollection();
+        services.AddBeamOsRemoteTest(httpClient);
+        var serviceProvider = services.BuildServiceProvider();
+        return serviceProvider.GetRequiredService<BeamOsResultApiClient>();
+    }
+
+    private static IServiceCollection AddBeamOsRemoteTest(
+        this IServiceCollection services,
+        HttpClient httpClient
+    )
+    {
+        services.AddSingleton(httpClient);
+
+        services.AddScoped<IStructuralAnalysisApiClientV1, StructuralAnalysisApiClientV1>();
+        services.AddScoped<ISpeckleConnectorApi, SpeckleConnectorApi>();
+
+        services.AddStructuralAnalysisSdkRequired();
+
+        return services;
+    }
+
     private static readonly char[] separator = [' ', '\n', '\r'];
 
     [Before(TUnitHookType.Assembly)]
@@ -29,19 +67,13 @@ public static partial class AssemblySetup
 
         TestUtils.Asserter = new();
 
-        // if (UseLocalApi)
-        // {
-        //     UseLocalApiClient();
-        // }
-        // else
-        // {
-        await UseRemoteApiClient();
-        // }
+        StructuralAnalysisLocalApiClient = ApiClientFactory.CreateResultLocal();
+        await InitializeRemoteApiClient();
 
         ApiIsRunning = true;
     }
 
-    private static async Task UseRemoteApiClient()
+    private static async Task InitializeRemoteApiClient()
     {
         DbContainer = new PostgreSqlBuilder().WithImage("postgres:15-alpine").Build();
         await DbContainer.StartAsync();
@@ -51,7 +83,9 @@ public static partial class AssemblySetup
             $"{DbContainer.GetConnectionString()};Include Error Detail=True"
         );
 #pragma warning restore IL3050 // Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.
-        StructuralAnalysisApiClient = CreateApiClientWebAppFactory(webAppFactory.CreateClient());
+        StructuralAnalysisRemoteApiClient = CreateApiClientWebAppFactory(
+            webAppFactory.CreateClient()
+        );
     }
 
     // private static void UseLocalApiClient()
@@ -137,23 +171,30 @@ public static partial class AssemblySetup
                 // for some reason the default diff runner does not work in dev containers
                 // so I'm just doing it manually for now
                 DiffRunner.Disabled = true;
+                VerifierSettings.OnFirstVerify(
+                    async (filePair, receivedText, autoVerify) =>
+                    {
+                        File.Create(filePair.VerifiedPath);
+                        using var process = new Process
+                        {
+                            StartInfo = new ProcessStartInfo
+                            {
+                                FileName = vscodeServerPath,
+                                Arguments =
+                                    $"--diff \"{filePair.ReceivedPath}\" \"{filePair.VerifiedPath}\"",
+                                RedirectStandardOutput = true,
+                                UseShellExecute = false,
+                                CreateNoWindow = true,
+                            },
+                        };
+
+                        process.Start();
+                        await process.WaitForExitAsync();
+                    }
+                );
                 VerifierSettings.OnVerifyMismatch(
                     async (filePair, message, autoVerify) =>
                     {
-                        // string endflags;
-                        // lock (firstRunLock)
-                        // {
-                        //     if (isFirstTestRun)
-                        //     {
-                        //         endflags = " --new-window";
-                        //         isFirstTestRun = false;
-                        //     }
-                        //     else
-                        //     {
-                        //         endflags = " --reuse-window";
-                        //     }
-                        // }
-
                         using var process = new Process
                         {
                             StartInfo = new ProcessStartInfo

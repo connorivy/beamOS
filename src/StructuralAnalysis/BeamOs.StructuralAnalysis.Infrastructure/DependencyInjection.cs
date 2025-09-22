@@ -2,7 +2,6 @@ using System.Diagnostics.CodeAnalysis;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.Identity;
-using BeamOs.StructuralAnalysis.Api;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.EnvelopeResultSets;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.NodeResults;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.ResultSets;
@@ -17,7 +16,6 @@ using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
-using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 using BeamOs.StructuralAnalysis.Infrastructure.AnalyticalResults.EnvelopeResultSets;
 using BeamOs.StructuralAnalysis.Infrastructure.AnalyticalResults.NodeResults;
 using BeamOs.StructuralAnalysis.Infrastructure.AnalyticalResults.ResultSets;
@@ -179,9 +177,6 @@ public static partial class DependencyInjection
         configurationBuilder.AddValueConverters();
     }
 
-    // public static void AddValueConverters<TAssemblyMarker>(
-    //     this ModelConfigurationBuilder configurationBuilder
-    // )
     // {
     //     var valueConverters = typeof(TAssemblyMarker)
     //         .Assembly.GetTypes()

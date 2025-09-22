@@ -1,0 +1,13 @@
+{
+  Value: null,
+  Error: {
+    Title: Not Found Error,
+    Detail: Element1d with id 1234 not found on model with id Guid_1.,
+    Status: 404,
+    Type: https://tools.ietf.org/html/rfc7231#section-6.5.4,
+    Instance: null,
+    Extensions: null
+  },
+  IsError: true,
+  IsSuccess: false
+}

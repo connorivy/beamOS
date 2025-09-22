@@ -1,9 +1,14 @@
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis.Application.AnalyticalResults.EnvelopeResultSets;
+using BeamOs.StructuralAnalysis.Application.AnalyticalResults.ResultSets;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCombinations;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Materials;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.MomentLoads;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
@@ -33,9 +38,15 @@ internal sealed class InMemoryModelRepository(
     INodeRepository nodeRepository,
     IInternalNodeRepository internalNodeRepository,
     IElement1dRepository element1dRepository,
+    IPointLoadRepository pointLoadRepository,
+    IMomentLoadRepository momentLoadRepository,
     IMaterialRepository materialRepository,
     ISectionProfileRepository sectionProfileRepository,
     ISectionProfileFromLibraryRepository sectionProfileFromLibraryRepository,
+    ILoadCombinationRepository loadCombinationRepository,
+    IResultSetRepository resultSetRepository,
+    IEnvelopeResultSetRepository envelopeResultSetRepository,
+    IModelProposalRepository modelProposalRepository,
     InMemoryUnitOfWork unitOfWork
 ) : IModelRepository
 {
@@ -75,6 +86,8 @@ internal sealed class InMemoryModelRepository(
             default(IList<Element1dId>),
             ct
         );
+        model.PointLoads = await pointLoadRepository.GetMany(modelId, null, ct);
+        model.MomentLoads = await momentLoadRepository.GetMany(modelId, null, ct);
         model.Materials = await materialRepository.GetMany(modelId, null, ct);
         model.SectionProfiles = await sectionProfileRepository.GetMany(modelId, null, ct);
         model.SectionProfilesFromLibrary = await sectionProfileFromLibraryRepository.GetMany(
@@ -82,6 +95,10 @@ internal sealed class InMemoryModelRepository(
             null,
             ct
         );
+        model.LoadCombinations = await loadCombinationRepository.GetMany(modelId, null, ct);
+        model.ResultSets = await resultSetRepository.GetMany(modelId, null, ct);
+        model.EnvelopeResultSets = await envelopeResultSetRepository.GetMany(modelId, null, ct);
+        model.ModelProposals = await modelProposalRepository.GetMany(modelId, null, ct);
 
         return model;
     }

@@ -46,7 +46,7 @@ internal class InMemoryModelResourceRepository<TId, T>(
     protected Dictionary<ModelId, Dictionary<TId, T>> ModelResources { get; } =
         inMemoryModelRepositoryStorage.GetStorage<Dictionary<ModelId, Dictionary<TId, T>>>();
 
-    public void Add(T aggregate)
+    public virtual void Add(T aggregate)
     {
         if (!this.ModelResources.TryGetValue(aggregate.ModelId, out var resources))
         {
@@ -72,7 +72,11 @@ internal class InMemoryModelResourceRepository<TId, T>(
         return Task.FromResult(new List<TId>());
     }
 
-    public Task<List<T>> GetMany(ModelId modelId, IList<TId>? ids, CancellationToken ct = default)
+    public virtual Task<List<T>> GetMany(
+        ModelId modelId,
+        IList<TId>? ids,
+        CancellationToken ct = default
+    )
     {
         if (!this.ModelResources.TryGetValue(modelId, out var resources))
         {

@@ -1,5 +1,7 @@
+using System.Collections.Concurrent;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
@@ -15,16 +17,28 @@ using FluentAssertions;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration.Api;
 
-public class EndToEndTests
+[MethodDataSource(typeof(ApiClients), nameof(ApiClients.GetClients))]
+public class EndToEndTests(ApiClientKey client)
 {
-    private static Guid modelId;
-    private static ApiResponse<ModelResponse> modelResponseResult;
-    private static BeamOsApiResultModelId modelClient;
+    private static readonly ConcurrentDictionary<ApiClientKey, Guid> clientModelIds = [];
+    private static readonly ConcurrentDictionary<
+        ApiClientKey,
+        ApiResponse<ModelResponse>
+    > modelResponses = [];
+    private Guid modelId => clientModelIds[client];
+    private ApiResponse<ModelResponse> modelResponseResult => modelResponses[client];
+    private BeamOsResultApiClient apiClient => client.GetClient();
+    private BeamOsApiResultModelId modelClient => this.apiClient.Models[this.modelId];
 
-    [Before(HookType.Class)]
-    public static async Task SetupModel()
+    [Before(HookType.Test)]
+    public async Task SetupModel()
     {
-        modelId = Guid.NewGuid();
+        if (clientModelIds.ContainsKey(client))
+        {
+            return;
+        }
+
+        var modelId = Guid.NewGuid();
 
         CreateModelRequest request = new()
         {
@@ -34,16 +48,14 @@ public class EndToEndTests
             Id = modelId,
         };
 
-        modelResponseResult =
-            await AssemblySetup.StructuralAnalysisApiClient.Models.CreateModelAsync(request);
-
-        modelClient = AssemblySetup.StructuralAnalysisApiClient.Models[modelId];
+        clientModelIds[client] = modelId;
+        modelResponses[client] = await this.apiClient.Models.CreateModelAsync(request);
     }
 
     [Test]
     public async Task CreateModel_ShouldReturnSuccessfulResponse()
     {
-        await Verify(modelResponseResult);
+        await Verify(this.modelResponseResult);
     }
 
     [Test]
@@ -54,11 +66,10 @@ public class EndToEndTests
             Name = "test model",
             Description = "test model",
             Settings = new(UnitSettingsContract.K_FT),
-            Id = modelId,
+            Id = this.modelId,
         };
 
-        var modelResponseResult =
-            await AssemblySetup.StructuralAnalysisApiClient.Models.CreateModelAsync(request);
+        var modelResponseResult = await this.apiClient.Models.CreateModelAsync(request);
 
         await Verify(modelResponseResult).ScrubInlineGuids();
     }
@@ -71,7 +82,9 @@ public class EndToEndTests
             Restraint.Fixed
         );
 
-        var nodeResponseResult = await modelClient.Nodes.CreateNodeAsync(createNodeRequestBody);
+        var nodeResponseResult = await this.modelClient.Nodes.CreateNodeAsync(
+            createNodeRequestBody
+        );
 
         await Verify(nodeResponseResult)
             .ScrubMembers(l =>
@@ -84,7 +97,7 @@ public class EndToEndTests
     {
         LoadCaseData data = new() { Name = "Dead" };
 
-        var loadCaseResponse = await modelClient.LoadCases.CreateLoadCaseAsync(data);
+        var loadCaseResponse = await this.modelClient.LoadCases.CreateLoadCaseAsync(data);
 
         await Verify(loadCaseResponse);
     }
@@ -94,9 +107,8 @@ public class EndToEndTests
     {
         LoadCombinationData data = new((1, 1.0));
 
-        var loadCombinationResponse = await modelClient.LoadCombinations.CreateLoadCombinationAsync(
-            data
-        );
+        var loadCombinationResponse =
+            await this.modelClient.LoadCombinations.CreateLoadCombinationAsync(data);
 
         await Verify(loadCombinationResponse);
     }
@@ -113,9 +125,7 @@ public class EndToEndTests
             Id = Guid.NewGuid(),
         };
 
-        var modelResponse = await AssemblySetup.StructuralAnalysisApiClient.Models.CreateModelAsync(
-            request
-        );
+        var modelResponse = await this.apiClient.Models.CreateModelAsync(request);
 
         modelResponse.IsSuccess.Should().BeTrue();
 
@@ -123,9 +133,7 @@ public class EndToEndTests
             new(1, 1, 1, LengthUnitContract.Foot),
             Restraint.Fixed
         );
-        var newModelClient = AssemblySetup.StructuralAnalysisApiClient.Models[
-            modelResponse.Value.Id
-        ];
+        var newModelClient = this.apiClient.Models[modelResponse.Value.Id];
 
         var nodeResponseResult = await newModelClient.Nodes.CreateNodeAsync(createNodeRequestBody);
 
@@ -142,7 +150,9 @@ public class EndToEndTests
             5
         );
 
-        var nodeResponseResult = await modelClient.Nodes.CreateNodeAsync(createNodeRequestBody);
+        var nodeResponseResult = await this.modelClient.Nodes.CreateNodeAsync(
+            createNodeRequestBody
+        );
 
         await Verify(nodeResponseResult);
     }
@@ -161,7 +171,7 @@ public class EndToEndTests
             Id = 5,
         };
 
-        var result = await modelClient.PointLoads.CreatePointLoadAsync(requestBody);
+        var result = await this.modelClient.PointLoads.CreatePointLoadAsync(requestBody);
 
         await Verify(result);
     }
@@ -180,7 +190,7 @@ public class EndToEndTests
             Id = 5,
         };
 
-        var result = await modelClient.MomentLoads.CreateMomentLoadAsync(requestBody);
+        var result = await this.modelClient.MomentLoads.CreateMomentLoadAsync(requestBody);
 
         await Verify(result);
     }
@@ -213,7 +223,7 @@ public class EndToEndTests
             Id = 1636,
         };
         var sectionProfileResponseResult =
-            await modelClient.SectionProfiles.CreateSectionProfileAsync(w16x36Request);
+            await this.modelClient.SectionProfiles.CreateSectionProfileAsync(w16x36Request);
 
         await Verify(sectionProfileResponseResult);
     }
@@ -227,7 +237,9 @@ public class EndToEndTests
             Library = StructuralCode.AISC_360_16,
         };
         var sectionProfileResponseResult =
-            await modelClient.SectionProfiles.FromLibrary.AddSectionProfileFromLibraryAsync(w14x22);
+            await this.modelClient.SectionProfiles.FromLibrary.AddSectionProfileFromLibraryAsync(
+                w14x22
+            );
 
         await Verify(sectionProfileResponseResult)
             .ScrubMembers(l =>
@@ -246,7 +258,9 @@ public class EndToEndTests
             Id = 992,
         };
 
-        var materialResponseResult = await modelClient.Materials.CreateMaterialAsync(a992Request);
+        var materialResponseResult = await this.modelClient.Materials.CreateMaterialAsync(
+            a992Request
+        );
 
         await Verify(materialResponseResult);
     }
@@ -266,7 +280,9 @@ public class EndToEndTests
             6
         );
 
-        var nodeResponseResult = await modelClient.Nodes.CreateNodeAsync(createNodeRequestBody);
+        var nodeResponseResult = await this.modelClient.Nodes.CreateNodeAsync(
+            createNodeRequestBody
+        );
 
         await Assert.That(nodeResponseResult.IsSuccess).IsTrue();
 
@@ -279,7 +295,7 @@ public class EndToEndTests
             Id = 99,
         };
 
-        var elResponseResult = await modelClient.Element1ds.CreateElement1dAsync(elRequest);
+        var elResponseResult = await this.modelClient.Element1ds.CreateElement1dAsync(elRequest);
 
         await Verify(elResponseResult);
     }
@@ -295,9 +311,8 @@ public class EndToEndTests
             10
         );
 
-        var internalNodeResponseResult = await modelClient.Nodes.Internal.CreateInternalNodeAsync(
-            requestBody
-        );
+        var internalNodeResponseResult =
+            await this.modelClient.Nodes.Internal.CreateInternalNodeAsync(requestBody);
 
         await Verify(internalNodeResponseResult)
             .ScrubMembers(l =>
@@ -309,8 +324,8 @@ public class EndToEndTests
     [DependsOn(nameof(CreateInternalNode_ShouldCreateInternalNode))]
     public async Task ChangeInternalNodeToSpatial_ShouldChangeNode()
     {
-        var x = await modelClient
-            .Nodes[10]
+        var x = await this
+            .modelClient.Nodes[10]
             .PutNodeAsync(
                 new NodeData()
                 {
@@ -329,7 +344,7 @@ public class EndToEndTests
     [DependsOn(nameof(CreateElement1d_ShouldCreateElement1d))]
     public async Task GetElement1d_ShouldResultInExpectedResponse()
     {
-        var elResponseResult = await modelClient.Element1ds[99].GetElement1dAsync();
+        var elResponseResult = await this.modelClient.Element1ds[99].GetElement1dAsync();
 
         await Verify(elResponseResult);
     }
@@ -344,7 +359,7 @@ public class EndToEndTests
             Restraint.Free
         );
 
-        var nodeResponseResult = await modelClient.Nodes.PatchNodeAsync(updateNodeRequest);
+        var nodeResponseResult = await this.modelClient.Nodes.PatchNodeAsync(updateNodeRequest);
 
         await Verify(nodeResponseResult);
     }
@@ -354,8 +369,8 @@ public class EndToEndTests
     [DependsOn(nameof(CreateElement1d_ShouldCreateElement1d))]
     public async Task ChangeSpatialNodeToInternal_ShouldChangeNode()
     {
-        var changeToInternal = await modelClient
-            .Nodes[5]
+        var changeToInternal = await this
+            .modelClient.Nodes[5]
             .Internal.PutInternalNodeAsync(
                 new InternalNodeData(99, new(50, RatioUnitContract.Percent))
             );
@@ -363,9 +378,11 @@ public class EndToEndTests
 
         // element with id 99 has start node with id 5
         // changing the node type should not affect the element
-        var existingElement = await modelClient.Element1ds[99].GetElement1dAsync();
+        var existingElement = await this.modelClient.Element1ds[99].GetElement1dAsync();
 
-        var internalNodeResponseResult = await modelClient.Nodes[5].Internal.GetInternalNodeAsync();
+        var internalNodeResponseResult = await this
+            .modelClient.Nodes[5]
+            .Internal.GetInternalNodeAsync();
 
         await Verify(internalNodeResponseResult);
     }
@@ -426,14 +443,14 @@ public class EndToEndTests
         var newNode1Id = 456;
         var newNode2Id = 789;
         var newElement1dId = 1234;
-        var newNode1Response = await modelClient.Nodes.CreateNodeAsync(
+        var newNode1Response = await this.modelClient.Nodes.CreateNodeAsync(
             new CreateNodeRequest(
                 new(7, 7, 7, LengthUnitContract.Foot),
                 Restraint.Fixed,
                 newNode1Id
             )
         );
-        var newNode2Response = await modelClient.Nodes.CreateNodeAsync(
+        var newNode2Response = await this.modelClient.Nodes.CreateNodeAsync(
             new CreateNodeRequest(
                 new(17, 17, 17, LengthUnitContract.Foot),
                 Restraint.Fixed,
@@ -443,7 +460,7 @@ public class EndToEndTests
         newNode1Response.ThrowIfError();
         newNode2Response.ThrowIfError();
 
-        var newElement1dResponse = await modelClient.Element1ds.CreateElement1dAsync(
+        var newElement1dResponse = await this.modelClient.Element1ds.CreateElement1dAsync(
             new CreateElement1dRequest()
             {
                 Id = newElement1dId,
@@ -465,11 +482,11 @@ public class EndToEndTests
             );
         }
 
-        var deleteNodeResponse = await modelClient.Nodes[newNode1Id].DeleteNodeAsync();
+        var deleteNodeResponse = await this.modelClient.Nodes[newNode1Id].DeleteNodeAsync();
         deleteNodeResponse.ThrowIfError();
 
         // Verify that the element1d with id 1234 has been deleted
-        var getElement1dResponse = await modelClient.Element1ds[1234].GetElement1dAsync();
+        var getElement1dResponse = await this.modelClient.Element1ds[1234].GetElement1dAsync();
 
         await Verify(getElement1dResponse)
             .ScrubInlineGuids()
@@ -477,4 +494,10 @@ public class EndToEndTests
                 typeof(IHasIntId).IsAssignableFrom(l.DeclaringType) && l.Name == "Id"
             );
     }
+}
+
+public class IntegrationTestContext
+{
+    public ApiClientKey ClientKey { get; init; }
+    public Guid ModelId { get; init; }
 }

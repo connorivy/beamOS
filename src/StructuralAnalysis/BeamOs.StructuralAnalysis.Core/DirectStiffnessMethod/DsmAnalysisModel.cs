@@ -36,16 +36,32 @@ internal sealed class DsmAnalysisModel(
     private static DsmElement1d[] CreateDsmElement1dsFromModel(Model model) =>
         model.Settings.AnalysisSettings.Element1DAnalysisType switch
         {
-            Element1dAnalysisType.Euler => model
-                .Element1ds.Select(el => new DsmElement1d(
+            Element1dAnalysisType.Euler => (
+                model.Element1ds
+                ?? throw new InvalidOperationException("Model does not contain any Element1ds")
+            )
+                .Select(el => new DsmElement1d(
                     el,
-                    el.SectionProfile.GetSectionProfile()
+                    (
+                        el.SectionProfile
+                        ?? throw new InvalidOperationException(
+                            "Element1d does not contain a SectionProfile"
+                        )
+                    ).GetSectionProfile()
                 ))
                 .ToArray(),
-            Element1dAnalysisType.Timoshenko => model
-                .Element1ds.Select(el => new TimoshenkoDsmElement1d(
+            Element1dAnalysisType.Timoshenko => (
+                model.Element1ds
+                ?? throw new InvalidOperationException("Model does not contain any Element1ds")
+            )
+                .Select(el => new TimoshenkoDsmElement1d(
                     el,
-                    el.SectionProfile.GetSectionProfile()
+                    (
+                        el.SectionProfile
+                        ?? throw new InvalidOperationException(
+                            "Element1d does not contain a SectionProfile"
+                        )
+                    ).GetSectionProfile()
                 ))
                 .ToArray(),
             Element1dAnalysisType.Undefined or _ => throw new Exception(

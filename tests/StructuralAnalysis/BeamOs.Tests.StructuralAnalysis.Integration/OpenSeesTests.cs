@@ -4,37 +4,25 @@ using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.NodeResult;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Sdk;
 using BeamOs.Tests.Common;
-using BeamOs.Tests.StructuralAnalysis.Integration;
-using TUnit.Core.Attributes;
-using TUnit.Core.Exceptions;
+using BeamOs.Tests.Common.Mappers.UnitValueDtoMappers;
 
-namespace BeamOs.Tests.Aot;
+namespace BeamOs.Tests.StructuralAnalysis.Integration;
 
 [MethodDataSource(
-    typeof(AllSolvedProblems),
-    nameof(AllSolvedProblems.ModelFixturesWithExpectedNodeResults)
+    typeof(AllSolvedProblemsWithMulipleClients),
+    nameof(AllSolvedProblemsWithMulipleClients.ModelFixturesWithExpectedNodeResults)
 )]
-public class OpenSeesTests(ModelFixture modelFixture)
+public class OpenSeesTests(ApiClientKey apiClientKey, ModelFixture modelFixture)
 {
-    private BeamOsResultApiClient client;
-    private BeamOsApiResultModelId modelClient;
+    private BeamOsResultApiClient ApiClient => field ??= apiClientKey.GetClient();
+    private BeamOsApiResultModelId ModelClient => field ??= this.ApiClient.Models[modelFixture.Id];
 
-    [Before(TUnitHookType.Test)]
-    public void BeforeClass()
-    {
-        // #if !Sqlite
-        //         throw new SkipTestException("OpenSees AOT tests only run with SQLite backend");
-        // #endif
-        this.client = ApiClientFactory.CreateResultLocal();
-        this.modelClient ??= this.client.Models[modelFixture.Id];
-    }
-
-    [Test]
+    [Test, SkipInFrontEnd]
     public async Task RunOpenSeesAnalysis_ShouldReturnSuccessfulStatusCode()
     {
-        await modelFixture.CreateOnly(this.client);
+        await modelFixture.CreateOnly(this.ApiClient);
 
-        var resultSetIdResponse = await this.modelClient.Analyze.Opensees.RunOpenSeesAnalysisAsync(
+        var resultSetIdResponse = await this.ModelClient.Analyze.Opensees.RunOpenSeesAnalysisAsync(
             new() { LoadCombinationIds = [1] }
         );
 
@@ -62,8 +50,8 @@ public class OpenSeesTests(ModelFixture modelFixture)
                 || expectedNodeDisplacementResult.RotationAboutZ.HasValue
             )
             {
-                var result = await modelClient
-                    .Results.LoadCombinations[1]
+                var result = await this
+                    .ModelClient.Results.LoadCombinations[1]
                     .Nodes[expectedNodeDisplacementResult.NodeId]
                     .GetNodeResultAsync();
 
@@ -89,8 +77,8 @@ public class OpenSeesTests(ModelFixture modelFixture)
                 || expectedNodeDisplacementResult.TorqueAboutZ.HasValue
             )
             {
-                var result = await modelClient
-                    .Results.LoadCombinations[1]
+                var result = await this
+                    .ModelClient.Results.LoadCombinations[1]
                     .Nodes[expectedNodeDisplacementResult.NodeId]
                     .GetNodeResultAsync();
 
@@ -190,6 +178,4 @@ public class OpenSeesTests(ModelFixture modelFixture)
             ]
         );
     }
-
-    public static object Create(ModelFixture modelFixture) => new OpenSeesTests(modelFixture);
 }

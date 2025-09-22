@@ -40,6 +40,4 @@
     <ProjectReference Include="..\..\BeamOs.Tests.Common\BeamOs.Tests.Common.csproj" />
   </ItemGroup>
 
-  <Import Project="..\BeamOs.Tests.StructuralAnalysis.Integration.Shared\BeamOs.Tests.StructuralAnalysis.Integration.Shared.projitems" Label="Shared" />
-
 </Project>

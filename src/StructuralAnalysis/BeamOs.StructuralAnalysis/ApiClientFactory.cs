@@ -1,11 +1,9 @@
 ﻿using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.StructuralAnalysis.Api;
-using BeamOs.StructuralAnalysis.Sdk;
-using Microsoft.Extensions.DependencyInjection;
-#if Sqlite
 using BeamOs.StructuralAnalysis.Api.Endpoints;
 using BeamOs.StructuralAnalysis.Infrastructure;
-#endif
+using BeamOs.StructuralAnalysis.Sdk;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BeamOs.StructuralAnalysis;
 
@@ -23,43 +21,19 @@ public static class ApiClientFactory
 
     public static BeamOsApiClient CreateLocal()
     {
-#if Sqlite
         var services = new ServiceCollection();
-        services
-            .AddStructuralAnalysisSdkRequired()
-            .AddStructuralAnalysisRequired()
-            .AddStructuralAnalysisConfigurable()
-            .AddInMemoryInfrastructure();
-#if !CODEGEN
-        services.AddScoped<IStructuralAnalysisApiClientV2, InMemoryApiClient2>();
-#endif
+        services.AddBeamOsLocal();
 
         var serviceProvider = services.BuildServiceProvider();
         var apiClient = serviceProvider.GetRequiredService<IStructuralAnalysisApiClientV2>();
 
-        // InMemoryApiClient2 x = default;
         return new BeamOsApiClient(apiClient);
-        // return new BeamOsModelBuilder(model, apiClient);
-#else
-        throw new NotSupportedException("Local client requires Sqlite support.");
-#endif
     }
 
     public static BeamOsResultApiClient CreateResultLocal()
     {
-#if Sqlite
         var services = new ServiceCollection();
-        services
-            .AddStructuralAnalysisSdkRequired()
-            .AddStructuralAnalysisRequired()
-            .AddStructuralAnalysisConfigurable();
-
-        var sqliteConnection = DI_Sqlite.AddSqliteInMemoryAndReturnConnection(services);
-        services
-            .AddStructuralAnalysisInfrastructureRequired()
-            .AddStructuralAnalysisInfrastructureConfigurable("dummy");
-
-        services.AddLogging();
+        services.AddBeamOsLocal();
 
 #if !CODEGEN
         services.AddScoped<IStructuralAnalysisApiClientV2, InMemoryApiClient2>();
@@ -68,24 +42,13 @@ public static class ApiClientFactory
         var serviceProvider = services.BuildServiceProvider();
         var client = serviceProvider.GetRequiredService<BeamOsResultApiClient>();
 
+#if Sqlite
         using var scope = serviceProvider.CreateScope();
         scope.EnsureDbCreated();
-        client.Disposables.Add(sqliteConnection);
-        return client;
-#else
-        throw new NotSupportedException("Local client requires Sqlite support.");
 #endif
+        // client.Disposables.Add(sqliteConnection);
+        return client;
     }
-    // public static BeamOsModel Local()
-    // {
-
-    // }
-    //
-    // public static BeamOsModel Hi()
-    // {
-    // }
-
-    // public static BeamOsModel WebApp() { }
 }
 
 // [DotWrapExpose]

@@ -1,13 +1,41 @@
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.StructuralAnalysis.Application.Common;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.MomentLoads;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 
-internal class InMemoryNodeRepository(InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage)
-    : InMemoryModelResourceRepository<NodeId, Node>(inMemoryModelRepositoryStorage),
-        INodeRepository
+internal class InMemoryNodeRepository(
+    InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage,
+    IPointLoadRepository pointLoadRepository,
+    IMomentLoadRepository momentLoadRepository
+) : InMemoryModelResourceRepository<NodeId, Node>(inMemoryModelRepositoryStorage), INodeRepository
 {
+    public override async Task<List<Node>> GetMany(
+        ModelId modelId,
+        IList<NodeId>? ids,
+        CancellationToken ct = default
+    )
+    {
+        var nodes = await base.GetMany(modelId, ids, ct);
+        foreach (var node in nodes)
+        {
+            node.PointLoads =
+            [
+                .. (await pointLoadRepository.GetMany(modelId, null, ct)).Where(pl =>
+                    pl.NodeId == node.Id
+                ),
+            ];
+            node.MomentLoads =
+            [
+                .. (await momentLoadRepository.GetMany(modelId, null, ct)).Where(ml =>
+                    ml.NodeId == node.Id
+                ),
+            ];
+        }
+        return nodes;
+    }
     // public Task<Node> Update(PatchNodeCommand patchCommand)
     // {
     //     if (

@@ -6,6 +6,7 @@
     <IsPackable>true</IsPackable>
     <PublishAot Condition="'$(BeamOsEnableAot)' == 'true'">true</PublishAot>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <BeamOsUseInMemoryInfra Condition="'$(BeamOsUseInMemoryInfra)' == ''">true</BeamOsUseInMemoryInfra>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,6 +23,13 @@
 		<DefineConstants>$(DefineConstants);Sqlite</DefineConstants>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(BeamOsUseInMemoryInfra)' == 'true'">
+		<DefineConstants>$(DefineConstants);InMemory</DefineConstants>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(BeamOsUseInMemoryInfra)' == 'true'">
+    <ProjectReference Include="../BeamOs.StructuralAnalysis.Core/BeamOs.StructuralAnalysis.Core.csproj" />
+	</ItemGroup>
 	<ItemGroup Condition="'$(BeamOsUseSqlite)' == 'true'">
     <ProjectReference Include="../BeamOs.StructuralAnalysis.Core/BeamOs.StructuralAnalysis.Core.csproj" />
     <ProjectReference Include="../BeamOs.StructuralAnalysis.Infrastructure/BeamOs.StructuralAnalysis.Infrastructure.csproj" />
