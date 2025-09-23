@@ -99,14 +99,14 @@ internal class InMemoryModelResourceRepository<TId, T>(
         return Task.FromResult(result);
     }
 
-    public Task<T?> GetSingle(ModelId modelId, TId id, CancellationToken ct = default)
+    public virtual Task<T?> GetSingle(ModelId modelId, TId id, CancellationToken ct = default)
     {
         if (
             this.ModelResources.TryGetValue(modelId, out var resources)
             && resources.TryGetValue(id, out var entity)
         )
         {
-            return Task.FromResult(entity);
+            return Task.FromResult<T?>(entity);
         }
         return Task.FromResult<T?>(null);
     }
@@ -136,7 +136,7 @@ internal class InMemoryModelResourceRepository<TId, T>(
         return Task.FromResult(default(ModelSettingsAndEntity<T>?)); // Entity not found
     }
 
-    public ValueTask Put(T aggregate)
+    public virtual ValueTask Put(T aggregate)
     {
         if (this.ModelResources.TryGetValue(aggregate.ModelId, out var resources))
         {
@@ -155,19 +155,12 @@ internal class InMemoryModelResourceRepository<TId, T>(
         return Task.CompletedTask;
     }
 
-    public void Remove(T aggregate)
+    public virtual void Remove(T aggregate)
     {
-        if (this.ModelResources.TryGetValue(aggregate.ModelId, out var resources))
-        {
-            resources.Remove(aggregate.Id);
-            if (resources.Count == 0)
-            {
-                this.ModelResources.Remove(aggregate.ModelId);
-            }
-        }
+        this.RemoveById(aggregate.ModelId, aggregate.Id);
     }
 
-    public Task RemoveById(ModelId modelId, TId id, CancellationToken ct = default)
+    public virtual Task RemoveById(ModelId modelId, TId id, CancellationToken ct = default)
     {
         if (this.ModelResources.TryGetValue(modelId, out var resources))
         {

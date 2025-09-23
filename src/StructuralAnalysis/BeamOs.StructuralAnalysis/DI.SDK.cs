@@ -21,6 +21,7 @@ using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using Microsoft.Extensions.DependencyInjection;
 #if Sqlite
 using BeamOs.StructuralAnalysis.Api.Endpoints;
@@ -116,6 +117,9 @@ public static class DI
         services.AddScoped<IModelRepository, InMemoryModelRepository>();
         services.AddScoped<INodeDefinitionRepository, InMemoryNodeDefinitionRepository>();
         services.AddScoped<INodeRepository, InMemoryNodeRepository>();
+        services.AddScoped<IModelResourceRepositoryIn<NodeId, Node>, INodeRepository>(sp =>
+            sp.GetRequiredService<INodeRepository>()
+        );
         services.AddScoped<IInternalNodeRepository, InMemoryInternalNodeRepository>();
         services.AddScoped<IMaterialRepository, InMemoryMaterialRepository>();
         services.AddScoped<ISectionProfileRepository, InMemorySectionProfileRepository>();

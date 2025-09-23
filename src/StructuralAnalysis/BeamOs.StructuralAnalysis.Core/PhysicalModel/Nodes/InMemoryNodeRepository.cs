@@ -1,15 +1,20 @@
 using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.StructuralAnalysis.Application.Common;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.MomentLoads;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 
 internal class InMemoryNodeRepository(
     InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage,
     IPointLoadRepository pointLoadRepository,
-    IMomentLoadRepository momentLoadRepository
+    IMomentLoadRepository momentLoadRepository,
+    IServiceProvider serviceProvider
 ) : InMemoryModelResourceRepository<NodeId, Node>(inMemoryModelRepositoryStorage), INodeRepository
 {
     public override async Task<List<Node>> GetMany(
@@ -36,6 +41,7 @@ internal class InMemoryNodeRepository(
         }
         return nodes;
     }
+
     // public Task<Node> Update(PatchNodeCommand patchCommand)
     // {
     //     if (
@@ -88,10 +94,78 @@ internal class InMemoryNodeRepository(
 }
 
 internal class InMemoryNodeDefinitionRepository(
-    InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage
+    InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage,
+    INodeRepository nodeRepository,
+    IInternalNodeRepository internalNodeRepository,
+    IServiceProvider serviceProvider
 )
     : InMemoryModelResourceRepository<NodeId, NodeDefinition>(inMemoryModelRepositoryStorage),
-        INodeDefinitionRepository { }
+        INodeDefinitionRepository
+{
+    public override async Task RemoveById(
+        ModelId modelId,
+        NodeId id,
+        CancellationToken ct = default
+    )
+    {
+        await base.RemoveById(modelId, id, ct);
+        await nodeRepository.RemoveById(modelId, id, ct);
+        await internalNodeRepository.RemoveById(modelId, id, ct);
+
+        var element1dRepository = serviceProvider.GetRequiredService<IElement1dRepository>();
+        var els = await element1dRepository.GetMany(modelId, default(List<Element1dId>), ct);
+        var elsToRemove = els.Where(el => el.StartNodeId == id || el.EndNodeId == id).ToList();
+        foreach (var el in elsToRemove)
+        {
+            await element1dRepository.RemoveById(modelId, el.Id, ct);
+        }
+    }
+
+    public override async ValueTask Put(NodeDefinition aggregate)
+    {
+        try
+        {
+            await base.Put(aggregate);
+            return;
+        }
+        catch (KeyNotFoundException) { }
+
+        if (aggregate is Node node)
+        {
+            try
+            {
+                await nodeRepository.Put(node);
+            }
+            catch (KeyNotFoundException)
+            {
+                // this means that the node was internal, but now is being changed to a regular node
+                // so we need to remove it from the internal node repository
+                nodeRepository.Add(node);
+                await internalNodeRepository.RemoveById(node.ModelId, node.Id);
+            }
+        }
+        else if (aggregate is InternalNode internalNode)
+        {
+            try
+            {
+                await internalNodeRepository.Put(internalNode);
+            }
+            catch (KeyNotFoundException)
+            {
+                // this means that the internal node was a regular node, but now is being changed to an internal node
+                // so we need to remove it from the regular node repository
+                internalNodeRepository.Add(internalNode);
+                await nodeRepository.RemoveById(internalNode.ModelId, internalNode.Id);
+            }
+        }
+        else
+        {
+            throw new NotSupportedException(
+                $"NodeDefinition of type {aggregate.GetType().Name} is not supported."
+            );
+        }
+    }
+}
 
 internal class InMemoryInternalNodeRepository(
     InMemoryModelRepositoryStorage inMemoryModelRepositoryStorage

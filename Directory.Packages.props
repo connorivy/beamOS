@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
   <PropertyGroup>
-    <AspnetVersion>10.0.0-preview.7.25380.108</AspnetVersion>
-    <MicrosoftExtensionsVersion>10.0.0-rc.1.25451.107</MicrosoftExtensionsVersion>
+    <!-- <AspnetVersion>10.0.0-preview.7.25380.108</AspnetVersion>
+    <MicrosoftExtensionsVersion>10.0.0-rc.1.25451.107</MicrosoftExtensionsVersion> -->
+    <AspnetVersion>9.0.9</AspnetVersion>
+    <MicrosoftExtensionsVersion>9.0.9</MicrosoftExtensionsVersion>
     <EfVersion>9.0.9</EfVersion>
     <!-- <EfVersion>10.0.0-rc.1.25451.107</EfVersion> -->
     <FastEndpointVersion>5.30.0</FastEndpointVersion>

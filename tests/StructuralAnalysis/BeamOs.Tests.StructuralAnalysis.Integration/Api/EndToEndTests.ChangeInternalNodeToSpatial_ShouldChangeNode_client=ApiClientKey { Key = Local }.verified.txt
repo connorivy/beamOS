@@ -1,19 +1,19 @@
 {
   Value: {
-    Id: 5,
+    Id: {Scrubbed},
     ModelId: Guid_1,
     LocationPoint: {
       X: 50.0,
-      Y: 0.3048,
-      Z: 0.3048,
+      Y: 50.0,
+      Z: 50.0,
       LengthUnit: Meter
     },
     Restraint: {
-      CanTranslateAlongX: true,
-      CanTranslateAlongY: true,
-      CanTranslateAlongZ: true,
-      CanRotateAboutX: true,
-      CanRotateAboutY: true,
+      CanTranslateAlongX: false,
+      CanTranslateAlongY: false,
+      CanTranslateAlongZ: false,
+      CanRotateAboutX: false,
+      CanRotateAboutY: false,
       CanRotateAboutZ: true
     }
   },

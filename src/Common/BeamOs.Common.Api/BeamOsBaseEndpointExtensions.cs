@@ -38,6 +38,7 @@ public static class BeamOsBaseEndpointExtensions
         }
     }
 
+#if NET10_OR_GREATER
     extension<TResponse, TEnumerable>(Result<TResponse> result)
         where TResponse : IAsyncEnumerable<TEnumerable>
     {
@@ -63,6 +64,7 @@ public static class BeamOsBaseEndpointExtensions
             return BeamOsErrorUtils.MapErrorToResult(result.Error);
         }
     }
+#endif
 }
 
 internal static class BeamOsErrorUtils

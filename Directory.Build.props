@@ -2,7 +2,7 @@
 <Project>
   <Import Project="BeamOs.user.props" Condition="Exists('BeamOs.user.props')" />
   <PropertyGroup Label="General Config">
-    <BeamOsTargetFramework Condition="'$(BeamOsTargetFramework)' == ''">net10.0</BeamOsTargetFramework>
+    <BeamOsTargetFramework Condition="'$(BeamOsTargetFramework)' == ''">net9.0</BeamOsTargetFramework>
     <TargetFramework>$(BeamOsTargetFramework)</TargetFramework>
     <LangVersion>preview</LangVersion>
     <OpenSeesDir Condition="'$(OpenSeesDir)' == ''">$(MSBuildThisFileDirectory)openSees\OpenSees3.7.0\</OpenSeesDir>

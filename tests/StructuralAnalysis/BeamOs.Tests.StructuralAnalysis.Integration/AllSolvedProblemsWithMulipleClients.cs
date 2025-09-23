@@ -101,6 +101,6 @@ internal static class ApiClients
     public static IEnumerable<ApiClientKey> GetClients()
     {
         yield return ApiClientKey.Remote;
-        // yield return ApiClientKey.Local;
+        yield return ApiClientKey.Local;
     }
 }

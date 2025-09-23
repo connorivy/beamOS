@@ -6,6 +6,7 @@ using Microsoft.OpenApi;
 
 namespace BeamOs.StructuralAnalysis.Api;
 
+#if NET10_OR_GREATER
 public class EnumSchemaTransformer : IOpenApiSchemaTransformer
 {
     public Task TransformAsync(
@@ -77,6 +78,7 @@ public class EnumSchemaTransformer : IOpenApiSchemaTransformer
         return attribute?.Description ?? string.Empty;
     }
 }
+#endif
 
 // public class DictSchemaTransformer : IOpenApiSchemaTransformer
 // {

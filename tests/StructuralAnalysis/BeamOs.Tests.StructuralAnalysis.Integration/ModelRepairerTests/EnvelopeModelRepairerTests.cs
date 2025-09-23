@@ -273,7 +273,9 @@ public static class ModelRepairerTestUtil
         {
             var repairedElement = repairedModel.Element1ds.FirstOrDefault(e => e.Id == element.Id);
             if (repairedElement == null)
+            {
                 continue;
+            }
 
             var startNode = originalModel.Nodes.FirstOrDefault(n => n.Id == element.StartNodeId);
             var endNode = originalModel.Nodes.FirstOrDefault(n => n.Id == element.EndNodeId);

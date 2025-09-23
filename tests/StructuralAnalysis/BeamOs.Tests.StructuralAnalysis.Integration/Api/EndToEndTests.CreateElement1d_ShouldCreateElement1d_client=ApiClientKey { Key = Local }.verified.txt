@@ -8,7 +8,7 @@
     SectionProfileId: 1636,
     SectionProfileRotation: {
       Value: 0.0,
-      Unit: Radian
+      Unit: Degree
     },
     Metadata: null
   },

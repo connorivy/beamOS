@@ -1,12 +1,10 @@
 {
   Value: {
     Id: 5,
-    ModelId: Guid_1,
-    LocationPoint: {
-      X: 50.0,
-      Y: 0.3048,
-      Z: 0.3048,
-      LengthUnit: Meter
+    Element1dId: 99,
+    RatioAlongElement1d: {
+      Value: 50.0,
+      Unit: Percent
     },
     Restraint: {
       CanTranslateAlongX: true,
@@ -15,7 +13,8 @@
       CanRotateAboutX: true,
       CanRotateAboutY: true,
       CanRotateAboutZ: true
-    }
+    },
+    Metadata: null
   },
   Error: null,
   IsError: false,
