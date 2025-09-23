@@ -37,7 +37,7 @@ using Microsoft.Extensions.Logging;
 using ServiceScan.SourceGenerator;
 #if Postgres
 using EntityFramework.Exceptions.PostgreSQL;
-#else
+#elif Sqlite
 using EntityFramework.Exceptions.Sqlite;
 #endif
 

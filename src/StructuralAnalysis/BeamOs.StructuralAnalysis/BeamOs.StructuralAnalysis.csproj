@@ -19,14 +19,6 @@
     <ProjectReference Include="..\BeamOs.StructuralAnalysis.Contracts\BeamOs.StructuralAnalysis.Contracts.csproj" />
   </ItemGroup>
 
-	<PropertyGroup Condition="'$(BeamOsUseSqlite)' == 'true'">
-		<DefineConstants>$(DefineConstants);Sqlite</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(BeamOsUseInMemoryInfra)' == 'true'">
-		<DefineConstants>$(DefineConstants);InMemory</DefineConstants>
-	</PropertyGroup>
-
 	<ItemGroup Condition="'$(BeamOsUseInMemoryInfra)' == 'true'">
     <ProjectReference Include="../BeamOs.StructuralAnalysis.Core/BeamOs.StructuralAnalysis.Core.csproj" />
 	</ItemGroup>
