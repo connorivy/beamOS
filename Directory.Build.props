@@ -20,6 +20,7 @@
 
     <BeamOsUsePostgres Condition="'$(BeamOsUsePostgres)' == ''">true</BeamOsUsePostgres>
     <BeamOsUseSqlite Condition="'$(BeamOsUseSqlite)' == ''">false</BeamOsUseSqlite>
+    <BeamOsUseInMemoryInfra Condition="'$(BeamOsUseInMemoryInfra)' == ''">false</BeamOsUseInMemoryInfra>
     <!-- <BeamOsUsePostgres Condition="'$(BeamOsUsePostgres)' == ''">false</BeamOsUsePostgres>
     <BeamOsUseSqlite Condition="'$(BeamOsUseSqlite)' == ''">true</BeamOsUseSqlite> -->
     <!-- <BeamOsUsePostgres>true</BeamOsUsePostgres>
@@ -29,6 +30,7 @@
     </PropertyGroup> -->
     <DefineConstants Condition="'$(BeamOsUsePostgres)' == 'true'">$(DefineConstants);Postgres</DefineConstants>
     <DefineConstants Condition="'$(BeamOsUseSqlite)' == 'true'">$(DefineConstants);Sqlite</DefineConstants>
+    <DefineConstants Condition="'$(BeamOsUseInMemoryInfra)' == 'true'">$(DefineConstants);InMemory</DefineConstants>
 
     <!--<InvariantGlobalization>true</InvariantGlobalization>-->
     <NoWarn>

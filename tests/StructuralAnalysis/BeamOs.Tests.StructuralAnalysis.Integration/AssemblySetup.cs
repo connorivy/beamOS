@@ -67,7 +67,9 @@ public static partial class AssemblySetup
 
         TestUtils.Asserter = new();
 
+#if Sqlite || InMemory
         StructuralAnalysisLocalApiClient = ApiClientFactory.CreateResultLocal();
+#endif
         await InitializeRemoteApiClient();
 
         ApiIsRunning = true;

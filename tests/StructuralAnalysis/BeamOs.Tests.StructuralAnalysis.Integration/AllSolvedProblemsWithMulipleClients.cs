@@ -34,9 +34,7 @@ public static class AllSolvedProblemsWithMulipleClients
     /// <returns></returns>
     public static IEnumerable<(ApiClientKey, ModelFixture)> ModelFixtures()
     {
-        List<ApiClientKey> clients = [ApiClientKey.Remote, ApiClientKey.Local];
-
-        foreach (var client in clients)
+        foreach (var client in ApiClients.GetClients())
         {
             foreach (var fixture in AllSolvedProblems.ModelFixtures())
             {
@@ -101,6 +99,8 @@ internal static class ApiClients
     public static IEnumerable<ApiClientKey> GetClients()
     {
         yield return ApiClientKey.Remote;
+#if Sqlite || InMemory
         yield return ApiClientKey.Local;
+#endif
     }
 }

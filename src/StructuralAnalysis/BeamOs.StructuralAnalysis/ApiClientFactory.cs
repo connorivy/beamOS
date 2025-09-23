@@ -19,6 +19,7 @@ public static class ApiClientFactory
         return serviceProvider.GetRequiredService<BeamOsApiClient>();
     }
 
+#if Sqlite || InMemory
     public static BeamOsApiClient CreateLocal()
     {
         var services = new ServiceCollection();
@@ -49,6 +50,7 @@ public static class ApiClientFactory
         // client.Disposables.Add(sqliteConnection);
         return client;
     }
+#endif
 }
 
 // [DotWrapExpose]
