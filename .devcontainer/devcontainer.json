@@ -25,7 +25,10 @@
                 "ms-vscode-remote.remote-ssh",
                 "ms-vscode-remote.remote-ssh-edit",
                 "ms-vscode-remote.remote-wsl",
-                "csharpier.csharpier-vscode"
+                "csharpier.csharpier-vscode",
+                "ms-python.python", // Python extension
+                "ms-toolsai.jupyter", // Jupyter Notebook support
+                "ms-python.vscode-pylance" // Pylance for IntelliSense
             ]
         }
     },

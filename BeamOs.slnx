@@ -47,6 +47,7 @@
   </Folder>
   <Folder Name="/src/StructuralAnalysis/">
     <Project Path="src/StructuralAnalysis/BeamOs.StructuralAnalysis.Api/BeamOs.StructuralAnalysis.Api.csproj" />
+    <Project Path="src/StructuralAnalysis/BeamOs.StructuralAnalysis.ApiClient/BeamOs.StructuralAnalysis.ApiClient.csproj" />
     <Project Path="src/StructuralAnalysis/BeamOs.StructuralAnalysis.Contracts/BeamOs.StructuralAnalysis.Contracts.csproj" />
     <Project Path="src/StructuralAnalysis/BeamOs.StructuralAnalysis.Core/BeamOs.StructuralAnalysis.Core.csproj" />
     <Project Path="src/StructuralAnalysis/BeamOs.StructuralAnalysis.Infrastructure/BeamOs.StructuralAnalysis.Infrastructure.csproj" />

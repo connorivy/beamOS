@@ -96,7 +96,7 @@ public enum DiagramType
     None = 0,
     Shear,
     Moment,
-    Displacement
+    Displacement,
 }
 
 public enum RelativeDirection3D
@@ -107,5 +107,5 @@ public enum RelativeDirection3D
     LocalZ,
     GlobalX,
     GlobalY,
-    GlobalZ
+    GlobalZ,
 }

@@ -380,7 +380,9 @@ output.cobertura.xml
 
 # generated Python
 /py/
+venv/
 python_project_root/
+DotWrap/
 # /tests/BeamOs.Tests.Common/SolvedProblems/**/*.g.cs
 
 *.user.props

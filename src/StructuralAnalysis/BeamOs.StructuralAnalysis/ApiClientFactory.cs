@@ -1,13 +1,16 @@
 ﻿using BeamOs.CodeGen.StructuralAnalysisApiClient;
+using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Api;
 using BeamOs.StructuralAnalysis.Api.Endpoints;
-using BeamOs.StructuralAnalysis.Infrastructure;
 using BeamOs.StructuralAnalysis.Sdk;
+using DotWrap;
 using Microsoft.Extensions.DependencyInjection;
+#if Sqlite
+using BeamOs.StructuralAnalysis.Infrastructure;
+#endif
 
 namespace BeamOs.StructuralAnalysis;
 
-// [DotWrapExpose]
 public static class ApiClientFactory
 {
     public static BeamOsApiClient CreateRemote(string apiToken)
@@ -17,6 +20,15 @@ public static class ApiClientFactory
         services.AddStructuralAnalysisSdkRequired();
         var serviceProvider = services.BuildServiceProvider();
         return serviceProvider.GetRequiredService<BeamOsApiClient>();
+    }
+
+    public static BeamOsResultApiClient CreateResultRemote(string apiToken)
+    {
+        var services = new ServiceCollection();
+        services.AddBeamOsRemote(apiToken);
+        services.AddStructuralAnalysisSdkRequired();
+        var serviceProvider = services.BuildServiceProvider();
+        return serviceProvider.GetRequiredService<BeamOsResultApiClient>();
     }
 
 #if Sqlite || InMemory
@@ -51,44 +63,4 @@ public static class ApiClientFactory
         return client;
     }
 #endif
-}
-
-// [DotWrapExpose]
-public sealed class BeamOsApiClient : BeamOsFluentApiClient
-// IDisposable
-{
-    public BeamOsApiClient(IStructuralAnalysisApiClientV2 apiClient)
-        : base(apiClient) { }
-
-    //     public BeamOsApiClient(HttpClient httpClient)
-    // #if CODEGEN
-    //         : base(default) { }
-    // #else
-    //         : base(new StructuralAnalysisApiClientV2(httpClient)) { }
-    // #endif
-
-    // public void Dispose()
-}
-
-// [DotWrapExpose]
-public sealed class BeamOsResultApiClient : BeamOsFluentResultApiClient, IDisposable
-{
-    internal List<IDisposable> Disposables { get; } = [];
-
-    public BeamOsResultApiClient(IStructuralAnalysisApiClientV2 apiClient)
-        : base(apiClient) { }
-
-    //     public BeamOsResultApiClient(HttpClient httpClient)
-    // #if CODEGEN
-    //         : base(default) { }
-    // #else
-    //         : base(new StructuralAnalysisApiClientV2(httpClient)) { }
-    // #endif
-    public void Dispose()
-    {
-        foreach (var disposable in this.Disposables)
-        {
-            disposable.Dispose();
-        }
-    }
 }
