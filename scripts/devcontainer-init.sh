@@ -20,8 +20,16 @@ dotnet nuget add source /workspaces/beamOS/.nuget-local --name local
 
 python3 -m venv venv
 source venv/bin/activate
-# pip install --upgrade pip
-# pip install -r requirements.txt
+
+# Create or upgrade venv with latest pip/setuptools
+python3 -m venv /workspaces/beamOS/venv --upgrade-deps
+source /workspaces/beamOS/venv/bin/activate
+# pip install --upgrade pip setuptools
+
+# # Install requirements if requirements.txt exists
+# if [ -f /workspaces/beamOS/requirements.txt ]; then
+# 	pip install -r /workspaces/beamOS/requirements.txt
+# fi
 
 # The container creation script is executed in a new Bash instance
 # so we exit at the end to avoid the creation process lingering.

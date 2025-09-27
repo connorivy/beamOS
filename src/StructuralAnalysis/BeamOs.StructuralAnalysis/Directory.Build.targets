@@ -6,8 +6,9 @@
     <Exec Command="echo DEBUG PRINT: dotWrapToolsPath: $(DotWrapToolsPath)" />
     <Exec Command="echo DEBUG PRINT: DotWrapGenerateAfterBuild: $(DotWrapGenerateAfterBuild)" />
     <Exec Command="echo DEBUG PRINT: WrapperGenTarget: $(WrapperGenTarget)" />
+    <Exec Command="echo DEBUG PRINT: WrapperGenTarget: $(WrapperGenTarget)" />
   </Target>
-  <PropertyGroup Condition="'$(ContinuousIntegrationEnv)' == 'false'">
+  <PropertyGroup Condition="'$(DotWrapRelativeLocation)' != ''">
     <Configuration Condition=" '$(Configuration)' == '' and '$(_IsPublishing)' == 'true' "
       >Release</Configuration
     >
