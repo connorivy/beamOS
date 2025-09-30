@@ -1,13 +1,24 @@
-import { useState } from 'react'
 import './App.css'
+import * as React from 'react'
 import { Counter, TodoList } from './components'
+import { styled } from '@mui/material/styles'
+import Toolbar from '@mui/material/Toolbar'
+
+const StyledToolbar = styled(Toolbar)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  backgroundColor: theme.palette.primary.main,
+  color: theme.palette.common.white,
+  padding: theme.spacing(2),
+  borderRadius: theme.shape.borderRadius,
+}));
 
 function App() {
-  const [counterValue, setCounterValue] = useState(5) // Initialize to match Counter's initial value
+  const [counterValue, setCounterValue] = React.useState(5) // Initialize to match Counter's initial value
 
   return (
     <>
-      <h1>BeamOS React TDD Demo</h1>
+      <h1 className='text-red-500'>BeamOS React TDD Demo</h1>
       
       <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
         <div style={{ flex: 1, minWidth: '300px' }}>
