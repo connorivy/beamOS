@@ -1,21 +1,21 @@
-using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.MomentLoads;
+using BeamOs.StructuralAnalysis;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoads;
+using BeamOs.StructuralAnalysis.Sdk;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.Editor;
-using BeamOs.WebApp.EditorCommands;
 using BeamOs.WebApp.EditorCommands.Interfaces;
 using Fluxor;
 using Microsoft.Extensions.Logging;
 using MudBlazor;
+using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.WebApp.Components.Features.ModelObjectEditor.MomentLoads;
 
 public sealed class PutMomentLoadEditorCommandHandler(
     ILogger<PutMomentLoadEditorCommandHandler> logger,
     ISnackbar snackbar,
-    IStructuralAnalysisApiClientV1 structuralAnalysisApiClientV1,
+    BeamOsResultApiClient apiClient,
     IDispatcher dispatcher,
     IState<EditorComponentState> editorState
 ) : ClientCommandHandlerBase<PutMomentLoadClientCommand, MomentLoadResponse>(logger, snackbar)
@@ -34,12 +34,10 @@ public sealed class PutMomentLoadEditorCommandHandler(
         CancellationToken ct = default
     )
     {
-        return await structuralAnalysisApiClientV1.PutMomentLoadAsync(
-            command.New.Id,
-            command.New.ModelId,
-            command.New.ToData(),
-            ct
-        );
+        return await apiClient
+            .Models[command.New.ModelId]
+            .MomentLoads[command.New.Id]
+            .PutMomentLoadAsync(command.New.ToData(), ct);
     }
 
     // protected override async ValueTask<Result> UpdateEditorAfterServerResponse(
@@ -83,12 +81,14 @@ public sealed class PutMomentLoadSimpleCommandHandler(
     IState<EditorComponentState> editorState
 )
     : SimpleCommandHandlerBase<
-        PutMomentLoadCommand,
+        ModelResourceWithIntIdRequest<MomentLoadData>,
         PutMomentLoadClientCommand,
         MomentLoadResponse
     >(putMomentLoadEditorCommandHandler)
 {
-    protected override PutMomentLoadClientCommand CreateCommand(PutMomentLoadCommand simpleCommand)
+    protected override PutMomentLoadClientCommand CreateCommand(
+        ModelResourceWithIntIdRequest<MomentLoadData> simpleCommand
+    )
     {
         var node =
             (editorState.Value.CachedModelResponse?.MomentLoads.GetValueOrDefault(simpleCommand.Id))
@@ -125,4 +125,13 @@ public record PutMomentLoadClientCommand(MomentLoadResponse Previous, MomentLoad
             HandledByEditor = args?.HandledByEditor ?? this.HandledByEditor,
             HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
+}
+
+[Mapper]
+internal static partial class PutMomentLoadCommandMapper
+{
+    [MapNestedProperties(nameof(ModelResourceWithIntIdRequest<>.Body))]
+    public static partial MomentLoadResponse ToResponse(
+        this ModelResourceWithIntIdRequest<MomentLoadData> command
+    );
 }

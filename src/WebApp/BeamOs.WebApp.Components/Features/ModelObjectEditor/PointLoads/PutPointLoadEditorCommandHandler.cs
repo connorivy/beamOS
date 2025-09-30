@@ -1,7 +1,5 @@
-using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.Editor;
@@ -9,6 +7,7 @@ using BeamOs.WebApp.EditorCommands.Interfaces;
 using Fluxor;
 using Microsoft.Extensions.Logging;
 using MudBlazor;
+using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.WebApp.Components.Features.ModelObjectEditor.PointLoads;
 
@@ -46,8 +45,8 @@ public sealed class PutPointLoadEditorCommandHandler(
             command.New.Direction
         );
         return await structuralAnalysisApiClientV1.PutPointLoadAsync(
-            command.New.Id,
             command.New.ModelId,
+            command.New.Id,
             pointLoadData,
             ct
         );
@@ -93,11 +92,15 @@ public sealed class PutPointLoadSimpleCommandHandler(
     PutPointLoadEditorCommandHandler putPointLoadEditorCommandHandler,
     IState<EditorComponentState> editorState
 )
-    : SimpleCommandHandlerBase<PutPointLoadCommand, PutPointLoadClientCommand, PointLoadResponse>(
-        putPointLoadEditorCommandHandler
-    )
+    : SimpleCommandHandlerBase<
+        ModelResourceWithIntIdRequest<PointLoadData>,
+        PutPointLoadClientCommand,
+        PointLoadResponse
+    >(putPointLoadEditorCommandHandler)
 {
-    protected override PutPointLoadClientCommand CreateCommand(PutPointLoadCommand simpleCommand)
+    protected override PutPointLoadClientCommand CreateCommand(
+        ModelResourceWithIntIdRequest<PointLoadData> simpleCommand
+    )
     {
         var pointLoad =
             (editorState.Value.CachedModelResponse?.PointLoads.GetValueOrDefault(simpleCommand.Id))
@@ -107,23 +110,13 @@ public sealed class PutPointLoadSimpleCommandHandler(
     }
 }
 
-public static class PutPointLoadCommandExtensions
+[Mapper]
+public static partial class PutPointLoadCommandExtensions
 {
-    public static PointLoadResponse ToResponse(this PutPointLoadCommand command)
-    {
-        return new PointLoadResponse(
-            command.Id,
-            command.NodeId,
-            command.LoadCaseId,
-            command.ModelId,
-            command.Force,
-            new BeamOs.StructuralAnalysis.Contracts.Common.Vector3(
-                command.Direction.X,
-                command.Direction.Y,
-                command.Direction.Z
-            )
-        );
-    }
+    [MapNestedProperties(nameof(ModelResourceWithIntIdRequest<>.Body))]
+    public static partial PointLoadResponse ToResponse(
+        this ModelResourceWithIntIdRequest<PointLoadData> command
+    );
 
     public static PointLoadResponse ToEditorUnits(this PointLoadResponse response)
     {

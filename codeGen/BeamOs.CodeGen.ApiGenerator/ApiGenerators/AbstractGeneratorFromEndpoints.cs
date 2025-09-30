@@ -30,8 +30,11 @@ public abstract class AbstractGenerator2 : IApiGenerator
         var builder = WebApplication.CreateBuilder();
 
 #if DEBUG
-        builder.Services.AddOpenApi(o =>
+        builder.Services.AddOpenApi(
+#if NET10_OR_GREATER
+            o =>
             o.OpenApiVersion = Microsoft.OpenApi.OpenApiSpecVersion.OpenApi3_1
+#endif
         );
 #endif
 

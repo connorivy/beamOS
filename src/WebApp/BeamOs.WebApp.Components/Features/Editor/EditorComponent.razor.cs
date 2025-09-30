@@ -1,14 +1,11 @@
 using System.Collections.Immutable;
 using System.Reflection.Metadata;
-using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.CodeGen.EditorApi;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.WebApp.Components.Features.AnalysisToolbar;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.StructuralApi;
@@ -92,7 +89,7 @@ public partial class EditorComponent(
         {
             if (!command.HandledByEditor && command.New is not null && command.Previous is not null)
             {
-                LengthUnit lengthUnit = command.New.LocationPoint.LengthUnit.MapToLengthUnit();
+                LengthUnit lengthUnit = command.New.LocationPoint.LengthUnit.ToUnitsNet();
 
                 await state.Value.EditorApi.ReduceMoveNodeCommandAsync(
                     new MoveNodeCommand()
@@ -118,8 +115,8 @@ public partial class EditorComponent(
             if (!command.HandledByServer)
             {
                 await apiClient.PutNodeAsync(
-                    command.New.Id,
                     command.New.ModelId,
+                    command.New.Id,
                     new(command.New.LocationPoint, command.New.Restraint)
                 );
             }
@@ -162,11 +159,11 @@ public partial class EditorComponent(
 
             if (!command.HandledByEditor)
             {
-                if (command.EntityType == nameof(Element1d))
+                if (command.EntityType == "Element1d")
                 {
                     await stateSnapshot.EditorApi.DeleteElement1dAsync(command.ModelEntity);
                 }
-                else if (command.EntityType == nameof(Node))
+                else if (command.EntityType == "Node")
                 {
                     await stateSnapshot.EditorApi.DeleteNodeAsync(command.ModelEntity);
                 }

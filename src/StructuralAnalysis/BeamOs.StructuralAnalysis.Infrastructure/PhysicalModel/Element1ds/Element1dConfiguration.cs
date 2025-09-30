@@ -8,6 +8,9 @@ internal class Element1dConfiguration : IEntityTypeConfiguration<Element1d>
 {
     public void Configure(EntityTypeBuilder<Element1d> builder)
     {
+        builder.HasKey(n => new { n.Id, n.ModelId });
+        builder.Property(n => n.Id).ValueGeneratedNever();
+
         _ = builder
             .HasOne(el => el.StartNode)
             .WithMany(el => el.StartNodeElements)
@@ -43,19 +46,5 @@ internal class Element1dConfiguration : IEntityTypeConfiguration<Element1d>
             .HasForeignKey(el => new { el.Element1dId, el.ModelId })
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
-
-        //_ = builder
-        //    .HasMany(el => el.ShearForceDiagrams)
-        //    .WithOne(el => el.Element1d)
-        //    .HasForeignKey(el => el.Element1DId)
-        //    .IsRequired()
-        //    .OnDelete(DeleteBehavior.ClientCascade);
-
-        //_ = builder
-        //    .HasMany(el => el.MomentDiagrams)
-        //    .WithOne(el => el.Element1d)
-        //    .HasForeignKey(el => el.Element1DId)
-        //    .IsRequired()
-        //    .OnDelete(DeleteBehavior.ClientCascade);
     }
 }

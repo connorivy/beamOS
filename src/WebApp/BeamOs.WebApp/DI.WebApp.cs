@@ -6,7 +6,6 @@ using BeamOs.StructuralAnalysis.Api;
 using BeamOs.StructuralAnalysis.Api.Endpoints;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Sdk;
-using BeamOs.Tests.Runtime.TestRunner;
 using BeamOs.WebApp.Components;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.Editor;
@@ -33,7 +32,7 @@ public static class DI
         services.AddHttpContextAccessor();
         services.AddHttpClient();
         services.AddCascadingAuthenticationState();
-        services.AddTestServices();
+        // services.AddTestServices();
 
         return services;
     }

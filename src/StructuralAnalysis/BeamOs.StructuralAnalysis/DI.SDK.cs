@@ -6,6 +6,8 @@ using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Api;
 using BeamOs.StructuralAnalysis.Api.Endpoints;
+using Microsoft.Extensions.DependencyInjection;
+#if InMemory
 using BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.EnvelopeResultSets;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.NodeResults;
@@ -21,11 +23,17 @@ using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
-using Microsoft.Extensions.DependencyInjection;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
+#endif
+
+#if Sqlite
+using BeamOs.StructuralAnalysis.Api.Endpoints;
+using BeamOs.StructuralAnalysis.Infrastructure;
+#endif
 
 namespace BeamOs.StructuralAnalysis.Sdk;
 
-internal static class DI
+public static class DI
 {
     public static IServiceCollection AddStructuralAnalysisSdkRequired(
         this IServiceCollection services
@@ -33,6 +41,10 @@ internal static class DI
     {
         services.AddScoped<BeamOsResultApiClient>();
         services.AddScoped<BeamOsApiClient>();
+#if !CODEGEN
+        services.AddScoped<IStructuralAnalysisApiClientV2, StructuralAnalysisApiClientV2>();
+#endif
+
         return services;
     }
 
@@ -51,10 +63,6 @@ internal static class DI
             )
             .AddHttpMessageHandler<AuthMessageHandler>();
 
-#if !CODEGEN
-        services.AddScoped<IStructuralAnalysisApiClientV2, StructuralAnalysisApiClientV2>();
-#endif
-
         services
             .AddHttpClient<ISpeckleConnectorApi, SpeckleConnectorApi>(client =>
                 client.BaseAddress = new("https://beamos.net/")
@@ -64,57 +72,84 @@ internal static class DI
         return services;
     }
 
+#if Sqlite
+    public static IDisposable AddBeamOsLocal(this IServiceCollection services)
+    {
+        services
+            .AddStructuralAnalysisSdkRequired()
+            .AddStructuralAnalysisRequired()
+            .AddStructuralAnalysisConfigurable()
+            .AddInMemoryInfrastructure();
+#if !CODEGEN
+        services.AddScoped<IStructuralAnalysisApiClientV2, InMemoryApiClient2>();
+#endif
+        services.AddLogging();
+        services
+            .AddStructuralAnalysisInfrastructureRequired()
+            .AddStructuralAnalysisInfrastructureConfigurable("dummy");
+        return DI_Sqlite.AddSqliteInMemoryAndReturnConnection(services);
+    }
+#elif InMemory
+    public static IServiceCollection AddBeamOsLocal(this IServiceCollection services)
+    {
+        services
+            .AddStructuralAnalysisSdkRequired()
+            .AddStructuralAnalysisRequired()
+            .AddStructuralAnalysisConfigurable()
+            .AddInMemoryInfrastructure();
+        services.AddLogging();
+#if !CODEGEN
+        services.AddScoped<IStructuralAnalysisApiClientV2, InMemoryApiClient2>();
+#endif
+        return services;
+    }
+#endif
+
     public static IServiceCollection AddInMemoryInfrastructure(this IServiceCollection services)
     {
 #if !CODEGEN
+#if InMemory
         // services.AddScoped<InMemoryApiClient2>();
         // services.AddInMemoryCommandHandlers();
-        // services.AddKeyedScoped<IStructuralAnalysisApiClientV1, InMemoryApiClient>("InMemory");
-        services.AddScoped<InMemoryModelRepositoryStorage>();
-        services.AddKeyedScoped<IStructuralAnalysisUnitOfWork, InMemoryUnitOfWork>("InMemory");
-        services.AddKeyedScoped<IModelRepository, InMemoryModelRepository>("InMemory");
-        services.AddKeyedScoped<INodeDefinitionRepository, InMemoryNodeDefinitionRepository>(
-            "InMemory"
+        // services.AddScoped<IStructuralAnalysisApiClientV1, InMemoryApiClient>();
+        // services.AddScoped<InMemoryModelRepositoryStorage>();
+        services.AddScoped<InMemoryUnitOfWork>();
+        services.AddScoped<IStructuralAnalysisUnitOfWork>(sp =>
+            sp.GetRequiredService<InMemoryUnitOfWork>()
         );
-        services.AddKeyedScoped<INodeRepository, InMemoryNodeRepository>("InMemory");
-        services.AddKeyedScoped<IInternalNodeRepository, InMemoryInternalNodeRepository>(
-            "InMemory"
+        services.AddScoped<IModelRepository, InMemoryModelRepository>();
+        services.AddScoped<INodeDefinitionRepository, InMemoryNodeDefinitionRepository>();
+        services.AddScoped<INodeRepository, InMemoryNodeRepository>();
+        services.AddScoped<IModelResourceRepositoryIn<NodeId, Node>, INodeRepository>(sp =>
+            sp.GetRequiredService<INodeRepository>()
         );
-        services.AddKeyedScoped<IMaterialRepository, InMemoryMaterialRepository>("InMemory");
-        services.AddKeyedScoped<ISectionProfileRepository, InMemorySectionProfileRepository>(
-            "InMemory"
-        );
-        services.AddKeyedScoped<
+        services.AddScoped<IInternalNodeRepository, InMemoryInternalNodeRepository>();
+        services.AddScoped<IMaterialRepository, InMemoryMaterialRepository>();
+        services.AddScoped<ISectionProfileRepository, InMemorySectionProfileRepository>();
+        services.AddScoped<
             ISectionProfileFromLibraryRepository,
             InMemorySectionProfileFromLibraryRepository
-        >("InMemory");
-        services.AddKeyedScoped<IElement1dRepository, InMemoryElement1dRepository>("InMemory");
-        services.AddKeyedScoped<IPointLoadRepository, InMemoryPointLoadRepository>("InMemory");
-        services.AddKeyedScoped<IMomentLoadRepository, InMemoryMomentLoadRepository>("InMemory");
-        services.AddKeyedScoped<ILoadCaseRepository, InMemoryLoadCaseRepository>("InMemory");
-        services.AddKeyedScoped<ILoadCombinationRepository, InMemoryLoadCombinationRepository>(
-            "InMemory"
-        );
-        services.AddKeyedScoped<INodeResultRepository, InMemoryNodeResultRepository>("InMemory");
-        services.AddKeyedScoped<IResultSetRepository, InMemoryResultSetRepository>("InMemory");
-        services.AddKeyedScoped<IEnvelopeResultSetRepository, InMemoryEnvelopeResultSetRepository>(
-            "InMemory"
-        );
-        services.AddKeyedScoped<IModelProposalRepository, InMemoryModelProposalRepository>(
-            "InMemory"
-        );
-        services.AddKeyedScoped<IProposalIssueRepository, InMemoryProposalIssueRepository>(
-            "InMemory"
-        );
-        services.AddKeyedScoped<
+        >();
+        services.AddScoped<IElement1dRepository, InMemoryElement1dRepository>();
+        services.AddScoped<IPointLoadRepository, InMemoryPointLoadRepository>();
+        services.AddScoped<IMomentLoadRepository, InMemoryMomentLoadRepository>();
+        services.AddScoped<ILoadCaseRepository, InMemoryLoadCaseRepository>();
+        services.AddScoped<ILoadCombinationRepository, InMemoryLoadCombinationRepository>();
+        services.AddScoped<INodeResultRepository, InMemoryNodeResultRepository>();
+        services.AddScoped<IResultSetRepository, InMemoryResultSetRepository>();
+        services.AddScoped<IEnvelopeResultSetRepository, InMemoryEnvelopeResultSetRepository>();
+        services.AddScoped<IModelProposalRepository, InMemoryModelProposalRepository>();
+        services.AddScoped<IProposalIssueRepository, InMemoryProposalIssueRepository>();
+        services.AddScoped<
             IQueryHandler<EmptyRequest, ICollection<ModelInfoResponse>>,
             InMemoryGetModelsQueryHandler
-        >("InMemory");
+        >();
 
-        services.AddKeyedScoped<
+        services.AddScoped<
             ICommandHandler<ModelResourceRequest<DateTimeOffset>, ModelResponse>,
             InMemoryRestoreModeCommandHandler
-        >("InMemory");
+        >();
+#endif
 #endif
 
         return services;

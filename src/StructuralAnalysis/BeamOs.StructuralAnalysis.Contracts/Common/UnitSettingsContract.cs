@@ -8,6 +8,8 @@ public record UnitSettings
     public required ForceUnit ForceUnit { get; init; }
     public AngleUnit AngleUnit { get; init; } = AngleUnit.Radian;
 
+    // public RatioUnit RatioUnit { get; init; } = RatioUnit.DecimalFraction;
+
     public static UnitSettings K_IN { get; } =
         new() { LengthUnit = LengthUnit.Inch, ForceUnit = ForceUnit.KilopoundForce };
 

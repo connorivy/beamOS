@@ -8,6 +8,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoads;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
+using DotWrap;
 
 namespace BeamOs.StructuralAnalysis.Sdk;
 
@@ -61,8 +62,10 @@ public sealed class BeamOsDynamicModel(
             }
         );
 
+    [DotWrapIgnore]
     public void AddNodes(params Span<PutNodeRequest> nodes) => this.nodes.AddRange(nodes);
 
+    [DotWrapIgnore]
     public IEnumerable<PutNodeRequest> NodeRequests() => this.nodes.AsReadOnly();
 
     private readonly List<PutElement1dRequest> element1ds = [];
@@ -86,9 +89,11 @@ public sealed class BeamOsDynamicModel(
             )
         );
 
+    [DotWrapIgnore]
     public void AddElement1ds(params Span<PutElement1dRequest> els) =>
         this.element1ds.AddRange(els);
 
+    [DotWrapIgnore]
     public IEnumerable<PutElement1dRequest> Element1dRequests() => this.element1ds.AsReadOnly();
 
     private readonly List<PutMaterialRequest> materials = [];
@@ -104,9 +109,11 @@ public sealed class BeamOsDynamicModel(
             }
         );
 
+    [DotWrapIgnore]
     public void AddMaterials(params Span<PutMaterialRequest> materials) =>
         this.materials.AddRange(materials);
 
+    [DotWrapIgnore]
     public IEnumerable<PutMaterialRequest> MaterialRequests() => this.materials.AsReadOnly();
 
     private readonly List<LoadCaseContract> loadCases = [];
@@ -114,19 +121,27 @@ public sealed class BeamOsDynamicModel(
     public void AddLoadCase(int id, string caseName) =>
         this.AddLoadCases(new LoadCaseContract() { Id = id, Name = caseName });
 
+    [DotWrapIgnore]
     public void AddLoadCases(params Span<LoadCaseContract> loadCases) =>
         this.loadCases.AddRange(loadCases);
 
+    [DotWrapIgnore]
     public IEnumerable<LoadCaseContract> LoadCaseRequests() => this.loadCases.AsReadOnly();
 
     private readonly List<LoadCombinationContract> loadCombinations = [];
 
+    [DotWrapIgnore]
     public void AddLoadCombination(int id, params Span<(int, double)> loadCaseFactor) =>
         this.AddLoadCombinations(new LoadCombinationContract(id, loadCaseFactor));
 
+    public void AddLoadCombination(int id, IEnumerable<KeyValuePair<int, double>> loadCaseFactor) =>
+        this.AddLoadCombinations(new LoadCombinationContract(id, loadCaseFactor.ToDictionary()));
+
+    [DotWrapIgnore]
     public void AddLoadCombinations(params Span<LoadCombinationContract> loadCombinations) =>
         this.loadCombinations.AddRange(loadCombinations);
 
+    [DotWrapIgnore]
     public IEnumerable<LoadCombinationContract> LoadCombinationRequests() =>
         this.loadCombinations.AsReadOnly();
 
@@ -144,9 +159,11 @@ public sealed class BeamOsDynamicModel(
             }
         );
 
+    [DotWrapIgnore]
     public void AddPointLoads(params Span<PutPointLoadRequest> pointLoads) =>
         this.pointLoads.AddRange(pointLoads);
 
+    [DotWrapIgnore]
     public IEnumerable<PutPointLoadRequest> PointLoadRequests() => this.pointLoads.AsReadOnly();
 
     private readonly List<PutMomentLoadRequest> momentLoads = [];
@@ -169,9 +186,11 @@ public sealed class BeamOsDynamicModel(
             }
         );
 
+    [DotWrapIgnore]
     public void AddMomentLoads(params Span<PutMomentLoadRequest> momentLoads) =>
         this.momentLoads.AddRange(momentLoads);
 
+    [DotWrapIgnore]
     public IEnumerable<PutMomentLoadRequest> MomentLoadRequests() => this.momentLoads.AsReadOnly();
 
     private readonly List<PutSectionProfileRequest> sectionProfiles = [];
@@ -205,15 +224,17 @@ public sealed class BeamOsDynamicModel(
             }
         );
 
+    [DotWrapIgnore]
     public void AddSectionProfiles(params Span<PutSectionProfileRequest> sectionProfiles) =>
         this.sectionProfiles.AddRange(sectionProfiles);
 
+    [DotWrapIgnore]
     public IEnumerable<PutSectionProfileRequest> SectionProfileRequests() =>
         this.sectionProfiles.AsReadOnly();
 
     private readonly List<SectionProfileFromLibraryContract> sectionProfilesFromLibrary = [];
 
-    internal void AddSectionProfileFromLibrary(int id, string name, StructuralCode library) =>
+    public void AddSectionProfileFromLibrary(int id, string name, StructuralCode library) =>
         this.AddSectionProfilesFromLibrary(
             new SectionProfileFromLibraryContract()
             {
@@ -223,10 +244,12 @@ public sealed class BeamOsDynamicModel(
             }
         );
 
+    [DotWrapIgnore]
     public void AddSectionProfilesFromLibrary(
         params Span<SectionProfileFromLibraryContract> sectionProfilesFromLibrary
     ) => this.sectionProfilesFromLibrary.AddRange(sectionProfilesFromLibrary);
 
+    [DotWrapIgnore]
     public IEnumerable<SectionProfileFromLibraryContract> SectionProfilesFromLibraryRequests() =>
         this.sectionProfilesFromLibrary.AsReadOnly();
 }

@@ -12,7 +12,7 @@ public static class DI
         // services.AddScoped<OpenSeesTests>();
         services.AddScoped<DsmElement1dTests>();
         services.AddScoped<DsmModelTests>();
-        services.AddScoped<TestInfoRetriever>();
+        // services.AddScoped<TestInfoRetriever>();
 
         // services.AddSingleton<ISolverFactory, CholeskySolverFactory>();
         // services.AddInMemoryInfrastructure();

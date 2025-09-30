@@ -1,3 +1,4 @@
+#if Postgres
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -12,12 +13,14 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
         {
             migrationBuilder.DropPrimaryKey(
                 name: "PK_DeleteModelEntityProposals",
-                table: "DeleteModelEntityProposals");
+                table: "DeleteModelEntityProposals"
+            );
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_DeleteModelEntityProposals",
                 table: "DeleteModelEntityProposals",
-                column: "Id");
+                column: "Id"
+            );
         }
 
         /// <inheritdoc />
@@ -25,12 +28,16 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Migrations
         {
             migrationBuilder.DropPrimaryKey(
                 name: "PK_DeleteModelEntityProposals",
-                table: "DeleteModelEntityProposals");
+                table: "DeleteModelEntityProposals"
+            );
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_DeleteModelEntityProposals",
                 table: "DeleteModelEntityProposals",
-                columns: new[] { "Id", "ModelProposalId", "ModelId" });
+                columns: new[] { "Id", "ModelProposalId", "ModelId" }
+            );
         }
     }
 }
+
+#endif

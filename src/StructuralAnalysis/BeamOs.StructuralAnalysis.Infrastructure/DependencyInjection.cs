@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.Identity;
@@ -15,7 +16,6 @@ using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
-using BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 using BeamOs.StructuralAnalysis.Infrastructure.AnalyticalResults.EnvelopeResultSets;
 using BeamOs.StructuralAnalysis.Infrastructure.AnalyticalResults.NodeResults;
 using BeamOs.StructuralAnalysis.Infrastructure.AnalyticalResults.ResultSets;
@@ -29,13 +29,17 @@ using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.MomentLoads;
 using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Infrastructure.PhysicalModel.SectionProfiles;
-using EntityFramework.Exceptions.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ServiceScan.SourceGenerator;
+#if Postgres
+using EntityFramework.Exceptions.PostgreSQL;
+#elif Sqlite
+using EntityFramework.Exceptions.Sqlite;
+#endif
 
 namespace BeamOs.StructuralAnalysis.Infrastructure;
 
@@ -66,7 +70,12 @@ public static partial class DependencyInjection
         _ = services.AddScoped<IModelProposalRepository, ModelProposalRepository>();
         _ = services.AddScoped<IProposalIssueRepository, ProposalIssueRepository>();
 
+#if Postgres
         _ = services.AddScoped<IStructuralAnalysisUnitOfWork, UnitOfWork>();
+#elif Sqlite
+        _ = services.AddScoped<IStructuralAnalysisUnitOfWork, SqliteUnitOfWork>();
+#endif
+        // _ = services.AddScoped<IStructuralAnalysisUnitOfWork, UnitOfWork>();
 
         services.AddQueryHandlers();
         // services.AddObjectThatImplementInterface<IAssemblyMarkerInfrastructure>(
@@ -85,7 +94,11 @@ public static partial class DependencyInjection
     {
         services.AddSingleton(TimeProvider.System);
 
+#if Postgres
         services.AddDb(connectionString);
+#elif Sqlite
+        DI_Sqlite.AddSqliteInMemoryAndReturnConnection(services);
+#endif
 
         services.AddScoped<IUserIdProvider, UserIdProvider>();
 
@@ -96,14 +109,10 @@ public static partial class DependencyInjection
 
         services.AddScoped<IQueryHandler<Guid, ModelInfoResponse>, GetModelInfoQueryHandler>();
 
-        // pardiso is faster, but it requires mkl libraries. Since we're not using this solver factory in production,
-        // we can use CholeskySolverFactory which is a pure managed implementation.
-        // services.AddSingleton<ISolverFactory, PardisoSolverFactory>();
-        services.AddSingleton<ISolverFactory, CholeskySolverFactory>();
-
         return services;
     }
 
+#if Postgres
     private static void AddDb(this IServiceCollection services, string connectionString) =>
         _ = services.AddDbContext<StructuralAnalysisDbContext>(options =>
             options
@@ -111,8 +120,13 @@ public static partial class DependencyInjection
                     connectionString,
                     o => o.MigrationsAssembly(typeof(IAssemblyMarkerInfrastructure).Assembly)
                 )
-                .AddInterceptors(new ModelLastModifiedUpdater(TimeProvider.System))
+                // .AddInterceptors(new ModelLastModifiedUpdater(TimeProvider.System))
+                .AddInterceptors(new ModelEntityIdIncrementingInterceptor(TimeProvider.System))
+                .AddInterceptors(
+                    new ModelProposalEntityIdIncrementingInterceptor(TimeProvider.System)
+                )
                 .UseExceptionProcessor()
+                // .UseModel(StructuralAnalysisDbContextModel.Instance)
 #if DEBUG
                 .EnableSensitiveDataLogging()
                 .EnableDetailedErrors()
@@ -130,7 +144,9 @@ public static partial class DependencyInjection
                     warnings.Log(RelationalEventId.PendingModelChangesWarning)
                 )
         );
+#endif
 
+    [RequiresDynamicCode("Calls MigrateAsync which uses reflection to create tables.")]
     public static async Task MigrateDb(
         this IServiceScope scope,
         CancellationToken cancellationToken = default
@@ -139,12 +155,19 @@ public static partial class DependencyInjection
         var dbContext = scope.ServiceProvider.GetRequiredService<StructuralAnalysisDbContext>();
 
         // await dbContext.Database.EnsureDeletedAsync();
-        var appliedMigrations = (await dbContext.Database.GetAppliedMigrationsAsync()).ToList();
+        // var appliedMigrations = (await dbContext.Database.GetAppliedMigrationsAsync()).ToList();
         var pendingMigrations = (await dbContext.Database.GetPendingMigrationsAsync()).ToList();
         if (pendingMigrations.Count > 0)
         {
-            await dbContext.Database.MigrateAsync();
+            await dbContext.Database.MigrateAsync(cancellationToken);
         }
+    }
+
+    public static void EnsureDbCreated(this IServiceScope scope)
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<StructuralAnalysisDbContext>();
+        var sql = File.ReadAllText("createSqliteDb.sql");
+        _ = dbContext.Database.ExecuteSqlRaw(sql);
     }
 
     public static void AddPhysicalModelInfrastructure(
@@ -154,9 +177,6 @@ public static partial class DependencyInjection
         configurationBuilder.AddValueConverters();
     }
 
-    // public static void AddValueConverters<TAssemblyMarker>(
-    //     this ModelConfigurationBuilder configurationBuilder
-    // )
     // {
     //     var valueConverters = typeof(TAssemblyMarker)
     //         .Assembly.GetTypes()
@@ -178,6 +198,31 @@ public static partial class DependencyInjection
     //         _ = configurationBuilder.Properties(genericArgs[0]).HaveConversion(valueConverterType);
     //     }
     // }
+
+    [GenerateServiceRegistrations(
+        AssignableTo = typeof(IEntityTypeConfiguration<>),
+        CustomHandler = nameof(ApplyConfiguration)
+    )]
+    public static partial ModelBuilder AddEntityConfigurations(this ModelBuilder builder);
+
+    private static void ApplyConfiguration<
+        TConfig,
+        [DynamicallyAccessedMembers(
+            DynamicallyAccessedMemberTypes.PublicConstructors
+                | DynamicallyAccessedMemberTypes.NonPublicConstructors
+                | DynamicallyAccessedMemberTypes.PublicFields
+                | DynamicallyAccessedMemberTypes.NonPublicFields
+                | DynamicallyAccessedMemberTypes.PublicProperties
+                | DynamicallyAccessedMemberTypes.NonPublicProperties
+                | DynamicallyAccessedMemberTypes.Interfaces
+        )]
+            TEntity
+    >(ModelBuilder builder)
+        where TConfig : IEntityTypeConfiguration<TEntity>, new()
+        where TEntity : class
+    {
+        _ = builder.ApplyConfiguration(new TConfig());
+    }
 
     [GenerateServiceRegistrations(
         AssignableTo = typeof(ValueConverter<,>),

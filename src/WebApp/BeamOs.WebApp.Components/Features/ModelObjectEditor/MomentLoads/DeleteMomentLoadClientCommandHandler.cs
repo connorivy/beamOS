@@ -1,6 +1,5 @@
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoads;
 using BeamOs.WebApp.Components.Features.Common;
@@ -130,4 +129,10 @@ public record DeleteMomentLoadClientCommand : IBeamOsUndoableClientCommand
             HandledByEditor = args?.HandledByEditor ?? this.HandledByEditor,
             HandledByServer = args?.HandledByServer ?? this.HandledByServer,
         };
+}
+
+public readonly struct ModelEntityCommand : IModelEntity
+{
+    public Guid ModelId { get; init; }
+    public int Id { get; init; }
 }

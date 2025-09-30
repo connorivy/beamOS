@@ -7,10 +7,8 @@
     <DefineConstants>$(DefineConstants);RUNTIME</DefineConstants>
   </PropertyGroup>
 
-  <Import Project="..\..\StructuralAnalysis\BeamOs.Tests.StructuralAnalysis.Integration.Shared\BeamOs.Tests.StructuralAnalysis.Integration.Shared.projitems" Label="Shared" />
-
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\StructuralAnalysis\BeamOs.StructuralAnalysis\BeamOs.StructuralAnalysis.csproj" />
+    <ProjectReference Include="../../../src/StructuralAnalysis/BeamOs.StructuralAnalysis/BeamOs.StructuralAnalysis.Core.csproj" />
     <ProjectReference Include="..\..\BeamOs.Tests.Common\BeamOs.Tests.Common.csproj" />
   </ItemGroup>
 

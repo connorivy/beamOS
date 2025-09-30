@@ -2,9 +2,7 @@ using BeamOs.CodeGen.EditorApi;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
-using BeamOs.Tests.Common;
 using BeamOs.WebApp.Components.Features.Common;
-using BeamOs.WebApp.Components.Features.TestExplorer;
 using Fluxor;
 using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Logging;
@@ -236,84 +234,84 @@ public class LoadBeamOsEntityCommandHandler(
     }
 }
 
-public record struct RunTestCommand(IEnumerable<TestInfo> TestInfos);
+// public record struct RunTestCommand(IEnumerable<TestInfo> TestInfos);
 
-public class RunTestCommandHandler(
-    ISnackbar snackbar,
-    IDispatcher dispatcher,
-    IServiceProvider serviceProvider,
-    ILogger<RunTestCommandHandler> logger
-) : CommandHandlerBase<RunTestCommand, bool>(snackbar, logger)
-{
-    protected override async Task<Result<bool>> ExecuteCommandAsync(
-        RunTestCommand command,
-        CancellationToken ct = default
-    )
-    {
-        void OnAssertedEqual2(object? _, TestResult args) =>
-            dispatcher.Dispatch(new TestResultComputed(args));
+// public class RunTestCommandHandler(
+//     ISnackbar snackbar,
+//     IDispatcher dispatcher,
+//     IServiceProvider serviceProvider,
+//     ILogger<RunTestCommandHandler> logger
+// ) : CommandHandlerBase<RunTestCommand, bool>(snackbar, logger)
+// {
+//     protected override async Task<Result<bool>> ExecuteCommandAsync(
+//         RunTestCommand command,
+//         CancellationToken ct = default
+//     )
+//     {
+//         void OnAssertedEqual2(object? _, TestResult args) =>
+//             dispatcher.Dispatch(new TestResultComputed(args));
 
-        foreach (var test in command.TestInfos ?? [])
-        {
-            test.OnTestResult += OnAssertedEqual2;
-            try
-            {
-                await test.RunTest(serviceProvider);
-            }
-            finally
-            {
-                test.OnTestResult -= OnAssertedEqual2;
-            }
-        }
+//         foreach (var test in command.TestInfos ?? [])
+//         {
+//             test.OnTestResult += OnAssertedEqual2;
+//             try
+//             {
+//                 await test.RunTest(serviceProvider);
+//             }
+//             finally
+//             {
+//                 test.OnTestResult -= OnAssertedEqual2;
+//             }
+//         }
 
-        return true;
-    }
-}
+//         return true;
+//     }
+// }
 
-public record struct RunTestsInFrontEndCommand(params IEnumerable<string> testResultIds);
+// public record struct RunTestsInFrontEndCommand(params IEnumerable<string> testResultIds);
 
-public class RunTestsInFrontEndCommandHandler(
-    ISnackbar snackbar,
-    IDispatcher dispatcher,
-    IState<TestInfoState> testInfoState,
-    ILogger<RunTestsInFrontEndCommandHandler> logger
-) : CommandHandlerBase<RunTestsInFrontEndCommand, bool>(snackbar, logger)
-{
-    protected override async Task<Result<bool>> ExecuteCommandAsync(
-        RunTestsInFrontEndCommand command,
-        CancellationToken ct = default
-    )
-    {
-        List<string> notStartedTestResultIds = [];
-        foreach (var resultId in command.testResultIds)
-        {
-            SingleTestState testResult = testInfoState.Value.TestInfoIdToTestResultDict[resultId];
-            if (testResult.FrontEndProgressStatus == TestProgressStatus.NotStarted)
-            {
-                notStartedTestResultIds.Add(resultId);
-                dispatcher.Dispatch(
-                    new TestResultProgressChanged(resultId, TestProgressStatus.InProgress)
-                );
-            }
-        }
+// public class RunTestsInFrontEndCommandHandler(
+//     ISnackbar snackbar,
+//     IDispatcher dispatcher,
+//     IState<TestInfoState> testInfoState,
+//     ILogger<RunTestsInFrontEndCommandHandler> logger
+// ) : CommandHandlerBase<RunTestsInFrontEndCommand, bool>(snackbar, logger)
+// {
+//     protected override async Task<Result<bool>> ExecuteCommandAsync(
+//         RunTestsInFrontEndCommand command,
+//         CancellationToken ct = default
+//     )
+//     {
+//         List<string> notStartedTestResultIds = [];
+//         foreach (var resultId in command.testResultIds)
+//         {
+//             SingleTestState testResult = testInfoState.Value.TestInfoIdToTestResultDict[resultId];
+//             if (testResult.FrontEndProgressStatus == TestProgressStatus.NotStarted)
+//             {
+//                 notStartedTestResultIds.Add(resultId);
+//                 dispatcher.Dispatch(
+//                     new TestResultProgressChanged(resultId, TestProgressStatus.InProgress)
+//                 );
+//             }
+//         }
 
-        await foreach (
-            var resultId in Task.WhenEach(notStartedTestResultIds.Select(GiveTestsTimeToRun))
-        )
-        {
-            dispatcher.Dispatch(
-                new TestResultProgressChanged(await resultId, TestProgressStatus.Finished)
-            );
-        }
+//         await foreach (
+//             var resultId in Task.WhenEach(notStartedTestResultIds.Select(GiveTestsTimeToRun))
+//         )
+//         {
+//             dispatcher.Dispatch(
+//                 new TestResultProgressChanged(await resultId, TestProgressStatus.Finished)
+//             );
+//         }
 
-        return true;
-    }
+//         return true;
+//     }
 
-    public static async Task<string> GiveTestsTimeToRun(string resultId)
-    {
-        var x = Convert.ToInt32(1000 * Random.Shared.NextDouble());
-        await Task.Delay(x);
+//     public static async Task<string> GiveTestsTimeToRun(string resultId)
+//     {
+//         var x = Convert.ToInt32(1000 * Random.Shared.NextDouble());
+//         await Task.Delay(x);
 
-        return resultId;
-    }
-}
+//         return resultId;
+//     }
+// }

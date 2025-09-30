@@ -307,11 +307,7 @@ public static class ProposalInfoReducers
             .SelectedObjects.Where(o => !o.ObjectType.IsProposalType())
             .Select(o =>
                 state.DeleteEntityProposals.GetValueOrDefault(
-                    new DeleteModelEntityProposalData()
-                    {
-                        ModelEntityId = o.Id,
-                        ObjectType = o.ObjectType,
-                    }
+                    new DeleteModelEntityProposalData() { Id = o.Id, ObjectType = o.ObjectType }
                 )
             )
             .OfType<DeleteModelEntityProposalContract>();

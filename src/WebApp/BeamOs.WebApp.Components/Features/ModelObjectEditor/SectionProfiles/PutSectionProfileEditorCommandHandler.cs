@@ -1,18 +1,17 @@
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.WebApp.Components.Features.Common;
 using BeamOs.WebApp.Components.Features.Editor;
-using BeamOs.WebApp.EditorCommands;
 using Fluxor;
 using Microsoft.Extensions.Logging;
 using MudBlazor;
+using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.WebApp.Components.Features.ModelObjectEditor.SectionProfiles;
 
 public sealed class PutSectionProfileEditorCommandHandler(
-    ILogger<PutSectionProfileCommandHandler> logger,
+    ILogger<PutSectionProfileEditorCommandHandler> logger,
     ISnackbar snackbar,
     IStructuralAnalysisApiClientV1 structuralAnalysisApiClientV1,
     IDispatcher dispatcher
@@ -28,8 +27,8 @@ public sealed class PutSectionProfileEditorCommandHandler(
     )
     {
         return await structuralAnalysisApiClientV1.PutSectionProfileAsync(
-            command.New.Id,
             command.New.ModelId,
+            command.New.Id,
             command.New.ToSectionProfileData(),
             ct
         );
@@ -54,13 +53,13 @@ public sealed class PutSectionProfileSimpleCommandHandler(
     IState<EditorComponentState> editorState
 )
     : SimpleCommandHandlerBase<
-        PutSectionProfileCommand,
+        ModelResourceWithIntIdRequest<SectionProfileData>,
         PutSectionProfileClientCommand,
         SectionProfileResponse
     >(putSectionProfileEditorCommandHandler)
 {
     protected override PutSectionProfileClientCommand CreateCommand(
-        PutSectionProfileCommand simpleCommand
+        ModelResourceWithIntIdRequest<SectionProfileData> simpleCommand
     )
     {
         var sectionProfile =
@@ -72,4 +71,13 @@ public sealed class PutSectionProfileSimpleCommandHandler(
 
         return new(sectionProfile, simpleCommand.ToResponse());
     }
+}
+
+[Mapper]
+public static partial class SectionProfileMappers
+{
+    [MapNestedProperties(nameof(ModelResourceWithIntIdRequest<>.Body))]
+    public static partial SectionProfileResponse ToResponse(
+        this ModelResourceWithIntIdRequest<SectionProfileData> command
+    );
 }

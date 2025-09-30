@@ -1,0 +1,9 @@
+{
+  Value: {
+    Id: 1,
+    Name: Dead
+  },
+  Error: null,
+  IsError: false,
+  IsSuccess: true
+}

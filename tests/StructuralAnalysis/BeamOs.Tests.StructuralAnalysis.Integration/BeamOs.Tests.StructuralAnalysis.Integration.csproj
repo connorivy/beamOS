@@ -3,6 +3,8 @@
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PublishAot Condition="'$(BeamOsEnableAot)' == 'true'">true</PublishAot>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,10 +13,10 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
     <PackageReference Include="TUnit" />
     <PackageReference Include="Verify.TUnit" />
-    <PackageReference Include="MathNet.Numerics.MKL.Win-x64" PrivateAssets="all" />
-    <PackageReference Include="MathNet.Spatial" PrivateAssets="all" />
-    <PackageReference Include="Riok.Mapperly" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" PrivateAssets="all" />
+    <PackageReference Include="MathNet.Numerics.MKL.Win-x64" />
+    <PackageReference Include="MathNet.Spatial" />
+    <PackageReference Include="Riok.Mapperly" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
     <!--<PackageReference Include="Microsoft.Azure.WebJobs.Core" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Http" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker" />
@@ -35,10 +37,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\codeGen\BeamOs.CodeGen.StructuralAnalysisApiClient\BeamOs.CodeGen.StructuralAnalysisApiClient.csproj" />
     <ProjectReference Include="..\..\..\src\StructuralAnalysis\BeamOs.StructuralAnalysis.Api\BeamOs.StructuralAnalysis.Api.csproj" />
-    <ProjectReference Include="..\BeamOs.StructuralAnalysis.Application\BeamOs.StructuralAnalysis.Application.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\..\BeamOs.Tests.Common\BeamOs.Tests.Common.csproj" />
   </ItemGroup>
-
-  <Import Project="..\BeamOs.Tests.StructuralAnalysis.Integration.Shared\BeamOs.Tests.StructuralAnalysis.Integration.Shared.projitems" Label="Shared" />
 
 </Project>

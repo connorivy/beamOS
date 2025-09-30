@@ -1,9 +1,8 @@
-using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
-using BeamOs.StructuralAnalysis.Application.Common;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
+using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
 using BeamOs.WebApp.Components.Features.Editor;
+using BeamOs.WebApp.Components.Features.ModelObjectEditor.MomentLoads;
 using BeamOs.WebApp.Components.Features.SelectionInfo;
 using BeamOs.WebApp.EditorCommands;
 using Fluxor;
@@ -140,7 +139,7 @@ public partial class MemberObjectEditor(
         }
         else
         {
-            PutElement1dCommand command = new()
+            ModelResourceWithIntIdRequest<Element1dData> command = new()
             {
                 Id = this.element1d.Id,
                 ModelId = this.ModelId,

@@ -47,17 +47,21 @@
   </Folder>
   <Folder Name="/src/StructuralAnalysis/">
     <Project Path="src/StructuralAnalysis/BeamOs.StructuralAnalysis.Api/BeamOs.StructuralAnalysis.Api.csproj" />
+    <Project Path="src/StructuralAnalysis/BeamOs.StructuralAnalysis.ApiClient/BeamOs.StructuralAnalysis.ApiClient.csproj" />
     <Project Path="src/StructuralAnalysis/BeamOs.StructuralAnalysis.Contracts/BeamOs.StructuralAnalysis.Contracts.csproj" />
+    <Project Path="src/StructuralAnalysis/BeamOs.StructuralAnalysis.Core/BeamOs.StructuralAnalysis.Core.csproj" />
     <Project Path="src/StructuralAnalysis/BeamOs.StructuralAnalysis.Infrastructure/BeamOs.StructuralAnalysis.Infrastructure.csproj" />
     <Project Path="src/StructuralAnalysis/BeamOs.StructuralAnalysis.SourceGenerator/BeamOs.StructuralAnalysis.SourceGenerator.csproj" />
     <Project Path="src/StructuralAnalysis/BeamOs.StructuralAnalysis/BeamOs.StructuralAnalysis.csproj" />
   </Folder>
   <Folder Name="/src/WebApp/">
+    <Project Path="src/WebApp/BeamOs.WebApp.Components/BeamOs.WebApp.Components.csproj" />
+    <Project Path="src/WebApp/BeamOs.WebApp.EditorCommands/BeamOs.WebApp.EditorCommands.csproj" />
+    <Project Path="src/WebApp/BeamOs.WebApp/BeamOs.WebApp.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/BeamOs.Tests.Architecture/BeamOs.Tests.Architecture.csproj" />
     <Project Path="tests/BeamOs.Tests.Common/BeamOs.Tests.Common.csproj" />
-    <Project Path="tests/StructuralAnalysis/BeamOs.Tests.StructuralAnalysis.Integration.Shared/BeamOs.Tests.StructuralAnalysis.Integration.Shared.shproj" />
     <Project Path="tests/StructuralAnalysis/BeamOs.Tests.StructuralAnalysis.Integration/BeamOs.Tests.StructuralAnalysis.Integration.csproj" />
     <Project Path="tests/StructuralAnalysis/BeamOs.Tests.StructuralAnalysis.Unit.Shared/BeamOs.Tests.StructuralAnalysis.Unit.Shared.shproj" />
     <Project Path="tests/StructuralAnalysis/BeamOs.Tests.StructuralAnalysis.Unit/BeamOs.Tests.StructuralAnalysis.Unit.csproj" />

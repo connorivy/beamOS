@@ -106,7 +106,9 @@ internal sealed class TwistyBowlFramingGenerator(string speckleToken)
         //     }
         // }
 
+#if Sqlite || InMemory
         modelBuilder.GenerateStaticModelClass(OutputPath, "ModelFixture");
+#endif
         //modelBuilder.WriteToPyniteFile(OutputPath);
     }
 }

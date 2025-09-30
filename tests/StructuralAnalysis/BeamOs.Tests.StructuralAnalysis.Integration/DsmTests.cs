@@ -1,4 +1,5 @@
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
+using BeamOs.StructuralAnalysis;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.NodeResult;
 using BeamOs.StructuralAnalysis.Contracts.Common;
@@ -8,24 +9,41 @@ using TUnit.Core.Exceptions;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration;
 
-[MethodDataSource(typeof(AllSolvedProblems), nameof(AllSolvedProblems.ModelFixtures))]
-public partial class DsmTests(ModelFixture modelFixture)
+[MethodDataSource(
+    typeof(AllSolvedProblemsWithMulipleClients),
+    nameof(AllSolvedProblemsWithMulipleClients.ModelFixtures)
+)]
+public partial class DsmTests
 {
-    private BeamOsApiResultModelId modelClient;
+    private readonly ModelFixture modelFixture;
+    private readonly ApiClientKey clientKey;
 
-    [Before(TUnitHookType.Test)]
-    public void BeforeClass()
+    public DsmTests(ApiClientKey clientKey, ModelFixture modelFixture)
     {
-        // This is a workaround to ensure that the API client is initialized before any tests run.
-        this.modelClient ??= AssemblySetup.StructuralAnalysisApiClient.Models[modelFixture.Id];
+        this.modelFixture = modelFixture;
+        this.clientKey = clientKey;
     }
+
+    private BeamOsResultApiClient ApiClient => field ??= this.clientKey.GetClient();
+
+    private BeamOsApiResultModelId ModelClient =>
+        field ??= this.ApiClient.Models[this.modelFixture.Id];
+
+    // [Before(TUnitHookType.Test)]
+    // public void BeforeClass()
+    // {
+    //     // This is a workaround to ensure that the API client is initialized before any tests run.
+    //     this.modelClient ??= AssemblySetup.StructuralAnalysisRemoteApiClient.Models[
+    //         modelFixture.Id
+    //     ];
+    // }
 
     [Test, SkipInFrontEnd]
     public async Task RunDsmAnalysis_ShouldReturnSuccessfulStatusCode()
     {
-        await modelFixture.CreateOnly(AssemblySetup.StructuralAnalysisApiClient);
+        await modelFixture.CreateOnly(this.ApiClient);
 
-        var resultSetIdResponse = await this.modelClient.Analyze.Dsm.RunDirectStiffnessMethodAsync(
+        var resultSetIdResponse = await this.ModelClient.Analyze.Dsm.RunDirectStiffnessMethodAsync(
             new() { LoadCombinationIds = [2] }
         );
 
@@ -60,7 +78,7 @@ public partial class DsmTests(ModelFixture modelFixture)
             )
             {
                 var result = await this
-                    .modelClient.Results.LoadCombinations[2]
+                    .ModelClient.Results.LoadCombinations[2]
                     .Nodes[expectedNodeDisplacementResult.NodeId]
                     .GetNodeResultAsync();
 
@@ -87,7 +105,7 @@ public partial class DsmTests(ModelFixture modelFixture)
             )
             {
                 var result = await this
-                    .modelClient.Results.LoadCombinations[2]
+                    .ModelClient.Results.LoadCombinations[2]
                     .Nodes[expectedNodeDisplacementResult.NodeId]
                     .GetNodeResultAsync();
 
@@ -201,7 +219,7 @@ public partial class DsmTests(ModelFixture modelFixture)
             );
         }
 
-        var resultSet = await modelClient.ResultSets[2].GetResultSetAsync();
+        var resultSet = await ModelClient.ResultSets[2].GetResultSetAsync();
 
         resultSet.ThrowIfError();
 

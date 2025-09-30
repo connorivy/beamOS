@@ -2,7 +2,7 @@
 <Project>
   <Import Project="BeamOs.user.props" Condition="Exists('BeamOs.user.props')" />
   <PropertyGroup Label="General Config">
-    <BeamOsTargetFramework Condition="'$(BeamOsTargetFramework)' == ''">net10.0</BeamOsTargetFramework>
+    <BeamOsTargetFramework Condition="'$(BeamOsTargetFramework)' == ''">net9.0</BeamOsTargetFramework>
     <TargetFramework>$(BeamOsTargetFramework)</TargetFramework>
     <LangVersion>preview</LangVersion>
     <OpenSeesDir Condition="'$(OpenSeesDir)' == ''">$(MSBuildThisFileDirectory)openSees\OpenSees3.7.0\</OpenSeesDir>
@@ -16,10 +16,21 @@
     <TUnitImplicitUsings>false</TUnitImplicitUsings>
     <DefineConstants Condition="'$(CODEGEN)' == 'true'">$(DefineConstants);CODEGEN</DefineConstants>
     <LocalNugetFeed>/workspaces/beamOS/.nuget-local</LocalNugetFeed>
-    <BeamOsEnableAot Condition="'$(BeamOsEnableAot)' == ''">true</BeamOsEnableAot>
+    <BeamOsEnableAot Condition="'$(BeamOsEnableAot)' == ''">false</BeamOsEnableAot>
+
+    <BeamOsUsePostgres Condition="'$(BeamOsUsePostgres)' == ''">true</BeamOsUsePostgres>
+    <BeamOsUseSqlite Condition="'$(BeamOsUseSqlite)' == ''">false</BeamOsUseSqlite>
+    <BeamOsUseInMemoryInfra Condition="'$(BeamOsUseInMemoryInfra)' == ''">false</BeamOsUseInMemoryInfra>
+    <!-- <BeamOsUsePostgres Condition="'$(BeamOsUsePostgres)' == ''">false</BeamOsUsePostgres>
+    <BeamOsUseSqlite Condition="'$(BeamOsUseSqlite)' == ''">true</BeamOsUseSqlite> -->
+    <!-- <BeamOsUsePostgres>true</BeamOsUsePostgres>
+    <BeamOsUseSqlite>false</BeamOsUseSqlite> -->
     <!-- <PropertyGroup Condition="'$(CODEGEN)' == 'true'">
       <DefineConstants>$(DefineConstants);CODEGEN</DefineConstants>
     </PropertyGroup> -->
+    <DefineConstants Condition="'$(BeamOsUsePostgres)' == 'true'">$(DefineConstants);Postgres</DefineConstants>
+    <DefineConstants Condition="'$(BeamOsUseSqlite)' == 'true'">$(DefineConstants);Sqlite</DefineConstants>
+    <DefineConstants Condition="'$(BeamOsUseInMemoryInfra)' == 'true'">$(DefineConstants);InMemory</DefineConstants>
 
     <!--<InvariantGlobalization>true</InvariantGlobalization>-->
     <NoWarn>
@@ -34,6 +45,14 @@
 
       IDE0051;
       IDE0100; <!-- IDE0100: Ignore redundant equality -->
+
+      TUnit0046; <!-- Return a Func<T> rather than a T -->
+      TUnit0057; <!-- Hook method can accept a AssemblyHookContext -->
+
+      RMG020;
+      RMG012;
+      RMG037;
+      RMG038;
       $(NoWarn)
     </NoWarn>
 
@@ -57,6 +76,7 @@
       CA1727; <!-- Use PascalCase for named placeholders -->
       CA1822; <!-- Member 'METHOD' does not access instance data and can be marked as static -->
       CA1852; <!-- Seal internal types -->
+      CA1861; <!-- Prefer 'static readonly' fields over const array arguments -->
       CA1848; <!-- For improved performance, use the LoggerMessage delegates -->
       CA1873; <!-- Evaluation of this argument may be expensive. -->
       CA2016; <!-- Forward the 'CancellationToken' parameter to methods that take one -->
@@ -72,8 +92,11 @@
       IDE0290; <!-- Use primary ctor -->
       IDE1006; <!-- These words must begin with uppercase characters -->
 
+      CS0067; <!-- The event 'EVENT' is never used -->
       CS0108; <!-- Member hides inherited member; missing new keyword -->
+      CS0162; <!-- Unreachable code detected -->
       CS0168; <!-- Variable is declared but never used -->
+      CS0436; <!-- Type conflicts with imported type -->
       CS0618; <!-- Operator is obsolete: for null checks, use 'is null' or 'is not null' -->
       CS1572; <!-- XML comment has a param tag, but there is no parameter by that name -->
       CS1573; <!-- Parameter has no matching param tag in the XML comment -->
@@ -81,6 +104,7 @@
       CS8509; <!-- The switch expression does not handle all possible values of its input type (it is not exhaustive) -->
       CS8524; <!-- The switch expression is not exhaustive. -->
       CS8600; <!-- Converting null literal or possible null value to non-nullable type. -->
+      CS8601; <!-- Possible null reference assignment. -->
       CS8602; <!-- Dereference of a possibly null reference. -->
       CS8603; <!-- Possible null reference return. -->
       CS8604; <!-- Possible null reference argument for parameter 'PARAM' in 'METHOD'. -->
@@ -91,6 +115,8 @@
       CS8629; <!-- Nullable value type may be null. -->
       CS9107; <!-- Parameter is captured into the state of the class -->
       CS9113; <!-- Parameter 'PARAM' is unread -->
+
+      DW0003; <!-- DotWrap: method has 'ref like' -->
 
       SYSLIB0014; <!-- Obsolete API usage: 'API': Use 'Alternative' instead. -->
     </WarningsNotAsErrors>

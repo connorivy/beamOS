@@ -10,7 +10,7 @@ public static partial class DependencyInjection
 {
     [GenerateServiceRegistrations(
         AssignableTo = typeof(BeamOsBaseEndpoint<,>),
-        FromAssemblyOf = typeof(BeamOs.StructuralAnalysis.Sdk.BeamOsApiClient),
+        FromAssemblyOf = typeof(BeamOs.StructuralAnalysis.Application.DependencyInjection),
         // AttributeFilter = typeof(BeamOsRouteAttribute),
         CustomHandler = nameof(Asdf)
     )]

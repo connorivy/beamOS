@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>true</IsPackable>
+    <PublishAot Condition="'$(BeamOsEnableAot)' == 'true'">true</PublishAot>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)/Generated</CompilerGeneratedFilesOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/BeamOs.CodeGen.StructuralAnalysisApiClient.csproj" />
+    <ProjectReference Include="..\BeamOs.StructuralAnalysis.SourceGenerator\BeamOs.StructuralAnalysis.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\BeamOs.StructuralAnalysis.Contracts\BeamOs.StructuralAnalysis.Contracts.csproj" />
+  </ItemGroup>
+
+	<ItemGroup Condition="'$(BeamOsUseInMemoryInfra)' == 'true'">
+    <ProjectReference Include="../BeamOs.StructuralAnalysis.Core/BeamOs.StructuralAnalysis.Core.csproj" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(BeamOsUseSqlite)' == 'true'">
+    <ProjectReference Include="../BeamOs.StructuralAnalysis.Core/BeamOs.StructuralAnalysis.Core.csproj" />
+    <ProjectReference Include="../BeamOs.StructuralAnalysis.Infrastructure/BeamOs.StructuralAnalysis.Infrastructure.csproj" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(BeamOsUseSqlite)' != 'true'">
+    <ProjectReference Include="../BeamOs.StructuralAnalysis.Core/BeamOs.StructuralAnalysis.Core.csproj" PrivateAssets="all" />
+	</ItemGroup>
+
+  <Target Name="EchoDefines" BeforeTargets="CoreCompile">
+    <Message Importance="high" Text="BeamOsUseSqlite: $(BeamOsUseSqlite)" />
+    <Message Importance="high" Text="Defined symbols: $(DefineConstants)" />
+  </Target>
+
+
+</Project>

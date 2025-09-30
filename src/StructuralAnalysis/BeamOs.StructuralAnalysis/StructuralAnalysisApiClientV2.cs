@@ -1,15 +1,6 @@
 #if !CODEGEN
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis.Api.Endpoints.AnalyticalResults;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCases;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCombinations;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.Materials;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.MomentLoads;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.NodeResult;
@@ -26,7 +17,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints;
 
-internal sealed class StructuralAnalysisApiClientV2 : IStructuralAnalysisApiClientV2
+public sealed class StructuralAnalysisApiClientV2 : IStructuralAnalysisApiClientV2
 {
     private readonly StructuralAnalysisApiClientV1 apiClientV1;
 

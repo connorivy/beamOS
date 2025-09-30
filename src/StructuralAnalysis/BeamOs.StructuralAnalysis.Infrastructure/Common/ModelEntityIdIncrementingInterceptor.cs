@@ -1,21 +1,16 @@
-using System.Diagnostics;
 using System.Runtime.InteropServices;
-using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCases;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinations;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.Common;
 
-internal class ModelEntityIdIncrementingInterceptor : SaveChangesInterceptor
+internal class ModelEntityIdIncrementingInterceptor(TimeProvider timeProvider)
+    : SaveChangesInterceptor
 {
     public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(
         DbContextEventData eventData,
@@ -31,10 +26,14 @@ internal class ModelEntityIdIncrementingInterceptor : SaveChangesInterceptor
         var addedModelEntities = context
             .ChangeTracker.Entries()
             .Where(e => e.State == EntityState.Added && e.Entity is IBeamOsModelEntity)
+#if Sqlite
+            // Sqlite does not support composite keys with auto-increment
+            .Where(e => e.Entity is not ModelProposal and not DeleteModelEntityProposal)
+#endif
             .Select(e => (IBeamOsModelEntity)e.Entity)
-            .ToList();
+            .ToArray();
 
-        if (addedModelEntities.Count == 0)
+        if (addedModelEntities.Length == 0)
         {
             return await base.SavingChangesAsync(eventData, result, cancellationToken);
         }
@@ -50,64 +49,61 @@ internal class ModelEntityIdIncrementingInterceptor : SaveChangesInterceptor
                 .GroupBy(e => e.Entity.ModelId)
         )
         {
-            var idResults = await context
-                .Models.AsSplitQuery()
-                .Where(m => m.Id == entityInfoGroup.Key)
-                .Select(m => new
-                {
-                    MaxNodeId = m.Nodes.Max(el => (int?)el.Id) ?? 0,
-                    MaxElement1dId = m.Element1ds.Max(el => (int?)el.Id) ?? 0,
-                    MaxMaterialId = m.Materials.Max(el => (int?)el.Id) ?? 0,
-                    MaxSectionProfileId = m.SectionProfiles.Max(el => (int?)el.Id) ?? 0,
-                    MaxPointLoadId = m.PointLoads.Max(el => (int?)el.Id) ?? 0,
-                    MaxMomentLoadId = m.MomentLoads.Max(el => (int?)el.Id) ?? 0,
-                    MaxResultSetId = m.ResultSets.Max(el => (int?)el.Id) ?? 0,
-                    MaxLoadCaseId = m.LoadCases.Max(el => (int?)el.Id) ?? 0,
-                    MaxLoadCombinationId = m.LoadCombinations.Max(el => (int?)el.Id) ?? 0,
-                })
-                .FirstOrDefaultAsync(cancellationToken);
-
-            idResults ??= new
-            {
-                MaxNodeId = 0,
-                MaxElement1dId = 0,
-                MaxMaterialId = 0,
-                MaxSectionProfileId = 0,
-                MaxPointLoadId = 0,
-                MaxMomentLoadId = 0,
-                MaxResultSetId = 0,
-                MaxLoadCaseId = 0,
-                MaxLoadCombinationId = 0,
-            };
-
-            Dictionary<Type, int> entityTypeToMaxIdDict = new()
-            {
-                { typeof(Node), idResults.MaxNodeId },
-                { typeof(Element1d), idResults.MaxElement1dId },
-                { typeof(Material), idResults.MaxMaterialId },
-                { typeof(SectionProfile), idResults.MaxSectionProfileId },
-                { typeof(PointLoad), idResults.MaxPointLoadId },
-                { typeof(MomentLoad), idResults.MaxMomentLoadId },
-                { typeof(ResultSet), idResults.MaxResultSetId },
-                { typeof(LoadCase), idResults.MaxLoadCaseId },
-                { typeof(LoadCombination), idResults.MaxLoadCombinationId },
-            };
-
-            Dictionary<Type, HashSet<int>> entityTypeToTakenIdsDict = entityInfoGroup
+            var entityTypeToTakenIdsDict = entityInfoGroup
                 .GroupBy(i => i.Type)
                 .ToDictionary(info => info.Key, info => info.Select(i => i.Id).ToHashSet());
 
-            foreach (
-                var entityInfoByType in entityInfoGroup
-                    .Where(info => info.Id == 0)
-                    .GroupBy(info => info.Type)
-            )
+            var entitiesWithDefaultIds = entityInfoGroup
+                .Where(info => info.Id == 0)
+                .GroupBy(info => info.Type)
+                .ToArray();
+
+            var currentModel =
+                await context
+                    .Models.AsSplitQuery()
+                    .Where(m => m.Id == entityInfoGroup.Key)
+                    .FirstOrDefaultAsync(cancellationToken)
+                ?? throw new InvalidOperationException(
+                    $"Could not find model with id {entityInfoGroup.Key} when trying to assign ids to new entities."
+                );
+
+            // idResults ??= new
+            // {
+            //     MaxNodeId = 0,
+            //     MaxElement1dId = 0,
+            //     MaxMaterialId = 0,
+            //     MaxSectionProfileId = 0,
+            //     MaxPointLoadId = 0,
+            //     MaxMomentLoadId = 0,
+            //     MaxResultSetId = 0,
+            //     MaxLoadCaseId = 0,
+            //     MaxLoadCombinationId = 0,
+            // };
+
+            Dictionary<Type, int> entityTypeToMaxIdDict = new()
+            {
+                { typeof(Node), currentModel.MaxNodeId },
+                { typeof(InternalNode), currentModel.MaxInternalNodeId },
+                { typeof(Element1d), currentModel.MaxElement1dId },
+                { typeof(Material), currentModel.MaxMaterialId },
+                { typeof(SectionProfile), currentModel.MaxSectionProfileId },
+                { typeof(SectionProfileFromLibrary), currentModel.MaxSectionProfileFromLibraryId },
+                { typeof(PointLoad), currentModel.MaxPointLoadId },
+                { typeof(MomentLoad), currentModel.MaxMomentLoadId },
+                { typeof(LoadCase), currentModel.MaxLoadCaseId },
+                { typeof(LoadCombination), currentModel.MaxLoadCombinationId },
+                { typeof(ModelProposal), currentModel.MaxModelProposalId },
+            };
+
+            foreach (var entityInfoByType in entitiesWithDefaultIds)
             {
                 var entityType = entityInfoByType.Key;
-                Debug.Assert(
-                    entityTypeToMaxIdDict.ContainsKey(entityType),
-                    $"Could not find next id for entity of type {entityType}"
-                );
+                if (!entityTypeToMaxIdDict.ContainsKey(entityType))
+                {
+                    throw new InvalidOperationException(
+                        $"Could not find next id for entity of type {entityType}"
+                    );
+                }
 
                 ref int maxId = ref CollectionsMarshal.GetValueRefOrNullRef(
                     entityTypeToMaxIdDict,
@@ -117,13 +113,27 @@ internal class ModelEntityIdIncrementingInterceptor : SaveChangesInterceptor
                 HashSet<int>? takenIds = entityTypeToTakenIdsDict.GetValueOrDefault(entityType);
                 foreach (var entityInfo in entityInfoByType)
                 {
-                    while (takenIds?.Contains(++maxId) ?? false)
+                    do
                     {
-                        // do nothing
-                    }
+                        maxId++;
+                    } while (takenIds?.Contains(maxId) ?? false);
                     entityInfo.Entity.SetIntId(maxId);
                 }
             }
+
+            currentModel.MaxNodeId = entityTypeToMaxIdDict[typeof(Node)];
+            currentModel.MaxInternalNodeId = entityTypeToMaxIdDict[typeof(InternalNode)];
+            currentModel.MaxElement1dId = entityTypeToMaxIdDict[typeof(Element1d)];
+            currentModel.MaxMaterialId = entityTypeToMaxIdDict[typeof(Material)];
+            currentModel.MaxSectionProfileId = entityTypeToMaxIdDict[typeof(SectionProfile)];
+            currentModel.MaxSectionProfileFromLibraryId = entityTypeToMaxIdDict[
+                typeof(SectionProfileFromLibrary)
+            ];
+            currentModel.MaxPointLoadId = entityTypeToMaxIdDict[typeof(PointLoad)];
+            currentModel.MaxMomentLoadId = entityTypeToMaxIdDict[typeof(MomentLoad)];
+            currentModel.MaxLoadCaseId = entityTypeToMaxIdDict[typeof(LoadCase)];
+            currentModel.MaxLoadCombinationId = entityTypeToMaxIdDict[typeof(LoadCombination)];
+            currentModel.LastModified = timeProvider.GetUtcNow();
         }
 
         return result;

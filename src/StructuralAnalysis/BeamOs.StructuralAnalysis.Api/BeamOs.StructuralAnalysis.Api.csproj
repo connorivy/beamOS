@@ -24,11 +24,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="../BeamOs.StructuralAnalysis/BeamOs.StructuralAnalysis.Core.csproj" />
     <ProjectReference Include="..\..\..\tests\BeamOs.Tests.Common\BeamOs.Tests.Common.csproj" />
     <ProjectReference Include="..\..\Ai\BeamOs.Ai\BeamOs.Ai.csproj" />
     <ProjectReference Include="..\..\Common\BeamOs.Common.Api\BeamOs.Common.Api.csproj" />
     <ProjectReference Include="..\..\SpeckleConnector\BeamOs.SpeckleConnector\BeamOs.SpeckleConnector.csproj" />
-    <ProjectReference Include="..\BeamOs.StructuralAnalysis\BeamOs.StructuralAnalysis.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\BeamOs.StructuralAnalysis.Contracts\BeamOs.StructuralAnalysis.Contracts.csproj" />
     <ProjectReference Include="..\BeamOs.StructuralAnalysis.Infrastructure\BeamOs.StructuralAnalysis.Infrastructure.csproj" />
   </ItemGroup>

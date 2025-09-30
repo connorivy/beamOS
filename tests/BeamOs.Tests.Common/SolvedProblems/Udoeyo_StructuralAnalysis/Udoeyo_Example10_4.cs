@@ -140,7 +140,7 @@ public class Udoeyo_Example10_4 : ModelFixture, IHasExpectedNodeResults, ISkipDs
         yield return new InternalNode(
             3,
             1,
-            new(.5, RatioUnit.DecimalFraction),
+            new(.5, RatioUnitContract.DecimalFraction),
             new()
             {
                 CanTranslateAlongX = true,

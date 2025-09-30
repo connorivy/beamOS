@@ -17,6 +17,11 @@ using LoadCase = BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases.Loa
 
 namespace BeamOs.StructuralAnalysis.Contracts.Common;
 
+[JsonSourceGenerationOptions(
+    PropertyNameCaseInsensitive = true,
+    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
+    WriteIndented = false
+)]
 [JsonSerializable(typeof(CreateNodeRequest))]
 [JsonSerializable(typeof(CreateModelRequest))]
 [JsonSerializable(typeof(CreateMaterialRequest))]
@@ -88,7 +93,7 @@ namespace BeamOs.StructuralAnalysis.Contracts.Common;
 [JsonSerializable(typeof(GithubModelsChatRequest))]
 [JsonSerializable(typeof(Result<GithubModelsChatResponse>))]
 [JsonSerializable(typeof(ProblemDetails))]
-internal partial class BeamOsJsonSerializerContext : JsonSerializerContext { }
+public partial class BeamOsJsonSerializerContext : JsonSerializerContext { }
 
 public static class BeamOsSerializerOptions
 {

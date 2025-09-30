@@ -2,7 +2,6 @@
 @using BeamOs.CodeGen.StructuralAnalysisApiClient
 @using BeamOs.StructuralAnalysis.Contracts.Common
 @using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models
-@using BeamOs.StructuralAnalysis.CsSdk
 @using BeamOs.WebApp.Components.Features.Common
 @using BeamOs.WebApp.Components.Features.Dialogs
 @using BeamOs.WebApp.Components.Features.Editor
@@ -109,7 +108,14 @@
 
     private async Task RunAnalysis()
     {
-        var result = await runDsmCommandCommandHandler.ExecuteAsync(new() { ModelId = this.ModelId, UnitsOverride = "kn-m" });
+        var result = await runDsmCommandCommandHandler.ExecuteAsync(new()
+        {
+            ModelId = this.ModelId,
+            Body = new()
+            {
+                UnitsOverride = "kn-m"
+            }
+        });
 
         if (result.IsSuccess)
         {

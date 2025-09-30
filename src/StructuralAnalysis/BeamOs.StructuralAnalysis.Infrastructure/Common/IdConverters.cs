@@ -17,11 +17,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.Common;
 
-internal class ModelIdConverter : ValueConverter<ModelId, Guid>
-{
-    public ModelIdConverter()
-        : base(x => x.Id, x => new(x), null) { }
-}
+// internal class ModelIdConverter : ValueConverter<ModelId, Guid>
+// {
+//     public ModelIdConverter()
+//         : base(x => x.Id, x => new(x), null) { }
+// }
 
 internal class ModelIdProposalConverter : ValueConverter<ModelProposalId, int>
 {
@@ -95,7 +95,8 @@ internal class ResultSetIdConverter : ValueConverter<ResultSetId, int>
         : base(x => x.Id, x => new(x), null) { }
 }
 
-internal class DiagramConsistantIntervalIdConverter : ValueConverter<DiagramConsistantIntervalId, int>
+internal class DiagramConsistantIntervalIdConverter
+    : ValueConverter<DiagramConsistantIntervalId, int>
 {
     public DiagramConsistantIntervalIdConverter()
         : base(x => x.Id, x => new(x), null) { }
@@ -143,7 +144,8 @@ internal class ProposalIssueIdConverter : ValueConverter<ProposalIssueId, int>
         : base(x => x.Id, x => new(x), null) { }
 }
 
-internal class ModelEntityDeleteProposalIdConverter : ValueConverter<ModelEntityDeleteProposalId, int>
+internal class ModelEntityDeleteProposalIdConverter
+    : ValueConverter<DeleteModelEntityProposalId, int>
 {
     public ModelEntityDeleteProposalIdConverter()
         : base(x => x.Id, x => new(x), null) { }

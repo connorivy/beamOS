@@ -1,9 +1,11 @@
 using System.Text;
-using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.StructuralAnalysis.Api;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
+#if Sqlite || InMemory
+using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.StructuralAnalysis.Sdk.Extensions;
+#endif
 
 namespace BeamOs.StructuralAnalysis.Sdk;
 
@@ -68,6 +70,7 @@ public static class IBeamOsModelExtensions
             return await builder.CreateOrUpdate();
         }
 
+#if Sqlite || InMemory
         public void GenerateStaticModelClass(string outputDir, string? baseClass = null)
         {
             var sb = new StringBuilder();
@@ -420,6 +423,7 @@ print(f""Execution time: {execution_time} seconds"")
                 $"Translation from {direction} to pynite has not been implemented"
             );
         }
+#endif
     }
     // public static Task Create(this IBeamOsModel model)
     // {

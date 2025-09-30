@@ -209,7 +209,7 @@ public sealed class BeamOsError(
                 this.Description,
                 500,
                 "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1",
-                "",
+                null,
                 this.Metadata
             ),
             ErrorType.Validation => new ProblemDetails(
@@ -217,7 +217,7 @@ public sealed class BeamOsError(
                 this.Description,
                 400,
                 "https://tools.ietf.org/html/rfc7231#section-6.5.1",
-                "",
+                null,
                 this.Metadata
             ),
             ErrorType.Conflict => new ProblemDetails(
@@ -225,7 +225,7 @@ public sealed class BeamOsError(
                 this.Description,
                 409,
                 "https://tools.ietf.org/html/rfc7231#section-6.5.8",
-                "",
+                null,
                 this.Metadata
             ),
             ErrorType.NotFound => new ProblemDetails(
@@ -233,7 +233,7 @@ public sealed class BeamOsError(
                 this.Description,
                 404,
                 "https://tools.ietf.org/html/rfc7231#section-6.5.4",
-                "",
+                null,
                 this.Metadata
             ),
             ErrorType.Unauthorized => new ProblemDetails(
@@ -241,7 +241,7 @@ public sealed class BeamOsError(
                 this.Description,
                 401,
                 "https://tools.ietf.org/html/rfc7231#section-6.5.2",
-                "",
+                null,
                 this.Metadata
             ),
             ErrorType.Forbidden => new ProblemDetails(
@@ -249,7 +249,7 @@ public sealed class BeamOsError(
                 this.Description,
                 403,
                 "https://tools.ietf.org/html/rfc7231#section-6.5.3",
-                "",
+                null,
                 this.Metadata
             ),
             ErrorType.InvalidOperation => new ProblemDetails(
@@ -257,7 +257,7 @@ public sealed class BeamOsError(
                 this.Description,
                 422,
                 "https://tools.ietf.org/html/rfc4918#section-11.2",
-                "",
+                null,
                 this.Metadata
             ),
             _ => throw new NotImplementedException(),

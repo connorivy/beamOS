@@ -42,6 +42,11 @@ public abstract class BeamOsEntity<TId>
         return !Equals(left, right);
     }
 
+    internal void __SetId(TId id)
+    {
+        this.Id = id;
+    }
+
     public override int GetHashCode()
     {
         return this.Id.GetHashCode();

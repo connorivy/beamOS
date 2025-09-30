@@ -24,3 +24,12 @@ internal class MaterialProposalConfiguration : IEntityTypeConfiguration<Material
             .OnDelete(DeleteBehavior.Cascade);
     }
 }
+
+internal class MaterialConfiguration : IEntityTypeConfiguration<Material>
+{
+    public void Configure(EntityTypeBuilder<Material> builder)
+    {
+        builder.HasKey(n => new { n.Id, n.ModelId });
+        builder.Property(n => n.Id).ValueGeneratedNever();
+    }
+}

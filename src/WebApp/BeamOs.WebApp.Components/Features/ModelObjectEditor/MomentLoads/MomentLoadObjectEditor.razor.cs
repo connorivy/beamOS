@@ -1,7 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
-using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
-using BeamOs.StructuralAnalysis.Application.Common;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.MomentLoads;
+using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoads;
@@ -109,9 +107,7 @@ public partial class MomentLoadObjectEditor(
         this.momentLoad.ModelId = response.ModelId;
         this.momentLoad.NodeId = response.NodeId;
         this.momentLoad.LoadCaseId = response.LoadCaseId;
-        this.momentLoad.Torque = response
-            .Torque.MapToTorque()
-            .As(this.UnitSettings.TorqueUnit.MapToTorqueUnit());
+        this.momentLoad.Torque = response.Torque.As(this.UnitSettings.TorqueUnit);
         this.momentLoad.AxisDirection = new(
             response.AxisDirection.X,
             response.AxisDirection.Y,
@@ -151,7 +147,7 @@ public partial class MomentLoadObjectEditor(
         }
         else
         {
-            PutMomentLoadCommand command = new()
+            ModelResourceWithIntIdRequest<MomentLoadData> command = new()
             {
                 Id = this.momentLoad.Id,
                 ModelId = this.ModelId,

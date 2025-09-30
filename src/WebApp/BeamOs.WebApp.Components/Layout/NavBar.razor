@@ -1,5 +1,4 @@
 @using BeamOs.Identity
-@using BeamOs.WebApp.Components.Features.TestExplorer
 @using Fluxor
 @using Microsoft.AspNetCore.Components.Authorization
 @using MudBlazor
@@ -21,28 +20,25 @@
         <MudIcon Icon="@Icons.Custom.Brands.MudBlazor" Size="Size.Large" />
     </MudHidden> *@
     <MudHidden Breakpoint="Breakpoint.MdAndUp">
-        <MudIconButton OnClick="OpenDrawer" Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit" Edge="Edge.Start" />
+        <MudIconButton OnClick="OpenDrawer" Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit"
+            Edge="Edge.Start" />
     </MudHidden>
 
     <MudButton Href="/" Class="mr-12">beamOS</MudButton>
     @* <Logo Class="pr-8"/> *@
     <MudStack Row="true">
         <MudButton Href="/reliability">Reliability</MudButton>
-        <MudButton Href="@TestExplorer.Href">Test Explorer</MudButton>
+        @* <MudButton Href="@TestExplorer.Href">Test Explorer</MudButton> *@
         <MudButton Href="/models">Models</MudButton>
         @* <MudButton Href="/models/0a83df88-656e-47d9-98fe-25fd7d370b06">TestModelPage</MudButton> *@
     </MudStack>
     <MudSpacer />
     <MudStack Row="true">
-        <MudToggleIconButton
-        @bind-Toggled:get="@MainLayoutState.Value.IsDarkMode"
-        @bind-Toggled:set="ToggleDarkMode"
-        Size="Size.Medium"
-        Color="Color.Default"
-        Icon="@Icons.Material.Rounded.LightMode"
-        ToggledIcon="@Icons.Material.Rounded.DarkMode"
-        Class="my-auto" />
-        <MudIconButton Target="_blank" Href="https://github.com/connorivy/beamOS" Icon="@Icons.Custom.Brands.GitHub" Edge="Edge.Start" />
+        <MudToggleIconButton @bind-Toggled:get="@MainLayoutState.Value.IsDarkMode" @bind-Toggled:set="ToggleDarkMode"
+            Size="Size.Medium" Color="Color.Default" Icon="@Icons.Material.Rounded.LightMode"
+            ToggledIcon="@Icons.Material.Rounded.DarkMode" Class="my-auto" />
+        <MudIconButton Target="_blank" Href="https://github.com/connorivy/beamOS" Icon="@Icons.Custom.Brands.GitHub"
+            Edge="Edge.Start" />
         <AuthorizeView>
             <Authorized>
                 <MudMenu>
@@ -86,9 +82,9 @@
 
     // async Task ToggleDarkMode(bool value)
     // {
-    //     this.IsDarkModeProvider.IsDarkMode = value;
-    //     this.IsDarkMode = value;
-    //     await IsDarkModeChanged.InvokeAsync(value);
+    // this.IsDarkModeProvider.IsDarkMode = value;
+    // this.IsDarkMode = value;
+    // await IsDarkModeChanged.InvokeAsync(value);
     // }
 
     [Inject]

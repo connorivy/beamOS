@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using BeamOs.Common.Domain.Models;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
@@ -7,8 +8,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.Common;
 
-internal abstract class RepositoryBase<TId, TEntity>(StructuralAnalysisDbContext dbContext)
-    : IRepository<TId, TEntity>
+internal abstract class RepositoryBase<
+    TId,
+    [DynamicallyAccessedMembers(
+        DynamicallyAccessedMemberTypes.PublicConstructors
+            | DynamicallyAccessedMemberTypes.NonPublicConstructors
+            | DynamicallyAccessedMemberTypes.PublicFields
+            | DynamicallyAccessedMemberTypes.NonPublicFields
+            | DynamicallyAccessedMemberTypes.PublicProperties
+            | DynamicallyAccessedMemberTypes.NonPublicProperties
+            | DynamicallyAccessedMemberTypes.Interfaces
+    )]
+        TEntity
+>(StructuralAnalysisDbContext dbContext) : IRepository<TId, TEntity>
     where TId : struct
     where TEntity : BeamOsEntity<TId>
 {
@@ -42,9 +54,21 @@ internal abstract class RepositoryBase<TId, TEntity>(StructuralAnalysisDbContext
     }
 }
 
-internal abstract class ModelResourceRepositoryInBase<TId, TEntity>(
-    StructuralAnalysisDbContext dbContext
-) : RepositoryBase<TId, TEntity>(dbContext), IModelResourceRepositoryIn<TId, TEntity>
+internal abstract class ModelResourceRepositoryInBase<
+    TId,
+    [DynamicallyAccessedMembers(
+        DynamicallyAccessedMemberTypes.PublicConstructors
+            | DynamicallyAccessedMemberTypes.NonPublicConstructors
+            | DynamicallyAccessedMemberTypes.PublicFields
+            | DynamicallyAccessedMemberTypes.NonPublicFields
+            | DynamicallyAccessedMemberTypes.PublicProperties
+            | DynamicallyAccessedMemberTypes.NonPublicProperties
+            | DynamicallyAccessedMemberTypes.Interfaces
+    )]
+        TEntity
+>(StructuralAnalysisDbContext dbContext)
+    : RepositoryBase<TId, TEntity>(dbContext),
+        IModelResourceRepositoryIn<TId, TEntity>
     where TId : struct, IEquatable<TId>, IIntBasedId
     where TEntity : BeamOsModelEntity<TId>
 {
@@ -70,9 +94,21 @@ internal abstract class ModelResourceRepositoryInBase<TId, TEntity>(
     }
 }
 
-internal abstract class ModelResourceRepositoryBase<TId, TEntity>(
-    StructuralAnalysisDbContext dbContext
-) : ModelResourceRepositoryInBase<TId, TEntity>(dbContext), IModelResourceRepository<TId, TEntity>
+internal abstract class ModelResourceRepositoryBase<
+    TId,
+    [DynamicallyAccessedMembers(
+        DynamicallyAccessedMemberTypes.PublicConstructors
+            | DynamicallyAccessedMemberTypes.NonPublicConstructors
+            | DynamicallyAccessedMemberTypes.PublicFields
+            | DynamicallyAccessedMemberTypes.NonPublicFields
+            | DynamicallyAccessedMemberTypes.PublicProperties
+            | DynamicallyAccessedMemberTypes.NonPublicProperties
+            | DynamicallyAccessedMemberTypes.Interfaces
+    )]
+        TEntity
+>(StructuralAnalysisDbContext dbContext)
+    : ModelResourceRepositoryInBase<TId, TEntity>(dbContext),
+        IModelResourceRepository<TId, TEntity>
     where TId : struct, IEquatable<TId>, IIntBasedId
     where TEntity : BeamOsModelEntity<TId>
 {
@@ -129,9 +165,21 @@ internal abstract class ModelResourceRepositoryBase<TId, TEntity>(
     }
 }
 
-internal abstract class AnalyticalResultRepositoryBase<TId, TEntity>(
-    StructuralAnalysisDbContext dbContext
-) : RepositoryBase<TId, TEntity>(dbContext), IAnalyticalResultRepository<TId, TEntity>
+internal abstract class AnalyticalResultRepositoryBase<
+    TId,
+    [DynamicallyAccessedMembers(
+        DynamicallyAccessedMemberTypes.PublicConstructors
+            | DynamicallyAccessedMemberTypes.NonPublicConstructors
+            | DynamicallyAccessedMemberTypes.PublicFields
+            | DynamicallyAccessedMemberTypes.NonPublicFields
+            | DynamicallyAccessedMemberTypes.PublicProperties
+            | DynamicallyAccessedMemberTypes.NonPublicProperties
+            | DynamicallyAccessedMemberTypes.Interfaces
+    )]
+        TEntity
+>(StructuralAnalysisDbContext dbContext)
+    : RepositoryBase<TId, TEntity>(dbContext),
+        IAnalyticalResultRepository<TId, TEntity>
     where TId : struct, IIntBasedId, IEquatable<TId>
     where TEntity : BeamOsAnalyticalResultEntity<TId>
 {

@@ -82,7 +82,7 @@ namespace BeamOs.CodeGen.SpeckleConnectorApi
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, JsonSerializerSettings);
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, typeof(SpeckleReceiveParameters), BeamOsJsonSerializerContext.Default);
                     var content_ = new System.Net.Http.ByteArrayContent(json_);
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
@@ -191,10 +191,11 @@ namespace BeamOs.CodeGen.SpeckleConnectorApi
 
             if (ReadResponseAsString)
             {
-                var responseText = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var responseText = await ReadAsStringAsync(response.Content, cancellationToken).ConfigureAwait(false);
                 try
                 {
-                    var typedBody = System.Text.Json.JsonSerializer.Deserialize<T>(responseText, JsonSerializerSettings);
+                    var jsonTypeInfo = (System.Text.Json.Serialization.Metadata.JsonTypeInfo<T>)BeamOsJsonSerializerContext.Default.GetTypeInfo(typeof(T));
+                    var typedBody = System.Text.Json.JsonSerializer.Deserialize<T>(responseText, jsonTypeInfo);
                     return new ObjectResponseResult<T>(typedBody, responseText);
                 }
                 catch (System.Text.Json.JsonException exception)
@@ -207,9 +208,10 @@ namespace BeamOs.CodeGen.SpeckleConnectorApi
             {
                 try
                 {
-                    using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
+                    using (var responseStream = await ReadAsStreamAsync(response.Content, cancellationToken).ConfigureAwait(false))
                     {
-                        var typedBody = await System.Text.Json.JsonSerializer.DeserializeAsync<T>(responseStream, JsonSerializerSettings, cancellationToken).ConfigureAwait(false);
+                        var jsonTypeInfo = (System.Text.Json.Serialization.Metadata.JsonTypeInfo<T>)BeamOsJsonSerializerContext.Default.GetTypeInfo(typeof(T));
+                        var typedBody = await System.Text.Json.JsonSerializer.DeserializeAsync<T>(responseStream, jsonTypeInfo, cancellationToken).ConfigureAwait(false);
                         return new ObjectResponseResult<T>(typedBody, string.Empty);
                     }
                 }

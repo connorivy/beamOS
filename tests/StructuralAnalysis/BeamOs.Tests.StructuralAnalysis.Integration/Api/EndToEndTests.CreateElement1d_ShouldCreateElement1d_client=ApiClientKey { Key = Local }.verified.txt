@@ -1,0 +1,18 @@
+{
+  Value: {
+    Id: 99,
+    ModelId: Guid_1,
+    StartNodeId: 5,
+    EndNodeId: 6,
+    MaterialId: 992,
+    SectionProfileId: 1636,
+    SectionProfileRotation: {
+      Value: 0.0,
+      Unit: Degree
+    },
+    Metadata: null
+  },
+  Error: null,
+  IsError: false,
+  IsSuccess: true
+}

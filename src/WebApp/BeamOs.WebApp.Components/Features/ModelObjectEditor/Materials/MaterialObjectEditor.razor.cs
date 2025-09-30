@@ -1,9 +1,8 @@
-using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
-using BeamOs.StructuralAnalysis.Application.Common;
-using BeamOs.StructuralAnalysis.Application.PhysicalModel.Materials;
+using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Materials;
 using BeamOs.WebApp.Components.Features.Editor;
+using BeamOs.WebApp.Components.Features.ModelObjectEditor.MomentLoads;
 using BeamOs.WebApp.Components.Features.SelectionInfo;
 using BeamOs.WebApp.EditorCommands;
 using Fluxor;
@@ -95,8 +94,8 @@ public partial class MaterialObjectEditor(
 
     private void UpdateFromMaterialResponse(MaterialResponse response)
     {
-        var pressureUnit = response.PressureUnit.MapToPressureUnit();
-        var thisPressureUnit = this.UnitSettings.PressureUnit.MapToPressureUnit();
+        var pressureUnit = response.PressureUnit.ToUnitsNet();
+        var thisPressureUnit = this.UnitSettings.PressureUnit.ToUnitsNet();
         this.material.Id = response.Id;
         this.material.ModelId = response.ModelId;
         this.material.ModulusOfElasticity = new Pressure(
@@ -134,7 +133,7 @@ public partial class MaterialObjectEditor(
         }
         else
         {
-            PutMaterialCommand command = new()
+            ModelResourceWithIntIdRequest<MaterialData> command = new()
             {
                 Id = this.material.Id,
                 ModelId = this.ModelId,

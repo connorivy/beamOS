@@ -1,6 +1,4 @@
-using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.StructuralAnalysis.Contracts.AnalyticalResults.Diagrams;
-using UnitsNet;
 
 namespace BeamOs.WebApp.Components.Features.ResultCharts;
 
@@ -16,13 +14,13 @@ internal static class DiagramConsistantIntervalExtensions
         for (int i = 0; i < intervals.Count; i++)
         {
             var interval = intervals[i];
-            if (location < interval.StartLocation.MapToLength() - equalityTolerance)
+            if (location < interval.StartLocation.ToUnitsNet() - equalityTolerance)
             {
                 continue;
             }
 
             // not needed for ordered intervals
-            if (location > interval.EndLocation.MapToLength() + equalityTolerance)
+            if (location > interval.EndLocation.ToUnitsNet() + equalityTolerance)
             {
                 continue;
             }
@@ -31,7 +29,7 @@ internal static class DiagramConsistantIntervalExtensions
             double? right = null;
             if (
                 i < intervals.Count - 1
-                && location.Equals(interval.EndLocation.MapToLength(), equalityTolerance)
+                && location.Equals(interval.EndLocation.ToUnitsNet(), equalityTolerance)
             )
             {
                 //var rightInterval = intervals[i + 1];
@@ -60,16 +58,16 @@ internal static class DiagramConsistantIntervalExtensions
     )
     {
         if (
-            location < interval.StartLocation.MapToLength() - equalityTolerance
-            || location > interval.EndLocation.MapToLength() + equalityTolerance
+            location < interval.StartLocation.ToUnitsNet() - equalityTolerance
+            || location > interval.EndLocation.ToUnitsNet() + equalityTolerance
         )
         {
             throw new Exception("Out of bounds my guy");
         }
 
-        return interval
-            .PolynomialCoefficients
-            .Evaluate(location.As(interval.StartLocation.Unit.MapToLengthUnit()));
+        return interval.PolynomialCoefficients.Evaluate(
+            location.As(interval.StartLocation.Unit.ToUnitsNet())
+        );
     }
 
     public static double Evaluate(this IList<double> coefficients, double loc)
