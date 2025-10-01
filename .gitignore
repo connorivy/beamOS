@@ -386,3 +386,4 @@ DotWrap/
 # /tests/BeamOs.Tests.Common/SolvedProblems/**/*.g.cs
 
 *.user.props
+*.user.cs

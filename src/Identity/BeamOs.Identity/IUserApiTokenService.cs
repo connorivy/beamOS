@@ -6,7 +6,7 @@ public interface IUserApiTokenService
 {
     public Task<Result<ApiTokenResponse>> CreateToken(CreateApiTokenRequest token);
 
-    public Task<Result<List<ApiTokenResponse>>> GetTokens();
+    public Task<Result<ICollection<ApiTokenResponse>>> GetTokens();
 
     public Task RevokeToken(string tokenName);
 }
@@ -46,9 +46,9 @@ public class ExampleUserApiTokenService : IUserApiTokenService
         return Task.FromResult(result);
     }
 
-    public Task<Result<List<ApiTokenResponse>>> GetTokens()
+    public Task<Result<ICollection<ApiTokenResponse>>> GetTokens()
     {
-        Result<List<ApiTokenResponse>> result = this.apiTokenResponses;
+        Result<ICollection<ApiTokenResponse>> result = this.apiTokenResponses;
         return Task.FromResult(result);
     }
 

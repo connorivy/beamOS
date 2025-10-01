@@ -78,7 +78,9 @@ public abstract class AbstractGenerator2 : IApiGenerator
 
             if (!Path.Exists(this.DestinationPath))
             {
-                Directory.CreateDirectory(this.DestinationPath);
+                throw new DirectoryNotFoundException(
+                    $"Destination path '{this.DestinationPath}' not found."
+                );
             }
 
             await File.WriteAllTextAsync(
