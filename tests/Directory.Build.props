@@ -5,7 +5,8 @@
   <PropertyGroup>
     <TUnitImplictUsings>false</TUnitImplictUsings>
     <BeamOsStructuralAnalysisSdkRef>false</BeamOsStructuralAnalysisSdkRef>
-    <UseBeamOsPackage Condition="'$(ContinuousIntegrationEnv)' == 'true' or '$(BeamOsVersion)' != ''">true</UseBeamOsPackage>
+    <!-- <UseBeamOsPackage Condition="'$(ContinuousIntegrationEnv)' == 'true' or '$(BeamOsVersion)' != ''">true</UseBeamOsPackage> -->
+    <UseBeamOsPackage>false</UseBeamOsPackage>
   </PropertyGroup>
 
   <!-- Use project references locally, but use nuget package in CI -->
