@@ -44,7 +44,7 @@ public class EndToEndTests(ApiClientKey client)
     private BeamOsApiResultModelId ModelClient => this.ApiClient.Models[this.ModelId];
 
     [Before(HookType.Test)]
-    public async Task SetupModel()
+    public void SetupModel()
     {
         if (ClientModelIds.ContainsKey(client))
         {
@@ -62,7 +62,10 @@ public class EndToEndTests(ApiClientKey client)
         };
 
         ClientModelIds[client] = modelId;
-        ModelResponses[client] = await this.ApiClient.Models.CreateModelAsync(request);
+        ModelResponses[client] = this
+            .ApiClient.Models.CreateModelAsync(request)
+            .GetAwaiter()
+            .GetResult();
     }
 
     [Test]
