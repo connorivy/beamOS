@@ -46,8 +46,10 @@ public class EndToEndTests(ApiClientKey client)
     [Before(HookType.Test)]
     public void SetupModel()
     {
+        Console.WriteLine($"Setting up model for client: {client.Key}");
         if (ClientModelIds.ContainsKey(client))
         {
+            Console.WriteLine($"Model already set up for client: {client.Key}");
             return;
         }
 
