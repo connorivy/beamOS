@@ -71,8 +71,12 @@ public class EndToEndTests(ApiClientKey client)
     }
 
     [Test]
+    [NotInParallel]
     public async Task CreateModel_ShouldReturnSuccessfulResponse()
     {
+        Console.WriteLine(
+            $"Running CreateModel_ShouldReturnSuccessfulResponse for client: {client.Key}"
+        );
         await Verify(this.ModelResponseResult);
     }
 
