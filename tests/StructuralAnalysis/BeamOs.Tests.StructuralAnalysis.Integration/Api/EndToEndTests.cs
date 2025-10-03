@@ -67,8 +67,10 @@ public class EndToEndTests(ApiClientKey client)
 
         ClientModelIds[client] = modelId;
         var result = this.ApiClient.Models.CreateModelAsync(request).GetAwaiter().GetResult();
+
+        result.ThrowIfError();
         Console.WriteLine(
-            $"Model creation response for client {client.Key}: {JsonSerializer.Serialize(result, typeof(ApiResponse<ModelResponse>), BeamOsJsonSerializerContext.Default)}"
+            $"Model creation response for client {client.Key}: {JsonSerializer.Serialize(result.Value, BeamOsJsonSerializerContext.Default.ModelResponse)}"
         );
         ModelResponses[client] = result;
 
