@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Text.Json;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis;
@@ -20,42 +21,54 @@ namespace BeamOs.Tests.StructuralAnalysis.Integration.Api;
 [MethodDataSource(typeof(ApiClients), nameof(ApiClients.GetClients))]
 public class EndToEndTests(ApiClientKey client)
 {
-    private static readonly ConcurrentDictionary<ApiClientKey, Guid> clientModelIds = [];
+    private static readonly SemaphoreSlim semaphore = new(1, 1);
+    private static readonly ConcurrentDictionary<ApiClientKey, Guid> ClientModelIds = [];
     private static readonly ConcurrentDictionary<
         ApiClientKey,
         ApiResponse<ModelResponse>
-    > modelResponses = [];
-    private Guid modelId => clientModelIds[client];
-    private ApiResponse<ModelResponse> modelResponseResult => modelResponses[client];
-    private BeamOsResultApiClient apiClient => client.GetClient();
-    private BeamOsApiResultModelId modelClient => this.apiClient.Models[this.modelId];
+    > ModelResponses = [];
+    private Guid ModelId => ClientModelIds[client];
+    private ApiResponse<ModelResponse> ModelResponseResult => ModelResponses[client];
+    private BeamOsResultApiClient ApiClient => client.GetClient();
+    private BeamOsApiResultModelId ModelClient => this.ApiClient.Models[this.ModelId];
 
     [Before(HookType.Test)]
     public async Task SetupModel()
     {
-        if (clientModelIds.ContainsKey(client))
+        await semaphore.WaitAsync();
+        try
         {
-            return;
+            if (ClientModelIds.ContainsKey(client))
+            {
+                return;
+            }
+
+            var modelId = Guid.NewGuid();
+
+            CreateModelRequest request = new()
+            {
+                Name = "test model",
+                Description = "test model",
+                Settings = new(UnitSettingsContract.K_FT),
+                Id = modelId,
+            };
+
+            ClientModelIds[client] = modelId;
+            ModelResponses[client] = await this.ApiClient.Models.CreateModelAsync(request);
         }
-
-        var modelId = Guid.NewGuid();
-
-        CreateModelRequest request = new()
+        finally
         {
-            Name = "test model",
-            Description = "test model",
-            Settings = new(UnitSettingsContract.K_FT),
-            Id = modelId,
-        };
-
-        clientModelIds[client] = modelId;
-        modelResponses[client] = await this.apiClient.Models.CreateModelAsync(request);
+            semaphore.Release();
+        }
     }
 
     [Test]
     public async Task CreateModel_ShouldReturnSuccessfulResponse()
     {
-        await Verify(this.modelResponseResult);
+        Console.WriteLine(
+            $"Running CreateModel_ShouldReturnSuccessfulResponse for client: {client.Key}"
+        );
+        await Verify(this.ModelResponseResult);
     }
 
     [Test]
@@ -66,10 +79,10 @@ public class EndToEndTests(ApiClientKey client)
             Name = "test model",
             Description = "test model",
             Settings = new(UnitSettingsContract.K_FT),
-            Id = this.modelId,
+            Id = this.ModelId,
         };
 
-        var modelResponseResult = await this.apiClient.Models.CreateModelAsync(request);
+        var modelResponseResult = await this.ApiClient.Models.CreateModelAsync(request);
 
         await Verify(modelResponseResult).ScrubInlineGuids();
     }
@@ -82,7 +95,7 @@ public class EndToEndTests(ApiClientKey client)
             Restraint.Fixed
         );
 
-        var nodeResponseResult = await this.modelClient.Nodes.CreateNodeAsync(
+        var nodeResponseResult = await this.ModelClient.Nodes.CreateNodeAsync(
             createNodeRequestBody
         );
 
@@ -97,7 +110,7 @@ public class EndToEndTests(ApiClientKey client)
     {
         LoadCaseData data = new() { Name = "Dead" };
 
-        var loadCaseResponse = await this.modelClient.LoadCases.CreateLoadCaseAsync(data);
+        var loadCaseResponse = await this.ModelClient.LoadCases.CreateLoadCaseAsync(data);
 
         await Verify(loadCaseResponse);
     }
@@ -108,7 +121,7 @@ public class EndToEndTests(ApiClientKey client)
         LoadCombinationData data = new((1, 1.0));
 
         var loadCombinationResponse =
-            await this.modelClient.LoadCombinations.CreateLoadCombinationAsync(data);
+            await this.ModelClient.LoadCombinations.CreateLoadCombinationAsync(data);
 
         await Verify(loadCombinationResponse);
     }
@@ -125,7 +138,7 @@ public class EndToEndTests(ApiClientKey client)
             Id = Guid.NewGuid(),
         };
 
-        var modelResponse = await this.apiClient.Models.CreateModelAsync(request);
+        var modelResponse = await this.ApiClient.Models.CreateModelAsync(request);
 
         modelResponse.IsSuccess.Should().BeTrue();
 
@@ -133,7 +146,7 @@ public class EndToEndTests(ApiClientKey client)
             new(1, 1, 1, LengthUnitContract.Foot),
             Restraint.Fixed
         );
-        var newModelClient = this.apiClient.Models[modelResponse.Value.Id];
+        var newModelClient = this.ApiClient.Models[modelResponse.Value.Id];
 
         var nodeResponseResult = await newModelClient.Nodes.CreateNodeAsync(createNodeRequestBody);
 
@@ -150,7 +163,7 @@ public class EndToEndTests(ApiClientKey client)
             5
         );
 
-        var nodeResponseResult = await this.modelClient.Nodes.CreateNodeAsync(
+        var nodeResponseResult = await this.ModelClient.Nodes.CreateNodeAsync(
             createNodeRequestBody
         );
 
@@ -171,7 +184,7 @@ public class EndToEndTests(ApiClientKey client)
             Id = 5,
         };
 
-        var result = await this.modelClient.PointLoads.CreatePointLoadAsync(requestBody);
+        var result = await this.ModelClient.PointLoads.CreatePointLoadAsync(requestBody);
 
         await Verify(result);
     }
@@ -190,7 +203,7 @@ public class EndToEndTests(ApiClientKey client)
             Id = 5,
         };
 
-        var result = await this.modelClient.MomentLoads.CreateMomentLoadAsync(requestBody);
+        var result = await this.ModelClient.MomentLoads.CreateMomentLoadAsync(requestBody);
 
         await Verify(result);
     }
@@ -223,7 +236,7 @@ public class EndToEndTests(ApiClientKey client)
             Id = 1636,
         };
         var sectionProfileResponseResult =
-            await this.modelClient.SectionProfiles.CreateSectionProfileAsync(w16x36Request);
+            await this.ModelClient.SectionProfiles.CreateSectionProfileAsync(w16x36Request);
 
         await Verify(sectionProfileResponseResult);
     }
@@ -237,7 +250,7 @@ public class EndToEndTests(ApiClientKey client)
             Library = StructuralCode.AISC_360_16,
         };
         var sectionProfileResponseResult =
-            await this.modelClient.SectionProfiles.FromLibrary.AddSectionProfileFromLibraryAsync(
+            await this.ModelClient.SectionProfiles.FromLibrary.AddSectionProfileFromLibraryAsync(
                 w14x22
             );
 
@@ -258,7 +271,7 @@ public class EndToEndTests(ApiClientKey client)
             Id = 992,
         };
 
-        var materialResponseResult = await this.modelClient.Materials.CreateMaterialAsync(
+        var materialResponseResult = await this.ModelClient.Materials.CreateMaterialAsync(
             a992Request
         );
 
@@ -280,7 +293,7 @@ public class EndToEndTests(ApiClientKey client)
             6
         );
 
-        var nodeResponseResult = await this.modelClient.Nodes.CreateNodeAsync(
+        var nodeResponseResult = await this.ModelClient.Nodes.CreateNodeAsync(
             createNodeRequestBody
         );
 
@@ -295,7 +308,7 @@ public class EndToEndTests(ApiClientKey client)
             Id = 99,
         };
 
-        var elResponseResult = await this.modelClient.Element1ds.CreateElement1dAsync(elRequest);
+        var elResponseResult = await this.ModelClient.Element1ds.CreateElement1dAsync(elRequest);
 
         await Verify(elResponseResult);
     }
@@ -312,7 +325,7 @@ public class EndToEndTests(ApiClientKey client)
         );
 
         var internalNodeResponseResult =
-            await this.modelClient.Nodes.Internal.CreateInternalNodeAsync(requestBody);
+            await this.ModelClient.Nodes.Internal.CreateInternalNodeAsync(requestBody);
 
         await Verify(internalNodeResponseResult)
             .ScrubMembers(l =>
@@ -325,7 +338,7 @@ public class EndToEndTests(ApiClientKey client)
     public async Task ChangeInternalNodeToSpatial_ShouldChangeNode()
     {
         var x = await this
-            .modelClient.Nodes[10]
+            .ModelClient.Nodes[10]
             .PutNodeAsync(
                 new NodeData()
                 {
@@ -344,7 +357,7 @@ public class EndToEndTests(ApiClientKey client)
     [DependsOn(nameof(CreateElement1d_ShouldCreateElement1d))]
     public async Task GetElement1d_ShouldResultInExpectedResponse()
     {
-        var elResponseResult = await this.modelClient.Element1ds[99].GetElement1dAsync();
+        var elResponseResult = await this.ModelClient.Element1ds[99].GetElement1dAsync();
 
         await Verify(elResponseResult);
     }
@@ -359,7 +372,7 @@ public class EndToEndTests(ApiClientKey client)
             Restraint.Free
         );
 
-        var nodeResponseResult = await this.modelClient.Nodes.PatchNodeAsync(updateNodeRequest);
+        var nodeResponseResult = await this.ModelClient.Nodes.PatchNodeAsync(updateNodeRequest);
 
         await Verify(nodeResponseResult);
     }
@@ -370,7 +383,7 @@ public class EndToEndTests(ApiClientKey client)
     public async Task ChangeSpatialNodeToInternal_ShouldChangeNode()
     {
         var changeToInternal = await this
-            .modelClient.Nodes[5]
+            .ModelClient.Nodes[5]
             .Internal.PutInternalNodeAsync(
                 new InternalNodeData(99, new(50, RatioUnitContract.Percent))
             );
@@ -378,10 +391,10 @@ public class EndToEndTests(ApiClientKey client)
 
         // element with id 99 has start node with id 5
         // changing the node type should not affect the element
-        var existingElement = await this.modelClient.Element1ds[99].GetElement1dAsync();
+        var existingElement = await this.ModelClient.Element1ds[99].GetElement1dAsync();
 
         var internalNodeResponseResult = await this
-            .modelClient.Nodes[5]
+            .ModelClient.Nodes[5]
             .Internal.GetInternalNodeAsync();
 
         await Verify(internalNodeResponseResult);
@@ -443,14 +456,14 @@ public class EndToEndTests(ApiClientKey client)
         var newNode1Id = 456;
         var newNode2Id = 789;
         var newElement1dId = 1234;
-        var newNode1Response = await this.modelClient.Nodes.CreateNodeAsync(
+        var newNode1Response = await this.ModelClient.Nodes.CreateNodeAsync(
             new CreateNodeRequest(
                 new(7, 7, 7, LengthUnitContract.Foot),
                 Restraint.Fixed,
                 newNode1Id
             )
         );
-        var newNode2Response = await this.modelClient.Nodes.CreateNodeAsync(
+        var newNode2Response = await this.ModelClient.Nodes.CreateNodeAsync(
             new CreateNodeRequest(
                 new(17, 17, 17, LengthUnitContract.Foot),
                 Restraint.Fixed,
@@ -460,7 +473,7 @@ public class EndToEndTests(ApiClientKey client)
         newNode1Response.ThrowIfError();
         newNode2Response.ThrowIfError();
 
-        var newElement1dResponse = await this.modelClient.Element1ds.CreateElement1dAsync(
+        var newElement1dResponse = await this.ModelClient.Element1ds.CreateElement1dAsync(
             new CreateElement1dRequest()
             {
                 Id = newElement1dId,
@@ -482,11 +495,11 @@ public class EndToEndTests(ApiClientKey client)
             );
         }
 
-        var deleteNodeResponse = await this.modelClient.Nodes[newNode1Id].DeleteNodeAsync();
+        var deleteNodeResponse = await this.ModelClient.Nodes[newNode1Id].DeleteNodeAsync();
         deleteNodeResponse.ThrowIfError();
 
         // Verify that the element1d with id 1234 has been deleted
-        var getElement1dResponse = await this.modelClient.Element1ds[1234].GetElement1dAsync();
+        var getElement1dResponse = await this.ModelClient.Element1ds[1234].GetElement1dAsync();
 
         await Verify(getElement1dResponse)
             .ScrubInlineGuids()
@@ -498,6 +511,6 @@ public class EndToEndTests(ApiClientKey client)
 
 public class IntegrationTestContext
 {
-    public ApiClientKey ClientKey { get; init; }
+    public required ApiClientKey ClientKey { get; init; }
     public Guid ModelId { get; init; }
 }

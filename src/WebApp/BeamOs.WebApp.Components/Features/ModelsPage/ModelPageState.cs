@@ -23,7 +23,29 @@ public record ModelPageState
 
     static ModelPageState()
     {
-        List<ModelInfoResponse> sampleModels = [];
+        SampleModelResponses =
+        [
+            new(
+                Guid.Parse("4ce66084-4ac1-40bc-99ae-3d0f334c66fa"),
+                "Twisty Bowl Framing",
+                "A crazy twisting bowl type structure. Made by Bjorn Steinhagen in grasshopper and then sent to beamOS using Speckle",
+                new ModelSettings(
+                    unitSettings: new UnitSettingsContract
+                    {
+                        LengthUnit = LengthUnitContract.Inch,
+                        ForceUnit = ForceUnitContract.KilopoundForce,
+                        AngleUnit = AngleUnitContract.Radian,
+                    },
+                    analysisSettings: new AnalysisSettings
+                    {
+                        Element1DAnalysisType = Element1dAnalysisType.Timoshenko,
+                    },
+                    yAxisUp: true
+                ),
+                DateTimeOffset.Parse("2023-11-01T12:00:00Z"),
+                "Sample"
+            ),
+        ];
         // foreach (var modelBuilder in AllSolvedProblems.ModelFixtures())
         // {
         //     // Only add sample models from SAP2000 because they look the coolest
@@ -43,6 +65,5 @@ public record ModelPageState
         //         )
         //     );
         // }
-        SampleModelResponses = sampleModels;
     }
 }

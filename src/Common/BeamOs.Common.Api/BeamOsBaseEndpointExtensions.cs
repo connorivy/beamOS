@@ -7,8 +7,26 @@ using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace BeamOs.Common.Api;
 
-public static class BeamOsBaseEndpointExtensions
+internal static class BeamOsBaseEndpointExtensions
 {
+    extension<TRequest, TResponse>(BeamOsBaseEndpoint<TRequest, TResponse> result)
+    {
+        /// <summary>
+        /// Do not remove. This method says 0 usages, but that is not true. It is used instead of ExecuteAsync when
+        /// generating strongly typed api clients
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+#pragma warning disable CA1822 // Mark members as static
+        internal TResponse GetResponseTypeForClientGenerationPurposes(
+#pragma warning restore CA1822 // Mark members as static
+        )
+        {
+            return default!;
+        }
+    }
+
     extension<TResponse>(Result<TResponse> result)
     {
         /// <summary>
@@ -66,6 +84,24 @@ public static class BeamOsBaseEndpointExtensions
     }
 #endif
 }
+public static class BeamOsBaseEndpointMoreExtensions
+{
+    extension<TResponse>(Result<TResponse> result)
+        where TResponse : IResult
+    {
+#pragma warning disable IDE0060 // Remove unused parameter
+        public IResult ToWebResult(CancellationToken ct = default)
+#pragma warning restore IDE0060 // Remove unused parameter
+        {
+            if (result.IsSuccess)
+            {
+                return TypedResults.Ok(result.Value);
+            }
+            return BeamOsErrorUtils.MapErrorToResult(result.Error);
+        }
+    }
+}
+
 
 internal static class BeamOsErrorUtils
 {

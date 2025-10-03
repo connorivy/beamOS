@@ -62,6 +62,9 @@ public static partial class AssemblySetup
     {
         if (ApiIsRunning || !SetupWebApi)
         {
+            Console.WriteLine(
+                $"Skipping API setup. ApiIsRunning: {ApiIsRunning}. SetupWebApi: {SetupWebApi}"
+            );
             return;
         }
 
