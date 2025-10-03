@@ -47,7 +47,7 @@ public class ApiResponse
         {
             return apiResponse.Error.ToBeamOsError();
         }
-        return ApiResponse.Success;
+        return Success;
     }
 
     public void ThrowIfError()
@@ -128,7 +128,13 @@ public sealed class ApiResponse<TValue> : ApiResponse
         Func<ProblemDetails, TApiResponse> failure
     ) => !this.IsError ? success(this.Value!) : failure(this.Error);
 
-    public static ApiResponse<TValue> Success() => new(default(TValue), null, false);
+#pragma warning disable CS0618 // Type or member is obsolete
+    public static ApiResponse<TValue> Success() => new(default, null, false);
+#pragma warning restore CS0618 // Type or member is obsolete
+
+    internal static ApiResponse<TValue> FromValue(TValue value) => new(value);
+
+    internal static ApiResponse<TValue> FromError(ProblemDetails error) => new(error);
 }
 
 public record ProblemDetails(
