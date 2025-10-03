@@ -1,6 +1,7 @@
 using System.Reflection;
 using BeamOs.Common.Api;
 using BeamOs.StructuralAnalysis.Infrastructure;
+using BeamOs.StructuralAnalysis.Sdk;
 using Microsoft.EntityFrameworkCore;
 using ServiceScan.SourceGenerator;
 
@@ -84,6 +85,17 @@ public static partial class DependencyInjection
         {
             using var scope = app.Services.CreateScope();
             await BeamOs.StructuralAnalysis.Infrastructure.DependencyInjection.MigrateDb(scope);
+
+            var apiClient = scope.ServiceProvider.GetRequiredService<BeamOsResultApiClient>();
+            foreach (var model in Tests.Common.AllSolvedProblems.ModelFixtures())
+            {
+                if (await model.CreateOnly(apiClient))
+                {
+                    await apiClient
+                        .Models[model.Id]
+                        .Analyze.Opensees.RunOpenSeesAnalysisAsync(new());
+                }
+            }
         }
     }
 }
