@@ -21,6 +21,7 @@ namespace BeamOs.Tests.StructuralAnalysis.Integration.Api;
 [MethodDataSource(typeof(ApiClients), nameof(ApiClients.GetClients))]
 public class EndToEndTests(ApiClientKey client)
 {
+    private static readonly SemaphoreSlim semaphore = new(1, 1);
     private static readonly ConcurrentDictionary<ApiClientKey, Guid> ClientModelIds = [];
     private static readonly ConcurrentDictionary<
         ApiClientKey,
@@ -45,39 +46,47 @@ public class EndToEndTests(ApiClientKey client)
     private BeamOsApiResultModelId ModelClient => this.ApiClient.Models[this.ModelId];
 
     [Before(HookType.Test)]
-    public void SetupModel()
+    public async Task SetupModel()
     {
-        Console.WriteLine($"Setting up model for client: {client.Key}");
-        if (ClientModelIds.ContainsKey(client))
+        await semaphore.WaitAsync();
+        try
         {
-            Console.WriteLine($"Model already set up for client: {client.Key}");
-            return;
+            Console.WriteLine($"Setting up model for client: {client.Key}");
+            if (ClientModelIds.ContainsKey(client))
+            {
+                Console.WriteLine($"Model already set up for client: {client.Key}");
+                return;
+            }
+
+            var modelId = Guid.NewGuid();
+            Console.WriteLine($"Creating model with ID: {modelId} for client: {client.Key}");
+
+            CreateModelRequest request = new()
+            {
+                Name = "test model",
+                Description = "test model",
+                Settings = new(UnitSettingsContract.K_FT),
+                Id = modelId,
+            };
+
+            ClientModelIds[client] = modelId;
+            var result = await this.ApiClient.Models.CreateModelAsync(request);
+
+            result.ThrowIfError();
+            Console.WriteLine(
+                $"Model creation response for client {client.Key}: {JsonSerializer.Serialize(result.Value, BeamOsJsonSerializerContext.Default.ModelResponse)}"
+            );
+            ModelResponses[client] = result;
+
+            var availableKeys = string.Join(", ", ModelResponses.Keys.Select(k => k.Key));
+            Console.WriteLine(
+                $"Current ModelResponses keys after setup for client {client.Key}: [{availableKeys}]"
+            );
         }
-
-        var modelId = Guid.NewGuid();
-        Console.WriteLine($"Creating model with ID: {modelId} for client: {client.Key}");
-
-        CreateModelRequest request = new()
+        finally
         {
-            Name = "test model",
-            Description = "test model",
-            Settings = new(UnitSettingsContract.K_FT),
-            Id = modelId,
-        };
-
-        ClientModelIds[client] = modelId;
-        var result = this.ApiClient.Models.CreateModelAsync(request).GetAwaiter().GetResult();
-
-        result.ThrowIfError();
-        Console.WriteLine(
-            $"Model creation response for client {client.Key}: {JsonSerializer.Serialize(result.Value, BeamOsJsonSerializerContext.Default.ModelResponse)}"
-        );
-        ModelResponses[client] = result;
-
-        var availableKeys = string.Join(", ", ModelResponses.Keys.Select(k => k.Key));
-        Console.WriteLine(
-            $"Current ModelResponses keys after setup for client {client.Key}: [{availableKeys}]"
-        );
+            semaphore.Release();
+        }
     }
 
     [Test]
