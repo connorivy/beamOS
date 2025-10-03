@@ -28,20 +28,7 @@ public class EndToEndTests(ApiClientKey client)
         ApiResponse<ModelResponse>
     > ModelResponses = [];
     private Guid ModelId => ClientModelIds[client];
-    private ApiResponse<ModelResponse> ModelResponseResult
-    {
-        get
-        {
-            if (!ModelResponses.TryGetValue(client, out var response))
-            {
-                var availableKeys = string.Join(", ", ModelResponses.Keys.Select(k => k.Key));
-                throw new KeyNotFoundException(
-                    $"Key '{client.Key}' not found in ModelResponses. Available keys: [{availableKeys}]. Did SetupModel run?"
-                );
-            }
-            return response;
-        }
-    }
+    private ApiResponse<ModelResponse> ModelResponseResult => ModelResponses[client];
     private BeamOsResultApiClient ApiClient => client.GetClient();
     private BeamOsApiResultModelId ModelClient => this.ApiClient.Models[this.ModelId];
 
@@ -51,15 +38,12 @@ public class EndToEndTests(ApiClientKey client)
         await semaphore.WaitAsync();
         try
         {
-            Console.WriteLine($"Setting up model for client: {client.Key}");
             if (ClientModelIds.ContainsKey(client))
             {
-                Console.WriteLine($"Model already set up for client: {client.Key}");
                 return;
             }
 
             var modelId = Guid.NewGuid();
-            Console.WriteLine($"Creating model with ID: {modelId} for client: {client.Key}");
 
             CreateModelRequest request = new()
             {
@@ -70,18 +54,7 @@ public class EndToEndTests(ApiClientKey client)
             };
 
             ClientModelIds[client] = modelId;
-            var result = await this.ApiClient.Models.CreateModelAsync(request);
-
-            result.ThrowIfError();
-            Console.WriteLine(
-                $"Model creation response for client {client.Key}: {JsonSerializer.Serialize(result.Value, BeamOsJsonSerializerContext.Default.ModelResponse)}"
-            );
-            ModelResponses[client] = result;
-
-            var availableKeys = string.Join(", ", ModelResponses.Keys.Select(k => k.Key));
-            Console.WriteLine(
-                $"Current ModelResponses keys after setup for client {client.Key}: [{availableKeys}]"
-            );
+            ModelResponses[client] = await this.ApiClient.Models.CreateModelAsync(request);
         }
         finally
         {
