@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Text.Json;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis;
@@ -54,6 +55,7 @@ public class EndToEndTests(ApiClientKey client)
         }
 
         var modelId = Guid.NewGuid();
+        Console.WriteLine($"Creating model with ID: {modelId} for client: {client.Key}");
 
         CreateModelRequest request = new()
         {
@@ -64,10 +66,16 @@ public class EndToEndTests(ApiClientKey client)
         };
 
         ClientModelIds[client] = modelId;
-        ModelResponses[client] = this
-            .ApiClient.Models.CreateModelAsync(request)
-            .GetAwaiter()
-            .GetResult();
+        var result = this.ApiClient.Models.CreateModelAsync(request).GetAwaiter().GetResult();
+        Console.WriteLine(
+            $"Model creation response for client {client.Key}: {JsonSerializer.Serialize(result, typeof(ApiResponse<ModelResponse>), BeamOsJsonSerializerContext.Default)}"
+        );
+        ModelResponses[client] = result;
+
+        var availableKeys = string.Join(", ", ModelResponses.Keys.Select(k => k.Key));
+        Console.WriteLine(
+            $"Current ModelResponses keys after setup for client {client.Key}: [{availableKeys}]"
+        );
     }
 
     [Test]
