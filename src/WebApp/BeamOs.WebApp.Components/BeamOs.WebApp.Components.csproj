@@ -17,6 +17,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Exclude problematic TypeScript file that causes Blazor build errors -->
+    <Content Remove="Features/ResultCharts/ResultChartsComponent.razor.ts" />
+    <None Include="Features/ResultCharts/ResultChartsComponent.razor.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" />
