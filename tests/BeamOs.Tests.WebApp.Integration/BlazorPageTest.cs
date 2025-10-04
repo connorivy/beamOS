@@ -66,6 +66,7 @@ public class BlazorPageTest<TProgram> : BrowserTest
 
         return new PlaywrightPageState(this.Browser, context, page, captureState ? testName : null);
     }
+<<<<<<< Updated upstream
 
     // public async Task InitializeAsync()
     // {
@@ -98,6 +99,8 @@ public class BlazorPageTest<TProgram> : BrowserTest
     //         this.host = null;
     //     }
     // }
+=======
+>>>>>>> Stashed changes
 }
 
 public class PlaywrightPageState(
