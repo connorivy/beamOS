@@ -45,3 +45,12 @@ jobs:
       - name: build web app components
         run: dotnet build ./src/WebApp/BeamOs.WebApp.Components/BeamOs.WebApp.Components.csproj
         continue-on-error: true
+
+      - name: build test project
+        run: dotnet build ./test/BeamOs.Tests.WebApp.Integration/BeamOs.Tests.WebApp.Integration.csproj
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Further playwright setup
+        run: ./test/BeamOs.Tests.WebApp.Integration/bin/Debug/net9.0/playwright.ps1 install
