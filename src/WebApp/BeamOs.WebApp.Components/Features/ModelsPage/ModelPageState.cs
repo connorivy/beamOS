@@ -26,6 +26,26 @@ public record ModelPageState
         SampleModelResponses =
         [
             new(
+                Guid.Parse("00000000-0000-0000-0000-000000000001"),
+                "Tutorial",
+                "Learn the basics of BeamOS with this interactive tutorial",
+                new ModelSettings(
+                    unitSettings: new UnitSettingsContract
+                    {
+                        LengthUnit = LengthUnitContract.Foot,
+                        ForceUnit = ForceUnitContract.KilopoundForce,
+                        AngleUnit = AngleUnitContract.Radian,
+                    },
+                    analysisSettings: new AnalysisSettings
+                    {
+                        Element1DAnalysisType = Element1dAnalysisType.Timoshenko,
+                    },
+                    yAxisUp: true
+                ),
+                DateTimeOffset.Parse("2024-01-01T12:00:00Z"),
+                "Sample"
+            ),
+            new(
                 Guid.Parse("4ce66084-4ac1-40bc-99ae-3d0f334c66fa"),
                 "Twisty Bowl Framing",
                 "A crazy twisting bowl type structure. Made by Bjorn Steinhagen in grasshopper and then sent to beamOS using Speckle",

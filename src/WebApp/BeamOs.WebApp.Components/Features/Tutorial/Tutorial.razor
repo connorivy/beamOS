@@ -1,0 +1,17 @@
+@page "/tutorial"
+
+@using BeamOs.CodeGen.EditorApi
+@using BeamOs.StructuralAnalysis.Contracts.Common
+@using BeamOs.WebApp.Components.Features.Editor
+@using BeamOs.WebApp.Components.Layout
+@using Fluxor.Blazor.Web.Components
+@using MudBlazor
+
+@inherits FluxorComponent
+@layout ResponsiveSidebarLayout
+
+<PageTitle>Tutorial</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="relative h-full w-full">
+    <EditorComponent Class="h-full" @ref="editorComponent" ModelId="@TutorialModelId" IsReadOnly="false"></EditorComponent>
+</MudContainer>

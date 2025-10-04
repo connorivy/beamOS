@@ -86,6 +86,16 @@ public partial class Models : FluxorComponent
         };
     }
 
+    private string GetModelUrl(ModelInfoResponse model)
+    {
+        // Tutorial model navigates to /tutorial page
+        if (model.Id == Guid.Parse("00000000-0000-0000-0000-000000000001"))
+        {
+            return "/tutorial";
+        }
+        return ModelEditor.GetRelativeUrl(model.Id);
+    }
+
     private async Task ShowCreateModelDialog()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
