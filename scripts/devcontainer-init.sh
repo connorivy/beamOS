@@ -18,6 +18,17 @@ dotnet restore
 mkdir -p /workspaces/beamOS/.nuget-local
 dotnet nuget add source /workspaces/beamOS/.nuget-local --name local
 
+# build web app components
+dotnet build ./src/WebApp/BeamOs.WebApp.Components/BeamOs.WebApp.Components.csproj
+
+# build webapp integration tests
+dotnet build ./tests/BeamOs.Tests.WebApp.Integration/BeamOs.Tests.WebApp.Integration.csproj
+
+# install powershell
+./scripts/installPwsh.sh
+
+pwsh ./tests/BeamOs.Tests.WebApp.Integration/bin/Debug/net9.0/playwright.ps1 install
+
 python3 -m venv venv
 source venv/bin/activate
 
