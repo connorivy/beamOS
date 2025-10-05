@@ -19,14 +19,17 @@ public record ModelPageState
 
     public bool IsLoading { get; set; } = true;
     public required IReadOnlyCollection<ModelInfoResponse> UserModelResponses { get; init; }
+    public static Guid TutorialGuid { get; }
     public static IReadOnlyCollection<ModelInfoResponse> SampleModelResponses { get; }
 
     static ModelPageState()
     {
+        TutorialGuid = Guid.CreateVersion7();
+        
         SampleModelResponses =
         [
             new(
-                Guid.CreateVersion7(),
+                TutorialGuid,
                 "Tutorial",
                 "Learn the basics of BeamOS with this interactive tutorial",
                 new ModelSettings(

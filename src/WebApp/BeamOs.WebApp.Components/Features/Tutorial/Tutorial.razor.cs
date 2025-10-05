@@ -11,8 +11,6 @@ namespace BeamOs.WebApp.Components.Features.Tutorial;
 
 public partial class Tutorial : FluxorComponent
 {
-    private Guid TutorialModelId { get; set; }
-
     [Inject]
     private IStructuralAnalysisApiClientV1 StructuralAnalysisApiClient { get; set; }
 
@@ -28,7 +26,6 @@ public partial class Tutorial : FluxorComponent
     {
         base.OnInitialized();
         dispatcher.Dispatch(new OpenDrawer());
-        TutorialModelId = Guid.CreateVersion7();
     }
 
     protected override async Task OnInitializedAsync()
@@ -38,7 +35,7 @@ public partial class Tutorial : FluxorComponent
         // Create the tutorial model
         var createModelRequest = new CreateModelRequest
         {
-            Id = TutorialModelId,
+            Id = ModelsPage.ModelPageState.TutorialGuid,
             Name = "Tutorial",
             Description = "Learn the basics of BeamOS with this interactive tutorial",
             Settings = new ModelSettings(

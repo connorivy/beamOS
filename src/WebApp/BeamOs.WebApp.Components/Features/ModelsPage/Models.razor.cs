@@ -89,7 +89,7 @@ public partial class Models : FluxorComponent
     private string GetModelUrl(ModelInfoResponse model)
     {
         // Tutorial model navigates to /tutorial page
-        if (model.Name == "Tutorial")
+        if (model.Id == ModelPageState.TutorialGuid)
         {
             return "/tutorial";
         }
