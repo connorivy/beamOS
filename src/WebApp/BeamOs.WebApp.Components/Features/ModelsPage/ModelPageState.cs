@@ -26,7 +26,7 @@ public record ModelPageState
         SampleModelResponses =
         [
             new(
-                Guid.NewGuid(),
+                Guid.CreateVersion7(),
                 "Tutorial",
                 "Learn the basics of BeamOS with this interactive tutorial",
                 new ModelSettings(

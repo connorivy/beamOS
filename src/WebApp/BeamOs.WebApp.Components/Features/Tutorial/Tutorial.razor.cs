@@ -28,7 +28,7 @@ public partial class Tutorial : FluxorComponent
     {
         base.OnInitialized();
         dispatcher.Dispatch(new OpenDrawer());
-        TutorialModelId = Guid.NewGuid();
+        TutorialModelId = Guid.CreateVersion7();
     }
 
     protected override async Task OnInitializedAsync()
