@@ -26,7 +26,7 @@ public record ModelPageState
         SampleModelResponses =
         [
             new(
-                Guid.Parse("00000000-0000-0000-0000-000000000001"),
+                Guid.NewGuid(),
                 "Tutorial",
                 "Learn the basics of BeamOS with this interactive tutorial",
                 new ModelSettings(

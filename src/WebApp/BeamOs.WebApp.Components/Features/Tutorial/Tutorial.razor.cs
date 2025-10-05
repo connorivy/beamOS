@@ -11,7 +11,7 @@ namespace BeamOs.WebApp.Components.Features.Tutorial;
 
 public partial class Tutorial : FluxorComponent
 {
-    private static readonly Guid TutorialModelId = Guid.Parse("00000000-0000-0000-0000-000000000001");
+    private Guid TutorialModelId { get; set; }
 
     [Inject]
     private IStructuralAnalysisApiClientV1 StructuralAnalysisApiClient { get; set; }
@@ -28,6 +28,7 @@ public partial class Tutorial : FluxorComponent
     {
         base.OnInitialized();
         dispatcher.Dispatch(new OpenDrawer());
+        TutorialModelId = Guid.NewGuid();
     }
 
     protected override async Task OnInitializedAsync()
