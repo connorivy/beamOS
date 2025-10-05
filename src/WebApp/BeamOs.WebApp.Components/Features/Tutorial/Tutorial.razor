@@ -2,16 +2,63 @@
 
 @using BeamOs.CodeGen.EditorApi
 @using BeamOs.StructuralAnalysis.Contracts.Common
+@using BeamOs.WebApp.Components.Features.AiAssistant
+@using BeamOs.WebApp.Components.Features.AnalysisToolbar
 @using BeamOs.WebApp.Components.Features.Editor
+@using BeamOs.WebApp.Components.Features.ModelObjectEditor
 @using BeamOs.WebApp.Components.Layout
+@using BeamOs.WebApp.Components.Pages
 @using Fluxor.Blazor.Web.Components
 @using MudBlazor
 
 @inherits FluxorComponent
-@layout ResponsiveSidebarLayout
 
 <PageTitle>Tutorial</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="relative h-full w-full">
-    <EditorComponent Class="h-full" @ref="editorComponent" ModelId="@ModelsPage.ModelPageState.TutorialGuid" IsReadOnly="false"></EditorComponent>
+    <EditorComponent Class="h-full" @ref="editorComponent" ModelId="@tutorialState.Value.ModelId" IsReadOnly="false">
+    </EditorComponent>
+    @if (this.editorComponent is not null && editorState.Value.LoadedModelId is Guid modelId)
+    {
+        <div class="flex items-center justify-center absolute left-4 right-4 top-4">
+            <AnalysisToolbar Class="" editorComponent="@editorComponent" ModelId="@modelId"
+                CanvasId="@editorComponent.CanvasId"></AnalysisToolbar>
+        </div>
+
+        <FloatingResponsiveSidebar>
+            <ModelObjectEditor ModelId="@modelId"
+                UnitSettings="@editorState.Value.CachedModelResponse.Settings.UnitSettings" />
+        </FloatingResponsiveSidebar>
+
+        @* <div class="flex justify-center absolute bottom-0 right-0 left-0 h-2/5">
+            <ResultsTableComponent ModelId="@modelId" Class="w-5/6 p-4" />
+        </div> *@
+
+        @* var panelContentStack = this.State.Value.PanelContent;
+        if (!panelContentStack.IsEmpty)
+        {
+            var panelContent = panelContentStack.Peek();
+            <FloatingResponsivePanel>
+                @if (!this.State.Value.PanelContentLocked && panelContentStack.Count() > 1)
+                {
+                    <MudIconButton OnClick="@GoBack" Icon="@Icons.Material.Filled.ArrowBack" Color="Color.Inherit"
+                        Class="absolute top-2 left-2 z-10" />
+                }
+                @switch (panelContent)
+                {
+                    case PanelContent.ProposalInfo:
+                        <ProposalInfo ModelId="@modelId" EditorApi="@editorState.Value.EditorApi" />
+                        break;
+                    case PanelContent.Element1dResults:
+                        <ResultChartsComponent ModelId="@modelId" />
+                        break;
+                    case PanelContent.ModelRepairScenarioCreator:
+                        <ModelRepairScenarioCreator ModelId="@modelId" />
+                        break;
+                }
+            </FloatingResponsivePanel>
+        } *@
+
+        <AiAssistant ModelId="@tutorialState.Value.ModelId" />
+    }
 </MudContainer>

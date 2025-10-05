@@ -18,36 +18,34 @@ public record ModelPageState
     }
 
     public bool IsLoading { get; set; } = true;
+
     public required IReadOnlyCollection<ModelInfoResponse> UserModelResponses { get; init; }
-    public static Guid TutorialGuid { get; }
     public static IReadOnlyCollection<ModelInfoResponse> SampleModelResponses { get; }
 
     static ModelPageState()
     {
-        TutorialGuid = Guid.CreateVersion7();
-        
         SampleModelResponses =
         [
-            new(
-                TutorialGuid,
-                "Tutorial",
-                "Learn the basics of BeamOS with this interactive tutorial",
-                new ModelSettings(
-                    unitSettings: new UnitSettingsContract
-                    {
-                        LengthUnit = LengthUnitContract.Foot,
-                        ForceUnit = ForceUnitContract.KilopoundForce,
-                        AngleUnit = AngleUnitContract.Radian,
-                    },
-                    analysisSettings: new AnalysisSettings
-                    {
-                        Element1DAnalysisType = Element1dAnalysisType.Timoshenko,
-                    },
-                    yAxisUp: true
-                ),
-                DateTimeOffset.Parse("2024-01-01T12:00:00Z"),
-                "Sample"
-            ),
+            // new(
+            //     TutorialGuid,
+            //     "Tutorial",
+            //     "Learn the basics of BeamOS with this interactive tutorial",
+            //     new ModelSettings(
+            //         unitSettings: new UnitSettingsContract
+            //         {
+            //             LengthUnit = LengthUnitContract.Foot,
+            //             ForceUnit = ForceUnitContract.KilopoundForce,
+            //             AngleUnit = AngleUnitContract.Radian,
+            //         },
+            //         analysisSettings: new AnalysisSettings
+            //         {
+            //             Element1DAnalysisType = Element1dAnalysisType.Timoshenko,
+            //         },
+            //         yAxisUp: true
+            //     ),
+            //     DateTimeOffset.Parse("2024-01-01T12:00:00Z"),
+            //     "Sample"
+            // ),
             new(
                 Guid.Parse("4ce66084-4ac1-40bc-99ae-3d0f334c66fa"),
                 "Twisty Bowl Framing",
